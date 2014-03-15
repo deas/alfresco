@@ -197,7 +197,7 @@ public class Navigation extends SharePage
         selectUserDropdown();
         if(!alfrescoVersion.isCloud() || (AlfrescoVersion.Enterprise43 != alfrescoVersion))
         {
-            throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
+            throw new UnsupportedOperationException("This option is in cloud only, not available for Enterprise");
         }
         String selector = "td[id*='alfresco/header/AlfMenuItem']>a.alfresco-menus-_AlfMenuItemMixin";
         drone.findAndWait(By.cssSelector(selector)).click();
@@ -515,7 +515,7 @@ public class Navigation extends SharePage
         {
             return selectManageSitesRepoAdmin();
         }
-        else if (ShareUtil.isUserInGroup("GROUP_SITE_ADMINISTRATORS"))
+        else if (ShareUtil.isUserInGroup("SITE_ADMINISTRATORS"))
         {
             return selectManageSitesSiteAdmin();
         }
