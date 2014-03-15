@@ -138,6 +138,17 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * Focuses the domNode. This has been added to support the dijit/_KeyNavContainer functions mixed into 
+       * the [document library views]{@link module:alfresco/documentlibrary/views/AlfDocumentListView} to 
+       * allow easier keyboard navigation.
+       * 
+       * @instance
+       */
+      focus: function alfresco_documentlibrary_views_layouts_HeaderCell__focus() {
+         this.domNode.focus();
+      },
+
+      /**
        * This function is called whenever the header cell is clicked. It publishes a request to 
        * resort the current data and updates its display
        *

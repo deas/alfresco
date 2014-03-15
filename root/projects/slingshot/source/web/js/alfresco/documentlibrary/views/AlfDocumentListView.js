@@ -33,22 +33,21 @@
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
-        "dijit/_KeyNavContainer",
         "dojo/text!./templates/AlfDocumentListView.html",
         "alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin",
         "alfresco/documentlibrary/_AlfDndDocumentUploadMixin",
+        "alfresco/documentlibrary/views/DocumentListRenderer",
         "alfresco/core/Core",
         "alfresco/core/JsNode",
         "dojo/_base/lang",
         "dojo/_base/array",
-        "dojo/keys",
         "dojo/dom-construct",
         "dojo/dom-class",
         "dijit/registry"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _KeyNavContainer, template, _MultiItemRendererMixin, _AlfDndDocumentUploadMixin, 
-                 AlfCore, JsNode, lang, array, keys, domConstruct, domClass, registry) {
+        function(declare, _WidgetBase, _TemplatedMixin, template, _MultiItemRendererMixin, _AlfDndDocumentUploadMixin, DocumentListRenderer, 
+                 AlfCore, JsNode, lang, array, domConstruct, domClass, registry) {
    
-   return declare([_WidgetBase, _TemplatedMixin, _KeyNavContainer, _MultiItemRendererMixin, AlfCore, _AlfDndDocumentUploadMixin], {
+   return declare([_WidgetBase, _TemplatedMixin, _MultiItemRendererMixin, AlfCore, _AlfDndDocumentUploadMixin], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -94,7 +93,6 @@ define(["dojo/_base/declare",
       postCreate: function alfresco_documentlibrary_views_AlfDocumentListView__postCreate() {
          this.inherited(arguments);
          this.addUploadDragAndDrop(this.domNode);
-         this.setupKeyboardNavigation();
          this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onFilterChange"));
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onDocumentsLoaded"));
          if (this.currentData != null)
@@ -108,12 +106,20 @@ define(["dojo/_base/declare",
        * @param {object} payload The details of the documents that have been provided.
        */
       onDocumentsLoaded: function alfresco_documentlibrary_views_AlfDocumentListView__onDocumentsLoaded(payload) {
-         for (var i = 0; i<payload.response.items.length; i++)
+         var items = lang.getObject("response.items", false, payload);
+         if (items != null)
          {
-            payload.response.items[i].jsNode = new JsNode(payload.response.items[i].node);
+            for (var i = 0; i<items.length; i++)
+            {
+               items[i].jsNode = new JsNode(items[i].node);
+            }
+            this.setData(payload.response);
+            this.renderView();
          }
-         this.setData(payload.response);
-         this.renderView();
+         else
+         {
+            this.alfLog("warn", "Payload contained no 'response.items' attribute", payload, this);
+         }
       },
       
       /**
@@ -132,29 +138,6 @@ define(["dojo/_base/declare",
          else
          {
             this.removeUploadDragAndDrop(this.domNode);
-         }
-      },
-      
-      /**
-       * This sets up the default keyboard handling for a view. The standard controls are navigation to the
-       * next item by pressing the down key and navigation to the previous item by pressing the up key.
-       * 
-       * @instance
-       */
-      setupKeyboardNavigation: function alfresco_documentlibrary_views_AlfDocumentListView__setupKeyboardNavigation() {
-         this.connectKeyNavHandlers([keys.UP_ARROW], [keys.DOWN_ARROW]);
-      },
-      
-      /**
-       * Overrides the _KevNavContainer function to call the "blur" function of the widget that has lost
-       * focus (assuming it has one).
-       * 
-       * @instance
-       */
-      _onChildBlur: function alfresco_documentlibrary_views_AlfDocumentListView___onChildBlur(widget) {
-         if (typeof widget.blur === "function")
-         {
-            widget.blur();
          }
       },
       
@@ -222,7 +205,11 @@ define(["dojo/_base/declare",
          {
             try
             {
-               this.renderData();
+               this.docListRenderer = new DocumentListRenderer({
+                  widgets: this.widgets,
+                  currentData: this.currentData
+               }, this.contentNode);
+               this.docListRenderer.renderData();
             }
             catch(e)
             {
@@ -242,10 +229,10 @@ define(["dojo/_base/declare",
        * @instance
        */
       clearOldView: function alfresco_documentlibrary_views_AlfDocumentListView__clearOldView() {
-         if (this.containerNode != null)
+         if (this.contentNode != null)
          {
-            array.forEach(registry.findWidgets(this.containerNode), lang.hitch(this, "destroyWidget"));
-            domConstruct.empty(this.containerNode);
+            array.forEach(registry.findWidgets(this.contentNode), lang.hitch(this, "destroyWidget"));
+            domConstruct.empty(this.contentNode);
          }
       },
       
@@ -285,7 +272,7 @@ define(["dojo/_base/declare",
          this.clearOldView();
          domConstruct.create("div", {
             innerHTML: this.message("doclistview.no.data.message")
-         }, this.containerNode);
+         }, this.contentNode);
       },
 
       /**
@@ -297,7 +284,7 @@ define(["dojo/_base/declare",
          this.clearOldView();
          domConstruct.create("div", {
             innerHTML: this.message("doclistview.rendering.error.message")
-         }, this.containerNode);
+         }, this.contentNode);
       }
    });
 });
