@@ -1,9 +1,11 @@
-package org.alfresco.po.share.admin;
+package org.alfresco.share.admin;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.po.share.*;
+import org.alfresco.po.share.admin.ManageSitesPage;
+import org.alfresco.po.share.admin.ManagedSiteRow;
 import org.alfresco.po.share.enums.SiteVisibility;
 import org.alfresco.po.share.util.SiteUtil;
 import org.apache.commons.logging.Log;
