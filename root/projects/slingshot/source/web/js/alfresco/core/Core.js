@@ -652,46 +652,6 @@ define(["dojo/_base/declare",
       widgetsToDestroy: null,
 
       /**
-       * Handles the dependency management and instantiation of services required.
-       * 
-       * @instance
-       * @param {Array} services An array of the services to be instantiated.
-       */
-      processServices: function alfresco_core_Core__processServices(services) {
-         var _this = this;
-         if (services)
-         {
-            if (this.servicesToDestroy == null)
-            {
-               this.servicesToDestroy = [];
-            }
-
-            // Iterate over all the widgets in the configuration object and add them...
-            array.forEach(services, function(entry, i) {
-               var dep = null,
-                   config = {};
-               if (typeof entry === "string")
-               {
-                  dep = entry;
-               }
-               else if (typeof entry === "object" && entry.name != null)
-               {
-                  dep = entry.name;
-                  if (typeof entry.config === "object")
-                  {
-                     config = entry.config;
-                  }
-               }
-               var requires = [dep];
-               require(requires, function(ServiceType) {
-                  var service = new ServiceType(config);
-                  _this.servicesToDestroy.push(service);
-               });
-            });
-         }
-      },
-      
-      /**
        * Creates a new DOM node for a widget to use. The DOM node contains a child <div> element
        * that the widget will be attached to and an outer <div> element that additional CSS classes
        * can be applied to.
