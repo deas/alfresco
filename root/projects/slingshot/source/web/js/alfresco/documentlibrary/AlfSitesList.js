@@ -34,6 +34,15 @@ define(["dojo/_base/declare",
    
    return declare([AlfDocumentList], {
       
+       /**
+       * An array of the i18n files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{i18nFile: "./i18n/AlfDocumentList.properties"}]
+       */
+      i18nRequirements: [{i18nFile: "./i18n/AlfSitesList.properties"}],
+
       /**
        * 
        * @instance
@@ -50,6 +59,16 @@ define(["dojo/_base/declare",
        * @default null
        */
       site: null,
+
+      /**
+       * Extends the default implementation to override the loading message.
+       * 
+       * @instance
+       */
+      postMixInProperties: function alfresco_documentlibrary_AlfSitesList__postMixInProperties() {
+         this.inherited(arguments);
+         this.fetchingDataMessage = this.message("sitesList.loading.data.message");
+      },
 
       /**
        * Overrides the default implementation to retrieve site data.
