@@ -131,10 +131,9 @@ define(["dojo/_base/declare",
             this.sortIcon(this.sortedAscending == false ? "desc" : "asc");
          }
 
-         // Subscribe function addToolTipMsg to run when ALF_WIDGETS_READY publishes
          if (this.toolTipMsg != null)
          {
-            this.alfSubscribe("ALF_WIDGETS_READY", lang.hitch(this, "addToolTipMsg"));
+            this.addToolTipMsg();
          }
       },
 
@@ -263,7 +262,7 @@ define(["dojo/_base/declare",
       addToolTipMsg: function alfresco_documentlibrary_views_layouts_HeaderCell__addToolTipMsg() {
          Tooltip.defaultPosition=['above-centered', 'below-centered'];
          var tip = new Tooltip({
-            connectId: [this.id],
+            connectId: [this.domNode],
             label: this.message(this.toolTipMsg),
             showDelay: 250
          });
