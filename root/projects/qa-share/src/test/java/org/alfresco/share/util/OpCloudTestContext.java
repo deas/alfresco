@@ -109,7 +109,15 @@ public class OpCloudTestContext
      */
     public void addSite(String siteCreator, String... site)
     {
-        Set<String> setOfSites = new HashSet<String>(Arrays.asList(site));
+        Set<String> setOfSites = createdSites.get(siteCreator);
+        if (setOfSites == null)
+        {
+            setOfSites = new HashSet<String>(Arrays.asList(site));
+        }
+        else
+        {
+            setOfSites.addAll(Arrays.asList(site));
+        }
         createdSites.put(siteCreator, setOfSites);
     }
 
