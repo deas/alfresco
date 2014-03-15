@@ -36,7 +36,8 @@ define(["dojo/_base/declare",
        * @type {string}
        * @default ["/js/alfresco.js"]
        */
-      nonAmdDependencies: ["/js/alfresco.js"],
+      nonAmdDependencies: ["/js/yui-common.js",
+                           "/js/alfresco.js"],
                            
       /**
        * An array of the CSS files to use with this widget.

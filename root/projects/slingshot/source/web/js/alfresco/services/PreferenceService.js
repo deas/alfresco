@@ -41,7 +41,8 @@ define(["dojo/_base/declare",
        * @type {string[]}
        * @default ["/js/alfresco.js"],
        */
-      nonAmdDependencies: ["/js/alfresco.js"],
+      nonAmdDependencies: ["/js/yui-common.js",
+                           "/js/alfresco.js"],
       
       /**
        * A reference to the wrapped YUI implemented preferences service.

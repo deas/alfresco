@@ -36,7 +36,8 @@ define(["dojo/_base/declare"],
        * @instance
        * @type {String[]}
        */
-      nonAmdDependencies: ["/js/alfresco.js"],
+      nonAmdDependencies: ["/js/yui-common.js",
+                           "/js/alfresco.js"],
       
       
       /**
