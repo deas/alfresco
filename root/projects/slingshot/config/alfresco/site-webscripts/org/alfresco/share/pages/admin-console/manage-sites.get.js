@@ -202,6 +202,25 @@ model.jsonModel = {
                                                                index: "10",
                                                                publishTopic: "ALF_DELETE_SITE",
                                                                type: "javascript"
+                                                            },
+                                                            {
+                                                               label: msg.get("button.site-manage.label"),
+                                                               icon: "folder-manage-permissions",
+                                                               index: "10",
+                                                               publishTopic: "ALF_BECOME_SITE_MANAGER",
+                                                               publishPayload: {
+                                                                  site: {
+                                                                     alfType: "item",
+                                                                     alfProperty: "shortName"
+                                                                  }
+                                                               },
+                                                               type: "javascript",
+                                                               renderFilter: [
+                                                                  {
+                                                                     property: "isSiteManager",
+                                                                     values: [false]
+                                                                  }
+                                                               ]
                                                             }
                                                          ]
                                                       }

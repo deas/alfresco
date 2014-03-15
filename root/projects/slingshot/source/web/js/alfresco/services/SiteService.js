@@ -298,7 +298,7 @@ define(["dojo/_base/declare",
          {
             this.alfUnsubscribe(subscriptionHandle);
          }
-         this.alfPublish("ALF_DOCLIST_RELOAD_DATA", {});
+         this.reloadData();
       },
 
       /**
@@ -420,13 +420,13 @@ define(["dojo/_base/declare",
             var data = {
                   role: (config.role) ? config.role : "SiteManager",
                   person: {
-                     userName: config.user
+                     userName: (config.user) ? config.user : AlfConstants.USERNAME
                   }
             };
             this.serviceXhr({url : url,
                              data: data,
                              method: "POST",
-                             successCallback: this.reloadPage,
+                             successCallback: this.reloadData,
                              callbackScope: this});
          }
          else
@@ -713,7 +713,14 @@ define(["dojo/_base/declare",
          // TODO: Check user in request is current user and that site in request is current site
          this.alfPublish("ALF_RELOAD_PAGE", {});
       },
-      
+
+      /**
+       * This is a method that reloads DocList data
+       */
+      reloadData: function alfresco_services_SiteService__reloadData(response, requestConfig) {
+         this.alfPublish("ALF_DOCLIST_RELOAD_DATA", {});
+      },
+
       /**
        * When a request is made for a user to leave a site we should determine whether or not the current user is the
        * user removed and whether or not they are currently viewing that site. If they are then we should navigate

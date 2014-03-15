@@ -31,10 +31,12 @@ define(["dojo/_base/declare",
         "alfresco/menus/AlfMenuItem",
         "dojo/_base/array",
         "dojo/_base/lang",
-        "service/constants/Default"], 
-        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array, lang, AlfConstants) {
+        "service/constants/Default",
+        "alfresco/core/ObjectTypeUtils",
+        "alfresco/renderers/_PublishPayload"], 
+        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array, lang, AlfConstants, ObjectTypeUtils, _PublishPayload) {
 
-   return declare([AlfMenuBar, _AlfDocumentListTopicMixin], {
+   return declare([AlfMenuBar, _AlfDocumentListTopicMixin, _PublishPayload], {
       
       /**
        * Overrides the default to create a popup containing a group containing all the actions
@@ -81,12 +83,9 @@ define(["dojo/_base/declare",
             label: action.label,
             iconImage: AlfConstants.URL_RESCONTEXT + "components/documentlibrary/actions/" + action.icon + "-16.png",
             type: action.type,
-            publishTopic: (action.publishTopic != null) ? action.publishTopic : this.singleDocumentActionTopic,
             pubSubScope: this.pubSubScope,
-            publishPayload: {
-               document: this.currentItem,
-               action: action
-            }
+            publishTopic: (action.publishTopic != null) ? action.publishTopic : this.singleDocumentActionTopic,
+            publishPayload: this.generatePayload(action, this.currentItem, null, {document: this.currentItem, action: action})
          });
          this.actionsGroup.addChild(menuItem);
       }

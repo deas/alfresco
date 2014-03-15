@@ -34,10 +34,11 @@ define(["dojo/_base/declare",
         "alfresco/core/ObjectTypeUtils",
         "alfresco/forms/controls/DojoSelect",
         "dojo/_base/lang",
-        "dojo/dom-class"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, ObjectTypeUtils, DojoSelect, lang, domClass) {
+        "dojo/dom-class",
+        "alfresco/renderers/_PublishPayload"], 
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, ObjectTypeUtils, DojoSelect, lang, domClass, _PublishPayload) {
 
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, _PublishPayload], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -131,7 +132,7 @@ define(["dojo/_base/declare",
 
          if (this.publishTopic != null)
          {
-            var updatePayload = this.generatePayload(payload);
+            var updatePayload = this.generatePayload(this, this.currentItem, payload, null);
 
             // Hide any previously displayed warning image and show the processing image...
             domClass.remove(this.processingNode, "hidden");
@@ -198,55 +199,6 @@ define(["dojo/_base/declare",
          domClass.remove(this.warningNode, "hidden");
 
          this.alfLog("log", "Update request success", payload)
-      },
-
-      /** 
-       * <p>This function is used to process configurable payloads. It iterates over the first-level of attributes
-       * of the defined payload and checks to see if the attribute is an object featuring both 'alfType' and 'alfProperty'
-       * attributes. If the attribute does match this criteria then the payload will be processed to attempt to
-       * retrieve the defined 'alfProperty' from a specific type. Currently two types are supported:
-       * <ul><li>'item' which indicates the property is of the currentItem object</li>
-       * <li>'payload' which indicates the property is of the published payload that triggered the publish request</li></ul><p>
-       * 
-       * @instance
-       * @param {object} payload
-       * @returns {object} The payload to be published
-       */
-      generatePayload: function alfresco_renderers_PublishingDropDownMenu__generatePayload(payload) {
-         var publishPayload = null;
-         if (this.publishPayload != null)
-         {
-            publishPayload = lang.clone(this.publishPayload);
-            for (var key in publishPayload)
-            {
-               var value = publishPayload[key];
-               if (ObjectTypeUtils.isObject(value) &&
-                  value.alfType !== undefined &&
-                  value.alfProperty !== undefined)
-               {
-                  var type = value.alfType;
-                  var property = value.alfProperty;
-                  if (type == "item")
-                  {
-                     value = lang.getObject(property, null, this.currentItem);
-                  }
-                  else if (type == "payload")
-                  {
-                     value = lang.getObject(property, null, payload);
-                  }
-                  else
-                  {
-                     this.alfLog("warn", "A payload was defined with 'alfType' and 'alfProperty' attributes but the 'alfType' attribute was neither 'item' nor 'payload' which are the only supported types", this);
-                  }
-                  publishPayload[key] = value;
-               }
-            }
-         }
-         else
-         {
-            this.alfLog("warn", "A drop-down property was changed but there is no 'publishPayload' defined to publish", this);
-         }
-         return publishPayload;
       }
    });
 });
