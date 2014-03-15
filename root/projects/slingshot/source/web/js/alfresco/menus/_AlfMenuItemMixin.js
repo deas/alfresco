@@ -29,6 +29,7 @@ define(["dojo/_base/declare",
         "alfresco/core/CoreRwd",
         "alfresco/menus/_AlfPopupCloseMixin",
         "alfresco/services/_NavigationServiceTopicMixin",
+        "alfresco/renderers/_PublishPayloadMixin",
         "service/constants/Default",
         "dojo/dom-class", 
         "dojo/dom-style",
@@ -39,9 +40,9 @@ define(["dojo/_base/declare",
         "dojo/query",
         "dojo/NodeList",
         "dojo/NodeList-manipulate"],
-        function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, AlfConstants, domClass, domStyle, domConstruct, on, lang, event, query, NodeList) {
+        function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, _PublishPayloadMixin, AlfConstants, domClass, domStyle, domConstruct, on, lang, event, query, NodeList) {
    
-   return declare([AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin], {
+   return declare([AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, _PublishPayloadMixin], {
 
       /**
        * An array of the CSS files to use with this widget.
@@ -254,7 +255,8 @@ define(["dojo/_base/declare",
          else if (this.publishTopic != null)
          {
             // Handle publish requests...
-            var payload = (this.publishPayload) ? this.publishPayload : {};
+            //var payload = (this.publishPayload) ? this.publishPayload : {};
+            var payload = this.generatePayload(this, this.currentItem, null, (this.publishPayload) ? this.publishPayload : {document: this.currentItem});
             this.alfPublish(this.publishTopic, payload);
          }
          else

@@ -208,20 +208,20 @@ define(["dojo/_base/declare",
        * [_processedWidgets]{@link module:alfresco/core/Core#_processedWidgets} array)
        */
       createWidget: function alfresco_core_CoreWidgetProcessing__createWidget(config, domNode, callback, callbackScope, index) {
-         
+
          var _this = this;
          this.alfLog("log", "Creating widget: ",config);
-         
+
          // Make sure we have an instantiation args object...
          var initArgs = (config && config.config && (typeof config.config === 'object')) ? config.config : {};
-         
+
          // Ensure that each widget has a unique id. Without this Dojo seems to occasionally
          // run into trouble trying to re-use an existing id...
          if (typeof initArgs.id == "undefined")
          {
             initArgs.id = config.name.replace(/\//g, "_") + "___" + this.generateUuid();
          }
-         
+
          if (initArgs.generatePubSubScope === true)
          {
             // Generate a new pubSubScope if requested to...
@@ -232,18 +232,24 @@ define(["dojo/_base/declare",
             // ...otherwise inherit the callers pubSubScope if one hasn't been explicitly configured...
             initArgs.pubSubScope = this.pubSubScope;
          }
+
          if (initArgs.dataScope === undefined)
          {
             initArgs.dataScope = this.dataScope;
          }
-         
+
+         if (initArgs.currentItem === undefined)
+         {
+            initArgs.currentItem = this.currentItem;
+         }
+
          // Create a reference for the widget to be added to. Technically the require statement
          // will need to asynchronously request the widget module - however, assuming the widget
          // has been included in such a way that it will have been included in the generated 
          // module cache then the require call will actually process synchronously and the widget
          // variable will be returned with an assigned value...
          var widget = null;
-         
+
          // Dynamically require the specified widget
          // The use of indirection is done so modules will not rolled into a build (should we do one)
          var requires = [config.name];

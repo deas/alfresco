@@ -192,35 +192,55 @@ model.jsonModel = {
                                                 class: "actions smallpad last",
                                                 widgets: [
                                                    {
-                                                      name: "alfresco/renderers/Actions",
+                                                      name: "alfresco/menus/AlfMenuBar",
+                                                      align: "left",
                                                       config: {
-                                                         class: "unmargined",
-                                                         customActions: [
+                                                         widgets: [
                                                             {
-                                                               label: msg.get("button.site-delete.label"),
-                                                               icon: "document-delete",
-                                                               index: "10",
-                                                               publishTopic: "ALF_DELETE_SITE",
-                                                               type: "javascript"
-                                                            },
-                                                            {
-                                                               label: msg.get("button.site-manage.label"),
-                                                               icon: "folder-manage-permissions",
-                                                               index: "10",
-                                                               publishTopic: "ALF_BECOME_SITE_MANAGER",
-                                                               publishPayload: {
-                                                                  site: {
-                                                                     alfType: "item",
-                                                                     alfProperty: "shortName"
-                                                                  }
-                                                               },
-                                                               type: "javascript",
-                                                               renderFilter: [
-                                                                  {
-                                                                     property: "isSiteManager",
-                                                                     values: [false]
-                                                                  }
-                                                               ]
+                                                               name: "alfresco/menus/AlfMenuBarPopup",
+                                                               config: {
+                                                                  label: "Actions",
+                                                                  widgets: [
+                                                                     {
+                                                                        name: "alfresco/menus/AlfMenuGroup",
+                                                                        config: {
+                                                                           class: "unmargined",
+                                                                           widgets: [
+                                                                              {
+                                                                                 name: "alfresco/menus/AlfMenuItem",
+                                                                                 config: {
+                                                                                    label: msg.get("button.site-delete.label"),
+                                                                                    iconClass: "document-delete",
+                                                                                    publishTopic: "ALF_DELETE_SITE"
+                                                                                 }
+                                                                              },
+                                                                              {
+                                                                                 name: "alfresco/menus/AlfMenuItem",
+                                                                                 config: {
+                                                                                    label: msg.get("button.site-manage.label"),
+                                                                                    iconClass: "folder-manage-permissions",
+                                                                                    publishTopic: "ALF_BECOME_SITE_MANAGER",
+                                                                                    publishPayload: {
+                                                                                       site: {
+                                                                                          alfType: "item",
+                                                                                          alfProperty: "shortName"
+                                                                                       }
+                                                                                    }
+//                                                                              ,
+//                                                                                    renderFilter: [
+//                                                                                       {
+//                                                                                          currentContext: true,
+//                                                                                          property: "userIsSiteManager",
+//                                                                                          values: ["false"]
+//                                                                                       }
+//                                                                                    ]
+                                                                                 }
+                                                                              }
+                                                                           ]
+                                                                        }
+                                                                     }
+                                                                  ]
+                                                               }
                                                             }
                                                          ]
                                                       }
