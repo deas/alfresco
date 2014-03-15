@@ -774,9 +774,16 @@ define(["dojo/_base/declare",
        */
       onSortRequest: function alfresco_documentlibrary_AlfDocumentList__onSortRequest(payload) {
          this.alfLog("log", "Sort requested: ", payload);
-         if (payload && payload.direction)
+         if (payload && (payload.direction != null || payload.value != null))
          {
-            this.sortAscending = (payload.direction == "ascending");
+            if (payload.direction)
+            {
+               this.sortAscending = (payload.direction == "ascending");
+            }
+            if (payload.value)
+            {
+               this.sortField = payload.value;
+            }
             this.loadData();
          }
       },

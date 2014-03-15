@@ -22,7 +22,7 @@
  * configured with a widgets definition. Otherwise it can be extended to define specific views
  * 
  * @module alfresco/documentlibrary/views/AlfDocumentListView
- * @extends dijit/_WidgetBae
+ * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes dijit/_KeyNavContainer
  * @mixes module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin
@@ -217,11 +217,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       renderView: function alfresco_documentlibrary_views_AlfDocumentListView__renderView() {
-         if (this.containerNode != null)
-         {
-            array.forEach(registry.findWidgets(this.containerNode), lang.hitch(this, "destroyWidget"));
-            domConstruct.empty(this.containerNode);
-         }
+         this.clearOldView();
          if (this.currentData && this.currentData.items && this.currentData.items.length > 0)
          {
             try
@@ -238,6 +234,18 @@ define(["dojo/_base/declare",
          else
          {
             this.renderNoDataDisplay();
+         }
+      },
+
+      /**
+       *
+       * @instance
+       */
+      clearOldView: function alfresco_documentlibrary_views_AlfDocumentListView__clearOldView() {
+         if (this.containerNode != null)
+         {
+            array.forEach(registry.findWidgets(this.containerNode), lang.hitch(this, "destroyWidget"));
+            domConstruct.empty(this.containerNode);
          }
       },
       
@@ -274,7 +282,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       renderNoDataDisplay: function alfresco_documentlibrary_views_AlfDocumentListView__renderNoDataDisplay() {
-         domConstruct.empty(this.containerNode);
+         this.clearOldView();
          domConstruct.create("div", {
             innerHTML: this.message("doclistview.no.data.message")
          }, this.containerNode);
@@ -286,7 +294,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       renderErrorDisplay: function alfresco_documentlibrary_views_AlfDocumentListView__renderErrorDisplay() {
-         domConstruct.empty(this.containerNode);
+         this.clearOldView();
          domConstruct.create("div", {
             innerHTML: this.message("doclistview.rendering.error.message")
          }, this.containerNode);

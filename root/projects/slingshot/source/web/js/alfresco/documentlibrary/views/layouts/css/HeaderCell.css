@@ -1,0 +1,23 @@
+th.alfresco-documentlibrary-views-layouts-HeaderCell {
+   background-color: #ccc;
+   border: 1px solid #000;
+   padding: 4px;
+}
+
+.alfresco-documentlibrary-views-layouts-HeaderCell img {
+   width: 16px;
+   height: 16px;
+   float: right;
+}
+
+.alfresco-documentlibrary-views-layouts-HeaderCell img.hidden {
+   display: none;
+} 
+
+.alfresco-documentlibrary-views-layouts-HeaderCell img.ascendingSort {
+   background-image: url(./images/sort-ascending-16.png);
+}
+
+.alfresco-documentlibrary-views-layouts-HeaderCell img.descendingSort {
+   background-image: url(./images/sort-descending-16.png);
+}
