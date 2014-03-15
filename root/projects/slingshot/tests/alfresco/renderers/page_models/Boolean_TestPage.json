@@ -1,0 +1,74 @@
+{
+   "services": [
+      {
+         "name": "alfresco/services/LoggingService",
+         "config": {
+            "loggingPreferences": {
+               "enabled": true,
+               "all": true
+            }
+         }
+      }
+   ],
+   "widgets":[
+      {
+         "name": "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
+         "config": {
+            "id": "LIST_WITH_HEADER",
+            "currentData": {
+               "items": [
+                  {"col1": true},
+                  {"col1": "true"},
+                  {"col1": 1},
+                  {"col1": "1"},
+                  {"col1": false},
+                  {"col1": "false"},
+                  {"col1": 0},
+                  {"col1": "0"},
+                  {"col1": "whatever"},
+                  {"col1": null}
+               ]
+            },
+            "widgetsForHeader": [
+               {
+                  "name": "alfresco/documentlibrary/views/layouts/HeaderCell",
+                  "config": {
+                     "id": "COLUMN1_HEADER",
+                     "label": "Column 1"
+                  }
+               }
+            ],
+            "widgets":[
+               {
+                  "name": "alfresco/documentlibrary/views/layouts/Row",
+                  "config": {
+                     "widgets": [
+                        {
+                           "name": "alfresco/documentlibrary/views/layouts/Cell",
+                           "config": {
+                              "widgets": [
+                                 {
+                                    "name": "alfresco/renderers/Boolean",
+                                    "config": {
+                                       "propertyToRender": "col1",
+                                       "renderAsLink": false
+                                    }
+                                 }
+                              ]
+                           }
+                        }
+                     ]
+                  }
+               }
+            ]
+            
+         }
+      },
+      {
+         "name": "alfresco/testing/SubscriptionLog"
+      },
+      {
+         "name": "alfresco/testing/TestCoverageResults"
+      }
+   ]
+}

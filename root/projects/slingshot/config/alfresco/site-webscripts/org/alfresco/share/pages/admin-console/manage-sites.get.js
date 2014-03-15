@@ -73,13 +73,7 @@ model.jsonModel = {
 //                                 {
 //                                    name: "alfresco/documentlibrary/views/layouts/HeaderCell",
 //                                    config: {
-//                                       label: msg.get("message.created-header-label")
-//                                    }
-//                                 },
-//                                 {
-//                                    name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-//                                    config: {
-//                                       label: msg.get("message.last-modified-header-label")
+//                                       label: msg.get("message.manager-header-label")
 //                                    }
 //                                 },
                                  {
@@ -161,25 +155,12 @@ model.jsonModel = {
 //                                          {
 //                                             name: "alfresco/documentlibrary/views/layouts/Cell",
 //                                             config: {
+//                                                class: "siteManager",
 //                                                widgets: [
 //                                                   {
-//                                                      name: "alfresco/renderers/Property",
+//                                                      name: "alfresco/renderers/Boolean",
 //                                                      config: {
-//                                                         propertyToRender: "createdDate",
-//                                                         renderAsLink: false
-//                                                      }
-//                                                   }
-//                                                ]
-//                                             }
-//                                          },
-//                                          {
-//                                             name: "alfresco/documentlibrary/views/layouts/Cell",
-//                                             config: {
-//                                                widgets: [
-//                                                   {
-//                                                      name: "alfresco/renderers/Property",
-//                                                      config: {
-//                                                         propertyToRender: "lastModifiedDate",
+//                                                         propertyToRender: "userIsSiteManager",
 //                                                         renderAsLink: false
 //                                                      }
 //                                                   }
@@ -225,15 +206,14 @@ model.jsonModel = {
                                                                                           alfType: "item",
                                                                                           alfProperty: "shortName"
                                                                                        }
-                                                                                    }
-//                                                                              ,
-//                                                                                    renderFilter: [
-//                                                                                       {
-//                                                                                          currentContext: true,
-//                                                                                          property: "userIsSiteManager",
-//                                                                                          values: ["false"]
-//                                                                                       }
-//                                                                                    ]
+                                                                                    },
+                                                                                    renderFilter: [
+                                                                                       {
+                                                                                          property: "userIsSiteManager",
+                                                                                          values: ["false"],
+                                                                                          renderOnAbsentProperty: true
+                                                                                       }
+                                                                                    ]
                                                                                  }
                                                                               }
                                                                            ]

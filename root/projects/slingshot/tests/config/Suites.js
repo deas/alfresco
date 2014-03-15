@@ -61,6 +61,8 @@ define({
 
                           'tests/alfresco/misc/AlfTooltipTest',
 
+                          'tests/alfresco/renderers/BooleanTest',
+                          'tests/alfresco/renderers/PropertyLinkTest',
                           'tests/alfresco/renderers/PublishingDropDownMenuTest',
                           'tests/alfresco/renderers/PublishPayloadMixinOnActionsTest'],
 
