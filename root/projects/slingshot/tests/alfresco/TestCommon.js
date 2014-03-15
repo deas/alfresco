@@ -142,11 +142,12 @@ define(["intern/dojo/node!fs",
          };
 
          var selector = ".alfresco-testing-SubscriptionLog tr.sl-row:" + row +
-                " td[data-pubsub-object-key=" + 
-                key + 
-                "]+td[data-pubsub-object-value='" + 
-                value + "']";
+            " td[data-pubsub-object-key=" + 
+            key + 
+            "]+td[data-pubsub-object-value='" + 
+            value + "']";
          // console.log("Topic selector: " + selector);
+
          return selector;
 
       },
@@ -158,11 +159,13 @@ define(["intern/dojo/node!fs",
        * @param {number} expectedRow The row to get the topic for
        */
       nthTopicSelector: function(expectedRow) {
-         var row = this._determineRow(expectedRow);
 
+         var row = this._determineRow(expectedRow);
          var selector = ".alfresco-testing-SubscriptionLog tr.sl-row:" + row + " td.sl-topic";
-         console.log("Selector: " + selector);
+         // console.log("Selector: " + selector);
+
          return selector;
+
       },
 
       /**
@@ -207,15 +210,15 @@ define(["intern/dojo/node!fs",
       postCoverageResults: function(browser) {
          if(Config.doCoverageReport)
          {
-    	    browser
-    	    .end()
-    	    .elementByCss('.alfresco-testing-TestCoverageResults input[type=submit]')
+            browser
+            .end()
+            .elementByCss('.alfresco-testing-TestCoverageResults input[type=submit]')
             .moveTo()
             .sleep(500)
             .click()
             .end();
 
-    	    console.log("Coverage ~~>");
+            console.log("Coverage ~~>");
          }
          else
          {

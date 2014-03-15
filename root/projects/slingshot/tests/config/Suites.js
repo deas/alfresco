@@ -38,22 +38,31 @@ define({
     * @instance
     * @type [string]
     */
-   baseFunctionalSuites: ['tests/alfresco/documentlibrary/views/AlfDocumentListWithHeaderTest',
+   baseFunctionalSuites: ['tests/alfresco/accessibility/AccessibilityMenuTest',
+
+                          'tests/alfresco/documentlibrary/views/AlfDocumentListWithHeaderTest',
+
                           'tests/alfresco/forms/controls/DocumentPickerTest',
                           'tests/alfresco/forms/controls/DojoSelectTest',
                           'tests/alfresco/forms/controls/DojoValidationTextBoxTest',
-                          'tests/alfresco/layout/BasicLayoutTest',
-                          'tests/alfresco/accessibility/AccessibilityMenuTest',
-                          'tests/alfresco/menus/MenuTests',
-                          'tests/alfresco/menus/AlfCheckableMenuItemTest',
-                          'tests/alfresco/menus/AlfMenuBarSelectTest',
-                          'tests/alfresco/menus/AlfMenuBarSelectItemsTest',
-                          'tests/alfresco/menus/AlfMenuBarToggleTest',
-                          'tests/alfresco/menus/AlfFormDialogMenuItemTest',
-                          'tests/alfresco/menus/AlfMenuTextForClipboardTest',
-                          'tests/alfresco/menus/AlfMenuItemWrapperTest',
-                          'tests/alfresco/menus/AlfVerticalMenuBarTest',
                           'tests/alfresco/forms/controls/FormButtonDialogTest',
+
+                          'tests/alfresco/layout/BasicLayoutTest',
+
+                          'tests/alfresco/menus/AlfCheckableMenuItemTest',
+                          'tests/alfresco/menus/AlfFormDialogMenuItemTest',
+                          'tests/alfresco/menus/AlfMenuBarSelectItemsTest',
+                          'tests/alfresco/menus/AlfMenuBarSelectTest',
+                          'tests/alfresco/menus/AlfMenuBarToggleTest',
+
+                          'tests/alfresco/menus/AlfMenuItemWrapperTest',
+                          'tests/alfresco/menus/AlfMenuTextForClipboardTest',
+
+                          'tests/alfresco/menus/AlfVerticalMenuBarTest',
+                          'tests/alfresco/menus/MenuTests',
+
+                          'tests/alfresco/renderers/PublishingDropDownMenuTest',
+
                           'tests/alfresco/misc/AlfTooltipTest'],
 
    /**
