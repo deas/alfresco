@@ -102,6 +102,7 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
+                                                class: "siteName",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/renderers/Property",
@@ -116,6 +117,7 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
+                                                class: "siteDescription",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/renderers/Property",
@@ -130,7 +132,7 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
-                                                class: "smallpad",
+                                                class: "visibility smallpad",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/renderers/PublishingDropDownMenu",
@@ -191,7 +193,7 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
-                                                class: "smallpad last",
+                                                class: "actions smallpad last",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/renderers/Actions",
