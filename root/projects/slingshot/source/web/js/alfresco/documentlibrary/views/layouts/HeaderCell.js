@@ -31,8 +31,9 @@ define(["dojo/_base/declare",
         "dojo/text!./templates/HeaderCell.html",
         "alfresco/core/Core",
         "dojo/_base/lang",
-        "dojo/dom-class"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domClass) {
+        "dojo/dom-class",
+        "dijit/Tooltip"], 
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domClass, Tooltip) {
 
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
       
@@ -60,7 +61,7 @@ define(["dojo/_base/declare",
        * @type boolean
        * @default false
        */
-      sortable: true,
+      sortable: false,
 
       /**
        * Indicate whether or not this cell is currently being used as the sort field.
@@ -92,6 +93,15 @@ define(["dojo/_base/declare",
       sortValue: null,
 
       /**
+       * The tool tip to display.
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      toolTipMsg: null,
+
+      /**
        * @instance
        */
       postMixinProperties: function alfresco_documentlibrary_views_layouts_HeaderCell__postMixinProperties() {
@@ -114,19 +124,17 @@ define(["dojo/_base/declare",
 
          if (this.sortable == false || this.usedForSort == false)
          {
-            domClass.add(this.ascendingSortNode, "hidden");
-            domClass.add(this.descendingSortNode, "hidden");
+            this.sortIcon("nil");
          }
          else
          {
-            if (this.sortedAscending == false)
-            {
-               domClass.add(this.descendingSortNode, "hidden");
-            }
-            else
-            {
-               domClass.add(this.ascendingSortNode, "hidden");
-            }
+            this.sortIcon(this.sortedAscending == false ? "desc" : "asc");
+         }
+
+         // Subscribe function addToolTipMsg to run when ALF_WIDGETS_READY publishes
+         if (this.toolTipMsg != null)
+         {
+            this.alfSubscribe("ALF_WIDGETS_READY", lang.hitch(this, "addToolTipMsg"));
          }
       },
 
@@ -146,23 +154,19 @@ define(["dojo/_base/declare",
                // If currently NOT being used for sort then use it now...
                this.usedForSort = true;
                this.sortedAscending = true;
-               domClass.remove(this.ascendingSortNode, "hidden");
-               this.publishSortRequest();
+               this.sortIcon("asc");
             }
             else if (this.sortedAscending == true)
             {
-               domClass.add(this.ascendingSortNode, "hidden");
-               domClass.remove(this.descendingSortNode, "hidden");
+               this.sortIcon("desc");
                this.sortedAscending = false;
-               this.publishSortRequest();
             }
             else
             {
-               domClass.remove(this.ascendingSortNode, "hidden");
-               domClass.add(this.descendingSortNode, "hidden");
+               this.sortIcon("asc");
                this.sortedAscending = true;
-               this.publishSortRequest();
             }
+            this.publishSortRequest();
          }
       },
 
@@ -194,23 +198,13 @@ define(["dojo/_base/declare",
                if (value == this.sortValue)
                {
                   this.usedForSort = true;
-                  if (this.sortedAscending == true)
-                  {
-                     domClass.add(this.ascendingSortNode, "hidden");
-                     domClass.remove(this.descendingSortNode, "hidden");
-                  }
-                  else
-                  {
-                     domClass.remove(this.ascendingSortNode, "hidden");
-                     domClass.add(this.descendingSortNode, "hidden");
-                  }
+                  this.sortIcon(this.sortedAscending == true ? "asc" : "desc");
                }
                else
                {
                   // A different field has been used for sorting, hide the sort icons and update the status...
                   this.usedForSort = false;
-                  domClass.add(this.ascendingSortNode, "hidden");
-                  domClass.add(this.descendingSortNode, "hidden");
+                  this.sortIcon("nil");
                }
             }
 
@@ -220,19 +214,56 @@ define(["dojo/_base/declare",
                this.sortedAscending = (direction == "ascending");
                if (this.usedForSort == true)
                {
-                  if (this.sortedAscending == true)
-                  {
-                     domClass.add(this.ascendingSortNode, "hidden");
-                     domClass.remove(this.descendingSortNode, "hidden");
-                  }
-                  else
-                  {
-                     domClass.remove(this.ascendingSortNode, "hidden");
-                     domClass.add(this.descendingSortNode, "hidden");
-                  }
+            	  this.sortIcon(this.sortedAscending == true ? "asc" : "desc");
                }
             }
          }
+      },
+
+      /**
+       * This controls the display of icons when using sort functionality.
+       *
+       * @instance
+       * @param {string} dir - asc, desc or nil
+       */
+      sortIcon: function alfresco_documentlibrary_views_layouts_HeaderCell__sortIcon(dir) {
+    	 var hideClass = "hidden",
+    	     asn = this.ascendingSortNode,
+    	     dsn = this.descendingSortNode;
+
+    	 switch(dir)
+         {
+            case "asc":
+               domClass.remove(asn, hideClass);
+               domClass.add(dsn, hideClass);
+            break;
+            
+            case "desc":
+               domClass.add(asn, hideClass);
+               domClass.remove(dsn, hideClass);
+            break;
+
+            default:
+               domClass.add(asn, hideClass);
+               domClass.add(dsn, hideClass);
+            break;
+         }
+      },
+
+      /**
+       * This controls the display of a tool tip against the header cell.
+       *
+       * @instance
+       */
+      addToolTipMsg: function alfresco_documentlibrary_views_layouts_HeaderCell__addToolTipMsg() {
+    	  Tooltip.defaultPosition=['above', 'below'];
+          new Tooltip({
+        	 label: this.message(this.toolTipMsg),
+             showDelay: 250,
+             connectId: [this.id]
+          });
+          this.alfLog("log", "Created HeaderCell tooltip for item '" + this.id + "'", this);
       }
+
    });
 });

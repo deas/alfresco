@@ -80,7 +80,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            this.alfLog("warn", "An view with header was used in a model, but no 'widgetsForHeader' attribute was defined", this);
+            this.alfLog("warn", "A view containing a header was used in a model, but no 'widgetsForHeader' attribute was defined", this);
          }
          this.currentItem = null;
       }
