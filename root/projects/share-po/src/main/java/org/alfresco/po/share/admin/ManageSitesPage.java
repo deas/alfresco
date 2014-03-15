@@ -68,7 +68,7 @@ public class ManageSitesPage extends SharePage
     public ManageSitesPage render(RenderTime maxPageLoadingTime)
     {
         basicRender(maxPageLoadingTime);
-        initElements();
+        loadElements();
         return this;
     }
 
@@ -100,15 +100,30 @@ public class ManageSitesPage extends SharePage
      */
     public ManagedSiteRow findManagedSiteRowByNameFromPaginatedResults(String siteName)
     {
-        // Navigate to the first page of results
-        this.docListPaginator.gotoFirstResultsPage();
-
         // Initialise a simple row instance for comparison
         ManagedSiteRow testManagedSiteRow = new ManagedSiteRow(siteName);
 
         // Iterate through paginations until the last pagination or row found
-        while (this.docListPaginator.hasNextPage())
+        boolean first = true;
+        do
         {
+            if(first)
+            {
+                // Navigate to the first page of results
+                this.docListPaginator.gotoFirstResultsPage();
+                first = false;
+            }
+            else
+            {
+                // Navigate to next pagination
+                this.docListPaginator.clickNextButton();
+                
+            }
+
+            // Refresh the page elements
+            this.loadElements();
+
+            // Iterate through rows and return if we find a matching site
             for (ManagedSiteRow row : this.getManagedSiteRows())
             {
                 if (row.equals(testManagedSiteRow))
@@ -116,17 +131,16 @@ public class ManageSitesPage extends SharePage
                     return row;
                 }
             }
-            this.docListPaginator.clickNextButton();
-            this.render();
         }
+        while (this.docListPaginator.hasNextPage());
 
         return null;
     }
-
+    
     /**
      * Initialises the elements that make up a ManageSitesPage.
      */
-    private void initElements()
+    public void loadElements()
     {
         // Initialise the available site rows
         List<WebElement> siteRows = drone.findAll(SITE_ROWS);

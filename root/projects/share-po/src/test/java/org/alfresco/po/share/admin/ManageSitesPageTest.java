@@ -1,4 +1,3 @@
-
 package org.alfresco.po.share.admin;
 
 import static org.testng.Assert.assertEquals;
@@ -38,9 +37,9 @@ public class ManageSitesPageTest extends AbstractTest
     @BeforeClass
     public void setup() throws Exception
     {
-        sites = new ArrayList<String>(MAX_NUM_OF_SITES);
-
         dashBoardPage = loginAs(username, password);
+
+        sites = new ArrayList<String>(MAX_NUM_OF_SITES);
         createTestSites(MAX_NUM_OF_SITES);
 
         manageSitesPage = dashBoardPage.getNav().selectManageSites().render();
@@ -98,6 +97,8 @@ public class ManageSitesPageTest extends AbstractTest
     @Test
     public void testFindBootstrappedSite()
     {
+        manageSitesPage.loadElements();
+
         String testSiteName = sites.get(0);
         ManagedSiteRow result = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
         assertNotNull(result);
@@ -110,10 +111,15 @@ public class ManageSitesPageTest extends AbstractTest
     @Test
     public void testModifyVisibilityOfBootstrappedSite()
     {
+        manageSitesPage.loadElements();
+
         String testSiteName = sites.get(0);
         ManagedSiteRow result = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
         assertNotNull(result);
         result.getVisibility().selectValue(SiteVisibility.PRIVATE);
+
+        manageSitesPage.loadElements();
+
         result = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
         assertEquals(result.getVisibility().getValue(), SiteVisibility.PRIVATE.getDisplayValue());
     }
@@ -124,17 +130,26 @@ public class ManageSitesPageTest extends AbstractTest
     @Test
     public void testDeleteOfBootstrappedSite()
     {
-        /*
-        String testSiteName = sites.get(0);
+        manageSitesPage.loadElements();
+
+        String testSiteName = sites.get(1);
         ManagedSiteRow result = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
         assertNotNull(result);
         result.getActions().clickActionByNameAndDialogByButtonName("Delete Site", "OK");
+
+        manageSitesPage.loadElements();
+
         result = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
-        // The page won't refresh after deleting the site, therefore the site still exists.
         assertNull(result);
-        */
+        sites.remove(1);
+
     }
 
+    /**
+     * Creates the test sites.
+     * 
+     * @param numOfSites the number of sites required
+     */
     private void createTestSites(int numOfSites)
     {
         for (int i = 0; i < numOfSites; i++)
