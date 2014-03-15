@@ -55,6 +55,15 @@ define(["dojo/_base/declare",
       templateString: template,
       
       /**
+       * This is the topic that will be published on when the drop-down menu value is changed.
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      publishTopic: null,
+
+      /**
        * This will be set to reference the [DojoSelect]{@link module:alfresco/forms/controls/DojoSelect} that is 
        * wrapped by this widget.
        * 
@@ -119,11 +128,69 @@ define(["dojo/_base/declare",
       onPublishChange: function alfresco_renderers_PublishingDropDownMenu__onPublishChange(payload) {
          this.alfLog("log", "Drop down property changed", payload);
 
-         var updatePayload = {
-            shortName: lang.getObject("shortName", false, this.currentItem),
-            visibility: payload.value
-         };
-         this.alfPublish("ALF_UPDATE_SITE_DETAILS", updatePayload, true);
+         if (this.publishTopic != null)
+         {
+            // TODO: We need to set a more abstract payload...
+            var updatePayload = this.generatePayload(payload);
+            // var updatePayload = {
+            //    shortName: lang.getObject("shortName", false, this.currentItem),
+            //    visibility: payload.value
+            // };
+            this.alfPublish(this.publishTopic, updatePayload, true);
+         }
+         else
+         {
+            this.alfLog("warn", "A drop-down property was changed but there is no 'publishTopic' defined to publish on", this);
+         }
+      },
+
+      /** 
+       * <p>This function is used to process configurable payloads. It iterates over the first-level of attributes
+       * of the defined payload and checks to see if the attribute is an object featuring both 'alfType' and 'alfProperty'
+       * attributes. If the attribute does match this criteria then the payload will be processed to attempt to
+       * retrieve the defined 'alfProperty' from a specific type. Currently two types are supported:
+       * <ul><li>'item' which indicates the property is of the currentItem object</li>
+       * <li>'payload' which indicates the property is of the published payload that triggered the publish request</li></ul><p>
+       * 
+       * @instance
+       * @param {object} payload
+       * @returns {object} The payload to be published
+       */
+      generatePayload: function alfresco_renderers_PublishingDropDownMenu__generatePayload(payload) {
+         var publishPayload = null;
+         if (this.publishPayload != null)
+         {
+            publishPayload = lang.clone(this.publishPayload);
+            for (var key in publishPayload)
+            {
+               var value = publishPayload[key];
+               if (ObjectTypeUtils.isObject(value) &&
+                  value.alfType !== undefined &&
+                  value.alfProperty !== undefined)
+               {
+                  var type = value.alfType;
+                  var property = value.alfProperty;
+                  if (type == "item")
+                  {
+                     value = lang.getObject(property, null, this.currentItem);
+                  }
+                  else if (type == "payload")
+                  {
+                     value = lang.getObject(property, null, payload);
+                  }
+                  else
+                  {
+                     this.alfLog("warn", "A payload was defined with 'alfType' and 'alfProperty' attributes but the 'alfType' attribute was neither 'item' nor 'payload' which are the only supported types", this);
+                  }
+                  publishPayload[key] = value;
+               }
+            }
+         }
+         else
+         {
+            this.alfLog("warn", "A drop-down property was changed but there is no 'publishPayload' defined to publish", this);
+         }
+         return publishPayload;
       }
    });
 });

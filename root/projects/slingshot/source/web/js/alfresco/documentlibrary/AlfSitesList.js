@@ -35,6 +35,23 @@ define(["dojo/_base/declare",
    return declare([AlfDocumentList], {
       
       /**
+       * 
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      dataRequestTopic: null,
+
+      /**
+       * This is the site to get data for. This is only really applicable when getting data about 
+       * a specific site as opposed 
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      site: null,
+
+      /**
        * Overrides the default implementation to retrieve site data.
        *
        * @instance
@@ -44,10 +61,15 @@ define(["dojo/_base/declare",
 
          // Set a response topic that is scoped to this widget...
          var documentPayload = {
-            responseTopic: this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS"
+            responseTopic: this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST",
          };
 
-         this.alfPublish("ALF_GET_SITES", documentPayload, true);
+         if (this.site != null)
+         {
+            documentPayload.site = this.site
+         }
+
+         this.alfPublish(this.dataRequestTopic, documentPayload, true);
       },
 
       /**
@@ -60,13 +82,15 @@ define(["dojo/_base/declare",
       onDataLoadSuccess: function alfresco_documentlibrary_AlfSitesList__onDataLoadSuccess(payload) {
          this.alfLog("log", "Data Loaded", payload, this);
          
-         this._currentData = payload;
+         this._currentData = {
+            items: payload.response
+         };
 
          // Publish the details of the loaded documents. The API isn't currently returning data
          // beyond the pagination limit...
          this.alfPublish(this.documentsLoadedTopic, {
-            documents: payload.items,
-            totalDocuments: payload.items.length,
+            documents: this._currentData.items,
+            totalDocuments: this._currentData.items.length,
             startIndex: 0
          });
 

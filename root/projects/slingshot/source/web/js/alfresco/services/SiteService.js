@@ -55,6 +55,7 @@ define(["dojo/_base/declare",
       constructor: function alfresco_services_SiteService__constructor(args) {
          lang.mixin(this, args);
          this.alfSubscribe("ALF_GET_SITES", lang.hitch(this, "getSites"));
+         this.alfSubscribe("ALF_GET_SITE_MEMBERSHIPS", lang.hitch(this, "getSiteMemberships"));
          this.alfSubscribe("ALF_GET_SITE_DETAILS", lang.hitch(this, "getSiteDetails"));
          this.alfSubscribe("ALF_UPDATE_SITE_DETAILS", lang.hitch(this, "updateSite"));
          this.alfSubscribe("ALF_BECOME_SITE_MANAGER", lang.hitch(this, "becomeSiteManager"));
@@ -86,9 +87,7 @@ define(["dojo/_base/declare",
          this.serviceXhr({
             url: AlfConstants.PROXY_URI + "api/sites",
             method: "GET",
-            responseTopic: payload.responseTopic,
-            successCallback: this.getSitesSuccess,
-            callbackScope: this
+            alfTopic: payload.responseTopic
          });
       },
 
@@ -266,6 +265,30 @@ define(["dojo/_base/declare",
          this.alfPublish("ALF_FAVOURITE_SITE_REMOVED", { site: originalRequestConfig.site, user: originalRequestConfig.user});
       },
       
+      /**
+       * Retrieves the site membership data for the supplied site.
+       *
+       * @instance
+       * @param {object} payload The details of the site to retrieve member data for
+       */
+      getSiteMemberships: function alfresco_services_SiteService__getSiteMemberships(payload) {
+         if (payload && 
+             payload.site && 
+             payload.responseTopic)
+         {
+            var url = AlfConstants.PROXY_URI + "api/sites/" + payload.site + "/memberships";
+            this.serviceXhr({url : url,
+                             method: "GET",
+                             alfTopic: payload.responseTopic});
+            
+         }
+         else
+         {
+            this.alfLog("error", "A request to get the details of a site was made, but either the 'site' or 'responseTopic' attributes was not provided", payload);
+         }
+      },
+
+
       /**
        * Handles XHR posting to make a user a site manager.
        * 

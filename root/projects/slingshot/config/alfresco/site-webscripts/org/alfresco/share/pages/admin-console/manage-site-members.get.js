@@ -3,6 +3,7 @@
 //       /share/page/dp/ws/manage-sites as opposed to /share/page/hdp/ws/manage-sites
 
 
+
 model.jsonModel = {
    services: [{
       name: "alfresco/services/LoggingService",
@@ -21,7 +22,7 @@ model.jsonModel = {
          id: "SET_PAGE_TITLE",
          name: "alfresco/header/SetTitle",
          config: {
-            title: msg.get("manage-sites.page.title")
+            title: msg.get("manage-site-members.page.title")
          }
       },
       {
@@ -30,37 +31,6 @@ model.jsonModel = {
          config: 
          {
             widgets: [
-               {
-                  name: "alfresco/menus/AlfMenuBar",
-                  config: {
-                     widgets: [
-                        {
-                           name: "alfresco/menus/AlfMenuBarItem",
-                           config: {
-                              label: "All"
-                           }
-                        },
-                        {
-                           name: "alfresco/menus/AlfMenuBarItem",
-                           config: {
-                              label: "Public"
-                           }
-                        },
-                        {
-                           name: "alfresco/menus/AlfMenuBarItem",
-                           config: {
-                              label: "Moderated"
-                           }
-                        },
-                        {
-                           name: "alfresco/menus/AlfMenuBarItem",
-                           config: {
-                              label: "Private"
-                           }
-                        }
-                     ]
-                  }
-               },
                {
                   name: "alfresco/layout/LeftAndRight",
                   config: {
@@ -85,6 +55,13 @@ model.jsonModel = {
                            config: {
                               label: "Export"
                            }
+                        },
+                        {
+                           name: "alfresco/buttons/AlfButton",
+                           align: "right",
+                           config: {
+                              label: "Add User"
+                           }
                         }
                      ]
                   }
@@ -95,35 +72,6 @@ model.jsonModel = {
                   config: {
                      id: "MANAGE_SITES_TOOLBAR",
                      widgets: [
-                        {
-                           id: "MANAGE_SITES_TOOLBAR_LEFT_MENU",
-                           name: "alfresco/menus/AlfMenuBar",
-                           align: "left",
-                           config: {
-                              widgets: [
-                                 {
-                                    id: "MANAGE_SITES_SELECT_ITEMS_MENU",
-                                    name: "alfresco/documentlibrary/AlfSelectDocumentListItems"
-                                 },
-                                 {
-                                    id: "MANAGE_SITES_SELECTED_ITEMS_MENU",
-                                    name: "alfresco/documentlibrary/AlfSelectedItemsMenuBarPopup",
-                                    config: {
-                                       label: "Selected sites...",
-                                       widgets: [
-                                          {
-                                             id: "MANAGE_SITES_SELECTED_ITEMS_MENU_GROUP1",
-                                             name: "alfresco/menus/AlfMenuGroup",
-                                             config: {
-                                                widgets: []
-                                             }
-                                          }
-                                       ]
-                                    }
-                                 }
-                              ]
-                           }
-                        },
                         {
                            id: "MANAGE_SITES_PAGINATION_MENU",
                            name: "alfresco/documentlibrary/AlfDocumentListPaginator",
@@ -140,7 +88,8 @@ model.jsonModel = {
                      sortAscending: true,
                      sortField: "title",
                      usePagination: true,
-                     dataRequestTopic: "ALF_GET_SITES",
+                     dataRequestTopic: "ALF_GET_SITE_MEMBERSHIPS",
+                     site: page.url.args["site"],
                      widgets: [
                         {
                            name: "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
@@ -150,7 +99,7 @@ model.jsonModel = {
                                  {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                     config: {
-                                       label: "",
+                                       label: "First Name",
                                        sortable: false,
                                        sortValue: ""
                                     }
@@ -158,23 +107,15 @@ model.jsonModel = {
                                  {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                     config: {
-                                       label: "Name",
-                                       sortable: true,
+                                       label: "Last Name",
+                                       sortable: false,
                                        sortValue: "title"
                                     }
                                  },
                                  {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                     config: {
-                                       label: "Description",
-                                       sortable: true,
-                                       sortValue: "description"
-                                    }
-                                 },
-                                 {
-                                    name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                    config: {
-                                       label: "Visibility",
+                                       label: "Site Role",
                                        sortable: false
                                     }
                                  },
@@ -197,19 +138,9 @@ model.jsonModel = {
                                              config: {
                                                 widgets: [
                                                    {
-                                                      name: "alfresco/renderers/Selector"
-                                                   }
-                                                ]
-                                             }
-                                          },
-                                          {
-                                             name: "alfresco/documentlibrary/views/layouts/Cell",
-                                             config: {
-                                                widgets: [
-                                                   {
                                                       name: "alfresco/renderers/Property",
                                                       config: {
-                                                         propertyToRender: "title",
+                                                         propertyToRender: "authority.firstName",
                                                          renderAsLink: false
                                                       }
                                                    }
@@ -223,7 +154,7 @@ model.jsonModel = {
                                                    {
                                                       name: "alfresco/renderers/Property",
                                                       config: {
-                                                         propertyToRender: "description",
+                                                         propertyToRender: "authority.lastName",
                                                          renderAsLink: false
                                                       }
                                                    }
@@ -237,23 +168,14 @@ model.jsonModel = {
                                                    {
                                                       name: "alfresco/renderers/PublishingDropDownMenu",
                                                       config: {
-                                                         publishTopic: "ALF_UPDATE_SITE_DETAILS",
-                                                         publishPayload: {
-                                                            shortName: {
-                                                               alfType: "item",
-                                                               alfProperty: "shortName"
-                                                            },
-                                                            visibility: {
-                                                               alfType: "payload",
-                                                               alfProperty: "value"
-                                                            }
-                                                         },
-                                                         propertyToRender: "visibility",
+                                                         publishTopic: "ALF_UPDATE_SITE_MEMBERSHIP",
+                                                         propertyToRender: "role",
                                                          optionsConfig: {
                                                             fixed: [
-                                                               {label: "Public", value: "PUBLIC"},
-                                                               {label: "Moderated", value: "MODERATED"},
-                                                               {label: "Private", value: "PRIVATE"}
+                                                               {label: "Manager", value: "SiteManager"},
+                                                               {label: "Collaborator", value: "SiteCollaborator"},
+                                                               {label: "Contributor", value: "SiteContributor"},
+                                                               {label: "Consumer", value: "SiteConsumer"}
                                                             ]
                                                          }
                                                       }
@@ -270,14 +192,14 @@ model.jsonModel = {
                                                       config: {
                                                          customActions: [
                                                             {
-                                                               label: "View Members",
-                                                               icon : "document-view-content",
+                                                               label: "Remove",
+                                                               icon : "document-delete",
                                                                index: "10",
                                                                publishTopic : "",
                                                                type: "javascript"
                                                             },
                                                             {
-                                                               label: "Delete Site",
+                                                               label: "Manage User's Sites",
                                                                icon : "document-delete",
                                                                index: "20",
                                                                publishTopic : "",
