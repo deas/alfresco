@@ -18,6 +18,8 @@
  */
 package org.alfresco.po.share;
 
+import org.alfresco.po.share.admin.AdminConsolePage;
+import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.search.AdvanceSearchFolderPage;
 import org.alfresco.po.share.search.AdvanceSearchPage;
 import org.alfresco.po.share.search.AllSitesResultsPage;
@@ -115,6 +117,9 @@ public class FactorySharePageTest
     private final String siteGroupsPage= baseUrl+"%s/page/site/sitemsitesapitests1383578859371/site-groups";
     private final String addGroupsPage= baseUrl+"%s/page/site/sitemsitesapitests1383578859371/add-groups";
     private final String repositoryWithFolder= baseUrl+"%s/page/repository#filter=path|/Folderhtc-RepositoryFolderTests3|&page=1";
+    private final String adminConsolePage= baseUrl+"%s/page/console/admin-console/application";
+    private final String manageSitesPage= baseUrl+"%s/page/console/admin-console/manage-sites";
+    
 
     @Test(groups={"unit"})
     public void resolveUrls()
@@ -254,6 +259,13 @@ public class FactorySharePageTest
             page = resolvePage(addGroupsPage, "add-groups", drone);
             Assert.assertTrue(page instanceof AddGroupsPage);
             
+            //---------------admin console ----------------
+            page = resolvePage(adminConsolePage, "admin-console", drone);
+            Assert.assertTrue(page instanceof AdminConsolePage);
+            
+            page = resolvePage(manageSitesPage, "manage-sites", drone);
+            Assert.assertTrue(page instanceof ManageSitesPage);
+
             long duration = System.currentTimeMillis() - start;
             logger.info("Total duration of test in milliseconds: " + duration);
         }

@@ -430,4 +430,29 @@ public class Navigation extends SharePage
         }
         return new GroupsPage(drone);
     }
+
+    /**
+     * Select admin tools.
+     *
+     * @return the html page
+     */
+    public HtmlPage selectAdminTools()
+    {
+        String selector = "div#HEADER_ADMIN_CONSOLE";
+    	drone.find(By.cssSelector(selector)).click();
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Select manage sites.
+     *
+     * @return the html page
+     */
+    public HtmlPage selectManageSites()
+    {
+        selectAdminTools().render();
+        String selector = "ul.toolLink > li > span > a[href=\"manage-sites\"]";
+        drone.find(By.cssSelector(selector)).click();
+        return FactorySharePage.resolvePage(drone);
+    }
 }

@@ -20,6 +20,8 @@ package org.alfresco.po.share;
 
 import java.util.List;
 
+import org.alfresco.po.share.admin.AdminConsolePage;
+import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.user.MyProfilePage;
@@ -196,5 +198,29 @@ public class NavigationBarTest extends AbstractTest
     {
         List<String> userNetworks = page.getNav().getUserNetworks();
         Assert.assertTrue(userNetworks.size() > 0);
+    }
+    
+    /**
+     * Navigate to admin tools from the dashboard page.
+     * 
+     * @throws Exception if error
+     */
+    @Test(groups = { "alfresco-one" })
+    public void navigateToAdminTools() throws Exception
+    {
+        AdminConsolePage adminConsolePage = page.getNav().selectAdminTools().render();
+        Assert.assertEquals("Admin Console", adminConsolePage.getPageTitle());
+    }
+
+    /**
+     * Navigate to manage sites from the dashboard page.
+     * 
+     * @throws Exception if error
+     */
+    @Test(groups = { "alfresco-one" })
+    public void navigateToManageSites() throws Exception
+    {
+        ManageSitesPage manageSitesPage = page.getNav().selectManageSites().render();
+        Assert.assertEquals("Manage Sites", manageSitesPage.getPageTitle());
     }
  }

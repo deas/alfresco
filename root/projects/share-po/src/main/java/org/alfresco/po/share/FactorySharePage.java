@@ -23,6 +23,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.alfresco.po.share.admin.AdminConsolePage;
+import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.search.AdvanceSearchCRMPage;
 import org.alfresco.po.share.search.AdvanceSearchFolderPage;
 import org.alfresco.po.share.search.AdvanceSearchPage;
@@ -135,6 +137,8 @@ public class FactorySharePage implements PageFactory
         pages.put("search", SiteResultsPage.class);
         pages.put("start-workflow", StartWorkFlowPage.class);
         pages.put("user-cloud-auth", CloudSyncPage.class);
+        pages.put("admin-console", AdminConsolePage.class);
+        pages.put("manage-sites", ManageSitesPage.class);
     }
     
     public HtmlPage getPage(WebDrone drone)
@@ -302,6 +306,13 @@ public class FactorySharePage implements PageFactory
         if(url.contains("/repository"))
         {
             return "repository";
+        }
+        
+        // The admin console has an unusual url which we handle here
+        // 'application' by itself would be inappropriate
+        if(url.contains("/admin-console/application"))
+        {
+            return "admin-console";
         }
         
         //Get the last element of url
