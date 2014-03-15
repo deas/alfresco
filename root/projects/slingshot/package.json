@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "intern": "~1.4.0",
+    "intern": "*",
     "squirejs": "~0.1.0",
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.11",
@@ -24,6 +24,7 @@
     "grunt-sync": "0.0.4",
     "glob": "~3.2.7",
     "lodash": "~2.4.1",
-    "node-coverage": "~1.0.6"
+    "node-coverage": "~1.0.6",
+    "selenium-server": "~2.38.0"
   }
 }

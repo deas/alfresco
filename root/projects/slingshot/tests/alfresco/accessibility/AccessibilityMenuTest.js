@@ -91,8 +91,8 @@ define(["intern!object",
          .keys([specialKeys["Shift"]])
          .keys([specialKeys["Alt"], specialKeys["Shift"], "s"])
          .keys([specialKeys["Alt"], specialKeys["Shift"]])
-         .keys([specialKeys["Control"], specialKeys["Command"], "s"])
-         .keys([specialKeys["Control"], specialKeys["Command"]])
+//         .keys([specialKeys["Control"], specialKeys["Command"], "s"])
+//         .keys([specialKeys["Control"], specialKeys["Command"]])
          .url()
          .then(function (page) {
             TestCommon.log(testname,98,"Hit the browser with a sequence of different accesskey combinations and the letter 's' for a nav skip");

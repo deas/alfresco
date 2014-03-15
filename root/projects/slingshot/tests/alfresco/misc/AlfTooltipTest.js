@@ -53,9 +53,9 @@ define(["intern!object",
          .end()
 
          // Move to test button - does the tool tip appear?
-         .elementById("TEST_BUTTON")
+         .elementByCss("#TEST_BUTTON > #TEST_BUTTON_label")
          .moveTo()
-         .sleep(250)
+         .sleep(1000)
          .hasElementByCss(".dijitTooltip")
          .then(function(result2) {
             TestCommon.log(testname,61,"Move to test button - does the tool tip appear?");

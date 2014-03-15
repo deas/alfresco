@@ -41,6 +41,6 @@ define({
     * @type {boolean}
     * @default true
     */
-   doCoverageReport: true
+   doCoverageReport: false
 
 });
