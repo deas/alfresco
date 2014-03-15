@@ -1182,6 +1182,23 @@ function generateAppItems() {
             targetUrl: "console/admin-console/application"
          }
       });
+   } else
+   {
+      appItems.push({
+         id: "HEADER_ADMIN_CONSOLE",
+         name: "alfresco/menus/AlfMenuBarItem",
+         config: {
+            id: "HEADER_SITES_CONSOLE",
+            label: "header.menu.admin.sites.label",
+            targetUrl: "console/sites-console/manage-sites/",
+            renderFilter: [
+               {
+                  property: "groups.GROUP_SITE_ADMINISTRATORS",
+                  values: [true]
+               }
+            ]
+         }
+      });
    }
    return appItems;
 }

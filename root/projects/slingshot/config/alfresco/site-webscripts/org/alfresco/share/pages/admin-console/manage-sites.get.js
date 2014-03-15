@@ -1,21 +1,5 @@
-// TODO: This currently only contains the model for the main content (i.e. it will work with the hybrid-template)
-//       but ideally we should sort out all the lib files so that it runs in the full template...
-//       /share/page/dp/ws/manage-sites as opposed to /share/page/hdp/ws/manage-sites
-
-
 model.jsonModel = {
-   services: [{
-      name: "alfresco/services/LoggingService",
-      config: {
-         loggingPreferences: {
-            enabled: true,
-            all: true,
-            warn: true,
-            error: true
-         }
-      }
-   },
-   "alfresco/services/SiteService"],
+   services: ["alfresco/services/SiteService"],
    widgets: [
       {
          id: "SET_PAGE_TITLE",
@@ -39,6 +23,12 @@ model.jsonModel = {
                      sortField: "title",
                      usePagination: true,
                      dataRequestTopic: "ALF_GET_SITES",
+                     renderFilter: [
+                        {
+                           property: "groups.GROUP_SITE_ADMINISTRATORS",
+                           values: [true]
+                        }
+                     ],
                      widgets: [
                         {
                            name: "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
