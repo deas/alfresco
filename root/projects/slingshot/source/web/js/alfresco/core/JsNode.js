@@ -63,8 +63,16 @@ define(["dojo/_base/declare",
          if (ObjectTypeUtils.isString(args))
          {
             // The supplied node is a String (and is expected to be a JSON string so should be parsed into an object)...
-            this.nodeJson = args;
-            this.node = dojoJson.parse(args);
+            try
+            {
+               this.nodeJson = args;
+               this.node = dojoJson.parse(args);
+            }
+            catch (e)
+            {
+               // Can't log error, no alfLog !
+            }
+            
          }
          else if (ObjectTypeUtils.isObject(args))
          {
@@ -237,7 +245,7 @@ define(["dojo/_base/declare",
        */
       constructor: function alfresco_core_JsNode__constructor(args) {
          var primaryJsNode = new JsNode(args);
-         if (primaryJsNode.node.linkedNode != null)
+         if (primaryJsNode.node != null && primaryJsNode.node.linkedNode != null)
          {
             primaryJsNode.linkedNode = new JsNode(primaryJsNode.linkedNode);
          }

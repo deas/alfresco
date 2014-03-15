@@ -27,13 +27,14 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreXhr",
         "alfresco/core/NotificationUtils",
+        "alfresco/core/ObjectTypeUtils",
         "dojo/request/xhr",
         "dojo/json",
         "dojo/_base/lang",
         "dojo/dom-construct",
         "alfresco/buttons/AlfButton",
         "service/constants/Default"],
-        function(declare, AlfCore, AlfXhr, NotificationUtils, xhr, JSON, lang, domConstruct, AlfButton, AlfConstants) {
+        function(declare, AlfCore, AlfXhr, NotificationUtils, ObjectTypeUtils, xhr, JSON, lang, domConstruct, AlfButton, AlfConstants) {
    
    return declare([AlfCore, AlfXhr, NotificationUtils], {
       
@@ -51,8 +52,9 @@ define(["dojo/_base/declare",
        * @instance 
        * @param {array} args The constructor arguments.
        */
-      constructor: function alf_services_SiteService__constructor(args) {
+      constructor: function alfresco_services_SiteService__constructor(args) {
          lang.mixin(this, args);
+         this.alfSubscribe("ALF_GET_SITES", lang.hitch(this, "getSites"));
          this.alfSubscribe("ALF_GET_SITE_DETAILS", lang.hitch(this, "getSiteDetails"));
          this.alfSubscribe("ALF_BECOME_SITE_MANAGER", lang.hitch(this, "becomeSiteManager"));
          this.alfSubscribe("ALF_JOIN_SITE", lang.hitch(this, "joinSite"));
@@ -75,6 +77,43 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * 
+       * @instance
+       * @param {object} payload The details of the request
+       */
+      getSites: function alfresco_services_SiteService__getSites(payload) {
+         this.serviceXhr({
+            url: AlfConstants.PROXY_URI + "api/sites",
+            method: "GET",
+            responseTopic: payload.responseTopic,
+            successCallback: this.getSitesSuccess,
+            callbackScope: this
+         });
+      },
+
+      /**
+       * This processes the results returned from the XHR request.
+       *
+       * @instance
+       * @param {object} response
+       * @param {object} originalRequestConfig
+       */
+      getSitesSuccess: function alfresco_services_SiteService__getSitesSuccess(response, originalRequestConfig) {
+         if (response != null && ObjectTypeUtils.isArray(response))
+         {
+            var topic = (originalRequestConfig.responseTopic != null) ? originalRequestConfig.responseTopic : "ALF_SITES_LOADED";
+            var sitesData = {
+               items: response
+            };
+            this.alfPublish(topic, sitesData);
+         }
+         else
+         {
+            this.alfLog("error", "The request to retrieve available sites returned a response that could not be interpreted", response, originalRequestConfig, this);
+         }
+      },
+
+      /**
        * This function makes a request to obtain the details of a specific site. Unlike the other functions
        * in this service it requires a specific callback function and scope to be provided in the request
        * as it doesn't make sense to just publish site information.
@@ -82,7 +121,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} config An object with the details of the site to retrieve the data for.
        */
-      getSiteDetails: function alf_services_SiteService__getSiteDetails(config) {
+      getSiteDetails: function alfresco_services_SiteService__getSiteDetails(config) {
          if (config && 
              config.site && 
              config.responseTopic)
@@ -109,7 +148,7 @@ define(["dojo/_base/declare",
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
-      publishSiteDetails: function alf_services_SiteService__publishSiteDetails(response, originalRequestConfig) {
+      publishSiteDetails: function alfresco_services_SiteService__publishSiteDetails(response, originalRequestConfig) {
          if (originalRequestConfig && originalRequestConfig.responseTopic)
          {
             this.alfLog("log", "Publishing site details", originalRequestConfig);
@@ -127,7 +166,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {config} config The payload containing the details of the site to add to the favourites list
        */
-      addSiteAsFavourite: function alf_services_SiteService__addSiteAsFavourite(config) {
+      addSiteAsFavourite: function alfresco_services_SiteService__addSiteAsFavourite(config) {
         
          if (config.site && config.user)
          {
@@ -158,7 +197,7 @@ define(["dojo/_base/declare",
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
-      favouriteSiteAdded: function alf_services_SiteService__favouriteSiteAdded(response, originalRequestConfig) {
+      favouriteSiteAdded: function alfresco_services_SiteService__favouriteSiteAdded(response, originalRequestConfig) {
          this.alfLog("log", "Favourite Site Added Successfully", response, originalRequestConfig);
          this.alfPublish("ALF_FAVOURITE_SITE_ADDED", { site: originalRequestConfig.site, user: originalRequestConfig.user});
       },
@@ -170,7 +209,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {config} config The payload containing the details of the site to remove from the favourites list
        */
-      removeSiteFromFavourites: function alf_services_SiteService__removeSiteFromFavourites(config) {
+      removeSiteFromFavourites: function alfresco_services_SiteService__removeSiteFromFavourites(config) {
          if (config.site && config.user)
          {
             // Set up the favourites information...
@@ -197,7 +236,7 @@ define(["dojo/_base/declare",
        * @param {object} response The response from the XHR request to remove the site.
        * @param {object} originalRequestConfig The original configuration passed when the request was made.
        */
-      favouriteSiteRemoved: function alf_services_SiteService_favouriteSiteRemoved(response, originalRequestConfig) {
+      favouriteSiteRemoved: function alfresco_services_SiteService_favouriteSiteRemoved(response, originalRequestConfig) {
          this.alfLog("log", "Favourite Site Removed Successfully", response, originalRequestConfig);
          this.alfPublish("ALF_FAVOURITE_SITE_REMOVED", { site: originalRequestConfig.site, user: originalRequestConfig.user});
       },
@@ -208,7 +247,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} data The payload containing the user status to post.
        */
-      becomeSiteManager: function alf_services_SiteService__becomeSiteManager(config) {
+      becomeSiteManager: function alfresco_services_SiteService__becomeSiteManager(config) {
          if (config.site)
          {
             this.alfLog("log", "A request has been made for a user to become the manager of a site: ", config);
@@ -312,7 +351,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} config The configuration for the join request. 
        */
-      joinSite: function alf_services_SiteService__joinSite(config) {
+      joinSite: function alfresco_services_SiteService__joinSite(config) {
          if (config.site && config.user)
          {
             // PLEASE NOTE: The default role for joining a site is "SiteConsumer", however this can be overridden
@@ -356,7 +395,7 @@ define(["dojo/_base/declare",
        * @param {object} response The response from the XHR request to join the site.
        * @param {object} originalRequestConfig The original configuration passed when the request was made.
        */
-      siteJoined: function alf_services_SiteService__siteJoined(response, originalRequestConfig) {
+      siteJoined: function alfresco_services_SiteService__siteJoined(response, originalRequestConfig) {
          this.alfLog("log", "User has successfully joined a site", response, originalRequestConfig);
          this.alfPublish("ALF_SITE_JOINED", { site: originalRequestConfig.site, user: originalRequestConfig.user});
          this.reloadPage();
@@ -368,7 +407,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {string} site
        */
-      createSite: function alf_services_SiteService__editSite(config) {
+      createSite: function alfresco_services_SiteService__editSite(config) {
          // TODO: When an edit site request is received we should display the edit site dialog.
          //       We need to wrap the existing YUI widget in a Dojo object.
          this.alfLog("log", "A request has been made to create a site: ", config);
@@ -390,7 +429,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {string} site
        */
-      editSite: function alf_services_SiteService__editSite(config) {
+      editSite: function alfresco_services_SiteService__editSite(config) {
          // TODO: When an edit site request is received we should display the edit site dialog.
          //       We need to wrap the existing YUI widget in a Dojo object.
          this.alfLog("log", "A request has been made to edit a site: ", config);
@@ -414,7 +453,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} payload
        */
-      leaveSiteRequest: function alf_services_SiteService__leaveSiteReqest(payload) {
+      leaveSiteRequest: function alfresco_services_SiteService__leaveSiteReqest(payload) {
          this.displayPrompt({
             title: this.message("message.leave", { "0": payload.siteTitle}),
             textContent: this.message("message.leave-site-prompt", { "0": payload.siteTitle}),
@@ -445,7 +484,7 @@ define(["dojo/_base/declare",
        * @param {string} site The name of the site to leave
        * @param {string} user The name of the user to leave the site
        */
-      leaveSite: function alf_services_SiteService__leaveSite(config) {
+      leaveSite: function alfresco_services_SiteService__leaveSite(config) {
          if (config.site && config.user)
          {
             this.alfLog("log", "A request has been made for a user to leave a site: ", config);
@@ -481,7 +520,7 @@ define(["dojo/_base/declare",
        * @param {object} response The response from the XHR request to leave the site.
        * @param {object} originalRequestConfig The original configuration passed when the request was made.
        */
-      siteLeft: function alf_services_SiteService__siteLeft(response, originalRequestConfig) {
+      siteLeft: function alfresco_services_SiteService__siteLeft(response, originalRequestConfig) {
          this.alfLog("log", "User has successfully left a site", response, originalRequestConfig);
          this.displayMessage(this.message("message.leaving", {"0": originalRequestConfig.userFullName, "1": originalRequestConfig.siteTitle}));
          this.alfPublish("ALF_SITE_LEFT", { site: originalRequestConfig.site, user: originalRequestConfig.user});
@@ -495,7 +534,7 @@ define(["dojo/_base/declare",
        * @param {object} response The response from the XHR request to leave the site.
        * @param {object} originalRequestConfig The original configuration passed when the request was made.
        */
-      siteLeftFailure: function alf_services_SiteService__siteLeftFailure(response, originalRequestConfig) {
+      siteLeftFailure: function alfresco_services_SiteService__siteLeftFailure(response, originalRequestConfig) {
          this.alfLog("log", "User has failed to leave a site", response, originalRequestConfig);
          this.displayMessage(this.message("message.leave-failure", {"0": originalRequestConfig.userFullName, "1": originalRequestConfig.siteTitle}));
       },
@@ -505,7 +544,7 @@ define(["dojo/_base/declare",
        * the current page. It is ** INCORRECTLY ** assumed that the current user will always be on the site
        * referenced in the request. This method needs to be updated accordingly.
        */
-      reloadPage: function alf_services_SiteService__reloadPage(response, requestConfig) {
+      reloadPage: function alfresco_services_SiteService__reloadPage(response, requestConfig) {
          // TODO: Check user in request is current user and that site in request is current site
          this.alfPublish("ALF_RELOAD_PAGE", {});
       },
@@ -521,7 +560,7 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      leaveSiteSuccess: function alf_services_SiteService__leaveSiteSuccess(response, requestConfig) {
+      leaveSiteSuccess: function alfresco_services_SiteService__leaveSiteSuccess(response, requestConfig) {
          window.location.href = AlfConstants.URL_CONTEXT;
       },
 
