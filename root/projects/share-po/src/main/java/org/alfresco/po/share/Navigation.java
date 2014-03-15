@@ -21,6 +21,7 @@ package org.alfresco.po.share;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.po.share.ShareUtil.RequiredAlfrescoVersion;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.SiteFinderPage;
@@ -281,7 +282,7 @@ public class Navigation extends SharePage
      */
     public HtmlPage getUsersPage()
     {
-        ShareUtil.cloudCheck(alfrescoVersion);
+        ShareUtil.validateAlfrescoVersion(alfrescoVersion, RequiredAlfrescoVersion.ENTERPRISE_ONLY);
         //TODO To be implemented by using UI once JIRA: https://issues.alfresco.com/jira/browse/ALF-18909 is resolved 
         String usersPageURL = "/page/console/admin-console/users";
         String currentUrl = drone.getCurrentUrl();
@@ -300,7 +301,7 @@ public class Navigation extends SharePage
      */
     public DashBoardPage selectNetworkDropdown()
     {
-        ShareUtil.cloudCheck(alfrescoVersion);
+        ShareUtil.validateAlfrescoVersion(alfrescoVersion, RequiredAlfrescoVersion.CLOUD_ONLY);
 
         try
         {
@@ -322,7 +323,7 @@ public class Navigation extends SharePage
      */
     public DashBoardPage selectNetwork(final String networkName)
     {
-        ShareUtil.cloudCheck(alfrescoVersion);
+        ShareUtil.validateAlfrescoVersion(alfrescoVersion, RequiredAlfrescoVersion.CLOUD_ONLY);
         if (StringUtils.isEmpty(networkName))
         {
             throw new IllegalArgumentException("Network name is required.");
@@ -428,7 +429,7 @@ public class Navigation extends SharePage
      */
     public GroupsPage getGroupsPage()
     {
-        ShareUtil.cloudCheck(alfrescoVersion);
+        ShareUtil.validateAlfrescoVersion(alfrescoVersion, RequiredAlfrescoVersion.ENTERPRISE_ONLY);
         //TODO To be implemented by using UI once JIRA: https://issues.alfresco.com/jira/browse/ALF-18909 is resolved 
         String usersPageURL = "/page/console/admin-console/groups";
         String currentUrl = drone.getCurrentUrl();
@@ -487,7 +488,7 @@ public class Navigation extends SharePage
 
     public HtmlPage selectManageSitesNetworkAdmin()
     {
-        ShareUtil.cloudCheck(alfrescoVersion);
+        ShareUtil.validateAlfrescoVersion(alfrescoVersion, RequiredAlfrescoVersion.CLOUD_ONLY);
         // TODO: Abstract this to a method on the page object.
         String manageSitesPageURL = "/page/console/cloud-console/manage-sites";
         String currentUrl = drone.getCurrentUrl();

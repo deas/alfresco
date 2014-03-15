@@ -29,6 +29,16 @@ import org.alfresco.webdrone.WebDrone;
 public class ShareUtil 
 {
     /**
+     * A simple Enum to request the required Alfresco version.
+     * 
+     * @author Jamal Kaabi-Mofrad
+     */
+    public static enum RequiredAlfrescoVersion
+    {
+        CLOUD_ONLY, ENTERPRISE_ONLY;
+    }
+    
+    /**
      * Pattern representing url prefix without the /share/*.*
      */
     private static final String BASE_URL_PATTERN = "^*/page.*";
@@ -88,15 +98,39 @@ public class ShareUtil
     }
 
     /**
-     * Check to see the mode Share is in
+     * A helper method to check the current running Alfresco version against the
+     * required version.
+     * 
+     * @param alfrescoVersion the currently running Alfresco version
+     * @param requiredVersion the required version (CLOUD_ONLY |
+     *            ENTERPRISE_ONLY)
+     * @throws UnsupportedOperationException if the {@code requiredVersion}
+     *             differs from the {@code alfrescoVersion}
+     * @throws IllegalArgumentException if {@code requiredVersion} is invalid
      */
-    public static void cloudCheck(AlfrescoVersion alfrescoVersion)
+    public static void validateAlfrescoVersion(AlfrescoVersion alfrescoVersion, RequiredAlfrescoVersion requiredVersion)
+                throws UnsupportedOperationException, IllegalArgumentException
     {
-        if(alfrescoVersion.isCloud())
+        boolean isCloud = alfrescoVersion.isCloud();
+        switch (requiredVersion)
         {
-            throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
+            case CLOUD_ONLY:
+                if (!isCloud)
+                {
+                    throw new UnsupportedOperationException("This operation is Cloud only, not available for Enterprise.");
+                }
+                break;
+            case ENTERPRISE_ONLY:
+                if (isCloud)
+                {
+                    throw new UnsupportedOperationException("This operation is Enterprise only, not available for Cloud.");
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unrecognised Alfresco version: " + requiredVersion);
         }
     }
+
     /**
      *
      */
