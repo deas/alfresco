@@ -31,9 +31,12 @@ else
    mv chromedriver /usr/local/bin
 
    # Download and copy Phantomjs to /usr/local/bin
-   wget "http://phantomjs.googlecode.com/files/phantomjs-1.9.2-linux-x86_64.tar.bz2"
-   tar -xjvf phantomjs-1.9.2-linux-x86_64.tar.bz2
-   mv phantomjs-1.9.2-linux-x86_64/bin/phantomjs /usr/local/bin
+   # wget "http://phantomjs.googlecode.com/files/phantomjs-1.9.2-linux-x86_64.tar.bz2"
+   # tar -xjvf phantomjs-1.9.2-linux-x86_64.tar.bz2
+   # mv phantomjs-1.9.2-linux-x86_64/bin/phantomjs /usr/local/bin
+   wget "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2"
+   tar -xjvf phantomjs-1.9.7-linux-x86_64.tar.bz2
+   mv phantomjs-1.9.7-linux-x86_64/bin/phantomjs /usr/local/bin
 
    # Download and copy Selenium to /usr/local/bin
    wget "https://selenium.googlecode.com/files/selenium-server-standalone-2.39.0.jar"
@@ -57,7 +60,7 @@ echo "Starting Firefox ..."
 firefox &
 
 echo "Starting Phantomjs ..."
-phantomjs --webdriver=4444 --remote-debugger-port=9223 &
+phantomjs --ignore-ssl-errors=true --web-security=false --webdriver=192.168.56.4:4444 &
 
 echo "Starting Selenium ..."
 cd /usr/local/bin
