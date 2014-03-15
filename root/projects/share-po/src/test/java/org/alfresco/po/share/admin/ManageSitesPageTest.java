@@ -121,7 +121,7 @@ public class ManageSitesPageTest extends AbstractTest
         manageSitesPage.loadElements();
 
         result = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
-        assertEquals(result.getVisibility().getValue(), SiteVisibility.PRIVATE.getDisplayValue());
+        assertEquals(result.getVisibility().getValue(), SiteVisibility.PRIVATE);
     }
 
     /**

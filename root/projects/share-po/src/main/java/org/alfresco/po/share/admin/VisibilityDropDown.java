@@ -49,9 +49,9 @@ public class VisibilityDropDown
      * 
      * @return the value
      */
-    public String getValue()
+    public SiteVisibility getValue()
     {
-        return value.getDisplayValue();
+        return value;
     }
 
     /**
@@ -88,5 +88,15 @@ public class VisibilityDropDown
                 }
             }
         }
+    }
+
+    /**
+     * Is the provided value the current value of the drop down?
+     *
+     * @return true, if the value is selected
+     */
+    public boolean isValueSelected(SiteVisibility visibility)
+    {
+        return this.value == visibility;
     }
 }

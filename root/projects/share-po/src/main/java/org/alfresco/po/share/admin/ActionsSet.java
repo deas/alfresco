@@ -1,5 +1,6 @@
 package org.alfresco.po.share.admin;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.po.share.util.TestUtils;
@@ -44,36 +45,40 @@ public class ActionsSet
     }
 
     /**
+     * Checks if the menu contains a named action
+     *
+     * @param actionName the action name
+     * @return true, if successful
+     */
+    public boolean hasActionByName(String actionName)
+    {
+        // Iterate over the menuRows and return true if we find an item that matches the named action
+        for (WebElement menuRow : getMenuRows())
+        {
+            if (actionName.equalsIgnoreCase(StringUtils.trim(menuRow.findElement(MENU_LABEL).getText())))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    /**
      * Click action by name.
      * 
      * @param actionName the action name
      */
     public void clickActionByName(String actionName)
     {
-        // Click the control to open the menu
-        control.click();
 
-        // Compose the selector for the drop down menu
-        String menuSelector = StringUtils.replace(MENU_ELEMENT_SELECTOR_TEMPLATE, "?", this.menuId);
-
-        // Find the menu
-        WebElement menu = this.drone.find(By.cssSelector(menuSelector));
-
-        // If the menu is not null and is displayed and is enabled
-        if (TestUtils.usableElement(menu))
+        // Iterate over the menuRows and click the control that matches the named action
+        for (WebElement menuRow : getMenuRows())
         {
-
-            // Within the menu element find the MENU_ROWS
-            List<WebElement> menuRows = menu.findElements(MENU_ROWS);
-
-            // Iterate over the menuRows and click the control that matches the named action
-            for (WebElement menuRow : menuRows)
+            if (actionName.equalsIgnoreCase(StringUtils.trim(menuRow.findElement(MENU_LABEL).getText())))
             {
-                if (actionName.equalsIgnoreCase(StringUtils.trim(menuRow.findElement(MENU_LABEL).getText())))
-                {
-                    menuRow.click();
-                    break;
-                }
+                menuRow.click();
+                break;
             }
         }
     }
@@ -107,5 +112,33 @@ public class ActionsSet
                 }
             }
         }
+    }
+
+    /**
+     * Opens and returns the menu row WebElements.
+     * 
+     * @return the menu rows
+     */
+    private List<WebElement> getMenuRows()
+    {
+        // Click the control to open the menu
+        control.click();
+
+        // Compose the selector for the drop down menu
+        String menuSelector = StringUtils.replace(MENU_ELEMENT_SELECTOR_TEMPLATE, "?", this.menuId);
+
+        // Find the menu
+        WebElement menu = this.drone.find(By.cssSelector(menuSelector));
+
+        // If the menu is not null and is displayed and is enabled
+        if (TestUtils.usableElement(menu))
+        {
+
+            // Within the menu element find the MENU_ROWS
+            return menu.findElements(MENU_ROWS);
+
+        }
+
+        return new ArrayList<WebElement>();
     }
 }
