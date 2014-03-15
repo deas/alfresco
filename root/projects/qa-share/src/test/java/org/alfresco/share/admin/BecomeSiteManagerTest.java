@@ -5,18 +5,13 @@ import static org.testng.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.NewUserPage;
-import org.alfresco.po.share.ShareUtil;
-import org.alfresco.po.share.UserSearchPage;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.admin.ManagedSiteRow;
 import org.alfresco.po.share.enums.SiteVisibility;
 import org.alfresco.share.util.AbstractTests;
-import org.alfresco.share.util.SiteUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.alfresco.share.util.OpCloudTestContext;
+import org.alfresco.share.util.ShareUser;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -32,25 +27,18 @@ import org.testng.annotations.Test;
  * @author Richard Smith
  */
 
-// TODO: This should use AbstractTests instead and OpCloudTestContext.
-public class BecomeSiteManagerTest extends AbstractTest
+public class BecomeSiteManagerTest extends AbstractTests
 {
-
-    /** The logger */
-    private static Log logger = LogFactory.getLog(BecomeSiteManagerTest.class);
-
     /** Constants */
-    private static final String PREFIX = "aaaa-tc797-";
-    private static final String ESUFFIX = "@example.com";
-    private static final String NEW_USER_PASSWORD = "password";
     private static final String BECOME_SITE_MANAGER_BUTTON = "Become Site Manager";
+    private static final String PREFIX = "aaaa-tc797-";
+    private static final String SITE_ADMIN_GROUP = "SITE_ADMINISTRATORS";
 
     private DashBoardPage dashBoardPage;
     private ManageSitesPage manageSitesPage;
+    private OpCloudTestContext testContext;
     private List<String> sites;
     private List<String> users;
-    private int userCounter = 1;
-    private int siteCounter = 1;
 
     /**
      * Setup.
@@ -60,39 +48,42 @@ public class BecomeSiteManagerTest extends AbstractTest
     @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
     {
-        trace("Starting setup for BecomeSiteManagerTest");
+        traceLog("Starting setup for BecomeSiteManagerTest");
 
-        // Initialise sites and users
-        users = new ArrayList<>(2);
-        sites = new ArrayList<>(2);
-
-        // Login as admin:admin
-        dashBoardPage = loginAs(username, password);
+        super.setup();
+        this.testContext = new OpCloudTestContext(this);
+        String network = testContext.createNetworkName("acme");
 
         // Create two users - one site administrator and one not
-        createUser(true);
-        createUser(false);
+        String user1 = testContext.createUserName("AmandaAdmin", network);
+        createTestUser(drone, user1, DEFAULT_PASSWORD, SITE_ADMIN_GROUP);
+        testContext.addUser(user1);
 
-        // Logout
-        logout(drone);
+        String user2 = testContext.createUserName("JaneUser", network);
+        createTestUserWithoutGroup(drone, user2, DEFAULT_PASSWORD);
+        testContext.addUser(user2);
+
+        users = new ArrayList<> (testContext.getCreatedUsers());
 
         // Login as the site administrator
-        dashBoardPage = loginAs(users.get(0), NEW_USER_PASSWORD);
+        dashBoardPage = ShareUser.loginAs(drone, users.get(0), DEFAULT_PASSWORD);
 
         // Create a private site managed by the site administrator
-        createSite(SiteVisibility.PRIVATE);
+        createTestSite(drone, testContext, PREFIX, SiteVisibility.PRIVATE, users.get(0));
 
         // Logout
-        logout(drone);
+        ShareUser.logout(drone);
 
         // Login as the non site administrator
-        dashBoardPage = loginAs(users.get(1), NEW_USER_PASSWORD);
+        dashBoardPage = ShareUser.loginAs(drone, users.get(1), DEFAULT_PASSWORD);
 
         // Create a private site managed by the non site administrator
-        createSite(SiteVisibility.PRIVATE);
+        createTestSite(drone, testContext, PREFIX, SiteVisibility.PRIVATE, users.get(1));
 
         // Logout
-        logout(drone);
+        ShareUser.logout(drone);
+
+        sites = new ArrayList<> (testContext.getCreatedSitesAsList());
     }
 
     /**
@@ -101,10 +92,10 @@ public class BecomeSiteManagerTest extends AbstractTest
     @Test
     public void hasButtonTest() throws Exception
     {
-        trace("Starting Test1");
+        traceLog("Starting Test1");
 
         // Login as the site administrator and navigate to manage sites
-        dashBoardPage = loginAs(users.get(0), NEW_USER_PASSWORD);
+        dashBoardPage = ShareUser.loginAs(drone, users.get(0), DEFAULT_PASSWORD);
         manageSitesPage = dashBoardPage.getNav().selectManageSitesPage().render();
 
         // Load manage sites page elements
@@ -127,7 +118,7 @@ public class BecomeSiteManagerTest extends AbstractTest
         Assert.assertFalse(row.getActions().hasActionByName(BECOME_SITE_MANAGER_BUTTON));
 
         // Logout
-        logout(drone);
+        ShareUser.logout(drone);
     }
 
     /**
@@ -136,10 +127,10 @@ public class BecomeSiteManagerTest extends AbstractTest
     @Test
     public void hasNoButtonTest() throws Exception
     {
-        trace("Starting Test2");
+        traceLog("Starting Test2");
 
         // Login as the site administrator and navigate to manage sites
-        dashBoardPage = loginAs(users.get(0), NEW_USER_PASSWORD);
+        dashBoardPage = ShareUser.loginAs(drone, users.get(0), DEFAULT_PASSWORD);
         manageSitesPage = dashBoardPage.getNav().selectManageSitesPage().render();
 
         // Load manage sites page elements
@@ -151,7 +142,7 @@ public class BecomeSiteManagerTest extends AbstractTest
         Assert.assertFalse(row.getActions().hasActionByName(BECOME_SITE_MANAGER_BUTTON));
 
         // Logout
-        logout(drone);
+        ShareUser.logout(drone);
     }
 
     /**
@@ -162,100 +153,14 @@ public class BecomeSiteManagerTest extends AbstractTest
     @AfterClass(alwaysRun = true)
     public void teardown() throws Exception
     {
-        trace("Starting teardown for BecomeSiteManagerTest");
+        traceLog("Starting teardown for BecomeSiteManagerTest");
 
-        // Login as user 1
-        dashBoardPage = loginAs(users.get(0), NEW_USER_PASSWORD);
 
-        // Delete site 1
-        try
-        {
-            SiteUtil.deleteSite(drone, sites.get(0));
-        }
-        catch (Exception e)
-        {}
-
-        // Logout
-        logout(drone);
-
-        // Login as user 2
-        dashBoardPage = loginAs(users.get(1), NEW_USER_PASSWORD);
-
-        // Delete site 2
-        try
-        {
-            SiteUtil.deleteSite(drone, sites.get(1));
-        }
-        catch (Exception e)
-        {}
-
-        // Logout
-        logout(drone);
-
-        // Login as admin:admin
-        dashBoardPage = loginAs(username, password);
+        testContext.cleanupAllSites();
 
         manageSitesPage = null;
         dashBoardPage = null;
         sites = null;
         users = null;
-
-        // Logout
-        logout(drone);
-    }
-
-    /**
-     * Creates a test user.
-     * 
-     * @param admin should this be a site administrator?
-     */
-    private void createUser(boolean admin)
-    {
-        UserSearchPage userPage = dashBoardPage.getNav().getUsersPage().render();
-        NewUserPage newPage = userPage.selectNewUser().render();
-
-        String username = PREFIX + "user-" + userCounter + "-" + System.currentTimeMillis() + (AbstractTests.isAlfrescoVersionCloud(drone) ? ESUFFIX : "");
-
-        if (admin)
-        {
-            newPage.createEnterpriseUserWithGroup(username, username, username, PREFIX + System.currentTimeMillis() + ESUFFIX, NEW_USER_PASSWORD,
-                    "SITE_ADMINISTRATORS");
-        }
-        else
-        {
-            newPage.createEnterpriseUser(username, username, username, PREFIX + System.currentTimeMillis() + ESUFFIX, NEW_USER_PASSWORD);
-        }
-
-        users.add(username);
-        userCounter++;
-
-        trace("Created User: " + username);
-    }
-
-    /**
-     * Creates a test site.
-     * 
-     * @param visibility the SiteVisibility of the created site
-     */
-    private void createSite(SiteVisibility visibility)
-    {
-        String siteName = PREFIX + "site-" + siteCounter + "-" + System.currentTimeMillis();
-        boolean created = SiteUtil.createSite(drone, siteName, visibility.getDisplayValue());
-        assertTrue(created);
-        sites.add(siteName);
-        siteCounter++;
-    }
-
-    /**
-     * Compact proxy for the logger.trace method.
-     * 
-     * @param string to log
-     */
-    private void trace(String string)
-    {
-        if (logger.isTraceEnabled())
-        {
-            logger.trace(string);
-        }
     }
 }

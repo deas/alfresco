@@ -49,7 +49,9 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.ShareUtil;
+import org.alfresco.po.share.enums.SiteVisibility;
 import org.alfresco.share.search.SearchKeys;
+import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -75,6 +77,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
+
+import static org.testng.Assert.assertTrue;
 
 /**
  * Class includes: Abstract test holds all common methods, These will be used
@@ -1111,4 +1115,94 @@ public abstract class AbstractTests
         }
     }
 
+    /**
+     * Creates a test user, abstracting out the differences.
+     *
+     * @param drone Webdrone instance
+     * @param userName the desired username (should be a valid email address)
+     * @param password User's password, usually DEFAULT_PASSWORD
+     * @throws Exception
+     */
+
+    public static void createTestUserWithoutGroup(WebDrone drone, String userName, String password) throws Exception
+    {
+        createTestUser(drone, userName, password, null);
+    }
+
+    /**
+     * Creates a test user, abstracting out the differences.
+     *
+     * TODO: This should probably have added logic around AsTenantAdmin or not.
+     *
+     * @param drone Webdrone instance
+     * @param userName the desired username (should be a valid email address)
+     * @param password User's password, usually DEFAULT_PASSWORD
+     * @param groupMembership (this should be optional) the name of a group to join (on premise only)
+     * @throws Exception
+     */
+    public static void createTestUser(WebDrone drone, String userName, String password, String groupMembership) throws Exception
+    {
+        String firstName = "firstName-" + System.currentTimeMillis();
+        String lastName = "lastName-" + System.currentTimeMillis();
+        boolean created;
+        if (isAlfrescoVersionCloud(drone))
+        {
+            created = CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, userName,
+                firstName, lastName, password);
+        }
+        else if (groupMembership == null)
+        {
+            created = ShareUser.createEnterpriseUser(drone, ADMIN_USERNAME, userName, firstName, lastName,
+                password);
+        }
+        else
+        {
+            created = ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, userName, firstName, lastName,
+                password, groupMembership);
+        }
+        assertTrue(created);
+    }
+
+    /**
+     * Creates a test site.
+     *
+     * @param siteVisibility the SiteVisibility of the created site
+     */
+    public static void createTestSite(WebDrone drone, OpCloudTestContext testContext, String prefix, SiteVisibility siteVisibility, String createdUsername)
+    {
+        String siteName = testContext.createSiteName(prefix + "site-");
+        boolean created = SiteUtil.createSite(drone, siteName, siteVisibility.getDisplayValue());
+        assertTrue(created);
+        testContext.addSite(createdUsername, siteName);
+    }
+
+    /**
+     * Creates the test sites.
+     *
+     * @param numOfSites the number of sites required
+     */
+    public static void createTestSites(WebDrone drone, OpCloudTestContext testContext, String prefix, SiteVisibility siteVisibility, String createdUsername, int numOfSites) throws InterruptedException
+    {
+        for (int i = 0; i < numOfSites; i++)
+        {
+            createTestSite(drone, testContext, prefix, siteVisibility, createdUsername);
+
+            // TODO: Remove this silly code. (once create site uses API)
+            // sleep needed because the SiteUtil.createSite method doesn't work when called lots in quick succession.
+            Thread.sleep(1000l);
+        }
+    }
+
+    /**
+     * Compact proxy for the logger.trace method.
+     *
+     * @param string to log
+     */
+    public static void traceLog(String string)
+    {
+        if (logger.isTraceEnabled())
+        {
+            logger.trace(string);
+        }
+    }
 }

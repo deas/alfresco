@@ -18,6 +18,7 @@
  */
 
 package org.alfresco.share.util;
+import org.alfresco.share.util.AbstractTests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -189,6 +190,22 @@ public class OpCloudTestContext
         finally
         {
             ShareUser.logout(this.drone);
+        }
+    }
+
+    /**
+     *
+     * Calls the cleanupSites methods for all users.
+     * Note: Assumes user was created with default password.
+     *
+     * @throws Exception
+     */
+    public void cleanupAllSites() throws Exception
+    {
+        List<String> users = new ArrayList<> (getCreatedUsers());
+        for (String username : users)
+        {
+            cleanupSites(username, AbstractTests.DEFAULT_PASSWORD);
         }
     }
 }

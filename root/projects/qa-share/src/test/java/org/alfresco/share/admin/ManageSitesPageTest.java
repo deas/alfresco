@@ -11,7 +11,6 @@ import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.AbstractTests;
-import org.alfresco.share.util.api.CreateUserAPI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.AfterClass;
@@ -56,10 +55,7 @@ public class ManageSitesPageTest extends AbstractTests
         this.testContext = new OpCloudTestContext(this);
         String network = testContext.createNetworkName("acme");
 
-        if(logger.isTraceEnabled())
-        {
-            logger.trace("Starting ManageSitesPageTest setup");
-        }
+        traceLog("Starting ManageSitesPageTest setup");
 
         // Create our test users
         for (int i = 0; i < NUM_OF_USERS; i++)
@@ -69,21 +65,15 @@ public class ManageSitesPageTest extends AbstractTests
             // Create the first user as a site admin, and the others as regular users.
             if (i == 0)
             {
-                createTestUser(username, DEFAULT_PASSWORD, SITE_ADMIN_GROUP);
+                createTestUser(drone, username, DEFAULT_PASSWORD, SITE_ADMIN_GROUP);
 
-                if(logger.isTraceEnabled())
-                {
-                    logger.trace("Created Site Admin User: " + username);
-                }
+                traceLog("Created Site Admin User: " + username);
             }
             else
             {
-                createTestUserWithoutGroup(username, DEFAULT_PASSWORD);
+                createTestUserWithoutGroup(drone, username, DEFAULT_PASSWORD);
 
-                if(logger.isTraceEnabled())
-                {
-                    logger.trace("Created User: " + username);
-                }
+                traceLog("Created User: " + username);
             }
 
             testContext.addUser(username);
@@ -95,23 +85,17 @@ public class ManageSitesPageTest extends AbstractTests
         {
             // Create sites as multiple users & of multiple types in order to confirm list is able to display them
             dashBoardPage = ShareUser.loginAs(drone, username, DEFAULT_PASSWORD);
-            createTestSites(NUM_OF_SITES_PER_TYPE, SiteVisibility.PUBLIC, username);
-            createTestSites(NUM_OF_SITES_PER_TYPE, SiteVisibility.PRIVATE, username);
-            createTestSites(NUM_OF_SITES_PER_TYPE, SiteVisibility.MODERATED, username);
+            createTestSites(drone, testContext, PREFIX, SiteVisibility.PUBLIC, username, NUM_OF_SITES_PER_TYPE);
+            createTestSites(drone, testContext, PREFIX, SiteVisibility.PRIVATE, username, NUM_OF_SITES_PER_TYPE);
+            createTestSites(drone, testContext, PREFIX, SiteVisibility.MODERATED, username, NUM_OF_SITES_PER_TYPE);
             ShareUser.logout(drone);
 
-            if(logger.isTraceEnabled())
-            {
-                logger.trace("Created " + NUM_OF_SITES_PER_TYPE * 3 + " sites for user: " + username);
-            }
+            traceLog("Created " + NUM_OF_SITES_PER_TYPE * 3 + " sites for user: " + username);
         }
 
         dashBoardPage = ShareUser.loginAs(drone, users.get(0), DEFAULT_PASSWORD);
 
-        if(logger.isTraceEnabled())
-        {
-            logger.trace("Created " + NUM_OF_SITES_PER_TYPE * 3 + " sites for user: " + username);
-        }
+        traceLog("Created " + NUM_OF_SITES_PER_TYPE * 3 + " sites for user: " + username);
 
         manageSitesPage = dashBoardPage.getNav().selectManageSitesPage().render();
     }
@@ -126,15 +110,9 @@ public class ManageSitesPageTest extends AbstractTests
     @AfterClass
     public void teardown() throws Exception
     {
-        if(logger.isTraceEnabled())
-        {
-            logger.trace("Starting teardown for ManageSitesPageTest");
-        }
+        traceLog("Starting teardown for ManageSitesPageTest");
 
-        for (String username : users)
-        {
-            testContext.cleanupSites(username, DEFAULT_PASSWORD);
-        }
+        testContext.cleanupAllSites();
     }
 
     /**
@@ -153,11 +131,8 @@ public class ManageSitesPageTest extends AbstractTests
     @Test
     public void ManageSitesPageTests() throws Exception
     {
+        traceLog("Starting ManageSitesPageTests");
 
-        if(logger.isTraceEnabled())
-        {
-            logger.trace("Starting ManageSitesPageTests");
-        }
         manageSitesPage.loadElements();
 
         verifySitesExist();
@@ -195,10 +170,8 @@ public class ManageSitesPageTest extends AbstractTests
      */
     private void verifySitesExist()
     {
-        if(logger.isTraceEnabled())
-        {
-            logger.trace("Checking Sites exist in list");
-        }
+        traceLog("Checking Sites exist in list");
+
         for (int i = 0; i < TOTAL_NUM_OF_SITES;)
         {
             List<String> sites = new ArrayList<> (testContext.getCreatedSitesAsList());
@@ -218,10 +191,8 @@ public class ManageSitesPageTest extends AbstractTests
      */
     private void paginationTest()
     {
-        if(logger.isTraceEnabled())
-        {
-            logger.trace("Testing pagination performs as expected");
-        }
+        traceLog("Testing pagination performs as expected");
+
         // Assumes sites are not being created, modified or deleted by parallel processes.
         DocListPaginator docListPaginator = manageSitesPage.getPaginator();
         docListPaginator.gotoFirstResultsPage();
@@ -256,62 +227,5 @@ public class ManageSitesPageTest extends AbstractTests
             // Check that going back a page means we get the same results as we had before.
             assertEquals(managedSiteRowsOnCurrentPage, managedSiteRowsOnPreviousPage);
         }
-    }
-
-    /**
-     * Creates the test sites.
-     *
-     * @param numOfSites the number of sites required
-     */
-    private void createTestSites(int numOfSites, SiteVisibility siteVisibility, String createdUsername) throws InterruptedException
-    {
-        for (int i = 0; i < numOfSites; i++)
-        {
-            String siteName = testContext.createSiteName(PREFIX + "site-" + i + "-");
-            boolean created = SiteUtil.createSite(drone, siteName, siteVisibility.getDisplayValue());
-            assertTrue(created);
-            testContext.addSite(createdUsername, siteName);
-
-            // TODO: Remove this silly code. (once create site uses API)
-            // sleep needed because the SiteUtil.createSite method doesn't work when called lots in quick succession.
-            Thread.sleep(1000l);
-        }
-    }
-
-    /**
-     * Creates a test user, abstracting out the differences.
-     *
-     * TODO: This should probably be a util method somewhere. With added logic around AsTenantAdmin or not.
-     *
-     * @param userName the desired username (should be a valid email address)
-     * @param password User's password, usually DEFAULT_PASSWORD
-     * @param groupMembership (this should be optional) the name of a group to join (on premise only)
-     * @throws Exception
-     */
-    private void createTestUser(String userName, String password, String groupMembership) throws Exception
-    {
-        String firstName = "firstName-" + System.currentTimeMillis();
-        String lastName = "lastName-" + System.currentTimeMillis();
-        boolean created;
-        if (isAlfrescoVersionCloud(drone))
-        {
-            created = CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, userName,
-                firstName, lastName, password);
-        }
-        else if (groupMembership == null)
-        {
-            created = ShareUser.createEnterpriseUser(drone, ADMIN_USERNAME, userName, firstName, lastName,
-                password);
-        }
-        else
-        {
-            created = ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, userName, firstName, lastName,
-                password, groupMembership);
-        }
-        assertTrue(created);
-    }
-    private void createTestUserWithoutGroup(String userName, String password) throws Exception
-    {
-        createTestUser(userName, password, null);
     }
 }
