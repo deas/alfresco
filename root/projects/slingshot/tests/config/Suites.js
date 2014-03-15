@@ -38,7 +38,9 @@ define({
     * @instance
     * @type [string]
     */
-   baseFunctionalSuites: ['tests/alfresco/accessibility/AccessibilityMenuTest',
+   baseFunctionalSuites: ['tests/alfresco/CodeCoverageBalancer',
+
+                          'tests/alfresco/accessibility/AccessibilityMenuTest',
 
                           'tests/alfresco/core/RenderFilterTest',
 

@@ -35,7 +35,7 @@ module.exports = function (grunt, alf) {
       grunt.task.run('start-node-coverage-server');
       grunt.task.run('intern:local');
       grunt.task.run('merge-reports');
-      // grunt.task.run('clean-reports');
+      grunt.task.run('clean-reports');
       grunt.task.run('copy:uninstrumentedJs');
       grunt.task.run('http:clearDependencyCaches');
    });
