@@ -85,7 +85,7 @@ define(["dojo/_base/declare",
        */
       getSites: function alfresco_services_SiteService__getSites(payload) {
          this.serviceXhr({
-            url: AlfConstants.PROXY_URI + "api/sites?size=10",
+            url: AlfConstants.PROXY_URI + "api/sites",
             method: "GET",
             alfTopic: payload.responseTopic
          });
