@@ -3,7 +3,7 @@
 // has it's own SiteService so we need to scope this one in order to prevent duplicate HTTP requests from
 // occurring. It is not possible to simply omit this SiteService and rely on the one provided by the
 // share-header.get WebScript as race conditions come into play...
-var siteServiceScope = "MANAGE_SITES_SITE_SERVICE";
+var siteServiceScope = "MANAGE_SITES_SITE_SERVICE_";
 
 model.jsonModel = {
    services: [{
@@ -35,7 +35,7 @@ model.jsonModel = {
                      sortAscending: true,
                      sortField: "title",
                      usePagination: true,
-                     dataRequestTopic: "ALF_GET_SITES",
+                     dataRequestTopic: "ALF_GET_SITES_ADMIN",
                      renderFilter: [
                         {
                            property: "groups.GROUP_SITE_ADMINISTRATORS",

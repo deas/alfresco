@@ -57,7 +57,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       loadData: function alfresco_documentlibrary_AlfSitesList__loadData() {
-         this.showLoadingMessage(); // Commented out because of timing issues...
+         this.showLoadingMessage();
 
          // Set a response topic that is scoped to this widget...
          var documentPayload = {
@@ -87,17 +87,20 @@ define(["dojo/_base/declare",
        */
       onDataLoadSuccess: function alfresco_documentlibrary_AlfSitesList__onDataLoadSuccess(payload) {
          this.alfLog("log", "Data Loaded", payload, this);
-         
+
+         var pagination = payload.response.list.pagination;
+
          this._currentData = {
-            items: payload.response
+            // Site admin API returns items nested inside individual entry objects inside an entries array, this just removes that entry object.
+            items: payload.response.list.entries.map(function(entries){ return entries.entry;})
          };
 
-         // Publish the details of the loaded documents. The API isn't currently returning data
-         // beyond the pagination limit...
+         // Publish the details of the loaded documents.
+         // With the pagination items mapped to what the documentList expects
          this.alfPublish(this.documentsLoadedTopic, {
             documents: this._currentData.items,
-            totalDocuments: this._currentData.items.length,
-            startIndex: 0
+            totalDocuments: pagination.totalItems,
+            startIndex: pagination.skipCount
          });
 
          // Re-render the current view with the new data...

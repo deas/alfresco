@@ -56,6 +56,7 @@ define(["dojo/_base/declare",
       constructor: function alfresco_services_SiteService__constructor(args) {
          lang.mixin(this, args);
          this.alfSubscribe("ALF_GET_SITES", lang.hitch(this, "getSites"));
+         this.alfSubscribe("ALF_GET_SITES_ADMIN", lang.hitch(this, "getAdminSites"));
          this.alfSubscribe("ALF_GET_SITE_MEMBERSHIPS", lang.hitch(this, "getSiteMemberships"));
          this.alfSubscribe("ALF_GET_SITE_DETAILS", lang.hitch(this, "getSiteDetails"));
          this.alfSubscribe("ALF_UPDATE_SITE_DETAILS", lang.hitch(this, "updateSite"));
@@ -91,6 +92,22 @@ define(["dojo/_base/declare",
             method: "GET",
             alfTopic: payload.responseTopic
          });
+      },
+
+      /**
+       * Get sites list using the admin API - this returns ALL sites if the user is a member of the SITE_ADMINISTRATORS group.
+       *
+       * @instance
+       * @param {object} payload The details of the request
+       */
+      getAdminSites: function alfresco_services_SiteService__getAdminSites(payload) {
+         // skipCount is the number of entries to skip, not pages so needs some maths:
+         var skipCount = (payload.page - 1) * payload.pageSize;
+         this.serviceXhr({
+            url: AlfConstants.PROXY_URI + "api/admin-sites?skipCount=" + skipCount + "&maxItems="+ payload.pageSize ,
+            method: "GET",
+            alfTopic: payload.responseTopic
+         })
       },
 
       /**
