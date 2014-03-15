@@ -136,7 +136,7 @@ public class ManageSitesPage extends SharePage
 
         return null;
     }
-    
+
     /**
      * Initialises the elements that make up a ManageSitesPage.
      */

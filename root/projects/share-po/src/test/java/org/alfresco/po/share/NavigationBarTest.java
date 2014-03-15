@@ -152,7 +152,7 @@ public class NavigationBarTest extends AbstractTest
             throw new SkipException("This feature is not supported in cloud so skip it");
         }
         AdvanceSearchContentPage searchPage = page.getNav().selectAdvanceSearch().render();
-        Assert.assertEquals("Advanced Search",searchPage.getPageTitle());
+        Assert.assertEquals("Advanced Search", searchPage.getPageTitle());
     }
 
     @Test(dependsOnMethods = "advanceSearch", groups = {"Enterprise-only"}, expectedExceptions = UnsupportedOperationException.class)
@@ -232,7 +232,7 @@ public class NavigationBarTest extends AbstractTest
     @Test(groups = { "Enterprise-only" })
     public void navigateToManageSites() throws Exception
     {
-        ManageSitesPage manageSitesPage = page.getNav().selectManageSites().render();
+        ManageSitesPage manageSitesPage = page.getNav().selectManageSitesPage().render();
         Assert.assertEquals("Manage Sites", manageSitesPage.getPageTitle());
     } 
     

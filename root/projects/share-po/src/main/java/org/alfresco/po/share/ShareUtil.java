@@ -63,4 +63,39 @@ public class ShareUtil
         lp.loginAs(userInfo[0], userInfo[1]);
         return drone.getCurrentPage();
     }
+
+    /**
+     *
+     * Is the User the Repo Admin?
+     *
+     * @return boolean
+     */
+    public static boolean isUserAdmin()
+    {
+        // TODO: Make this work.
+        return true;
+    }
+
+    /**
+     *
+     * Is the User a member of the group
+     *
+     * @return boolean
+     */
+    public static boolean isUserInGroup(String group)
+    {
+        // TODO: Make this work.
+        return true;
+    }
+
+    /**
+     * Check to see the mode Share is in
+     */
+    public static void cloudCheck(AlfrescoVersion alfrescoVersion)
+    {
+        if(alfrescoVersion.isCloud())
+        {
+            throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
+        }
+    }
 }

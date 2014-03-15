@@ -21,7 +21,6 @@ package org.alfresco.po.share;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.SiteFinderPage;
@@ -278,11 +277,8 @@ public class Navigation extends SharePage
      * @return {@link UserSearchPage} Instance of UserSearchPage
      */
     public HtmlPage getUsersPage()
-    {       
-        if(alfrescoVersion.isCloud())
-        {
-            throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
-        }
+    {
+        ShareUtil.cloudCheck(alfrescoVersion);
         //TODO To be implemented by using UI once JIRA: https://issues.alfresco.com/jira/browse/ALF-18909 is resolved 
         String usersPageURL = "/page/console/admin-console/users";
         String currentUrl = drone.getCurrentUrl();
@@ -301,10 +297,7 @@ public class Navigation extends SharePage
      */
     public DashBoardPage selectNetworkDropdown()
     {
-        if (!alfrescoVersion.isCloud())
-        {
-            throw new UnsupportedOperationException("This is an unsupported operation for Enterprise.");
-        }
+        ShareUtil.cloudCheck(alfrescoVersion);
 
         try
         {
@@ -326,10 +319,7 @@ public class Navigation extends SharePage
      */
     public DashBoardPage selectNetwork(final String networkName)
     {
-        if (!alfrescoVersion.isCloud())
-        {
-            throw new UnsupportedOperationException("This is an unsupported operation for Enterprise.");
-        }
+        ShareUtil.cloudCheck(alfrescoVersion);
         if (StringUtils.isEmpty(networkName))
         {
             throw new IllegalArgumentException("Network name is required.");
@@ -434,11 +424,8 @@ public class Navigation extends SharePage
      * @return {@link GroupsPage} Instance of UserSearchPage
      */
     public GroupsPage getGroupsPage()
-    {       
-        if(alfrescoVersion.isCloud())
-        {
-            throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
-        }
+    {
+        ShareUtil.cloudCheck(alfrescoVersion);
         //TODO To be implemented by using UI once JIRA: https://issues.alfresco.com/jira/browse/ALF-18909 is resolved 
         String usersPageURL = "/page/console/admin-console/groups";
         String currentUrl = drone.getCurrentUrl();
@@ -468,11 +455,11 @@ public class Navigation extends SharePage
      * @return the html page
      */
     
-    public ManageSitesPage selectManageSitesSiteAdmin()
+    public HtmlPage selectManageSitesSiteAdmin()
     {        
         String selector = "span[id='HEADER_SITES_CONSOLE_text']>a";        
         drone.find(By.cssSelector(selector)).click();               
-        return new ManageSitesPage(drone);        
+        return FactorySharePage.resolvePage(drone);
     }
 
     /**
@@ -481,12 +468,12 @@ public class Navigation extends SharePage
      * @return the html page
      */
 
-    public ManageSitesPage selectManageSitesRepoAdmin()
+    public HtmlPage selectManageSitesRepoAdmin()
     {
         selectAdminTools().render();
         String selector = "ul.toolLink > li > span > a[href=\"manage-sites\"]";
         drone.find(By.cssSelector(selector)).click();
-        return new ManageSitesPage(drone);
+        return FactorySharePage.resolvePage(drone);
     }
 
     /**
@@ -495,13 +482,15 @@ public class Navigation extends SharePage
      * @return the html page
      */
 
-    public ManageSitesPage selectManageSitesNetworkAdmin()
+    public HtmlPage selectManageSitesNetworkAdmin()
     {
+        ShareUtil.cloudCheck(alfrescoVersion);
+        // TODO: Abstract this to a method on the page object.
         String manageSitesPageURL = "/page/console/cloud-console/manage-sites";
         String currentUrl = drone.getCurrentUrl();
         String url = currentUrl.replaceFirst("^*/page.*", manageSitesPageURL);
         drone.navigateTo(url);
-        return new ManageSitesPage(drone);
+        return FactorySharePage.resolvePage(drone);
     }
 
     /**
@@ -509,7 +498,7 @@ public class Navigation extends SharePage
      *
      * @return the manage sites page
      */
-    public ManageSitesPage selectManageSitesPage()
+    public HtmlPage selectManageSitesPage()
     {
         if (alfrescoVersion.isCloud())
         {
@@ -525,5 +514,4 @@ public class Navigation extends SharePage
         }
         throw new UnsupportedOperationException("The correct method for finding the manage sites page couldn't be determined");
     }
-    
 }
