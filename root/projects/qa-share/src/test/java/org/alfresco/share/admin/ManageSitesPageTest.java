@@ -7,7 +7,11 @@ import org.alfresco.po.share.*;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.admin.ManagedSiteRow;
 import org.alfresco.po.share.enums.SiteVisibility;
-import org.alfresco.po.share.util.SiteUtil;
+import org.alfresco.share.util.OpCloudTestContext;
+import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.SiteUtil;
+import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.api.CreateUserAPI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.AfterClass;
@@ -26,19 +30,19 @@ import static org.testng.Assert.*;
  * @author David Webster
  */
 
-public class ManageSitesPageTest extends AbstractTest
+public class ManageSitesPageTest extends AbstractTests
 {
     private static Log logger = LogFactory.getLog(ManageSitesPageTest.class);
-    private static final int NUM_OF_SITES_PER_TYPE = 2; // TODO: this was reduced from 25 due to speed. Increase again once API Create Site call is functional.
+    private static final int NUM_OF_SITES_PER_TYPE = 1; // TODO: this was reduced from 25 due to speed. Increase again once API Create Site call is functional.
     private static final int NUM_OF_USERS = 2;
     private static final int TOTAL_NUM_OF_SITES = NUM_OF_SITES_PER_TYPE * 3 * NUM_OF_USERS;
     private static final String PREFIX = "aaaa-tc497-";
-    private static final String NEW_USER_PASSWORD = "password"; // Hard coded in createEnterpriseUser method.
+    private static final String SITE_ADMIN_GROUP = "SITE_ADMINISTRATORS";
     private DashBoardPage dashBoardPage;
     private ManageSitesPage manageSitesPage;
-    private DocListPaginator docListPaginator;
-    private List<String> sites;
+    private OpCloudTestContext testContext;
     private List<String> users;
+
 
     /**
      * Setup.
@@ -48,28 +52,24 @@ public class ManageSitesPageTest extends AbstractTest
     @BeforeClass
     public void setup() throws Exception
     {
+        super.setup();
+        this.testContext = new OpCloudTestContext(this);
+        String network = testContext.createNetworkName("acme");
+
         if(logger.isTraceEnabled())
         {
             logger.trace("Starting ManageSitesPageTest setup");
         }
-        // Public, Private and Moderated sites are created for every user
-        sites = new ArrayList<>(TOTAL_NUM_OF_SITES);
-        users = new ArrayList<>(NUM_OF_USERS);
-
-        dashBoardPage = loginAs(username, password);
-
-        UserSearchPage userPage = dashBoardPage.getNav().getUsersPage().render();
-        NewUserPage newPage = userPage.selectNewUser().render();
 
         // Create our test users
         for (int i = 0; i < NUM_OF_USERS; i++)
         {
-            String username = PREFIX + "user-" + i + "-" + System.currentTimeMillis();
+            String username = testContext.createUserName("johnDoe-" + i, network);
 
             // Create the first user as a site admin, and the others as regular users.
             if (i == 0)
             {
-                newPage.createEnterpriseUserWithGroup(username, username, username, "tc497-" + System.currentTimeMillis() + "@example.com", NEW_USER_PASSWORD, "SITE_ADMINISTRATORS");
+                createTestUser(username, DEFAULT_PASSWORD, SITE_ADMIN_GROUP);
 
                 if(logger.isTraceEnabled())
                 {
@@ -78,8 +78,7 @@ public class ManageSitesPageTest extends AbstractTest
             }
             else
             {
-                newPage = userPage.selectNewUser().render();
-                newPage.createEnterpriseUser(username, username, username, "tc497-" + System.currentTimeMillis() + "@example.com", NEW_USER_PASSWORD);
+                createTestUserWithoutGroup(username, DEFAULT_PASSWORD);
 
                 if(logger.isTraceEnabled())
                 {
@@ -87,19 +86,19 @@ public class ManageSitesPageTest extends AbstractTest
                 }
             }
 
-            users.add(username);
+            testContext.addUser(username);
         }
 
-        logout(drone);
+        users = new ArrayList<> (testContext.getCreatedUsers());
 
         for (String username : users)
         {
             // Create sites as multiple users & of multiple types in order to confirm list is able to display them
-            dashBoardPage = loginAs(username, NEW_USER_PASSWORD);
-            createTestSites(NUM_OF_SITES_PER_TYPE, SiteVisibility.PUBLIC);
-            createTestSites(NUM_OF_SITES_PER_TYPE, SiteVisibility.PRIVATE);
-            createTestSites(NUM_OF_SITES_PER_TYPE, SiteVisibility.MODERATED);
-            logout(drone);
+            dashBoardPage = ShareUser.loginAs(drone, username, DEFAULT_PASSWORD);
+            createTestSites(NUM_OF_SITES_PER_TYPE, SiteVisibility.PUBLIC, username);
+            createTestSites(NUM_OF_SITES_PER_TYPE, SiteVisibility.PRIVATE, username);
+            createTestSites(NUM_OF_SITES_PER_TYPE, SiteVisibility.MODERATED, username);
+            ShareUser.logout(drone);
 
             if(logger.isTraceEnabled())
             {
@@ -107,8 +106,7 @@ public class ManageSitesPageTest extends AbstractTest
             }
         }
 
-        dashBoardPage = loginAs(username, password);
-
+        dashBoardPage = ShareUser.loginAs(drone, users.get(0), DEFAULT_PASSWORD);
 
         if(logger.isTraceEnabled())
         {
@@ -132,13 +130,10 @@ public class ManageSitesPageTest extends AbstractTest
         {
             logger.trace("Starting teardown for ManageSitesPageTest");
         }
-        for (String siteName : sites)
-        {
-            SiteUtil.deleteSite(drone, siteName);
-        }
+
         for (String username : users)
         {
-            ShareUtil.deleteUser(username);
+            testContext.cleanupSites(username, DEFAULT_PASSWORD);
         }
     }
 
@@ -173,9 +168,10 @@ public class ManageSitesPageTest extends AbstractTest
         {
 
             // * Log Out
-            logout(drone);
-            // * Log in as User 1
-            dashBoardPage = loginAs(users.get(0), NEW_USER_PASSWORD);
+            ShareUser.logout(drone);
+
+            // * Log in as Repo Admin
+            dashBoardPage = ShareUser.loginAs(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
             // * Navigate to Manage Sites page.
             manageSitesPage = dashBoardPage.getNav().selectManageSitesPage().render();
@@ -184,10 +180,10 @@ public class ManageSitesPageTest extends AbstractTest
             verifySitesExist();
 
             // * log out
-            logout(drone);
+            ShareUser.logout(drone);
 
             // * log in as user 2
-            dashBoardPage = loginAs(users.get(1), NEW_USER_PASSWORD);
+            dashBoardPage = ShareUser.loginAs(drone, users.get(1), DEFAULT_PASSWORD);
 
             // * verify manage sites link does not appear (TC-497-04)
             assertFalse(dashBoardPage.getNav().hasSelectManageSitesSiteAdminLink());
@@ -205,6 +201,7 @@ public class ManageSitesPageTest extends AbstractTest
         }
         for (int i = 0; i < TOTAL_NUM_OF_SITES;)
         {
+            List<String> sites = new ArrayList<> (testContext.getCreatedSitesAsList());
             String testSiteName = sites.get(i);
             ManagedSiteRow result = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
             assertNotNull(result);
@@ -226,7 +223,7 @@ public class ManageSitesPageTest extends AbstractTest
             logger.trace("Testing pagination performs as expected");
         }
         // Assumes sites are not being created, modified or deleted by parallel processes.
-        docListPaginator = manageSitesPage.getPaginator();
+        DocListPaginator docListPaginator = manageSitesPage.getPaginator();
         docListPaginator.gotoFirstResultsPage();
         // Check there isn't a previous page.
         assertFalse(docListPaginator.hasPrevPage());
@@ -236,31 +233,29 @@ public class ManageSitesPageTest extends AbstractTest
         // assertTrue(docListPaginator.hasNextPage());
         // Check that clicking on the pagination actually does something.
 
-        List<ManagedSiteRow> managedSiteRowsOnCurrentPage = manageSitesPage.getManagedSiteRows();
-        List<ManagedSiteRow> managedSiteRowsOnPreviousPage = new ArrayList<>();
 
-        while (true)
+        if (docListPaginator.hasNextPage())
         {
-            if (docListPaginator.hasNextPage())
-            {
+            List<ManagedSiteRow> managedSiteRowsOnCurrentPage = manageSitesPage.getManagedSiteRows();
+            List<ManagedSiteRow> managedSiteRowsOnPreviousPage;
+
+
+            do {
                 managedSiteRowsOnPreviousPage = managedSiteRowsOnCurrentPage;
                 docListPaginator.clickNextButton();
                 manageSitesPage.loadElements();
                 managedSiteRowsOnCurrentPage = manageSitesPage.getManagedSiteRows();
                 assertNotEquals(managedSiteRowsOnCurrentPage, managedSiteRowsOnPreviousPage);
             }
-            else
-            {
-                break;
-            }
-        }
+            while (docListPaginator.hasNextPage());
 
-        docListPaginator.clickPrevButton();
-        manageSitesPage.loadElements();
-        managedSiteRowsOnCurrentPage = manageSitesPage.getManagedSiteRows();
-        // We've not modified the previousPage results, so these contain the results for the penultimate page.
-        // Check that going back a page means we get the same results as we had before.
-        assertEquals(managedSiteRowsOnCurrentPage, managedSiteRowsOnPreviousPage);
+            docListPaginator.clickPrevButton();
+            manageSitesPage.loadElements();
+            managedSiteRowsOnCurrentPage = manageSitesPage.getManagedSiteRows();
+            // We've not modified the previousPage results, so these contain the results for the penultimate page.
+            // Check that going back a page means we get the same results as we had before.
+            assertEquals(managedSiteRowsOnCurrentPage, managedSiteRowsOnPreviousPage);
+        }
     }
 
     /**
@@ -268,14 +263,55 @@ public class ManageSitesPageTest extends AbstractTest
      *
      * @param numOfSites the number of sites required
      */
-    private void createTestSites(int numOfSites, SiteVisibility siteVisibility)
+    private void createTestSites(int numOfSites, SiteVisibility siteVisibility, String createdUsername) throws InterruptedException
     {
         for (int i = 0; i < numOfSites; i++)
         {
-            String siteName = PREFIX + "site-" + i + "-" +  System.currentTimeMillis();
+            String siteName = testContext.createSiteName(PREFIX + "site-" + i + "-");
             boolean created = SiteUtil.createSite(drone, siteName, siteVisibility.getDisplayValue());
             assertTrue(created);
-            sites.add(siteName);
+            testContext.addSite(createdUsername, siteName);
+
+            // TODO: Remove this silly code. (once create site uses API)
+            // sleep needed because the SiteUtil.createSite method doesn't work when called lots in quick succession.
+            Thread.sleep(1000l);
         }
+    }
+
+    /**
+     * Creates a test user, abstracting out the differences.
+     *
+     * TODO: This should probably be a util method somewhere. With added logic around AsTenantAdmin or not.
+     *
+     * @param userName the desired username (should be a valid email address)
+     * @param password User's password, usually DEFAULT_PASSWORD
+     * @param groupMembership (this should be optional) the name of a group to join (on premise only)
+     * @throws Exception
+     */
+    private void createTestUser(String userName, String password, String groupMembership) throws Exception
+    {
+        String firstName = "firstName-" + System.currentTimeMillis();
+        String lastName = "lastName-" + System.currentTimeMillis();
+        boolean created;
+        if (isAlfrescoVersionCloud(drone))
+        {
+            created = CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, userName,
+                firstName, lastName, password);
+        }
+        else if (groupMembership == null)
+        {
+            created = ShareUser.createEnterpriseUser(drone, ADMIN_USERNAME, userName, firstName, lastName,
+                password);
+        }
+        else
+        {
+            created = ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, userName, firstName, lastName,
+                password, groupMembership);
+        }
+        assertTrue(created);
+    }
+    private void createTestUserWithoutGroup(String userName, String password) throws Exception
+    {
+        createTestUser(userName, password, null);
     }
 }
