@@ -1,7 +1,14 @@
 th.alfresco-documentlibrary-views-layouts-HeaderCell {
-   background-color: #ccc;
-   border: 1px solid #000;
-   padding: 4px;
+   background-color: #f2f2f2;
+   border-top: 1px solid #e3e3e3;
+   border-bottom: 1px solid #e3e3e3;
+   border-right: 1px solid #e3e3e3;
+   padding: 10px;
+   vertical-align: middle;
+}
+
+th.alfresco-documentlibrary-views-layouts-HeaderCell.last {
+   border-right: none;
 }
 
 .alfresco-documentlibrary-views-layouts-HeaderCell img {

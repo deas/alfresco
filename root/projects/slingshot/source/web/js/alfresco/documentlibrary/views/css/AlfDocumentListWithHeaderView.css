@@ -1,3 +1,30 @@
-.alfresco-documentlibrary-views-layouts-AlfDocumentListWithHeaderView table {
+.alfresco-documentlibrary-AlfDocumentList.unbordered {
+	border: none;
+	margin: 0;
+}
+
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView.alfresco-documentlibrary-views-layouts-AlfDocumentListWithHeaderView table {
    width: 100%;
+   border-collapse: collapse;
+}
+
+.alfresco-documentlibrary-views-layouts-AlfDocumentListWithHeaderView td {
+   border-top: 1px solid #e3e3e3;
+   border-bottom: 1px solid #e3e3e3;
+   border-right: 1px solid #e3e3e3;
+   padding: 10px;
+   margin: 0;
+   vertical-align: top;
+}
+
+.alfresco-documentlibrary-views-layouts-AlfDocumentListWithHeaderView td.last {
+   border-right: none;
+}
+
+.alfresco-documentlibrary-views-layouts-AlfDocumentListWithHeaderView table tr:nth-child(odd) {
+   background-color: #fff;
+}
+
+.alfresco-documentlibrary-views-layouts-AlfDocumentListWithHeaderView table tr:nth-child(even) {
+   background-color: #f7f7f7;
 }

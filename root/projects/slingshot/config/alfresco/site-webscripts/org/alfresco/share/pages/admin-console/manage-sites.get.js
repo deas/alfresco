@@ -39,6 +39,7 @@ model.jsonModel = {
                      sortField: "title",
                      usePagination: true,
                      dataRequestTopic: "ALF_GET_SITES",
+                     class: "unbordered",
                      widgets: [
                         {
                            name: "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
@@ -48,21 +49,36 @@ model.jsonModel = {
                                  {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                     config: {
-                                       label: "Name",
+                                       id: "titleTableHeader",
+                                       label: "Site Name",
                                        sortable: true,
                                        sortValue: "title",
-                                       toolTipMsg: "sort by title"
+                                       toolTipMsg: "Sort by site name"
                                     }
                                  },
                                  {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                     config: {
-                                       label: "Description",
+                                       id: "descriptionTableHeader",
+                                       label: "Site Description",
                                        sortable: true,
                                        sortValue: "description",
-                                       toolTipMsg: "sort by description"
+                                       toolTipMsg: "Sort by site description"
                                     }
-                                 }
+                                 },
+                                 {
+                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                     config: {
+                                        label: "Visibility"
+                                     }
+                                  },
+                                 {
+                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                     config: {
+                                        label: "Actions",
+                                        class: "last"
+                                     }
+                                  }
                               ],
                               widgets: [
                                  {
@@ -95,6 +111,18 @@ model.jsonModel = {
                                                       }
                                                    }
                                                 ]
+                                             }
+                                          },
+                                          {
+                                             name: "alfresco/documentlibrary/views/layouts/Cell",
+                                             config: {
+                                                
+                                             }
+                                          },
+                                          {
+                                             name: "alfresco/documentlibrary/views/layouts/Cell",
+                                             config: {
+                                                class: "last"
                                              }
                                           }
                                        ]

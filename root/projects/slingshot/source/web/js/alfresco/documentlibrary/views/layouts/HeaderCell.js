@@ -36,7 +36,7 @@ define(["dojo/_base/declare",
         function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domClass, Tooltip) {
 
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
-      
+
       /**
        * An array of the CSS files to use with this widget.
        * 
@@ -45,7 +45,7 @@ define(["dojo/_base/declare",
        * @default [{cssFile:"./css/Cell.css"}]
        */
       cssRequirements: [{cssFile:"./css/HeaderCell.css"}],
-      
+
       /**
        * The HTML template to use for the widget.
        * 
@@ -53,7 +53,7 @@ define(["dojo/_base/declare",
        * @type {String}
        */
       templateString: template,
-      
+
       /**
        * Indicates whether or not this header can actually be used to trigger sort requests.
        * 
@@ -164,7 +164,7 @@ define(["dojo/_base/declare",
                this.sortIcon("desc");
                this.sortedAscending = false;
             }
-            
+
             // Otherwise we want sort by ascending
             else
             {
@@ -219,7 +219,7 @@ define(["dojo/_base/declare",
                this.sortedAscending = (direction == "ascending");
                if (this.usedForSort == true)
                {
-            	  this.sortIcon(this.sortedAscending == true ? "asc" : "desc");
+                  this.sortIcon(this.sortedAscending == true ? "asc" : "desc");
                }
             }
          }
@@ -232,17 +232,17 @@ define(["dojo/_base/declare",
        * @param {string} dir - asc, desc or nil
        */
       sortIcon: function alfresco_documentlibrary_views_layouts_HeaderCell__sortIcon(dir) {
-    	 var hideClass = "hidden",
-    	     asn = this.ascendingSortNode,
-    	     dsn = this.descendingSortNode;
+         var hideClass = "hidden",
+             asn = this.ascendingSortNode,
+             dsn = this.descendingSortNode;
 
-    	 switch(dir)
+         switch(dir)
          {
             case "asc":
                domClass.remove(asn, hideClass);
                domClass.add(dsn, hideClass);
             break;
-            
+
             case "desc":
                domClass.add(asn, hideClass);
                domClass.remove(dsn, hideClass);
@@ -261,13 +261,13 @@ define(["dojo/_base/declare",
        * @instance
        */
       addToolTipMsg: function alfresco_documentlibrary_views_layouts_HeaderCell__addToolTipMsg() {
-    	  Tooltip.defaultPosition=['above', 'below'];
-          var tip = new Tooltip({
-        	 label: this.message(this.toolTipMsg),
-             showDelay: 250,
-             connectId: [this.id]
-          });
-          this.alfLog("log", "Created HeaderCell tooltip with label '" + tip.label + "' for item '" + this.id + "'", this);
+         Tooltip.defaultPosition=['above-centered', 'below-centered'];
+         var tip = new Tooltip({
+            connectId: [this.id],
+            label: this.message(this.toolTipMsg),
+            showDelay: 250
+         });
+         this.alfLog("log", "Created HeaderCell tooltip with label '" + tip.label + "' for item '" + this.id + "'", this);
       }
 
    });
