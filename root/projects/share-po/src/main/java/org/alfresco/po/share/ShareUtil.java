@@ -74,30 +74,6 @@ public class ShareUtil
     }
 
     /**
-     *
-     * Is the User the Repo Admin?
-     *
-     * @return boolean
-     */
-    public static boolean isUserAdmin()
-    {
-        // TODO: Make this work.
-        return true;
-    }
-
-    /**
-     *
-     * Is the User a member of the group
-     *
-     * @return boolean
-     */
-    public static boolean isUserInGroup(String group)
-    {
-        // TODO: Make this work.
-        return true;
-    }
-
-    /**
      * A helper method to check the current running Alfresco version against the
      * required version.
      * 

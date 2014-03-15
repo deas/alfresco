@@ -32,6 +32,7 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,6 +54,8 @@ public class Navigation extends SharePage
     private static final String DEFAULT_NETWORK_MENU_BUTTON = "default.network.dropdown";
     private static final String NETWORK_NAMES = "network.names";
     private final String userNameDropDown ;
+    public static final String REPO_ADMIN_MANAGE_SITE_LINK_SELECTOR = "div#HEADER_ADMIN_CONSOLE";
+    public static final String SITE_ADMIN_MANAGE_SITE_LINK_SELECTOR = "span[id='HEADER_SITES_CONSOLE_text']>a";
 
     /**
      * Constructor
@@ -448,8 +451,7 @@ public class Navigation extends SharePage
      */
     public HtmlPage selectAdminTools()
     {
-        String selector = "div#HEADER_ADMIN_CONSOLE";
-        drone.find(By.cssSelector(selector)).click();
+        drone.find(By.cssSelector(REPO_ADMIN_MANAGE_SITE_LINK_SELECTOR)).click();
         return FactorySharePage.resolvePage(drone);
     }
     
@@ -460,10 +462,29 @@ public class Navigation extends SharePage
      */
     
     public HtmlPage selectManageSitesSiteAdmin()
-    {        
-        String selector = "span[id='HEADER_SITES_CONSOLE_text']>a";        
-        drone.find(By.cssSelector(selector)).click();               
+    {
+        drone.find(By.cssSelector(SITE_ADMIN_MANAGE_SITE_LINK_SELECTOR)).click();
         return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Does the current page have a manage-sites link in the header?
+     *
+     * @return boolean
+     */
+    public boolean hasSelectManageSitesSiteAdminLink()
+    {
+        try
+        {
+            return drone.find(By.cssSelector(SITE_ADMIN_MANAGE_SITE_LINK_SELECTOR)).isDisplayed();
+        } catch (NoSuchElementException e)
+        {
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Site Admin's Manage Site link not present: " + e.getMessage());
+            }
+        }
+        return false;
     }
 
     /**
@@ -481,6 +502,26 @@ public class Navigation extends SharePage
     }
 
     /**
+     * Does the current page have an Admin Tools link in the header?
+     *
+     * @return boolean
+     */
+    private boolean hasSelectManageSitesRepoAdmin()
+    {
+        try
+        {
+            return drone.find(By.cssSelector(REPO_ADMIN_MANAGE_SITE_LINK_SELECTOR)).isDisplayed();
+        } catch (NoSuchElementException e)
+        {
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Repo Admin's Manage Site link not present: " + e.getMessage());
+            }
+        }
+        return false;
+    }
+
+    /**
      * Select manage sites link as Network Admin.
      *
      * @return the html page
@@ -489,7 +530,7 @@ public class Navigation extends SharePage
     public HtmlPage selectManageSitesNetworkAdmin()
     {
         ShareUtil.validateAlfrescoVersion(alfrescoVersion, RequiredAlfrescoVersion.CLOUD_ONLY);
-        // TODO: Abstract this to a method on the page object.
+        // Navigate direct to URL as link isn't visible on page.
         String manageSitesPageURL = "/page/console/cloud-console/manage-sites";
         String currentUrl = drone.getCurrentUrl();
         String url = currentUrl.replaceFirst("^*/page.*", manageSitesPageURL);
@@ -508,17 +549,23 @@ public class Navigation extends SharePage
         {
             logger.trace("Finding the manage sites page.");
         }
-        if (alfrescoVersion.isCloud())
+        try
         {
-            return selectManageSitesNetworkAdmin();
-        }
-        else if (ShareUtil.isUserAdmin())
+            if (alfrescoVersion.isCloud())
+            {
+                return selectManageSitesNetworkAdmin();
+            }
+            else if (hasSelectManageSitesRepoAdmin())
+            {
+                return selectManageSitesRepoAdmin();
+            }
+            else if (hasSelectManageSitesSiteAdminLink())
+            {
+                return selectManageSitesSiteAdmin();
+            }
+        } catch (NoSuchElementException e)
         {
-            return selectManageSitesRepoAdmin();
-        }
-        else if (ShareUtil.isUserInGroup("SITE_ADMINISTRATORS"))
-        {
-            return selectManageSitesSiteAdmin();
+            throw new PageOperationException("Unable to select manage sites link", e);
         }
         throw new UnsupportedOperationException("The correct method for finding the manage sites page couldn't be determined");
     }
