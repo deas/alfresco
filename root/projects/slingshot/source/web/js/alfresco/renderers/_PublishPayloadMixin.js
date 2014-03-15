@@ -18,7 +18,32 @@
  */
 
 /**
- * @module alfresco/renderers/_PublishPayload
+ * The _PublishPayloadMixin provides functionality that makes it possible to define the payload that will be 
+ * constructed on a topic publish from the currentItem properties or payload. The model configuration defines 
+ * the name of variables in the new payload and the name and location of where those variables can be found 
+ * in the inbound request.
+ * 
+ * In the following example one variable called shortName is defined as being sourced from the shortName 
+ * property of the currentItem. A second variable called visibility is defined as being the value property 
+ * found within the payload.
+ * 
+ * Example model configuration:
+ * 
+ * publishTopic: "ALF_DO_SOMETHING",
+ * publishPayload: {
+ *    shortName: {
+ *       alfType: "item",
+ *       alfProperty: "shortName"
+ *    },
+ *    visibility: {
+ *       alfType: "payload",
+ *       alfProperty: "value"
+ *    }
+ * }
+ * 
+ * Widgets mixing in the _PublishPayloadMixin will support the model configuration shown.
+ * 
+ * @module alfresco/renderers/_PublishPayloadMixin
  * @author Richard Smith
  */
 define(["dojo/_base/declare",
@@ -47,7 +72,7 @@ define(["dojo/_base/declare",
        * @param {object} defReturn
        * @returns {object} The payload to be published
        */
-      generatePayload: function alfresco_renderers__PublishPayload__generatePayload(configuration, item, payload, defReturn) {
+      generatePayload: function alfresco_renderers__PublishPayloadMixin__generatePayload(configuration, item, payload, defReturn) {
 
          var publishPayload = (defReturn) ? defReturn : null;
 

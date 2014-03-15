@@ -33,10 +33,10 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "service/constants/Default",
         "alfresco/core/ObjectTypeUtils",
-        "alfresco/renderers/_PublishPayload"], 
-        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array, lang, AlfConstants, ObjectTypeUtils, _PublishPayload) {
+        "alfresco/renderers/_PublishPayloadMixin"], 
+        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array, lang, AlfConstants, ObjectTypeUtils, _PublishPayloadMixin) {
 
-   return declare([AlfMenuBar, _AlfDocumentListTopicMixin, _PublishPayload], {
+   return declare([AlfMenuBar, _AlfDocumentListTopicMixin, _PublishPayloadMixin], {
       
       /**
        * Overrides the default to create a popup containing a group containing all the actions

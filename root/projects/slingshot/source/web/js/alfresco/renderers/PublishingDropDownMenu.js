@@ -35,10 +35,10 @@ define(["dojo/_base/declare",
         "alfresco/forms/controls/DojoSelect",
         "dojo/_base/lang",
         "dojo/dom-class",
-        "alfresco/renderers/_PublishPayload"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, ObjectTypeUtils, DojoSelect, lang, domClass, _PublishPayload) {
+        "alfresco/renderers/_PublishPayloadMixin"], 
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, ObjectTypeUtils, DojoSelect, lang, domClass, _PublishPayloadMixin) {
 
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, _PublishPayload], {
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, _PublishPayloadMixin], {
       
       /**
        * An array of the CSS files to use with this widget.
