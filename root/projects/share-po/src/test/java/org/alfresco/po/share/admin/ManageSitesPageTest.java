@@ -71,9 +71,9 @@ public class ManageSitesPageTest extends AbstractTest
     {
         // TODO: Bootstrap site data
         // TODO: Find a site we have actually bootstrapped
-//        String testSiteName = "WAT1";
-//        ManagedSiteRow wat1 = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
-//        Assert.assertNotNull(wat1);
+//        String testSiteName = "WAT49";
+//        ManagedSiteRow row = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
+//        Assert.assertNotNull(row);
     }
 
     /**

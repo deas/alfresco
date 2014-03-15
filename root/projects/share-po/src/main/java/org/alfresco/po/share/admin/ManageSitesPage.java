@@ -20,7 +20,8 @@ public class ManageSitesPage extends SharePage
 {
 
     /** Constants */
-    private static final By SITE_ROWS = By.cssSelector("div.alfresco-documentlibrary-AlfDocumentList table tbody tr.alfresco-documentlibrary-views-layouts-Row");
+    private static final By SITE_ROWS = By
+            .cssSelector("div.alfresco-documentlibrary-AlfDocumentList table tbody tr.alfresco-documentlibrary-views-layouts-Row");
     private static final By SITE_ROW_NAME = By.cssSelector("td.alfresco-documentlibrary-views-layouts-Cell.siteName");
     private static final By SITE_ROW_DESCRIPTION = By.cssSelector("td.alfresco-documentlibrary-views-layouts-Cell.siteDescription");
     private static final By SITE_ROW_VISIBILITY = By.cssSelector("td.alfresco-documentlibrary-views-layouts-Cell.visibility");
@@ -93,8 +94,8 @@ public class ManageSitesPage extends SharePage
 
     /**
      * Find a managed site row by name from paginated results.
-     *
-     * @param siteName the site name
+     * 
+     * @param siteName the required site name
      * @return the managed site row
      */
     public ManagedSiteRow findManagedSiteRowByNameFromPaginatedResults(String siteName)
@@ -102,19 +103,26 @@ public class ManageSitesPage extends SharePage
         // Navigate to the first page of results
         this.docListPaginator.gotoFirstResultsPage();
 
-        //TODO: Pagination needs implementing here
+        // Initialise a simple row instance for comparison
         ManagedSiteRow testManagedSiteRow = new ManagedSiteRow(siteName);
-        for (ManagedSiteRow row : this.getManagedSiteRows())
+
+        // Iterate through paginations until the last pagination or row found
+        while (this.docListPaginator.hasNextPage())
         {
-            if (row.equals(testManagedSiteRow))
+            for (ManagedSiteRow row : this.getManagedSiteRows())
             {
-                return row;
+                if (row.equals(testManagedSiteRow))
+                {
+                    return row;
+                }
             }
+            this.docListPaginator.clickNextButton();
+            this.render();
         }
 
         return null;
     }
-    
+
     /**
      * Initialises the elements that make up a ManageSitesPage.
      */

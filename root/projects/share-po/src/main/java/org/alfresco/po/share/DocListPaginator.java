@@ -119,6 +119,16 @@ public class DocListPaginator
     }
 
     /**
+     * Checks if there is a prev page available.
+     *
+     * @return true, if successful
+     */
+    public boolean hasPrevPage()
+    {
+        return TestUtils.usableElement(prevPageButton);
+    }
+
+    /**
      * Gets the previous page button.
      *
      * @return the previous page button
@@ -160,6 +170,16 @@ public class DocListPaginator
     public Integer getPageNumber()
     {
         return pageNumber;
+    }
+
+    /**
+     * Checks if there is a next page available.
+     *
+     * @return true, if successful
+     */
+    public boolean hasNextPage()
+    {
+        return TestUtils.usableElement(nextPageButton);
     }
 
     /**
