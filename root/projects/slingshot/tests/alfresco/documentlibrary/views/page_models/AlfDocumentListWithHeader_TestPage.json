@@ -14,6 +14,7 @@
       {
          "name": "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
          "config": {
+            "id": "LIST_WITH_HEADER",
             "currentData": {
                "items": [
                   {"col1": "A", "col2":"B","col3":"C"},
@@ -26,6 +27,7 @@
                {
                   "name": "alfresco/documentlibrary/views/layouts/HeaderCell",
                   "config": {
+                     "id": "COLUMN1_HEADER",
                      "label": "Column 1",
                      "sortable": true,
                      "sortValue": "col1",
@@ -35,6 +37,7 @@
                {
                   "name": "alfresco/documentlibrary/views/layouts/HeaderCell",
                   "config": {
+                     "id": "COLUMN2_HEADER",
                      "label": "Column 2",
                      "sortable": true,
                      "sortValue": "col2",
@@ -44,6 +47,7 @@
                {
                   "name": "alfresco/documentlibrary/views/layouts/HeaderCell",
                   "config": {
+                     "id": "COLUMN3_HEADER",
                      "label": "Column 3",
                      "sortable": false
                   }

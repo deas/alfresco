@@ -18,30 +18,190 @@
  */
 
 /**
+ * The purpose of this test is to ensure that keyboard accessibility is possible between the header and the 
+ * main table. It should be possible to use the tab/shift-tab keys to navigate along the headers (and the enter/space key
+ * to make requests for sorting) and then the cursor keys to navigate around the table itself.
  * 
  * @author Dave Draper
  */
 define(["intern!object",
         "intern/chai!assert",
+        "intern/chai!expect",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!wd/lib/special-keys"], 
-        function (registerSuite, assert, require, TestCommon, specialKeys) {
+        function (registerSuite, assert, expect, require, TestCommon, specialKeys) {
 
    registerSuite({
       name: 'Document Picker Test',
       'alfresco/documentlibrary/views/AlfDocumentListWithHeaderView': function () {
 
+         var alfPause = 150;
          var browser = this.remote;
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/AlfDocumentListWithHeader_TestPage.json")
             .end()
 
+            // Sort on the first column header...
+            .keys(specialKeys.Tab)
+            .sleep(alfPause)
+            .active()
+            .text()
+            .then(function(resultText) {
+               console.log("Test #1a");
+               expect(resultText).to.equal("Column 1", "The text is incorrect");
+            })
+            .keys(specialKeys["Space"])
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
+            .then(function(result) {
+               console.log("Test #1b");
+               assert(result == true, "Could not request to sort column 1 in PubSubLog");
+            })
+            .end()
+
+            // Sort on the second column header...
+            .keys(specialKeys.Tab)
+            .sleep(alfPause)
+            .keys(specialKeys["Return"])
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
+            .then(function(result) {
+               console.log("Test #1c");
+               assert(result == true, "Could not request to sort column 1 in PubSubLog");
+            })
+            .end()
+
+            // Check that sort request doesn't occur for third column...
+            .keys(specialKeys.Tab)
+            .sleep(alfPause)
+            .keys(specialKeys["Return"])
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
+            .then(function(result) {
+               console.log("Test #1d");
+               assert(result == true, "Could not request to sort column 1 in PubSubLog");
+            })
+            .end()
+
+            // Go back to the previous header cell and sort in the opposite direction...
+            .keys([specialKeys.Shift,specialKeys.Tab])
+            .sleep(alfPause)
+
+            // Check it is currently sorted ascendinging...
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "direction", "ascending"))
+            .then(function(result) {
+               console.log("Test #1e");
+               assert(result == true, "The initial sort direction is not ascending");
+            })
+            // Now change the sort direction...
+            .keys(specialKeys["Return"])
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "direction", "descending"))
+            .then(function(result) {
+               console.log("Test #1f");
+               assert(result == true, "The second sort direction is not descending");
+            })
+
+            // Now go to the table itself...
+            .keys(specialKeys.Shift) // Need to remove shift...
+            .sleep(alfPause)
+            .keys(specialKeys.Tab)
+            .sleep(alfPause)
+            .keys(specialKeys.Tab)
+            .sleep(alfPause)
+
+            // Should now be on the first row, tab to focus on the first cell...
+            .keys(specialKeys.Tab)
+            .sleep(alfPause)
+
+            .active()
+            .text()
+            .then(function(resultText) {
+               console.log("Test #1g");
+               expect(resultText).to.equal("A", "The text is incorrect");
+            })
+
+            // Use the cursor keys to go to the next line...
+            .keys(specialKeys['Down arrow'])
+            .sleep(alfPause)
+
+            // Select the first element...
+            .keys(specialKeys.Tab)
+            .sleep(alfPause)
+            .active()
+            .text()
+            .then(function(resultText) {
+               console.log("Test #1h");
+               expect(resultText).to.equal("D", "The text is incorrect");
+            })
+
+            // Use the cursor keys to wrap back to the first row...
+            .keys(specialKeys['Down arrow'])
+            .sleep(alfPause)
+            .keys(specialKeys['Down arrow'])
+            .sleep(alfPause)
+            .keys(specialKeys['Down arrow'])
+            .sleep(alfPause)
+
+            // Select the first element...
+            .keys(specialKeys.Tab)
+            .sleep(alfPause)
+            .active()
+            .text()
+            .then(function(resultText) {
+               console.log("Test #1i");
+               expect(resultText).to.equal("A", "The text is incorrect");
+            })
+
+            // Use the up cursor to wrap back to the last element...
+            .keys(specialKeys['Up arrow'])
+            .sleep(alfPause)
+
+            // Select the first element...
+            .keys(specialKeys.Tab)
+            .sleep(alfPause)
+            .active()
+            .text()
+            .then(function(resultText) {
+               console.log("Test #1j");
+               expect(resultText).to.equal("J", "The text is incorrect");
+            })
+
+            // Use the up cursor to go to the third row
+            .keys(specialKeys['Up arrow'])
+            .sleep(alfPause)
+
+            // Select the first element...
+            .keys(specialKeys.Tab)
+            .sleep(alfPause)
+            .active()
+            .text()
+            .then(function(resultText) {
+               console.log("Test #1k");
+               expect(resultText).to.equal("G", "The text is incorrect");
+            })
+            .end()
+
+            // // Now do the same tests with the mouse...
+            // COMMENTED OUT DUE TO UNUSUAL ERRORS - THIS NEEDS TO BE FINISHED, QUESTION ASKED ON STACKOVERFLOW...
+            // http://stackoverflow.com/questions/21735472/elementbycss-failure-after-haselementbycss-success-in-intern
+            // .sleep(alfPause)
+            // .hasElementByCss("#COLUMN1_HEADER > span")
+            // .then(function(result) {
+            //    console.log("Test #2a - Check column header");
+            //    assert(result == true, "Could not find COLUMN1_HEADER in Test #2a");
+            // })
+            // .elementByCss("#COLUMN1_HEADER > span")
+            //    .moveTo()
+            //    .click()
+            //    .end()
+            // .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
+            // .then(function(result) {
+            //    console.log("Test #2b");
+            //    assert(result == true, "Could not request to sort column 1 via mouse");
+            // })
             
             // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+            // .then(function() {
+            //    TestCommon.postCoverageResults(browser);
+            // })
+            // .end();
       }
    });
 });

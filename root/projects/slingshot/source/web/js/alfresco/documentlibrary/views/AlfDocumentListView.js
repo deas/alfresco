@@ -211,6 +211,7 @@ define(["dojo/_base/declare",
                }
                this.alfLog("log", "Rendering items", this);
                this.docListRenderer = new DocumentListRenderer({
+                  id: this.id + "_ITEMS",
                   widgets: this.widgets,
                   currentData: this.currentData,
                   pubSubScope: this.pubSubScope

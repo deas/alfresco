@@ -38,7 +38,8 @@ define({
     * @instance
     * @type [string]
     */
-   baseFunctionalSuites: ['tests/alfresco/forms/controls/DocumentPickerTest',
+   baseFunctionalSuites: ['tests/alfresco/documentlibrary/views/AlfDocumentListWithHeaderTest',
+                          'tests/alfresco/forms/controls/DocumentPickerTest',
                           'tests/alfresco/forms/controls/DojoSelectTest',
                           'tests/alfresco/forms/controls/DojoValidationTextBoxTest',
                           'tests/alfresco/layout/BasicLayoutTest',
