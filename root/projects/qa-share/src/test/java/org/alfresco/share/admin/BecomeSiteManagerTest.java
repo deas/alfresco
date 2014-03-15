@@ -32,6 +32,7 @@ import org.testng.annotations.Test;
  * @author Richard Smith
  */
 
+// TODO: This should use AbstractTests instead and OpCloudTestContext.
 public class BecomeSiteManagerTest extends AbstractTest
 {
 
@@ -197,7 +198,7 @@ public class BecomeSiteManagerTest extends AbstractTest
         // Delete users
         for (String username : users)
         {
-            ShareUtil.deleteUser(username);
+            ShareUtil.deleteUser(drone, username);
         }
 
         manageSitesPage = null;
