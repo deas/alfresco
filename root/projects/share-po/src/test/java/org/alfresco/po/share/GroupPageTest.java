@@ -31,8 +31,8 @@ import org.testng.annotations.Test;
 /**
  *
  * 
- * @author nshah
- * @since 1.6.1
+ * @author Charu
+ * 
  */
 @Listeners(FailedTestListener.class)
 public class GroupPageTest extends AbstractTest
@@ -51,7 +51,7 @@ public class GroupPageTest extends AbstractTest
     public void testNewGroup() throws Exception
     {         
         GroupsPage page = dashBoard.getNav().getGroupsPage();
-        page = page.navigateToAddAndEditGroups().render();
+        page = page.clickBrowse().render();
         NewGroupPage newGroupPage = page.navigateToNewGroupPage().render();
         page = newGroupPage.createGroup(groupName, groupName, ActionButton.CREATE_GROUP).render();
         Assert.assertTrue(page.getGroupList().contains(groupName), "Group is created!!");
@@ -62,7 +62,7 @@ public class GroupPageTest extends AbstractTest
     public void testSelectGroup() throws Exception
     {         
         GroupsPage page = dashBoard.getNav().getGroupsPage();
-        page = page.navigateToAddAndEditGroups().render();
+        page = page.clickBrowse().render();
         Assert.assertTrue(page.getGroupList().contains(siteAdmin), "Site Admin Group is present!!");
         GroupsPage groupsPage = page.selectGroup(siteAdmin).render();
         Assert.assertTrue(groupsPage.hasMembers(), "Group members are  present");
@@ -73,7 +73,7 @@ public class GroupPageTest extends AbstractTest
     public void testisGroupPresent() throws Exception
     {         
         GroupsPage page = dashBoard.getNav().getGroupsPage();
-        page = page.navigateToAddAndEditGroups().render();
+        page = page.clickBrowse().render();
         Assert.assertTrue(page.getGroupList().contains(siteAdmin), "Site Admin Group is present!!");
         
     }
@@ -88,7 +88,7 @@ public class GroupPageTest extends AbstractTest
         String userinfo = "user" + System.currentTimeMillis() + "@test.com";
         newPage.createEnterpriseUserWithGroup(userinfo, userinfo, userinfo, userinfo, userinfo, siteAdmin);
         GroupsPage page = dashBoard.getNav().getGroupsPage();
-        page = page.navigateToAddAndEditGroups().render();
+        page = page.clickBrowse().render();
         GroupsPage groupspage = page.selectGroup(siteAdmin).render();
         Assert.assertTrue(groupspage.hasMembers(), "Group members are present");
         List<UserProfile> userProfiles = groupspage.getMembersList();
@@ -137,7 +137,7 @@ public class GroupPageTest extends AbstractTest
         String userinfo = "user" + System.currentTimeMillis() + "@test.com";
         newPage.createEnterpriseUserWithGroup(userinfo, userinfo, userinfo, userinfo, userinfo, siteAdmin);
         GroupsPage page = dashBoard.getNav().getGroupsPage();
-        page = page.navigateToAddAndEditGroups().render();
+        page = page.clickBrowse().render();
         GroupsPage groupspage = page.selectGroup(siteAdmin).render();
         RemoveUserFromGroupPage removeUserFromGroupPage = groupspage.removeUser(userinfo).render();
         removeUserFromGroupPage.selectAction(Action.Yes).render();
@@ -154,4 +154,16 @@ public class GroupPageTest extends AbstractTest
         }
 
     }
+    
+    @Test(groups = "Enterprise-only")
+    public void testisAdminInGroup() throws Exception
+    {         
+        GroupsPage page = dashBoard.getNav().getGroupsPage();
+        page = page.clickBrowse().render();
+        Assert.assertTrue(page.getGroupList().contains(siteAdmin), "Site Admin Group is present!!");
+        GroupsPage groupsPage = page.selectGroup(siteAdmin).render();
+        Assert.assertTrue(groupsPage.isAdminInGroup(siteAdmin), "Admin is present in group");
+        
+    }
+    
 }

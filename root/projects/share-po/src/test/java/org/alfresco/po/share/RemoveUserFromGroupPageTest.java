@@ -54,7 +54,7 @@ public class RemoveUserFromGroupPageTest extends AbstractTest
         String userinfo = "user" + System.currentTimeMillis() + "@test.com";
         newPage.createEnterpriseUserWithGroup(userinfo, userinfo, userinfo, userinfo, userinfo, groupName);
         GroupsPage page = dashBoard.getNav().getGroupsPage();
-        page = page.navigateToAddAndEditGroups().render();
+        page = page.clickBrowse().render();
         GroupsPage groupspage = page.selectGroup(groupName).render();
         RemoveUserFromGroupPage removeUserFromGroupPage = groupspage.removeUser(userinfo).render();
         removeUserFromGroupPage.selectAction(Action.No).render();
@@ -93,7 +93,7 @@ public class RemoveUserFromGroupPageTest extends AbstractTest
         String userinfo = "user" + System.currentTimeMillis() + "@test.com";
         newPage.createEnterpriseUserWithGroup(userinfo, userinfo, userinfo, userinfo, userinfo, groupName);
         GroupsPage page = dashBoard.getNav().getGroupsPage();
-        page = page.navigateToAddAndEditGroups().render();
+        page = page.clickBrowse().render();
         GroupsPage groupspage = page.selectGroup(groupName).render();
         RemoveUserFromGroupPage removeUserFromGroupPage = groupspage.removeUser(userinfo).render();
         Assert.assertEquals(removeUserFromGroupPage.getTitle(),"Remove User from Group");

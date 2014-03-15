@@ -54,7 +54,7 @@ public class AddGroupsPageTest extends AbstractTest
         siteName = "InviteMembersTest" + System.currentTimeMillis();
         dashBoard = loginAs(username, password);
         GroupsPage page = dashBoard.getNav().getGroupsPage();
-        page = page.navigateToAddAndEditGroups().render();
+        page = page.clickBrowse().render();
         NewGroupPage newGroupPage = page.navigateToNewGroupPage().render();
         page = newGroupPage.createGroup(groupName, groupName, ActionButton.CREATE_GROUP).render();
         Assert.assertTrue(page.getGroupList().contains(groupName), "Group is not created!!");
