@@ -43,6 +43,19 @@ module.exports = function (grunt, alf) {
             }
          },
 
+         // selenium
+         seleniumUp: {
+            command: 'java -jar selenium*.jar',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true,
+               execOptions: {
+                  cwd: alf.testResourcesDir + "/selenium"
+               }
+            }
+         },
+
          // start share & alfresco
          startRepo: {
             command: 'r -ie && r -t',

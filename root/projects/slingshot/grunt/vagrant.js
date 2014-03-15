@@ -26,22 +26,23 @@
 module.exports = function (grunt, alf) {
 
    // Bring up an instance of vagrant
-   grunt.registerTask('vag-up', [
-      'shell:vagrantUp'
+   grunt.registerTask('vup', [
+      'shell:vagrantUp',
+      'shell:vagrantProvision'
    ]);
 
    // Provision an instance of vagrant
-   grunt.registerTask('vag-prov', [
+   grunt.registerTask('vpro', [
       'shell:vagrantProvision'
    ]);
 
    // Take down an instance of vagrant
-   grunt.registerTask('vag-down', [
+   grunt.registerTask('vdown', [
       'shell:vagrantHalt'
    ]);
 
    // Rebuild a vagrant instance.
-   grunt.registerTask('vag-clean', [
+   grunt.registerTask('vclean', [
       'shell:vagrantDestroy',
       'shell:vagrantUp'
    ]);
