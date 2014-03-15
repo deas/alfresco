@@ -204,7 +204,7 @@ public abstract class AbstractTests
     protected static String SUPERADMIN_PASSWORD;
     protected static String ADMIN_USERNAME;
     protected static String ADMIN_PASSWORD;
-    protected static String HEADER_KEY = "071af540e7ce320312d2d44ab2d6d377";
+    protected static String HEADER_KEY = "0cfa2600ac2311e3a7570002a5d5c51b";
     protected static String DEFAULT_USER;
     protected static String UNIQUE_TESTDATA_STRING;
     protected static AlfrescoVersion alfrescoVersion;

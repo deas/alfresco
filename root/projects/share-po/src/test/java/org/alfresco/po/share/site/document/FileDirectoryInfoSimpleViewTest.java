@@ -58,7 +58,7 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
     private static DocumentLibraryPage documentLibPage;
     private File file;
     private final String cloudUserName = "user1@premiernet.test";
-    private final String cloudUserPassword = "spr!nkles";
+    private final String cloudUserPassword = "cat1ns1deD0g";
     private File testLockedFile;
 
     /**
