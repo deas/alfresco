@@ -112,7 +112,7 @@ define(["dojo/_base/declare",
             // Create the subscription AFTER the widget has been instantiated so that we don't 
             // uncessarily process the setup publications which are intended to be processed by 
             // other controls in the same scoped form...
-            this.alfSubscribe(subscriptionTopic, lang.hitch(this, "onPublishChange"));
+            this.alfSubscribe(subscriptionTopic, lang.hitch(this, "onPublishChange"), true);
          }
          else
          {

@@ -1,5 +1,17 @@
+// Ideally we would want the SiteService to subscribe to global topics, but because it is used within
+// the AdminConsole we need to render the page as a "hybrid" of multiple Components. The header component
+// has it's own SiteService so we need to scope this one in order to prevent duplicate HTTP requests from
+// occurring. It is not possible to simply omit this SiteService and rely on the one provided by the
+// share-header.get WebScript as race conditions come into play...
+var siteServiceScope = "MANAGE_SITES_SITE_SERVICE";
+
 model.jsonModel = {
-   services: ["alfresco/services/SiteService"],
+   services: [{
+      name: "alfresco/services/SiteService",
+      config: {
+         pubSubScope: siteServiceScope
+      }
+   }],
    widgets: [
       {
          id: "SET_PAGE_TITLE",
@@ -13,6 +25,7 @@ model.jsonModel = {
          name: "alfresco/layout/VerticalWidgets",
          config: 
          {
+            pubSubScope: siteServiceScope,
             widgets: [
                {
                   id: "DOCLIB_DOCUMENT_LIST",
