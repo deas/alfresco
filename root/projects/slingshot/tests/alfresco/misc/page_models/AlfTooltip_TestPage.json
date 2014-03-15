@@ -17,9 +17,8 @@
       {
          "name": "alfresco/misc/AlfTooltip",
          "config": {
-            "connectId": "TEST_BUTTON",
-            "label": "This is the test button",
-            "showDelay": 250
+            "targetNode": "TEST_BUTTON",
+            "label": "This is the test button"
          }
       },
       {

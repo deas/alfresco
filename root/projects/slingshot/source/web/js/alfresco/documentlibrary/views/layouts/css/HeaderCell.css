@@ -6,6 +6,7 @@ th.alfresco-documentlibrary-views-layouts-HeaderCell {
    padding: 10px;
    margin: 0;
    vertical-align: middle;
+   text-align: left;
 }
 
 th.alfresco-documentlibrary-views-layouts-HeaderCell.last {

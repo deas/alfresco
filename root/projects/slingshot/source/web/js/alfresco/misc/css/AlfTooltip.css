@@ -1,5 +1,7 @@
-.claro .dijitTooltipContainer {
+.alfresco-share.claro .dijitTooltipContainer {
+   background: #fff;
    border: 1px solid @toolTipBorderColour;
+   background-image: none;
    -webkit-box-shadow: none;
    -moz-box-shadow: none;
    box-shadow: none;

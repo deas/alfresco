@@ -1057,9 +1057,8 @@ define(["dojo/_base/declare",
          {
             // Create a tooltip for the control...
             var tip = new AlfTooltip({
-                connectId: [this.wrappedWidget.domNode],
+                domNode: this.wrappedWidget.domNode,
                 label: this.message(this.description),
-                showDelay: 250,
                 defaultPosition: ['above', 'below']
              });
          }

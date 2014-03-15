@@ -39,7 +39,7 @@ define(["dojo/_base/declare",
       cssRequirements: [{cssFile:"./css/AlfTooltip.css"}],
 
       /**
-       * An array of the tooltip positions.
+       * An array of the tool tip positions.
        * 
        * @instance
        * @type {Array}
@@ -48,10 +48,33 @@ define(["dojo/_base/declare",
       defaultPosition: ['above-centered', 'below-centered'],
 
       /**
+       * A default show delay time in milliseconds.
+       * 
+       * @instance
+       * @type {Number}
+       * @default 250
+       */
+      showDelay: 250,
+
+      /**
+       * A dom node to attach the tool tip to - object or string.
+       * 
+       * @instance
+       * @type {object}
+       * @default null
+       */
+      targetNode: null,
+
+      /**
        * @instance postCreate
        */
       postCreate: function alfresco_menus_AlfTooltip__postCreate() {
          Tooltip.defaultPosition = this.defaultPosition;
+         // If a targetNode has been provided, use the addTarget method on dijit/Tooltip to apply it
+         if (this.targetNode)
+         {
+            this.addTarget(this.targetNode);
+         }
       }
 
    });

@@ -275,9 +275,8 @@ define(["dojo/_base/declare",
          // Find the .label item within the domNode
          var labelNode = query(".label", this.domNode);
          var tip = new AlfTooltip({
-            connectId: [labelNode],
-            label: this.message(this.toolTipMsg),
-            showDelay: 250
+            targetNode: labelNode,
+            label: this.message(this.toolTipMsg)
          });
          this.alfLog("log", "Created HeaderCell tooltip with label '" + tip.label + "' for item '" + this.domNode + "'", this);
       }
