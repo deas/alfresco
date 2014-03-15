@@ -45,8 +45,8 @@ define(["dojo/_base/declare",
         "dojo/dom-style",
         "dojo/dom-class",
         "dijit/focus",
-        "dijit/Tooltip"], 
-        function(declare, _Widget, _Templated, _FocusMixin, template, domConstruct, AlfCore, ObjectTypeUtils, xhr, lang, array, domStyle, domClass, focusUtil, Tooltip) {
+        "alfresco/menus/AlfTooltip"], 
+        function(declare, _Widget, _Templated, _FocusMixin, template, domConstruct, AlfCore, ObjectTypeUtils, xhr, lang, array, domStyle, domClass, focusUtil, AlfTooltip) {
    
    return declare([_Widget, _Templated, _FocusMixin, AlfCore], {
       
@@ -1056,10 +1056,12 @@ define(["dojo/_base/declare",
              this.description != "")
          {
             // Create a tooltip for the control...
-            Tooltip.defaultPosition=['above', 'below'];
-            var tooltip = new Tooltip({label: this.message(this.description),
-                                       showDelay: 250,
-                                       connectId: [this.wrappedWidget.domNode]});
+            var tip = new AlfTooltip({
+                connectId: [this.wrappedWidget.domNode],
+                label: this.message(this.description),
+                showDelay: 250,
+                defaultPosition: ['above', 'below']
+             });
          }
          else
          {

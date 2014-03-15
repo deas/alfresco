@@ -1,0 +1,10 @@
+.claro .dijitTooltipContainer {
+   border: 1px solid @toolTipBorderColour;
+   -webkit-box-shadow: none;
+   -moz-box-shadow: none;
+   box-shadow: none;
+}
+
+.claro .dijitTooltipConnector {
+   background: @toolTipTailBg;
+}
