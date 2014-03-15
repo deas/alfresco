@@ -18,8 +18,10 @@
  */
 
 /**
- * An abstract view for the Alfresco Share document list. It can be used in JSON page models if 
- * configured with a widgets definition. Otherwise it can be extended to define specific views
+ * This module has been created to ensure that keyboard navigation (via the dijit/_KeyNavContainer) can be used
+ * without impacting the rest of the view. An instance of this module should be created within each 
+ * [document list view]{@link module:alfresco/documentlibrary/views/AlfDocumentListView} (unless a view requires 
+ * a specific renderer implementation).
  * 
  * @module alfresco/documentlibrary/views/DocumentListRenderer
  * @extends dijit/_WidgetBase
@@ -27,7 +29,6 @@
  * @mixes dijit/_KeyNavContainer
  * @mixes module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin
  * @mixes module:alfresco/core/Core
- * @mixes module:alfresco/documentlibrary/_AlfDndDocumentUploadMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -49,24 +50,6 @@ define(["dojo/_base/declare",
    
    return declare([_WidgetBase, _TemplatedMixin, _KeyNavContainer, _MultiItemRendererMixin, AlfCore], {
       
-      /**
-       * An array of the i18n files to use with this widget.
-       * 
-       * @instance
-       * @type {object[]}
-       * @default [{i18nFile: "./i18n/DocumentListRenderer.properties"}]
-       */
-      i18nRequirements: [{i18nFile: "./i18n/DocumentListRenderer.properties"}],
-      
-      /**
-       * An array of the CSS files to use with this widget.
-       * 
-       * @instance cssRequirements {Array}
-       * @type {object[]}
-       * @default [{cssFile:"./css/AlfDialog.css"}]
-       */
-      cssRequirements: [{cssFile:"./css/DocumentListRenderer.css"}],
-
       /**
        * The HTML template to use for the widget.
        * @instance

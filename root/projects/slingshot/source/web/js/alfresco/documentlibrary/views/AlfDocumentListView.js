@@ -225,6 +225,7 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * Removes the previously rendered view.
        *
        * @instance
        */
