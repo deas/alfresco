@@ -255,6 +255,16 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * This is the property that should be used to compare unique keys when comparing items. This will default
+       * to "nodeRef" if not set.
+       * 
+       * @instance
+       * @type {string}
+       * @default "nodeRef"
+       */
+      itemKey: "nodeRef",
+
+      /**
        * Compares the nodeRef attribute of both item arguments. This has been abstracted to a separate function to
        * allow simpler overriding when comparing items. This function is called by the
        * [onItemSelection]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin#onItemSelection}
@@ -266,7 +276,9 @@ define(["dojo/_base/declare",
        * @returns {boolean} true if the items are the same and false otherwise.
        */
       compareItems: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__compareItems(item1, item2) {
-         return (item1.nodeRef != null && (item1.nodeRef == item2.nodeRef));
+         var key1 = lang.getObject(this.itemKey, null, item1);
+         var key2 = lang.getObject(this.itemKey, null, item2);
+         return (key1 != null && (key1 == key2));
       },
       
       /**

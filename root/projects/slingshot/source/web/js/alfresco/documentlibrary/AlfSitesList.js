@@ -62,6 +62,14 @@ define(["dojo/_base/declare",
          
          this._currentData = payload;
 
+         // Publish the details of the loaded documents. The API isn't currently returning data
+         // beyond the pagination limit...
+         this.alfPublish(this.documentsLoadedTopic, {
+            documents: payload.items,
+            totalDocuments: payload.items.length,
+            startIndex: 0
+         });
+
          // Re-render the current view with the new data...
          var view = this.viewMap[this._currentlySelectedView];
          if (view != null)

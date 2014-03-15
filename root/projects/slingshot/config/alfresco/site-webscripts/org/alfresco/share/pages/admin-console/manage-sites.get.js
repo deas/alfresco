@@ -144,6 +144,7 @@ model.jsonModel = {
                         {
                            name: "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
                            config: {
+                              itemKey: "shortName",
                               widgetsForHeader: [
                                  {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
