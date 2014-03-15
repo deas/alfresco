@@ -1190,7 +1190,7 @@ function generateAppItems() {
          config: {
             id: "HEADER_SITES_CONSOLE",
             label: "header.menu.admin.sites.label",
-            targetUrl: "console/sites-console/manage-sites/",
+            targetUrl: "console/sites-console/manage-sites",
             renderFilter: [
                {
                   property: "groups.GROUP_SITE_ADMINISTRATORS",
