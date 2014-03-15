@@ -399,7 +399,7 @@ public class ShareUser extends AbstractTests
      *            String Path for the folder to be created, under
      *            DocumentLibrary : such as constDoclib + file.seperator +
      *            parentFolderName1 + file.seperator + parentFolderName2
-     * @throws Excetion
+     * @throws Exception
      */
     public static void createFolderInFolder(WebDrone driver, String folderName, String folderDesc, String parentFolderPath) throws Exception
     {
@@ -427,9 +427,9 @@ public class ShareUser extends AbstractTests
      * 
      * @param driver
      *            WebDrone Instance
-     * @param folderName
+     * @param fileName
      *            String Name of the folder to be created
-     * @param folderDesc
+     * @param parentFolderPath
      *            String Description of the folder to be created
      * @return DocumentLibraryPage
      */
@@ -484,8 +484,7 @@ public class ShareUser extends AbstractTests
      * Navigates to the Path specified, Starting from the Document Library Page.
      * Assumes User is logged in and a specific Site is open.
      * 
-     * @param fileName
-     * @param parentFolderPath
+     * @param fileInfo
      *            : such as constDoclib + file.seperator + parentFolderName1
      * @throws SkipException
      *             if error in this API
@@ -702,7 +701,7 @@ public class ShareUser extends AbstractTests
     /**
      * Helper to search for an Element in the list of <List<ActivityShareLink>>.
      * 
-     * @param List
+     * @param entryList
      *            <List<ActivityShareLink>>
      * @param entry
      *            String entry to be found in the ShareLinks' list
@@ -723,7 +722,7 @@ public class ShareUser extends AbstractTests
     /**
      * Helper to search for an Element in the list of <ShareLinks>.
      * 
-     * @param List
+     * @param entryList
      *            <ShareLinks>
      * @param entry
      *            String entry to be found in the ShareLinks' list
@@ -746,7 +745,7 @@ public class ShareUser extends AbstractTests
      * 
      * @param driver
      *            WebDrone Instance
-     * @param siteSearchCriteria
+     * @param contentName
      *            String Criteria for site search
      * @return {@link DocumentDetailsPage}
      */
@@ -783,7 +782,7 @@ public class ShareUser extends AbstractTests
      * the specified network.
      * 
      * @param driver
-     * @param network
+     * @param tenantID
      */
     public static void selectTenant(WebDrone driver, String tenantID)
     {
@@ -812,9 +811,9 @@ public class ShareUser extends AbstractTests
      * @param password
      *            String password
      */
-    public static Boolean createEnterpriseUser(WebDrone driver, String invitingUsername, String userName, String fname, String lname, String password)
+    public static Boolean createEnterpriseUser(WebDrone driver, String invitingUsername, String userName, String fName, String lName, String password)
     {
-        return createEnterpriseUserWithGroup(driver, invitingUsername, userName, fname, lname, password, null);
+        return createEnterpriseUserWithGroup(driver, invitingUsername, userName, fName, lName, password, null);
     }
     
     /**
@@ -1010,7 +1009,7 @@ public class ShareUser extends AbstractTests
      * This util method gets the random number for the given length of return
      * string.
      * 
-     * @param int length
+     * @param length length
      * @return String
      */
     public static String getRandomStringWithNumders(int length)
@@ -1489,7 +1488,7 @@ public class ShareUser extends AbstractTests
      * This method uploads the new version for the document with the given file
      * from data folder. User should be on Document details page.
      * 
-     * @param newFileName
+     * @param fileName
      * @param drone
      * @return DocumentDetailsPage
      * @throws IOException
