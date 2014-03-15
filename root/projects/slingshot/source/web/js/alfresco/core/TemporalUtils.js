@@ -25,10 +25,10 @@
  * @module alfresco/core/TemporalUtils
  * @author Dave Draper
  */
-define(["dojo/_base/declare"], 
-        function(declare) {
+define([], 
+        function() {
    
-   return declare(null, {
+   return {
 
       /**
        * Declare the dependencies on "legacy" JS files that this is wrapping.
@@ -54,5 +54,5 @@ define(["dojo/_base/declare"],
       getRelativeTime: function alfresco_core_TemporalUtils__getRelativeTime(id) {
          return Alfresco.util.relativeTime(id);
       }
-   })
+   };
 });

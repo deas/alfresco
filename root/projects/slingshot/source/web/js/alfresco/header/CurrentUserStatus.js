@@ -30,14 +30,14 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/CurrentUserStatus.html",
         "alfresco/core/Core",
-        "alfresco/core/TemporalUtils",
         "dojo/_base/lang",
         "dojo/on",
         "dojo/dom-class",
         "alfresco/dialogs/AlfDialog",
         "alfresco/buttons/AlfButton",
-        "dijit/form/Textarea"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, TemporalUtils, lang, on, domClass, AlfDialog, AlfButton, TextArea) {
+        "dijit/form/Textarea",
+        "alfresco/core/TemporalUtils"], 
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, on, domClass, AlfDialog, AlfButton, TextArea, TemporalUtils) {
    
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
       
