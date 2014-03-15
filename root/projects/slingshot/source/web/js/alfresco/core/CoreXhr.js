@@ -116,7 +116,7 @@ define(["dojo/_base/declare",
                      }
                      catch (e)
                      {
-                        this.alfLog("error", "An error occurred parsing an XHR JSON success response", response, this);
+                        _this.alfLog("error", "An error occurred parsing an XHR JSON success response", response, this);
                      }
                      
                   }
@@ -142,7 +142,7 @@ define(["dojo/_base/declare",
                      }
                      catch (e)
                      {
-                        this.alfLog("error", "An error occurred parsing an XHR JSON failure response", response, this);
+                        _this.alfLog("error", "An error occurred parsing an XHR JSON failure response", response, this);
                      }
                   }
                   if (typeof config.failureCallback == "function")
@@ -167,7 +167,7 @@ define(["dojo/_base/declare",
                      }
                      catch (e)
                      {
-                        this.alfLog("error", "An error occurred parsing an XHR JSON progress response", response, this);
+                        _this.alfLog("error", "An error occurred parsing an XHR JSON progress response", response, this);
                      }
                   }
                   if (typeof config.progressCallback == "function")
