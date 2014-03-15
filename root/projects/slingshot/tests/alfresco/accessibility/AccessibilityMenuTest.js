@@ -93,7 +93,8 @@ define(["intern!object",
 
          // Hit the browser with a sequence of different accesskey combinations and the letter 's' for a nav skip
          .keys([specialKeys["Alt"], specialKeys["Shift"], "s"])
-         .keys([specialKeys["Alt"], "s"])
+         .keys([specialKeys["Shift"], "s"]) // Release SHIFT (keep ALT down)
+         .keys([specialKeys["Alt"]]) // Release ALT
          .keys([specialKeys["Control"], specialKeys["Command"], "s"])
          .url()
          .then(function (page) {
@@ -102,6 +103,9 @@ define(["intern!object",
         	 expect(page).to.contain("#accesskey-skip", "Test #7 - Accesskey target not linked to");
          })
          .end()
+
+         // Release control, command...
+         .keys([specialKeys["Control"], specialKeys["Command"]])
 
          // Post the coverage results...
          .then(function() {

@@ -39,7 +39,7 @@ define(["intern!object",
          var alfPause = 150;
          var browser = this.remote;
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/AlfDocumentListWithHeader_TestPage.json")
-            .end()
+            // .end()
 
             // Sort on the first column header...
             .keys(specialKeys.Tab)

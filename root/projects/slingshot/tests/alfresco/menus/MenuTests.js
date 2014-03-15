@@ -44,7 +44,7 @@ define(["intern!object",
             .keys(specialKeys["Down arrow"])
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("3", "item", "MENU_ITEM_1"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_1"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_1 after Test #1");
             })
@@ -56,7 +56,7 @@ define(["intern!object",
             .keys(specialKeys["Down arrow"])
             .sleep(1000)
             .keys(specialKeys["Return"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("4", "item", "MENU_ITEM_2"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_2"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_2 in Test #2");
             })
@@ -69,7 +69,7 @@ define(["intern!object",
             .keys(specialKeys["Down arrow"])
             .sleep(1000)
             .keys(specialKeys["Return"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("5", "item", "MENU_ITEM_3"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_3"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_3 in Test #3");
             })
@@ -83,7 +83,7 @@ define(["intern!object",
             .keys(specialKeys["Up arrow"])
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("6", "item", "MENU_ITEM_2"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_2"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_2 in Test #4");
             })
@@ -95,7 +95,7 @@ define(["intern!object",
             .keys(specialKeys["Up arrow"])
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("7", "item", "MENU_ITEM_6"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_6"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_6 in Test #5");
             })
@@ -108,7 +108,7 @@ define(["intern!object",
             .keys(specialKeys["Down arrow"])
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("8", "item", "MENU_ITEM_1"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_1"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_1 in Test #6");
             })
@@ -119,7 +119,7 @@ define(["intern!object",
             .keys(specialKeys["Right arrow"])
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("9", "url", "MENU_BAR_ITEM_1"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "url", "MENU_BAR_ITEM_1"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_BAR_ITEM_1 in Test #7");
             })
@@ -132,7 +132,7 @@ define(["intern!object",
             .keys(specialKeys["Down arrow"])
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("10", "url", "MENU_ITEM_8"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "url", "MENU_ITEM_8"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_8 in Test #8");
             })
@@ -143,7 +143,7 @@ define(["intern!object",
             .keys(specialKeys["Up arrow"])
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("11", "url", "MENU_ITEM_7"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "url", "MENU_ITEM_7"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_7 in Test #8");
             })
@@ -158,7 +158,7 @@ define(["intern!object",
             .keys(specialKeys["Right arrow"]) // Open the cascade
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("12", "item", "MENU_ITEM_11"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_11"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_11 in Test #9");
             })
@@ -173,7 +173,7 @@ define(["intern!object",
             .keys(specialKeys["Right arrow"]) // Open the SECOND cascade
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("13", "item", "MENU_ITEM_13"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_13"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_13 in Test #10");
             })
@@ -188,7 +188,7 @@ define(["intern!object",
             .keys(specialKeys["Down arrow"])  // Select the next menu item
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("14", "item", "MENU_ITEM_14"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_14"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_14 in Test #11");
             })
@@ -200,7 +200,7 @@ define(["intern!object",
             .keys(specialKeys["Down arrow"]) // This should jump over the logo widget inserted into the menu
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("15", "item", "MENU_ITEM_10"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_10"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_10 in Test #12");
             })
@@ -213,7 +213,7 @@ define(["intern!object",
             .keys(specialKeys["Up arrow"]) // This should jump over the logo widget inserted into the menu
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("16", "item", "MENU_ITEM_9"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_9"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_9 in Test #13");
             })
@@ -225,7 +225,7 @@ define(["intern!object",
             .keys(specialKeys["Down arrow"])
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("17", "item", "MENU_ITEM_2"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_2"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_2 in Test #14");
             })
@@ -237,7 +237,7 @@ define(["intern!object",
             .keys(specialKeys["Down arrow"])
             .sleep(1000)
             .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("18", "item", "MENU_ITEM_10"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_10"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_10 in Test #15");
             })
@@ -253,7 +253,7 @@ define(["intern!object",
                .moveTo()
                .click()
                .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("19", "item", "MENU_ITEM_1"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_1"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_1 in Test #16");
             })
@@ -277,7 +277,7 @@ define(["intern!object",
                .moveTo()
                .click()
                .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("20", "item", "MENU_ITEM_13"))
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_13"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_13 in Test #17");
             })
