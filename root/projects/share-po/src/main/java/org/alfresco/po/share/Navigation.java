@@ -458,7 +458,7 @@ public class Navigation extends SharePage
     public HtmlPage selectAdminTools()
     {
         String selector = "div#HEADER_ADMIN_CONSOLE";
-    	drone.find(By.cssSelector(selector)).click();
+        drone.find(By.cssSelector(selector)).click();
         return FactorySharePage.resolvePage(drone);
     }
     
@@ -476,16 +476,54 @@ public class Navigation extends SharePage
     }
 
     /**
-     * Select manage sites by Admin.
+     * Select manage sites link as Admin.
      *
      * @return the html page
      */
-    public HtmlPage selectManageSites()
+
+    public ManageSitesPage selectManageSitesRepoAdmin()
     {
         selectAdminTools().render();
         String selector = "ul.toolLink > li > span > a[href=\"manage-sites\"]";
         drone.find(By.cssSelector(selector)).click();
-        return FactorySharePage.resolvePage(drone);
+        return new ManageSitesPage(drone);
+    }
+
+    /**
+     * Select manage sites link as Network Admin.
+     *
+     * @return the html page
+     */
+
+    public ManageSitesPage selectManageSitesNetworkAdmin()
+    {
+        String manageSitesPageURL = "/page/console/cloud-console/manage-sites";
+        String currentUrl = drone.getCurrentUrl();
+        String url = currentUrl.replaceFirst("^*/page.*", manageSitesPageURL);
+        drone.navigateTo(url);
+        return new ManageSitesPage(drone);
+    }
+
+    /**
+     * Abstract the manage sites page to choose.
+     *
+     * @return the manage sites page
+     */
+    public ManageSitesPage selectManageSitesPage()
+    {
+        if (alfrescoVersion.isCloud())
+        {
+            return selectManageSitesNetworkAdmin();
+        }
+        else if (ShareUtil.isUserAdmin())
+        {
+            return selectManageSitesRepoAdmin();
+        }
+        else if (ShareUtil.isUserInGroup("GROUP_SITE_ADMINISTRATORS"))
+        {
+            return selectManageSitesSiteAdmin();
+        }
+        throw new UnsupportedOperationException("The correct method for finding the manage sites page couldn't be determined");
     }
     
 }
