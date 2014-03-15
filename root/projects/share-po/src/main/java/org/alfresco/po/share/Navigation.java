@@ -474,17 +474,8 @@ public class Navigation extends SharePage
      */
     public boolean hasSelectManageSitesSiteAdminLink()
     {
-        try
-        {
-            return drone.find(By.cssSelector(SITE_ADMIN_MANAGE_SITE_LINK_SELECTOR)).isDisplayed();
-        } catch (NoSuchElementException e)
-        {
-            if(logger.isTraceEnabled())
-            {
-                logger.trace("Site Admin's Manage Site link not present: " + e.getMessage());
-            }
-        }
-        return false;
+        List<org.openqa.selenium.WebElement> elements = drone.findAll(By.cssSelector(SITE_ADMIN_MANAGE_SITE_LINK_SELECTOR));
+        return (elements.size() != 0);
     }
 
     /**
@@ -508,17 +499,8 @@ public class Navigation extends SharePage
      */
     private boolean hasSelectManageSitesRepoAdmin()
     {
-        try
-        {
-            return drone.find(By.cssSelector(REPO_ADMIN_MANAGE_SITE_LINK_SELECTOR)).isDisplayed();
-        } catch (NoSuchElementException e)
-        {
-            if(logger.isTraceEnabled())
-            {
-                logger.trace("Repo Admin's Manage Site link not present: " + e.getMessage());
-            }
-        }
-        return false;
+        List<org.openqa.selenium.WebElement> elements = drone.findAll(By.cssSelector(REPO_ADMIN_MANAGE_SITE_LINK_SELECTOR));
+        return (elements.size() != 0);
     }
 
     /**
