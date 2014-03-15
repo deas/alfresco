@@ -38,8 +38,8 @@ module.exports = function (grunt, alf) {
 
    // Register a test task that uses Intern_local
    grunt.registerTask('test_local', [ 
-      'csslint',
-      'jshint', // TODO: Make this friendly.
+      // 'csslint',
+      // 'jshint', // TODO: Make this friendly.
       'intern:local' // Run all the intern tests on sauce labs
    ]);
 

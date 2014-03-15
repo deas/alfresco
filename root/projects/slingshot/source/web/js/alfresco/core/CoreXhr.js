@@ -197,6 +197,7 @@ define(["dojo/_base/declare",
        */
       defaultSuccessCallback: function alfresco_core_CoreXhr__defaultSuccessCallback(response, requestConfig) {
          this.alfLog("log", "[DEFAULT CALLBACK] The following successful response was received", response, requestConfig);
+
          if (requestConfig.alfTopic)
          {
             this.alfPublish(requestConfig.alfTopic + "_SUCCESS", {

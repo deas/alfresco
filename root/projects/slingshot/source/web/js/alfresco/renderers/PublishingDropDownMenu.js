@@ -33,8 +33,9 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/ObjectTypeUtils",
         "alfresco/forms/controls/DojoSelect",
-        "dojo/_base/lang"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, ObjectTypeUtils, DojoSelect, lang) {
+        "dojo/_base/lang",
+        "dojo/dom-class"], 
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, ObjectTypeUtils, DojoSelect, lang, domClass) {
 
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
       
@@ -130,18 +131,73 @@ define(["dojo/_base/declare",
 
          if (this.publishTopic != null)
          {
-            // TODO: We need to set a more abstract payload...
             var updatePayload = this.generatePayload(payload);
-            // var updatePayload = {
-            //    shortName: lang.getObject("shortName", false, this.currentItem),
-            //    visibility: payload.value
-            // };
+
+            // Hide any previously displayed warning image and show the processing image...
+            domClass.remove(this.processingNode, "hidden");
+            domClass.add(this.warningNode, "hidden");
+            domClass.add(this.successNode, "hidden");
+
+            // Genereate a uuid for the response to ensure we only provide an update for our request...
+            var responseTopic = this.generateUuid();
+            this._updateSuccessHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onChangeSuccess"), true);
+            this._updateFailureHandle = this.alfSubscribe(responseTopic + "_FAILURE", lang.hitch(this, "onChangeFailure"), true);
+            updatePayload.responseTopic = responseTopic;
+
+            // Request to make the update...
             this.alfPublish(this.publishTopic, updatePayload, true);
          }
          else
          {
             this.alfLog("warn", "A drop-down property was changed but there is no 'publishTopic' defined to publish on", this);
          }
+      },
+
+      /**
+       * This function is called whenever the request to update the value is completed successfully. It will hide the
+       * processing image and display the success image.
+       *
+       * @instance
+       * @param {object} payload
+       */
+      onChangeSuccess: function alfresco_renderers_PublishingDropDownMenu__onChangeSuccess(payload) {
+         if (this._updateSuccessHandle != null)
+         {
+            this.alfUnsubscribe(this._updateSuccessHandle);
+         }
+         else
+         {
+            this.alfLog("warn", "A subscription handle was not found for confirming publishing actions - this could be a potential memory leak", this);
+         }
+
+         domClass.add(this.processingNode, "hidden");
+         domClass.remove(this.successNode, "hidden");
+         this.alfLog("log", "Update request success", payload)
+      },
+
+      /**
+       * This function is called whenever the request to update the value fails. It will hide the
+       * processing image and display the warning image.
+       * 
+       * TODO: Ideally this should include a popup failure message
+       * TODO: The CoreXhr standard failure dialog should be prevented from being displayed
+       *
+       * @instance
+       * @param {object} payload
+       */
+      onChangeFailure: function alfresco_renderers_PublishingDropDownMenu__onChangeFailure(payload) {
+         if (this._updateFailureHandle != null)
+         {
+            this.alfUnsubscribe(this._updateFailureHandle);
+         }
+         else
+         {
+            this.alfLog("warn", "A subscription handle was not found for confirming publishing actions - this could be a potential memory leak", this);
+         }
+         domClass.add(this.processingNode, "hidden");
+         domClass.remove(this.warningNode, "hidden");
+
+         this.alfLog("log", "Update request success", payload)
       },
 
       /** 

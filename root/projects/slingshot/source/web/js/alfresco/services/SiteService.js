@@ -177,7 +177,8 @@ define(["dojo/_base/declare",
             this.serviceXhr({
                url: url,
                method: "PUT",
-               data: payload
+               data: payload,
+               alfTopic: payload.responseTopic
             });
          }
          else
