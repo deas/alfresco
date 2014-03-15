@@ -49,9 +49,14 @@ define(["dojo/_base/declare",
          this.actionsGroup = new AlfMenuGroup({
             
          });
-         // Iterate over the actions to create a menu item for each of them...
-         if (this.currentItem.actions && this.currentItem.actions.length > 0)
+
+         if (this.customActions != null && this.customActions.length > 0)
          {
+            array.forEach(this.customActions, lang.hitch(this, "addAction"));
+         }
+         else if (this.currentItem.actions && this.currentItem.actions.length > 0)
+         {
+            // Iterate over the actions to create a menu item for each of them...
             array.forEach(this.currentItem.actions, lang.hitch(this, "addAction"));
          }
 
@@ -76,7 +81,7 @@ define(["dojo/_base/declare",
             label: action.label,
             iconImage: AlfConstants.URL_RESCONTEXT + "components/documentlibrary/actions/" + action.icon + "-16.png",
             type: action.type,
-            publishTopic: this.singleDocumentActionTopic,
+            publishTopic: (action.publishTopic != null) ? action.publishTopic : this.singleDocumentActionTopic,
             publishPayload: {
                document: this.currentItem,
                action: action

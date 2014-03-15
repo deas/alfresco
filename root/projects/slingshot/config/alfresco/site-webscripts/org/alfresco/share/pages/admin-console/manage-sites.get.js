@@ -31,6 +31,108 @@ model.jsonModel = {
          {
             widgets: [
                {
+                  name: "alfresco/menus/AlfMenuBar",
+                  config: {
+                     widgets: [
+                        {
+                           name: "alfresco/menus/AlfMenuBarItem",
+                           config: {
+                              label: "All"
+                           }
+                        },
+                        {
+                           name: "alfresco/menus/AlfMenuBarItem",
+                           config: {
+                              label: "Public"
+                           }
+                        },
+                        {
+                           name: "alfresco/menus/AlfMenuBarItem",
+                           config: {
+                              label: "Moderated"
+                           }
+                        },
+                        {
+                           name: "alfresco/menus/AlfMenuBarItem",
+                           config: {
+                              label: "Private"
+                           }
+                        }
+                     ]
+                  }
+               },
+               {
+                  name: "alfresco/layout/LeftAndRight",
+                  config: {
+                     widgets: [
+                        {
+                           name: "alfresco/forms/controls/DojoValidationTextBox",
+                           align: "left",
+                           config: {
+                              label: ""
+                           }
+                        },
+                        {
+                           name: "alfresco/buttons/AlfButton",
+                           align: "left",
+                           config: {
+                              label: "Filter"
+                           }
+                        },
+                        {
+                           name: "alfresco/buttons/AlfButton",
+                           align: "right",
+                           config: {
+                              label: "Export"
+                           }
+                        }
+                     ]
+                  }
+               },
+               {
+                  id: "MANAGE_SITES_TOOLBAR",
+                  name: "alfresco/documentlibrary/AlfToolbar",
+                  config: {
+                     id: "MANAGE_SITES_TOOLBAR",
+                     widgets: [
+                        {
+                           id: "MANAGE_SITES_TOOLBAR_LEFT_MENU",
+                           name: "alfresco/menus/AlfMenuBar",
+                           align: "left",
+                           config: {
+                              widgets: [
+                                 {
+                                    id: "MANAGE_SITES_SELECT_ITEMS_MENU",
+                                    name: "alfresco/documentlibrary/AlfSelectDocumentListItems"
+                                 },
+                                 {
+                                    id: "MANAGE_SITES_SELECTED_ITEMS_MENU",
+                                    name: "alfresco/documentlibrary/AlfSelectedItemsMenuBarPopup",
+                                    config: {
+                                       label: "Selected sites...",
+                                       widgets: [
+                                          {
+                                             id: "MANAGE_SITES_SELECTED_ITEMS_MENU_GROUP1",
+                                             name: "alfresco/menus/AlfMenuGroup",
+                                             config: {
+                                                widgets: []
+                                             }
+                                          }
+                                       ]
+                                    }
+                                 }
+                              ]
+                           }
+                        },
+                        {
+                           id: "MANAGE_SITES_PAGINATION_MENU",
+                           name: "alfresco/documentlibrary/AlfDocumentListPaginator",
+                           align: "left"
+                        }
+                     ]
+                  }
+               },
+               {
                   id: "DOCLIB_DOCUMENT_LIST",
                   name: "alfresco/documentlibrary/AlfSitesList",
                   config: {
@@ -46,6 +148,14 @@ model.jsonModel = {
                                  {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                     config: {
+                                       label: "",
+                                       sortable: false,
+                                       sortValue: ""
+                                    }
+                                 },
+                                 {
+                                    name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                    config: {
                                        label: "Name",
                                        sortable: true,
                                        sortValue: "title"
@@ -55,9 +165,16 @@ model.jsonModel = {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                     config: {
                                        label: "Description",
-                                       usedForSort: false,
                                        sortable: true,
                                        sortValue: "description"
+                                    }
+                                 },
+                                 {
+                                    name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                    config: {
+                                       label: "Actions",
+                                       sortable: false,
+                                       sortValue: ""
                                     }
                                  }
                               ],
@@ -66,6 +183,16 @@ model.jsonModel = {
                                     name: "alfresco/documentlibrary/views/layouts/Row",
                                     config: {
                                        widgets: [
+                                          {
+                                             name: "alfresco/documentlibrary/views/layouts/Cell",
+                                             config: {
+                                                widgets: [
+                                                   {
+                                                      name: "alfresco/renderers/Selector"
+                                                   }
+                                                ]
+                                             }
+                                          },
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
@@ -89,6 +216,34 @@ model.jsonModel = {
                                                       config: {
                                                          propertyToRender: "description",
                                                          renderAsLink: false
+                                                      }
+                                                   }
+                                                ]
+                                             }
+                                          },
+                                          {
+                                             name: "alfresco/documentlibrary/views/layouts/Cell",
+                                             config: {
+                                                widgets: [
+                                                   {
+                                                      name: "alfresco/renderers/Actions",
+                                                      config: {
+                                                         customActions: [
+                                                            {
+                                                               label: "Wiew Members",
+                                                               icon : "document-view-content",
+                                                               index: "10",
+                                                               publishTopic : "",
+                                                               type: "javascript"
+                                                            },
+                                                            {
+                                                               label: "Members",
+                                                               icon : "document-delete",
+                                                               index: "20",
+                                                               publishTopic : "",
+                                                               type: "javascript"
+                                                            },
+                                                         ]
                                                       }
                                                    }
                                                 ]
