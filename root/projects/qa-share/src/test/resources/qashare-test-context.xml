@@ -97,60 +97,6 @@
     
     <util:constant id="language" static-field="org.alfresco.webdrone.BrowserPreference.Language" />  
 
-	<util:constant id="downloadFolderList" static-field="org.alfresco.webdrone.BrowserPreference.DownloadFolderList" /> 
-	<util:constant id="downloadDirectory" static-field="org.alfresco.webdrone.BrowserPreference.DownloadDirectory" /> 
-	<util:constant id="saveToDisk" static-field="org.alfresco.webdrone.BrowserPreference.SaveToDisk" /> 
-	
-    <bean id="hybridWebDroneFactoryBean" class="org.alfresco.webdrone.WebDroneFactory" lazy-init="true">
-        <constructor-arg name="defaultWaitTime" value="${webdrone.hybrid.element.wait.time}" />
-        <constructor-arg name="browser" value="${webdrone.hybrid.browser}" />
-        <constructor-arg name="maxPageRenderWaitTime" value="${webdrone.hybrid.page.render.wait.time}" />
-        <constructor-arg name="factoryPage" ref="factoryPage" />
-        <constructor-arg name="properties" ref="poProperties" />
-                <constructor-arg name="preferences">
-            <util:map key-type="org.alfresco.webdrone.BrowserPreference" value-type="java.lang.Object">
-                <entry key-ref="language" value-ref="englishLocale" />
-            </util:map>
-        </constructor-arg>
-        <property name="gridUrl" value="${webdrone.grid.url}" />
-        <property name="chromeServerPath" value="${webdrone.chrome.server.path}" />
-        <property name="ieServerPath" value="${webdrone.ie.server.path}" />
-        <property name="downloadDirectory" value="${webdrone.page.render.wait.time}"/>
-        <property name="mimeTypes" value="${webdrone.download.mime.types}" />
-    </bean>
- 
-	<!--                  -->
-    <!-- WebDrone Factory -->
-    <!--                  -->
-    <bean id="downloadWebDroneFactoryBean" class="org.alfresco.webdrone.WebDroneFactory" lazy-init="true">
-        <constructor-arg name="defaultWaitTime" value="${webdrone.element.wait.time}" />
-        <constructor-arg name="browser" value="${webdrone.browser}" />
-        <constructor-arg name="maxPageRenderWaitTime" value="${webdrone.page.render.wait.time}" />
-        <constructor-arg name="factoryPage" ref="factoryPage" />
-        <constructor-arg name="properties" ref="poProperties" />
-        <constructor-arg name="preferences">
-            <util:map key-type="org.alfresco.webdrone.BrowserPreference" value-type="java.lang.Object">
-                <entry key-ref="downloadFolderList" value="2" />
-                <entry key-ref="downloadDirectory" value="${webdrone.download.directory}"  />
-                <entry key-ref="saveToDisk" value="${webdrone.download.mime.types}" />      
-            </util:map>
-        </constructor-arg>
-        <constructor-arg name="localGrid">
-            <value type="java.lang.Boolean">${webdrone.localGrid}</value>
-        </constructor-arg>
-        <constructor-arg name="grid" ref="grid" />
-        <constructor-arg name="node" ref="node" />
-        <property name="gridUrl" value="${webdrone.grid.url}" />
-        <property name="chromeServerPath" value="${webdrone.chrome.server.path}" />
-        <property name="ieServerPath" value="${webdrone.ie.server.path}" />
-        <property name="downloadDirectory" value="${webdrone.download.directory}"/>
-        <property name="mimeTypes" value="${webdrone.download.mime.types}" />
-    </bean>
-
-    <!--                  -->
-    <!-- WebDrone for hybrid workflows        -->
-    <!--                  -->    
-    <bean id="downloadWebDrone" factory-bean="&amp;downloadWebDroneFactoryBean"
-        lazy-init="true" factory-method="getObject" scope="prototype" destroy-method="quit" />
+    
     
 </beans>
