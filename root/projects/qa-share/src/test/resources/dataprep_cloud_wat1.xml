@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Data Prep Cloud Suite" verbose="1" preserve-order="true" thread-count="5" parallel="classes">
+    <groups>
+        <run>
+            <include name="DataPrep.*" />
+            <exclude name="Enterpris.*" />
+            <exclude name="Hybrid.*" />
+        </run>
+    </groups>
+    <test name="SiteAdminGroupTests Data Prep" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.admin.SiteAdminGroupTests"></class>
+        </classes>
+    </test>
+</suite>
