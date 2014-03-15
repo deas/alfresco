@@ -84,6 +84,16 @@ define(["dojo/_base/declare",
       widgets: null,
       
       /**
+       * This can be set to be a custom message that is displayed when there are no items to
+       * be displayed in the current view.
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      noItemsMessage: null,
+
+      /**
        * Implements the widget life-cycle method to add drag-and-drop upload capabilities to the root DOM node.
        * This allows files to be dragged and dropped from the operating system directly into the browser
        * and uploaded to the location represented by the document list. 
@@ -92,6 +102,17 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_documentlibrary_views_AlfDocumentListView__postCreate() {
          this.inherited(arguments);
+
+         // Allow custom messages to be displayed when no items are available for display...
+         if (this.noItemsMessage == null)
+         {
+            this.noItemsMessage = this.message("doclistview.no.data.message");
+         }
+         else
+         {
+            this.noItemsMessage = this.message(this.noItemsMessage);
+         }
+
          this.addUploadDragAndDrop(this.domNode);
          this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onFilterChange"));
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onDocumentsLoaded"));
@@ -283,7 +304,7 @@ define(["dojo/_base/declare",
       renderNoDataDisplay: function alfresco_documentlibrary_views_AlfDocumentListView__renderNoDataDisplay() {
          this.clearOldView();
          this.messageNode = domConstruct.create("div", {
-            innerHTML: this.message("doclistview.no.data.message")
+            innerHTML: this.noItemsMessage
          }, this.domNode);
       },
 

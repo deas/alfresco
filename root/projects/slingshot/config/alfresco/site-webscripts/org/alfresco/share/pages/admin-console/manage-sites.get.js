@@ -55,6 +55,7 @@ model.jsonModel = {
                         {
                            name: "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
                            config: {
+                              noItemsMessage: msg.get("message.no-sites"),
                               itemKey: "shortName",
                               widgetsForHeader: [
                                  {
