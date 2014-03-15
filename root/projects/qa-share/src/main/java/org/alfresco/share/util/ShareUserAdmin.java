@@ -54,13 +54,15 @@ public class ShareUserAdmin extends AbstractTests
     }
     
     /**     
-     * @param driver WebDriver Instance      
+     * @param driver WebDriver Instance
+     * This method is called when the user is on groups page      
      * Click on browse button in Groups page
      * @return Groups page
      */
     public static GroupsPage browseGroups(WebDrone driver)
     {                 
-        GroupsPage page = navigateToGroup(driver);  
+        GroupsPage page = driver.getCurrentPage().render();
+        //GroupsPage page = navigateToGroup(driver);  
         GroupsPage groupsPage = page.clickBrowse().render(); 
         return groupsPage;
     } 
@@ -73,7 +75,7 @@ public class ShareUserAdmin extends AbstractTests
      * @return Boolean
      */
     
-    public static Boolean isUserGroupMember(WebDrone driver, String fName, String lName, String groupName)
+    public static Boolean isUserGroupMember(WebDrone driver, String fName, String uName, String groupName)
     {
         GroupsPage page = browseGroups(driver);
         GroupsPage groupspage = page.selectGroup(groupName).render();
@@ -84,7 +86,7 @@ public class ShareUserAdmin extends AbstractTests
             if (fName.equals(userProfile.getfName()))
             {
                 // Verify user is present in the members list
-                if (userProfile.getUsername().contains(lName))
+                if (userProfile.getUsername().contains(uName))
                 {
                     return true;
                 }
@@ -102,7 +104,7 @@ public class ShareUserAdmin extends AbstractTests
      */
     
     
-    public static Boolean isUserAdmin(WebDrone driver, String fName, String lName)
+    public static Boolean isUserAdmin(WebDrone driver, String fName, String uName)
     {
         String groupName = "ALFRESCO_ADMINISTRATORS";
         GroupsPage page = browseGroups(driver);
@@ -114,7 +116,7 @@ public class ShareUserAdmin extends AbstractTests
             if (fName.equals(userProfile.getfName()))
             {
                 // Verify user is present in the members list
-                if (userProfile.getUsername().contains(lName))
+                if (userProfile.getUsername().contains(uName))
                 {
                     return true;
                 }

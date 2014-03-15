@@ -23,13 +23,10 @@ package org.alfresco.share.admin;
 * @author Charu
 * 
 */
-import java.util.List;
-
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.GroupsPage;
 import org.alfresco.po.share.RemoveUserFromGroupPage;
 import org.alfresco.po.share.RemoveUserFromGroupPage.Action;
-import org.alfresco.po.share.site.document.UserProfile;
 import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserAdmin;
@@ -38,7 +35,6 @@ import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
@@ -59,30 +55,10 @@ public class SiteAdminGroupTests extends AbstractTests
         super.setup();
         testName = this.getClass().getSimpleName();
 
-    }
+    }   
 
     /**
-     * User logs in before test is executed
-     * 
-     * @throws Exception
-     */
-    @BeforeMethod
-    public void prepare() throws Exception
-    {
-        // no before method
-        try
-        {
-            ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-            logger.info("Create user logged in - drone.");
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-    }
-
-    /**
-     * User logs out before test is executed
+     * User logs out after test is executed
      * 
      * @throws Exception
      */
@@ -112,18 +88,14 @@ public class SiteAdminGroupTests extends AbstractTests
     @Test (groups = "EnterpriseOnly")
     public void ACE_564_02() throws Exception
     {
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-        
-        // Open User dash board page
-        //DashBoardPage dashBoardPage = ShareUser.openUserDashboard(drone);
-        
-        //Navigate to Groups page 
-        //GroupsPage page = dashBoardPage.getNav().getGroupsPage();
-        
-        //Navigate to Add and Edit groups in Groups page
-        //page = page.clickBrowse().render();
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);      
+                
+        //Navigate to Groups pgae
         ShareUserAdmin.navigateToGroup(drone);
+        
+        //Click on browse button in Groups Page
         GroupsPage page = ShareUserAdmin.browseGroups(drone);
+        
         //Verify Site_admin group name is present in the list of Groups
         Assert.assertTrue(page.getGroupList().contains(siteAdmin), "Site Admin Group is present!!");        
     
@@ -133,7 +105,7 @@ public class SiteAdminGroupTests extends AbstractTests
      * Test:
      * <ul>
      * <li>Select the Site_Admin group from the list of Groups in Groups page</li>
-     * <li>Verify Site_Admin is present in the Group Members list</li>
+     * <li>Verify Repo_Admin is present in Site_Admin Group Members list</li>
      * </ul>
      */  
     //cover this test in share po as page object
@@ -141,40 +113,19 @@ public class SiteAdminGroupTests extends AbstractTests
     public void ACE_564_04() throws Exception
     {
         String admin ="Administrator";
-        String lname ="(admin)";
+        String uname ="admin";
         
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-        
-        // Open User dash board page
-        DashBoardPage dashBoard = ShareUser.openUserDashboard(drone);
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);        
         
         //Navigate to Groups page
-        GroupsPage page = dashBoard.getNav().getGroupsPage().render();
+        ShareUserAdmin.navigateToGroup(drone);
         
-        //Navigate to Add and Edit groups in Groups page
-        page = page.clickBrowse().render();
+        //Click on browse button in Groups Page
+        ShareUserAdmin.browseGroups(drone);       
         
-        //Verify Site_admin group name is present in the list of Groups
-        Assert.assertTrue(page.getGroupList().contains(siteAdmin), "Site Admin Group is present!!");
-        
-        Assert.assertTrue(ShareUserAdmin.isUserGroupMember(drone,admin,lname, siteAdmin));        
-        
-        /*//Select site_Admin group from list of groups           
-        GroupsPage groupspage = page.selectGroup(siteAdmin).render();     
-        
-        //Get the user profile for list of users in Groups page
-        List<UserProfile> userProfiles = groupspage.getMembersList();
-        
-        for (UserProfile userProfile : userProfiles)
-        {
-            if(admin.equals(userProfile.getfName()))
-            {                
-                // Verify user is present in Groups page
-                Assert.assertTrue(userProfile.getUsername().contains(lname), "User is present!!");
-               
-            } 
-        }*/
-      
+        //Verify RepoAdmin is the member of siteAdmin group
+        Assert.assertTrue(ShareUserAdmin.isUserGroupMember(drone,admin,uname, siteAdmin));    
+       
     }    
     
     /**
@@ -188,44 +139,30 @@ public class SiteAdminGroupTests extends AbstractTests
      */    
     @Test(groups = "EnterpriseOnly")
     public void ACE_564_06() throws Exception
-    {
-        
+    {        
         String testname = getTestName();
-        String UserName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
+        String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
+        String lName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
+        String uName = getUserNameFreeDomain(testname+ System.currentTimeMillis());           
         
-        //Create User and add to Site Admin group
-        ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, UserName , UserName, UserName, DEFAULT_PASSWORD, siteAdmin);
+        //Login as Admin
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+        
+        //Create User and add to SiteAdmin group
+        ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, fName,lName,uName, DEFAULT_PASSWORD, siteAdmin);
 
         //Login as Admin
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);        
         
-        //Navigate to Dash Board Page
-        //DashBoardPage dashBoard = ShareUser.openUserDashboard(drone);
+        //Navigate to Groups page
+        ShareUserAdmin.navigateToGroup(drone);
         
-        //Navigate to Groups Page
-        //GroupsPage page = dashBoard.getNav().getGroupsPage();
+        //Click on browse button in Groups Page
+        ShareUserAdmin.browseGroups(drone);
         
-        //Navigate to Add and edit Groups page
-        //GroupsPage groupsPage = page.clickBrowse().render(); 
-              
-       
+        //Verify created user is present in siteAdmin group
+        Assert.assertTrue(ShareUserAdmin.isUserGroupMember(drone,fName,uName, siteAdmin));       
         
-        /*//Select Site_admin group from the list of groups
-        GroupsPage groupspage = groupsPage.selectGroup(siteAdmin).render();        
-                
-        //To do call this from Utils
-        //Get the user profile for list of users
-        List<UserProfile> userProfiles = groupspage.getMembersList();
-        
-        for (UserProfile userProfile : userProfiles)
-        {
-            if(testname.equals(userProfile.getfName()))
-            {
-                //Verify created user is present in the members list in groups page
-                Assert.assertTrue(userProfile.getUsername().contains(testname), "User is present!!");
-            }
-        }*/
-
     }
     
     /**
@@ -244,25 +181,25 @@ public class SiteAdminGroupTests extends AbstractTests
     @Test(groups = "EnterpriseOnly")
     public void ACE_564_08() throws Exception
     {
-        String testname = getTestName() + System.currentTimeMillis();        
-        
-        //Create User and add to Site Admin group
-        ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, testname, testname, testname, DEFAULT_PASSWORD, siteAdmin);
+        String testname = getTestName();
+        String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
+        String lName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
+        String uName = getUserNameFreeDomain(testname+ System.currentTimeMillis());         
         
         //Login as RepoAdmin
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);        
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);  
         
-        //Navigate to Dash Board Page
-        DashBoardPage dashBoardPage = ShareUser.openUserDashboard(drone);
+        //Create User and add to Site Admin group
+        ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, fName, lName, uName, DEFAULT_PASSWORD, siteAdmin);
         
-        //Navigate to Groups Page
-        GroupsPage page = dashBoardPage.getNav().getGroupsPage();
+        //Login as RepoAdmin
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);                      
         
-        //Navigate to Add and edit Groups page
-        GroupsPage groupsPage = page.clickBrowse().render();
+        //Navigate to Groups page
+        ShareUserAdmin.navigateToGroup(drone);
         
-        //Verify Site_admin is present in groups list
-        Assert.assertTrue(groupsPage.getGroupList().contains(siteAdmin), "Site Admin Group is present!!");
+        //Click on browse button in Groups Page
+        GroupsPage groupsPage = ShareUserAdmin.browseGroups(drone);        
         
         //Select Site_admin group from the list of groups
         GroupsPage groupspage = groupsPage.selectGroup(siteAdmin).render();
@@ -276,18 +213,9 @@ public class SiteAdminGroupTests extends AbstractTests
         //Confirm Remove user from Group page
         removeUserFromGroupPagegroupspage.selectAction(Action.No).render();
         
-        List<UserProfile> userProfiles = groupspage.getMembersList();
-        
-        for (UserProfile userProfile : userProfiles)
-        {
-            if(testname.equals(userProfile.getfName()))
-            {
-                //Verify user is present  in the members list  
-                Assert.assertTrue(userProfile.getUsername().contains(testname));
-                break;
-            }
-        }    
-                     
+        //Verify created user is present in siteAdmin group
+        Assert.assertTrue(ShareUserAdmin.isUserGroupMember(drone,fName,uName, siteAdmin));  
+                           
     }       
 
     /**
@@ -305,25 +233,25 @@ public class SiteAdminGroupTests extends AbstractTests
     @Test(groups = "EnterpriseOnly")
     public void ACE_564_10() throws Exception
     {
-        String testname = getTestName() + System.currentTimeMillis();
-        
-        //Create User and add to Site Admin group
-        ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, testname, testname, testname, DEFAULT_PASSWORD, siteAdmin);
+        String testname = getTestName();
+        String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
+        String lName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
+        String uName = getUserNameFreeDomain(testname+ System.currentTimeMillis());         
         
         //Login as RepoAdmin
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);        
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);  
         
-        //Navigate to Dash Board Page
-        DashBoardPage dashBoardPage = ShareUser.openUserDashboard(drone); 
+        //Create User and add to Site Admin group
+        ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, fName, lName, uName, DEFAULT_PASSWORD, siteAdmin);
         
-        //Navigate to Groups Page
-        GroupsPage page = dashBoardPage.getNav().getGroupsPage();
+        //Login as RepoAdmin
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);                      
         
-        //Navigate to Add and edit Groups page
-        GroupsPage groupsPage = page.clickBrowse().render();
+        //Navigate to Groups page
+        ShareUserAdmin.navigateToGroup(drone);
         
-        //Verify Site_admin is present in groups list
-        Assert.assertTrue(groupsPage.getGroupList().contains(siteAdmin), "Site Admin Group is present!!");
+        //Click on browse button in Groups Page
+        GroupsPage groupsPage = ShareUserAdmin.browseGroups(drone);        
         
         //Select Site_admin group from the list of groups
         GroupsPage groupspage = groupsPage.selectGroup(siteAdmin).render();
@@ -337,17 +265,8 @@ public class SiteAdminGroupTests extends AbstractTests
         //Confirm Remove user from Group page
         removeUserFromGroupPagegroupspage.selectAction(Action.Yes).render();
         
-        List<UserProfile> userProfiles = groupspage.getMembersList();
-        
-        for (UserProfile userProfile : userProfiles)
-        {
-            if(testname.equals(userProfile.getfName()))
-            {
-                //Verify user is not displayed in the members list  
-                Assert.assertFalse(userProfile.getUsername().contains(testname));
-                break;
-            }
-        }    
+        //Verify created user is present in siteAdmin group
+        Assert.assertFalse(ShareUserAdmin.isUserGroupMember(drone,fName,uName, siteAdmin));        
                      
     }   
     
