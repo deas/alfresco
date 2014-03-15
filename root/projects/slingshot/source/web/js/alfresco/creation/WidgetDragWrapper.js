@@ -22,6 +22,7 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -29,13 +30,14 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/WidgetDragWrapper.html",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "dojo/on",
         "dijit/registry",
         "dojo/_base/lang",
         "dojo/_base/array"], 
-        function(declare, _Widget, _Templated, template, AlfCore, on, registry, lang, array) {
+        function(declare, _Widget, _Templated, template, AlfCore, CoreWidgetProcessing, on, registry, lang, array) {
    
-   return declare([_Widget, _Templated, AlfCore], {
+   return declare([_Widget, _Templated, AlfCore, CoreWidgetProcessing], {
       
       /**
        * An array of the CSS files to use with this widget.

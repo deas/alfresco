@@ -22,6 +22,7 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -30,6 +31,7 @@ define(["dojo/_base/declare",
         "dojo/text!./templates/SlidingTabs.html",
         "dojo/text!./templates/SlidingTabSelector.html",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "alfresco/core/ObjectTypeUtils",
         "dojo/_base/lang",
         "dojo/_base/array",
@@ -42,9 +44,9 @@ define(["dojo/_base/declare",
         "dojo/query",
         "dojo/NodeList-dom",
         "dojo/NodeList-traverse"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, tabTemplate, AlfCore, ObjectTypeUtils, lang, array, on, domGeom, stringUtil, domConstruct, domClass, domStyle, query) {
+        function(declare, _WidgetBase, _TemplatedMixin, template, tabTemplate, AlfCore, CoreWidgetProcessing, ObjectTypeUtils, lang, array, on, domGeom, stringUtil, domConstruct, domClass, domStyle, query) {
    
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
       
       /**
        * An array of the CSS files to use with this widget.

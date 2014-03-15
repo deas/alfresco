@@ -27,12 +27,14 @@
  * 
  * @module alfresco/dialogs/AlfDialog
  * @extends dijit/Dialog
- * @mixes module:Alfresco/core/Core
+ * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
         "dijit/Dialog",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "dojo/_base/lang",
         "dojo/_base/array",
         "dojo/dom-construct",
@@ -40,9 +42,9 @@ define(["dojo/_base/declare",
         "dojo/html",
         "dojo/aspect",
         "dijit/registry"], 
-        function(declare, Dialog, AlfCore, lang, array, domConstruct, domClass, html, aspect, registry) {
+        function(declare, Dialog, AlfCore, CoreWidgetProcessing, lang, array, domConstruct, domClass, html, aspect, registry) {
    
-   return declare([Dialog, AlfCore], {
+   return declare([Dialog, AlfCore, CoreWidgetProcessing], {
       
       /**
        * An array of the CSS files to use with this widget.

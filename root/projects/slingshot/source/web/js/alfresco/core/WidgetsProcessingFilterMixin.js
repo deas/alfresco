@@ -23,16 +23,18 @@
  * 
  * @module alfresco/core/WidgetsProcessingFilterMixin
  * @extends module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "alfresco/core/ObjectTypeUtils",
         "dojo/_base/array",
         "dojo/_base/lang"], 
-        function(declare, AlfCore, ObjectTypeUtils, array, lang) {
+        function(declare, AlfCore, CoreWidgetProcessing, ObjectTypeUtils, array, lang) {
    
-   return declare([AlfCore], {
+   return declare([AlfCore, CoreWidgetProcessing], {
 
       /**
        * Overrides [filterWidget]{@link module:alfresco/core/Core#filterWidget} to check for a "renderFilter" attribute

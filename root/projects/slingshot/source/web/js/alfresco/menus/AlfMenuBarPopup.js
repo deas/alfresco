@@ -21,6 +21,7 @@
  * @module alfresco/menus/AlfMenuBarPopup
  * @extends dijit/PopupMenuBarItem
  * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @mixes module:alfresco/core/CoreRwd
  * @mixes module:alfresco/menus/_AlfPopupCloseMixin
  * @author Dave Draper
@@ -28,15 +29,16 @@
 define(["dojo/_base/declare",
         "dijit/PopupMenuBarItem",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "alfresco/core/CoreRwd",
         "alfresco/menus/_AlfPopupCloseMixin",
         "dojo/dom-construct",
         "dojo/dom-class",
         "alfresco/menus/AlfMenuGroups",
         "service/constants/Default"], 
-        function(declare, PopupMenuBarItem, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, domConstruct, domClass, AlfMenuGroups, AlfConstants) {
+        function(declare, PopupMenuBarItem, AlfCore, CoreWidgetProcessing, AlfCoreRwd, _AlfPopupCloseMixin, domConstruct, domClass, AlfMenuGroups, AlfConstants) {
    
-   return declare([PopupMenuBarItem, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin], {
+   return declare([PopupMenuBarItem, AlfCore, CoreWidgetProcessing, AlfCoreRwd, _AlfPopupCloseMixin], {
       
       /**
        * The scope to use for i18n messages.

@@ -25,6 +25,7 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @mixes module:alfresco/documentlibrary/_AlfDocumentListTopicMixin
  * @author Dave Draper
  */
@@ -33,6 +34,7 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/AlfDocumentFilters.html",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
         "alfresco/documentlibrary/AlfDocumentFilter",
         "dojo/_base/lang",
@@ -40,9 +42,9 @@ define(["dojo/_base/declare",
         "dojo/dom-construct",
         "dojo/dom-class",
         "dojo/on"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template,  AlfCore, _AlfDocumentListTopicMixin, AlfDocumentFilter, lang, array, domConstruct, domClass, on) {
+        function(declare, _WidgetBase, _TemplatedMixin, template,  AlfCore, CoreWidgetProcessing, _AlfDocumentListTopicMixin, AlfDocumentFilter, lang, array, domConstruct, domClass, on) {
 
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, _AlfDocumentListTopicMixin], {
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, _AlfDocumentListTopicMixin], {
       
       /**
        * An array of the i18n files to use with this widget.

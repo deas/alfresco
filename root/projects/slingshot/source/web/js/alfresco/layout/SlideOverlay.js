@@ -29,6 +29,7 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -36,6 +37,7 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/SlideOverlay.html",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "dojo/_base/lang",
         "dojo/_base/array",
         "dojo/on",
@@ -44,9 +46,9 @@ define(["dojo/_base/declare",
         "dojo/dom-style",
         "dojo/fx",
         "dojo/_base/fx"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, array, on, domGeom, domClass, domStyle, coreFx, baseFx) {
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, CoreWidgetProcessing, lang, array, on, domGeom, domClass, domStyle, coreFx, baseFx) {
    
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
       
       /**
        * An array of the CSS files to use with this widget.

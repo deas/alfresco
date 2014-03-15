@@ -27,6 +27,7 @@
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin
  * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -35,6 +36,7 @@ define(["dojo/_base/declare",
         "dojo/text!./templates/Grid.html",
         "alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "dojo/keys",
         "dojo/_base/lang",
         "dojo/_base/array",
@@ -45,9 +47,9 @@ define(["dojo/_base/declare",
         "dijit/registry",
         "dojo/dom",
         "dojo/on"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, _MultiItemRendererMixin, AlfCore, keys, lang, array, domConstruct, domGeom, query, domStyle, registry, dom, on) {
+        function(declare, _WidgetBase, _TemplatedMixin, template, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing, keys, lang, array, domConstruct, domGeom, query, domStyle, registry, dom, on) {
 
-   return declare([_WidgetBase, _TemplatedMixin, _MultiItemRendererMixin, AlfCore], {
+   return declare([_WidgetBase, _TemplatedMixin, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing], {
       
       /**
        * An array of the CSS files to use with this widget.

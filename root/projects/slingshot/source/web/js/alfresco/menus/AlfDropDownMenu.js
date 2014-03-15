@@ -21,19 +21,21 @@
  * @module alfresco/menus/AlfDropDownMenu
  * @extends dijit/DropDownMenu
  * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
         "dijit/DropDownMenu",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "alfresco/menus/AlfMenuItemWrapper",
         "dojo/_base/array",
         "dojo/dom-class",
         "dojo/_base/event",
         "dojo/on"], 
-        function(declare, DropDownMenu, AlfCore, AlfMenuItemWrapper, array, domClass, event, on) {
+        function(declare, DropDownMenu, AlfCore, CoreWidgetProcessing, AlfMenuItemWrapper, array, domClass, event, on) {
    
-   return declare([DropDownMenu, AlfCore], {
+   return declare([DropDownMenu, AlfCore, CoreWidgetProcessing], {
       
       /**
        * An array of the CSS files to use with this widget.

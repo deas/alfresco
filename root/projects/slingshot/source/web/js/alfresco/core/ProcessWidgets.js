@@ -25,18 +25,20 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "dojo/text!./templates/ProcessWidgets.html",
         "dojo/dom-construct",
         "dojo/_base/array"], 
-        function(declare, _Widget, _Templated, AlfCore, template, domConstruct, array) {
+        function(declare, _Widget, _Templated, AlfCore, CoreWidgetProcessing, template, domConstruct, array) {
    
-   return declare([_Widget, _Templated, AlfCore], {
+   return declare([_Widget, _Templated, AlfCore, CoreWidgetProcessing], {
       
       /**
        * The HTML template to use for the widget.

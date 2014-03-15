@@ -22,6 +22,7 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -29,9 +30,10 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/AlfMenuBar.html",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "dojo/_base/array",
         "dijit/MenuBar"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template,  AlfCore, array, MenuBar) {
+        function(declare, _WidgetBase, _TemplatedMixin, template,  AlfCore, CoreWidgetProcessing, array, MenuBar) {
 
    /**
     * This is a customization of the default dijit/MenuBar implementation to allow menu popups to be locked.
@@ -71,7 +73,7 @@ define(["dojo/_base/declare",
       }
    });
    
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
       
       /**
        * The scope to use for i18n messages.

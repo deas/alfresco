@@ -28,11 +28,13 @@
  * @module alfresco/renderers/QuickShare
  * @extends module:alfresco/renderers/Toggle
  * @mixes module:alfresco/services/_QuickShareServiceTopicMixin
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
         "alfresco/renderers/Toggle",
         "alfresco/services/_QuickShareServiceTopicMixin",
+        "alfresco/core/CoreWidgetProcessing",
         "dojo/text!./templates/QuickShare.html",
         "dojo/_base/lang",
         "dojo/_base/array",
@@ -44,9 +46,9 @@ define(["dojo/_base/declare",
         "alfresco/menus/AlfMenuGroup",
         "alfresco/menus/AlfMenuItem",
         "alfresco/menus/AlfMenuTextForClipboard"], 
-        function(declare, Toggle, _QuickShareServiceTopicMixin, template, lang, array, domClass, registry, AlfMenuBar, AlfMenuBarPopup, AlfCascadingMenu, AlfMenuGroup, AlfMenuItem, AlfMenuTextForClipboard) {
+        function(declare, Toggle, _QuickShareServiceTopicMixin, CoreWidgetProcessing, template, lang, array, domClass, registry, AlfMenuBar, AlfMenuBarPopup, AlfCascadingMenu, AlfMenuGroup, AlfMenuItem, AlfMenuTextForClipboard) {
 
-   return declare([Toggle, _QuickShareServiceTopicMixin], {
+   return declare([Toggle, _QuickShareServiceTopicMixin, CoreWidgetProcessing], {
       
       /**
        * An array of the i18n files to use with this widget.

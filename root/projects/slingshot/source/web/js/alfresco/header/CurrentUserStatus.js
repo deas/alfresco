@@ -22,6 +22,7 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -29,13 +30,14 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/CurrentUserStatus.html",
         "alfresco/core/Core",
+        "alfresco/core/TemporalUtils",
         "dojo/_base/lang",
         "dojo/on",
         "dojo/dom-class",
         "alfresco/dialogs/AlfDialog",
         "alfresco/buttons/AlfButton",
         "dijit/form/Textarea"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, on, domClass, AlfDialog, AlfButton, TextArea) {
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, TemporalUtils, lang, on, domClass, AlfDialog, AlfButton, TextArea) {
    
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
       
@@ -204,7 +206,7 @@ define(["dojo/_base/declare",
        */
       setStatusRelativeTime: function alfresco_header_CurrentUserStatus__setStatusRelativeTime()
       {
-         var relativeTime = (this.userStatusTime == "") ? this.message("status.never-updated") : this.getRelativeTime(this.userStatusTime);
+         var relativeTime = (this.userStatusTime == "") ? this.message("status.never-updated") : TemporalUtils.getRelativeTime(this.userStatusTime);
          this.lastUpdateNode.innerHTML = this.message("status.updated", [relativeTime]);
       },
       

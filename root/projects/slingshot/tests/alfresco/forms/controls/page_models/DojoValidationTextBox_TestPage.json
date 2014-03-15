@@ -1,4 +1,15 @@
 {
+   "services": [{
+      name: "alfresco/services/LoggingService",
+      config: {
+         loggingPreferences: {
+            enabled: true,
+            all: true,
+            warn: true,
+            error: true
+         }
+      }
+   }],
    "widgets": [
       {
          "name": "alfresco/forms/Form",

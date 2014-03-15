@@ -20,14 +20,16 @@
 /**
  * @module alfresco/forms/controls/DocumentPicker
  * @extends module:alfresco/forms/controls/BaseFormControl
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["alfresco/forms/controls/BaseFormControl",
+        "alfresco/core/CoreWidgetProcessing",
         "dojo/_base/declare",
         "dojo/_base/lang"], 
-        function(BaseFormControl, declare, lang) {
+        function(BaseFormControl, CoreWidgetProcessing, declare, lang) {
    
-   return declare([BaseFormControl], {
+   return declare([BaseFormControl, CoreWidgetProcessing], {
       
       /**
        * @instance

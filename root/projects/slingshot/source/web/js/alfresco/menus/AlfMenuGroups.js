@@ -23,6 +23,7 @@
  * @mixes dijit/_TemplatedMixin
  * @mixes dijit/_KeyNavContainer
  * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -31,17 +32,18 @@ define(["dojo/_base/declare",
         "dijit/_KeyNavContainer",
         "dojo/text!./templates/AlfMenuGroups.html",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "dojo/keys",
         "dojo/_base/array",
         "alfresco/menus/AlfMenuGroup"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _KeyNavContainer, template, AlfCore, keys, array, AlfMenuGroup) {
+        function(declare, _WidgetBase, _TemplatedMixin, _KeyNavContainer, template, AlfCore, CoreWidgetProcessing, keys, array, AlfMenuGroup) {
    
    /**
     * This class has been created to act as the main container for the popup referenced by "alfresco/menus/AlfMenuBarPopup".
     * It currently just acts as a container object but is intended to allow instances of "alfresco/menus/AlfMenuGroup" to be
     * added into a menu bar popup.
     */
-   return declare([_WidgetBase, _TemplatedMixin, _KeyNavContainer, AlfCore], {
+   return declare([_WidgetBase, _TemplatedMixin, _KeyNavContainer, AlfCore, CoreWidgetProcessing], {
       
       /**
        * The HTML template to use for the widget.

@@ -24,6 +24,7 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -32,15 +33,16 @@ define(["dojo/_base/declare",
         "dijit/form/Form",
         "dojo/_base/xhr",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "dojo/text!./templates/Form.html",
         "dojo/_base/lang",
         "alfresco/buttons/AlfButton",
         "dojo/_base/array",
         "dojo/json",
         "dijit/registry"], 
-        function(declare, _Widget, _Templated, Form, xhr, AlfCore, template, lang, AlfButton, array, json, registry) {
+        function(declare, _Widget, _Templated, Form, xhr, AlfCore, CoreWidgetProcessing, template, lang, AlfButton, array, json, registry) {
    
-   return declare([_Widget, _Templated, AlfCore], {
+   return declare([_Widget, _Templated, AlfCore, CoreWidgetProcessing], {
       
       /**
        * An array of the i18n files to use with this widget.

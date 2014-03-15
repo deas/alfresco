@@ -20,15 +20,17 @@
 /**
  * @module alfresco/forms/controls/MultipleEntryFormControl
  * @extends alfresco/forms/controls/BaseFormControl
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["alfresco/forms/controls/BaseFormControl",
         "dojo/_base/declare",
         "alfresco/forms/controls/MultipleEntryCreator",
+        "alfresco/core/CoreWidgetProcessing",
         "dojo/aspect"], 
-        function(BaseFormControl, declare, MultipleEntryCreator, aspect) {
+        function(BaseFormControl, declare, MultipleEntryCreator, CoreWidgetProcessing, aspect) {
    
-   return declare([BaseFormControl], {
+   return declare([BaseFormControl, CoreWidgetProcessing], {
       
       /**
        * @instance

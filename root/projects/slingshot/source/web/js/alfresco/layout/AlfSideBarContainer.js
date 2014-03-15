@@ -22,6 +22,7 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -30,6 +31,7 @@ define(["dojo/_base/declare",
         "alfresco/services/_PreferenceServiceTopicMixin",
         "dojo/text!./templates/AlfSideBarContainer.html",
         "alfresco/core/Core",
+        "alfresco/core/CoreWidgetProcessing",
         "dijit/layout/BorderContainer",
         "dojo/_base/lang",
         "dojo/_base/array",
@@ -38,9 +40,9 @@ define(["dojo/_base/declare",
         "dojo/on",
         "dojo/dom-geometry",
         "dojo/window"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _PreferenceServiceTopicMixin, template, AlfCore, BorderContainer, lang, array, domStyle, domClass, on, domGeom, win) {
+        function(declare, _WidgetBase, _TemplatedMixin, _PreferenceServiceTopicMixin, template, AlfCore, CoreWidgetProcessing, BorderContainer, lang, array, domStyle, domClass, on, domGeom, win) {
    
-   return declare([_WidgetBase, _TemplatedMixin, _PreferenceServiceTopicMixin, AlfCore], {
+   return declare([_WidgetBase, _TemplatedMixin, _PreferenceServiceTopicMixin, AlfCore, CoreWidgetProcessing], {
       
       /**
        * An array of the CSS files to use with this widget.
