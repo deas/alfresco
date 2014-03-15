@@ -32,8 +32,9 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "dojo/_base/lang",
         "dojo/dom-class",
-        "dijit/Tooltip"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domClass, Tooltip) {
+        "dojo/query",
+        "alfresco/menus/AlfTooltip"], 
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domClass, query, AlfTooltip) {
 
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
 
@@ -266,14 +267,15 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * This controls the display of a tool tip against the header cell.
+       * This controls the display of a tool tip against the header cell label.
        *
        * @instance
        */
       addToolTipMsg: function alfresco_documentlibrary_views_layouts_HeaderCell__addToolTipMsg() {
-         Tooltip.defaultPosition=['above-centered', 'below-centered'];
-         var tip = new Tooltip({
-            connectId: [this.domNode],
+         // Find the .label item within the domNode
+         var labelNode = query(".label", this.domNode);
+         var tip = new AlfTooltip({
+            connectId: [labelNode],
             label: this.message(this.toolTipMsg),
             showDelay: 250
          });
