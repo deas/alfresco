@@ -172,6 +172,13 @@ model.jsonModel = {
                                  {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                     config: {
+                                       label: "Visibility",
+                                       sortable: false
+                                    }
+                                 },
+                                 {
+                                    name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                    config: {
                                        label: "Actions",
                                        sortable: false,
                                        sortValue: ""
@@ -226,18 +233,38 @@ model.jsonModel = {
                                              config: {
                                                 widgets: [
                                                    {
+                                                      name: "alfresco/renderers/PublishingDropDownMenu",
+                                                      config: {
+                                                         propertyToRender: "visibility",
+                                                         optionsConfig: {
+                                                            fixed: [
+                                                               {label: "Public", value: "PUBLIC"},
+                                                               {label: "Moderated", value: "MODERATED"},
+                                                               {label: "Private", value: "PRIVATE"}
+                                                            ]
+                                                         }
+                                                      }
+                                                   }
+                                                ]
+                                             }
+                                          },
+                                          {
+                                             name: "alfresco/documentlibrary/views/layouts/Cell",
+                                             config: {
+                                                widgets: [
+                                                   {
                                                       name: "alfresco/renderers/Actions",
                                                       config: {
                                                          customActions: [
                                                             {
-                                                               label: "Wiew Members",
+                                                               label: "View Members",
                                                                icon : "document-view-content",
                                                                index: "10",
                                                                publishTopic : "",
                                                                type: "javascript"
                                                             },
                                                             {
-                                                               label: "Members",
+                                                               label: "Delete Site",
                                                                icon : "document-delete",
                                                                index: "20",
                                                                publishTopic : "",

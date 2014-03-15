@@ -56,6 +56,7 @@ define(["dojo/_base/declare",
          lang.mixin(this, args);
          this.alfSubscribe("ALF_GET_SITES", lang.hitch(this, "getSites"));
          this.alfSubscribe("ALF_GET_SITE_DETAILS", lang.hitch(this, "getSiteDetails"));
+         this.alfSubscribe("ALF_UPDATE_SITE_DETAILS", lang.hitch(this, "updateSite"));
          this.alfSubscribe("ALF_BECOME_SITE_MANAGER", lang.hitch(this, "becomeSiteManager"));
          this.alfSubscribe("ALF_JOIN_SITE", lang.hitch(this, "joinSite"));
          this.alfSubscribe("ALF_REQUEST_SITE_MEMBERSHIP", lang.hitch(this, "requestSiteMembership"));
@@ -160,6 +161,30 @@ define(["dojo/_base/declare",
          }
       },
       
+      /**
+       * This function handles requests to update a specific site
+       *
+       * @instance
+       * @param {object} payload Details of the update
+       */
+      updateSite: function alfresco_services_SiteService__updateSite(payload) {
+
+         var shortName = lang.getObject("shortName", false, payload);
+         if (shortName != null)
+         {
+            var url = AlfConstants.PROXY_URI + "api/sites/" + shortName;
+            this.serviceXhr({
+               url: url,
+               method: "PUT",
+               data: payload
+            });
+         }
+         else
+         {
+            this.alfLog("warn", "A request was made to update a site but no 'shortName' attribute was provided", payload, this);
+         }
+      },
+
       /**
        * Handles requesting that a site be made a favourite.
        * 
