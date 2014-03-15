@@ -44,7 +44,7 @@ public class GroupPageTest extends AbstractTest
     @BeforeClass(groups = "Enterprise-only")
     public void setup() throws Exception
     {
-        dashBoard = loginAs("admin", "admin");
+        dashBoard = loginAs(username, password);
     }
 
     @Test(groups = "Enterprise-only")
@@ -54,8 +54,7 @@ public class GroupPageTest extends AbstractTest
         page = page.clickBrowse().render();
         NewGroupPage newGroupPage = page.navigateToNewGroupPage().render();
         page = newGroupPage.createGroup(groupName, groupName, ActionButton.CREATE_GROUP).render();
-        Assert.assertTrue(page.getGroupList().contains(groupName), "Group is created!!");
-       
+        Assert.assertTrue(page.getGroupList().contains(groupName), String.format("Group: %s can not be found", groupName));       
     }
     
     @Test(groups = "Enterprise-only")
