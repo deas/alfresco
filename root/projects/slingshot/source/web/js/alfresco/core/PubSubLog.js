@@ -54,9 +54,9 @@ define(["dojo/_base/declare",
          };
 
          // Send details to the console to enable better filter, searching and clearing.
-         if (lang.isFunction(console.debug)) {
-            console.debug(entry);
-         }
+         // if (lang.isFunction(console.debug)) {
+         //    console.debug(entry);
+         // }
 
          this.addEntry(entry);
       },

@@ -28,16 +28,15 @@
  * @author Dave Draper
  */
 define(["alfresco/core/Page",
-        "alfresco/core/WidgetsProcessingFilterMixin",
         "alfresco/core/CoreXhr",
         "dojo/_base/declare",
         "dojo/_base/array",
         "dojo/_base/lang",
         "alfresco/core/ObjectTypeUtils",
         "service/constants/Default"], 
-        function(ProcessWidgets, WidgetsProcessingFilterMixin, CoreXhr, declare, array, lang, ObjectTypeUtils, AlfConstants) {
+        function(ProcessWidgets, CoreXhr, declare, array, lang, ObjectTypeUtils, AlfConstants) {
    
-   return declare([ProcessWidgets, CoreXhr, WidgetsProcessingFilterMixin], {
+   return declare([ProcessWidgets, CoreXhr], {
       
       /**
        * 
@@ -121,7 +120,7 @@ define(["alfresco/core/Page",
        * @param {number} index The index of the widget in its original array
        */
       filterPageWidget: function alfresco_core_FilteredPage__filterPageWidget(filteredWidgets, widget, index) {
-         var passesFilter = this.filterWidget(widget);
+         var passesFilter = this.filterWidget(widget, index, false);
          if (passesFilter)
          {
             this.alfLog("log", "Widget PASSES page filtering", widget);
