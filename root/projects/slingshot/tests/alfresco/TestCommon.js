@@ -57,7 +57,21 @@ define(["intern/dojo/node!fs",
        * @param {string} fileName The path to the file containing the page model to be loaded.
        */
       loadPageModel: function(fileName) {
-         return fs.readFileSync(fileName, 'utf-8');
+         var fileContent;
+         try
+         {
+            fileContent = fs.readFileSync(fileName, 'utf-8');
+         }
+         catch (e)
+         {
+            console.log("############################################");
+            console.log("#                                          #");
+            console.log("# AN ERROR OCCURRED READING THE PAGE MODEL #");
+            console.log("#                                          #");
+            console.log("############################################");
+            console.log(e);
+         }
+         return fileContent;
       },
 
       /**
@@ -74,14 +88,27 @@ define(["intern/dojo/node!fs",
       bootstrapTest: function(browser, testPageDefinitionFile) {
 
          // Set an implicit timeout of 10 seconds
-    	 // This allows us to use "elementBy..." calls rather than a "waitForElementBy..." which is more efficient...
-         browser.setImplicitWaitTimeout(10000);
+         // This allows us to use "elementBy..." calls rather than a "waitForElementBy..." which is more efficient...
+         browser.setImplicitWaitTimeout(1000);
          browser.setPageLoadTimeout(10000);
          browser.setAsyncScriptTimeout(10000);
 
          // Load the model definition file
          // It's necessary to remove any carriage returns and new line characters from the page model otherwise the eval statement will cause an error...
-         var pageModel = (this.loadPageModel(testPageDefinitionFile)).replace(/[\n\r]/g, "");
+         var pageModel;
+         try
+         {
+            pageModel = (this.loadPageModel(testPageDefinitionFile)).replace(/[\n\r]/g, "");
+         }
+         catch (e)
+         {
+            console.log("###############################################");
+            console.log("#                                             #");
+            console.log("# AN ERROR OCCURRED PROCESSING THE PAGE MODEL #");
+            console.log("#                                             #");
+            console.log("###############################################");
+            console.log(e);
+         }
 
          return browser.get(this.bootstrapUrl())
 

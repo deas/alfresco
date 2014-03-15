@@ -164,10 +164,9 @@ define(["dojo/_base/declare",
        * @param widgets The widgets that have been successfully instantiated.
        */
       allWidgetsProcessed: function alfresco_menus_AlfMenuBar__allWidgetsProcessed(widgets) {
-         var _this = this;
          array.forEach(widgets, function(entry, i) {
-            _this._menuBar.addChild(entry);
-         });
+            this._menuBar.addChild(entry);
+         }, this);
          this._menuBar.placeAt(this.containerNode);
       }
    });

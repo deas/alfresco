@@ -80,7 +80,7 @@ define(["dojo/_base/declare",
        * @param {number} index The index of the widget configuration in the array that it was taken from
        */
       processWidget: function alfresco_core_CoreWidgetProcessing__processWidget(rootNode, widgetConfig, index) {
-         if (this.filterWidget(widgetConfig, index))
+         if (widgetConfig != null && this.filterWidget(widgetConfig, index))
          {
             var domNode = this.createWidgetDomNode(widgetConfig, rootNode, widgetConfig.className);
             this.createWidget(widgetConfig, domNode, this._registerProcessedWidget, this, index);
@@ -117,17 +117,26 @@ define(["dojo/_base/declare",
        */
       _registerProcessedWidget: function alfresco_core_CoreWidgetProcessing___registerProcessedWidget(widget, index) {
          this._processedWidgetCountdown--;
-         if (index == null || isNaN(index))
+         this.alfLog("log", "Widgets expected: ", this._processedWidgetCountdown);
+         if (widget != null)
          {
-            this._processedWidgets.push(widget);
-         }
-         else
-         {
-            this._processedWidgets[index] = widget;
+            if (index == null || isNaN(index))
+            {
+               this._processedWidgets.push(widget);
+            }
+            else
+            {
+               this._processedWidgets[index] = widget;
+            }
          }
          
          if (this._processedWidgetCountdown == 0)
          {
+            // Double-check that no empty elements are in the array of processed widgets...
+            // This could still be possible when indices have been used to set array contents...
+            this._processedWidgets = array.filter(this._processedWidgets, function(item) {
+               return item != null;
+            }, this);
             this.allWidgetsProcessed(this._processedWidgets);
             this.widgetProcessingComplete = true;
          }
@@ -318,13 +327,9 @@ define(["dojo/_base/declare",
          }
          if (!shouldRender && decrementCounter !== false)
          {
-            this.alfLog("log", "Widget filtering FAIL, decrementing counter", widgetConfig, this);
-            this._processedWidgetCountdown--;
-            if (this._processedWidgetCountdown == 0)
-            {
-               this.allWidgetsProcessed(this._processedWidgets);
-               this.widgetProcessingComplete = true;
-            }
+            // It is not always necessary to call the _registerProcessedWidget. This is relevant for widgets
+            // that work through an entire model before performing any processing (e.g. alfresco/core/FilteredPage)
+            this._registerProcessedWidget(null, index);
          }
          return shouldRender;
       },
@@ -344,14 +349,15 @@ define(["dojo/_base/declare",
                 renderFilterValues = this.getRenderFilterValues(renderFilterConfig);
             passesFilter = array.some(renderFilterValues, lang.hitch(this, "processFilter", renderFilterConfig, renderFilterProperty));
          }
-         else if (renderFilterConfig.renderOnAbsentProperty === undefined || renderFilterConfig.renderOnAbsentProperty == true)
+         else if (renderFilterConfig.renderOnAbsentProperty == true)
          {
             passesFilter = true;
          }
          else
          {
-            this.alfLog("warn", "A request was made to filter a widget but the configured filter is not a property of the current item", this, renderFilterConfig);
+            passesFilter = false;
          }
+         this.alfLog("log", "Render filter result", passesFilter, this.currentItem, renderFilterConfig);
          return passesFilter;
       },
       

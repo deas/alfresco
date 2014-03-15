@@ -40,6 +40,8 @@ define({
     */
    baseFunctionalSuites: ['tests/alfresco/accessibility/AccessibilityMenuTest',
 
+                          'tests/alfresco/core/RenderFilterTest',
+
                           'tests/alfresco/documentlibrary/views/AlfDocumentListWithHeaderTest',
 
                           'tests/alfresco/forms/controls/DocumentPickerTest',
