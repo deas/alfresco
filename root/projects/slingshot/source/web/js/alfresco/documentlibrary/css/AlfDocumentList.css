@@ -1,5 +1,6 @@
 .alfresco-documentlibrary-AlfDocumentList {
-   $theme-widget-box-1
+   border: none;
+   margin: 0;
 }
 
 .alfresco-documentlibrary-AlfDocumentList .info {

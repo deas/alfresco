@@ -1,24 +1,25 @@
-.alfresco-documentlibrary-AlfDocumentList, .alfresco-documentlibrary-views-layouts-AlfDocumentListView {
-   
-}
-
 .alfresco-documentlibrary-views-layouts-AlfDocumentListView > table {
-   $theme-widget-table-1
+   width: 100%;
+   border-collapse: collapse;
+   border-spacing: 0;
+   border: none;
 }
 
 .alfresco-documentlibrary-views-layouts-AlfDocumentListView table tr:nth-child(even) {
-   $theme-widget-bg-3
+   background-color: @docListEvenRowColour;
 }
 
 .alfresco-documentlibrary-views-layouts-AlfDocumentListView table tr:nth-child(odd) {
-   $theme-widget-bg-2
+   background-color: @docListOddRowColour;
 }
 
 .alfresco-documentlibrary-views-layouts-AlfDocumentListView td {
-   border-top: $theme-widget-border-1;
-   border-bottom: $theme-widget-border-1;
-   border-right: $theme-widget-border-1;
-   $theme-widget-td-1
+   border-top: 1px solid @docListBorderColour;
+   border-bottom: 1px solid @docListBorderColour;
+   border-right: 1px solid @docListBorderColour;
+   padding: 10px;
+   margin: 0;
+   vertical-align: top;
 }
 
 .alfresco-documentlibrary-views-layouts-AlfDocumentListView td.last {
@@ -26,5 +27,6 @@
 }
 
 .alfresco-documentlibrary-views-layouts-AlfDocumentListView.dndHighlight {
-   $theme-widget-dnd-highlight
+   outline: 2px solid @docListDndHighlight;
+   outline-offset: -2px;
 }

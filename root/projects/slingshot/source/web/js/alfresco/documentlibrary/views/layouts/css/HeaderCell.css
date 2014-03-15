@@ -1,9 +1,11 @@
 th.alfresco-documentlibrary-views-layouts-HeaderCell {
-   $theme-widget-bg-1
-   border-top: $theme-widget-border-1;
-   border-bottom: $theme-widget-border-1;
-   border-right: $theme-widget-border-1;
-   $theme-widget-th-1
+   background-color: @docListHeaderBgColour;
+   border-top: 1px solid @docListBorderColour;
+   border-bottom: 1px solid @docListBorderColour;
+   border-right: 1px solid @docListBorderColour;
+   padding: 10px;
+   margin: 0;
+   vertical-align: middle;
 }
 
 th.alfresco-documentlibrary-views-layouts-HeaderCell.last {

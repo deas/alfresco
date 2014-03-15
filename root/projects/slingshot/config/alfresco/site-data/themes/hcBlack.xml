@@ -3,6 +3,15 @@
    <title>High Contrast Theme</title>
    <title-id>theme.hcBlack</title-id>
    <css-tokens>
+
+      <less-variables>
+      @docListHeaderBgColour: #f2f2f2;
+      @docListOddRowColour: #fff;
+      @docListEvenRowColour: #f7f7f7;
+      @docListBorderColour: #e3e3e3;
+      @docListDndHighlight: #4F94C9;
+      </less-variables>
+
       <theme-font-family-1>arial,helvetica,clean,sans-serif</theme-font-family-1>
       <theme-font-family-2>arial,helvetica,clean,sans-serif</theme-font-family-2>
       <theme-font-family-3>arial,helvetica,clean,sans-serif</theme-font-family-3>
@@ -38,15 +47,5 @@
       <!-- New theme tokens -->
       <button>background-image: none;background-color: #ffffff; border-color: #000000;border-style: solid;border-width: 1px 0;margin: auto 0.25em;color:#000000;</button>
 
-      <!-- New widget tokens -->
-      <theme-widget-bg-1>background-color: #f2f2f2;</theme-widget-bg-1>
-      <theme-widget-bg-2>background-color: #fff;</theme-widget-bg-2>
-      <theme-widget-bg-3>background-color: #f7f7f7;</theme-widget-bg-3>
-      <theme-widget-border-1>1px solid #e3e3e3</theme-widget-border-1>
-      <theme-widget-table-1>width: 100%; border-collapse: collapse; border-spacing: 0; border: none;</theme-widget-table-1>
-      <theme-widget-th-1>padding: 10px; margin: 0; vertical-align: middle;</theme-widget-th-1>
-      <theme-widget-td-1>padding: 10px; margin: 0; vertical-align: top;</theme-widget-td-1>
-      <theme-widget-box-1>border: none; margin: 0;</theme-widget-box-1>
-      <theme-widget-dnd-highlight>outline: 2px solid #4F94C9; outline-offset: -2px;</theme-widget-dnd-highlight>
    </css-tokens>
 </theme>
