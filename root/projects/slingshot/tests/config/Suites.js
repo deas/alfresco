@@ -38,8 +38,7 @@ define({
     * @instance
     * @type [string]
     */
-   baseFunctionalSuites: ['tests/alfresco/CodeCoverageBalancer',
-                          'tests/alfresco/forms/controls/DocumentPickerTest',
+   baseFunctionalSuites: ['tests/alfresco/forms/controls/DocumentPickerTest',
                           'tests/alfresco/forms/controls/DojoSelectTest',
                           'tests/alfresco/forms/controls/DojoValidationTextBoxTest',
                           'tests/alfresco/layout/BasicLayoutTest',
@@ -53,7 +52,8 @@ define({
                           'tests/alfresco/menus/AlfMenuTextForClipboardTest',
                           'tests/alfresco/menus/AlfMenuItemWrapperTest',
                           'tests/alfresco/menus/AlfVerticalMenuBarTest',
-                          'tests/alfresco/forms/controls/FormButtonDialogTest'],
+                          'tests/alfresco/forms/controls/FormButtonDialogTest',
+                          'tests/alfresco/menus/AlfTooltipTest'],
 
    /**
     * This is the array of functional test suites that should only be applied to local tests
@@ -61,7 +61,7 @@ define({
     * @instance
     * @type [string]
     */
-   localOnlyFunctionalSuites: [],
+   localOnlyFunctionalSuites: ['tests/alfresco/CodeCoverageBalancer'],
 
    /**
     * This is the full array of functional test suites for local tests
@@ -79,7 +79,7 @@ define({
     * @instance
     * @type [string]
     */
-   vmOnlyFunctionalSuites: [],
+   vmOnlyFunctionalSuites: ['tests/alfresco/CodeCoverageBalancer'],
 
    /**
     * This is the full array of functional test suites for virtual machine tests

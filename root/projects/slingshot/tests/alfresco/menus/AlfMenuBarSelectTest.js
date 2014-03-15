@@ -36,45 +36,53 @@ define(["intern!object",
          var browser = this.remote;
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfMenuBarSelect_TestPage.json")
 
+            .end()
+         
             // Test #1
             // Check that the subscriptions are set-up correctly
             .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT"))
             .then(function(result) {
                assert(result == true, "Test #1 - A subscription for the basic widget could not be found");
             })
+            .end()
+
             .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT_VALUE"))
             .then(function(result) {
                assert(result == true, "Test #1 - A subcription for the widget that displays selected values could not be found");
             })
+            .end()
+
             .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT_WITH_ICONS"))
             .then(function(result) {
                assert(result == true, "Test #1 - A subcription for the widget that displays icons could not be found");
             })
+            .end()
 
             // Test #2
             // Check the initial labels are correctly displayed...
-            .end()
             .elementByCss("#MENU_BAR_SELECT_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Select (label)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
             })
             .end()
+
             .elementByCss("#MENU_BAR_SELECT_VALUE_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Select (value)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
             })
             .end()
+
             .elementByCss("#MENU_BAR_SELECT_WITH_ICON_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Select (show icon)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
             })
+            .end()
 
             // Test #3
             // Use the keyboard to test label set (using label)...
-            .end()
             .keys(specialKeys["Tab"])
             .keys(specialKeys["Down arrow"])
             .sleep(1000)
@@ -84,20 +92,22 @@ define(["intern!object",
                assert(result == true, "Test #3 - Keyboard selection of 'Option 1' didn't publish correctly (missing topic)");
             })
             .end()
+
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "label", "Option 1 Selected"))
             .then(function(result) {
                assert(result == true, "Test #3 - Keyboard selection of 'Option 1' didn't publish correctly (incorrect 'label' payload attribute");
             })
             .end()
+
             .elementByCss("#MENU_BAR_SELECT_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Option 1 Selected", "Test #3 - The label was not updated correctly: " + resultText);
             })
+            .end()
 
             // Test #4
             // Use the keyboard to test label set (using value)...
-            .end()
             .keys(specialKeys["Right arrow"])
             .sleep(1000)
             .keys(specialKeys["Return"])
@@ -106,16 +116,19 @@ define(["intern!object",
                assert(result == true, "Test #4 - Keyboard selection of 'Option 1' didn't publish correctly (missing topic)");
             })
             .end()
+
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "Alpha"))
             .then(function(result) {
                assert(result == true, "Test #4 - Keyboard selection of 'Alpha' didn't publish correctly (incorrect 'value' payload attribute");
             })
             .end()
+
             .elementByCss("#MENU_BAR_SELECT_VALUE_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Alpha", "Test #4 - The label was not updated correctly (to use a value): " + resultText);
             })
+            .end()
 
             // Test #5
             // Use the keyboard to test label set (using icons)...
@@ -123,57 +136,69 @@ define(["intern!object",
 
             // Test #6
             // Use the mouse to test label set (using label)...
-            .end()
             .elementByCss("#MENU_BAR_SELECT")
                .moveTo()
+               .sleep(500)
                .click()
+               .sleep(500)
                .end()
             .elementByCss("#SELECT_MENU_ITEM_2")
                .moveTo()
+               .sleep(500)
                .click()
+               .sleep(500)
                .end()
             .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT", "publish", "last"))
             .then(function(result) {
                assert(result == true, "Test #6 - Mouse selection of 'Option 2' didn't publish correctly (missing topic)");
             })
             .end()
+
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "label", "Option 2 Selected"))
             .then(function(result) {
                assert(result == true, "Test #6 - Mouse selection of 'Option 2' didn't publish correctly (incorrect 'label' payload attribute)");
             })
             .end()
+
             .elementByCss("#MENU_BAR_SELECT_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Option 2 Selected", "Test #6 - The label was not updated correctly: " + resultText);
             })
+            .end()
 
             // Test #6
             // Use the mouse to test label set (using label)...
-            .end()
             .elementByCss("#MENU_BAR_SELECT_VALUE")
                .moveTo()
+               .sleep(500)
                .click()
+               .sleep(500)
                .end()
             .elementByCss("#SELECT_MENU_ITEM_4")
                .moveTo()
+               .sleep(500)
                .click()
+               .sleep(500)
                .end()
             .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT_VALUE", "publish", "last"))
             .then(function(result) {
                assert(result == true, "Test #6 - Mouse selection of 'Beta' didn't publish correctly (missing topic)");
             })
             .end()
+
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "Beta"))
             .then(function(result) {
                assert(result == true, "Test #6 - Mouse selection of 'Beta' didn't publish correctly (incorrect 'value' payload attribute)");
             })
             .end()
+
             .elementByCss("#MENU_BAR_SELECT_VALUE_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Beta", "Test #6 - The label was not updated correctly: " + resultText);
             })
+            .end()
 
             // Test #7
             // Use the mouse to test label set (using icon)...
@@ -181,35 +206,40 @@ define(["intern!object",
 
             // Test #8
             // Set the label using an external publication...
-            .end()
+            
             .elementByCss("#SET_WITH_LABEL_label")
                .moveTo()
+               .sleep(500)
                .click()
+               .sleep(500)
                .end()
             .elementByCss("#MENU_BAR_SELECT_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Alternative Label", "Test #8 - The label was not updated correctly by an external publication: " + resultText);
             })
+            .end()
 
             // Test #9
             // Set the label using an external publication...
-            .end()
             .elementByCss("#SET_WITH_VALUE_label")
                .moveTo()
+               .sleep(500)
                .click()
+               .sleep(500)
                .end()
             .elementByCss("#MENU_BAR_SELECT_VALUE_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Alternative Value", "Test #9 - The label was not updated correctly by an external publication: " + resultText);
             })
+            .end()
 
             // Post the coverage results...
             .then(function() {
                TestCommon.postCoverageResults(browser);
             })
-            ;
+            .end();
       }
    });
 });

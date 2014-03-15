@@ -32,6 +32,15 @@ define({
     * @type {string}
     * @default "http://localhost:8081"
     */
-   bootstrapBaseUrl: "http://localhost:8081"
+   bootstrapBaseUrl: "http://localhost:8081",
+
+   /**
+    * Should this process run the coverage report submission?
+    *
+    * @instance
+    * @type {boolean}
+    * @default true
+    */
+   doCoverageReport: true
 
 });

@@ -35,10 +35,14 @@ define(["intern!object",
 
          var browser = this.remote;
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/page_models/RequireEverything.json")
+
+            .end()
+
             // Post the coverage results...
             .then(function() {
                TestCommon.postCoverageResults(browser);
-            });
+            })
+            .end();
       }
    });
 });

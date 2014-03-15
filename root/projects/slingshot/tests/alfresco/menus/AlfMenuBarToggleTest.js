@@ -188,7 +188,7 @@ define(["intern!object",
             .then(function() {
                TestCommon.postCoverageResults(browser);
             })
-            ;
+            .end();
       }
    });
 });

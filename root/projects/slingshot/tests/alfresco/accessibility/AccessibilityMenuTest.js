@@ -106,7 +106,8 @@ define(["intern!object",
          // Post the coverage results...
          .then(function() {
             TestCommon.postCoverageResults(browser);
-         });
+         })
+         .end();
       }
    });
 });

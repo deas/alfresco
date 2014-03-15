@@ -1,0 +1,32 @@
+{
+   "widgets": [
+      {
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "id": "TEST_BUTTON",
+            "label": "Test Button"
+         }
+      },
+      {
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "id": "TEST_BUTTON_TWO",
+            "label": "Test Button Two"
+         }
+      },
+      {
+         "name": "alfresco/menus/AlfTooltip",
+         "config": {
+            "connectId": "TEST_BUTTON",
+            "label": "This is the test button",
+            "showDelay": 250
+         }
+      },
+      {
+         "name": "alfresco/testing/SubscriptionLog"
+      },
+      {
+         "name": "alfresco/testing/TestCoverageResults"
+      }
+   ]
+}

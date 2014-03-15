@@ -72,36 +72,37 @@ define(["intern/dojo/node!fs",
        * @returns {promise} The promise for continuing the unit test.
        */
       bootstrapTest: function(browser, testPageDefinitionFile) {
-         var pageModel = this.loadPageModel(testPageDefinitionFile);
-         // console.log("Testing against url: " + this.bootstrapUrl());
 
-         // Set an implicit timeout - this allows us to use the "elementBy..." call rather than a
-         // "waitForElementBy..." which is more efficient...
-         browser.setImplicitWaitTimeout(5000);
-         
-         var pageModel = this.loadPageModel(testPageDefinitionFile);
+         // Set an implicit timeout of 10 seconds
+    	 // This allows us to use "elementBy..." calls rather than a "waitForElementBy..." which is more efficient...
+         browser.setImplicitWaitTimeout(10000);
+         browser.setPageLoadTimeout(10000);
+         browser.setAsyncScriptTimeout(10000);
 
-         // It's necessary to remove any carriage returns and new line characters from the page model
-         // otherwise the eval statement will cause an error...
-         pageModel = pageModel.replace(/[\n\r]/g, "");
+         // Load the model definition file
+         // It's necessary to remove any carriage returns and new line characters from the page model otherwise the eval statement will cause an error...
+         var pageModel = (this.loadPageModel(testPageDefinitionFile)).replace(/[\n\r]/g, "");
+
          return browser.get(this.bootstrapUrl())
-            .elementByCss('.alfresco-core-Page.allWidgetsProcessed')
-            .safeEval("dijit.registry.byId('UNIT_TEST_MODEL_FIELD').setValue('" + pageModel + "');'set';")
-            .then(function(result) {
-               // console.log("Page model set, loading test page...");
-            })
-            .end()
-            // It's necessary to type an additional space into the text area to ensure that the 
-            // text area field validates and populates the form model with the data to be published...
-            .elementByCss('#UNIT_TEST_MODEL_FIELD>DIV.control>TEXTAREA')
-               .type(" ")
-               .end()
-            // Find and click on the test button to load the test page...
-            .elementByCss("#LOAD_TEST_BUTTON")
-               .click()
-               .sleep(500) // This sleep appears to be needed to prevent errors, but ideally it woudn't be here :(
-               .end()
-               .elementByCss('.alfresco-core-Page.allWidgetsProcessed', 5000)
+
+         .elementByCss('.alfresco-core-Page.allWidgetsProcessed')
+         .safeEval("dijit.registry.byId('UNIT_TEST_MODEL_FIELD').setValue('" + pageModel + "');'set';")
+         .end()
+            
+         // It's necessary to type an additional space into the text area to ensure that the 
+         // text area field validates and populates the form model with the data to be published...
+         .elementByCss('#UNIT_TEST_MODEL_FIELD > DIV.control > TEXTAREA')
+         .type(" ")
+         .end()
+
+         // Find and click on the test button to load the test page...
+         .elementByCss("#LOAD_TEST_BUTTON")
+         .moveTo()
+         .sleep(500)
+         .click()
+         .sleep(500) // This sleep appears to be needed to prevent errors, but ideally it woudn't be here :(
+         .end()
+         .elementByCss('.alfresco-core-Page.allWidgetsProcessed', 5000)
       },
 
       /**
@@ -204,12 +205,22 @@ define(["intern/dojo/node!fs",
        * @param {object} browser This should be set to a reference to "this.remote" from the unit test
        */
       postCoverageResults: function(browser) {
-         browser.end().elementByCss('.alfresco-testing-TestCoverageResults input[type=submit]')
+         if(Config.doCoverageReport)
+         {
+    	    browser
+    	    .end()
+    	    .elementByCss('.alfresco-testing-TestCoverageResults input[type=submit]')
             .moveTo()
             .sleep(500)
             .click()
-            .end()
-         
+            .end();
+
+    	    console.log("Coverage ~~>");
+         }
+         else
+         {
+            browser.end();
+         }
       }
    };
 

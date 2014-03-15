@@ -53,6 +53,7 @@ define(["intern!object",
          // Click the dialog button - does the dialog appear?
          .elementById("TEST_DIALOG_BUTTON")
          .moveTo()
+         .sleep(500)
          .click()
          .sleep(500)
          .hasElementByCss(".alfresco-dialog-AlfDialog")
@@ -115,6 +116,7 @@ define(["intern!object",
          // Click the checkbox
          .elementByCss("div#TEST_CHECKBOX_CONTAINER > div.control input")
          .moveTo()
+         .sleep(500)
          .click()
          .sleep(500)
          .end()
@@ -130,6 +132,7 @@ define(["intern!object",
          // Click the cancel button
          .elementByCss("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span")
          .moveTo()
+         .sleep(500)
          .click()
          .sleep(500)
          .end()
@@ -138,13 +141,14 @@ define(["intern!object",
          .elementByCss(".alfresco-dialog-AlfDialog")
          .isDisplayed()
          .then(function(result5) {
-            expect(result5).to.equal(false, "The Dialog was found but should be be hidden after the cancel button has been clicked");
+            expect(result5).to.equal(false, "The Dialog was found but should be hidden after the cancel button has been clicked");
          })
          .end()
 
          // Submit the main form
          .elementByCss("span.alfresco-buttons-AlfButton.confirmationButton > span")
          .moveTo()
+         .sleep(500)
          .click()
          .sleep(500)
          .end()
@@ -161,7 +165,6 @@ define(["intern!object",
          .then(function() {
             TestCommon.postCoverageResults(browser);
          })
-
          .end();
       }
    });

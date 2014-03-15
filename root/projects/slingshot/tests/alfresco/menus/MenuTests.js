@@ -32,18 +32,23 @@ define(["intern!object",
    registerSuite({
       name: 'Basic Menus Test',
       'Menus Test': function () {
-
-         var browser = this.remote;
+    	  
+    	 var browser = this.remote;
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/BasicMenuTestPage.json")
+            
+            .end()
+         
             // Test #1 
             // Open the drop-down menu and select the FIRST menut item using the space bar...
             .keys(specialKeys.Tab)
             .keys(specialKeys["Down arrow"])
+            .sleep(1000)
             .keys(specialKeys["Space"])
             .hasElementByCss(TestCommon.pubSubDataCssSelector("3", "item", "MENU_ITEM_1"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_1 after Test #1");
             })
+            .end()
 
             // Test #2
             // Open the drop-down menu and select the SECOND menu item using the return key...
@@ -55,6 +60,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_2 in Test #2");
             })
+            .end()
 
             // Test #3
             // Open the menu and select the first item in the SECOND group (tests cross-group navigation)...
@@ -63,11 +69,11 @@ define(["intern!object",
             .keys(specialKeys["Down arrow"])
             .sleep(1000)
             .keys(specialKeys["Return"])
-            .end()
             .hasElementByCss(TestCommon.pubSubDataCssSelector("5", "item", "MENU_ITEM_3"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_3 in Test #3");
             })
+            .end()
 
             // Test #4
             // Test cross group navigation both up and down groups...
@@ -81,6 +87,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_2 in Test #4");
             })
+            .end()
 
             // Test #5
             // Test going from first item in first group to last item in last group...
@@ -92,6 +99,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_6 in Test #5");
             })
+            .end()
 
             // Test #6
             // Test going from the last item in the last group to the first item in the first group...
@@ -104,6 +112,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_1 in Test #6");
             })
+            .end()
 
             // Test #7
             // Test going along the menu bar (the menu bar should already have focus)...
@@ -114,6 +123,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_BAR_ITEM_1 in Test #7");
             })
+            .end()
 
             // Test #8
             // Test navigating between UNGROUPED menu items in a drop down menu...
@@ -126,6 +136,8 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_8 in Test #8");
             })
+            .end()
+
             .keys(specialKeys["Down arrow"])
             .keys(specialKeys["Down arrow"])
             .keys(specialKeys["Up arrow"])
@@ -135,6 +147,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_7 in Test #8");
             })
+            .end()
 
             // Test #9
             // Test cascade menu keyboard navigation (opening and closing cascades)...
@@ -149,6 +162,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_11 in Test #9");
             })
+            .end()
 
             // Test #10
             // Test opening cascades within cascades...
@@ -163,6 +177,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_13 in Test #10");
             })
+            .end()
 
             // Test #11
             // Test closing cascades
@@ -177,6 +192,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_14 in Test #11");
             })
+            .end()
 
             // Test #12
             // Test menu item wrapper navigation (e.g. that you can navigate over non-menu items)
@@ -188,6 +204,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_10 in Test #12");
             })
+            .end()
 
             // Test #13
             // Test menu item wrapper navigation (e.g. that you can navigate back up over non-menu items)
@@ -200,6 +217,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_9 in Test #13");
             })
+            .end()
 
             // Test #14
             // Test right cursor wrapping on menu...
@@ -211,6 +229,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_2 in Test #14");
             })
+            .end()
 
             // Test #15
             // Test left cursor wrapping on menu...
@@ -222,6 +241,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_10 in Test #15");
             })
+            .end()
 
             // Test #16
             // Test drop-down menu using the mouse...
@@ -237,6 +257,7 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_1 in Test #16");
             })
+            .end()
 
             // Test #17
             // Test cascade menus using the mouse...
@@ -260,11 +281,13 @@ define(["intern!object",
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_13 in Test #17");
             })
+            .end()
 
             // Post the coverage results...
             .then(function() {
                TestCommon.postCoverageResults(browser);
-            });
+            })
+            .end();
       }
    });
 });

@@ -32,6 +32,15 @@ define({
     * @type {string}
     * @default "http://192.168.56.1:8081"
     */
-   bootstrapBaseUrl: "http://192.168.56.1:8081"
+   bootstrapBaseUrl: "http://192.168.56.1:8081",
+
+   /**
+    * Should this process run the coverage report submission?
+    *
+    * @instance
+    * @type {boolean}
+    * @default true
+    */
+   doCoverageReport: true
 
 });

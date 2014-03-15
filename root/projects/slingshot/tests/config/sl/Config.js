@@ -32,6 +32,15 @@ define({
     * @type {string}
     * @default "http://local.alfresco.test:8081"
     */
-   bootstrapBaseUrl: "http://local.alfresco.test:8081"
+   bootstrapBaseUrl: "http://local.alfresco.test:8081",
+
+   /**
+    * Should this process run the coverage report submission?
+    *
+    * @instance
+    * @type {boolean}
+    * @default false
+    */
+   doCoverageReport: false
 
 });
