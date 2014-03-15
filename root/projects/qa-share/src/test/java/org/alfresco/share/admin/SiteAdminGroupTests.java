@@ -157,7 +157,8 @@ public class SiteAdminGroupTests extends AbstractTests
         //Verify Site_admin group name is present in the list of Groups
         Assert.assertTrue(page.getGroupList().contains(siteAdmin), "Site Admin Group is present!!");
         
-        ShareUserAdmin.isUserGroupMember(drone,lname, siteAdmin);
+        Assert.assertTrue(ShareUserAdmin.isUserGroupMember(drone,admin,lname, siteAdmin));        
+        
         /*//Select site_Admin group from list of groups           
         GroupsPage groupspage = page.selectGroup(siteAdmin).render();     
         
@@ -207,7 +208,7 @@ public class SiteAdminGroupTests extends AbstractTests
         //Navigate to Add and edit Groups page
         //GroupsPage groupsPage = page.clickBrowse().render(); 
               
-        Assert.assertTrue(ShareUserAdmin.isUserGroupMember(drone,UserName, siteAdmin));
+       
         
         /*//Select Site_admin group from the list of groups
         GroupsPage groupspage = groupsPage.selectGroup(siteAdmin).render();        

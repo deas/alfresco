@@ -26,7 +26,7 @@ import org.alfresco.po.share.site.document.UserProfile;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.testng.Assert;
+
 
 public class ShareUserAdmin extends AbstractTests
 {
@@ -73,19 +73,21 @@ public class ShareUserAdmin extends AbstractTests
      * @return Boolean
      */
     
-    public static Boolean isUserGroupMember(WebDrone driver, String userName, String groupName)
-    {             
+    public static Boolean isUserGroupMember(WebDrone driver, String fName, String lName, String groupName)
+    {
         GroupsPage page = browseGroups(driver);
         GroupsPage groupspage = page.selectGroup(groupName).render();
         List<UserProfile> userProfiles = groupspage.getMembersList();
-        
+
         for (UserProfile userProfile : userProfiles)
         {
-            if(userName.equals(userProfile.getfName()))
+            if (fName.equals(userProfile.getfName()))
             {
-                //Verify user is present  in the members list  
-                Assert.assertTrue(userProfile.getUsername().contains(userName));                
-                return true;               
+                // Verify user is present in the members list
+                if (userProfile.getUsername().contains(lName))
+                {
+                    return true;
+                }
             }
         }
         return false;
@@ -101,19 +103,21 @@ public class ShareUserAdmin extends AbstractTests
     
     
     public static Boolean isUserAdmin(WebDrone driver, String fName, String lName)
-    {             
+    {
         String groupName = "ALFRESCO_ADMINISTRATORS";
         GroupsPage page = browseGroups(driver);
         GroupsPage groupspage = page.selectGroup(groupName).render();
         List<UserProfile> userProfiles = groupspage.getMembersList();
-        
+
         for (UserProfile userProfile : userProfiles)
         {
-            if(fName.equals(userProfile.getfName()))
+            if (fName.equals(userProfile.getfName()))
             {
-                //Verify user is present  in the members list  
-                Assert.assertTrue(userProfile.getUsername().contains(lName));                
-                return true;               
+                // Verify user is present in the members list
+                if (userProfile.getUsername().contains(lName))
+                {
+                    return true;
+                }
             }
         }
         return false;
