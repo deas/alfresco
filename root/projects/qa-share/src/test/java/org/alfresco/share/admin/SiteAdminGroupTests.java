@@ -205,7 +205,7 @@ public class SiteAdminGroupTests extends AbstractTests
         GroupsPage groupspage = groupsPage.selectGroup(siteAdmin).render();
         
         //Remove user from members list in Groups page
-        RemoveUserFromGroupPage removeUserFromGroupPagegroupspage = groupspage.removeUser(testname);
+        RemoveUserFromGroupPage removeUserFromGroupPagegroupspage = groupspage.removeUser(fName);
         
         //Verify Confirm Remove pop up window is displayed
         Assert.assertTrue(removeUserFromGroupPagegroupspage.getTitle().equalsIgnoreCase(title), "Title is present");
@@ -257,7 +257,7 @@ public class SiteAdminGroupTests extends AbstractTests
         GroupsPage groupspage = groupsPage.selectGroup(siteAdmin).render();
         
         //Remove user from members list in Groups page
-        RemoveUserFromGroupPage removeUserFromGroupPagegroupspage = groupspage.removeUser(testname);
+        RemoveUserFromGroupPage removeUserFromGroupPagegroupspage = groupspage.removeUser(fName);
         
         //Verify Confirm Remove pop up window is displayed
         Assert.assertTrue(removeUserFromGroupPagegroupspage.getTitle().equalsIgnoreCase(title), "Title is present");
