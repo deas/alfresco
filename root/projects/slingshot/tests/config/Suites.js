@@ -39,7 +39,7 @@ define({
     * @type [string]
     */
    baseFunctionalSuites: ['tests/alfresco/CodeCoverageBalancer',
-                          // 'tests/alfresco/forms/controls/DocumentPickerTest', - Commented out because code changes have broken the widget (but the widget isn't needed yet)
+                          'tests/alfresco/forms/controls/DocumentPickerTest',
                           'tests/alfresco/forms/controls/DojoSelectTest',
                           'tests/alfresco/forms/controls/DojoValidationTextBoxTest',
                           'tests/alfresco/layout/BasicLayoutTest',
