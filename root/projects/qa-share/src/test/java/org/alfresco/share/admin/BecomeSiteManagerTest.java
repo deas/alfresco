@@ -167,7 +167,12 @@ public class BecomeSiteManagerTest extends AbstractTest
         dashBoardPage = loginAs(users.get(0), NEW_USER_PASSWORD);
 
         // Delete site 1
-        SiteUtil.deleteSite(drone, sites.get(0));
+        try
+        {
+            SiteUtil.deleteSite(drone, sites.get(0));
+        }
+        catch (Exception e)
+        {}
 
         // Logout
         logout(drone);
@@ -176,7 +181,12 @@ public class BecomeSiteManagerTest extends AbstractTest
         dashBoardPage = loginAs(users.get(1), NEW_USER_PASSWORD);
 
         // Delete site 2
-        SiteUtil.deleteSite(drone, sites.get(1));
+        try
+        {
+            SiteUtil.deleteSite(drone, sites.get(1));
+        }
+        catch (Exception e)
+        {}
 
         // Logout
         logout(drone);
