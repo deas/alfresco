@@ -566,7 +566,7 @@
         </modules>
         <properties>
             <!-- Enterprise specific properties -->
-            <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD</maven.scm.connection>
+            <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-enterprise-mirror/alfresco/HEAD</maven.scm.connection>
             <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD</maven.scm.developerConnection>
             <maven.scm.url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</maven.scm.url>
             <maven.repository.url>https://artifacts.alfresco.com/nexus/content/groups/private</maven.repository.url>
