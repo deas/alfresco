@@ -53,9 +53,7 @@ model.jsonModel = {
                                     config: {
                                        id: "titleTableHeader",
                                        label: msg.get("message.site-name-header-label"),
-                                       sortable: true,
-                                       sortValue: "title",
-                                       toolTipMsg: msg.get("message.site-name-header-tooltip-label")
+                                       sortable: false
                                     }
                                  },
                                  {
@@ -63,9 +61,7 @@ model.jsonModel = {
                                     config: {
                                        id: "descriptionTableHeader",
                                        label: msg.get("message.site-description-header-label"),
-                                       sortable: true,
-                                       sortValue: "description",
-                                       toolTipMsg: msg.get("message.site-description-header-tooltip-label")
+                                       sortable: false
                                     }
                                  },
                                  {
