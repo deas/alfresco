@@ -106,12 +106,4 @@ public class ShareUtil
                 throw new IllegalArgumentException("Unrecognised Alfresco version: " + requiredVersion);
         }
     }
-
-    /**
-     *
-     */
-    public static void deleteUser(String username)
-    {
-        //TODO make this work (via API call).
-    }
 }

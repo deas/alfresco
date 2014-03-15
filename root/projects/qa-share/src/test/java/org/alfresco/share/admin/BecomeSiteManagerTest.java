@@ -195,12 +195,6 @@ public class BecomeSiteManagerTest extends AbstractTest
         // Login as admin:admin
         dashBoardPage = loginAs(username, password);
 
-        // Delete users
-        for (String username : users)
-        {
-            ShareUtil.deleteUser(drone, username);
-        }
-
         manageSitesPage = null;
         dashBoardPage = null;
         sites = null;
