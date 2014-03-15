@@ -129,7 +129,7 @@ public class GroupPageTest extends AbstractTest
         
     }*/
     
-    @Test(groups = "Enterprise-only", dependsOnMethods = "testclickAdGroup")
+    @Test(groups = "Enterprise-only", dependsOnMethods = "testgetMembersList")
     public void testRemoveUser() throws Exception
     {
         UserSearchPage userPage = dashBoard.getNav().getUsersPage().render();
