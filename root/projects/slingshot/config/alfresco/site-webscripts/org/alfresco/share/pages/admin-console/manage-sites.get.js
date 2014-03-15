@@ -39,32 +39,32 @@ model.jsonModel = {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                     config: {
                                        id: "titleTableHeader",
-                                       label: "Site Name",
+                                       label: msg.get("message.site-name-header-label"),
                                        sortable: true,
                                        sortValue: "title",
-                                       toolTipMsg: "Sort by site name"
+                                       toolTipMsg: msg.get("message.site-name-header-tooltip-label")
                                     }
                                  },
                                  {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                     config: {
                                        id: "descriptionTableHeader",
-                                       label: "Site Description",
+                                       label: msg.get("message.site-description-header-label"),
                                        sortable: true,
                                        sortValue: "description",
-                                       toolTipMsg: "Sort by site description"
+                                       toolTipMsg: msg.get("message.site-description-header-tooltip-label")
                                     }
                                  },
                                  {
                                      name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                      config: {
-                                        label: "Visibility"
+                                        label: msg.get("message.visibility-header-label")
                                      }
                                   },
                                  {
                                      name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                      config: {
-                                        label: "Actions",
+                                        label: msg.get("message.actions-header-label"),
                                         class: "last"
                                      }
                                   }
@@ -125,9 +125,9 @@ model.jsonModel = {
                                                          propertyToRender: "visibility",
                                                          optionsConfig: {
                                                             fixed: [
-                                                               {label: "Public", value: "PUBLIC"},
-                                                               {label: "Moderated", value: "MODERATED"},
-                                                               {label: "Private", value: "PRIVATE"}
+                                                               {label: msg.get("message.site-visibility-dropdown-public-label"), value: "PUBLIC"},
+                                                               {label: msg.get("message.site-visibility-dropdown-moderated-label"), value: "MODERATED"},
+                                                               {label: msg.get("message.site-visibility-dropdown-private-label"), value: "PRIVATE"}
                                                             ]
                                                          }
                                                       }
@@ -141,12 +141,18 @@ model.jsonModel = {
                                                 class: "smallpad last",
                                                 widgets: [
                                                    {
-                                                      name: "alfresco/buttons/AlfButton",
+                                                      name: "alfresco/renderers/Actions",
                                                       config: {
-                                                         id: "deleteSiteButton",
-                                                         icon : "document-delete",
-                                                         label: "Delete Site",
-                                                         publishTopic: "DELETE_SITE"
+                                                         class: "unmargined",
+                                                         customActions: [
+                                                            {
+                                                               label: msg.get("button.site-delete.label"),
+                                                               icon : "document-delete",
+                                                               index: "10",
+                                                               publishTopic : "ALF_DELETE_SITE",
+                                                               type: "javascript"
+                                                            }
+                                                         ]
                                                       }
                                                    }
                                                 ]

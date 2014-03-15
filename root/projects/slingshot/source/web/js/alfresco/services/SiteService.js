@@ -33,8 +33,9 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/dom-construct",
         "alfresco/buttons/AlfButton",
-        "service/constants/Default"],
-        function(declare, AlfCore, AlfXhr, NotificationUtils, ObjectTypeUtils, xhr, JSON, lang, domConstruct, AlfButton, AlfConstants) {
+        "service/constants/Default",
+        "alfresco/dialogs/AlfDialog"],
+        function(declare, AlfCore, AlfXhr, NotificationUtils, ObjectTypeUtils, xhr, JSON, lang, domConstruct, AlfButton, AlfConstants, AlfDialog) {
    
    return declare([AlfCore, AlfXhr, NotificationUtils], {
       
@@ -65,6 +66,7 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_LEAVE_SITE_CONFIRMATION", lang.hitch(this, "leaveSite"));
          this.alfSubscribe("ALF_CREATE_SITE", lang.hitch(this, "createSite"));
          this.alfSubscribe("ALF_EDIT_SITE", lang.hitch(this, "editSite"));
+         this.alfSubscribe("ALF_DELETE_SITE", lang.hitch(this, "onActionDeleteSite"));
          this.alfSubscribe("ALF_ADD_FAVOURITE_SITE", lang.hitch(this, "addSiteAsFavourite"));
          this.alfSubscribe("ALF_REMOVE_FAVOURITE_SITE", lang.hitch(this, "removeSiteFromFavourites"));
          this.alfSubscribe("ALF_GET_RECENT_SITES", lang.hitch(this, "getRecentSites"));
@@ -185,13 +187,110 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * Handles requests to delete the supplied site.
+       * 
+       * @instance
+       * @param {object} payload The details of the site to delete
+       */
+      onActionDeleteSite: function alfresco_services_SiteService__onActionDeleteSite(payload) {
+
+         var document = payload.document;
+         var shortName = lang.getObject("shortName", false, document);
+         if (shortName != null)
+         {
+            var responseTopic = this.generateUuid();
+            this._actionDeleteHandle = this.alfSubscribe(responseTopic, lang.hitch(this, "onActionDeleteSiteConfirmation"), true);
+
+            var dialog = new AlfDialog({
+               generatePubSubScope: false,
+               title: this.message("message.delete-site-confirm-title"),
+               textContent: this.message("message.delete-site-prompt", { "0": shortName}),
+               widgetsButtons: [
+                  {
+                     name: "alfresco/buttons/AlfButton",
+                     config: {
+                        label: this.message("button.delete-site.confirm-label"),
+                        publishTopic: responseTopic,
+                        publishPayload: payload
+                     }
+                  },
+                  {
+                     name: "alfresco/buttons/AlfButton",
+                     config: {
+                        label: this.message("button.delete-site.cancel-label"),
+                        publishTopic: "close"
+                     }
+                  }
+               ]
+            });
+            dialog.show();
+         }
+         else
+         {
+            this.alfLog("warn", "A request was made to delete a site but no 'shortName' attribute was provided", document, this);
+         }
+      },
+
+      /**
+       * This function is called when the user confirms that they wish to delete a site
+       * 
+       * @instance
+       * @param {object} payload An object containing the details of the site to be deleted.
+       */
+      onActionDeleteSiteConfirmation: function alfresco_services_SiteService__onActionDeleteSiteConfirmation(payload) {
+
+         if (this._actionDeleteHandle != null)
+         {
+            this.alfUnsubscribe(this._actionDeleteHandle);
+         }
+         else
+         {
+            this.alfLog("warn", "A subscription handle was not found for confirming delete actions - this could be a potential memory leak", this);
+         }
+
+         var responseTopic = this.generateUuid();
+         var subscriptionHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onActionDeleteSiteSuccess"), true);
+         var document = payload.document;
+         var shortName = lang.getObject("shortName", false, document);
+         if (shortName != null)
+         {
+            var url = AlfConstants.PROXY_URI + "api/sites/" + shortName;
+            this.serviceXhr({
+               alfTopic: responseTopic,
+               subscriptionHandle: subscriptionHandle,
+               url: url,
+               method: "DELETE"
+            });
+         }
+         else
+         {
+            this.alfLog("warn", "A request was made to delete a site but no 'shortName' attribute was provided", document, this);
+         }
+      },
+
+      /**
+       * This action will be called when a site is successfully deleted
+       *
+       * @instance
+       * @param {object} payload
+       */
+      onActionDeleteSiteSuccess: function alfresco_services_SiteService__onActionDeleteSiteSuccess(payload) {
+         var subscriptionHandle = lang.getObject("requestConfig.subscriptionHandle", false, payload);
+         if (subscriptionHandle != null)
+         {
+            this.alfUnsubscribe(subscriptionHandle);
+         }
+         this.alfPublish("ALF_DOCLIST_RELOAD_DATA", {});
+      },
+
+      /**
        * Handles requesting that a site be made a favourite.
        * 
        * @instance
        * @param {config} config The payload containing the details of the site to add to the favourites list
        */
       addSiteAsFavourite: function alfresco_services_SiteService__addSiteAsFavourite(config) {
-        
+
          if (config.site && config.user)
          {
             // Set up the favourites information...

@@ -3,19 +3,20 @@
    border-collapse: collapse;
    border-spacing: 0;
    border: none;
+   border-bottom: 1px solid @docListBorderColour; 
 }
 
 .alfresco-documentlibrary-views-layouts-AlfDocumentListView > table > tbody > tr:nth-child(even) {
-   background-color: @docListEvenRowColour;
+   /*background-color: @docListEvenRowColour;*/
 }
 
 .alfresco-documentlibrary-views-layouts-AlfDocumentListView > table > tbody > tr:nth-child(odd) {
-   background-color: @docListOddRowColour;
+   /*background-color: @docListOddRowColour;*/
 }
 
 .alfresco-documentlibrary-views-layouts-AlfDocumentListView > table > tbody > tr > td {
-   border-top: 1px solid @docListBorderColour;
-   border-bottom: 1px solid @docListBorderColour;
+   border-top: 1px dashed @docListBorderColour;
+   border-bottom: 1px dashed @docListBorderColour;
    border-right: 1px solid @docListBorderColour;
    padding: 10px;
    margin: 0;

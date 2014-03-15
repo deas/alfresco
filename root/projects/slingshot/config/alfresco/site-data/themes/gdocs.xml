@@ -5,13 +5,13 @@
    <css-tokens>
 
       <less-variables>
-      @docListHeaderBgColour: #f2f2f2;
+      @docListHeaderBgColour: #f5f5f5;
       @docListOddRowColour: #fff;
       @docListEvenRowColour: #f7f7f7;
-      @docListBorderColour: #e3e3e3;
+      @docListBorderColour: #d0d0d0;
       @docListDndHighlight: #4F94C9;
 
-      @selectControlStaticBgColour: #e3e3e3;
+      @selectControlStaticBgColour: #f4f4f4;
       </less-variables>
 
       <theme-font-family-1>arial,helvetica,clean,sans-serif</theme-font-family-1>
