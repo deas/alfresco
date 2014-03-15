@@ -69,6 +69,12 @@ define(["dojo/_base/declare",
             documentPayload.site = this.site
          }
 
+         if (this.usePagination)
+         {
+            documentPayload.page = this.currentPage;
+            documentPayload.pageSize = this.currentPageSize;
+         }
+
          this.alfPublish(this.dataRequestTopic, documentPayload, true);
       },
 

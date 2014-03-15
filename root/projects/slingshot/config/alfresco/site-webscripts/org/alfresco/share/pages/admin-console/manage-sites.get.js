@@ -28,6 +28,11 @@ model.jsonModel = {
             pubSubScope: siteServiceScope,
             widgets: [
                {
+                  id: "DOCLIB_PAGINATION_MENU",
+                  name: "alfresco/documentlibrary/AlfDocumentListPaginator",
+                  align: "center"
+               },
+               {
                   id: "DOCLIB_DOCUMENT_LIST",
                   name: "alfresco/documentlibrary/AlfSitesList",
                   config: {
