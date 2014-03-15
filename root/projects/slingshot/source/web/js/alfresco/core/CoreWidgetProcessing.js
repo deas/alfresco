@@ -219,7 +219,7 @@ define(["dojo/_base/declare",
          // run into trouble trying to re-use an existing id...
          if (typeof initArgs.id == "undefined")
          {
-            initArgs.id = config.name + "___" + this.generateUuid();
+            initArgs.id = config.name.replace(/\//g, "_") + "___" + this.generateUuid();
          }
          
          if (initArgs.generatePubSubScope === true)
