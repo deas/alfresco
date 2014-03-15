@@ -340,7 +340,59 @@ public class GroupsPage extends SharePage
             }
         }
         return false;
-    } 
+    }
+    
+    /**
+     * Verify User is the member of group 
+     * 
+     * @return Boolean
+     */
+    public boolean isUserGroupMember( String fName, String lName, String groupName)
+    {
+        List<UserProfile> userProfiles = this.getMembersList();
+
+        for (UserProfile userProfile : userProfiles)
+        {
+            if (fName.equals(userProfile.getfName()))
+            {
+                // Verify user is present in the members list
+                if (userProfile.getUsername().contains(lName))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Verify User is Admin 
+     * 
+     * @return Boolean
+     */
+    
+    public Boolean isUserAdmin(String fName, String lName)
+    {                
+        String siteAdmin="ALFRESCO_ADMINISTRATORS";
+        
+        selectGroup(siteAdmin);
+        List<UserProfile> userProfiles = this.getMembersList();
+
+        for (UserProfile userProfile : userProfiles)
+        {
+            if (fName.equals(userProfile.getfName()))
+            {
+                // Verify user is present in the members list
+                if (userProfile.getUsername().contains(lName))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     
     
 }
