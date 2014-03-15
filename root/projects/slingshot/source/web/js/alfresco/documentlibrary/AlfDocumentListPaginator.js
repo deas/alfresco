@@ -233,7 +233,7 @@ define(["dojo/_base/declare",
                         value: (i+1),
                         group: "PAGE_SELECTION_GROUP",
                         checked: (this.currentPage == i+1),
-                        publishTopic: this.pageSelectionTopic,
+                        publishTopic: this.pubSubScope + this.pageSelectionTopic,
                         publishPayload: {
                            label: label,
                            value: (i+1)
