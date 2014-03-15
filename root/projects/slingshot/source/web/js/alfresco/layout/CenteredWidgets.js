@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,37 +18,34 @@
  */
 
 /**
- * <p>This should be used to lay widgets out in a horizontal line. If no specific widths are requested
- * by the child widgets then each will be allotted an equal amount of the available space. However, it is
- * possible for each widget to request a width in either pixels or percentage (and it is possible to mix
- * and match). Pixel dimensions will be allocated first and the percentages will be of the remaining available
- * width after fixed sizes are deducted. Any widgets that do not request a specific width will be allocated 
- * an equal amount of whatever is left.</p>
+ * <p>This should be used to arrange widgets horizontally and centred. For centre alignment to work each widget contained 
+ * within this widget must declare a widthCalc value which is used to calculate the size of the container and therefore the 
+ * size of the margins required.</p>
  * <p>It is also possible to define gaps between widgets by using the 
  * [widgetMarginLeft]{@link module:alfresco/layout/HorizontalWidgets#widgetMarginLeft} and
  * [widgetMarginRight]{@link module:alfresco/layout/HorizontalWidgets#widgetMarginRight} attributes (but you should bear
  * in mind that if using both attributes then the gap between 2 widgets will be the <b>combination</b> of both values).</p>
  * <p><b>PLEASE NOTE: Resize operations are not currently handled - this will be addressed in the future</b></p>
  * <p><pre>{
- *    "name": "alfresco/layout/VerticalWidgets",
+ *    "name": "alfresco/layout/CenteredWidgets",
  *    "config": {
  *       "widgetMarginLeft": 10,
  *       "widgetMarginRight": 10
  *       "widgets": [
  *          {
  *             "name": "alfresco/logo/Logo",
- *             "widthPx" 300
+ *             "widthCalc" 300
  *          },
  *          {
  *             "name": "alfresco/logo/Logo",
- *             "widthPc" 50
+ *             "widthCalc" 50
  *          }
  *       ]
  *    }
  * }</pre></p>
- * @module alfresco/layout/HorizontalWidgets
+ * @module alfresco/layout/CenteredWidgets
  * @extends module:alfresco/core/ProcessWidgets
- * @author Dave Draper
+ * @author Richard Smith
  */
 define(["alfresco/core/ProcessWidgets",
         "dojo/_base/declare",
@@ -79,17 +76,7 @@ define(["alfresco/core/ProcessWidgets",
        * @type {string}
        */
       templateString: template,
-      
-      /**
-       * This will be set to a percentage value such that each widget displayed has an equal share
-       * of page width. 
-       * 
-       * @instance
-       * @type {string}
-       * @default null 
-       */
-      widgetWidth: null,
-      
+
       /**
        * This is the size of margin (in pixels) that will appear to the left of every widget added. 
        *
