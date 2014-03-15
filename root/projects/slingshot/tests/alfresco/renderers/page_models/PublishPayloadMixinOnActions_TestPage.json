@@ -16,9 +16,9 @@
          "config": {
             "currentData": {
                "items": [
-                  {"col1":"Test1", "col2":"PUBLIC"},
-                  {"col1":"Test2", "col2":"MODERATED"},
-                  {"col1":"Test3", "col2":"PRIVATE"}
+                  {"col1":"Test1", "variable1":"red", "variable2":"orange"},
+                  {"col1":"Test2", "variable1":"yellow", "variable2":"green"},
+                  {"col1":"Test3", "variable1":"blue", "variable2":"indigo"}
                ]
             },
             "widgetsForHeader": [
@@ -59,23 +59,34 @@
                            "config": {
                               "widgets": [
                                  {
-                                    "name": "alfresco/renderers/PublishingDropDownMenu",
+                                    "name": "alfresco/renderers/Actions",
                                     "config": {
-                                       "publishTopic": "ALF_PUBLISHING_DROPDOWN_MENU",
-                                       "publishPayload": {
-                                          "shortName": {
-                                             "alfType": "item",
-                                             "alfProperty": "col1"
+                                       "customActions": [
+                                          {
+                                             "label": "Delete action",
+                                             "icon": "document-delete",
+                                             "index": "10",
+                                             "publishTopic": "DELETE_ACTION_TOPIC",
+                                             "type": "javascript"
+                                          },
+                                          {
+                                             "label": "Manage action",
+                                             "icon": "folder-manage-permissions",
+                                             "index": "10",
+                                             "publishTopic": "MANAGE_ACTION_TOPIC",
+                                             "publishPayload": {
+                                                "payloadVariable1": {
+                                                   "alfType": "item",
+                                                   "alfProperty": "variable2"
+                                                },
+                                                "payloadVariable2": {
+                                                   "alfType": "item",
+                                                   "alfProperty": "variable1"
+                                                }
+                                             },
+                                             "type": "javascript"
                                           }
-                                       },
-                                       "propertyToRender": "col2",
-                                       "optionsConfig": {
-                                          "fixed": [
-                                             {"label": "Public", "value": "PUBLIC"},
-                                             {"label": "Moderated", "value": "MODERATED"},
-                                             {"label": "Private", "value": "PRIVATE"}
-                                          ]
-                                       }
+                                       ]
                                     }
                                  }
                               ]

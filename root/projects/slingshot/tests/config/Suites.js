@@ -61,7 +61,8 @@ define({
 
                           'tests/alfresco/misc/AlfTooltipTest',
 
-                          'tests/alfresco/renderers/PublishingDropDownMenuTest'],
+                          'tests/alfresco/renderers/PublishingDropDownMenuTest',
+                          'tests/alfresco/renderers/PublishPayloadMixinOnActionsTest'],
 
    /**
     * This is the array of functional test suites that should only be applied to local tests
