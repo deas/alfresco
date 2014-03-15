@@ -46,12 +46,19 @@ define(["dojo/_base/declare",
        * @param {object} object The widget or service that triggered the event
        */
       updateLog: function alfresco_core_PubSubLog__updateLog(type, topic, data, object) {
-         this.addEntry({
+         var entry = {
             type: type,
             topic: topic,
             data: data,
             object: object
-         });
+         };
+
+         // Send details to the console to enable better filter, searching and clearing.
+         if (lang.isFunction(console.debug)) {
+            console.debug(entry);
+         }
+
+         this.addEntry(entry);
       },
 
       /**
