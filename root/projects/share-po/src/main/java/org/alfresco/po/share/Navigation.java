@@ -32,6 +32,8 @@ import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
@@ -45,6 +47,7 @@ import org.openqa.selenium.WebElement;
  */
 public class Navigation extends SharePage
 {
+    private static Log logger = LogFactory.getLog(Navigation.class);
     private static final String SITE_FINDER_LINK = "div[id$='app_sites-sites-menu']>div>ul[class^='site-finder-menuitem']>li>a";
     private static final String DEFAULT_NETWORK_MENU_BUTTON = "default.network.dropdown";
     private static final String NETWORK_NAMES = "network.names";
@@ -362,7 +365,7 @@ public class Navigation extends SharePage
             networks = drone.findAndWaitForElements(By.cssSelector(networkNamesid));
             if(networks != null)
             {
-                List<String> networkList = new ArrayList<String>();
+                List<String> networkList = new ArrayList<>();
                 for (WebElement network : networks)
                 {
                     networkList.add(network.getText());
@@ -500,6 +503,10 @@ public class Navigation extends SharePage
      */
     public HtmlPage selectManageSitesPage()
     {
+        if(logger.isTraceEnabled())
+        {
+            logger.trace("Finding the manage sites page.");
+        }
         if (alfrescoVersion.isCloud())
         {
             return selectManageSitesNetworkAdmin();

@@ -41,7 +41,6 @@ public class ShareUtil
      * Logs user out, by using a restful approach. This has been done as the UI
      * has not labelled the logout with an id or css element to indicate a
      * logout link.
-     * @throws Exception 
      */
     public static void logout(final WebDrone drone) 
     {
@@ -97,5 +96,12 @@ public class ShareUtil
         {
             throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
         }
+    }
+    /**
+     *
+     */
+    public static void deleteUser(String username)
+    {
+        //TODO make this work (via API call).
     }
 }
