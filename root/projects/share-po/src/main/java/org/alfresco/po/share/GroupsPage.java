@@ -40,7 +40,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-import org.testng.Assert;
+
 
 /**
  * @author Charu To get the list of groups and group members this page is used 
@@ -321,6 +321,7 @@ public class GroupsPage extends SharePage
      * @return Boolean
      */
     public boolean hasMembers()
+
     {
 
         try
@@ -339,42 +340,7 @@ public class GroupsPage extends SharePage
             }
         }
         return false;
-    }
-    
-    /**
-     * Verify admin is a member of Group
-     * 
-     * @return Boolean
-    */
-    public boolean isAdminInGroup(String groupName)
-    {
-        String fName = "Administrator"; 
-        String uName= "admin";
-        try
-        {
-            List<UserProfile> userProfiles = getMembersList();
-            
-            for (UserProfile userProfile : userProfiles)
-            {
-                if(fName.equals(userProfile.getfName()))
-                {
-                    //Verify Admin user is present in the members list in groups page
-                    Assert.assertTrue(userProfile.getUsername().contains(uName), "User is present!!");
-                    return true;
-                }
-            }     
-                    
-        } catch (NoSuchElementException e)
-        {
-            if (logger.isTraceEnabled())
-            {
-                logger.trace("Unable to find member in  list");
-            }
-        }
-        return false;
-    }
-    
-    
+    } 
     
     
 }

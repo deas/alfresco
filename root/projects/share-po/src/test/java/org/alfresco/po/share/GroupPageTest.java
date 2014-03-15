@@ -153,17 +153,7 @@ public class GroupPageTest extends AbstractTest
 
         }
 
-    }
+    }  
     
-    @Test(groups = "Enterprise-only")
-    public void testisAdminInGroup() throws Exception
-    {         
-        GroupsPage page = dashBoard.getNav().getGroupsPage();
-        page = page.clickBrowse().render();
-        Assert.assertTrue(page.getGroupList().contains(siteAdmin), "Site Admin Group is present!!");
-        GroupsPage groupsPage = page.selectGroup(siteAdmin).render();
-        Assert.assertTrue(groupsPage.isAdminInGroup(siteAdmin), "Admin is present in group");
-        
-    }
     
 }
