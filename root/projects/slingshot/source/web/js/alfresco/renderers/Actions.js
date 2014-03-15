@@ -82,6 +82,7 @@ define(["dojo/_base/declare",
             iconImage: AlfConstants.URL_RESCONTEXT + "components/documentlibrary/actions/" + action.icon + "-16.png",
             type: action.type,
             publishTopic: (action.publishTopic != null) ? action.publishTopic : this.singleDocumentActionTopic,
+            pubSubScope: this.pubSubScope,
             publishPayload: {
                document: this.currentItem,
                action: action

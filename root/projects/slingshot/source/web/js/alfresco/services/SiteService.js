@@ -217,7 +217,7 @@ define(["dojo/_base/declare",
          if (shortName != null)
          {
             var responseTopic = this.generateUuid();
-            this._actionDeleteHandle = this.alfSubscribe(responseTopic, lang.hitch(this, "onActionDeleteSiteConfirmation"), true);
+            this._actionDeleteHandle = this.alfSubscribe(responseTopic, lang.hitch(this, "onActionDeleteSiteConfirmation"), false);
 
             var dialog = new AlfDialog({
                generatePubSubScope: false,
@@ -228,7 +228,7 @@ define(["dojo/_base/declare",
                      name: "alfresco/buttons/AlfButton",
                      config: {
                         label: this.message("button.delete-site.confirm-label"),
-                        publishTopic: responseTopic,
+                        publishTopic: this.pubSubScope + responseTopic,
                         publishPayload: payload
                      }
                   },
@@ -267,7 +267,7 @@ define(["dojo/_base/declare",
          }
 
          var responseTopic = this.generateUuid();
-         var subscriptionHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onActionDeleteSiteSuccess"), true);
+         var subscriptionHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onActionDeleteSiteSuccess"), false);
          var document = payload.document;
          var shortName = lang.getObject("shortName", false, document);
          if (shortName != null)

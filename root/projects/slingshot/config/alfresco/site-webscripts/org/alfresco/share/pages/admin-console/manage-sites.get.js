@@ -202,9 +202,9 @@ model.jsonModel = {
                                                          customActions: [
                                                             {
                                                                label: msg.get("button.site-delete.label"),
-                                                               icon : "document-delete",
+                                                               icon: "document-delete",
                                                                index: "10",
-                                                               publishTopic : "ALF_DELETE_SITE",
+                                                               publishTopic: "ALF_DELETE_SITE",
                                                                type: "javascript"
                                                             }
                                                          ]
