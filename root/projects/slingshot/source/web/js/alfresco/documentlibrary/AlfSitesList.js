@@ -61,7 +61,7 @@ define(["dojo/_base/declare",
 
          // Set a response topic that is scoped to this widget...
          var documentPayload = {
-            responseTopic: this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST",
+            responseTopic: this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST"
          };
 
          if (this.site != null)

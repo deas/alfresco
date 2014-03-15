@@ -2,5 +2,5 @@
   <shortname>Manage Sites Page</shortname>
   <description>This WebScript defines the Manage Sites page - it should be accessible to Admins only</description>
   <family>admin-console</family>
-  <url>/manage-sites</url>
+  <url>/components/console/manage-sites</url>
 </webscript>
