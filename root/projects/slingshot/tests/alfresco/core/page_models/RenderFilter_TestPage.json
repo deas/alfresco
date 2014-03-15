@@ -125,6 +125,48 @@
                   }
                },
                {
+                  "name": "alfresco/menus/AlfMenuBarItem",
+                  "config": {
+                     "id": "MBI7",
+                     "label": "Should appear (OR)",
+                     "publishTopic": "MBI7",
+                     "renderFilterMethod": "ANY",
+                     "renderFilter": [
+                        {
+                           "property": "x",
+                           "values": ["k", "a"]
+                        },
+                        {
+                           "property": "y",
+                           "values": ["false"]
+                        },
+                        {
+                           "property": "z",
+                           "values": ["wrong"]
+                        }
+                     ]
+                  }
+               },
+               {
+                  "name": "alfresco/menus/AlfMenuBarItem",
+                  "config": {
+                     "id": "MBI8",
+                     "label": "Should not appear (OR)",
+                     "publishTopic": "MBI8",
+                     "renderFilterMethod": "ANY",
+                     "renderFilter": [
+                        {
+                           "property": "y",
+                           "values": ["false"]
+                        },
+                        {
+                           "property": "z",
+                           "values": ["wrong"]
+                        }
+                     ]
+                  }
+               }
+               {
                   "name": "alfresco/menus/AlfMenuBarPopup",
                   "config": {
                      "id": "DD1",

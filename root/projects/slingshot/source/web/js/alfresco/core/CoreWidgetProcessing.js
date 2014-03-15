@@ -317,8 +317,17 @@ define(["dojo/_base/declare",
             else
             {
                // Check that the widget passes all the filter checks...
-               // TODO: Should we provide the ability to switch from AND to OR??
-               shouldRender = array.every(renderFilterConfig, lang.hitch(this, "processFilterConfig"));
+               var renderFilterMethod = lang.getObject("config.renderFilterMethod", false, widgetConfig);
+               if (renderFilterMethod == null || renderFilterMethod.trim() == "ALL")
+               {
+                  // Handle AND logic (all filters must pass)
+                  shouldRender = array.every(renderFilterConfig, lang.hitch(this, "processFilterConfig"));
+               }
+               else
+               {
+                  // Handle OR logic (only one filter needs to pass)
+                  shouldRender = array.some(renderFilterConfig, lang.hitch(this, "processFilterConfig"));
+               }
             }
          }
          else
