@@ -43,7 +43,7 @@ import org.testng.annotations.Test;
 @Test(groups ={"alfresco-one"})
 public class NavigationBarTest extends AbstractTest
 {
-    private SharePage page;
+    private SharePage page;    
     
     @BeforeClass()
     public void setup() throws Exception
@@ -113,7 +113,7 @@ public class NavigationBarTest extends AbstractTest
      * Test navigating to Account Settings Page.
      * @throws Exception if error
      */
-    @Test(dependsOnMethods= "navigateChangePassword",groups={"alfresco-one"})
+    @Test(dependsOnMethods= "navigateChangePassword",groups={"Cloud-only"})
     public void navigateAccountSettings() throws Exception
     {
         AccountSettingsPage accountSettingsPage = page.getNav().selectAccountSettingsPage().render();        
@@ -227,7 +227,7 @@ public class NavigationBarTest extends AbstractTest
     }
 
     /**
-     * Navigate to manage sites from the dashboard page.
+     * Navigate to manage sites from the dashboard page by Repo Admin
      * 
      * @throws Exception if error
      */
@@ -236,5 +236,7 @@ public class NavigationBarTest extends AbstractTest
     {
         ManageSitesPage manageSitesPage = page.getNav().selectManageSites().render();
         Assert.assertEquals("Manage Sites", manageSitesPage.getPageTitle());
-    }
+    } 
+        
+    
  }
