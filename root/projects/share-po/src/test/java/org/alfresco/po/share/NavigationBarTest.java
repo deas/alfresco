@@ -24,6 +24,7 @@ import org.alfresco.po.share.admin.AdminConsolePage;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.site.CreateSitePage;
+import org.alfresco.po.share.user.AccountSettingsPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.testng.Assert;
@@ -107,12 +108,25 @@ public class NavigationBarTest extends AbstractTest
         ChangePasswordPage changePasswordPage = page.getNav().selectChangePassword().render();
         Assert.assertTrue(changePasswordPage.formPresent());
     }
+    
+    /**
+     * Test navigating to Account Settings Page.
+     * @throws Exception if error
+     */
+    @Test(dependsOnMethods= "navigateChangePassword",groups={"alfresco-one"})
+    public void navigateAccountSettings() throws Exception
+    {
+        AccountSettingsPage accountSettingsPage = page.getNav().selectAccountSettingsPage().render();        
+        Assert.assertEquals("Account Settings", accountSettingsPage.getPageTitle());       
+    }
+    
+    /**
 
     /**
      * Test navigating to change password page.
      * @throws Exception if error
      */
-    @Test(dependsOnMethods= "navigateChangePassword",groups={"alfresco-one"})
+    @Test(dependsOnMethods= "navigateAccountSettings",groups={"alfresco-one"})
     public void navigateDashBoard() throws Exception
     {
         DashBoardPage dash = page.getNav().selectMyDashBoard().render();

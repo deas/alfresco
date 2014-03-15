@@ -24,6 +24,7 @@ import java.util.List;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.SiteFinderPage;
+import org.alfresco.po.share.user.AccountSettingsPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.webdrone.HtmlPage;
@@ -181,6 +182,23 @@ public class Navigation extends SharePage
         String selector = isDojoSupport() ? "td#HEADER_USER_MENU_PROFILE_text" : "div[id$='usermenu_user'] ul li:nth-of-type(2) a";
         drone.findAndWait(By.cssSelector(selector)).click();
         return new MyProfilePage(drone);
+    }
+    
+    /**
+     * Mimics the action of selecting Account Settings link.
+     * 
+     * @return AccountSettingsPage
+     */
+    public AccountSettingsPage selectAccountSettingsPage()
+    {
+        selectUserDropdown();
+        if(!alfrescoVersion.isCloud() || (AlfrescoVersion.Enterprise43 != alfrescoVersion))
+        {
+            throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
+        }
+        String selector = "td[id*='alfresco/header/AlfMenuItem']>a.alfresco-menus-_AlfMenuItemMixin";
+        drone.findAndWait(By.cssSelector(selector)).click();
+        return new AccountSettingsPage(drone);
     }
 
     /**
