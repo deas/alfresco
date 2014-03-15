@@ -24,8 +24,10 @@ else
    cd /tmp
 
    # Download and copy the ChromeDriver to /usr/local/bin
-   wget "https://chromedriver.googlecode.com/files/chromedriver_linux64_2.2.zip"
-   unzip chromedriver_linux64_2.2.zip
+   # wget "https://chromedriver.googlecode.com/files/chromedriver_linux64_2.3.zip"
+   # unzip chromedriver_linux64_2.3.zip
+   wget "http://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip"
+   unzip chromedriver_linux64.zip
    mv chromedriver /usr/local/bin
 
    # Download and copy Phantomjs to /usr/local/bin
