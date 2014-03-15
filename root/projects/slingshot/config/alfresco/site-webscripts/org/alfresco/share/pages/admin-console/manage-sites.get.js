@@ -200,7 +200,7 @@ model.jsonModel = {
                                                                                  name: "alfresco/menus/AlfMenuItem",
                                                                                  config: {
                                                                                     label: msg.get("button.site-delete.label"),
-                                                                                    iconClass: "document-delete",
+                                                                                    iconClass: "alf-delete-icon",
                                                                                     publishTopic: "ALF_DELETE_SITE"
                                                                                  }
                                                                               },
@@ -208,7 +208,7 @@ model.jsonModel = {
                                                                                  name: "alfresco/menus/AlfMenuItem",
                                                                                  config: {
                                                                                     label: msg.get("button.site-manage.label"),
-                                                                                    iconClass: "folder-manage-permissions",
+                                                                                    iconClass: "alf-password-icon",
                                                                                     publishTopic: "ALF_BECOME_SITE_MANAGER",
                                                                                     publishPayload: {
                                                                                        site: {

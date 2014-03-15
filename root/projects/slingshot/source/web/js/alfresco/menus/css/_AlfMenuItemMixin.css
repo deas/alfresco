@@ -155,3 +155,10 @@
    height: 20px;
    width: 20px;
 }
+
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-delete-icon {
+   background: url("./images/delete-16.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
