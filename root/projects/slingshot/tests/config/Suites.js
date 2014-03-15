@@ -53,7 +53,7 @@ define({
                           'tests/alfresco/menus/AlfMenuItemWrapperTest',
                           'tests/alfresco/menus/AlfVerticalMenuBarTest',
                           'tests/alfresco/forms/controls/FormButtonDialogTest',
-                          'tests/alfresco/menus/AlfTooltipTest'],
+                          'tests/alfresco/misc/AlfTooltipTest'],
 
    /**
     * This is the array of functional test suites that should only be applied to local tests

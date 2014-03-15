@@ -45,7 +45,7 @@ define(["dojo/_base/declare",
         "dojo/dom-style",
         "dojo/dom-class",
         "dijit/focus",
-        "alfresco/menus/AlfTooltip"], 
+        "alfresco/misc/AlfTooltip"], 
         function(declare, _Widget, _Templated, _FocusMixin, template, domConstruct, AlfCore, ObjectTypeUtils, xhr, lang, array, domStyle, domClass, focusUtil, AlfTooltip) {
    
    return declare([_Widget, _Templated, _FocusMixin, AlfCore], {

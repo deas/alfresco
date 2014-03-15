@@ -33,7 +33,7 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/dom-class",
         "dojo/query",
-        "alfresco/menus/AlfTooltip"], 
+        "alfresco/misc/AlfTooltip"], 
         function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domClass, query, AlfTooltip) {
 
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {

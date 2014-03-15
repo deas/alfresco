@@ -20,7 +20,7 @@
 /**
  * An Alfresco styled tool tip. Extends the default Dijit Tooltip and provides an overridden stylesheet.
  *
- * @module alfresco/menus/AlfTooltip
+ * @module alfresco/misc/AlfTooltip
  * @extends module:dijit/Tooltip
  * @author Richard Smith
  */

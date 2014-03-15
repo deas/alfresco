@@ -28,10 +28,10 @@ define(["intern!object",
 
    registerSuite({
       name: 'AlfTooltip Test',
-      'alfresco/menus/AlfTooltip': function () {
+      'alfresco/misc/AlfTooltip': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfTooltip_TestPage.json")
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/misc/page_models/AlfTooltip_TestPage.json")
 
          .end()
 

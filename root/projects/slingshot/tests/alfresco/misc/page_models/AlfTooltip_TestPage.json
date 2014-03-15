@@ -15,7 +15,7 @@
          }
       },
       {
-         "name": "alfresco/menus/AlfTooltip",
+         "name": "alfresco/misc/AlfTooltip",
          "config": {
             "connectId": "TEST_BUTTON",
             "label": "This is the test button",
