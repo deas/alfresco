@@ -60,7 +60,7 @@ define(["alfresco/core/Page",
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
       userGroupsLoaded: function alfresco_core_FilteredPage__userGroupsLoaded(response, originalRequestConfig) {
-
+         this.alfLog("log", "User groups loaded", response, originalRequestConfig);
          if (response != null && response.groups != null)
          {
             array.forEach(response.groups, lang.hitch(this, "processUserGroups"));
@@ -68,12 +68,11 @@ define(["alfresco/core/Page",
 
          // Get the group information from the response and then filter the widgets based on the data...
          this.widgets = this.performPageFiltering(this.widgets);
-         if (this.services)
+         if (this.services != null && this.services.length != 0)
          {
             this.processServices(this.services);
          }
-         
-         if (this.widgets)
+         else if (this.widgets != null && this.widgets.length != 0)
          {
             this.processWidgets(this.widgets, this.containerNode);
          }

@@ -44,7 +44,7 @@ define(["dojo/_base/declare",
        * @param {Object[]} widgets An array of the widget definitions to instantiate
        * @param {element} rootNode The DOM node which should be used to add instantiated widgets to
        */
-      processWidgets: function alfresco_core_Core__processWidgets(widgets, rootNode) {
+      processWidgets: function alfresco_core_CoreWidgetProcessing__processWidgets(widgets, rootNode) {
          // There are two options for providing configuration, either via a JSON object or
          // via a URL to asynchronously retrieve the configuration. The configuration object
          // takes precedence as it will be faster by virtue of not requiring a remote call.
@@ -78,7 +78,7 @@ define(["dojo/_base/declare",
        * @param {object} widgetConfig The configuration for the widget to be created
        * @param {number} index The index of the widget configuration in the array that it was taken from
        */
-      processWidget: function alfresco_core_Core__processWidget(rootNode, widgetConfig, index) {
+      processWidget: function alfresco_core_CoreWidgetProcessing__processWidget(rootNode, widgetConfig, index) {
          if (this.filterWidget(widgetConfig))
          {
             var domNode = this.createWidgetDomNode(widgetConfig, rootNode, widgetConfig.className);
@@ -98,7 +98,7 @@ define(["dojo/_base/declare",
        * @param {object} widgetConfig The configuration for the widget to be created
        * @returns {boolean} This always returns true by default.
        */
-      filterWidget: function alfresco_core_Core__filterWidget(widgetConfig) {
+      filterWidget: function alfresco_core_CoreWidgetProcessing__filterWidget(widgetConfig) {
          return true;
       },
       
@@ -130,7 +130,7 @@ define(["dojo/_base/declare",
        * @param {object} widget The widget that has just been processed.
        * @param {number} index The target index of the widget
        */
-      _registerProcessedWidget: function alfresco_core_Core___registerProcessedWidget(widget, index) {
+      _registerProcessedWidget: function alfresco_core_CoreWidgetProcessing___registerProcessedWidget(widget, index) {
          this._processedWidgetCountdown--;
          if (index == null || isNaN(index))
          {
@@ -166,7 +166,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {Array} widgets An array of all the widgets that have been processed
        */
-      allWidgetsProcessed: function alfresco_core_Core__allWidgetsProcessed(widgets) {
+      allWidgetsProcessed: function alfresco_core_CoreWidgetProcessing__allWidgetsProcessed(widgets) {
          this.alfLog("log", "All widgets processed");
       },
 
@@ -180,7 +180,7 @@ define(["dojo/_base/declare",
        * @param {element} rootNode The DOM node to create the new DOM node as a child of
        * @param {string} rootClassName A string containing one or more space separated CSS classes to set on the DOM node
        */
-      createWidgetDomNode: function alfresco_core_Core__createWidgetDomNode(widget, rootNode, rootClassName) {
+      createWidgetDomNode: function alfresco_core_CoreWidgetProcessing__createWidgetDomNode(widget, rootNode, rootClassName) {
          // Add a new <div> element to the "main" domNode (defined by the "data-dojo-attach-point"
          // in the HTML template)...
          var tmp = rootNode;
@@ -207,7 +207,7 @@ define(["dojo/_base/declare",
        * @param {number} index The index of the widget to create (this will effect it's location in the 
        * [_processedWidgets]{@link module:alfresco/core/Core#_processedWidgets} array)
        */
-      createWidget: function alfresco_core_Core__createWidget(config, domNode, callback, callbackScope, index) {
+      createWidget: function alfresco_core_CoreWidgetProcessing__createWidget(config, domNode, callback, callbackScope, index) {
          
          var _this = this;
          this.alfLog("log", "Creating widget: ",config);

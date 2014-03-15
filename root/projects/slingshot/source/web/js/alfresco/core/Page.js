@@ -52,11 +52,11 @@ define(["alfresco/core/ProcessWidgets",
        */
       postCreate: function alfresco_core_Page__postCreate() {
          
-         if (this.services)
+         if (this.services != null && this.services.length != 0)
          {
             this.processServices(this.services);
          }
-         else if (this.widgets)
+         else if (this.widgets != null && this.widgets.length != 0)
          {
             // Make sure to process widgets if there are no services...
             // Otherwise they will be processed once all the services are instantiated...
