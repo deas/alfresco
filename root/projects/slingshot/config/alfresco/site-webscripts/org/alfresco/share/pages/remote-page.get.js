@@ -9,7 +9,7 @@ if (page.url.templateArgs.pagename != null)
    {
       if (json.status == 200)
       {
-         pageDetails = jsonUtils.toObject(json.response);
+         pageDetails = JSON.parse(json.response);
       }
       else
       {
@@ -17,11 +17,11 @@ if (page.url.templateArgs.pagename != null)
       }
       if (pageDetails &&
           pageDetails.items != null &&
-          pageDetails.items.size() == 1 &&
-          pageDetails.items.get(0).content != null &&
-          pageDetails.items.get(0).content != "")
+          pageDetails.items.length == 1 &&
+          pageDetails.items[0].content != null &&
+          pageDetails.items[0].content != "")
       {
-         pageDefinition = pageDetails.items.get(0).content;
+         pageDefinition = pageDetails.items[0].content;
       }
       else
       {
@@ -29,7 +29,7 @@ if (page.url.templateArgs.pagename != null)
          model.jsonModelErrorArgs = pageDetails;
       }
 
-      model.jsonModel = jsonUtils.toObject(pageDefinition);
+      model.jsonModel = JSON.parse(pageDefinition);
    }
    catch(e)
    {
