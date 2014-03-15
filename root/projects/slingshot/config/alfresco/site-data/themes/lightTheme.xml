@@ -10,6 +10,8 @@
       @docListEvenRowColour: #f7f7f7;
       @docListBorderColour: #e3e3e3;
       @docListDndHighlight: #4F94C9;
+
+      @selectControlStaticBgColour: #e3e3e3;
       </less-variables>
 
       <theme-font-family-1>Open Sans Condensed,Arial,sans-serif</theme-font-family-1>

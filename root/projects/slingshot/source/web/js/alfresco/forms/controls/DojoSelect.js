@@ -27,9 +27,18 @@ define(["alfresco/forms/controls/BaseFormControl",
         "dijit/form/Select",
         "dijit/focus"], 
         function(BaseFormControl, declare, Select, focusUtil) {
-   
+
    return declare([BaseFormControl], {
-      
+
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/DojoSelect.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/DojoSelect.css"}],
+
       /**
        * @instance
        */

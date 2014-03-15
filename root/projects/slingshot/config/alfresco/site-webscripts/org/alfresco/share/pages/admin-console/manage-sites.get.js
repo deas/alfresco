@@ -105,10 +105,12 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
+                                                class: "smallpad",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/renderers/PublishingDropDownMenu",
                                                       config: {
+                                                         class: "unmargined",
                                                          publishTopic: "ALF_UPDATE_SITE_DETAILS",
                                                          publishPayload: {
                                                             shortName: {
@@ -136,7 +138,7 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
-                                                class: "last",
+                                                class: "smallpad last",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/buttons/AlfButton",

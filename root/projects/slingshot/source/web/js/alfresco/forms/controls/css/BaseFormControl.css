@@ -50,3 +50,11 @@
    clear: both;
    height: 5px;
 }
+
+.unmargined .alfresco-forms-controls-BaseFormControl{
+   margin-bottom: 0;
+}
+
+.unmargined .alfresco-forms-controls-BaseFormControl > .clear-both {
+   height: 0;
+}

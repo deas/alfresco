@@ -5,21 +5,25 @@
    border: none;
 }
 
-.alfresco-documentlibrary-views-layouts-AlfDocumentListView table tr:nth-child(even) {
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView > table > tbody > tr:nth-child(even) {
    background-color: @docListEvenRowColour;
 }
 
-.alfresco-documentlibrary-views-layouts-AlfDocumentListView table tr:nth-child(odd) {
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView > table > tbody > tr:nth-child(odd) {
    background-color: @docListOddRowColour;
 }
 
-.alfresco-documentlibrary-views-layouts-AlfDocumentListView td {
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView > table > tbody > tr > td {
    border-top: 1px solid @docListBorderColour;
    border-bottom: 1px solid @docListBorderColour;
    border-right: 1px solid @docListBorderColour;
    padding: 10px;
    margin: 0;
    vertical-align: top;
+}
+
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView td.smallpad {
+   padding: 4px;
 }
 
 .alfresco-documentlibrary-views-layouts-AlfDocumentListView td.last {
