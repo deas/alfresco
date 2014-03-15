@@ -33,8 +33,8 @@ define(["intern!object",
         function (registerSuite, assert, expect, require, TestCommon, specialKeys) {
 
    registerSuite({
-      name: 'Document Picker Test',
-      'alfresco/documentlibrary/views/AlfDocumentListWithHeaderView': function () {
+      name: 'AlfDocumentListWithHeaderView',
+      'Keyboard Tests': function () {
 
          var alfPause = 150;
          var browser = this.remote;
@@ -47,13 +47,13 @@ define(["intern!object",
             .active()
             .text()
             .then(function(resultText) {
-               console.log("Test #1a");
+               console.log("Test #1a - Check tab focus on column header 1");
                expect(resultText).to.equal("Column 1", "The text is incorrect");
             })
             .keys(specialKeys["Space"])
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
             .then(function(result) {
-               console.log("Test #1b");
+               console.log("Test #1b - Check sort on column header 1");
                assert(result == true, "Could not request to sort column 1 in PubSubLog");
             })
             .end()
@@ -64,7 +64,7 @@ define(["intern!object",
             .keys(specialKeys["Return"])
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
             .then(function(result) {
-               console.log("Test #1c");
+               console.log("Test #1c - Check tab focus on column header 2");
                assert(result == true, "Could not request to sort column 1 in PubSubLog");
             })
             .end()
@@ -75,26 +75,26 @@ define(["intern!object",
             .keys(specialKeys["Return"])
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
             .then(function(result) {
-               console.log("Test #1d");
+               console.log("Test #1d - Check sort on column header 2");
                assert(result == true, "Could not request to sort column 1 in PubSubLog");
             })
             .end()
 
-            // Go back to the previous header cell and sort in the opposite direction...
+            // // Go back to the previous header cell and sort in the opposite direction...
             .keys([specialKeys.Shift,specialKeys.Tab])
             .sleep(alfPause)
 
             // Check it is currently sorted ascendinging...
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "direction", "ascending"))
             .then(function(result) {
-               console.log("Test #1e");
+               console.log("Test #1e - Check initial sort direction on column header 2");
                assert(result == true, "The initial sort direction is not ascending");
             })
             // Now change the sort direction...
             .keys(specialKeys["Return"])
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "direction", "descending"))
             .then(function(result) {
-               console.log("Test #1f");
+               console.log("Test #1f - Check reversed sort direction on column header 2");
                assert(result == true, "The second sort direction is not descending");
             })
 
@@ -113,7 +113,7 @@ define(["intern!object",
             .active()
             .text()
             .then(function(resultText) {
-               console.log("Test #1g");
+               console.log("Test #1g - Check row 1 selection");
                expect(resultText).to.equal("A", "The text is incorrect");
             })
 
@@ -127,9 +127,10 @@ define(["intern!object",
             .active()
             .text()
             .then(function(resultText) {
-               console.log("Test #1h");
+               console.log("Test #1h - Check cursor down moves to next row");
                expect(resultText).to.equal("D", "The text is incorrect");
             })
+            .end()
 
             // Use the cursor keys to wrap back to the first row...
             .keys(specialKeys['Down arrow'])
@@ -145,9 +146,10 @@ define(["intern!object",
             .active()
             .text()
             .then(function(resultText) {
-               console.log("Test #1i");
+               console.log("Test #1i - Check cursor down wraps to first row");
                expect(resultText).to.equal("A", "The text is incorrect");
             })
+            .end()
 
             // Use the up cursor to wrap back to the last element...
             .keys(specialKeys['Up arrow'])
@@ -159,9 +161,10 @@ define(["intern!object",
             .active()
             .text()
             .then(function(resultText) {
-               console.log("Test #1j");
+               console.log("Test #1j - Check cursor up wraps to last row");
                expect(resultText).to.equal("J", "The text is incorrect");
             })
+            .end()
 
             // Use the up cursor to go to the third row
             .keys(specialKeys['Up arrow'])
@@ -173,35 +176,44 @@ define(["intern!object",
             .active()
             .text()
             .then(function(resultText) {
-               console.log("Test #1k");
+               console.log("Test #1k - Check cursor up moves to previous row");
                expect(resultText).to.equal("G", "The text is incorrect");
             })
             .end()
 
-            // // Now do the same tests with the mouse...
-            // COMMENTED OUT DUE TO UNUSUAL ERRORS - THIS NEEDS TO BE FINISHED, QUESTION ASKED ON STACKOVERFLOW...
-            // http://stackoverflow.com/questions/21735472/elementbycss-failure-after-haselementbycss-success-in-intern
-            // .sleep(alfPause)
-            // .hasElementByCss("#COLUMN1_HEADER > span")
-            // .then(function(result) {
-            //    console.log("Test #2a - Check column header");
-            //    assert(result == true, "Could not find COLUMN1_HEADER in Test #2a");
-            // })
-            // .elementByCss("#COLUMN1_HEADER > span")
-            //    .moveTo()
-            //    .click()
-            //    .end()
-            // .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
-            // .then(function(result) {
-            //    console.log("Test #2b");
-            //    assert(result == true, "Could not request to sort column 1 via mouse");
-            // })
+            // Post the coverage results...
+            .then(function() {
+               TestCommon.postCoverageResults(browser);
+            })
+            .end();
+      },
+      'Mouse Tests': function () {
+         var alfPause = 150;
+         var browser = this.remote;
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/AlfDocumentListWithHeader_TestPage.json")
+            .end()
+
+            .hasElementByCss("#COLUMN1_HEADER > span")
+            .then(function(result) {
+               console.log("Test #2a - Check column header");
+               assert(result == true, "Could not find COLUMN1_HEADER in Test #2a");
+            })
+            .end()
+            .elementByCss("#COLUMN1_HEADER > span")
+               .moveTo()
+               .click()
+               .end()
+            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
+            .then(function(result) {
+               console.log("Test #2b");
+               assert(result == true, "Could not request to sort column 1 via mouse");
+            })
             
             // Post the coverage results...
-            // .then(function() {
-            //    TestCommon.postCoverageResults(browser);
-            // })
-            // .end();
+            .then(function() {
+               TestCommon.postCoverageResults(browser);
+            })
+            .end();
       }
    });
 });
