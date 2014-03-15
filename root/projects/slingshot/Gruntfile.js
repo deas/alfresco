@@ -65,4 +65,14 @@ module.exports = function(grunt) {
       'watch'
    ]);   
 
+   // Shortcuts to incremental builds of Share/Repo
+   grunt.registerTask('r', [
+      'shell:killRepo',
+      'shell:startRepo'
+   ]);
+   grunt.registerTask('s', [
+      'shell:killShare',
+      'shell:startShare'
+   ]);
+
 }

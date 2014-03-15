@@ -60,7 +60,22 @@ module.exports = function (grunt, alf) {
                failOnError: true
             }
          },
-
+         killRepo: {
+            command: 'kill -9 `lsof -t -i :8080`',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: false
+            }
+         },
+         killShare: {
+            command: 'kill -9 `lsof -t -i :8081`',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: false
+            }
+         },
          // See also vagrant.js
          // Start the vagrant VM
          vagrantUp: {
