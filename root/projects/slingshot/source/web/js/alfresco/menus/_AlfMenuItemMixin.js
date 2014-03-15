@@ -152,7 +152,7 @@ define(["dojo/_base/declare",
             }
             else if (this.targetUrlType == this.contextRelativePath)
             {
-               url = Alfresco.contants.URL_CONTEXT + this.targetUrl;
+               url = AlfConstants.URL_CONTEXT + this.targetUrl;
             }
             else if (this.targetUrlType == this.fullPath)
             {
@@ -197,7 +197,7 @@ define(["dojo/_base/declare",
             this.iconNode = domConstruct.create("img", {
                role:"presentation",
                className: "dijitInline dijitIcon dijitMenuItemIcon " + this.iconClass,
-               src: Alfresco.constants.URL_RESCONTEXT + "/js/alfresco/menus/css/images/transparent-20.png",
+               src: AlfConstants.URL_RESCONTEXT + "/js/alfresco/menus/css/images/transparent-20.png",
                alt: this.message(this.iconAltText)
             }, iconNodeParent, "first");
          }

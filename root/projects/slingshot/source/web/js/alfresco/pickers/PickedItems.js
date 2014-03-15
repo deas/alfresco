@@ -68,7 +68,7 @@ define(["dojo/_base/declare",
          // TODO: Change doc load subscription...
          // DOESN'T INHERIT BY DESIGN
          this.removeUploadDragAndDrop(this.domNode);
-         this.setupKeyboardNavigation();
+         // this.setupKeyboardNavigation();
 
          this.alfSubscribe("ALF_ITEM_SELECTED", lang.hitch(this, "addPickedItem"));
          this.alfSubscribe("ALF_ITEM_REMOVED", lang.hitch(this, "removePickedItem"));
@@ -196,21 +196,21 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      renderView: function alfresco_pickers_PickedItems__renderView() {
-         if (this.containerNode != null)
-         {
-            array.forEach(registry.findWidgets(this.containerNode), lang.hitch(this, "destroyWidget"));
-            domConstruct.empty(this.containerNode);
-         }
-         if (this.currentData && this.currentData.items && this.currentData.items.length > 0)
-         {
-            this.renderData();
-         }
-         else
-         {
-            this.renderNoDataDisplay();
-         }
-      },
+      // renderView: function alfresco_pickers_PickedItems__renderView() {
+      //    if (this.containerNode != null)
+      //    {
+      //       array.forEach(registry.findWidgets(this.containerNode), lang.hitch(this, "destroyWidget"));
+      //       domConstruct.empty(this.containerNode);
+      //    }
+      //    if (this.currentData && this.currentData.items && this.currentData.items.length > 0)
+      //    {
+      //       this.renderData();
+      //    }
+      //    else
+      //    {
+      //       this.renderNoDataDisplay();
+      //    }
+      // },
       
       /**
        * The widgets to be processed to generate each item in the rendered view.

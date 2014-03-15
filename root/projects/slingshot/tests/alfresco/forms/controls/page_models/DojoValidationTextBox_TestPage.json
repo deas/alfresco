@@ -1,12 +1,12 @@
 {
    "services": [{
-      name: "alfresco/services/LoggingService",
-      config: {
-         loggingPreferences: {
-            enabled: true,
-            all: true,
-            warn: true,
-            error: true
+      "name": "alfresco/services/LoggingService",
+      "config": {
+         "loggingPreferences": {
+            "enabled": true,
+            "all": true,
+            "warn": true,
+            "error": true
          }
       }
    }],
