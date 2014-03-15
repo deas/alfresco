@@ -266,7 +266,7 @@ define(["dojo/_base/declare",
             label: this.message(this.toolTipMsg),
             showDelay: 250
          });
-         this.alfLog("log", "Created HeaderCell tooltip with label '" + tip.label + "' for item '" + this.id + "'", this);
+         this.alfLog("log", "Created HeaderCell tooltip with label '" + tip.label + "' for item '" + this.domNode + "'", this);
       }
 
    });

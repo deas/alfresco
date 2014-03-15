@@ -39,7 +39,6 @@ model.jsonModel = {
                      sortField: "title",
                      usePagination: true,
                      dataRequestTopic: "ALF_GET_SITES",
-                     class: "unbordered",
                      widgets: [
                         {
                            name: "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
@@ -116,13 +115,49 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
-                                                
+                                                widgets: [
+                                                   {
+                                                      name: "alfresco/renderers/PublishingDropDownMenu",
+                                                      config: {
+                                                         publishTopic: "ALF_UPDATE_SITE_DETAILS",
+                                                         publishPayload: {
+                                                            shortName: {
+                                                               alfType: "item",
+                                                               alfProperty: "shortName"
+                                                            },
+                                                            visibility: {
+                                                               alfType: "payload",
+                                                               alfProperty: "value"
+                                                            }
+                                                         },
+                                                         propertyToRender: "visibility",
+                                                         optionsConfig: {
+                                                            fixed: [
+                                                               {label: "Public", value: "PUBLIC"},
+                                                               {label: "Moderated", value: "MODERATED"},
+                                                               {label: "Private", value: "PRIVATE"}
+                                                            ]
+                                                         }
+                                                      }
+                                                   }
+                                                ]
                                              }
                                           },
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
-                                                class: "last"
+                                                class: "last",
+                                                widgets: [
+                                                   {
+                                                      name: "alfresco/buttons/AlfButton",
+                                                      config: {
+                                                         id: "deleteSiteButton",
+                                                         icon : "document-delete",
+                                                         label: "Delete Site",
+                                                         publishTopic: "DELETE_SITE"
+                                                      }
+                                                   }
+                                                ]
                                              }
                                           }
                                        ]

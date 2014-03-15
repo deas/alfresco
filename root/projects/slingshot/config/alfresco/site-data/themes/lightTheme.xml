@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <theme>
-	<title>Light Theme</title>
-	<title-id>theme.lightTheme</title-id>
+   <title>Light Theme</title>
+   <title-id>theme.lightTheme</title-id>
    <css-tokens>
       <theme-font-family-1>Open Sans Condensed,Arial,sans-serif</theme-font-family-1>
       <theme-font-family-2>Open Sans,Arial,sans-serif</theme-font-family-2>
@@ -35,9 +35,19 @@
       <theme-border-4>1px solid #ccc</theme-border-4>
       <theme-border-5></theme-border-5>
       <theme-box-shadow>0.33px 2px 8px rgba(0, 0, 0, 0.3)</theme-box-shadow>
-      
+
       <!-- New theme tokens -->
       <button>background-image: none;background-color: #ffffff; border-color: #ffffff;border-style: solid;border-width: 1px 0;margin: auto 0.25em;color:#333333;</button>
-      
+
+      <!-- New widget tokens -->
+      <theme-widget-bg-1>background-color: #f2f2f2;</theme-widget-bg-1>
+      <theme-widget-bg-2>background-color: #fff;</theme-widget-bg-2>
+      <theme-widget-bg-3>background-color: #f7f7f7;</theme-widget-bg-3>
+      <theme-widget-border-1>1px solid #e3e3e3</theme-widget-border-1>
+      <theme-widget-table-1>width: 100%; border-collapse: collapse; border-spacing: 0; border: none;</theme-widget-table-1>
+      <theme-widget-th-1>padding: 10px; margin: 0; vertical-align: middle;</theme-widget-th-1>
+      <theme-widget-td-1>padding: 10px; margin: 0; vertical-align: top;</theme-widget-td-1>
+      <theme-widget-box-1>border: none; margin: 0;</theme-widget-box-1>
+      <theme-widget-dnd-highlight>outline: 2px solid #4F94C9; outline-offset: -2px;</theme-widget-dnd-highlight>
    </css-tokens>
 </theme>
