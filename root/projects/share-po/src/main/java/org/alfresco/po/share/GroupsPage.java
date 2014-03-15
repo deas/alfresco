@@ -238,7 +238,7 @@ public class GroupsPage extends SharePage
      * click on Add user button in GroupsPage
      * 
      * @return AddUserPage
-     */
+     *//*
     public AddUserPage clickAddUser()
     {
         try
@@ -258,11 +258,11 @@ public class GroupsPage extends SharePage
         throw new PageOperationException("Not found element is : " + BUTTON_ADD_USER);
     }
 
-    /**
+    *//**
      * Click on Add Group button in GroupsPage
      * 
      * @return AddGroupPage
-     */
+     *//*
     public AddGroupPage clickAddGroup()
     {
         try
@@ -281,7 +281,7 @@ public class GroupsPage extends SharePage
         }
         throw new PageOperationException("Not found element is : " + BUTTON_ADD_GROUP);
     }
-
+*/
     /**
      * Click on Remove icon on members list in group page
      * 

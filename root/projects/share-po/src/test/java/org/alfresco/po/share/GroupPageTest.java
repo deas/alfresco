@@ -107,7 +107,7 @@ public class GroupPageTest extends AbstractTest
     }
     
     
-    @Test(groups = "Enterprise-only", dependsOnMethods = "testgetMembersList")
+    /*@Test(groups = "Enterprise-only", dependsOnMethods = "testgetMembersList")
     public void testclickAddUser() throws Exception
     {         
         GroupsPage page = dashBoard.getNav().getGroupsPage();
@@ -127,7 +127,7 @@ public class GroupPageTest extends AbstractTest
         AddGroupPage addGroupPage = page.clickAddGroup().render();
         Assert.assertTrue(addGroupPage.getTitle().contains("Add Group"),"Add User page is displayed");
         
-    }
+    }*/
     
     @Test(groups = "Enterprise-only", dependsOnMethods = "testclickAdGroup")
     public void testRemoveUser() throws Exception
