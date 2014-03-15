@@ -218,12 +218,24 @@ define(["intern/dojo/node!fs",
             .click()
             .end();
 
-            console.log("Coverage ~~>");
+            console.log(">> Coverage ~~>");
          }
          else
          {
             browser.end();
          }
+      },
+
+      /**
+       * This function provides common logging for tests
+       *
+       * @instance
+       * @param {string} test The name of the test running
+       * @param {string} line The line number
+       * @param {string} desc The test description
+       */
+      log: function(test, line, desc) {
+         console.log(">> " + test + " [" + line + "]: " + desc);
       }
    };
 
