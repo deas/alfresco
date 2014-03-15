@@ -149,18 +149,23 @@ define(["dojo/_base/declare",
          if (this.sortable == true)
          {
             this.alfLog("log", "Sort request received");
+
+            // If currently NOT being used for sort then we start with ascending
             if (this.usedForSort == false)
             {
-               // If currently NOT being used for sort then use it now...
                this.usedForSort = true;
                this.sortedAscending = true;
                this.sortIcon("asc");
             }
+
+            // If we are already sorting on this column and direction is ascending then we want descending
             else if (this.sortedAscending == true)
             {
                this.sortIcon("desc");
                this.sortedAscending = false;
             }
+            
+            // Otherwise we want sort by ascending
             else
             {
                this.sortIcon("asc");
@@ -257,12 +262,12 @@ define(["dojo/_base/declare",
        */
       addToolTipMsg: function alfresco_documentlibrary_views_layouts_HeaderCell__addToolTipMsg() {
     	  Tooltip.defaultPosition=['above', 'below'];
-          new Tooltip({
+          var tip = new Tooltip({
         	 label: this.message(this.toolTipMsg),
              showDelay: 250,
              connectId: [this.id]
           });
-          this.alfLog("log", "Created HeaderCell tooltip for item '" + this.id + "'", this);
+          this.alfLog("log", "Created HeaderCell tooltip with label '" + tip.label + "' for item '" + this.id + "'", this);
       }
 
    });

@@ -65,13 +65,15 @@ define(["dojo/_base/declare",
       },
 
       /** 
+       * Builds the header contents from a nested set of widgets in attribute widgetsForHeader
+       * 
        * @instance
        */
       renderHeader: function alfresco_documentlibrary_views_AlfDocumentListWithHeaderView__renderHeader() {
          // This is something of a hack to work around the original expected behaviour of a view...
          // It was expected that sub-widgets would need to have a current item set as they were iterated over
-         // but obviously that doesn't apply to the header widgets. Therefore we're going to set a currentItem
-         // process the header widgets and then remove it again...
+         // but obviously that doesn't apply to the header widgets. Therefore we're going to get a currentItem
+         // to process the header widgets and then remove it again...
          // Without this the header widgets would not get rendered (see the _MultiItemRendererMixin code)
          this.currentItem = {};
          if (this.widgetsForHeader != null)
