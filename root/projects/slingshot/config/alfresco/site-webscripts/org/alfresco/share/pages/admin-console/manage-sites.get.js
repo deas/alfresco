@@ -48,13 +48,6 @@ model.jsonModel = {
                                  {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                     config: {
-                                       label: "",
-                                       sortable: false
-                                    }
-                                 },
-                                 {
-                                    name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                    config: {
                                        label: "Name",
                                        sortable: true,
                                        sortValue: "title",
@@ -76,16 +69,6 @@ model.jsonModel = {
                                     name: "alfresco/documentlibrary/views/layouts/Row",
                                     config: {
                                        widgets: [
-                                          {
-                                             name: "alfresco/documentlibrary/views/layouts/Cell",
-                                             config: {
-                                                widgets: [
-                                                   {
-                                                      name: "alfresco/renderers/Selector"
-                                                   }
-                                                ]
-                                             }
-                                          },
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
