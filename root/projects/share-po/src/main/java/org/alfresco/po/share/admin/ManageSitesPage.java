@@ -92,6 +92,30 @@ public class ManageSitesPage extends SharePage
     }
 
     /**
+     * Find a managed site row by name from paginated results.
+     *
+     * @param siteName the site name
+     * @return the managed site row
+     */
+    public ManagedSiteRow findManagedSiteRowByNameFromPaginatedResults(String siteName)
+    {
+        // Navigate to the first page of results
+        this.docListPaginator.gotoFirstResultsPage();
+
+        //TODO: Pagination needs implementing here
+        ManagedSiteRow testManagedSiteRow = new ManagedSiteRow(siteName);
+        for (ManagedSiteRow row : this.getManagedSiteRows())
+        {
+            if (row.equals(testManagedSiteRow))
+            {
+                return row;
+            }
+        }
+
+        return null;
+    }
+    
+    /**
      * Initialises the elements that make up a ManageSitesPage.
      */
     private void initElements()

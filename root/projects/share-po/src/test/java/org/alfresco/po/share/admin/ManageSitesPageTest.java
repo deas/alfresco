@@ -72,7 +72,7 @@ public class ManageSitesPageTest extends AbstractTest
         // TODO: Bootstrap site data
         // TODO: Find a site we have actually bootstrapped
 //        String testSiteName = "WAT1";
-//        ManagedSiteRow wat1 = findManagedSiteRowByNameFromPaginatedResults(testSiteName);
+//        ManagedSiteRow wat1 = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
 //        Assert.assertNotNull(wat1);
     }
 
@@ -85,10 +85,10 @@ public class ManageSitesPageTest extends AbstractTest
         // TODO: Bootstrap site data
         // TODO: Find a site we have actually bootstrapped
 //        String testSiteName = "WAT20";
-//        ManagedSiteRow wat20 = findManagedSiteRowByNameFromPaginatedResults(testSiteName);
+//        ManagedSiteRow wat20 = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
 //        Assert.assertNotNull(wat20);
 //        wat20.getVisibility().selectValue(SiteVisibility.PRIVATE);
-//        wat20 = findManagedSiteRowByNameFromPaginatedResults(testSiteName);
+//        wat20 = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
 //        Assert.assertEquals(wat20.getVisibility().getValue(), SiteVisibility.PRIVATE.getDisplayValue());
     }
 
@@ -100,35 +100,11 @@ public class ManageSitesPageTest extends AbstractTest
     {
         // TODO: Bootstrap site data
         // TODO: Find a site we have actually bootstrapped
-//        String testSiteName = "WAT29";
-//        ManagedSiteRow wat29 = findManagedSiteRowByNameFromPaginatedResults(testSiteName);
-//        Assert.assertNotNull(wat29);
-//        wat29.getActions().clickActionByNameAndDialogByButtonName("Delete Site", "OK");
-//        wat29 = findManagedSiteRowByNameFromPaginatedResults(testSiteName);
-//        Assert.assertNull(wat29);
-    }
-
-    /**
-     * Find a managed site row by name from paginated results.
-     *
-     * @param siteName the site name
-     * @return the managed site row
-     */
-    private ManagedSiteRow findManagedSiteRowByNameFromPaginatedResults(String siteName)
-    {
-        // Navigate to the first page of results
-        manageSitesPage.getPaginator().gotoFirstResultsPage();
-
-        //TODO: Pagination needs implementing here
-        ManagedSiteRow testManagedSiteRow = new ManagedSiteRow(siteName);
-        for (ManagedSiteRow row : manageSitesPage.getManagedSiteRows())
-        {
-            if (row.equals(testManagedSiteRow))
-            {
-                return row;
-            }
-        }
-
-        return null;
+//        String testSiteName = "WAT22";
+//        ManagedSiteRow wat22 = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
+//        Assert.assertNotNull(wat22);
+//        wat22.getActions().clickActionByNameAndDialogByButtonName("Delete Site", "OK");
+//        wat22 = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
+//        Assert.assertNull(wat22);
     }
 }

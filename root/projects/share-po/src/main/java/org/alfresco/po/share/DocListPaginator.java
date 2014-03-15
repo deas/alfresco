@@ -119,6 +119,16 @@ public class DocListPaginator
     }
 
     /**
+     * Gets the previous page button.
+     *
+     * @return the previous page button
+     */
+    public WebElement getPrevPageButton()
+    {
+        return prevPageButton;
+    }
+
+    /**
      * Click the previous page button.
      * 
      * @return the html page
@@ -150,6 +160,16 @@ public class DocListPaginator
     public Integer getPageNumber()
     {
         return pageNumber;
+    }
+
+    /**
+     * Gets the next page button.
+     *
+     * @return the next page button
+     */
+    public WebElement getNextPageButton()
+    {
+        return nextPageButton;
     }
 
     /**

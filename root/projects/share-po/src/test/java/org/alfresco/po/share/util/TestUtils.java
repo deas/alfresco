@@ -14,12 +14,12 @@ public class TestUtils
      * @param element the WebElement
      * @return boolean
      */
-    public static Boolean usableElement(WebElement element)
+    public static boolean usableElement(WebElement element)
     {
         if (element != null && element.isDisplayed() && element.isEnabled())
         {
-            return Boolean.TRUE;
+            return true;
         }
-        return Boolean.FALSE;
+        return false;
     }
 }
