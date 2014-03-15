@@ -116,7 +116,10 @@ public class ManageSitesPageTest extends AbstractTest
      */
     private ManagedSiteRow findManagedSiteRowByNameFromPaginatedResults(String siteName)
     {
-        // TODO: Pagination needs implementing here
+        // Navigate to the first page of results
+        manageSitesPage.getPaginator().gotoFirstResultsPage();
+
+        //TODO: Pagination needs implementing here
         ManagedSiteRow testManagedSiteRow = new ManagedSiteRow(siteName);
         for (ManagedSiteRow row : manageSitesPage.getManagedSiteRows())
         {

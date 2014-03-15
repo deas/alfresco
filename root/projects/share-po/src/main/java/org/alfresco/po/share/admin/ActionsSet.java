@@ -2,6 +2,7 @@ package org.alfresco.po.share.admin;
 
 import java.util.List;
 
+import org.alfresco.po.share.util.TestUtils;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -59,7 +60,7 @@ public class ActionsSet
         WebElement menu = this.drone.find(By.cssSelector(menuSelector));
 
         // If the menu is not null and is displayed and is enabled
-        if (menu != null && menu.isDisplayed() && menu.isEnabled())
+        if (TestUtils.usableElement(menu))
         {
 
             // Within the menu element find the MENU_ROWS
@@ -91,7 +92,7 @@ public class ActionsSet
         // Find the dialog
         WebElement dialog = this.drone.find(DIALOG);
 
-        if(dialog != null && dialog.isDisplayed() && dialog.isEnabled())
+        if(TestUtils.usableElement(dialog))
         {
             // Within the dialog find the buttons
             List<WebElement> dialogButtons = dialog.findElements(DIALOG_BUTTONS);

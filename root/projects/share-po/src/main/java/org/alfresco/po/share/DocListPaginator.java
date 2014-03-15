@@ -14,13 +14,14 @@
  */
 package org.alfresco.po.share;
 
+import org.alfresco.po.share.util.TestUtils;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-
 
 /**
  * Pagination object for Document List.
@@ -32,85 +33,144 @@ public class DocListPaginator
 
     /** Constants */
     private static final By PAGINATION_GROUP = By.cssSelector("div[id^=\"alfresco_documentlibrary_AlfDocumentListPaginator___\"].alfresco-menus-AlfMenuBar");
-    private static final By PAGINATION_NEXT_BUTTON = By.cssSelector("div[id$=\"_PAGE_BACK\"]");
-    private static final By PAGINATION_PREVIOUS_BUTTON = By.cssSelector("div[id$=\"_PAGE_FORWARD\"]");
+    private static final By PAGINATION_PAGE_SELECTOR = By.cssSelector("div[id$=\"_PAGE_SELECTOR\"]");
+    private static final By PAGINATION_PREVIOUS_BUTTON = By.cssSelector("div[id$=\"_PAGE_BACK\"]");
+    private static final By PAGINATION_PAGE_MARKER = By.cssSelector("div[id$=\"_PAGE_MARKER\"]");
+    private static final By PAGINATION_NEXT_BUTTON = By.cssSelector("div[id$=\"_PAGE_FORWARD\"]");
+    private static final By PAGINATION_RESULTS_PER_PAGE_SELECTOR = By.cssSelector("div[id$=\"_RESULTS_PER_PAGE_SELECTOR\"]");
+
+    private static final String MENU_ELEMENT_SUFFIX = "_dropdown";
+    private static final String MENU_ELEMENT_SELECTOR_TEMPLATE = "div#?";
+    private static final By FIRST_MENU_ROW = By.cssSelector("tr.dijitMenuItem:first-of-type");
 
     private WebDrone drone;
-    private WebElement prevPage;
-    private WebElement nextPage;
+    private WebElement pageSelector;
+    private WebElement prevPageButton;
+    private Integer pageNumber;
+    private WebElement nextPageButton;
+    private WebElement resultsPerPageSelector;
 
     /**
      * Instantiates a new doc list paginator.
-     *
+     * 
      * @param drone the WebDrone
      */
     public DocListPaginator(WebDrone drone)
     {
         this.drone = drone;
         WebElement element = drone.find(PAGINATION_GROUP);
-        nextPage = element.findElement(PAGINATION_NEXT_BUTTON);
-        prevPage = element.findElement(PAGINATION_PREVIOUS_BUTTON);
+        pageSelector = element.findElement(PAGINATION_PAGE_SELECTOR);
+        prevPageButton = element.findElement(PAGINATION_PREVIOUS_BUTTON);
+        pageNumber = Integer.parseInt(StringUtils.trim(element.findElement(PAGINATION_PAGE_MARKER).getText()));
+        nextPageButton = element.findElement(PAGINATION_NEXT_BUTTON);
+        resultsPerPageSelector = element.findElement(PAGINATION_RESULTS_PER_PAGE_SELECTOR);
     }
 
     /**
-     * Gets the previous page.
-     *
-     * @return the previous page
-     */
-    public WebElement getPrevPage()
-    {
-        return prevPage;
-    }
-
-    /**
-     * Gets the next page.
-     *
-     * @return the next page
-     */
-    public WebElement getNextPage()
-    {
-        return nextPage;
-    }
-
-    /**
-     * Click next button.
-     *
+     * Go to the first page of results.
+     * 
      * @return the html page
      */
-    public HtmlPage clickNextButton()
+    public HtmlPage gotoFirstResultsPage()
     {
-        if (nextPage.isDisplayed() && nextPage.isEnabled())
+        // If we're on page 1 return
+        if (pageNumber.equals(new Integer(1)))
+        {
+            return FactorySharePage.resolvePage(drone);
+        }
+        else
         {
             try
             {
-                nextPage.click();
+                // Click the page selector to open the drop down menu
+                pageSelector.click();
+                
+                // Compose the selector for the drop down menu
+                String menuId = this.pageSelector.getAttribute("id") + MENU_ELEMENT_SUFFIX;
+                String menuSelector = StringUtils.replace(MENU_ELEMENT_SELECTOR_TEMPLATE, "?", menuId);
+
+                // Find the menu
+                WebElement menu = this.drone.find(By.cssSelector(menuSelector));
+
+                // If the menu is not null and is displayed and is enabled
+                if (TestUtils.usableElement(menu))
+                {
+                    // Within the menu select the first page
+                    WebElement firstPage = menu.findElement(FIRST_MENU_ROW);
+
+                    // First page found - click it
+                    if(TestUtils.usableElement(firstPage))
+                    {
+                        firstPage.click();
+                    }
+                }
             }
             catch (NoSuchElementException nse)
-            {}
+            {
+            }
             catch (TimeoutException te)
-            {}
+            {
+            }
+            
+        }
+        
+        // Return the resolved page
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Click the previous page button.
+     * 
+     * @return the html page
+     */
+    public HtmlPage clickPrevButton()
+    {
+        if (TestUtils.usableElement(prevPageButton))
+        {
+            try
+            {
+                prevPageButton.click();
+            }
+            catch (NoSuchElementException nse)
+            {
+            }
+            catch (TimeoutException te)
+            {
+            }
             return FactorySharePage.resolvePage(drone);
         }
         return null;
     }
 
     /**
-     * Click previous button.
-     *
+     * Gets the current page number.
+     * 
+     * @return the page number
+     */
+    public Integer getPageNumber()
+    {
+        return pageNumber;
+    }
+
+    /**
+     * Click the next page button.
+     * 
      * @return the html page
      */
-    public HtmlPage clickPrevButton()
+    public HtmlPage clickNextButton()
     {
-        if (prevPage.isDisplayed() && prevPage.isEnabled())
+        if (TestUtils.usableElement(nextPageButton))
         {
             try
             {
-                prevPage.click();
+                nextPageButton.click();
             }
             catch (NoSuchElementException nse)
-            {}
+            {
+            }
             catch (TimeoutException te)
-            {}
+            {
+            }
             return FactorySharePage.resolvePage(drone);
         }
         return null;

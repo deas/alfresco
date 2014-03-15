@@ -280,6 +280,7 @@ define(["dojo/_base/declare",
             {
                name: "alfresco/menus/AlfMenuBarSelect",
                config: {
+                  id: this.id + "_PAGE_SELECTOR",
                   label: this.message("alf-documentlist-paginator.pageSelect.label"),
                   selectionTopic: this.pageSelectionTopic,
                   widgets: [
@@ -316,6 +317,7 @@ define(["dojo/_base/declare",
             {
                name: "alfresco/menus/AlfMenuBarSelect",
                config: {
+                  id: this.id + "_RESULTS_PER_PAGE_SELECTOR",
                   label: this.message("alf-documentlist-paginator.docsPerPageSelect.label"),
                   selectionTopic: this.docsPerpageSelectionTopic,
                   minRwdWidth: 1024,
