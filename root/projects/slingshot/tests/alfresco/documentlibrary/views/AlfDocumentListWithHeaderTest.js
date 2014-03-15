@@ -38,6 +38,7 @@ define(["intern!object",
 
          var alfPause = 150;
          var browser = this.remote;
+         var testname = "AlfDocumentListWithHeaderTest";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/AlfDocumentListWithHeader_TestPage.json")
             // .end()
 
@@ -47,13 +48,13 @@ define(["intern!object",
             .active()
             .text()
             .then(function(resultText) {
-               console.log("Test #1a - Check tab focus on column header 1");
+               TestCommon.log(testname,51,"Check tab focus on column header 1");
                expect(resultText).to.equal("Column 1", "The text is incorrect");
             })
             .keys(specialKeys["Space"])
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
             .then(function(result) {
-               console.log("Test #1b - Check sort on column header 1");
+               TestCommon.log(testname,57,"Check sort on column header 1");
                assert(result == true, "Could not request to sort column 1 in PubSubLog");
             })
             .end()
@@ -64,7 +65,7 @@ define(["intern!object",
             .keys(specialKeys["Return"])
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
             .then(function(result) {
-               console.log("Test #1c - Check tab focus on column header 2");
+               TestCommon.log(testname,68,"Check tab focus on column header 2");
                assert(result == true, "Could not request to sort column 1 in PubSubLog");
             })
             .end()
@@ -75,7 +76,7 @@ define(["intern!object",
             .keys(specialKeys["Return"])
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
             .then(function(result) {
-               console.log("Test #1d - Check sort on column header 2");
+               TestCommon.log(testname,79,"Check sort on column header 2");
                assert(result == true, "Could not request to sort column 1 in PubSubLog");
             })
             .end()
@@ -87,14 +88,14 @@ define(["intern!object",
             // Check it is currently sorted ascendinging...
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "direction", "ascending"))
             .then(function(result) {
-               console.log("Test #1e - Check initial sort direction on column header 2");
+               TestCommon.log(testname,91,"Check initial sort direction on column header 2");
                assert(result == true, "The initial sort direction is not ascending");
             })
             // Now change the sort direction...
             .keys(specialKeys["Return"])
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "direction", "descending"))
             .then(function(result) {
-               console.log("Test #1f - Check reversed sort direction on column header 2");
+               TestCommon.log(testname,98,"Check reversed sort direction on column header 2");
                assert(result == true, "The second sort direction is not descending");
             })
 
@@ -113,7 +114,7 @@ define(["intern!object",
             .active()
             .text()
             .then(function(resultText) {
-               console.log("Test #1g - Check row 1 selection");
+               TestCommon.log(testname,117,"Check row 1 selection");
                expect(resultText).to.equal("A", "The text is incorrect");
             })
 
@@ -127,7 +128,7 @@ define(["intern!object",
             .active()
             .text()
             .then(function(resultText) {
-               console.log("Test #1h - Check cursor down moves to next row");
+               TestCommon.log(testname,131,"Check cursor down moves to next row");
                expect(resultText).to.equal("D", "The text is incorrect");
             })
             .end()
@@ -146,7 +147,7 @@ define(["intern!object",
             .active()
             .text()
             .then(function(resultText) {
-               console.log("Test #1i - Check cursor down wraps to first row");
+               TestCommon.log(testname,150,"Check cursor down wraps to first row");
                expect(resultText).to.equal("A", "The text is incorrect");
             })
             .end()
@@ -161,7 +162,7 @@ define(["intern!object",
             .active()
             .text()
             .then(function(resultText) {
-               console.log("Test #1j - Check cursor up wraps to last row");
+               TestCommon.log(testname,165,"Check cursor up wraps to last row");
                expect(resultText).to.equal("J", "The text is incorrect");
             })
             .end()
@@ -176,7 +177,7 @@ define(["intern!object",
             .active()
             .text()
             .then(function(resultText) {
-               console.log("Test #1k - Check cursor up moves to previous row");
+               TestCommon.log(testname,180,"Check cursor up moves to previous row");
                expect(resultText).to.equal("G", "The text is incorrect");
             })
             .end()
@@ -190,12 +191,13 @@ define(["intern!object",
       'Mouse Tests': function () {
          var alfPause = 150;
          var browser = this.remote;
+         var testname = "AlfDocumentListWithHeaderTest";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/AlfDocumentListWithHeader_TestPage.json")
             .end()
 
             .hasElementByCss("#COLUMN1_HEADER > span")
             .then(function(result) {
-               console.log("Test #2a - Check column header");
+               TestCommon.log(testname,200,"Check column header");
                assert(result == true, "Could not find COLUMN1_HEADER in Test #2a");
             })
             .end()
@@ -205,7 +207,7 @@ define(["intern!object",
                .end()
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
             .then(function(result) {
-               console.log("Test #2b");
+               TestCommon.log(testname,210,"Sort on column 1 via the mouse");
                assert(result == true, "Could not request to sort column 1 via mouse");
             })
             

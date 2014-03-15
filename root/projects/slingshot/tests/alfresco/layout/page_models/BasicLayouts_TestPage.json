@@ -160,7 +160,31 @@
                         }
                      ]
                   }
-               }
+               },
+		       {
+		          "name": "alfresco/layout/CenteredWidgets",
+		          "config": {
+		             "id": "CENTERED_WIDGETS",
+		             "widgets": [
+		                {
+		                   "name": "alfresco/logo/Logo",
+		                   "widthPx": 200,
+		                   "widthCalc": 184
+		                   "config": {
+		                      "id": "LOGO9"
+		                   }
+		                },
+		                {
+		                   "name": "alfresco/logo/Logo",
+		                   "widthPx": 200,
+		                   "widthCalc": 184
+		                   "config": {
+		                      "id": "LOGO10"
+		                   }
+		                }
+		             ]
+		          }
+		       }
             ]
          }
       },
@@ -180,6 +204,12 @@
          "name": "alfresco/layout/LeftAndRight",
          "config": {
             "id": "EMPTY_LEFT_AND_RIGHT"
+         }
+      },
+      {
+         "name": "alfresco/layout/CenteredWidgets",
+         "config": {
+            "id": "EMPTY_CENTERED_WIDGETS"
          }
       },
       {

@@ -28,11 +28,6 @@ model.jsonModel = {
             pubSubScope: siteServiceScope,
             widgets: [
                {
-                  id: "DOCLIB_PAGINATION_MENU",
-                  name: "alfresco/documentlibrary/AlfDocumentListPaginator",
-                  align: "center"
-               },
-               {
                   id: "DOCLIB_DOCUMENT_LIST",
                   name: "alfresco/documentlibrary/AlfSitesList",
                   config: {
@@ -74,18 +69,30 @@ model.jsonModel = {
                                     }
                                  },
                                  {
-                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                     config: {
-                                        label: msg.get("message.visibility-header-label")
-                                     }
-                                  },
+                                    name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                    config: {
+                                       label: msg.get("message.visibility-header-label")
+                                    }
+                                 },
+//                                 {
+//                                    name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+//                                    config: {
+//                                       label: msg.get("message.created-header-label")
+//                                    }
+//                                 },
+//                                 {
+//                                    name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+//                                    config: {
+//                                       label: msg.get("message.last-modified-header-label")
+//                                    }
+//                                 },
                                  {
-                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                     config: {
-                                        label: msg.get("message.actions-header-label"),
-                                        class: "last"
-                                     }
-                                  }
+                                    name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                    config: {
+                                       label: msg.get("message.actions-header-label"),
+                                       class: "last"
+                                    }
+                                 }
                               ],
                               widgets: [
                                  {
@@ -153,6 +160,34 @@ model.jsonModel = {
                                                 ]
                                              }
                                           },
+//                                          {
+//                                             name: "alfresco/documentlibrary/views/layouts/Cell",
+//                                             config: {
+//                                                widgets: [
+//                                                   {
+//                                                      name: "alfresco/renderers/Property",
+//                                                      config: {
+//                                                         propertyToRender: "createdDate",
+//                                                         renderAsLink: false
+//                                                      }
+//                                                   }
+//                                                ]
+//                                             }
+//                                          },
+//                                          {
+//                                             name: "alfresco/documentlibrary/views/layouts/Cell",
+//                                             config: {
+//                                                widgets: [
+//                                                   {
+//                                                      name: "alfresco/renderers/Property",
+//                                                      config: {
+//                                                         propertyToRender: "lastModifiedDate",
+//                                                         renderAsLink: false
+//                                                      }
+//                                                   }
+//                                                ]
+//                                             }
+//                                          },
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
@@ -181,6 +216,19 @@ model.jsonModel = {
                                  }
                               ]
                            }
+                        }
+                     ]
+                  }
+               },
+               {
+                  name: "alfresco/layout/CenteredWidgets",
+                  config: {
+                     pubSubScope: siteServiceScope,
+                     widgets: [
+                        {
+                           id: "DOCLIB_PAGINATION_MENU",
+                           name: "alfresco/documentlibrary/AlfDocumentListPaginator",
+                           widthCalc: 430
                         }
                      ]
                   }
