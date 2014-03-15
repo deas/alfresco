@@ -1193,7 +1193,7 @@ function generateAppItems() {
             targetUrl: "console/sites-console/manage-sites",
             renderFilter: [
                {
-                  property: "groups.GROUP_SITE_ADMINISTRATORS",
+                  property: "user.groups.GROUP_SITE_ADMINISTRATORS",
                   values: [true]
                }
             ]

@@ -36,9 +36,18 @@ model.jsonModel = {
                      sortField: "title",
                      usePagination: true,
                      dataRequestTopic: "ALF_GET_SITES_ADMIN",
+                     renderFilterMethod: "ANY",
                      renderFilter: [
                         {
-                           property: "groups.GROUP_SITE_ADMINISTRATORS",
+                           property: "user.groups.GROUP_ALFRESCO_ADMINISTRATORS",
+                           values: [true]
+                        },
+                        {
+                           property: "user.groups.GROUP_SITE_ADMINISTRATORS",
+                           values: [true]
+                        },
+                        {
+                           property: "user.isNetworkAdmin",
                            values: [true]
                         }
                      ],

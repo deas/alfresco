@@ -19,7 +19,7 @@
 
 /**
  * This can be used as the root page widget, but it performs an XHR request to retrieve information about the
- * group membership and relevant permissions for the current user. This information is then procesed against 
+ * current user. This information is then procesed against 
  * widget filtering rules to determine whether or not the widgets should be displayed. This allows the page 
  * to vary according to role and permissions.
  * 
@@ -46,8 +46,8 @@ define(["alfresco/core/Page",
 
          this.serviceXhr({url : AlfConstants.PROXY_URI + "api/people/" + AlfConstants.USERNAME + "?groups=true",
                           method: "GET",
-                          successCallback: this.userGroupsLoaded,
-                          failureCallback: this.userGroupsLoadFailure,
+                          successCallback: this.userDataLoaded,
+                          failureCallback: this.userDataLoadFailure,
                           callbackScope: this});
       },
 
@@ -58,14 +58,18 @@ define(["alfresco/core/Page",
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
-      userGroupsLoaded: function alfresco_core_FilteredPage__userGroupsLoaded(response, originalRequestConfig) {
-         this.alfLog("log", "User groups loaded", response, originalRequestConfig);
+      userDataLoaded: function alfresco_core_FilteredPage__userDataLoaded(response, originalRequestConfig) {
+         this.alfLog("log", "User data loaded", response, originalRequestConfig);
+
+         // Set the user data as the current item...
+         lang.setObject("currentItem.user", response, this);
+         // this.currentItem.user = response;
          if (response != null && response.groups != null)
          {
             array.forEach(response.groups, lang.hitch(this, "processUserGroups"));
          }
 
-         // Get the group information from the response and then filter the widgets based on the data...
+         // Get the user information from the response and then filter the widgets based on the data...
          this.widgets = this.performPageFiltering(this.widgets);
          if (this.services != null && this.services.length != 0)
          {
@@ -87,7 +91,7 @@ define(["alfresco/core/Page",
          // TODO: Using "currentItem" is temporary and based on how the original _MultiItemRendererMixin performed filtering
          //       before it was refactored out into the WidgetsProcessingFilterMixin (which needs to be updated to make the
          //       property a variable, e.g. allow "currentItem" to be set as something else)
-         lang.setObject("currentItem.groups." + groupData.itemName, true, this);
+         lang.setObject("currentItem.user.groups." + groupData.itemName, true, this);
          // this.currentItem.groups[groupData.itemName] = true;
       },
 
@@ -98,8 +102,8 @@ define(["alfresco/core/Page",
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
-      userGroupsLoadFailure: function alfresco_core_FilteredPage__userGroupsLoadFailure(response, originalRequestConfig) {
-         this.alfLog("error", "It was not possible to load the current users group information", response, originalRequestConfig);
+      userDataLoadFailure: function alfresco_core_FilteredPage__userDataLoadFailure(response, originalRequestConfig) {
+         this.alfLog("error", "It was not possible to load the current user data", response, originalRequestConfig);
       },
 
       /**
