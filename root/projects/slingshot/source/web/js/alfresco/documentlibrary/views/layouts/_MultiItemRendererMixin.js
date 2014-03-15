@@ -224,6 +224,10 @@ define(["dojo/_base/declare",
        */
       rootWidgetProcessing: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__rootWidgetProcessing(widget, index) {
          domClass.add(widget.domNode, "alfresco-documentlibrary-views-layout-_MultiItemRendererMixin--item");
+         if (this.rootWidgetSubscriptions == null)
+         {
+            this.rootWidgetSubscriptions = [];
+         }
          this.rootWidgetSubscriptions.push(this.alfSubscribe(this.documentSelectedTopic, lang.hitch(this, "onItemSelection", widget)));
          this.rootWidgetSubscriptions.push(this.alfSubscribe(this.documentDeselectedTopic, lang.hitch(this, "onItemDeselection", widget)));
       },
