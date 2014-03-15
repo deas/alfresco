@@ -21,6 +21,7 @@ package org.alfresco.po.share;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.SiteFinderPage;
@@ -460,9 +461,22 @@ public class Navigation extends SharePage
     	drone.find(By.cssSelector(selector)).click();
         return FactorySharePage.resolvePage(drone);
     }
+    
+    /**
+     * Select manage sites link from home page by Site Admin.
+     *
+     * @return the html page
+     */
+    
+    public ManageSitesPage selectManageSitesSiteAdmin()
+    {        
+        String selector = "span[id='HEADER_SITES_CONSOLE_text']>a";        
+        drone.find(By.cssSelector(selector)).click();               
+        return new ManageSitesPage(drone);        
+    }
 
     /**
-     * Select manage sites.
+     * Select manage sites by Admin.
      *
      * @return the html page
      */
@@ -473,4 +487,5 @@ public class Navigation extends SharePage
         drone.find(By.cssSelector(selector)).click();
         return FactorySharePage.resolvePage(drone);
     }
+    
 }

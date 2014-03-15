@@ -109,24 +109,11 @@ public class NavigationBarTest extends AbstractTest
         Assert.assertTrue(changePasswordPage.formPresent());
     }
     
-    /**
-     * Test navigating to Account Settings Page.
-     * @throws Exception if error
-     */
-    @Test(dependsOnMethods= "navigateChangePassword",groups={"Cloud-only"})
-    public void navigateAccountSettings() throws Exception
-    {
-        AccountSettingsPage accountSettingsPage = page.getNav().selectAccountSettingsPage().render();        
-        Assert.assertEquals("Account Settings", accountSettingsPage.getPageTitle());       
-    }
-    
-    /**
-
-    /**
+     /**
      * Test navigating to change password page.
      * @throws Exception if error
      */
-    @Test(dependsOnMethods= "navigateAccountSettings",groups={"alfresco-one"})
+    @Test(dependsOnMethods= "navigateChangePassword",groups={"alfresco-one"})
     public void navigateDashBoard() throws Exception
     {
         DashBoardPage dash = page.getNav().selectMyDashBoard().render();
@@ -181,7 +168,7 @@ public class NavigationBarTest extends AbstractTest
        page.getNav().selectNetwork(strInvitedUser);
     }
     
-    @Test(dependsOnMethods = "navigateDashBoard", groups = "Cloud-only")
+    @Test(dependsOnMethods = "testSelectNetworkInEnterprise", groups = "Cloud-only")    
     public void testNetworkDropdown()
     {
         Assert.assertNotNull(page.getNav().selectNetworkDropdown());
@@ -215,11 +202,22 @@ public class NavigationBarTest extends AbstractTest
     }
     
     /**
+     * Test navigating to Account Settings Page.
+     * @throws Exception if error
+     */
+    @Test(dependsOnMethods= "testgetNetworks",groups={"Cloud-only"})
+    public void navigateAccountSettings() throws Exception
+    {
+        AccountSettingsPage accountSettingsPage = page.getNav().selectAccountSettingsPage().render();        
+        Assert.assertEquals("Account Settings", accountSettingsPage.getPageTitle());       
+    }
+    
+    /**
      * Navigate to admin tools from the dashboard page.
      * 
      * @throws Exception if error
      */
-    @Test(groups = { "alfresco-one" })
+    @Test(groups = {"Enterprise-only"})
     public void navigateToAdminTools() throws Exception
     {
         AdminConsolePage adminConsolePage = page.getNav().selectAdminTools().render();
@@ -231,12 +229,32 @@ public class NavigationBarTest extends AbstractTest
      * 
      * @throws Exception if error
      */
-    @Test(groups = { "alfresco-one" })
+    @Test(groups = { "Enterprise-only" })
     public void navigateToManageSites() throws Exception
     {
         ManageSitesPage manageSitesPage = page.getNav().selectManageSites().render();
         Assert.assertEquals("Manage Sites", manageSitesPage.getPageTitle());
     } 
+    
+    /**
+     * Navigate to manage sites from the dashboard page by Repo Admin
+     * 
+     * @throws Exception if error
+     */
+    @Test (groups = { "Enterprise-only" })
+    public void navigateToManageSitesSiteAdmin() throws Exception
+    {   
+        String siteAdmin = "SITE_ADMINISTRATORS";
+        UserSearchPage userPage = page.getNav().getUsersPage().render();
+        NewUserPage newPage = userPage.selectNewUser().render();
+        String userinfo = "user" + System.currentTimeMillis() + "@test.com";        
+        newPage.createEnterpriseUserWithGroup(userinfo, userinfo, userinfo, userinfo, userinfo, siteAdmin);
+        ShareUtil.logout(drone);
+        ShareUtil.loginAs(drone, shareUrl, userinfo, userinfo);
+        ManageSitesPage manageSitesPage = page.getNav().selectManageSitesSiteAdmin().render();
+        Assert.assertEquals("Manage Sites", manageSitesPage.getPageTitle());
         
+    }
+    
     
  }
