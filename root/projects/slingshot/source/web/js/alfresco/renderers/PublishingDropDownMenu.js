@@ -140,12 +140,12 @@ define(["dojo/_base/declare",
 
             // Genereate a uuid for the response to ensure we only provide an update for our request...
             var responseTopic = this.generateUuid();
-            this._updateSuccessHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onChangeSuccess"), true);
-            this._updateFailureHandle = this.alfSubscribe(responseTopic + "_FAILURE", lang.hitch(this, "onChangeFailure"), true);
+            this._updateSuccessHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onChangeSuccess"), false);
+            this._updateFailureHandle = this.alfSubscribe(responseTopic + "_FAILURE", lang.hitch(this, "onChangeFailure"), false);
             updatePayload.responseTopic = responseTopic;
 
             // Request to make the update...
-            this.alfPublish(this.publishTopic, updatePayload, true);
+            this.alfPublish(this.publishTopic, updatePayload, false);
          }
          else
          {
