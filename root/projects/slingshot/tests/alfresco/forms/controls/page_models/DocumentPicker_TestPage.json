@@ -22,6 +22,9 @@
          }
       },
       {
+         "name": "alfresco/testing/SubscriptionLog"
+      }
+      {
          "name": "alfresco/testing/TestCoverageResults"
       }
    ]

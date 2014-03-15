@@ -178,7 +178,8 @@ define(["alfresco/forms/controls/BaseFormControl",
                         additionalCssClasses: "confirmationButton",
                         widgets: [
                            {
-                              name: "alfresco/pickers/Picker"
+                              name: "alfresco/pickers/Picker",
+                              config: {}
                            }
                         ]
                      }

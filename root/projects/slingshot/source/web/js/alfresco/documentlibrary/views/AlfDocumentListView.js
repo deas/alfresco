@@ -205,10 +205,17 @@ define(["dojo/_base/declare",
          {
             try
             {
+               if (this.docListRenderer != null)
+               {
+                  this.docListRenderer.destroy(true);
+               }
+               this.alfLog("log", "Rendering items", this);
                this.docListRenderer = new DocumentListRenderer({
                   widgets: this.widgets,
-                  currentData: this.currentData
-               }, this.contentNode);
+                  currentData: this.currentData,
+                  pubSubScope: this.pubSubScope
+               });
+               this.docListRenderer.placeAt(this.tableNode, "last");
                this.docListRenderer.renderData();
             }
             catch(e)
@@ -230,10 +237,13 @@ define(["dojo/_base/declare",
        * @instance
        */
       clearOldView: function alfresco_documentlibrary_views_AlfDocumentListView__clearOldView() {
-         if (this.contentNode != null)
+         if (this.docListRenderer != null)
          {
-            array.forEach(registry.findWidgets(this.contentNode), lang.hitch(this, "destroyWidget"));
-            domConstruct.empty(this.contentNode);
+            this.docListRenderer.destroy();
+         }
+         if (this.messageNode != null)
+         {
+            domConstruct.destroy(this.messageNode);
          }
       },
       
@@ -271,9 +281,9 @@ define(["dojo/_base/declare",
        */
       renderNoDataDisplay: function alfresco_documentlibrary_views_AlfDocumentListView__renderNoDataDisplay() {
          this.clearOldView();
-         domConstruct.create("div", {
+         this.messageNode = domConstruct.create("div", {
             innerHTML: this.message("doclistview.no.data.message")
-         }, this.contentNode);
+         }, this.domNode);
       },
 
       /**
@@ -283,9 +293,9 @@ define(["dojo/_base/declare",
        */
       renderErrorDisplay: function alfresco_documentlibrary_views_AlfDocumentListView__renderErrorDisplay() {
          this.clearOldView();
-         domConstruct.create("div", {
+         this.messageNode = domConstruct.create("div", {
             innerHTML: this.message("doclistview.rendering.error.message")
-         }, this.contentNode);
+         }, this.domNode);
       }
    });
 });
