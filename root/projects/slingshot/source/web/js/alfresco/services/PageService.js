@@ -74,7 +74,7 @@ define(["dojo/_base/declare",
          
          function cleanUpModel(obj) {
             for (var key in obj) {
-               if (key == "widgetsForDisplay")
+               if (key == "widgetsForDisplay" || key == "widgetsForConfig" || key == "widgetDisplayName")
                {
                   delete obj[key];
                }
@@ -93,10 +93,11 @@ define(["dojo/_base/declare",
          var exportString = "model.jsonModel = " + JSON.stringify(pageDef, null, "   ");
 
          // Create the content as a download link and click it to trigger the download...
-         var pom = domConstruct.create("a", {
+         var downloadLink = domConstruct.create("a", {
             href: 'data:text/plain;charset=utf-8,' + encodeURIComponent(exportString),
             download: payload.pageName + ".get.js"
-         }).click();
+         });
+         downloadLink.click();
       },
 
       /**

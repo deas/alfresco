@@ -150,12 +150,13 @@ define(["dojo/_base/declare",
 
          if (this.value != null && this.value != "")
          {
-            array.forEach(this.value, function(x, i) {
+            array.forEach(this.value, function(widget, i) {
                var data = {
-                  name: x.name,
-                  module: x.name,
-                  defaultConfig: x.config,
-                  widgetsForDisplay: x.widgetsForDisplay
+                  name: widget.widgetDisplayName,
+                  module: widget.name,
+                  defaultConfig: widget.config,
+                  widgetsForDisplay: widget.widgetsForDisplay,
+                  widgetsForConfig: widget.widgetsForConfig
                };
                var dndData = this.creator(data);
                this.previewTarget.insertNodes(true, [dndData.data]);
@@ -248,7 +249,10 @@ define(["dojo/_base/declare",
 
          // Create the new definition...
          var newDef = {
-            widgetsForDisplay: currentField.data.widgetsForDisplay // Save the widgets to use for display??
+            widgetsForDisplay: currentField.data.widgetsForDisplay,
+            widgetDisplayName: currentField.data.name,
+            widgetsForConfig: currentField.data.widgetsForConfig,
+            previewWidget: currentField.data.previewWidget
          };
 
          // Set the name and config...
