@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -47,6 +43,7 @@ import org.testng.annotations.Test;
 public class SiteAdminChangeVisibilityTest extends AbstractTests
 {
 
+    /** The logger */
     private static final Logger logger = Logger.getLogger(SiteAdminChangeVisibilityTest.class);
 
     private static final String SITE_ADMIN_GROUP = "SITE_ADMINISTRATORS";
@@ -81,15 +78,15 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
 
         // Create user1
         createTestUser(ADMIN_USERNAME, user1, "John", "Doe", DEFAULT_PASSWORD);
+
         // Create user2
         createTestUser(ADMIN_USERNAME, user2, "Joe", "Bloggs", DEFAULT_PASSWORD);
+
         // Add the created users, so they can be cleaned up
         this.testContext.addUser(user1, user2);
 
         if (logger.isTraceEnabled())
-        {
             logger.trace("Users created " + user1 + ", " + user2 + "]");
-        }
 
         this.user1PublicSite = this.testContext.createSiteName("u1PubSite");
         this.user1ModeratedSite = this.testContext.createSiteName("u1ModSite");
@@ -107,10 +104,8 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
         this.testContext.addSite(user1, user1PublicSite, user1ModeratedSite, user1PrivateSite);
 
         if (logger.isTraceEnabled())
-        {
-            logger.trace("Sites created by " + user1 + " [" + user1PublicSite + ", " + user1ModeratedSite + ", "
-                        + user1PrivateSite + "]");
-        }
+            logger.trace("Sites created by " + user1 + " [" + user1PublicSite + ", " + user1ModeratedSite + ", " + user1PrivateSite + "]");
+
         ShareUser.logout(drone);
 
     }
@@ -140,14 +135,21 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
      * @throws Exception
      */
     @AfterClass
-    public void teardown() throws Exception
+    public void teardown()
     {
         if (logger.isTraceEnabled())
-        {
             logger.trace("Starting teardown for " + testName);
+
+        try
+        {
+            this.testContext.cleanupSites(user1, DEFAULT_PASSWORD);
         }
-        
-        this.testContext.cleanupSites(user1, DEFAULT_PASSWORD);
+        catch (Exception e)
+        {
+            if (logger.isTraceEnabled())
+                logger.trace("Teardown of SiteAdminChangeVisibilityTest failed", e);
+        }
+
     }
 
     /**
@@ -251,8 +253,7 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
      * @param from the old visibility of the site
      * @param to the new visibility of the site
      */
-    private void testSiteVisibility(ManageSitesPage manageSitesPage, String siteName, SiteVisibility from,
-                SiteVisibility to)
+    private void testSiteVisibility(ManageSitesPage manageSitesPage, String siteName, SiteVisibility from, SiteVisibility to)
     {
         ManagedSiteRow managedSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(siteName);
         assertNotNull(managedSiteRow);
@@ -273,19 +274,16 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
      * @param password the invitee's password
      * @throws Exception
      */
-    private void createTestUser(String inviterUsername, String userName, String firstName, String lastName,
-                String password) throws Exception
+    private void createTestUser(String inviterUsername, String userName, String firstName, String lastName, String password) throws Exception
     {
         boolean created = false;
         if (isAlfrescoVersionCloud(drone))
         {
-            created = CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, new String[] { userName,
-                        firstName, lastName, password });
+            created = CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, new String[] { userName, firstName, lastName, password });
         }
         else
         {
-            created = ShareUser.createEnterpriseUserWithGroup(drone, inviterUsername, userName, firstName, lastName,
-                        password, SITE_ADMIN_GROUP);
+            created = ShareUser.createEnterpriseUserWithGroup(drone, inviterUsername, userName, firstName, lastName, password, SITE_ADMIN_GROUP);
         }
         assertTrue(created);
     }

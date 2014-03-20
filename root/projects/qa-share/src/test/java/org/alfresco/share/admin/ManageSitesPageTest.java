@@ -1,37 +1,41 @@
 package org.alfresco.share.admin;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.po.share.*;
+import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.DocListPaginator;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.admin.ManagedSiteRow;
 import org.alfresco.po.share.enums.SiteVisibility;
+import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.SiteUtil;
-import org.alfresco.share.util.AbstractTests;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
-
 /**
  * The Class ManageSitesPageTest.
- *
  * This tests the Manage Sites page behaves as one would expect.
- *
+ * 
  * @link JIRA Story: ACE-87
- * @ Test Case Reference tc-497-01 to tc-497-28
+ *       @ Test Case Reference tc-497-01 to tc-497-28
  * @author David Webster
  */
 
 public class ManageSitesPageTest extends AbstractTests
 {
+    /** The logger */
     private static Log logger = LogFactory.getLog(ManageSitesPageTest.class);
+
     private static final int NUM_OF_SITES_PER_TYPE = 1; // TODO: this was reduced from 25 due to speed. Increase again once API Create Site call is functional.
     private static final int NUM_OF_USERS = 2;
     private static final int TOTAL_NUM_OF_SITES = NUM_OF_SITES_PER_TYPE * 3 * NUM_OF_USERS;
@@ -41,7 +45,6 @@ public class ManageSitesPageTest extends AbstractTests
     private ManageSitesPage manageSitesPage;
     private OpCloudTestContext testContext;
     private List<String> users;
-
 
     /**
      * Setup.
@@ -55,7 +58,8 @@ public class ManageSitesPageTest extends AbstractTests
         this.testContext = new OpCloudTestContext(this);
         String network = testContext.createNetworkName("acme");
 
-        traceLog("Starting ManageSitesPageTest setup");
+        if (logger.isTraceEnabled())
+            logger.trace("Starting ManageSitesPageTest setup");
 
         // Create our test users
         for (int i = 0; i < NUM_OF_USERS; i++)
@@ -66,20 +70,20 @@ public class ManageSitesPageTest extends AbstractTests
             if (i == 0)
             {
                 createTestUser(drone, username, DEFAULT_PASSWORD, SITE_ADMIN_GROUP);
-
-                traceLog("Created Site Admin User: " + username);
+                if (logger.isTraceEnabled())
+                    logger.trace("Created Site Admin User: " + username);
             }
             else
             {
                 createTestUserWithoutGroup(drone, username, DEFAULT_PASSWORD);
-
-                traceLog("Created User: " + username);
+                if (logger.isTraceEnabled())
+                    logger.trace("Created User: " + username);
             }
 
             testContext.addUser(username);
         }
 
-        users = new ArrayList<> (testContext.getCreatedUsers());
+        users = new ArrayList<>(testContext.getCreatedUsers());
 
         for (String username : users)
         {
@@ -90,12 +94,14 @@ public class ManageSitesPageTest extends AbstractTests
             createTestSites(drone, testContext, PREFIX, SiteVisibility.MODERATED, username, NUM_OF_SITES_PER_TYPE);
             ShareUser.logout(drone);
 
-            traceLog("Created " + NUM_OF_SITES_PER_TYPE * 3 + " sites for user: " + username);
+            if (logger.isTraceEnabled())
+                logger.trace("Created " + NUM_OF_SITES_PER_TYPE * 3 + " sites for user: " + username);
         }
 
         dashBoardPage = ShareUser.loginAs(drone, users.get(0), DEFAULT_PASSWORD);
 
-        traceLog("Created " + NUM_OF_SITES_PER_TYPE * 3 + " sites for user: " + username);
+        if (logger.isTraceEnabled())
+            logger.trace("Created " + NUM_OF_SITES_PER_TYPE * 3 + " sites for user: " + username);
 
         manageSitesPage = dashBoardPage.getNav().selectManageSitesPage().render();
     }
@@ -108,11 +114,20 @@ public class ManageSitesPageTest extends AbstractTests
      * @throws Exception
      */
     @AfterClass
-    public void teardown() throws Exception
+    public void teardown()
     {
-        traceLog("Starting teardown for ManageSitesPageTest");
+        if (logger.isTraceEnabled())
+            logger.trace("Starting teardown for ManageSitesPageTest");
 
-        testContext.cleanupAllSites();
+        try
+        {
+            testContext.cleanupAllSites();
+        }
+        catch (Exception e)
+        {
+            if (logger.isTraceEnabled())
+                logger.trace("Teardown of ManageSitesPageTest failed", e);
+        }
     }
 
     /**
@@ -131,7 +146,8 @@ public class ManageSitesPageTest extends AbstractTests
     @Test
     public void ManageSitesPageTests() throws Exception
     {
-        traceLog("Starting ManageSitesPageTests");
+        if (logger.isTraceEnabled())
+            logger.trace("Starting ManageSitesPageTests");
 
         manageSitesPage.loadElements();
 
@@ -139,28 +155,27 @@ public class ManageSitesPageTest extends AbstractTests
 
         paginationTest();
 
-        if(!alfrescoVersion.isCloud())
+        if (!alfrescoVersion.isCloud())
         {
-
-            // * Log Out
+            // Log Out
             ShareUser.logout(drone);
 
-            // * Log in as Repo Admin
+            // Log in as Repo Admin
             dashBoardPage = ShareUser.loginAs(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
-            // * Navigate to Manage Sites page.
+            // Navigate to Manage Sites page.
             manageSitesPage = dashBoardPage.getNav().selectManageSitesPage().render();
 
-            // * verify one site of each visibility appears in list for each user (test 6 sites)  (TC-497-16)
+            // Verify one site of each visibility appears in list for each user (test 6 sites) (TC-497-16)
             verifySitesExist();
 
-            // * log out
+            // Log out
             ShareUser.logout(drone);
 
-            // * log in as user 2
+            // Log in as user 2
             dashBoardPage = ShareUser.loginAs(drone, users.get(1), DEFAULT_PASSWORD);
 
-            // * verify manage sites link does not appear (TC-497-04)
+            // Verify manage sites link does not appear (TC-497-04)
             assertFalse(dashBoardPage.getNav().hasSelectManageSitesSiteAdminLink());
         }
     }
@@ -170,11 +185,12 @@ public class ManageSitesPageTest extends AbstractTests
      */
     private void verifySitesExist()
     {
-        traceLog("Checking Sites exist in list");
+        if (logger.isTraceEnabled())
+            logger.trace("Checking Sites exist in list");
 
         for (int i = 0; i < TOTAL_NUM_OF_SITES;)
         {
-            List<String> sites = new ArrayList<> (testContext.getCreatedSitesAsList());
+            List<String> sites = new ArrayList<>(testContext.getCreatedSitesAsList());
             String testSiteName = sites.get(i);
             ManagedSiteRow result = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(testSiteName);
             assertNotNull(result);
@@ -186,12 +202,12 @@ public class ManageSitesPageTest extends AbstractTests
     }
 
     /**
-     *
      * Verifies the tests run correctly
      */
     private void paginationTest()
     {
-        traceLog("Testing pagination performs as expected");
+        if (logger.isTraceEnabled())
+            logger.trace("Testing pagination performs as expected");
 
         // Assumes sites are not being created, modified or deleted by parallel processes.
         DocListPaginator docListPaginator = manageSitesPage.getPaginator();
@@ -204,14 +220,13 @@ public class ManageSitesPageTest extends AbstractTests
         // assertTrue(docListPaginator.hasNextPage());
         // Check that clicking on the pagination actually does something.
 
-
         if (docListPaginator.hasNextPage())
         {
             List<ManagedSiteRow> managedSiteRowsOnCurrentPage = manageSitesPage.getManagedSiteRows();
             List<ManagedSiteRow> managedSiteRowsOnPreviousPage;
 
-
-            do {
+            do
+            {
                 managedSiteRowsOnPreviousPage = managedSiteRowsOnCurrentPage;
                 docListPaginator.clickNextButton();
                 manageSitesPage.loadElements();

@@ -1,23 +1,20 @@
 /*
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.alfresco.share.util;
+
 import org.alfresco.share.util.AbstractTests;
 
 import java.util.ArrayList;
@@ -157,9 +154,7 @@ public class OpCloudTestContext
     /**
      * Deletes the created sites.
      * <p>
-     * Note: This method currently will NOT delete the sites permanently. All
-     * the deleted sites will be archived which can be accessed through the
-     * Trashcan
+     * Note: This method currently will NOT delete the sites permanently. All the deleted sites will be archived which can be accessed through the Trashcan
      * 
      * @throws Exception
      */
@@ -178,8 +173,15 @@ public class OpCloudTestContext
 
             for (String siteName : sitesToBeDeleted)
             {
-                SiteUtil.deleteSite(this.drone, siteName);
-                logger.info("Deleting site [" + siteName + "] created in " + this.concreteTest.testName);
+                try
+                {
+                    SiteUtil.deleteSite(this.drone, siteName);
+                    logger.info("Deleting site [" + siteName + "] created in " + this.concreteTest.testName);
+                }
+                catch (Exception e)
+                {
+                    logger.error("There was an error deleting site [" + siteName + "] created in " + this.concreteTest.testName, e);
+                }
             }
         }
         catch (RuntimeException e)
@@ -194,15 +196,14 @@ public class OpCloudTestContext
     }
 
     /**
-     *
      * Calls the cleanupSites methods for all users.
      * Note: Assumes user was created with default password.
-     *
+     * 
      * @throws Exception
      */
     public void cleanupAllSites() throws Exception
     {
-        List<String> users = new ArrayList<> (getCreatedUsers());
+        List<String> users = new ArrayList<>(getCreatedUsers());
         for (String username : users)
         {
             cleanupSites(username, AbstractTests.DEFAULT_PASSWORD);
