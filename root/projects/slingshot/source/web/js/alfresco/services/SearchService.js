@@ -170,6 +170,8 @@ define(["dojo/_base/declare",
                      case "repo":
                      case "pageSize":
                      case "maxResults":
+                     case "facetFields":
+                     case "filters":
                         break;
                      default:
                         queryAttributes[key] = payload[key];
@@ -187,13 +189,18 @@ define(["dojo/_base/declare",
             }
 
             var data = {
+               facetFields: (payload.facetFields != null) ? payload.facetFields : "{http://www.alfresco.org/model/content/1.0}content.mimetype,{http://www.alfresco.org/model/content/1.0}modifier.__,{http://www.alfresco.org/model/content/1.0}creator.__,{http://www.alfresco.org/model/content/1.0}description.__",
+               filters: (payload.filters != null) ? payload.filters : "",
                term: payload.term,
                tag: (payload.tag != null) ? payload.tag : this.tag,
                startIndex: (payload.startIndex != null) ? payload.startIndex : this.startIndex,
                sort: (payload.sort != null) ? payload.sort : this.sort,
-               site: (payload.site != null) ? payload.site : this.site,
-               rootNode: (payload.rootNode != null) ? payload.rootNode : this.rootNode,
-               repo: (payload.repo != null) ? payload.repo : this.repo,
+               // site: (payload.site != null) ? payload.site : this.site,
+               site: "",
+               // rootNode: (payload.rootNode != null) ? payload.rootNode : this.rootNode,
+               rootNode: "alfresco://company/home",
+               // repo: (payload.repo != null) ? payload.repo : this.repo,
+               repo: false,
                query: query,
                pageSize: (payload.pageSize != null) ? payload.pageSize : this.pageSize,
                maxResults: (payload.maxResults != null) ? payload.maxResults : this.maxResults

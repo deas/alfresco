@@ -32,8 +32,9 @@ define(["dojo/_base/declare",
         "alfresco/core/ObjectTypeUtils",
         "dojo/_base/lang",
         "dojo/_base/array",
+        "dojo/dom-construct",
         "service/constants/Default"],
-        function(declare, AlfCore, CoreXhr, _PageServiceTopicMixin, NotificationUtils, ObjectTypeUtils, lang, array, AlfConstants) {
+        function(declare, AlfCore, CoreXhr, _PageServiceTopicMixin, NotificationUtils, ObjectTypeUtils, lang, array, domConstruct, AlfConstants) {
    
    return declare([AlfCore, CoreXhr, _PageServiceTopicMixin, NotificationUtils], {
       
@@ -57,8 +58,60 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_AVAILABLE_PAGE_DEFINITIONS", lang.hitch(this, "loadPages"));
          this.alfSubscribe(this.createPageTopic, lang.hitch(this, "createPage"));
          this.alfSubscribe(this.updatePageTopic, lang.hitch(this, "updatePage"));
+         this.alfSubscribe("ALF_EXPORT_PAGE_DEFINITION", lang.hitch(this, "exportPageModel"));
       },
       
+
+      /**
+       * Exports the JSON model in a format that can be used in a WebScript.
+       *
+       * @instance
+       * @param {object} payload Details of the page to export
+       */
+      exportPageModel: function alfresco_services_PageService__exportPageModel(payload) {
+
+         var pageDef = this.getPageDefinitionFromPayload(payload);
+         
+         function cleanUpModel(obj) {
+            for (var key in obj) {
+               if (key == "widgetsForDisplay")
+               {
+                  delete obj[key];
+               }
+               if (obj[key] !== null && typeof(obj[key])=="object") {
+                  cleanUpModel(obj[key]);
+               }
+            }
+         }
+
+         // Remove all the "widgetsForDisplay" attributes from the model...
+         cleanUpModel(pageDef.publishOnReady);
+         cleanUpModel(pageDef.services);
+         cleanUpModel(pageDef.widgets);
+
+         // Stringify the model in a nice format...
+         var exportString = "model.jsonModel = " + JSON.stringify(pageDef, null, "   ");
+
+         // Create the content as a download link and click it to trigger the download...
+         var pom = domConstruct.create("a", {
+            href: 'data:text/plain;charset=utf-8,' + encodeURIComponent(exportString),
+            download: payload.pageName + ".get.js"
+         }).click();
+      },
+
+      /**
+       * Deletes an attribute from the  "widgetsForDisplay" attributes from the current object
+       * @instance
+       * @param {string} key The current key in the current object
+       * @param {object} obj The current object
+       */
+      _cleanUpModelObject: function alfresco_services_PageService___cleanUpModelObject(key, obj) {
+         if (key == "widgetsForDisplay")
+         {
+            delete obj[key];
+         }
+      },
+
       /**
        * Makes an XHR request to retrieve the pages that are available. The pages returned are those
        * that have been created and stored in the Data Dictionary on the Alfresco repository. 
@@ -245,7 +298,6 @@ define(["dojo/_base/declare",
        */
       updatePage: function alfresco_services_PageService__updatePage(payload) {
          if (payload != null && 
-             payload.pageDefinition != null &&
              payload.pageName != null)
          {
             var data = {

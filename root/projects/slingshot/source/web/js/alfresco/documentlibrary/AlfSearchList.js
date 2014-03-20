@@ -67,19 +67,120 @@ define(["dojo/_base/declare",
          
          // Subscribe to the topics that will be published on by the DocumentService when retrieving documents
          // that this widget requests...
-         this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onDataLoadSuccess"));
+         this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onSearchLoadSuccess"));
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_FAILURE", lang.hitch(this, "onDataLoadFailure"));
-         this.alfSubscribe("ALF_SEARCH_REQUEST_SUCCESS", lang.hitch(this, "onSearchLoadSuccess"));
-         this.alfSubscribe("ALF_SEARCH_REQUEST_FAILURE", lang.hitch(this, "onDataLoadFailure"));
+         // this.alfSubscribe("ALF_SEARCH_REQUEST_SUCCESS", lang.hitch(this, "onSearchLoadSuccess"));
+         // this.alfSubscribe("ALF_SEARCH_REQUEST_FAILURE", lang.hitch(this, "onDataLoadFailure"));
          this.alfSubscribe("ALF_SEARCH_RESULT_CLICKED", lang.hitch(this, "onSearchResultClicked"));
+
+         this.alfSubscribe("ALF_SET_SEARCH_TERM", lang.hitch(this, "onSearchTermRequest"));
+         this.alfSubscribe("ALF_INCLUDE_FACET", lang.hitch(this, "onIncludeFacetRequest"));
+         this.alfSubscribe("ALF_APPLY_FACET_FILTER", lang.hitch(this, "onApplyFacetFilter"));
+         this.alfSubscribe("ALF_REMOVE_FACET_FILTER", lang.hitch(this, "onRemoveFacetFilter"));
 
          // Get the messages for the template...
          this.noViewSelectedMessage = this.message("doclist.no.view.message");
          this.noDataMessage = this.message("doclist.no.data.message");
          this.fetchingDataMessage = this.message("doclist.loading.data.message");
          this.renderingViewMessage = this.message("doclist.rendering.data.message");
+
+         this.facetFilters = {};
       },
       
+      searchTerm: "",
+
+      /**
+       * Updates the current search term
+       *
+       * @instance
+       * @param {object} payload The details of the search term to set
+       */
+      onSearchTermRequest: function alfresco_documentlibrary_AlfSearchList__onSearchTermRequest(payload) {
+         this.alfLog("log", "Setting search term", payload, this);
+         var searchTerm = lang.getObject("term", false, payload);
+         if (searchTerm == null)
+         {
+            this.alfLog("warn", "No term provided on request", payload, this);
+         }
+         else
+         {
+            this.searchTerm = searchTerm;
+            this.loadData();
+         }
+      },
+
+      /**
+       * The facet fields to include in searches. This is updated by the onIncludeFacetRequest function.
+       * 
+       * @instance
+       * @type {string}
+       * @default ""
+       */
+      facetFields: "",
+
+      /**
+       * 
+       * @instance
+       * @param {object} payload The details of the facet to include
+       */
+      onIncludeFacetRequest: function alfresco_services_SearchService__onIncludeFacetRequest(payload) {
+         this.alfLog("log", "Adding facet filter", payload, this);
+         var qname = lang.getObject("qname", false, payload);
+         if (qname == null)
+         {
+            this.alfLog("warn", "No qname provided when adding facet field", payload, this);
+         }
+         else
+         {
+            this.facetFields = (this.facetFields != "") ? this.facetFields + "," + qname : qname;
+         }
+      },
+
+      facetFilters: null,
+
+      onApplyFacetFilter: function alfresco_documentlibrary_AlfSearchList__onApplyFacetFilter(payload) {
+         this.alfLog("log", "Filtering on facet", payload, this);
+         var filter = lang.getObject("filter", false, payload);
+         if (filter == null)
+         {
+            this.alfLog("warn", "No filter provided when filtering by facet", payload, this);
+         }
+         else
+         {
+            this.facetFilters[filter] = true;
+            this.loadData();
+         }
+      },
+
+      onRemoveFacetFilter: function alfresco_documentlibrary_AlfSearchList__onRemoveFacetFilter(payload) {
+         this.alfLog("log", "Removing facet filter", payload, this);
+         delete this.facetFilters[payload.filter];
+         this.loadData();
+      },
+
+      loadData: function alfresco_documentlibrary_AlfDocumentList__loadData() {
+         this.showLoadingMessage(); // Commented out because of timing issues...
+
+         var filters = "";
+         for (var key in this.facetFilters)
+         {
+            filters = filters + key.replace(/\.__/g, "") + ",";
+         }
+         filters = filters.substring(0, filters.length - 1);
+
+         var searchPayload = {
+            term: this.searchTerm,
+            facetFields: this.facetFields,
+            filters: filters
+         };
+
+         // Set a response topic that is scoped to this widget...
+         searchPayload.alfResponseTopic = this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST";
+
+         this.alfPublish("ALF_SEARCH_REQUEST", searchPayload, true);
+      },
+
+
       /**
        * Handles successful calls to get data from the repository.
        * 
@@ -92,6 +193,20 @@ define(["dojo/_base/declare",
          
          this._currentData = payload.response;
          
+         // TODO: This should probably be in the SearchService... but will leave here for now...
+         var facets = lang.getObject("response.facets", false, payload);
+         var filters = lang.getObject("requestConfig.query.filters", false, payload);
+         if (facets != null)
+         {
+            for (var key in facets)
+            {
+               this.alfPublish("ALF_FACET_RESULTS_" + key, {
+                  facetResults: facets[key],
+                  activeFilters: filters
+               });
+            }
+         }
+
          // Re-render the current view with the new data...
          var view = this.viewMap[this._currentlySelectedView];
          if (view != null)
@@ -105,6 +220,8 @@ define(["dojo/_base/declare",
             this.alfPublish("ALF_RESIZE_SIDEBAR", {});
          }
       },
+
+      
 
       /**
        * @instance

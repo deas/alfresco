@@ -147,6 +147,20 @@ define(["dojo/_base/declare",
          {
             this.previewTarget.insertNodes(false, this.initialItems, false, null);
          }
+
+         if (this.value != null && this.value != "")
+         {
+            array.forEach(this.value, function(x, i) {
+               var data = {
+                  name: x.name,
+                  module: x.name,
+                  defaultConfig: x.config,
+                  widgetsForDisplay: x.widgetsForDisplay
+               };
+               var dndData = this.creator(data);
+               this.previewTarget.insertNodes(true, [dndData.data]);
+            }, this);
+         }
       },
       
       /**
@@ -402,7 +416,8 @@ define(["dojo/_base/declare",
                // Update the configuration values...
                for (var i=0; i<clonedConfig.widgetsForConfig.length; i++)
                {
-                  clonedConfig.widgetsForConfig[i].config.value = payload.updatedConfig[clonedConfig.widgetsForConfig[i].config.name];
+                  // clonedConfig.widgetsForConfig[i].config.value = payload.updatedConfig[clonedConfig.widgetsForConfig[i].config.name];
+                  clonedConfig.widgetsForConfig[i].config.value = lang.getObject(clonedConfig.widgetsForConfig[i].config.name, false, payload.updatedConfig)
                }
                
                // Update the previously stored name the field name

@@ -1,8 +1,28 @@
+
+.alfresco-documentlibrary-AlfDocumentFilters:first-child {
+  border-radius: 5px 5px 0 0;
+}
+
+.alfresco-documentlibrary-AlfDocumentFilters:last-child {
+  border-radius: 0 0 5px 5px;
+  border-bottom: 1px solid #DCD8D8;
+}
+
 .alfresco-documentlibrary-AlfDocumentFilters {
-   margin-bottom: 20px;
+   border: 1px solid #DCD8D8;
+   width: 320px;
+   padding: 5px;
+   border-bottom: none;
+   padding: 15px 5px;
+}
+
+.alfresco-documentlibrary-AlfDocumentFilters > div.alfresco-twister {
+  padding-left: 20px !important; /* Important is only required to override base.css use of important */
 }
 
 .alfresco-documentlibrary-AlfDocumentFilters .label {
-   font-size: 123.1%;
-   font-weight: normal;
+   /*font-size: 123.1%;
+   font-weight: normal;*/
+   margin-bottom: 15px;
+   margin-left: 15px;
 }

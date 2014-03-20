@@ -1,3 +1,18 @@
+
+function getCommonTopics() {
+   return [
+      {label:"Get all items in QuADDS",value:"ALF_GET_QUADDS_ITEMS"},
+      {label:"Create a new QuADDS item",value:"ALF_CREATE_QUADDS_ITEM"},
+      {label:"Update an existing QuADDS item",value:"ALF_UPDATE_QUADDS_ITEM"},
+      {label:"Delete an existing QuADDS item",value:"ALF_DELETE_QUADDS_ITEM"},
+      {label:"Reload data",value:"ALF_DOCLIST_RELOAD_DATA"},
+      {label:"Switch to CRUD Create view",value:"ALF_CRUD_FORM_CREATE"},
+      {label:"Switch to CRUD Update view",value:"ALF_CRUD_FORM_UPDATE"},
+      {label:"Set search term", value:"ALF_SET_SEARCH_TERM"}
+   ];
+}
+
+
 /* *********************************************************************************
  *                                                                                 *
  * GENERAL FUNCTIONS                                                               *
@@ -1139,6 +1154,54 @@ function getUserService() {
    };
 }
 
+function getQuaddsService() {
+   return {
+      type: ["service"],
+      name: "QuADDS Service",
+      module: "alfresco/services/QuaddsService",
+      // This is the initial configuration that will be provided when the widget
+      // is dropped into the drop-zone...
+      defaultConfig: {},
+      // These are the widgets used to configure the dropped widget.
+      widgetsForConfig: [],
+      // If set to true, then the actual widget will be previewed...
+      previewWidget: false,
+      // This is the widget structure to use to display the widget.
+      widgetsForDisplay: [
+         {
+            name: "alfresco/html/Label",
+            config: {
+               label: "QuADDS Service"
+            }
+         }
+      ]
+   };
+}
+
+function getSearchService() {
+   return {
+      type: ["service"],
+      name: "Search Service",
+      module: "alfresco/services/SearchService",
+      // This is the initial configuration that will be provided when the widget
+      // is dropped into the drop-zone...
+      defaultConfig: {},
+      // These are the widgets used to configure the dropped widget.
+      widgetsForConfig: [],
+      // If set to true, then the actual widget will be previewed...
+      previewWidget: false,
+      // This is the widget structure to use to display the widget.
+      widgetsForDisplay: [
+         {
+            name: "alfresco/html/Label",
+            config: {
+               label: "Search Service"
+            }
+         }
+      ]
+   };
+}
+
 function getAllServices() {
    return [
       getNavigationService(),
@@ -1150,7 +1213,9 @@ function getAllServices() {
       getPageService(),
       getPreferenceService(),
       getSiteService(),
-      getUserService()
+      getUserService(),
+      getQuaddsService(),
+      getSearchService()
    ];
 }
 
@@ -1239,10 +1304,94 @@ function getLogoWidget() {
    };
 }
 
+function getButtonWidget() {
+   return {
+      type: ["widget"],
+      name: "Button",
+      module: "alfresco/buttons/AlfButton",
+      // This is the initial configuration that will be provided when the widget
+      // is dropped into the drop-zone...
+      defaultConfig: {
+         label: "New Button"
+      },
+      // These are the widgets used to configure the dropped widget.
+      widgetsForConfig: [
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.label",
+               label: "",
+               value: ""
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoSelect",
+            config: {
+               name: "defaultConfig.publishTopic",
+               label: "",
+               value: "",
+               optionsConfig: {
+                  fixed: getCommonTopics()
+               }
+            }
+         }
+      ],
+      // If set to true, then the actual widget will be previewed...
+      previewWidget: false,
+      // This is the widget structure to use to display the widget.
+      widgetsForDisplay: [
+         {
+            name: "alfresco/html/Label",
+            config: {
+               label: "Button"
+            }
+         }
+      ]
+   };
+}
+
+function getQuaddsWidgets() {
+   return {
+      type: ["widget"],
+      name: "QuADDS Widgets",
+      module: "alfresco/quadds/QuaddsWidgets",
+      // This is the initial configuration that will be provided when the widget
+      // is dropped into the drop-zone...
+      defaultConfig: {
+         quadds: ""
+      },
+      // These are the widgets used to configure the dropped widget.
+      widgetsForConfig: [
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.quadds",
+               label: "",
+               value: ""
+            }
+         }
+      ],
+      // If set to true, then the actual widget will be previewed...
+      previewWidget: false,
+      // This is the widget structure to use to display the widget.
+      widgetsForDisplay: [
+         {
+            name: "alfresco/html/Label",
+            config: {
+               label: "QuADDS Widgets"
+            }
+         }
+      ]
+   };
+}
+
+
 function getGeneralWidgets() {
    return [
       getSetTitleWidget(),
-      getLogoWidget()
+      getLogoWidget(),
+      getButtonWidget(),
+      getQuaddsWidgets()
    ];
 }
 
@@ -1291,6 +1440,25 @@ function getDocumentListWidget() {
          }
       },
       widgetsForConfig: getDocumentsSourceConfigWidgets(),
+      previewWidget: false,
+      widgetsForDisplay: [
+         {
+            name: "alfresco/creation/DropZone",
+            config: {
+               horizontal: true
+            }
+         }
+      ]
+   };
+}
+
+function getSearchListWidget() {
+   return {
+      type: ["widget"],
+      name: "Search Results List",
+      module: "alfresco/documentlibrary/AlfSearchList",
+      defaultConfig: {},
+      widgetsForConfig: [],
       previewWidget: false,
       widgetsForDisplay: [
          {
@@ -1556,6 +1724,85 @@ function getPropertyWidget() {
                name: "defaultConfig.renderedValueSuffix",
                label: "Suffix",
                value: ""
+            }
+         }
+      ],
+      previewWidget: false,
+      widgetsForDisplay: [
+         {
+            name: "alfresco/creation/DropZone",
+            config: {
+               horizontal: true
+            }
+         }
+      ]
+   };
+}
+
+function getConfigPropertyWidget() {
+   return {
+      type: ["widget"],
+      name: "Config Property",
+      module: "alfresco/renderers/Property",
+      // This is the initial configuration that will be provided when the widget
+      // is dropped into the drop-zone...
+      defaultConfig: {
+         propertyToRender: "name",
+         postParam: "name"
+      },
+      // These are the widgets used to configure the dropped widget.
+      widgetsForConfig: [
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.propertyToRender",
+               label: "Property to render",
+               value: ""
+            }
+         }
+      ],
+      previewWidget: false,
+      widgetsForDisplay: [
+         {
+            name: "alfresco/creation/DropZone",
+            config: {
+               horizontal: true
+            }
+         }
+      ]
+   };
+}
+
+function getPropertyLinkWidget() {
+   return {
+      type: ["widget"],
+      name: "Property Link",
+      module: "alfresco/renderers/PropertyLink",
+      // This is the initial configuration that will be provided when the widget
+      // is dropped into the drop-zone...
+      defaultConfig: {
+         propertyToRender: "name",
+         publishTopic: ""
+      },
+      // These are the widgets used to configure the dropped widget.
+      widgetsForConfig: [
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.propertyToRender",
+               label: "Property to render",
+               value: ""
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoSelect",
+            config: {
+               name: "defaultConfig.publishTopic",
+               label: "Link Topic",
+               value: "",
+               optionsConfig: {
+                  fixed: getCommonTopics()
+               }
             }
          }
       ],
@@ -1913,18 +2160,50 @@ function getFileTypeWidget() {
    };
 }
 
+function getQuaddsListWidget() {
+   return {
+      type: ["widget"],
+      name: "QuADDS List",
+      module: "alfresco/documentlibrary/QuaddsList",
+      defaultConfig: {},
+      widgetsForConfig: [
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.quadds",
+               label: "QuADDS",
+               value: "quadds",
+            }
+         }
+      ],
+      previewWidget: false,
+      widgetsForDisplay: [
+         {
+            name: "alfresco/creation/DropZone",
+            config: {
+               horizontal: true
+            }
+         }
+      ]
+   };
+}
+
 function getAllDocListWidgets() {
    return [
+      getQuaddsListWidget(),
       getDocumentWidget(),
       getDocumentPreview(),
       getDocumentListWidget(),
+      getSearchListWidget(),
       getDocListSimpleView(),
       getDocListDetailedView(),
       getAbstractDocListViewWidget(),
       getDocListRowWidget(),
       getDocListCellWidget(),
       getDocListColumnWidget(),
+      getConfigPropertyWidget(),
       getPropertyWidget(),
+      getPropertyLinkWidget(),
       getInlineEditPropertyWidget(),
       getDocListSelectorWidget(),
       getDocListIndicatorsWidget(),
@@ -2316,7 +2595,32 @@ function getHorizontalLayoutWidget() {
       // is dropped into the drop-zone...
       defaultConfig: {},
       // These are the widgets used to configure the dropped widget.
-      widgetsForConfig: [],
+      widgetsForConfig: [
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.widgetMarginLeft",
+               label: "Widget margin left",
+               unitsLabel: "px",
+               value: "0",
+               validationConfig: {
+                  regex: "^([0-9]+)$"
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.widgetMarginRight",
+               label: "Widget margin right",
+               unitsLabel: "px",
+               value: "0",
+               validationConfig: {
+                  regex: "^([0-9]+)$"
+               }
+            }
+         }
+      ],
       // If set to true, then the actual widget will be previewed...
       previewWidget: false,
       // This is the widget structure to use to display the widget.
@@ -2324,7 +2628,89 @@ function getHorizontalLayoutWidget() {
          {
             name: "alfresco/creation/DropZone",
             config: {
-               horizontal: false
+               horizontal: false,
+               widgetsForNestedConfig: [
+                  {
+                     name: "alfresco/forms/controls/DojoSelect",
+                     config: {
+                        fieldId: "widthType",
+                        name: "widthType",
+                        label: "Widget width",
+                        value: "AUTO",
+                        optionsConfig: {
+                           fixed: [
+                              {label:"Auto",value:"AUTO"},
+                              {label:"Size in pixels",value:"PIXELS"},
+                              {label:"Size as percentage",value:"PERCENTAGE"}
+                           ]
+                        }
+                     }
+                  },
+                  {
+                     name: "alfresco/forms/controls/DojoValidationTextBox",
+                     config: {
+                        name: "additionalConfig.widthPx",
+                        label: "Widget width (in pixels)",
+                        unitsLabel: "px",
+                        value: "",
+                        postWhenHiddenOrDisabled: false,
+                        noValueUpdateWhenHiddenOrDisabled: true,
+                        visibilityConfig: {
+                           initialValue: false,
+                           rules: [
+                              {
+                                 targetId: "widthType",
+                                 is: ["PIXELS"]
+                              }
+                           ]
+                        },
+                        requirementConfig: {
+                           initialValue: false,
+                           rules: [
+                              {
+                                 targetId: "widthType",
+                                 is: ["PIXELS"]
+                              }
+                           ]
+                        },
+                        validationConfig: {
+                           regex: "^([0-9]+)$"
+                        }
+                     }
+                  },
+                  {
+                     name: "alfresco/forms/controls/DojoValidationTextBox",
+                     config: {
+                        name: "additionalConfig.widthPc",
+                        label: "Widget width (as percentage)",
+                        unitsLabel: "%",
+                        value: "",
+                        postWhenHiddenOrDisabled: false,
+                        noValueUpdateWhenHiddenOrDisabled: true,
+                        visibilityConfig: {
+                           initialValue: false,
+                           rules: [
+                              {
+                                 targetId: "widthType",
+                                 is: ["PERCENTAGE"]
+                              }
+                           ]
+                        },
+                        requirementConfig: {
+                           initialValue: false,
+                           rules: [
+                              {
+                                 targetId: "widthType",
+                                 is: ["PERCENTAGE"]
+                              }
+                           ]
+                        },
+                        validationConfig: {
+                           regex: "^([0-9]+)$"
+                        }
+                     }
+                  }
+               ]
             }
          }
       ]
@@ -2593,6 +2979,45 @@ function getForm() {
             }
          },
          {
+            name: "alfresco/forms/controls/DojoSelect",
+            config: {
+               name: "defaultConfig.okButtonPublishTopic",
+               label: "Confirmation Button Topic",
+               value: "",
+               postWhenHiddenOrDisabled: false,
+               noValueUpdateWhenHiddenOrDisabled: true,
+               visibilityConfig: {
+                  initialValue: true,
+                  rules: [
+                     {
+                        targetId: "showFormButtons",
+                        is: [true]
+                     }
+                  ]
+               },
+               requirementConfig: {
+                  initialValue: true,
+                  rules: [
+                     {
+                        targetId: "showFormButtons",
+                        is: [true]
+                     }
+                  ]
+               },
+               optionsConfig: {
+                  fixed: getCommonTopics()
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoCheckBox",
+            config: {
+               name: "defaultConfig.okButtonPublishGlobal",
+               label: "Global Publish",
+               value: true
+            }
+         },
+         {
             name: "alfresco/forms/controls/DojoValidationTextBox",
             config: {
                name: "defaultConfig.cancelButtonLabel",
@@ -2620,6 +3045,151 @@ function getForm() {
                }
             }
          }
+      ],
+      previewWidget: false,
+      widgetsForDisplay: [
+         {
+            name: "alfresco/creation/DropZone",
+            config: {
+               horizontal: false
+            }
+         }
+      ]
+   };
+}
+
+function getCrudForm() {
+   return {
+      type: [ "widget" ],
+      name: "CRUD Form",
+      module: "alfresco/forms/CrudForm",
+      iconClass: "checkbox",
+      defaultConfig: {
+         createButtonLabel: "Create",
+         createButtonPublishTopic: "ALF_CREATE_QUADDS_ITEM",
+         createButtonPublishPayload: {},
+         createButtonPublishGlobal: true,
+         updateButtonLabel: "Update",
+         updateButtonPublishTopic: "ALF_UPDATE_QUADDS_ITEM",
+         updateButtonPublishPayload: {},
+         updateButtonPublishGlobal: true,
+         deleteButtonLabel: "Delete",
+         deleteButtonPublishTopic: "ALF_DELETE_QUADDS_ITEM",
+         deleteButtonPublishPayload: {},
+         deleteButtonPublishGlobal: true
+      },
+      widgetsForConfig: [
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.createButtonLabel",
+               label: "Create Button Label",
+               value: "Create",
+               postWhenHiddenOrDisabled: false,
+               noValueUpdateWhenHiddenOrDisabled: true,
+               requirementConfig: {
+                  initialValue: true
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoSelect",
+            config: {
+               name: "defaultConfig.createButtonPublishTopic",
+               label: "Create Button Topic",
+               value: "ALF_CREATE_QUADDS_ITEM",
+               postWhenHiddenOrDisabled: false,
+               noValueUpdateWhenHiddenOrDisabled: true,
+               requirementConfig: {
+                  initialValue: true
+               },
+               optionsConfig: {
+                  fixed: getCommonTopics()
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoCheckBox",
+            config: {
+               name: "defaultConfig.createButtonPublishGlobal",
+               label: "Create Button Global Publish",
+               value: true
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.updateButtonLabel",
+               label: "Update Button Label",
+               value: "Update",
+               postWhenHiddenOrDisabled: false,
+               noValueUpdateWhenHiddenOrDisabled: true,
+               requirementConfig: {
+                  initialValue: true
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoSelect",
+            config: {
+               name: "defaultConfig.updateButtonPublishTopic",
+               label: "Update Button Topic",
+               value: "ALF_UPDATE_QUADDS_ITEM",
+               postWhenHiddenOrDisabled: false,
+               noValueUpdateWhenHiddenOrDisabled: true,
+               requirementConfig: {
+                  initialValue: true
+               },
+               optionsConfig: {
+                  fixed: getCommonTopics()
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoCheckBox",
+            config: {
+               name: "defaultConfig.updateButtonPublishGlobal",
+               label: "Update Button Global Publish",
+               value: true
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.deleteButtonLabel",
+               label: "Delete Button Label",
+               value: "Delete",
+               postWhenHiddenOrDisabled: false,
+               noValueUpdateWhenHiddenOrDisabled: true,
+               requirementConfig: {
+                  initialValue: true
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoSelect",
+            config: {
+               name: "defaultConfig.deleteButtonPublishTopic",
+               label: "Delete Button Topic",
+               value: "ALF_DELETE_QUADDS_ITEM",
+               postWhenHiddenOrDisabled: false,
+               noValueUpdateWhenHiddenOrDisabled: true,
+               requirementConfig: {
+                  initialValue: true
+               },
+               optionsConfig: {
+                  fixed: getCommonTopics()
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoCheckBox",
+            config: {
+               name: "defaultConfig.deleteButtonPublishGlobal",
+               label: "Delete Button Global Publish",
+               value: true
+            }
+         },
       ],
       previewWidget: false,
       widgetsForDisplay: [
@@ -2944,6 +3514,7 @@ function getAceEditor() {
 function getAllFormWidgets() {
    return [
       getForm(),
+      getCrudForm(),
       getTextField(),
       getTextArea(),
       getSelectField(),

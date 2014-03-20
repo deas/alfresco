@@ -25,19 +25,29 @@
  * @author Richard Smith
  */
 define(["dojo/_base/declare",
-        "alfresco/renderers/Property"], 
-        function(declare, Property) {
+        "alfresco/renderers/Property",
+        "dijit/_OnDijitClickMixin",
+        "dojo/text!./templates/PropertyLink.html"], 
+        function(declare, Property, _OnDijitClickMixin, template) {
 
-   return declare([Property], {
+   return declare([Property, _OnDijitClickMixin], {
 
       /**
-       * Set up the attributes to be used when rendering the template.
-       * 
+       * Overriddes the default HTML template to use for the widget.
        * @instance
+       * @type {string}
        */
-//      postMixInProperties: function alfresco_renderers_PropertyLink__postMixInProperties() {
-//
-//      }
+      templateString: template,
 
+      onLinkClick: function alfresco_renderers_PropertyLink__onLinkClick(evt) {
+         if (this.publishTopic == null || this.publishTopic.trim() == "")
+         {
+            this.alfLog("warn", "No publishTopic provided for PropertyLink", this);
+         }
+         else
+         {
+            this.alfPublish(this.publishTopic, this.currentItem);
+         }
+      }
    });
 });

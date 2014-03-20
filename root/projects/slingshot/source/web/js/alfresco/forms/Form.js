@@ -394,6 +394,16 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * Update all the button payloads with the supplied values
+       * @instance
+       */
+      updateButtonPayloads: function alfresco_forms_Form__updateButtonPayloads(values) {
+         array.forEach(this.additionalButtons, function(button, i) {
+            lang.mixin(button.payload, values);
+         });
+      },
+
+      /**
        * @instance
        * @return {object}
        */
@@ -415,11 +425,14 @@ define(["dojo/_base/declare",
                }
                else
                {
-                  values[entry.get("name")] = entry.getValue();
+                  // values[entry.get("name")] = entry.getValue();
+                  // Process dot-notation property names...
+                  lang.setObject(entry.get("name"), entry.getValue(), values);
                }
             });
          }
          this.alfLog("log", "Returning form values: ", values);
+         this.updateButtonPayloads(values);
          return values;
       },
       
@@ -444,12 +457,14 @@ define(["dojo/_base/declare",
                   }
                   else
                   {
-                     entry.setValue(values[entry.get("name")]);
+                     // entry.setValue(values[entry.get("name")]);
+                     entry.setValue(lang.getObject(entry.get("name"), false, values));
                   }
                });
             }
          }
          this.validate();
+         this.updateButtonPayloads(values);
       },
       
       /**

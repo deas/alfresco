@@ -61,7 +61,7 @@ define(["alfresco/forms/controls/BaseFormControl",
          if (this.wrappedWidget)
          {
             value = this.wrappedWidget.get("checked");
-            if (value == "")
+            if (value === "")
             {
                value = this.value;
             }
