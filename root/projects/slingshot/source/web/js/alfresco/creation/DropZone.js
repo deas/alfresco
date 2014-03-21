@@ -264,7 +264,8 @@ define(["dojo/_base/declare",
          // This is for the benefit of the widget being added to, not the widget being instantiated...
          if (currentField.data.updatedConfig != null)
          {
-            newDef[itemConfigKey] = currentField.data.updatedConfig.defaultConfig;
+            newDef[itemConfigKey] = currentField.data.defaultConfig;
+            lang.mixin(newDef[itemConfigKey], currentField.data.updatedConfig);
             lang.mixin(newDef, currentField.data.additionalConfig);
          }
          else
@@ -596,7 +597,8 @@ define(["dojo/_base/declare",
                {
                   name: "alfresco/creation/DropZone",
                   config: {
-                     horizontal: this.horizontal
+                     horizontal: this.horizontal,
+                     widgetsForNestedConfig: this.widgetsForNestedConfig
                   }
                }
             ]
