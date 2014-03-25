@@ -125,9 +125,22 @@ define(["alfresco/core/ProcessWidgets",
       postCreate: function alfresco_layout_HorizontalWidgets__postCreate() {
          // Split the full width between all widgets... 
          // We should update this to allow for specific widget width requests...
-         // on(window, "resize", lang.hitch(this, "onResize"));
-
-         if (this.widgets != null)
+         this.doWidthProcessing(this.widgets);
+         this.inherited(arguments);
+         on(window, "resize", lang.hitch(this, "onResize"));
+      },
+      
+      /**
+       * Calculates the widths of each widget based on the requested sizes defined in either pixels or
+       * percentage. The pixel widths take precedence and the percentages are calcuated as the percentage
+       * of whatever remains. If a widget has not requested a width then it will get an even share
+       * of whatever horizontal space remains.
+       *
+       * @instance
+       * @param {array} widgets The widgets or widget configurations to process the widths for
+       */
+      doWidthProcessing: function alfresco_layout_HorizontalWidgets__doWidthProcessing(widgets) {
+         if (widgets != null)
          {
             // Get the dimensions of the current DOM node...
             var computedStyle = domStyle.getComputedStyle(this.domNode);
@@ -139,18 +152,18 @@ define(["alfresco/core/ProcessWidgets",
                 rightMarginsSize = 0;
             if (this.widgetMarginLeft != null && !isNaN(this.widgetMarginLeft))
             {
-               leftMarginsSize = this.widgets.length * parseInt(this.widgetMarginLeft);
+               leftMarginsSize = widgets.length * parseInt(this.widgetMarginLeft);
             }
             if (this.widgetMarginRight != null && !isNaN(this.widgetMarginLeft))
             {
-               rightMarginsSize = this.widgets.length * parseInt(this.widgetMarginRight);
+               rightMarginsSize = widgets.length * parseInt(this.widgetMarginRight);
             }
             var remainingWidth = overallwidth - leftMarginsSize - rightMarginsSize;
 
             // Work out how many pixels widgets have requested and substract that from the remainder...
             var widgetRequestedWidth = 0;
             var widgetsWithNoWidthReq = 0;
-            array.forEach(this.widgets, function(widget, index) {
+            array.forEach(widgets, function(widget, index) {
                if (widget.widthPx != null && !isNaN(widget.widthPx))
                {
                   widgetRequestedWidth += parseInt(widget.widthPx);
@@ -180,7 +193,7 @@ define(["alfresco/core/ProcessWidgets",
 
             // Update the widgets that have requested a percentage of space with a value that is calculated from the remaining space
             var totalWidthAsRequestedPercentage = 0;
-            array.forEach(this.widgets, function(widget, index) {
+            array.forEach(widgets, function(widget, index) {
                if (widget.widthPc != null && !isNaN(widget.widthPc))
                {
                   var pc = parseInt(widget.widthPc);
@@ -210,7 +223,7 @@ define(["alfresco/core/ProcessWidgets",
             // Divide up the remaining horizontal space between the remaining widgets...
             var remainingPercentage = remainingPercentage / widgetsWithNoWidthReq,
                 standardWidgetWidth = remainingWidth * (remainingPercentage/100);
-            array.forEach(this.widgets, function(widget, index) {
+            array.forEach(widgets, function(widget, index) {
                if ((widget.widthPc != null && !isNaN(widget.widthPc)) ||
                    (widget.widthPx != null && !isNaN(widget.widthPx)))
                {
@@ -222,19 +235,22 @@ define(["alfresco/core/ProcessWidgets",
                }
             });
          }
-         this.inherited(arguments);
       },
-      
+
       /**
-       *
+       * Updates the sizes of each widget when the window is resized.
        *
        * @instance
        * @param {object} evt The resize event.
        */
-      onResize: function alfresco_layout_HorizontalWidgets__onResize(evt) {
-         this.alfLog("log", "Resizing");
-
-         // TODO: Implement to resize when the window changes...
+      onResize: function alfresco_layout_HorizontalWidget__onResize() {
+         this.doWidthProcessing(this._processedWidgets);
+         array.forEach(this._processedWidgets, function(widget, index) {
+            if (widget != null && widget.domNode != null && widget.widthCalc != null && widget.widthCalc != 0)
+            {
+               domStyle.set(widget.domNode.parentNode, "width", widget.widthCalc + "px");
+            }
+         });
       },
 
       /**
@@ -265,6 +281,36 @@ define(["alfresco/core/ProcessWidgets",
          
          var innerDiv = domConstruct.create("div", {}, outerDiv);
          return innerDiv;
+      },
+
+      /**
+       *
+       * @instance
+       * @param {object} config The configuration for the widget
+       * @param {element} domNode The DOM node to attach the widget to
+       * @param {function} callback A function to call once the widget has been instantiated
+       * @param {object} callbackScope The scope with which to call the callback
+       * @param {number} index The index of the widget to create (this will effect it's location in the 
+       * [_processedWidgets]{@link module:alfresco/core/Core#_processedWidgets} array)
+       */
+      createWidget: function alfresco_layout_HorizontalWidgets__createWidget(config, domNode, callback, callbackScope, index) {
+         var widget = this.inherited(arguments);
+         if (widget != null)
+         {
+            if (config.widthPx != null && !isNaN(config.widthPx))
+            {
+               widget.widthPx = config.widthPx;
+            }
+            else if (config.widthPc != null && !isNaN(config.widthPc))
+            {
+               widget.widthPc = config.widthPc;
+            }
+            else
+            {
+               // No action required
+            }
+         }
+         return widget;
       }
    });
 });
