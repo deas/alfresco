@@ -112,6 +112,16 @@
          Selector.query(".links a", this.id, true).setAttribute("href", Alfresco.util.siteURL(workflowDetailsUrl));
          Dom.removeClass(Selector.query(".links", this.id, true), "hidden");
          Selector.query("h1 span", this.id, true).innerHTML = message;
+		 
+         // Format dates (datatype could be 'date' or 'datetime')
+         var dateEls = document.querySelectorAll('[data-datatype^="date"]');
+         for (var i = 0; i < dateEls.length; i++) {
+            var formatString = 'date-format.default'; // Default to date time format
+            if (dateEls[i].getAttribute('data-datatype') === 'date') {
+               formatString = 'date-format.mediumDate';
+            }
+            dateEls[i].innerHTML = Alfresco.util.formatDate(dateEls[i].innerHTML, Alfresco.util.message(formatString));
+         };
       }
    });
 })();
