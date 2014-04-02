@@ -113,6 +113,7 @@
          
          <pathelement location="${dir.project.core}/${dir.name.source}/${dir.name.test.resources}" />
          <pathelement location="${dir.project.repository}/${dir.name.source}/${dir.name.test.resources}" />
+         <pathelement location="${dir.project.wdrdeployment}/${dir.name.source}/${dir.name.test.resources}" />
       </path>
 
       <path id="classpath.unit.test.beyondrepo">
