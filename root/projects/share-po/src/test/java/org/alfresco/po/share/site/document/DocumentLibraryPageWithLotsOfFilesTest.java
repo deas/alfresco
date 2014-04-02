@@ -124,6 +124,7 @@ public class DocumentLibraryPageWithLotsOfFilesTest extends AbstractDocumentTest
     {
         DocumentDetailsPage detailsPage = drone.getCurrentPage().render();
         DocumentLibraryPage lib = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+        lib = lib.getNavigation().selectDetailedView().render();
         Assert.assertTrue(lib.hasFiles());
         lib = lib.deleteItem(1).render();
         lib = lib.deleteItem(2).render();

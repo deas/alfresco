@@ -100,6 +100,7 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
             }
         }
     }
+
     /**
      * Test updating an existing file with a new uploaded file. The test covers major and minor version changes
      *
@@ -117,9 +118,9 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         documentLibPage = newFolderPage.createNewFolder(folderName, folderDescription).render();
         uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = uploadForm.uploadFile(file.getCanonicalPath()).render();
+        documentLibPage = documentLibPage.getNavigation().selectDetailedView().render();
         doclibUrl = drone.getCurrentUrl();
     }
-    
 
     /**
      * Method renders the documentlibrary page and returns the file as FileDirectoryInfo
