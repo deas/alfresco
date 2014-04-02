@@ -11,6 +11,8 @@ import java.io.File;
 
 import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.UserProfilePage;
+import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.util.FailedTestListener;
@@ -28,7 +30,7 @@ import org.testng.annotations.Test;
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
-@Test(groups={"Firefox17Ent"}, enabled = false)
+@Test(groups={"alfresco-one"})
 public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
 {
     private static final String FILE_TITLE = "File";
@@ -117,6 +119,15 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         TableViewFileDirectoryInfo fileInfo = (TableViewFileDirectoryInfo) documentLibPage.getFiles().get(0);
         UserProfilePage profile = fileInfo.selectCreator();
         Assert.assertNotNull(profile);
+        navigateDocumentLib(profile);
+    }
+
+    private void navigateDocumentLib(UserProfilePage profile)
+    {
+        SiteFinderPage finderPage = profile.getNav().selectSearchForSites().render();
+        finderPage = finderPage.searchForSite(siteName).render();
+        SiteDashboardPage dashboardPage  = finderPage.selectSite(siteName).render();
+        documentLibPage = dashboardPage.getSiteNav().selectSiteDocumentLibrary().render();
     }
 
     @Test(dependsOnMethods = "selectCreator", groups="alfresco-one")
@@ -150,6 +161,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         TableViewFileDirectoryInfo fileInfo = (TableViewFileDirectoryInfo) documentLibPage.getFiles().get(0);
         UserProfilePage profile = fileInfo.selectModifier();
         Assert.assertNotNull(profile);
+        navigateDocumentLib(profile);
     }
 
     @Test(dependsOnMethods = "selectModifier", groups="alfresco-one")

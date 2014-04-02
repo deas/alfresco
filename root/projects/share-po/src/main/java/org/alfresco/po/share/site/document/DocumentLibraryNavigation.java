@@ -827,17 +827,14 @@ public class DocumentLibraryNavigation extends SharePage
         {
             switch (alfrescoVersion) 
             {
-                case Enterprise42:
-                case MyAlfresco:
-                    selectItemInOptionsDropDown(By.cssSelector("span.view.table"));
+                case Enterprise41:
+                    drone.findAndWait(By.cssSelector("button[title='Table View']")).click();
                     break;
-                    
                 case Cloud:
                     drone.findAndWait(By.cssSelector("button[id$='default-tableView-button']")).click();
                     break;
-                    
                 default:
-                    drone.findAndWait(By.cssSelector("button[title='Table View']")).click();
+                    selectItemInOptionsDropDown(By.cssSelector("span.view.table"));
                     break;
             }
             return drone.getCurrentPage();
