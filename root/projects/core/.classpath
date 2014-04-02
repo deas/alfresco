@@ -39,7 +39,7 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.aop-3.0.5.RELEASE.jar" sourcepath="/3rd Party/src/org.springframework.aop-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/quartz-1.8.3-patched.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/junit-dep-4.11.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/mockito-all-1.8.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/mockito-all-1.9.5.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/jetty/jetty-server-7.3.0.v20110203.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/jetty/jetty-webapp-7.3.0.v20110203.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/jetty/jetty-util-7.3.0.v20110203.jar"/>

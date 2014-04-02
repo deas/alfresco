@@ -29,7 +29,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/3rd Party/lib/junit-dep-4.11.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/mockito-all-1.8.0.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/mockito-all-1.9.5.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/freemarker-2.3.20-patched.jar" sourcepath="/3rd Party/src/freemarker-2.3.20-patched.zip"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/htmlparser-2.1.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-api-0.10.0.jar"/>

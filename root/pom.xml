@@ -152,7 +152,6 @@
     <dependency.vorbisJava.version>0.3-20130206</dependency.vorbisJava.version>
     <dependency.opencmis.version>0.10.0</dependency.opencmis.version>
     <dependency.antlr.version>3.4</dependency.antlr.version>
-    <dependency.mockito.version>1.9.5</dependency.mockito.version>
     <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
     <dependency.surf.version>1.2.1-M6</dependency.surf.version>
     <dependency.activiti.version>5.13-alf-20140107</dependency.activiti.version>
@@ -168,6 +167,11 @@
             <artifactId>junit</artifactId>
             <version>4.11</version>
         </dependency>    
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+        </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
