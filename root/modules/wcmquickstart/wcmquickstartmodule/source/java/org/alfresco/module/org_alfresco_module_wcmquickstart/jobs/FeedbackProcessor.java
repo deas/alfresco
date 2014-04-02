@@ -216,20 +216,24 @@ public class FeedbackProcessor
                                     FeedbackProcessorHandler handler = handlers.get(feedbackType);
                                     if (handler != null)
                                     {
-                                        /// TODO wrap into sub transaction
-                                    
-                                        // Process the feedback
-                                        if (log.isDebugEnabled() == true)
+                                        //Make sure that node wasn't processed on another cluster node. see MNT-10481
+                                        if (Boolean.FALSE.equals((Boolean)nodeService.getProperty(feedback, WebSiteModel.PROP_RATING_PROCESSED)))
                                         {
-                                            log.debug("Processing feedback node " + feedback.toString() + " of feedback type " + feedbackType);                                        
-                                        }
-                                        handler.processFeedback(feedback);
+                                            /// TODO wrap into sub transaction
+                                     
+                                            // Process the feedback
+                                            if (log.isDebugEnabled() == true)
+                                            {
+                                                log.debug("Processing feedback node " + feedback.toString() + " of feedback type " + feedbackType);                                        
+                                            }
+                                            handler.processFeedback(feedback);
                                         
-                                        // END
-                                        // TODO Log exception                                    
+                                            // END
+                                            // TODO Log exception                                    
                                     
-                                        //Set the "ratingProcessed" flag to true on this feedback node so we don't process it again
-                                        nodeService.setProperty(feedback, WebSiteModel.PROP_RATING_PROCESSED, Boolean.TRUE);
+                                            //Set the "ratingProcessed" flag to true on this feedback node so we don't process it again
+                                            nodeService.setProperty(feedback, WebSiteModel.PROP_RATING_PROCESSED, Boolean.TRUE);
+                                        }
                                     }
                                     else
                                     {
