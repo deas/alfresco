@@ -21,6 +21,8 @@ package org.alfresco.po.share.dashlet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.po.share.CustomiseUserDashboardPage;
+import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.enums.Dashlet;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.util.FailedTestListener;
@@ -45,6 +47,7 @@ public class ConfigureSavedSearchDialogBoxPageTest extends AbstractSiteDashletTe
     private CustomiseSiteDashboardPage customiseSiteDashBoard = null;
     ConfigureSavedSearchDialogBoxPage configureSavedSearchDialogBoxPage = null;
     private static final String savedSearchTitle = "Test Saved Search";
+    private DashBoardPage dashBoardPage;
 
     @BeforeTest
     public void prepare() throws Exception
@@ -127,4 +130,42 @@ public class ConfigureSavedSearchDialogBoxPageTest extends AbstractSiteDashletTe
         Assert.assertEquals(configureSavedSearchDialogBoxPage.getHelpBalloonMessage(), "The value cannot be empty.");
     }
 
+    @Test(dependsOnMethods = "isHelpBalloonDisplayed")
+    public void dashBoardPageClickCancelButton()
+    {
+        siteDashBoard = configureSavedSearchDialogBoxPage.clickOnCancelButton().render();
+        dashBoardPage = siteDashBoard.getNav().selectMyDashBoard().render();
+        CustomiseUserDashboardPage customiseUserDashBoard = dashBoardPage.getNav().selectCustomizeUserDashboard();
+        customiseUserDashBoard.render();
+        dashBoardPage = customiseUserDashBoard.addDashlet(Dashlet.SAVED_SEARCH, 1).render();
+        savedSearchDashlet = dashBoardPage.getDashlet("saved-search").render();
+
+        configureSavedSearchDialogBoxPage = savedSearchDashlet.clickOnEditButton().render();
+        dashBoardPage = configureSavedSearchDialogBoxPage.clickOnCancelButton().render();
+        Assert.assertTrue(dashBoardPage != null);
+    }
+
+    @Test(dependsOnMethods = "isHelpBalloonDisplayed")
+    public void dashBoardPageClickCloseButton()
+    {
+        savedSearchDashlet = dashBoardPage.getDashlet("saved-search").render();
+
+        configureSavedSearchDialogBoxPage = savedSearchDashlet.clickOnEditButton().render();
+        dashBoardPage = configureSavedSearchDialogBoxPage.clickOnCloseButton().render();
+        Assert.assertTrue(dashBoardPage != null);
+    }
+
+    @Test(dependsOnMethods = "isHelpBalloonDisplayed")
+    public void dashBoardPageClickOKButton()
+    {
+        savedSearchDashlet = dashBoardPage.getDashlet("saved-search").render();
+
+        configureSavedSearchDialogBoxPage = savedSearchDashlet.clickOnEditButton().render();
+        configureSavedSearchDialogBoxPage.setSearchTerm(fileName);
+        dashBoardPage = configureSavedSearchDialogBoxPage.clickOnOKButton().render();
+        Assert.assertTrue(dashBoardPage != null);
+        savedSearchDashlet = dashBoardPage.getDashlet("saved-search").render();
+        Assert.assertTrue(savedSearchDashlet.isItemFound(fileName));
+        Assert.assertFalse(savedSearchDashlet.isItemFound(String.valueOf(System.currentTimeMillis())));
+    }
 }

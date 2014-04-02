@@ -46,9 +46,9 @@ public class SiteNoticeDashletTest extends AbstractSiteDashletTest
     private ConfigureSiteNoticeTinyMceEditor siteNoticeEditor = null;
     private String titleAndText = null;
     private static final String expectedHelpBallonMsg = "This dashlet displays a custom message on the dashboard, specified by the site manager";
-    private String fontAttForCloud = "<font style=\"color: rgb(0, 0, 0);\">";
-    private String fontAtt = "<font color=\"#000000\">";
-    private String fontBackColorAttr = "<font style=\"background-color: rgb(0, 0, 0);\">";
+    private String fontAttForCloud = "<font style=\"color: rgb(0, 0, 255);\">";
+    private String fontAtt = "<font color=\"#0000FF\">";
+    private String fontBackColorAttr = "<font style=\"background-color: rgb(255, 255, 0);\">";
     
     @BeforeTest
     public void prepare()

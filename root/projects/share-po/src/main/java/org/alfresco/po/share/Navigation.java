@@ -551,4 +551,30 @@ public class Navigation extends SharePage
         }
         throw new UnsupportedOperationException("The correct method for finding the manage sites page couldn't be determined");
     }
+    
+    
+    /**
+     * Mimics the action of selecting on the 
+     * user dashboard configuration icon
+     * 
+     */
+    private void selectUserDashboardConfigurationIcon()
+    {
+        drone.findAndWait(By.id("HEADER_CUSTOMIZE_USER_DASHBOARD")).click();
+    }    
+    
+    
+    /**
+     * 
+     * @return {@link CustomiseSiteDashboardPage}
+     */
+    public CustomiseUserDashboardPage selectCustomizeUserDashboard()
+    {
+        if(alfrescoVersion.isDojoSupported())
+        {
+            selectUserDashboardConfigurationIcon();
+        }
+        return new CustomiseUserDashboardPage(getDrone());
+        
+    }
 }

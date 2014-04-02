@@ -427,7 +427,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         documentLibPage = documentLibPage.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(tagName).render();
         
         Assert.assertNotNull(documentLibPage);
-        Assert.assertTrue(documentLibPage.getTagsCountUnderTagsTreeMenuOnDocumentLibrary(tagName) == 1);
+        Assert.assertTrue(documentLibPage.getTagsCountUnderTagsTreeMenu(tagName) == 1);
         documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
     }
     

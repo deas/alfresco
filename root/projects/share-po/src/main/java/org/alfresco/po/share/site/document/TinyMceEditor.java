@@ -182,6 +182,33 @@ public class TinyMceEditor extends HtmlElement
             logger.error("Element : " + txt + " is not present");
         }
     }
+    
+    /**
+     * This method sets the given text into Site Content Configure text editor.
+     * 
+     * @param text
+     */
+   
+    public void setText(String text)
+    {   
+        if(text == null)
+        {
+            throw new IllegalArgumentException("Text is required");
+        }
+        
+        try
+        {   
+            String setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", "");
+            drone.executeJavaScript(setCommentJs);
+            setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", text);
+            drone.executeJavaScript(setCommentJs);
+        }
+        catch (NoSuchElementException noSuchElementExp)
+        {
+            throw new PageException("Unable to find text css in tinyMCE editor." , noSuchElementExp);
+        }
+    }
+    
 
     /**
      * Click on TinyMCE editor's format option.    

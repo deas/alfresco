@@ -197,6 +197,21 @@ public class ManagePermissionsTest extends AbstractTest
         UserRole role = pageUnderTest.getExistingPermissionForInheritPermission(userName);
         Assert.assertEquals(role, UserRole.SITECONSUMER);
     }
+    
+    @Test(dependsOnMethods = "getExistingPermissionTest")
+    public void deletePermissionTest()
+    {
+        String userName = "Administrator";
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        if(AlfrescoVersion.Cloud2.equals(version))
+        {
+            userName = "Auto Account";
+        }
+        Assert.assertTrue(pageUnderTest.isDeleteActionPresent(userName, UserRole.COLLABORATOR));
+        pageUnderTest = pageUnderTest.deleteUserWithPermission(userName, UserRole.COLLABORATOR);
+        pageUnderTest.selectCancel().render();
+    }
+    
     @Test(dependsOnMethods = "getExistingPermissionTest")
     public void deleteExistingPermissionTest()
     {
@@ -216,6 +231,7 @@ public class ManagePermissionsTest extends AbstractTest
         pageUnderTest = ((DocumentDetailsPage)drone.getCurrentPage()).selectManagePermissions().render();    
         ManagePermissionsPage.UserSearchPage userSearchPage = pageUnderTest.selectAddUser().render();
         Assert.assertTrue(userSearchPage.isEveryOneDisplayed("<>?:\"|}{+_)(*&^%$#@!~;"));
+        pageUnderTest.selectCancel();
     }
     
 }

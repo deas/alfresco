@@ -139,7 +139,7 @@ public abstract class AbstractEditProperties extends SitePage
         }
         catch (NoSuchElementException e)
         {
-            throw new PageOperationException("Not able to find categories", e);
+            throw new PageOperationException("Not able to find categories" + e.getMessage());
         }
         return categories;
     }

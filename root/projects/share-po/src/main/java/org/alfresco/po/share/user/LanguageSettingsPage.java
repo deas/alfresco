@@ -101,7 +101,7 @@ public class LanguageSettingsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageException("Unable to find Element", nse);
+            throw new PageException("Unable to find Element" + nse.getMessage());
         }
         return this;
     }
@@ -120,7 +120,7 @@ public class LanguageSettingsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageException("Unable to find Element", nse);
+            throw new PageException("Unable to find Element" + nse.getMessage());
         }
     }
 
@@ -137,7 +137,7 @@ public class LanguageSettingsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageException("Unable to find Element", nse);
+            throw new PageException("Unable to find Element" + nse.getMessage());
         }
     }
 }

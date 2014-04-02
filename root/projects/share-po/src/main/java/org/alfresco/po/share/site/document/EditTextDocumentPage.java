@@ -20,6 +20,7 @@ package org.alfresco.po.share.site.document;
 
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -71,7 +72,7 @@ public class EditTextDocumentPage extends CreatePlainTextContentPage
      * @param details - The {@link ContentDetails} to be saved.
      * @return {@link DocumentDetailsPage}
      */
-    public DocumentDetailsPage save(ContentDetails details)
+    public HtmlPage save(ContentDetails details)
     {
         return create(details);
     }

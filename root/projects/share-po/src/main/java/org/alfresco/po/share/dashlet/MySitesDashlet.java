@@ -160,6 +160,7 @@ public class MySitesDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Checks the site is favourite.
+     * @param siteName Site Name checked for is in Favourite.
      * 
      * @return
      */
@@ -173,10 +174,13 @@ public class MySitesDashlet extends AbstractDashlet implements Dashlet
             // length of text rather than string 'Favourite' to support i18n.
             return !(siteRow.findElement(By.cssSelector("div > span > a")).getText().length() > 1);
         }
+        catch (NoSuchElementException e)
+        {
+        }
         catch (TimeoutException e)
         {
-            return false;
         }
+        return false;
     }
 
     /**

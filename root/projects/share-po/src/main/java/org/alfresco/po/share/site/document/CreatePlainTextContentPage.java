@@ -19,6 +19,11 @@
 package org.alfresco.po.share.site.document;
 
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
+import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
@@ -75,12 +80,14 @@ public class CreatePlainTextContentPage extends InlineEditPage
      * @param details - Document Content
      * @return {@link DocumentDetailsPage}
      */
-    public DocumentDetailsPage create(ContentDetails details) 
+    public HtmlPage create(ContentDetails details) 
     {
     	createContent(details);
         WebElement createButton = drone.find(SUBMIT_BUTTON);
+        String id = createButton.getAttribute("id");
         createButton.click();
-        return new DocumentDetailsPage(drone);
+        drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return FactorySharePage.resolvePage(drone);
         
     }
     

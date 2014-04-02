@@ -359,11 +359,11 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         }
         catch (PageRenderTimeException pt)
         {
-            throw new PageException("Exceeded time to find destination page : ", pt);
+            throw new PageException("Exceeded time to find destination page : " + pt.getMessage());
         }
         catch (TimeoutException te)
         {
-            throw new PageOperationException("Exceeded time to find destination button",te);
+            throw new PageOperationException("Exceeded time to find destination button : " + te.getMessage());
         }
     }
 

@@ -535,4 +535,12 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
         Assert.assertFalse(documentLibPage.getFileDirectoryInfo(testLockedFile.getName()).isInlineEditLinkPresent(), "Verify the Inline Edit option is NOT displayed");
         Assert.assertFalse(documentLibPage.getFileDirectoryInfo(testLockedFile.getName()).isEditOfflineLinkPresent(), "Verify the Edit Offline option is NOT displayed");
     }
+    
+    @Test(groups = { "alfresco-one" }, priority=32)
+    public void test128isCommentOptionPresent()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        Assert.assertFalse(documentLibPage.getFileDirectoryInfo(testLockedFile.getName()).isCommentLinkPresent(), "Verify the Comment option is displayed");
+    }
+
 }

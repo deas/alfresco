@@ -270,7 +270,7 @@ public class CategoryPage extends AbstractEditProperties
             return drone.getCurrentPage();
         } catch (NoSuchElementException nse)
         {
-            throw new PageException("Not able find the cancel button: ", nse);
+            throw new PageException("Not able find the cancel button: " + nse.getMessage());
         }
     }
     
@@ -286,7 +286,7 @@ public class CategoryPage extends AbstractEditProperties
             return drone.getCurrentPage();
         } catch (NoSuchElementException nse)
         {
-            throw new PageException("Not able find the ok button", nse);  
+            throw new PageException("Not able find the ok button: " + nse.getMessage());  
         }
     }
 }

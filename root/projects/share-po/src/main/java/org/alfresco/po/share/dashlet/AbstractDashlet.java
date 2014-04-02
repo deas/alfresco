@@ -209,4 +209,9 @@ abstract class AbstractDashlet extends SharePage
         this.resizeHandle = resizeHandle;
     }
 
+    public By getResizeHandle()
+    {
+        return resizeHandle;
+    }
+
 }

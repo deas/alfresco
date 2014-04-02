@@ -25,6 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.po.share.admin.AdminConsolePage;
 import org.alfresco.po.share.admin.ManageSitesPage;
+import org.alfresco.po.share.dashlet.mydiscussions.CreateNewTopicPage;
+import org.alfresco.po.share.dashlet.mydiscussions.TopicDetailsPage;
+import org.alfresco.po.share.dashlet.mydiscussions.TopicsListPage;
 import org.alfresco.po.share.search.AdvanceSearchCRMPage;
 import org.alfresco.po.share.search.AdvanceSearchFolderPage;
 import org.alfresco.po.share.search.AdvanceSearchPage;
@@ -35,12 +38,12 @@ import org.alfresco.po.share.site.AddGroupsPage;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.InviteMembersPage;
+import org.alfresco.po.share.site.contentrule.FolderRulesPreRender;
+import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SiteGroupsPage;
 import org.alfresco.po.share.site.SiteMembersPage;
-import org.alfresco.po.share.site.contentrule.FolderRulesPreRender;
-import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
 import org.alfresco.po.share.site.datalist.DataListPage;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
@@ -117,6 +120,7 @@ public class FactorySharePage implements PageFactory
         pages.put("users", UserSearchPage.class);
         pages.put("customise-site", CustomizeSitePage.class);
         pages.put("customise-site-dashboard", CustomiseSiteDashboardPage.class);
+        pages.put("customise-user-dashboard", CustomiseUserDashboardPage.class);
         pages.put("data-lists", DataListPage.class);
         pages.put("advsearch", AdvanceSearchPage.class);
         pages.put("advfolder-search", AdvanceSearchFolderPage.class);
@@ -133,7 +137,10 @@ public class FactorySharePage implements PageFactory
         pages.put("groups", GroupsPage.class);
         pages.put("site-groups", SiteGroupsPage.class);
         pages.put("add-groups", AddGroupsPage.class);
-        pages.put("task-edit", EditTaskPage.class);
+        pages.put("discussions-createtopic", CreateNewTopicPage.class);
+        pages.put("discussions-topicview", TopicDetailsPage.class);
+        pages.put("discussions-topiclist", TopicsListPage.class);
+        
         pages.put("search", SiteResultsPage.class);
         pages.put("start-workflow", StartWorkFlowPage.class);
         pages.put("user-cloud-auth", CloudSyncPage.class);
@@ -278,6 +285,10 @@ public class FactorySharePage implements PageFactory
             if(url.endsWith("customise-site-dashboard"))
             {
             	return "customise-site-dashboard";
+            }
+            if(url.endsWith("customise-user-dashboard"))
+            {
+                return "customise-user-dashboard";
             }
             if(url.contains("/page/site/"))
             {

@@ -265,7 +265,7 @@ public class SiteMembersPage extends SharePage
         } 
         catch (TimeoutException e)
         {
-            throw new PageException("Unable to find the InviteMembersPage.", e);
+            throw new PageException("Unable to find the InviteMembersPage."+e.getMessage());
         }
         return new InviteMembersPage(getDrone());
 

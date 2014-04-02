@@ -18,6 +18,7 @@ package org.alfresco.po.share.site.document;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneUtil;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
@@ -64,6 +66,7 @@ public class ManagePermissionsPage extends SharePage
     private final By userListInhrtPerm = By.cssSelector("div[id$='default-inheritedPermissions'] tr[class^='yui-dt-rec']");
     private final By deleteAction = By.cssSelector("td[class*='yui-dt-col-actions'] div div.action-set");
     private final By areYouSureButtonGroup = By.cssSelector("span.button-group span span button");
+    private final By userPermissionDeleteAction =  By.cssSelector("a[class$='action-link']");
     public enum ButtonType
     {
         Yes, No;
@@ -625,11 +628,11 @@ public class ManagePermissionsPage extends SharePage
         {
             try
             {
-                By usernameSpan = By.cssSelector("h3>span");
+                //By USERNAME_SPAN = By.cssSelector("h3>span");
             
-                for (WebElement  element: searchUserAndGroup(searchText))
+                for (UserSearchRow  element: searchUserAndGroup(searchText))
                 {
-                    if(element.findElement(usernameSpan).getText().contains("EVERYONE"))
+                    if(element.getUserName().contains("EVERYONE"))
                      {
                         return true;
                      }
@@ -671,17 +674,31 @@ public class ManagePermissionsPage extends SharePage
          * @param searchText
          * @return
          */
-        private List<WebElement> searchUserAndGroup(String searchText)
+        public List<UserSearchRow> searchUserAndGroup(String searchText) throws UnsupportedOperationException
         {
+            WebDroneUtil.checkMandotaryParam("Search Text", searchText);
+            List<UserSearchRow> searchRows = new ArrayList<UserSearchRow>();
             drone.find(SEARCH_USER_INPUT).clear();
             drone.find(SEARCH_USER_INPUT).sendKeys(searchText);
-
             drone.find(SEARCH_USER_BUTTON).click();
-            this.render();
-            By dataRows = By.cssSelector("div.finder-wrapper tbody.yui-dt-data tr");
-            return drone.findAndWaitForElements(dataRows, maxPageLoadingTime);
+            if(searchText.length() < 3)
+            {
+                WebElement element = drone.find(By.cssSelector(".message"));
+                throw new UnsupportedOperationException(element.getText());
+            }
+            else
+            {
+                this.render();
+                By DATA_ROWS = By.cssSelector("div.finder-wrapper tbody.yui-dt-data tr");
+                for (WebElement  element : drone.findAndWaitForElements(DATA_ROWS, maxPageLoadingTime))
+                {
+                    searchRows.add(new UserSearchRow(drone, element));
+                }
+            }
+           
+            return searchRows;
         }
-        
+
         /**
          * @param searchRows
          * @param searchText
@@ -689,48 +706,69 @@ public class ManagePermissionsPage extends SharePage
          * @param userProfile
          * @return
          */
-        private ManagePermissionsPage selectUserOrGroup(List<WebElement> searchRows, String searchText, boolean isGroupSearch,  UserProfile userProfile)
+        public ManagePermissionsPage selectUserOrGroup(List<UserSearchRow> searchRows, String searchText, boolean isGroupSearch,  UserProfile userProfile)
         {
-            By USERNAME_SPAN = By.cssSelector("h3>span");
-            By NAME_ANCHOR = By.cssSelector("h3>a");
-            try
+            if (StringUtils.isEmpty(searchText))
             {
-                for (WebElement searchRow : searchRows)
+                throw new IllegalArgumentException("Search value is null");
+            }
+            for (UserSearchRow searchRow : searchRows)
+            {
+                if (isGroupSearch)
                 {
-                    if (isGroupSearch)
+                    if (searchRow.getUserName().contains(searchText))
                     {
-                        if (searchRow.findElement(USERNAME_SPAN).getText().contains(searchText))
-                        {
-                            searchRow.findElement(By.cssSelector("button")).click();
-                            return new ManagePermissionsPage(drone);
-                        }
-
-                    }
-                    else
-                    {
-                        String fullName = searchRow.findElement(NAME_ANCHOR).getText();
-                        String[] name = fullName.split(" ");
-                        userProfile.setfName(name[0]);
-
-                        if (name.length > 1)
-                        {
-                            userProfile.setlName(name[1]);
-                        }
-                        else
-                        {
-                            userProfile.setlName("");
-                        }
-
-                        searchRow.findElement(By.cssSelector("button")).click();
+                        searchRow.clickAdd();
                         return new ManagePermissionsPage(drone);
                     }
+
+                } else
+                {
+                    if (null == userProfile)
+                    {
+                        throw new IllegalArgumentException(
+                                "User profile is null");
+                    }
+                    String fullName = searchRow.getUserName();
+                    String[] name = fullName.split(" ");
+                    userProfile.setfName(name[0]);
+
+                    if (name.length > 1)
+                        userProfile.setlName(name[1]);
+                    else
+                        userProfile.setlName("");
+
+                    return (ManagePermissionsPage) searchRow.clickAdd();
+
                 }
+            }
+            throw new PageException("User with username containing - '"
+                    + searchText + "' not found");
+        }
+        
+        /**
+         * Verify if user or group exist in the search list.
+         * @param searchText
+         * @return
+         */
+        public boolean isUserOrGroupPresentInSearchList(String searchText)
+        {
+            try
+            {
+                //By USERNAME_SPAN = By.cssSelector("h3>span");
+            
+                for (UserSearchRow  element: searchUserAndGroup(searchText))
+                {
+                    if(element.getUserName().contains(searchText))
+                     {
+                        return true;
+                     }
+                }
+            }catch(NoSuchElementException nse)
+            {
                 throw new PageException("User with username containing - '" + searchText + "' not found");
             }
-            catch (Exception e)
-            {
-                throw new PageException("No users found for - " + searchText, e);
-            }
+            return false;
         }
     }
 
@@ -811,5 +849,68 @@ public class ManagePermissionsPage extends SharePage
         }
     }
     
+    /**
+     * @param name
+     * @param role
+     * @return
+     */
+    private WebElement getDeleteAction(String name, UserRole role)
+    {
+        try
+        {
+            List<WebElement> userList = drone.findAndWaitForElements(userListLocator);
+            for (WebElement webElement : userList)
+                if (webElement.findElement(userNameLocator).getText().contains(name))
+                {
+                    String currentRole = StringUtils.replace(webElement.findElement(userRoleLocator).getText().toUpperCase(), " ", "");
+                    if(role.equals(UserRole.valueOf(currentRole)))
+                        {
+                             drone.mouseOverOnElement(webElement);
+                             return drone.find(userPermissionDeleteAction);
+                        }
+                }
+        }
+        catch (NoSuchElementException toe)
+        {
+            logger.error("User name elementis not found!!");
+            return null;
+        }
+        throw new PageOperationException("User name is not found!!");
+    }
+    
+    /**
+     * Check if delete action is present for the user and permission.
+     * @param name
+     * @param role
+     * @return
+     */
+    public boolean isDeleteActionPresent(String name, UserRole role)
+    {
+        WebElement element = getDeleteAction(name, role);
+        if (null != element)
+        {
+            return true;
 
+        }
+        return false;
+    }
+    
+    
+    /**
+     * Delete the user and permission. 
+     * @param name
+     * @param role
+     * @return
+     */
+    public ManagePermissionsPage deleteUserWithPermission(String name, UserRole role)
+    {
+
+        WebElement element = getDeleteAction(name, role);
+        if (null != element)
+        {
+            element.click();
+
+        }
+        return drone.getCurrentPage().render();
+    }
 }

@@ -110,7 +110,7 @@ public class ProfileNavigation
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find Language link", nse);
+            throw new PageOperationException("Unable to find Language link" + nse.getMessage());
         }
     }
 }

@@ -290,7 +290,7 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
 
         // Get ContentEditInfo
         Assert.assertNotNull(thisRow.getContentEditInfo());
-        Assert.assertTrue(thisRow.getContentEditInfo().contains("just now"));
+        Assert.assertTrue(thisRow.getContentEditInfo().contains("Created"));
     }
 
     @Test(groups={"alfresco-one"}, priority=12)
@@ -494,5 +494,12 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         Assert.assertEquals(documentLibraryPage.getFileDirectoryInfo(testLockedFile.getName()).getContentInfo(), "This document is locked by you.");
         Assert.assertFalse(documentLibPage.getFileDirectoryInfo(testLockedFile.getName()).isInlineEditLinkPresent(), "Verify the Inline Edit option is NOT displayed");
         Assert.assertFalse(documentLibPage.getFileDirectoryInfo(testLockedFile.getName()).isEditOfflineLinkPresent(), "Verify the Edit Offline option is NOT displayed");
+    }
+    
+    @Test(groups = { "alfresco-one" }, priority=28)
+    public void test128isCommentOptionPresent()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        Assert.assertTrue(documentLibPage.getFileDirectoryInfo(testLockedFile.getName()).isCommentLinkPresent(), "Verify the Comment option is displayed");
     }
 }

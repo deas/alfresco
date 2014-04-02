@@ -18,7 +18,6 @@
  */
 package org.alfresco.po.share;
 
-import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -68,11 +67,6 @@ public class RepositoryPage extends DocumentLibraryPage
     public RepositoryPage render(RenderTime timer)
     {
         super.render(timer);
-        if(!AlfrescoVersion.Enterprise41.equals(alfrescoVersion))
-        {
-            String text = (String) drone.executeJavaScript(JS_DOCUMENT_VIEW_TYPE);
-            setViewType(ViewType.getViewType(text));
-        }
         return this;
     }
 

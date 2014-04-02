@@ -383,7 +383,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         }
         catch (TimeoutException te)
         {
-            throw new PageOperationException("Unable to find WorkFlow Could NOT be started prompt", te);
+            throw new PageOperationException("Unable to find WorkFlow Could NOT be started prompt" + te.getMessage());
         }
     }
 
@@ -410,7 +410,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable find help icon", nse);
+            throw new PageOperationException("Unable find help icon" + nse.getMessage());
         }  
     }
     
@@ -427,7 +427,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable find help text, Please click the help icon first.", nse);
+            throw new PageOperationException("Unable find help text, Please click the help icon first." + nse.getMessage());
         } 
     }
 }

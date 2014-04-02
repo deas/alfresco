@@ -42,32 +42,7 @@ public class ConfigureSiteNoticeTinyMceEditor extends TinyMceEditor
     {
         super(drone);
     }
-    
-    /**
-     * This method sets the given text into Site Content Configure text editor.
-     * 
-     * @param text
-     */
-    public void setText(String text)
-    {   
-        if(text == null)
-        {
-            throw new IllegalArgumentException("Text is required");
-        }
-        
-        try
-        {   
-            String setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", "");
-            drone.executeJavaScript(setCommentJs);
-            setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", text);
-            drone.executeJavaScript(setCommentJs);
-        }
-        catch (NoSuchElementException noSuchElementExp)
-        {
-            throw new PageException("Unable to find text css in tinyMCE editor." , noSuchElementExp);
-        }
-    }
-    
+     
     /**
      * Get text from TinyMCE editor.
      * @param siteName
@@ -112,8 +87,8 @@ public class ConfigureSiteNoticeTinyMceEditor extends TinyMceEditor
     {        
         selectTextFromEditor();
         clickElementOnRichTextFormatter("a[id$='default-configDialog-text_forecolor_open']");
-        setFormatType(FormatType.BLACK_COLOR_CODE);
-        clickElementOnRichTextFormatter(getCSSOfFormatType());
+        setFormatType(FormatType.COLOR_CODE);
+        clickElementOnRichTextFormatter(getCSSOfFormatType());       
     }
 
     /**
@@ -123,7 +98,8 @@ public class ConfigureSiteNoticeTinyMceEditor extends TinyMceEditor
     {        
         selectTextFromEditor();
         clickElementOnRichTextFormatter("a[id$='default-configDialog-text_backcolor_open']");
-        clickElementOnRichTextFormatter("div.mce_backcolor td>a[title='Black']");
+        setFormatType(FormatType.COLOR_CODE);
+        clickElementOnRichTextFormatter("#_mce_item_70");       
     }
 
     /**

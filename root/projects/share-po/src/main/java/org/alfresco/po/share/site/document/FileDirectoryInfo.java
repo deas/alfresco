@@ -2,11 +2,10 @@ package org.alfresco.po.share.site.document;
 
 import java.util.List;
 
-import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UpdateFilePage;
+import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.webdrone.HtmlPage;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 public interface FileDirectoryInfo
@@ -192,12 +191,7 @@ public interface FileDirectoryInfo
      *
      * @return {Link SitePage} Instance of SitePage page object
      */
-     SitePage selectThumbnail();
-
-    /**
-     * Returns the WebElement for <More> Actions the in the selected row.
-     */
-     WebElement selectMoreAction();
+    HtmlPage selectThumbnail();
 
     /**
      * Returns true if content in the selected data row on DocumentLibrary is
@@ -471,6 +465,11 @@ public interface FileDirectoryInfo
      * @return {@link SelectAspectsPage}
      */
      SelectAspectsPage selectManageAspects();
+     
+     /**
+     * @return
+     */
+    public boolean isCommentLinkPresent();
 
      /**
       * Performs the find with an added resolveStaleness.
@@ -479,5 +478,16 @@ public interface FileDirectoryInfo
       * @param By css selector
       * @return {@link WebElement}
       */
-     WebElement findElement(By cssSelector);
+     String getLikeOrUnlikeTip();
+
+    /**
+     * Checks if quick share link present
+     * 
+     * @return boolean
+     */
+    boolean isShareLinkVisible();
+
+    boolean isViewInBrowserVisible();
+
+    void enterTagString(final String tagName);
 }

@@ -866,6 +866,7 @@ public class DocumentDetailsPage extends DetailsPage
             return false;
         }
     }
+
     /**
      * Verify if the comment count is displayed or not
      * @param waitTime
@@ -884,6 +885,26 @@ public class DocumentDetailsPage extends DetailsPage
                 logger.info("Comment count is not displayed");
             }
         }
+        return false;
+    }
+
+    /**
+     * Checks if hide record link is displayed.
+     * This will only be visible under the following
+     * condition:
+     * <ul>
+     *  <li> Record management module enabled</li>
+     *  <li> When the document has been declared as record</li>
+     * </ul>
+     * @return true if link is displayed
+     */
+    public boolean isHideRecordLinkDisplayed()
+    {
+        try
+        {
+            return drone.find(By.cssSelector("div#onHideRecordAction.rm-hide-record")).isDisplayed();
+        }
+        catch (NoSuchElementException nse) { }
         return false;
     }
 

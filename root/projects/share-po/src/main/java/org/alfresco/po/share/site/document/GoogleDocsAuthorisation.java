@@ -29,6 +29,7 @@ import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
@@ -148,7 +149,7 @@ public class GoogleDocsAuthorisation extends SharePage
                 }
                 catch (NoSuchElementException te)
                 {
-                    throw new TimeoutException("authorisation prompt was not found", te);
+                    throw new PageOperationException("authorisation prompt was not found", te);
                 }
             }
         };

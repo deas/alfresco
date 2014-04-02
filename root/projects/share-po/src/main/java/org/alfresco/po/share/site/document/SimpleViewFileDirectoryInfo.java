@@ -1,9 +1,7 @@
-package org.alfresco.po.share.workflow;
+package org.alfresco.po.share.site.document;
 
 import java.util.List;
 
-import org.alfresco.po.share.site.document.Categories;
-import org.alfresco.po.share.site.document.FileDirectoryInfoImpl;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.WebElement;
 
@@ -11,12 +9,14 @@ import org.openqa.selenium.WebElement;
  * @author cbairaajoni
  *
  */
-public class SimpleViewFileDirectoryInfo extends FileDirectoryInfoImpl
+public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
 {
 
     public SimpleViewFileDirectoryInfo(String nodeRef, WebElement webElement, WebDrone drone)
     {
         super(nodeRef, webElement, drone);
+        rowElementXPath = "../../..";
+        resolveStaleness();
     }
     
     /* (non-Javadoc)

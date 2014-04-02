@@ -24,10 +24,8 @@ import java.util.List;
 
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.Pagination;
-import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.SitePage;
-import org.alfresco.po.share.workflow.FactoryShareFileDirectoryInfo;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
@@ -38,6 +36,7 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
@@ -64,6 +63,13 @@ public class DocumentLibraryPage extends SitePage
     private static final String NODEREF_LOCATOR = "input[id^='checkbox-yui']";
     private static final String FILE_UPLOAD_INSTRUCTION = "div.docListInstructionsWithDND";
     private static final String BOTTOM_PAGINATOR_LOCATION = "div[id$='_default-paginatorBottom']";
+    private static final By FILMSTRIP_MAIN_DIV = By.cssSelector("div.alf-filmstrip.alf-gallery.documents");
+    private static final By FILMSTRIP_NAV_NEXT = By.cssSelector("div[id$='default-filmstrip-nav-main-next']");
+    private static final By FILMSTRIP_NAV_PREVIOUS = By.cssSelector("div[id$='_default-filmstrip-nav-main-previous']");
+    private static final By FILMSTRIP_TAPE_NEXT = By.cssSelector("div[id$='-filmstrip-nav-next']");
+    private static final By FILMSTRIP_TAPE_PREVIOUS = By.cssSelector("div[id$='_default-filmstrip-nav-main-previous']");
+    private static final By FILMSTRIP_ITEM_DISLAYED = By.cssSelector("li[class$='item-selected'] div.alf-header div.alf-label");
+    private static final By FILMSTRIP_NAV_HANDLE = By.cssSelector("div[id$='__default-filmstrip-nav-handle']");
     private static final By THUMBNAIL_IMAGE = By.cssSelector("td[class$='yui-dt-col-thumbnail'] img");
     private static final By DOCUMENTS_TREE_CSS = By.cssSelector("div.filter.doclib-filter h2");
     private final String subfolderName;
@@ -193,10 +199,7 @@ public class DocumentLibraryPage extends SitePage
             }
         }
         
-        if(!(this instanceof RepositoryPage))
-        {
-            viewType = getNavigation().getViewType();
-        }
+        viewType = getNavigation().getViewType();
         return this;
     }
     /**
@@ -534,8 +537,28 @@ public class DocumentLibraryPage extends SitePage
      */
     protected WebElement selectEntry(final String title)
     {
-        if(title == null || title.isEmpty()) {throw new IllegalArgumentException("Title is required");}
-        String search = String.format("//h3/span/a[text()='%s']",title);
+        if (title == null || title.isEmpty())
+            throw new IllegalArgumentException("Title is required");
+        String xpath = "//h3/span/a[text()='%s']";
+
+        switch (viewType)
+        {
+        case GALLERY_VIEW:
+            xpath = ".//div[@class='alf-gallery-item-thumbnail']/div[@class='alf-label']/a[text()='%s']";
+            break;
+        case FILMSTRIP_VIEW:
+            FilmStripViewFileDirectoryInfo fileDirInfo = (FilmStripViewFileDirectoryInfo) getFileDirectoryInfo(title);
+            fileDirInfo.clickOnTitle();
+            fileDirInfo.openGalleryInfo(false);
+            break;
+        case TABLE_VIEW:
+            xpath = "//td[contains(@class,'yui-dt-col-name')]/div/span/a[text()='%s']";
+            break;
+        default:
+            break;
+        }
+
+        String search = String.format(xpath, title);
         return drone.findAndWait(By.xpath(search), WAIT_TIME_3000);
     }
 
@@ -870,10 +893,29 @@ public class DocumentLibraryPage extends SitePage
         {
             throw new IllegalArgumentException("Title is required");
         }
+        
+        WebElement row = null;
+        String nodeRef = null;
+        
         try
         {
-            WebElement row = drone.findAndWait(By.xpath(String.format("//h3/span/a[text()='%s']/../../../../..",title)), WAIT_TIME_3000);
-            String nodeRef = row.findElement(THUMBNAIL_IMAGE).getAttribute("id");
+            switch (viewType)
+            {
+            case GALLERY_VIEW:
+                row = drone.findAndWait(By.xpath(String.format("//h3/span/a[text()='%s']/../../../../../../..", title)), WAIT_TIME_3000);
+                nodeRef = row.findElement(By.cssSelector("input[id$='gallery-item']")).getAttribute("value");
+                break;
+            case FILMSTRIP_VIEW:
+                nodeRef = drone.findAndWait(By.xpath(String.format(".//div[@class='alf-filmstrip-nav']//div[@class='alf-label'][text()='%s']/..//img", title)),
+                        WAIT_TIME_3000).getAttribute("id");
+                row = drone.findAndWait(By.xpath(String.format(".//div[@class='alf-filmstrip-nav']//div[@class='alf-label'][text()='%s']", title)), WAIT_TIME_3000);
+                break;
+            default:
+                row = drone.findAndWait(By.xpath(String.format("//h3/span/a[text()='%s']/../../../../..", title)), WAIT_TIME_3000);
+                nodeRef = row.findElement(THUMBNAIL_IMAGE).getAttribute("id");
+                break;
+            }
+            
             return getFileDirectoryInfo(nodeRef, row);
         }
         catch (NoSuchElementException e)
@@ -947,7 +989,7 @@ public class DocumentLibraryPage extends SitePage
      * @param tagName
      * @return int
      */
-    public int getTagsCountUnderTagsTreeMenuOnDocumentLibrary(String tagName)
+    public int getTagsCountUnderTagsTreeMenu(String tagName)
     {
         if (tagName == null)
         {
@@ -1022,6 +1064,247 @@ public class DocumentLibraryPage extends SitePage
         }
         
         return FactoryShareFileDirectoryInfo.getPage(nodeRef, webElement, drone, viewType);
+    }
+    
+    /**
+     * Check whether FilmStrip view is displayed.
+     * 
+     * @return - boolean
+     */
+    public boolean isFilmStripViewDisplayed()
+    {
+        try
+        {
+            WebElement filmStripDiv = drone.find(FILMSTRIP_MAIN_DIV);
+            if (filmStripDiv.isDisplayed())
+            {
+                return true;
+            }
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.info("isFilmStripViewDisplayed - Filmstrip view not loaded");
+        }
+        return false;
+    }
+    
+    /**
+     * Selects the next arrow on filmstrip pane.
+     */
+    public HtmlPage selectNextFilmstripItem()
+    {
+        try
+        {
+            WebElement nextArrow = drone.find(FILMSTRIP_NAV_NEXT);
+            nextArrow.click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.info("selectNextFilmstripItem - Filmstrip view not loaded");
+            throw new PageException("Foreground previous arrow not visible.");
+        }
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Selects the previous arrow on filmstrip pane.
+     */
+    public HtmlPage selectPreviousFilmstripItem()
+    {
+        try
+        {
+            WebElement filmStripDiv = drone.find(FILMSTRIP_MAIN_DIV);
+            if (filmStripDiv.isDisplayed())
+            {
+                WebElement nextArrow = filmStripDiv.findElement(FILMSTRIP_NAV_PREVIOUS);
+                if (nextArrow.isDisplayed())
+                {
+                    nextArrow.click();
+                }
+                else
+                    throw new PageException("Foreground arrow not visible.");
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.info("selectPreviousFilmstripItem - Filmstrip view not loaded");
+            throw new PageException("Foreground arrow not visible.");
+        }
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Selects the next arrow on filmstrip pane.
+     */
+    public HtmlPage selectNextFilmstripTape()
+    {
+        try
+        {
+            WebElement nextArrow = drone.find(FILMSTRIP_TAPE_NEXT);
+            if (nextArrow.isDisplayed())
+            {
+                nextArrow.click();
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.info("selectNextFilmstripItem - Filmstrip view not loaded");
+            throw new PageException("Tape arrow not visible.");
+        }
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Selects the previous arrow on filmstrip pane.
+     */
+    public HtmlPage selectPreviousFilmstripTape()
+    {
+        try
+        {
+            WebElement arrow = drone.find(FILMSTRIP_TAPE_PREVIOUS);
+            if (arrow.isDisplayed())
+            {
+                arrow.click();
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.info("selectPreviousFilmstripTape - Filmstrip view not loaded");
+            throw new PageException("Tape arrow not visible.");
+        }
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Checks whether next arrow is present
+     */
+    public boolean isNextFilmstripArrowPresent()
+    {
+        try
+        {
+            drone.find(FILMSTRIP_NAV_NEXT);
+            return true;
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.info("isNextFilmstripArrowPresent - Filmstrip view not loaded");
+        }
+        catch (TimeoutException te)
+        {
+            logger.info("isNextFilmstripArrowPresent - Filmstrip view not loaded");
+        }
+        return false;
+    }
+
+
+    /**
+     * Get filmStrip pane displayed file.
+     */
+    public String getDisplyedFilmstripItem()
+    {
+        try
+        {
+            WebElement mainDiv = drone.find(FILMSTRIP_MAIN_DIV);
+            return mainDiv.findElement(FILMSTRIP_ITEM_DISLAYED).getText();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.info("getDisplyedFilmstripItem - Filmstrip view not loaded");
+        }
+        catch (TimeoutException te)
+        {
+            logger.info("getDisplyedFilmstripItem - Filmstrip view not loaded");
+        }
+        return null;
+    }
+
+    /**
+     * Filmstrip view send right arrow.
+     */
+    public HtmlPage sendKeyRightArrowForFilmstrip()
+    {
+        try
+        {
+            drone.find(FILMSTRIP_MAIN_DIV);
+            drone.find(By.cssSelector("div[id$='_default-breadcrumb']")).sendKeys(Keys.TAB, Keys.TAB, Keys.ARROW_RIGHT);
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.info("sendKeyLefttArrowForFilmstrip - Filmstrip view not loaded");
+        }
+        catch (TimeoutException te)
+        {
+            logger.info("sendKeyLefttArrowForFilmstrip - Filmstrip view not loaded");
+        }
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Filmstrip view send left arrow.
+     */
+    public HtmlPage sendKeyLeftArrowForFilmstrip()
+    {
+        try
+        {
+            drone.find(FILMSTRIP_MAIN_DIV);
+            drone.find(By.cssSelector("div[id$='_default-breadcrumb']")).sendKeys(Keys.TAB, Keys.TAB, Keys.ARROW_LEFT);
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.info("sendKeyLefttArrowForFilmstrip - Filmstrip view not loaded");
+        }
+        catch (TimeoutException te)
+        {
+            logger.info("sendKeyLefttArrowForFilmstrip - Filmstrip view not loaded");
+        }
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Filmstrip Toggles the nav row.
+     */
+    public void toggleNavHandleForFilmstrip()
+    {
+        try
+        {
+            WebElement mainDiv = drone.find(FILMSTRIP_MAIN_DIV);
+            mainDiv.findElement(FILMSTRIP_NAV_HANDLE).click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.info("toggleNavHandleForFilmstrip - Filmstrip view not loaded");
+        }
+        catch (TimeoutException te)
+        {
+            logger.info("toggleNavHandleForFilmstrip - Filmstrip view not loaded");
+        }
+    }
+
+    /**
+     * Filmstrip gets selected files.
+     */
+    public List<String> getSelectedFIlesForFilmstrip()
+    {
+        List<String> selectedFiles = new ArrayList<String>();
+        try
+        {
+            List<WebElement> selectedDivs = drone.findAll(By.cssSelector("div.alf-filmstrip-nav-item.alf-selected div.alf-label"));
+            for (WebElement webElement : selectedDivs)
+            {
+                selectedFiles.add(webElement.getText());
+            }
+            return selectedFiles;
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.info("getSelectedFIlesForFilmstrip - No items selected");
+            return Collections.emptyList();
+        }
+        catch (TimeoutException te)
+        {
+            logger.info("getSelectedFIlesForFilmstrip - No items selected");
+            return Collections.emptyList();
+        }
     }
 
     protected void setViewType(ViewType viewType)

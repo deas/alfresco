@@ -82,6 +82,9 @@ public class SiteFinderPageTest extends AbstractTest
     public void test100zeroResults() throws IOException
     {
         Assert.assertEquals(siteFinder.hasResults(), false);
+        siteFinder = siteFinder.searchForSite(siteName + System.currentTimeMillis()).render();
+        Assert.assertEquals(siteFinder.hasResults(), false);
+        Assert.assertEquals(siteFinder.getSiteList().size(), 0);
         this.saveScreenShot("Prepare");
     }
     

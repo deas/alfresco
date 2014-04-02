@@ -28,7 +28,9 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
@@ -82,5 +84,19 @@ public class MyTasksTest extends AbstractTest
     {
         SharePage returnedPage = myTasksPage.selectCompletedTasks();
         assertTrue(returnedPage instanceof MyTasksPage, "Returned page should be instance of MyTaskPage");
+    }
+    
+       /**
+     *  This test is to assert and click the cloud task page form to navigate to edit task page.
+     * @throws Exception
+     */
+    @Test(dependsOnMethods = { "selectCompletedTasksTest", "selectActiveTasksTest" }, groups = "Enterprise4.2")
+    public void navigateToCloudTaskPage() throws Exception
+    {
+        SharePage page = drone.getCurrentPage().render();
+        myTasksPage =  page.getNav().selectMyTasks().render();
+        EditTaskPage returnPage = myTasksPage.navigateToEditTaskPage(message, "Administrator").render();
+        Assert.assertNotNull(returnPage);
+
     }
 }

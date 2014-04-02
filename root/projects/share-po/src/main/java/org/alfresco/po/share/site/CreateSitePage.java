@@ -185,15 +185,15 @@ public class CreateSitePage extends SharePage
     {
         if(isPrivate)
         {
-            drone.findAndWait(PRIVATE_CHECKBOX).click();  
+            drone.find(PRIVATE_CHECKBOX).click();  
             return;
         }
         else
         {
-            drone.findAndWait(PUBLIC_CHECKBOX).click();
+            drone.find(PUBLIC_CHECKBOX).click();
             if(isModerated)
             {
-            	drone.findAndWait(MODERATED_CHECKBOX).click();
+            	drone.find(MODERATED_CHECKBOX).click();
             }
         }
     }

@@ -78,7 +78,9 @@ public class DocumentLibraryNavigation extends SharePage
     private static final By MOVE_TO = By.cssSelector(".onActionMoveTo");
     private static final By DESELECT_ALL = By.cssSelector(".onActionDeselectAll");
     private static final By START_WORKFLOW = By.cssSelector(".onActionAssignWorkflow");
-
+    private static final By SET_DEFAULT_VIEW = By.cssSelector(".setDefaultView");
+    private static final By REMOVE_DEFAULT_VIEW = By.cssSelector(".removeDefaultView");
+    
     private Log logger = LogFactory.getLog(this.getClass());
 
     /**
@@ -695,7 +697,13 @@ public class DocumentLibraryNavigation extends SharePage
         }
     }
 
-
+    private void clickOptionDropDown()
+    {
+        WebElement btn = drone.find(By.cssSelector("button[id$='default-options-button-button']"));
+        HtmlElement dropdownButton = new HtmlElement(btn, drone);
+        dropdownButton.click();
+    }
+    
     /**
      * Select the option drop down, introduced in
      * Alfresco enterprise 4.2 and clicks on the button in
@@ -710,10 +718,7 @@ public class DocumentLibraryNavigation extends SharePage
             timer.start();
             try
             {
-                WebElement btn = drone.find(By.cssSelector("button[id$='default-options-button-button']"));
-                HtmlElement dropdownButton = new HtmlElement(btn, drone);
-                dropdownButton.click();
-
+                clickOptionDropDown();
                 WebElement dropdown = drone.findAndWait(By.cssSelector("div[id$='default-options-menu']"));
                 if(dropdown.isDisplayed())
                 {
@@ -759,41 +764,27 @@ public class DocumentLibraryNavigation extends SharePage
     }
 
     /**
-     * Selects the Detailed View of the Document Library.
-     *
+     * Selects the Filmstrip View of the Document Library.
+     * 
      * @return {@link DocumentLibraryPage}
      */
-    public HtmlPage selectFilmView()
+    public HtmlPage selectFilmstripView()
     {
         try
         {
-            switch (alfrescoVersion)
-            {
-            case Enterprise42:
-            case MyAlfresco:
-                selectItemInOptionsDropDown(By.cssSelector("span.view.filmstrip"));
-                break;
-
-            case Cloud:
-                drone.findAndWait(By.cssSelector("button[id$='default-detailedView-button']")).click();
-                break;
-
-            default:
-                drone.findAndWait(By.cssSelector("button[title='Detailed View']")).click();
-                break;
-            }
+            selectItemInOptionsDropDown(By.cssSelector("span.view.filmstrip"));
             return drone.getCurrentPage();
         }
         catch (TimeoutException e)
         {
             logger.error("Exceeded the time to find css." + e.getMessage());
-            throw new PageException("Exceeded the time to find css.",e);
+            throw new PageException("Exceeded the time to find css.");
         }
     }
 
     /**
-     * Selects the Detailed View of the Document Library.
-     *
+     * Selects the Simple View of the Document Library.
+     * 
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectSimpleView()
@@ -821,6 +812,39 @@ public class DocumentLibraryNavigation extends SharePage
         }
     }
 
+    /**
+     * Selects the Table View of the Document Library.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectTableView()
+    {
+        try
+        {
+            switch (alfrescoVersion) 
+            {
+                case Enterprise42:
+                case MyAlfresco:
+                    selectItemInOptionsDropDown(By.cssSelector("span.view.table"));
+                    break;
+                    
+                case Cloud:
+                    drone.findAndWait(By.cssSelector("button[id$='default-tableView-button']")).click();
+                    break;
+                    
+                default:
+                    drone.findAndWait(By.cssSelector("button[title='Table View']")).click();
+                    break;
+            }
+            return drone.getCurrentPage();
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded the time to find css." + e.getMessage());
+            throw new PageException("Exceeded the time to find css.");
+        }
+    }
+    
     /**
      * Mimics the action of selecting the Hide Folders in Option Menu.
      *
@@ -1047,11 +1071,15 @@ public class DocumentLibraryNavigation extends SharePage
             selectItemInOptionsDropDown(By.cssSelector("span.view.gallery"));
             return drone.getCurrentPage();
         }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("Unable to find css." + nse.getMessage());
+        }
         catch (TimeoutException e)
         {
             logger.error("Exceeded the time to find css." + e.getMessage());
-            throw new PageException("Exceeded the time to find css.", e);
         }
+        throw new PageException("Unable to select the Gallery view.");
     }
 
     /**
@@ -1061,44 +1089,91 @@ public class DocumentLibraryNavigation extends SharePage
      */
     public ViewType getViewType()
     {
+        // Note: This is temporary fix to find out the view type.
+        String text = (String) drone.executeJavaScript("return document.getElementsByClassName('setDefaultView')[0].innerHTML");
+        ViewType type = ViewType.getViewType(text);
+        return type;
+    }
+    
+    private boolean isDefaultViewVisible(By view)
+    {
+        boolean visible = false;
         try
         {
-            ViewType type = null;
-
-            if(AlfrescoVersion.Enterprise41.equals(alfrescoVersion))
+            clickOptionDropDown();
+            if(drone.findAndWait(By.cssSelector("div[id$='default-options-menu']")).isDisplayed())
             {
-                try
-                {
-                    if(drone.findAndWait(By.cssSelector("span[id$='default-simpleView']")).getAttribute("class").contains("checked"))
-                    {
-                        type = ViewType.SIMPLE_VIEW;
-                    }
-                    else
-                    {
-                        if(drone.findAndWait(By.cssSelector("span[id$='default-detailedView']")).getAttribute("class").contains("checked"))
-                        {
-                            type = ViewType.DETAILED_VIEW;
-                        }
-                    }
-                }
-                catch (TimeoutException e)
-                {
-                    logger.error("Not able to find the view type " + e.getMessage());
-                    throw new PageOperationException("Not able find the view type on this page.", e);
-                }
+                visible = drone.find(view).isDisplayed();
             }
-            else
-            {
-                // The place holder is not set properly all the time
-                String text = (String) drone.executeJavaScript("return Alfresco.util.ComponentManager.findFirst('Alfresco.DocumentList').options.viewRendererName;");
-                type = ViewType.getViewType(text);
-            }
-            return type;
         }
-        catch (TimeoutException te)
+        catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find the view css." + te.getMessage());
         }
-        throw new PageOperationException("Unable to find Document Library view.");
+        catch (NoSuchElementException e)
+        {
+        }
+        
+        closeOptionMenu();
+        
+        return visible;
     }
+    
+    /**
+     * Returns true if the Set current view to default is visible
+     * 
+     * @return
+     */
+    public boolean isSetDefaultViewVisible()
+    {
+        return isDefaultViewVisible(SET_DEFAULT_VIEW);
+    }
+    
+    /**
+     * Returns true if the Remove current default view is present
+     * 
+     * @return
+     */
+    public boolean isRemoveDefaultViewVisible()
+    {
+        return isDefaultViewVisible(REMOVE_DEFAULT_VIEW);
+    }
+    
+    public HtmlPage selectSetCurrentViewToDefault()
+    {
+        try
+        {
+            selectItemInOptionsDropDown(SET_DEFAULT_VIEW);
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("Exceeded the time to find css." + nse.getMessage());
+        }
+        catch(TimeoutException te)
+        {
+            logger.error("Exceeded the time to find css." + te.getMessage());
+        }
+        closeOptionMenu();
+        throw new PageOperationException("Not able to find the Set Default View Option");
+    }
+    
+    public HtmlPage selectRemoveCurrentViewFromDefault()
+    {
+        try
+        {
+            selectItemInOptionsDropDown(REMOVE_DEFAULT_VIEW);
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("Exceeded the time to find css." + nse.getMessage());
+        }
+        catch(TimeoutException te)
+        {
+            logger.error("Exceeded the time to find css." + te.getMessage());
+        }
+        closeOptionMenu();
+        throw new PageOperationException("Not able to find the Remove Default View Option");
+    }
+
 }

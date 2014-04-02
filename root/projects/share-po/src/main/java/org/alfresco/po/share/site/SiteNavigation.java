@@ -243,7 +243,7 @@ public class SiteNavigation extends AbstractSiteNavigation
         }
         catch (NoSuchElementException e)
         {
-            throw new PageException("Unable to find the InviteMembersPage.", e);
+            throw new PageException("Unable to find the InviteMembersPage." + e.getMessage());
         }
    }
     
@@ -267,7 +267,7 @@ public class SiteNavigation extends AbstractSiteNavigation
         } 
         catch (TimeoutException e)
         {
-            throw new PageException("Unable to find the InviteMembersPage.", e);
+            throw new PageException("Unable to find the InviteMembersPage."+e.getMessage());
         }
         return new InviteMembersPage(getDrone());
     }

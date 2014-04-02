@@ -18,10 +18,17 @@
  */
 package org.alfresco.po.share.dashlet;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
@@ -33,9 +40,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This page object holds all element of the HTML relating to Configure Saved
@@ -96,7 +100,7 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
     {
         try
         {
-            drone.waitUntilElementDisappears(CONFIGURE_SEARCH_DIALOG_BOX, 2);
+            drone.waitUntilElementDisappears(CONFIGURE_SEARCH_DIALOG_BOX, SECONDS.convert(WAIT_TIME_3000, MILLISECONDS));
         }
         catch (TimeoutException te)
         {
@@ -110,7 +114,7 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
      * 
      * @return {@link org.alfresco.po.share.site.SiteDashboardPage}
      */
-    public SharePage clickOnOKButton()
+    public HtmlPage clickOnOKButton()
     {
         try
         {
@@ -119,9 +123,17 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
             {
                 return this;
             }
-            else
+            else if(drone.getCurrentPage().render() instanceof SiteDashboardPage)
             {
                 return new SiteDashboardPage(drone);
+            }
+            else if(drone.getCurrentPage().render() instanceof DashBoardPage)
+            {
+                return new DashBoardPage(drone);
+            }
+            else
+            {
+                throw new PageOperationException("Current page is not ConfigureSavedSearchDialog or SiteDashBoardPage or DashBoardPage");
             }
         }
         catch (NoSuchElementException te)
@@ -134,34 +146,41 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
     /**
      * This method is used to Finds Cancel button and clicks on it.
      */
-    public SiteDashboardPage clickOnCancelButton()
+    public HtmlPage clickOnCancelButton()
     {
-        try
-        {
-            drone.find(CANCEL_BUTTON).click();
-            return new SiteDashboardPage(drone);
-        }
-        catch (NoSuchElementException te)
-        {
-            LOGGER.error("Unable to find the CANCEL button." + te.getMessage());
-            throw new PageOperationException("Unable to click the CANCEL Button.", te);
-        }
+        return clickButton(CANCEL_BUTTON, "CANCEL");
     }
 
     /**
      * This method is used to Finds Close button and clicks on it.
      */
-    public SiteDashboardPage clickOnCloseButton()
+    public HtmlPage clickOnCloseButton()
+    {
+        return clickButton(CLOSE_BUTTON, "CLOSE");
+    }
+
+    private HtmlPage clickButton(By locator, String buttonName)
     {
         try
         {
-            drone.find(CLOSE_BUTTON).click();
-            return new SiteDashboardPage(drone);
+            drone.find(locator).click();
+            if(drone.getCurrentPage().render() instanceof DashBoardPage)
+            {
+                return new DashBoardPage(drone);
+            }
+            else if(drone.getCurrentPage().render() instanceof SiteDashboardPage)
+            {
+                return new SiteDashboardPage(drone);
+            }
+            else
+            {
+                throw new PageOperationException("Returned page is not either DashBoardPage or SiteDashBoardPage");
+            }
         }
         catch (NoSuchElementException te)
         {
-            LOGGER.error("Unable to find the CLOSE button." + te.getMessage());
-            throw new PageOperationException("Unable to click the CLOSE Button.", te);
+            LOGGER.error("Unable to find the " + buttonName + " button." + te.getMessage());
+            throw new PageOperationException("Unable to click the " + buttonName + " Button.");
         }
     }
 
@@ -261,9 +280,11 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
     {
         try
         {
-            return drone.findAndWait(HELP_BALLOON).isDisplayed();
+            return drone.find(HELP_BALLOON).isDisplayed();
         }
-        catch (TimeoutException elementException){ }
+        catch (NoSuchElementException elementException)
+        {
+        }
         return false;
     }
 

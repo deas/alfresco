@@ -230,7 +230,7 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            throw new UnsupportedOperationException("Exceeded time to find the title.", te);
+            throw new UnsupportedOperationException("Exceeded time to find the title." + te.getMessage());
         }
     }
 
@@ -247,7 +247,7 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            throw new UnsupportedOperationException("Exceeded time to find the title.", te);
+            throw new UnsupportedOperationException("Exceeded time to find the title." + te.getMessage());
         }
     }
 
@@ -276,13 +276,19 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException e)
         {
-            logger.error("Not able to find the element: " + e.getMessage());
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Not able to find the element: " + e.getMessage());
+            }
         }
         catch (NoSuchElementException e)
         {
-            logger.error("Not able to find the element: " + e.getMessage());
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Not able to find the element: " + e.getMessage());
+            }
         }
-        throw new PageOperationException("Not able to get the search items.");
+        return Collections.emptyList();
     }
 
     /**
@@ -309,6 +315,29 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
             logger.error("Unable to find the Edit (Configure) icon." + te.getMessage());
             throw new PageOperationException("Unable to click the Edit (Configure) icon", te);
         }
+    }
+
+
+    /**
+     * Method to check if a given item is listed in the search results or not
+     * @param itemName
+     * @return True if item found in search results
+     */
+    public boolean isItemFound(String itemName)
+    {
+        if(itemName == null)
+        {
+            throw new IllegalArgumentException("Item Name can't be null.");
+        }
+        List<SiteSearchItem> items = getSearchItems();
+        for(SiteSearchItem item: items)
+        {
+            if(item.getItemName().getDescription().equals(itemName))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

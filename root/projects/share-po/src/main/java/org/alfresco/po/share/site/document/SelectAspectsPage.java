@@ -212,7 +212,7 @@ public class SelectAspectsPage extends SharePage
             return drone.getCurrentPage();
         } catch (NoSuchElementException nse)
         {
-            throw new PageException("Not able find the cancel button: ", nse);
+            throw new PageException("Not able find the cancel button: " + nse.getMessage());
         }
     }
     /**
@@ -229,7 +229,7 @@ public class SelectAspectsPage extends SharePage
             return drone.getCurrentPage();
         } catch (NoSuchElementException nse)
         {
-            throw new PageException("Not able find the apply change button", nse);  
+            throw new PageException("Not able find the apply change button: " + nse.getMessage());  
         }
     }
     

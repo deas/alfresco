@@ -23,7 +23,6 @@ import java.util.List;
 import org.alfresco.po.share.enums.Dashlet;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.util.FailedTestListener;
-import org.alfresco.webdrone.exception.PageOperationException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
@@ -102,13 +101,15 @@ public class SavedSearchDashletTest extends AbstractSiteDashletTest
         Assert.assertEquals(savedSearchDashlet.getContent(), "No results found.");
     }
 
-    @Test(dependsOnMethods = "getContent", expectedExceptions = PageOperationException.class)
-    public void getSearchItemsWithException()
+    @Test(dependsOnMethods = "getContent", expectedExceptions=IllegalArgumentException.class)
+    public void getSearchItemsWithEmptyResult()
     {
-        savedSearchDashlet.getSearchItems();
+        Assert.assertTrue(savedSearchDashlet.getSearchItems().isEmpty());
+        Assert.assertFalse(savedSearchDashlet.isItemFound(siteName));
+        Assert.assertFalse(savedSearchDashlet.isItemFound(null));
     }
 
-    @Test(dependsOnMethods = "getSearchItemsWithException")
+    @Test(dependsOnMethods = "getSearchItemsWithEmptyResult")
     public void clickOnEditButton()
     {
         configureSavedSearchDialogBoxPage = savedSearchDashlet.clickOnEditButton().render();
@@ -138,5 +139,6 @@ public class SavedSearchDashletTest extends AbstractSiteDashletTest
         Assert.assertEquals(searchResults.get(0).getItemName().getDescription(), fileName);
         Assert.assertNotNull(searchResults.get(0).getThumbnail());
         Assert.assertNotNull(searchResults.get(0).getPath());
+        Assert.assertTrue(savedSearchDashlet.isItemFound(fileName));
     }
 }

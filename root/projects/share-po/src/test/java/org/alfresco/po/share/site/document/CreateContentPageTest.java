@@ -142,9 +142,12 @@ public class CreateContentPageTest extends AbstractDocumentTest
         List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
         aspects.add(DocumentAspect.VERSIONABLE);
         aspects.add(DocumentAspect.CLASSIFIABLE);
-        aspectsPage.add(aspects).render();
+        aspectsPage = aspectsPage.add(aspects).render();
+        assertFalse(aspectsPage.getAvailableAspects().contains(DocumentAspect.VERSIONABLE));
+        assertTrue(aspectsPage.getSelectedAspects().contains(DocumentAspect.VERSIONABLE));
         detailsPage = aspectsPage.clickApplyChanges().render();
-        EditTextDocumentPage editPage = detailsPage.selectInlineEdit().render();
+        EditTextDocumentPage editPage = detailsPage.selectInlineEdit();
+        editPage.render();
         contentDetails = editPage.getDetails();
         assertEquals(contentDetails.getContent(), "Shan Test Doc");
         contentDetails.setContent("123456789");
