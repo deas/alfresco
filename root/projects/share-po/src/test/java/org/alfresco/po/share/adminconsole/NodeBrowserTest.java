@@ -12,7 +12,7 @@ import static org.testng.Assert.assertTrue;
 public class NodeBrowserTest extends AbstractTest
 {
 
-        @Test(groups = "Enterprise-only")
+        @Test(groups = "Enterprise-only", timeOut = 400000)
         public void checkThatFactoryReturnNodeBrowserPage() throws Exception
         {
                 SharePage page = loginAs("admin", "admin");
@@ -20,7 +20,7 @@ public class NodeBrowserTest extends AbstractTest
                 NodeBrowserPage nodeBrowserPage = (NodeBrowserPage) drone.getCurrentPage();
         }
 
-        @Test(groups = "Enterprise-only")
+        @Test(groups = "Enterprise-only", timeOut = 400000)
         public void executeCustomNodeSearch() throws Exception
         {
                 SharePage page = loginAs("admin", "admin");
