@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
-@Test(groups={"alfresco-one"})
+@Test(groups={"alfresco-one", "BambooBug"})
 public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
 {
     private static final String FILE_TITLE = "File";

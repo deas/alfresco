@@ -17,13 +17,7 @@
     </groups>
     <test name="Dashlets">
         <packages>
-            <package name="org.alfresco.po.share.dashlet">
-                <exclude name="failingTestw">
-                    <classes>
-                        <class name="org.alfresco.po.share.dashlet.SiteNoticeDashletTest" />
-                    </classes>
-                </exclude>
-            </package>
+            <package name="org.alfresco.po.share.dashlet" />
         </packages>
     </test>
     <test name="SiteContent">
@@ -58,16 +52,7 @@
     </test>
     <test name="Document">
         <packages>
-            <package name="org.alfresco.po.share.site.document">
-                <exclude name="failingTestw">
-                    <classes>
-                        <class name="org.alfresco.po.share.site.document.TableViewFileDirectoryInfoTest" />
-                        <class name="org.alfresco.po.share.site.document.FileDirectoryInfoFilmstripViewTest" />
-                        <class name="org.alfresco.po.share.site.document.FileDirectoryInfoGalleryViewTest" />
-                        <class name="org.alfresco.po.share.site.document.ManagePermissionsTest" />
-                    </classes>
-                </exclude>
-            </package>
+             <package name="org.alfresco.po.share.site.document" />
         </packages>
     </test>
     <test name="Share">

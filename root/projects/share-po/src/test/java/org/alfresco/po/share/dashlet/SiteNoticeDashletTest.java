@@ -159,7 +159,7 @@ public class SiteNoticeDashletTest extends AbstractSiteDashletTest
         Assert.assertTrue(siteNoticeEditor.getContent().contains(fontAtt +titleAndText+"</font>"));
     }
     
-    @Test(dependsOnMethods="getTextFromEditor")
+    @Test(dependsOnMethods="getTextFromEditor", groups="BambooBug")
     public void getBackColorFromEditor()
     {
         // test text as yellow back ground color
