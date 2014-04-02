@@ -3,10 +3,10 @@
 
 <#if results.query.phrase??>
     <#assign text=results.query.phrase/>
-    <#assign link="${url.context}/search.html?sectionId=${results.query.sectionId?url}&phrase=${results.query.phrase?url}"/>
+    <#assign link="${url.context}${rootSection.path}search.html?sectionId=${results.query.sectionId?url}&phrase=${results.query.phrase?url}"/>
 <#else>
     <#assign text=results.query.tag/>
-    <#assign link="${url.context}/search.html?sectionId=${results.query.sectionId?url}&tag=${results.query.tag?url}"/>
+    <#assign link="${url.context}${rootSection.path}search.html?sectionId=${results.query.sectionId?url}&tag=${results.query.tag?url}"/>
 </#if>
 
 <#if results.size == 0>
