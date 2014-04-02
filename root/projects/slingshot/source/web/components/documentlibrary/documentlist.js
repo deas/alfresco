@@ -1356,6 +1356,12 @@
          // Hook action events
          var fnActionHandler = function DL_fnActionHandler(layer, args)
          {
+            // Hide the "more actions" menu to avoid double clicking
+            // ACE-849
+            if (me.hideMoreActionsFn)
+            {
+               me.hideMoreActionsFn.call(me);
+            }
             var owner = YAHOO.Bubbling.getOwnerByTagName(args[1].anchor, "div");
             if (owner !== null)
             {
