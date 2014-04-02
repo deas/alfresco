@@ -26,7 +26,7 @@ import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -123,7 +123,7 @@ public class DetailsPageTest extends AbstractTest
         docDetails.addComment(xssComment, Encoder.ENCODER_HTML);
         docDetails.addComment(xssComment, Encoder.ENCODER_JAVASCRIPT);
         
-        Assert.assertTrue("Problem adding XSS Comment", docDetails.getComments().contains(xssComment));
+        Assert.assertTrue(docDetails.getComments().contains(xssComment), "Problem adding XSS Comment");
         
     }
     
@@ -152,6 +152,6 @@ public class DetailsPageTest extends AbstractTest
         folderDetails.addComment(xssComment, Encoder.ENCODER_HTML);
         folderDetails.addComment(xssComment, Encoder.ENCODER_JAVASCRIPT);
         
-        Assert.assertTrue("Problem adding XSS Comment", folderDetails.getComments().contains(xssComment));
+        Assert.assertTrue(folderDetails.getComments().contains(xssComment), "Problem adding XSS Comment");
     }
 }

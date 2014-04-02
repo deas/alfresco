@@ -36,11 +36,11 @@ import org.testng.annotations.Test;
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
-@Test(groups = { "alfresco-one" })
+@Test(groups ={"alfresco-one"})
 public class NavigationBarTest extends AbstractTest
 {
     private SharePage page;
-
+    
     @BeforeClass()
     public void setup() throws Exception
     {
