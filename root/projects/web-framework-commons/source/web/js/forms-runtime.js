@@ -1527,7 +1527,10 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
                      }
                      if (errorsByField[valFieldId].length == 0 && warningsByField[valFieldId].length == 0)
                      {
-                        field.setAttribute("title", val.originalTitle);
+                        if (field.getAttribute("title") != val.originalTitle)
+                        {
+                           field.setAttribute("title", val.originalTitle);
+                        }
                         field.setAttribute(this._VALIDATION_MSG_ATTR, "");
                         if (this.tooltips[valFieldId])
                         {
