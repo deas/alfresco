@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.alfresco.po.share.AlfrescoVersion;
-import org.alfresco.po.share.UserProfilePage;
 import org.alfresco.po.share.exception.AlfrescoVersionException;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.user.CloudSignInPage;
@@ -1979,5 +1978,32 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     public double getFileOrFolderHeight()
     {
         throw new UnsupportedOperationException("File or Folder Height is not available in this view type.");
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isInfoPopUpDisplayed()
+     */
+    @Override
+    public boolean isInfoPopUpDisplayed()
+    {
+        throw new UnsupportedOperationException("Info Icon is not available in this view type.");
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#clickInfoIcon()
+     */
+    @Override
+    public void clickInfoIcon()
+    {
+        throw new UnsupportedOperationException("Info Icon is not available in this view type.");
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isInfoIconVisible()
+     */
+    @Override
+    public boolean isInfoIconVisible()
+    {
+        throw new UnsupportedOperationException("Info Icon is not available in this view type.");
     }
 }

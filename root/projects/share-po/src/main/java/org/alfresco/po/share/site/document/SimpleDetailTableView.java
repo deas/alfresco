@@ -63,6 +63,15 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
     }
     
     /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#selectMoreLink()
+     */
+    @Override
+    public void selectMoreLink()
+    {
+        selectMoreAction().click();
+    }
+    
+    /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectDownloadFolderAsZip()
      */
     @Override

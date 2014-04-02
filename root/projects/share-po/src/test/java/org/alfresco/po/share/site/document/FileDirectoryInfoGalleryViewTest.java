@@ -420,10 +420,11 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
     @Test(groups="Enterprise4.2", priority=25)
     public void testIsInfoIconDisplayed()
     {
-        GalleryViewFileDirectoryInfo thisRow = (GalleryViewFileDirectoryInfo) documentLibPage.getFileDirectoryInfo(folderName);
-        Assert.assertNotNull(thisRow.isGalleryInfoIconVisible());
-        thisRow.openGalleryInfo(false);
-        Assert.assertNotNull(thisRow.isGalleryInfoPopUpDisplayed());
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        Assert.assertNotNull(thisRow.isInfoIconVisible());
+        thisRow.clickInfoIcon();
+        Assert.assertNotNull(thisRow.isInfoPopUpDisplayed());
+        thisRow.selectMoreLink();
         documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
     }
 

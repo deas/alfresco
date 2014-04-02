@@ -41,7 +41,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public String getDescription()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         String desc = super.getDescription();
         focusOnDocLibFooter();
         return desc;
@@ -55,7 +55,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public String getContentEditInfo()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         String editInfo = super.getContentEditInfo();
         focusOnDocLibFooter();
         return editInfo;
@@ -69,7 +69,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public List<String> getTags()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         
         List<String> tags = super.getTags();
         focusOnDocLibFooter();
@@ -84,7 +84,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public List<Categories> getCategories()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         List<Categories> cats = super.getCategories();
         focusOnDocLibFooter();
         return cats;
@@ -98,7 +98,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     {
         try
         {
-            openGalleryInfo(true);
+            clickInfoIcon(true);
             return super.selectDelete();
         }
         catch (NoSuchElementException e) { }
@@ -119,7 +119,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public EditDocumentPropertiesPopup selectEditProperties()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         return super.selectEditProperties();
     }
 
@@ -131,7 +131,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void selectViewInBrowser()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         super.selectViewInBrowser();
     }
 
@@ -143,7 +143,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void selectFavourite()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         super.selectFavourite();
         focusOnDocLibFooter();
     }
@@ -156,7 +156,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void selectLike()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         super.selectLike();
         focusOnDocLibFooter();
     }
@@ -169,7 +169,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isLiked()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         boolean like = super.isLiked();
         focusOnDocLibFooter();
         return like;
@@ -183,7 +183,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isFavourite()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         boolean favourite = super.isFavourite();
         focusOnDocLibFooter();
         return favourite;
@@ -197,7 +197,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public String getLikeCount()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         String likeCount = super.getLikeCount();
         focusOnDocLibFooter();
         return likeCount;
@@ -211,7 +211,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean hasTags()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         boolean tag = super.hasTags();
         focusOnDocLibFooter();
         return tag;
@@ -225,7 +225,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public String getContentNodeRef()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         String nodeRef = super.getContentNodeRef();
         focusOnDocLibFooter();
         return nodeRef;
@@ -239,7 +239,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void addTag(final String tagName)
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         super.addTag(tagName);
         focusOnDocLibFooter();
     }
@@ -252,7 +252,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void clickOnAddTag()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         super.clickOnAddTag();
     }
 
@@ -264,7 +264,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean removeTagButtonIsDisplayed(String tagName)
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         return super.removeTagButtonIsDisplayed(tagName);
     }
 
@@ -276,7 +276,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void clickOnTagRemoveButton(String tagName)
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         super.clickOnTagRemoveButton(tagName);
     }
 
@@ -288,7 +288,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isCloudSynced()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         boolean cloudSync = super.isCloudSynced();
         focusOnDocLibFooter();
         return cloudSync;
@@ -302,7 +302,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isPartOfWorkflow()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         boolean cloudSync = super.isPartOfWorkflow();
         focusOnDocLibFooter();
         return cloudSync;
@@ -316,7 +316,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void selectDownloadFolderAsZip()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         super.downloadFolderAsZip();
         focusOnDocLibFooter();
     }
@@ -329,7 +329,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void selectDownload()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         super.selectDownload();
     }
 
@@ -341,7 +341,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public FolderDetailsPage selectViewFolderDetails()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         return super.selectViewFolderDetails();
     }
 
@@ -364,7 +364,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public HtmlPage selectSyncToCloud()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.selectSyncToCloud();
     }
 
@@ -376,7 +376,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public HtmlPage selectEditInGoogleDocs()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.selectEditInGoogleDocs();
     }
 
@@ -388,7 +388,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void selectUnSyncFromCloud()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         super.selectUnSyncFromCloud();
     }
 
@@ -400,7 +400,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isViewCloudSyncInfoLinkPresent()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         boolean viewCloudSyncInfo = super.isViewCloudSyncInfoLinkPresent(); 
         focusOnDocLibFooter();
         return viewCloudSyncInfo;
@@ -414,7 +414,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public SyncInfoPage clickOnViewCloudSyncInfo()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         return super.clickOnViewCloudSyncInfo();
     }
 
@@ -426,7 +426,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public HtmlPage selectInlineEdit()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.selectInlineEdit();
     }
 
@@ -438,7 +438,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public String getCloudSyncType()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         return super.getCloudSyncType();
     }
 
@@ -450,7 +450,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isLocked()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         boolean lock = super.isLocked(); 
         focusOnDocLibFooter();
         return lock;
@@ -464,7 +464,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isInlineEditLinkPresent()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.isInlineEditLinkPresent();
     }
 
@@ -476,7 +476,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isEditOfflineLinkPresent()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.isEditOfflineLinkPresent();
     }
 
@@ -488,7 +488,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isEditInGoogleDocsPresent()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.isEditInGoogleDocsPresent();
     }
 
@@ -500,7 +500,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isDeletePresent()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.isDeletePresent();
     }
 
@@ -524,7 +524,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public HtmlPage selectManageRules()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.selectManageRules();
     }
 
@@ -536,7 +536,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isUnSyncFromCloudLinkPresent()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.isUnSyncFromCloudLinkPresent();
     }
 
@@ -548,7 +548,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isSyncFailedIconPresent(long waitTime)
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         boolean syncFail = super.isSyncFailedIconPresent(waitTime);
         focusOnDocLibFooter();
         return syncFail;
@@ -562,7 +562,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public DocumentLibraryPage selectRequestSync()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.selectRequestSync();
     }
 
@@ -574,7 +574,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isRequestToSyncLinkPresent()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.isRequestToSyncLinkPresent();
     }
 
@@ -586,7 +586,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isSyncToCloudLinkPresent()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.isSyncToCloudLinkPresent();
     }
 
@@ -598,7 +598,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public ManagePermissionsPage selectManagePermission()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.selectManagePermission();
     }
 
@@ -610,7 +610,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public CopyOrMoveContentPage selectCopyTo()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.selectCopyTo();
     }
 
@@ -622,7 +622,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public CopyOrMoveContentPage selectMoveTo()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.selectMoveTo();
     }
 
@@ -647,7 +647,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public StartWorkFlowPage selectStartWorkFlow()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.selectStartWorkFlow();
     }
 
@@ -660,7 +660,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public UpdateFilePage selectUploadNewVersion()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.selectUploadNewVersion();
     }
 
@@ -672,7 +672,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isManagePermissionLinkPresent()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.isManagePermissionLinkPresent();
     }
 
@@ -684,7 +684,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isEditPropertiesLinkPresent()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.isEditPropertiesLinkPresent();
     }
 
@@ -696,7 +696,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public DocumentLibraryPage selectEditOffline()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.selectEditOffline();
     }
 
@@ -708,7 +708,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public DocumentLibraryPage selectCancelEditing()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.selectCancelEditing();
     }
 
@@ -720,7 +720,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public SelectAspectsPage selectManageAspects()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.selectManageAspects();
     }
 
@@ -730,7 +730,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void selectCheckbox()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         super.selectCheckbox();
     }
     
@@ -740,11 +740,15 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isCheckboxSelected()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         return super.isCheckboxSelected();
     }
 
-    public boolean isGalleryInfoPopUpDisplayed()
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isInfoPopUpDisplayed()
+     */
+    @Override
+    public boolean isInfoPopUpDisplayed()
     {
         try
         {
@@ -756,48 +760,55 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         return false;
     }
     
-    public void clickOnGalleryInfo()
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#clickInfoIcon()
+     */
+    @Override
+    public void clickInfoIcon()
     {
-        openGalleryInfo(false);  
+        clickInfoIcon(false);
     }
     
     /**
      * @param hasMoreLink
-     *            TODO
-     * 
      */
-    public void openGalleryInfo(boolean hasMoreLink)
+    private void clickInfoIcon(boolean hasMoreLink)
+    {
+        WebElement infoIcon = getInfoIcon();
+        infoIcon.click();
+
+        if (hasMoreLink)
+        {
+            selectMoreLink();
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#selectMoreLink()
+     */
+    @Override
+    public void selectMoreLink()
     {
         try
         {
-            WebElement infoIcon = getGalleryInfoIcon();
-            infoIcon.click();
-
-            if (hasMoreLink)
-            {
-                findElement(By.cssSelector("a.show-more")).click();
-            }
+            findElement(By.cssSelector("a.show-more")).click();
         }
         catch (NoSuchElementException e)
         {
             logger.error("Exceeded time to find the css." + e.getMessage());
-            throw new PageException("File directory info with title was not found");
+            throw new PageException("Unable to find and click the more link");
         }
-
     }
 
-    /**
-     * Checks to see if file is visible on the page.
-     * 
-     * @param fileName
-     *            String title
-     * @return true if file exists on the page
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isInfoIconVisible()
      */
-    public boolean isGalleryInfoIconVisible()
+    @Override
+    public boolean isInfoIconVisible()
     {
         try
         {
-            WebElement infoIcon = getGalleryInfoIcon();
+            WebElement infoIcon = getInfoIcon();
             return infoIcon.isDisplayed();
         }
         catch (PageException e)
@@ -810,7 +821,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
      * @param fileName
      * @return WebElement
      */
-    protected WebElement getGalleryInfoIcon()
+    protected WebElement getInfoIcon()
     {
         try
         {
@@ -834,7 +845,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void contentNameEnableEdit()
     {
-        openGalleryInfo(true);
+        clickInfoIcon(true);
         String temp = FILENAME_IDENTIFIER;
         FILENAME_IDENTIFIER = "h3.filename a";
         super.contentNameEnableEdit();
@@ -868,7 +879,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public boolean isShareLinkVisible()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         return super.isShareLinkVisible();
     }
     
@@ -878,7 +889,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public HtmlPage clickShareLink()
     {
-        openGalleryInfo(false);
+        clickInfoIcon(false);
         return super.clickShareLink();
     }
 }

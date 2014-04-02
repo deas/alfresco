@@ -549,7 +549,7 @@ public class DocumentLibraryPage extends SitePage
         case FILMSTRIP_VIEW:
             FilmStripViewFileDirectoryInfo fileDirInfo = (FilmStripViewFileDirectoryInfo) getFileDirectoryInfo(title);
             fileDirInfo.clickOnTitle();
-            fileDirInfo.openGalleryInfo(false);
+            fileDirInfo.clickInfoIcon();
             break;
         case TABLE_VIEW:
             xpath = "//td[contains(@class,'yui-dt-col-name')]/div/span/a[text()='%s']";

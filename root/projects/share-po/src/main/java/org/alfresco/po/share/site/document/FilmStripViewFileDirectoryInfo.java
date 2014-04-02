@@ -46,7 +46,7 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
      * @return WebElement
      */
     @Override
-    protected WebElement getGalleryInfoIcon()
+    protected WebElement getInfoIcon()
     {
         try
         {
@@ -117,7 +117,7 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
     @Override
     public String getTitle()
     {
-        openGalleryInfo(false);
+        clickInfoIcon();
         return super.getTitle();
     }
 }

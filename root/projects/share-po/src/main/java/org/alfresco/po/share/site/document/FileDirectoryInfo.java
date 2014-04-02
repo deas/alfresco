@@ -594,4 +594,26 @@ public interface FileDirectoryInfo
      * @return HtmlPage
      */
     HtmlPage clickShareLink();
+
+    /**
+     * This method verifies that info popup is displayed or not.
+     */
+    boolean isInfoPopUpDisplayed();
+    
+    /**
+     * This method used to click the info icon present on file or folder.
+     */
+    void clickInfoIcon();
+    
+    /**
+     * Checks to see if file is visible on the page.
+     * 
+     * @return true if file exists on the page
+     */
+    boolean isInfoIconVisible();
+    
+    /**
+     * This method is used to click on more link, on file directory info.
+     */
+    public void selectMoreLink();
 }
