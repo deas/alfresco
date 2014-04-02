@@ -33,7 +33,6 @@ import org.testng.annotations.Test;
  * @since 1.6.1
  */
 @Listeners(FailedTestListener.class)
-@Test(groups ={"Enterprise-only"})
 public class UserSearchPageTest extends AbstractTest
 {
     private DashBoardPage dashBoard;
