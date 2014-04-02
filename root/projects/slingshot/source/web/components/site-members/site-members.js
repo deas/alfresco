@@ -648,7 +648,7 @@
                obj: user,
                scope: this
             },
-            failureMessage: this.msg("site-members.remove-failure", user),
+            failureMessage: this.msg("site-members.remove-failure", user, this.options.siteId),
             failureCallback:
             {
                fn: failure,
