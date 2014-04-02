@@ -100,7 +100,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.10-beta2-20130720.jar" sourcepath="src/poi-3.10-beta2-20130720-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/ooxml-schemas-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/optional/log4j-1.2.15.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/optional/log4j-1.2.17.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-analyzers-2.4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-core-2.4.1.jar" sourcepath="src/lucene-2.4.1-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-snowball-2.4.1.jar"/>

@@ -1905,7 +1905,7 @@
          <zipfileset dir="${dir.project.3rdparty}/lib/commons" prefix="WEB-INF/lib"
                      includes="commons-httpclient-3.1.jar, commons-logging-1.1.1.jar, commons-codec-1.5.jar" />
          <zipfileset dir="${dir.project.3rdparty}/lib/optional" prefix="WEB-INF/lib" 
-                     includes="log4j-1.2.15.jar" />
+                     includes="log4j-1.2.17.jar" />
          <zipfileset dir="${dir.project.3rdparty}/lib/spring-surf" prefix="WEB-INF/lib"
                      includes="spring-webeditor-client-jsp-1.2.1-SNAPSHOT.jar" />
          <zipfileset dir="${dir.project.3rdparty}/lib" prefix="WEB-INF/lib" includes="json.jar" />
@@ -2159,7 +2159,7 @@
       </delete>
       <delete verbose="true">
          <fileset dir="${dir.project.webclient.assemble}/WEB-INF/lib" 
-                  includes="log4j-1.2.15.jar,myfaces-api.jar,myfaces-impl.jar" />
+                  includes="log4j-1.2.17.jar,myfaces-api.jar,myfaces-impl.jar" />
       </delete>
 
       <delete file="${dir.project.webclient.dist}/${file.name.war.webclient}" />
@@ -3068,7 +3068,7 @@
          <include name="ehcache-core-2.0.0.jar" />
          <include name="jug-asl-2.0.0.jar" />
          <include name="dom4j-1.6.1.jar" />
-         <include name="optional/log4j-1.2.15.jar" />
+         <include name="optional/log4j-1.2.17.jar" />
          <include name="abdera/abdera-client-0.4.0-incubating.jar" />
          <include name="abdera/abdera-core-0.4.0-incubating.jar" />
          <include name="abdera/abdera-extensions-json-0.4.0-incubating.jar" />
@@ -3135,7 +3135,7 @@
             <include name="org.springframework.core-3.0.5.RELEASE.jar" />
             <include name="org.springframework.expression-3.0.5.RELEASE.jar" />
             <include name="commons/commons-logging-1.1.1.jar" />
-            <include name="optional/log4j-1.2.15.jar" />
+            <include name="optional/log4j-1.2.17.jar" />
             <include name="aopalliance.jar" />
             <include name="json-simple-1.1.1.jar" />
             <include name="joda-time-2.3.jar" />

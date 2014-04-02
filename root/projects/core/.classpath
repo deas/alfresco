@@ -12,7 +12,7 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jboss/jboss-vfs-2.1.0.GA.jar" sourcepath="/3rd Party/lib/jboss/jboss-vfs-2.1.0.GA-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/hibernate-3.2.6-patched.jar" sourcepath="/3rd Party/src/hibernate-3.2.6-patched-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jaxb-xjc-2.1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/optional/log4j-1.2.15.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/optional/log4j-1.2.17.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-1.2.1-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-surf-core-1.2.1-SNAPSHOT-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-surf-core-configservice-1.2.1-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-surf-core-configservice-1.2.1-SNAPSHOT-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/jaxb-impl-2.1.11.jar"/>

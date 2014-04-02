@@ -93,7 +93,7 @@
 		<include name="ehcache-core-2.0.0.jar" />
 		<include name="jug-asl-2.0.0.jar" />
 		<include name="dom4j-1.6.1.jar" />
-		<include name="optional/log4j-1.2.15.jar" />
+		<include name="optional/log4j-1.2.17.jar" />
 		<include name="abdera/abdera-client-0.4.0-incubating.jar" />
 		<include name="abdera/abdera-core-0.4.0-incubating.jar" />
 		<include name="abdera/abdera-extensions-json-0.4.0-incubating.jar" />
