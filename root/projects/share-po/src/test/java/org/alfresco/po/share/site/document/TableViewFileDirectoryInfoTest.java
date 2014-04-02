@@ -21,7 +21,6 @@ package org.alfresco.po.share.site.document;
 import java.io.File;
 
 import org.alfresco.po.share.ShareUtil;
-import org.alfresco.po.share.UserProfilePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SitePage;
@@ -42,7 +41,7 @@ import org.testng.annotations.Test;
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
-@Test(groups={"alfresco-one", "BambooBug"})
+@Test(groups={"alfresco-one"})
 public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
 {
     private static final String FILE_TITLE = "File";
@@ -203,7 +202,6 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         thisRow.contentNameEnableEdit();
         thisRow.contentNameEnter(file2.getName() + " not updated");
         thisRow.contentNameClickCancel();
-        drone.refresh();
         documentLibPage = drone.getCurrentPage().render();
         Assert.assertEquals(documentLibPage.getFileDirectoryInfo(file2.getName()).getName(), file2.getName());
     }
