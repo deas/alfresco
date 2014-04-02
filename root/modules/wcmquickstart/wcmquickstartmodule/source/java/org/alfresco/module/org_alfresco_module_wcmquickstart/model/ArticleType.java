@@ -28,6 +28,7 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.alfresco.model.ContentModel;;
 
 /**
  * ws:article type behaviours.
@@ -82,7 +83,11 @@ public class ArticleType implements WebSiteModel
             for (AssociationRef assoc : assocs)
             {
                 //Currently we just delete the feedback node directly - do we need to do this asynchronously?
-                nodeService.deleteNode(assoc.getSourceRef());
+                NodeRef nodeToDelete = assoc.getSourceRef();
+                if (nodeService.exists(nodeToDelete) && !nodeService.hasAspect(nodeToDelete, ContentModel.ASPECT_PENDING_DELETE))
+                {
+                    nodeService.deleteNode(nodeToDelete);
+                }
             }
         }
     }
