@@ -366,6 +366,25 @@ public class AssignmentPage extends SharePage
     }
 
     /**
+     * This method gets the User Search results content.
+     * 
+     * @return String
+     */
+    public String getContent()
+    {
+        try
+        {
+            WebElement el = drone.findAndWait(By.cssSelector("div[id$='_assignee-cntrl-picker-results'] tbody[class$='message'] div"));
+            String s = el.getText();
+            return s;
+        }
+        catch(TimeoutException te)
+        {
+            throw new UnsupportedOperationException("Exceeded time to find the title.", te); 
+        }
+    }
+    
+    /**
      * Method to get User list after search
      * @param userName
      * @return List of users

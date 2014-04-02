@@ -22,11 +22,15 @@ import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -43,6 +47,21 @@ public class CreatePlainTextContentPage extends InlineEditPage
     protected static final By CONTENT = By.cssSelector("textarea[id$='default_prop_cm_content']");
     protected static final By SUBMIT_BUTTON = By.cssSelector("button[id$='form-submit-button']");
     protected static final By CANCEL_BUTTON = By.cssSelector("button[id$='form-cancel-button']");
+    
+    public enum Fields
+    {
+        NAME(CreatePlainTextContentPage.NAME),
+        TITLE(CreatePlainTextContentPage.TITLE),
+        DESCRIPTION(CreatePlainTextContentPage.DESCRIPTION),
+        CONTENT(CreatePlainTextContentPage.CONTENT);
+        
+        private By locator;
+        
+        private Fields(By locator)
+        {
+            this.locator = locator;
+        }
+    }
     
     public CreatePlainTextContentPage(WebDrone drone)
     {
@@ -82,7 +101,12 @@ public class CreatePlainTextContentPage extends InlineEditPage
      */
     public HtmlPage create(ContentDetails details) 
     {
-    	createContent(details);
+        if(details == null || details.getName() == null || details.getName().trim().isEmpty())
+        {
+            throw new UnsupportedOperationException("Name can't be null or empty");
+        }
+        
+        createContent(details);
         WebElement createButton = drone.find(SUBMIT_BUTTON);
         String id = createButton.getAttribute("id");
         createButton.click();
@@ -90,10 +114,42 @@ public class CreatePlainTextContentPage extends InlineEditPage
         return FactorySharePage.resolvePage(drone);
         
     }
-    
-   /**
+
+    /**
+     * Create the content with name, title and description.  Checks the form fields for validation messages.
+     * If there are any it does not save the form but returns it.  If there are no validation messages it
+     * saves the form and returns {@link CreatePlainTextContentPage}.
+     * 
+     * @param details A ContentDetails object containing name, title description and content. The name field is mandatory.
+     * @return If there are no validation messages {@link DocumentDetailsPage}, otherwise {@link CreatePlainTextContentPage}
+     */
+    public HtmlPage createWithValidation(ContentDetails details)
+    {
+        if(details == null)
+        {
+            throw new UnsupportedOperationException("ContentDetails can't be null");
+        }
+        
+        createContent(details);
+        
+        boolean validationPresent = isMessagePresent(NAME);
+        validationPresent = validationPresent || isMessagePresent(TITLE);
+        validationPresent = validationPresent || isMessagePresent(DESCRIPTION);
+        validationPresent = validationPresent || isMessagePresent(CONTENT);
+
+        if(!validationPresent)
+        {
+            WebElement createButton = drone.find(SUBMIT_BUTTON);
+            String id = createButton.getAttribute("id");
+            createButton.click();
+            drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        }
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
     * Cancel button interaction on the form
-    * @return {@link DocumentDetailsPage}
+    * @return {@link DocumentLibraryPage}
     */
     public DocumentLibraryPage cancel(ContentDetails details)
     {
@@ -103,15 +159,25 @@ public class CreatePlainTextContentPage extends InlineEditPage
    		return new DocumentLibraryPage(drone);
     }
     
+   /**
+    * Click the Cancel button without completing the form
+    * @return
+    */
+    public HtmlPage cancel()
+    {
+        WebElement cancelButton = drone.findAndWait(CANCEL_BUTTON);
+        cancelButton.click();
+        return FactorySharePage.resolvePage(drone);
+    }
+    
     private void createContent(ContentDetails details) 
     {
-    	if(details == null || details.getName() == null || details.getName().trim().isEmpty())
+        if(details.getName() != null)
         {
-            throw new UnsupportedOperationException("Name can't be null or empty");
+            WebElement nameElement = drone.find(NAME);
+            nameElement.clear();
+            nameElement.sendKeys(details.getName());
         }
-        WebElement nameElement = drone.find(NAME);
-        nameElement.clear();
-        nameElement.sendKeys(details.getName());
         
         if(details.getTitle() != null)
         {
@@ -133,6 +199,75 @@ public class CreatePlainTextContentPage extends InlineEditPage
             contentElement.clear();
             contentElement.sendKeys(details.getContent());
         }
+    }
+    
+    /**
+     * Returns the validation message, if any, for the given Field.
+     * @param field The reqired field
+     * @return The validation message or an empty string if there is no message.
+     */
+    public String getMessage(Fields field)
+    {
+        String message = "";
+        try
+        {
+            message = getValidationMessage(field.locator);
+        }
+        catch(NoSuchElementException e)
+        {
+        }
+        return message;
+    }
+
+    /**
+     * Returns a map of validation messages for all the fields in the form.
+     * @param field The reqired field
+     * @return The validation message or an empty string if there is no message.
+     */
+    public Map<Fields, String> getMessages()
+    {
+        Map<Fields, String> messages = new HashMap<>();
         
+        String message = getMessage(Fields.NAME);
+        if(message.length() > 0)
+        {
+            messages.put(Fields.NAME, message);
+        }
+        
+        message = getMessage(Fields.TITLE);
+        if(message.length() > 0)
+        {
+            messages.put(Fields.TITLE, message);
+        }
+        
+        message = getMessage(Fields.DESCRIPTION);
+        if(message.length() > 0)
+        {
+            messages.put(Fields.DESCRIPTION, message);
+        }
+        
+        message = getMessage(Fields.CONTENT);
+        if(message.length() > 0)
+        {
+            messages.put(Fields.CONTENT, message);
+        }
+        
+        return messages;
+    }
+    
+    private boolean isMessagePresent(By locator)
+    {
+        try
+        {
+            String message = getValidationMessage(locator);
+            if(message.length() > 0)
+            {
+                return true;
+            }
+        }
+        catch(NoSuchElementException e)
+        {
+        }
+        return false;
     }
 }

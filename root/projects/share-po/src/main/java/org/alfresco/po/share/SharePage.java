@@ -644,4 +644,19 @@ public abstract class SharePage extends Page
     {
         return dojoSupport;
     }
+    
+    /**
+     * Returns the validation message from the validation popup balloon for the web element
+     * or an empty string if there is no message or the field is not validated.
+     * 
+     * @param locator
+     * @return The validation message
+     */
+    public String getValidationMessage(By locator)
+    {
+        WebElement webElement = drone.find(locator);
+        String message = webElement.getAttribute("alf-validation-msg");
+        
+        return (message == null ? "" : message);
+    }
 }

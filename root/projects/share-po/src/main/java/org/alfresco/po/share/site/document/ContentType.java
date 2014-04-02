@@ -66,6 +66,7 @@ public enum ContentType
         switch(this)
         {
             case PLAINTEXT:
+            case XML:
                  return new CreatePlainTextContentPage(drone);
             case GOOGLEDOCS:
                 return new GoogleDocsAuthorisation(drone, null, isGoogleCreate);
