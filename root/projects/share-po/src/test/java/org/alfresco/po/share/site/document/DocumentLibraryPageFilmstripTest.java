@@ -71,7 +71,7 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
         SiteUtil.deleteSite(drone, siteName);
     }
 
-    @Test(enabled = true)
+    @Test(enabled = true, priority=1)
     public void testNavigateToFilmstripView() throws Exception
     {
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
@@ -80,7 +80,7 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
         assertEquals(documentLibPage.getDisplyedFilmstripItem(), file1.getName());
     }
 
-    @Test(enabled = true)
+    @Test(enabled = true, priority=2)
     public void testSelectNextPreviousFilmstripItem() throws Exception
     {
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
@@ -96,7 +96,7 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
 
     // Looks like a bug
     // https://issues.alfresco.com/jira/browse/MNT-10621
-    @Test(enabled = false)
+    @Test(enabled = false, priority=3)
     public void testSendKeyLeftRightArrowForFilmstrip() throws Exception
     {
 
@@ -113,12 +113,12 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
         documentLibPage.toggleNavHandleForFilmstrip();
     }
 
-    @Test
+    @Test(priority=4)
     public void testGetSelectedFIlesForFilmstrip() throws Exception
     {
 
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
-
+        assertEquals(documentLibPage.getSelectedFIlesForFilmstrip().size(), 0);
         FileDirectoryInfo fileInfo = documentLibPage.getFileDirectoryInfo(file1.getName());
         fileInfo.selectCheckbox();
         List<String> selectFiles = documentLibPage.getSelectedFIlesForFilmstrip();

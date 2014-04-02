@@ -57,7 +57,6 @@ public class DocumentLibraryPageSortTest extends AbstractTest
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass
     private void prepare() throws Exception
     {

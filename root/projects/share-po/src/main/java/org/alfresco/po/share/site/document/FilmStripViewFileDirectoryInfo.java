@@ -22,7 +22,7 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
 
     private static Log logger = LogFactory.getLog(FilmStripViewFileDirectoryInfo.class);
 
-    WebElement THUMBNAIL_ROOT;
+    private WebElement THUMBNAIL_ROOT;
 
     /**
      * @param nodeRef
@@ -38,9 +38,6 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
         rowElementXPath = "../../../..";
         FILE_DESC_IDENTIFIER = "div.detail:first-of-type span.item";
         THUMBNAIL = THUMBNAIL_TYPE + "/../..";
-
-
-
         resolveStaleness();
         THUMBNAIL_ROOT = drone.findAndWait(By.xpath(THUMBNAIL));
     }
@@ -49,6 +46,7 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
      * @param fileName
      * @return WebElement
      */
+    @Override
     protected WebElement getGalleryInfoIcon()
     {
         try
