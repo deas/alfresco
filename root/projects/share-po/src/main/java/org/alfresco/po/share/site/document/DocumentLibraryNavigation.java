@@ -1138,6 +1138,11 @@ public class DocumentLibraryNavigation extends SharePage
         return isDefaultViewVisible(REMOVE_DEFAULT_VIEW);
     }
     
+    /**
+     * Clicks on the 'Set "<current view>" as default for this folder' button in the options menu.
+     * 
+     * @return
+     */
     public HtmlPage selectSetCurrentViewToDefault()
     {
         try
@@ -1157,6 +1162,11 @@ public class DocumentLibraryNavigation extends SharePage
         throw new PageOperationException("Not able to find the Set Default View Option");
     }
     
+    /**
+     * Clicks on the 'Remove "<current view>" as default for this folder' button in the options menu.
+     * 
+     * @return
+     */
     public HtmlPage selectRemoveCurrentViewFromDefault()
     {
         try
@@ -1176,4 +1186,155 @@ public class DocumentLibraryNavigation extends SharePage
         throw new PageOperationException("Not able to find the Remove Default View Option");
     }
 
+    private void clickSortDropDown()
+    {
+        WebElement btn = drone.find(By.cssSelector("button[id$='default-sortField-button-button']"));
+        HtmlElement sortButton = new HtmlElement(btn, drone);
+        sortButton.click();
+    }
+    
+    /**
+     * Select the sort drop down and clicks on the button in 
+     * the dropdown.
+     * @param sortField enum value of the button in dropdown to select
+     */
+    public HtmlPage selectSortFieldFromDropDown(SortField sortField)
+    {
+        try
+        {
+            RenderTime timer = new RenderTime(WAIT_TIME_3000);
+            while(true)
+            {
+                timer.start();
+                try
+                {
+                	clickSortDropDown();
+                	
+                    WebElement dropdown = drone.findAndWait(By.cssSelector("div[class$='sort-field'] > div"));
+                    if(dropdown.isDisplayed())
+                    {
+                        new HtmlElement(drone.find(sortField.getSortLocator()), drone).click();
+                        break;
+                    }            
+                }
+                catch (StaleElementReferenceException stale) { }
+                finally { timer.end(); }
+            }
+
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("Unable to find css." + nse.getMessage());
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded the time to find css." + e.getMessage());
+        }
+        throw new PageException("Unable to select the sort field " + sortField);
+    }
+    
+    /**
+     * Get the current sort field.
+     * 
+     * @return	The SortField enum.
+     */
+    public SortField getCurrentSortField()
+    {
+        try
+        {
+            RenderTime timer = new RenderTime(WAIT_TIME_3000);
+            while(true)
+            {
+                timer.start();
+                try
+                {
+                	
+                    WebElement button = drone.findAndWait(By.cssSelector("div[class$='sort-field'] button"));
+                   
+                    return SortField.getEnum(button.getText());
+         
+                }
+                catch (StaleElementReferenceException stale) { }
+                finally { timer.end(); }
+            }
+        }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("Unable to find css." + nse.getMessage());
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded the time to find css." + e.getMessage());
+        }
+        throw new PageException("Unable to find the current sort field ");
+    }
+
+    /**
+     * Determines the sort direction.
+     * 
+     * @return	<code>true</code> if the page is sorted ascending, otherwise <code>false</code>
+     */
+    public boolean isSortAscending()
+    {
+    	try
+    	{
+	    	WebElement sortEl = drone.findAndWait(By.cssSelector("span[id$='default-sortAscending-button']"));
+	    	String classValue = sortEl.getAttribute("class");
+	    	
+	    	if(classValue == null)
+	    	{
+	    		return true;
+	    	}
+	    	
+	    	//if class sort-descending exists then ascending is true.
+	    	return !classValue.contains("sort-descending");    		
+    	}
+        catch(NoSuchElementException nse)
+        {
+            logger.error("Unable to find css." + nse.getMessage());
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded the time to find css." + e.getMessage());
+        }
+        throw new PageException("Unable to find the sort button.");
+    }
+    
+    private void clickSortOrder()
+    {
+        WebElement btn = drone.find(By.cssSelector("button[id$='default-sortAscending-button-button']"));
+        HtmlElement dropdownButton = new HtmlElement(btn, drone);
+        dropdownButton.click();
+    }
+    
+    /**
+     * Set the sort direction to ascending.
+     * 
+     * @return	The refreshed HtmlPage.
+     */
+    public HtmlPage sortAscending()
+    {
+    	if(!isSortAscending())
+    	{
+    		clickSortOrder();
+    	}
+    	
+    	return FactorySharePage.resolvePage(drone);
+    }
+    
+    /**
+     * Set the sort direction to descending.
+     * 
+     * @return	The refreshed HtmlPage.
+     */
+    public HtmlPage sortDescending()
+    {
+    	if(isSortAscending())
+    	{
+    		clickSortOrder();
+    	}
+    	
+    	return FactorySharePage.resolvePage(drone);
+    }
 }
