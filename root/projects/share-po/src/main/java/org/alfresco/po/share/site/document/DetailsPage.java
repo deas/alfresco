@@ -32,6 +32,7 @@ import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.enums.Encoder;
 import org.alfresco.po.share.site.SitePage;
+import org.alfresco.po.share.site.document.Links.DetailsPageType;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -85,7 +86,7 @@ public abstract class DetailsPage extends SitePage
     {
         super(drone);
     }
-
+    
     /**
      * @param type
      * @return Verify if the page viewed is the @type@ details page.
@@ -871,5 +872,34 @@ public abstract class DetailsPage extends SitePage
       {
           throw new PageOperationException("Cannot go back to document library");
       }
+    }
+    
+    /**
+     * Checks if link is displayed.
+     * @return true if visible
+     */
+    public boolean isLinkPresent(Links linkType)
+    {
+        DetailsPageType type ; 
+        try
+        {
+            
+            if(this instanceof FolderDetailsPage)
+            {
+                type = DetailsPageType.FOLDER;
+            }else if (this instanceof DocumentDetailsPage)
+            {
+                type = DetailsPageType.DOCUMENT;
+            }else
+            {
+                throw new UnsupportedOperationException("This action is not supported.");
+            }
+            return drone.find(By.cssSelector(linkType.getLink(type))).isDisplayed();
+        }
+        catch (NoSuchElementException nse)        
+        {
+            logger.error("LinkType is not present Css value is :");
+        }
+        return false;
     }
 }

@@ -223,6 +223,5 @@ public class FolderDetailsPage extends DetailsPage
         {
         }
         return false;
-    }
-
+    }        
 }
