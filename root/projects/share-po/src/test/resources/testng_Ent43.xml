@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Alfresco Share 4.3 Tests" verbose="6" preserve-order="true" parallel="classes"  thread-count="5">
+<suite name="Alfresco Share 4.3 Tests" verbose="6" preserve-order="true" parallel="classes"  thread-count="1">
     <groups>
         <run>
             <include name="unit" />
