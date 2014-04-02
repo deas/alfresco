@@ -116,6 +116,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
     private static final String LOGIN_PATH_INFORMATION = "/dologin";
     private static final String LOGIN_PARAMETER = "login";
     private static final String IGNORE_LINK = "/accept-invite";
+    private static final String UNAUTHENTICATED_ACCESS_PROXY = "/proxy/alfresco-noauth";
     
     private ConnectorService connectorService;
     private String endpoint;
@@ -395,6 +396,14 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         HttpServletRequest req = (HttpServletRequest)sreq;
         HttpServletResponse res = (HttpServletResponse)sresp;
         HttpSession session = req.getSession();
+        
+        if (req.getServletPath() != null && req.getServletPath().startsWith(UNAUTHENTICATED_ACCESS_PROXY))
+        {
+            if (debug)
+                logger.debug("SSO is by-passed for unauthenticated access endpoint.");
+            chain.doFilter(sreq, sresp);
+            return;
+        }
         
         // external invitation link should not trigger any SSO
         if (PAGE_SERVLET_PATH.equals(req.getServletPath()) && IGNORE_LINK.equals(req.getPathInfo()))
