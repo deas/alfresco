@@ -237,7 +237,7 @@ public class CustomiseUserDashboardPage extends SharePage
                 if (columns != null)
                 {
                     String columnSize = columns.substring(columns.length() - 1);
-                    noOfColumns = (columnSize != null) ? Integer.valueOf(columnSize) : 0;
+                    noOfColumns = Integer.valueOf(columnSize);
                 }
             }
             catch (NoSuchElementException te)
