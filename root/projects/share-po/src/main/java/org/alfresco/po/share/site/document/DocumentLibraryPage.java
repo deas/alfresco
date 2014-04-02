@@ -1272,4 +1272,31 @@ public class DocumentLibraryPage extends SitePage
     {
         this.viewType = viewType;
     }
+
+    /**
+     * Checks whether the tape with file names is open or closed.
+     */
+    public boolean isFilmstripTapeDisplpayed()
+    {
+        try
+        {
+            WebElement element = drone.find(FILMSTRIP_MAIN_DIV);
+            if(element.isDisplayed())
+            {
+                
+                element = drone.find(By.cssSelector("div[id$='_default-filmstrip']"));
+                
+                return !element.getAttribute("class").contains("alf-filmstrip-content-only");
+            }
+
+        }
+        catch (NoSuchElementException nse)
+        {
+            if(logger.isInfoEnabled())
+            {
+                logger.info("isFilmstripTapeDisplpayed - Filmstrip view not loaded");
+            }
+        }
+        throw new PageOperationException("Filmstrip view not loaded - FilmStrip tape may not be displayed.");
+    }
 }

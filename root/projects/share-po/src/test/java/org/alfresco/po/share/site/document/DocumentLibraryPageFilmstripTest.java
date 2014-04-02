@@ -126,4 +126,14 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
         assertFalse(selectFiles.contains(file2.getName()), selectFiles.toString());
 
     }
+
+    @Test(priority = 5)
+    public void testToggleNavHandleForFilmstrip() throws Exception
+    {
+
+        documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
+        boolean isTapeDiaplyed = documentLibPage.isFilmstripTapeDisplpayed();
+        documentLibPage.toggleNavHandleForFilmstrip();
+        assertEquals(documentLibPage.isFilmstripTapeDisplpayed(), !isTapeDiaplyed);
+    }
 }
