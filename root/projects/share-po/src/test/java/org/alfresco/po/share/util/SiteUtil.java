@@ -75,7 +75,7 @@ public class SiteUtil
      * @param String name to give a file.
      * @return {@link File} simple text file.
      */
-    public static File prepareFile(final String name)
+    public static File prepareFile(final String name, String data)
     {
 
         File file = null;
@@ -87,7 +87,7 @@ public class SiteUtil
             
             writer = new OutputStreamWriter(new FileOutputStream(file),
                                                             Charset.forName("UTF-8").newEncoder());
-            writer.write("this is a sample test upload file");
+            writer.write(data);
             writer.close();
         }
         catch (IOException ioe)
@@ -114,6 +114,11 @@ public class SiteUtil
         }
         return file;
     }
+    public static File prepareFile(final String name){
+        return prepareFile(name , "this is a sample test upload file");
+
+    }
+
     
     /**
      * Create site using share
