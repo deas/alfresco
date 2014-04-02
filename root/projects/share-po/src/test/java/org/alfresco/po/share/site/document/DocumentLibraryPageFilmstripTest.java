@@ -85,19 +85,26 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
     {
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
 
+        assertTrue(documentLibPage.isNextFilmstripArrowPresent());
+        assertFalse(documentLibPage.isPreviousFilmstripArrowPresent());
+
         documentLibPage.selectNextFilmstripItem().render();
 
         assertEquals(documentLibPage.getDisplyedFilmstripItem(), file2.getName());
+        assertFalse(documentLibPage.isNextFilmstripArrowPresent());
+        assertTrue(documentLibPage.isPreviousFilmstripArrowPresent());
 
         documentLibPage.selectPreviousFilmstripItem().render();
 
         assertEquals(documentLibPage.getDisplyedFilmstripItem(), file1.getName());
+        assertTrue(documentLibPage.isNextFilmstripArrowPresent());
+        assertFalse(documentLibPage.isPreviousFilmstripArrowPresent());
     }
 
     // Looks like a bug
     // https://issues.alfresco.com/jira/browse/MNT-10621
-    @Test(enabled = false, priority=3)
-    public void testSendKeyLeftRightArrowForFilmstrip() throws Exception
+    @Test(enabled = true, priority = 3)
+    public void testSendKeysForFilmstrip() throws Exception
     {
 
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
@@ -110,30 +117,75 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
 
         assertEquals(documentLibPage.getDisplyedFilmstripItem(), file1.getName());
 
-        documentLibPage.toggleNavHandleForFilmstrip();
+        documentLibPage.sendKeyDownArrowForFilmstrip().render();
+
+        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file2.getName());
+
+        documentLibPage.sendKeyUpArrowForFilmstrip().render();
+
+        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file1.getName());
+
     }
 
     @Test(priority=4)
     public void testGetSelectedFIlesForFilmstrip() throws Exception
     {
-
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
         assertEquals(documentLibPage.getSelectedFIlesForFilmstrip().size(), 0);
+
         FileDirectoryInfo fileInfo = documentLibPage.getFileDirectoryInfo(file1.getName());
         fileInfo.selectCheckbox();
+
         List<String> selectFiles = documentLibPage.getSelectedFIlesForFilmstrip();
         assertTrue(selectFiles.contains(file1.getName()), selectFiles.toString());
         assertFalse(selectFiles.contains(file2.getName()), selectFiles.toString());
-
     }
 
     @Test(priority = 5)
     public void testToggleNavHandleForFilmstrip() throws Exception
     {
-
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
         boolean isTapeDiaplyed = documentLibPage.isFilmstripTapeDisplpayed();
         documentLibPage.toggleNavHandleForFilmstrip();
         assertEquals(documentLibPage.isFilmstripTapeDisplpayed(), !isTapeDiaplyed);
+        documentLibPage.toggleNavHandleForFilmstrip();
+        assertEquals(documentLibPage.isFilmstripTapeDisplpayed(), isTapeDiaplyed);
+    }
+
+    @Test(priority = 6)
+    public void testArrowsOnTape() throws Exception
+    {
+        documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
+
+        for (int i = 3; i < 5; i++)
+        {
+            File file = SiteUtil.prepareFile(siteName + i);
+            UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
+            documentLibPage = uploadForm.uploadFile(file.getCanonicalPath()).render();
+        }
+
+        for (int i = 0; i < 2; i++)
+        {
+            documentLibPage = documentLibPage.getNavigation().selectAll().render();
+
+            // Select Copy To
+            CopyOrMoveContentPage copyContent = documentLibPage.getNavigation().render().selectCopyTo().render();
+
+            // Keep the selected Destination: Current Site > DocumentLibrary Folder
+            documentLibPage = copyContent.selectOkButton().render();
+        }
+
+        assertTrue(documentLibPage.isNextFilmstripTapeArrowPresent());
+        assertFalse(documentLibPage.isPreviousFilmstripTapeArrowPresent());
+
+        documentLibPage = documentLibPage.selectNextFilmstripTape().render();
+
+        assertFalse(documentLibPage.isNextFilmstripTapeArrowPresent());
+        assertTrue(documentLibPage.isPreviousFilmstripTapeArrowPresent());
+
+        documentLibPage = documentLibPage.selectPreviousFilmstripTape().render();
+
+        assertTrue(documentLibPage.isNextFilmstripTapeArrowPresent());
+        assertFalse(documentLibPage.isPreviousFilmstripTapeArrowPresent());
     }
 }

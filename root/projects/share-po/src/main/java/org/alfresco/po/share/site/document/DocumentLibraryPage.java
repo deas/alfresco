@@ -67,7 +67,7 @@ public class DocumentLibraryPage extends SitePage
     private static final By FILMSTRIP_NAV_NEXT = By.cssSelector("div[id$='default-filmstrip-nav-main-next']");
     private static final By FILMSTRIP_NAV_PREVIOUS = By.cssSelector("div[id$='_default-filmstrip-nav-main-previous']");
     private static final By FILMSTRIP_TAPE_NEXT = By.cssSelector("div[id$='-filmstrip-nav-next']");
-    private static final By FILMSTRIP_TAPE_PREVIOUS = By.cssSelector("div[id$='_default-filmstrip-nav-main-previous']");
+    private static final By FILMSTRIP_TAPE_PREVIOUS = By.cssSelector("div[id$='-filmstrip-nav-previous']");
     private static final By FILMSTRIP_ITEM_DISLAYED = By.cssSelector("li[class$='item-selected'] div.alf-header div.alf-label");
     private static final By FILMSTRIP_NAV_HANDLE = By.cssSelector("div[id$='_default-filmstrip-nav-handle']");
     private static final By THUMBNAIL_IMAGE = By.cssSelector("td[class$='yui-dt-col-thumbnail'] img");
@@ -1167,21 +1167,50 @@ public class DocumentLibraryPage extends SitePage
      */
     public boolean isNextFilmstripArrowPresent()
     {
+        return checkIfElementPresent(FILMSTRIP_NAV_NEXT, "next filmstrip arrow");
+    }
+
+    /**
+     * Checks whether next arrow is present
+     */
+    public boolean isPreviousFilmstripArrowPresent()
+    {
+        return checkIfElementPresent(FILMSTRIP_NAV_PREVIOUS, "previous filmstrip arrow");
+    }
+
+    /**
+     * Checks whether next arrow is present
+     */
+    public boolean isNextFilmstripTapeArrowPresent()
+    {
+        return checkIfElementPresent(FILMSTRIP_TAPE_NEXT, "next filmstrip thumbnail tape arrow");
+    }
+
+    /**
+     * Checks whether next arrow is present
+     */
+    public boolean isPreviousFilmstripTapeArrowPresent()
+    {
+        return checkIfElementPresent(FILMSTRIP_TAPE_PREVIOUS, "previous filmstrip thumbnail tape arrow");
+    }
+
+    private boolean checkIfElementPresent(By byElement, String elementName)
+    {
         try
         {
-            drone.find(FILMSTRIP_NAV_NEXT);
-            return true;
+            WebElement element = drone.find(byElement);
+            return element.isDisplayed();
         }
         catch (NoSuchElementException nse)
         {
-            logger.info("isNextFilmstripArrowPresent - Filmstrip view not loaded");
+            logger.info("Element not present: " + elementName);
         }
         return false;
     }
     
 
     /**
-     * Get filmStrip pane displayed file.
+     * Gets the filmStrip item opened for preview.
      */
     public String getDisplyedFilmstripItem()
     {
@@ -1203,7 +1232,7 @@ public class DocumentLibraryPage extends SitePage
         {
             try
             {
-                WebElement element = drone.find(FILMSTRIP_MAIN_DIV).findElement(By.cssSelector("div[id$='_default-breadcrumb']"));
+                WebElement element = drone.find(By.cssSelector("div.alf-gallery-item-thumbnail"));
                 if(element.isDisplayed())
                 {
                     element.sendKeys(keysToSend);
@@ -1235,7 +1264,7 @@ public class DocumentLibraryPage extends SitePage
      */
     public HtmlPage sendKeyRightArrowForFilmstrip()
     {
-        return sendKeysFilmStripViewElement("Right Arrow ", Keys.TAB, Keys.TAB, Keys.ARROW_RIGHT);
+        return sendKeysFilmStripViewElement("Send right key ", Keys.TAB, Keys.TAB, Keys.ARROW_RIGHT);
     }
 
     /**
@@ -1243,7 +1272,23 @@ public class DocumentLibraryPage extends SitePage
      */
     public HtmlPage sendKeyLeftArrowForFilmstrip()
     {
-        return sendKeysFilmStripViewElement("Left Arrow ", Keys.TAB, Keys.TAB, Keys.ARROW_LEFT);
+        return sendKeysFilmStripViewElement("Send left key ", Keys.TAB, Keys.TAB, Keys.ARROW_LEFT);
+    }
+
+    /**
+     * Filmstrip view send right arrow.
+     */
+    public HtmlPage sendKeyUpArrowForFilmstrip()
+    {
+        return sendKeysFilmStripViewElement("Send Up Arrow ", Keys.TAB, Keys.TAB, Keys.ARROW_UP);
+    }
+
+    /**
+     * Filmstrip view send left arrow.
+     */
+    public HtmlPage sendKeyDownArrowForFilmstrip()
+    {
+        return sendKeysFilmStripViewElement("Send Down Arrow ", Keys.TAB, Keys.TAB, Keys.ARROW_DOWN);
     }
 
     /**
