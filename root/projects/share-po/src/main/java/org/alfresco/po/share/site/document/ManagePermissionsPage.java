@@ -390,7 +390,7 @@ public class ManagePermissionsPage extends SharePage
                 if (webElement.findElement(userNameLocator).getText().contains(name))
                 {
                     String currentRole = webElement.findElement(userRoleLocator).getText().toUpperCase();
-                    return UserRole.valueOf(currentRole);
+                    return UserRole.valueOf(StringUtils.replace(currentRole, " ", ""));
                 }
             }
         }
@@ -447,6 +447,7 @@ public class ManagePermissionsPage extends SharePage
     {
         try
         {
+            System.out.println();
             List<WebElement> userList = drone.findAndWaitForElements(userListLocator);
             for (WebElement webElement : userList)
             {
