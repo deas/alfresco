@@ -109,10 +109,6 @@
                     <artifactId>wstx-asl</artifactId>
                     <groupId>org.codehaus.woodstox</groupId>
                 </exclusion>
-                <exclusion>
-                    <artifactId>xml-apis</artifactId>
-                    <groupId>xml-apis</groupId>
-                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -207,14 +203,6 @@
                 <exclusion>
                     <artifactId>xom</artifactId>
                     <groupId>xom</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>xercesImpl</artifactId>
-                    <groupId>xerces</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>xml-apis</artifactId>
-                    <groupId>xml-apis</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
