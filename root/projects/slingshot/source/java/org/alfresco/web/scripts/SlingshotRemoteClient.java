@@ -120,6 +120,10 @@ public class SlingshotRemoteClient extends RemoteClient
                                 {
                                     res.setContentType("text/plain");
                                 }
+                                else if (hasDocType(content, "html", false))
+                                {
+                                    content = StringUtils.stripUnsafeHTMLDocument(content, false);
+                                }
                             }
                             else if (mimetype.equals("text/x-component"))
                             {
