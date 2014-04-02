@@ -835,8 +835,8 @@
             fileInfo.rawJson = json;  // Added for CSV upload
          }
 
-         // Add the label "Successful" after the filename, updating the fileName from the response
-         fileInfo.progressInfo.innerHTML = fileInfo.progressInfo.innerHTML.replace(oldFileName, fileInfo.fileName) + " " + this.msg("label.success");
+         // Add the label "Successful" after the fileSize
+         fileInfo.fileSizeInfo["innerHTML"] = fileInfo.fileSizeInfo["innerHTML"] + " (" + this.msg("label.success") + ")";
 
          // Change the style of the progress bar
          Dom.removeClass(fileInfo.progress, "fileupload-progressSuccess-span");
@@ -893,7 +893,7 @@
             {
                msg = Alfresco.util.message("label.failure", this.name);
             }
-            fileInfo.progressInfo["innerHTML"] = fileInfo.progressInfo["innerHTML"] + " (" + msg + ")";
+            fileInfo.fileSizeInfo["innerHTML"] = fileInfo.fileSizeInfo["innerHTML"] + " (" + msg + ")";
             fileInfo.progressInfo.setAttribute("title", msg);
             fileInfo.progressInfoCell.setAttribute("title", msg);
 
@@ -1390,7 +1390,7 @@
             if (progressInfo.length == 1)
             {
                // Display the file size in human readable format after the filename.
-               var fileInfoStr = record.name + " (" + Alfresco.util.formatFileSize(record.size) + ")";
+               var fileInfoStr = record.name;
                templateInstance.setAttribute("title", fileInfoStr);
 
                // Display the file name and size.
@@ -1400,6 +1400,16 @@
 
                // Save the cell element
                this.fileStore[flashId].progressInfoCell = el;
+            }
+
+            var fileSize = Dom.getElementsByClassName("fileupload-filesize-span", "span", templateInstance);
+            if (fileSize.length == 1)
+            {
+               // Display the file size in human readable format below the filename.
+               var fileInfoStr = Alfresco.util.formatFileSize(record.size);
+               fileSize = fileSize[0];
+               this.fileStore[flashId].fileSizeInfo = fileSize;
+               fileSize.innerHTML = fileInfoStr;
             }
 
             // Save a reference to the contentType dropdown so we can find each file's contentType before upload.            

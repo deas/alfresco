@@ -206,9 +206,17 @@
 {
    position: absolute;
    left: 40px;
-   top: 12px;
+   top: 4px;
    font-weight: bold;
    font-size: 108%;
+}
+
+.flash-upload  .fileupload-filesize-span
+{
+   position: absolute;
+   left: 41px;
+   top: 22px;
+   font-size: 85%;
 }
 
 .flash-upload .fileupload-center-div .fileupload-progressSuccess-span,

@@ -84,6 +84,7 @@
                   <span class="fileupload-progressSuccess-span">&nbsp;</span>
                   <img src="${url.context}/res/components/images/generic-file-32.png" class="fileupload-docImage-img" alt="file" />
                   <span class="fileupload-progressInfo-span"></span>
+                  <span class="fileupload-filesize-span"></span>
                </div>
                <div id="${el}-right-div" class="fileupload-right-div">
                   <span class="fileupload-fileButton-span">
