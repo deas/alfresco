@@ -339,7 +339,8 @@ public class DocumentLibraryNavigation extends SharePage
             }
             else
             {
-                throw new PageException("Selected Items menu not visible please click selected items before download as zip");
+                throw new PageException(
+                        "Selected Items menu not visible please click selected items before download as zip");
             }
         }
         catch (TimeoutException e)

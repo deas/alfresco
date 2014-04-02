@@ -153,7 +153,7 @@ public class FolderDetailsPage extends DetailsPage
      */
     public FolderDetailsPage selectDownloadFolderAsZip(String type)
     {
-        if (AlfrescoVersion.Enterprise41.equals(alfrescoVersion)) 
+        if (AlfrescoVersion.Enterprise41.equals(alfrescoVersion) || alfrescoVersion.isCloud()) 
         {
             throw new UnsupportedOperationException(
                     "Option Download Folder as Zip is not available for this version of Alfresco");

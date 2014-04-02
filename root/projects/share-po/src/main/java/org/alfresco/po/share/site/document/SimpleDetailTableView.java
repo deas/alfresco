@@ -71,11 +71,13 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         AlfrescoVersion version = getDrone().getProperties().getVersion();
         if(!isFolder())
         {
-            throw new PageOperationException("Option Download Folder is not possible against a file, must be folder to workFileDirectoryInfoTest");
+            throw new PageOperationException(
+                    "Option Download Folder is not possible against a file, must be folder to workFileDirectoryInfoTest");
         }
-        if(!(AlfrescoVersion.Enterprise42.equals(version) || AlfrescoVersion.Enterprise43.equals(version)))
+        if(AlfrescoVersion.Enterprise41.equals(version) || version.isCloud())
         {
-            throw new AlfrescoVersionException("Option Download Folder as Zip is not available for this version of Alfresco");
+            throw new AlfrescoVersionException(
+                    "Option Download Folder as Zip is not available for this version of Alfresco");
         }
 
         WebElement contentActions = selectAction();

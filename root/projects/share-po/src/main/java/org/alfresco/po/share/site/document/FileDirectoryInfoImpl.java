@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.alfresco.po.share.AlfrescoVersion;
+import org.alfresco.po.share.exception.AlfrescoVersionException;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.user.CloudSignInPage;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
@@ -783,10 +784,17 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
      */
     public void downloadFolderAsZip()
     {
+        AlfrescoVersion version = getDrone().getProperties().getVersion();
         if(!isFolder())
         {
             throw new UnsupportedOperationException("Download folder as zip is available for folders only.");
         }
+        if(AlfrescoVersion.Enterprise41.equals(version) || version.isCloud())
+        {
+            throw new AlfrescoVersionException(
+                    "Option Download Folder as Zip is not available for this version of Alfresco");
+        }
+
         try
         {
             WebElement menuOption = findElement(By.cssSelector(DOWNLOAD_FOLDER));
