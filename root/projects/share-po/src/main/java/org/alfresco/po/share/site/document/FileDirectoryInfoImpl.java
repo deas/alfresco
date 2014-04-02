@@ -1952,4 +1952,32 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         throw new UnsupportedOperationException("Creator is not available in current view.");
     }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#clickShareLink()
+     */
+    @Override
+    public HtmlPage clickShareLink()
+    {
+        try
+        {
+            findAndWait(QUICK_SHARE_LINK).click();
+
+            return new ShareLinkPage(drone);
+        }
+        catch (TimeoutException ex)
+        {
+            logger.error("Exceeded time to find the share link element", ex);
+        }
+
+        throw new PageException("Unable to find the Share Link.");
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#getFileOrFolderHeight()
+     */
+    public double getFileOrFolderHeight()
+    {
+        throw new UnsupportedOperationException("File or Folder Height is not available in this view type.");
+    }
 }

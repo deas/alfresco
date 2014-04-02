@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.alfresco.po.share.enums.ZoomStyle;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UpdateFilePage;
@@ -124,7 +125,73 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         Assert.assertNotNull(documentLibPage.getFileDirectoryInfo(file1.getName()));
     }
 
-    @Test(dependsOnMethods = "uploadFile", groups="alfresco-one")
+    @Test(dependsOnMethods="uploadFile", groups="alfresco-one")
+    public void testZoom()
+    {
+        DocumentLibraryNavigation navigation = documentLibPage.getNavigation();
+        documentLibPage = ((DocumentLibraryPage) navigation.selectGalleryView()).render();
+
+        Assert.assertTrue(navigation.isZoomControlVisible());
+        
+        navigation.selectZoom(ZoomStyle.SMALLER);
+        ZoomStyle actualZoomStyle = navigation.getZoomStyle();
+        Assert.assertEquals(actualZoomStyle,ZoomStyle.SMALLER);
+
+        double fileHeightSize = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        
+        navigation.selectZoom(ZoomStyle.SMALLEST);
+        actualZoomStyle = navigation.getZoomStyle();
+        Assert.assertEquals(actualZoomStyle,ZoomStyle.SMALLEST);
+        
+        double actualFileHeight = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        Assert.assertTrue(fileHeightSize > actualFileHeight);
+        
+        navigation.selectZoom(ZoomStyle.BIGGER);
+        actualZoomStyle = navigation.getZoomStyle();
+        Assert.assertEquals(actualZoomStyle,ZoomStyle.BIGGER);
+        
+        fileHeightSize = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        Assert.assertTrue(fileHeightSize > actualFileHeight);
+        
+        navigation.selectZoom(ZoomStyle.BIGGEST);
+        actualZoomStyle = navigation.getZoomStyle();
+        Assert.assertEquals(actualZoomStyle,ZoomStyle.BIGGEST);
+        
+        actualFileHeight = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        Assert.assertTrue(fileHeightSize < actualFileHeight);
+        
+        navigation.selectZoom(ZoomStyle.BIGGER);
+        actualZoomStyle = navigation.getZoomStyle();
+        Assert.assertEquals(actualZoomStyle,ZoomStyle.BIGGER);
+        
+        fileHeightSize = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        Assert.assertTrue(fileHeightSize < actualFileHeight);
+        
+        navigation.selectZoom(ZoomStyle.SMALLEST);
+        actualZoomStyle = navigation.getZoomStyle();
+        Assert.assertEquals(actualZoomStyle,ZoomStyle.SMALLEST);
+        
+        actualFileHeight = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        Assert.assertTrue(actualFileHeight < fileHeightSize);
+        
+        navigation.selectZoom(ZoomStyle.SMALLER);
+        actualZoomStyle = navigation.getZoomStyle();
+        Assert.assertEquals(actualZoomStyle,ZoomStyle.SMALLER);
+        
+        fileHeightSize = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        Assert.assertTrue(actualFileHeight < fileHeightSize);
+        
+        navigation.selectZoom(ZoomStyle.BIGGEST);
+        actualZoomStyle = navigation.getZoomStyle();
+        Assert.assertEquals(actualZoomStyle,ZoomStyle.BIGGEST);
+        
+        actualFileHeight = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        Assert.assertTrue(actualFileHeight > fileHeightSize);
+        
+        documentLibPage = ((DocumentLibraryPage) navigation.selectDetailedView()).render();
+    }
+    
+    @Test(dependsOnMethods = "testZoom", groups="alfresco-one")
     public void editProperites()
     {
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(1);
@@ -463,5 +530,4 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         Assert.assertNotNull(workFlowPage);
         Assert.assertTrue(workFlowPage.getTitle().contains("Start Workflow"));
     }
- }
-    
+ }  

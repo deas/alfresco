@@ -29,6 +29,7 @@ import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.enums.ViewType;
+import org.alfresco.po.share.enums.ZoomStyle;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.user.CloudSignInPage;
@@ -80,6 +81,7 @@ public class DocumentLibraryNavigation extends SharePage
     private static final By START_WORKFLOW = By.cssSelector(".onActionAssignWorkflow");
     private static final By SET_DEFAULT_VIEW = By.cssSelector(".setDefaultView");
     private static final By REMOVE_DEFAULT_VIEW = By.cssSelector(".removeDefaultView");
+    private final By ZOOM_CONTROL_BAR_THUMBNAIL_CSS = By.cssSelector(".alf-gallery-slider-thumb");
     
     private Log logger = LogFactory.getLog(this.getClass());
 
@@ -1338,5 +1340,106 @@ public class DocumentLibraryNavigation extends SharePage
     	}
     	
     	return FactorySharePage.resolvePage(drone);
+    }
+    
+    /**
+     * Finds the ZoomStyle of the doclib.
+     * 
+     * @param zoomThumbnail
+     * @return {@link ZoomStyle}
+     */
+    public ZoomStyle getZoomStyle()
+    {
+        int size;
+        try
+        {
+            WebElement zoomThumbnail = findZoomControl();
+            String style = zoomThumbnail.getAttribute("style");
+            size = Integer.valueOf(style.substring(style.indexOf(" ") + 1, style.indexOf("p")));
+        }
+        catch (NumberFormatException e)
+        {
+            throw new PageOperationException("Unable to convert String into int:" + e.getMessage());
+        }
+
+        switch (size)
+        {
+        case 0:
+            return ZoomStyle.SMALLEST;
+        case 20:
+            return ZoomStyle.SMALLER;
+        case 40:
+            return ZoomStyle.BIGGER;
+        case 60:
+            return ZoomStyle.BIGGEST;
+        default:
+            throw new PageOperationException("Unable to find the ZoomStyle for the zoomSize:" + size);
+        }
+    }
+    
+    /**
+     * This methods does the zoom in and zoom out on Gallery view.
+     * 
+     * @param zoomStyle
+     * @return HtmlPage
+     */
+    public HtmlPage selectZoom(ZoomStyle zoomStyle)
+    {
+        if (!getViewType().equals(ViewType.GALLERY_VIEW))
+        {
+            throw new UnsupportedOperationException("Zoom Control is available in GalleryView only.");
+        }
+
+        if (zoomStyle == null)
+        {
+            throw new IllegalArgumentException("ZoomStyle value is required");
+        }
+
+        WebElement zoomThumbnail = findZoomControl();
+        ZoomStyle actualZoomStyle = getZoomStyle();
+
+        if (zoomStyle.equals(actualZoomStyle))
+        {
+            logger.info("The selected zoom style is already in place.");
+        } 
+        else
+        {
+            drone.dragAndDrop(zoomThumbnail, (zoomStyle.getSize() - actualZoomStyle.getSize()), 0);
+        }
+
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * @return WebElement
+     */
+    private WebElement findZoomControl()
+    {
+        try
+        {
+            return drone.findAndWait(ZOOM_CONTROL_BAR_THUMBNAIL_CSS);
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded time to find the Zoom Control bar css" + e.getMessage());
+        }
+
+        throw new PageOperationException("Error in Selecting zoom.");
+    }
+    
+    /**
+     * Returns true if the Zoom Control is visible
+     * 
+     * @return boolean
+     */
+    public boolean isZoomControlVisible()
+    {
+        try
+        {
+            return findZoomControl().isDisplayed();
+        }
+        catch(PageOperationException poe) {}
+        
+        return false;
     }
 }

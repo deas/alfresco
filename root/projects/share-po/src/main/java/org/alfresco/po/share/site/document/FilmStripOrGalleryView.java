@@ -861,4 +861,24 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         // openGalleryInfo(false);
         super.contentNameClickCancel();
     }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#isShareLinkVisible()
+     */
+    @Override
+    public boolean isShareLinkVisible()
+    {
+        openGalleryInfo(false);
+        return super.isShareLinkVisible();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickShareLink()
+     */
+    @Override
+    public HtmlPage clickShareLink()
+    {
+        openGalleryInfo(false);
+        return super.clickShareLink();
+    }
 }

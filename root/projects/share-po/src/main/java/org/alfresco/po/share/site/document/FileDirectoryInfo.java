@@ -580,4 +580,18 @@ public interface FileDirectoryInfo
      * @throws UnsupportedOperationException if this operation is not supported in the current view.
      */
     public String getCreator();
+
+    /**
+     * This method is used to get the File or Foder height in document library page.
+     * 
+     * @return double
+     */
+    double getFileOrFolderHeight();
+    
+    /**
+     * Click on quick share link.
+     * 
+     * @return HtmlPage
+     */
+    HtmlPage clickShareLink();
 }

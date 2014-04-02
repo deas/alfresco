@@ -20,6 +20,7 @@ package org.alfresco.po.share.site.document;
 
 import java.util.List;
 
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.WebElement;
 
@@ -152,5 +153,14 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
     public List<Categories> getCategories()
     {
         throw new UnsupportedOperationException("Categories are not available in Simple View File Directory Info.");
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickShareLink()
+     */
+    @Override
+    public HtmlPage clickShareLink()
+    {
+        throw new UnsupportedOperationException("ShareLink is not available in Simple View File Directory Info.");
     }
 }

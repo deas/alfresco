@@ -122,4 +122,13 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
         catch (TimeoutException te) { }
         throw new PageOperationException("Unable to find content column created");
     }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickShareLink()
+     */
+    @Override
+    public HtmlPage clickShareLink()
+    {
+        throw new UnsupportedOperationException("ShareLink is not available in Table View File Directory Info.");
+    }
 }
