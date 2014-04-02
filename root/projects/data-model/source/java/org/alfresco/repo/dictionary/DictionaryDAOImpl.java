@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -1041,7 +1041,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
         {
             return dictionaryRegistry; // return local dictionaryRegistry
         }
-        LockHelper.tryLock(readLock, 100);
+        LockHelper.tryLock(readLock, 1000);
         try
         {
             // check cache second - return if set
@@ -1063,7 +1063,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
         }
         
         // Double check cache with write lock
-        LockHelper.tryLock(writeLock, 100);
+        LockHelper.tryLock(writeLock, 1000);
         try
         {
             dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
