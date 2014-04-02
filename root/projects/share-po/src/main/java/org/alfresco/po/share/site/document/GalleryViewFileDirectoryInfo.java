@@ -48,11 +48,11 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
         
         if(isFolder())
         {
-            THUMBNAIL = "div.alf-gallery-item-thumbnail>div+div+span a";  
+            THUMBNAIL = "div.alf-gallery-item-thumbnail>div+div+span a>img";  
         }
         else
         {
-            THUMBNAIL = "div.alf-gallery-item-thumbnail>div+div+a";
+            THUMBNAIL = "div.alf-gallery-item-thumbnail>div+div+a>img";
         }
     }
     
