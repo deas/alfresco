@@ -716,4 +716,27 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         List<Categories> categories = thisRow.getCategories();
         Assert.assertNotNull(categories);
     }
+    
+    @Test(enabled = true, groups = "Enterprise4.2", priority = 45)
+    public void renameContentTest()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        folderName = folderName + " updated";
+        thisRow.renameContent(folderName);
+        Assert.assertEquals(documentLibPage.getFileDirectoryInfo(folderName).getName(), folderName);
+    }
+    
+    @Test(enabled = true, groups = "Enterprise4.2", priority = 46)
+    public void cancelRenameContentTest()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        thisRow.contentNameEnableEdit();
+        thisRow.contentNameEnter(folderName + " not updated");
+        thisRow.contentNameClickCancel();
+        drone.refresh();
+        documentLibPage = drone.getCurrentPage().render();
+        Assert.assertEquals(documentLibPage.getFileDirectoryInfo(folderName).getName(), folderName);
+    }
 }

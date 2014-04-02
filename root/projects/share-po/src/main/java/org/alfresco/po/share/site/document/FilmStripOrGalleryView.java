@@ -830,4 +830,35 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     {
         drone.mouseOverOnElement(drone.findAndWait(By.xpath("//div[contains(@id,'default-doclistBarBottom')]")));
     }
+
+    @Override
+    public void contentNameEnableEdit()
+    {
+        openGalleryInfo(true);
+        String temp = FILENAME_IDENTIFIER;
+        FILENAME_IDENTIFIER = "h3.filename a";
+        super.contentNameEnableEdit();
+        FILENAME_IDENTIFIER = temp;
+    }
+
+    @Override
+    public void contentNameEnter(String newContentName)
+    {
+        // openGalleryInfo(false);
+        super.contentNameEnter(newContentName);
+    }
+
+    @Override
+    public void contentNameClickSave()
+    {
+        // openGalleryInfo(false);
+        super.contentNameClickSave();
+    }
+
+    @Override
+    public void contentNameClickCancel()
+    {
+        // openGalleryInfo(false);
+        super.contentNameClickCancel();
+    }
 }

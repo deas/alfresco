@@ -33,7 +33,6 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
     {
         super(nodeRef, webElement, drone);
 
-        FILENAME_IDENTIFIER = "";
         THUMBNAIL_TYPE = String.format(".//div[@class='alf-filmstrip-nav-item-thumbnail']//img[@id='%s']", nodeRef);
         rowElementXPath = "../../../..";
         FILE_DESC_IDENTIFIER = "div.detail:first-of-type span.item";
@@ -120,17 +119,5 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
     {
         openGalleryInfo(false);
         return super.getTitle();
-    }
-
-    /**
-     * Gets the Create / Edit Information of the file or directory, if none then empty string is returned.
-     * 
-     * @return String Content Edit Information
-     */
-    @Override
-    public String getContentEditInfo()
-    {
-        openGalleryInfo(false);
-        return findAndWait(By.cssSelector("h3.filename")).getText();
     }
 }

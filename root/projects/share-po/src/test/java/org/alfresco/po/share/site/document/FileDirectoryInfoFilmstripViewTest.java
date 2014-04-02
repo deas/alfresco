@@ -97,6 +97,12 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
     @AfterClass(alwaysRun=true)
     public void teardown()
     {
+        SiteFinderPage siteFinder = ((SharePage) drone.getCurrentPage()).getNav().selectSearchForSites().render();
+        siteFinder = siteFinder.searchForSite(siteName).render();
+        SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
+        DocumentLibraryPage docPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
+        docPage.getNavigation().selectDetailedView();
+
         SiteUtil.deleteSite(drone, siteName);
         
         if (isHybridEnabled())
@@ -230,7 +236,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
 
         // Get ContentEditInfo
         Assert.assertNotNull(thisRow.getContentEditInfo());
-        Assert.assertTrue(thisRow.getContentEditInfo().contains("Created"));
+        Assert.assertTrue(thisRow.getContentEditInfo().contains("Created"), thisRow.getContentEditInfo());
     }
 
     @Test(groups={"alfresco-one"}, priority=5)
@@ -289,7 +295,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
 
         // Get ContentEditInfo
         Assert.assertNotNull(thisRow.getContentEditInfo());
-        Assert.assertTrue(thisRow.getContentEditInfo().contains("Created"));
+        Assert.assertTrue(thisRow.getContentEditInfo().contains(firstName), thisRow.getContentEditInfo());
     }
 
     @Test(groups={"alfresco-one"}, priority=12)
@@ -697,5 +703,29 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
         SelectAspectsPage selectAspectPage = thisRow.selectManageAspects().render();
         Assert.assertNotNull(selectAspectPage);
+    }
+
+    @Test(enabled = true, groups = "Enterprise4.2", priority = 44)
+    public void renameContentTest()
+    {
+        drone.refresh();
+        documentLibPage = drone.getCurrentPage().render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        folderName = folderName + "updated";
+        thisRow.renameContent(folderName);
+        Assert.assertEquals(documentLibPage.getFileDirectoryInfo(folderName).getName(), folderName);
+    }
+
+    @Test(enabled = true, groups = "Enterprise4.2", priority = 45)
+    public void cancelRenameContentTest()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        thisRow.contentNameEnableEdit();
+        thisRow.contentNameEnter(folderName + " not updated");
+        thisRow.contentNameClickCancel();
+        drone.refresh();
+        documentLibPage = drone.getCurrentPage().render();
+        Assert.assertEquals(documentLibPage.getFileDirectoryInfo(folderName).getName(), folderName);
     }
 }
