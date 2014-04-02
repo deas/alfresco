@@ -1869,3 +1869,9 @@ body.brand-bg-1 .sticky-wrapper
 {
     color: #595959;
 }
+
+.form-container textarea,
+.page-form-body textarea
+{
+   width: 99.5% !important;
+}
