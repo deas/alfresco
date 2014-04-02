@@ -1,6 +1,6 @@
 <#escape x as jsonUtils.encodeJSONString(x)>
 {
-   data: {
+   "data": {
       "locales" : [
          <#list locales as locale>
             { 
