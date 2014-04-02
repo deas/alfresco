@@ -13,19 +13,15 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/slf4j-api-1.5.11.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/slf4j-log4j12-1.5.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/optional/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-pool-1.5.5.jar" sourcepath="/3rd Party/src/commons-pool-1.5.5-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/3rd Party/src/commons-pool-1.5.5-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-pool-1.6.jar" sourcepath="/3rd Party/src/commons-pool-1.6-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-opencmis-client-api-0.4.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/chemistry-opencmis-client-bindings-0.4.0-SNAPSHOT.jar" sourcepath="/3rd Party/src/chemistry-opencmis-0.4.0-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="lib" path="lib/chemistry-opencmis-client-impl-0.4.0-SNAPSHOT.jar" sourcepath="/3rd Party/src/chemistry-opencmis-0.4.0-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="lib" path="lib/chemistry-opencmis-commons-api-0.4.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/chemistry-opencmis-commons-impl-0.4.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/mockito-all-1.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/commons/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-codec-1.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/commons/commons-logging-1.1.3.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/commons/commons-codec-1.9.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.beans-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.context-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/org.springframework.context.support-3.0.5.RELEASE.jar"/>

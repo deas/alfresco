@@ -21,7 +21,7 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/spring-surf/spring-webscripts-api-1.2.1-SNAPSHOT.jar" sourcepath="/3rd Party/src/spring-webscripts-api-1.2.1-SNAPSHOT-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/tika-core-1.5-20130720-alfresco-patched.jar" sourcepath="/3rd Party/src/tika-core-1.5-20130720-alfresco-patched.zip"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/tika-parsers-1.5-20130720-alfresco-patched.jar" sourcepath="/3rd Party/src/tika-parsers-1.5-20130720-alfresco-patched.zip"/>
-	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/commons/commons-codec-1.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/commons/commons-codec-1.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/chemistry-abdera-0.1-incubating-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.aop-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/org.springframework.asm-3.0.5.RELEASE.jar"/>

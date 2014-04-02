@@ -1293,7 +1293,7 @@
       </copy>
       <copy todir="${dir.deploy.tomcat.application.webeditor.sample.customersite}/WEB-INF/lib" verbose="${copy.verbose}">
          <fileset dir="${dir.project.3rdparty}/lib/commons" 
-                  includes="commons-httpclient-3.1.jar, commons-logging-1.1.1.jar, commons-codec-1.5.jar" />
+                  includes="commons-httpclient-3.1.jar, commons-logging-1.1.3.jar, commons-codec-1.9.jar" />
          <fileset dir="${dir.project.3rdparty}/lib/optional" includes="log4j-1.2.17.jar" />
          <fileset dir="${dir.project.3rdparty}/lib/spring-surf" 
                   includes="spring-webeditor-client-jsp-1.2.1-SNAPSHOT.jar" />

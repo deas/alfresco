@@ -98,10 +98,6 @@
             <version>0.4.0-incubating</version>
             <exclusions>
                 <exclusion>
-                    <groupId>commons-httpclient</groupId>
-                    <artifactId>commons-httpclient</artifactId>
-                </exclusion>
-                <exclusion>
                     <artifactId>geronimo-stax-api_1.0_spec</artifactId>
                     <groupId>org.apache.geronimo.specs</groupId>
                 </exclusion>
@@ -137,10 +133,6 @@
                     <groupId>org.apache.abdera</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>commons-lang</artifactId>
-                    <groupId>commons-lang</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>geronimo-stax-api_1.0_spec</artifactId>
                     <groupId>org.apache.geronimo.specs</groupId>
                 </exclusion>
@@ -160,13 +152,9 @@
                     <groupId>org.jvnet.staxex</groupId>
                     <artifactId>stax-ex</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>commons-collections</groupId>
-                    <artifactId>commons-collections</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
-        <!-- Dependency on Alfresco patched version of Rhino available in artfifact.alfresco.com -->
+        <!-- Dependency on Alfresco patched version of Rhino available in artifacts.alfresco.com -->
         <dependency>
             <groupId>org.mozilla</groupId>
             <artifactId>rhino</artifactId>
@@ -192,7 +180,6 @@
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>1.3.1</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -280,10 +267,6 @@
             <version>1.1.8</version>
             <exclusions>
                 <exclusion>
-                    <groupId>commons-collections</groupId>
-                    <artifactId>commons-collections</artifactId>
-                </exclusion>
-                <exclusion>
                     <artifactId>jstl</artifactId>
                     <groupId>javax.servlet</groupId>
                 </exclusion>
@@ -293,20 +276,6 @@
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-impl</artifactId>
             <version>1.1.8</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-collections</groupId>
-                    <artifactId>commons-collections</artifactId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>commons-lang</artifactId>
-                    <groupId>commons-lang</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>commons-digester</artifactId>
-                    <groupId>commons-digester</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
 		<!-- Dependency on Dojo ZIP -->
 		<dependency>

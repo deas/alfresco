@@ -30,10 +30,6 @@
                     <groupId>javax.servlet</groupId>
                     <artifactId>jsp-api</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>commons-lang</groupId>
-                    <artifactId>commons-lang</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -45,7 +41,6 @@
         <dependency>
              <groupId>commons-logging</groupId>
              <artifactId>commons-logging</artifactId>
-             <version>1.1.1</version>
              <scope>provided</scope>
         </dependency>
         <!-- Test only dependencies -->
