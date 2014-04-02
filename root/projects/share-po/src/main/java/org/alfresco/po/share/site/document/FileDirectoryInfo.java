@@ -2,6 +2,7 @@ package org.alfresco.po.share.site.document;
 
 import java.util.List;
 
+import org.alfresco.po.share.UserProfilePage;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.webdrone.HtmlPage;
@@ -528,4 +529,55 @@ public interface FileDirectoryInfo
      */
     public abstract void renameContent(String newContentName);
     
+    /**
+     * Returns the modified date string as displayed on-screen.
+     * 
+     * @return
+     */
+    public String getModified();
+    
+    /**
+     * Clicks on the modifier's name
+     * 
+     * @return If the current user is the modifier then {@link MyProfilePage} otherwise {@link UserProfilePage}
+     * 
+     * @throws UnsupportedOperationException if this operation is not supported in the current view.
+     */
+    public HtmlPage selectModifier();
+    
+    /**
+     * Gets the modifier's name as displayed on-screen.
+     * 
+     * @return The modifier's name
+     * 
+     * @throws UnsupportedOperationException if this operation is not supported in the current view.
+     */
+    public String getModifier();
+    
+    /**
+     * Returns the created date as displayed on-screen.
+     * 
+     * @return
+     * 
+     * @throws UnsupportedOperationException if this operation is not supported in the current view.
+     */
+    public String getCreated();
+    
+    /**
+     * Clicks on the creator's name.
+     * 
+     * @return If the current user is the creator then {@link MyProfilePage} otherwise {@link UserProfilePage}
+     * 
+     * @throws UnsupportedOperationException if this operation is not supported in the current view.
+     */
+    public HtmlPage selectCreator();
+    
+    /**
+     * Gets the creator's name as displayed on screen.
+     * 
+     * @return The creator's name
+     * 
+     * @throws UnsupportedOperationException if this operation is not supported in the current view.
+     */
+    public String getCreator();
 }

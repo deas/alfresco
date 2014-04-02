@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.alfresco.po.share.AlfrescoVersion;
+import org.alfresco.po.share.UserProfilePage;
 import org.alfresco.po.share.exception.AlfrescoVersionException;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.user.CloudSignInPage;
@@ -1898,4 +1899,57 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getModified()
+    {
+        throw new UnsupportedOperationException("Modified is not available in current view.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public HtmlPage selectModifier()
+    {
+        throw new UnsupportedOperationException("Modifier is not available in current view.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getModifier()
+    {
+        throw new UnsupportedOperationException("Modifier is not available in current view.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getCreated()
+    {
+        throw new UnsupportedOperationException("Created is not available in current view.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public HtmlPage selectCreator()
+    {
+        throw new UnsupportedOperationException("Creator is not available in current view.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getCreator()
+    {
+        throw new UnsupportedOperationException("Creator is not available in current view.");
+    }
 }

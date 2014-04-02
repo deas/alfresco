@@ -1,9 +1,20 @@
 /*
- * Copyright (C) 2005-2014 Alfresco Software Limited. This file is part of Alfresco Alfresco is free software: you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any
- * later version. Alfresco is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details. You should have received a copy of the GNU Lesser General
- * Public License along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share.site.document;
 
@@ -15,6 +26,7 @@ import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
+import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.testng.Assert;
@@ -79,8 +91,8 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
         int noOfFiles = documentLibPage.getFiles().size();
-        documentLibPage = ((DocumentLibraryPage) documentLibPage.getNavigation().selectTableView()).render();
-        Assert.assertNotNull(documentLibPage);
+        documentLibPage = documentLibPage.getNavigation().selectTableView().render();
+        
         Assert.assertEquals(documentLibPage.getFiles().size(), noOfFiles);
     }
 
@@ -90,7 +102,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
 
-        TableViewFileDirectoryInfo fileInfo = (TableViewFileDirectoryInfo) documentLibPage.getFiles().get(0);
+        FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
         EditDocumentPropertiesPopup editPage = fileInfo.selectEditProperties().render();
         editPage.setDescription(FILE_DESCRIPTION);
         editPage.setDocumentTitle(FILE_TITLE);
@@ -105,7 +117,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
 
-        TableViewFileDirectoryInfo fileInfo = (TableViewFileDirectoryInfo) documentLibPage.getFiles().get(0);
+        FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
 
         Assert.assertEquals(fileInfo.getCreator(), "Administrator");
     }
@@ -116,13 +128,13 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
 
-        TableViewFileDirectoryInfo fileInfo = (TableViewFileDirectoryInfo) documentLibPage.getFiles().get(0);
-        UserProfilePage profile = fileInfo.selectCreator();
-        Assert.assertNotNull(profile);
+        FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
+        MyProfilePage profile = fileInfo.selectCreator().render();
+
         navigateDocumentLib(profile);
     }
 
-    private void navigateDocumentLib(UserProfilePage profile)
+    private void navigateDocumentLib(MyProfilePage profile)
     {
         SiteFinderPage finderPage = profile.getNav().selectSearchForSites().render();
         finderPage = finderPage.searchForSite(siteName).render();
@@ -133,12 +145,11 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     @Test(dependsOnMethods = "selectCreator", groups="alfresco-one")
     public void getCreated() throws Exception
     {
-        // TODO: This test works but it needs to end on the site doclib page
-        /*SitePage page = drone.getCurrentPage().render();
+        SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
 
-        TableViewFileDirectoryInfo fileInfo = (TableViewFileDirectoryInfo) documentLibPage.getFiles().get(0);
-        Assert.assertNotNull(fileInfo.getCreated());*/
+        FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
+        Assert.assertNotNull(fileInfo.getCreated());
     }
 
     @Test(dependsOnMethods = "getCreated", groups="alfresco-one")
@@ -147,7 +158,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
 
-        TableViewFileDirectoryInfo fileInfo = (TableViewFileDirectoryInfo) documentLibPage.getFiles().get(0);
+        FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
 
         Assert.assertEquals(fileInfo.getModifier(), "Administrator");
     }
@@ -158,9 +169,9 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
 
-        TableViewFileDirectoryInfo fileInfo = (TableViewFileDirectoryInfo) documentLibPage.getFiles().get(0);
-        UserProfilePage profile = fileInfo.selectModifier();
-        Assert.assertNotNull(profile);
+        FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
+        MyProfilePage profile = fileInfo.selectModifier().render();
+
         navigateDocumentLib(profile);
     }
 
@@ -170,7 +181,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
 
-        TableViewFileDirectoryInfo fileInfo = (TableViewFileDirectoryInfo) documentLibPage.getFiles().get(0);
+        FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
         Assert.assertNotNull(fileInfo.getModified());
     }
 
@@ -196,5 +207,4 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         documentLibPage = drone.getCurrentPage().render();
         Assert.assertEquals(documentLibPage.getFileDirectoryInfo(file2.getName()).getName(), file2.getName());
     }
-
 }
