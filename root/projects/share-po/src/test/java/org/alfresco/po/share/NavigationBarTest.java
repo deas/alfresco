@@ -40,7 +40,7 @@ public class NavigationBarTest extends AbstractTest
 {
     private SharePage page;
     
-    @BeforeClass
+    @BeforeClass(groups={"alfresco-one"})
     public void setup() throws Exception
     {
         page = loginAs(username, password);

@@ -38,7 +38,7 @@ public class UserSearchPageTest extends AbstractTest
 {
     private DashBoardPage dashBoard;
 
-    @BeforeClass()
+    @BeforeClass(groups ={"Enterprise-only", "Cloud-only"})
     public void setup() throws Exception
     {
         dashBoard = loginAs(username, password);

@@ -60,11 +60,6 @@
             <package name="org.alfresco.po.share.enums" />
         </packages>
     </test>
-    <test name="user">
-        <packages>
-            <package name="org.alfresco.po.share.user" />
-        </packages>
-    </test>
     <test name="Document">
         <packages>
              <package name="org.alfresco.po.share.site.document" />
