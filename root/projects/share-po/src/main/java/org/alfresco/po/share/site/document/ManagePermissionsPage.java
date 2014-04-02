@@ -527,7 +527,7 @@ public class ManagePermissionsPage extends SharePage
         for (WebElement userPermissionRow : userPermissionRows)
         {
             String name = userPermissionRow.findElement(By.cssSelector("td[class$='-displayName']")).getText();
-            if (StringUtils.equalsIgnoreCase(name, (userProfile.getfName() + " " + userProfile.getlName()).trim()))
+            if (StringUtils.equalsIgnoreCase(name, (userProfile.getfName()).trim()))
             {
                 return true;
             }
