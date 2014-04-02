@@ -30,6 +30,7 @@ import java.util.Map;
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.RepositoryPage;
+import org.alfresco.po.share.enums.Encoder;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
@@ -43,6 +44,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.owasp.esapi.ESAPI;
 
 /**
  * <li>This is a parent class for all the pages using View Details as asection.</li>
@@ -434,6 +436,41 @@ public abstract class DetailsPage extends SitePage
             logger.error("Element :" + "div[id$='default-actionSet'] div." + type + "-edit-metadata a" + " does not exist");
         }
         throw new PageException("Properties not present in the page");
+    }
+    
+    /**
+     * Adding a comment to a details by selecting add to prompt the input field,
+     * as this is based on a rich editor JavaScript was used to enter the
+     * comment.
+     * 
+     * @param comment
+     *            String user comment
+     * @param encoder Encoder as html, javascript, no encoder           
+     * @return {@link HtmlPage} page response
+     */
+    public HtmlPage addComment(String comment, Encoder encoder)
+    {
+        String encodedComment = comment;
+        if (encoder == null)
+        {
+            // Assume no encoding
+            encoder = Encoder.ENCODER_NOENCODER;
+        }
+        
+        switch (encoder)
+        {
+            case ENCODER_HTML:
+                encodedComment = ESAPI.encoder().encodeForHTML(comment);
+                logger.info("Comment encoded as HTML");
+                break;
+            case ENCODER_JAVASCRIPT:
+                encodedComment = ESAPI.encoder().encodeForJavaScript(comment);
+                logger.info("Comment encoded as JavaScript");
+                break;
+            default:
+                logger.info("Comment is not encoded");
+        }        
+        return addComment(encodedComment);
     }
 
     /**
