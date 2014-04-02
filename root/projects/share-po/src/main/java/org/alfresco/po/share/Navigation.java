@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.po.share.ShareUtil.RequiredAlfrescoVersion;
+import org.alfresco.po.share.adminconsole.NodeBrowserPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.SiteFinderPage;
@@ -43,406 +44,442 @@ import org.openqa.selenium.WebElement;
 
 /**
  * Represent elements found on the HTML page relating to the main navigation bar
- * 
+ *
  * @author Michael Suzuki
  * @since 1.0
  */
 public class Navigation extends SharePage
 {
     private static Log logger = LogFactory.getLog(Navigation.class);
-    private static final String SITE_FINDER_LINK = "div[id$='app_sites-sites-menu']>div>ul[class^='site-finder-menuitem']>li>a";
-    private static final String DEFAULT_NETWORK_MENU_BUTTON = "default.network.dropdown";
-    private static final String NETWORK_NAMES = "network.names";
-    private final String userNameDropDown ;
+        private static final String SITE_FINDER_LINK = "div[id$='app_sites-sites-menu']>div>ul[class^='site-finder-menuitem']>li>a";
+        private static final String DEFAULT_NETWORK_MENU_BUTTON = "default.network.dropdown";
+        private static final String NETWORK_NAMES = "network.names";
+        private final String userNameDropDown;
     public static final String REPO_ADMIN_MANAGE_SITE_LINK_SELECTOR = "div#HEADER_ADMIN_CONSOLE";
     public static final String SITE_ADMIN_MANAGE_SITE_LINK_SELECTOR = "span[id='HEADER_SITES_CONSOLE_text']>a";
 
-    /**
-     * Constructor
-     * 
-     * @param drone WebDriver browser client
-     */
-    public Navigation(WebDrone drone)
-    {
-        super(drone);
-        userNameDropDown = drone.getElement("user.dropdown");
-      
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Navigation render(RenderTime timer)
-    {
-        basicRender(timer);
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Navigation render()
-    {
-        return render(new RenderTime(maxPageLoadingTime));
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public Navigation render(final long time)
-    {
-        return render(new RenderTime(time));
-    }
-    
-
-    /**
-     * Mimics the action of selecting the dashboard link.
-     * 
-     * @return HtmlPage dashboard page object
-     */
-    public DashBoardPage selectMyDashBoard()
-    {
-        String selector = isDojoSupport() ? "div#HEADER_HOME" : "a[id$='-dashboard-button']";
-    	drone.find(By.cssSelector(selector)).click();
-        return new DashBoardPage(drone);
-    }
-
-    /**
-     * Mimics the action of selecting people finder link.
-     * 
-     * @return HtmlPage people finder page object
-     */
-    public PeopleFinderPage selectPeople()
-    {
-        String selector = isDojoSupport() ? "div#HEADER_PEOPLE" : "a[id$='people-button']";
-    	drone.find(By.cssSelector(selector)).click();
-        return new PeopleFinderPage(drone);
-    }
-
-    /**
-     * Mimics the action of selecting site finder link.
-     * 
-     * @return HtmlPage people finder page object
-     */
-    public SiteFinderPage selectSearchForSites()
-    {
-        selectSitesDropdown();
-        try
+        /**
+         * Constructor
+         *
+         * @param drone WebDriver browser client
+         */
+        public Navigation(WebDrone drone)
         {
-            if(isDojoSupport())
-            {
-              drone.findAndWait(By.cssSelector(drone.getElement("site.finder"))).click();
-            }
-            else
-            {
-                drone.findAndWait(By.cssSelector(SITE_FINDER_LINK)).click();
-            }
+                super(drone);
+                userNameDropDown = drone.getElement("user.dropdown");
+
         }
-        catch (NoSuchElementException nse)
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Navigation render(RenderTime timer)
         {
-            //Try again
-            selectSearchForSites();
+                basicRender(timer);
+                return this;
         }
-        return new SiteFinderPage(drone);
-    }
 
-    /**
-     * Mimics the action of selecting create site link.
-     * 
-     * @return HtmlPage people finder page object
-     */
-    public CreateSitePage selectCreateSite()
-    {
-        String selector = isDojoSupport() ? "td#HEADER_SITES_MENU_CREATE_SITE_text" : "ul.create-site-menuitem>li>a";
-        selectSitesDropdown();
-        drone.findAndWait(By.cssSelector(selector)).click();
-        return new CreateSitePage(drone);
-    }
-
-    /**
-     * Selects the "Sites" icon on main navigation. As this link is created by
-     * Java script, a wait is implemented to ensure the link is rendered.
-     */
-    protected void selectSitesDropdown()
-    {
-        // Wait is applied as the link is within a java script.
-        String selector = isDojoSupport() ? "div#HEADER_SITES_MENU" : "button[id$='app_sites-button']";
-        WebElement siteButton = drone.find(By.cssSelector(selector));
-        siteButton.click();
-    }
-
-    /**
-     * Selects the user link on main navigation. As this link is created by Java
-     * script, a wait is implemented to ensure the link is rendered.
-     */
-    private void selectUserDropdown()
-    {
-    	WebElement userButton = drone.find(By.cssSelector(userNameDropDown));
-        userButton.click();
-    }
-
-    /**
-     * Mimics the action of selecting my profile link.
-     * 
-     * @return HtmlPage people finder page object
-     */
-    public MyProfilePage selectMyProfile()
-    {
-        selectUserDropdown();
-        String selector = isDojoSupport() ? "td#HEADER_USER_MENU_PROFILE_text" : "div[id$='usermenu_user'] ul li:nth-of-type(2) a";
-        drone.findAndWait(By.cssSelector(selector)).click();
-        return new MyProfilePage(drone);
-    }
-    
-    /**
-     * Mimics the action of selecting Account Settings link.
-     * 
-     * @return AccountSettingsPage
-     */
-    public AccountSettingsPage selectAccountSettingsPage()
-    {
-        selectUserDropdown();
-        if(!alfrescoVersion.isCloud() || (AlfrescoVersion.Enterprise43 != alfrescoVersion))
+        @SuppressWarnings("unchecked")
+        @Override
+        public Navigation render()
         {
-            throw new UnsupportedOperationException("This option is in cloud only, not available for Enterprise");
+                return render(new RenderTime(maxPageLoadingTime));
         }
-        String selector = "td[id*='alfresco/header/AlfMenuItem']>a.alfresco-menus-_AlfMenuItemMixin";
-        drone.findAndWait(By.cssSelector(selector)).click();
-        return new AccountSettingsPage(drone);
-    }
 
-    /**
-     * Mimics the action of selecting my profile link.
-     * 
-     * @return HtmlPage change password page object
-     */
-    public ChangePasswordPage selectChangePassword()
-    {
-        String selector = isDojoSupport() ? "td#HEADER_USER_MENU_CHANGE_PASSWORD_text" : "div[id$='usermenu_user'] ul li:nth-of-type(3) a";
-        selectUserDropdown();
-        drone.findAndWait(By.cssSelector(selector)).click();
-        return new ChangePasswordPage(drone); 
-    }
+        @SuppressWarnings("unchecked")
+        @Override
+        public Navigation render(final long time)
+        {
+                return render(new RenderTime(time));
+        }
 
-    /**
-     * Mimics the action of selecting logout link.
-     * The page returned from a logout is a LoginPage.
-     * @return {@link LoginPage} page response
-     */
-    public LoginPage logout()
-    {
-        selectUserDropdown();
-        String selector = isDojoSupport() ? "td#HEADER_USER_MENU_LOGOUT_text" : "div[id$='usermenu_user'] ul li:nth-of-type(5) a";
-        drone.findAndWait(By.cssSelector(selector)).click();
-        return new LoginPage(drone);
-    }
 
-    /**
-     * Mimics the action of selecting repository link.
-     * 
-     * @return HtmlPage repository page object
-     */
-    public RepositoryPage selectRepository()
-    {
-        String selector = isDojoSupport() ? "div#HEADER_REPOSITORY" : "a[id$='app_repository-button']"; 
-        drone.find(By.cssSelector(selector)).click();
-        return new RepositoryPage(drone);
-    }
+        /**
+         * Mimics the action of selecting the dashboard link.
+         *
+         * @return HtmlPage dashboard page object
+         */
+        public DashBoardPage selectMyDashBoard()
+        {
+                String selector = isDojoSupport() ? "div#HEADER_HOME" : "a[id$='-dashboard-button']";
+                drone.find(By.cssSelector(selector)).click();
+                return new DashBoardPage(drone);
+        }
 
-    /**
-     * Select the advance search button from dropdown.
-     * @return HtmlPage advance search page.
-     */
-    public AdvanceSearchContentPage selectAdvanceSearch()
-    {
-        try
+        /**
+         * Mimics the action of selecting people finder link.
+         *
+         * @return HtmlPage people finder page object
+         */
+        public PeopleFinderPage selectPeople()
         {
-          if(isDojoSupport())
-          {
-              // TODO ALF-19185 - Bug Advance Search
-              String usersPageURL = "/page/advsearch";
-              String currentUrl = drone.getCurrentUrl();
-              if (currentUrl != null)
-              {
-                  String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
-                  drone.navigateTo(url);
-              }
-          }
-          else
-          {
-              drone.findAndWait(By.cssSelector("button[id$='default-search_more-button']")).click();
-              drone.findAndWait(By.cssSelector("div[id$='searchmenu_more']>div>ul>li>a")).click();
-          }
-          
-          return new AdvanceSearchContentPage(drone);
+                String selector = isDojoSupport() ? "div#HEADER_PEOPLE" : "a[id$='people-button']";
+                drone.find(By.cssSelector(selector)).click();
+                return new PeopleFinderPage(drone);
         }
-        catch(TimeoutException ne)
-        {
-            throw new PageException("Advance Search is not visible");
-        }
-    }    
-    
-    /**
-     * Navigates to the users page on Admin Console - Enterprise Only option.
-     * @return {@link UserSearchPage} Instance of UserSearchPage
-     */
-    public HtmlPage getUsersPage()
-    {
-        ShareUtil.validateAlfrescoVersion(alfrescoVersion, RequiredAlfrescoVersion.ENTERPRISE_ONLY);
-        //TODO To be implemented by using UI once JIRA: https://issues.alfresco.com/jira/browse/ALF-18909 is resolved 
-        String usersPageURL = "/page/console/admin-console/users";
-        String currentUrl = drone.getCurrentUrl();
-        if(currentUrl != null)
-        {
-            String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
-            drone.navigateTo(url);
-        }
-        return new UserSearchPage(drone);
-    }
-    
-    /**
-     * Selects the Network dropdown button present on UserDashBoard.
-     * 
-     * @return {@link DashBoardPage}
-     */
-    public DashBoardPage selectNetworkDropdown()
-    {
-        ShareUtil.validateAlfrescoVersion(alfrescoVersion, RequiredAlfrescoVersion.CLOUD_ONLY);
 
-        try
+        /**
+         * Mimics the action of selecting site finder link.
+         *
+         * @return HtmlPage people finder page object
+         */
+        public SiteFinderPage selectSearchForSites()
         {
-           String dropDownElementId = drone.getElement(DEFAULT_NETWORK_MENU_BUTTON);
-           drone.findAndWait(By.cssSelector(dropDownElementId)).click();
-           return new DashBoardPage(drone);
-        }
-        catch (TimeoutException e)
-        {
-            throw new PageException(this.getClass().getName() + " : selectNetworkDropdown() : failed to render in time. ", e);
-        }
-    }
-    
-    /**
-     * Selects the given User Network link present in list of networks.
-     * 
-     * @param networkName String name
-     * @return {@link DashBoardPage}
-     */
-    public DashBoardPage selectNetwork(final String networkName)
-    {
-        ShareUtil.validateAlfrescoVersion(alfrescoVersion, RequiredAlfrescoVersion.CLOUD_ONLY);
-        if (StringUtils.isEmpty(networkName))
-        {
-            throw new IllegalArgumentException("Network name is required.");
-        }
-        try
-        {
-            String networkNamesid = drone.getElement(NETWORK_NAMES);
-            List<WebElement> networks = drone.findAndWaitForElements(By.cssSelector(networkNamesid));
-            {
-                for (WebElement network : networks)
+                selectSitesDropdown();
+                try
                 {
-                    if (network.getText() != null && network.getText().equalsIgnoreCase(networkName.trim()))
-                    {
-                        network.click();
+                        if (isDojoSupport())
+                        {
+                                drone.findAndWait(By.cssSelector(drone.getElement("site.finder"))).click();
+                        }
+                        else
+                        {
+                                drone.findAndWait(By.cssSelector(SITE_FINDER_LINK)).click();
+                        }
+                }
+                catch (NoSuchElementException nse)
+                {
+                        //Try again
+                        selectSearchForSites();
+                }
+                return new SiteFinderPage(drone);
+        }
+
+        /**
+         * Mimics the action of selecting create site link.
+         *
+         * @return HtmlPage people finder page object
+         */
+        public CreateSitePage selectCreateSite()
+        {
+                String selector = isDojoSupport() ? "td#HEADER_SITES_MENU_CREATE_SITE_text" : "ul.create-site-menuitem>li>a";
+                selectSitesDropdown();
+                drone.findAndWait(By.cssSelector(selector)).click();
+                return new CreateSitePage(drone);
+        }
+
+        /**
+         * Selects the "Sites" icon on main navigation. As this link is created by
+         * Java script, a wait is implemented to ensure the link is rendered.
+         */
+        protected void selectSitesDropdown()
+        {
+                // Wait is applied as the link is within a java script.
+                String selector = isDojoSupport() ? "div#HEADER_SITES_MENU" : "button[id$='app_sites-button']";
+                WebElement siteButton = drone.find(By.cssSelector(selector));
+                siteButton.click();
+        }
+
+        /**
+         * Selects the user link on main navigation. As this link is created by Java
+         * script, a wait is implemented to ensure the link is rendered.
+         */
+        private void selectUserDropdown()
+        {
+                WebElement userButton = drone.find(By.cssSelector(userNameDropDown));
+                userButton.click();
+        }
+        
+        /**
+         * Mimics the action of selecting Account Settings link.
+         * 
+         * @return AccountSettingsPage
+         */
+        public AccountSettingsPage selectAccountSettingsPage()
+        {
+            selectUserDropdown();
+            if(!alfrescoVersion.isCloud() || (AlfrescoVersion.Enterprise43 != alfrescoVersion))
+            {
+                throw new UnsupportedOperationException("This option is in cloud only, not available for Enterprise");
+            }
+            String selector = "td[id*='alfresco/header/AlfMenuItem']>a.alfresco-menus-_AlfMenuItemMixin";
+            drone.findAndWait(By.cssSelector(selector)).click();
+            return new AccountSettingsPage(drone);
+        }
+
+        /**
+         * Mimics the action of selecting my profile link.
+         *
+         * @return HtmlPage people finder page object
+         */
+        public MyProfilePage selectMyProfile()
+        {
+                selectUserDropdown();
+                String selector = isDojoSupport() ? "td#HEADER_USER_MENU_PROFILE_text" : "div[id$='usermenu_user'] ul li:nth-of-type(2) a";
+                drone.findAndWait(By.cssSelector(selector)).click();
+                return new MyProfilePage(drone);
+        }
+
+        /**
+         * Mimics the action of selecting my profile link.
+         *
+         * @return HtmlPage change password page object
+         */
+        public ChangePasswordPage selectChangePassword()
+        {
+                String selector = isDojoSupport() ? "td#HEADER_USER_MENU_CHANGE_PASSWORD_text" : "div[id$='usermenu_user'] ul li:nth-of-type(3) a";
+                selectUserDropdown();
+                drone.findAndWait(By.cssSelector(selector)).click();
+                return new ChangePasswordPage(drone);
+        }
+
+        /**
+         * Mimics the action of selecting logout link.
+         * The page returned from a logout is a LoginPage.
+         *
+         * @return {@link LoginPage} page response
+         */
+        public LoginPage logout()
+        {
+                selectUserDropdown();
+                String selector = isDojoSupport() ? "td#HEADER_USER_MENU_LOGOUT_text" : "div[id$='usermenu_user'] ul li:nth-of-type(5) a";
+                drone.findAndWait(By.cssSelector(selector)).click();
+                return new LoginPage(drone);
+        }
+
+        /**
+         * Mimics the action of selecting repository link.
+         *
+         * @return HtmlPage repository page object
+         */
+        public RepositoryPage selectRepository()
+        {
+                String selector = isDojoSupport() ? "div#HEADER_REPOSITORY" : "a[id$='app_repository-button']";
+                drone.find(By.cssSelector(selector)).click();
+                return new RepositoryPage(drone);
+        }
+
+        /**
+         * Select the advance search button from dropdown.
+         *
+         * @return HtmlPage advance search page.
+         */
+        public AdvanceSearchContentPage selectAdvanceSearch()
+        {
+                try
+                {
+                        if (isDojoSupport())
+                        {
+                                // TODO ALF-19185 - Bug Advance Search
+                                String usersPageURL = "/page/advsearch";
+                                String currentUrl = drone.getCurrentUrl();
+                                if (currentUrl != null)
+                                {
+                                        String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
+                                        drone.navigateTo(url);
+                                }
+                        }
+                        else
+                        {
+                                drone.findAndWait(By.cssSelector("button[id$='default-search_more-button']")).click();
+                                drone.findAndWait(By.cssSelector("div[id$='searchmenu_more']>div>ul>li>a")).click();
+                        }
+
+                        return new AdvanceSearchContentPage(drone);
+                }
+                catch (TimeoutException ne)
+                {
+                        throw new PageException("Advance Search is not visible");
+                }
+        }
+
+        /**
+         * Navigates to the users page on Admin Console - Enterprise Only option.
+         *
+         * @return {@link UserSearchPage} Instance of UserSearchPage
+         */
+        public HtmlPage getUsersPage()
+        {
+                if (alfrescoVersion.isCloud())
+                {
+                        throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
+                }
+                //TODO To be implemented by using UI once JIRA: https://issues.alfresco.com/jira/browse/ALF-18909 is resolved
+                String usersPageURL = "/page/console/admin-console/users";
+                String currentUrl = drone.getCurrentUrl();
+                if (currentUrl != null)
+                {
+                        String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
+                        drone.navigateTo(url);
+                }
+                return new UserSearchPage(drone);
+        }
+
+        public NodeBrowserPage getNodeBrowserPage()
+        {
+                if (alfrescoVersion.isCloud())
+                {
+                        throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
+                }
+                //TODO To be implemented by using UI once JIRA: https://issues.alfresco.com/jira/browse/ALF-18909 is resolved
+                String usersPageURL = "/page/console/admin-console/node-browser";
+                String currentUrl = drone.getCurrentUrl();
+                if (currentUrl != null)
+                {
+                        String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
+                        drone.navigateTo(url);
+                }
+                return new NodeBrowserPage(drone).render();
+
+        }
+
+        /**
+         * Selects the Network dropdown button present on UserDashBoard.
+         *
+         * @return {@link DashBoardPage}
+         */
+        public DashBoardPage selectNetworkDropdown()
+        {
+                if (!alfrescoVersion.isCloud())
+                {
+                        throw new UnsupportedOperationException("This is an unsupported operation for Enterprise.");
+                }
+
+                try
+                {
+                        String dropDownElementId = drone.getElement(DEFAULT_NETWORK_MENU_BUTTON);
+                        drone.findAndWait(By.cssSelector(dropDownElementId)).click();
                         return new DashBoardPage(drone);
-                    }
                 }
-            }
-            throw new PageException("Unable to find the User Network : " + networkName);
-        }
-        catch (TimeoutException e)
-        {
-            throw new PageException(this.getClass().getName() + " : selectNetwork() : failed to render in time. ", e);
-        }
-    }
-
-    /**
-     * Gets the list of user networks.
-     * 
-     * @return List<String>
-     */
-    public List<String> getUserNetworks()
-    {
-        List<WebElement> networks = null;
-        try
-        {
-            String defaultNetworkButton = drone.getElement(DEFAULT_NETWORK_MENU_BUTTON);
-            drone.findAndWait(By.cssSelector(defaultNetworkButton)).click();
-            String networkNamesid = drone.getElement(NETWORK_NAMES);
-            networks = drone.findAndWaitForElements(By.cssSelector(networkNamesid));
-            if(networks != null)
-            {
-                List<String> networkList = new ArrayList<>();
-                for (WebElement network : networks)
+                catch (TimeoutException e)
                 {
-                    networkList.add(network.getText());
+                        throw new PageException(this.getClass().getName() + " : selectNetworkDropdown() : failed to render in time. ", e);
                 }
-                return networkList;
-            }
-            throw new PageException("Not able to find the any networks");
         }
-        catch (TimeoutException e)
-        {
-            throw new PageException(this.getClass().getName() + " : selectUserNetwork() : failed to render in time. ", e);
-        }
-    }
 
-    /**
-     * Selects the user link on main navigation. As this link is created by Java
-     * script, a wait is implemented to ensure the link is rendered.
-     * 
-     * @return {@link MyTasksPage}
-     */
-    public MyTasksPage selectMyTasks()
-    {
-        if (isDojoSupport())
+        /**
+         * Selects the given User Network link present in list of networks.
+         *
+         * @param networkName String name
+         * @return {@link DashBoardPage}
+         */
+        public DashBoardPage selectNetwork(final String networkName)
         {
-            if(!alfrescoVersion.isCloud())
-            {
-                drone.find(By.cssSelector("#HEADER_TASKS")).click();
-            }
-            drone.find(By.cssSelector("#HEADER_MY_TASKS")).click();
+                if (!alfrescoVersion.isCloud())
+                {
+                        throw new UnsupportedOperationException("This is an unsupported operation for Enterprise.");
+                }
+                if (StringUtils.isEmpty(networkName))
+                {
+                        throw new IllegalArgumentException("Network name is required.");
+                }
+                try
+                {
+                        String networkNamesid = drone.getElement(NETWORK_NAMES);
+                        List<WebElement> networks = drone.findAndWaitForElements(By.cssSelector(networkNamesid));
+                        {
+                                for (WebElement network : networks)
+                                {
+                                        if (network.getText() != null && network.getText().equalsIgnoreCase(networkName.trim()))
+                                        {
+                                                network.click();
+                                                return new DashBoardPage(drone);
+                                        }
+                                }
+                        }
+                        throw new PageException("Unable to find the User Network : " + networkName);
+                }
+                catch (TimeoutException e)
+                {
+                        throw new PageException(this.getClass().getName() + " : selectNetwork() : failed to render in time. ", e);
+                }
         }
-        else
-        {
-            drone.find(By.cssSelector("button[id$='default-app_more-button']")).click();
-            drone.find(By.cssSelector("div[id$='-appmenu_more']>div>ul:first-of-type>li:first-of-type>a")).click();
-        }
-        return new MyTasksPage(drone);
-    }
 
-    /**
-     * Method to select "Workflows I've Started" under Tasks navigation menu item
-     * @return {@link MyWorkFlowsPage}
-     */
-    public MyWorkFlowsPage selectWorkFlowsIHaveStarted()
-    {
-        try
+        /**
+         * Gets the list of user networks.
+         *
+         * @return List<String>
+         */
+        public List<String> getUserNetworks()
         {
-            drone.find(By.cssSelector("#HEADER_TASKS")).click();
-            drone.find(By.cssSelector("td#HEADER_MY_WORKFLOWS_text")).click();
-            return new MyWorkFlowsPage(drone);
+                List<WebElement> networks = null;
+                try
+                {
+                        String defaultNetworkButton = drone.getElement(DEFAULT_NETWORK_MENU_BUTTON);
+                        drone.findAndWait(By.cssSelector(defaultNetworkButton)).click();
+                        String networkNamesid = drone.getElement(NETWORK_NAMES);
+                        networks = drone.findAndWaitForElements(By.cssSelector(networkNamesid));
+                        if (networks != null)
+                        {
+                                List<String> networkList = new ArrayList<String>();
+                                for (WebElement network : networks)
+                                {
+                                        networkList.add(network.getText());
+                                }
+                                return networkList;
+                        }
+                        throw new PageException("Not able to find the any networks");
+                }
+                catch (TimeoutException e)
+                {
+                        throw new PageException(this.getClass().getName() + " : selectUserNetwork() : failed to render in time. ", e);
+                }
         }
-        catch (NoSuchElementException nse)
+
+        /**
+         * Selects the user link on main navigation. As this link is created by Java
+         * script, a wait is implemented to ensure the link is rendered.
+         *
+         * @return {@link MyTasksPage}
+         */
+        public MyTasksPage selectMyTasks()
         {
-            throw new PageException("Unable to find Workflows I've started link", nse);
+                if (isDojoSupport())
+                {
+                        if (!alfrescoVersion.isCloud())
+                        {
+                                drone.find(By.cssSelector("#HEADER_TASKS")).click();
+                        }
+                        drone.find(By.cssSelector("#HEADER_MY_TASKS")).click();
+                }
+                else
+                {
+                        drone.find(By.cssSelector("button[id$='default-app_more-button']")).click();
+                        drone.find(By.cssSelector("div[id$='-appmenu_more']>div>ul:first-of-type>li:first-of-type>a")).click();
+                }
+                return new MyTasksPage(drone);
         }
-    }
-    
-    /**
-     * Navigates to the groups page on Admin Console - Enterprise Only option.
-     * @return {@link GroupsPage} Instance of UserSearchPage
-     */
-    public GroupsPage getGroupsPage()
-    {
-        ShareUtil.validateAlfrescoVersion(alfrescoVersion, RequiredAlfrescoVersion.ENTERPRISE_ONLY);
-        //TODO To be implemented by using UI once JIRA: https://issues.alfresco.com/jira/browse/ALF-18909 is resolved 
-        String usersPageURL = "/page/console/admin-console/groups";
-        String currentUrl = drone.getCurrentUrl();
-        if(currentUrl != null)
+
+        /**
+         * Method to select "Workflows I've Started" under Tasks navigation menu item
+         *
+         * @return {@link MyWorkFlowsPage}
+         */
+        public MyWorkFlowsPage selectWorkFlowsIHaveStarted()
         {
-            String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
-            drone.navigateTo(url);
+                try
+                {
+                        drone.find(By.cssSelector("#HEADER_TASKS")).click();
+                        drone.find(By.cssSelector("td#HEADER_MY_WORKFLOWS_text")).click();
+                        return new MyWorkFlowsPage(drone);
+                }
+                catch (NoSuchElementException nse)
+                {
+                        throw new PageException("Unable to find Workflows I've started link", nse);
+                }
         }
-        return new GroupsPage(drone);
-    }
+
+        /**
+         * Navigates to the groups page on Admin Console - Enterprise Only option.
+         *
+         * @return {@link GroupsPage} Instance of UserSearchPage
+         */
+        public GroupsPage getGroupsPage()
+        {
+                if (alfrescoVersion.isCloud())
+                {
+                        throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
+                }
+                //TODO To be implemented by using UI once JIRA: https://issues.alfresco.com/jira/browse/ALF-18909 is resolved
+                String usersPageURL = "/page/console/admin-console/groups";
+                String currentUrl = drone.getCurrentUrl();
+                if (currentUrl != null)
+                {
+                        String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
+                        drone.navigateTo(url);
+                }
+                return new GroupsPage(drone);
+        }
+
 
     /**
      * Select admin tools.
@@ -570,11 +607,10 @@ public class Navigation extends SharePage
      */
     public CustomiseUserDashboardPage selectCustomizeUserDashboard()
     {
-        if(alfrescoVersion.isDojoSupported())
+        if (alfrescoVersion.isDojoSupported())
         {
             selectUserDashboardConfigurationIcon();
         }
         return new CustomiseUserDashboardPage(getDrone());
-        
     }
 }
