@@ -189,8 +189,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/devenv/org.springframework.test-3.0.5.RELEASE.jar" sourcepath="src/org.springframework.test-sources-3.0.5.RELEASE.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/JSlideShare-0.6.jar" sourcepath="src/JSlideShare-0.6-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/apache-solr-solrj-1.4.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-core-asl-1.9.9.jar" sourcepath="src/jackson-core-asl-1.9.9-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.9.9.jar" sourcepath="src/jackson-mapper-asl-1.9.9-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson-core-asl-1.9.13.jar" sourcepath="src/jackson-core-asl-1.9.13-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.9.13.jar" sourcepath="src/jackson-mapper-asl-1.9.13-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-security-core-3.1.0.RC2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-linkedin-1.0.0.BUILD-SNAPSHOT.jar" sourcepath="src/spring-social-linkedin-1.0.0.BUILD-SNAPSHOT-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/mybatis-3.0.4-patched.jar" sourcepath="src/mybatis-3.0.4-sources-patched.jar">
