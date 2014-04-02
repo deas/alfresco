@@ -543,4 +543,27 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
         Assert.assertFalse(documentLibPage.getFileDirectoryInfo(testLockedFile.getName()).isCommentLinkPresent(), "Verify the Comment option is displayed");
     }
 
+    @Test(enabled = true, groups = "alfresco-one", priority = 33)
+    public void renameContentTest()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        folderName = folderName + " updated";
+        thisRow.renameContent(folderName);
+        Assert.assertEquals(documentLibPage.getFileDirectoryInfo(folderName).getName(), folderName);
+    }
+
+    @Test(enabled = true, groups = "alfresco-one", priority = 34)
+    public void cancelRenameContentTest()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        thisRow.contentNameEnableEdit();
+        thisRow.contentNameEnter(folderName + " not updated");
+        thisRow.contentNameClickCancel();
+        drone.refresh();
+        documentLibPage = drone.getCurrentPage().render();
+        Assert.assertEquals(documentLibPage.getFileDirectoryInfo(folderName).getName(), folderName);
+    }
+
 }

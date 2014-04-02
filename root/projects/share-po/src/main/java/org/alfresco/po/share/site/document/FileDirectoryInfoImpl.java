@@ -67,7 +67,6 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     private static final String TAG_INFO = "span[title='Tag'] + form + span.item";
     private static final String TAG_COLLECTION = TAG_INFO + " > span.tag > a";
     private static final String ADD_TAG = "span[title='Tag']";
-    private static final String EDIT_CONTENT_NAME_ICON = "span[title='Rename']";
     @SuppressWarnings("unused")
     private static final String TAG_NAME = "a.tag-link";
     private static final String IMG_FOLDER = "/documentlibrary/images/folder";
@@ -101,6 +100,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     protected String GOOGLE_DOCS_URL = "googledocsEditor?";
     protected String FILENAME_IDENTIFIER = "h3.filename a";
     protected String DOWNLOAD_DOCUMENT = "div.document-download>a";
+    protected String EDIT_CONTENT_NAME_ICON = "span[title='Rename']";
     protected String DOWNLOAD_FOLDER = "div.folder-download>a";
     protected String rowElementXPath = null;
     protected String MORE_ACTIONS;
@@ -1772,6 +1772,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
                 timer.start();
                 WebElement contentNameLink = findAndWait(By.cssSelector(FILENAME_IDENTIFIER));
                 getDrone().mouseOver(contentNameLink);
+                resolveStaleness();
                 // Wait till pencil icon appears
                 WebElement editIcon = findElement(By.cssSelector(EDIT_CONTENT_NAME_ICON));
                 // Select to get focus
@@ -1786,6 +1787,9 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             {
             }
             catch (StaleElementReferenceException stale)
+            {
+            }
+            catch (TimeoutException stale)
             {
             }
             finally
@@ -1808,11 +1812,15 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
                 inputCOntentName.sendKeys(newContentName);
                 return;
             }
+            else
+            {
+                throw new PageException("Input is not displayed displayed");
+            }
         }
         catch (NoSuchElementException e)
         {
             logger.error("Input should be displayed" + e.getMessage());
-            throw new PageException("Input should be displayed");
+            throw new PageException("Input should be displayed", e);
         }
         
     }
@@ -1822,12 +1830,20 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            findAndWait(By.linkText("Save")).click();
+            WebElement inputBox = findElement(By.cssSelector(INPUT_CONTENT_NAME));
+            if (inputBox.isDisplayed())
+            {
+                findAndWait(By.linkText("Save")).click();
+            }
+            else
+            {
+                throw new PageException("Input is not displayed displayed");
+            }
         }
         catch (TimeoutException ex)
         {
             logger.error("Exceeded time to find the Save button css." + ex.getMessage());
-            throw new PageException("Exceeded time to find the Save button css.");
+            throw new PageException("Exceeded time to find the Save button css.", ex);
         }
 
     }
@@ -1837,12 +1853,20 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            findAndWait(By.linkText("Cancel")).click();
+            WebElement inputBox = findElement(By.cssSelector(INPUT_CONTENT_NAME));
+            if (inputBox.isDisplayed())
+            {
+                findAndWait(By.linkText("Cancel")).click();
+            }
+            else
+            {
+                throw new PageException("Input is not displayed displayed");
+            }
         }
         catch (TimeoutException ex)
         {
             logger.error("Exceeded time to find the Save button css." + ex.getMessage());
-            throw new PageException("Exceeded time to find the Save button css.");
+            throw new PageException("Exceeded time to find the Save button css.", ex);
         }
     }
 

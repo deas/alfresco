@@ -25,6 +25,7 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
         MORE_ACTIONS = drone.getElement("more.actions");
         CONTENT_ACTIONS = "td.yui-dt-col-actions";
         rowElementXPath = "../../..";
+        EDIT_CONTENT_NAME_ICON = "td[class*='-col-name'] span[title='Rename']";
         resolveStaleness();
     }
 

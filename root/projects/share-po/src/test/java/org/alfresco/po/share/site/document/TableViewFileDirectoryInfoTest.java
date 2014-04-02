@@ -174,4 +174,27 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         Assert.assertNotNull(fileInfo.getModified());
     }
 
+    @Test(dependsOnMethods = "getModified", enabled = true, groups = "alfresco-one")
+    public void renameContentTest()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName());
+
+        thisRow.renameContent(file1.getName() + " updated");
+        Assert.assertEquals(documentLibPage.getFileDirectoryInfo(file1.getName() + " updated").getName(), file1.getName() + " updated");
+    }
+
+    @Test(enabled = true, groups = "alfresco-one", dependsOnMethods = "renameContentTest")
+    public void cancelRenameContentTest()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file2.getName());
+        thisRow.contentNameEnableEdit();
+        thisRow.contentNameEnter(file2.getName() + " not updated");
+        thisRow.contentNameClickCancel();
+        drone.refresh();
+        documentLibPage = drone.getCurrentPage().render();
+        Assert.assertEquals(documentLibPage.getFileDirectoryInfo(file2.getName()).getName(), file2.getName());
+    }
+
 }
