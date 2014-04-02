@@ -17,6 +17,8 @@ goto :ParamsLoop
 for /D %%D IN (%~dp0..\) do set ALF_HOME=%%~dpD
 set CATALINA_HOME=%ALF_HOME%tomcat
 
+if exist "%CATALINA_HOME%\bin\setenv.bat" call "%CATALINA_HOME%\bin\setenv.bat"
+
 :start
 echo This script will apply all the AMPs in %ALF_HOME%amps to the alfresco.war and share.war files in %CATALINA_HOME%\webapps
 if "%ALF_AMP_NOWAIT%" == "yes" goto nowait1

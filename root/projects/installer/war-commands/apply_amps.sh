@@ -6,7 +6,9 @@ pushd $(dirname $0)>/dev/null
 export SCRIPTPATH=$(pwd)
 export ALF_HOME=${SCRIPTPATH%/*}
 export CATALINA_HOME=$ALF_HOME/tomcat
-. $ALF_HOME/scripts/setenv.sh
+if [ -f $CATALINA_HOME/bin/setenv.sh ]; then
+  . $CATALINA_HOME/bin/setenv.sh
+fi
 echo "This script will apply all the AMPs in amps and amps_share to the alfresco.war and share.war files in $CATALINA_HOME/webapps"
 echo "Press control-c to stop this script . . ."
 echo "Press any other key to continue . . ."
