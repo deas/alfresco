@@ -24,7 +24,11 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
          config.extended_valid_elements = extValidElements + "embed[src|type|width|height|flashvars|wmode]";
          
          config.plugins = (config.plugins && config.plugins != '') ? config.plugins + ', safari,legacyoutput,paste': 'safari,legacyoutput,paste';
-         config.forced_root_block = "p";
+         // MNT-10971 fix,  if forced_root_block was already provided through custom config - then use it
+         if (typeof config.forced_root_block === "undefined")
+         {
+            config.forced_root_block = "p";
+         }
 
          if (!config.init_instance_callback) 
          {
