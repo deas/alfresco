@@ -58,8 +58,12 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
     @Override
     public synchronized ConfigureSiteNoticeDialogBoxPage render(RenderTime timer)
     {
-        elementRender(timer, getVisibleRenderElement(CONFIGURE_SITE_NOTICE_DIALOG_BOX), getVisibleRenderElement(TITLE_BOX), getVisibleRenderElement(OK_BUTTON),
-                getVisibleRenderElement(CANCEL_BUTTON), getVisibleRenderElement(CLOSE_BUTTON));
+        elementRender(timer, 
+                getVisibleRenderElement(CONFIGURE_SITE_NOTICE_DIALOG_BOX),
+                getVisibleRenderElement(TITLE_BOX),
+                getVisibleRenderElement(OK_BUTTON),
+                getVisibleRenderElement(CANCEL_BUTTON),
+                getVisibleRenderElement(CLOSE_BUTTON));
         return this;
 
     }
