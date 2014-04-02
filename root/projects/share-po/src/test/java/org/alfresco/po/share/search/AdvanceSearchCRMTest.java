@@ -45,7 +45,6 @@ public class AdvanceSearchCRMTest extends AbstractTest
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass(groups={"Cloud2"})
     private void prepare() throws Exception
     {

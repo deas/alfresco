@@ -41,7 +41,6 @@ public class SiteFinderPageTest extends AbstractTest
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass(groups="alfresco-one")
     private void prepare() throws Exception
     {

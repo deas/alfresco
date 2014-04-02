@@ -44,7 +44,6 @@ public class DownloadFileAndFolderTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass
     private void prepare() throws Exception
     {

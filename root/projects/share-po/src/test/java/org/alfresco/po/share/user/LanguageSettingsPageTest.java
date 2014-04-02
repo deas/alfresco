@@ -46,7 +46,6 @@ public class LanguageSettingsPageTest extends AbstractTest
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass(groups = { "Cloud" })
     private void prepare() throws Exception
     {

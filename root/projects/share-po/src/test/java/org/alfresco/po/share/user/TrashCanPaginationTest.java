@@ -63,7 +63,6 @@ public class TrashCanPaginationTest extends AbstractTest
      * Before method to create 60 files and delete them 
      * @throws Exception
      */
-	@SuppressWarnings("unused")
     @BeforeClass(groups = { "Enterprise4.2" })
     private void setup() throws Exception
     {

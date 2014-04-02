@@ -67,7 +67,6 @@ public class AdvanceSearchContentTest extends AbstractTest
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass(groups={"Enterprise-only"})
     private void prepare() throws Exception
     {

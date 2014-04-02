@@ -69,7 +69,6 @@ public class TrashCanPageTest extends AbstractTest
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unused")
     @BeforeClass(groups = { "Enterprise4.2" })
     private void prepare() throws Exception
     {

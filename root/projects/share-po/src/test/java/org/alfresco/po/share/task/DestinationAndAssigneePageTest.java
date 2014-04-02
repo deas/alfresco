@@ -60,7 +60,6 @@ public class DestinationAndAssigneePageTest extends AbstractTest
      * Test process of accessing DestinationAndAssignee page.
      * @throws Exception 
      */
-    @SuppressWarnings("unused")
     @BeforeClass
     private void setUp() throws Exception
     {
