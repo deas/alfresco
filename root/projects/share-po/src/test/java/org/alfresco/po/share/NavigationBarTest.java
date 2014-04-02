@@ -36,12 +36,11 @@ import org.testng.annotations.Test;
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
-@Test(groups ={"alfresco-one"})
 public class NavigationBarTest extends AbstractTest
 {
     private SharePage page;
     
-    @BeforeClass()
+    @BeforeClass
     public void setup() throws Exception
     {
         page = loginAs(username, password);
@@ -171,7 +170,7 @@ public class NavigationBarTest extends AbstractTest
         String strInvitedUser = username.substring(username.lastIndexOf("@") + 1, username.length());
         page.getNav().selectNetwork(strInvitedUser);
     }
-
+    
     @Test(dependsOnMethods = "testSelectNetworkInEnterprise", groups = "Cloud-only")
     public void testNetworkDropdown()
     {
