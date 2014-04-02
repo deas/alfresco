@@ -21,6 +21,7 @@ package org.alfresco.po.share.dashlet;
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -40,7 +41,13 @@ public class SiteSearchItem
     {
         this.thumbnail = new ShareLink(searchItem.findElement(By.cssSelector("td[class*='col-site'] a")), drone);
         this.itemName = new ShareLink(searchItem.findElement(By.cssSelector("td[class*='col-path'] div>h3>a")), drone);
-        this.path = new ShareLink(searchItem.findElement(By.cssSelector("td[class*='col-path'] .details>a")), drone);
+        try
+        {
+            this.path = new ShareLink(searchItem.findElement(By.cssSelector("td[class*='col-path'] .details>a")), drone);
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
     }
 
     public ShareLink getThumbnail()
