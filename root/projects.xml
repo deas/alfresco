@@ -1125,18 +1125,6 @@
    
    <target name="package-solr"
            depends="compile-solr">
-      <!-- Set version.number to Solr cores -->
-      <replaceregexp
-            file="${dir.project.solr.instance.config.archive}/solrcore.properties"
-            match="^alfresco\.version=.*"
-            replace="alfresco.version=${version.number}"
-            byline="true"/>
-      <replaceregexp
-            file="${dir.project.solr.instance.config.workspace}/solrcore.properties"
-            match="^alfresco\.version=.*"
-            replace="alfresco.version=${version.number}"
-            byline="true"/>
-            
       <mkdir dir="${dir.project.solr.dist}" />
       <jar jarfile="${dir.project.solr.dist}/${file.name.jar.solr}" 
            basedir="${dir.project.solr.classes}" />
