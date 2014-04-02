@@ -634,14 +634,14 @@
         </plugin>
         <plugin>
             <artifactId>maven-pmd-plugin</artifactId>
-            <version>3.0.1</version>
+            <version>3.1</version>
             <configuration>
                 <targetJdk>${maven.build.sourceVersion}</targetJdk>
             </configuration>
         </plugin>
         <plugin>
             <artifactId>maven-jxr-plugin</artifactId>
-            <version>2.3</version>
+            <version>2.4</version>
             <configuration>
                 <aggregate>false</aggregate>
             </configuration>
@@ -649,7 +649,7 @@
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>findbugs-maven-plugin</artifactId>
-            <version>2.5.2</version>
+            <version>2.5.3</version>
         </plugin>
     </plugins>
   </reporting>
