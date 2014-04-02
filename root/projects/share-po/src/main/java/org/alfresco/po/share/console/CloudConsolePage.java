@@ -1,14 +1,3 @@
-package org.alfresco.po.share.console;
-
-import org.alfresco.po.share.SharePage;
-import org.alfresco.webdrone.RenderElement;
-import org.alfresco.webdrone.RenderTime;
-import org.alfresco.webdrone.WebDrone;
-import org.alfresco.webdrone.exception.PageOperationException;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
-
 /*
  * Copyright (C) 2005-2014 Alfresco Software Limited.
  * This file is part of Alfresco
@@ -23,6 +12,18 @@ import org.openqa.selenium.WebElement;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.alfresco.po.share.console;
+
+import org.alfresco.po.share.SharePage;
+import org.alfresco.webdrone.RenderElement;
+import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.RenderWebElement;
+import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageOperationException;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
+
 
 // "extends SharePage" should be changed to "extends Page" we should re-locate method "render" from SharePage to Page
 public class CloudConsolePage extends SharePage
@@ -38,8 +39,8 @@ public class CloudConsolePage extends SharePage
     private static final By DASHBOARD_LINK = By.cssSelector("li>a[href*='/support']");
     private static final By LOGOUT_LINK = By.cssSelector("li>a[href*='logout']");
     private static final By SEARCH_INPUT = By.cssSelector("input[id$='edit-search-field']");
+    @RenderWebElement
     private static final By FIND_BUTTON = By.cssSelector("input[id$='edit-submit']");
-    private static final RenderElement FIND_BUTTON_RENDER = RenderElement.getVisibleRenderElement(FIND_BUTTON);
     /**
      * Constructor.
      */
@@ -57,7 +58,7 @@ public class CloudConsolePage extends SharePage
     @Override
     public CloudConsolePage render(RenderTime timer)
     {
-        elementRender(timer, FIND_BUTTON_RENDER);
+        webElementRender(timer);
         return this;
     }
 

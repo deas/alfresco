@@ -1,8 +1,8 @@
 package org.alfresco.po.share.console;
 
 import org.alfresco.po.share.console.tabs.InviteUsersTab;
-import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.RenderWebElement;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -24,11 +24,10 @@ import org.openqa.selenium.WebElement;
  */
 public class CloudConsoleDashboardPage extends CloudConsolePage
 {
+    @RenderWebElement
     private static final By INVITE_USERS_TAB = By.cssSelector("li>a[href*='support/invite']");
+    @RenderWebElement
     private static final By AUDIT_LOG_TAB = By.cssSelector("li>a[href*='audit']");
-
-    private static final RenderElement INVITE_USERS_TAB_RENDER = RenderElement.getVisibleRenderElement(INVITE_USERS_TAB);
-    private static final RenderElement AUDIT_LOG_TAB_RENDER = RenderElement.getVisibleRenderElement(AUDIT_LOG_TAB);
 
     protected CloudConsoleDashboardPage(WebDrone drone)
     {
@@ -39,7 +38,7 @@ public class CloudConsoleDashboardPage extends CloudConsolePage
     @Override
     public CloudConsoleDashboardPage render(RenderTime timer)
     {
-        elementRender(timer, INVITE_USERS_TAB_RENDER, AUDIT_LOG_TAB_RENDER);
+        webElementRender(timer);
         return this;
     }
 
