@@ -65,7 +65,8 @@ public class InviteMembersPageTest extends AbstractTest
         // userName, userName, userName, alfrescoVersion.isCloud(),
         // shareUrl));
 
-        SitePage site = dashBoard.getNav().selectCreateSite().createNewSite(siteName).render();
+        CreateSitePage createSitePage = dashBoard.getNav().selectCreateSite().render();
+        SitePage site = createSitePage.createNewSite(siteName).render();
         membersPage = site.getSiteNav().selectInvite().render();
     }
 
