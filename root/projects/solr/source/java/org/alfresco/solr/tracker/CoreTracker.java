@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -228,6 +228,8 @@ public class CoreTracker implements CloseHook
     
     private boolean isMaster = true;
     
+    private String alfrescoVersion;
+
     // index contrl
 
     // http client
@@ -430,7 +432,8 @@ public class CoreTracker implements CloseHook
         authorityCacheSize =  Integer.parseInt(p.getProperty("solr.authorityCache.size", "64"));
         pathCacheSize =  Integer.parseInt(p.getProperty("solr.pathCache.size", "64"));
         
-        
+        alfrescoVersion = p.getProperty("alfresco.version", "4.2.2");
+
         client = new SOLRAPIClient(getRepoClient(loader), dataModel.getDictionaryService(CMISStrictDictionaryService.DEFAULT), dataModel.getNamespaceDAO());
 
         JobDetail job = new JobDetail("CoreTracker-" + core.getName(), "Solr", CoreTrackerJob.class);
@@ -453,6 +456,7 @@ public class CoreTracker implements CloseHook
         }
 
         core.addCloseHook(this);
+        log.info("Solr built for Alfresco version: " + alfrescoVersion);
     }
 
     protected AlfrescoHttpClient getRepoClient(SolrResourceLoader loader)
@@ -4686,6 +4690,12 @@ public class CoreTracker implements CloseHook
         }
         
     }
-    
-    
+
+    /**
+     * @return Alfresco version Solr was built for
+     */
+    public String getAlfrescoVersion()
+    {
+        return alfrescoVersion;
+    }
 }
