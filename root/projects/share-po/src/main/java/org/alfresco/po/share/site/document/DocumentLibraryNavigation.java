@@ -775,11 +775,15 @@ public class DocumentLibraryNavigation extends SharePage
             selectItemInOptionsDropDown(By.cssSelector("span.view.filmstrip"));
             return drone.getCurrentPage();
         }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("Exceeded the time to find css." + nse.getMessage());
+        }
         catch (TimeoutException e)
         {
             logger.error("Exceeded the time to find css." + e.getMessage());
-            throw new PageException("Exceeded the time to find css.");
         }
+        throw new PageOperationException("Not able to select film strip view");
     }
 
     /**
