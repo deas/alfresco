@@ -76,7 +76,8 @@ public class SiteMembersPageTest extends AbstractTest
             // shareUrl));
         }
         SharePage page = drone.getCurrentPage().render();
-        SitePage site = page.getNav().selectCreateSite().createNewSite(siteName).render();
+        CreateSitePage createSitePage = page.getNav().selectCreateSite().render();
+        SitePage site = createSitePage.createNewSite(siteName).render();
         if (!alfrescoVersion.isCloud())
         {
             List<String> searchUsers = null;

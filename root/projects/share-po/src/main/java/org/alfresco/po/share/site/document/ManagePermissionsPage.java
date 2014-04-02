@@ -546,6 +546,7 @@ public class ManagePermissionsPage extends SharePage
      */
     public class UserSearchPage extends SharePage
     {
+        private static final int SEARCH_TEXT_MIN_LEN = 3;
         private final By SEARCH_USER_INPUT = By.cssSelector("div.search-text input");
         private final By SEARCH_USER_BUTTON = By.cssSelector("div.authority-search-button button");
 
@@ -682,7 +683,7 @@ public class ManagePermissionsPage extends SharePage
             drone.find(SEARCH_USER_INPUT).clear();
             drone.find(SEARCH_USER_INPUT).sendKeys(searchText);
             drone.find(SEARCH_USER_BUTTON).click();
-            if(searchText.length() < 3)
+            if(searchText.length() < SEARCH_TEXT_MIN_LEN)
             {
                 WebElement element = drone.find(By.cssSelector(".message"));
                 throw new UnsupportedOperationException(element.getText());
