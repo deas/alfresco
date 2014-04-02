@@ -1090,7 +1090,7 @@ public class DocumentLibraryNavigation extends SharePage
     public ViewType getViewType()
     {
         // Note: This is temporary fix to find out the view type.
-        String text = (String) drone.executeJavaScript("return document.getElementsByClassName('setDefaultView')[0].innerHTML");
+        String text = (String) drone.executeJavaScript("return Alfresco.util.ComponentManager.findFirst('Alfresco.DocumentList').options.viewRendererName;");
         ViewType type = ViewType.getViewType(text);
         return type;
     }
