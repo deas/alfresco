@@ -135,11 +135,21 @@
        */
       resizeCommentDetails: function CommentsList_resizeCommentDetails()
       {
-         var width = Dom.get(this.id + "-body").offsetWidth + "px",
+         var width = Dom.get(this.id + "-body").offsetWidth,
              comments = YAHOO.util.Selector.query('div.comment-details', this.id + "-body");
+
+         //MNT-10596 fix. Get Comments Container left and right paddings
+         if (comments.length != 0)
+         {
+            var containerLeftPadding = window.getComputedStyle(comments[0], null).getPropertyValue('padding-left').replace("px",""),
+                containerRightPadding = window.getComputedStyle(comments[0], null).getPropertyValue('padding-right').replace("px","");
+
+            // normalize the comments width
+            width = width - containerLeftPadding - containerRightPadding;
+         }
          for (var i=0; i<comments.length; i++)
          {
-            comments[i].style.width = width;
+            comments[i].style.width = width + "px";
          }
       },
 
