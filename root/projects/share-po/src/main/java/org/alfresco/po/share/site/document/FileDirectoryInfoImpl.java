@@ -77,7 +77,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     private static final String CONTENT_NODEREF = "h3.filename form";
     protected static String ACTIONS_MENU = "td:nth-of-type(5)";
     private static final String ACTIONS_LIST = "div.action-set>div";
-    protected static String TITLE = "span.title";
+    protected String TITLE = "span.title";
     private static final String CLOUD_REMOVE_TAG = "img[src$='delete-item-off.png']";
     private static final String ENTERPRISE_REMOVE_TAG = "img[src$='delete-tag-off.png']";
     private static final String SELECT_CHECKBOX = "input[id^='checkbox-yui']";

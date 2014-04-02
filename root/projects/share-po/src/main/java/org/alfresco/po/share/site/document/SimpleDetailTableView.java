@@ -32,7 +32,7 @@ import org.openqa.selenium.WebElement;
  */
 public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
 {
-    protected static String CONTENT_ACTIONS = "td:nth-of-type(5)";
+    protected String CONTENT_ACTIONS = "td:nth-of-type(5)";
     
     public SimpleDetailTableView(String nodeRef,WebElement webElement, WebDrone drone)
     {
