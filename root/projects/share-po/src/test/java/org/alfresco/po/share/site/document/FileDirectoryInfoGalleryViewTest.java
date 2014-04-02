@@ -52,7 +52,6 @@ import org.testng.annotations.Test;
  * @author Chiran
  */
 @Listeners(FailedTestListener.class)
-@Test(groups="BambooBug")
 public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
 {
     private final Log logger = LogFactory.getLog(this.getClass());

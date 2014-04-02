@@ -17,12 +17,11 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share.site.document;
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.RenderWebElement;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
@@ -39,10 +38,14 @@ import org.openqa.selenium.NoSuchElementException;
 public class ViewPublicLinkPage extends SharePage
 {
     private static Log logger = LogFactory.getLog(ViewPublicLinkPage.class);
+    @RenderWebElement
     private static final By alfrescoImageLocator = By.cssSelector(".quickshare-header-left>img");
+    @RenderWebElement
     private static final By documentDetailsLinkLocator = By.cssSelector("div.quickshare-header-right>a.brand-button");
+    @RenderWebElement
     private static final By documentNameLocator = By.cssSelector(".quickshare-node-header h1");
-    private static final By documentPreviewLocator = By.cssSelector("div[id$='web-preview-previewer-div']>img");
+    @RenderWebElement
+    private static final By documentPreviewLocator = By.cssSelector("div[id$='web-preview-previewer-div']");
    
     /**
      * Constructor.
@@ -56,8 +59,7 @@ public class ViewPublicLinkPage extends SharePage
     @Override
     public ViewPublicLinkPage render(RenderTime timer)
     {
-        elementRender(timer, getVisibleRenderElement(alfrescoImageLocator), getVisibleRenderElement(documentDetailsLinkLocator),
-                getVisibleRenderElement(documentNameLocator), getVisibleRenderElement(documentPreviewLocator));
+        webElementRender(timer);
         
         return this;
     }

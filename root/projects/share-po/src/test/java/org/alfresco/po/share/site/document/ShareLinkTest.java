@@ -43,7 +43,7 @@ public class ShareLinkTest extends AbstractDocumentTest
     private final String cloudUserName = "user1@premiernet.test";
     private final String cloudUserPassword = "spr!nkles";
 
-    @BeforeClass(alwaysRun=true)
+    @BeforeClass(groups="alfresco-one")
     private void prepare() throws Exception
     {
         siteName = "site" + System.currentTimeMillis();
@@ -53,7 +53,7 @@ public class ShareLinkTest extends AbstractDocumentTest
         createData();
     }
 
-    @AfterClass(alwaysRun=true)
+    @AfterClass(groups="alfresco-one")
     public void teardown()
     {
         SiteUtil.deleteSite(drone, siteName);
