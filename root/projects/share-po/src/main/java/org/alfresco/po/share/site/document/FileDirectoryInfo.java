@@ -483,9 +483,49 @@ public interface FileDirectoryInfo
      * 
      * @return boolean
      */
-    boolean isShareLinkVisible();
+    public abstract boolean isShareLinkVisible();
 
-    boolean isViewInBrowserVisible();
+    /**
+     * Checks if view in browser icon is visible.
+     * 
+     * @return boolean
+     */
+    public abstract boolean isViewInBrowserVisible();
 
-    void enterTagString(final String tagName);
+    /**
+     * Sends the keys that needs to be entered for new tag.
+     * 
+     * @param tagName
+     */
+    public abstract void enterTagString(final String tagName);
+
+    /**
+     * Hovers over the edit icon and clicks the edit button.
+     */
+    public abstract void contentNameEnableEdit();
+
+    /**
+     * Enters the new content name in the box
+     * 
+     * @param newContentName
+     */
+    public abstract void contentNameEnter(String newContentName);
+
+    /**
+     * Clicks the save link for content name editing.
+     */
+    public abstract void contentNameClickSave();
+
+    /**
+     * Clicks the cancel link for content name editing.
+     */
+    public abstract void contentNameClickCancel();
+
+    /**
+     * Hovers over the edit icon and clicks the edit button.
+     * Enters the new content name in the box.
+     * Clicks the save link for content name editing.
+     */
+    public abstract void renameContent(String newContentName);
+    
 }

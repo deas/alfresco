@@ -33,6 +33,7 @@ import org.alfresco.webdrone.WebDroneImpl;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
@@ -66,6 +67,9 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     private static final String TAG_INFO = "span[title='Tag'] + form + span.item";
     private static final String TAG_COLLECTION = TAG_INFO + " > span.tag > a";
     private static final String ADD_TAG = "span[title='Tag']";
+    private static final String EDIT_CONTENT_NAME_ICON = "span[title='Rename']";
+    @SuppressWarnings("unused")
+    private static final String TAG_NAME = "a.tag-link";
     private static final String IMG_FOLDER = "/documentlibrary/images/folder";
     private static final String FAVOURITE_CONTENT = "a.favourite-action";
     private static final String LIKE_CONTENT = "a.like-action";
@@ -91,6 +95,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     protected final String LINK_MANAGE_PERMISSION = "div[class$='-permissions']>a";
     protected final long WAIT_TIME_3000 = 3000;
     protected String INPUT_TAG_NAME = "div.inlineTagEdit input";
+    protected String INPUT_CONTENT_NAME = "input[name='prop_cm_name']";
     protected String nodeRef;
     protected String INLINE_TAGS = "div.inlineTagEdit>span>span.inlineTagEditTag";
     protected String GOOGLE_DOCS_URL = "googledocsEditor?";
@@ -1753,6 +1758,112 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             // no log needed due to negative cases.
         }
         return false;
+    }
+
+    @Override
+    public void contentNameEnableEdit()
+    {
+        // hover over tag area
+        RenderTime timer = new RenderTime(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime() * 2);
+        while (true)
+        {
+            try
+            {
+                timer.start();
+                WebElement contentNameLink = findAndWait(By.cssSelector(FILENAME_IDENTIFIER));
+                getDrone().mouseOver(contentNameLink);
+                // Wait till pencil icon appears
+                WebElement editIcon = findElement(By.cssSelector(EDIT_CONTENT_NAME_ICON));
+                // Select to get focus
+                editIcon.click();
+                if (findElement(By.cssSelector(INPUT_CONTENT_NAME)).isDisplayed())
+                    break;
+            }
+            catch (NoSuchElementException e)
+            {
+            }
+            catch (ElementNotVisibleException e2)
+            {
+            }
+            catch (StaleElementReferenceException stale)
+            {
+            }
+            finally
+            {
+                timer.end();
+            }
+        }
+    }
+
+    @Override
+    public void contentNameEnter(String newContentName)
+    {
+        try
+        {
+            WebElement inputBox = findElement(By.cssSelector(INPUT_CONTENT_NAME));
+            if (inputBox.isDisplayed())
+            {
+                WebElement inputCOntentName = findAndWait(By.cssSelector(INPUT_CONTENT_NAME));
+                inputCOntentName.clear();
+                inputCOntentName.sendKeys(newContentName);
+                return;
+            }
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.error("Input should be displayed" + e.getMessage());
+            throw new PageException("Input should be displayed");
+        }
+        
+    }
+
+    @Override
+    public void contentNameClickSave()
+    {
+        try
+        {
+            findAndWait(By.linkText("Save")).click();
+        }
+        catch (TimeoutException ex)
+        {
+            logger.error("Exceeded time to find the Save button css." + ex.getMessage());
+            throw new PageException("Exceeded time to find the Save button css.");
+        }
+
+    }
+
+    @Override
+    public void contentNameClickCancel()
+    {
+        try
+        {
+            findAndWait(By.linkText("Cancel")).click();
+        }
+        catch (TimeoutException ex)
+        {
+            logger.error("Exceeded time to find the Save button css." + ex.getMessage());
+            throw new PageException("Exceeded time to find the Save button css.");
+        }
+    }
+
+    @Override
+    public void renameContent(String newContentName)
+    {
+        if (StringUtils.isEmpty(newContentName))
+        {
+            throw new IllegalArgumentException("Content name is required");
+        }
+        try
+        {
+            contentNameEnableEdit();
+            contentNameEnter(newContentName);
+            contentNameClickSave();
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Error renaming content: ", e);
+            throw new PageException("Error While renaming content: " + newContentName);
+        }
     }
 
 }
