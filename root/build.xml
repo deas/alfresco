@@ -244,7 +244,6 @@
          <exclude name="**/org/alfresco/repo/admin/registry/RegistryServiceImplTest.java" />
          <exclude name="**/org/alfresco/repo/attributes/AttributeServiceTest.java" />
          <exclude name="**/org/alfresco/repo/audit/AuditTestSuite.java" />
-         <exclude name="**/org/alfresco/repo/avm/AVMTestSuite.java" />
          <exclude name="**/org/alfresco/repo/blog/BlogServiceImplTest.java" />
          <exclude name="**/org/alfresco/repo/bulkimport/impl/BulkImportTest.java" />
          <exclude name="**/org/alfresco/repo/bulkimport/impl/StripingFilesystemTrackerTest.java" />
@@ -260,8 +259,6 @@
          <exclude name="**/org/alfresco/repo/content/ContentMinimalContextTestSuite.java" />
          <exclude name="**/org/alfresco/repo/content/caching/CachingContentStoreTestSuite.java" />
          <exclude name="**/org/alfresco/repo/copy/CopyServiceImplTest.java" />
-         <exclude name="**/org/alfresco/repo/deploy/ASRDeploymentTest.java" />
-         <exclude name="**/org/alfresco/repo/deploy/DeploymentServiceImplFSTest.java" />
          <exclude name="**/org/alfresco/repo/deploy/DeploymentServiceTest.java" />
          <exclude name="**/org/alfresco/repo/descriptor/DescriptorServiceTest.java" />
          <exclude name="**/org/alfresco/repo/dictionary/DictionaryModelTypeTest.java" />
@@ -317,7 +314,6 @@
          <exclude name="**/org/alfresco/repo/node/cleanup/TransactionCleanupTest.java" />
          <exclude name="**/org/alfresco/repo/node/db/DbNodeServiceImplTest.java" />
          <exclude name="**/org/alfresco/repo/node/getchildren/GetChildrenCannedQueryTest.java" />
-         <exclude name="**/org/alfresco/repo/node/index/AVMRemoteSnapshotTrackerTest.java" />
          <exclude name="**/org/alfresco/repo/node/index/FullIndexRecoveryComponentTest.java" />
          <exclude name="**/org/alfresco/repo/node/index/IndexTransactionTrackerTest.java" />
          <exclude name="**/org/alfresco/repo/node/index/MissingContentReindexComponentTest.java" />
@@ -364,7 +360,6 @@
          <exclude name="**/org/alfresco/repo/subscriptions/SubscriptionServiceActivitiesTest.java" />
          <exclude name="**/org/alfresco/repo/subscriptions/SubscriptionServiceImplTest.java" />
          <exclude name="**/org/alfresco/repo/tagging/TaggingServiceImplTest.java" />
-         <exclude name="**/org/alfresco/repo/template/AVMTemplateNodeTest.java" />
          <exclude name="**/org/alfresco/repo/template/TemplateServiceImplTest.java" />
          <exclude name="**/org/alfresco/repo/template/XSLTProcessorTest.java" />
          <exclude name="**/org/alfresco/repo/tenant/MultiTDemoTest.java" />
@@ -523,9 +518,6 @@
          <exclude name="**/org/alfresco/repo/action/**/*Test.java" />
          <!-- Auditable Tests -->
          <exclude name="**/org/alfresco/repo/audit/**/*Test.java" />
-         <!-- AVM Tests -->
-         <exclude name="**/org/alfresco/repo/avm/**/*Test.java" />
-         <exclude name="**/org/alfresco/repo/avm/**/*TestP.java" />
          <!-- "Old" CMIS Tests -->
          <exclude name="**/org/alfresco/repo/cmis/ws/*.java" />
          <!-- Content Tests -->
@@ -541,11 +533,8 @@
          <exclude name="**/org/alfresco/repo/version/**/*Test.java" />
          <!-- Workflow Tests -->
          <exclude name="**/org/alfresco/repo/workflow/**/*Test.java" />
-         <!-- WCM Tests -->
-         <exclude name="**/org/alfresco/wcm/**/*Test.java" />
          <!-- Web Script Tests -->
          <exclude name="**/org/alfresco/repo/web/scripts/**/*Test.java" />
-         <include name="**/org/alfresco/repo/web/scripts/wcm/sandbox/AssetTest.java" />
          <!-- Search Tests -->
          <exclude name="**/org/alfresco/repo/search/**/*Test.java" />
          <!-- Security Tests -->
@@ -570,7 +559,6 @@
          <include name="**/org/alfresco/rest/api/tests/TestCMISAPI.java"/>
 
          <!-- Excluding long tests -->
-         <exclude name="**/org/alfresco/deployment/impl/asr/AVMDeploymentTargetTest.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/deployment/impl/dmr/DMDeploymentTargetTest.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/enterprise/license/LicenseComponentTest.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/enterprise/repo/admin/indexcheck/IndexCheckServiceImplTest.java" if="minimal.testing" />
