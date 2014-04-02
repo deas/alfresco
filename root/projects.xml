@@ -2195,8 +2195,8 @@
            manifest="${dir.project.repository.dist}/MANIFEST.MF"
            webxml="${dir.project.webclient.test.resources}/websites/alfresco/ROOT/WEB-INF/web.xml">
          <lib dir="${dir.project.3rdparty.lib}">
-            <include name="standard.jar"/>
-            <include name="jstl-1.1.0.jar"/>
+            <include name="standard-1.1.2.jar"/>
+            <include name="jstl-1.1.2.jar"/>
          </lib>
          <lib dir="${dir.project.webclient.samplewebsite}/alfresco" />
          <fileset dir="${dir.project.webclient.test.resources}/websites/alfresco/ROOT">
