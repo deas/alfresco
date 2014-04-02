@@ -48,7 +48,9 @@ import org.springframework.extensions.webscripts.ui.common.StringUtils;
 public class SlingshotRemoteClient extends RemoteClient
 {
     private static final Pattern CONTENT_PATTERN = Pattern.compile(".*/api/(node|path)/content/workspace/SpacesStore/.*");
-    
+    private static final Pattern SLINGSHOT_WIKI_PAGE_PATTERN = Pattern.compile(".*/slingshot/wiki/page/.*");
+    private static final Pattern SLINGSHOT_WIKI_VERSION_PATTERN = Pattern.compile(".*/slingshot/wiki/version/.*");
+
     private boolean swfEnabled = false;
     
     public void setSwfEnabled(boolean swfEnabled)
@@ -68,7 +70,9 @@ public class SlingshotRemoteClient extends RemoteClient
             if (cd == null || !cd.getValue().startsWith("attachment"))
             {
                 // only match appropriate content REST URIs 
-                if (contentType != null && CONTENT_PATTERN.matcher(url.getPath()).matches())
+                if (contentType != null && (CONTENT_PATTERN.matcher(url.getPath()).matches()
+                        || SLINGSHOT_WIKI_PAGE_PATTERN.matcher(url.getPath()).matches()
+                        || SLINGSHOT_WIKI_VERSION_PATTERN.matcher(url.getPath()).matches()))
                 {
                     // found a GET request that might be a security risk
                     String mimetype = contentType;
