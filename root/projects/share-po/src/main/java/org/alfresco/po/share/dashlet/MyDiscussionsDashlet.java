@@ -123,8 +123,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
     {
         try
         {
-            WebElement emptyDashletMessage = drone.find(By.cssSelector(EMPTY_DASHLET_MESSAGE));
-            return emptyDashletMessage.getText();
+            return drone.find(By.cssSelector(EMPTY_DASHLET_MESSAGE)).getText();
         }
         catch (NoSuchElementException nse)
         {
@@ -132,8 +131,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         }
         throw new PageOperationException("Error in finding the css for empty dashlet message.");
     }
-    
-    
+
     /**
      * Find whether Help Button is displayed on this dashlet.
      * 
@@ -154,7 +152,6 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         }
 
         return false;
-
     }
 
     /**
@@ -460,10 +457,12 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
                 if (webElement.getText().equals(lastDayTopics.getDescription()))
                 {
                     webElement.click();
+                    return FactorySharePage.resolvePage(drone);
                 }
             }
         }
-        return FactorySharePage.resolvePage(drone);
+        clickHistoryButtton();
+        throw new PageOperationException("Not able find the filte named " + lastDayTopics.getDescription());
     }
 
     /**
@@ -670,7 +669,5 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         }
          
     }
-    
-  
 
 }

@@ -77,8 +77,10 @@ public class CreateNewTopicPage extends SharePage
     public CreateNewTopicPage render(RenderTime timer)
     {
 
-        elementRender(timer, getVisibleRenderElement(By.cssSelector(CREATE_NEW_TOPIC_HEADER)), getVisibleRenderElement(By.cssSelector(CREATE_NEW_TOPIC_TITLE)), getVisibleRenderElement(By
-                .cssSelector(SAVE_TOPIC_BUTTON)));
+        elementRender(timer, 
+                getVisibleRenderElement(By.cssSelector(CREATE_NEW_TOPIC_HEADER)),
+                getVisibleRenderElement(By.cssSelector(CREATE_NEW_TOPIC_TITLE)),
+                getVisibleRenderElement(By.cssSelector(SAVE_TOPIC_BUTTON)));
 
         return this;
 
@@ -117,8 +119,7 @@ public class CreateNewTopicPage extends SharePage
     {
         try
         {
-            WebElement pageTitle = drone.find(By.cssSelector(CREATE_NEW_TOPIC_HEADER));
-            return pageTitle.getText();
+            return drone.find(By.cssSelector(CREATE_NEW_TOPIC_HEADER)).getText();
         }
         catch (NoSuchElementException nse)
         {
@@ -127,19 +128,20 @@ public class CreateNewTopicPage extends SharePage
         throw new PageOperationException("Error in finding the css for create new topic page title.");
     }
 
-    public void enterTopicTitle(String title)
+    public HtmlPage enterTopicTitle(String title)
     {
         try
         {
             WebElement inputField = drone.find(By.cssSelector(CREATE_NEW_TOPIC_TITLE));
             inputField.clear();
             inputField.sendKeys(title);
+            return this;
         }
         catch (NoSuchElementException nse)
         {
             logger.error("Unable to enter topic title." + nse.getMessage());
-            throw new PageOperationException("Error in finding the css for topic title input field.");
         }
+        throw new PageOperationException("Error in finding the css for topic title input field.");
 
     }
 
@@ -148,37 +150,37 @@ public class CreateNewTopicPage extends SharePage
      * 
      * @param tag
      */
-    public void fillTagField(String tag)
+    public HtmlPage fillTagField(String tag)
     {
         try
         {
             WebElement inputField = drone.find(By.cssSelector(TOPIC_TAG_INPUT));
             inputField.clear();
             inputField.sendKeys(tag);
+            return this;
         }
         catch (NoSuchElementException nse)
         {
             logger.error("Unable to enter topic tag." + nse.getMessage());
-            throw new PageOperationException("Error in finding the css for topic tag input field.");
         }
+        throw new PageOperationException("Error in finding the css for topic tag input field.");
     }
 
     /**
      * Clicks on Add Tag button
      */
-    public void addTag()
+    public HtmlPage addTag()
     {
         try
         {
-            WebElement addTagButton = drone.find(By.cssSelector(ADD_TOPIC_TAG_BUTTON));
-            addTagButton.click();
-
+            drone.find(By.cssSelector(ADD_TOPIC_TAG_BUTTON)).click();
+            return this;
         }
         catch (NoSuchElementException nse)
         {
             logger.error("Unable to click on Add Tag button on Create New Topic Page." + nse.getMessage());
-            throw new PageOperationException("Cannot find Add Tag button on Create New Topic Page.");
         }
+        throw new PageOperationException("Cannot find Add Tag button on Create New Topic Page.");
     }
 
     /**
@@ -188,8 +190,7 @@ public class CreateNewTopicPage extends SharePage
     {
         try
         {
-            WebElement saveTopicButton = drone.find(By.cssSelector(SAVE_TOPIC_BUTTON));
-            saveTopicButton.click();
+            drone.find(By.cssSelector(SAVE_TOPIC_BUTTON)).click();
             return new TopicDetailsPage(drone);
         }
         catch (NoSuchElementException nse)
@@ -207,8 +208,7 @@ public class CreateNewTopicPage extends SharePage
     {
         try
         {
-            WebElement cancelTopicButton = drone.find(By.cssSelector(CANCEL_TOPIC_BUTTON));
-            cancelTopicButton.click();
+            drone.find(By.cssSelector(CANCEL_TOPIC_BUTTON)).click();
             return FactorySharePage.resolvePage(drone);
 
         }
