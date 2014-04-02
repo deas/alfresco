@@ -3,10 +3,8 @@ package org.alfresco.po.share.site.document;
 import java.util.List;
 
 import org.alfresco.po.share.site.UpdateFilePage;
-import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.webdrone.HtmlPage;
-import org.openqa.selenium.WebElement;
 
 public interface FileDirectoryInfo
 {

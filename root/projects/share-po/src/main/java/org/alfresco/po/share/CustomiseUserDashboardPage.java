@@ -22,7 +22,6 @@ package org.alfresco.po.share;
 import java.util.List;
 
 import org.alfresco.po.share.enums.Dashlet;
-import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.site.SiteLayout;
 import org.alfresco.webdrone.RenderTime;
