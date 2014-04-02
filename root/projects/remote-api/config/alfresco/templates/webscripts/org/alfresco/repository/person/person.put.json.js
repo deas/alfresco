@@ -26,9 +26,9 @@ function main()
    {
       person.properties["title"] = json.get("title");
    }
-   if (!json.isNull("organisation"))
+   if (!json.isNull("organization"))
    {
-      person.properties["organization"] = json.get("organisation");
+      person.properties["organization"] = json.get("organization");
    }
    if (!json.isNull("jobtitle"))
    {
@@ -82,9 +82,13 @@ function main()
    { 
       person.properties["instantmsg"] = json.get("instantmsg"); 
    } 
+   if (!json.isNull("googleusername")) 
+   { 
+      person.properties["googleusername"] = json.get("googleusername"); 
+   } 
    if (!json.isNull("persondescription")) 
    { 
-      person.properties["persondescription"] = json.get("persondescription"); 
+      person.properties["persondescription"].content = json.get("persondescription"); 
    } 
    // Update the person node with the modified details
    person.save();
@@ -143,5 +147,4 @@ function main()
    // Put the created person into the model
    model.person = person;
 }
-
 main();
