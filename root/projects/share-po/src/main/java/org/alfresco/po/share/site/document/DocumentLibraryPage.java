@@ -1264,7 +1264,7 @@ public class DocumentLibraryPage extends SitePage
      */
     public HtmlPage sendKeyRightArrowForFilmstrip()
     {
-        return sendKeysFilmStripViewElement("Send right key ", Keys.TAB, Keys.TAB, Keys.ARROW_RIGHT);
+        return sendKeysFilmStripViewElement("Send right key ", Keys.TAB, Keys.ARROW_RIGHT);
     }
 
     /**
@@ -1272,7 +1272,7 @@ public class DocumentLibraryPage extends SitePage
      */
     public HtmlPage sendKeyLeftArrowForFilmstrip()
     {
-        return sendKeysFilmStripViewElement("Send left key ", Keys.TAB, Keys.TAB, Keys.ARROW_LEFT);
+        return sendKeysFilmStripViewElement("Send left key ", Keys.TAB, Keys.ARROW_LEFT);
     }
 
     /**
@@ -1280,7 +1280,7 @@ public class DocumentLibraryPage extends SitePage
      */
     public HtmlPage sendKeyUpArrowForFilmstrip()
     {
-        return sendKeysFilmStripViewElement("Send Up Arrow ", Keys.TAB, Keys.TAB, Keys.ARROW_UP);
+        return sendKeysFilmStripViewElement("Send Up Arrow ", Keys.TAB, Keys.ARROW_UP);
     }
 
     /**
@@ -1288,7 +1288,7 @@ public class DocumentLibraryPage extends SitePage
      */
     public HtmlPage sendKeyDownArrowForFilmstrip()
     {
-        return sendKeysFilmStripViewElement("Send Down Arrow ", Keys.TAB, Keys.TAB, Keys.ARROW_DOWN);
+        return sendKeysFilmStripViewElement("Send Down Arrow ", Keys.TAB, Keys.ARROW_DOWN);
     }
 
     /**

@@ -180,7 +180,6 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
 
         documentLibPage = documentLibPage.selectNextFilmstripTape().render();
 
-        assertFalse(documentLibPage.isNextFilmstripTapeArrowPresent());
         assertTrue(documentLibPage.isPreviousFilmstripTapeArrowPresent());
 
         documentLibPage = documentLibPage.selectPreviousFilmstripTape().render();
