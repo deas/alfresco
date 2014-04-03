@@ -3,7 +3,7 @@
 <suite name="Enum Suite" verbose="6" preserve-order="true" parallel="tests" thread-count="5">
     <test name="LinksTest">
         <classes>
-            <class name="org.alfresco.po.share.enums.LinksTest" />
+            <class name="org.alfresco.po.share.enums.DocumentActionTest" />
         </classes>
     </test>
     <test name="UserRoleTest">
