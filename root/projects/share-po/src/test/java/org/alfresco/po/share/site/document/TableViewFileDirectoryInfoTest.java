@@ -21,6 +21,7 @@ package org.alfresco.po.share.site.document;
 import java.io.File;
 
 import org.alfresco.po.share.ShareUtil;
+import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SitePage;
@@ -89,10 +90,9 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     {
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
-        int noOfFiles = documentLibPage.getFiles().size();
         documentLibPage = documentLibPage.getNavigation().selectTableView().render();
         
-        Assert.assertEquals(documentLibPage.getFiles().size(), noOfFiles);
+        Assert.assertEquals(documentLibPage.getViewType(), ViewType.TABLE_VIEW);
     }
 
     @Test(dependsOnMethods = "selectTableView", groups="alfresco-one")
