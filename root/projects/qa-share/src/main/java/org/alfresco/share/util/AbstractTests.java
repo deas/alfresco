@@ -19,8 +19,6 @@
 
 package org.alfresco.share.util;
 
-import org.alfresco.po.share.console.CloudConsolePage;
-
 import java.awt.AWTException;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -46,7 +44,15 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-import org.alfresco.po.share.*;
+import org.alfresco.po.share.AlfrescoVersion;
+import org.alfresco.po.share.BrowserPreference;
+import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.SharePopup;
+import org.alfresco.po.share.ShareProperties;
+import org.alfresco.po.share.ShareUtil;
+import org.alfresco.po.share.console.CloudConsolePage;
 import org.alfresco.po.share.enums.SiteVisibility;
 import org.alfresco.share.search.SearchKeys;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -310,12 +316,19 @@ public abstract class AbstractTests
         // Close the browser
         for(Map.Entry<String, WebDrone> entry: droneMap.entrySet())
         {
-            if(entry.getValue() != null)
+            try
             {
-                ShareUtil.logout(entry.getValue());
-                entry.getValue().quit();
-                logger.info(entry.getKey() + " closed");
-                logger.info("[Suite ] : End of Tests in: " + this.getClass().getSimpleName());
+                if(entry.getValue() != null)
+                {
+                    ShareUtil.logout(entry.getValue());
+                    entry.getValue().quit();
+                    logger.info(entry.getKey() + " closed");
+                    logger.info("[Suite ] : End of Tests in: " + this.getClass().getSimpleName());
+                }
+            }
+            catch (Exception e)
+            {
+                logger.error("Failed to close previous instance of brower:" + entry.getKey(), e);
             }
         }
     }

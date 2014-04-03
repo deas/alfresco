@@ -71,7 +71,7 @@ public class FilmStripDocLibTest extends AbstractTests
     @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
     {
-        super.setup();
+        // super.setup();
         super.setupCustomDrone(WebDroneType.DownLoadDrone);
         testName = this.getClass().getSimpleName();
         testUser = testName + "@" + DOMAIN_FREE;
@@ -1385,6 +1385,9 @@ public class FilmStripDocLibTest extends AbstractTests
 
         FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
+        // Step - 3 "View in Browser"
+        // This is covered by unit test. FileDirectoryInfoFilmstripViewTest.testSelectViewInBrowser()
+
         // Click on the document's Info panel icon;
         fileInfo.clickInfoIcon();
         // Info Panel is displayed for the document;
@@ -1396,13 +1399,13 @@ public class FilmStripDocLibTest extends AbstractTests
         assertTrue(propDialog.isEditPropertiesPopupVisible());
         docLibPage = propDialog.selectCancel().render();
         fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
-         
+
         // Close the "Edit Properties" form and return to the document's Info panel and click the 'Upload new version' action;
         // fileInfo.clickInfoIcon();
         UpdateFilePage uploadForm = fileInfo.selectUploadNewVersion().render();
         // "Update File" form is displayed;
         uploadForm.selectCancel();
-         
+
         docLibPage = ShareUser.openDocumentLibrary(customDrone);
         fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         // click the "Edit Offline" action;
@@ -1412,7 +1415,7 @@ public class FilmStripDocLibTest extends AbstractTests
         // "This document is locked by you for offline editing" message displays above document's name on Info panel;
         assertEquals(ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).getContentInfo(), "This document is locked by you for offline editing.",
                 "Got content info: " + ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).getContentInfo());
-         
+
         // Return to the document's Info Panel and click the "Cancel Editing" button;
         docLibPage = fileInfo.selectCancelEditing().render();
         fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
@@ -1425,7 +1428,7 @@ public class FilmStripDocLibTest extends AbstractTests
         assertEquals(copyToForm.getDialogTitle(), "Copy " + fileName1 + " to...");
         docLibPage = copyToForm.selectCancelButton().render();
         fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
-         
+
         // Close the "Copy %itemname% to..." form, return to the document's Info panel and click the "Move to..." action.
         CopyOrMoveContentPage moveToForm = fileInfo.selectMoveTo().render();
         // "Move %itemname% to..." form is opened;
@@ -1469,15 +1472,7 @@ public class FilmStripDocLibTest extends AbstractTests
         List<String> extractedChildFilesOrFolders = ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory);
         assertTrue(extractedChildFilesOrFolders.contains(fileName1));
 
-        // Step - 2
-        // Return to the document's Info panel and click the "View in Browser" action;
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        DocumentLibraryPage docLibPage1 = ShareUser.openSitesDocumentLibrary(drone, siteName);
-        docLibPage1 = docLibPage1.getNavigation().selectFilmstripView().render();
-        docLibPage1.getFileDirectoryInfo(fileName1).selectViewInBrowser();
-        // The document is opened in browser. If the document cannot be previewed in the browser, download dialog should be displayed;
-        // assertTrue(drone.getTitle().contains(fileName1));
-        // drone.closeTab();
+
     }
 
     /**
