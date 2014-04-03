@@ -3,13 +3,13 @@
 	<test name="debugthesetests" verbose="1" parallel="classes" thread-count="1">
         <groups>
             <run>
-                <exclude name="DataPrep.*" />
+                <include name="DataPrep.*" />
             </run>
         </groups>
 		<classes>
-             <class name="org.alfresco.share.repository.RepositoryFolderTests">
-                <methods>
-                    <include name="Enterprise40x_5340" />
+             <class name="org.alfresco.share.LoginTest">
+                 <methods>
+                    <include name="cloud_1161" />
                 </methods>
              </class>
 		</classes>

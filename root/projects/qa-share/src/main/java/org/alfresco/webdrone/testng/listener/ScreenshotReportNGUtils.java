@@ -13,11 +13,13 @@ import org.uncommons.reportng.ReportNGUtils;
 /**
  * @author Ranjith Manyam
  */
-public class ScreenshotReportNGUtils extends ReportNGUtils {
+public class ScreenshotReportNGUtils extends ReportNGUtils
+{
     public static final String SLASH = File.separator;
 
     @Override
-    public List<String> getTestOutput(ITestResult result) {
+    public List<String> getTestOutput(ITestResult result)
+    {
         List<String> output = super.getTestOutput(result);
 
         output.add("<script>\n" +
@@ -40,19 +42,20 @@ public class ScreenshotReportNGUtils extends ReportNGUtils {
         {
             AbstractUtils abstractTests = (AbstractUtils) instace;
             Map<String, WebDrone> droneMap = abstractTests.getDroneMap();
-            for(Map.Entry<String, WebDrone> entry: droneMap.entrySet())
+            for (Map.Entry<String, WebDrone> entry : droneMap.entrySet())
             {
-                String fileName = entry.getKey()+result.getMethod().getMethodName()+".png";
+                String fileName = entry.getKey() + result.getMethod().getMethodName() + ".png";
 
                 System.setProperty("org.uncommons.reportng.escape-output", "false");
 
                 // add screenshot if there is one
-                String screenshot = (String)result.getAttribute(entry.getKey()+result.getMethod().getMethodName());
-                if (screenshot != null) {
-                    String imageDivID = "imgDivID"+ entry.getKey() + result.getMethod().getMethodName();
+                String screenshot = (String) result.getAttribute(entry.getKey() + result.getMethod().getMethodName());
+                if (screenshot != null)
+                {
+                    String imageDivID = "imgDivID" + entry.getKey() + result.getMethod().getMethodName();
                     String imageID = "imageID" + entry.getKey() + result.getMethod().getMethodName();
                     String imageButtonID = "imageBtnID" + entry.getKey() + result.getMethod().getMethodName();
-                    String buttonName = WordUtils.capitalize(entry.getKey())+ "-" + "ScreenShot";
+                    String buttonName = WordUtils.capitalize(entry.getKey()) + "-" + "ScreenShot";
 
                     output.add("<div>\n" +
                             "    <div id=\""+imageDivID+"\" style=\"display: none\">\n" +

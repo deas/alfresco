@@ -18,31 +18,36 @@ import org.uncommons.reportng.HTMLReporter;
 /**
  * @author Ranjith Manyam
  */
-public class ScreenshotHTMLReporter extends HTMLReporter implements ITestListener {
+public class ScreenshotHTMLReporter extends HTMLReporter implements ITestListener
+{
 
     protected static final ScreenshotReportNGUtils SS_UTILS = new ScreenshotReportNGUtils();
     public static final String SLASH = File.separator;
 
     private static final Logger logger = LoggerFactory.getLogger(ScreenshotHTMLReporter.class);
 
-    protected VelocityContext createContext() {
+    protected VelocityContext createContext()
+    {
         VelocityContext context = super.createContext();
         context.put("utils", SS_UTILS);
         return context;
     }
 
     @Override
-    public void onTestStart(ITestResult result) {
+    public void onTestStart(ITestResult result)
+    {
 
     }
 
     @Override
-    public void onTestSuccess(ITestResult result) {
+    public void onTestSuccess(ITestResult result)
+    {
 
     }
 
     @Override
-    public void onTestFailure(ITestResult tr) {
+    public void onTestFailure(ITestResult tr)
+    {
         Object instace = tr.getInstance();
         if (instace instanceof AbstractUtils)
         {
@@ -54,9 +59,9 @@ public class ScreenshotHTMLReporter extends HTMLReporter implements ITestListene
 
     private void saveScreenShots(ITestResult tr, Map<String, WebDrone> droneMap)
     {
-        for(Map.Entry<String, WebDrone> entry: droneMap.entrySet())
+        for (Map.Entry<String, WebDrone> entry : droneMap.entrySet())
         {
-            if(entry.getValue()!=null)
+            if (entry.getValue() != null)
             {
                 try
                 {
@@ -66,8 +71,8 @@ public class ScreenshotHTMLReporter extends HTMLReporter implements ITestListene
                     // output dir includes suite, so go up one level
                     String outputDir = tr.getTestContext().getOutputDirectory();
                     logger.debug("Output Directory: {}", outputDir);
-                    outputDir = outputDir.substring(0, outputDir.lastIndexOf(SLASH))+SLASH+"html";
-                    File saved = new File(outputDir, entry.getKey()+tr.getMethod().getMethodName()+".png");
+                    outputDir = outputDir.substring(0, outputDir.lastIndexOf(SLASH)) + SLASH + "html";
+                    File saved = new File(outputDir, entry.getKey() + tr.getMethod().getMethodName() + ".png");
                     FileUtils.copyFile(file, saved);
                     // save screenshot path as result attribute so generateReport can access it
                     tr.setAttribute(entry.getKey() + tr.getMethod().getMethodName(), saved.getName());
@@ -81,22 +86,26 @@ public class ScreenshotHTMLReporter extends HTMLReporter implements ITestListene
     }
 
     @Override
-    public void onTestSkipped(ITestResult result) {
+    public void onTestSkipped(ITestResult result)
+    {
 
     }
 
     @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result)
+    {
 
     }
 
     @Override
-    public void onStart(ITestContext context) {
+    public void onStart(ITestContext context)
+    {
 
     }
 
     @Override
-    public void onFinish(ITestContext context) {
+    public void onFinish(ITestContext context)
+    {
 
     }
 }

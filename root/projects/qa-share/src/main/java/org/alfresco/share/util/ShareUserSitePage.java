@@ -23,7 +23,6 @@ import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.document.MimeType;
 import org.alfresco.po.share.site.document.SortField;
 import org.alfresco.po.share.site.document.TagPage;
-import org.alfresco.po.share.site.document.TreeMenuNavigation;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
