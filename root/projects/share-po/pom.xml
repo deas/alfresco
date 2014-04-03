@@ -185,6 +185,7 @@
                         <suiteXmlFile>src/test/resources/SitesSuite.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/TasksSuite.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/WorkflowSuite.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/ShareSuite.xml</suiteXmlFile>
                     </suiteXmlFiles>
                     <argLine>-Xms512m -Xmx1024m</argLine>
                     <excludedGroups>
