@@ -21,7 +21,7 @@ package org.alfresco.po.share.site.document;
 import java.util.List;
 
 import org.alfresco.po.share.FactorySharePage;
-import org.alfresco.po.share.SharePopup;
+import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -147,13 +147,12 @@ public class TagPage extends AbstractEditProperties
             createButton.click();
             canResume();
             
-            //TODO: change return when jira WEBDRONE-563 is implemented.
             HtmlPage page = FactorySharePage.resolvePage(drone);
-            if(page instanceof SharePopup)
+            if(page instanceof ShareDialogue)
             {
-                return page;
+                return ((ShareDialogue) page).resolveShareDialoguePage();
             }
-            return this;
+            return page;
         }
         catch (NoSuchElementException nse)
         {

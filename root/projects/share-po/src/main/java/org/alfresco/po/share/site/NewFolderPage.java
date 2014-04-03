@@ -23,6 +23,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.webdrone.HtmlPage;
@@ -145,25 +146,34 @@ public class NewFolderPage extends SharePage
      */
     public HtmlPage createNewFolderWithValidation(final String folderName, final String description)
     {
+        boolean validationPresent = false;
+        
         typeNameWithValidation(folderName);
         typeDescription(description);
-        boolean validationPresent = isMessagePresent(name);
-        validationPresent = validationPresent || isMessagePresent(folderTitleCss);
-        validationPresent = validationPresent || isMessagePresent(descriptionLocator);
-
+        
+        WebElement okButton = drone.find(submitButton);
+        okButton.click();
+        
+        HtmlPage htmlPage = FactorySharePage.resolvePage(drone);
+        if(htmlPage instanceof ShareDialogue)
+        {
+            htmlPage = ((ShareDialogue) htmlPage).resolveShareDialoguePage().render();
+        
+            validationPresent = isMessagePresent(name);
+            validationPresent = validationPresent || isMessagePresent(folderTitleCss);
+            validationPresent = validationPresent || isMessagePresent(descriptionLocator);
+        }
+        
         if(!validationPresent)
         {
-            WebElement okButton = drone.find(submitButton);
-            okButton.click();
-            
             //Wait till the pop up disappears
             waitUntilMessageAppearAndDisappear("Folder");
             DocumentLibraryPage page = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
             page.setShouldHaveFiles(true);
-            return page;
+            htmlPage = page;
         }
-        //TODO: change return when jira WEBDRONE-563 is implemented.
-        return this.render();
+
+        return htmlPage.render();
     }
     
     /**

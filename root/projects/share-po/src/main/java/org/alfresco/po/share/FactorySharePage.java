@@ -189,19 +189,19 @@ public class FactorySharePage implements PageFactory
             {
             }
             
-//            // Check for Share Dialogue
-//            try
-//            {
-//                WebElement shareDialogue = drone.findFirstDisplayedElement(By.cssSelector(SHARE_DIALOGUE));
-//                if (shareDialogue.isDisplayed())
-//                {
-//                    return new ShareDialogue(drone);
-//                }
-//            }
-//            catch (NoSuchElementException nse)
-//            {
-//
-//            }
+            // Check for Share Dialogue
+            try
+            {
+                WebElement shareDialogue = drone.findFirstDisplayedElement(By.cssSelector(SHARE_DIALOGUE));
+                if (shareDialogue.isDisplayed())
+                {
+                    return new ShareDialogue(drone);
+                }
+            }
+            catch (NoSuchElementException nse)
+            {
+
+            }
 
             // Determine what page we're on based on url
             return getPage(drone.getCurrentUrl(), drone);
