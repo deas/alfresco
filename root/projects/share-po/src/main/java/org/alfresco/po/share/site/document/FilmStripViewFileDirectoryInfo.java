@@ -50,7 +50,14 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
     {
         try
         {
-            selectThumbnail();
+            if (THUMBNAIL_ROOT.isDisplayed())
+            {
+                selectThumbnail();
+            }
+            else
+            {
+                throw new PageException("Thumbnail not visible");
+            }
             return findAndWait(By.cssSelector("a.alf-show-detail"));
         }
         catch (TimeoutException e)
@@ -110,5 +117,12 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
     {
         clickInfoIcon();
         return super.getTitle();
+    }
+    
+    @Override
+    public void selectCheckbox()
+    {
+        clickInfoIcon();
+        super.selectCheckbox();
     }
 }

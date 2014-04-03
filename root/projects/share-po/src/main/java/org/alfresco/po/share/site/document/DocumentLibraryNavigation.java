@@ -332,6 +332,7 @@ public class DocumentLibraryNavigation extends SharePage
         {
             throw new UnsupportedOperationException("Download as Zip option si not available on this version " + alfrescoVersion.toString());
         }
+        clickSelectedItems();
         try
         {
             if(isSelectedItemMenuVisible())

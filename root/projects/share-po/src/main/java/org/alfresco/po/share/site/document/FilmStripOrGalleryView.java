@@ -15,6 +15,7 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
@@ -661,8 +662,17 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public UpdateFilePage selectUploadNewVersion()
     {
-        clickInfoIcon(true);
-        return super.selectUploadNewVersion();
+        try
+        {
+            clickInfoIcon(true);
+            return super.selectUploadNewVersion();
+        }
+        catch (ElementNotVisibleException s)
+        {
+            resolveStaleness();
+            selectUploadNewVersion();
+        }
+        throw new PageException("Element not visible");
     }
 
     /*
@@ -826,7 +836,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void contentNameEnableEdit()
     {
-        clickInfoIcon(true);
+        clickInfoIcon(false);
         String temp = FILENAME_IDENTIFIER;
         FILENAME_IDENTIFIER = "h3.filename a";
         super.contentNameEnableEdit();
@@ -873,6 +883,13 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         clickInfoIcon(false);
         return super.clickShareLink();
     }    
+
+    @Override
+    public String getContentInfo()
+    {
+        clickInfoIcon(false);
+        return super.getContentInfo();
+    }
 
     /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickOnCategoryNameLink(java.lang.String)

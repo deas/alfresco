@@ -1161,7 +1161,15 @@ public class DocumentLibraryPage extends SitePage
      */
     public HtmlPage toggleNavHandleForFilmstrip()
     {
-        return clickFilmStripViewElement(FILMSTRIP_NAV_HANDLE, "Toggle Nav Handler");
+        HtmlPage page = clickFilmStripViewElement(FILMSTRIP_NAV_HANDLE, "Toggle Nav Handler");
+        try
+        {
+            drone.findAndWait(By.cssSelector("div.alf-filmstrip.alf-gallery.documents.alf-filmstrip-content-only"), 2000);
+        }
+        catch (TimeoutException e)
+        {
+        }
+        return page;
     }
 
     /**

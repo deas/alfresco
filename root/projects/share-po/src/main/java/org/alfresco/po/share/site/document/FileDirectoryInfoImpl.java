@@ -74,8 +74,8 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     @SuppressWarnings("unused")
     private static final String TAG_NAME = "a.tag-link";
     private static final String IMG_FOLDER = "/documentlibrary/images/folder";
-    private static final String FAVOURITE_CONTENT = "a.favourite-action";
-    private static final String LIKE_CONTENT = "a.like-action";
+    private static final String FAVOURITE_CONTENT = "a[class*='favourite-action']";
+    private static final String LIKE_CONTENT = "a[class*='like-action']";
     private static final String LIKE_COUNT = "span.likes-count";
     private static final String CONTENT_NODEREF = "h3.filename form";
     private static final String ACTIONS_LIST = "div.action-set>div";
@@ -760,7 +760,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     @Override
     public void selectCheckbox()
     {
-        findElement(By.cssSelector(SELECT_CHECKBOX)).click();
+        findAndWait(By.cssSelector(SELECT_CHECKBOX)).click();
         domEventCompleted();
     }
 
@@ -1700,6 +1700,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             resolveStaleness();
             selectUploadNewVersion();
         }
+       
         // TODO add version
         return new UpdateFilePage(drone, "");
     }
