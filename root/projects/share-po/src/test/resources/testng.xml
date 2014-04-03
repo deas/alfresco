@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Alfresco Share 4.3 Tests" verbose="6">
+<suite name="Alfresco Share 4.3 Tests" verbose="6" preserve-order="true" parallel="classes"  thread-count="1">
     <groups>
         <run>
             <include name="unit" />
@@ -8,7 +8,6 @@
             <include name="Enterprise4.2" />
             <include name="Enterprise-only" />
             <exclude name=".*Bug42" />
-            <exclude name="Cloud-only" />
             <exclude name=".*Bug" />
             <exclude name="chromeOnly" />
             <exclude name="Hybrid" />
@@ -50,14 +49,19 @@
             <package name="org.alfresco.po.share.site.document.download" />
         </packages>
     </test>
-    <test name="Document">
-        <packages>
-            <package name="org.alfresco.po.share.site.document" />
-        </packages>
-    </test>
     <test name="Share">
         <packages>
             <package name="org.alfresco.po.share" />
+        </packages>
+    </test>
+    <test name="enums">
+        <packages>
+            <package name="org.alfresco.po.share.enums" />
+        </packages>
+    </test>
+    <test name="Document">
+        <packages>
+             <package name="org.alfresco.po.share.site.document" />
         </packages>
     </test>
 </suite>

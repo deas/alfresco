@@ -85,6 +85,11 @@
                 <entry key-ref="language" value-ref="englishLocale" />
             </util:map>
         </constructor-arg>
+        <constructor-arg name="localGrid">
+            <value type="java.lang.Boolean">${webdrone.localGrid}</value>
+        </constructor-arg>
+        <constructor-arg name="grid" ref="grid" />
+        <constructor-arg name="node" ref="node" />
         <property name="gridUrl" value="${webdrone.grid.url}" />
         <property name="chromeServerPath" value="${webdrone.chrome.server.path}" />
         <property name="ieServerPath" value="${webdrone.ie.server.path}" />
