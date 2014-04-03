@@ -1344,4 +1344,14 @@ public class DocumentLibraryPage extends SitePage
         }
         throw new PageOperationException("Filmstrip view not loaded - FilmStrip tape may not be displayed.");
     }
+
+    /**
+     * Returns the current view type if it set already or by calling render it sets the view type.
+     * 
+     * @return {@link ViewType}
+     */
+    public ViewType getViewType()
+    {
+        return viewType;
+    }
 }
