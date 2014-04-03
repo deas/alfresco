@@ -868,7 +868,7 @@ public class ManagePermissionsPage extends SharePage
                     if(role.equals(UserRole.valueOf(currentRole)))
                         {
                              drone.mouseOverOnElement(webElement);
-                             return drone.find(userPermissionDeleteAction);
+                             return webElement.findElement(userPermissionDeleteAction);
                         }
                 }
         }

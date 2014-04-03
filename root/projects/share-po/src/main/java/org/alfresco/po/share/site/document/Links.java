@@ -29,7 +29,7 @@ public enum Links
     MOVE_TO         ("div[id$='onActionMoveTo']", DetailsPageType.COMMON), 
     DELETE_CONTENT   ("div[id$='onActionDelete']", DetailsPageType.COMMON),       
     MANAGE_ASPECTS    ("div[id$='onActionManageAspects']", DetailsPageType.COMMON), 
-    MANAGE_PERMISSION   (".document-manage-granular-permissions", DetailsPageType.COMMON), 
+    MANAGE_PERMISSION   (".document-manage-repo-permissions", DetailsPageType.COMMON), 
     CHNAGE_TYPE     ("div[id$='onActionChangeType']", DetailsPageType.COMMON),
     EDIT_PROPERTIES (".document-edit-metadata", DetailsPageType.COMMON),   
     
