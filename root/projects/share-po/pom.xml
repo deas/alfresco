@@ -49,6 +49,11 @@
     
     <dependencies>
         <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.10.0-alfresco-patched</version>
+        </dependency>
+        <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>webdrone</artifactId>
             <version>2.5-SNAPSHOT</version>
