@@ -1373,23 +1373,23 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
 
         // Add a tag to the first file
-        FileDirectoryInfo thisRow = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
-        thisRow.clickInfoIcon();
-        DocumentLibraryPage docLibPage = thisRow.clickOnTagNameLink(testFileTagName).render();
+        ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).addTag(testFileTagName);
+
 
         // Verify the Tags size
         Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).getTags().size(), 1);
 
         // Clicking the tagName link present under file1 name
-        thisRow = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
+        FileDirectoryInfo thisRow = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         thisRow.clickInfoIcon();
-        docLibPage = thisRow.clickOnTagNameLink(testFileTagName).render();
+        thisRow.clickOnTagNameLink(testFileTagName).render();
 
         // Check that the file1 is listed
         Assert.assertTrue(ShareUserSitePage.searchDocumentLibraryWithRetry(customDrone, fileName1, true));
 
         // Clicking the tagName present under Tags menu tree on Document Library page.
-        docLibPage = docLibPage.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(testFileTagName).render();
+        DocumentLibraryPage docLibPage = getSharePage(customDrone).render();
+        docLibPage.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(testFileTagName).render();
 
         // Check that the file1 is listed
         Assert.assertTrue(docLibPage.isFileVisible(fileName1));

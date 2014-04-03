@@ -51,12 +51,14 @@ import org.alfresco.share.util.ShareUserDashboard;
 import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
@@ -65,6 +67,7 @@ import org.testng.annotations.Test;
  * @author jcule
  *
  */
+@Listeners(FailedTestListener.class)
 public class MyDashboardMyDiscussionTests extends AbstractTests
 {
 
@@ -126,26 +129,32 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
      * 
      * @throws Exception
      */
-    @Test(groups = "MyDashboardMyDiscussionTests")
+    @Test(groups = {"MyDashboardMyDiscussionTests", "AlfrescoOne"})
     public void ALF_10752() throws Exception
     {
         //create user
         testName = getTestName();
+        
+        String siteName = testName + System.currentTimeMillis();
+        
         testUser = testName + System.currentTimeMillis() + "@" + DOMAIN_FREE;
         String[] testUserInfo = new String[] { testUser };
+        
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
          
         // login as created user
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // create a site
-        String siteName = testName + System.currentTimeMillis();
+
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         
         // open user dashboard and get My Discussions Dashlet
         //ShareUser.openUserDashboard(drone);
         DashBoardPage dashBoardPage = ShareUserDashboard.addDashlet(drone, Dashlet.MY_DISCUSSIONS);
+       
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone);
+        
         Assert.assertNotNull(myDiscussionsDashlet);
         dashBoardPage = myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render();
         Assert.assertNotNull(dashBoardPage);
@@ -164,6 +173,7 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         //verify baloon popup with Discussion Forum dashlet. View your latest posts on the Discussion Forum. is displayed
         myDiscussionsDashlet.clickHelpButton();
         Assert.assertTrue(myDiscussionsDashlet.isBalloonDisplayed());
+        
         String actualHelpBallonMsg = myDiscussionsDashlet.getHelpBalloonMessage();
         Assert.assertEquals(actualHelpBallonMsg, EXPECTED_HELP_BALOON_MESSAGES);
 
@@ -174,17 +184,21 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         // verify drop-down menu: My Topics, All Topics
         MyDiscussionsTopicsFilter currentTopicFilter = myDiscussionsDashlet.getCurrentTopicFilter();
         Assert.assertEquals(currentTopicFilter, MY_TOPICS);
+        
         myDiscussionsDashlet.clickTopicsButtton();
+        
         List<MyDiscussionsTopicsFilter> allTopicFilters = myDiscussionsDashlet.getTopicFilters();
         Assert.assertTrue(allTopicFilters.contains(ALL_TOPICS));
         Assert.assertTrue(allTopicFilters.contains(MY_TOPICS));
 
-        // Drop-down menu: Topics updated in the last day; Topics updated in the last 7 days; Topics updated in the last 14 days, Topics updated in the last 28
-        // days;
+        // Drop-down menu: Topics updated in the last day; Topics updated in the last 7 days; 14 days, 28 days
         MyDiscussionsHistoryFilter currentHistoryFilter = myDiscussionsDashlet.getCurrentHistoryFilter();
         Assert.assertEquals(currentHistoryFilter, LAST_DAY_TOPICS);
+        
         myDiscussionsDashlet.clickHistoryButtton();
+        
         List<MyDiscussionsHistoryFilter> allHistoryFilters = myDiscussionsDashlet.getHistoryFilters();
+        
         Assert.assertTrue(allHistoryFilters.contains(LAST_DAY_TOPICS));
         Assert.assertTrue(allHistoryFilters.contains(SEVEN_DAYS_TOPICS));
         Assert.assertTrue(allHistoryFilters.contains(FOURTEEN_DAYS_TOPICS));
@@ -211,29 +225,33 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
     @Test(groups = "MyDashboardMyDiscussionTests")
     public void ALF_10753() throws Exception
     {
-        //create user
-        testName = getTestName();
-        testUser = testName + System.currentTimeMillis() + "@" + DOMAIN_FREE;
+        String testName = getTestName();
+        
+        String siteName = testName + System.currentTimeMillis();
+        
+        String testUser = testName + System.currentTimeMillis() + "@" + DOMAIN_FREE;
         String[] testUserInfo = new String[] { testUser };
+        
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
         
         // login as created user
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // create a site
-        String testName = getTestName();
-        String siteName = testName + System.currentTimeMillis();
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Get My Discussions Dashlet
         ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
+        
+        // TODO: Add this to util above to throw PageOperationException if myDiscussionsDashlet is null since every test checks this
         Assert.assertNotNull(myDiscussionsDashlet);
         
         // add a topic for the site
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
         Assert.assertNotNull(createNewTopicPage);
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
+        
         createNewTopicPage.enterTopicTitle(TOPIC_USER_DETAILS_TITLE_ONE);
         TopicDetailsPage topicDetailsPage =  createNewTopicPage.saveTopic().render();
         Assert.assertNotNull(topicDetailsPage);
@@ -245,7 +263,7 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         Assert.assertNotNull(myDiscussionsDashlet);
         
         // Repeat search until the element is found or Timeout is hit
-        //TODO: move somewhere to share po
+        //TODO: No Webdriver Code in qa-share tests. Create a Method for PageObject and a Util for retry
         for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
         {
             if (searchCount > 1)
@@ -270,9 +288,12 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
 
         // click user's name link
         dashBoardPage = ShareUser.openUserDashboard(drone);
+        
+        // TODO: Add util to select filter, since this is being in most tests
         myDiscussionsDashlet = dashBoardPage.getDashlet(MY_DISCUSSIONS).render();
         dashBoardPage = myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render();
-         
+        
+        // TODO: Implement a method for myDiscussionsDashlet PageObject to Return MyProfilePage?
         MyProfilePage myProfilePage = myDiscussionsDashlet.selectTopicUser(testUser + " LName").click().render();
 
         // verify User Profile page is displayed
@@ -300,21 +321,23 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
      *
      * @throws Exception
      */
+    // TODO: Rename testcase, testcase ID to match testlink for results submission util
     @Test(groups = "MyDashboardMyDiscussionTests")
     public void ALF_10754_10755() throws Exception
     {
         //create user
-        testName = getTestName();
-        testUser = testName + System.currentTimeMillis() + "@" + DOMAIN_FREE;
+        String testName = getTestName();
+        
+        String siteName = testName + System.currentTimeMillis();
+        
+        String testUser = testName + System.currentTimeMillis() + "@" + DOMAIN_FREE;
         String[] testUserInfo = new String[] { testUser };
+        
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
         
         // login as created user
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-        // create a site
-        String testName = getTestName();
-        String siteName = testName + System.currentTimeMillis();
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Get My Discussions Dashlet
