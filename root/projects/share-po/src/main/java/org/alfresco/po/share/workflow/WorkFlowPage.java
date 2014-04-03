@@ -32,7 +32,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
@@ -56,8 +58,8 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
     private static final By WORKFLOW_COULD_NOT_BE_STARTED_PROMPT_HEADER = By.cssSelector("#prompt_h");
     private static final By WORKFLOW_COULD_NOT_BE_STARTED_MESSAGE = By.cssSelector("#prompt>div.bd");
 
-    private static final By WORKFLOW_DESCRIPTION_HELP_ICON = By.cssSelector("img[id$='_prop_bpm_workflowDescription-help-icon']");
-    private static final By WORKFLOW_DESCRIPTION_HELP_MESSAGE = By.cssSelector("div[id$='_prop_bpm_workflowDescription-help']");
+    protected static final By WORKFLOW_DESCRIPTION_HELP_ICON = By.cssSelector("img[id$='_prop_bpm_workflowDescription-help-icon']");
+    protected static final By WORKFLOW_DESCRIPTION_HELP_MESSAGE = By.cssSelector("div[id$='_prop_bpm_workflowDescription-help']");
 
 	/**
 	 * Constructor.
