@@ -27,7 +27,29 @@
 
     <test name="Create Rule Test" verbose="1">
         <classes>
-            <class name="org.alfresco.share.content.rules.CreateRuleTest"/>
+            <class name="org.alfresco.share.content.rules.CreateRuleTest">
+                <methods>
+                    <include name="ALF_14018" />
+                    <include name="ALF_14019" />
+                    <include name="ALF_14020" />
+                    <include name="ALF_14021" />
+                    <include name="ALF_14022" />
+                    <include name="ALF_14023" />
+                    <include name="ALF_14024" />
+                    <include name="ALF_14025" />
+                    <include name="ALF_14026" />
+                    <include name="ALF_14028" />
+                    <include name="ALF_14029" />
+                    <include name="ALF_14030" />
+                    <include name="ALF_14031" />
+                    <include name="ALF_14034" />
+                    <include name="ALF_15271" />
+                    <include name="ALF_14017" />
+                    <include name="ALF_8483" />
+                    <include name="ALF_8497" />
+                    <include name="ALF_8499" />
+                </methods>
+            </class>
         </classes>
     </test>
 
