@@ -768,7 +768,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         // Click on save button in edit document properties pop up page
         categoryPage.clickOk().render();
 
-        editDocumentPropertiesPopup.selectSave().render();
+        documentLibPage =  editDocumentPropertiesPopup.selectSave().render();
         
         documentLibPage = documentLibPage.getFileDirectoryInfo(folderName).clickOnCategoryNameLink(Categories.LANGUAGES.getValue()).render();
         Assert.assertTrue(documentLibPage.isFileVisible(folderName));
