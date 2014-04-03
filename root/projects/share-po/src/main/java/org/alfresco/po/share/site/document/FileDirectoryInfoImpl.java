@@ -1691,7 +1691,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            // css selector changed to suite MyAlfresco + no localisation issues
+            // css selector changed to suite MyAlfresco + fix localisation issues due to linkText
             WebElement startWorkFlow = findAndWait(CREATE_TASK_WORKFLOW);
             startWorkFlow.click();
             return new StartWorkFlowPage(drone);

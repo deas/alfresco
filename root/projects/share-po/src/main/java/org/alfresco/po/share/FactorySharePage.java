@@ -30,6 +30,7 @@ import org.alfresco.po.share.dashlet.mydiscussions.CreateNewTopicPage;
 import org.alfresco.po.share.dashlet.mydiscussions.TopicDetailsPage;
 import org.alfresco.po.share.dashlet.mydiscussions.TopicsListPage;
 import org.alfresco.po.share.search.AdvanceSearchCRMPage;
+import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.search.AdvanceSearchFolderPage;
 import org.alfresco.po.share.search.AdvanceSearchPage;
 import org.alfresco.po.share.search.AllSitesResultsPage;
@@ -135,6 +136,7 @@ public class FactorySharePage implements PageFactory
         pages.put("customise-user-dashboard", CustomiseUserDashboardPage.class);
         pages.put("data-lists", DataListPage.class);
         pages.put("advsearch", AdvanceSearchPage.class);
+        pages.put("advcontent-search", AdvanceSearchContentPage.class);
         pages.put("advfolder-search", AdvanceSearchFolderPage.class);
         pages.put("advCRM-search", AdvanceSearchCRMPage.class);
         pages.put("googledocsEditor", EditInGoogleDocsPage.class);
@@ -373,6 +375,10 @@ public class FactorySharePage implements PageFactory
             else if (val.contains("prop_crm"))
             {
                 return "advCRM-search";
+            }
+            else if (val.contains("Acontent"))
+            {
+                return "advcontent-search";
             }
             return "advsearch";
         }

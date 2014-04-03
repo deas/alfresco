@@ -24,6 +24,7 @@ import org.alfresco.po.share.adminconsole.NodeBrowserPage;
 import org.alfresco.po.share.dashlet.mydiscussions.CreateNewTopicPage;
 import org.alfresco.po.share.dashlet.mydiscussions.TopicDetailsPage;
 import org.alfresco.po.share.dashlet.mydiscussions.TopicsListPage;
+import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.search.AdvanceSearchFolderPage;
 import org.alfresco.po.share.search.AdvanceSearchPage;
 import org.alfresco.po.share.search.AllSitesResultsPage;
@@ -85,7 +86,8 @@ public class FactorySharePageTest
     private final String userSearchPage = baseUrl + "%s/page/console/admin-console/users";
     private final String siteSarchResult = baseUrl + "%s/page/site/site1376665231775/search?t=ipsum";
     private final String advanceSearch = baseUrl + "%s/page/advsearch";
-    private final String advanceFolderSearch = baseUrl + "%s/page/advsearch?st=&stag=&ss=&sa=&sr=true&sq=%7b%22prop_cm_name%22%3a%22%22%2c%22prop_cm_title%22%3a%22%22%2c%22prop_cm_description%22%3a%22%22%2c%22datatype%22%3a%22cm%3afolder%22%7d";
+    private final String advanceContentSearch = baseUrl + "%s/page/advsearch?st=&stag=&ss=&sa=&sr=true&sq=%7b%22prop_cm_name%22%3a%22%22%2c%22prop_cm_title%22%3a%22%22%2c%22prop_cm_description%22%3a%22%22%2c%22prop_mimetype%22%3A%22%22%2C%22prop_cm_modified-date-range%22%3A%22%22%2C%22prop_cm_modifier%22%3A%22%22%2C%22datatype%22%3a%22cm%3Acontent%22%7d";
+    private final String advanceFolderSearch = baseUrl + "%s/page/advsearch?st=&stag=&ss=&sa=&sr=true&sq=%7b%22prop_cm_name%22%3a%22%22%2c%22prop_cm_title%22%3a%22%22%2c%22prop_cm_description%22%3a%22%22%2c%22datatype%22%3a%22cm%3afolder%22%7d";   
     private final String googleDocs = baseUrl + "%s/page/site/workflow/googledocsEditor?nodeRef=workspace%3A%2F%2FSpacesStore%2Fe9f5955c-8dc7-471d-92e3-5ac1f99d420b&return=site%2Fworkflow%2Fdocumentlibrary";
     private final String searchResult = baseUrl + "%s/page/search?t=ipsum";
     private final String searchResultAllSites = baseUrl + "%s/page/search?t=ipsum&s=&a=true&r=false";
@@ -227,7 +229,10 @@ public class FactorySharePageTest
 
             //---------------search ----------------
             page = resolvePage(advanceSearch, "advanceSearch", drone);
-            Assert.assertTrue(page instanceof AdvanceSearchPage);
+            Assert.assertTrue(page instanceof AdvanceSearchPage);            
+            
+            page = resolvePage(advanceContentSearch, "advContent-search", drone);
+            Assert.assertTrue(page instanceof AdvanceSearchContentPage);
             
             page = resolvePage(advanceFolderSearch, "advanceFolderSearch", drone);
             Assert.assertTrue(page instanceof AdvanceSearchFolderPage);
