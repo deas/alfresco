@@ -22,22 +22,27 @@ public enum Categories {
     
     /**
      * Find the {@link Categories} based on name.
-     * @param name - category name
+     * 
+     * @param name
+     *            - category name
      * @return {@link Category}
-     * @throws Exception - Throws {@link Exception} if not able to find 
+     * @throws Exception
+     *             - Throws {@link Exception} if not able to find
      */
     public static Categories getCategory(String name)
     {
-    	if(StringUtils.isEmpty(name))
-    	{
-    		throw new UnsupportedOperationException("Name can't be null or empty, It is required.");
-    	}
-		for (Categories aspect : Categories.values()) {
-			if (aspect.value != null && aspect.value.equalsIgnoreCase(name.trim())) {
-				return aspect;
-			}
-		}
+        if (StringUtils.isEmpty(name))
+        {
+            throw new UnsupportedOperationException("Name can't be null or empty, It is required.");
+        }
+        for (Categories aspect : Categories.values())
+        {
+            if (aspect.value != null && aspect.value.equalsIgnoreCase(name.trim()))
+            {
+                return aspect;
+            }
+        }
         throw new IllegalArgumentException("Not able to find the Category for given name : " + name);
-    }	
+    }
 
 }

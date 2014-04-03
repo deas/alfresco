@@ -375,7 +375,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Unable to find Error PopUp");
+                logger.trace("Unable to find Error PopUp", nse);
             }
         }
         return false;
@@ -401,7 +401,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         }
         catch (TimeoutException te)
         {
-            throw new PageOperationException("Unable to find WorkFlow Could NOT be started prompt" + te);
+            throw new PageOperationException("Unable to find WorkFlow Could NOT be started prompt", te);
         }
     }
 
@@ -428,7 +428,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable find help icon" + nse);
+            throw new PageOperationException("Unable find help icon", nse);
         }
     }
 
@@ -445,7 +445,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable find help text, Please click the help icon first." + nse);
+            throw new PageOperationException("Unable find help text, Please click the help icon first.", nse);
         }
     }
 
@@ -517,11 +517,11 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
             }
             catch (NoSuchElementException nse)
             {
-                throw new PageOperationException("Unable to find element: " + nse.getMessage());
+                throw new PageOperationException("Unable to find element: ", nse);
             }
             catch (TimeoutException te)
             {
-                throw new PageOperationException("Timed out on waiting for: " + te.getMessage());
+                throw new PageOperationException("Timed out on waiting for: ", te);
             }
         }
 
@@ -540,7 +540,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Unable to find Close button on Calendar date picker");
+                logger.trace("Unable to find Close button on Calendar date picker", nse);
             }
         }
     }
@@ -561,14 +561,14 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Unable to find DueDate field" + nse.getMessage());
+                logger.trace("Unable to find DueDate field", nse);
             }
         }
         catch (IllegalArgumentException ie)
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Unalbe to parse Due Date" + ie.getMessage());
+                logger.trace("Unalbe to parse Due Date", ie);
             }
         }
         return "";

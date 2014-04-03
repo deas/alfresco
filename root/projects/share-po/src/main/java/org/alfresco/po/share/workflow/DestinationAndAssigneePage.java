@@ -151,7 +151,7 @@ public class DestinationAndAssigneePage extends SharePage
         } 
         catch (TimeoutException exception)
         {
-            logger.error("Time out while finding elements!!");
+            logger.error("Time out while finding elements!!", exception);
         }       
         throw new PageException("could not found Site name:"+siteName);
     }
@@ -317,7 +317,7 @@ public class DestinationAndAssigneePage extends SharePage
         catch (TimeoutException e) {}
         if(logger.isTraceEnabled())
         {
-            logger.trace("Folder \"" +folderName + "\" is NOT displayed" );
+            logger.trace("Folder \"" +folderName + "\" is NOT displayed");
         }
         return false;
     }
@@ -369,7 +369,7 @@ public class DestinationAndAssigneePage extends SharePage
        }
        catch(TimeoutException toe)
        {
-           logger.error("Time out loading :"+INCLUDE_SUB_FOLDER);
+           logger.error("Time out loading :"+INCLUDE_SUB_FOLDER, toe);
        }
     }
     
@@ -386,7 +386,7 @@ public class DestinationAndAssigneePage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Time out loading :"+INCLUDE_SUB_FOLDER);
+                logger.trace("Time out loading :"+INCLUDE_SUB_FOLDER, toe);
             }
         }
        return false;
@@ -421,7 +421,7 @@ public class DestinationAndAssigneePage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Time out loading :"+INCLUDE_SUB_FOLDER);
+                logger.trace("Time out loading :"+INCLUDE_SUB_FOLDER, toe);
             }
         }
         return false;

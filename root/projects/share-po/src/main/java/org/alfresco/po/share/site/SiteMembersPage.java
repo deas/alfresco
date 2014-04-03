@@ -140,11 +140,11 @@ public class SiteMembersPage extends SharePage
         }
         catch (NoSuchElementException e)
         {
-            if(logger.isTraceEnabled()){ logger.error("Unable to find the users list css." + e);}
+            if(logger.isTraceEnabled()){ logger.trace("Unable to find the users list css." , e);}
         }
         catch (TimeoutException e)
         {
-            if(logger.isTraceEnabled()){ logger.error("Time exceeded to find the users list css." + e);}
+            if(logger.isTraceEnabled()){ logger.trace("Time exceeded to find the users list css." , e);}
         }
         return Collections.emptyList();
     }
@@ -178,7 +178,7 @@ public class SiteMembersPage extends SharePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded time to find the list of roles." + e);
+            logger.error("Exceeded time to find the list of roles." , e);
         }
        
         return listOfRoles;
@@ -241,7 +241,7 @@ public class SiteMembersPage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("User: \"" + userName + "\" can not be found in members list.");
+                logger.trace("User: \"" + userName + "\" can not be found in members list.", e);
             }
         }
         throw new PageException("User: \"" + userName + "\" can not be found in members list.");
@@ -265,7 +265,7 @@ public class SiteMembersPage extends SharePage
         } 
         catch (TimeoutException e)
         {
-            throw new PageException("Unable to find the InviteMembersPage."+e);
+            throw new PageException("Unable to find the InviteMembersPage.", e);
         }
         return new InviteMembersPage(getDrone());
 
@@ -289,7 +289,7 @@ public class SiteMembersPage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Unable to find users list");
+                logger.trace("Unable to find users list", nse);
             }
         }
         return false;

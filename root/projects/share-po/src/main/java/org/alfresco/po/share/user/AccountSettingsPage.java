@@ -25,15 +25,9 @@ import org.alfresco.webdrone.WebDrone;
 /**
  * My profile page object, holds all element of the html page relating to
  * share's my profile page.
- * 
- * 
- * 
  */
 public class AccountSettingsPage extends SharePage
 {
-    
-    
- 
 
     /**
      * Constructor.
@@ -66,10 +60,6 @@ public class AccountSettingsPage extends SharePage
     {
         return render(new RenderTime(time));
     }
-    
-    
-    
-    
     
 }
     

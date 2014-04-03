@@ -179,11 +179,11 @@ public class CategoryPage extends AbstractEditProperties
                 }
                 catch (NoSuchElementException e)
                 {
-                    logger.error("Not able to find the header or link element on this row.");
+                    logger.error("Not able to find the header or link element on this row.", e);
                 }
                 catch (Exception e)
                 {
-                    logger.error("Exception while finding & adding categories : " + e);
+                    logger.error("Exception while finding & adding categories : ", e);
                 }
             }
         }
@@ -206,7 +206,7 @@ public class CategoryPage extends AbstractEditProperties
                     catch (StaleElementReferenceException exception)
                     {
                         drone.find(CANCEL_BUTTON).click();
-                        throw new PageException("Unexpected Refresh on Page lost reference to the Categories." + exception);
+                        throw new PageException("Unexpected Refresh on Page lost reference to the Categories.", exception);
                     }
                 }
                 else
@@ -270,7 +270,7 @@ public class CategoryPage extends AbstractEditProperties
             return drone.getCurrentPage();
         } catch (NoSuchElementException nse)
         {
-            throw new PageException("Not able find the cancel button: " + nse);
+            throw new PageException("Not able find the cancel button: ", nse);
         }
     }
     
@@ -286,7 +286,7 @@ public class CategoryPage extends AbstractEditProperties
             return drone.getCurrentPage();
         } catch (NoSuchElementException nse)
         {
-            throw new PageException("Not able find the ok button: " + nse);  
+            throw new PageException("Not able find the ok button: ", nse);  
         }
     }
 }

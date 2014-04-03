@@ -89,7 +89,7 @@ public class DeleteTopicDialogPage extends SharePage
         {
             if (logger.isDebugEnabled())
             {
-                logger.error("Exceeded the time to find xpath for topic delete button on Delete Topic Page." + te);
+                logger.debug("Exceeded the time to find xpath for topic delete button on Delete Topic Page.", te);
             }
         }
         throw new PageOperationException("Cannot find topic delete button on Delete Topic Page.");
@@ -109,7 +109,7 @@ public class DeleteTopicDialogPage extends SharePage
         {
             if (logger.isDebugEnabled())
             {
-                logger.error("Exceeded the time to find xpath for cancel topic delete button on Delete Topic Page." + te);
+                logger.debug("Exceeded the time to find xpath for cancel topic delete button on Delete Topic Page.", te);
             }
         }
         throw new PageOperationException("Cannot find topic cancel delete button on Delete Topic Page.");

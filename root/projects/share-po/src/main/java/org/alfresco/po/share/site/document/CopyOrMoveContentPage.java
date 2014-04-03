@@ -113,7 +113,10 @@ public class CopyOrMoveContentPage  extends ShareDialogue
         }
         catch (TimeoutException e)
         {
-            logger.warn("Unable to find the Copy/Move Dialog Css : ", e);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find the Copy/Move Dialog Css : ", e);
+            }
         }
         return title;
     }
@@ -136,7 +139,10 @@ public class CopyOrMoveContentPage  extends ShareDialogue
         }
         catch (TimeoutException e)
         {
-            logger.warn("Unable to get the list of destionations : ", e);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to get the list of destionations : ", e);
+            }
         }
         return destinations;
     }
@@ -160,7 +166,10 @@ public class CopyOrMoveContentPage  extends ShareDialogue
         }
         catch (TimeoutException e)
         {
-            logger.warn("Unable to get the list of sites : ", e);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to get the list of sites : ", e);
+            }
         }
 
         return sites;
@@ -184,7 +193,10 @@ public class CopyOrMoveContentPage  extends ShareDialogue
         }
         catch (TimeoutException e)
         {
-            logger.warn("Unable to get the list of folders : ", e);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to get the list of folders : ", e);
+            }
         }
         return folders;
     }
@@ -208,7 +220,7 @@ public class CopyOrMoveContentPage  extends ShareDialogue
         catch (TimeoutException e)
         {
             logger.error("Unable to find the Copy/Move Button Css : ", e);
-            throw new PageException("Unable to find the Copy/Move button on Copy/Move Dialog.", e);
+            throw new PageException("Unable to find the Copy/Move button on Copy/Move Dialog.");
         }
     }
     
@@ -227,8 +239,8 @@ public class CopyOrMoveContentPage  extends ShareDialogue
         }
         catch (TimeoutException e)
         {
-            logger.error("Unable to find the cancel button Css : " + e);
-            throw new PageException("Unable to find the cancel button on Copy/Move Dialog.", e);
+            logger.error("Unable to find the cancel button Css : ", e);
+            throw new PageException("Unable to find the cancel button on Copy/Move Dialog.");
         }
     }
     
@@ -246,7 +258,7 @@ public class CopyOrMoveContentPage  extends ShareDialogue
         catch (TimeoutException e)
         {
             logger.error("Unable to find the close button Css : ", e);
-            throw new PageException("Unable to find the close button on Copy/Move Dialog.", e);
+            throw new PageException("Unable to find the close button on Copy/Move Dialog.");
         }
     }
     

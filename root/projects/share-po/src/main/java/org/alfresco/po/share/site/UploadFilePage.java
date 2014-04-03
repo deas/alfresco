@@ -155,17 +155,20 @@ public class UploadFilePage extends ShareDialogue
         }
         return FactorySharePage.getPage(drone.getCurrentUrl(), drone);
     }
+    
     /**
      * Clicks on the cancel link.
      */
-     public void cancel()
-	    {
-	    	List<WebElement> cancelButton = drone.findAll(By.cssSelector("button[id$='default-cancelOk-button-button']"));
-	    	for (WebElement webElement : cancelButton) {
-				if(webElement.isDisplayed() && webElement.isEnabled())
-				{
-					webElement.click();
-				}
-			}
+    public void cancel()
+    {
+        List<WebElement> cancelButton = drone.findAll(By
+                .cssSelector("button[id$='default-cancelOk-button-button']"));
+        for (WebElement webElement : cancelButton)
+        {
+            if (webElement.isDisplayed() && webElement.isEnabled())
+            {
+                webElement.click();
+            }
+        }
     }
 }

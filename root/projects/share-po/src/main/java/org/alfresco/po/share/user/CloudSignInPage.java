@@ -237,7 +237,7 @@ public class CloudSignInPage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Forgot password link is not visible");
+                logger.trace("Forgot password link is not visible", e);
             }
         }
         return false;
@@ -257,7 +257,7 @@ public class CloudSignInPage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Forgot password link is not visible");
+                logger.trace("Forgot password link is not visible", e);
             }
         }
         return "";

@@ -138,8 +138,8 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
         }
         catch (NoSuchElementException te)
         {
-            logger.error("Unable to find the OK button." + te);
-            throw new PageOperationException("Unable to click the OK Button.", te);
+            logger.error("Unable to find the OK button.", te);
+            throw new PageOperationException("Unable to click the OK Button.");
         }
     }
 
@@ -180,7 +180,7 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
         catch (NoSuchElementException te)
         {
             logger.error("Unable to find the " + buttonName + " button.", te);
-            throw new PageOperationException("Unable to click the " + buttonName + " Button.", te);
+            throw new PageOperationException("Unable to click the " + buttonName + " Button.");
         }
     }
 
@@ -205,8 +205,8 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
         }
         catch (NoSuchElementException te)
         {
-            logger.error("Unable to find the Search Term box." + te);
-            throw new PageOperationException("Unable to find the Search Term box.", te);
+            logger.error("Unable to find the Search Term box.", te);
+            throw new PageOperationException("Unable to find the Search Term box.");
         }
     }
 
@@ -230,8 +230,8 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
         }
         catch (NoSuchElementException te)
         {
-            logger.error("Unable to find the Title box." + te);
-            throw new PageOperationException("Unable to find the Title box.", te);
+            logger.error("Unable to find the Title box.", te);
+            throw new PageOperationException("Unable to find the Title box.");
         }
     }
 
@@ -249,8 +249,8 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
         }
         catch (NoSuchElementException te)
         {
-            logger.error("Unable to find the Search SearchLimit drop down." + te);
-            throw new PageOperationException("Unable to find the Search SearchLimit drop down.", te);
+            logger.error("Unable to find the Search SearchLimit drop down.", te);
+            throw new PageOperationException("Unable to find the Search SearchLimit drop down.");
         }
     }
 
@@ -302,7 +302,7 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
         }
         catch (TimeoutException elementException)
         {
-            logger.error("Exceeded time to find the help ballon text");
+            logger.error("Exceeded time to find the help ballon text", elementException);
         }
         throw new UnsupportedOperationException("Not able to find the help text");
     }

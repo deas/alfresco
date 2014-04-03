@@ -231,7 +231,10 @@ public class CustomiseSiteDashboardPage extends SharePage
         }
         catch (TimeoutException te)
         {
-            logger.info("Exceeded time to find the Available dashlet names " + te);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Exceeded time to find the Available dashlet names " + te);
+            }
         }
 
         if (newDashlet != null)
@@ -271,7 +274,10 @@ public class CustomiseSiteDashboardPage extends SharePage
                 }
                 catch (TimeoutException te)
                 {
-                    logger.info("Exceeded time to find the Available dashlet names " + te);
+                    if(logger.isTraceEnabled())
+                    {
+                        logger.info("Exceeded time to find the Available dashlet names ", te);
+                    }
                 }
             }
             else

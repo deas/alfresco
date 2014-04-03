@@ -37,7 +37,7 @@ import org.openqa.selenium.WebElement;
  * @author Charu -To confirm remove user/ not to remove user from any group this page is used
  */
 
-
+@SuppressWarnings("unused")
 public class RemoveUserFromGroupPage extends SharePage
 {
     private static final String CONFIRM_MESSAGE = "div[class='yui-module yui-overlay yui-panel' ]>div[class='bd']";
@@ -96,7 +96,7 @@ public class RemoveUserFromGroupPage extends SharePage
                 {
                     button.click();
                     canResume();
-                    return FactorySharePage.resolvePage(drone);                           
+                    return FactorySharePage.resolvePage(drone);
                 }               
                 
             }
@@ -104,13 +104,13 @@ public class RemoveUserFromGroupPage extends SharePage
         }
         catch(NoSuchElementException nse)
         {
-            throw new PageOperationException("not present in this page");           
+            throw new PageOperationException("not present in this page", nse);
         }
         throw new PageOperationException("not present in this page");
     }    
     
     /**
-     * Get the Title in Remove user pop up window       
+     * Get the Title in Remove user pop up window
      *   
      * @return - String
      */
@@ -123,7 +123,7 @@ public class RemoveUserFromGroupPage extends SharePage
         }
         catch (TimeoutException toe)
         {
-            throw new PageOperationException("Not visible Element: Remove user from Goup" +toe.getMessage());
+            throw new PageOperationException("Not visible Element: Remove user from Goup", toe);
         }
         
     }

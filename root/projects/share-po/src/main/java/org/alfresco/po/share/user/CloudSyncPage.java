@@ -70,11 +70,11 @@ public class CloudSyncPage extends SharePage
         }
         catch (NoSuchElementException e)
         {
-            logger.error(SIGN_IN_BUTTON.toString() + "not found");
+            logger.error(SIGN_IN_BUTTON.toString() + "not found", e);
         }
         catch (TimeoutException e)
         {
-            logger.error(SIGN_IN_BUTTON.toString() + " took a lot of time to locate");
+            logger.error(SIGN_IN_BUTTON.toString() + " took a lot of time to locate", e);
         }
         return this;
     }
@@ -118,7 +118,7 @@ public class CloudSyncPage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Disconnect button not Present");
+                logger.trace("Disconnect button not Present", e);
             }
             try
             {

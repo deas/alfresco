@@ -167,7 +167,7 @@ public class SyncInfoPage extends SharePage
         }
         catch (TimeoutException nse)
         {
-            logger.error("Time out finding unsync button!!");
+            logger.error("Time out finding unsync button!!", nse);
         }
         return false;
     }
@@ -184,7 +184,7 @@ public class SyncInfoPage extends SharePage
         }
         catch (TimeoutException nse)
         {
-            logger.error("Time out finding unsync button!!");
+            logger.error("Time out finding unsync button!!", nse);
         }
         return false;
     }
@@ -202,8 +202,8 @@ public class SyncInfoPage extends SharePage
         }
         catch(TimeoutException e) 
         {
-            logger.error("Unable to find Close button on Sync Info page" + e);
-            throw new PageException("Not able to click on Sync Info close button.", e);
+            logger.error("Unable to find Close button on Sync Info page", e);
+            throw new PageException("Not able to click on Sync Info close button.");
         }
     }
     
@@ -219,7 +219,7 @@ public class SyncInfoPage extends SharePage
         }
         catch(TimeoutException e) 
         {
-            logger.error("Exceeded the time to find css." + e);
+            logger.error("Exceeded the time to find css.", e);
         }
         
         throw new PageException("Not able to find Sync Info status.");
@@ -250,7 +250,7 @@ public class SyncInfoPage extends SharePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e);
+            logger.error("Exceeded the time to find css.", e);
         }
 
         throw new PageException("Not able to find Sync Info Location.");
@@ -268,7 +268,7 @@ public class SyncInfoPage extends SharePage
         }
         catch(TimeoutException e) 
         {
-            logger.error("Exceeded the time to find css." + e);
+            logger.error("Exceeded the time to find css.", e);
         }
         
         throw new PageException("Not able to find Sync Info Location.");
@@ -282,8 +282,8 @@ public class SyncInfoPage extends SharePage
     {
         try
         {
-            String syncPeriod =drone.findAndWait(SYNC_PERIOD).getAttribute("title");           
-            return new SimpleDateFormat(DATE_FORMAT).parse(syncPeriod);            
+            String syncPeriod =drone.findAndWait(SYNC_PERIOD).getAttribute("title");
+            return new SimpleDateFormat(DATE_FORMAT).parse(syncPeriod);
         }catch(TimeoutException toe)
         {
            logger.error("Time out finding element for sync time period"); 
@@ -326,7 +326,7 @@ public class SyncInfoPage extends SharePage
         }
         catch (TimeoutException nse)
         {
-            logger.error("Time out finding unsync button!!");
+            logger.error("Time out finding unsync button!!", nse);
         }
         throw new PageException();
     }
@@ -374,7 +374,7 @@ public class SyncInfoPage extends SharePage
         }
         catch (TimeoutException nse)
         {
-            logger.error("Time out finding buttons!!");
+            logger.error("Time out finding buttons!!", nse);
         }
         throw new PageException();
     }

@@ -178,11 +178,11 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Not able to find the web element" + nse);
+            logger.error("Not able to find the web element", nse);
         }
         catch (TimeoutException exception)
         {
-            logger.error("Exceeded time to find the web element" + exception);
+            logger.error("Exceeded time to find the web element", exception);
         }
         
         throw new PageException("Unable to find assign workflow.");

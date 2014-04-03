@@ -302,7 +302,7 @@ public class CustomiseUserDashboardPage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Unable to find the Save button css " + te);
+                logger.trace("Unable to find the Save button css ", te);
             }
         }
 

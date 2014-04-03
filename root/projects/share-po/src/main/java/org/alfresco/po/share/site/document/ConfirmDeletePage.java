@@ -46,7 +46,7 @@ public class ConfirmDeletePage extends SharePage
       
     }
 
-    private static final Log LOGGER = LogFactory.getLog(ConfirmDeletePage.class);
+    private final Log logger = LogFactory.getLog(ConfirmDeletePage.class);
     
     private static final By BUTTON_GROUP = By.cssSelector(".button-group");
     private static final By PROMPT = By.cssSelector("div[id$='prompt']");
@@ -61,12 +61,12 @@ public class ConfirmDeletePage extends SharePage
         }
         catch (NoSuchElementException e)
         {
-            LOGGER.error(BUTTON_GROUP+ "or" +PROMPT+" not found!");
+            logger.error(BUTTON_GROUP+ "or" +PROMPT+" not found!", e);
             
         }
         catch (TimeoutException e)
         {
-            LOGGER.error(BUTTON_GROUP+ "or" +PROMPT+" not found!");
+            logger.error(BUTTON_GROUP+ "or" +PROMPT+" not found!", e);
         }
         return this;
     }
@@ -109,7 +109,7 @@ public class ConfirmDeletePage extends SharePage
         }
         catch(NoSuchElementException nse)
         {
-            LOGGER.error(BUTTON_GROUP+"not present in this page");
+            logger.error(BUTTON_GROUP+"not present in this page", nse);
            
         }
         throw new PageOperationException(BUTTON_GROUP+"not present in this page");

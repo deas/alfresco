@@ -29,19 +29,26 @@ package org.alfresco.po.share.site.document;
 public enum DocumentAction
 {
 
-    COPY_TO("div[id$='onActionCopyTo']", DetailsPageType.COMMON), MOVE_TO("div[id$='onActionMoveTo']", DetailsPageType.COMMON), DELETE_CONTENT(
-            "div[id$='onActionDelete']", DetailsPageType.COMMON), MANAGE_ASPECTS("div[id$='onActionManageAspects']", DetailsPageType.COMMON), //
-    MANAGE_PERMISSION_DOC(".document-manage-granular-permissions", DetailsPageType.DOCUMENT), MANAGE_PERMISSION_FOL(".document-manage-granular-permissions",
-            DetailsPageType.FOLDER), MANAGE_PERMISSION_REPO(".document-manage-repo-permissions", DetailsPageType.FOLDER), CHNAGE_TYPE(
-            "div[id$='onActionChangeType']", DetailsPageType.COMMON), EDIT_PROPERTIES(".document-edit-metadata", DetailsPageType.COMMON),
-
-    MANAGE_RULES(".folder-manage-rules", DetailsPageType.FOLDER), DOWNLOAD_FOLDER("div[id$='onActionFolderDownload']", DetailsPageType.FOLDER), VIEW_IN_EXPLORER(
-            ".view-in-explorer", DetailsPageType.FOLDER),
-
-    DOWNLOAD_DOCUMENT(".document-download", DetailsPageType.DOCUMENT), VIEW_IN_EXLPORER(".document-view-content", DetailsPageType.DOCUMENT), UPLOAD_DOCUMENT(
-            "div[id$='onActionUploadNewVersion']", DetailsPageType.DOCUMENT), DOCUMENT_INLINE_EDIT(".document-inline-edit", DetailsPageType.DOCUMENT), EDIT_OFFLINE(
-            "div[id$='onActionEditOffline']", DetailsPageType.DOCUMENT), GOOGLE_DOCS_EDIT("div[id$='onGoogledocsActionEdit']", DetailsPageType.DOCUMENT), START_WORKFLOW(
-            "div[id$='onActionAssignWorkflow']", DetailsPageType.DOCUMENT), PUBLISH_ACTION("div[id$='onActionPublish']", DetailsPageType.DOCUMENT);
+    COPY_TO("div[id$='onActionCopyTo']", DetailsPageType.COMMON), 
+    MOVE_TO("div[id$='onActionMoveTo']", DetailsPageType.COMMON), 
+    DELETE_CONTENT("div[id$='onActionDelete']", DetailsPageType.COMMON), 
+    MANAGE_ASPECTS("div[id$='onActionManageAspects']", DetailsPageType.COMMON), //
+    MANAGE_PERMISSION_DOC(".document-manage-granular-permissions", DetailsPageType.DOCUMENT), 
+    MANAGE_PERMISSION_FOL(".document-manage-granular-permissions", DetailsPageType.FOLDER),
+    MANAGE_PERMISSION_REPO(".document-manage-repo-permissions", DetailsPageType.FOLDER), 
+    CHNAGE_TYPE("div[id$='onActionChangeType']", DetailsPageType.COMMON), 
+    EDIT_PROPERTIES(".document-edit-metadata", DetailsPageType.COMMON),
+    MANAGE_RULES(".folder-manage-rules", DetailsPageType.FOLDER), 
+    DOWNLOAD_FOLDER("div[id$='onActionFolderDownload']", DetailsPageType.FOLDER), 
+    VIEW_IN_EXPLORER(".view-in-explorer", DetailsPageType.FOLDER),
+    DOWNLOAD_DOCUMENT(".document-download", DetailsPageType.DOCUMENT), 
+    VIEW_IN_EXLPORER(".document-view-content", DetailsPageType.DOCUMENT), 
+    UPLOAD_DOCUMENT("div[id$='onActionUploadNewVersion']", DetailsPageType.DOCUMENT), 
+    DOCUMENT_INLINE_EDIT(".document-inline-edit", DetailsPageType.DOCUMENT), 
+    EDIT_OFFLINE("div[id$='onActionEditOffline']", DetailsPageType.DOCUMENT), 
+    GOOGLE_DOCS_EDIT("div[id$='onGoogledocsActionEdit']", DetailsPageType.DOCUMENT), 
+    START_WORKFLOW("div[id$='onActionAssignWorkflow']", DetailsPageType.DOCUMENT), 
+    PUBLISH_ACTION("div[id$='onActionPublish']", DetailsPageType.DOCUMENT);
 
     public enum DetailsPageType
     {

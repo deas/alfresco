@@ -181,7 +181,7 @@ public class EditTaskPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find Approve button" + nse);
+            throw new PageOperationException("Unable to find Approve button", nse);
         }
     }
 

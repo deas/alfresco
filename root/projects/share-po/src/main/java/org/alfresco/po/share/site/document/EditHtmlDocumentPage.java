@@ -86,7 +86,6 @@ public class EditHtmlDocumentPage extends InlineEditPage
         }
         catch(NoSuchElementException nse)
         {
-            logger.error("It not a EditHtmlDocumentPage!!");
             return false;
         }
     }
@@ -119,7 +118,7 @@ public class EditHtmlDocumentPage extends InlineEditPage
        }
        catch(TimeoutException toe)
        {
-           logger.error("Tinymce Editor is not found");
+           logger.error("Tinymce Editor is not found", toe);
        }
     }
     
@@ -137,7 +136,7 @@ public class EditHtmlDocumentPage extends InlineEditPage
         }
         catch(TimeoutException toe)
         {
-            logger.error("Submit button is not present");
+            logger.error("Submit button is not present", toe);
         }
         throw new PageOperationException();
     }

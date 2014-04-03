@@ -121,7 +121,7 @@ public class MyWorkFlowsPage extends SharePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Not able to find start work flow button" + e);
+            logger.error("Not able to find start work flow button", e);
         }
         throw new PageException("Not able to find start work flow button");
     }
@@ -157,7 +157,7 @@ public class MyWorkFlowsPage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("No workflow found");
+                logger.trace("No workflow found", nse);
             }
         }
         catch (StaleElementReferenceException se)

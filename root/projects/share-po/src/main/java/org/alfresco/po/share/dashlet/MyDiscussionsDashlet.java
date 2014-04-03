@@ -131,7 +131,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to find empty dashlet message." + nse);
+            logger.error("Unable to find empty dashlet message.", nse);
         }
         throw new PageOperationException("Error in finding the css for empty dashlet message.");
     }
@@ -152,7 +152,10 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            logger.info("Unable to find the help icon." + te);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find the help icon.", te);
+            }
         }
 
         return false;
@@ -174,7 +177,10 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            logger.info("Unable to find the new topic icon." + te);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find the new topic icon.", te);
+            }
         }
 
         return false;
@@ -193,7 +199,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         catch (NoSuchElementException nse)
         {
             logger.error("Unable to find the help icon.", nse);
-            throw new PageOperationException("Unable to click the Help icon", nse);
+            throw new PageOperationException("Unable to click the Help icon");
         }
     }
 
@@ -231,7 +237,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Not able to find the ballon");
+                logger.trace("Not able to find the ballon", elementException);
             }
         }
         return false;
@@ -288,7 +294,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Not able to find the ballon");
+                logger.trace("Not able to find the ballon", elementException);
             }           
         }
     }
@@ -308,7 +314,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Exceeded time to find and click the Topic Filter Button.");
+                logger.trace("Exceeded time to find and click the Topic Filter Button.", e);
             }
         }
     }
@@ -328,7 +334,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Exceeded time to find and click the Topic History Filter Button.");
+                logger.trace("Exceeded time to find and click the Topic History Filter Button.", e);
             }
         }
     }
@@ -685,7 +691,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Exceeded time to find and clickresize handle.");
+                logger.trace("Exceeded time to find and clickresize handle.", e);
             }
         }
          

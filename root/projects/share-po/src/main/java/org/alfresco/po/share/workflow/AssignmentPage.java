@@ -208,7 +208,7 @@ public class AssignmentPage extends SharePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding element" + toe);
+            logger.error("Time out finding element", toe);
         }
         throw new PageException();
     }
@@ -237,11 +237,11 @@ public class AssignmentPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Element Not found" + nse);
+            logger.error("Element Not found", nse);
         }
         catch (TimeoutException toe)
         {
-            logger.error("Timed out: " + toe);
+            logger.error("Timed out: ",toe);
         }
     }
 
@@ -324,7 +324,7 @@ public class AssignmentPage extends SharePage
         {
             if(logger.isErrorEnabled())
             {
-                logger.error("Unable to find Search Field");
+                logger.error("Unable to find Search Field", nse);
             }
         }
     }
@@ -340,7 +340,7 @@ public class AssignmentPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to find Search button");
+            logger.error("Unable to find Search button", nse);
         }
     }
 
@@ -360,7 +360,7 @@ public class AssignmentPage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Unable to find Warning Message");
+                logger.trace("Unable to find Warning Message", te);
             }
             return "";
         }
@@ -438,7 +438,7 @@ public class AssignmentPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("No Users found");
+            logger.error("No Users found", nse);
         }
         return Collections.<WebElement> emptyList();
     }

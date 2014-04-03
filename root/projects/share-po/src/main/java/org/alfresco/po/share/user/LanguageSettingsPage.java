@@ -50,7 +50,6 @@ public class LanguageSettingsPage extends SharePage
      * Constructor
      *
      */
-
     public LanguageSettingsPage(WebDrone drone)
     {
         super(drone);
@@ -59,7 +58,6 @@ public class LanguageSettingsPage extends SharePage
     /*
      *Render logic
      */
-    
     @SuppressWarnings("unchecked")
     public LanguageSettingsPage render(RenderTime timer)
     {
@@ -101,7 +99,7 @@ public class LanguageSettingsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageException("Unable to find Element" + nse);
+            throw new PageException("Unable to find Element", nse);
         }
         return this;
     }
@@ -120,7 +118,7 @@ public class LanguageSettingsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageException("Unable to find Element" + nse);
+            throw new PageException("Unable to find Element", nse);
         }
     }
 
@@ -137,7 +135,7 @@ public class LanguageSettingsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageException("Unable to find Element" + nse);
+            throw new PageException("Unable to find Element", nse);
         }
     }
 }

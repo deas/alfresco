@@ -102,7 +102,7 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (TimeoutException e)
                 {
-                        logger.error("Page, contains Element :" + "div[id$='" + type + "-details']" + " does not exist");
+                        logger.error("Page, contains Element :" + "div[id$='" + type + "-details']" + " does not exist", e);
                 }
                 return false;
         }
@@ -143,11 +143,11 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (StaleElementReferenceException sere)
                 {
-                        logger.error("Element :" + COMMENT_PANEL + " or " + DIV_COMMENT_CONTENT + " does not exist");
+                        logger.error("Element :" + COMMENT_PANEL + " or " + DIV_COMMENT_CONTENT + " does not exist", sere);
                 }
                 catch (NoSuchElementException nse)
                 {
-                        logger.error("Element :" + COMMENT_PANEL + " or " + DIV_COMMENT_CONTENT + " does not exist");
+                        logger.error("Element :" + COMMENT_PANEL + " or " + DIV_COMMENT_CONTENT + " does not exist", nse);
                 }
                 return comments;
         }
@@ -176,7 +176,7 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (TimeoutException nsee)
                 {
-                        logger.error("Element :" + SPAN_LIKE_COMMENT + " does not exist");
+                        logger.error("Element :" + SPAN_LIKE_COMMENT + " does not exist", nsee);
                 }
                 return count;
         }
@@ -204,11 +204,17 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (NoSuchElementException elementException)
                 {
-                        logger.error("Field Element is not found");
+                    if(logger.isTraceEnabled())
+                    {
+                        logger.trace("Field Element is not found", elementException);
+                    }
                 }
                 catch (TimeoutException toe)
                 {
-                        logger.error("Time out while finding form fields");
+                    if(logger.isTraceEnabled())
+                    {
+                        logger.trace("Time out while finding form fields", toe);
+                    }
                 }
                 return Collections.emptyMap();
         }
@@ -291,7 +297,10 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (NoSuchElementException nse)
                 {
-                        logger.error("Element :span.tag does not exist");
+                    if(logger.isTraceEnabled())
+                    {
+                        logger.error("Element :span.tag does not exist", nse);
+                    }
                 }
                 return Collections.<String>emptyList();
         }
@@ -311,7 +320,7 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (TimeoutException e)
                 {
-                        logger.error("Element :" + FAVOURITE_ACTION + " does not exist");
+                        logger.error("Element :" + FAVOURITE_ACTION + " does not exist", e);
                 }
                 throw new PageException("Favourite element not present");
         }
@@ -338,7 +347,6 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (NoSuchElementException nse)
                 {
-                        logger.error("Element :" + FAVOURITE_ACTION + " does not exist");
                         return false;
                 }
         }
@@ -361,7 +369,6 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (NoSuchElementException nse)
                 {
-                        logger.error("Element :" + LIKE_ACTION + " does not exist");
                 }
                 return false;
         }
@@ -437,7 +444,7 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (TimeoutException e)
                 {
-                        logger.error("Element :" + "div[id$='default-actionSet'] div." + type + "-edit-metadata a" + " does not exist");
+                        logger.error("Element :" + "div[id$='default-actionSet'] div." + type + "-edit-metadata a" + " does not exist", e);
                 }
                 throw new PageException("Properties not present in the page");
         }
@@ -644,7 +651,7 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (TimeoutException toe)
                 {
-                        logger.error("Element :" + PROMPT_PANEL_ID + " does not exist");
+                        logger.error("Element :" + PROMPT_PANEL_ID + " does not exist", toe);
                 }
 
         }
@@ -668,7 +675,6 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (TimeoutException toe)
                 {
-                        logger.error("Element :" + selector + "can not be found on the page");
                 }
                 catch (NoSuchElementException nse)
                 {
@@ -694,7 +700,6 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (NoSuchElementException exce)
                 {
-                        logger.error("Element :" + PAGE_SHARE_PANEL + " does not exist");
                 }
                 return false;
 
@@ -800,7 +805,7 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (TimeoutException toe)
                 {
-                        logger.error("This content is not Synced, Can not return SyncInfoPage!!");
+                        logger.error("This content is not Synced, Can not return SyncInfoPage!!", toe);
                 }
                 throw new PageException("This content is not Synced, Can not return SyncInfoPage!!");
         }
@@ -883,7 +888,7 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (TimeoutException te)
                 {
-                        throw new PageOperationException("Cannot go back to document library");
+                        throw new PageOperationException("Cannot go back to document library", te);
                 }
         }
 
@@ -986,7 +991,7 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (NoSuchElementException e)
                 {
-                        logger.error("Unable to find the edit comments save button css." + e);
+                        logger.error("Unable to find the edit comments save button css.", e);
                 }
                 throw new PageException("Error in saving the edit comments.");
         }
@@ -1004,8 +1009,8 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (NoSuchElementException e)
                 {
-                        logger.error("Unable to find the edit comments cancel button css." + e);
-                        throw new PageException("Error in cancelling the edit comments.", e);
+                        logger.error("Unable to find the edit comments cancel button css.", e);
+                        throw new PageException("Error in cancelling the edit comments.");
                 }
         }
 

@@ -247,7 +247,7 @@ public class ShareDialogue extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new NoSuchElementException("Unable to find the css " + nse);
+            throw new NoSuchElementException("Unable to find the css ", nse);
         }
     }
     

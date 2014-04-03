@@ -161,7 +161,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         catch(TimeoutException te)
         {
             logger.error("Unable to find the help icon.", te);
-            throw new PageOperationException("Unable to click the Help icon", te);
+            throw new PageOperationException("Unable to click the Help icon");
         }
     }
     
@@ -193,7 +193,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         } 
         catch (TimeoutException elementException)
         {
-                logger.error("Exceeded time to find the help ballon text", elementException);
+            logger.error("Exceeded time to find the help ballon text", elementException);
         }
         throw new UnsupportedOperationException("Not able to find the help text");
     }
@@ -272,11 +272,17 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException e)
         {
-            logger.error("Not able to find the element: ", e);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Not able to find the element: ", e);
+            }
         }
         catch (NoSuchElementException e)
         {
-            logger.error("Not able to find the element: ", e);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Not able to find the element: ", e);
+            }
         }
         return Collections.emptyList();
     }

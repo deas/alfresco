@@ -117,7 +117,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
         catch(TimeoutException te)
         {
             logger.error("Unable to find the OK button.", te);
-            throw new PageOperationException("Unable to click the OK Button.", te);
+            throw new PageOperationException("Unable to click the OK Button.");
         }
     }
     
@@ -133,7 +133,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
         catch(TimeoutException te)
         {
             logger.error("Unable to find the CANCEL button.", te);
-            throw new PageOperationException("Unable to click the CANCEL Button.", te);
+            throw new PageOperationException("Unable to click the CANCEL Button.");
         }
     }
     
@@ -149,7 +149,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
         catch(TimeoutException te)
         {
             logger.error("Unable to find the CLOSE button.", te);
-            throw new PageOperationException("Unable to click the CLOSE Button.", te);
+            throw new PageOperationException("Unable to click the CLOSE Button.");
         }
     }
     
@@ -174,7 +174,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
         catch(TimeoutException te)
         {
             logger.error("Unable to find the Title box.", te);
-            throw new PageOperationException("Unable to find the Title box.", te);
+            throw new PageOperationException("Unable to find the Title box.");
         }
     }
 }

@@ -49,7 +49,7 @@ import org.openqa.selenium.WebElement;
  */
 public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 {
-    private static final Logger LOGGER = Logger.getLogger(AbstractWorkFlowTaskDetailsPage.class);
+    private final Logger logger = Logger.getLogger(AbstractWorkFlowTaskDetailsPage.class);
 
     private static final By MENU_TITLE = By.cssSelector(".alf-menu-title-text");
     private static final By WORKFLOW_DETAILS_HEADER = By.cssSelector("div.workflow-details-header>h1");
@@ -163,9 +163,9 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            if(LOGGER.isTraceEnabled())
+            if(logger.isTraceEnabled())
             {
-                LOGGER.trace("Unable to find Cancel button ");
+                logger.trace("Unable to find Cancel button ");
             }
             throw new PageException("Unable to find Cancel button", nse);
         }
@@ -183,7 +183,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
         }
         catch (TimeoutException toe)
         {
-            LOGGER.error("Unable to find Assignee with exception" + toe);
+            logger.error("Unable to find Assignee with exception", toe);
         }
         return "";
     }

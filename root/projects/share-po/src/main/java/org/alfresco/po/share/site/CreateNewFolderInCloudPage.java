@@ -123,14 +123,14 @@ public class CreateNewFolderInCloudPage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Unable to find \"Name\" element");
+                logger.trace("Unable to find \"Name\" element", te);
             }
         }
         catch (NoSuchElementException nse)
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Unable to find \"Description/Save button\" elements");
+                logger.trace("Unable to find \"Description/Save button\" elements", nse);
             }
         }
         throw new PageException("Unable to find element");

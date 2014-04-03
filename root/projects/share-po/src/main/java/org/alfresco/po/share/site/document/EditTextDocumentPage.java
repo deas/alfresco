@@ -141,7 +141,7 @@ public class EditTextDocumentPage extends CreatePlainTextContentPage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Cancel button doesn't exist");
+                logger.trace("Cancel button doesn't exist", te);
             }
         }
         throw new PageException();

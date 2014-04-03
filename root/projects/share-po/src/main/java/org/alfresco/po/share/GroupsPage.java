@@ -53,8 +53,6 @@ public class GroupsPage extends SharePage
     private static final String BUTTON_BROWSE = "button[id$='default-browse-button-button']";
     private static final String BUTTON_SEARCH = "button[id$='default-search-button-button']";
     private static final String BUTTON_ADD = ".groups-newgroup-button";
-    private static final String BUTTON_ADD_USER = ".groups-adduser-button";
-    private static final String BUTTON_ADD_GROUP = ".groups-addgroup-button";
     private static final String GROUP_NAMES = "a[class$='groups-item-group']";
     private static Log logger = LogFactory.getLog(CopyOrMoveContentPage.class);
     private static final String USER_NAMES = "a[class*='groups-item-user']>span[class$='-item-label']";    
@@ -229,7 +227,7 @@ public class GroupsPage extends SharePage
 
         } catch (TimeoutException e)
         {
-            logger.error("Unable to get the list of members : " + e.getMessage());
+            logger.error("Unable to get the list of members : ", e);
         }
 
         throw new PageOperationException("Unable to get the list of members  : ");
@@ -309,7 +307,7 @@ public class GroupsPage extends SharePage
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("User: \"" + userName + "\" can not be found in members list.");
+                logger.trace("User: \"" + userName + "\" can not be found in members list.", e);
             }
         }
         throw new PageException("User: \"" + userName + "\" can not be found in members list.");
@@ -336,7 +334,7 @@ public class GroupsPage extends SharePage
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Unable to find member in  list");
+                logger.trace("Unable to find member in  list", e);
             }
         }
         return false;

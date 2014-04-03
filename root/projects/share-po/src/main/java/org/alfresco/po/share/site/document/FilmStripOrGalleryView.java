@@ -262,11 +262,11 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         }
         catch (NoSuchElementException e)
         {
-            logger.error("Unable to find the add tag icon"+ e);
+            logger.error("Unable to find the add tag icon", e);
         }
         catch(TimeoutException te)
         {
-            logger.error("Exceeded time to find the tag info area "+ te);
+            logger.error("Exceeded time to find the tag info area ", te);
         }
         catch (ElementNotVisibleException e2)
         {
@@ -817,7 +817,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         catch (NoSuchElementException e)
         {
             logger.error("Exceeded time to find the css.", e);
-            throw new PageException("Unable to find and click the more link", e);
+            throw new PageException("Unable to find and click the more link");
         }
     }
 
@@ -852,7 +852,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded time to find the css." + e);
+            logger.error("Exceeded time to find the css.", e);
         }
 
         throw new PageException("File directory info with title was not found");

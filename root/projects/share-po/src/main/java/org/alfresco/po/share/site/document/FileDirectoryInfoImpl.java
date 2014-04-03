@@ -256,7 +256,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (NoSuchElementException e)
         {
-            throw new PageOperationException("Not able to find categories" + e);
+            throw new PageOperationException("Not able to find categories", e);
         }
         return categories;
     }
@@ -275,11 +275,11 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException e)
         {
-            throw new PageOperationException("Exceeded time to find the css " + e);
+            throw new PageOperationException("Exceeded time to find the css ", e);
         }
         catch (StaleElementReferenceException st)
         {
-            throw new StaleElementReferenceException("Unable to find the css " + st);
+            throw new StaleElementReferenceException("Unable to find the css ", st);
         }
         return new ConfirmDeletePage(drone);
     }
@@ -501,7 +501,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         catch (TimeoutException te)
         {
             logger.error("Error adding tag: ", te);
-            throw new PageException("Error While adding tag: " + tagName, te);
+            throw new PageException("Error While adding tag: " + tagName);
         }
     }
 
@@ -625,7 +625,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         catch (TimeoutException e)
         {
             logger.error("Exceeded the time to find css.", e);
-            throw new PageException("Exceeded the time to find css.", e);
+            throw new PageException("Exceeded the time to find css.");
         }
 
     }
@@ -760,7 +760,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         catch (TimeoutException ex)
         {
             logger.error("Exceeded time to find the Save button css.", ex);
-            throw new PageException("Exceeded time to find the Save button css.", ex);
+            throw new PageException("Exceeded time to find the Save button css.");
         }
     }
 
@@ -778,7 +778,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         catch (TimeoutException ex)
         {
             logger.error("Exceeded time to find the Save button css.", ex);
-            throw new PageException("Exceeded time to find the Save button css.", ex);
+            throw new PageException("Exceeded time to find the Save button css.");
         }
     }
 
@@ -1088,7 +1088,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         catch (TimeoutException e)
         {
             logger.error("Exceeded the time to find css.", e);
-            throw new PageException("Exceeded the time to find css.", e);
+            throw new PageException("Exceeded the time to find css.");
         }
         throw new PageException("Not able to tag name: " + tagName);
     }
@@ -1121,14 +1121,14 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("No Such Element exception" + nse);
+                logger.trace("No Such Element exception", nse);
             }
         }
         catch (TimeoutException te)
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Timeout exception" + te);
+                logger.trace("Timeout exception", te);
             }
         }
         throw new PageException("Unable to select SyncToCloud option");
@@ -1324,7 +1324,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find Info banner.");
+            logger.error("Exceeded the time to find Info banner.", e);
         }
         return "";
     }
@@ -1344,7 +1344,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Lock icon is not displayed");
+                logger.trace("Lock icon is not displayed", te);
             }
         }
         return false;
@@ -1366,7 +1366,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Inline Edit link is not displayed");
+                logger.trace("Inline Edit link is not displayed", te);
             }
         }
         catch (TimeoutException e)
@@ -1391,7 +1391,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Edit Offline link is not displayed");
+                logger.trace("Edit Offline link is not displayed", te);
             }
         }
         catch (TimeoutException e)
@@ -1471,7 +1471,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             if (logger.isInfoEnabled())
             {
-                logger.info("UnSync From Cloud Link is not displayed");
+                logger.info("UnSync From Cloud Link is not displayed", e);
             }
         }
         return false;
@@ -1490,9 +1490,9 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException e)
         {
-            if (logger.isInfoEnabled())
+            if (logger.isTraceEnabled())
             {
-                logger.info("Sync failed icon is not displayed");
+                logger.trace("Sync failed icon is not displayed", e);
             }
         }
         return false;
@@ -1511,9 +1511,9 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException e)
         {
-            if (logger.isInfoEnabled())
+            if (logger.isTraceEnabled())
             {
-                logger.info("Rule icon is not displayed");
+                logger.trace("Rule icon is not displayed", e);
             }
         }
         return false;
@@ -1534,9 +1534,9 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (NoSuchElementException e)
         {
-            if (logger.isInfoEnabled())
+            if (logger.isTraceEnabled())
             {
-                logger.info("Request Sync link is not displayed");
+                logger.trace("Request Sync link is not displayed", e);
             }
         }
         throw new PageException("Unable to select Request Sync option");
@@ -1555,9 +1555,9 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (NoSuchElementException e)
         {
-            if (logger.isInfoEnabled())
+            if (logger.isTraceEnabled())
             {
-                logger.info("Request Sync link element is not present");
+                logger.trace("Request Sync link element is not present", e);
             }
         }
         throw new PageException("Request Sync link element is not present");
@@ -1581,7 +1581,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Unable to find \"Sync to Cloud\" option");
+                logger.trace("Unable to find \"Sync to Cloud\" option", nse);
             }
         }
         return false;
@@ -1607,7 +1607,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Manage permission link is not displayed for selected data row");
+                logger.trace("Manage permission link is not displayed for selected data row", exception);
             }
         }
         throw new PageOperationException("Manage permission link is not displayed for selected data row");
@@ -1646,7 +1646,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException exception)
         {
-            logger.error(linkText + " link is not displayed for selected data row");
+            logger.error(linkText + " link is not displayed for selected data row", exception);
         }
         catch (StaleElementReferenceException st)
         {
@@ -1753,7 +1753,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Manage permission link is not displayed for selected data row");
+                logger.trace("Manage permission link is not displayed for selected data row", nse);
             }
         }
         return false;
@@ -1774,7 +1774,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Edit properties link is not displayed for selected data row");
+                logger.trace("Edit properties link is not displayed for selected data row", nse);
             }
         }
         return false;
@@ -2033,7 +2033,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         catch (NoSuchElementException e)
         {
             logger.error("Input should be displayed", e);
-            throw new PageOperationException("Input should be displayed", e);
+            throw new PageOperationException("Input should be displayed");
         }
 
     }
@@ -2095,7 +2095,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         catch (TimeoutException e)
         {
             logger.error("Error renaming content: ", e);
-            throw new PageException("Error While renaming content: " + newContentName, e);
+            throw new PageException("Error While renaming content: " + newContentName);
         }
     }
 
@@ -2295,7 +2295,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         catch (TimeoutException e)
         {
             logger.error("Exceeded the time to find css.", e);
-            throw new PageException("Exceeded the time to find css.", e);
+            throw new PageException("Exceeded the time to find css.");
         }
         throw new PageException("Not able to category name: " + categoryName);
     }

@@ -48,6 +48,7 @@ public class DocListPaginator
     private WebElement prevPageButton;
     private Integer pageNumber;
     private WebElement nextPageButton;
+    @SuppressWarnings("unused")
     private WebElement resultsPerPageSelector;
 
     /**

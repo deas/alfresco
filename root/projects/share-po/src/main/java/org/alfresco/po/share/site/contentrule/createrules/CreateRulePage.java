@@ -344,11 +344,17 @@ public class CreateRulePage extends SitePage
 
     private void waitUntilCreatedAlert()
     {
-        try {
+        try 
+        {
             drone.waitUntilElementPresent(CREATED_ALERT, 5);
             drone.waitUntilElementDeletedFromDom(CREATED_ALERT, 5);
-        } catch (TimeoutException ex) {
-            logger.info("Throw exception",ex);
+        } 
+        catch (TimeoutException ex) 
+        {
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Throw exception", ex);
+            }
         }
     }
 

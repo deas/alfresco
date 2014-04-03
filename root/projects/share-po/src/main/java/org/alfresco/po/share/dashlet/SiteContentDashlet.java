@@ -46,7 +46,7 @@ import org.openqa.selenium.WebElement;
 public class SiteContentDashlet extends AbstractDashlet implements Dashlet
 {
 
-    private static final Log LOGGER = LogFactory.getLog(SiteContentDashlet.class);
+    private final Log logger = LogFactory.getLog(SiteContentDashlet.class);
     private static final String DATA_LIST_CSS_LOCATION = "h3.filename>a";
     private static final String DASHLET_CONTAINER_PLACEHOLDER = "div.dashlet.docsummary";
     private static final String DASHLET_DETAILED_VIEW_BUTTON = "button[title='Detailed View']";
@@ -184,9 +184,9 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException e)
         {
-            if(LOGGER.isTraceEnabled())
+            if(logger.isTraceEnabled())
             {
-                LOGGER.trace("Not able to find the Detail View Button.");
+                logger.trace("Not able to find the Detail View Button.", e);
             }
         }
         return false;
@@ -204,9 +204,9 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
 
         } catch (NoSuchElementException e)
         {
-            if(LOGGER.isTraceEnabled()) 
+            if(logger.isTraceEnabled()) 
             {
-                LOGGER.trace("Not able to find the Simple View Button.");
+                logger.trace("Not able to find the Simple View Button.", e);
             }
         }
         return false;
@@ -225,11 +225,11 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException exception)
         {
-            if(LOGGER.isTraceEnabled())
+            if(logger.isTraceEnabled())
             {
-                LOGGER.trace("Not able to find the Help Button.");
+                logger.trace("Not able to find the Help Button.");
             }
-            throw new NoSuchElementException("Not able to find the Help Button." + exception);
+            throw new NoSuchElementException("Not able to find the Help Button.", exception);
         }
     }
 
@@ -246,9 +246,9 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         } 
         catch (NoSuchElementException e)
         {
-            if(LOGGER.isTraceEnabled())
+            if(logger.isTraceEnabled())
             {
-                LOGGER.trace("Not able to find the Help Button.");
+                logger.trace("Not able to find the Help Button.", e);
             }
         }
         return false;
@@ -274,9 +274,9 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         } 
         catch (NoSuchElementException elementException)
         {
-            if(LOGGER.isTraceEnabled())
+            if(logger.isTraceEnabled())
             {
-                LOGGER.trace("Not able to find the ballon");
+                logger.trace("Not able to find the ballon", elementException);
             }
         }
         return false;
@@ -341,9 +341,9 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         }
         catch(TimeoutException e)
         {
-            if(LOGGER.isTraceEnabled())
+            if(logger.isTraceEnabled())
             {
-                LOGGER.trace("Exceeded time to find and click the Filter Button.");
+                logger.trace("Exceeded time to find and click the Filter Button.", e);
             }
         }
     }
@@ -402,7 +402,7 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException elementException)
         {
-            LOGGER.error("Not able to find the empty heading on Site Content Dashlet");
+            logger.error("Not able to find the empty heading on Site Content Dashlet", elementException);
         }
         return "";
     }
@@ -471,8 +471,8 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         } 
         catch (NoSuchElementException nse)
         {
-            LOGGER.error(nse);
-            throw new PageException("Unable to display simple view informationin site content dashlet data", nse);
+            logger.error(nse);
+            throw new PageException("Unable to display simple view informationin site content dashlet data");
         }
 
         return informations;
@@ -599,7 +599,7 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException nse)
         {
-            LOGGER.error("Unable to access site content dashlet filters data", nse);
+            logger.error("Unable to access site content dashlet filters data", nse);
         }
 
         return list;

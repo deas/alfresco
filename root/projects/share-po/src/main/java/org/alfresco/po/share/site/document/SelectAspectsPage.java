@@ -149,11 +149,11 @@ public class SelectAspectsPage extends SharePage
                 }
                 catch (NoSuchElementException e)
                 {
-                    logger.error("Not able to find the header or link element on this row.");
+                    logger.error("Not able to find the header or link element on this row.", e);
                 }
                 catch (Exception e) 
                 {
-                    logger.error("Exception while finding & adding aspects : " + e);
+                    logger.error("Exception while finding & adding aspects : ", e);
                 }
             }
         }
@@ -192,7 +192,7 @@ public class SelectAspectsPage extends SharePage
                     catch (StaleElementReferenceException exception)
                     {
                         drone.find(CANCEL).click();
-                        throw new PageException("Unexpected Refresh on Page lost reference to the Aspects." + exception);
+                        throw new PageException("Unexpected Refresh on Page lost reference to the Aspects.", exception);
                     }
                 } 
                 else
@@ -216,7 +216,7 @@ public class SelectAspectsPage extends SharePage
             return drone.getCurrentPage();
         } catch (NoSuchElementException nse)
         {
-            throw new PageException("Not able find the cancel button: " + nse);
+            throw new PageException("Not able find the cancel button: ", nse);
         }
     }
     /**
@@ -233,7 +233,7 @@ public class SelectAspectsPage extends SharePage
             return drone.getCurrentPage();
         } catch (NoSuchElementException nse)
         {
-            throw new PageException("Not able find the apply change button: " + nse);  
+            throw new PageException("Not able find the apply change button: ", nse);  
         }
     }
     

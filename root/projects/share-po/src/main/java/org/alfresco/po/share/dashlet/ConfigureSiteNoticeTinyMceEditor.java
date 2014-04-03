@@ -65,8 +65,8 @@ public class ConfigureSiteNoticeTinyMceEditor extends TinyMceEditor
         }
         catch (NoSuchElementException noSuchElementExp)
         {
-            logger.error("Element : does not exist");
-            throw new PageException("Unable to find text in tinyMCE editor." , noSuchElementExp);
+            logger.error("Element : does not exist", noSuchElementExp);
+            throw new PageException("Unable to find text in tinyMCE editor.");
         }
     }
 

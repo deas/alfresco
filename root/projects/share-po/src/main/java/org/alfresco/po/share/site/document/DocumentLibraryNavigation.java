@@ -352,7 +352,7 @@ public class DocumentLibraryNavigation extends SharePage
                 {
                         String expectionMessage = "Not able to find the download as zip Link";
                         logger.error(expectionMessage, e);
-                        throw new PageException(expectionMessage, e);
+                        throw new PageException(expectionMessage);
                 }
         }
 
@@ -361,16 +361,16 @@ public class DocumentLibraryNavigation extends SharePage
          */
         private void clickSelectDropDown()
         {
-                try
-                {
-                        drone.findAndWait(SELECT_DROPDOWN).click();
-                }
-                catch (TimeoutException e)
-                {
-                        String exceptionMessage = "Not able to find the Select Dropdown";
-                        logger.error(exceptionMessage, e);
-                        throw new PageException(exceptionMessage, e);
-                }
+            try
+            {
+                drone.findAndWait(SELECT_DROPDOWN).click();
+            }
+            catch (TimeoutException e)
+            {
+                String exceptionMessage = "Not able to find the Select Dropdown";
+                logger.error(exceptionMessage, e);
+                throw new PageException(exceptionMessage);
+            }
         }
 
         /**
@@ -415,7 +415,7 @@ public class DocumentLibraryNavigation extends SharePage
                 {
                         String exceptionMessage = "Not able to find select All option";
                         logger.error(exceptionMessage, e);
-                        throw new PageException(exceptionMessage, e);
+                        throw new PageException(exceptionMessage);
                 }
         }
 
@@ -454,7 +454,7 @@ public class DocumentLibraryNavigation extends SharePage
                 {
                         String exceptionMessage = "Not able to find the \"Sync to Cloud\" Link";
                         logger.error(exceptionMessage, e);
-                        throw new PageOperationException(exceptionMessage, e);
+                        throw new PageOperationException(exceptionMessage);
                 }
         }
 
@@ -803,7 +803,7 @@ public class DocumentLibraryNavigation extends SharePage
                 }
                 catch (TimeoutException e)
                 {
-                        logger.error("Exceeded the time to find css." + e);
+                        logger.error("Exceeded the time to find css.", e);
                 }
                 throw new PageOperationException("Not able to select film strip view");
         }
@@ -1267,7 +1267,7 @@ public class DocumentLibraryNavigation extends SharePage
                 }
                 catch (NoSuchElementException nse)
                 {
-                        logger.error("Unable to find css." + nse);
+                        logger.error("Unable to find css.", nse);
                 }
                 catch (TimeoutException e)
                 {
@@ -1411,7 +1411,7 @@ public class DocumentLibraryNavigation extends SharePage
                 }
                 catch (IllegalArgumentException e)
                 {
-                        throw new PageOperationException("Unable to find the ZoomStyle for the zoomSize:" + size);
+                        throw new PageOperationException("Unable to find the ZoomStyle for the zoomSize:" + size, e);
                 }
         }
 
@@ -1438,7 +1438,10 @@ public class DocumentLibraryNavigation extends SharePage
 
                 if (zoomStyle.equals(actualZoomStyle))
                 {
-                        logger.info("The selected zoom style is already in place.");
+                    if(logger.isTraceEnabled())
+                    {
+                        logger.trace("The selected zoom style is already in place.");
+                    }
                 }
                 else
                 {

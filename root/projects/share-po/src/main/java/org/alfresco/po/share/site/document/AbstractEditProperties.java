@@ -140,7 +140,7 @@ public abstract class AbstractEditProperties extends ShareDialogue
         }
         catch (NoSuchElementException e)
         {
-            throw new PageOperationException("Not able to find categories" + e);
+            throw new PageOperationException("Not able to find categories", e);
         }
         return categories;
     }

@@ -140,7 +140,7 @@ public class FolderRulesPageWithRules extends FolderRulesPage
         }
         catch (NoSuchElementException e)
         {
-            logger.error("Not able to find the inherited rule.");
+            logger.error("Not able to find the inherited rule.", e);
         }
         throw new PageException("Not able to find the inherited rule element on this page.");
     }

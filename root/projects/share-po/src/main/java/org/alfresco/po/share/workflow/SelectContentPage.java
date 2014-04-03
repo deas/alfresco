@@ -291,7 +291,7 @@ public class SelectContentPage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Unable to find \"OK\" button");
+                logger.trace("Unable to find \"OK\" button", nse);
             }
         }
         throw new PageException("Unable to find \"OK\" button");
@@ -409,7 +409,7 @@ public class SelectContentPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find Close Button" + nse);
+            throw new PageOperationException("Unable to find Close Button", nse);
         }
     }
 
@@ -424,7 +424,7 @@ public class SelectContentPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find Cancel Button" + nse);
+            throw new PageOperationException("Unable to find Cancel Button", nse);
         }
     }
 

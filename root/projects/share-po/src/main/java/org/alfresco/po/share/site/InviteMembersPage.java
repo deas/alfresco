@@ -189,7 +189,7 @@ public class InviteMembersPage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Unable to find the username for the userElement.");
+                logger.trace("Unable to find the username for the userElement.", e);
             }
         }
 
@@ -296,7 +296,7 @@ public class InviteMembersPage extends SharePage
             {
                 if(logger.isTraceEnabled())
                 {
-                    logger.trace("Unable to find the invitee css." + e);
+                    logger.trace("Unable to find the invitee css.", e);
                 }
             }
         }

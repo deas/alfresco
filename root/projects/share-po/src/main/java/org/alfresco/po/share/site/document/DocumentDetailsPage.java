@@ -389,7 +389,7 @@ public class DocumentDetailsPage extends DetailsPage
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find Info banner.");
+            logger.error("Exceeded the time to find Info banner.", e);
         }
         return "";
     }
@@ -439,7 +439,7 @@ public class DocumentDetailsPage extends DetailsPage
         }
         catch (TimeoutException exception)
         {
-            logger.error("Not able to find the web element");
+            logger.error("Not able to find the web element", exception);
             throw new PageOperationException("Unable to select Inline Edit", exception);
         }
 
@@ -584,18 +584,18 @@ public class DocumentDetailsPage extends DetailsPage
      */
     public DocumentDetailsPage clickOnDownloadLinkForUnsupportedDocument() {
 
-		try {
-			WebElement noPreviewElement = drone.findAndWait(By
-					.cssSelector(NO_DOCUMENT_PREVIEW));
-			noPreviewElement.findElement(
-					By.linkText(CLICK_HERE_TO_DOWNLOAD_LINK)).click();
-		} catch (Exception exception) {
-			logger.error("Not able to find the web element: details can't be Previewed");
-			throw new PageException("Unable to find option for Download Link",
-					exception);
-		}
+        try
+        {
+            WebElement noPreviewElement = drone.findAndWait(By.cssSelector(NO_DOCUMENT_PREVIEW));
+            noPreviewElement.findElement(By.linkText(CLICK_HERE_TO_DOWNLOAD_LINK)).click();
+        } 
+        catch (Exception exception)
+        {
+            logger.error("Not able to find the web element: details can't be Previewed");
+            throw new PageException("Unable to find option for Download Link", exception);
+        }
 
-		return new DocumentDetailsPage(drone);
+        return new DocumentDetailsPage(drone);
     }
 
     /**
@@ -687,7 +687,7 @@ public class DocumentDetailsPage extends DetailsPage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to find element");
+            logger.error("Unable to find element", nse);
         }
         return new DocumentDetailsPage(drone);
     }
@@ -722,7 +722,7 @@ public class DocumentDetailsPage extends DetailsPage
         }
         catch (TimeoutException exception)
         {
-            logger.error("Not able to find the web element" + exception);
+            logger.error("Not able to find the web element", exception);
         }
         throw new PageException("Unable to find assign workflow.");
     }
@@ -741,7 +741,7 @@ public class DocumentDetailsPage extends DetailsPage
         }
         catch (TimeoutException exception)
         {
-            logger.error("Not able to find the web element" + exception);
+            logger.error("Not able to find the web element", exception);
         }
         throw new PageException("Unable to find assign workflow.");
     }
@@ -899,7 +899,7 @@ public class DocumentDetailsPage extends DetailsPage
         {
             if(logger.isInfoEnabled())
             {
-                logger.info("Comment count is not displayed");
+                logger.info("Comment count is not displayed", e);
             }
         }
         return false;
@@ -940,7 +940,7 @@ public class DocumentDetailsPage extends DetailsPage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Sync Status element is not visible");
+                logger.trace("Sync Status element is not visible", te);
             }
         }
         return "";
@@ -961,7 +961,7 @@ public class DocumentDetailsPage extends DetailsPage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Cloud location element is not visible");
+                logger.trace("Cloud location element is not visible", te);
             }
         }
         return "";
@@ -981,7 +981,7 @@ public class DocumentDetailsPage extends DetailsPage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Request to Sync icon is not displayed");
+                logger.trace("Request to Sync icon is not displayed", te);
             }
         }
         return false;
@@ -1011,7 +1011,7 @@ public class DocumentDetailsPage extends DetailsPage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Revert to version button for " + versionNumber + " is not displayed");
+                logger.trace("Revert to version button for " + versionNumber + " is not displayed", nse);
             }
         }
         throw new PageException("Revert to version button for " + versionNumber + " is not displayed");
@@ -1042,11 +1042,14 @@ public class DocumentDetailsPage extends DetailsPage
      */
     public DocumentDetailsPage openCopyThisLinkInNewTab() {
 
-		try {
+		try 
+		{
 			WebElement copyThisLink = drone.findAndWait(By.cssSelector(COPY_THIS_LINK_TO_SHARE_THE_CURRENT_PAGE));
 			drone.createNewTab();
 			drone.navigateTo(copyThisLink.getAttribute("value"));
-		} catch (TimeoutException exception) {
+		} 
+		catch (TimeoutException exception) 
+		{
 			logger.error("Not able to find the web element: Copy This Link To Share The Current Page ");
 			throw new PageException("Unable to find  Copy This Link To Share The Current Page ", exception);
 		}

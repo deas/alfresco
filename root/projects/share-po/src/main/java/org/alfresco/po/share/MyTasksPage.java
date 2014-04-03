@@ -134,7 +134,7 @@ public class MyTasksPage extends SharePage
         }
         catch (NoSuchElementException e)
         {
-            logger.error("Not able to find the My Task Table.");
+            logger.error("Not able to find the My Task Table.", e);
         }
         throw new PageException("Not able to find the site link element on this row.");
     }
@@ -168,7 +168,7 @@ public class MyTasksPage extends SharePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Not able to find start work flow button" + e);
+            logger.error("Not able to find start work flow button", e);
         }
         throw new PageException("Not able to find start work flow button");
     }

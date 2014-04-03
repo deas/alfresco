@@ -306,7 +306,7 @@ public class ManagePermissionsPage extends SharePage
         }
         catch (TimeoutException te)
         {
-            throw new PageOperationException("Unable to find Access Specific Button" + te);
+            throw new PageOperationException("Unable to find Access Specific Button", te);
         }
         
         getRoleOption(drone, userRole).click();
@@ -336,7 +336,7 @@ public class ManagePermissionsPage extends SharePage
         }
         catch (TimeoutException toe)
         {
-            logger.warn("User name element is not found!!");
+            logger.warn("User name element is not found!!", toe);
             return isExist;
         }
     }
@@ -368,7 +368,7 @@ public class ManagePermissionsPage extends SharePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("User name elementis not found!!");
+            logger.error("User name elementis not found!!", toe);
         }
         throw new PageOperationException("User name is not found!!");
     }
@@ -396,7 +396,7 @@ public class ManagePermissionsPage extends SharePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("User name elementis not found!!");
+            logger.error("User name elementis not found!!", toe);
         }
         throw new PageOperationException("User name is not found!!");
     }
@@ -427,11 +427,11 @@ public class ManagePermissionsPage extends SharePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("User name is not found!!");
+            logger.error("User name is not found!!", toe);
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Role element is not found");
+            logger.error("Role element is not found", nse);
         }
         throw new PageOperationException("User or Role doesnt exist!!");
     }
@@ -465,7 +465,7 @@ public class ManagePermissionsPage extends SharePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("User name elementis not found!!");
+            logger.error("User name elementis not found!!", toe);
         }
         throw new PageOperationException("User name is not found!!");
     }
@@ -489,7 +489,7 @@ public class ManagePermissionsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Roles element is not found");
+            logger.error("Roles element is not found", nse);
         }
         throw new PageOperationException("Role doesnt exist!!");
     }
@@ -845,7 +845,7 @@ public class ManagePermissionsPage extends SharePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("User delete element is not found!!");
+            logger.error("User delete element is not found!!", toe);
             return isExist;
         }
     }
@@ -873,7 +873,7 @@ public class ManagePermissionsPage extends SharePage
         }
         catch (NoSuchElementException toe)
         {
-            logger.error("User name elementis not found!!");
+            logger.error("User name elementis not found!!", toe);
             return null;
         }
         throw new PageOperationException("User name is not found!!");

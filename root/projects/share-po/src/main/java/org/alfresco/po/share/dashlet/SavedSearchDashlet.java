@@ -143,7 +143,10 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            logger.info("Unable to find the help icon.", te);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find the help icon.", te);
+            }
         }
 
         return false;
@@ -161,8 +164,8 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            logger.error("Unable to find the help icon." + te);
-            throw new PageOperationException("Unable to click the Help icon", te);
+            logger.error("Unable to find the help icon.", te);
+            throw new PageOperationException("Unable to click the Help icon");
         }
     }
 
@@ -230,7 +233,7 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            throw new UnsupportedOperationException("Exceeded time to find the title." + te);
+            throw new UnsupportedOperationException("Exceeded time to find the title.", te);
         }
     }
 
@@ -247,7 +250,7 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            throw new UnsupportedOperationException("Exceeded time to find the title." + te);
+            throw new UnsupportedOperationException("Exceeded time to find the title.", te);
         }
     }
 
@@ -278,14 +281,14 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Not able to find the element: " + e);
+                logger.trace("Not able to find the element: ", e);
             }
         }
         catch (NoSuchElementException e)
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Not able to find the element: " + e);
+                logger.trace("Not able to find the element: ", e);
             }
         }
         return Collections.emptyList();
@@ -312,8 +315,8 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            logger.error("Unable to find the Edit (Configure) icon." + te);
-            throw new PageOperationException("Unable to click the Edit (Configure) icon", te);
+            logger.error("Unable to find the Edit (Configure) icon.", te);
+            throw new PageOperationException("Unable to click the Edit (Configure) icon");
         }
     }
 

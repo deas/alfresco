@@ -78,7 +78,7 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded time to find the css." + e);
+            logger.error("Exceeded time to find the css.", e);
         }
 
         throw new PageException("File directory info with title was not found");

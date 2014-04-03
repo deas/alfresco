@@ -30,8 +30,8 @@ public class CopyOrMoveContentRulesPage extends CopyOrMoveContentPage {
         }
         catch (TimeoutException e)
         {
-            logger.warn("Unable to find the Copy/Move Button Css : " + e);
-            throw new PageException("Unable to find the Copy/Move button on Copy/Move Dialog.", e);
+            logger.error("Unable to find the Copy/Move Button Css : ", e);
+            throw new PageException("Unable to find the Copy/Move button on Copy/Move Dialog.");
         }
     }
 }

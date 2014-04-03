@@ -7,6 +7,11 @@
  */
 package org.alfresco.po.share.site.document;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -28,13 +33,10 @@ import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.webdrone.exception.PageException;
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.*;
 
 /**
  * Integration test to verify document library page is operating correctly.
@@ -57,7 +59,8 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         private String userName = "user" + System.currentTimeMillis() + "@test.com";
         private String firstName = userName;
         private String lastName = userName;
-
+        @SuppressWarnings("unused")
+        private String uname = "dlpt1user" + System.currentTimeMillis();
         /**
          * Pre test setup of a dummy file to upload.
          *

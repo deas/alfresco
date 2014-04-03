@@ -1153,8 +1153,7 @@ public class DocumentLibraryPage extends SitePage
         {
             drone.findAndWait(By.cssSelector(".favourites>a")).click();
             return FactorySharePage.resolvePage(drone);
-        }
-        catch (TimeoutException te)
+        } catch (TimeoutException te)
         {
             logger.error("Exceeded time to find the the css", te);
         }

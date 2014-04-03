@@ -130,7 +130,10 @@ public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
         }
         catch(TimeoutException te)
         {
-            logger.info("Unable to find the help icon."+ te);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find the help icon.", te);
+            }
         }
         
         return false;
@@ -151,7 +154,10 @@ public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
         }
         catch(TimeoutException te)
         {
-            logger.info("Unable to find the configure icon.");
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find the configure icon.");
+            }
         }
         
         return false;
@@ -170,7 +176,10 @@ public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
         }
         catch(TimeoutException te)
         {
-            logger.info("Unable to find the help icon." + te);
+            if(logger.isTraceEnabled())
+            {
+                logger.info("Unable to find the help icon.");
+            }
             throw new PageOperationException("Unable to click the Help icon", te);
         }
     }
@@ -191,7 +200,10 @@ public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
         }
         catch(TimeoutException te)
         {
-            logger.info("Unable to find the help icon.");
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find the help icon.", te);
+            }
         }
         
         throw new PageOperationException("Unable to click the Configure icon");
@@ -210,7 +222,10 @@ public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
         } 
         catch (TimeoutException elementException)
         {
-            logger.info("Exceeded time to find the ballon");
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Exceeded time to find the ballon", elementException);
+            }
         }
         return false;
     }
@@ -228,7 +243,10 @@ public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
         } 
         catch (TimeoutException elementException)
         {
-                logger.info("Exceeded time to find the help ballon text");
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Exceeded time to find the help ballon text", elementException);
+            }
         }
 
         throw new UnsupportedOperationException("Not able to find the help text");

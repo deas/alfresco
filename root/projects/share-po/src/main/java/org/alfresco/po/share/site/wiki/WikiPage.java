@@ -64,17 +64,21 @@ public class WikiPage extends SitePage
 
     private TinyMceEditor tinyMCEEditor = new TinyMceEditor(drone);
 
-    public enum ImageType{
+    public enum ImageType
+    {
         JPG,
         PNG,
         BMP;
     }
-    public enum Mode{
+    
+    public enum Mode
+    {
         ADD,
         EDIT;        
     }
     
-    public enum FONT_ATTR{
+    public enum FONT_ATTR
+    {
         face,
         size;        
     }
@@ -121,14 +125,14 @@ public class WikiPage extends SitePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Time out finding " + CANCEL_BUTTON.toString());
+                logger.trace("Time out finding " + CANCEL_BUTTON.toString(), toe);
             }
         }
         catch (ElementNotVisibleException visibleException)
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Element Not Visible: " + CANCEL_BUTTON.toString());
+                logger.trace("Element Not Visible: " + CANCEL_BUTTON.toString(), visibleException);
             }
         }
         return false;
@@ -147,7 +151,7 @@ public class WikiPage extends SitePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding " + DEFAULT_CONTENT_TOOLBAR.toString());
+            logger.error("Time out finding " + DEFAULT_CONTENT_TOOLBAR.toString(), toe);
         }
         throw new PageException("Page is not rendered");
     }
@@ -163,7 +167,7 @@ public class WikiPage extends SitePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding " + BUTTON_CREATE.toString());
+            logger.error("Time out finding " + BUTTON_CREATE.toString(), toe);
         }
 
     }
@@ -181,7 +185,7 @@ public class WikiPage extends SitePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding " + CREATE_WIKI_TITLE.toString());
+            logger.error("Time out finding " + CREATE_WIKI_TITLE.toString(), toe);
         }
     }
 
@@ -205,7 +209,7 @@ public class WikiPage extends SitePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding #tinymce");
+            logger.error("Time out finding #tinymce", toe);
         }
     }
 
@@ -261,7 +265,7 @@ public class WikiPage extends SitePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding " + FONT_SIZE_SELECT.toString() + " OR #mce_22");
+            logger.error("Time out finding " + FONT_SIZE_SELECT.toString() + " OR #mce_22", toe);
         }
     }
 
@@ -283,7 +287,7 @@ public class WikiPage extends SitePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding " + type);
+            logger.error("Time out finding " + type, toe);
         }
         throw new PageException("Wiki Page has no such element");
     }
@@ -301,7 +305,7 @@ public class WikiPage extends SitePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding " + IMAGE_LIB+" or "+IMAGE_RSLT);
+            logger.error("Time out finding " + IMAGE_LIB+" or "+IMAGE_RSLT, toe);
         }
         return false;
     }
@@ -324,7 +328,7 @@ public class WikiPage extends SitePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding " + BUTTON_SAVE);
+            logger.error("Time out finding " + BUTTON_SAVE, toe);
         }
         throw new PageException("Not able find the Save Button");
     }
@@ -340,7 +344,7 @@ public class WikiPage extends SitePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding " + REMOVE_FORMAT);
+            logger.error("Time out finding " + REMOVE_FORMAT, toe);
         }
     }
     
@@ -355,7 +359,7 @@ public class WikiPage extends SitePage
         }
         catch(TimeoutException toe)
         {
-            logger.error("Time out finding image");
+            logger.error("Time out finding image", toe);
         }
     }
     
@@ -384,7 +388,7 @@ public class WikiPage extends SitePage
         }
         catch(TimeoutException toe)
         {
-            logger.error("Time out rendering image");
+            logger.error("Time out rendering image", toe);
         }
         throw new PageException("Image is not rendered");
     }
@@ -402,7 +406,7 @@ public class WikiPage extends SitePage
         }
         catch(TimeoutException toe)
         {
-            logger.error("Unable to find delete wiki button");
+            logger.error("Unable to find delete wiki button", toe);
         }
     }
     
@@ -466,7 +470,7 @@ public class WikiPage extends SitePage
         }
         catch(TimeoutException toe)
         {
-            logger.error("Time out finding image");
+            logger.error("Time out finding image", toe);
         }
     }
     
@@ -486,7 +490,7 @@ public class WikiPage extends SitePage
         }
         catch(TimeoutException toe)
         {
-            logger.error("Time out finding image");
+            logger.error("Time out finding image", toe);
         }
     }
     
@@ -504,7 +508,7 @@ public class WikiPage extends SitePage
         }
         catch(TimeoutException toe)
         {
-            logger.error("Time out finding image");
+            logger.error("Time out finding image", toe);
         }
         throw new PageException();
      }
@@ -525,7 +529,7 @@ public class WikiPage extends SitePage
         }
         catch(TimeoutException toe)
         {
-            logger.error("Time out finding image");
+            logger.error("Time out finding image", toe);
         }
         throw new PageException();
     }
@@ -547,7 +551,7 @@ public class WikiPage extends SitePage
         }
         catch(TimeoutException toe)
         {
-            logger.error("Time out finding attribute of font element");
+            logger.error("Time out finding attribute of font element", toe);
         }
         throw new PageException("Font element not found!");
     }

@@ -375,11 +375,11 @@ public abstract class SharePage extends Page
                     } 
                     catch (IllegalArgumentException e) 
                     {
-                        logger.error("Object may not be instance of By class " + e);
+                        logger.error("Object may not be instance of By class ", e);
                     } 
                     catch (IllegalAccessException e) 
                     {
-                        logger.error("Not able access the field: " + field.getName() + e);
+                        logger.error("Not able access the field: " + field.getName(), e);
                     }
                 }
                 else
@@ -420,8 +420,8 @@ public abstract class SharePage extends Page
             }
             catch(TimeoutException e)
             {
-                logger.error("Not able to render the element : " + element.getLocator().toString());
-                throw new PageRenderTimeException("element not rendered in time.", e);
+                logger.error("Not able to render the element : " + element.getLocator().toString(), e);
+                throw new PageRenderTimeException("element not rendered in time.");
             }
             finally
             {
@@ -550,7 +550,7 @@ public abstract class SharePage extends Page
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Element not found" + locator.toString());
+                logger.trace("Element not found" + locator.toString(), nse);
             }
         }
         return "";

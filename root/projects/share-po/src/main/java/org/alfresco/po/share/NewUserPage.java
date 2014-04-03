@@ -400,11 +400,11 @@ private void entrpriseUserDetails(String userName, String fname, String lname, S
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Group name element not found!!");
+            logger.error("Group name element not found!!", nse);
         }
         catch (TimeoutException toe)
         {
-            logger.error("Group name element doesnt exist!!");
+            logger.error("Group name element doesnt exist!!", toe);
         }
         throw new PageOperationException("Group doesnt exist!!");  
     }

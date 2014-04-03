@@ -132,7 +132,7 @@ public class TagPage extends AbstractEditProperties
     {
         try
         {
-            return drone.find(ENTER_TAG_VALUE).isDisplayed();           
+            return drone.find(ENTER_TAG_VALUE).isDisplayed();
         }
         catch (NoSuchElementException nse) {}
         return false;
