@@ -95,5 +95,15 @@
             <class name="org.alfresco.share.site.document.FolderDetailsCommentsTest"/>
         </classes>
     </test>
-
+    
+    <test name="Test for RepositoryFolder" verbose="1">
+        <classes>
+            <class name=" org.alfresco.share.repository.RepositoryFolderTests1">
+             <methods>
+                    <include name="dataPrep_Enterprise40x_5419"/> 
+                    <include name="dataPrepRepositoryFolderTests"/>                            
+              </methods>
+            </class>
+        </classes>
+    </test>
 </suite>

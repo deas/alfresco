@@ -105,5 +105,19 @@
             <class name="org.alfresco.share.site.document.DocumentDetailsActionsTest"/>
         </classes>
     </test>
+    
+      <test name="Test for RepositoryFolder" verbose="1">
+        <classes>
+            <class name=" org.alfresco.share.repository.RepositoryFolderTests1">
+             <methods>
+                    <include name="Enterprise40x_5407"/>
+                    <include name="Enterprise40x_5419"/>
+                    <include name="Enterprise40x_5337"/>
+                    <include name="Enterprise40x_5345"/>
+                    <include name="Enterprise40x_5335"/>                    
+              </methods>
+            </class>
+        </classes>
+    </test>
 
 </suite>
