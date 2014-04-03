@@ -21,10 +21,12 @@ import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -40,6 +42,7 @@ public class SearchBox extends HtmlElement
     private final Log logger = LogFactory.getLog(SearchBox.class);
     private final By selector;
     private final By liveSearchDropdownSelector;
+
     /**
      * Constructor.
      */
@@ -85,32 +88,34 @@ public class SearchBox extends HtmlElement
 
     /**
      * Performs the live search by typing the term into search field
+     * 
      * @param term String term to search
      * @return true when actioned
      */
     public LiveSearchDropdown liveSearch(final String term)
     {
-        if(term == null || term.isEmpty())
+        if (term == null || term.isEmpty())
         {
             throw new UnsupportedOperationException("Search term is required to perform a search");
         }
         try
         {
-            
+
             WebElement input = drone.findAndWait(selector);
             input.clear();
             input.sendKeys(term);
             input.click();
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Apply live search on the keyword: " + term);
             }
             drone.waitUntilElementPresent(liveSearchDropdownSelector, SECONDS.convert(drone.getDefaultWaitTime(), MILLISECONDS));
+            return new LiveSearchDropdown(drone);
         }
-        catch (NoSuchElementException nse){ }
-        return new LiveSearchDropdown(drone);
+        catch (TimeoutException nse)
+        {
+            throw new PageException("Live search not displayed.");
+        }
     }
-
-
 
 }

@@ -20,6 +20,7 @@ import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
@@ -44,22 +45,22 @@ public class LiveSearchDropdown extends SharePage
 
     // Documents Title
     private static final String DOCUMENTS_TITLE = "div[data-dojo-attach-point='titleNodeDocs']";
-    
+
     // Sites Title
     private static final String SITES_TITLE = "div[data-dojo-attach-point='titleNodeSites']";
-    
+
     // People Title
     private static final String PEOPLE_TITLE = "div[data-dojo-attach-point='titleNodePeople']";
-    
+
     // Close button
     private static final String CLOSE_DROPDOWN = ".alf-search-box-clear a";
 
     // Document results
     private static final String DOCUMENT_RESULTS = "div[data-dojo-attach-point='containerNodeDocs'] div.alf-livesearch-item";
-    
+
     // Sites Results
     private static final String SITES_RESULTS = "div[data-dojo-attach-point='containerNodeSites'] div.alf-livesearch-item";
-    
+
     // People Results
     private static final String PEOPLE_RESULTS = "div[data-dojo-attach-point='containerNodePeople'] div.alf-livesearch-item";
 
@@ -88,10 +89,8 @@ public class LiveSearchDropdown extends SharePage
     @Override
     public LiveSearchDropdown render(RenderTime timer)
     {
-        elementRender(timer, getVisibleRenderElement(By.cssSelector(DOCUMENTS_TITLE)),
-                             getVisibleRenderElement(By.cssSelector(CLOSE_DROPDOWN)), 
-                             getVisibleRenderElement(By.cssSelector(SITES_TITLE)), 
-                             getVisibleRenderElement(By.cssSelector(PEOPLE_TITLE)));
+        elementRender(timer, getVisibleRenderElement(By.cssSelector(DOCUMENTS_TITLE)), getVisibleRenderElement(By.cssSelector(CLOSE_DROPDOWN)), getVisibleRenderElement(By
+                .cssSelector(SITES_TITLE)), getVisibleRenderElement(By.cssSelector(PEOPLE_TITLE)));
         return this;
     }
 
@@ -109,10 +108,12 @@ public class LiveSearchDropdown extends SharePage
      */
     public List<LiveSearchDocumentResult> getSearchDocumentResults()
     {
+        
         List<LiveSearchDocumentResult> results = new ArrayList<LiveSearchDocumentResult>();
         try
         {
-            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(DOCUMENT_RESULTS));
+            
+            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(DOCUMENT_RESULTS));           
             if (elements.size() > 0)
             {
                 for (WebElement element : elements)
@@ -122,9 +123,9 @@ public class LiveSearchDropdown extends SharePage
             }
 
         }
-        catch (TimeoutException nse)
+        catch (TimeoutException toe)
         {
-            logger.error("No live search document results " + nse);
+            logger.error("No live search document results " + toe);
         }
         return results;
 
@@ -149,9 +150,9 @@ public class LiveSearchDropdown extends SharePage
                 }
             }
         }
-        catch (TimeoutException nse)
+        catch (TimeoutException toe)
         {
-            logger.error("No live search sites results " + nse);
+            logger.error("No live search sites results " + toe);
         }
         return results;
     }
@@ -175,9 +176,9 @@ public class LiveSearchDropdown extends SharePage
                 }
             }
         }
-        catch (TimeoutException nse)
+        catch (TimeoutException toe)
         {
-            logger.error("No live search people results " + nse);
+            logger.error("No live search people results " + toe);
         }
         return results;
     }
@@ -261,9 +262,27 @@ public class LiveSearchDropdown extends SharePage
             throw new PageException("Unable to find live search people title.", nse);
         }
     }
-    
+
     /**
+     * Checks if more icon is displayed
      * 
+     * @return
+     */
+    public boolean isMoreResultsVisible()
+    {
+        try
+        {
+            WebElement moreResults = drone.find(By.cssSelector(MORE_RESULTS));
+            return moreResults.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No more results icon " + nse);
+            throw new PageException("Unable to find more results icon.", nse);
+        }
+    }
+
+    /**
      * Checks if live search returns document search results
      * 
      * @return
@@ -272,7 +291,7 @@ public class LiveSearchDropdown extends SharePage
     {
         boolean hasDocumentSearchResults = false;
         List<LiveSearchDocumentResult> liveSearchDocumentResults = getSearchDocumentResults();
-        if(liveSearchDocumentResults.size() > 0)
+        if (liveSearchDocumentResults.size() > 0)
         {
             hasDocumentSearchResults = true;
         }
@@ -280,7 +299,6 @@ public class LiveSearchDropdown extends SharePage
     }
 
     /**
-     * 
      * Checks if live search returns sites search results
      * 
      * @return
@@ -289,15 +307,14 @@ public class LiveSearchDropdown extends SharePage
     {
         boolean hasSitesSearchResults = false;
         List<LiveSearchSiteResult> liveSearchSiteResults = getSearchSitesResults();
-        if(liveSearchSiteResults.size() > 0)
+        if (liveSearchSiteResults.size() > 0)
         {
             hasSitesSearchResults = true;
         }
         return hasSitesSearchResults;
     }
-    
+
     /**
-     * 
      * Checks if live search returns people search results
      * 
      * @return
@@ -306,14 +323,13 @@ public class LiveSearchDropdown extends SharePage
     {
         boolean hasPeopleSearchResults = false;
         List<LiveSearchPeopleResult> liveSearchPeopleResults = getSearchPeopleResults();
-        if(liveSearchPeopleResults.size() > 0)
+        if (liveSearchPeopleResults.size() > 0)
         {
             hasPeopleSearchResults = true;
         }
         return hasPeopleSearchResults;
-    }   
-    
-    
+    }
+
     /**
      * Clicks on see more results arrow
      * 
@@ -339,9 +355,9 @@ public class LiveSearchDropdown extends SharePage
         }
 
     }
-    
+
     /**
-     * Clicks on any link in live search results 
+     * Clicks on any link in live search results
      * 
      * @param liveSearchItem
      * @return
@@ -356,7 +372,8 @@ public class LiveSearchDropdown extends SharePage
         {
             drone.findAndWait(By.xpath(String.format("//a[text()='%s']", liveSearchItem))).click();
             return FactorySharePage.resolvePage(drone);
-        }catch (NoSuchElementException nse)
+        }
+        catch (NoSuchElementException nse)
         {
             logger.error(String.format("Live search result %s item not found ", liveSearchItem) + nse);
             throw new PageException(String.format("Live search result %s item not found", liveSearchItem), nse);

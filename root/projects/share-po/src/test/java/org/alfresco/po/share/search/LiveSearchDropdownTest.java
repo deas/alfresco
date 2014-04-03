@@ -15,20 +15,24 @@
 
 package org.alfresco.po.share.search;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.alfresco.po.share.AbstractTest;
+import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SitePage;
+import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
+import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
@@ -37,7 +41,6 @@ import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
@@ -46,7 +49,6 @@ import org.testng.annotations.Test;
  * 
  * @author jcule
  */
-@Test(groups={"Enterprise-only"})
 @Listeners(FailedTestListener.class)
 public class LiveSearchDropdownTest extends AbstractTest
 {
@@ -70,13 +72,27 @@ public class LiveSearchDropdownTest extends AbstractTest
             SitePage site = drone.getCurrentPage().render();
             DocumentLibraryPage docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
 
-            CreatePlainTextContentPage contentPage = docPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
-            ContentDetails contentDetails = new ContentDetails();
-            contentDetails.setName(fileName);
-            contentDetails.setTitle("House");
-            contentDetails.setDescription("House");
-            contentDetails.setContent("House");
-            contentPage.create(contentDetails).render();
+            AlfrescoVersion version = drone.getProperties().getVersion();
+            if (version.isCloud())
+            {
+                UploadFilePage filePage = docPage.getNavigation().selectFileUpload().render();
+                File file = SiteUtil.prepareFile(fileName, fileName, "");
+                docPage = filePage.uploadFile(file.getCanonicalPath()).render();
+                DocumentDetailsPage detailsPage = docPage.selectFile(file.getName()).render();
+                EditDocumentPropertiesPage propertiesPage = detailsPage.selectEditProperties().render();
+                propertiesPage.setName(fileName);
+                detailsPage = propertiesPage.selectSave().render();
+            }
+            else
+            {
+                CreatePlainTextContentPage contentPage = docPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
+                ContentDetails contentDetails = new ContentDetails();
+                contentDetails.setName(fileName);
+                contentDetails.setTitle("House");
+                contentDetails.setDescription("House");
+                contentDetails.setContent("House");
+                contentPage.create(contentDetails).render();
+            }
 
         }
         catch (Throwable pe)
@@ -86,28 +102,30 @@ public class LiveSearchDropdownTest extends AbstractTest
         }
     }
 
-    @BeforeMethod
+    // @BeforeMethod
     public void reset()
     {
         SharePage page = drone.getCurrentPage().render();
         page.getNav().selectMyDashBoard();
     }
-    
+
     @AfterClass
     public void deleteSite()
     {
         SiteUtil.deleteSite(drone, siteName);
     }
-    
+
     /**
      * Checks that the document search result contains document name,
      * site name and user name
+     * 
+     * @throws InterruptedException
      */
     @Test
-    public void liveSearchDocumentResult()
+    public void liveSearchDocumentResult() throws InterruptedException
     {
-        SearchBox search = dashBoard.getSearch();        
-        LiveSearchDropdown liveSearchResultPage;
+        SearchBox search = dashBoard.getSearch();
+        LiveSearchDropdown liveSearchResultPage = null;
         List<LiveSearchDocumentResult> liveSearchDocumentResults = new ArrayList<LiveSearchDocumentResult>();
 
         int counter = 0;
@@ -115,6 +133,7 @@ public class LiveSearchDropdownTest extends AbstractTest
         while (counter < 3)
         {
             liveSearchResultPage = search.liveSearch(fileName).render();
+
             if (liveSearchResultPage.getSearchDocumentResults().size() > 0)
             {
                 liveSearchDocumentResults = liveSearchResultPage.getSearchDocumentResults();
@@ -124,8 +143,9 @@ public class LiveSearchDropdownTest extends AbstractTest
             {
                 counter++;
                 dashBoard = dashBoard.getNav().selectMyDashBoard().render();
+
             }
-            // double wait time to not over do solr search
+            // double wait time to not overdo solr search
             waitInMilliSeconds = (waitInMilliSeconds * 2);
             synchronized (this)
             {
@@ -138,13 +158,14 @@ public class LiveSearchDropdownTest extends AbstractTest
                 }
             }
         }
-        
+        Assert.assertNotNull(liveSearchResultPage);
         Assert.assertTrue(liveSearchDocumentResults.size() > 0);
+        Assert.assertFalse(liveSearchResultPage.isMoreResultsVisible());
         for (LiveSearchDocumentResult liveSearchDocumentResult : liveSearchDocumentResults)
         {
             Assert.assertEquals(liveSearchDocumentResult.getTitle().getDescription(), fileName);
             Assert.assertEquals(liveSearchDocumentResult.getSiteName().getDescription(), siteName);
-            Assert.assertEquals(liveSearchDocumentResult.getUserName().getDescription(), username);
+            Assert.assertEquals(liveSearchDocumentResult.getUserName().getDescription(), username.toLowerCase());
         }
     }
 
@@ -155,7 +176,7 @@ public class LiveSearchDropdownTest extends AbstractTest
     public void expandLiveSearchDocumentResult()
     {
         SearchBox search = dashBoard.getSearch();
-        LiveSearchDropdown liveSearchResultPage = search.liveSearch(".ftl").render();
+        LiveSearchDropdown liveSearchResultPage = search.liveSearch("*.*").render();
         Assert.assertNotNull(liveSearchResultPage);
 
         liveSearchResultPage.clickToSeeMoreDocumentResults();
@@ -198,7 +219,7 @@ public class LiveSearchDropdownTest extends AbstractTest
 
         List<LiveSearchPeopleResult> liveSearchPeopleResults = liveSearchResultPage.getSearchPeopleResults();
         Assert.assertTrue(liveSearchPeopleResults.size() > 0);
-        
+
         for (LiveSearchPeopleResult liveSearchPeopleResult : liveSearchPeopleResults)
         {
             Assert.assertTrue(liveSearchPeopleResult.getUserName().getDescription().indexOf(username) != -1);
@@ -216,6 +237,15 @@ public class LiveSearchDropdownTest extends AbstractTest
         SearchBox search = dashBoard.getSearch();
         LiveSearchDropdown liveSearchResultPage = search.liveSearch("x@z").render();
         Assert.assertNotNull(liveSearchResultPage);
+
+        List<LiveSearchDocumentResult> liveSearchDocumentResultsPage = liveSearchResultPage.getSearchDocumentResults();
+        Assert.assertTrue(liveSearchDocumentResultsPage.size() == 0);
+
+        List<LiveSearchSiteResult> liveSearchSitesResults = liveSearchResultPage.getSearchSitesResults();
+        Assert.assertTrue(liveSearchSitesResults.size() == 0);
+
+        List<LiveSearchPeopleResult> liveSearchPeopleResults = liveSearchResultPage.getSearchPeopleResults();
+        Assert.assertTrue(liveSearchPeopleResults.size() == 0);
 
         liveSearchResultPage.closeLiveSearchDropdown();
 
