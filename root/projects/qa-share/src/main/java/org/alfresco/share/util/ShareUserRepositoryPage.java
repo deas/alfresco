@@ -562,7 +562,8 @@ public class ShareUserRepositoryPage extends AbstractTests
         }
         else
         {
-            tagPage = tagPage.enterTagValue(tagName).render();
+            tagPage.enterTagValue(tagName).render();
+           
             if (Operation.ADD_AND_CANCEL.equals(operation))
             {
                 tagPage.clickCancelButton().render();
