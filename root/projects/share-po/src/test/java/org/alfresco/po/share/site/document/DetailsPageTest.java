@@ -135,18 +135,18 @@ public class DetailsPageTest extends AbstractTest
            
         Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.COPY_TO), "Copy to is not present");
         Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MOVE_TO), "Move to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.DELETE_CONTENT), "Copy to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MANAGE_ASPECTS), "Copy to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MANAGE_PERMISSION_DOC), "Copy to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.CHNAGE_TYPE), "Copy to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.EDIT_PROPERTIES), "Copy to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.DOWNLOAD_DOCUMENT), "Copy to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.VIEW_IN_EXLPORER), "Copy to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.UPLOAD_DOCUMENT), "Copy to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.EDIT_OFFLINE), "Copy to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.GOOGLE_DOCS_EDIT), "Copy to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.START_WORKFLOW), "Copy to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.PUBLISH_ACTION), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.DELETE_CONTENT), "Delete is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MANAGE_ASPECTS), "Manage Aspect is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MANAGE_PERMISSION_DOC), "Manage Permission is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.CHNAGE_TYPE), "Chnage Type is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.EDIT_PROPERTIES), "Edit Properties is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.DOWNLOAD_DOCUMENT), "Download Document is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.VIEW_IN_EXLPORER), "View In Exlporer to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.UPLOAD_DOCUMENT), "Upload Document is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.EDIT_OFFLINE), "Edit offline is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.GOOGLE_DOCS_EDIT), "Edit Google docs is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.START_WORKFLOW), "Start workflow is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.PUBLISH_ACTION), "Publish Action  is not present");
     }    
     
     
@@ -186,18 +186,18 @@ public class DetailsPageTest extends AbstractTest
            
         Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.COPY_TO), "Copy to is not present");
         Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.MOVE_TO), "Move to is not present");
-        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.DELETE_CONTENT), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.MANAGE_ASPECTS), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.MANAGE_PERMISSION_FOL), "Copy to is not present");       
-        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.CHNAGE_TYPE), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.EDIT_PROPERTIES), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.MANAGE_RULES), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.DOWNLOAD_FOLDER), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.VIEW_IN_EXPLORER), "Copy to is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.DELETE_CONTENT), "Delete to is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.MANAGE_ASPECTS), "Manager Aspect not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.MANAGE_PERMISSION_FOL), "Manage Permission not present");       
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.CHNAGE_TYPE), "Change Type is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.EDIT_PROPERTIES), "Edit properties to is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.MANAGE_RULES), "Manage Rules is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.DOWNLOAD_FOLDER), "Download Folder is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.VIEW_IN_EXPLORER), "View in exlporer is not present");
 
     }    
     
-    @Test(dependsOnMethods="isLinkPresentFolderTest", groups = { "alfresco-one" }, expectedExceptions={UnsupportedOperationException.class})
+    @Test(dependsOnMethods="isDocumentActionPresent", groups = { "alfresco-one" }, expectedExceptions={UnsupportedOperationException.class})
     public void isLinkUnspportedTest() throws Exception
     {
         FolderDetailsPage folderDetailsNew = new FolderDetailsPage(drone);
