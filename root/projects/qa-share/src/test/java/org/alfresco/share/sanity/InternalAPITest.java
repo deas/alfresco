@@ -168,7 +168,7 @@ public class InternalAPITest extends AbstractTests
         }
     }
     
-    @Test(groups = { "Sanity", "AlfrescoOne" })
+    @Test(groups = { "Sanity", "MyAlfresco" })
     public void unitTestCreateDPEntv_2() throws Exception
     {
         String envName = (System.currentTimeMillis() + "dp").substring(6, 14);
@@ -189,14 +189,14 @@ public class InternalAPITest extends AbstractTests
         checkResult(response, 500);
     }
     
-    @Test(groups = { "Sanity", "AlfrescoOne" })
+    @Test(groups = { "Sanity", "MyAlfresco" })
     public void unitTestDeleteDPEntv_3() throws Exception
     {
-        String envName = "NEWDPENV5";
+        String envName = "NEWDPENV10";
         
         HttpResponse response;         
        
         response = PublicAPIRestClient.deleteDPEnv(envName);
-        checkResult(response, 200);
+        checkResult(response, 200);        
     }
 }

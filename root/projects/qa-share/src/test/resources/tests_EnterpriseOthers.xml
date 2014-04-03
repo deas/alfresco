@@ -75,7 +75,7 @@
     
      <test name="GalleryView" verbose="1" parallel="classes" thread-count="1">
         <classes>
-            <class name="org.alfresco.share.site.document.ShareRefreshDocLibToolBarContent"/>
+            <class name="org.alfresco.share.site.document.GalleryViewTest"/>
         </classes>
     </test>
 

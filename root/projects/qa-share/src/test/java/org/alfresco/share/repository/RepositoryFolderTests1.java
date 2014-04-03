@@ -156,8 +156,7 @@ public class RepositoryFolderTests1 extends AbstractTests
         // TODO - Name, Title and Description assertions missing
 
         // Verify details page of selected folder is displayed
-        // Assert.assertTrue(folderDetailsPage.isDetailsPage(folderName),
-        // "Verifying folder details page is displayed");
+        // Assert.assertTrue(folderDetailsPage.isDetailsPage(folderName), "Verifying folder details page is displayed");
 
         // Verify section Add comment is present
         Assert.assertTrue(folderDetailsPage.isCommentLinkPresent(), "Verifying comment link is present");
@@ -194,7 +193,7 @@ public class RepositoryFolderTests1 extends AbstractTests
         drone.createNewTab();
         drone.navigateTo(url);
 
-        // Check naother tab
+        // Check another tab
         // ShareUser.login(anotherDrone, testUser, testUserPass);
         // TODO - Doesn't match Steps 6, 7 and 8 from test link
         folderDetailsPage = (FolderDetailsPage) ShareUser.getSharePage(drone);
