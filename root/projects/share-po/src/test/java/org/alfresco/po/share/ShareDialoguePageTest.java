@@ -16,12 +16,14 @@ package org.alfresco.po.share;
 
 import java.io.File;
 
+import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
+import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
 import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
@@ -48,6 +50,7 @@ public class ShareDialoguePageTest extends AbstractTest
     private SitePage site;
     private DocumentLibraryPage documentLibPage;
     private DocumentDetailsPage docDetailsPage;
+    private EditDocumentPropertiesPopup editPropPopup;
     private EditDocumentPropertiesPage editPropPage;
     private ShareDialogue dialogue;
     
@@ -94,7 +97,9 @@ public class ShareDialoguePageTest extends AbstractTest
         dialogue = FactorySharePage.resolvePage(drone).render();
         Assert.assertTrue(dialogue.isShareDialogueDisplayed());
         
-        dialogue.resolveShareDialoguePage();
+        dialogue.getShareDialoguePageName();
+        CreateSitePage page = dialogue.resolveShareDialoguePage().render();
+        Assert.assertNotNull(page);
 
         logger.info("Title: " + dialogue.getDialogueTitle());
     }
@@ -119,7 +124,10 @@ public class ShareDialoguePageTest extends AbstractTest
         dialogue = FactorySharePage.resolvePage(drone).render();
         Assert.assertTrue(dialogue.isShareDialogueDisplayed());
         
-        dialogue.resolveShareDialoguePage();
+        dialogue.getShareDialoguePageName();
+        
+        NewFolderPage page = dialogue.resolveShareDialoguePage().render();
+        Assert.assertNotNull(page);
         
         logger.info("Title: " + dialogue.getDialogueTitle());    
     }
@@ -140,7 +148,10 @@ public class ShareDialoguePageTest extends AbstractTest
         dialogue = FactorySharePage.resolvePage(drone).render();
         Assert.assertTrue(dialogue.isShareDialogueDisplayed());
         
-        dialogue.resolveShareDialoguePage();
+        dialogue.getShareDialoguePageName();
+        
+        UploadFilePage page = dialogue.resolveShareDialoguePage().render();
+        Assert.assertNotNull(page);
 
         logger.info("Title: " + dialogue.getDialogueTitle());
     }
@@ -151,8 +162,32 @@ public class ShareDialoguePageTest extends AbstractTest
         documentLibPage = closeDialogue().render();
     }
 
-    // Edit Properties > Tags
+    // Edit Properties
     @Test(dependsOnMethods="closeUploadFileDialogue")
+    public void resolveEditPropertiesDialogue() throws Exception
+    {
+        // Edit Properties
+        editPropPopup = documentLibPage.getFileDirectoryInfo(fileName).selectEditProperties().render();      
+        
+        dialogue = FactorySharePage.resolvePage(drone).render();
+        Assert.assertTrue(dialogue.isShareDialogueDisplayed());
+        
+        dialogue.getShareDialoguePageName();
+        
+        EditDocumentPropertiesPopup page = dialogue.resolveShareDialoguePage().render();
+        Assert.assertNotNull(page);
+
+        logger.info("Title: " + dialogue.getDialogueTitle());
+    }
+    
+    @Test(dependsOnMethods="resolveEditPropertiesDialogue")
+    public void closeEditPropertiesDialogue() throws Exception
+    {
+        documentLibPage = closeDialogue().render();
+    }
+    
+    // Edit Properties > Tags
+    @Test(dependsOnMethods="closeEditPropertiesDialogue")
     public void resolveEditPropertiesTagsDialogue() throws Exception
     {
         // Select File, Edit Properties > Tag
@@ -163,7 +198,10 @@ public class ShareDialoguePageTest extends AbstractTest
         dialogue = FactorySharePage.resolvePage(drone).render();
         Assert.assertTrue(dialogue.isShareDialogueDisplayed());
         
-        dialogue.resolveShareDialoguePage();
+        dialogue.getShareDialoguePageName();
+        
+        TagPage page = dialogue.resolveShareDialoguePage().render();
+        Assert.assertNotNull(page);
 
         logger.info("Title: " + dialogue.getDialogueTitle());
     }

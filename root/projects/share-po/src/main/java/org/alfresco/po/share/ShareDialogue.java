@@ -14,6 +14,12 @@
  */
 package org.alfresco.po.share;
 
+import org.alfresco.po.share.site.CreateSitePage;
+import org.alfresco.po.share.site.NewFolderPage;
+import org.alfresco.po.share.site.UploadFilePage;
+import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
+import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
+import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -31,7 +37,7 @@ import org.openqa.selenium.WebElement;
  */
 public class ShareDialogue extends SharePage
 {
-    private static Log logger = LogFactory.getLog(ShareDialoguePageTest.class);
+    private static Log logger = LogFactory.getLog(ShareDialogue.class);
     
     private static final By SHARE_DIALOGUE_PARENT = By.xpath("//div[@class='hd']/..");
     private static final By SHARE_DIALOGUE_HEADER = By.cssSelector("div.hd");
@@ -183,13 +189,14 @@ public class ShareDialogue extends SharePage
     }
     
     /**
-     * Helper method to return right Page for Share Dialogue displayed
+     * Helper method to return right PageName for Share Dialogue displayed
      * 
-     * @return HtmlPage
+     * @return String
      */
-    public String resolveShareDialoguePage()
-    {
+    public String getShareDialoguePageName()
+    {        
         String pageName = "";
+
         try
         {
             WebElement dialogue = getDialogueHeader();
@@ -198,33 +205,27 @@ public class ShareDialogue extends SharePage
                 String dialogueID = dialogue.getAttribute("id");
                 if (dialogueID.contains("createSite"))
                 {
-                    pageName = "Create Site Page";
-                    logger.info(pageName);
+                    pageName = "Create Site Page";                    
                 }
                 else if(dialogueID.contains("createFolder"))
                 {
                     pageName = "Create Folder Page";
-                    logger.info(pageName);
                 }
                 else if(dialogueID.contains("upload"))
                 {
                     pageName = "Upload File Page";
-                    logger.info(pageName);
                 }
                 else if(dialogueID.contains("editDetails"))
                 {
                     pageName = "Edit Properties Page";
-                    logger.info(pageName);
                 }
                 else if(dialogueID.contains("taggable-cntrl-picker"))
                 {
                     pageName = "Tags Page";
-                    logger.info(pageName);
                 }
                 else if(dialogueID.contains("copyMoveTo"))
                 {
                     pageName = "CopyOrMoveContent Page";
-                    logger.info(pageName);
                 }
             }          
         }
@@ -232,7 +233,56 @@ public class ShareDialogue extends SharePage
         {
         }
         
+        logger.info(pageName);
+        
         return pageName;
-        //return drone.getCurrentPage().render();
+    }
+    
+    /**
+     * Helper method to return right Page for Share Dialogue displayed
+     * 
+     * @return HtmlPage
+     */
+    public HtmlPage resolveShareDialoguePage()
+    {
+        SharePage sharePage = null;
+        try
+        {
+            WebElement dialogue = getDialogueHeader();
+            if (dialogue != null && dialogue.isDisplayed())
+            {
+                String dialogueID = dialogue.getAttribute("id");
+                if (dialogueID.contains("createSite"))
+                {
+                    sharePage = new CreateSitePage(drone);
+                    
+                }
+                else if(dialogueID.contains("createFolder"))
+                {
+                    sharePage = new NewFolderPage(drone);
+                }
+                else if(dialogueID.contains("upload"))
+                {
+                    sharePage = new UploadFilePage(drone);
+                }
+                else if(dialogueID.contains("editDetails"))
+                {
+                    sharePage = new EditDocumentPropertiesPopup(drone);
+                }
+                else if(dialogueID.contains("taggable-cntrl-picker"))
+                {
+                    sharePage = new TagPage(drone);
+                }
+                else if(dialogueID.contains("copyMoveTo"))
+                {
+                    sharePage = new CopyOrMoveContentPage(drone);
+                }
+            }          
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        
+        return sharePage;
     }
 }
