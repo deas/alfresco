@@ -206,6 +206,7 @@ public class CopyOrMoveContentPageTest extends AbstractTest
         Assert.assertNotNull(documentLibPage);
         Assert.assertTrue(documentLibPage.getFiles().size() == 4);
         
+        documentLibPage = documentLibPage.getNavigation().selectHideFolders().render();
         copyOrMoveContentPage = documentLibPage.getFileDirectoryInfo(file2.getName()).selectMoveTo().render();
         copyOrMoveContentPage = selectDestination(copyOrMoveContentPage, destinations);
         Assert.assertNotNull(copyOrMoveContentPage);
@@ -215,7 +216,7 @@ public class CopyOrMoveContentPageTest extends AbstractTest
         Assert.assertNotNull(copyOrMoveContentPage);
 
         documentLibPage = copyOrMoveContentPage.selectOkButton().render();
-        
+        documentLibPage = documentLibPage.getNavigation().selectShowFolders().render();
         Assert.assertNotNull(documentLibPage);
         Assert.assertTrue(documentLibPage.getFiles().size() == 3);
         Assert.assertFalse(documentLibPage.isFileVisible(file2.getName()));
