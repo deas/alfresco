@@ -1,0 +1,65 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="1" preserve-order="true" thread-count="5" parallel="classes">
+    <groups>
+        <run>
+            <include name="DataPrep.*"/>
+            <exclude name="Enterprise42"/>
+            <exclude name="Hybrid.*"/>
+        </run>
+    </groups>
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
+    </listeners>
+	<test name="Granular Manage Permission" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.site.document.ManagePermissionTest">
+				<methods>
+					<include name="dataPrep_ALF_10427" />
+					<include name="dataPrep_ALF_10428" />
+					<include name="dataPrep_ALF_10429" />
+					<include name="dataPrep_ALF_10790" />
+					<include name="dataPrep_ALF_10793" />
+					<include name="dataPrep_ALF_10795" />
+					<include name="dataPrep_ALF_10287" />
+					<include name="dataPrep_ALF_10288" />
+					<include name="dataPrep_ALF_10425" />
+					<include name="dataPrep_ALF_10426" />
+					<include name="dataPrep_ALF_10785" />
+					<include name="dataPrep_ALF_10786" />
+				</methods>
+			</class>
+		</classes>
+	</test>
+
+   <test name="Table View Tests" verbose="1">
+      <classes>
+         <class name="org.alfresco.share.site.document.TableViewDocLibTest">
+            <methods>
+               <include name="dataPrep_Alf_14392" />
+               <include name="dataPrep_Alf_14544" />
+               <include name="dataPrep_Alf_14548" />
+               <include name="dataPrep_Alf_14549" />
+            </methods>
+         </class>
+      </classes>
+   </test>
+   <test name="Filmstrip_Dataprep" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.site.document.FilmStripDocLibTest">
+				<methods>
+					<include name="dataprep_ALF_14200" />
+					<include name="dataprep_ALF_14201" />
+					<include name="dataprep_ALF_14203" />
+					<include name="dataprep_ALF_14204" />
+					<include name="dataprep_ALF_14207" />
+					<include name="dataprep_ALF_14208" />
+					<include name="dataprep_ALF_14210" />
+					<include name="dataprep_ALF_14214" />
+					<include name="dataprep_ALF_14228" />
+					<include name="dataprep_ALF_14233" />
+					<include name="dataprep_ALF_14234" />
+				</methods>
+			</class>
+		</classes>
+	</test>
+</suite>

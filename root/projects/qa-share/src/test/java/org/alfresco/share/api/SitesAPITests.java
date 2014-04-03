@@ -220,10 +220,11 @@ public class SitesAPITests extends SitesAPI
         assertEquals(response.getPaging().getMaxItems(), new Integer(2147483));
 
         params.put(SKIP_COUNT, "0");
+        params.put(MAX_ITEMS,"1");
         response = getSites(testUser, DOMAIN, params);
 
         assertNotNull(response);
-        assertFalse(response.getPaging().getHasMoreItems());
+        assertTrue(response.getPaging().getHasMoreItems());
 
     }
 
@@ -296,20 +297,20 @@ public class SitesAPITests extends SitesAPI
         }
 
         params = new HashMap<String, String>();
-        params.put(SKIP_COUNT, "0");
+        params.put(SKIP_COUNT, "2");
         params.put(MAX_ITEMS, "2147483");
         response = getSites(testUser, DOMAIN, params);
 
         assertNotNull(response);
-        assertEquals(response.getPaging().getSkipCount(), new Integer(0));
+        assertEquals(response.getPaging().getSkipCount(), new Integer(2));
         assertEquals(response.getPaging().getMaxItems(), new Integer(2147483));
 
         params = new HashMap<String, String>();
-        params.put(SKIP_COUNT, "0");
+        params.put(SKIP_COUNT, "2");
         response = getSites(testUser, DOMAIN, params);
 
         assertNotNull(response);
-        assertEquals(response.getPaging().getSkipCount(), new Integer(0));
+        assertEquals(response.getPaging().getSkipCount(), new Integer(2));
         assertEquals(response.getPaging().getMaxItems(), new Integer(100));
 
 
@@ -526,7 +527,7 @@ public class SitesAPITests extends SitesAPI
             assertEquals(e.getHttpResponse().getStatusCode(), 404, e.getHttpResponse().getJsonResponse().toJSONString());
         }
 
-        // Status: 404: Invalid Role
+        // Status: 400: Invalid Role
         try
         {
             createSiteMember(testUser, DOMAIN, siteName, new SiteMember(user2, user1));
@@ -623,7 +624,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getPersonSite(testUser, DOMAIN, testUserInvalid, siteName);
-            fail("ALF_148701 - This block of code shouldn't be reached. As person id is wrong. Expected error - 404");
+            fail("ALF_148801 - This block of code shouldn't be reached. As person id is wrong. Expected error - 404");
         }
         catch (PublicApiException e)
         {
@@ -634,7 +635,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getPersonSite(testUserInvalid, DOMAIN, testUser, siteName);
-            fail("ALF_148701 - This block of code shouldn't be reached. As person id is wrong. Expected error - 401");
+            fail("ALF_148801 - This block of code shouldn't be reached. As person id is wrong. Expected error - 401");
         }
         catch (PublicApiException e)
         {
@@ -645,7 +646,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getPersonSite(testUser, DOMAIN, testUser, siteNameInvalid);
-            fail("ALF_148701 - This block of code shouldn't be reached. As site id is wrong. Expected error - 404");
+            fail("ALF_148801 - This block of code shouldn't be reached. As site id is wrong. Expected error - 404");
         }
         catch (PublicApiException e)
         {
@@ -671,7 +672,7 @@ public class SitesAPITests extends SitesAPI
             assertEquals(e.getHttpResponse().getStatusCode(), 404, e.getHttpResponse().toString());
         }
 
-        // Status invalid site: 4041
+        // Status invalid site: 401
         try
         {
             getPersonSites(testUserInvalid, DOMAIN, null, testUser);
@@ -754,8 +755,6 @@ public class SitesAPITests extends SitesAPI
         {
             assertEquals(e.getHttpResponse().getStatusCode(), 400, e.getHttpResponse().toString());
         }
-
-        // TODO: TestLink: Separate steps in TestLink
 
     }
 

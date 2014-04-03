@@ -1829,77 +1829,77 @@ public class AdvanceSearchTest2 extends AbstractTests
       */
     @Test(groups={"DataPrepAdvanceSearch"})
     public void dataPrep_AdvSearch_ALF_4976() throws Exception
-   {
-       String testName = getTestName();
-       String siteName = getSiteName(testName);
-       String mainUser = getUserNameFreeDomain(testName);
-       String[] mainUserInfo = new String[] { mainUser };
-       String testUser = getUserNameFreeDomain(testName + "1");
-       String[] testUserInfo = new String[] { testUser };
-       String[] folders = { siteName + "_House", siteName + "_Techno", siteName + "_House Techno", siteName + "_House Techno Trance" };
-       String[] files = { siteName + "_House my", siteName + "_Techno my", siteName + "_House Techno my", siteName + "_House Techno Trance my" };
-       String[] filesWithContent = { siteName + "_My 1", siteName + "_My 2", siteName + "_My 3", siteName + "_My 4" };
-       try
-       {
-           // User
-           CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, mainUserInfo);
-           CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+    {
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String mainUser = getUserNameFreeDomain(testName);
+        String[] mainUserInfo = new String[] { mainUser };
+        String testUser = getUserNameFreeDomain(testName + "1");
+        String[] testUserInfo = new String[] { testUser };
+        String[] folders = { siteName + "_House", siteName + "_Techno", siteName + "_House Techno", siteName + "_House Techno Trance" };
+        String[] files = { siteName + "_House my", siteName + "_Techno my", siteName + "_House Techno my", siteName + "_House Techno Trance my" };
+        String[] filesWithContent = { siteName + "_My 1", siteName + "_My 2", siteName + "_My 3", siteName + "_My 4" };
+        try
+        {
+            // User
+            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, mainUserInfo);
+            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-           // Login
-           ShareUser.login(drone, mainUser, testPassword);
+            // Login
+            ShareUser.login(drone, mainUser, testPassword);
 
-           // Site
-           ShareUser.createSite(drone, siteName, ShareUser.SITE_VISIBILITY_MODERATED);
+            // Site
+            ShareUser.createSite(drone, siteName, ShareUser.SITE_VISIBILITY_MODERATED);
 
-           ShareUser.openDocumentLibrary(drone);
-           ShareUserSitePage.selectView(drone, ViewType.SIMPLE_VIEW);
+            ShareUser.openDocumentLibrary(drone);
+            ShareUserSitePage.selectView(drone, ViewType.SIMPLE_VIEW);
 
-           // Creating files with given Title.
-           ContentDetails contentDetails = new ContentDetails();
+            // Creating files with given Title.
+            ContentDetails contentDetails = new ContentDetails();
 
-           contentDetails.setName(files[0]);
-           ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+            contentDetails.setName(files[0]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-           contentDetails.setName(files[1]);
-           ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+            contentDetails.setName(files[1]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-           contentDetails.setName(files[2]);
-           ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+            contentDetails.setName(files[2]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-           contentDetails.setName(files[3]);
-           ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+            contentDetails.setName(files[3]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-           // Creating files with given Title and description.
-           contentDetails.setName(filesWithContent[0]);
-           contentDetails.setContent(folders[0]);
-           ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+            // Creating files with given Title and description.
+            contentDetails.setName(filesWithContent[0]);
+            contentDetails.setContent(folders[0]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-           contentDetails.setName(filesWithContent[1]);
-           contentDetails.setContent(folders[1]);
-           ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+            contentDetails.setName(filesWithContent[1]);
+            contentDetails.setContent(folders[1]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-           contentDetails.setName(filesWithContent[2]);
-           contentDetails.setContent(folders[2]);
-           ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+            contentDetails.setName(filesWithContent[2]);
+            contentDetails.setContent(folders[2]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-           contentDetails.setName(filesWithContent[3]);
-           contentDetails.setContent(folders[3]);
-           ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
-                      
-           // Creating folders
-           ShareUserSitePage.createFolder(drone, folders[0], null, null);
-           ShareUserSitePage.createFolder(drone, folders[1], null, null);
-           ShareUserSitePage.createFolder(drone, folders[2], null, null);
-           ShareUserSitePage.createFolder(drone, folders[3], null, null);
+            contentDetails.setName(filesWithContent[3]);
+            contentDetails.setContent(folders[3]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+                       
+            // Creating folders
+            ShareUserSitePage.createFolder(drone, folders[0], null, null);
+            ShareUserSitePage.createFolder(drone, folders[1], null, null);
+            ShareUserSitePage.createFolder(drone, folders[2], null, null);
+            ShareUserSitePage.createFolder(drone, folders[3], null, null);
 
-           ShareUserMembers.inviteUserToSiteWithRole(drone, mainUser, testUser, siteName, UserRole.COLLABORATOR);
+            ShareUserMembers.inviteUserToSiteWithRole(drone, mainUser, testUser, siteName, UserRole.COLLABORATOR);
 
-       }
-       catch (Throwable e)
-       {
-           reportError(drone, testName, e);
-       }
-   }
+        }
+        catch (Throwable e)
+        {
+            reportError(drone, testName, e);
+        }
+    }
      
 
     /**

@@ -48,6 +48,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     private static final String TEST_DOC_FILE = "Test3.doc";
     private static final String TEST_JPG_FILE = "Test4.JPG";
     private static final String TEST_PDF_FILE = "TestPDFImap.pdf";
+    private static final String TEST_HTML_FILE = "Test5.html";
     private static final String TEST_DOCX_FILE = "WordDocument.docx";
 
     @Override
@@ -889,6 +890,9 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
             String[] fileInfo4 = { TEST_PDF_FILE };
             ShareUser.uploadFileInFolder(drone, fileInfo4);
+            
+            String[] fileInfo5 = { TEST_HTML_FILE };
+            ShareUser.uploadFileInFolder(drone, fileInfo5);
         }
         catch (Throwable e)
         {
@@ -914,7 +918,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      */
     @Test(groups="GoogleDocs", timeOut = 400000)
     public void ALF_1502() throws Exception
-    {
+    { 
         /** Start Test */
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -933,6 +937,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         // Verifying the EditInGoogleDocs link is not present for the below documents
         Assert.assertFalse(docLibPage.getFileDirectoryInfo(TEST_JPG_FILE).isEditInGoogleDocsPresent());
         Assert.assertFalse(docLibPage.getFileDirectoryInfo(TEST_PDF_FILE).isEditInGoogleDocsPresent());
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(TEST_HTML_FILE).isEditInGoogleDocsPresent());
     }
 
     /**
@@ -1121,7 +1126,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    //@Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
+    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
     public void dataPrep_GoogleDocs_ALF_1935() throws Exception
     {
         String testName = getTestName();
@@ -1975,7 +1980,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    //@Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
+    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
     public void dataPrep_GoogleDocs_ALF_1946() throws Exception
     {
         String testName = getTestName();

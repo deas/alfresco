@@ -1,0 +1,69 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="1" preserve-order="true" parallel="classes" thread-count="5">
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
+    </listeners>
+    <groups>
+        <run>
+            <exclude name="DataPrep.*"/>
+            <exclude name="Enterprise42"/>
+            <exclude name="Hybrid.*"/>
+        </run>
+    </groups>
+    <test name="Granular Manage Permission" verbose="1" >
+		<classes>
+			<class name="org.alfresco.share.site.document.ManagePermissionTest">
+				<methods>
+					<include name="alf_10427"/>
+                    <include name="alf_10428"/>
+                    <include name="alf_10429"/>
+                    <include name="alf_10790"/>
+                    <include name="alf_10793"/>
+                    <include name="alf_10795"/>
+                    <include name="alf_10287"/>
+                    <include name="alf_10288"/>
+                    <include name="alf_10425"/>
+                    <include name="alf_10426"/>
+                    <include name="alf_10785"/>
+                    <include name="alf_10786"/>
+				</methods>
+			</class>
+		</classes>
+	</test>
+   
+   <test name="Table View Tests" verbose="1">
+      <classes>
+         <class name="org.alfresco.share.site.document.TableViewDocLibTest">
+            <methods>
+               <include name="Alf_14392" />
+               <include name="Alf_14544" />
+               <include name="Alf_14548" />
+               <include name="Alf_14549" />
+            </methods>
+         </class>
+      </classes>
+   </test>
+   
+   <test name="FilmStrip Test" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.site.document.FilmStripDocLibTest">
+				<methods >
+					<exclude name="ALF_141*" />
+					<exclude name="ALF_14205" />
+					<exclude name="ALF_14206" />
+					<include name="ALF_14200" />
+					<include name="ALF_14210" />
+					<include name="ALF_14201" />
+					<include name="ALF_14203" />
+					<include name="ALF_14204" />
+					<include name="ALF_14207" />
+					<include name="ALF_14208" />
+					<include name="ALF_14214" />
+					<include name="ALF_14228" />
+					<include name="ALF_14233" />
+					<include name="ALF_14234" />
+				</methods>
+			</class>
+		</classes>
+	</test>
+</suite>

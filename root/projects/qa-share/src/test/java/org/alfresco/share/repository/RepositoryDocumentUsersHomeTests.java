@@ -298,7 +298,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractTests
         editDocumentProperties.selectMimeType(mimeType);
         editDocumentProperties.setAuthor(newAuthor);
         TagPage tagPage = editDocumentProperties.getTag().render();
-        tagPage = tagPage.enterTagValue(newTag);
+        tagPage = tagPage.enterTagValue(newTag).render();
         editDocumentProperties = tagPage.clickOkButton().render();
         detailsPage = editDocumentProperties.selectSave().render();
 

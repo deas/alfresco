@@ -1,9 +1,29 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="All" verbose="1">
-	<test name="smoke">
+<suite name="Sanity" verbose="1" preserve-order="true">
+ 	<test name="smoke">
 		<classes>
 			<class name="org.alfresco.share.sanity.InternalAPITest" />
 		</classes>
 	</test>
+ <!--	<test name="SanityFolders">
+		<classes>
+			<class name="org.alfresco.share.sanity.FolderSanityTest" />
+		</classes>
+	</test> 
+	<test name="SanitySearch">
+		<classes>
+			<class name="org.alfresco.share.sanity.AdvanceSearchSanityTest" />
+		</classes>
+	</test>
+	<test name="SanitySites">
+		<classes>
+			<class name="org.alfresco.share.sanity.SiteSearchSanityTest" />
+		</classes>
+	</test>
+	<test name="SanityPeople">
+		<classes>
+			<class name="org.alfresco.share.sanity.PeopleFinderTest" />
+		</classes>
+	</test> -->
 </suite>

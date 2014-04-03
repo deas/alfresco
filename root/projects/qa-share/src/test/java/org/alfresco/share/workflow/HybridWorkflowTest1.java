@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.alfresco.share.workflow;
 
 import java.util.ArrayList;
@@ -23,17 +42,14 @@ import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.ShareUserWorkFlow;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
-import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
  * @author Ranjith Manyam
  * 
  */
-@Listeners(FailedTestListener.class)
 public class HybridWorkflowTest1 extends AbstractWorkflow
 {
     private String testDomain;
@@ -47,15 +63,15 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
     {
         super.setup();
         testName = this.getClass().getSimpleName();
-        testDomain = "hybrid.test";
+        testDomain = DOMAIN_HYBRID;
     }
 
     public void dataPrep(String testName) throws Exception
     {
-        String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
+        String user1 = getUserNameForDomain(testName, testDomain);
         String[] userInfo1 = new String[] { user1 };
 
-        String cloudUser = getUserNameForDomain(testName, DOMAIN_HYBRID);
+        String cloudUser = getUserNameForDomain(testName, testDomain);
         String[] cloudUserInfo1 = new String[] { cloudUser };
 
         // Create User1 (On-premise)
@@ -102,15 +118,15 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
         CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, cloudUserInfo1);
         CreateUserAPI.upgradeCloudAccount(hybridDrone, ADMIN_USERNAME, testDomain, "1000");
 
-        // OP: User 1: set up the cloud sync
+        // Login to User1, set up the cloud sync
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         signInToAlfrescoInTheCloud(drone, cloudUser, DEFAULT_PASSWORD);
         ShareUser.logout(drone);
 
-        // CL: User 1: Create a site, a folder
+        // Login as cloudUser (Cloud) and create a site, a folder within the site
         ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
         ShareUser.createSite(hybridDrone, cloudSite, SITE_VISIBILITY_PUBLIC);
-        ShareUserSitePage.createFolder(hybridDrone, folderName, folderName).render();
+        ShareUserSitePage.createFolder(hybridDrone, folderName, folderName);
         ShareUser.logout(hybridDrone);
     }
 
@@ -152,9 +168,10 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
 
         try
         {
-            // OP: User 1: Start Simple Cloud Task Workflow
+            // Login as OP user
             ShareUser.login(drone, user1, DEFAULT_PASSWORD);
 
+            // Start Simple Cloud Task Workflow
             CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startSimpleCloudTaskWorkFlow(drone);
 
             Assert.assertTrue(cloudTaskOrReviewPage.isSimpleCloudTaskElementsPresent(), "Verifying Simple Cloud Task fields");
@@ -167,7 +184,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             // Verify the Select Assignee button is disabled when the destination is not chosen and no assignee is displayed
             Assert.assertFalse(cloudTaskOrReviewPage.isSelectAssigneeButtonEnabled(), "Verifying the Select Assignee button is disabled when the destination is not chosen");
             Assert.assertFalse(cloudTaskOrReviewPage.isAssigneePresent(), "Verifying the Assignee is not present");
-
+            
             // Select Destination And Assignee but DO NOT choose destination (15139)
             DestinationAndAssigneePage destinationAndAssigneePage = cloudTaskOrReviewPage.selectDestinationAndAssigneePage().render();
 
@@ -316,18 +333,18 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
         CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, reviewerInfo2);
         CreateUserAPI.upgradeCloudAccount(hybridDrone, ADMIN_USERNAME, testDomain, "1000");
 
-        // OP: User 1: set up the cloud sync
+        // Login to User1, set up the cloud sync
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         signInToAlfrescoInTheCloud(drone, cloudUser, DEFAULT_PASSWORD);
         ShareUser.logout(drone);
 
-        // CL: User: Create a site, a folder
+        // Login as cloudUser (Cloud) and create a site, a folder within the site
         ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
         ShareUser.createSite(hybridDrone, cloudSite, SITE_VISIBILITY_PUBLIC);
         ShareUserSitePage.createFolder(hybridDrone, folderName, folderName).render();
         ShareUser.logout(hybridDrone);
 
-        // CL: Invite Cloud reviewers to join the site
+        // Invite Cloud reviewers to join the site
         CreateUserAPI.inviteUserToSiteWithRoleAndAccept(hybridDrone, cloudUser, reviewer1, getSiteShortname(cloudSite), "SiteContributor", "");
         CreateUserAPI.inviteUserToSiteWithRoleAndAccept(hybridDrone, cloudUser, reviewer2, getSiteShortname(cloudSite), "SiteContributor", "");
     }
@@ -530,8 +547,8 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
     public void ALF_15173() throws Exception
     {
         String testName = getTestName();
-        String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser = getUserNameForDomain(testName, DOMAIN_HYBRID);
+        String user1 = getUserNameForDomain(testName, testDomain);
+        String cloudUser = getUserNameForDomain(testName, testDomain);
         String opSiteName = getSiteName(testName) + System.currentTimeMillis() + "-OP";
         String cloudSite = getSiteName(testName) + System.currentTimeMillis() + "-CL";
 
@@ -544,19 +561,22 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
 
         try
         {
-            // CL: User 1: Creates Site
+            // Login as User1 (Cloud)
             ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
+            // Create Site
             ShareUser.createSite(hybridDrone, cloudSite, SITE_VISIBILITY_PUBLIC);
             ShareUser.logout(hybridDrone);
 
-            // OP: User1: Creates Site
+            // Login as User1 (OP)
             ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-            
-            ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
+            // Create Site
+            SiteDashboardPage siteDashboardPage = ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
+            // Open Document library, Upload a file
+            siteDashboardPage.getSiteNav().selectSiteDocumentLibrary().render();
 
-            DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo);
+            DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo).render();
 
-            // OP: User 1: Start "Cloud Task or Review"
+            // Select "Cloud Task or Review" from select a workflow dropdown
             CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, simpleTaskFile);
 
             WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
@@ -584,10 +604,11 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
 
             ShareUser.logout(drone);
 
-            // CL : User: Check Active task
-            ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
+            // Login as CloudUser User
+            SharePage sharePage = ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
 
-            MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(hybridDrone);
+            // Navigate to MyTasks page
+            MyTasksPage myTasksPage = sharePage.getNav().selectMyTasks().render();
 
             // Verify tasks are displayed in Active Tasks list
             Assert.assertTrue(myTasksPage.isTaskPresent(simpleTaskWF));
@@ -603,7 +624,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             Assert.assertTrue(myTasksPage.isTaskPresent(simpleTaskWF));
 
             // Open Site Document Library, verify all files are part of the workflow, and synced
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSite);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(hybridDrone, cloudSite).render();
 
             Assert.assertTrue(documentLibraryPage.isFileVisible(simpleTaskFile), "Verifying File1 exists");
             Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(simpleTaskFile).isCloudSynced(), "Verifying the File1 is synced");
@@ -611,17 +632,19 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
 
             ShareUser.logout(hybridDrone);
 
-            // OP: User 1
-            ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+            // Login as OP user
+            sharePage = ShareUser.login(drone, user1, DEFAULT_PASSWORD);
 
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+
+            // Open Site Document Library
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(drone, opSiteName).render();
 
             // Verify all files are still synced and part of workflow
             Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(simpleTaskFile).isCloudSynced(), "Verifying the document is synced");
             Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(simpleTaskFile).isPartOfWorkflow(), "Verifying the document is part of a workflow");
 
             // Open My Tasks page
-            myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
+            myTasksPage = sharePage.getNav().selectMyTasks().render();
 
             // Verify a new tasks are displayed for OP user in Active Tasks List
             Assert.assertTrue(ShareUser.checkIfTaskIsPresent(drone, simpleTaskWF));
@@ -648,7 +671,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             Assert.assertTrue(myWorkFlowsPage.isWorkFlowPresent(simpleTaskWF));
 
             // Open Site Document Library
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(drone, opSiteName).render();
 
             // Verify File1 is still Synced and not part of a workflow any more
             Assert.assertFalse(documentLibraryPage.getFileDirectoryInfo(simpleTaskFile).isCloudSynced(), "Verifying the document is NOT synced");
@@ -660,7 +683,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
 
             // Open Site Document Library
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSite);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(hybridDrone, cloudSite).render();
 
             // Verify all documents are disappeared from Cloud site
             Assert.assertFalse(documentLibraryPage.isFileVisible(simpleTaskFile), "Verifying File1 exists");
@@ -690,8 +713,8 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
     public void ALF_15174() throws Exception
     {
         String testName = getTestName();
-        String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser = getUserNameForDomain(testName, DOMAIN_HYBRID);
+        String user1 = getUserNameForDomain(testName, testDomain);
+        String cloudUser = getUserNameForDomain(testName, testDomain);
         String opSiteName = getSiteName(testName) + System.currentTimeMillis() + "-OP";
         String cloudSite = getSiteName(testName) + System.currentTimeMillis() + "-CL";
 
@@ -705,18 +728,20 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
 
         try
         {
-            // CL: User1: Creates Site
+            // Login as User1 (Cloud)
             ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
+            // Create Site
             ShareUser.createSite(hybridDrone, cloudSite, SITE_VISIBILITY_PUBLIC);
             ShareUser.logout(hybridDrone);
 
-            // OP: User 1: Creates Site
+            // Login as User1 (OP)
             ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-            
-            ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
-            
+            // Create Site
+            SiteDashboardPage siteDashboardPage = ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
             // Open Document library, Upload 3 files
-            DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo);
+            siteDashboardPage.getSiteNav().selectSiteDocumentLibrary().render();
+
+            DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo).render();
 
             WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
 
@@ -768,7 +793,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             Assert.assertTrue(myTasksPage.isTaskPresent(cloudReviewApproveWF));
 
             // Open Site Document Library, verify all files are part of the workflow, and synced
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSite);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(hybridDrone, cloudSite).render();
 
             Assert.assertTrue(documentLibraryPage.isFileVisible(cloudReviewApproveFile), "Verifying File2 exists");
 
@@ -783,7 +808,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
 
 
             // Open Site Document Library
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(drone, opSiteName).render();
 
             // Verify all files are still synced and part of workflow
             Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(cloudReviewApproveFile).isCloudSynced(), "Verifying the document is synced");
@@ -820,7 +845,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             Assert.assertTrue(myWorkFlowsPage.isWorkFlowPresent(cloudReviewApproveWF));
 
             // Open Site Document Library
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(drone, opSiteName).render();
 
             // Verify File2 is NOT Synced and NOT part of a workflow
             Assert.assertFalse(documentLibraryPage.getFileDirectoryInfo(cloudReviewApproveFile).isCloudSynced(), "Verifying the document is NOT synced");
@@ -832,7 +857,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
 
             // Open Site Document Library
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSite);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(hybridDrone, cloudSite).render();
 
             // Verify all documents are disappeared from Cloud site
             Assert.assertFalse(documentLibraryPage.isFileVisible(cloudReviewApproveFile), "Verifying File2 exists");
@@ -865,8 +890,8 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
     public void ALF_15175() throws Exception
     {
         String testName = getTestName();
-        String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser = getUserNameForDomain(testName, DOMAIN_HYBRID);
+        String user1 = getUserNameForDomain(testName, testDomain);
+        String cloudUser = getUserNameForDomain(testName, testDomain);
         String opSiteName = getSiteName(testName) + System.currentTimeMillis() + "-OP";
         String cloudSite = getSiteName(testName) + System.currentTimeMillis() + "-CL";
 
@@ -948,7 +973,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             Assert.assertTrue(myTasksPage.isTaskPresent(cloudReviewRejectWF));
 
             // Open Site Document Library, verify all files are part of the workflow, and synced
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSite);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(hybridDrone, cloudSite).render();
 
             Assert.assertTrue(documentLibraryPage.isFileVisible(cloudReviewRejectFile), "Verifying File3 exists");
 
@@ -963,7 +988,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
 
 
             // Open Site Document Library
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(drone, opSiteName).render();
 
             // Verify all files are still synced and part of workflow
             Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(cloudReviewRejectFile).isCloudSynced(), "Verifying the document is synced");
@@ -1000,7 +1025,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             Assert.assertTrue(myWorkFlowsPage.isWorkFlowPresent(cloudReviewRejectWF));
 
             // Open Site Document Library
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(drone, opSiteName).render();
 
             // Verify File3 is NOT Synced and NOT part of a workflow
             Assert.assertFalse(documentLibraryPage.getFileDirectoryInfo(cloudReviewRejectFile).isCloudSynced(), "Verifying the document is NOT synced");
@@ -1012,7 +1037,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
 
             // Open Site Document Library
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSite);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(hybridDrone, cloudSite).render();
 
             // Verify all documents are disappeared from Cloud site
             Assert.assertFalse(documentLibraryPage.isFileVisible(cloudReviewRejectFile), "Verifying File3 does NOT exist");
@@ -1066,8 +1091,8 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
     public void ALF_15176() throws Exception
     {
         String testName = getTestName();
-        String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser = getUserNameForDomain(testName, DOMAIN_HYBRID);
+        String user1 = getUserNameForDomain(testName, testDomain);
+        String cloudUser = getUserNameForDomain(testName, testDomain);
         String opSiteName = getSiteName(testName) + System.currentTimeMillis() + "-OP";
         String cloudSite = getSiteName(testName) + System.currentTimeMillis() + "-CL";
 
@@ -1131,7 +1156,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
 
             // Open Site Document Library
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSite);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(hybridDrone, cloudSite).render();
 
             // Verify File1 exists in Site Document Library, it is Synced and part of workflow.
             Assert.assertTrue(documentLibraryPage.isFileVisible(fileName1), "Verifying File1 exists");
@@ -1170,7 +1195,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             Assert.assertTrue(myTasksPage.isTaskPresent(workFlowName1));
 
             // Open Site Document Library
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(drone, opSiteName).render();
 
             // Verify File1 is Cloud Synced, part of workflow and it is Locked
             Assert.assertFalse(documentLibraryPage.getFileDirectoryInfo(fileName1).isPartOfWorkflow(), "Verifying the File1 is part of a workflow");
@@ -1204,8 +1229,8 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
     public void ALF_15177() throws Exception
     {
         String testName = getTestName();
-        String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser = getUserNameForDomain(testName, DOMAIN_HYBRID);
+        String user1 = getUserNameForDomain(testName, testDomain);
+        String cloudUser = getUserNameForDomain(testName, testDomain);
         String opSiteName = getSiteName(testName) + System.currentTimeMillis() + "-OP";
         String cloudSite = getSiteName(testName) + System.currentTimeMillis() + "-CL";
 
@@ -1266,7 +1291,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
 
             // Open Site Document Library
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSite);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(hybridDrone, cloudSite).render();
 
             // Verify File2 exists in Site Document library, it is Synced and part of workflow.
             Assert.assertTrue(documentLibraryPage.isFileVisible(fileName2), "Verifying File2 exists");
@@ -1304,7 +1329,7 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
             Assert.assertTrue(myTasksPage.isTaskPresent(workFlowName2));
 
             // Open Site Document Library
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(drone, opSiteName).render();
 
             // Verify File1 is Cloud Synced, part of workflow and it is Locked
             Assert.assertFalse(documentLibraryPage.getFileDirectoryInfo(fileName2).isPartOfWorkflow(), "Verifying the File2 is part of a workflow");

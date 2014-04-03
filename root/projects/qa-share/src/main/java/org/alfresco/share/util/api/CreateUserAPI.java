@@ -129,7 +129,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
      * @return
      * @throws Exception
      */
-    public static boolean createActivateUserAsTenantAdmin(WebDrone drone, String invitingUserEmail, String... newUserDetails) throws Exception
+    public synchronized static boolean createActivateUserAsTenantAdmin(WebDrone drone, String invitingUserEmail, String... newUserDetails) throws Exception
     {
         Boolean result = false;
         String tenantType = TenantTypes.Premium.getTenantType();
@@ -149,7 +149,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
         return result;
     }
 
-    public static boolean CreateActivateUser(WebDrone drone, String invitingUserEmail, String... newUserDetails) throws Exception
+    public synchronized static boolean CreateActivateUser(WebDrone drone, String invitingUserEmail, String... newUserDetails) throws Exception
     {
 
         boolean result = false;

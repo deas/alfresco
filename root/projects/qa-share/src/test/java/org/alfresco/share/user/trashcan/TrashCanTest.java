@@ -907,7 +907,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
     {
 
         String testName = getTestName();
-        String siteName1 = testName;
+        String siteName1 = getSiteName(testName);
         String testUser = getUserNameForDomain(testName + "1", testDomainFree);
 
         String fileName1 = "fi1-" + getFileName(testName);
@@ -1482,7 +1482,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
         ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, testUser2, true, UserRole.COLLABORATOR, false);
 
-        ShareUser.openSitesDocumentLibrary(drone, siteName1);
+        docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName1);
 
         ShareUser.selectContentCheckBox(drone, fileName1);
         ShareUser.deleteSelectedContent(drone);
@@ -1491,7 +1491,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
         ShareUserProfile.recoverTrashCanItem(drone, fileName1);
 
-        docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName1);
+        ShareUser.openSitesDocumentLibrary(drone, siteName1);
 
         ManagePermissionsPage permissionPage = ShareUser.returnManagePermissionPage(drone, fileName1);
 

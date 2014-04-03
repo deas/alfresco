@@ -63,6 +63,13 @@ public class FailedTestListener extends TestListenerAdapter
         super.onConfigurationFailure(itr);
     }
     
+    @Override
+    public void onTestSkipped(ITestResult tr)
+    {
+        takeSaveScreenShotSource(tr);
+        super.onTestSkipped(tr);
+    }
+    
     private void takeSaveScreenShotSource(ITestResult tr)
     {
         Object instace = tr.getInstance();

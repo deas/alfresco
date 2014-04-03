@@ -35,7 +35,16 @@ public enum DataGroup
     LOGIN,
     DOWNLOAD,
     Test, 
-    WIKI_PAGE,
-    SANITY, 
-    CloudSync;   
+    CloudSync,
+    CloudSync1,
+    CloudSync2,
+    CloudSync3,
+    SET_UP,
+    EnterpriseOnly,
+    WikiPage,
+    HYBRID,
+    SANITY,
+    TRASHCAN,
+    HYBRID_WORKFLOW2
+    ;   
 }

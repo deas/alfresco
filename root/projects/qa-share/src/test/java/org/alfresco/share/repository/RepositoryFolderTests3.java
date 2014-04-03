@@ -144,7 +144,7 @@ public class RepositoryFolderTests3 extends AbstractTests
 
             // Verify tag scope is decreased in repository page after folder is deleted
             // TODO: Watch and fix: This could be inconsistent, as count may not have been updated straight away.
-            tagsCount = repositorypage.getTagsCountUnderTagsTreeMenuOnDocumentLibrary(tagName);
+            tagsCount = repositorypage.getTagsCountUnderTagsTreeMenu(tagName);
             Assert.assertTrue(tagsCount == 1, "Tag Count displayed: " + tagsCount);
         }
         catch (Exception e)

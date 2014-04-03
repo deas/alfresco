@@ -177,21 +177,15 @@ public class SiteDashBoardTest extends AbstractTests
             // uploadFile
             ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            // Open Document Details
-            DocumentLibraryPage docPage = drone.getCurrentPage().render(refreshDuration);
-
             // Check Like count is zero
-            // String likeCount = docPage.getLikeCount();
-            String likeCount = docPage.getFileDirectoryInfo(fileName).getLikeCount();
+            String likeCount = ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getLikeCount();
             Assert.assertEquals(likeCount, "0", "Test: 711: Fail: Incorrect Like Count. Expected 0 when no likes");
 
             // Like Document
-            // DocumentDetailsPage docDetailsPage = docPage.selectFile(fileName).render();
-            docPage.getFileDirectoryInfo(fileName).selectLike();
+            ShareUserSitePage.getFileDirectoryInfo(drone, fileName).selectLike();
 
             // Check Like Count
-            // likeCount = docPage.getShareContentRow(fileName).getLikeCount();
-            likeCount = docPage.getFileDirectoryInfo(fileName).getLikeCount();
+            likeCount = ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getLikeCount();
             Assert.assertEquals(likeCount, "1", "Test: 711: Fail: Incorrect Like Count. Expected 1, on Like Document");
 
             // openUserDashboard(drone);

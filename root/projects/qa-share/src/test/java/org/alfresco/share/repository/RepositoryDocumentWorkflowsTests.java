@@ -23,6 +23,7 @@ import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
 import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
+import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
@@ -144,7 +145,9 @@ public class RepositoryDocumentWorkflowsTests extends AbstractTests
         // add a tag to the file
         String tag = "tag" + System.currentTimeMillis();
         EditDocumentPropertiesPopup editDocumentPropertiesPopup = repositoryPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
-        editDocumentPropertiesPopup.getTag().render().enterTagValue(tag).clickOkButton();
+        TagPage tagPage = editDocumentPropertiesPopup.getTag().render();
+        tagPage = tagPage.enterTagValue(tag).render();
+        tagPage.clickOkButton();
         editDocumentPropertiesPopup.selectSave().render();
 
         // create folder in users home folder

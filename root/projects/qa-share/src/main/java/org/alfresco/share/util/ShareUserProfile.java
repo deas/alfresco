@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
-import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.exception.ShareException;
+import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.document.SyncInfoPage.ButtonType;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.user.TrashCanDeleteConfirmationPage;

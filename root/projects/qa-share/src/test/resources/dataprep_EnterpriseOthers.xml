@@ -1,0 +1,36 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="1" preserve-order="true">
+	<test name="dataprep" verbose="1" parallel="classes" thread-count="1">
+		<groups>
+			<run>
+				<include name="DataPrep.*" />
+			</run>
+		</groups>
+		<classes>
+			<class name="org.alfresco.share.api.CommentsAPITests" />
+			<class name="org.alfresco.share.api.DeploymentsAPITests" />
+			<class name="org.alfresco.share.api.FavouriteAPITests" />
+			<class name="org.alfresco.share.api.NodesAPITests" />
+			<class name="org.alfresco.share.api.PeopleAPITests" />
+			<class name="org.alfresco.share.api.ProcessesAPITests" />
+			<class name="org.alfresco.share.api.SiteMembershipAPITests" />
+			<class name="org.alfresco.share.api.SitesAPITests" />
+			<class name="org.alfresco.share.api.TagsAPITests" />
+			<class name="org.alfresco.share.api.WorkflowAPITests" />
+			
+			<class name="org.alfresco.share.dashlet.SavedSearchSiteDashboardBasicTest" />
+			<class name="org.alfresco.share.dashlet.SavedSearchSiteDashboardAdvancedTest" />
+            <class name="org.alfresco.share.site.document.TableViewDocLibTest" />
+			<class name="org.alfresco.share.dashlet.SiteSearchDashletTest" />
+			
+			<class name="org.alfresco.share.site.document.ShareRefreshDocLibToolBarContent"/>
+
+            <class name="org.alfresco.share.site.document.ManagePermissionTest" />
+
+            <class name="org.alfresco.share.site.document.FilmStripDocLibTest" />
+
+            <class name="org.alfresco.share.site.document.GoogleDocsTest"/>
+            
+		</classes>
+	</test>
+</suite>

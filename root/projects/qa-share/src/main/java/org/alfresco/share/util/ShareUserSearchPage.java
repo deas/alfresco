@@ -4,14 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.search.AdvanceSearchCRMPage;
-import org.alfresco.po.share.search.AdvanceSearchContentPage;
-import org.alfresco.po.share.search.AdvanceSearchFolderPage;
-import org.alfresco.po.share.search.AdvanceSearchPage;
-import org.alfresco.po.share.search.SearchResultItem;
-import org.alfresco.po.share.search.SearchResultsPage;
-import org.alfresco.po.share.search.SortType;
 import org.alfresco.share.search.SearchKeys;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -303,7 +295,6 @@ public class ShareUserSearchPage extends AbstractTests
     public static AdvanceSearchPage navigateToAdvanceSearch(WebDrone driver, List<String> info) throws PageException, Exception
     {
         SharePage sharePage;
-        
         if (info == null)
         {
             info = Arrays.asList(ADV_FOLDER_SEARCH);

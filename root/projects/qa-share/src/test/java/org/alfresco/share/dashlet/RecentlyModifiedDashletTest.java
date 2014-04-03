@@ -63,8 +63,11 @@ public class RecentlyModifiedDashletTest extends AbstractTests
     }
     
     @Test(groups={"DataPrepDashlets"})
-    public void dataPrep_Enterprise40x_7935() throws Exception
+    public void dataPrep_Dashlets_7935() throws Exception
     {
+
+        try
+        {
             String testName = getTestName();
             String testUser = getUserNameFreeDomain(testName);            
             String siteName = getSiteName(testName);
@@ -85,6 +88,13 @@ public class RecentlyModifiedDashletTest extends AbstractTests
             DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo).render();
             DocumentDetailsPage detailsPage = documentLibraryPage.selectFile(fileName).render();
             detailsPage.selectFavourite().render();
+        }
+        catch (Exception e)
+        {
+            saveScreenShot(drone, testName);
+            logger.error("Error in dataPrep", e);
+        }
+
     }
     
     @Test

@@ -2,7 +2,6 @@
 <suite name="All" verbose="1" preserve-order="true">
 	<groups>
 		<run>
-			<exclude name="DataPrep.*" />
 			<exclude name="Enterprise41" />
 			<exclude name="Enterprise42" />
 			<exclude name="EnterpriseOnly" />
@@ -12,6 +11,7 @@
 			<exclude name="CloudSync" />
 			<exclude name="Staging" />
 			<exclude name="Download" />
+			<exclude name="DataPrep.*" />
 		</run>
 	</groups>
 	<test name="Sanity">
@@ -37,17 +37,21 @@
 			
 			<!-- DocLib -->
 			<class name="org.alfresco.share.SiteDocumentLibraryTest" />
-			<class name="org.alfresco.share.site.document.ManageAspectTest" />
 			<class name="org.alfresco.share.site.document.GoogleDocsTest" />
+			<class name="org.alfresco.share.site.document.ManageAspectTest" />
 			
 			<!-- Search -->
 		 	<class name="org.alfresco.share.search.AdvanceSearchTest" />
 			<class name="org.alfresco.share.search.BasicSearchTest" />
+			<class name="org.alfresco.share.cloud.AdvanceSearchCRMTest" />
 			
 			<!-- Dashlet -->
 			<class name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest" />
 			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet" />
 			<class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete" />
+			
+			<!-- TrashCan -->
+            <!-- class name="org.alfresco.share.user.trashcan.TrashCanTest" /-->
 			
 		</classes>
 

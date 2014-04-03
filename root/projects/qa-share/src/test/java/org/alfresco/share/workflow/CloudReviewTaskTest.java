@@ -85,7 +85,6 @@ public class CloudReviewTaskTest extends AbstractWorkflow
     public void dataPrep_15151() throws Exception
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameForDomain(testName + "-op", DOMAIN_HYBRID);
         String[] userInfo1 = new String[] { user1 };
 
@@ -207,7 +206,6 @@ public class CloudReviewTaskTest extends AbstractWorkflow
     public void ALF_15151() throws Exception
     {
         String testName = getTestName();
-        ;
         String uniqueString = String.valueOf(System.currentTimeMillis()).substring(7, 12);
         String user1 = getUserNameForDomain(testName + "-op", DOMAIN_HYBRID);
         String cloudUser = getUserNameForDomain(testName + "-cl", DOMAIN_HYBRID);
@@ -336,7 +334,7 @@ public class CloudReviewTaskTest extends AbstractWorkflow
             TaskDetails taskDetails = myTasksPage.getTaskDetails(workFlowName);
 
             assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
-            assertEquals(taskDetails.getDue(), DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(due), "Verifying workflow due date");
+            assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
             assertEquals(taskDetails.getStartDate().toLocalDate(), getToDaysLocalDate(), "Verify Workflow Start date");
             assertEquals(taskDetails.getStatus(), TaskStatus.NOTYETSTARTED.getTaskName(), "Verifying status");
             assertEquals(taskDetails.getType(), TaskDetailsType.REVIEW, "Verifying Task type");

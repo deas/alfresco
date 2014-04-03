@@ -1,0 +1,260 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Test for Sprint 25" verbose="1" preserve-order="true" parallel="tests" thread-count="5">
+	<groups>
+		<run>
+			<exclude name="DataPrep.*" />
+			<exclude name="Download" />
+		</run>
+	</groups>
+ 
+	<listeners>
+		<listener
+			class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+	</listeners>
+
+	<test name="Saved Search Site Dashlet Advanced Tests" verbose="1">
+		<classes>
+			<class
+				name="org.alfresco.share.dashlet.SavedSearchSiteDashboardAdvancedTest">
+				<methods>
+					<include name="alf_10370" />
+					<include name="alf_10371" />
+					<include name="alf_10372" />
+					<include name="alf_10373" />
+					<include name="alf_10374" />
+					<include name="alf_10375" />
+					<include name="alf_10376" />
+					<include name="alf_10377" />
+					<include name="alf_10378" />
+					<include name="alf_10379" />
+					<include name="alf_10380" />
+					<include name="alf_10381" />
+				</methods>
+			</class>
+		</classes>
+	</test>
+
+	<test name="Saved Search My Dashboard Dashlet Basic Tests"
+		verbose="1">
+		<classes>
+			<class name="org.alfresco.share.dashlet.SavedSearchMyDashboardBasicTest" />
+		</classes>
+	</test>
+
+	<test name="Saved Search My Dashboard Dashlet Advanced Tests"
+		verbose="1">
+		<classes>
+			<class
+				name="org.alfresco.share.dashlet.SavedSearchMyDashboardAdvancedTest" />
+		</classes>
+	</test>
+
+	<test name="Granular Manage Permission" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.site.document.ManagePermissionTest">
+				<methods>
+					<include name="alf_10427" />
+					<include name="alf_10428" />
+					<include name="alf_10429" />
+					<include name="alf_10790" />
+					<include name="alf_10793" />
+					<include name="alf_10795" />
+					<include name="alf_10287" />
+					<include name="alf_10288" />
+					<include name="alf_10425" />
+					<include name="alf_10426" />
+					<include name="alf_10785" />
+					<include name="alf_10786" />
+					<include name="alf_10789" />
+					<include name="alf_10787" />
+					<include name="alf_10788" />
+					<include name="alf_10791" />
+				</methods>
+			</class>
+		</classes>
+	</test>
+
+	<test name="Node Browser Tests" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.newfeatures.NodeBrowserTests" />
+		</classes>
+	</test>
+   <test name="Table View Tests" verbose="1">
+      <classes>
+         <class name="org.alfresco.share.site.document.TableViewDocLibTest">
+            <methods>
+               <include name="Alf_14392" />
+               <include name="Alf_14544" />
+               <include name="Alf_14548" />
+               <include name="Alf_14549" />
+            </methods>
+         </class>
+      </classes>
+   </test>
+
+   <test name="Manage Documents Test" verbose="1">
+       <classes>
+           <class name="org.alfresco.share.site.document.ManageDocumentsTest" >
+               <methods>
+                   <include name="Enterprise40x_8364" />
+                   <include name="Enterprise40x_10772" />
+                   <include name="Enterprise40x_8565" />
+                   <include name="Enterprise40x_13811" />
+                   <include name="Enterprise40x_13813" />
+               </methods>
+           </class>
+       </classes>
+   </test>
+
+	<test name="Repository Folder" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.repository.RepositoryFolderTests1">
+				<methods>
+					<include name="Enterprise40x_5405" />
+					<include name="Enterprise40x_5412" />
+					<include name="Enterprise40x_5422" />
+					<include name="Enterprise40x_5423" />
+					<include name="Enterprise40x_5425" />
+					<include name="Enterprise40x_5426" />
+					<include name="Enterprise40x_5431" />
+				</methods>
+			</class>
+		</classes>
+	</test>
+
+    <test name="Security XSS Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.SecurityXssTest" >
+               <methods>
+                    <include name="Enterprise40x_5361" />
+                    <include name="Enterprise40x_5362" />
+                    <include name="Enterprise40x_5363" />
+                    <include name="Enterprise40x_5364" />
+                    <include name="Enterprise40x_5365" />
+                    <include name="Enterprise40x_5366" />
+                    <include name="Enterprise40x_5367" />
+                    <include name="Enterprise40x_5368" />
+                    <include name="Enterprise40x_5369" />
+                    <include name="Enterprise40x_5370" />
+                    <include name="Enterprise40x_5371" />
+                    <include name="Enterprise40x_5372" />
+                    <include name="Enterprise40x_5373" />
+               </methods>
+            </class>
+        </classes>
+    </test>
+
+
+    <test name="Manage Folders Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.ManageFoldersTest" />
+        </classes>
+    </test>
+    
+	<test name="GalleryView Test" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.site.document.GalleryViewTest">
+				<methods>
+				<include name="alf_8751"/>
+				<include name="alf_8748"/>
+				<include name="alf_8747"/>
+				<include name="alf_8712"/>
+				<include name="alf_8745"/>
+				<include name="alf_8742"/>
+				<include name="alf_8741"/>
+				<include name="alf_8719"/>
+				<include name="alf_8723"/>
+				<include name="alf_8729"/>
+				<include name="alf_8722"/>
+				<include name="alf_8743"/>
+				<include name="alf_8721"/>
+				<include name="alf_8664"/>
+				<include name="alf_8728"/>
+				</methods>
+			</class>
+		</classes>
+	</test>
+
+	<test name="FilmStrip Test" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.site.document.FilmStripDocLibTest">
+				<methods >
+					<exclude name="ALF_141*" />
+					<exclude name="ALF_14205" />
+					<exclude name="ALF_14206" />
+					<include name="ALF_14200" />
+					<include name="ALF_14210" />
+					<include name="ALF_14201" />
+					<include name="ALF_14203" />
+					<include name="ALF_14204" />
+					<include name="ALF_14207" />
+					<include name="ALF_14208" />
+					<include name="ALF_14214" />
+					<include name="ALF_14228" />
+					<include name="ALF_14233" />
+					<include name="ALF_14234" />
+				</methods>
+			</class>
+		</classes>
+	</test>
+
+    <test name="Create Rule Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.content.rules.CreateRuleTest">
+                <methods>
+                    <include name="Enterprise40x_14018" />
+                    <include name="Enterprise40x_14019" />
+                    <include name="Enterprise40x_14020" />
+                    <include name="Enterprise40x_14021" />
+                    <include name="Enterprise40x_14022" />
+                    <include name="Enterprise40x_14023" />
+                    <include name="Enterprise40x_14024" />
+                    <include name="Enterprise40x_14025" />
+                    <include name="Enterprise40x_14026" />
+                    <include name="Enterprise40x_14028" />
+                    <include name="Enterprise40x_14029" />
+                    <include name="Enterprise40x_14030" />
+                    <include name="Enterprise40x_14031" />
+                    <include name="Enterprise40x_14034" />
+                    <include name="Enterprise40x_15271" />
+                    <include name="Enterprise40x_14017" />
+                    <include name="Enterprise40x_8483" />
+                    <include name="Enterprise40x_8497" />
+                    <include name="Enterprise40x_8499" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Comments tests for 'Folder Details Page'" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.FolderDetailsCommentsTests"/>
+        </classes>
+    </test>
+
+ <test name="Folders Actions Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.FolderActionsTest" >
+                <methods>
+                    <include name="Enterprise40x_14329" />
+                    <include name="Enterprise40x_14330" />
+                    <include name="Enterprise40x_14332" />
+                    <include name="Enterprise40x_14333" />
+                    <include name="Enterprise40x_14334" />
+                    <include name="Enterprise40x_14335" />
+                    <include name="Enterprise40x_14336" />
+                    <include name="Enterprise40x_14337" />
+                    <include name="Enterprise40x_14351" />
+                    <include name="Enterprise40x_14353" />
+                    <include name="Enterprise40x_14354" />
+                    <include name="Enterprise40x_14355" />
+                    <include name="Enterprise40x_14356" />
+                    <include name="Enterprise40x_14357" />
+                    <include name="Enterprise40x_14358" />
+                    <include name="Enterprise40x_14033" />
+            </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>

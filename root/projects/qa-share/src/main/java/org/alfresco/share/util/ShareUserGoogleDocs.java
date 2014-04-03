@@ -1,6 +1,5 @@
 package org.alfresco.share.util;
 
-import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.UserProfilePage;
@@ -22,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 public class ShareUserGoogleDocs extends AbstractCloudSyncTest
 {
     protected String googleURL = "https://accounts.google.com";
-    protected String googlePlusURL= "https://plus.google.com";
+    protected String googlePlusURL = "https://plus.google.com";
 
     private static Log logger = LogFactory.getLog(ShareUserGoogleDocs.class);
 
@@ -35,7 +34,8 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
     }
 
     /**
-     * This method provides the user to login into edit google docs page through google authorization.
+     * This method provides the user to login into edit google docs page through
+     * google authorization.
      * 
      * @param drone
      * @return EditInGoogleDocsPage
@@ -62,16 +62,17 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
     }
 
     /**
-     * This method provides the user to login into create google docs with given filename through google authorization.
-     * And Saves the document return to the document library page.
-     * User should be already logged 
+     * This method provides the user to login into create google docs with given
+     * filename through google authorization. And Saves the document return to
+     * the document library page. User should be already logged
+     * 
      * @param drone
      * @param fileName
      * @param contentType
      * @return DocumentLibraryPage
      * @throws Exception
      */
-    protected DocumentLibraryPage createAndSavegoogleDocBySignIn(WebDrone drone, String fileName, ContentType contentType) throws Exception 
+    protected DocumentLibraryPage createAndSavegoogleDocBySignIn(WebDrone drone, String fileName, ContentType contentType) throws Exception
     {
         DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
         docLibPage.render();
@@ -80,17 +81,17 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
         googleAuthorisationPage.render();
 
         EditInGoogleDocsPage googleDocsPage = signInGoogleDocs(googleAuthorisationPage);
-        
+
         googleDocsPage = renameGoogleDocName(fileName, googleDocsPage);
 
         docLibPage = googleDocsPage.selectSaveToAlfresco().render();
-        
+
         return docLibPage.render();
     }
-    
 
     /**
-     * This method provides the user to edit google docs name with the given name.
+     * This method provides the user to edit google docs name with the given
+     * name.
      * 
      * @param fileName
      * @param googleDocsPage
@@ -103,7 +104,9 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
     }
 
     /**
-     * Saving the google doc with the minor version and if isCreate boolean value is true for saving the new google doc otherwise existing google doc.
+     * Saving the google doc with the minor version and if isCreate boolean
+     * value is true for saving the new google doc otherwise existing google
+     * doc.
      * 
      * @param drone
      * @param isCreateDoc
@@ -163,13 +166,12 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
         if (isMinorVersion)
         {
             googleUpdatefile.selectMinorVersionChange();
-        }
-        else
+        } else
         {
             googleUpdatefile.selectMajorVersionChange();
         }
-        
-        if(!StringUtils.isEmpty(comments))
+
+        if (!StringUtils.isEmpty(comments))
         {
             googleUpdatefile.setComment(comments);
         }
@@ -186,13 +188,12 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      */
     protected UserSearchPage deleteUser(WebDrone drone, String testUser)
     {
-    	AlfrescoVersion version = drone.getProperties().getVersion();
-        if(version.isCloud())
+        if (isAlfrescoVersionCloud(drone))
         {
             throw new UnsupportedOperationException("Delete user is available in cloud");
         }
         DashBoardPage dashBoard = (DashBoardPage) drone.getCurrentPage();
-        UserSearchPage page = dashBoard.getNav().getUsersPage().render();
+        UserSearchPage page = (UserSearchPage) dashBoard.getNav().getUsersPage();
         page = page.searchFor(testUser).render();
         UserProfilePage userProfile = page.clickOnUser(testUser).render();
         return userProfile.deleteUser().render();

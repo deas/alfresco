@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite verbose="1" name="ExecucteCloudTests" preserve-order="true">
+    <groups>
+        <run>
+
+            <include name="Cloud2"/>
+
+            <exclude name="Enterprise41"/>
+
+            <exclude name=".*Bug"/>
+
+            <exclude name="ChromeOnly"/>
+
+            <exclude name="Download"/>
+
+            <exclude name="Hybrid"/>
+
+            <exclude name="CloudSync"/>
+
+        </run>
+    </groups>
+
+    <test verbose="1" name="Regression" thread-count="5" parallel="classes">
+        <classes>
+         <class name="org.alfresco.share.cloudconsole.CloudConsoleTest" />
+        </classes>
+    </test>
+</suite>

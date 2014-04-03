@@ -50,6 +50,7 @@ public class UnzipDownload
             if (ze == null)
             {
                 logger.error("There is no file:" + zipFile + " present to extract.");
+                zis.close();
                 return false;
             }
 

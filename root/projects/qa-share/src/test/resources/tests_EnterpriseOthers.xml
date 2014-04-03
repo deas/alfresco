@@ -1,0 +1,119 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="1" preserve-order="true">
+    <groups>
+        <run>
+            <exclude name="DataPrep.*"/>
+        </run>
+    </groups>
+  
+    <test name="CommentsAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.CommentsAPITests"/>
+        </classes>
+    </test>
+    <test name="DeploymentsAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.DeploymentsAPITests"/>
+        </classes>
+    </test>
+    <test name="FavouriteAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.FavouriteAPITests"/>
+        </classes>
+    </test>
+    <test name="NodesAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.NodesAPITests"/>
+        </classes>
+    </test>
+    <test name="PeopleAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.PeopleAPITests"/>
+        </classes>
+    </test>
+    <test name="ProcessesAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.ProcessesAPITests"/>
+        </classes>
+    </test>
+    <test name="SiteMembershipAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.SiteMembershipAPITests"/>
+        </classes>
+    </test>
+    <test name="SitesAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.SitesAPITests"/>
+        </classes>
+    </test>
+    <test name="TagsAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.TagsAPITests"/>
+        </classes>
+    </test>
+    <test name="WorkflowAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.WorkflowAPITests"/>
+        </classes>
+    </test>
+    <test name="SavedSearchSiteDashBoardBasicTest" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.dashlet.SavedSearchSiteDashboardBasicTest"/>
+        </classes>
+    </test>
+    <test name="SavedSearchSiteDashBoardAdvancedTest" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.dashlet.SavedSearchSiteDashboardAdvancedTest"/>
+        </classes>
+    </test>
+    
+    <test name="TableViewDocLibTest" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.TableViewDocLibTest"/>
+        </classes>
+    </test>
+    
+     <test name="GalleryView" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.ShareRefreshDocLibToolBarContent"/>
+        </classes>
+    </test>
+
+    <test name="SiteSearchDashletTest" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.dashlet.SiteSearchDashletTest"/>
+        </classes>
+    </test> 
+
+
+   <test name="SiteDashboardMyDiscussionTests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.dashlet.SiteDashboardMyDiscussionTests" />
+        </classes>
+    </test>
+  
+    <test name="MyDashboardMyDiscussionTests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.dashlet.MyDashboardMyDiscussionTests" />
+        </classes>
+    </test>
+ 
+    <test name="ManagePermissionTest" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.ManagePermissionTest" />
+        </classes>
+    </test>
+
+    <test name="FilmStripViewTests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.FilmStripDocLibTest" />
+        </classes>
+    </test>
+
+    <!--<test name="GoogleDocsTest" verbose="1" parallel="classes" thread-count="1">-->
+    <!--<classes>-->
+    <!--<class name="org.alfresco.share.site.document.GoogleDocsTest"/>-->
+    <!--</classes>-->
+    <!--</test>-->
+
+</suite>

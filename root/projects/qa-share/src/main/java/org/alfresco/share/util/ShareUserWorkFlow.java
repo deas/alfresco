@@ -22,6 +22,8 @@ import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 /**
  * @author Ranjith Manyam
@@ -441,8 +443,9 @@ public class ShareUserWorkFlow extends AbstractTests
      * Util method to create a {@link WorkFlowType} of task for
      * {@link WorkFlowFormDetails}
      * 
-     * @param dashPage
+     * @param drone
      * @param newWorkflow
+     * @param formDetails
      * @throws InterruptedException
      */
     public static MyTasksPage startWorkflow(WebDrone drone, WorkFlowType newWorkflow, WorkFlowFormDetails formDetails) throws InterruptedException
@@ -451,6 +454,24 @@ public class ShareUserWorkFlow extends AbstractTests
         WorkFlow workFlow = startWorkFlowPage.getWorkflowPage(newWorkflow);
         MyTasksPage tasksPage = workFlow.startWorkflow(formDetails).render();
         return tasksPage;
+    }
+
+    /**
+     * Method to get Due Date format on MyTasks page
+     * @param dueDateString
+     * @return
+     */
+    public static String getDueDateOnMyTaskPage(String dueDateString)
+    {
+        try
+        {
+            DateTime date = DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(dueDateString);
+            return date.toString(DateTimeFormat.forPattern("dd MMMM, yyyy"));
+        }
+        catch (IllegalArgumentException ie)
+        {
+            return NONE;
+        }
     }
 
 }

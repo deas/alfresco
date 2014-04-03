@@ -37,33 +37,31 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- * Welcome Widget Remove test case (7950). 
+ * Welcome Widget Remove test case (7950).
  * 
- * <li>1. Login & Create Site.</li> 
- * <li>2. Remove the welcome widget.</li> 
- * <li>3. Remove the site.</li> 
- * <li>4. Create the site with the same name.</li> 
- * <li>5. Open site dashboard & verify the welcome widget.</li>
- * <li>6. Delete the site again.</li>
+ * <li>1. Login & Create Site.</li> <li>2. Remove the welcome widget.</li> <li>
+ * 3. Remove the site.</li> <li>4. Create the site with the same name.</li> <li>
+ * 5. Open site dashboard & verify the welcome widget.</li> <li>6. Delete the
+ * site again.</li>
  * 
  * @author Shan Nagarajan
  */
 public class WelcomeDashletCreateDelete extends AbstractTests
-{  
-    private static Log logger = LogFactory.getLog(WelcomeDashletCreateDelete.class);    
-    
+{
+    private static Log logger = LogFactory.getLog(WelcomeDashletCreateDelete.class);
+
     protected String testUser;
     protected String testUserPass = DEFAULT_PASSWORD;
-    
+
     private List<String> optionsDesc;
     private int expectedOptionsSize;
 
     DashBoardPage dashBoard;
 
     /**
-     * <li>Create site name based on the current system time & login.</li>
-     * <li>Login to using user name & password from property file.</li>
-     * <li>Set Expected Option on welcome screen based on the Environment.</li>
+     * <li>Create site name based on the current system time & login.</li> <li>
+     * Login to using user name & password from property file.</li> <li>Set
+     * Expected Option on welcome screen based on the Environment.</li>
      * 
      * @throws Exception
      */
@@ -75,7 +73,7 @@ public class WelcomeDashletCreateDelete extends AbstractTests
         testName = this.getClass().getSimpleName();
         testUser = testUser + "@" + DOMAIN_FREE;
         logger.info("[Suite ] : Start Tests in: " + testName);
-        
+
         optionsDesc = new ArrayList<String>();
 
         if (isAlfrescoVersionCloud(drone))
@@ -86,7 +84,8 @@ public class WelcomeDashletCreateDelete extends AbstractTests
             optionsDesc.add("Upload content");
             optionsDesc.add("Customize your dashboard");
         }
-        else if (alfrescoVersion.equals(AlfrescoVersion.Enterprise41) || alfrescoVersion.equals(AlfrescoVersion.Enterprise42))
+        else if (alfrescoVersion.equals(AlfrescoVersion.Enterprise41)
+                || alfrescoVersion.equals(AlfrescoVersion.Enterprise42))
         {
             optionsDesc.add("Customize the site dashboard");
             optionsDesc.add("Invite people");
@@ -96,22 +95,25 @@ public class WelcomeDashletCreateDelete extends AbstractTests
         expectedOptionsSize = optionsDesc.size();
 
     }
-    
-    @Test(groups={"DataPrepDashlets"})
+
+    @Test(groups =
+    { "DataPrepDashlets" })
     public void dataPrep_Dashlets_7950() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
         // User
-        String[] testUserInfo = new String[] {testUser};        
+        String[] testUserInfo = new String[]
+        { testUser };
 
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
     }
-    
+
     /**
-     * Create the Site & Remove the Welcome Dashlet validate the dashlet not present.
+     * Create the Site & Remove the Welcome Dashlet validate the dashlet not
+     * present.
      * 
      * @throws Exception
      */
@@ -120,8 +122,8 @@ public class WelcomeDashletCreateDelete extends AbstractTests
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName) + System.currentTimeMillis();             
-        
+        String siteName = getSiteName(testName) + System.currentTimeMillis();
+
         try
         {
             // Login
@@ -130,18 +132,20 @@ public class WelcomeDashletCreateDelete extends AbstractTests
             // Site
             ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            //Check Welcome Dashlet
+            // Check Welcome Dashlet
             SiteWelcomeDashlet welcomeDashlet = checkWelcomeDashlet(siteName);
-            
-            //Remove Dashlet
+
+            // Remove Dashlet
             welcomeDashlet.removeDashlet();
-            
+
             ShareUser.openUserDashboard(drone);
 
-            //Delete Site
-            SiteUtil.deleteSite(drone, siteName);  
-            
-            // DeleteSite completes with success and createSite with same name completes with success implicitly proves the site was deleted successfully by deleteSite
+            // Delete Site
+            SiteUtil.deleteSite(drone, siteName);
+
+            // DeleteSite completes with success and createSite with same name
+            // completes with success implicitly proves the site was deleted
+            // successfully by deleteSite
 
             // Create Site
             ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
@@ -163,7 +167,7 @@ public class WelcomeDashletCreateDelete extends AbstractTests
     }
 
     /**
-     * Create site & validate the expected options present in welcome dashlet. 
+     * Create site & validate the expected options present in welcome dashlet.
      * 
      * @return @link {@link SiteWelcomeDashlet}
      * @throws Exception
@@ -172,9 +176,9 @@ public class WelcomeDashletCreateDelete extends AbstractTests
     {
 
         SiteWelcomeDashlet welcomeDashlet;
-        
+
         SiteDashboardPage dashBoard = ShareUser.openSiteDashboard(drone, siteName);
-        
+
         try
         {
 

@@ -59,6 +59,7 @@ import org.testng.annotations.Test;
 public class CommentsAPITests extends CommentsAPI
 {
     private static final String TEST_COMMENT = "Test Comment";
+    
     private String testName;
     private String testUser;
     private String anotherTestUser;
@@ -113,6 +114,7 @@ public class CommentsAPITests extends CommentsAPI
         docGuid2 = ShareUser.getGuid(drone, fileName2);
 
         docDetails = doclibPage.selectFile(fileName).render();
+        
         docDetails.addComment("<p>" + TEST_COMMENT + "</p>");
         docDetails.addComment("<p>" + TEST_COMMENT + "_1 </p>");
         docDetails.addComment("<p>" + TEST_COMMENT + "_2 </p>");
@@ -142,9 +144,6 @@ public class CommentsAPITests extends CommentsAPI
             Date commentDate1 = (Date) format.parse(comments.getList().get(1).getCreatedAt());
             assertTrue(commentDate0.after(commentDate1), comments.getList().get(1) + " should be created before " + comments.getList().get(0));
         }
-
-
-
 
         // Status: 401
         try
@@ -184,12 +183,11 @@ public class CommentsAPITests extends CommentsAPI
     @Test
     public void ALF_197101() throws Exception
     {
-        
         publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
         HttpResponse comments = commentsClient.getAll("nodes", docGuid, "comments", null, null, "Could not retrieve the comment");
         assertNotNull(comments);
-        assertTrue(comments.getStatusCode() == 200, "Response code - " + comments.getStatusCode());        
-        
+        assertTrue(comments.getStatusCode() == 200, "Response code - " + comments.getStatusCode());
+
         // Get Comment
         ListResponse<Comment> nodeComments = getNodeComments(testUser, DOMAIN, null, docGuid);
         assertNotNull(comments);
@@ -199,7 +197,6 @@ public class CommentsAPITests extends CommentsAPI
         try
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
-            
             commentsClient.getSingle("nodes", docGuid, "comments", comment.getId(), "Could not get the comment");
             Assert.fail(String.format("ALF_197101: , %s, Expected Result: %s", "GET comments-commentId not allowed", 405));
         }

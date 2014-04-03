@@ -189,11 +189,11 @@ public class DownloadFilesAndFoldersTest extends AbstractTests
     public void dataPrep_AdvSearch_5654() throws Exception
     {
         String testName = getTestName();
-        String siteName = getSiteName(testName) +"test";
+        String siteName = getSiteName(testName);
         String testUser = getUserNameFreeDomain(testName);
         String[] testUserInfo = new String[] { testUser };
-        String folderName1 =getFolderName(testName) + "test1";
-        String folderName2 =getFolderName(testName) + "test2";
+        String folderName1 = getFolderName(testName) + "test1";
+        String folderName2 = getFolderName(testName) + "test2";
         
         try
         {
@@ -250,7 +250,7 @@ public class DownloadFilesAndFoldersTest extends AbstractTests
         /** Start Test */
         testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName) + "test";
+        String siteName = getSiteName(testName);
         String folderName1 = getFolderName(testName) + "test1";
         String folderName2 = getFolderName(testName) + "test2";
 

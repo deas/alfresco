@@ -61,6 +61,8 @@
         <constructor-arg name="uniqueTestDataString" value="${uniqueTestDataString}" />  
         <constructor-arg name="adminUsername" value="${adminUsername}" />
         <constructor-arg name="adminPassword" value="${adminPassword}" />
+        <constructor-arg name="superadminUsername" value="${superadminUsername}" />
+        <constructor-arg name="superadminPassword" value="${superadminPassword}" />
         <constructor-arg name="headerKey" value="${headerKey}" />   
         <constructor-arg name="httpSecurePort" value="${webdrone.secure.port}" />  
     </bean>
@@ -73,7 +75,7 @@
         <constructor-arg name="gridUrl" value="null" />
         <constructor-arg name="username" value="${webdrone.hybrid.cloud.username}" />
         <constructor-arg name="password" value="${webdrone.hybrid.cloud.password}" />
-        <constructor-arg name="alfrescoVersion" value="Cloud2" />
+        <constructor-arg name="alfrescoVersion" value="${webdrone.cloud.version}" />
         <constructor-arg name="cloudUrlForHybrid" value="" />
         <constructor-arg name="downloadDirectory" value="${webdrone.download.directory}" />
 		<constructor-arg name="googleUserName" value="${googleUserName}" />
@@ -95,7 +97,7 @@
     <!-- WebDrone Factory -->
     <!--                  -->
     <bean id="hybridWebDroneFactoryBean" class="org.alfresco.webdrone.WebDroneFactory">
-        <constructor-arg name="alfrescoVersion" value="Cloud2" />
+        <constructor-arg name="alfrescoVersion" value="${webdrone.cloud.version}" />
         <constructor-arg name="defaultWaitTime" value="${webdrone.element.wait.time}" />
         <constructor-arg name="browser" value="${webdrone.browser}" />
         <constructor-arg name="maxPageRenderWaitTime" value="${webdrone.page.render.wait.time}" />

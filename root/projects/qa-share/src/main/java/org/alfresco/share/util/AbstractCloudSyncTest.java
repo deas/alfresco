@@ -76,6 +76,7 @@ public abstract class AbstractCloudSyncTest extends AbstractTests
 
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, adminUserFree);
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, adminUserPrem);
+        
         if (hybridEnabled)
         {
             setupHybridDrone();
@@ -207,9 +208,9 @@ public abstract class AbstractCloudSyncTest extends AbstractTests
                 throw new UnsupportedOperationException("This operation is not supported for Cloud: Request Sync To Cloud");
             }
         }
-        catch (Throwable t)
+        catch (Exception e)
         {
-            logger.error(t.getMessage());
+            logger.error(e.getMessage());
         }
         return docLibPage;
     }

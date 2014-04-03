@@ -22,6 +22,7 @@ import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.site.document.InlineEditPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.document.MimeType;
+import org.alfresco.po.share.site.document.SortField;
 import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
@@ -86,7 +87,7 @@ public class ShareUserSitePage extends AbstractTests
                 {
                     // Ignore, Continue to the next;
                 }
-
+                else
                 if ((i == 0) && (path[i].equalsIgnoreCase(REPO) || path[i].equalsIgnoreCase(DOCLIB)))
                 {
                     // Repo or Doclib is already open
@@ -106,6 +107,8 @@ public class ShareUserSitePage extends AbstractTests
 
         return docPage;
     }
+
+
 
     /**
      * Assumes User is logged in and a specific Site's Doclib is open, Parent Folder is pre-selected.
@@ -180,6 +183,39 @@ public class ShareUserSitePage extends AbstractTests
 
         logger.info("Folder Created" + folderName);
         return docPage.render();
+    }
+
+    /**
+     * Creates a new folder at the Path specified, Starting from the Document Library Page.
+     * Assumes User is logged in and a specific Site is open.
+     * 
+     * @param driver WebDrone Instance
+     * @param folderName String Name of the folder to be created
+     * @param folderTitle String Title of the folder to be created
+     * @param folderDesc String Description of the folder to be created
+     * @return DocumentLibraryPage
+     */
+    public static HtmlPage createFolderWithValidation(WebDrone driver, String folderName, String folderTitle, String folderDesc)
+    {
+        DocumentLibraryPage docPage = null;
+
+        // Open Document Library
+        SharePage thisPage = ShareUser.getSharePage(driver);
+
+        if (!(thisPage instanceof RepositoryPage) && (!(thisPage instanceof DocumentLibraryPage)))
+        {
+            docPage = ShareUser.openDocumentLibrary(driver);
+        }
+        else
+        {
+            docPage = (DocumentLibraryPage) thisPage;
+        }
+
+        NewFolderPage newFolderPage = docPage.getNavigation().selectCreateNewFolder().render();
+        HtmlPage htmlPage = newFolderPage.createNewFolderWithValidation(folderName, folderTitle, folderDesc);
+
+        logger.info("Folder Created" + folderName);
+        return htmlPage.render();
     }
 
     /**
@@ -281,7 +317,7 @@ public class ShareUserSitePage extends AbstractTests
      * @param isFile
      * @return DetailsPage
      */
-    private static DetailsPage getContentDetailsPage(WebDrone drone, String contentName)
+    public static DetailsPage getContentDetailsPage(WebDrone drone, String contentName)
     {
         DocumentLibraryPage docLibPage = (DocumentLibraryPage) getSharePage(drone);
         DetailsPage detailsPage = null;
@@ -326,7 +362,8 @@ public class ShareUserSitePage extends AbstractTests
     /**
      * private method to do upload new version
      */
-    private static HtmlPage UploadNewVersion(WebDrone drone,UpdateFilePage updatePage, boolean majorVersion, String fileName, String comments) throws Exception
+    private static HtmlPage UploadNewVersion(WebDrone drone, UpdateFilePage updatePage, boolean majorVersion, String fileName, String comments)
+            //throws Exception
     {
         String fileContents = "New File being created on repository page:" + fileName;
         File newFileName = newFile(fileName, fileContents);
@@ -354,7 +391,7 @@ public class ShareUserSitePage extends AbstractTests
         return page;
     }
 
-    public static DocumentDetailsPage uploadNewVersionFromDocDetail(WebDrone drone, boolean majorVersion, String fileName, String comments) throws Exception
+    public static DocumentDetailsPage uploadNewVersionFromDocDetail(WebDrone drone, boolean majorVersion, String fileName, String comments) //throws Exception
     {
         DocumentDetailsPage docdetailPage = (DocumentDetailsPage) ShareUser.getSharePage(drone);
         UpdateFilePage updateFilePage = docdetailPage.selectUploadNewVersion().render();
@@ -402,7 +439,7 @@ public class ShareUserSitePage extends AbstractTests
      * @param contentName
      * @return
      */
-    private static FileDirectoryInfo getFileDirectoryInfo(WebDrone drone, String contentName)
+    public static FileDirectoryInfo getFileDirectoryInfo(WebDrone drone, String contentName)
     {
         SharePage sharePage = getSharePage(drone);
         if (sharePage instanceof RepositoryPage)
@@ -436,6 +473,14 @@ public class ShareUserSitePage extends AbstractTests
             case DETAILED_VIEW:
                 docPage = docPage.getNavigation().selectDetailedView().render();
                 logger.info("Opened Detailed View");
+                return docPage;
+            case GALLERY_VIEW:
+                docPage = docPage.getNavigation().selectGalleryView().render();
+                logger.info("Opened Gallery View");
+                return docPage;
+            case TABLE_VIEW:
+                docPage = docPage.getNavigation().selectTableView().render();
+                logger.info("Opened Table View");
                 return docPage;
             default:
                 logger.info("Failed to find specified View: View not changed");
@@ -526,4 +571,120 @@ public class ShareUserSitePage extends AbstractTests
         return propertiesPage.selectSave().render();
     }
 
- }
+    public static String getDocumentContents(WebDrone drone, String fileName)
+    {
+        DocumentLibraryPage doclibPage = getSharePage(drone).render();
+        
+        if(doclibPage.getFileDirectoryInfo(fileName).isFolder())
+        {
+            throw new UnsupportedOperationException("This util isn't supported for Folders, files only");
+        }
+        
+        DocumentDetailsPage detailsPage = doclibPage.selectFile(fileName).render();
+        
+        EditTextDocumentPage editTextDocumentPage = detailsPage.selectInlineEdit().render();
+
+        return editTextDocumentPage.getDetails().getContent();
+    }
+    
+    /**
+     * Uses the in-line rename function to rename content
+     * Assumes User is logged in and a DocumentLibraryPage of the selected site is open
+     * 
+     * @param drone
+     * @param contentName
+     * @param newName
+     * @param saveChanges   <code>true</code> saves the changes, <code>false</code> cancels without saving.
+     * @return
+     */
+    public static DocumentLibraryPage editContentNameInline(WebDrone drone, String contentName, String newName, boolean saveChanges)
+    {        
+        FileDirectoryInfo fileDirInfo = getFileDirectoryInfo(drone, contentName);
+        
+        fileDirInfo.contentNameEnableEdit();
+        fileDirInfo.contentNameEnter(newName);
+        if(saveChanges)
+        {
+            fileDirInfo.contentNameClickSave();
+        }
+        else
+        {
+            fileDirInfo.contentNameClickCancel();
+        }
+
+        return getSharePage(drone).render();
+    }
+    
+    /**
+     * This does the adding the Properties for file or foler.
+     * User should be on document library page.
+     * 
+     * @param drone
+     * @param contentName
+     * @param newName
+     * @param newTitle
+     * @param newDescription
+     * @param doSave
+     * @return {@link DocumentLibraryPage}
+     */
+    public static DocumentLibraryPage editProperties(WebDrone drone, String contentName, String newName, String newTitle, String newDescription, boolean doSave)
+    {
+        if (drone == null || StringUtils.isEmpty(contentName))
+        {
+            throw new IllegalArgumentException("Mandatory params Drone/contentName should not be null or blank.");
+        }
+        
+        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
+        FileDirectoryInfo thisRow = docLibPage.getFileDirectoryInfo(contentName);
+
+        // Click on Edit in propertis link from gallery view.
+        EditDocumentPropertiesPopup editDocPropertiesPage = thisRow.selectEditProperties().render();
+        
+        if (!StringUtils.isEmpty(newName))
+        {
+            editDocPropertiesPage.setName(newName);
+        }
+       
+        if (!StringUtils.isEmpty(newDescription))
+        {
+            editDocPropertiesPage.setDescription(newDescription);
+        }
+
+        if (!StringUtils.isEmpty(newTitle))
+        {
+            editDocPropertiesPage.setDocumentTitle(newTitle);
+        }
+        
+        if (doSave)
+        {
+            return editDocPropertiesPage.selectSave().render();
+        }
+        else
+        {
+            return editDocPropertiesPage.selectCancel().render();
+        }
+    }
+    
+    /**
+     * Sorts the document library by the given field.
+     * 
+     * @param drone
+     * @param field         The field to sort by.
+     * @param sortAscending <code>true</code> if ascending. <code>false</code> if descending.
+     * @return {@link DocumentLibraryPage}
+     */
+    public static DocumentLibraryPage sortLibraryOn(WebDrone drone, SortField field, boolean sortAscending)
+    {
+        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
+        
+        docLibPage.getNavigation().selectSortFieldFromDropDown(field).render();
+        if(sortAscending)
+        {
+            return docLibPage.getNavigation().sortAscending().render();
+        }
+        else
+        {
+            return docLibPage.getNavigation().sortDescending().render();
+        }
+    }
+}

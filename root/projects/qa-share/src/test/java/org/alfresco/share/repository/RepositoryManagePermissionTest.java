@@ -891,8 +891,9 @@ public class RepositoryManagePermissionTest extends AbstractTests
 
         ShareUser.returnManagePermissionPage(drone, folderName);
 
-        // TODO: Add a variant in addUserOrGroupIntoInheritedPermissions to pass
-        // default role, in which case, the def is kept
+        // TODO: Add missing Step 3
+        
+        // TODO: Add a variant in addUserOrGroupIntoInheritedPermissions to pass default role, in which case, the def is kept
         ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user1, true, UserRole.CONTRIBUTOR, true);
 
         Assert.assertEquals(UserRole.CONTRIBUTOR, ShareUserMembers.getContentPermission(drone, folderName, user1));
@@ -1507,7 +1508,7 @@ public class RepositoryManagePermissionTest extends AbstractTests
         ShareUser.logout(drone);
     }
 
-    // TODO application faultering.
+
     @Test(groups = { "DataPrepRepository" })
     public void dataPrepEnterprise40x_8576() throws Exception
     {
@@ -1557,9 +1558,7 @@ public class RepositoryManagePermissionTest extends AbstractTests
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
 
-        // TODO: Testlink: To confirm: Steps can be implemented from doclib or
-        // Repo
-
+        // TODO: Testlink: To confirm: Steps can be implemented from doclib or Repo
         repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
         repoPage = repoPage.selectFolder("Sites").render();

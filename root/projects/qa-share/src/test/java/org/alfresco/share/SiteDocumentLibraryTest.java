@@ -121,7 +121,9 @@ public class SiteDocumentLibraryTest extends AbstractTests
             // Adding test tag to folders with same name on both folders.
             documentLibPage.getFileDirectoryInfo(fileName).addTag("1234567890");
             documentLibPage.getFileDirectoryInfo(fileName).addTag("`¬!£$%^&();{}[]'@#~,");
-            documentLibPage.getFileDirectoryInfo(fileName).addTag("abcdefghijklmnopqrstuvwxyzsdsdfknoiwenirnskdnfernlkaniifsdreiwolektkmnsdmfnlksisdlkfnksdnfksnnnnnnnnnnnnnnnnnwsierfweknfknsdfxckvnksdifksdfike");
+            documentLibPage
+                    .getFileDirectoryInfo(fileName)
+                    .addTag("abcdefghijklmnopqrstuvwxyzsdsdfknoiwenirnskdnfernlkaniifsdreiwolektkmnsdmfnlksisdlkfnksdnfksnnnnnnnnnnnnnnnnnwsierfweknfknsdfxckvnksdifksdfike");
 
             FileDirectoryInfo content = documentLibPage.getFileDirectoryInfo(fileName);
 
@@ -140,7 +142,8 @@ public class SiteDocumentLibraryTest extends AbstractTests
                 content = documentLibPage.getFileDirectoryInfo(contentName);
             }
 
-            // Click on tags remove link and click on inline edit tags save button
+            // Click on tags remove link and click on inline edit tags save
+            // button
             for (String tagName : contentTags)
             {
                 content.clickOnAddTag();
@@ -224,8 +227,8 @@ public class SiteDocumentLibraryTest extends AbstractTests
             documentLibPage = ShareUserSitePage.selectView(drone, ViewType.DETAILED_VIEW);
 
             // Adding test tag to folders with same name on both folders.
-            //documentLibPage.getFileDirectoryInfo(folderName).addTag(testTagName);
             ShareUserSitePage.addTagsFromDocLib(drone, folderName, Arrays.asList(testTagName));
+            //documentLibPage.getFileDirectoryInfo(folderName).addTag(testTagName);
 
             // Clicking the tagName link present under folder name
             documentLibPage.getFileDirectoryInfo(folderName).clickOnTagNameLink(testTagName).render();
@@ -233,7 +236,8 @@ public class SiteDocumentLibraryTest extends AbstractTests
             // Check that the folder is listed
             Assert.assertTrue(ShareUserSitePage.searchDocumentLibraryWithRetry(drone, folderName, true));
 
-            // Clicking the tagName present under Tags menu tree on Document Library page.
+            // Clicking the tagName present under Tags menu tree on Document
+            // Library page.
             documentLibPage = documentLibPage.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(testTagName).render();
 
             Assert.assertTrue(documentLibPage.isFileVisible(folderName));
@@ -350,8 +354,10 @@ public class SiteDocumentLibraryTest extends AbstractTests
      * <li>Open Document library page</li>
      * <li>select added any unsupported document</li>
      * <li>Document details page opens</li>
-     * <li>Add Folder in document library<li>
-     * <li>View Folder Details page<li>
+     * <li>Add Folder in document library
+     * <li>
+     * <li>View Folder Details page
+     * <li>
      * <li>check Title appeared</li>
      * <li>check correct path for folder</li>
      * <li>check modify details present with user and date</li>
@@ -446,8 +452,10 @@ public class SiteDocumentLibraryTest extends AbstractTests
      * <li>Open Document library page</li>
      * <li>select added any unsupported document</li>
      * <li>Document details page opens</li>
-     * <li>Add Folder in document library<li>
-     * <li>View Folder Details page<li>     * 
+     * <li>Add Folder in document library
+     * <li>
+     * <li>View Folder Details page
+     * <li>*
      * <li>Open Comment text editor</li>
      * <li>click on bold to change text to bold</li>
      * <li>click on italic to change text to italic</li>
@@ -480,7 +488,7 @@ public class SiteDocumentLibraryTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
         FolderDetailsPage folderDetailsPage = docLibPage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
         TinyMceEditor tinyMceEditor = folderDetailsPage.getContentPage();
-        tinyMceEditor.setTinyMce(TinyMceEditor.FRAME_ID);
+        //tinyMceEditor.setTinyMce(drone.findAndWait(TinyMceEditor.FRAME_ID_SELECTOR).getAttribute("id"));
         tinyMceEditor.addContent(comment);
 
         // test text as BOLD
@@ -571,9 +579,12 @@ public class SiteDocumentLibraryTest extends AbstractTests
      * <li>Open Document library page</li>
      * <li>select comment of the file</li>
      * <li>Add your comment</li>
-     * <li>verify the comment counter should be increased in doclib and details page as well<li>
-     * <li>Delete the comment in details page<li> 
-     * <li>verify the comment counter should be decreased in doclib and details page as well<li>
+     * <li>verify the comment counter should be increased in doclib and details page as well
+     * <li>
+     * <li>Delete the comment in details page
+     * <li>
+     * <li>verify the comment counter should be decreased in doclib and details page as well
+     * <li>
      * </ul>
      * 
      * @throws Exception

@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="1" preserve-order="true">
+	<test name="Workflow" verbose="1" parallel="classes" thread-count="5">
+		<groups>
+			<run>
+				<include name="DataPrepCloudSync1" />
+			</run>
+		</groups>
+		<classes>
+			<class name="org.alfresco.share.cloudsync.CloudSyncAccessTest" />
+		</classes>
+	</test>
+</suite>

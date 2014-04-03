@@ -31,11 +31,11 @@ public class AlfrescoHttpClient extends AbstractTests
 {
     private static final int TIMEOUT_MILLISEC = (int) refreshDuration; // = 10 seconds
     private static Log logger = LogFactory.getLog(AlfrescoHttpClient.class);
-    private AlfrescoHttpClient alfrescoHttpClient = new AlfrescoHttpClient();
+    // private AlfrescoHttpClient alfrescoHttpClient = new AlfrescoHttpClient();
 
     public AlfrescoHttpClient() throws Exception
     {
-        alfrescoHttpClient = this.alfrescoHttpClient;
+        //alfrescoHttpClient = this.alfrescoHttpClient;
     }
     
     public static String getHeaderKey()

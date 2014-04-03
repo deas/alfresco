@@ -682,7 +682,7 @@ public class AdvanceSearchTest extends AbstractTests
 
             ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
             
-            ShareUser.openSitesDocumentLibrary(drone, siteName);
+            ShareUser.openDocumentLibrary(drone);
             
             ShareUserSitePage.selectView(drone, ViewType.SIMPLE_VIEW);
 

@@ -22,5 +22,10 @@
             <package name="org.alfresco.share.site.document" />
         </packages>
     </test>
+    <test name="wiki">
+        <packages>
+            <package name="org.alfresco.webdrone.share.site.wiki" />
+        </packages>
+    </test>
 </suite>
 

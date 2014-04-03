@@ -312,7 +312,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
 
         assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
 
-        assertEquals(taskDetails.getDue(), dueDate, "Verifying workflow due date");
+        assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
         assertEquals(getLocalDate(taskDetails.getStartDate()), getToDaysLocalDate(), "Verify Workflow Start date");
         assertEquals(taskDetails.getStatus(), TaskStatus.NOTYETSTARTED.getTaskName(), "Verifying status");
         assertEquals(taskDetails.getType(), TaskDetailsType.TASK, "Verifying Task type");
@@ -457,7 +457,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         taskDetails = myTasksPage.getTaskDetails(workFlowName);
 
         assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
-        assertEquals(taskDetails.getDue(), dueDate, "Verifying workflow due date");
+        assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
         assertEquals(getLocalDate(taskDetails.getStartDate()), getToDaysLocalDate(), "Verify Workflow Start date");
         assertEquals(getLocalDate(taskDetails.getEndDate()), getToDaysLocalDate(), "Verify Workflow End date");
         assertEquals(taskDetails.getStatus(), TaskStatus.COMPLETED.getTaskName(), "Verifying status");
@@ -527,7 +527,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         taskDetails = myTasksPage.getTaskDetails(workFlowName);
 
         assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
-        assertEquals(taskDetails.getDue(), dueDate, "Verifying workflow due date");
+        assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
         assertEquals(getLocalDate(taskDetails.getStartDate()), getToDaysLocalDate(), "Verify Workflow Start date");
         assertNull(taskDetails.getEndDate(), "Verify Workflow End date is NULL as the task is still active");
         assertEquals(taskDetails.getStatus(), TaskStatus.NOTYETSTARTED.getTaskName(), "Verifying status");
@@ -616,7 +616,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         taskDetails = myTasksPage.getTaskDetails(workFlowName);
 
         assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
-        assertEquals(taskDetails.getDue(), dueDate, "Verifying workflow due date");
+        assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
         assertEquals(getLocalDate(taskDetails.getStartDate()), getToDaysLocalDate(), "Verify Workflow Start date");
         assertEquals(getLocalDate(taskDetails.getEndDate()), getToDaysLocalDate(), "Verify Workflow End date");
         assertEquals(taskDetails.getStatus(), TaskStatus.COMPLETED.getTaskName(), "Verifying status");
@@ -844,7 +844,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         TaskDetails taskDetails = myTasksPage.getTaskDetails(workFlowName);
 
         assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
-        assertEquals(taskDetails.getDue(), dueDate, "Verifying workflow due date");
+        assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
         assertEquals(getLocalDate(taskDetails.getStartDate()), getToDaysLocalDate(), "Verify Workflow Start date");
         assertEquals(taskDetails.getStatus(), TaskStatus.NOTYETSTARTED.getTaskName(), "Verifying status");
         assertEquals(taskDetails.getType(), TaskDetailsType.REVIEW, "Verifying Task type");
@@ -869,7 +869,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         taskDetails = myTasksPage.getTaskDetails(workFlowName);
 
         assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
-        assertEquals(taskDetails.getDue(), dueDate, "Verifying workflow due date");
+        assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
         assertEquals(getLocalDate(taskDetails.getStartDate()), getToDaysLocalDate(), "Verify Workflow Start date");
         assertEquals(taskDetails.getStatus(), TaskStatus.NOTYETSTARTED.getTaskName(), "Verifying status");
         assertEquals(taskDetails.getType(), TaskDetailsType.REVIEW, "Verifying Task type");
@@ -890,7 +890,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         taskDetails = myTasksPage.getTaskDetails(workFlowName);
 
         assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
-        assertEquals(taskDetails.getDue(), dueDate, "Verifying workflow due date");
+        assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
         assertEquals(getLocalDate(taskDetails.getStartDate()), getToDaysLocalDate(), "Verify Workflow Start date");
         assertEquals(getLocalDate(taskDetails.getEndDate()), getToDaysLocalDate(), "Verify Workflow End date");
         assertEquals(taskDetails.getStatus(), TaskStatus.COMPLETED.getTaskName(), "Verifying status");
@@ -926,7 +926,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         taskDetails = myTasksPage.getTaskDetails(workFlowName);
 
         assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
-        assertEquals(taskDetails.getDue(), DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(due), "Verifying workflow due date");
+        assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
         assertEquals(getLocalDate(taskDetails.getStartDate()), getToDaysLocalDate(), "Verify Workflow Start date");
         assertNull(taskDetails.getEndDate(), "Verify Workflow End date is NULL as the task is still active");
         assertEquals(taskDetails.getStatus(), TaskStatus.NOTYETSTARTED.getTaskName(), "Verifying status");
@@ -948,7 +948,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         taskDetails = myTasksPage.getTaskDetails(workFlowName);
 
         assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
-        assertEquals(taskDetails.getDue(), DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(due), "Verifying workflow due date");
+        assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
         assertEquals(getLocalDate(taskDetails.getStartDate()), getToDaysLocalDate(), "Verify Workflow Start date");
         assertEquals(getLocalDate(taskDetails.getEndDate()), getToDaysLocalDate(), "Verify Workflow End date");
         assertEquals(taskDetails.getStatus(), TaskStatus.COMPLETED.getTaskName(), "Verifying status");
@@ -1198,7 +1198,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         TaskDetails taskDetails = myTasksPage.getTaskDetails(workFlowName);
 
         assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
-        assertEquals(taskDetails.getDue(), dueDate, "Verifying workflow due date");
+        assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
         assertEquals(getLocalDate(taskDetails.getStartDate()), getToDaysLocalDate(), "Verify Workflow Start date");
         assertNull(taskDetails.getEndDate(), "Verify Workflow End date is NULL as the task is still active");
         assertEquals(taskDetails.getStatus(), TaskStatus.NOTYETSTARTED.getTaskName(), "Verifying status");
@@ -1222,7 +1222,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         taskDetails = myTasksPage.getTaskDetails(workFlowName);
 
         assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
-        assertEquals(taskDetails.getDue(), dueDate, "Verifying workflow due date");
+        assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
         assertEquals(getLocalDate(taskDetails.getStartDate()), getToDaysLocalDate(), "Verify Workflow Start date");
         assertEquals(getLocalDate(taskDetails.getEndDate()), getToDaysLocalDate(), "Verify Workflow End date");
         assertEquals(taskDetails.getStatus(), TaskStatus.COMPLETED.getTaskName(), "Verifying status");
@@ -1408,7 +1408,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         TaskDetails taskDetails = myTasksPage.getTaskDetails(workFlowName);
 
         assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
-        assertEquals(taskDetails.getDue(), dueDate, "Verifying workflow due date");
+        assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
         assertEquals(getLocalDate(taskDetails.getStartDate()), getToDaysLocalDate(), "Verify Workflow Start date");
         assertEquals(taskDetails.getStatus(), TaskStatus.NOTYETSTARTED.getTaskName(), "Verifying status");
         assertEquals(taskDetails.getType(), TaskDetailsType.REVIEW, "Verifying Task type");
@@ -1655,7 +1655,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         TaskDetails taskDetails = myTasksPage.getTaskDetails(workFlowName);
 
         assertEquals(taskDetails.getTaskName(), workFlowName, "Verifying workflow name");
-        assertEquals(taskDetails.getDue(), dueDate, "Verifying workflow due date");
+        assertEquals(taskDetails.getDue(), ShareUserWorkFlow.getDueDateOnMyTaskPage(due), "Verifying workflow due date");
         assertEquals(getLocalDate(taskDetails.getStartDate()), getToDaysLocalDate(), "Verify Workflow Start date");
         assertNull(taskDetails.getEndDate(), "Verify Workflow End date is NULL as the task is still active");
         assertEquals(taskDetails.getStatus(), TaskStatus.NOTYETSTARTED.getTaskName(), "Verifying status");

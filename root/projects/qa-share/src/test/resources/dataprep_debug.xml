@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="1" preserve-order="true">
+	<test name="debugthesedatapreps" verbose="1" parallel="classes" thread-count="1">
+        <groups>
+            <run>
+                <include name="DataPrep.*" />
+            </run>
+        </groups>
+        <classes>
+             <class name="org.alfresco.share.repository.RepositoryFolderTests">
+                <methods>
+                    <include name="Enterprise40x_5340" />
+                </methods>
+             </class>
+        </classes>
+    </test>
+</suite>

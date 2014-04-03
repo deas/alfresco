@@ -18,6 +18,7 @@ import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
 import org.alfresco.po.share.site.document.EditTextDocumentPage;
 import org.alfresco.po.share.site.document.FileDirectoryInfo;
+import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -285,7 +286,9 @@ public class RepositoryDocumentCreateTests extends AbstractTests
         editDocumentPropertiesPopup.setName(fileName);
         editDocumentPropertiesPopup.setDocumentTitle(titleNew);
         editDocumentPropertiesPopup.setDescription(descriptionNew);
-        editDocumentPropertiesPopup.getTag().render().enterTagValue(tagNew).clickOkButton();
+        TagPage tagPage = editDocumentPropertiesPopup.getTag().render();
+        tagPage = tagPage.enterTagValue(tagNew).render();
+        tagPage.clickOkButton();
         editDocumentPropertiesPopup.selectSave().render();
 
         // Check file properties are correct
@@ -331,7 +334,9 @@ public class RepositoryDocumentCreateTests extends AbstractTests
         editDocumentPropertiesPopup.setName(fileName);
         editDocumentPropertiesPopup.setDocumentTitle(titleNew);
         editDocumentPropertiesPopup.setDescription(descriptionNew);
-        editDocumentPropertiesPopup.getTag().render().enterTagValue(tagNew).clickOkButton();
+        TagPage tagPage = editDocumentPropertiesPopup.getTag().render();
+        tagPage = tagPage.enterTagValue(tagNew).render();
+        tagPage.clickOkButton();
         editDocumentPropertiesPopup.selectCancel().render();
 
         List<FileDirectoryInfo> files = repositoryPage.getFiles();

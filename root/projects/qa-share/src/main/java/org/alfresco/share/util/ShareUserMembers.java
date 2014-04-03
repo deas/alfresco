@@ -51,7 +51,8 @@ public class ShareUserMembers extends AbstractTests
     }
 
     /**
-     * This method allows the Site Manager to invite user to join  site as given role
+     * This method allows the Site Manager to invite user to join site as given
+     * role
      * 
      * @param driver
      * @param invitingUser
@@ -102,7 +103,9 @@ public class ShareUserMembers extends AbstractTests
     }
 
     /**
-     * This method is used to retry the search to get user details in Invitemembers page 
+     * This method is used to retry the search to get user details in
+     * Invitemembers page
+     * 
      * @param driver
      * @param userJoiningSite
      * @return List<String>
@@ -151,7 +154,8 @@ public class ShareUserMembers extends AbstractTests
     }
 
     /**
-     * This method allows the Site Manager to invite the user to join site as given role.
+     * This method allows the Site Manager to invite the user to join site as
+     * given role.
      * 
      * @param driver
      * @param invitingUser
@@ -173,7 +177,8 @@ public class ShareUserMembers extends AbstractTests
         {
             if (isAlfrescoVersionCloud(driver))
             {
-                retVal = CreateUserAPI.inviteUserToSiteWithRoleAndAccept(driver, invitingUser, userJoiningSite, getSiteShortname(siteName), role.getRoleName(), "");
+                retVal = CreateUserAPI.inviteUserToSiteWithRoleAndAccept(driver, invitingUser, userJoiningSite, getSiteShortname(siteName), role.getRoleName(),
+                        "");
             }
             else
             {
@@ -229,8 +234,8 @@ public class ShareUserMembers extends AbstractTests
     }
 
     /**
-     * This method allows the user to join himself on another user's site as consumer.
-     * Assumes user is logged in
+     * This method allows the user to join himself on another user's site as
+     * consumer. Assumes user is logged in
      * 
      * @param driver
      * @param siteName
@@ -247,8 +252,10 @@ public class ShareUserMembers extends AbstractTests
     }
 
     /**
-     * This method allows the Site Manager to assign the role to site member for the public sites.
-     * For private and moderate sites Site Manager approves the sitemembers request as a additional task before assigning the role.
+     * This method allows the Site Manager to assign the role to site member for
+     * the public sites. For private and moderate sites Site Manager approves
+     * the sitemembers request as a additional task before assigning the role.
+     * 
      * @param drone
      * @param siteMember
      * @param siteName
@@ -271,8 +278,9 @@ public class ShareUserMembers extends AbstractTests
     }
 
     /**
-     * This method is used to retry the search to get user details in members page 
-     * and returns true if user found otherwise false.
+     * This method is used to retry the search to get user details in members
+     * page and returns true if user found otherwise false.
+     * 
      * @param driver
      * @param userName
      * @return boolean
@@ -312,7 +320,9 @@ public class ShareUserMembers extends AbstractTests
     }
 
     /**
-     * This method allows the Site Manager to remove the site member for the public sites.
+     * This method allows the Site Manager to remove the site member for the
+     * public sites.
+     * 
      * @param drone
      * @param siteMember
      * @param siteName
@@ -336,11 +346,15 @@ public class ShareUserMembers extends AbstractTests
     }
 
     /**
-     * Utility to promote the user as network admin (for the given domain)
-     * Only suitable for Enterprise: As Admin Console is not available for Cloud
-     * @param drone WebDrone Instance
-     * @param authUser String authenticating user
-     * @param userNametoBePromoted String userName to be promoted as network admin
+     * Utility to promote the user as network admin (for the given domain) Only
+     * suitable for Enterprise: As Admin Console is not available for Cloud
+     * 
+     * @param drone
+     *            WebDrone Instance
+     * @param authUser
+     *            String authenticating user
+     * @param userNametoBePromoted
+     *            String userName to be promoted as network admin
      * @throws Exception
      */
     public static Boolean promoteUserAsAdminEnterprise(WebDrone driver, String authUser, String userNametoBePromoted) throws Exception
@@ -369,10 +383,13 @@ public class ShareUserMembers extends AbstractTests
         return result;
     }
 
-    /** Utility to navigate to EditUserPage on admin console, 
-     * Assumes user is logged in
+    /**
+     * Utility to navigate to EditUserPage on admin console, Assumes user is
+     * logged in
+     * 
      * @param driver
-     * @param String userinfo such as username
+     * @param String
+     *            userinfo such as username
      * @return {@link}EditUserPage
      */
     private static EditUserPage navigateToEditUser(WebDrone driver, String userinfo)
@@ -395,8 +412,8 @@ public class ShareUserMembers extends AbstractTests
     }
 
     /**
-     * Util to invite a group to the specified site
-     * Assumes user is logged in
+     * Util to invite a group to the specified site Assumes user is logged in
+     * 
      * @param driver
      * @param invitingUser
      * @param groupDisplayName
@@ -467,8 +484,9 @@ public class ShareUserMembers extends AbstractTests
     }
 
     /**
-     * This method updates the role to the content selected at document library page. 
-     * Assumes user is logged in
+     * This method updates the role to the content selected at document library
+     * page. Assumes user is logged in
+     * 
      * @param drone
      * @param user
      * @param contentName
@@ -494,8 +512,11 @@ public class ShareUserMembers extends AbstractTests
     }
 
     /**
-     * This method switches the toggleInheritPemissions icon to desired status specified as boolean value <toggleInheritPermission>
-     * @IMP Note: This is to be called when user is on the ManagePermissions page.
+     * This method switches the toggleInheritPemissions icon to desired status
+     * specified as boolean value <toggleInheritPermission>
+     * 
+     * @IMP Note: This is to be called when user is on the ManagePermissions
+     *      page.
      * @param drone
      * @param toggleInheritPermission
      * @return
@@ -514,12 +535,15 @@ public class ShareUserMembers extends AbstractTests
     }
 
     /**
-     * Add Inherited permission to User and Group.
-     * Assumes user is logged in and on ManagePermissionsPage
+     * Add Inherited permission to User and Group. Assumes user is logged in and
+     * on ManagePermissionsPage
+     * 
      * @param driver
      * @param candidate
      * @param role
-     * @param isUser <tt>true</tt> if username is specified, <tt>false</tt> if group
+     * @param isUser
+     *            <tt>true</tt> if username is specified, <tt>false</tt> if
+     *            group
      * @param toggleInheritPermission
      * @return
      */
@@ -553,10 +577,13 @@ public class ShareUserMembers extends AbstractTests
     }
 
     /**
-     * Util to assign the specified <UserRole> to the specified <User> for the Site.
-     * Assumes the SiteManager role is logged in.
+     * Util to assign the specified <UserRole> to the specified <User> ofr the
+     * Site. Assumes the SiteManager role is logged in.
+     * 
      * @param drone
-     * @param user String username. Util assumes that this user is already a member of the site
+     * @param user
+     *            String username. Util assumes that this user is already a
+     *            member of the site
      * @param userRole
      * @param siteName
      * @return

@@ -9,8 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
-
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.GroupsPage;
 import org.alfresco.po.share.LoginPage;
@@ -88,7 +86,7 @@ public class ShareUser extends AbstractTests
      *            String username, password
      * @return boolean true: if log in succeeds
      */
-    public static SharePage login(WebDrone driver, String... userInfo)
+    public static synchronized SharePage login(WebDrone driver, String... userInfo)
     {
         LoginPage page = null;
         SharePage sharePage = null;
@@ -153,7 +151,8 @@ public class ShareUser extends AbstractTests
                 logger.info("Logout");
                 currentPage = driver.getCurrentPage().render(maxWaitTime);
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             // Already logged out.
             logger.info("already logged out" + e.getMessage());
@@ -231,13 +230,28 @@ public class ShareUser extends AbstractTests
     {
         // Assumes User is logged in
 
+        // Checking for site dashboard to be open.
+        HtmlPage page = driver.getCurrentPage();
+        if (page instanceof SiteDashboardPage)
+        {
+            if (((SiteDashboardPage) page).isSite(siteName))
+            {
+                logger.info("Site dashboad page open for site - " + siteName);
+                return ((SiteDashboardPage) page);
+            }
+
+        }
         // Open User DashBoard
-        DashBoardPage dashBoard = openUserDashboard(driver);
+        openUserDashboard(driver);
 
-        // SiteDashboardPage siteDashPage = SiteUtil.openSiteURL(driver, getSiteShortname(siteName));
-        MySitesDashlet dashlet = dashBoard.getDashlet(DASHLET_SITES).render(refreshDuration);
+        SiteDashboardPage siteDashPage = SiteUtil.openSiteURL(driver, getSiteShortname(siteName));
 
-        SiteDashboardPage siteDashPage = dashlet.selectSite(siteName).click().render(maxWaitTime);
+        /*
+         * MySitesDashlet dashlet =
+         * dashBoard.getDashlet(DASHLET_SITES).render(refreshDuration);
+         * SiteDashboardPage siteDashPage =
+         * dashlet.selectSite(siteName).click().render(maxWaitTime);
+         */
 
         logger.info("Opened Site Dashboard: " + siteName);
 
@@ -248,8 +262,7 @@ public class ShareUser extends AbstractTests
      * Open document Library: Top Level Assumes User is logged in and a Specific
      * Site is open.
      * 
-     * @param driver
-     *            WebDrone Instance
+     * @param driver	WebDrone Instance
      * @return DocumentLibraryPage
      */
     public static DocumentLibraryPage openDocumentLibrary(WebDrone driver)
@@ -311,6 +324,17 @@ public class ShareUser extends AbstractTests
     {
         // Assumes User is logged in
 
+        // Checking for site doc lib to be open.
+        HtmlPage page = driver.getCurrentPage();
+        if (page instanceof DocumentLibraryPage)
+        {
+            if (((DocumentLibraryPage) page).isSite(siteName) && ((DocumentLibraryPage) page).isDocumentLibrary())
+            {
+                logger.info("Site doc lib page open ");
+                return ((DocumentLibraryPage) page);
+            }
+        }
+
         // Open Site
         openSiteDashboard(driver, siteName);
 
@@ -340,7 +364,8 @@ public class ShareUser extends AbstractTests
             {
                 logger.info("Site Created:" + siteName);
                 site = driver.getCurrentPage().render();
-            } else
+            }
+            else
             {
                 logger.info("Site has not been created");
             }
@@ -399,7 +424,7 @@ public class ShareUser extends AbstractTests
      *            String Path for the folder to be created, under
      *            DocumentLibrary : such as constDoclib + file.seperator +
      *            parentFolderName1 + file.seperator + parentFolderName2
-     * @throws Exception
+     * @throws Excetion
      */
     public static void createFolderInFolder(WebDrone driver, String folderName, String folderDesc, String parentFolderPath) throws Exception
     {
@@ -415,7 +440,8 @@ public class ShareUser extends AbstractTests
 
             // Create Folder
             ShareUserSitePage.createFolder(driver, folderName, folderDesc);
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             throw new SkipException("Skip test. Error in Create Folder: " + ex.getMessage());
         }
@@ -427,9 +453,9 @@ public class ShareUser extends AbstractTests
      * 
      * @param driver
      *            WebDrone Instance
-     * @param fileName
+     * @param folderName
      *            String Name of the folder to be created
-     * @param parentFolderPath
+     * @param folderDesc
      *            String Description of the folder to be created
      * @return DocumentLibraryPage
      */
@@ -452,9 +478,6 @@ public class ShareUser extends AbstractTests
      * @param fileName String
      * @param parentFolderPath String folder path relative to documentLibrary:
      * e.g. CONST_DOCLIB + file.seperator + parentFolderName1
-     * @param parentFolderPath String folder path relative to documentLibrary:
-     * e.g. CONST_DOCLIB + file.seperator + parentFolderName1
-     * 
      * @throws SkipException if error in this API
      */
     public static void uploadFileInFolder1(WebDrone driver, String fileName, String parentFolderPath) throws Exception
@@ -484,7 +507,8 @@ public class ShareUser extends AbstractTests
      * Navigates to the Path specified, Starting from the Document Library Page.
      * Assumes User is logged in and a specific Site is open.
      * 
-     * @param fileInfo
+     * @param fileName
+     * @param parentFolderPath
      *            : such as constDoclib + file.seperator + parentFolderName1
      * @throws SkipException
      *             if error in this API
@@ -504,7 +528,8 @@ public class ShareUser extends AbstractTests
         if (argCount < 1)
         {
             throw new IllegalArgumentException("Specify at least Filename");
-        } else
+        }
+        else
         {
             fileName = fileInfo[0];
         }
@@ -512,7 +537,8 @@ public class ShareUser extends AbstractTests
         if (argCount > 1)
         {
             parentFolderPath = fileInfo[1];
-        } else
+        }
+        else
         {
             parentFolderPath = DOCLIB;
         }
@@ -520,7 +546,8 @@ public class ShareUser extends AbstractTests
         if (argCount > 2)
         {
             fileContents = fileInfo[2];
-        } else
+        }
+        else
         {
             fileContents = "New File being created via newFile:" + fileName;
         }
@@ -605,7 +632,8 @@ public class ShareUser extends AbstractTests
                 {
                     found = findInActivitiesList(entries, entry);
                 }
-            } else
+            }
+            else
             {
                 List<ShareLink> entries = getDashletEntries(driver, dashlet);
 
@@ -649,7 +677,8 @@ public class ShareUser extends AbstractTests
         {
             MyActivitiesDashlet myActivities = userDashBoard.getDashlet(dashlet).render();
             entries = myActivities.getActivities();
-        } else
+        }
+        else
         {
             throw new SkipException("Incorrect Dashlet");
         }
@@ -680,14 +709,11 @@ public class ShareUser extends AbstractTests
         {
             MyDocumentsDashlet myDocuments = userDashBoard.getDashlet(dashlet).render();
             entries = myDocuments.getDocuments();
-        } else if (dashlet.equals(DASHLET_SITES))
+        }
+        else if (dashlet.equals(DASHLET_SITES))
         {
             MySitesDashlet mySites = userDashBoard.getDashlet(dashlet).render();
             entries = mySites.getSites();
-        } else if (dashlet.equals(DASHLET_TASKS))
-        {
-            MyTasksDashlet myTasks = userDashBoard.getDashlet(dashlet).render();
-            entries = myTasks.getTasks();
         }
         else if (dashlet.equals(DASHLET_TASKS))
         {
@@ -701,7 +727,7 @@ public class ShareUser extends AbstractTests
     /**
      * Helper to search for an Element in the list of <List<ActivityShareLink>>.
      * 
-     * @param entryList
+     * @param List
      *            <List<ActivityShareLink>>
      * @param entry
      *            String entry to be found in the ShareLinks' list
@@ -722,7 +748,7 @@ public class ShareUser extends AbstractTests
     /**
      * Helper to search for an Element in the list of <ShareLinks>.
      * 
-     * @param entryList
+     * @param List
      *            <ShareLinks>
      * @param entry
      *            String entry to be found in the ShareLinks' list
@@ -745,12 +771,23 @@ public class ShareUser extends AbstractTests
      * 
      * @param driver
      *            WebDrone Instance
-     * @param contentName
+     * @param siteSearchCriteria
      *            String Criteria for site search
      * @return {@link DocumentDetailsPage}
      */
     public static DocumentDetailsPage openDocumentDetailPage(WebDrone driver, String contentName)
     {
+        // Checking for doc lib to be open.
+        HtmlPage page = driver.getCurrentPage();
+        if (page instanceof DocumentDetailsPage)
+        {
+            if (((DocumentDetailsPage) page).getDocumentTitle().equalsIgnoreCase(contentName))
+            {
+                logger.info("Site doc lib page open ");
+                return ((DocumentDetailsPage) page);
+            }
+        }
+
         DocumentLibraryPage docLibraryPage = (DocumentLibraryPage) getSharePage(driver);
         DocumentDetailsPage docDetailsPage = docLibraryPage.selectFile(contentName);
         return docDetailsPage.render();
@@ -782,7 +819,7 @@ public class ShareUser extends AbstractTests
      * the specified network.
      * 
      * @param driver
-     * @param tenantID
+     * @param network
      */
     public static void selectTenant(WebDrone driver, String tenantID)
     {
@@ -811,11 +848,11 @@ public class ShareUser extends AbstractTests
      * @param password
      *            String password
      */
-    public static Boolean createEnterpriseUser(WebDrone driver, String invitingUsername, String userName, String fName, String lName, String password)
+    public static Boolean createEnterpriseUser(WebDrone driver, String invitingUsername, String userName, String fname, String lname, String password)
     {
-        return createEnterpriseUserWithGroup(driver, invitingUsername, userName, fName, lName, password, null);
+        return createEnterpriseUserWithGroup(driver, invitingUsername, userName, fname, lname, password, null);
     }
-    
+
     /**
      * Helper to search for an Activity Entry on the Site Dashboard Page, with
      * configurable retry search option.
@@ -1006,24 +1043,6 @@ public class ShareUser extends AbstractTests
     }
 
     /**
-     * This util method gets the random number for the given length of return
-     * string.
-     * 
-     * @param length length
-     * @return String
-     */
-    public static String getRandomStringWithNumders(int length)
-    {
-        StringBuilder rv = new StringBuilder();
-        Random rnd = new Random();
-        char from[] = "0123456789".toCharArray();
-
-        for (int i = 0; i < length; i++)
-            rv.append(from[rnd.nextInt((from.length - 1))]);
-        return rv.toString();
-    }
-
-    /**
      * This method is used to create content with name, title and description.
      * User should be logged in and present on site page.
      * 
@@ -1038,6 +1057,32 @@ public class ShareUser extends AbstractTests
         // Open Document Library
         DocumentLibraryPage documentLibPage = ShareUser.openDocumentLibrary(drone);
         DocumentDetailsPage detailsPage = null;
+
+        try
+        {
+            if (isAlfrescoVersionCloud(drone))
+            {
+                documentLibPage = createContentWithSpecificProps(drone, contentDetails);
+            }
+            else
+            {
+                CreatePlainTextContentPage contentPage = documentLibPage.getNavigation().selectCreateContent(contentType).render();
+                detailsPage = contentPage.create(contentDetails).render();
+                documentLibPage = (DocumentLibraryPage) detailsPage.getSiteNav().selectSiteDocumentLibrary();
+                documentLibPage.render();
+            }
+        }
+        catch (Exception e)
+        {
+            throw new SkipException("Error in creating content." + e);
+        }
+
+        return documentLibPage;
+    }
+
+    public static DocumentLibraryPage createContentInCurrentFolder(WebDrone drone, ContentDetails contentDetails, ContentType contentType, DocumentLibraryPage documentLibPage) throws Exception
+    {
+        DocumentDetailsPage detailsPage;
 
         try
         {
@@ -1136,6 +1181,17 @@ public class ShareUser extends AbstractTests
 
     public static DocumentLibraryPage openSiteDocumentLibraryFromSearch(WebDrone drone, String siteName)
     {
+        // Checking for site doc lib to be open.
+        HtmlPage page = drone.getCurrentPage();
+        if (page instanceof DocumentLibraryPage)
+        {
+            if (((DocumentLibraryPage) page).isSite(siteName) && ((DocumentLibraryPage) page).isDocumentLibrary())
+            {
+                logger.info("Site doc lib page open ");
+                return ((DocumentLibraryPage) page);
+            }
+        }
+
         SiteUtil.openSiteFromSearch(drone, siteName).render();
         return openDocumentLibrary(drone);
     }
@@ -1437,7 +1493,7 @@ public class ShareUser extends AbstractTests
     public static Boolean createEnterpriseUserWithGroup(WebDrone driver, String invitingUsername, String userName, String fname, String lname, String password, String groupName)
     {
         try
-        {
+        {            
             String[] authDetails = getAuthDetails(invitingUsername);
             ShareUser.login(driver, authDetails[0], authDetails[1]);
             DashBoardPage dash = (DashBoardPage) driver.getCurrentPage().render();
@@ -1457,7 +1513,7 @@ public class ShareUser extends AbstractTests
             logger.info("Created User: " + userName);
             ShareUser.logout(driver);
             return true;
-        } 
+        }
         catch (Exception e)
         {
             logger.error("Error Creating User: " + userName + " Exception: " + e.getMessage());
@@ -1488,7 +1544,7 @@ public class ShareUser extends AbstractTests
      * This method uploads the new version for the document with the given file
      * from data folder. User should be on Document details page.
      * 
-     * @param fileName
+     * @param newFileName
      * @param drone
      * @return DocumentDetailsPage
      * @throws IOException
@@ -1598,7 +1654,8 @@ public class ShareUser extends AbstractTests
         {
             docLibPage.getNavigation().selectAll().render();
             docLibPage = deleteSelectedContent(drone);
-        } while (docLibPage.hasFiles());
+        }
+        while (docLibPage.hasFiles());
         return docLibPage;
     }
 
@@ -1637,7 +1694,8 @@ public class ShareUser extends AbstractTests
             logger.info("Date : " + date + " converted into string value :" + strDate);
 
             return strDate;
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             throw new PageException("converting Date to String is having problem : " + e.getMessage());
         }
@@ -1685,7 +1743,7 @@ public class ShareUser extends AbstractTests
             ShareUser.login(driver, ADMIN_USERNAME, ADMIN_PASSWORD);
             DashBoardPage dash = (DashBoardPage) driver.getCurrentPage().render();
             GroupsPage page = dash.getNav().getGroupsPage();
-            NewGroupPage newGrp = page.clickBrowse().render().navigateToNewGroupPage().render();
+            NewGroupPage newGrp = page.navigateToAddAndEditGroups().render().navigateToNewGroupPage().render();
             page = newGrp.createGroup(groupName, groupName, ActionButton.CREATE_GROUP).render();
             if (page.getGroupList().contains(groupName))
             {
@@ -1695,13 +1753,38 @@ public class ShareUser extends AbstractTests
             ShareUser.logout(driver);
             return isGroupCreated;
 
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             logger.error("Error Creating Group: " + groupName + " Exception: " + e.getMessage());
             return false;
         }
     }
-    
+
+    // /**
+    // * This method used to add the group with role in manage permissions list.
+    // * User should be on manage permissions page
+    // * @param driver
+    // * @param user2
+    // * @return DocumentDetailsPage, DocumentLibraryPage
+    // */
+    // public static HtmlPage addGroupIntoInhertedPermissions(WebDrone driver,
+    // String groupName, UserRole role, boolean toggleInheritPermission)
+    // {
+    // ManagePermissionsPage managePermissionsPage = (ManagePermissionsPage)
+    // getSharePage(driver);
+    // ManagePermissionsPage.UserSearchPage userSearchPage =
+    // managePermissionsPage.selectAddUser().render();
+    // managePermissionsPage =
+    // userSearchPage.searchAndSelectGroup(groupName).render();
+    //
+    // //Add role to User
+    // managePermissionsPage.setAccessType(role);
+    // managePermissionsPage =
+    // managePermissionsPage.toggleInheritPermission(toggleInheritPermission);
+    // return managePermissionsPage.selectSave().render();
+    // }
+
     /**
      * Util method to change the language from My Profile page (Only applicable
      * to Cloud2 env)
@@ -1777,5 +1860,63 @@ public class ShareUser extends AbstractTests
         editProp.setDescription(description);
         return editProp.selectSave().render();
     }
+    
+    public static DocumentLibraryPage editProperties(WebDrone drone, String contentName, String newContentName, String title, String description) {
+        DocumentLibraryPage documentLibraryPage = drone.getCurrentPage().render();
 
+        EditDocumentPropertiesPopup editProp = documentLibraryPage.getFileDirectoryInfo(contentName).selectEditProperties().render();
+
+        if (newContentName != null) {
+            editProp.setName(newContentName);
+        }
+        if (title != null) {
+            editProp.setDocumentTitle(title);
+        }
+        if (description != null) {
+            editProp.setDescription(description);
+        }
+
+        return editProp.selectSave().render();
+    }
+
+    /**
+     * Function mime the action of opening the folder detail Page.
+     * 
+     * @param driver
+     *            WebDrone Instance
+     * @param siteSearchCriteria
+     *            String Criteria for site search
+     * @return {@link FolderDetailsPage}
+     */
+    public static FolderDetailsPage openFolderDetailPage(WebDrone driver, String contentName)
+    {
+        DocumentLibraryPage docLibraryPage = (DocumentLibraryPage) getSharePage(driver);
+        FolderDetailsPage folderDetailsPage = docLibraryPage.getFileDirectoryInfo(contentName).selectViewFolderDetails();
+        return folderDetailsPage.render();
+    }
+
+    /**
+     * This method used to open the document library page in gallery view.
+     * User should be present on document library page.
+     * 
+     * @param customDrone
+     * @param siteName
+     * @return DocumentLibraryPage
+     */
+    public static DocumentLibraryPage openDocumentLibraryInGalleryView(WebDrone customDrone, String siteName)
+    {
+        DocumentLibraryPage docLibPage = null;
+        SharePage sharePage = ShareUser.getSharePage(customDrone);
+
+        if (!(sharePage instanceof DocumentLibraryPage))
+        {
+            ShareUser.openSitesDocumentLibrary(customDrone, siteName);
+        }
+        else
+        {
+            docLibPage = (DocumentLibraryPage) sharePage;
+        }
+
+        return docLibPage.getNavigation().selectGalleryView().render();
+    }
 }

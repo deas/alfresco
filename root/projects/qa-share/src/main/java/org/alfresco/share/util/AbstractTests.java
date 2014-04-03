@@ -1,19 +1,25 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
+ *
  * This file is part of Alfresco
+ *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.alfresco.share.util;
+
+import org.alfresco.po.share.console.CloudConsolePage;
 
 import java.awt.AWTException;
 import java.awt.Rectangle;
@@ -36,18 +42,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-import org.alfresco.po.share.AlfrescoVersion;
-import org.alfresco.po.share.BrowserPreference;
-import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.SharePopup;
-import org.alfresco.po.share.ShareUtil;
-import org.alfresco.po.share.enums.SiteVisibility;
+import org.alfresco.po.share.*;
 import org.alfresco.share.search.SearchKeys;
-import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -62,6 +62,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -73,8 +74,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
-
-import static org.testng.Assert.assertTrue;
 
 /**
  * Class includes: Abstract test holds all common methods, These will be used
@@ -166,6 +165,7 @@ public abstract class AbstractTests
     protected static final String USER_TASKS = "tasks";
     protected static final String SITE_ACTIVITIES = "site-activities";
     protected static final String SITE_NOTICE = "site-notice";
+    protected static final String MY_DISCUSSIONS = "my-discussions";
 
     // Activity Feeds
     protected static final String FEED_CONTENT_ADDED = " added";
@@ -217,16 +217,13 @@ public abstract class AbstractTests
     Map<String, WebDrone> droneMap = new HashMap<String, WebDrone>();
 
     @BeforeSuite(alwaysRun = true)
-    @Parameters({ "contextFileName" })
+    @Parameters(
+    { "contextFileName" })
     public static void setupContext(@Optional("qashare-test-context.xml") String contextFileName)
     {
         List<String> contextXMLList = new ArrayList<String>();
-        contextXMLList.add("webdrone-context.xml");
-        contextXMLList.add("share-po-context.xml");
-        contextXMLList.add("share-po-test-context.xml");
         contextXMLList.add(contextFileName);
         ctx = new ClassPathXmlApplicationContext(contextXMLList.toArray(new String[contextXMLList.size()]));
-
         testProperties = (ShareTestProperty) ctx.getBean("shareTestProperties");
         shareUrl = testProperties.getShareUrl();
         cloudUrlForHybrid = testProperties.getCloudUrlForHybrid();
@@ -288,6 +285,16 @@ public abstract class AbstractTests
         maxWaitTime = ((WebDroneImpl) customDrone).getMaxPageRenderWaitTime();
     }
 
+        public void setupCustomDrone(WebDriver webDriver)
+        {
+                customDrone = new WebDroneImpl(webDriver,2000,5000,new ShareProperties(alfrescoVersion.toString()), new FactorySharePage());
+                droneMap.put("custom_drone", customDrone);
+                dronePropertiesMap.put(customDrone, testProperties);
+                maxWaitTime = ((WebDroneImpl) customDrone).getMaxPageRenderWaitTime();
+        }
+
+
+
     @AfterClass(alwaysRun = true)
     public void tearDown()
     {
@@ -296,9 +303,9 @@ public abstract class AbstractTests
             logger.trace("shutting web drone");
         }
         // Close the browser
-        for (Map.Entry<String, WebDrone> entry : droneMap.entrySet())
+        for(Map.Entry<String, WebDrone> entry: droneMap.entrySet())
         {
-            if (entry.getValue() != null)
+            if(entry.getValue() != null)
             {
                 ShareUtil.logout(entry.getValue());
                 entry.getValue().quit();
@@ -349,12 +356,12 @@ public abstract class AbstractTests
 
     public void savePageSource(String methodName) throws IOException
     {
-        for (Map.Entry<String, WebDrone> entry : droneMap.entrySet())
+        for(Map.Entry<String, WebDrone> entry: droneMap.entrySet())
         {
-            if (entry.getValue() != null)
+            if(entry.getValue() != null)
             {
                 String htmlSource = ((WebDroneImpl) entry.getValue()).getDriver().getPageSource();
-                File file = new File(RESULTS_FOLDER + methodName + "_" + entry.getKey() + "_Source.html");
+                File file = new File(RESULTS_FOLDER + methodName + "_" + entry.getKey() +"_Source.html");
                 FileUtils.writeStringToFile(file, htmlSource);
             }
         }
@@ -372,35 +379,34 @@ public abstract class AbstractTests
      */
     public void saveScreenShot(String methodName) throws IOException
     {
-        for (Map.Entry<String, WebDrone> entry : droneMap.entrySet())
+        for(Map.Entry<String, WebDrone> entry: droneMap.entrySet())
         {
-            if (entry.getValue() != null)
+            if(entry.getValue() != null)
             {
                 File file = entry.getValue().getScreenShot();
-                File tmp = new File(RESULTS_FOLDER + methodName + "_" + entry.getKey() + ".png");
+                File tmp = new File(RESULTS_FOLDER + methodName + "_" + entry.getKey() +".png");
                 FileUtils.copyFile(file, tmp);
             }
         }
-        try
+        try 
         {
-            saveOsScreenShot(methodName);
-        }
-        catch (AWTException e)
+			saveOsScreenShot(methodName);
+		} 
+        catch (AWTException e) 
         {
-            logger.error("Not able to take the OS screen shot: " + e.getMessage());
-        }
+        	logger.error("Not able to take the OS screen shot: " + e.getMessage());
+		}
     }
-
+    
     /**
      * Take OS Scren Shot
-     * 
      * @param methodName - Method Name
      */
     public void saveOsScreenShot(String methodName) throws IOException, AWTException
     {
-        Robot robot = new Robot();
-        BufferedImage screenShot = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
-        ImageIO.write(screenShot, "png", new File("target/webdrone-" + methodName + "_OS" + ".png"));
+    	Robot robot = new Robot();
+    	BufferedImage screenShot = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+        ImageIO.write(screenShot, "png", new File("target/webdrone-" + methodName+ "_OS" +".png"));
     }
 
     @BeforeMethod
@@ -460,8 +466,8 @@ public abstract class AbstractTests
      *            WebDrone Instance
      * @param testName
      *            String test case ID
-     * @param Throwable
-     *            t Throwable Error & Exception to include testng assert
+     * @param t
+     *            Throwable Error & Exception to include testng assert
      *            failures being reported as Errors
      */
     protected void reportError(WebDrone driver, String testName, Throwable t)
@@ -486,7 +492,6 @@ public abstract class AbstractTests
      * drones are created
      * 
      * @param drone
-     * @param reqURL
      * @return
      */
     public static String getAPIURL(WebDrone drone)
@@ -503,7 +508,7 @@ public abstract class AbstractTests
         {
             if (shareURL.equalsIgnoreCase(STAGURL))
             {
-                apiUrl = shareURL.replace("my.alfresco.com/share", "api.alfresco.com/");
+                apiUrl = shareURL.replace("my.alfresco.com/share", "api.alfresco.com/"); 
             }
         }
 
@@ -515,7 +520,7 @@ public abstract class AbstractTests
     /**
      * Helper to return the stack trace as a string for reporting purposes.
      * 
-     * @param Throwable
+     * @param ex
      *            exception / error
      * @return String: stack trace
      */
@@ -539,7 +544,7 @@ public abstract class AbstractTests
      * Helper to create a new file, empty or with specified contents if one does
      * not exist. Logs if File already exists
      * 
-     * @param fileName
+     * @param filename
      *            String Complete path of the file to be created
      * @param contents
      *            String Contents for text file
@@ -714,7 +719,8 @@ public abstract class AbstractTests
     public static String getSiteShortname(String siteName)
     {
         String siteShortname = "";
-        String[] unallowedCharacters = { "_", "!" };
+        String[] unallowedCharacters =
+        { "_", "!" };
 
         for (String removeChar : unallowedCharacters)
         {
@@ -807,7 +813,8 @@ public abstract class AbstractTests
      */
     public static String[] getAuthDetails(String authUsername)
     {
-        String[] authDetails = { ADMIN_USERNAME, ADMIN_PASSWORD };
+        String[] authDetails =
+        { ADMIN_USERNAME, ADMIN_PASSWORD };
 
         if (authUsername == null)
         {
@@ -887,9 +894,8 @@ public abstract class AbstractTests
     /**
      * Helper to check the actual Result Vs expected
      * 
-     * @param HttpResponse
-     *            actualResult
-     * @param int expectedResult
+     * @param actualResult  HttpResponse
+     * @param expectedResult int
      * @return void
      */
     protected void checkResult(HttpResponse actualResult, int expectedResult)
@@ -933,8 +939,8 @@ public abstract class AbstractTests
      * 
      * @param driver
      *            WebDrone instance
-     * @param String
-     *            domainName
+     * @param domain
+     *            String
      * @return {@String domainName}
      */
     public static String getDomainForAPI(WebDrone driver, String domain)
@@ -1110,90 +1116,40 @@ public abstract class AbstractTests
     }
 
     /**
-     * Creates a test user, abstracting out the differences.
-     * 
-     * @param drone Webdrone instance
-     * @param userName the desired username (should be a valid email address)
-     * @param password User's password, usually DEFAULT_PASSWORD
-     * @throws Exception
+     * Method to get Cloud Console URL for specific Cloud env.
      */
-
-    public static void createTestUserWithoutGroup(WebDrone drone, String userName, String password) throws Exception
+    public static String getCloudConsoleURL(WebDrone drone)
     {
-        createTestUser(drone, userName, password, null);
+        String shareURL = dronePropertiesMap.get(drone).getShareUrl();
+        CloudConsolePage cloudConsolePage = new CloudConsolePage(drone);
+        return cloudConsolePage.getCloudConsoleUrl(shareURL);
     }
 
     /**
-     * Creates a test user, abstracting out the differences.
-     * TODO: This should probably have added logic around AsTenantAdmin or not.
-     * 
-     * @param drone Webdrone instance
-     * @param userName the desired username (should be a valid email address)
-     * @param password User's password, usually DEFAULT_PASSWORD
-     * @param groupMembership (this should be optional) the name of a group to join (on premise only)
-     * @throws Exception
+     * Getter method to get Drone Map
+     * @return droneMap
      */
-    public static void createTestUser(WebDrone drone, String userName, String password, String groupMembership) throws Exception
+    public Map<String, WebDrone> getDroneMap()
     {
-        String firstName = "firstName-" + System.currentTimeMillis();
-        String lastName = "lastName-" + System.currentTimeMillis();
-        boolean created;
-        if (isAlfrescoVersionCloud(drone))
-        {
-            created = CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, userName, firstName, lastName, password);
-        }
-        else if (groupMembership == null)
-        {
-            created = ShareUser.createEnterpriseUser(drone, ADMIN_USERNAME, userName, firstName, lastName, password);
-        }
-        else
-        {
-            created = ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, userName, firstName, lastName, password, groupMembership);
-        }
-        assertTrue(created);
+        return droneMap;
     }
-
+    
     /**
-     * Creates a test site.
+     * This util method gets the random number for the given length of return
+     * string.
      * 
-     * @param siteVisibility the SiteVisibility of the created site
+     * @param int length
+     * @return String
      */
-    public static String createTestSite(WebDrone drone, OpCloudTestContext testContext, String prefix, SiteVisibility siteVisibility, String createdUsername)
+    public static String getRandomStringWithNumders(int length)
     {
-        String siteName = testContext.createSiteName(prefix + "site-");
-        boolean created = SiteUtil.createSite(drone, siteName, siteVisibility.getDisplayValue());
-        assertTrue(created);
-        testContext.addSite(createdUsername, siteName);
+        StringBuilder rv = new StringBuilder();
+        Random rnd = new Random();
+        char from[] = "0123456789".toCharArray();
 
-        return siteName;
+        for (int i = 0; i < length; i++)
+            rv.append(from[rnd.nextInt((from.length - 1))]);
+        return rv.toString();
     }
 
-    /**
-     * Creates the test sites.
-     * 
-     * @param numOfSites the number of sites required
-     */
-    public static void createTestSites(WebDrone drone, OpCloudTestContext testContext, String prefix, SiteVisibility siteVisibility, String createdUsername, int numOfSites)
-            throws InterruptedException
-    {
-        for (int i = 0; i < numOfSites; i++)
-        {
-            createTestSite(drone, testContext, prefix, siteVisibility, createdUsername);
-
-            // TODO: Remove this silly code. (once create site uses API)
-            // sleep needed because the SiteUtil.createSite method doesn't work when called lots in quick succession.
-            Thread.sleep(1000l);
-        }
-    }
-
-    /**
-     * Compact proxy for the logger.trace method.
-     * 
-     * @param string to log
-     */
-    public static void traceLog(String string)
-    {
-        if (logger.isTraceEnabled())
-            logger.trace(string);
-    }
 }

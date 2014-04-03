@@ -1747,13 +1747,15 @@ public class CloudSyncAccessTest2 extends AbstractCloudSyncTest
 
         // admin user joins the site.
         ShareUser.login(drone, adminUserPrem, DEFAULT_PASSWORD);
+
         ShareUserMembers.userRequestToJoinSite(drone, siteName);
+
         ShareUser.logout(drone);
 
         // 3. User1 is logged in Alfresco Share (On-premise)
         ShareUser.login(hybridDrone, testUser1, DEFAULT_PASSWORD);
-        
-        // 4. Create any site (e.g. Test) in Alfresco Share (On-premise) by user1 
+
+        // 4. Create any site (e.g. Test) in Alfresco Share (On-premise) by user1
         ShareUser.createSite(hybridDrone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.logout(hybridDrone);
 
