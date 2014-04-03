@@ -466,8 +466,9 @@ public interface FileDirectoryInfo
      SelectAspectsPage selectManageAspects();
      
      /**
-     * @return
-     */
+      * Check if comment link is present.
+      * @return boolean
+      */
      boolean isCommentLinkPresent();
 
      /**
@@ -616,4 +617,25 @@ public interface FileDirectoryInfo
      * This method is used to click on more link, on file directory info.
      */
     void selectMoreLink();
+    
+    /**
+     * This method does the clicking event and opens the coments section from doclib page.
+     * 
+     * @return HtmlPage
+     */
+    HtmlPage clickCommentsLink();
+    
+    /**
+     * This method gets the comments tooltip from doclib page.
+     * 
+     * @return String
+     */
+    String getCommentsToolTip();
+    
+    /**
+     * This method gets the comments count from doclib page.
+     * 
+     * @return int
+     */
+    int getCommentsCount();
 }

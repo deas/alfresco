@@ -204,6 +204,8 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         // Content CheckBox
         Assert.assertFalse(thisRow.isCheckboxSelected());
         thisRow.selectCheckbox();
+        documentLibPage = documentLibPage.render();
+        thisRow = documentLibPage.getFileDirectoryInfo(folderName);
         Assert.assertTrue(thisRow.isCheckboxSelected());
 
         // UnSelect
@@ -341,8 +343,8 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
     {
         // Get File
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
-        SitePage sitePage = thisRow.selectThumbnail().render();
-        Assert.assertTrue(sitePage instanceof DocumentDetailsPage);
+        DocumentDetailsPage detailsPage = thisRow.selectThumbnail().render();
+        Assert.assertNotNull(detailsPage);
     }
 
     @Test(groups={"alfresco-one"}, priority=18)
@@ -356,8 +358,8 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
 
             // Get File
             FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(folderName);
-            SitePage sitePage = thisRow.selectThumbnail().render();
-            Assert.assertTrue(sitePage instanceof DocumentLibraryPage);
+            DocumentLibraryPage doclib = thisRow.selectThumbnail().render();
+            Assert.assertNotNull(doclib);
         }
         catch (Throwable e)
         {
@@ -739,5 +741,73 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         drone.refresh();
         documentLibPage = drone.getCurrentPage().render();
         Assert.assertEquals(documentLibPage.getFileDirectoryInfo(folderName).getName(), folderName);
+    }
+    
+    @Test(groups = "Enterprise4.2", priority = 47)
+    public void commentsTest() throws IOException
+    {
+        String comment = "test";
+        String newComment = "test updated";
+
+        // Folder
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        
+        Assert.assertTrue(thisRow.isCommentLinkPresent());
+        Assert.assertTrue(thisRow.getCommentsToolTip().equalsIgnoreCase("Comment on this Folder"));
+        
+        FolderDetailsPage folderDetailsPage = thisRow.clickCommentsLink().render();
+        folderDetailsPage = folderDetailsPage.addComment("test").render();
+        
+        documentLibPage = folderDetailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+        
+        thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        Assert.assertTrue(thisRow.getCommentsCount()==1);
+        
+        folderDetailsPage = thisRow.clickCommentsLink().render();
+        
+        folderDetailsPage = folderDetailsPage.editComment(comment, newComment).render();
+        folderDetailsPage = folderDetailsPage.saveEditComments().render();
+        
+        folderDetailsPage = folderDetailsPage.editComment(newComment, "testing").render();
+        folderDetailsPage.cancelEditComments();
+        
+        folderDetailsPage = folderDetailsPage.removeComment(newComment).render();
+        
+        documentLibPage = folderDetailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+        thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        Assert.assertTrue(thisRow.getCommentsCount()==0);
+        
+        // File
+        File tempFile = SiteUtil.prepareFile();
+        
+        UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
+        documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
+        
+        thisRow = documentLibPage.getFileDirectoryInfo(tempFile.getName());
+        
+        Assert.assertTrue(thisRow.isCommentLinkPresent());
+        Assert.assertTrue(thisRow.getCommentsToolTip().equalsIgnoreCase("Comment on this document"));
+        
+        DocumentDetailsPage detailsPage = thisRow.clickCommentsLink().render();
+        detailsPage = detailsPage.addComment("test").render();
+        
+        documentLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+        
+        thisRow = documentLibPage.getFileDirectoryInfo(tempFile.getName());
+        Assert.assertTrue(thisRow.getCommentsCount()==1);
+        
+        detailsPage = thisRow.clickCommentsLink().render();
+        
+        detailsPage = detailsPage.editComment(comment, newComment).render();
+        detailsPage = detailsPage.saveEditComments().render();
+        
+        detailsPage = detailsPage.editComment(newComment, "testing").render();
+        detailsPage.cancelEditComments();
+        
+        detailsPage = detailsPage.removeComment(newComment).render();
+        
+        documentLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+        thisRow = documentLibPage.getFileDirectoryInfo(tempFile.getName());
+        Assert.assertTrue(thisRow.getCommentsCount()==0);
     }
 }

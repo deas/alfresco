@@ -48,11 +48,11 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
         
         if(isFolder())
         {
-            THUMBNAIL = "div.alf-gallery-item-thumbnail>div+div+span a>img";  
+            THUMBNAIL = "div.alf-gallery-item-thumbnail>div+div+span a";  
         }
         else
         {
-            THUMBNAIL = "div.alf-gallery-item-thumbnail>div+div+a>img";
+            THUMBNAIL = "div.alf-gallery-item-thumbnail>div+div+a";
         }
     }
     
@@ -86,5 +86,15 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
         }
 
         throw new PageOperationException("Error in finding the file size.");
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectCheckbox()
+     */
+    @Override
+    public void selectCheckbox()
+    {
+        drone.mouseOverOnElement(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']",getName()))));
+        super.selectCheckbox();
     }
 }

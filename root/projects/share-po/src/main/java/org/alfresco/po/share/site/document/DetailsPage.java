@@ -485,18 +485,41 @@ public abstract class DetailsPage extends SitePage
      */
     public HtmlPage addComment(final String comment)
     {
-        WebElement addComment = drone.findAndWait(By.cssSelector(ADD_COMMENT_BUTTON));
-        if (logger.isTraceEnabled())
+        WebElement addComment = null;
+        WebElement tinymceaddCommentButton = null;
+        
+        try
         {
-            logger.trace(String.format("Add Comment panel isDisplayed : %s ", addComment.isDisplayed()));
+            addComment = drone.findAndWait(By.cssSelector(ADD_COMMENT_BUTTON));
+
+            if (logger.isTraceEnabled())
+            {
+                logger.trace(String.format("Add Comment panel isDisplayed : %s ", addComment.isDisplayed()));
+            }
         }
-        if (addComment.isDisplayed())
+        catch(TimeoutException e)
+        {
+            try
+            {
+                tinymceaddCommentButton = drone.findAndWait(By.cssSelector("button[id$='default-add-submit-button']"));
+
+                if (logger.isTraceEnabled())
+                {
+                    logger.trace(String.format("Add Comment panel isDisplayed in tinyMCE editor : %s ", tinymceaddCommentButton.isDisplayed()));
+                }
+
+            }
+            catch(TimeoutException te) {}
+        }
+        
+        if ((addComment != null && addComment.isDisplayed()) || (tinymceaddCommentButton != null && tinymceaddCommentButton.isDisplayed()))
         {
 
             boolean isDocument = false;
             boolean isFolder = false;
             String jsElementButtonId = "";
             String whichPage = getTitle();
+            String addCommentButtonId = null;
 
             if (whichPage.contains("Document"))
             {
@@ -506,14 +529,13 @@ public abstract class DetailsPage extends SitePage
             {
                 isFolder = true;
             }
-            String addCommentButtonId = addComment.getAttribute("id");
+            
             /*
              * Adding comment uses the rich editor to ensure it works on all
              * drivers we are using a js script to click on add comment, enter
              * comment to rich editor and double click on adding comment button
              * to submit.
              */
-            String addCommentJs = String.format("document.getElementById('%s').click();", addCommentButtonId);
             String setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", comment);
 
             if (isDocument)
@@ -526,7 +548,13 @@ public abstract class DetailsPage extends SitePage
             }
             String submitCommentJs = String.format("var t = document.getElementById('%s'); t.click(); t.click();", jsElementButtonId);
 
-            drone.executeJavaScript(addCommentJs);
+            if(addComment != null)
+            {
+                addCommentButtonId = addComment.getAttribute("id");
+                String addCommentJs = String.format("document.getElementById('%s').click();", addCommentButtonId);
+                drone.executeJavaScript(addCommentJs);
+            }
+
             drone.executeJavaScript(setCommentJs);
             /*
              * As of Alfresco v4.2 the add comment button is enclosed in a span
@@ -555,7 +583,7 @@ public abstract class DetailsPage extends SitePage
                 logger.trace("Add Comment has been executed");
             }
             // check to ensure js completed
-            if (drone.findAndWait(By.id(addCommentButtonId)).isDisplayed())
+            if (addCommentButtonId != null && drone.findAndWait(By.id(addCommentButtonId)).isDisplayed())
             {
                 if (logger.isTraceEnabled())
                 {
@@ -901,5 +929,73 @@ public abstract class DetailsPage extends SitePage
             logger.error("LinkType is not present Css value is :");
         }
         return false;
+    }
+    
+    /**
+     * Editing a comment to a details by selecting the edit link,
+     * as this is based on a rich editor JavaScript was used to enter the
+     * comment.
+     * 
+     * @param comment String user comment
+     * @param newComment String user new comment
+     * 
+     * @return {@link HtmlPage} page response
+     */
+    public HtmlPage editComment(final String comment, final String newComment)
+    {
+        try
+        {
+            WebElement editCommentLink = drone.findAndWait(By.xpath(String.format("//div[@class='comment-content']/p[text()='%s']/../..", comment)));
+            drone.mouseOverOnElement(editCommentLink);
+            editCommentLink.findElement(By.cssSelector("span.comment-actions a")).click();
+            
+            String setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", newComment);
+            drone.executeJavaScript(setCommentJs);
+            
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Exceeded time to find the edit comment link" + te.getMessage());
+        }
+        throw new PageException("Edit comment form has not been rendered in time");
+    }
+    
+    /**
+     * Mimics the action of saving the edited comments on details page.
+     * 
+     * @return {@link DetailsPage}
+     */
+    public HtmlPage saveEditComments()
+    {
+        try
+        {
+            getVisibleElement(By.cssSelector("button[id$='submit-button']")).click();
+            drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.error("Unable to find the edit comments save button css."+ e.getMessage());
+        }
+        throw new PageException("Error in saving the edit comments.");
+    }
+    
+    /**
+     * Mimics the action of cancelling the edited comments on details page.
+     * 
+     * @return {@link DetailsPage}
+     */
+    public void cancelEditComments()
+    {
+        try
+        {
+            getVisibleElement(By.cssSelector("button[id$='cancel-button']")).click();
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.error("Unable to find the edit comments cancel button css."+ e.getMessage());
+            throw new PageException("Error in cancelling the edit comments.");
+        }
     }
 }

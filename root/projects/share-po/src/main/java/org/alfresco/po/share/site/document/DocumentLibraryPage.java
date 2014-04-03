@@ -1354,4 +1354,24 @@ public class DocumentLibraryPage extends SitePage
     {
         return viewType;
     }
+
+    /**
+     * This method does the clicking on My Farourites link, which presents on Document Library page Tree menu.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectMyFavouritesOnTreeMenu()
+    {
+        try
+        {
+            drone.findAndWait(By.linkText("My Favorites")).click();
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Exceeded time to find the the css" + te.getMessage());
+        }
+
+        throw new PageException("Error in selecting the My Favourties on DocLib Tree Menu.");
+   }
 }

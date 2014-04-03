@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.alfresco.po.share.AlfrescoVersion;
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.exception.AlfrescoVersionException;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.user.CloudSignInPage;
@@ -108,7 +109,6 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     private static final By COMMENT_LINK = By.cssSelector("a.comment");
     private static final By QUICK_SHARE_LINK = By.cssSelector("a.quickshare-action");
     protected static final By VIEW_IN_BROWsER_ICON = By.cssSelector("div.document-view-content>a");
-
     private static final By EDIT_PROP_ICON = By.cssSelector("div.document-edit-properties>a");
     
     public FileDirectoryInfoImpl(String nodeRef,WebElement webElement, WebDrone drone)
@@ -1692,18 +1692,18 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div.bd>span.message"), text, timeInSeconds);
     }
     
-    /**
-     * Check if comment link is present.
-     * @return
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isCommentLinkPresent()
      */
+    @Override
     public boolean isCommentLinkPresent()
     {
         try
         {
-            WebElement commentLink = find(COMMENT_LINK);
+            WebElement commentLink = findAndWait(COMMENT_LINK);
             return commentLink.isDisplayed();
         }
-        catch (NoSuchElementException nse)
+        catch (TimeoutException nse)
         {
             // no log needed due to negative cases.
         }
@@ -2005,5 +2005,67 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     public boolean isInfoIconVisible()
     {
         throw new UnsupportedOperationException("Info Icon is not available in this view type.");
+    }
+   
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#clickCommentsLink()
+     */
+    @Override
+    public HtmlPage clickCommentsLink()
+    {
+        try
+        {
+            findAndWait(COMMENT_LINK).click();
+
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch (TimeoutException ex)
+        {
+            logger.error("Exceeded time to find the comments element", ex);
+        }
+
+        throw new PageException("Unable to find the comments Link.");
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#getCommentsToolTip()
+     */
+    @Override
+    public String getCommentsToolTip()
+    {
+        try
+        {
+            return findAndWait(COMMENT_LINK).getAttribute("title");
+        }
+        catch (TimeoutException ex)
+        {
+            logger.error("Exceeded time to find the comments tooltip element", ex);
+        }
+
+        throw new PageException("Unable to find the comments tooltip.");
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#getCommentsCount()
+     */
+    @Override
+    public int getCommentsCount()
+    {
+        int cnt = 0;
+        try
+        {
+            String count = findAndWait(By.cssSelector("span.comment-count")).getText();
+            cnt = Integer.parseInt(count);
+        }
+        catch(NumberFormatException nfe)
+        {
+            logger.error("Unable to convert comments count string value into int" + nfe.getMessage());
+        }
+        catch (TimeoutException ex)
+        {
+            logger.error("Exceeded time to find the comments tooltip element" + ex.getMessage());
+        }
+
+        return cnt;
     }
 }

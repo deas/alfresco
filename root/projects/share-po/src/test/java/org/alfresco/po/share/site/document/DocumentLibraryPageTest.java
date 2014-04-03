@@ -11,8 +11,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.enums.ZoomStyle;
 import org.alfresco.po.share.site.NewFolderPage;
+import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.site.UploadFilePage;
@@ -529,5 +532,26 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         
         Assert.assertNotNull(workFlowPage);
         Assert.assertTrue(workFlowPage.getTitle().contains("Start Workflow"));
+    }
+    
+    @Test(dependsOnMethods = "selectStartWorkFlow", groups="Enterprise4.2")
+    public void testMyFavourite() throws Exception
+    {
+        SiteFinderPage siteFinder = ((SharePage) drone.getCurrentPage()).getNav().selectSearchForSites().render();
+        siteFinder = siteFinder.searchForSite(siteName).render();
+        SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
+        documentLibPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.getNavigation().selectDetailedView().render();
+        
+        File tempFile = SiteUtil.prepareFile();
+        UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
+        documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(tempFile.getName());
+        Assert.assertFalse(thisRow.isFavourite());
+        thisRow.selectFavourite();
+        documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();;
+        documentLibPage = documentLibPage.selectMyFavouritesOnTreeMenu().render();
+        Assert.assertTrue(documentLibPage.getFiles().size() == 1);
+        Assert.assertTrue(documentLibPage.getFiles().get(0).getName().equalsIgnoreCase(tempFile.getName()));
     }
  }  

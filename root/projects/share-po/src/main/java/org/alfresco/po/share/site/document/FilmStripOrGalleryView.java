@@ -725,26 +725,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     }
 
     /* (non-Javadoc)
-     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectCheckbox()
-     */
-    @Override
-    public void selectCheckbox()
-    {
-        clickInfoIcon(true);
-        super.selectCheckbox();
-    }
-    
-    /* (non-Javadoc)
-     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isCheckboxSelected()
-     */
-    @Override
-    public boolean isCheckboxSelected()
-    {
-        clickInfoIcon(true);
-        return super.isCheckboxSelected();
-    }
-
-    /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isInfoPopUpDisplayed()
      */
     @Override
@@ -891,5 +871,45 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     {
         clickInfoIcon(false);
         return super.clickShareLink();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#clickCommentsLink()
+     */
+    @Override
+    public HtmlPage clickCommentsLink()
+    {
+        clickInfoIcon(false);
+        return super.clickCommentsLink();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#getCommentsToolTip()
+     */
+    @Override
+    public String getCommentsToolTip()
+    {
+        clickInfoIcon(false);
+        return super.getCommentsToolTip();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#getCommentsCount()
+     */
+    @Override
+    public int getCommentsCount()
+    {
+        clickInfoIcon(false);
+        return super.getCommentsCount();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isCommentLinkPresent()
+     */
+    @Override
+    public boolean isCommentLinkPresent()
+    {
+        clickInfoIcon(false);
+        return super.isCommentLinkPresent();
     }
 }

@@ -163,4 +163,31 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("ShareLink is not available in Simple View File Directory Info.");
     }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#clickCommentsLink()
+     */
+    @Override
+    public HtmlPage clickCommentsLink()
+    {
+        throw new UnsupportedOperationException("CommentsLink is not available in Simple View File Directory Info.");
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#getCommentsToolTip()
+     */
+    @Override
+    public String getCommentsToolTip()
+    {
+        throw new UnsupportedOperationException("CommentsToolTip is not available in Simple View File Directory Info.");
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#getCommentsCount()
+     */
+    @Override
+    public int getCommentsCount()
+    {
+        throw new UnsupportedOperationException("Comments Count is not available in Simple View File Directory Info.");
+    }
 }
