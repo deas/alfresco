@@ -198,7 +198,7 @@ public class LiveSearchDropdown extends SharePage
         }
         catch (TimeoutException te)
         {
-            logger.error("NClose live search dropdown button not present " + te);
+            logger.error("Close live search dropdown button not present " + te);
             throw new PageException("Close live search dropdown button is not visible", te);
         }
 
