@@ -759,7 +759,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         
         EditDocumentPropertiesPopup editDocumentPropertiesPopup = documentLibPage.getFileDirectoryInfo(folderName).selectEditProperties().render();
         // Add category and click ok
-        CategoryPage categoryPage = editDocumentPropertiesPopup.getCategory();
+        CategoryPage categoryPage = editDocumentPropertiesPopup.getCategory().render();
         // Verify added category is displayed beneath categories part
         
         // Select add category

@@ -563,16 +563,16 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         
         EditDocumentPropertiesPopup editDocumentPropertiesPopup = documentLibPage.getFileDirectoryInfo(folderName).selectEditProperties().render();
         // Add category and click ok
-        CategoryPage categoryPage = editDocumentPropertiesPopup.getCategory();
+        CategoryPage categoryPage = editDocumentPropertiesPopup.getCategory().render();
         // Verify added category is displayed beneath categories part
         
         // Select add category
         categoryPage.add(Arrays.asList(Categories.LANGUAGES));
 
         // Click on save button in edit document properties pop up page
-        documentLibPage = (DocumentLibraryPage) categoryPage.clickOk().render();
+        categoryPage.clickOk().render();
 
-        editDocumentPropertiesPopup.selectSave().render();
+        editDocumentPropertiesPopup.selectSave().render();;
         
         documentLibPage = documentLibPage.getFileDirectoryInfo(folderName).clickOnCategoryNameLink(Categories.LANGUAGES.getValue()).render();
         Assert.assertTrue(documentLibPage.isFileVisible(folderName));

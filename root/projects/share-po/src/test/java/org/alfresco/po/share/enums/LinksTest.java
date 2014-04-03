@@ -42,7 +42,7 @@ public class LinksTest
         assertEquals(Links.COPY_TO.getLink(DetailsPageType.COMMON), "div[id$='onActionCopyTo']");
         assertEquals(Links.MOVE_TO.getLink(DetailsPageType.COMMON), "div[id$='onActionMoveTo']");
         assertEquals(Links.DELETE_CONTENT.getLink(DetailsPageType.COMMON), "div[id$='onActionDelete']");
-        assertEquals(Links.MANAGE_ASPECTS.getLink(DetailsPageType.COMMON), ".onActionManageAspects");        
+        assertEquals(Links.MANAGE_ASPECTS.getLink(DetailsPageType.COMMON), "div[id$='onActionManageAspects']");        
         assertEquals(Links.CHNAGE_TYPE.getLink(DetailsPageType.COMMON), "div[id$='onActionChangeType']");
         assertEquals(Links.EDIT_PROPERTIES.getLink(DetailsPageType.COMMON), ".document-edit-metadata");
          
@@ -54,7 +54,7 @@ public class LinksTest
     {
         assertEquals(Links.MANAGE_RULES.getType(), Links.DetailsPageType.FOLDER);
         assertEquals(Links.MANAGE_RULES.getLink(DetailsPageType.FOLDER), ".folder-manage-rules");
-        assertEquals(Links.DOWNLOAD_FOLDER.getLink(DetailsPageType.FOLDER), ".onActionFolderDownload");
+        assertEquals(Links.DOWNLOAD_FOLDER.getLink(DetailsPageType.FOLDER), "div[id$='onActionFolderDownload']");
         assertEquals(Links.VIEW_IN_EXPLORER.getLink(DetailsPageType.FOLDER), ".view-in-explorer");
     }
     
@@ -64,11 +64,11 @@ public class LinksTest
         assertEquals(Links.DOWNLOAD_DOCUMENT.getType(), Links.DetailsPageType.DOCUMENT);
         assertEquals(Links.DOWNLOAD_DOCUMENT.getLink(DetailsPageType.DOCUMENT), ".document-download");
         assertEquals(Links.VIEW_IN_EXLPORER.getLink(DetailsPageType.DOCUMENT), ".document-view-content");
-        assertEquals(Links.UPLOAD_DOCUMENT.getLink(DetailsPageType.DOCUMENT), ".onActionUploadNewVersion");
+        assertEquals(Links.UPLOAD_DOCUMENT.getLink(DetailsPageType.DOCUMENT), "div[id$='onActionUploadNewVersion']");
         assertEquals(Links.DOCUMENT_INLINE_EDIT.getLink(DetailsPageType.DOCUMENT), ".document-inline-edit");       
-        assertEquals(Links.EDIT_OFFLINE.getLink(DetailsPageType.DOCUMENT), ".onActionEditOffline");
-        assertEquals(Links.GOOGLE_DOCS_EDIT.getLink(DetailsPageType.DOCUMENT), ".onGoogledocsActionEdit");
-        assertEquals(Links.START_WORKFLOW.getLink(DetailsPageType.DOCUMENT), ".onActionAssignWorkflow");
-        assertEquals(Links.PUBLISH_ACTION.getLink(DetailsPageType.DOCUMENT), ".onActionPublish");
+        assertEquals(Links.EDIT_OFFLINE.getLink(DetailsPageType.DOCUMENT), "div[id$='onActionEditOffline']");
+        assertEquals(Links.GOOGLE_DOCS_EDIT.getLink(DetailsPageType.DOCUMENT), "div[id$='onGoogledocsActionEdit']");
+        assertEquals(Links.START_WORKFLOW.getLink(DetailsPageType.DOCUMENT), "div[id$='onActionAssignWorkflow']");
+        assertEquals(Links.PUBLISH_ACTION.getLink(DetailsPageType.DOCUMENT), "div[id$='onActionPublish']");
     }
 }
