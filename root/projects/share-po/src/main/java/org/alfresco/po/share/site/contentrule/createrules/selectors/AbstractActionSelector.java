@@ -22,6 +22,7 @@ public abstract class AbstractActionSelector
     private static final By SELECT_DESTINATION_BUTTON = By
             .cssSelector("span[class*='destination-dialog-button'] button");
     private static final By MIMETYPE_SELECT           = By.cssSelector("select[title='Mimetype']");
+    private static final By RUN_SCRIPTS_SELECT = By.xpath("//select[@class='suppress-validation']");
 
     protected AbstractActionSelector(WebDrone drone)
     {
@@ -58,6 +59,15 @@ public abstract class AbstractActionSelector
             mimeTypesSelects.add(new Select(mimeTypeElement));
         }
         mimeTypesSelects.get(mimeTypesSelects.size()-1).selectByVisibleText(visibleText);
+    }
+
+    protected void selectScript(String visibleName) {
+        List<WebElement> scriptOptions = drone.findAndWaitForElements(RUN_SCRIPTS_SELECT);
+        List<Select> scriptSelects = new ArrayList<Select>();
+        for (WebElement scriptOption : scriptOptions) {
+            scriptSelects.add(new Select(scriptOption));
+        }
+        scriptSelects.get(scriptSelects.size() - 1).selectByVisibleText(visibleName);
     }
 
     protected WebDrone getDrone()

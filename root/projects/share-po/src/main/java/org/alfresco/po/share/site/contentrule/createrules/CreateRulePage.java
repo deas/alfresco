@@ -9,11 +9,7 @@ import org.alfresco.po.share.site.contentrule.FolderRulesPage;
 import org.alfresco.po.share.site.contentrule.FolderRulesPageWithRules;
 import org.alfresco.po.share.site.contentrule.createrules.selectors.AbstractActionSelector;
 import org.alfresco.po.share.site.contentrule.createrules.selectors.AbstractIfSelector;
-import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.ActionSelectorCloudImpl;
-import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.ActionSelectorEnterpImpl;
-import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.IfSelectorCloudImpl;
-import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.IfSelectorEnterpImpl;
-import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.WhenSelectorImpl;
+import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.*;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
@@ -38,6 +34,8 @@ public class CreateRulePage extends SitePage
             .cssSelector("ul[id$=ruleConfigIfCondition-configs] select[class$='config-name']");
     private static final By ACTION_OPTIONS_SELECT = By
             .cssSelector("ul[id$=ruleConfigAction-configs]>li select[class$='config-name']");
+    private static final By IF_ERRORS_OCCURS_RUN_SCRIPTS_SELECT = By
+            .xpath("//div[@class='form-field scriptRef']/select[contains(@id,'default-scriptRef')]");
 
     //textField
     private static final By NAME_FIELD        = By.cssSelector("input[name='title']");
@@ -48,6 +46,8 @@ public class CreateRulePage extends SitePage
             .cssSelector("div[class='form-field disabled'] input[title='Disable rule']");
     private static final By CHECK_BOX_APPLY_TO_SUBFOLDER = By
             .cssSelector("div[class='form-field applyToChildren'] input[title='Rule applies to subfolders']");
+    private static final By CHECK_BOX_RULE_IN_BACKGROUND = By
+            .cssSelector("div[class='form-field executeAsynchronously'] input[title='Run rule in background']");
 
     //Messages
     private static final By     BALLOON_TEXT_MESSAGE         = By
@@ -136,6 +136,10 @@ public class CreateRulePage extends SitePage
         return new WhenSelectorImpl(drone);
     }
 
+    public IfErrorEnterpImpl getIfErrorObj() {
+        return new IfErrorEnterpImpl(drone);
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends AbstractIfSelector> T getIfOptionObj()
     {
@@ -189,6 +193,12 @@ public class CreateRulePage extends SitePage
     {
         WebElement applyToSubfolderCheckBox = drone.findAndWait(CHECK_BOX_APPLY_TO_SUBFOLDER);
         applyToSubfolderCheckBox.click();
+    }
+
+    public void selectRunRuleInBackgroundCheckbox()
+    {
+        WebElement runRuleInBackgroundCheckbox = drone.findAndWait(CHECK_BOX_RULE_IN_BACKGROUND);
+        runRuleInBackgroundCheckbox.click();
     }
 
     

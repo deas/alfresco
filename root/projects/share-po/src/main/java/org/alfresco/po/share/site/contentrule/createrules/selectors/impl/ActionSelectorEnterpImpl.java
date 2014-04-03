@@ -57,9 +57,10 @@ public class ActionSelectorEnterpImpl extends AbstractActionSelector
         super(drone);
     }
 
-    public void selectExecuteScript()
-    {
+    public void selectExecuteScript(String visibleName) {
         super.selectAction(PerformActions.EXECUTE_SCRIPT.numberPosition);
+        super.selectScript(visibleName);
+
     }
 
     public void selectCopy(String siteName, String... folders)

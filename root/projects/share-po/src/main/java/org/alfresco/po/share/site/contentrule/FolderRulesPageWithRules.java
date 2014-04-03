@@ -7,8 +7,12 @@ import java.util.List;
 import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -20,6 +24,7 @@ import org.openqa.selenium.WebElement;
  */
 public class FolderRulesPageWithRules extends FolderRulesPage
 {
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     private static final By EDIT_BUTTON        = By.cssSelector("button[id*='edit-button-button']");
     private static final By DELETE_BUTTON      = By.cssSelector("button[id*='delete-button-button']");
@@ -114,5 +119,29 @@ public class FolderRulesPageWithRules extends FolderRulesPage
     public boolean isPageCorrect(String folderName)
     {
         return (super.isTitleCorrect(folderName) && isRuleDetailsDisplay());
+    }
+
+    // return folder name by inherited rule name
+    public String getInheritedRulesFolderName(String ruleName)
+    {
+        if (ruleName == null)
+        {
+            throw new UnsupportedOperationException("Name of the rule is required");
+        }
+
+
+        try
+        {
+            String inheritedFolderXpath = String.format("//a[contains(text(),'%s')]" +
+                    "/following-sibling::a[@class='inherited-folder']",ruleName);
+            String folderName = drone.findAndWait(By.xpath(inheritedFolderXpath)).getText();
+
+            return folderName;
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.error("Not able to find the inherited rule.");
+        }
+        throw new PageException("Not able to find the inherited rule element on this page.");
     }
 }
