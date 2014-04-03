@@ -39,7 +39,7 @@ public class SearchBox extends HtmlElement
 {
     private final Log logger = LogFactory.getLog(SearchBox.class);
     private final By selector;
-
+    private final By liveSearchDropdownSelector;
     /**
      * Constructor.
      */
@@ -48,6 +48,7 @@ public class SearchBox extends HtmlElement
         super(drone);
         String searchField = isDojoSupport ? "input.alf-search-box-text" : "input[id$='searchText']";
         selector = By.cssSelector(searchField);
+        liveSearchDropdownSelector = By.cssSelector("div[id='uniqName_0_2'] div[data-dojo-attach-point='titleNodeDocs']");
     }
 
     /**
@@ -81,4 +82,34 @@ public class SearchBox extends HtmlElement
         }
         return FactorySharePage.resolvePage(drone);
     }
+
+    /**
+     * Performs the live search by typing the term into search field
+     * @param term String term to search
+     * @return true when actioned
+     */
+    public LiveSearchDropdown liveSearch(final String term)
+    {
+        if(term == null || term.isEmpty())
+        {
+            throw new UnsupportedOperationException("Search term is required to perform a search");
+        }
+        try
+        {
+            
+            WebElement input = drone.findAndWait(selector);
+            input.clear();
+            input.sendKeys(term);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Apply live search on the keyword: " + term);
+            }
+            drone.waitUntilElementPresent(liveSearchDropdownSelector, SECONDS.convert(drone.getDefaultWaitTime(), MILLISECONDS));
+        }
+        catch (NoSuchElementException nse){ }
+        return new LiveSearchDropdown(drone);
+    }
+
+
+
 }

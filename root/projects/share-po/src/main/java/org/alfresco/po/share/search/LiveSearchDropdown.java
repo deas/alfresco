@@ -1,0 +1,292 @@
+/*
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+package org.alfresco.po.share.search;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.alfresco.po.share.SharePage;
+import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
+
+
+/**
+ * Interactions with live search dropdown
+ * @author jcule
+ *
+ */
+public class LiveSearchDropdown extends SharePage
+{
+    private static Log logger = LogFactory.getLog(LiveSearchDropdown.class);
+
+    // Documents Title
+    private static final String DOCUMENTS_TITLE = "div[id='uniqName_0_2'] div[data-dojo-attach-point='titleNodeDocs']";
+
+    // Sites Title
+    private static final String SITES_TITLE = "div[id='uniqName_0_2'] div[data-dojo-attach-point='titleNodeSites']";
+
+    // People Title
+    private static final String PEOPLE_TITLE = "div[id='uniqName_0_2'] div[data-dojo-attach-point='titleNodePeople']";
+
+    // Close button
+    private static final String CLOSE_DROPDOWN = "div[id='uniqName_0_2'] div.alf-livesearch-clear a[title='Clear']";
+
+    // Document results 
+    private static final String DOCUMENT_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodeDocs'] div.alf-livesearch-item";
+    
+    //Sites Results
+    private static final String SITES_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodeSites'] div.alf-livesearch-item>a";
+    
+    //People Results
+    private static final String PEOPLE_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodePeople'] div.alf-livesearch-item>a";
+    
+    /**
+     * Constructor
+     * 
+     * @param drone
+     */
+    public LiveSearchDropdown(WebDrone drone)
+    {
+        super(drone);
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public LiveSearchDropdown render()
+    {
+        return render(new RenderTime(maxPageLoadingTime));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public LiveSearchDropdown render(RenderTime timer)
+    {
+        elementRender(timer, getVisibleRenderElement(By.cssSelector(DOCUMENTS_TITLE)),
+                getVisibleRenderElement(By.cssSelector(CLOSE_DROPDOWN)),
+                getVisibleRenderElement(By.cssSelector(SITES_TITLE)),
+                getVisibleRenderElement(By.cssSelector(PEOPLE_TITLE))); 
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public LiveSearchDropdown render(final long time)
+    {
+        return render(new RenderTime(time));
+    }
+
+    /**
+     * Gets the search results as a collection of LiveSearchDocumentResult.
+     * 
+     * @return Collections of search result
+     */
+    public List<LiveSearchDocumentResult> getSearchDocumentResults()
+    {
+        List<LiveSearchDocumentResult> results = new ArrayList<LiveSearchDocumentResult>();
+        try
+        {
+            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(DOCUMENT_RESULTS));
+            if (elements.size() > 0)
+            {
+                for (WebElement element : elements)
+                {
+                    results.add(new LiveSearchDocumentResult(element));
+                }
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No live search document results " + nse);
+            throw new PageException("Unable to find document search results.", nse);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("No live search document results " + te);
+            throw new PageException("Document search results are not visible", te);
+        }
+        return results;
+        
+    }
+
+    
+    /**
+     * Gets the sites search results as a collection.
+     * 
+     * @return Collections of search result
+     */
+    public List<String> getSearchSitesResults()
+    {
+        List<String> results = new ArrayList<String>();
+        try
+        {
+            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(SITES_RESULTS));
+            if (elements.size() > 0)
+            {
+                for (WebElement element : elements)
+                {
+                    results.add(element.getText());
+                }
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No live search sites results " + nse);
+            throw new PageException("Unable to find sites search results.", nse);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("No live search sites results " + te);
+            throw new PageException("Sites search results are not visible", te);
+        }
+        return results;
+    }
+
+    
+    
+    
+    /**
+     * Gets the people search results as a collection.
+     * 
+     * @return Collections of search result
+     */
+    public List<String> getSearchPeopleResults()
+    {
+        List<String> results = new ArrayList<String>();
+        try
+        {
+
+            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(PEOPLE_RESULTS));
+            if (elements.size() > 0)
+            {
+                for (WebElement element : elements)
+                {
+                    results.add(element.getText());
+                }
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No live search people results " + nse);
+            throw new PageException("Unable to find people search results.", nse);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("No live search people results " + te);
+            throw new PageException("People search results are not visible", te);
+        }
+        return results;
+    }
+    
+    /**
+     * clicks on close button
+     * 
+     */
+    public void closeLiveSearchDropdown()
+    {
+        try
+        {
+            WebElement closeDropdown = drone.findAndWait(By.cssSelector(CLOSE_DROPDOWN));
+            closeDropdown.click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Close live search dropdown button not present " + nse);
+            throw new PageException("Unable to find close live search dropdown button.", nse);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("NClose live search dropdown button not present " + te);
+            throw new PageException("Close live search dropdown button is not visible", te);
+        }
+        
+    }
+    
+    /**
+     * Checks if documents title is displayed
+     * @return
+     */
+    public boolean isDocumentsTitleVisible()
+    {
+        try
+        {
+            WebElement documentTitle = drone.find(By.cssSelector(DOCUMENTS_TITLE));
+            return documentTitle.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No live search documents title " + nse);
+            throw new PageException("Unable to find live search documents title.", nse);
+        }
+    }
+    
+    /**
+     * Checks if sites title is displayed
+     * @return
+     */
+    public boolean isSitesTitleVisible()
+    {
+        try
+        {
+            WebElement sitesTitle = drone.find(By.cssSelector(SITES_TITLE));
+            return sitesTitle.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No live search sites title " + nse);
+            throw new PageException("Unable to find live search sites title.", nse);
+        }
+    }
+
+
+    /**
+     * Checks if people title is displayed
+     * @return
+     */
+    public boolean isPeopleTitleVisible()
+    {
+        try
+        {
+            WebElement peopleTitle = drone.find(By.cssSelector(PEOPLE_TITLE));
+            return peopleTitle.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No live search people title " + nse);
+            throw new PageException("Unable to find live search people title.", nse);
+        }
+    }
+
+
+
+
+
+
+}
