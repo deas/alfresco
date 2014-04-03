@@ -31,7 +31,22 @@ public class ContentDetails
     private String title;
     private String description;
     private String content;
-    
+
+    public ContentDetails(String name, String title, String description, String content)
+    {
+        this.name = name;
+        this.title = title;
+        this.description = description;
+        this.content = content;
+    }
+
+    public ContentDetails(String name)
+    {
+        this.name = name;
+    }
+
+    public ContentDetails(){}
+
     public String getName()
     {
         return name;

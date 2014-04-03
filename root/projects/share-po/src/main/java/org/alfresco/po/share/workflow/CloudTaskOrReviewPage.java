@@ -99,6 +99,9 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
     private static final RenderElement ADD_ITEM_BUTTON_ELEMENT = getVisibleRenderElement(ADD_ITEMS_BUTTON);
     private static final RenderElement REMOVE_ALL_BUTTON_ELEMENT = getVisibleRenderElement(REMOVE_ALL_BUTTON);
     private static final RenderElement SELECTED_ITEMS_SECTION_ELEMENT = getVisibleRenderElement(SELECTED_ITEMS_SECTION);
+    private static final RenderElement WORKFLOW_DESCRIPTION_HELP_ICON_ELEMENT = getVisibleRenderElement(WORKFLOW_DESCRIPTION_HELP_ICON);
+    private static final RenderElement PRIORITY_DROPDOWN_ELEMENT = getVisibleRenderElement(PRIORITY_DROPDOWN);
+    private static final RenderElement DUE_DATE_ELEMENT = getVisibleRenderElement(DUE_DATE);
     private static final long TIME_LEFT = 1000;
 
     private final Log logger = LogFactory.getLog(this.getClass());
@@ -119,7 +122,8 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
     {
         elementRender(timer, MESSAGE_ELEMENT, DESTINATION_NETWORK_ELEMENT, DESTINATION_SITE_ELEMENT, DESTINATION_FOLDER_ELEMENT, DESTINATION_BUTTON_ELEMENT,
                     ASSIGNEE_OR_REVIEWERS_LABEL_ELEMENT, ASSIGNMENT_BUTTON_ELEMENT, AFTER_COMPLETION_DROPDOWN_ELEMENT, LOCK_ON_PREMISE_ELEMENT,
-                    ADD_ITEM_BUTTON_ELEMENT, REMOVE_ALL_BUTTON_ELEMENT, SELECTED_ITEMS_SECTION_ELEMENT);
+                    ADD_ITEM_BUTTON_ELEMENT, REMOVE_ALL_BUTTON_ELEMENT, SELECTED_ITEMS_SECTION_ELEMENT, WORKFLOW_DESCRIPTION_HELP_ICON_ELEMENT, PRIORITY_DROPDOWN_ELEMENT,
+                    DUE_DATE_ELEMENT);
         return this;
     }
 

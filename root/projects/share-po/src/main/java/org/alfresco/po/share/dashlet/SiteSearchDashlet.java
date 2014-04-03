@@ -278,7 +278,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         {
             logger.error("Not able to find the element: ", e);
         }
-        throw new PageOperationException("Not able to get the search items.");
+        return Collections.emptyList();
     }
     
     /**
