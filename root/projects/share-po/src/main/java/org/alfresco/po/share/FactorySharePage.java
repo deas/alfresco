@@ -55,7 +55,6 @@ import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
 import org.alfresco.po.share.site.document.EditInGoogleDocsPage;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.InlineEditPage;
@@ -427,14 +426,15 @@ public class FactorySharePage implements PageFactory
                 {
                     sharePage = new UploadFilePage(drone);
                 }
-                else if(dialogueID.contains("editDetails"))
-                {
-                    sharePage = new EditDocumentPropertiesPage(drone);
-                }
                 else if(dialogueID.contains("taggable-cntrl-picker"))
                 {
                     sharePage = new TagPage(drone);
                 }
+                else if(dialogueID.contains("editDetails"))
+                {
+                    sharePage = new EditDocumentPropertiesPage(drone);
+                }
+                
                 else if(dialogueID.contains("copyMoveTo"))
                 {
                     sharePage = new CopyOrMoveContentPage(drone);

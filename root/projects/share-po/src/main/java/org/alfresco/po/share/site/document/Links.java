@@ -19,6 +19,7 @@
 package org.alfresco.po.share.site.document;
 
 /**
+ * This class contains the CSS details of actions in details page of Folder, Document.
  * @author nshah
  *
  */

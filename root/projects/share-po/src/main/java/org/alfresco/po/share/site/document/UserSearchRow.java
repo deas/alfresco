@@ -26,6 +26,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 /**
+ * This is object to carry Search Row. 
  * @author nshah
  *
  */
@@ -47,8 +48,7 @@ public class UserSearchRow implements SearchRow
     
     @Override
     public HtmlPage clickAdd()
-    {
-        // TODO Auto-generated method stub
+    {       
         try
         {
             element.findElement(BUTTON_ADD).click();
@@ -87,8 +87,7 @@ public class UserSearchRow implements SearchRow
 
     @Override
     public String getUserName()
-    {
-        // TODO Auto-generated method stub
+    {        
         return this.userName;
     }
 
