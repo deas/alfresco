@@ -33,12 +33,13 @@ import org.openqa.selenium.WebElement;
 public class ShareDialogue extends SharePage
 {
     private static Log logger = LogFactory.getLog(ShareDialogue.class);
-    
-    private static final By SHARE_DIALOGUE_PARENT = By.xpath("//div[@class='hd']/..");   
+
+    private static final By SHARE_DIALOGUE_PARENT = By.xpath("//div[@class='hd']/..");
     private static final By CLOSE_BUTTON = By.cssSelector("a.container-close");
     private static final By TITLE_TEXT_UPLOAD_FILE = By.cssSelector("span");
     private static final By CANCEL_BUTTON = By.cssSelector("button[id*='cancel']");
     private static final By SHARE_DIALOGUE_HEADER = By.cssSelector("div.hd");
+
     /**
      * Constructor.
      * 
@@ -98,14 +99,14 @@ public class ShareDialogue extends SharePage
         try
         {
             drone.findFirstDisplayedElement(CLOSE_BUTTON).click();
-        } 
+        }
         catch (NoSuchElementException e)
         {
             throw new PageOperationException("Not able find the close button " + e);
         }
         return FactorySharePage.resolvePage(drone);
     }
-    
+
     /**
      * Helper method to click on the Cancel button to return to the original page
      */
@@ -126,13 +127,13 @@ public class ShareDialogue extends SharePage
         String title = "";
         try
         {
-            WebElement dialogue = getDialogueHeader();            
+            WebElement dialogue = getDialogueHeader();
             title = dialogue.getText();
             if (title.isEmpty())
             {
                 WebElement dialogueUploadFile = dialogue.findElement(TITLE_TEXT_UPLOAD_FILE);
                 title = dialogueUploadFile.getText();
-            }                
+            }
             return title;
         }
         catch (NoSuchElementException nse)
@@ -180,16 +181,14 @@ public class ShareDialogue extends SharePage
             return null;
         }
     }
-    
 
-    
     /**
      * Helper method to return right PageName for Share Dialogue displayed
      * 
      * @return String
      */
     public String getShareDialoguePageName()
-    {        
+    {
         String pageName = "";
 
         try
@@ -200,39 +199,39 @@ public class ShareDialogue extends SharePage
                 String dialogueID = dialogue.getAttribute("id");
                 if (dialogueID.contains("createSite"))
                 {
-                    pageName = "Create Site Page";                    
+                    pageName = "Create Site Page";
                 }
-                else if(dialogueID.contains("createFolder"))
+                else if (dialogueID.contains("createFolder"))
                 {
                     pageName = "Create Folder Page";
                 }
-                else if(dialogueID.contains("upload"))
+                else if (dialogueID.contains("upload"))
                 {
                     pageName = "Upload File Page";
                 }
-                else if(dialogueID.contains("editDetails"))
+                else if (dialogueID.contains("editDetails"))
                 {
                     pageName = "Edit Properties Page";
                 }
-                else if(dialogueID.contains("taggable-cntrl-picker"))
+                else if (dialogueID.contains("taggable-cntrl-picker"))
                 {
                     pageName = "Tags Page";
                 }
-                else if(dialogueID.contains("copyMoveTo"))
+                else if (dialogueID.contains("copyMoveTo"))
                 {
                     pageName = "CopyOrMoveContent Page";
                 }
-            }          
+            }
         }
         catch (NoSuchElementException nse)
         {
         }
-        
+
         logger.info(pageName);
-        
+
         return pageName;
     }
-    
+
     /**
      * Helper method to return WebElement for the Share Dialogue
      * 
@@ -250,5 +249,5 @@ public class ShareDialogue extends SharePage
             throw new NoSuchElementException("Unable to find the css ", nse);
         }
     }
-    
+
 }

@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -45,7 +41,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
     private static final By OK_BUTTON = By.cssSelector("button[id$='default-configDialog-ok-button']");
     private static final By CANCEL_BUTTON = By.cssSelector("button[id$='default-configDialog-cancel-button']");
     private static final By CLOSE_BUTTON = By.cssSelector("a.container-close");
-    
+
     /**
      * Constructor.
      */
@@ -67,7 +63,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
         return this;
 
     }
- 
+
     @SuppressWarnings("unchecked")
     @Override
     public ConfigureSiteNoticeDialogBoxPage render(long time)
@@ -81,7 +77,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     /**
      * Get Rich Text Editor to edit the contents of Comments etc.
      * 
@@ -91,7 +87,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
     {
         return new ConfigureSiteNoticeTinyMceEditor(drone);
     }
-    
+
     /**
      * This method sets the given text into Site Content Configure text editor.
      * 
@@ -101,7 +97,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
     {
         getContentTinyMceEditor().setText(text);
     }
-    
+
     /**
      * This method is used to Finds OK button and clicks on it.
      * 
@@ -114,13 +110,13 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
             drone.findAndWait(OK_BUTTON).click();
             return new SiteDashboardPage(drone);
         }
-        catch(TimeoutException te)
+        catch (TimeoutException te)
         {
             logger.error("Unable to find the OK button.", te);
             throw new PageOperationException("Unable to click the OK Button.");
         }
     }
-    
+
     /**
      * This method is used to Finds Cancel button and clicks on it.
      */
@@ -130,13 +126,13 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
         {
             drone.findAndWait(CANCEL_BUTTON).click();
         }
-        catch(TimeoutException te)
+        catch (TimeoutException te)
         {
             logger.error("Unable to find the CANCEL button.", te);
             throw new PageOperationException("Unable to click the CANCEL Button.");
         }
     }
-    
+
     /**
      * This method is used to Finds Close button and clicks on it.
      */
@@ -146,13 +142,13 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
         {
             drone.findAndWait(CLOSE_BUTTON).click();
         }
-        catch(TimeoutException te)
+        catch (TimeoutException te)
         {
             logger.error("Unable to find the CLOSE button.", te);
             throw new PageOperationException("Unable to click the CLOSE Button.");
         }
     }
-    
+
     /**
      * This method sets the given title into Site Content Configure title box.
      * 
@@ -160,18 +156,18 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
      */
     public void setTitle(String title)
     {
-        if(title == null)
+        if (title == null)
         {
             throw new IllegalArgumentException("Title is required");
         }
-        
+
         try
         {
             WebElement titleBox = drone.findAndWait(TITLE_BOX);
             titleBox.clear();
             titleBox.sendKeys(title);
         }
-        catch(TimeoutException te)
+        catch (TimeoutException te)
         {
             logger.error("Unable to find the Title box.", te);
             throw new PageOperationException("Unable to find the Title box.");

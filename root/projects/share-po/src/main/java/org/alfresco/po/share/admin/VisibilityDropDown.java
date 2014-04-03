@@ -92,7 +92,7 @@ public class VisibilityDropDown
 
     /**
      * Is the provided value the current value of the drop down?
-     *
+     * 
      * @return true, if the value is selected
      */
     public boolean isValueSelected(SiteVisibility visibility)

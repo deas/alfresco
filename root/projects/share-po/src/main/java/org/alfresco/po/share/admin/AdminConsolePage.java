@@ -14,7 +14,7 @@ public class AdminConsolePage extends SharePage implements HtmlPage
 
     /**
      * Instantiates a new admin console page.
-     *
+     * 
      * @param drone WebDriver browser client
      */
     public AdminConsolePage(WebDrone drone)
@@ -22,7 +22,8 @@ public class AdminConsolePage extends SharePage implements HtmlPage
         super(drone);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.webdrone.Render#render()
      */
     @Override
@@ -31,7 +32,8 @@ public class AdminConsolePage extends SharePage implements HtmlPage
         return render(new RenderTime(maxPageLoadingTime));
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.webdrone.Render#render(org.alfresco.webdrone.RenderTime)
      */
     @Override
@@ -41,7 +43,8 @@ public class AdminConsolePage extends SharePage implements HtmlPage
         return this;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.webdrone.Render#render(long)
      */
     @Override

@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -199,16 +195,22 @@ public class CustomiseUserDashboardPage extends SharePage
      */
     public DashBoardPage addDashlet(Dashlet dashletName, int columnNumber)
     {
-        if (dashletName == null) { throw new IllegalArgumentException("Dashlet Name is required"); }
+        if (dashletName == null)
+        {
+            throw new IllegalArgumentException("Dashlet Name is required");
+        }
 
-        if (columnNumber < 1 || columnNumber > NUMBER_OF_COLUMNS) { throw new IllegalArgumentException("Column number should be between 1 and 4"); }
+        if (columnNumber < 1 || columnNumber > NUMBER_OF_COLUMNS)
+        {
+            throw new IllegalArgumentException("Column number should be between 1 and 4");
+        }
 
         WebElement newDashlet = null;
         int noOfColumns = 0;
 
         this.selectAddDashlets();
 
-        try 
+        try
         {
             String dashletXpath = String.format("//*[@class='availableDashlet dnd-draggable']/span[text()='%s']", dashletName.getDashletName());
             WebElement element = drone.findAndWait(By.xpath(dashletXpath));
@@ -225,7 +227,7 @@ public class CustomiseUserDashboardPage extends SharePage
         }
         catch (TimeoutException te)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Exceeded time to find the Available dashlet names ", te);
             }
@@ -244,7 +246,7 @@ public class CustomiseUserDashboardPage extends SharePage
             }
             catch (NoSuchElementException te)
             {
-                if(logger.isTraceEnabled())
+                if (logger.isTraceEnabled())
                 {
                     logger.trace("Unable to find the Columns css " + te);
                 }
@@ -255,7 +257,7 @@ public class CustomiseUserDashboardPage extends SharePage
                 try
                 {
                     List<WebElement> existingDashletsInColumn = drone.findAndWaitForElements(By.cssSelector(String.format("ul[id$='column-ul-%d'] li",
-                                columnNumber)));
+                            columnNumber)));
 
                     if (existingDashletsInColumn.size() < MAX_DASHLETS_IN_COLUMN)
                     {
@@ -271,7 +273,7 @@ public class CustomiseUserDashboardPage extends SharePage
                 }
                 catch (TimeoutException te)
                 {
-                    if(logger.isTraceEnabled())
+                    if (logger.isTraceEnabled())
                     {
                         logger.trace("Exceeded time to find the Available dashlet names ", te);
                     }
@@ -300,13 +302,13 @@ public class CustomiseUserDashboardPage extends SharePage
         }
         catch (NoSuchElementException te)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Unable to find the Save button css ", te);
             }
         }
 
         return new DashBoardPage(drone);
-    }    
-    
+    }
+
 }

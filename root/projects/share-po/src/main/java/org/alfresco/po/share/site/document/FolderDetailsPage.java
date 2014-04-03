@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -36,205 +32,204 @@ import java.util.List;
 /**
  * This class supports the Folder Details page and extends the
  * DetailsPage for common functionalities.
- *
+ * 
  * @author Naved Shah
  * @since 1.7.0
  */
 public class FolderDetailsPage extends DetailsPage
 {
 
-        private final Log logger = LogFactory.getLog(this.getClass());
-        private static final String FOLDER_TAGS = "div.folder-tags";
-        private static final String CSS_PANEL = "div.panel-body";
-        private static final String NODE_PATH = "div.node-path";
-        private static final String DOWNLOAD_TITLE = "Download as Zip";
+    private final Log logger = LogFactory.getLog(this.getClass());
+    private static final String FOLDER_TAGS = "div.folder-tags";
+    private static final String CSS_PANEL = "div.panel-body";
+    private static final String NODE_PATH = "div.node-path";
+    private static final String DOWNLOAD_TITLE = "Download as Zip";
     private static final String VIEW_ON_GOOGLE_MAPS = "//span[text()='View on Google Maps']";
 
+    private final By changeTypeLink;
 
-        private final By changeTypeLink;
-
-        /**
-         * Constructor
-         */
-        public FolderDetailsPage(WebDrone drone)
+    /**
+     * Constructor
+     */
+    public FolderDetailsPage(WebDrone drone)
+    {
+        super(drone);
+        switch (alfrescoVersion)
         {
-                super(drone);
-                switch (alfrescoVersion)
-                {
-                        case Enterprise41:
-                                changeTypeLink = By.cssSelector("div.document-change-type a");
-                                break;
+            case Enterprise41:
+                changeTypeLink = By.cssSelector("div.document-change-type a");
+                break;
 
-                        default:
-                                changeTypeLink = By.cssSelector("div#onActionChangeType a");
-                                break;
-                }
+            default:
+                changeTypeLink = By.cssSelector("div#onActionChangeType a");
+                break;
         }
+    }
 
-        @SuppressWarnings("unchecked")
-        @Override
-        public synchronized FolderDetailsPage render()
+    @SuppressWarnings("unchecked")
+    @Override
+    public synchronized FolderDetailsPage render()
+    {
+        return render(new RenderTime(maxPageLoadingTime));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public synchronized FolderDetailsPage render(long time)
+    {
+        return render(new RenderTime(maxPageLoadingTime));
+    }
+
+    /**
+     * Verifies if the page has rendered completely by checking the page load is
+     * complete and in addition it will observe key HTML elements have rendered.
+     * Add subfolder using sumbol @>@
+     * 
+     * @param timer Max time to wait
+     * @return {@link DocumentDetailsPage}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public synchronized FolderDetailsPage render(RenderTime timer)
+    {
+        elementRender(timer, RenderElement.getVisibleRenderElement(By.cssSelector("div.node-header>div.node-info>h1.thin.dark")));
+        return this;
+    }
+
+    /**
+     * Selects the <View Details> link on the select data row on DocumentLibrary
+     * Page. Only available for content type = Folder.
+     * 
+     * @return {@link DocumentLibraryPage} response
+     */
+    public boolean isCorrectPath(String folderName)
+    {
+        boolean isPathCorrect = true;
+        try
         {
-                return render(new RenderTime(maxPageLoadingTime));
+            WebElement pathElement = drone.findAndWait(By.cssSelector(NODE_PATH));
+            String pathToBeVerify = "Documents" + " > " + folderName;
+            if (!pathToBeVerify.equals(pathElement.getText()))
+            {
+                isPathCorrect = false;
+            }
         }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public synchronized FolderDetailsPage render(long time)
+        catch (TimeoutException noSuchEleExc)
         {
-                return render(new RenderTime(maxPageLoadingTime));
+            logger.error("Element : " + NODE_PATH + " does not exist");
         }
+        return isPathCorrect;
+    }
 
-        /**
-         * Verifies if the page has rendered completely by checking the page load is
-         * complete and in addition it will observe key HTML elements have rendered.
-         * Add subfolder using sumbol @>@
-         *
-         * @param timer Max time to wait
-         * @return {@link DocumentDetailsPage}
-         */
-        @SuppressWarnings("unchecked")
-        @Override
-        public synchronized FolderDetailsPage render(RenderTime timer)
+    /**
+     * Verifies Tag Panel is present in the page.
+     * 
+     * @return
+     */
+    public boolean isTagPanelPresent()
+    {
+        String tagText;
+        String tagValue;
+        try
         {
-                elementRender(timer, RenderElement.getVisibleRenderElement(By.cssSelector("div.node-header>div.node-info>h1.thin.dark")));
-                return this;
-        }
+            tagText = drone.findAndWait(By.cssSelector(FOLDER_TAGS)).getText();
+            tagValue = drone.findAndWait(By.cssSelector(CSS_PANEL)).getText();
+            if (tagText.contains("Tags") && !tagValue.isEmpty())
+            {
+                return true;
+            }
 
-        /**
-         * Selects the <View Details> link on the select data row on DocumentLibrary
-         * Page. Only available for content type = Folder.
-         *
-         * @return {@link DocumentLibraryPage} response
-         */
-        public boolean isCorrectPath(String folderName)
+        }
+        catch (TimeoutException noSuchEleExcep)
         {
-                boolean isPathCorrect = true;
-                try
-                {
-                        WebElement pathElement = drone.findAndWait(By.cssSelector(NODE_PATH));
-                        String pathToBeVerify = "Documents" + " > " + folderName;
-                        if (!pathToBeVerify.equals(pathElement.getText()))
-                        {
-                                isPathCorrect = false;
-                        }
-                }
-                catch (TimeoutException noSuchEleExc)
-                {
-                        logger.error("Element : " + NODE_PATH + " does not exist");
-                }
-                return isPathCorrect;
+            logger.error("Element :" + FOLDER_TAGS + " OR " + CSS_PANEL + " does not exist.");
         }
+        throw new PageException("Tag pane is not present!");
+    }
 
-        /**
-         * Verifies Tag Panel is present in the page.
-         *
-         * @return
-         */
-        public boolean isTagPanelPresent()
+    /**
+     * Selects the <Download as zip> link on the select data row on
+     * DocumentLibrary Page. Only available for content type = Folder.
+     * 
+     * @return {@link DocumentLibraryPage} response
+     */
+    public FolderDetailsPage selectDownloadFolderAsZip(String type)
+    {
+        if (AlfrescoVersion.Enterprise41.equals(alfrescoVersion) || alfrescoVersion.isCloud())
         {
-                String tagText;
-                String tagValue;
-                try
-                {
-                        tagText = drone.findAndWait(By.cssSelector(FOLDER_TAGS)).getText();
-                        tagValue = drone.findAndWait(By.cssSelector(CSS_PANEL)).getText();
-                        if (tagText.contains("Tags") && !tagValue.isEmpty())
-                        {
-                                return true;
-                        }
-
-                }
-                catch (TimeoutException noSuchEleExcep)
-                {
-                        logger.error("Element :" + FOLDER_TAGS + " OR " + CSS_PANEL + " does not exist.");
-                }
-                throw new PageException("Tag pane is not present!");
+            throw new UnsupportedOperationException("Option Download Folder as Zip is not available for this version of Alfresco");
         }
-
-        /**
-         * Selects the <Download as zip> link on the select data row on
-         * DocumentLibrary Page. Only available for content type = Folder.
-         *
-         * @return {@link DocumentLibraryPage} response
-         */
-        public FolderDetailsPage selectDownloadFolderAsZip(String type)
+        try
         {
-                if (AlfrescoVersion.Enterprise41.equals(alfrescoVersion) || alfrescoVersion.isCloud())
-                {
-                        throw new UnsupportedOperationException(
-                                "Option Download Folder as Zip is not available for this version of Alfresco");
-                }
-                try
-                {
-                        WebElement menuOption = drone.findAndWait(By.cssSelector("div." + type + "-download>a"));
-                        menuOption.click();
-                        // Assumes driver capability settings to save file in a specific
-                        // location when
-                        // <Download> option is selected via Browser
-                        return new FolderDetailsPage(drone);
-                }
-                catch (TimeoutException toe)
-                {
-
-                }
-                throw new PageException("Download option is not present!");
+            WebElement menuOption = drone.findAndWait(By.cssSelector("div." + type + "-download>a"));
+            menuOption.click();
+            // Assumes driver capability settings to save file in a specific
+            // location when
+            // <Download> option is selected via Browser
+            return new FolderDetailsPage(drone);
         }
-
-        /**
-         * Selects the Change Type link from FOlder actions.
-         *
-         * @return {@link ChangeTypePage} response
-         */
-        public ChangeTypePage selectChangeType()
+        catch (TimeoutException toe)
         {
-                if (alfrescoVersion.isCloud())
-                {
-                        throw new UnsupportedOperationException("Operation available only for Enterprise version");
-                }
-                drone.findAndWait(changeTypeLink).click();
-                return new ChangeTypePage(drone);
-        }
 
-        /**
-         * @param comment
-         * @return
-         */
-        public boolean isCommentAddedAndRemoved(String comment)
-        {
-                if (addComment(comment) instanceof FolderDetailsPage)
-                {
-                        if (removeComment(comment) instanceof FolderDetailsPage)
-                        {
-                                return true;
-                        }
-                }
-                return false;
         }
+        throw new PageException("Download option is not present!");
+    }
 
-        /**
-         * Checks if donwload zip is displayed.
-         *
-         * @return true if visible
-         */
-        public boolean isDownloadAsZipAtTopRight()
+    /**
+     * Selects the Change Type link from FOlder actions.
+     * 
+     * @return {@link ChangeTypePage} response
+     */
+    public ChangeTypePage selectChangeType()
+    {
+        if (alfrescoVersion.isCloud())
         {
-                try
-                {
-                        String value = drone.findAndWaitForElements(By.cssSelector(".action-link")).get(0).getAttribute("title");
-                        if (DOWNLOAD_TITLE.equals(value))
-                        {
-                                return true;
-                        }
-                }
-                catch (TimeoutException toe)
-                {
-                }
-                return false;
+            throw new UnsupportedOperationException("Operation available only for Enterprise version");
         }
+        drone.findAndWait(changeTypeLink).click();
+        return new ChangeTypePage(drone);
+    }
+
+    /**
+     * @param comment
+     * @return
+     */
+    public boolean isCommentAddedAndRemoved(String comment)
+    {
+        if (addComment(comment) instanceof FolderDetailsPage)
+        {
+            if (removeComment(comment) instanceof FolderDetailsPage)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if donwload zip is displayed.
+     * 
+     * @return true if visible
+     */
+    public boolean isDownloadAsZipAtTopRight()
+    {
+        try
+        {
+            String value = drone.findAndWaitForElements(By.cssSelector(".action-link")).get(0).getAttribute("title");
+            if (DOWNLOAD_TITLE.equals(value))
+            {
+                return true;
+            }
+        }
+        catch (TimeoutException toe)
+        {
+        }
+        return false;
+    }
 
     /**
      * Get Folder Action List
+     * 
      * @return List<String>
      */
     public List<String> getFolderActionList()
@@ -244,17 +239,18 @@ public class FolderDetailsPage extends DetailsPage
 
         List<WebElement> actions = drone.findAndWaitForElements(By.xpath("//div[contains(@id, 'default-actionSet')]/div/a/span"));
 
-        for(WebElement action : actions)
+        for (WebElement action : actions)
         {
             text = action.getText();
 
-            if(text != null)
+            if (text != null)
             {
                 actionNames.add(text);
             }
         }
         return actionNames;
     }
+
     public boolean isViewOnGoogleMapsLinkVisible()
     {
         try

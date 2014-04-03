@@ -18,7 +18,7 @@ import org.openqa.selenium.WebElement;
 /**
  * FolderRulesPageWithRules page object, holds all element of the HTML page relating to Folder Rule Page
  * if some rule added.
- *
+ * 
  * @author Aliaksei Boole
  * @since 1.0
  */
@@ -26,17 +26,15 @@ public class FolderRulesPageWithRules extends FolderRulesPage
 {
     private final Log logger = LogFactory.getLog(this.getClass());
 
-    private static final By EDIT_BUTTON        = By.cssSelector("button[id*='edit-button-button']");
-    private static final By DELETE_BUTTON      = By.cssSelector("button[id*='delete-button-button']");
-    private static final By NEW_RULE_BUTTON    = By.cssSelector("button[id*='default-newRule-button-button']");
+    private static final By EDIT_BUTTON = By.cssSelector("button[id*='edit-button-button']");
+    private static final By DELETE_BUTTON = By.cssSelector("button[id*='delete-button-button']");
+    private static final By NEW_RULE_BUTTON = By.cssSelector("button[id*='default-newRule-button-button']");
     private static final By RULE_DETAILS_BLOCK = By.cssSelector("div[id*='default-body']>div[id*='rule-details']");
-    private static final By RULE_ITEMS         = By
-            .cssSelector("ul[class*='rules-list-container']>li[class*='rules-list-item']");
+    private static final By RULE_ITEMS = By.cssSelector("ul[class*='rules-list-container']>li[class*='rules-list-item']");
 
     private static final By ALERT_DELETE_BLOCK = By.cssSelector("div[id='prompt']");
-    //Delete and Cancel button has same css.
-    private static final By ALERT_DELETE_OK    = By.xpath("//button[text()='Delete']");
-
+    // Delete and Cancel button has same css.
+    private static final By ALERT_DELETE_OK = By.xpath("//button[text()='Delete']");
 
     protected FolderRulesPageWithRules(WebDrone drone)
     {
@@ -47,10 +45,7 @@ public class FolderRulesPageWithRules extends FolderRulesPage
     @Override
     public FolderRulesPageWithRules render(RenderTime timer)
     {
-        elementRender(timer,
-                      getVisibleRenderElement(TITLE_SELECTOR),
-                      getVisibleRenderElement(EDIT_BUTTON),
-                      getVisibleRenderElement(DELETE_BUTTON));
+        elementRender(timer, getVisibleRenderElement(TITLE_SELECTOR), getVisibleRenderElement(EDIT_BUTTON), getVisibleRenderElement(DELETE_BUTTON));
         return this;
     }
 
@@ -68,12 +63,9 @@ public class FolderRulesPageWithRules extends FolderRulesPage
         return render(new RenderTime(time));
     }
 
-
     private boolean isRuleDetailsDisplay()
     {
-        if (drone.find(RULE_DETAILS_BLOCK).isDisplayed()
-                && drone.find(EDIT_BUTTON).isDisplayed()
-                && drone.find(DELETE_BUTTON).isDisplayed())
+        if (drone.find(RULE_DETAILS_BLOCK).isDisplayed() && drone.find(EDIT_BUTTON).isDisplayed() && drone.find(DELETE_BUTTON).isDisplayed())
         {
             return true;
         }
@@ -129,11 +121,9 @@ public class FolderRulesPageWithRules extends FolderRulesPage
             throw new UnsupportedOperationException("Name of the rule is required");
         }
 
-
         try
         {
-            String inheritedFolderXpath = String.format("//a[contains(text(),'%s')]" +
-                    "/following-sibling::a[@class='inherited-folder']",ruleName);
+            String inheritedFolderXpath = String.format("//a[contains(text(),'%s')]" + "/following-sibling::a[@class='inherited-folder']", ruleName);
             String folderName = drone.findAndWait(By.xpath(inheritedFolderXpath)).getText();
 
             return folderName;

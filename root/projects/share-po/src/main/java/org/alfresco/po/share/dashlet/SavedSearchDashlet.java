@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -143,7 +139,7 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Unable to find the help icon.", te);
             }
@@ -180,7 +176,9 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         {
             return drone.findAndWait(DASHLET_HELP_BALLOON).isDisplayed();
         }
-        catch (TimeoutException elementException){ }
+        catch (TimeoutException elementException)
+        {
+        }
         return false;
     }
 
@@ -279,14 +277,14 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException e)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Not able to find the element: ", e);
             }
         }
         catch (NoSuchElementException e)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Not able to find the element: ", e);
             }
@@ -320,22 +318,22 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
     }
 
-
     /**
      * Method to check if a given item is listed in the search results or not
+     * 
      * @param itemName
      * @return True if item found in search results
      */
     public boolean isItemFound(String itemName)
     {
-        if(itemName == null)
+        if (itemName == null)
         {
             throw new IllegalArgumentException("Item Name can't be null.");
         }
         List<SiteSearchItem> items = getSearchItems();
-        for(SiteSearchItem item: items)
+        for (SiteSearchItem item : items)
         {
-            if(item.getItemName().getDescription().equals(itemName))
+            if (item.getItemName().getDescription().equals(itemName))
             {
                 return true;
             }

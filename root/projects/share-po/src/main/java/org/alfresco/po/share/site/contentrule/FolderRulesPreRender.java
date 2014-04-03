@@ -7,7 +7,7 @@ import org.openqa.selenium.By;
 
 /**
  * FolderRulesPreRender. This class need for resolve what is Folder rules page was displayed in FactorySharePage.
- *
+ * 
  * @author Aliaksei Boole
  * @since 1.0
  */
@@ -15,7 +15,7 @@ public class FolderRulesPreRender extends SharePage
 {
 
     private boolean isNoRule = true;
-    private static final By NO_RULE  = By.cssSelector("div[class*='rules-none']");
+    private static final By NO_RULE = By.cssSelector("div[class*='rules-none']");
 
     public FolderRulesPreRender(WebDrone drone)
     {
@@ -29,8 +29,7 @@ public class FolderRulesPreRender extends SharePage
         basicRender(timer);
         try
         {
-            drone.findAndWait(NO_RULE,
-                              5);
+            drone.findAndWait(NO_RULE, 5);
         }
         catch (Exception e)
         {

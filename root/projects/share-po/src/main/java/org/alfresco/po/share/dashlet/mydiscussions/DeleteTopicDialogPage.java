@@ -1,17 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
  * This file is part of Alfresco
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- * 
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,16 +31,14 @@ import org.openqa.selenium.WebElement;
  * Class that represents Delete Topic Dialog Popup
  * 
  * @author jcule
- *
  */
 public class DeleteTopicDialogPage extends SharePage
 {
     private static Log logger = LogFactory.getLog(DeleteTopicDialogPage.class);
-    
-    private static final String DELETE_TOPIC_TITLE =  "//div[text()='Delete Topic']";
-    private static final String DELETE_BUTTON =  "//button[text()='Delete']";
-    private static final String CANCEL_BUTTON =  "//button[text()='Cancel']";
-    
+
+    private static final String DELETE_TOPIC_TITLE = "//div[text()='Delete Topic']";
+    private static final String DELETE_BUTTON = "//button[text()='Delete']";
+    private static final String CANCEL_BUTTON = "//button[text()='Cancel']";
 
     protected DeleteTopicDialogPage(WebDrone drone)
     {
@@ -54,9 +49,8 @@ public class DeleteTopicDialogPage extends SharePage
     @Override
     public DeleteTopicDialogPage render(RenderTime timer)
     {
-        elementRender(timer, getVisibleRenderElement(By.xpath(DELETE_TOPIC_TITLE)),
-                             getVisibleRenderElement(By.xpath(DELETE_BUTTON)),
-                             getVisibleRenderElement(By.xpath(CANCEL_BUTTON)));
+        elementRender(timer, getVisibleRenderElement(By.xpath(DELETE_TOPIC_TITLE)), getVisibleRenderElement(By.xpath(DELETE_BUTTON)),
+                getVisibleRenderElement(By.xpath(CANCEL_BUTTON)));
         return this;
     }
 
@@ -73,7 +67,7 @@ public class DeleteTopicDialogPage extends SharePage
     {
         return render(maxPageLoadingTime);
     }
-    
+
     /**
      * Clicks on topic delete button
      */
@@ -94,7 +88,7 @@ public class DeleteTopicDialogPage extends SharePage
         }
         throw new PageOperationException("Cannot find topic delete button on Delete Topic Page.");
     }
-    
+
     /**
      * Clicks on cancel button
      */
@@ -114,5 +108,5 @@ public class DeleteTopicDialogPage extends SharePage
         }
         throw new PageOperationException("Cannot find topic cancel delete button on Delete Topic Page.");
     }
-    
+
 }

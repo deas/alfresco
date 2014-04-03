@@ -1,22 +1,19 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share.site;
+
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 import java.util.ArrayList;
@@ -43,7 +40,6 @@ import org.openqa.selenium.WebElement;
  * 
  * @author cbairaajoni
  * @version 1.6.2
- * 
  */
 public class SiteMembersPage extends SharePage
 {
@@ -66,12 +62,13 @@ public class SiteMembersPage extends SharePage
     {
         super(drone);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public SiteMembersPage render(RenderTime timer)
     {
-        elementRender(timer, getVisibleRenderElement(USER_SEARCH_PART), getVisibleRenderElement(SEARCH_USER_ROLE_TEXT), getVisibleRenderElement(SEARCH_USER_ROLE_BUTTON));
+        elementRender(timer, getVisibleRenderElement(USER_SEARCH_PART), getVisibleRenderElement(SEARCH_USER_ROLE_TEXT),
+                getVisibleRenderElement(SEARCH_USER_ROLE_BUTTON));
         return this;
     }
 
@@ -98,7 +95,7 @@ public class SiteMembersPage extends SharePage
     {
         return renderWithUserSearchResults(new RenderTime(maxPageLoadingTime));
     }
-    
+
     public SiteMembersPage renderWithUserSearchResults(RenderTime timer)
     {
         elementRender(timer, getVisibleRenderElement(LIST_OF_USERS));
@@ -117,7 +114,10 @@ public class SiteMembersPage extends SharePage
         {
             throw new UnsupportedOperationException("UserName value is required");
         }
-        if(logger.isTraceEnabled()){ logger.trace("Members page: searchUser :" + userName);}
+        if (logger.isTraceEnabled())
+        {
+            logger.trace("Members page: searchUser :" + userName);
+        }
         try
         {
             WebElement userRoleSearchTextBox = drone.find(SEARCH_USER_ROLE_TEXT);
@@ -140,11 +140,17 @@ public class SiteMembersPage extends SharePage
         }
         catch (NoSuchElementException e)
         {
-            if(logger.isTraceEnabled()){ logger.trace("Unable to find the users list css." , e);}
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find the users list css.", e);
+            }
         }
         catch (TimeoutException e)
         {
-            if(logger.isTraceEnabled()){ logger.trace("Time exceeded to find the users list css." , e);}
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Time exceeded to find the users list css.", e);
+            }
         }
         return Collections.emptyList();
     }
@@ -157,16 +163,16 @@ public class SiteMembersPage extends SharePage
      */
     private List<WebElement> getRoles(String userName)
     {
-        if(logger.isTraceEnabled())
+        if (logger.isTraceEnabled())
         {
             logger.trace("Members Page: Returning the roles list");
         }
-        
+
         List<WebElement> listOfRoles = new ArrayList<WebElement>();
         String name = userName.trim();
-        
-        // The below lowercase conversion will be resolved once Cloud-1847 task is finished. 
-        if(alfrescoVersion.isCloud())
+
+        // The below lowercase conversion will be resolved once Cloud-1847 task is finished.
+        if (alfrescoVersion.isCloud())
         {
             name = name.toLowerCase();
         }
@@ -178,9 +184,9 @@ public class SiteMembersPage extends SharePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded time to find the list of roles." , e);
+            logger.error("Exceeded time to find the list of roles.", e);
         }
-       
+
         return listOfRoles;
     }
 
@@ -193,11 +199,20 @@ public class SiteMembersPage extends SharePage
      */
     public SiteMembersPage assignRole(String userName, UserRole userRole)
     {
-        if (logger.isTraceEnabled()){ logger.trace("Members page: Assign role");}
-        if (userName == null || userName.isEmpty()) { throw new UnsupportedOperationException("usreName  is required."); }
-        if (userRole == null) { throw new UnsupportedOperationException("userRole is required."); }
+        if (logger.isTraceEnabled())
+        {
+            logger.trace("Members page: Assign role");
+        }
+        if (userName == null || userName.isEmpty())
+        {
+            throw new UnsupportedOperationException("usreName  is required.");
+        }
+        if (userRole == null)
+        {
+            throw new UnsupportedOperationException("userRole is required.");
+        }
 
-        if(!isUserPresent(userName))
+        if (!isUserPresent(userName))
         {
             throw new UnsupportedOperationException("Unable to find the user");
         }
@@ -215,6 +230,7 @@ public class SiteMembersPage extends SharePage
 
     /**
      * Method to remove given user from Site.
+     * 
      * @param userName
      */
     public SiteMembersPage removeUser(String userName)
@@ -224,7 +240,7 @@ public class SiteMembersPage extends SharePage
             throw new IllegalArgumentException("User Name is required.");
         }
 
-        if(alfrescoVersion.isCloud())
+        if (alfrescoVersion.isCloud())
         {
             userName = userName.toLowerCase();
         }
@@ -239,22 +255,24 @@ public class SiteMembersPage extends SharePage
         }
         catch (TimeoutException e)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("User: \"" + userName + "\" can not be found in members list.", e);
             }
         }
         throw new PageException("User: \"" + userName + "\" can not be found in members list.");
     }
+
     /**
      * Action of selecting invite people button.
+     * 
      * @return {@link InviteMembersPage} page response.
      */
     public InviteMembersPage selectInvitePeople()
     {
         try
         {
-            if(AlfrescoVersion.Enterprise41 == alfrescoVersion)
+            if (AlfrescoVersion.Enterprise41 == alfrescoVersion)
             {
                 drone.find(By.cssSelector("a[href$='invite']")).click();
             }
@@ -262,7 +280,7 @@ public class SiteMembersPage extends SharePage
             {
                 drone.find(By.cssSelector("span.alf-user-icon")).click();
             }
-        } 
+        }
         catch (TimeoutException e)
         {
             throw new PageException("Unable to find the InviteMembersPage.", e);
@@ -277,9 +295,9 @@ public class SiteMembersPage extends SharePage
         {
             List<WebElement> usersList = drone.findAll(USER_NAME_FROM_LIST);
 
-            for(WebElement user : usersList)
+            for (WebElement user : usersList)
             {
-                if(user.getText().contains(userName))
+                if (user.getText().contains(userName))
                 {
                     return true;
                 }
@@ -287,7 +305,7 @@ public class SiteMembersPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Unable to find users list", nse);
             }

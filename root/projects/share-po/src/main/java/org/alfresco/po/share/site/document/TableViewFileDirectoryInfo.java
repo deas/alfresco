@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -28,7 +24,7 @@ import org.openqa.selenium.WebElement;
 
 public class TableViewFileDirectoryInfo extends SimpleDetailTableView
 {
-    
+
     private static final String CREATOR = "td.yui-dt-col-cmcreator>div>span>a";
     private static final String CREATED = "td.yui-dt-col-cmcreated>div>span";
     private static final String MODIFIER = "td.yui-dt-col-cmmodifier>div>span>a";
@@ -37,7 +33,7 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
     public TableViewFileDirectoryInfo(String nodeRef, WebElement webElement, WebDrone drone)
     {
         super(nodeRef, webElement, drone);
-        
+
         FILENAME_IDENTIFIER = "td.yui-dt-col-name span>a";
         TITLE = "td.yui-dt-col-cmtitle>div>span";
         FILE_DESC_IDENTIFIER = "td.yui-dt-col-cmdescription>div>span";
@@ -57,7 +53,9 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
         {
             return findAndWait(By.cssSelector(CREATOR)).getText();
         }
-        catch (TimeoutException te) { }
+        catch (TimeoutException te)
+        {
+        }
         throw new PageOperationException("Unable to find content column creator");
     }
 
@@ -68,7 +66,7 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
     {
         WebElement creatorLink = findElement(By.cssSelector(CREATOR));
         creatorLink.click();
-        
+
         return FactorySharePage.resolvePage(drone);
     }
 
@@ -81,10 +79,12 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
         {
             return findAndWait(By.cssSelector(CREATED)).getText();
         }
-        catch (TimeoutException te) { }
+        catch (TimeoutException te)
+        {
+        }
         throw new PageOperationException("Unable to find content column created");
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -94,7 +94,9 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
         {
             return findAndWait(By.cssSelector(MODIFIER)).getText();
         }
-        catch (TimeoutException te) { }
+        catch (TimeoutException te)
+        {
+        }
         throw new PageOperationException("Unable to find content column modifier");
     }
 
@@ -105,7 +107,7 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
     {
         WebElement creatorLink = findElement(By.cssSelector(MODIFIER));
         creatorLink.click();
-        
+
         return FactorySharePage.resolvePage(drone);
     }
 
@@ -118,11 +120,14 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
         {
             return findAndWait(By.cssSelector(MODIFIED)).getText();
         }
-        catch (TimeoutException te) { }
+        catch (TimeoutException te)
+        {
+        }
         throw new PageOperationException("Unable to find content column created");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickShareLink()
      */
     @Override
@@ -130,8 +135,9 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("ShareLink is not available in Table View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#clickCommentsLink()
      */
     @Override
@@ -139,8 +145,9 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("CommentsLink is not available in Simple View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#getCommentsToolTip()
      */
     @Override
@@ -148,8 +155,9 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("CommentsToolTip is not available in Simple View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#getCommentsCount()
      */
     @Override
@@ -157,8 +165,9 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("Comments Count is not available in Simple View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isCommentLinkPresent()
      */
     @Override

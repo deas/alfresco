@@ -1,17 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
  * This file is part of Alfresco
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- * 
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -151,8 +148,7 @@ public class TopicDetailsPage extends SitePage
         }
         throw new PageOperationException("Cannot find topic created by on Topic Details Page.");
     }
-    
-    
+
     /**
      * Returns topic author
      * 
@@ -191,9 +187,8 @@ public class TopicDetailsPage extends SitePage
 
         }
         throw new PageOperationException("Cannot find topic text on Topic Details Page.");
-    }  
-    
-    
+    }
+
     /**
      * Returns topic author
      * 
@@ -316,7 +311,7 @@ public class TopicDetailsPage extends SitePage
             WebElement topicReply = drone.findAndWait(By.cssSelector(REPLY_LINK));
             topicReply.click();
             return new TopicDetailsPage(drone);
-         }
+        }
         catch (TimeoutException te)
         {
             if (logger.isTraceEnabled())
@@ -348,9 +343,7 @@ public class TopicDetailsPage extends SitePage
         }
         throw new PageOperationException("Cannot find topic reply link on Topic Details Page.");
     }
-    
-    
-    
+
     /**
      * Clicks on topic edit link
      */
@@ -393,7 +386,7 @@ public class TopicDetailsPage extends SitePage
         }
         throw new PageOperationException("Cannot find topic delete link on Topic Details Page.");
     }
-    
+
     /**
      * Clicks on new topic link
      */
@@ -402,7 +395,7 @@ public class TopicDetailsPage extends SitePage
         try
         {
             WebElement newTopic = drone.findAndWait(NEW_TOPIC);
-            newTopic.click();   
+            newTopic.click();
             return FactorySharePage.resolvePage(drone);
 
         }

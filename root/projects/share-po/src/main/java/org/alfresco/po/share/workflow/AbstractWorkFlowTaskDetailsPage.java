@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -45,7 +41,7 @@ import org.openqa.selenium.WebElement;
  * Abstract WorkFlow Details Page.
  * 
  * @author Ranjith Manyam
- * @since  1.7.1
+ * @since 1.7.1
  */
 public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 {
@@ -97,7 +93,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 
     /**
      * Verify if WorkFlow Details title is present on the page
-     *
+     * 
      * @return true if exists
      */
     public boolean isTitlePresent()
@@ -107,6 +103,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 
     /**
      * Method to get WorkFlow Details header
+     * 
      * @return
      */
     public String getPageHeader()
@@ -123,6 +120,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 
     /**
      * Method to get workflow status
+     * 
      * @return
      */
     public String getWorkFlowStatus()
@@ -140,6 +138,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
     /**
      * Method to click Cancel button from Workflow Details page
      * // TODO - Should return to MyWorkFlowsPage rather than MyTasksPage
+     * 
      * @return
      */
     public MyTasksPage selectCancelWorkFlow()
@@ -151,9 +150,9 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
             cancelButton.click();
             drone.waitForElement(By.cssSelector("#prompt"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             List<WebElement> buttons = drone.findAll(By.cssSelector("div#prompt>div.ft>span.button-group>span.yui-button>span.first-child>button"));
-            for(WebElement button: buttons)
+            for (WebElement button : buttons)
             {
-                if(button.getText().equals("Yes"))
+                if (button.getText().equals("Yes"))
                 {
                     button.click();
                     break;
@@ -163,7 +162,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Unable to find Cancel button ");
             }
@@ -173,6 +172,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 
     /**
      * Method to get Assignee
+     * 
      * @return Assignee Full Name and e-mail
      */
     public String getAssignee()
@@ -190,6 +190,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 
     /**
      * Method to get General Info section on WorkFlow Details Page
+     * 
      * @return {@link WorkFlowDetailsGeneralInfo}
      */
     public WorkFlowDetailsGeneralInfo getWorkFlowDetailsGeneralInfo()
@@ -219,6 +220,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 
     /**
      * Method to get More Info section on WorkFlow Details Page
+     * 
      * @return {@link WorkFlowDetailsMoreInfo}
      */
     public WorkFlowDetailsMoreInfo getWorkFlowDetailsMoreInfo()
@@ -226,7 +228,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
         WorkFlowDetailsMoreInfo moreInfo = new WorkFlowDetailsMoreInfo();
         try
         {
-            if(isBrowserTitle(drone.getValue("workflow.details.page.title")))
+            if (isBrowserTitle(drone.getValue("workflow.details.page.title")))
             {
                 moreInfo.setType(getElementText(By.xpath("//span[@class='viewmode-label' and contains(text(), 'Type:')]/../span[@class='viewmode-value']")));
                 moreInfo.setDestination(getElementText(By.xpath("//span[@class='viewmode-label' and contains(text(), 'Destination:')]/../span[@class='viewmode-value']")));
@@ -235,14 +237,14 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 
                 List<WebElement> assignmentElementList = drone.findAll(By.cssSelector("span[id$='hwf_assignment-cntrl-currentValueDisplay']>div"));
                 List<String> assignmentList = new ArrayList<String>();
-                for(WebElement assignment : assignmentElementList)
+                for (WebElement assignment : assignmentElementList)
                 {
                     assignmentList.add(assignment.getText());
                 }
 
                 moreInfo.setAssignmentList(assignmentList);
             }
-            else if(isBrowserTitle(drone.getValue("task.history.page.title")))
+            else if (isBrowserTitle(drone.getValue("task.history.page.title")))
             {
                 moreInfo.setNotification(getElementText(By.xpath("//span[@class='viewmode-label' and contains(text(), 'Send Email Notifications:')]/../span[@class='viewmode-value']")));
             }
@@ -268,6 +270,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 
     /**
      * Method to get the list of Items in a workflow
+     * 
      * @return {@link List<WorkFlowDetailsItem>}
      */
     public List<WorkFlowDetailsItem> getWorkFlowItems()
@@ -276,25 +279,30 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
         try
         {
             List<WebElement> itemsRows = getWorkFlowItemElements();
-            for(WebElement item: itemsRows)
+            for (WebElement item : itemsRows)
             {
                 workFlowDetailsItems.add(new WorkFlowDetailsItem(item, drone));
             }
             return workFlowDetailsItems;
         }
-        catch (NoSuchElementException nse){ }
-        catch (PageOperationException poe){ }
+        catch (NoSuchElementException nse)
+        {
+        }
+        catch (PageOperationException poe)
+        {
+        }
         return Collections.emptyList();
     }
 
     /**
      * Method to get the List of WorkFlowDetailsItem object for a given File Name
+     * 
      * @param fileName
      * @return {@link List<WorkFlowDetailsItem>}
      */
     public List<WorkFlowDetailsItem> getWorkFlowItem(String fileName)
     {
-        if(StringUtils.isEmpty(fileName))
+        if (StringUtils.isEmpty(fileName))
         {
             throw new IllegalArgumentException("FileName cannot be empty");
         }
@@ -302,7 +310,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
         List<WorkFlowDetailsItem> workFlowItems = new ArrayList<WorkFlowDetailsItem>();
         for (WebElement item : workFlowDetailsItemElements)
         {
-            if(item.findElement(By.cssSelector("h3.name")).getText().equals(fileName))
+            if (item.findElement(By.cssSelector("h3.name")).getText().equals(fileName))
             {
                 workFlowItems.add(new WorkFlowDetailsItem(item, drone));
             }
@@ -312,6 +320,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 
     /**
      * Method to verify "No Tasks" message is displayed under "Current Tasks"
+     * 
      * @return True if "No Tasks" Message is displayed
      */
     public boolean isNoTasksMessageDisplayed()
@@ -340,6 +349,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 
     /**
      * Method to get List of Current Tasks that are in the workflow details page
+     * 
      * @return {@link List<WorkFlowDetailsCurrentTask>}
      */
     public List<WorkFlowDetailsCurrentTask> getCurrentTasksList()
@@ -354,8 +364,12 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
             }
             return tasks;
         }
-        catch (NoSuchElementException nse){ }
-        catch (PageOperationException poe){ }
+        catch (NoSuchElementException nse)
+        {
+        }
+        catch (PageOperationException poe)
+        {
+        }
         return Collections.emptyList();
     }
 
@@ -373,6 +387,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 
     /**
      * Method to get List of History rows that are in the workflow details page
+     * 
      * @return {@link List<WorkFlowDetailsHistory>}
      */
     public List<WorkFlowDetailsHistory> getWorkFlowHistoryList()
@@ -387,40 +402,45 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
             }
             return historyList;
         }
-        catch (NoSuchElementException nse){}
-        catch (PageOperationException poe){}
+        catch (NoSuchElementException nse)
+        {
+        }
+        catch (PageOperationException poe)
+        {
+        }
         return Collections.emptyList();
     }
-    
 
-   /**
-    * This is method is used to find out whether the cancel task or workflow button is displayed or not.
-    * 
-    * @return boolean
-    */
-   public boolean isCancelTaskOrWorkFlowButtonDisplayed()
-   {
-       try
-       {
-           return drone.find(CANCEL_BUTTON).isDisplayed();
-       }
-       catch (NoSuchElementException nse) {}
-       return false;
-   }
+    /**
+     * This is method is used to find out whether the cancel task or workflow button is displayed or not.
+     * 
+     * @return boolean
+     */
+    public boolean isCancelTaskOrWorkFlowButtonDisplayed()
+    {
+        try
+        {
+            return drone.find(CANCEL_BUTTON).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        return false;
+    }
 
-   protected RenderElement getMenuTitle()
-   {
-       return menuTitle;
-   }
+    protected RenderElement getMenuTitle()
+    {
+        return menuTitle;
+    }
 
-   protected RenderElement getWorkflowDetailsHeader()
-   {
-       return workflowDetailsHeader;
-   }
+    protected RenderElement getWorkflowDetailsHeader()
+    {
+        return workflowDetailsHeader;
+    }
 
-   protected RenderElement getFormFieldsElements()
-   {
-       return formFieldsElements;
-   }
-   
+    protected RenderElement getFormFieldsElements()
+    {
+        return formFieldsElements;
+    }
+
 }

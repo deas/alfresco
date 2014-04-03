@@ -31,7 +31,8 @@ public class ManagedSiteRow
      * Instantiates a new manage site row.
      */
     public ManagedSiteRow()
-    {}
+    {
+    }
 
     /**
      * Instantiates a new manage site row.

@@ -14,17 +14,17 @@ public enum SiteVisibility
 
     /**
      * Instantiates a new site visibility.
-     *
+     * 
      * @param displayValue the display value
      */
     private SiteVisibility(String displayValue)
     {
         this.displayValue = displayValue;
     }
-    
+
     /**
      * Gets the display value.
-     *
+     * 
      * @return the display value
      */
     public String getDisplayValue()
@@ -34,7 +34,7 @@ public enum SiteVisibility
 
     /**
      * Gets the enum.
-     *
+     * 
      * @param displayValue the display value
      * @return the enum
      */
@@ -54,11 +54,13 @@ public enum SiteVisibility
         throw new IllegalArgumentException();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see java.lang.Enum#toString()
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         return this.getDisplayValue();
     }
 }

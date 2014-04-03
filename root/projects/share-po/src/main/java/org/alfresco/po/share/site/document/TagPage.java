@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -50,8 +46,10 @@ public class TagPage extends AbstractEditProperties
     protected static final By REMOVE_TAG = By.cssSelector("span.removeIcon");
     protected static final By OK_BUTTON = By.cssSelector("span[id$='taggable-cntrl-ok'] button[id$='cntrl-ok-button']");
     protected static final By CANCEL_BUTTON = By.cssSelector("button[id$='cntrl-cancel-button']");
+
     /**
      * Constructor.
+     * 
      * @param drone {@link WebDrone}
      */
     public TagPage(WebDrone drone)
@@ -59,22 +57,23 @@ public class TagPage extends AbstractEditProperties
         super(drone);
     }
 
-
     @SuppressWarnings("unchecked")
     @Override
     public TagPage render(RenderTime timer)
     {
-        while(true)
+        while (true)
         {
             timer.start();
             try
             {
-                if(isTagPageVisible() && isTagInputVisible())
+                if (isTagPageVisible() && isTagInputVisible())
                 {
                     break;
                 }
             }
-            catch (Exception e) {}
+            catch (Exception e)
+            {
+            }
             finally
             {
                 timer.end();
@@ -85,7 +84,7 @@ public class TagPage extends AbstractEditProperties
 
     @SuppressWarnings("unchecked")
     @Override
-    public TagPage render(long time) 
+    public TagPage render(long time)
     {
         return render(new RenderTime(time));
     }
@@ -96,7 +95,7 @@ public class TagPage extends AbstractEditProperties
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     /**
      * Verify if tagPage is displayed.
      * 
@@ -106,8 +105,8 @@ public class TagPage extends AbstractEditProperties
     {
         try
         {
-            List<WebElement> elements  = drone.findAll(By.cssSelector("div[id$='cntrl-picker-head']"));
-            if(elements.size() > 0)
+            List<WebElement> elements = drone.findAll(By.cssSelector("div[id$='cntrl-picker-head']"));
+            if (elements.size() > 0)
             {
                 return true;
             }
@@ -115,14 +114,14 @@ public class TagPage extends AbstractEditProperties
             {
                 return false;
             }
-            
+
         }
         catch (NoSuchElementException nse)
         {
             return false;
         }
     }
-    
+
     /**
      * Checks if tag input field is visible.
      * 
@@ -134,15 +133,17 @@ public class TagPage extends AbstractEditProperties
         {
             return drone.find(ENTER_TAG_VALUE).isDisplayed();
         }
-        catch (NoSuchElementException nse) {}
+        catch (NoSuchElementException nse)
+        {
+        }
         return false;
     }
-    
+
     /**
      * Enter the tag name and click to Add tag.
      * 
      * @param tagName
-     * @return 
+     * @return
      */
     public HtmlPage enterTagValue(String tagName)
     {
@@ -155,9 +156,9 @@ public class TagPage extends AbstractEditProperties
             WebElement createButton = drone.find(CREATE_TAG);
             createButton.click();
             canResume();
-            
+
             HtmlPage page = FactorySharePage.resolvePage(drone);
-            if(page instanceof ShareDialogue)
+            if (page instanceof ShareDialogue)
             {
                 return FactorySharePage.resolvePage(drone);
             }
@@ -170,11 +171,11 @@ public class TagPage extends AbstractEditProperties
 
         throw new PageOperationException("Error in finding the Enter tag value css.");
     }
-    
+
     /**
      * Click on OK button in tag page
      * 
-     * @return EditDocumentPropertiesPage 
+     * @return EditDocumentPropertiesPage
      */
     public EditDocumentPropertiesPage clickOkButton()
     {
@@ -183,18 +184,18 @@ public class TagPage extends AbstractEditProperties
             WebElement okButton = drone.findAndWait(OK_BUTTON);
             okButton.click();
             return new EditDocumentPropertiesPage(drone);
-        } 
+        }
         catch (NoSuchElementException nse)
         {
             logger.error("Unable to find 'ok' button.", nse);
         }
         throw new PageOperationException("Error in finding 'ok' button");
     }
-    
+
     /**
      * Click on cancel button in tag page
      * 
-     * @return EditDocumentPropertiesPage 
+     * @return EditDocumentPropertiesPage
      */
     public EditDocumentPropertiesPage clickCancelButton()
     {
@@ -203,14 +204,14 @@ public class TagPage extends AbstractEditProperties
             WebElement cancelButton = drone.find(CANCEL_BUTTON);
             cancelButton.click();
             return new EditDocumentPropertiesPage(drone);
-        } 
+        }
         catch (NoSuchElementException nse)
         {
             logger.error("Unable to find 'cancel' button.", nse);
         }
         throw new PageOperationException("Error in finding 'cancel' button");
     }
-    
+
     /**
      * Enter the tag name and click to Remove tag.
      * 
@@ -230,11 +231,11 @@ public class TagPage extends AbstractEditProperties
             tagElement.findElement(REMOVE_TAG).click();
             drone.find(OK_BUTTON).click();
             return new EditDocumentPropertiesPage(drone);
-        } 
+        }
         catch (NoSuchElementException nse)
         {
             logger.error("RemoveLink on Tag is not present.", nse);
-        } 
+        }
         catch (PageOperationException pe)
         {
             logger.error(pe);
@@ -256,29 +257,28 @@ public class TagPage extends AbstractEditProperties
 
         try
         {
-            tags = drone.findAndWaitForElements(By
-                    .cssSelector("div[id$='prop_cm_taggable-cntrl-picker-selectedItems'] tbody.yui-dt-data tr"));
-        } 
+            tags = drone.findAndWaitForElements(By.cssSelector("div[id$='prop_cm_taggable-cntrl-picker-selectedItems'] tbody.yui-dt-data tr"));
+        }
         catch (TimeoutException te)
         {
             logger.error("Exceeded time to find the tags list.", te);
         }
 
-        if(tags != null)
+        if (tags != null)
         {
             for (WebElement tag : tags)
             {
                 name = tag.findElement(By.cssSelector("td[class$='yui-dt-col-name'] h3.name")).getText();
-                
+
                 if (name != null && name.equalsIgnoreCase(tagName))
                 {
                     return tag;
                 }
-                
+
             }
         }
 
         throw new PageOperationException("Tag is not present.");
     }
-    
- }
+
+}

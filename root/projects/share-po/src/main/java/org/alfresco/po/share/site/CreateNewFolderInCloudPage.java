@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -48,6 +44,7 @@ public class CreateNewFolderInCloudPage extends SharePage
     private static final By NAME = By.cssSelector("input[id$='_default-cloud-folder-createFolderInTheCloud_prop_cm_name']");
     private static final By DESCRIPTION = By.cssSelector("input[id$='_default-cloud-folder-createFolderInTheCloud_prop_cm_description']");
     private static final By SAVE_BUTTON = By.cssSelector("button[id$='_default-cloud-folder-createFolderInTheCloud-form-submit-button']");
+
     /**
      * Constructor.
      */
@@ -88,9 +85,9 @@ public class CreateNewFolderInCloudPage extends SharePage
 
     /**
      * Create a new folder action by completing and submitting the form.
-     *
-     * @param folderName    mandatory folder name
-     * @param description   optional folder description
+     * 
+     * @param folderName mandatory folder name
+     * @param description optional folder description
      * @return {@link DestinationAndAssigneePage} page response
      */
     public DestinationAndAssigneePage createNewFolder(final String folderName, final String description)
@@ -109,26 +106,28 @@ public class CreateNewFolderInCloudPage extends SharePage
                 inputDescription.sendKeys(description);
             }
             submit(SAVE_BUTTON, ElementState.INVISIBLE);
-            //Wait till the pop up disappears
-            //canResume();
+            // Wait till the pop up disappears
+            // canResume();
             try
             {
                 drone.waitForElement(By.id("AlfrescoWebdronez1"), SECONDS.convert(WAIT_TIME_3000, MILLISECONDS));
             }
-            catch (TimeoutException e) {}
-            //drone.waitFor(WAIT_TIME_3000);
+            catch (TimeoutException e)
+            {
+            }
+            // drone.waitFor(WAIT_TIME_3000);
             return new DestinationAndAssigneePage(drone);
         }
         catch (TimeoutException te)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Unable to find \"Name\" element", te);
             }
         }
         catch (NoSuchElementException nse)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Unable to find \"Description/Save button\" elements", nse);
             }
@@ -138,10 +137,10 @@ public class CreateNewFolderInCloudPage extends SharePage
 
     /**
      * Create a new folder action by completing and submitting the form.
-     *
-     * @param folderName    mandatory folder name
-     * @param description   optional folder description
-     * @param folderTitle  options folder Title
+     * 
+     * @param folderName mandatory folder name
+     * @param description optional folder description
+     * @param folderTitle options folder Title
      * @return {@link DestinationAndAssigneePage} page response
      */
     public DestinationAndAssigneePage createNewFolder(final String folderName, final String folderTitle, final String description)
@@ -150,13 +149,13 @@ public class CreateNewFolderInCloudPage extends SharePage
         {
             throw new UnsupportedOperationException("Folder Name input required.");
         }
-        
-        if(folderTitle != null && !folderTitle.isEmpty())
+
+        if (folderTitle != null && !folderTitle.isEmpty())
         {
             WebElement inputFolderName = drone.find(FOLDER_TITLE_CSS);
             inputFolderName.sendKeys(folderTitle);
         }
-        
+
         return createNewFolder(folderName, description);
     }
 }

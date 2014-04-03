@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -48,7 +44,7 @@ import org.openqa.selenium.WebElement;
 public class TrashCanPage extends SharePage
 {
     @SuppressWarnings("unused")
-	private static Log logger = LogFactory.getLog(TrashCanPage.class);
+    private static Log logger = LogFactory.getLog(TrashCanPage.class);
     protected static final By TRASHCAN_SEARCH_INPUT = By.cssSelector("input[id$='trashcan_x0023_default-search-text']");
     protected static final By TRASHCAN_SEARCH_BUTTON = By.cssSelector("button[id$='default-search-button-button']");
     protected static final By TRASHCAN_CLEAR_BUTTON = By.cssSelector("button[id$='user-trashcan_x0023_default-clear-button-button']");
@@ -69,28 +65,28 @@ public class TrashCanPage extends SharePage
     protected static final By TRASHCAN_EMPTY = By.cssSelector("td.yui-dt-empty");
     protected static final By PAGE_LOADING = By.cssSelector("td.yui-dt-loading");
     private boolean deleteInitiator = false;
+
     /*
      * Constructor
-     * 
      */
-    
+
     public TrashCanPage(WebDrone drone)
     {
         super(drone);
     }
-    
+
     /*
-     *Render logic
+     * Render logic
      */
-    
+
     @SuppressWarnings("unchecked")
     public TrashCanPage render(RenderTime timer)
     {
         try
         {
             elementRender(timer, getVisibleRenderElement(TRASHCAN_SEARCH_INPUT), getVisibleRenderElement(TRASHCAN_SEARCH_BUTTON),
-                        getVisibleRenderElement(TRASHCAN_CLEAR_BUTTON), getVisibleRenderElement(TRASHCAN_SELECT_BUTTON),
-                        getVisibleRenderElement(TRASHCAN_EMPTY_BUTTON));
+                    getVisibleRenderElement(TRASHCAN_CLEAR_BUTTON), getVisibleRenderElement(TRASHCAN_SELECT_BUTTON),
+                    getVisibleRenderElement(TRASHCAN_EMPTY_BUTTON));
         }
         catch (NoSuchElementException e)
         {
@@ -211,53 +207,54 @@ public class TrashCanPage extends SharePage
         }
         return results;
     }
-    
+
     /**
      * This method will get TrashCanItem for the File
+     * 
      * @return - TrashCanItem
-     * @throws - PageOperationException 
+     * @throws - PageOperationException
      */
-    public List<TrashCanItem> getTrashCanItemForContent(TrashCanValues trashCanFileType , String contentName, String contentPath) throws PageOperationException
+    public List<TrashCanItem> getTrashCanItemForContent(TrashCanValues trashCanFileType, String contentName, String contentPath) throws PageOperationException
     {
         List<TrashCanItem> trashCanItemList = getTrashCanItems();
         List<TrashCanItem> item = Collections.emptyList();
-        if(!trashCanItemList.isEmpty())
-        {    
-        item = new ArrayList<TrashCanItem>();
-        for (TrashCanItem itemElement : trashCanItemList)
+        if (!trashCanItemList.isEmpty())
         {
-            if (itemElement.getFileName().equalsIgnoreCase(contentName) && itemElement.getFolderPath().contains(contentPath))
+            item = new ArrayList<TrashCanItem>();
+            for (TrashCanItem itemElement : trashCanItemList)
             {
-                switch (trashCanFileType)
+                if (itemElement.getFileName().equalsIgnoreCase(contentName) && itemElement.getFolderPath().contains(contentPath))
                 {
-                    case FILE:
-                         if (itemElement.isTrashCanItemFile())
-                         {
-                             item.add(itemElement);
-                             break;
-                         }
-                    case FOLDER:
-                        if (itemElement.isTrashCanItemFolder())
-                        {
-                            item.add(itemElement);
+                    switch (trashCanFileType)
+                    {
+                        case FILE:
+                            if (itemElement.isTrashCanItemFile())
+                            {
+                                item.add(itemElement);
+                                break;
+                            }
+                        case FOLDER:
+                            if (itemElement.isTrashCanItemFolder())
+                            {
+                                item.add(itemElement);
+                                break;
+                            }
+                        case SITE:
+                            if (itemElement.isTrashCanItemSite())
+                            {
+                                item.add(itemElement);
+                                break;
+                            }
+
+                        default:
                             break;
-                        }
-                    case SITE:
-                        if(itemElement.isTrashCanItemSite())
-                        {
-                            item.add(itemElement);
-                            break;
-                        }
-                        
-                    default:
-                       break;
                     }
                 }
-            }    
-        }  
+            }
+        }
         return item;
     }
-    
+
     /**
      * Empty the trashcan
      */
@@ -372,7 +369,7 @@ public class TrashCanPage extends SharePage
      */
     public HtmlPage selectPreviousPage()
     {
-       return NewPagination.selectPaginationButton(drone, TRASHCAN_PAGINATION_LESS_BUTTON);
+        return NewPagination.selectPaginationButton(drone, TRASHCAN_PAGINATION_LESS_BUTTON);
     }
 
     /**
@@ -385,7 +382,7 @@ public class TrashCanPage extends SharePage
             WebElement emptyTrashCanMessage = drone.find(TRASHCAN_EMPTY);
             return (emptyTrashCanMessage.isDisplayed() && emptyTrashCanMessage.getText().equals("No items exist"));
         }
-        catch(NoSuchElementException nse)
+        catch (NoSuchElementException nse)
         {
             return false;
         }

@@ -7,19 +7,22 @@ public enum MimeType
         XHTML("application/xhtml+xml"),
         AlfrescContentPackage("application/acp"),
         XML("text/xml");
-        private MimeType(String mimeCode)
-        {
-            this.mimeCode = mimeCode;
-        }
-        private String mimeCode;
-        /**
-         * Gets the mime code value as seen in
-         * dropdown value attribute.
-         * @return String value of mime type
-         */
-        public String getMimeCode()
-        {
-            return mimeCode;
-        }
-        
+    private MimeType(String mimeCode)
+    {
+        this.mimeCode = mimeCode;
+    }
+
+    private String mimeCode;
+
+    /**
+     * Gets the mime code value as seen in
+     * dropdown value attribute.
+     * 
+     * @return String value of mime type
+     */
+    public String getMimeCode()
+    {
+        return mimeCode;
+    }
+
 }

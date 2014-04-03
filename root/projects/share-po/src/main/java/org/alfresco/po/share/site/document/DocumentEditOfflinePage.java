@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,13 +30,13 @@ public class DocumentEditOfflinePage extends DocumentDetailsPage
 {
     private final By cancelEditOffLineBtn;
     private static final String VIEW_ORIGINAL_DOCUMENT = "div.document-view-original>a";
-    private static final String  VIEW_WORKING_COPY = "div.document-view-working-copy>a";
-    
+    private static final String VIEW_WORKING_COPY = "div.document-view-working-copy>a";
+
     public DocumentEditOfflinePage(WebDrone drone)
     {
         super(drone);
-        String selector = isDojoSupport() ? "div#onActionCancelEditing>a.action-link" :
-            "div[id$='default-actionSet']>div.document-cancel-editing>a.action-link"; 
+        String selector = isDojoSupport() ? "div#onActionCancelEditing>a.action-link"
+                : "div[id$='default-actionSet']>div.document-cancel-editing>a.action-link";
         cancelEditOffLineBtn = By.cssSelector(selector);
     }
 
@@ -61,16 +57,22 @@ public class DocumentEditOfflinePage extends DocumentDetailsPage
     @Override
     public DocumentEditOfflinePage render(RenderTime timer)
     {
-        while(true)
+        while (true)
         {
             timer.start();
             synchronized (this)
             {
-                try { this.wait(200L); } catch (InterruptedException ite) {}
+                try
+                {
+                    this.wait(200L);
+                }
+                catch (InterruptedException ite)
+                {
+                }
             }
             try
             {
-                if(!loadingMessageDisplayed())
+                if (!loadingMessageDisplayed())
                 {
                     if (drone.find(cancelEditOffLineBtn).isDisplayed())
                     {
@@ -79,7 +81,7 @@ public class DocumentEditOfflinePage extends DocumentDetailsPage
                     }
                 }
             }
-            catch (NoSuchElementException nse) 
+            catch (NoSuchElementException nse)
             {
                 // Keep waiting for it
             }
@@ -88,23 +90,24 @@ public class DocumentEditOfflinePage extends DocumentDetailsPage
         return this;
 
     }
+
     /**
      * Checks to see if the page is still entering off line
      * edit mode by checking the background message.
+     * 
      * @return true is background message is visible.
      */
     private boolean loadingMessageDisplayed()
     {
         return isJSMessageDisplayed();
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public DocumentEditOfflinePage render()
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-
 
     @Override
     public synchronized boolean isCheckedOut()
@@ -113,7 +116,7 @@ public class DocumentEditOfflinePage extends DocumentDetailsPage
     }
 
     /**
-     * @throws          UnsupportedOperationException  always
+     * @throws UnsupportedOperationException always
      */
     @Override
     public HtmlPage selectEditOffLine(File file)
@@ -123,6 +126,7 @@ public class DocumentEditOfflinePage extends DocumentDetailsPage
 
     /**
      * Select the cancel edit off line link.
+     * 
      * @return {@link HtmlPage} edit off line page.
      */
     public HtmlPage selectCancelEditing()
@@ -133,17 +137,20 @@ public class DocumentEditOfflinePage extends DocumentDetailsPage
             link.click();
             canResume();
         }
-        catch (NoSuchElementException nse) { }
+        catch (NoSuchElementException nse)
+        {
+        }
         return FactorySharePage.resolvePage(drone);
     }
-    
+
     /**
      * Mimics the action of clicking on View Original Document link
+     * 
      * @return
      */
     public HtmlPage selectViewOriginalDocument()
     {
-    	try
+        try
         {
             WebElement link = drone.findAndWait(By.cssSelector(VIEW_ORIGINAL_DOCUMENT));
             link.click();
@@ -152,16 +159,17 @@ public class DocumentEditOfflinePage extends DocumentDetailsPage
         {
             throw new PageOperationException("Unable to select View Original Document ", e);
         }
-    	return FactorySharePage.resolvePage(drone);
+        return FactorySharePage.resolvePage(drone);
     }
-    
+
     /**
      * Mimics the action of clicking on View Working Copy link
+     * 
      * @return
      */
     public DocumentEditOfflinePage selectViewWorkingCopy()
     {
-    	try
+        try
         {
             WebElement link = drone.findAndWait(By.cssSelector(VIEW_WORKING_COPY));
             link.click();
@@ -170,7 +178,7 @@ public class DocumentEditOfflinePage extends DocumentDetailsPage
         {
             throw new PageOperationException("Unable to select View Working Copy ", e);
         }
-    	return new DocumentEditOfflinePage(drone);
+        return new DocumentEditOfflinePage(drone);
     }
-    
+
 }

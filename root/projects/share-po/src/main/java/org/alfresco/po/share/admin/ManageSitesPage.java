@@ -107,7 +107,7 @@ public class ManageSitesPage extends SharePage
         boolean first = true;
         do
         {
-            if(first)
+            if (first)
             {
                 // Navigate to the first page of results
                 this.docListPaginator.gotoFirstResultsPage();
@@ -117,7 +117,7 @@ public class ManageSitesPage extends SharePage
             {
                 // Navigate to next pagination
                 this.docListPaginator.clickNextButton();
-                
+
             }
 
             // Refresh the page elements

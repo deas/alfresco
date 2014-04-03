@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -46,8 +42,9 @@ import org.openqa.selenium.WebElement;
 
 /**
  * Represent elements found on the HTML page to select and add content to workflow.
+ * 
  * @author Abhijeet Bharade, Shan Nagarajan
- * @since  1.7.0
+ * @since 1.7.0
  */
 public class SelectContentPage extends SharePage
 {
@@ -58,9 +55,11 @@ public class SelectContentPage extends SharePage
     private final By navigateCompanyHome = By.cssSelector("ul[id$='packageItems-cntrl-picker-navigatorItems'] li:nth-of-type(1)>a");
     private final By pickerLeftPanel = By.cssSelector("div[id$='assoc_packageItems-cntrl-picker-left'] a");
     private final By addedContents = By.cssSelector("div[id$='assoc_packageItems-cntrl-picker-right'] .name");
-    private final By addedContentsElements = By.cssSelector("div[id$='assoc_packageItems-cntrl-picker-right']>div[id$='-cntrl-picker-selectedItems']>table>tbody.yui-dt-data>tr");
+    private final By addedContentsElements = By
+            .cssSelector("div[id$='assoc_packageItems-cntrl-picker-right']>div[id$='-cntrl-picker-selectedItems']>table>tbody.yui-dt-data>tr");
     @SuppressWarnings("unused")
-	private final By availableContentElements = By.cssSelector("div[id$='assoc_packageItems-cntrl-picker-right']>div[id$='-cntrl-picker-selectedItems']>table>tbody.yui-dt-data>tr");
+    private final By availableContentElements = By
+            .cssSelector("div[id$='assoc_packageItems-cntrl-picker-right']>div[id$='-cntrl-picker-selectedItems']>table>tbody.yui-dt-data>tr");
     private final String sitesString = "Sites";
     private final String documentLibrary = "documentLibrary";
     private final By header = By.cssSelector("div[id$='packageItems-cntrl-picker-head']");
@@ -71,7 +70,7 @@ public class SelectContentPage extends SharePage
 
     /**
      * Constructor.
-     *
+     * 
      * @param drone WebDriver to access page
      */
     public SelectContentPage(WebDrone drone)
@@ -115,17 +114,18 @@ public class SelectContentPage extends SharePage
     {
         return render(new RenderTime(time));
     }
-    
+
     /**
      * Add Items set into {@link CompanyHome}.
+     * 
      * @param companyHome - {@link CompanyHome}
      */
     public void addItems(CompanyHome companyHome)
     {
-       
+
         Set<Site> sites = companyHome.getSites();
-        
-        if(sites != null)
+
+        if (sites != null)
         {
             drone.find(navigatorButton).click();
             drone.findAndWait(navigateCompanyHome).click();
@@ -141,21 +141,21 @@ public class SelectContentPage extends SharePage
                 }
             }
         }
-        
+
     }
-    
+
     private void contentProcessor(Content content)
     {
-        if(!content.isFolder() && (content.getContents() == null || content.getContents().size() == 0))
+        if (!content.isFolder() && (content.getContents() == null || content.getContents().size() == 0))
         {
             addContent(content.getName());
         }
-        else if(content.isFolder())
+        else if (content.isFolder())
         {
             String name = content.getName();
             clickElementOnLeftPanel(name);
             Set<Content> contents = content.getContents();
-            if(contents != null)
+            if (contents != null)
             {
                 for (Content content2 : contents)
                 {
@@ -166,41 +166,41 @@ public class SelectContentPage extends SharePage
             renderCurrentAvailableItem(name);
         }
     }
-    
+
     private void clickFolderUpButton()
     {
         drone.findAndWait(By.cssSelector("button[id$='packageItems-cntrl-picker-folderUp-button']")).click();
     }
-    
+
     private void clickElementOnLeftPanel(String text)
     {
-        if(StringUtils.isEmpty(text))
+        if (StringUtils.isEmpty(text))
         {
             throw new IllegalArgumentException("Text can't be empty or null");
         }
         List<WebElement> elements = drone.findAndWaitForElements(pickerLeftPanel);
-        
+
         for (WebElement webElement : elements)
         {
-            if(text.equalsIgnoreCase(webElement.getText()))
+            if (text.equalsIgnoreCase(webElement.getText()))
             {
                 webElement.click();
                 break;
             }
         }
     }
-    
+
     private void addContent(String name)
     {
-        if(StringUtils.isEmpty(name))
+        if (StringUtils.isEmpty(name))
         {
             throw new IllegalArgumentException("Name can't be empty or null");
         }
         List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector("div[id$='assoc_packageItems-cntrl-picker-left'] .yui-dt-data tr"));
-        
+
         for (WebElement webElement : elements)
         {
-            if(name.equalsIgnoreCase(webElement.findElement(By.cssSelector(".item-name")).getText()))
+            if (name.equalsIgnoreCase(webElement.findElement(By.cssSelector(".item-name")).getText()))
             {
                 webElement.findElement(By.cssSelector(".addIcon")).click();
 
@@ -208,23 +208,24 @@ public class SelectContentPage extends SharePage
             }
         }
     }
-    
+
     /**
      * Returns the Added items as Strings.
+     * 
      * @return {@link List}
      */
     public List<String> getAddedItems()
     {
         List<String> items = new ArrayList<String>();
         List<WebElement> elements = drone.findAll(addedContents);
-        if(elements != null)
+        if (elements != null)
         {
             for (WebElement webElement : elements)
             {
                 items.add(webElement.getText());
             }
         }
-        else 
+        else
         {
             items = Collections.emptyList();
         }
@@ -233,11 +234,12 @@ public class SelectContentPage extends SharePage
 
     /**
      * Render the element available in current items, it can be used to wait till element to be loaded into current available items.
+     * 
      * @param name - Name of the Content to be rendered
      */
     public void renderCurrentAvailableItem(String name)
     {
-        if(StringUtils.isEmpty(name))
+        if (StringUtils.isEmpty(name))
         {
             throw new IllegalArgumentException("Name can't be empty or null");
         }
@@ -249,12 +251,12 @@ public class SelectContentPage extends SharePage
             try
             {
                 List<WebElement> elements = drone.findAll(By.cssSelector("div[id$='assoc_packageItems-cntrl-picker-left'] .item-name a"));
-                if(elements != null)
+                if (elements != null)
                 {
-                    
+
                     for (WebElement webElement : elements)
                     {
-                        if(name.equalsIgnoreCase(webElement.getText()))
+                        if (name.equalsIgnoreCase(webElement.getText()))
                         {
                             break outerloop;
                         }
@@ -278,6 +280,7 @@ public class SelectContentPage extends SharePage
 
     /**
      * Method to click OK button
+     * 
      * @return
      */
     public HtmlPage selectOKButton()
@@ -289,7 +292,7 @@ public class SelectContentPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Unable to find \"OK\" button", nse);
             }
@@ -299,6 +302,7 @@ public class SelectContentPage extends SharePage
 
     /**
      * Method to verify Folder Up button is Enabled or not
+     * 
      * @return True if enabled
      */
     public boolean isFolderUpButtonEnabled()
@@ -315,17 +319,18 @@ public class SelectContentPage extends SharePage
 
     /**
      * Method to add given file from given site
+     * 
      * @param fileName
      * @param siteName
      */
     public void addItemFromSite(String fileName, String siteName)
     {
-        if(StringUtils.isEmpty(fileName))
+        if (StringUtils.isEmpty(fileName))
         {
             throw new IllegalArgumentException("File Name cannot be null or empty");
         }
 
-        if(StringUtils.isEmpty(siteName))
+        if (StringUtils.isEmpty(siteName))
         {
             throw new IllegalArgumentException("Site Name cannot be null or empty");
         }
@@ -349,22 +354,23 @@ public class SelectContentPage extends SharePage
 
     /**
      * Method to verify Add icon is present
+     * 
      * @return True if Add icon is present
      */
     public boolean isAddIconPresent(String fileName)
     {
-        if(StringUtils.isEmpty(fileName))
+        if (StringUtils.isEmpty(fileName))
         {
             throw new IllegalArgumentException("FileName cannot be null");
         }
         List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector("div[id$='assoc_packageItems-cntrl-picker-left'] .yui-dt-data tr"));
-        if(elements.size() == 0)
+        if (elements.size() == 0)
         {
             throw new PageOperationException("File Name doesn't exists in the list");
         }
         for (WebElement webElement : elements)
         {
-            if(fileName.equalsIgnoreCase(webElement.findElement(By.cssSelector(".item-name")).getText()))
+            if (fileName.equalsIgnoreCase(webElement.findElement(By.cssSelector(".item-name")).getText()))
             {
                 return webElement.findElement(By.cssSelector(".addIcon")).isDisplayed();
             }
@@ -374,20 +380,21 @@ public class SelectContentPage extends SharePage
 
     /**
      * Method to remove a user from Selected Users list
+     * 
      * @param userName
      */
     public void removeItem(String fileName)
     {
-        if(StringUtils.isEmpty(fileName))
+        if (StringUtils.isEmpty(fileName))
         {
             throw new IllegalArgumentException("File Name cannot be empty");
         }
         List<WebElement> selectedFiles = drone.findAll(addedContentsElements);
-        if(selectedFiles.size() < 1)
+        if (selectedFiles.size() < 1)
         {
             throw new PageOperationException("File is not selected.");
         }
-        for(WebElement file: selectedFiles)
+        for (WebElement file : selectedFiles)
         {
             if (file.findElement(By.cssSelector("h3.name")).getText().contains(fileName))
             {
@@ -427,6 +434,5 @@ public class SelectContentPage extends SharePage
             throw new PageOperationException("Unable to find Cancel Button", nse);
         }
     }
-
 
 }

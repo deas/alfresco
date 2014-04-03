@@ -2,24 +2,22 @@ package org.alfresco.po.share.site.document;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum Categories {
-    LANGUAGES("Languages"),
-    REGIONS("Regions"),
-    SOFTWARE_DOCUMENT_CLASSIFICATION("Software Document Classification"),
-    TAGS("Tags");
-    
+public enum Categories
+{
+    LANGUAGES("Languages"), REGIONS("Regions"), SOFTWARE_DOCUMENT_CLASSIFICATION("Software Document Classification"), TAGS("Tags");
+
     private String value;
-    
+
     private Categories(String value)
     {
         this.value = value;
     }
-    
+
     public String getValue()
     {
         return this.value;
     }
-    
+
     /**
      * Find the {@link Categories} based on name.
      * 

@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -64,13 +60,14 @@ public class InviteMembersPage extends SharePage
     private static final By SEACH_INVITEE_FROM_LIST = By.cssSelector("td+td>div.yui-dt-liner>h3>span.lighter");
     private static final By SEARCH_USER_RESULTS = By.cssSelector(".itemname>a");
     private final By linkGroup;
+
     /**
      * Constructor.
      */
     public InviteMembersPage(WebDrone drone)
     {
         super(drone);
-        linkGroup = AlfrescoVersion.Enterprise41.equals(alfrescoVersion) ? By.linkText("Groups") : By.cssSelector("a[id$='-site-groups-link']") ;
+        linkGroup = AlfrescoVersion.Enterprise41.equals(alfrescoVersion) ? By.linkText("Groups") : By.cssSelector("a[id$='-site-groups-link']");
     }
 
     @SuppressWarnings("unchecked")
@@ -90,14 +87,16 @@ public class InviteMembersPage extends SharePage
                     drone.find(By.cssSelector(SEARCH_USER_ROLE_BUTTON));
                     break;
                 }
-                catch (NoSuchElementException pe){ }
+                catch (NoSuchElementException pe)
+                {
+                }
             }
             finally
             {
                 timer.end();
             }
         }
-        
+
         return this;
     }
 
@@ -124,13 +123,13 @@ public class InviteMembersPage extends SharePage
     {
         return renderWithUserSearchResults(new RenderTime(maxPageLoadingTime));
     }
-    
+
     public InviteMembersPage renderWithUserSearchResults(RenderTime timer)
     {
         elementRender(timer, getVisibleRenderElement(SEARCH_USER_RESULTS));
         return this;
     }
-    
+
     /**
      * Verify if home page banner web element is present
      * 
@@ -156,7 +155,7 @@ public class InviteMembersPage extends SharePage
      */
     public List<String> searchUser(String userName)
     {
-        if(logger.isTraceEnabled())
+        if (logger.isTraceEnabled())
         {
             logger.trace("Members page: searchUser :" + userName);
         }
@@ -165,29 +164,29 @@ public class InviteMembersPage extends SharePage
         {
             throw new UnsupportedOperationException("userName input required");
         }
-        
+
         try
         {
-        	WebElement searchTextBox = drone.find(By.cssSelector(SEARCH_USER_ROLE_TEXT));
-	        searchTextBox.clear();
-	        searchTextBox.sendKeys(userName);
-	        
-	        drone.find(By.cssSelector(SEARCH_USER_ROLE_BUTTON)).click();
-	        
-	        List<WebElement> users = getListOfInvitees();
-	        if(users != null && !users.isEmpty())
-	        {
-	            List<String> userNames = new ArrayList<String>();
-	            for (WebElement element : users)
-	            {
-	                    userNames.add(element.findElement(SEARCH_USER_FROM_LIST).getText());
-	            }
-	            return userNames;
-	        }
+            WebElement searchTextBox = drone.find(By.cssSelector(SEARCH_USER_ROLE_TEXT));
+            searchTextBox.clear();
+            searchTextBox.sendKeys(userName);
+
+            drone.find(By.cssSelector(SEARCH_USER_ROLE_BUTTON)).click();
+
+            List<WebElement> users = getListOfInvitees();
+            if (users != null && !users.isEmpty())
+            {
+                List<String> userNames = new ArrayList<String>();
+                for (WebElement element : users)
+                {
+                    userNames.add(element.findElement(SEARCH_USER_FROM_LIST).getText());
+                }
+                return userNames;
+            }
         }
         catch (NoSuchElementException e)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Unable to find the username for the userElement.", e);
             }
@@ -219,10 +218,10 @@ public class InviteMembersPage extends SharePage
                 {
                     ele = element.findElement(SEACH_INVITEE_FROM_LIST);
                     String value = ele.getText();
-                    
+
                     if (value != null && !value.isEmpty())
                     {
-                        if(value.contains(user))
+                        if (value.contains(user))
                         {
                             element.findElement(By.cssSelector(BUTTON)).click();
                             break;
@@ -253,7 +252,7 @@ public class InviteMembersPage extends SharePage
         }
         catch (TimeoutException e)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Time exceeded to find the invitees list." + e);
             }
@@ -276,14 +275,14 @@ public class InviteMembersPage extends SharePage
         {
             throw new UnsupportedOperationException("user input required or inviteesList should not be blank.");
         }
-        
+
         for (WebElement link : inviteesList)
         {
             try
             {
                 WebElement invitee = link.findElement(By.cssSelector(INVITEE));
                 String text = invitee.getText();
-                
+
                 if (text != null && user.equalsIgnoreCase(text))
                 {
                     selectRolesDropdown();
@@ -294,7 +293,7 @@ public class InviteMembersPage extends SharePage
             }
             catch (NoSuchElementException e)
             {
-                if(logger.isTraceEnabled())
+                if (logger.isTraceEnabled())
                 {
                     logger.trace("Unable to find the invitee css.", e);
                 }
@@ -373,6 +372,7 @@ public class InviteMembersPage extends SharePage
 
     /**
      * Get List of users who are invited.
+     * 
      * @return List<WebElement> Collection of invited users
      */
     private List<WebElement> getListOfInvitees()
@@ -381,13 +381,15 @@ public class InviteMembersPage extends SharePage
         {
             return drone.findAndWaitForElements(By.cssSelector(LIST_OF_USERS));
         }
-        catch (TimeoutException e){ }
+        catch (TimeoutException e)
+        {
+        }
         return Collections.emptyList();
     }
-   
-    
+
     /**
      * Navigate to Site Groups.
+     * 
      * @return
      */
     public HtmlPage navigateToSiteGroupsPage()

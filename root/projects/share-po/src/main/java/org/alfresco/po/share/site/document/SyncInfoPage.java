@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -61,9 +57,9 @@ public class SyncInfoPage extends SharePage
 
     public enum ButtonType
     {
-        CANCEL,
-        REMOVE;
+        CANCEL, REMOVE;
     }
+
     public SyncInfoPage(WebDrone drone)
     {
         super(drone);
@@ -72,21 +68,23 @@ public class SyncInfoPage extends SharePage
     @SuppressWarnings("unchecked")
     public SyncInfoPage render(RenderTime timer)
     {
-        renderLoop: while(true)
+        renderLoop: while (true)
         {
             timer.start();
             try
             {
                 List<WebElement> statusElements = drone.findAll(STATUS_HEADING);
-                for (WebElement status: statusElements)
+                for (WebElement status : statusElements)
                 {
-                    if(status.isDisplayed())
+                    if (status.isDisplayed())
                     {
                         break renderLoop;
                     }
                 }
             }
-            catch (NoSuchElementException nse){ }
+            catch (NoSuchElementException nse)
+            {
+            }
             finally
             {
                 timer.end();
@@ -106,9 +104,10 @@ public class SyncInfoPage extends SharePage
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-	
+
     /**
      * Sync pop up close button is present or not.
+     * 
      * @return
      */
     public boolean isCloseButtonPresent()
@@ -122,9 +121,10 @@ public class SyncInfoPage extends SharePage
             return false;
         }
     }
-    
+
     /**
      * Status details of synced artifact is present or not.
+     * 
      * @return
      */
     public boolean isSyncStatusPresent()
@@ -138,9 +138,10 @@ public class SyncInfoPage extends SharePage
         }
         return false;
     }
-    
+
     /**
      * Location of synced artifact is present or not.
+     * 
      * @return
      */
     public boolean isSyncLocationPresent()
@@ -154,9 +155,10 @@ public class SyncInfoPage extends SharePage
         }
         return false;
     }
-    
+
     /**
      * Request sync button is present or not.
+     * 
      * @return
      */
     public boolean isRequestSyncButtonPresent()
@@ -171,9 +173,10 @@ public class SyncInfoPage extends SharePage
         }
         return false;
     }
-    
+
     /**
      * Unsync button present or not.
+     * 
      * @return
      */
     public boolean isUnsyncButtonPresent()
@@ -188,9 +191,10 @@ public class SyncInfoPage extends SharePage
         }
         return false;
     }
-    
+
     /**
      * Click on sync pop up button to close pop up.
+     * 
      * @return
      */
     public HtmlPage clickOnCloseButton()
@@ -200,15 +204,16 @@ public class SyncInfoPage extends SharePage
             drone.findAndWait(CLOSE_BUTTON).click();
             return FactorySharePage.getUnknownPage(drone);
         }
-        catch(TimeoutException e) 
+        catch (TimeoutException e)
         {
             logger.error("Unable to find Close button on Sync Info page", e);
             throw new PageException("Not able to click on Sync Info close button.");
         }
     }
-    
+
     /**
      * Get Sync status of the artifact.
+     * 
      * @return
      */
     public String getCloudSyncStatus()
@@ -217,16 +222,17 @@ public class SyncInfoPage extends SharePage
         {
             return drone.findAndWait(IS_CLOUD_SYNC_STATUS).getText();
         }
-        catch(TimeoutException e) 
+        catch (TimeoutException e)
         {
             logger.error("Exceeded the time to find css.", e);
         }
-        
+
         throw new PageException("Not able to find Sync Info status.");
     }
-    
+
     /**
      * Get location of synced document.(i.e. premiumnet>sitename>Documents)
+     * 
      * @return
      */
     public String getCloudSyncLocation()
@@ -237,9 +243,9 @@ public class SyncInfoPage extends SharePage
             List<WebElement> elements = drone.findAndWaitForElements(SYNC_LOCATION);
             int i = elements.size();
             for (WebElement webElement : elements)
-            {                
+            {
                 location.append(webElement.getText());
-                while(i > 1)
+                while (i > 1)
                 {
                     location.append(">");
                     i--;
@@ -255,9 +261,10 @@ public class SyncInfoPage extends SharePage
 
         throw new PageException("Not able to find Sync Info Location.");
     }
-    
+
     /**
      * Get name of the synced document.
+     * 
      * @return
      */
     public String getCloudSyncDocumentName()
@@ -266,62 +273,64 @@ public class SyncInfoPage extends SharePage
         {
             return drone.findAndWait(SYNC_DOCUMENT_NAME).getText();
         }
-        catch(TimeoutException e) 
+        catch (TimeoutException e)
         {
             logger.error("Exceeded the time to find css.", e);
         }
-        
+
         throw new PageException("Not able to find Sync Info Location.");
     }
-    
+
     /**
      * Get Date of sync happened.
+     * 
      * @return
      */
     public Date getSyncPeriodDetails()
     {
         try
         {
-            String syncPeriod =drone.findAndWait(SYNC_PERIOD).getAttribute("title");
+            String syncPeriod = drone.findAndWait(SYNC_PERIOD).getAttribute("title");
             return new SimpleDateFormat(DATE_FORMAT).parse(syncPeriod);
-        }catch(TimeoutException toe)
+        }
+        catch (TimeoutException toe)
         {
-           logger.error("Time out finding element for sync time period"); 
+            logger.error("Time out finding element for sync time period");
         }
         catch (ParseException e)
         {
-            logger.error("Parse error no date exist"); 
+            logger.error("Parse error no date exist");
         }
         throw new PageException();
     }
-  
-    
+
     /**
      * Unsync button present or not.
+     * 
      * @param removeContentFromCloud
-     * @see 
-     * true: Remove content from cloud.
-     * false: Remove sync with Cloud.
+     * @see
+     *      true: Remove content from cloud.
+     *      false: Remove sync with Cloud.
      * @return
      */
     public void selectUnsyncRemoveContentFromCloud(boolean removeContentFromCloud)
-    {        
+    {
         try
         {
-            List<WebElement> buttons =  drone.findAndWaitForElements(REQ_UNSYNC_BUTTON);
+            List<WebElement> buttons = drone.findAndWaitForElements(REQ_UNSYNC_BUTTON);
             for (WebElement button : buttons)
             {
-                if("Unsync".equals(button.getText()))
+                if ("Unsync".equals(button.getText()))
                 {
                     button.click();
                     break;
                 }
-            }     
-            if(removeContentFromCloud)
+            }
+            if (removeContentFromCloud)
             {
                 selectCheckBoxToRemoveContenFromCloud();
             }
-            clickButtonFromPopup(ButtonType.REMOVE);  
+            clickButtonFromPopup(ButtonType.REMOVE);
             return;
         }
         catch (TimeoutException nse)
@@ -330,16 +339,16 @@ public class SyncInfoPage extends SharePage
         }
         throw new PageException();
     }
-    
+
     /**
      * Click check box to remove content.
      */
     private void selectCheckBoxToRemoveContenFromCloud()
-    {        
+    {
         try
         {
-           drone.findAndWait(REMOVE_CHECKBOX).click();
-           return ;
+            drone.findAndWait(REMOVE_CHECKBOX).click();
+            return;
         }
         catch (TimeoutException nse)
         {
@@ -347,30 +356,31 @@ public class SyncInfoPage extends SharePage
         }
         throw new PageException();
     }
-    
+
     /**
      * Click Button to Remove or Cancel unsync operation.
+     * 
      * @param buttonType
      */
     private void clickButtonFromPopup(ButtonType buttonType)
-    {        
+    {
         try
         {
-          List<WebElement> buttons = drone.findAndWaitForElements(PROMPT_BUTTONS);
-          for (WebElement button : buttons)       
-           {
-              if("Remove sync".equals(button.getText()) && ButtonType.REMOVE.equals(buttonType))
-              {
-                  button.click();
-                  break;
-              }
-              else if("Cancel".equals(button.getText()) && ButtonType.CANCEL.equals(buttonType))
-              {
-                  button.click();
-                  break;
-              }     
-           }
-           return ;
+            List<WebElement> buttons = drone.findAndWaitForElements(PROMPT_BUTTONS);
+            for (WebElement button : buttons)
+            {
+                if ("Remove sync".equals(button.getText()) && ButtonType.REMOVE.equals(buttonType))
+                {
+                    button.click();
+                    break;
+                }
+                else if ("Cancel".equals(button.getText()) && ButtonType.CANCEL.equals(buttonType))
+                {
+                    button.click();
+                    break;
+                }
+            }
+            return;
         }
         catch (TimeoutException nse)
         {
@@ -378,18 +388,20 @@ public class SyncInfoPage extends SharePage
         }
         throw new PageException();
     }
-    
+
     /**
      * @return
      */
     public boolean isUnSyncIconPresentInDetailsPage()
-    {        
+    {
         try
         {
             return drone.find(By.cssSelector(".document-unsync-link")).isDisplayed();
-        } 
-        catch (NoSuchElementException nse) {}
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
         return false;
-       
+
     }
 }

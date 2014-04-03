@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -45,9 +41,10 @@ public class GoogleSignUpPage extends SharePage
     private static final By GOOGLE_PASSWORD = By.cssSelector("input#Passwd");
     private static final By SIGNUP_BUTTON = By.cssSelector("input#signIn");
     private static final String googleAccountTitle = "Google Accounts";
-   
+
     private boolean isGoogleCreate;
     private String documentVersion;
+
     /**
      * Constructor and switch to the sign up window
      */
@@ -57,7 +54,7 @@ public class GoogleSignUpPage extends SharePage
         this.isGoogleCreate = isGoogleCreate;
         this.documentVersion = documentVersion;
     }
-   
+
     @SuppressWarnings("unchecked")
     @Override
     public GoogleSignUpPage render(final long time)
@@ -75,9 +72,9 @@ public class GoogleSignUpPage extends SharePage
     @Override
     public GoogleSignUpPage render(RenderTime timer)
     {
-       while (true)
+        while (true)
         {
-           switchToGoogleSignIn();
+            switchToGoogleSignIn();
             timer.start();
             synchronized (this)
             {
@@ -115,6 +112,7 @@ public class GoogleSignUpPage extends SharePage
 
     /**
      * Verify if googleSignup Dialog is displayed.
+     * 
      * @return true if dialog is displayed.
      */
     public boolean isSignupWindowDisplayed()
@@ -131,6 +129,7 @@ public class GoogleSignUpPage extends SharePage
 
     /**
      * Enter the Username , password and Click on Sign up button.
+     * 
      * @return-EditInGoogleDocsPage
      */
     public EditInGoogleDocsPage signUp(String username, String password)
@@ -197,17 +196,17 @@ public class GoogleSignUpPage extends SharePage
         for (String windowHandle : windowHandles)
         {
             drone.switchToWindow(windowHandle);
-            if (drone.getTitle() != null) 
+            if (drone.getTitle() != null)
             {
-              if((drone.getTitle().contains("Document Details")))
-              {
-                  break;      
-              }
-             else if((drone.getTitle().contains("Document Library")))
-             {
-                break;
-             }
+                if ((drone.getTitle().contains("Document Details")))
+                {
+                    break;
+                }
+                else if ((drone.getTitle().contains("Document Library")))
+                {
+                    break;
+                }
             }
-        }  
+        }
     }
 }

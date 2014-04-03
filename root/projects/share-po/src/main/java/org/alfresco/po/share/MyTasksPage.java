@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -91,7 +87,7 @@ public class MyTasksPage extends SharePage
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public MyTasksPage render(final long time)
@@ -121,7 +117,7 @@ public class MyTasksPage extends SharePage
             throw new UnsupportedOperationException("Task name can't be null or empty");
         }
         String taskName = searchParams[0];
-        if(taskName == null)
+        if (taskName == null)
         {
             throw new PageOperationException("Task name is required");
         }
@@ -139,21 +135,22 @@ public class MyTasksPage extends SharePage
         throw new PageException("Not able to find the site link element on this row.");
     }
 
-    public void clickEdit(WebElement element, String ... attempt)
+    public void clickEdit(WebElement element, String... attempt)
     {
         try
         {
             element.findElement(taskLink).click();
         }
-        catch (StaleElementReferenceException e) 
+        catch (StaleElementReferenceException e)
         {
-            if(attempt.length < 1)
+            if (attempt.length < 1)
             {
                 clickEdit(element);
             }
             throw new PageOperationException("Unable to select edit task as its not clickable", e);
         }
     }
+
     /**
      * Clicks on Start workflow button.
      * 
@@ -175,6 +172,7 @@ public class MyTasksPage extends SharePage
 
     /**
      * Method to get the page subtitle (Active Tasks, Completed Tasks etc)
+     * 
      * @return
      */
     public String getSubTitle()
@@ -188,6 +186,7 @@ public class MyTasksPage extends SharePage
             throw new NoSuchElementException("Page Subtitle is not displayed", te);
         }
     }
+
     /**
      * Clicks on Active tasks link.
      * 
@@ -261,6 +260,7 @@ public class MyTasksPage extends SharePage
 
     /**
      * Method to find given task row
+     * 
      * @param taskName
      * @return
      */
@@ -282,12 +282,13 @@ public class MyTasksPage extends SharePage
 
     /**
      * Method to get the Task Details. If more than one task found, the first task details will be returned.
+     * 
      * @param taskName
      * @return {@link TaskDetails}
      */
     public TaskDetails getTaskDetails(String taskName)
     {
-        if(StringUtils.isEmpty(taskName))
+        if (StringUtils.isEmpty(taskName))
         {
             throw new IllegalArgumentException("Workflow Name cannot be null");
         }
@@ -298,7 +299,7 @@ public class MyTasksPage extends SharePage
         try
         {
 
-            if(taskRow != null)
+            if (taskRow != null)
             {
                 taskDetails.setTaskName(taskRow.findElement(By.cssSelector("div.yui-dt-liner>h3>a")).getText());
                 taskDetails.setDue(taskRow.findElement(By.cssSelector("div.due>span")).getText());
@@ -308,7 +309,7 @@ public class MyTasksPage extends SharePage
                 taskDetails.setDescription(taskRow.findElement(By.cssSelector("div.description>span")).getText());
                 taskDetails.setStartedBy(taskRow.findElement(By.cssSelector("div.initiator>span")).getText());
 
-                if(taskRow.findElement(By.cssSelector("div[class^='ended']>span")).isDisplayed())
+                if (taskRow.findElement(By.cssSelector("div[class^='ended']>span")).isDisplayed())
                 {
                     taskDetails.setEndDate(taskRow.findElement(By.cssSelector("div[class^='ended']>span")).getText());
                 }
@@ -327,6 +328,7 @@ public class MyTasksPage extends SharePage
 
     /**
      * Method to check if a given task is displayed in MyTasksPage page
+     * 
      * @param taskName
      * @return True if Task exists
      */

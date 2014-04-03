@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -23,7 +19,7 @@ import org.joda.time.format.DateTimeFormat;
 
 /**
  * Representation of General Info Section on Workflow details page
- *
+ * 
  * @author Ranjith Manyam
  * @since 1.9.0
  */
@@ -61,12 +57,13 @@ public class WorkFlowDetailsGeneralInfo
         this.description = WorkFlowDescription.getWorkFlowDescription(description);
     }
 
-
-    public String getStartedBy() {
+    public String getStartedBy()
+    {
         return startedBy;
     }
 
-    public void setStartedBy(String startedBy) {
+    public void setStartedBy(String startedBy)
+    {
         this.startedBy = startedBy;
     }
 
@@ -98,11 +95,13 @@ public class WorkFlowDetailsGeneralInfo
 
     }
 
-    public String getCompleted() {
+    public String getCompleted()
+    {
         return completed;
     }
 
-    public void setCompleted(String completed) {
+    public void setCompleted(String completed)
+    {
         this.completed = completed;
     }
 
@@ -140,28 +139,34 @@ public class WorkFlowDetailsGeneralInfo
         }
     }
 
-    public Priority getPriority() {
+    public Priority getPriority()
+    {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(String priority)
+    {
 
         this.priority = Priority.getPriority(priority);
     }
 
-    public WorkFlowStatus getStatus() {
+    public WorkFlowStatus getStatus()
+    {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(String status)
+    {
         this.status = WorkFlowStatus.getWorkFlowStatus(status);
     }
 
-    public String getMessage() {
+    public String getMessage()
+    {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(String message)
+    {
         this.message = message;
     }
 }

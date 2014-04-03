@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -42,7 +38,7 @@ import org.openqa.selenium.WebElement;
  * @since 1.6.1
  */
 public class NewUserPage extends SharePage
-{   
+{
     private Log logger = LogFactory.getLog(this.getClass());
     private static final String FIRSTNAME = "input[id$='admin-console_x0023_default-create-firstname']";
     private static final String LASTNAME = "input[id$='admin-console_x0023_default-create-lastname']";
@@ -51,18 +47,18 @@ public class NewUserPage extends SharePage
     private static final String PASSWORD = "input[id$='admin-console_x0023_default-create-password']";
     private static final String VERIFY_PASSWORD = "input[id$='admin-console_x0023_default-create-verifypassword']";
     private static final String GROUP_FINDER_SEARCH_TEXT = "input[id$='admin-console_x0023_default-create-groupfinder-search-text']";
-    
+
     private static final String GROUP_SEARCH_BUTTON = "button[id$='default-create-groupfinder-group-search-button-button']";
     private static final String CREATE_USER = "button[id$='default-createuser-ok-button-button']";
     private static final String CREATE_ANOTHER_USER = "button[id$='default-createuser-another-button-button']";
     private static final String CANCEL_CREATE_USER = "button[id$='default-createuser-cancel-button-button']";
-    
+
     private static final String USER_QUOTA = "input[id$='admin-console_x0023_default-create-quota']";
-    private static final String DISABLE_ACCOUNT = "input[id$='admin-console_x0023_default-create-disableaccount']";        
+    private static final String DISABLE_ACCOUNT = "input[id$='admin-console_x0023_default-create-disableaccount']";
     private static final String TABLE_GROUP_NAMES = "div[id$='create-groupfinder-results'] tbody[class$='yui-dt-data']  tr[class*='yui-dt-rec']";
     private static final String ROW_GROUP_NAME = "td[class*='yui-dt-col-description'] div h3.itemname";
     private static final String GROUP_NAME = "td[class*='yui-dt-col-actions'] div span button";
-    
+
     /**
      * Constructor.
      * 
@@ -77,20 +73,26 @@ public class NewUserPage extends SharePage
     @Override
     public NewUserPage render(RenderTime timer)
     {
-        while(true)
+        while (true)
         {
             timer.start();
             synchronized (this)
             {
-                try{ this.wait(100L); } catch (InterruptedException e) {}
+                try
+                {
+                    this.wait(100L);
+                }
+                catch (InterruptedException e)
+                {
+                }
             }
-        	if(isPageLoaded())
-        	{
-        		break;
-        	}
-        	timer.end();
+            if (isPageLoaded())
+            {
+                break;
+            }
+            timer.end();
         }
-        
+
         return this;
     }
 
@@ -100,14 +102,14 @@ public class NewUserPage extends SharePage
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public NewUserPage render(final long time)
     {
         return render(new RenderTime(time));
     }
-         
+
     /**
      * Verify if admin Console title is present on the page
      * 
@@ -117,7 +119,7 @@ public class NewUserPage extends SharePage
     {
         return isBrowserTitle("Admin Console");
     }
-    
+
     /**
      * Enter FirstName.
      */
@@ -127,7 +129,7 @@ public class NewUserPage extends SharePage
         input.clear();
         input.sendKeys(text);
     }
-    
+
     /**
      * Enter LastName.
      */
@@ -137,7 +139,7 @@ public class NewUserPage extends SharePage
         input.clear();
         input.sendKeys(text);
     }
-    
+
     /**
      * Enter Email.
      */
@@ -147,7 +149,7 @@ public class NewUserPage extends SharePage
         input.clear();
         input.sendKeys(text);
     }
-    
+
     /**
      * Enter Username into username input field.
      */
@@ -157,7 +159,7 @@ public class NewUserPage extends SharePage
         input.clear();
         input.sendKeys(text);
     }
-    
+
     /**
      * Enter Password.
      */
@@ -167,7 +169,7 @@ public class NewUserPage extends SharePage
         input.clear();
         input.sendKeys(text);
     }
-    
+
     /**
      * Enter VerifyPassword.
      */
@@ -177,7 +179,7 @@ public class NewUserPage extends SharePage
         input.clear();
         input.sendKeys(text);
     }
-    
+
     /**
      * Enter Quota.
      */
@@ -187,30 +189,32 @@ public class NewUserPage extends SharePage
         input.clear();
         input.sendKeys(text);
     }
-            
+
     /**
      * Enter the search text is group finder text box and clicks Search on the new user page.
+     * 
      * @param user String name
      * @return UserSearchPage page response
      */
     public NewUserPage searchGroup(final String user)
     {
-        try 
+        try
         {
-			WebElement input = drone.findAndWait(By.cssSelector(GROUP_FINDER_SEARCH_TEXT));
-			input.clear();
-			input.sendKeys(user);
-			drone.findAndWait(By.cssSelector(GROUP_SEARCH_BUTTON)).click();
-			return new NewUserPage(drone);
-		} 
-        catch (TimeoutException e) 
+            WebElement input = drone.findAndWait(By.cssSelector(GROUP_FINDER_SEARCH_TEXT));
+            input.clear();
+            input.sendKeys(user);
+            drone.findAndWait(By.cssSelector(GROUP_SEARCH_BUTTON)).click();
+            return new NewUserPage(drone);
+        }
+        catch (TimeoutException e)
         {
-		}
+        }
         throw new PageException("Not able to perform Group Search.");
     }
-    
+
     /**
      * Checks if the group search button is displayed.
+     * 
      * @return true if button is displayed
      */
     protected boolean isPageLoaded()
@@ -218,25 +222,27 @@ public class NewUserPage extends SharePage
         boolean groupsFrameLoaded = false;
         try
         {
-            WebElement element = drone.find(By.cssSelector(GROUP_SEARCH_BUTTON)); 
+            WebElement element = drone.find(By.cssSelector(GROUP_SEARCH_BUTTON));
             groupsFrameLoaded = element.isDisplayed();
         }
-        catch (NoSuchElementException te){ }
+        catch (NoSuchElementException te)
+        {
+        }
         return groupsFrameLoaded;
     }
-    
+
     /**
      * Clicks on Create User Button.
      * To get the error page there is wait added to delete disappear so it may not find the exact time taken to execute method,
-     * there might be delay added during error condition. 
+     * there might be delay added during error condition.
      * 
      * @return NewUserPage
      */
-    public HtmlPage  selectCreateUser()
+    public HtmlPage selectCreateUser()
     {
         return submit(By.cssSelector(CREATE_USER), ElementState.INVISIBLE);
     }
-    
+
     /**
      * Clicks on Create and Create Another User button to invoke New User Page.
      * 
@@ -255,7 +261,7 @@ public class NewUserPage extends SharePage
         }
         throw new PageException("Not able to find Create Another User Button.");
     }
-    
+
     /**
      * Clicks on Cancel button to cancel Create User.
      * 
@@ -269,10 +275,12 @@ public class NewUserPage extends SharePage
             element.click();
             return new UserSearchPage(drone);
         }
-        catch (TimeoutException te) { }
+        catch (TimeoutException te)
+        {
+        }
         throw new PageException("Not able to Click Cancel Create User Button.");
-    }   
-    
+    }
+
     /**
      * Selects the Disable Account checkbox.
      */
@@ -281,7 +289,7 @@ public class NewUserPage extends SharePage
         try
         {
             WebElement selectDisableAccount = drone.find(By.cssSelector(DISABLE_ACCOUNT));
-            if(!selectDisableAccount.isSelected())
+            if (!selectDisableAccount.isSelected())
             {
                 selectDisableAccount.click();
             }
@@ -290,16 +298,15 @@ public class NewUserPage extends SharePage
         {
         }
     }
-    
+
     /**
      * Method to create user on Enterprise using UI.
      * 
      * @param userName String username
      * @param fName String firstname
      * @param lName String lastname
-     * @param password String password     
+     * @param password String password
      * @return {@link UserSearchPage}
-     *  
      */
     public HtmlPage createEnterpriseUser(String userName, String fname, String lname, String userEmail, String password)
     {
@@ -307,40 +314,39 @@ public class NewUserPage extends SharePage
         return selectCreateUser();
     }
 
-private void entrpriseUserDetails(String userName, String fname, String lname, String userEmail, String password)
-{
-    	if(StringUtils.isEmpty(userName))
-    	{
-    		throw new UnsupportedOperationException("User Name can't be empty or null, it is required.");
-    	}
-    	if(StringUtils.isEmpty(fname))
-    	{
-    		throw new UnsupportedOperationException("First Name can't be empty or null, it is required.");
-    	}
-    	if(StringUtils.isEmpty(userEmail))
-    	{
-    		throw new UnsupportedOperationException("User Email can't be empty or null, it is required.");
-    	}
-    	if(StringUtils.isEmpty(password))
-    	{
-    		throw new UnsupportedOperationException("Password can't be empty or null, it is required.");
-    	}
-    	if(lname == null)
-    	{
-    		throw new UnsupportedOperationException("Last Name can't be null, it is required.");
-    	}
-		inputFirstName(fname);
-		inputLastName(lname);
-		inputEmail(userEmail);
-		inputUsername(userName);
-		inputPassword(password);
-		inputVerifyPassword(password);
+    private void entrpriseUserDetails(String userName, String fname, String lname, String userEmail, String password)
+    {
+        if (StringUtils.isEmpty(userName))
+        {
+            throw new UnsupportedOperationException("User Name can't be empty or null, it is required.");
+        }
+        if (StringUtils.isEmpty(fname))
+        {
+            throw new UnsupportedOperationException("First Name can't be empty or null, it is required.");
+        }
+        if (StringUtils.isEmpty(userEmail))
+        {
+            throw new UnsupportedOperationException("User Email can't be empty or null, it is required.");
+        }
+        if (StringUtils.isEmpty(password))
+        {
+            throw new UnsupportedOperationException("Password can't be empty or null, it is required.");
+        }
+        if (lname == null)
+        {
+            throw new UnsupportedOperationException("Last Name can't be null, it is required.");
+        }
+        inputFirstName(fname);
+        inputLastName(lname);
+        inputEmail(userEmail);
+        inputUsername(userName);
+        inputPassword(password);
+        inputVerifyPassword(password);
     }
-    
-    
-    
+
     /**
      * Create user with a group.
+     * 
      * @param userName
      * @param fname
      * @param lname
@@ -351,31 +357,31 @@ private void entrpriseUserDetails(String userName, String fname, String lname, S
      */
     public HtmlPage createEnterpriseUserWithGroup(String userName, String fname, String lname, String userEmail, String password, String groupName)
     {
-        if(groupName == null)
+        if (groupName == null)
         {
             throw new UnsupportedOperationException("Group Name can't be null, it is required.");
-        }       
+        }
         entrpriseUserDetails(userName, fname, lname, userEmail, password);
         searchGroup(groupName).render();
         addGroup(groupName);
         return selectCreateUser();
     }
-       
-    
+
     /**
      * Add group with User Name.
+     * 
      * @param groupName
      * @return
      */
     private boolean addGroup(String groupName)
     {
-        if (AlfrescoVersion.Cloud2.equals(alfrescoVersion)) 
-        { 
-            throw new UnsupportedOperationException("This function is not for CLOUD!!"); 
+        if (AlfrescoVersion.Cloud2.equals(alfrescoVersion))
+        {
+            throw new UnsupportedOperationException("This function is not for CLOUD!!");
         }
-        if (StringUtils.isEmpty(groupName)) 
-        { 
-            throw new IllegalArgumentException("Group Name can't be empty or null"); 
+        if (StringUtils.isEmpty(groupName))
+        {
+            throw new IllegalArgumentException("Group Name can't be empty or null");
         }
         try
         {
@@ -406,6 +412,6 @@ private void entrpriseUserDetails(String userName, String fname, String lname, S
         {
             logger.error("Group name element doesnt exist!!", toe);
         }
-        throw new PageOperationException("Group doesnt exist!!");  
+        throw new PageOperationException("Group doesnt exist!!");
     }
 }

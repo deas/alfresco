@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,17 +33,18 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * @author nshah
- * version 1.7
+ *         version 1.7
  */
 public class EditHtmlDocumentPage extends InlineEditPage
 {
     private Log logger = LogFactory.getLog(DetailsPage.class);
     private static final String IFRAME_ID = "template_x002e_inline-edit_x002e_inline-edit_x0023_default_prop_cm_content_ifr";
     private static final By SUBMIT_BUTTON = By.cssSelector("button[id$='default-form-submit-button']");
+
     public EditHtmlDocumentPage(WebDrone drone)
     {
-        super(drone);  
-       
+        super(drone);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -71,26 +68,29 @@ public class EditHtmlDocumentPage extends InlineEditPage
     {
         return render(new RenderTime(time));
     }
-    
+
     /**
      * @return
      */
-    public boolean isEditHtmlDocumentPage() {
+    public boolean isEditHtmlDocumentPage()
+    {
         try
         {
-            drone.switchToFrame(IFRAME_ID);      
-            boolean isDesiredPage = drone.find(By.cssSelector("#tinymce")).isDisplayed() ? true: false;
+            drone.switchToFrame(IFRAME_ID);
+            boolean isDesiredPage = drone.find(By.cssSelector("#tinymce")).isDisplayed() ? true : false;
             drone.switchToDefaultContent();
             return isDesiredPage;
-            
+
         }
-        catch(NoSuchElementException nse)
+        catch (NoSuchElementException nse)
         {
             return false;
         }
     }
+
     /**
      * return the count of text lines entered in editor.
+     * 
      * @return
      */
     public int countOfTxtsFromEditor()
@@ -104,41 +104,45 @@ public class EditHtmlDocumentPage extends InlineEditPage
 
     /**
      * Edit the editor, enter new text line, count the lines and save it.
+     * 
      * @param txtLine
      * @return
      */
-    public void editText (String txtLine)
+    public void editText(String txtLine)
     {
-       try{        
-            drone.switchToFrame(IFRAME_ID);      
+        try
+        {
+            drone.switchToFrame(IFRAME_ID);
             WebElement element = drone.findAndWait(By.cssSelector("#tinymce"));
             element.sendKeys(txtLine);
             element.sendKeys(Keys.chord(Keys.ENTER));
             drone.switchToDefaultContent();
-       }
-       catch(TimeoutException toe)
-       {
-           logger.error("Tinymce Editor is not found", toe);
-       }
+        }
+        catch (TimeoutException toe)
+        {
+            logger.error("Tinymce Editor is not found", toe);
+        }
     }
-    
+
     /**
      * Edit the editor, enter new text line, count the lines and save it.
+     * 
      * @param txtLine
      * @return
      */
-    public HtmlPage saveText ()
+    public HtmlPage saveText()
     {
-      try{
-            drone.findAndWait(SUBMIT_BUTTON).click(); 
-            drone.waitUntilElementDisappears(SUBMIT_BUTTON,  SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        try
+        {
+            drone.findAndWait(SUBMIT_BUTTON).click();
+            drone.waitUntilElementDisappears(SUBMIT_BUTTON, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             return FactorySharePage.resolvePage(drone);
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
             logger.error("Submit button is not present", toe);
         }
         throw new PageOperationException();
     }
-    
+
 }

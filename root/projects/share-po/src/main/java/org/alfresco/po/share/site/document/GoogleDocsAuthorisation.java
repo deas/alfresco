@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,13 +51,13 @@ public class GoogleDocsAuthorisation extends SharePage
      * @param documentVersion String original document version.
      * @Param - flase - Edit in ofline flag.
      */
-    protected GoogleDocsAuthorisation(WebDrone drone,String documentVersion, Boolean isGoogleCreate)
+    protected GoogleDocsAuthorisation(WebDrone drone, String documentVersion, Boolean isGoogleCreate)
     {
         super(drone);
         this.isGoogleCreate = isGoogleCreate;
         this.documentVersion = documentVersion;
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public GoogleDocsAuthorisation render(RenderTime timer)
@@ -86,6 +82,7 @@ public class GoogleDocsAuthorisation extends SharePage
 
     /**
      * Verify if authorisation prompt is displayed.
+     * 
      * @return true if dialog is displayed.
      */
     public boolean isAuthorisationDisplayed()
@@ -106,23 +103,24 @@ public class GoogleDocsAuthorisation extends SharePage
 
     /**
      * Clicks on the submit button to transfer to google docs page.
-     * @return EditInGoogleDocsPage 
+     * 
+     * @return EditInGoogleDocsPage
      */
     public EditInGoogleDocsPage submitNoAuth()
     {
-       try
-       {
-        WebElement prompt = drone.findAndWait(PROMPT_PANEL_ID);
-        List<WebElement> elements = prompt.findElements(BUTTON_TAG_NAME);
-        WebElement okButton = findButton("OK", elements);
-        okButton.click();
-        return new EditInGoogleDocsPage(drone, isGoogleCreate);
-       }
-       catch (TimeoutException te)
-       {
-           throw new TimeoutException("authorisation prompt was not found", te);
-       }
-       }
+        try
+        {
+            WebElement prompt = drone.findAndWait(PROMPT_PANEL_ID);
+            List<WebElement> elements = prompt.findElements(BUTTON_TAG_NAME);
+            WebElement okButton = findButton("OK", elements);
+            okButton.click();
+            return new EditInGoogleDocsPage(drone, isGoogleCreate);
+        }
+        catch (TimeoutException te)
+        {
+            throw new TimeoutException("authorisation prompt was not found", te);
+        }
+    }
 
     /**
      * Clicks on the submit button to transfer the control to Sign up page.
@@ -138,10 +136,10 @@ public class GoogleDocsAuthorisation extends SharePage
             {
                 try
                 {
-                WebElement prompt = drone.findAndWait(PROMPT_PANEL_ID);
-                List<WebElement> elements = prompt.findElements(BUTTON_TAG_NAME);
-                WebElement okButton = findButton("OK", elements);
-                okButton.click();
+                    WebElement prompt = drone.findAndWait(PROMPT_PANEL_ID);
+                    List<WebElement> elements = prompt.findElements(BUTTON_TAG_NAME);
+                    WebElement okButton = findButton("OK", elements);
+                    okButton.click();
                 }
                 catch (TimeoutException te)
                 {

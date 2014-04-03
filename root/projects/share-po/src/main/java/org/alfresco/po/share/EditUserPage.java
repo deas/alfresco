@@ -325,7 +325,7 @@ public class EditUserPage extends SharePage
         }
         try
         {
-            if(hasGroups())
+            if (hasGroups())
             {
                 List<WebElement> webElements = drone.findAndWaitForElements(By.cssSelector(TABLE_GROUP_NAMES));
                 boolean isAdded = false;
@@ -356,8 +356,10 @@ public class EditUserPage extends SharePage
         }
         throw new PageOperationException("Group could not be located");
     }
+
     /**
      * Verify if groups table contains user groups
+     * 
      * @return true if groups is displayed.
      */
     public boolean hasGroups()
@@ -366,15 +368,17 @@ public class EditUserPage extends SharePage
         {
             WebElement element = drone.find(By.cssSelector(TABLE_GROUP_NAMES));
             String text = element.getText();
-            if(text != null)
+            if (text != null)
             {
-                if(!text.equalsIgnoreCase("No groups found") || !text.equalsIgnoreCase("Enter a search term to find groups"))
+                if (!text.equalsIgnoreCase("No groups found") || !text.equalsIgnoreCase("Enter a search term to find groups"))
                 {
                     return true;
                 }
             }
         }
-        catch (NoSuchElementException e){ }
+        catch (NoSuchElementException e)
+        {
+        }
         return false;
     }
 }

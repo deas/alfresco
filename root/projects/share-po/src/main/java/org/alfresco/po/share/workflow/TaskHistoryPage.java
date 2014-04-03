@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,22 +23,21 @@ import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.openqa.selenium.By;
 
-
 /**
  * This page represents the Task History details page.
  * 
  * @author Chiran
- * @since  1.7.1
+ * @since 1.7.1
  */
 public class TaskHistoryPage extends AbstractWorkFlowTaskDetailsPage
 {
     private static final By MY_TASKS_LIST_LINK = By.cssSelector("span>a[href*='workflows|active']");
-    
+
     private RenderElement myTasksListLink = getVisibleRenderElement(MY_TASKS_LIST_LINK);
 
     /**
      * Constructor.
-     *
+     * 
      * @param drone WebDriver to access page
      */
     public TaskHistoryPage(WebDrone drone)
@@ -63,7 +58,6 @@ public class TaskHistoryPage extends AbstractWorkFlowTaskDetailsPage
         }
         return this;
     }
-
 
     @Override
     public TaskHistoryPage render()

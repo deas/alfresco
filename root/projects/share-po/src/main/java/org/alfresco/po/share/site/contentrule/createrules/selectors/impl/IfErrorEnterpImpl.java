@@ -6,14 +6,16 @@ import org.alfresco.webdrone.WebDrone;
 /**
  * Created by sergey.kardash on 2/26/14.
  */
-public class IfErrorEnterpImpl extends AbstractIfErrorSelector {
+public class IfErrorEnterpImpl extends AbstractIfErrorSelector
+{
 
-    public IfErrorEnterpImpl(WebDrone drone) {
+    public IfErrorEnterpImpl(WebDrone drone)
+    {
         super(drone);
     }
 
-
-    public void selectScript(String visibleName) {
+    public void selectScript(String visibleName)
+    {
         super.selectScript(visibleName);
     }
 }

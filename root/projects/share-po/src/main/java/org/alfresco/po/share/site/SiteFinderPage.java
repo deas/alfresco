@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -124,7 +120,7 @@ public class SiteFinderPage extends SharePage
 
     /**
      * check whether message displayed or not
-     *
+     * 
      * @return true if message displayed else false
      */
     private boolean isMessageScreenDisplayed()
@@ -167,9 +163,10 @@ public class SiteFinderPage extends SharePage
         WebElement searchSiteButton = drone.findAndWait(SEARCH_SUBMIT);
         searchSiteButton.click();
         searchActioned();
-       
+
         return new SiteFinderPage(drone);
     }
+
     /**
      * Checks if search has been actioned by
      * checking the results is populated or empty
@@ -178,21 +175,21 @@ public class SiteFinderPage extends SharePage
     private void searchActioned()
     {
         RenderTime timer = new RenderTime(drone.getDefaultWaitTime());
-        while(true)
+        while (true)
         {
             try
             {
                 timer.start();
-                if(hasResults())
+                if (hasResults())
                 {
                     break;
                 }
-                if(isMessageScreenDisplayed())
+                if (isMessageScreenDisplayed())
                 {
                     String msg = drone.find(By.cssSelector("tbody.yui-dt-message")).getText();
-                    if("No sites found".equalsIgnoreCase(msg.trim()))
+                    if ("No sites found".equalsIgnoreCase(msg.trim()))
                     {
-                    	break;
+                        break;
                     }
                 }
             }
@@ -262,7 +259,7 @@ public class SiteFinderPage extends SharePage
         {
         }
         return Collections.emptyList();
-    }    
+    }
 
     /**
      * Deletes a site based on the result of the site finder search which should

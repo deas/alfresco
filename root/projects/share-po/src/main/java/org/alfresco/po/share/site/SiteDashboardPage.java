@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -57,7 +53,6 @@ public class SiteDashboardPage extends SitePage implements Dashboard
 
     /**
      * Constructor
-     * 
      */
     public SiteDashboardPage(WebDrone drone)
     {
@@ -155,8 +150,9 @@ public class SiteDashboardPage extends SitePage implements Dashboard
 
     /**
      * Return page based on name of the Dash clickable element passed.
-     * This method is as of now only direct to Wiki page for other pages enums 
+     * This method is as of now only direct to Wiki page for other pages enums
      * with returning css selector to be added.
+     * 
      * @example: For Sample Site if you want to navigate to wiki page pass @Project
      *           Wiki@
      * @param name
@@ -171,16 +167,15 @@ public class SiteDashboardPage extends SitePage implements Dashboard
             List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(clickableElements));
             for (WebElement webElement : elements)
             {
-                    if ("More".equals(webElement.getText()) || name.equals(webElement.getText()))
+                if ("More".equals(webElement.getText()) || name.equals(webElement.getText()))
+                {
+                    webElement.click();
+                    if (AlfrescoVersion.Enterprise42.equals(alfrescoVersion) || AlfrescoVersion.Enterprise43.equals(alfrescoVersion))
                     {
-                        webElement.click();
-                        if (AlfrescoVersion.Enterprise42.equals(alfrescoVersion)
-                                || AlfrescoVersion.Enterprise43.equals(alfrescoVersion))
-                        {
-                            drone.findAndWait(By.cssSelector(PROJECT_WIKI_ID)).click();
-                        }
-                        break;
+                        drone.findAndWait(By.cssSelector(PROJECT_WIKI_ID)).click();
                     }
+                    break;
+                }
             }
         }
         catch (TimeoutException toe)
@@ -189,6 +184,7 @@ public class SiteDashboardPage extends SitePage implements Dashboard
         drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         return FactorySharePage.resolvePage(drone);
     }
+
     /**
      * Checks the title of the site
      * 
@@ -206,8 +202,10 @@ public class SiteDashboardPage extends SitePage implements Dashboard
             return false;
         }
     }
+
     /**
      * Check if welcome message is displayed.
+     * 
      * @return true if displayed.
      */
     public boolean isWelcomeMessageDashletDisplayed()
@@ -216,13 +214,18 @@ public class SiteDashboardPage extends SitePage implements Dashboard
         {
             return drone.find(By.cssSelector(WELCOME_DASHLET)).isDisplayed();
         }
-        catch (NoSuchElementException e) { }
-        catch (StaleElementReferenceException ste){}
+        catch (NoSuchElementException e)
+        {
+        }
+        catch (StaleElementReferenceException ste)
+        {
+        }
         return false;
     }
 
     /**
      * Method to find if the Configure Saved Search dialog displayed
+     * 
      * @return True if displayed
      */
     public boolean isConfigureSavedSearchDialogDisplayed()

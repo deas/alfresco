@@ -1,19 +1,16 @@
 package org.alfresco.po.share.workflow;
+
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -38,30 +35,30 @@ import org.openqa.selenium.WebElement;
  * @author Siva Kaliyappan
  * @since 1.6.2
  */
-public class StartWorkFlowPage extends SharePage 
+public class StartWorkFlowPage extends SharePage
 {
 
-	private static final By WORKFLOW_DROP_DOWN_BUTTON = By.cssSelector("button[id$='default-workflow-definition-button-button']");
-	private static final String WORKFLOW_TEXT = "Please select a workflow";
-	private static final By WORKFLOW_BUTTON = By.cssSelector("button[id$='default-workflow-definition-button-button']");
-	private static final By WORKFLOW_TITLE_LIST = By.cssSelector("li.yuimenuitem>span.title");
-	private final Log logger = LogFactory.getLog(this.getClass());
+    private static final By WORKFLOW_DROP_DOWN_BUTTON = By.cssSelector("button[id$='default-workflow-definition-button-button']");
+    private static final String WORKFLOW_TEXT = "Please select a workflow";
+    private static final By WORKFLOW_BUTTON = By.cssSelector("button[id$='default-workflow-definition-button-button']");
+    private static final By WORKFLOW_TITLE_LIST = By.cssSelector("li.yuimenuitem>span.title");
+    private final Log logger = LogFactory.getLog(this.getClass());
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param drone
-	 *            WebDriver to access page
-	 */
-	public StartWorkFlowPage(WebDrone drone)
-	{
-		super(drone);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param drone
+     *            WebDriver to access page
+     */
+    public StartWorkFlowPage(WebDrone drone)
+    {
+        super(drone);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public StartWorkFlowPage render(RenderTime timer)
-	{
+    @SuppressWarnings("unchecked")
+    @Override
+    public StartWorkFlowPage render(RenderTime timer)
+    {
         while (true)
         {
             timer.start();
@@ -94,43 +91,43 @@ public class StartWorkFlowPage extends SharePage
             }
         }
         return this;
-	}
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public StartWorkFlowPage render(long time)
-	{
-		return render(new RenderTime(time));
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public StartWorkFlowPage render(long time)
+    {
+        return render(new RenderTime(time));
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public StartWorkFlowPage render()
-	{
-		return render(new RenderTime(maxPageLoadingTime));
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public StartWorkFlowPage render()
+    {
+        return render(new RenderTime(maxPageLoadingTime));
+    }
 
-	/**
-	 * Verify if workflow text is present on the page
-	 * 
-	 * @return true if exists
-	 */
-	public boolean isWorkFlowTextPresent()
-	{
-		return (isTextPresent(WORKFLOW_DROP_DOWN_BUTTON, WORKFLOW_TEXT));
-	}
+    /**
+     * Verify if workflow text is present on the page
+     * 
+     * @return true if exists
+     */
+    public boolean isWorkFlowTextPresent()
+    {
+        return (isTextPresent(WORKFLOW_DROP_DOWN_BUTTON, WORKFLOW_TEXT));
+    }
 
-	/**
-	 * Method to check for test in WorkFlow page
-	 * 
-	 * @param selector
-	 * @param text
-	 * @return
-	 */
-	protected boolean isTextPresent(By selector, String text)
-	{
-		boolean display = false;
-		String workflowText = null;
+    /**
+     * Method to check for test in WorkFlow page
+     * 
+     * @param selector
+     * @param text
+     * @return
+     */
+    protected boolean isTextPresent(By selector, String text)
+    {
+        boolean display = false;
+        String workflowText = null;
 
         try
         {
@@ -146,8 +143,8 @@ public class StartWorkFlowPage extends SharePage
             display = workflowText.contains(text);
         }
 
-		return display;
-	}
+        return display;
+    }
 
     /**
      * Method to get the workflow sub page for the workflow passed.
@@ -159,15 +156,15 @@ public class StartWorkFlowPage extends SharePage
      * @return
      */
     public WorkFlow getWorkflowPage(WorkFlowType workFlowType)
-	{
-        if(workFlowType == null)
+    {
+        if (workFlowType == null)
         {
             throw new IllegalArgumentException("Workflow Type can't be null");
         }
-		drone.find(WORKFLOW_BUTTON).click();
+        drone.find(WORKFLOW_BUTTON).click();
         workFlowType.getTaskTypeElement(drone).click();
         return FactoryShareWorkFlow.getPage(drone, workFlowType);
-	}
+    }
 
     public <T extends WorkFlowPage> T getCurrentPage()
     {
@@ -178,6 +175,7 @@ public class StartWorkFlowPage extends SharePage
 
     /**
      * Method to get workflow types exists in select workflow dropdown
+     * 
      * @return List of WorkFlowType
      */
     public List<WorkFlowType> getWorkflowTypes()
@@ -186,14 +184,14 @@ public class StartWorkFlowPage extends SharePage
         try
         {
             drone.find(WORKFLOW_BUTTON).click();
-            if(logger.isInfoEnabled())
+            if (logger.isInfoEnabled())
             {
                 logger.info("Clicked on WORKFLOW_BUTTON");
             }
             List<WebElement> workflowElements = drone.findAll(WORKFLOW_TITLE_LIST);
             workFlowTypes = new ArrayList<WorkFlowType>(workflowElements.size());
 
-            for(WebElement workFlow: workflowElements)
+            for (WebElement workFlow : workflowElements)
             {
                 workFlowTypes.add(WorkFlowType.getWorkflowTypeByTitle(workFlow.getText()));
             }
@@ -202,7 +200,7 @@ public class StartWorkFlowPage extends SharePage
         {
         }
         // Click on WorkFlow button to close the drop down
-        if(drone.find(WORKFLOW_TITLE_LIST).isDisplayed())
+        if (drone.find(WORKFLOW_TITLE_LIST).isDisplayed())
         {
             drone.find(WORKFLOW_BUTTON).click();
         }
@@ -211,12 +209,13 @@ public class StartWorkFlowPage extends SharePage
 
     /**
      * Method to check if a given WorkFlowType is present in the select Workflow drop down
+     * 
      * @param workFlowType
      * @return
      */
     public boolean isWorkflowTypePresent(WorkFlowType workFlowType)
     {
-        if(workFlowType == null)
+        if (workFlowType == null)
         {
             throw new IllegalArgumentException("Workflow Type can not be null");
         }

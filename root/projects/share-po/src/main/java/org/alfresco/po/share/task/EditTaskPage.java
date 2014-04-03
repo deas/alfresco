@@ -1,18 +1,14 @@
 /*
-\ * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
+ * \ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -65,11 +61,11 @@ public class EditTaskPage extends SharePage
 
     private static final RenderElement TITLE_ELEMENT = getVisibleRenderElement(By.cssSelector(".alf-menu-title-text"));
     private static final RenderElement EDIT_TASK_HEADER_ELEMENT = getVisibleRenderElement(By.cssSelector("div.task-edit-header h1"));
-    //private static final RenderElement TASK_STATUS_ELEMENT = getVisibleRenderElement(By.cssSelector(TASK_STATUS));
-    //private static final RenderElement COMMENT_ELEMENT = getVisibleRenderElement(By.cssSelector(COMMENT_TEXTAREA));
+    // private static final RenderElement TASK_STATUS_ELEMENT = getVisibleRenderElement(By.cssSelector(TASK_STATUS));
+    // private static final RenderElement COMMENT_ELEMENT = getVisibleRenderElement(By.cssSelector(COMMENT_TEXTAREA));
     private static final RenderElement SAVE_BUTTON_ELEMENT = getVisibleRenderElement(By.cssSelector(SAVE_BUTTON));
     private static final RenderElement CANCEL_BUTTON_ELEMENT = getVisibleRenderElement(By.cssSelector(CANCEL_BUTTON));
-    
+
     /**
      * @param drone
      */
@@ -229,13 +225,11 @@ public class EditTaskPage extends SharePage
     /**
      * TODO - Dont know whether its absence from 4.2 is expected behaviour.
      * Selects comment box and enters comment into it.
-     * 
      * public void enterComment(String comment) { if (dojoSupport) { throw new
      * UnsupportedOperationException
      * ("Operation invalid for enterprise versions 4.2."); } WebElement
      * commentBox = drone.find(By.cssSelector(COMMENT_BOX));
      * commentBox.sendKeys(comment); }
-     * 
      * public String readCommentFromCommentBox() { if (dojoSupport) { throw new
      * UnsupportedOperationException
      * ("Operation invalid for enterprise versions 4.2."); } WebElement
@@ -245,6 +239,7 @@ public class EditTaskPage extends SharePage
 
     /**
      * Method to get Info section of Edit Task page
+     * 
      * @return
      */
     public TaskInfo getTaskDetailsInfo()
@@ -280,6 +275,7 @@ public class EditTaskPage extends SharePage
 
     /**
      * Method to get the list of Items in a Task
+     * 
      * @return {@link List< TaskItem >}
      */
     public List<TaskItem> getTaskItems()
@@ -289,25 +285,30 @@ public class EditTaskPage extends SharePage
         {
             List<WebElement> itemsRows = getTaskItemElements();
 
-            for(WebElement item: itemsRows)
+            for (WebElement item : itemsRows)
             {
                 taskItems.add(new TaskItem(item, drone, isViewMoreActionDisplayed));
             }
             return taskItems;
         }
-        catch (NoSuchElementException nse){ }
-        catch (PageOperationException poe){ }
+        catch (NoSuchElementException nse)
+        {
+        }
+        catch (PageOperationException poe)
+        {
+        }
         return Collections.emptyList();
     }
 
     /**
      * Method to get the List of TaskItem object for a given File Name
+     * 
      * @param fileName
      * @return {@link List< TaskItem >}
      */
     public List<TaskItem> getTaskItem(String fileName)
     {
-        if(StringUtils.isEmpty(fileName))
+        if (StringUtils.isEmpty(fileName))
         {
             throw new IllegalArgumentException("FileName cannot be empty");
         }
@@ -317,7 +318,7 @@ public class EditTaskPage extends SharePage
         {
             for (WebElement item : workFlowDetailsItemElements)
             {
-                if(item.findElement(By.cssSelector("h3.name")).getText().equals(fileName))
+                if (item.findElement(By.cssSelector("h3.name")).getText().equals(fileName))
                 {
                     taskItems.add(new TaskItem(item, drone, isViewMoreActionDisplayed));
                 }
@@ -332,6 +333,7 @@ public class EditTaskPage extends SharePage
 
     /**
      * Method to get Status Drop down options
+     * 
      * @return
      */
     public List<TaskStatus> getStatusOptions()
@@ -341,7 +343,7 @@ public class EditTaskPage extends SharePage
         {
             Select statusOptions = new Select(drone.find(By.cssSelector(TASK_STATUS)));
             List<WebElement> optionElements = statusOptions.getOptions();
-            for(WebElement option: optionElements)
+            for (WebElement option : optionElements)
             {
                 taskStatusList.add(TaskStatus.getTaskFromString(option.getText()));
             }
@@ -355,6 +357,7 @@ public class EditTaskPage extends SharePage
 
     /**
      * Method to select Cancel button on Edit Task Page
+     * 
      * @return {@link MyTasksPage} or {@link TaskDetailsPage}
      */
     public HtmlPage selectCancelButton()
@@ -376,6 +379,7 @@ public class EditTaskPage extends SharePage
 
     /**
      * Method to check if Reassign button is displayed or not
+     * 
      * @return True if displayed
      */
     public boolean isReAssignButtonDisplayed()
@@ -383,9 +387,11 @@ public class EditTaskPage extends SharePage
         try
         {
             return drone.find(By.cssSelector(REASSIGN_BUTTON)).isDisplayed();
-        } 
-        catch (NoSuchElementException nse) {}
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
         return false;
     }
-    
+
 }

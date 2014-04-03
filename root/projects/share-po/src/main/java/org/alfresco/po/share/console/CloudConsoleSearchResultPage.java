@@ -75,7 +75,7 @@ public class CloudConsoleSearchResultPage extends CloudConsolePage
 
     /**
      * Checks if results table is displayed
-     *
+     * 
      * @return true if visible
      */
     public boolean isVisibleResults()

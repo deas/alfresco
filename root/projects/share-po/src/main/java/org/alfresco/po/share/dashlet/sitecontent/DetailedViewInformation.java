@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -57,8 +53,8 @@ public class DetailedViewInformation extends SimpleViewInformation
                                    boolean likeEnabled)
     {
         super(drone, thumbnail, contentDetail, user, contentStatus, false);
-        
-        if(null == drone)
+
+        if (null == drone)
         {
             throw new UnsupportedOperationException("Drone is required, It can't be null.");
         }
@@ -67,17 +63,17 @@ public class DetailedViewInformation extends SimpleViewInformation
         {
             throw new UnsupportedOperationException("Comment link is required");
         }
-            
-        if (null == like) 
+
+        if (null == like)
         {
             throw new UnsupportedOperationException("Like link is required");
         }
-        
+
         if (null == favourite)
         {
             throw new UnsupportedOperationException("Favourite link is required");
         }
-            
+
         this.drone = drone;
         this.comment = comment;
         this.like = like;
@@ -89,7 +85,7 @@ public class DetailedViewInformation extends SimpleViewInformation
         this.favouriteEnabled = favouriteEnabled;
         this.likeEnabled = likeEnabled;
     }
-    
+
     public boolean isLikeEnabled()
     {
         return likeEnabled;
@@ -134,15 +130,16 @@ public class DetailedViewInformation extends SimpleViewInformation
     {
         return favorite;
     }
-    
+
     /**
      * Mimics the action of clicking comment.
+     * 
      * @return {@link DocumentDetailsPage}
      */
     public DocumentDetailsPage clickComment()
     {
-    	comment.click();
-    	return new DocumentDetailsPage(drone);
+        comment.click();
+        return new DocumentDetailsPage(drone);
     }
 
     @Override

@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -39,7 +35,7 @@ import org.openqa.selenium.WebElement;
  * share's create folder page.
  * 
  * @author Michael Suzuki, Jamie Allison
- * @since  1.0
+ * @since 1.0
  */
 public class NewFolderPage extends ShareDialogue
 {
@@ -57,9 +53,7 @@ public class NewFolderPage extends ShareDialogue
 
     public enum Fields
     {
-        NAME,
-        TITLE,
-        DESCRIPTION;
+        NAME, TITLE, DESCRIPTION;
     }
 
     /**
@@ -103,8 +97,8 @@ public class NewFolderPage extends ShareDialogue
     /**
      * Create a new folder action by completing and submitting the form.
      * 
-     * @param folderName    mandatory folder name
-     * @param description   optional folder description
+     * @param folderName mandatory folder name
+     * @param description optional folder description
      * @return {@link HtmlPage} page response
      */
     public HtmlPage createNewFolder(final String folderName, final String description)
@@ -114,7 +108,7 @@ public class NewFolderPage extends ShareDialogue
         WebElement okButton = drone.find(submitButton);
         okButton.click();
 
-        //Wait till the pop up disappears
+        // Wait till the pop up disappears
         waitUntilMessageAppearAndDisappear("Folder");
         DocumentLibraryPage page = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
         page.setShouldHaveFiles(true);
@@ -124,9 +118,9 @@ public class NewFolderPage extends ShareDialogue
     /**
      * Create a new folder action by completing and submitting the form.
      * 
-     * @param folderName    mandatory folder name
-     * @param description   optional folder description
-     * @param folderTitle  options folder Title
+     * @param folderName mandatory folder name
+     * @param description optional folder description
+     * @param folderTitle options folder Title
      * @return {@link HtmlPage} page response
      */
     public HtmlPage createNewFolder(final String folderName, final String folderTitle, final String description)
@@ -150,8 +144,8 @@ public class NewFolderPage extends ShareDialogue
     /**
      * Create a new folder action by completing and submitting the form.
      * 
-     * @param folderName    mandatory folder name
-     * @param description   optional folder description
+     * @param folderName mandatory folder name
+     * @param description optional folder description
      * @return {@link HtmlPage} page response
      */
     public HtmlPage createNewFolderWithValidation(final String folderName, final String description)
@@ -162,9 +156,9 @@ public class NewFolderPage extends ShareDialogue
     /**
      * Create a new folder action by completing and submitting the form.
      * 
-     * @param folderName    mandatory folder name
-     * @param description   optional folder description
-     * @param folderTitle   optional folder Title
+     * @param folderName mandatory folder name
+     * @param description optional folder description
+     * @param folderTitle optional folder Title
      * @return {@link HtmlPage} page response
      */
     public HtmlPage createNewFolderWithValidation(final String folderName, final String folderTitle, final String description)
@@ -175,12 +169,12 @@ public class NewFolderPage extends ShareDialogue
         validationMessage += typeTitle(folderTitle);
         validationMessage += typeDescription(description);
 
-        if(validationMessage.isEmpty())
+        if (validationMessage.isEmpty())
         {
             WebElement okButton = drone.find(submitButton);
             okButton.click();
 
-            //Wait till the pop up disappears
+            // Wait till the pop up disappears
             waitUntilMessageAppearAndDisappear("Folder");
             DocumentLibraryPage page = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
             page.setShouldHaveFiles(true);
@@ -188,7 +182,7 @@ public class NewFolderPage extends ShareDialogue
         }
 
         HtmlPage page = FactorySharePage.resolvePage(drone);
-        if(page instanceof ShareDialogue)
+        if (page instanceof ShareDialogue)
         {
             return FactorySharePage.resolvePage(drone);
         }
@@ -197,6 +191,7 @@ public class NewFolderPage extends ShareDialogue
 
     /**
      * Clear & Type Folder Name on the Text box.
+     * 
      * @param folderName
      */
     public void typeName(final String folderName)
@@ -217,11 +212,12 @@ public class NewFolderPage extends ShareDialogue
 
     /**
      * Clear & Type the Folder Title for box.
+     * 
      * @param folderTitle
      */
     public String typeTitle(final String folderTitle)
     {
-        if(folderTitle != null && !folderTitle.isEmpty())
+        if (folderTitle != null && !folderTitle.isEmpty())
         {
             return clearAndType(folderTitleCss, folderTitle);
         }
@@ -230,6 +226,7 @@ public class NewFolderPage extends ShareDialogue
 
     /**
      * Clear & Type the Description for box.
+     * 
      * @param description
      */
     public String typeDescription(final String description)
@@ -246,7 +243,7 @@ public class NewFolderPage extends ShareDialogue
         WebElement element = drone.find(by);
         element.clear();
         element.sendKeys(text);
-        //element.sendKeys(Keys.TAB);
+        // element.sendKeys(Keys.TAB);
 
         return getValidationMessage(element);
     }
@@ -264,6 +261,7 @@ public class NewFolderPage extends ShareDialogue
         drone.waitUntilElementDeletedFromDom(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         return drone.getCurrentPage();
     }
+
     /**
      * Wait until the black message box appear with text then wait until same black message disappear with text.
      * 
@@ -282,12 +280,13 @@ public class NewFolderPage extends ShareDialogue
      */
     protected void waitUntilMessageAppearAndDisappear(String text, long timeInSeconds)
     {
-        //drone.waitUntilVisible(By.cssSelector("div.bd>span.message"), text, timeInSeconds);
+        // drone.waitUntilVisible(By.cssSelector("div.bd>span.message"), text, timeInSeconds);
         drone.waitUntilElementDisappears(By.cssSelector("div.bd>span.message"), timeInSeconds);
     }
 
     /**
      * Returns the validation message, if any, for the given Field.
+     * 
      * @param field The reqired field
      * @return The validation message or an empty string if there is no message.
      */
@@ -319,7 +318,7 @@ public class NewFolderPage extends ShareDialogue
         {
             message = getValidationMessage(locator);
         }
-        catch(NoSuchElementException e)
+        catch (NoSuchElementException e)
         {
         }
 

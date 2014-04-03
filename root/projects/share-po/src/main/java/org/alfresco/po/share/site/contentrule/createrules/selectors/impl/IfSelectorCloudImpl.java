@@ -97,7 +97,7 @@ public class IfSelectorCloudImpl extends AbstractIfSelector
     @Deprecated
     public void selectHasTag()
     {
-        //todo: necessary to complete
+        // todo: necessary to complete
         super.selectWithButton(IfOptions.HAS_TAG.numberPosition);
     }
 }

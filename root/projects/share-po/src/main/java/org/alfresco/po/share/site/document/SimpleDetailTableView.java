@@ -33,14 +33,15 @@ import org.openqa.selenium.WebElement;
 public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
 {
     protected String CONTENT_ACTIONS = "td:nth-of-type(5)";
-    
-    public SimpleDetailTableView(String nodeRef,WebElement webElement, WebDrone drone)
+
+    public SimpleDetailTableView(String nodeRef, WebElement webElement, WebDrone drone)
     {
         super(nodeRef, webElement, drone);
         MORE_ACTIONS = drone.getElement("more.actions");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectMoreAction()
      */
     private WebElement selectMoreAction()
@@ -50,7 +51,7 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         WebElement contentActions = selectAction();
         return contentActions.findElement(By.cssSelector(MORE_ACTIONS));
     }
-    
+
     /**
      * Returns the WebElement for Actions in the selected row.
      * 
@@ -61,8 +62,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
     {
         return findElement(By.cssSelector(CONTENT_ACTIONS));
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#selectMoreLink()
      */
     @Override
@@ -70,39 +72,39 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
     {
         selectMoreAction().click();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectDownloadFolderAsZip()
      */
     @Override
     public void selectDownloadFolderAsZip()
     {
         AlfrescoVersion version = getDrone().getProperties().getVersion();
-        if(!isFolder())
+        if (!isFolder())
         {
-            throw new PageOperationException(
-                    "Option Download Folder is not possible against a file, must be folder to workFileDirectoryInfoTest");
+            throw new PageOperationException("Option Download Folder is not possible against a file, must be folder to workFileDirectoryInfoTest");
         }
-        if(AlfrescoVersion.Enterprise41.equals(version) || version.isCloud())
+        if (AlfrescoVersion.Enterprise41.equals(version) || version.isCloud())
         {
-            throw new AlfrescoVersionException(
-                    "Option Download Folder as Zip is not available for this version of Alfresco");
+            throw new AlfrescoVersionException("Option Download Folder as Zip is not available for this version of Alfresco");
         }
 
         WebElement contentActions = selectAction();
         downloadFolderAsZip(contentActions);
         /*
-         *  Assumes driver capability settings to save file in a specific location when
-         *  <Download> option is selected via Browser
+         * Assumes driver capability settings to save file in a specific location when
+         * <Download> option is selected via Browser
          */
     }
-    
+
     /**
      * Clicks on the download folder as a zip button from the action menu
+     * 
      * @param contentActions drop down menu web element
      * @param retry limits the number of tries
      */
-    private void downloadFolderAsZip(WebElement contentActions, String ... retry)
+    private void downloadFolderAsZip(WebElement contentActions, String... retry)
     {
         try
         {
@@ -111,15 +113,16 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         }
         catch (NoSuchElementException nse)
         {
-            if(retry.length < 1)
+            if (retry.length < 1)
             {
-                downloadFolderAsZip(contentActions,"retry");
+                downloadFolderAsZip(contentActions, "retry");
             }
             throw new PageException("Unable to click download folder as a zip", nse);
         }
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectDownload()
      */
     @Override
@@ -135,7 +138,8 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         super.selectDownload();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectViewFolderDetails()
      */
     @Override
@@ -145,8 +149,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         getDrone().mouseOver(contentActions);
         return super.selectViewFolderDetails();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectSyncToCloud()
      */
     @Override
@@ -155,8 +160,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.selectSyncToCloud();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectEditInGoogleDocs()
      */
     @Override
@@ -165,28 +171,31 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.selectEditInGoogleDocs();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectUnSyncFromCloud()
      */
     @Override
     public void selectUnSyncFromCloud()
     {
         selectMoreAction().click();
-        super.selectUnSyncFromCloud();   
+        super.selectUnSyncFromCloud();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectInlineEdit()
      */
     @Override
     public HtmlPage selectInlineEdit()
     {
         selectMoreAction().click();
-       return super.selectInlineEdit();
+        return super.selectInlineEdit();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isInlineEditLinkPresent()
      */
     @Override
@@ -196,7 +205,8 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         return super.isInlineEditLinkPresent();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isEditOfflineLinkPresent()
      */
     @Override
@@ -205,8 +215,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.isEditOfflineLinkPresent();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isEditInGoogleDocsPresent()
      */
     @Override
@@ -217,8 +228,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         focusOnFileOrFolder();
         return isEditInGoogleDocsLink;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isDeletePresent()
      */
     @Override
@@ -227,8 +239,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.isDeletePresent();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectManageRules()
      */
     @Override
@@ -237,18 +250,20 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.selectManageRules();
     }
-      
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isUnSyncFromCloudLinkPresent()
      */
     @Override
     public boolean isUnSyncFromCloudLinkPresent()
     {
         selectMoreAction().click();
-       return super.isUnSyncFromCloudLinkPresent();
+        return super.isUnSyncFromCloudLinkPresent();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectRequestSync()
      */
     @Override
@@ -257,8 +272,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.selectRequestSync();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isRequestToSyncLinkPresent()
      */
     @Override
@@ -267,8 +283,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.isRequestToSyncLinkPresent();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isSyncToCloudLinkPresent()
      */
     @Override
@@ -278,7 +295,8 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         return super.isSyncToCloudLinkPresent();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectManagePermission()
      */
     @Override
@@ -287,15 +305,16 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.selectManagePermission();
     }
-    
+
     @Override
     public CopyOrMoveContentPage selectCopyTo()
     {
         selectMoreAction().click();
         return super.selectCopyTo();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectMoveTo()
      */
     @Override
@@ -304,8 +323,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.selectMoveTo();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectStartWorkFlow()
      */
     @Override
@@ -314,19 +334,21 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.selectStartWorkFlow();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectUploadNewVersion()
      */
-    
+
     @Override
     public UpdateFilePage selectUploadNewVersion()
     {
         selectMoreAction().click();
         return super.selectUploadNewVersion();
-    }  
-    
-    /* (non-Javadoc)
+    }
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isManagePermissionLinkPresent()
      */
     @Override
@@ -336,7 +358,8 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         return super.isManagePermissionLinkPresent();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isEditPropertiesLinkPresent()
      */
     @Override
@@ -347,8 +370,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         resolveStaleness();
         return super.isEditPropertiesLinkPresent();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectEditOffline()
      */
     @Override
@@ -357,8 +381,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.selectEditOffline();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectCancelEditing()
      */
     @Override
@@ -367,8 +392,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.selectCancelEditing();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectManageAspects()
      */
     @Override
@@ -377,8 +403,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.selectManageAspects();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectEditProperties()
      */
     @Override
@@ -388,8 +415,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         getDrone().mouseOverOnElement(actions);
         return super.selectEditProperties();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectViewInBrowser()
      */
     @Override
@@ -399,10 +427,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         getDrone().mouseOverOnElement(actions);
         super.selectViewInBrowser();
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#delete()
      */
     @Override
@@ -413,7 +440,8 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         return drone.getCurrentPage();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectDelete()
      */
     @Override
@@ -424,19 +452,21 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
             selectMoreAction().click();
             return super.selectDelete();
         }
-        catch (NoSuchElementException e) { }
+        catch (NoSuchElementException e)
+        {
+        }
         catch (StaleElementReferenceException st)
         {
             resolveStaleness();
             selectDelete();
         }
-        
+
         throw new PageOperationException("Error in Select Delete.");
     }
-    
+
     private void focusOnFileOrFolder()
     {
-        drone.mouseOverOnElement(drone.findAndWait(By.xpath("//h3[@class='filename']/span/a[text()='"+ getName()+"']")));
+        drone.mouseOverOnElement(drone.findAndWait(By.xpath("//h3[@class='filename']/span/a[text()='" + getName() + "']")));
     }
 
     @Override

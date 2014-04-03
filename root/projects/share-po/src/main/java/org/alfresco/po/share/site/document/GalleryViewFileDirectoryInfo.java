@@ -24,15 +24,14 @@ import org.openqa.selenium.WebElement;
  * This class holds the Gallery View specific File Directory Info implementations.
  * 
  * @author cbairaajoni
- * 
  */
 public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
 {
 
     private static Log logger = LogFactory.getLog(GalleryViewFileDirectoryInfo.class);
-    
+
     private WebElement fileDirectoryInfo;
-    
+
     public GalleryViewFileDirectoryInfo(String nodeRef, WebElement webElement, WebDrone drone)
     {
         super(nodeRef, webElement, drone);
@@ -44,28 +43,30 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
         TAG_LINK_LOCATOR = By.cssSelector("div>div>span>span>a.tag-link");
         fileDirectoryInfo = webElement;
         resolveStaleness();
-        
-        if(isFolder())
+
+        if (isFolder())
         {
-            THUMBNAIL = "div.alf-gallery-item-thumbnail span a";  
+            THUMBNAIL = "div.alf-gallery-item-thumbnail span a";
         }
         else
         {
             THUMBNAIL = "div.alf-gallery-item-thumbnail>div+div+a>img";
         }
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectThumbnail()
      */
     @Override
     public HtmlPage selectThumbnail()
     {
-        drone.mouseOver(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']",getName()))));
+        drone.mouseOver(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']", getName()))));
         return super.selectThumbnail();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#getFileOrFolderHeight()
      */
     public double getFileOrFolderHeight()
@@ -82,14 +83,15 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
 
         throw new PageOperationException("Error in finding the file size.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectCheckbox()
      */
     @Override
     public void selectCheckbox()
     {
-        drone.mouseOver(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']",getName()))));
+        drone.mouseOver(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']", getName()))));
         super.selectCheckbox();
     }
 }

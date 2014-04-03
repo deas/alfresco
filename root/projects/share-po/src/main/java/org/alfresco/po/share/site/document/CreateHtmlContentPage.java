@@ -40,7 +40,7 @@ public class CreateHtmlContentPage extends CreatePlainTextContentPage
     @Override
     protected void createContentField(ContentDetails details)
     {
-        if(details.getContent() != null)
+        if (details.getContent() != null)
         {
             TinyMceEditor tinyMCEEditor = new TinyMceEditor(drone);
             tinyMCEEditor.setTinyMce(TINYMCE_CONTENT);

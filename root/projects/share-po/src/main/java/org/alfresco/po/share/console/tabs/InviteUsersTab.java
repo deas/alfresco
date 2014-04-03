@@ -98,13 +98,13 @@ public class InviteUsersTab extends CloudConsolePage
     {
         drone.findAndWait(ANY_RESULTS, maxPageLoadingTime);
         List<WebElement> successList;
-        try 
+        try
         {
             successList = drone.findAndWaitForElements(SUCCESS_INVITES);
-        } 
+        }
         catch (TimeoutException t)
         {
-            //at the moment i should nit verify negative tests, if we need verify negative invites we should remove exception.
+            // at the moment i should nit verify negative tests, if we need verify negative invites we should remove exception.
             throw new UnsupportedOperationException("No success invitations", t);
         }
 
@@ -141,7 +141,8 @@ public class InviteUsersTab extends CloudConsolePage
         return getResults();
     }
 
-    public Map<String, Boolean> executeCorrectBulkImport (File file){
+    public Map<String, Boolean> executeCorrectBulkImport(File file)
+    {
         selectFileForUploading(file);
         WebElement startInviteButton = drone.findAndWait(START_BULK_INVITE_BUTTON);
         startInviteButton.click();
@@ -150,7 +151,7 @@ public class InviteUsersTab extends CloudConsolePage
 
     private InviteUsersTab selectFileForUploading(File file)
     {
-        if (file==null)
+        if (file == null)
         {
             throw new UnsupportedOperationException("File cannot be null");
         }

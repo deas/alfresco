@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -36,21 +32,22 @@ import org.openqa.selenium.WebElement;
 
 public class ConfirmDeletePage extends SharePage
 {
-    public enum Action {
-        Delete,
-        Cancel
+    public enum Action
+    {
+        Delete, Cancel
     }
+
     protected ConfirmDeletePage(WebDrone drone)
     {
         super(drone);
-      
+
     }
 
     private final Log logger = LogFactory.getLog(ConfirmDeletePage.class);
-    
+
     private static final By BUTTON_GROUP = By.cssSelector(".button-group");
     private static final By PROMPT = By.cssSelector("div[id$='prompt']");
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public ConfirmDeletePage render(RenderTime timer)
@@ -61,58 +58,59 @@ public class ConfirmDeletePage extends SharePage
         }
         catch (NoSuchElementException e)
         {
-            logger.error(BUTTON_GROUP+ "or" +PROMPT+" not found!", e);
-            
+            logger.error(BUTTON_GROUP + "or" + PROMPT + " not found!", e);
+
         }
         catch (TimeoutException e)
         {
-            logger.error(BUTTON_GROUP+ "or" +PROMPT+" not found!", e);
+            logger.error(BUTTON_GROUP + "or" + PROMPT + " not found!", e);
         }
         return this;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public ConfirmDeletePage  render(long time)
+    public ConfirmDeletePage render(long time)
     {
         return render(new RenderTime(time));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public ConfirmDeletePage render()
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     /**
      * Select Action "Delete" or "Cancel" to perform.
+     * 
      * @param action
      * @return - HtmlPage
      */
-    public HtmlPage  selectAction(Action action)
+    public HtmlPage selectAction(Action action)
     {
-        
+
         try
         {
-           List<WebElement> buttons =  drone.findAll(By.cssSelector(".button-group span span button"));
-           for (WebElement button : buttons)
+            List<WebElement> buttons = drone.findAll(By.cssSelector(".button-group span span button"));
+            for (WebElement button : buttons)
             {
-                if(action.name().equals(button.getText()))
+                if (action.name().equals(button.getText()))
                 {
-                    button.click();                 
-                    return  drone.getCurrentPage();                                  
-                }               
-                
+                    button.click();
+                    return drone.getCurrentPage();
+                }
+
             }
-        
+
         }
-        catch(NoSuchElementException nse)
+        catch (NoSuchElementException nse)
         {
-            logger.error(BUTTON_GROUP+"not present in this page", nse);
-           
+            logger.error(BUTTON_GROUP + "not present in this page", nse);
+
         }
-        throw new PageOperationException(BUTTON_GROUP+"not present in this page");
+        throw new PageOperationException(BUTTON_GROUP + "not present in this page");
     }
 
 }

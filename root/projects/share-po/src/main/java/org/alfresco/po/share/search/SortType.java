@@ -1,4 +1,3 @@
-
 package org.alfresco.po.share.search;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,24 +34,25 @@ public enum SortType
     {
         return sortName;
     }
-    
+
     /**
      * Find the {@link SortType} based it is name.
+     * 
      * @param name - Aspect's Name
      * @return {@link SortType}
-     * @throws Exception - Throws {@link Exception} if not able to find 
+     * @throws Exception - Throws {@link Exception} if not able to find
      */
     public static SortType getSortType(String name) throws Exception
     {
-        if (StringUtils.isEmpty(name)) 
-        { 
-            throw new UnsupportedOperationException("Name can't null or empty, It is required."); 
+        if (StringUtils.isEmpty(name))
+        {
+            throw new UnsupportedOperationException("Name can't null or empty, It is required.");
         }
         for (SortType sortType : SortType.values())
         {
-            if (sortType.sortName != null && sortType.sortName.equalsIgnoreCase(name.trim())) 
-            { 
-                return sortType; 
+            if (sortType.sortName != null && sortType.sortName.equalsIgnoreCase(name.trim()))
+            {
+                return sortType;
             }
         }
         throw new IllegalArgumentException("Not able to find the Sort Type for given name : " + name);

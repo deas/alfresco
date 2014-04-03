@@ -1,18 +1,14 @@
 /**
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,12 +29,8 @@ import org.openqa.selenium.WebElement;
 public enum WorkFlowType
 {
 
-    CLOUD_TASK_OR_REVIEW("Cloud Task or Review"),
-    GROUP_REVIEW_AND_APPROVE("Group Review And Approve"),
-    NEW_WORKFLOW("New Task"),
-    POOLED_REVIEW_AND_APPROVE("Pooled Review And Approve"),
-    REVIEW_AND_APPROVE("Review And Approve"),
-    SEND_DOCS_FOR_REVIEW("Send Document(s) For Review");
+    CLOUD_TASK_OR_REVIEW("Cloud Task or Review"), GROUP_REVIEW_AND_APPROVE("Group Review And Approve"), NEW_WORKFLOW("New Task"), POOLED_REVIEW_AND_APPROVE(
+            "Pooled Review And Approve"), REVIEW_AND_APPROVE("Review And Approve"), SEND_DOCS_FOR_REVIEW("Send Document(s) For Review");
 
     private String title;
 
@@ -58,7 +50,7 @@ public enum WorkFlowType
         List<WebElement> liElements = drone.findAll(dropDown);
         for (WebElement liElement : liElements)
         {
-        	String elementText = liElement.getText().trim();
+            String elementText = liElement.getText().trim();
             if (elementText.equalsIgnoreCase(this.title.trim()))
             {
                 return liElement;
@@ -66,7 +58,6 @@ public enum WorkFlowType
         }
         return null;
     }
-    
 
     public static WorkFlowType getWorkflowType(String type)
     {

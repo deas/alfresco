@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -64,8 +60,9 @@ public class UpdateFilePage extends SharePage
      */
     public UpdateFilePage(WebDrone drone, final String documentVersion)
     {
-    	this(drone, documentVersion, false);
+        this(drone, documentVersion, false);
     }
+
     /**
      * Constructor.
      */
@@ -74,8 +71,8 @@ public class UpdateFilePage extends SharePage
         super(drone);
         this.documentVersion = documentVersion;
         this.isEditOffLine = editOffline;
-        
-        //Check if supports HTML5 form input as cloud supports and enterprise doesnt.
+
+        // Check if supports HTML5 form input as cloud supports and enterprise doesnt.
         String prefix = alfrescoVersion.isFileUploadHtml5() ? HTML5_IDENTIFIER : PLANIN_HTML_IDENTIFIER;
         textAreaCssLocation = String.format(TEXT_AREA_CSS, prefix);
         minorVersionRadioButton = String.format(MINOR_BTN_CSS, prefix);
@@ -83,7 +80,7 @@ public class UpdateFilePage extends SharePage
         submitButton = String.format(SUBMIT_BTN_CSS, prefix);
         cancelButton = String.format(CANCEL_BTN_CSS, prefix);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public synchronized UpdateFilePage render(RenderTime timer)
@@ -108,7 +105,7 @@ public class UpdateFilePage extends SharePage
     {
         return render(new RenderTime(time));
     }
-    
+
     /**
      * Select the minor version tick box.
      */
@@ -124,17 +121,18 @@ public class UpdateFilePage extends SharePage
     {
         drone.findAndWait(By.cssSelector(majorVersionRadioButton)).click();
     }
+
     /**
      * Clicks on the submit upload button.
      */
     public HtmlPage submit()
     {
-        //Get the expected version number
+        // Get the expected version number
         String previousVersion = (String) drone.executeJavaScript("Alfresco.getFileUploadInstance(this).showConfig.updateVersion;");
         drone.findAndWait(By.cssSelector(submitButton)).click();
         drone.waitUntilElementDisappears(By.cssSelector(".container-close"), drone.getDefaultWaitTime());
         HtmlPage page = drone.getCurrentPage();
-        if(page instanceof DocumentDetailsPage)
+        if (page instanceof DocumentDetailsPage)
         {
             return new DocumentDetailsPage(drone, previousVersion);
         }
@@ -150,11 +148,11 @@ public class UpdateFilePage extends SharePage
     public void uploadFile(final String filePath)
     {
         WebElement input;
-        if(alfrescoVersion.isFileUploadHtml5())
+        if (alfrescoVersion.isFileUploadHtml5())
         {
             input = drone.find(By.cssSelector(INPUT_DND_FILE_SELECTION_BUTTON));
-        } 
-        else 
+        }
+        else
         {
             input = drone.find(By.cssSelector(NON_HTML5_INPUT_FILE_FIELD));
         }
@@ -172,7 +170,7 @@ public class UpdateFilePage extends SharePage
         commentBox.click();
         commentBox.sendKeys(comment);
     }
-    
+
     /**
      * Clicks on the submit upload button.
      */
@@ -182,53 +180,53 @@ public class UpdateFilePage extends SharePage
         {
             drone.findAndWait(By.cssSelector(cancelButton)).click();
         }
-        catch(TimeoutException e)
+        catch (TimeoutException e)
         {
-            logger.error ("Exceeded time to find the cancel button.", e);
-            throw new PageException("Unable to find the cancel button css : "+ cancelButton);
+            logger.error("Exceeded time to find the cancel button.", e);
+            throw new PageException("Unable to find the cancel button css : " + cancelButton);
         }
     }
-    
+
     protected void setTextAreaCssLocation(String textAreaCssLocation)
     {
         this.textAreaCssLocation = textAreaCssLocation;
     }
-    
+
     protected void setMinorVersionRadioButton(String minorVersionRadioButton)
     {
         this.minorVersionRadioButton = minorVersionRadioButton;
     }
-    
+
     protected void setMajorVersionRadioButton(String majorVersionRadioButton)
     {
         this.majorVersionRadioButton = majorVersionRadioButton;
     }
-    
+
     protected void setSubmitButton(String submitButton)
     {
         this.submitButton = submitButton;
     }
-    
+
     protected void setCancelButton(String cancelButton)
     {
         this.cancelButton = cancelButton;
     }
-    
+
     protected String getMinorVersionRadioButton()
     {
         return minorVersionRadioButton;
     }
-    
+
     protected String getMajorVersionRadioButton()
     {
         return majorVersionRadioButton;
     }
-    
+
     protected String getSubmitButton()
     {
         return submitButton;
     }
-    
+
     protected String getDocumentVersion()
     {
         return documentVersion;

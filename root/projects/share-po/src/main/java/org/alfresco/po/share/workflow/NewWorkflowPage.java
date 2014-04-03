@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,7 +25,6 @@ import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-
 
 /**
  * Represent elements found on the HTML page relating to the Adhoc Workflow page
@@ -53,13 +48,14 @@ public class NewWorkflowPage extends WorkFlowPage
 
     /**
      * Constructor.
-     *
+     * 
      * @param drone WebDriver to access page
      */
     public NewWorkflowPage(WebDrone drone)
     {
         super(drone);
     }
+
     @SuppressWarnings("unchecked")
     @Override
     public NewWorkflowPage render(RenderTime timer)
@@ -97,7 +93,7 @@ public class NewWorkflowPage extends WorkFlowPage
             throw new UnsupportedOperationException("siteName or message or cloudUsers cannot be blank");
         }
         enterMessageText(formDetails.getMessage());
-        if(formDetails.getDueDate() != null)
+        if (formDetails.getDueDate() != null)
         {
             enterDueDateText(formDetails.getDueDate());
         }
@@ -145,7 +141,8 @@ public class NewWorkflowPage extends WorkFlowPage
     }
 
     /**
-     * Method to fill in the form details and cancel new workflow. 
+     * Method to fill in the form details and cancel new workflow.
+     * 
      * @return HtmlPage
      */
     @Override
@@ -156,11 +153,18 @@ public class NewWorkflowPage extends WorkFlowPage
         {
             throw new UnsupportedOperationException("siteName or message or cloudUsers cannot be blank");
         }
+        enterMessageText(formDetails.getMessage());
+        if (formDetails.getDueDate() != null)
+        {
+            enterDueDateText(formDetails.getDueDate());
+        }
+        AssignmentPage assignmentPage = selectReviewer().render();
+        assignmentPage.selectReviewers(formDetails.getReviewers());
         WebElement cancelButton = drone.findAndWait(CANCEL_BUTTON);
         String cancelButtonId = cancelButton.getAttribute("id");
         cancelButton.click();
         drone.waitUntilElementDeletedFromDom(By.id(cancelButtonId), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         return FactorySharePage.resolvePage(drone);
     }
-    
+
 }

@@ -4,7 +4,6 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.WebElement;
 
-
 /**
  * Represents a generic link, a warpper for {@link WebElement}
  * 

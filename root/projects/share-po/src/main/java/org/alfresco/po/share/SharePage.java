@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,7 +51,7 @@ public abstract class SharePage extends Page
     private static final String USER_LOGGED_IN_LABEL = "navigation.dropdown.user";
     protected static final int WAIT_TIME_3000 = 3000;
     private boolean dojoSupport;
-    protected static final By PROMPT_PANEL_ID = By.id("prompt"); 
+    protected static final By PROMPT_PANEL_ID = By.id("prompt");
     protected AlfrescoVersion alfrescoVersion;
     protected long popupRendertime;
     protected long elementWaitInSeconds;
@@ -72,11 +68,12 @@ public abstract class SharePage extends Page
      * The message details the background action taking place.
      * Some possible messages are document being uploaded, site
      * being created.
+     * 
      * @return if message displayed
      */
     protected boolean isJSMessageDisplayed()
     {
-        try 
+        try
         {
             return drone.find(By.cssSelector("div.bd")).isDisplayed();
         }
@@ -93,7 +90,8 @@ public abstract class SharePage extends Page
 
     /**
      * Basic render that checks if the page has rendered.
-     * @param timer {@link RenderTime} 
+     * 
+     * @param timer {@link RenderTime}
      */
     public void basicRender(RenderTime timer)
     {
@@ -124,7 +122,7 @@ public abstract class SharePage extends Page
             case Enterprise42:
                 selector = By.cssSelector("div.logo img");
                 break;
-                //Latest share 
+            // Latest share
             default:
                 selector = By.cssSelector("div.alfresco-logo-Logo img");
                 break;
@@ -140,7 +138,7 @@ public abstract class SharePage extends Page
     public String getPageTitle()
     {
         String selector;
-        switch (alfrescoVersion) 
+        switch (alfrescoVersion)
         {
             case Enterprise41:
                 selector = "h1.theme-color-3";
@@ -221,7 +219,7 @@ public abstract class SharePage extends Page
      */
     public SearchBox getSearch()
     {
-        return new SearchBox(drone,isDojoSupport());
+        return new SearchBox(drone, isDojoSupport());
     }
 
     /**
@@ -242,7 +240,10 @@ public abstract class SharePage extends Page
                 result = element;
             }
         }
-        if (result == null) { throw new NoSuchElementException("Can not find the delete button"); }
+        if (result == null)
+        {
+            throw new NoSuchElementException("Can not find the delete button");
+        }
         return result;
     }
 
@@ -254,11 +255,12 @@ public abstract class SharePage extends Page
     {
         drone.executeJavaScript("Alfresco.util.ComponentManager.findFirst('Alfresco.FileUpload').options.adobeFlashEnabled=false;");
     }
+
     /**
      * Change share file upload to single mode upload.
      * As selenium is unable to interact with flash we disable the normal file upload mode.
      * In addtion firefox does not display the html5 input element to send data hence
-     * we use single mode. 
+     * we use single mode.
      */
     public void setSingleMode()
     {
@@ -285,6 +287,7 @@ public abstract class SharePage extends Page
 
     /**
      * Get copy right text from alfresco footer.
+     * 
      * @return String copy right text.
      */
     public String getCopyRight()
@@ -292,6 +295,7 @@ public abstract class SharePage extends Page
         WebElement elemenent = drone.findAndWait(By.cssSelector("span.copyright"));
         return elemenent.getText();
     }
+
     /**
      * Waits for site pop up message to disappear to allow the drone to resume
      * operations on the page.
@@ -330,8 +334,9 @@ public abstract class SharePage extends Page
         }
         return true;
     }
+
     /**
-     * Default wait for site pop up message to disappear, this 
+     * Default wait for site pop up message to disappear, this
      * is currently set to 3 seconds. Once the popup disappears
      * drone can resume operations on the page as the focus is
      * off the div.bd and back on the main page.
@@ -345,39 +350,37 @@ public abstract class SharePage extends Page
 
     /**
      * Waits for given {@link ElementState} of all render elements when rendering a page.
-     * If the given element not reach element state, it will time out and throw 
-     * {@link TimeoutException}. If operation to find all elements
+     * If the given element not reach element state, it will time out and throw {@link TimeoutException}. If operation to find all elements
      * times out a {@link PageRenderTimeException} is thrown
-     * 
      * Renderable elements will be scanned from class using {@link RenderWebElement} annotation.
-     *
+     * 
      * @param renderTime render timer
      */
     public void webElementRender(RenderTime renderTime)
     {
-        if(renderTime == null)
+        if (renderTime == null)
         {
             throw new UnsupportedOperationException("RenderTime is required");
         }
         List<RenderElement> elements = new ArrayList<RenderElement>();
         Field[] fields = this.getClass().getDeclaredFields();
-        for (Field field : fields) 
+        for (Field field : fields)
         {
-            if(field.isAnnotationPresent(RenderWebElement.class))
+            if (field.isAnnotationPresent(RenderWebElement.class))
             {
-                if(field.getType().equals(By.class))
+                if (field.getType().equals(By.class))
                 {
                     RenderWebElement webElement = (RenderWebElement) field.getAnnotation(RenderWebElement.class);
                     field.setAccessible(true);
-                    try 
+                    try
                     {
                         elements.add(new RenderElement((By) field.get(this), webElement.state()));
-                    } 
-                    catch (IllegalArgumentException e) 
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         logger.error("Object may not be instance of By class ", e);
-                    } 
-                    catch (IllegalAccessException e) 
+                    }
+                    catch (IllegalAccessException e)
                     {
                         logger.error("Not able access the field: " + field.getName(), e);
                     }
@@ -393,24 +396,23 @@ public abstract class SharePage extends Page
 
     /**
      * Waits for given {@link ElementState} of all render elements when rendering a page.
-     * If the given element not reach element state, it will time out and throw 
-     * {@link TimeoutException}. If operation to find all elements
-     * times out a {@link PageRenderTimeException} is thrown 
-     *
+     * If the given element not reach element state, it will time out and throw {@link TimeoutException}. If operation to find all elements
+     * times out a {@link PageRenderTimeException} is thrown
+     * 
      * @param renderTime render timer
      * @param RenderElement collection of {@link RenderElement}
      */
     public void elementRender(RenderTime renderTime, RenderElement... elements)
     {
-        if(renderTime == null)
+        if (renderTime == null)
         {
             throw new UnsupportedOperationException("RenderTime is required");
         }
-        if(elements == null || elements.length < 1)
+        if (elements == null || elements.length < 1)
         {
             throw new UnsupportedOperationException("RenderElements are required");
         }
-        for(RenderElement element:elements)
+        for (RenderElement element : elements)
         {
             try
             {
@@ -418,7 +420,7 @@ public abstract class SharePage extends Page
                 long waitSeconds = TimeUnit.MILLISECONDS.toSeconds(renderTime.timeLeft());
                 element.render(drone, waitSeconds);
             }
-            catch(TimeoutException e)
+            catch (TimeoutException e)
             {
                 logger.error("Not able to render the element : " + element.getLocator().toString(), e);
                 throw new PageRenderTimeException("element not rendered in time.");
@@ -430,9 +432,9 @@ public abstract class SharePage extends Page
         }
     }
 
-
     /**
      * Wait for file to be present given path for maximum page loading time.
+     * 
      * @param pathname Absolute Path Name with File Name.
      */
     public void waitForFile(final long time, String pathname)
@@ -442,6 +444,7 @@ public abstract class SharePage extends Page
 
     /**
      * Wait for file to be present given path for maximum page loading time.
+     * 
      * @param pathname Absolute Path Name with File Name.
      */
     public void waitForFile(String pathname)
@@ -451,6 +454,7 @@ public abstract class SharePage extends Page
 
     /**
      * Wait for file to be present given path.
+     * 
      * @param renderTime Render Time
      * @param pathname Absolute Path Name with File Name.
      */
@@ -462,7 +466,7 @@ public abstract class SharePage extends Page
             {
                 renderTime.start();
                 File file = new File(pathname);
-                if(file.exists())
+                if (file.exists())
                 {
                     break;
                 }
@@ -475,8 +479,8 @@ public abstract class SharePage extends Page
     }
 
     /**
-     * <li>Click the element which passed and wait for given ElementState on the same element.</li>
-     * <li>If the Element State not changed, then render the {@link SharePopup} Page, if it is rendered the return {@link SharePopup} page.</li>
+     * <li>Click the element which passed and wait for given ElementState on the same element.</li> <li>If the Element State not changed, then render the
+     * {@link SharePopup} Page, if it is rendered the return {@link SharePopup} page.</li>
      * 
      * @param locator
      * @param elementState
@@ -530,13 +534,15 @@ public abstract class SharePage extends Page
             return FactorySharePage.resolvePage(drone);
         }
         catch (NoSuchElementException te)
-        {}
+        {
+        }
         throw new PageException("Not able to find the Page, may be locator missing in the page : " + locator.toString());
     }
 
     /**
      * Method to get element text for given locator.
      * If the element is not found, returns empty string
+     * 
      * @param locator
      * @return
      */
@@ -548,44 +554,46 @@ public abstract class SharePage extends Page
         }
         catch (NoSuchElementException nse)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Element not found" + locator.toString(), nse);
             }
         }
         return "";
     }
+
     public void setAlfrescoVersion(AlfrescoVersion alfrescoVersion)
     {
         this.alfrescoVersion = alfrescoVersion;
     }
-    public long getPopupRendertime() 
+
+    public long getPopupRendertime()
     {
         return popupRendertime;
     }
 
-    public void setPopupRendertime(long popupRendertime) 
+    public void setPopupRendertime(long popupRendertime)
     {
         this.popupRendertime = popupRendertime;
     }
-    public void setElementWaitInSeconds(long elementWaitInSeconds) 
+
+    public void setElementWaitInSeconds(long elementWaitInSeconds)
     {
         this.elementWaitInSeconds = elementWaitInSeconds;
-    }   
+    }
 
     /**
      * Helper to consistently get the Site Short Name.
-     *
+     * 
      * @param siteName String Name of the test for uniquely identifying / mapping test data with the test
-     *
      * @return String site short name
      */
     public static String getSiteShortName(String siteName)
     {
         String siteShortName = "";
-        String[] unAllowedCharacters = {"_", "!"};
+        String[] unAllowedCharacters = { "_", "!" };
 
-        for(String removeChar:unAllowedCharacters)
+        for (String removeChar : unAllowedCharacters)
         {
             siteShortName = siteName.replace(removeChar, "");
         }
@@ -603,17 +611,19 @@ public abstract class SharePage extends Page
     {
         drone.waitUntilElementDisappears(By.cssSelector("div.bd>span.message"), timeInSeconds);
     }
+
     /**
      * Return the {@link RenderElement} of the action message.
      * Checks that the black box with the message is not showing
      * on the page or showing pending state passed invisible vs visible.
+     * 
      * @param state {@link ElementState} the visiblity state of element
      * @return {@link RenderElement} of action message based on state
      */
     public RenderElement getActionMessageElement(ElementState state)
     {
         String messageSelector = "div#message, div.bd";
-        if(AlfrescoVersion.Enterprise41.equals(drone.getProperties().getVersion()))
+        if (AlfrescoVersion.Enterprise41.equals(drone.getProperties().getVersion()))
         {
             messageSelector = "div.bd";
         }
@@ -632,7 +642,7 @@ public abstract class SharePage extends Page
         List<WebElement> searchElements = drone.findAll(locator);
         for (WebElement webElement : searchElements)
         {
-            if(webElement.isDisplayed())
+            if (webElement.isDisplayed())
             {
                 return webElement;
             }
@@ -661,7 +671,7 @@ public abstract class SharePage extends Page
         }
         catch (NoSuchElementException exception)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace(exception);
             }

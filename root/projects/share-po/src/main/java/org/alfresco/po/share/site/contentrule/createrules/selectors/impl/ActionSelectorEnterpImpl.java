@@ -16,14 +16,12 @@ import java.util.List;
  */
 public class ActionSelectorEnterpImpl extends AbstractActionSelector
 {
-    private static final By CHECK_IN_OPTIONS_BUTTON        = By.cssSelector("span[class*='check-in'] button");
+    private static final By CHECK_IN_OPTIONS_BUTTON = By.cssSelector("span[class*='check-in'] button");
     private static final By LINK_TO_CATEGORY_SELECT_BUTTON = By.cssSelector("span[class*='category'] button");
-    private static final By ASPECT_SELECT                  = By.cssSelector("select[title='aspect-name']");
-    private static final By APPROVE_BUTTON                 = By
-            .cssSelector("span[class*='simple-workflow'] button:not([disabled])");
-    private static final By MESSAGE_BUTTON                 = By.cssSelector("span[class*='email-dialog'] button");
-    private static final By TYPE_SELECTOR                  = By
-            .cssSelector("span[class*='specialise'] select[param='type-name']");
+    private static final By ASPECT_SELECT = By.cssSelector("select[title='aspect-name']");
+    private static final By APPROVE_BUTTON = By.cssSelector("span[class*='simple-workflow'] button:not([disabled])");
+    private static final By MESSAGE_BUTTON = By.cssSelector("span[class*='email-dialog'] button");
+    private static final By TYPE_SELECTOR = By.cssSelector("span[class*='specialise'] select[param='type-name']");
 
     private enum PerformActions
     {
@@ -57,7 +55,8 @@ public class ActionSelectorEnterpImpl extends AbstractActionSelector
         super(drone);
     }
 
-    public void selectExecuteScript(String visibleName) {
+    public void selectExecuteScript(String visibleName)
+    {
         super.selectAction(PerformActions.EXECUTE_SCRIPT.numberPosition);
         super.selectScript(visibleName);
 
@@ -81,7 +80,7 @@ public class ActionSelectorEnterpImpl extends AbstractActionSelector
         super.selectAction(PerformActions.CHECK_IN.numberPosition);
         List<WebElement> checkInButtons = getDrone().findAndWaitForElements(CHECK_IN_OPTIONS_BUTTON);
         checkInButtons.get(checkInButtons.size() - 1).click();
-        //todo added logic for work with popUp menu.
+        // todo added logic for work with popUp menu.
     }
 
     public void selectCheckOut(String siteName, String... folders)
@@ -96,7 +95,7 @@ public class ActionSelectorEnterpImpl extends AbstractActionSelector
         super.selectAction(PerformActions.LINK_TO_CATEGORY.numberPosition);
         List<WebElement> selectButtons = getDrone().findAndWaitForElements(LINK_TO_CATEGORY_SELECT_BUTTON);
         selectButtons.get(selectButtons.size() - 1).click();
-        //todo added logic for work with popUp menu.
+        // todo added logic for work with popUp menu.
     }
 
     public void selectAddAspect(String visibleAspectName)
@@ -122,7 +121,6 @@ public class ActionSelectorEnterpImpl extends AbstractActionSelector
         aspectSelects.get(aspectSelects.size() - 1).selectByVisibleText(visibleAspectName);
     }
 
-
     public void selectTransformAndCopy(String visibleTypeText, String siteName, String... folders)
     {
         super.selectAction(PerformActions.TRANSFORM_AND_COPY_CONTENT.numberPosition);
@@ -143,7 +141,7 @@ public class ActionSelectorEnterpImpl extends AbstractActionSelector
         super.selectAction(PerformActions.ADD_SIMPLE_WORKFLOW.numberPosition);
         List<WebElement> approveButtons = getDrone().findAndWaitForElements(APPROVE_BUTTON);
         approveButtons.get(approveButtons.size() - 1).click();
-        //todo add logic for work with PopUp menu.
+        // todo add logic for work with PopUp menu.
     }
 
     @Deprecated
@@ -152,7 +150,7 @@ public class ActionSelectorEnterpImpl extends AbstractActionSelector
         super.selectAction(PerformActions.SEND_MAIL.numberPosition);
         List<WebElement> messageButtons = getDrone().findAndWaitForElements(MESSAGE_BUTTON);
         messageButtons.get(messageButtons.size() - 1).click();
-        //todo add Logic for work with PopUp menu.
+        // todo add Logic for work with PopUp menu.
     }
 
     public void selectExtractMetadata()

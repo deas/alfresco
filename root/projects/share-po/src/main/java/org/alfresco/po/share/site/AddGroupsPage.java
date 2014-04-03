@@ -1,38 +1,30 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  *//*
- * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
- * This file is part of Alfresco
- *
- * Alfresco is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Alfresco is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
- */
+    * Copyright (C) 2005-2013 Alfresco Software Limited.
+    * This file is part of Alfresco
+    * Alfresco is free software: you can redistribute it and/or modify
+    * it under the terms of the GNU Lesser General Public License as published by
+    * the Free Software Foundation, either version 3 of the License, or
+    * (at your option) any later version.
+    * Alfresco is distributed in the hope that it will be useful,
+    * but WITHOUT ANY WARRANTY; without even the implied warranty of
+    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    * GNU Lesser General Public License for more details.
+    * You should have received a copy of the GNU Lesser General Public License
+    * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+    */
 package org.alfresco.po.share.site;
 
 import java.util.List;
@@ -51,7 +43,7 @@ import org.openqa.selenium.WebElement;
 
 /**
  * @author nshah
- * To Add new Groups this page is used.
+ *         To Add new Groups this page is used.
  */
 public class AddGroupsPage extends SharePage
 {
@@ -79,8 +71,12 @@ public class AddGroupsPage extends SharePage
         {
             elementRender(timer, getVisibleRenderElement(By.cssSelector(ADD_GROUP)), getVisibleRenderElement(By.cssSelector(SEARCH_INPUT_TEXT)));
         }
-        catch (NoSuchElementException e){ }
-        catch (TimeoutException e){ }
+        catch (NoSuchElementException e)
+        {
+        }
+        catch (TimeoutException e)
+        {
+        }
         return this;
     }
 
@@ -163,11 +159,12 @@ public class AddGroupsPage extends SharePage
         {
             throw new PageOperationException("Not visible Element:" + SEARCH_BUTTON, toe);
         }
-        
+
     }
 
     /**
      * Assign role to group.
+     * 
      * @param groupDisplayName
      * @param roleToAssign
      * @return
@@ -179,13 +176,13 @@ public class AddGroupsPage extends SharePage
             if (drone.find(By.cssSelector(ADDED_GROUP)).isDisplayed())
             {
                 drone.find(By.cssSelector(ROW_ROLE_BUTTON)).click();
-                
+
                 List<WebElement> listOfRoles = drone.findAll(By.cssSelector("div[id$='inviteelist'] div > ul > li > a"));
-               
+
                 for (WebElement role : listOfRoles)
                 {
                     if (roleToAssign.toString().equalsIgnoreCase(role.getText()))
-                    {                        
+                    {
                         role.click();
                         return new AddGroupsPage(drone);
                     }
@@ -234,7 +231,7 @@ public class AddGroupsPage extends SharePage
             throw new PageOperationException("Not found element is : " + ADD_GROUP, nse);
         }
     }
-    
+
     /**
      * @param groupDisplayName
      * @param roleToAssign
@@ -259,9 +256,9 @@ public class AddGroupsPage extends SharePage
                 }
             }
         }
-        catch(NoSuchElementException nse)
+        catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Group not found",nse);
+            throw new PageOperationException("Group not found", nse);
         }
         return false;
     }

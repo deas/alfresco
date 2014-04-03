@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -56,7 +52,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
     private static final By SEARCH_RESULTS = By.cssSelector("div[id$='default-search-results']");
     private static final By SEARCH_BUTTON = By.cssSelector("button[id$='default-search-button']");
     private static final By LOADING_MESSAGE = By.cssSelector("table>tbody>tr>td.yui-dt-loading>div");
-    
+
     /**
      * Constructor.
      */
@@ -77,7 +73,13 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
                 timer.start();
                 synchronized (this)
                 {
-                    try { this.wait(WAIT_TIME);}catch (InterruptedException e){ }
+                    try
+                    {
+                        this.wait(WAIT_TIME);
+                    }
+                    catch (InterruptedException e)
+                    {
+                    }
                 }
                 try
                 {
@@ -92,11 +94,11 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
                 }
                 catch (NoSuchElementException e)
                 {
-                    
+
                 }
                 catch (StaleElementReferenceException ste)
                 {
-                    //DOM has changed therefore page should render once change is completed
+                    // DOM has changed therefore page should render once change is completed
                 }
                 finally
                 {
@@ -106,8 +108,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (PageRenderTimeException te)
         {
-            throw new NoSuchDashletExpection(this.getClass().getName()
-                        + " failed to find site notice dashlet", te);
+            throw new NoSuchDashletExpection(this.getClass().getName() + " failed to find site notice dashlet", te);
         }
         return this;
     }
@@ -125,7 +126,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     /**
      * Finds whether help icon is displayed or not.
      * 
@@ -138,17 +139,17 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
             scrollDownToDashlet();
             return drone.findAndWait(HELP_ICON).isDisplayed();
         }
-        catch(TimeoutException te)
+        catch (TimeoutException te)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Unable to find the help icon.", te);
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * This method is used to Finds Help icon and clicks on it.
      */
@@ -158,13 +159,13 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         {
             drone.findAndWait(HELP_ICON).click();
         }
-        catch(TimeoutException te)
+        catch (TimeoutException te)
         {
             logger.error("Unable to find the help icon.", te);
             throw new PageOperationException("Unable to click the Help icon");
         }
     }
-    
+
     /**
      * Finds whether help balloon is displayed on this page.
      * 
@@ -175,11 +176,13 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         try
         {
             return drone.findAndWait(DASHLET_HELP_BALLOON).isDisplayed();
-        } 
-        catch (TimeoutException elementException) {}
+        }
+        catch (TimeoutException elementException)
+        {
+        }
         return false;
     }
-    
+
     /**
      * This method gets the Help balloon messages and merge the message into string.
      * 
@@ -190,14 +193,14 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         try
         {
             return drone.findAndWait(DASHLET_HELP_BALLOON_TEXT).getText();
-        } 
+        }
         catch (TimeoutException elementException)
         {
             logger.error("Exceeded time to find the help ballon text", elementException);
         }
         throw new UnsupportedOperationException("Not able to find the help text");
     }
-    
+
     /**
      * This method closes the Help balloon message.
      */
@@ -208,13 +211,13 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
             drone.findAndWait(DASHLET_HELP_BALLOON_CLOSE_BUTTON).click();
             drone.waitUntilElementDisappears(DASHLET_HELP_BALLOON, TimeUnit.SECONDS.convert(WAIT_TIME_3000, TimeUnit.MILLISECONDS));
             return this;
-        } 
+        }
         catch (TimeoutException elementException)
         {
             throw new UnsupportedOperationException("Exceeded time to find the help ballon close button.", elementException);
         }
     }
-    
+
     /**
      * This method gets the Site Search Dashlet title.
      * 
@@ -226,12 +229,12 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         {
             return drone.findAndWait(DASHLET_TITLE).getText();
         }
-        catch(TimeoutException te)
+        catch (TimeoutException te)
         {
-            throw new UnsupportedOperationException("Exceeded time to find the title.", te); 
+            throw new UnsupportedOperationException("Exceeded time to find the title.", te);
         }
     }
-    
+
     /**
      * This method gets the Site Search Dashlet content.
      * 
@@ -243,12 +246,12 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         {
             return drone.findAndWait(SEARCH_RESULTS).getText();
         }
-        catch(TimeoutException te)
+        catch (TimeoutException te)
         {
-            throw new UnsupportedOperationException("Exceeded time to find the title.", te); 
+            throw new UnsupportedOperationException("Exceeded time to find the title.", te);
         }
     }
-    
+
     /**
      * To get search item reults from the dashlet after searching.
      * 
@@ -260,7 +263,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         {
             List<WebElement> resultItems = drone.findAndWaitForElements(By.cssSelector("div[id$='default-search-results'] .yui-dt-data>tr"));
             List<SiteSearchItem> searchItems = Collections.emptyList();
-            if(resultItems != null && resultItems.size() > 0)
+            if (resultItems != null && resultItems.size() > 0)
             {
                 searchItems = new ArrayList<SiteSearchItem>(resultItems.size());
                 for (WebElement webElement : resultItems)
@@ -272,21 +275,21 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException e)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Not able to find the element: ", e);
             }
         }
         catch (NoSuchElementException e)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Not able to find the element: ", e);
             }
         }
         return Collections.emptyList();
     }
-    
+
     /**
      * Input the given search text and click the search button.
      * 
@@ -309,7 +312,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         }
         return this;
     }
-    
+
     /**
      * Returns the list result sizes.
      * 
@@ -328,7 +331,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         drone.findAndWait(RESULT_SIZE_BUTTON).click();
         return resultSizeList;
     }
-    
+
     /**
      * @return The Search text from input box.
      */
@@ -340,10 +343,10 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException e)
         {
-           throw new PageOperationException("Not able find the input box ", e);
+            throw new PageOperationException("Not able find the input box ", e);
         }
     }
-    
+
     /**
      * This method gets the focus by placing mouse over on Site Content Dashlet.
      */
@@ -351,5 +354,5 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
     {
         drone.mouseOver(drone.findAndWait(DASHLET_CONTAINER_PLACEHOLDER));
     }
-    
+
 }

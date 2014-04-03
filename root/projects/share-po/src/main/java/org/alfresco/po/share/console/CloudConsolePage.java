@@ -24,7 +24,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
-
 // "extends SharePage" should be changed to "extends Page" we should re-locate method "render" from SharePage to Page
 @SuppressWarnings("unused")
 public class CloudConsolePage extends SharePage
@@ -42,6 +41,7 @@ public class CloudConsolePage extends SharePage
     private static final By SEARCH_INPUT = By.cssSelector("input[id$='edit-search-field']");
     @RenderWebElement
     private static final By FIND_BUTTON = By.cssSelector("input[id$='edit-submit']");
+
     /**
      * Constructor.
      */
@@ -52,7 +52,7 @@ public class CloudConsolePage extends SharePage
 
     /**
      * Verify if login html elements inputs are displayed.
-     *
+     * 
      * @return true if elements are displayed
      */
     @SuppressWarnings("unchecked")
@@ -79,7 +79,7 @@ public class CloudConsolePage extends SharePage
 
     /**
      * Verify if cloud console title is present on the page
-     *
+     * 
      * @return true if exists
      */
     protected boolean isTitlePresent()
@@ -89,7 +89,7 @@ public class CloudConsolePage extends SharePage
 
     /**
      * the function is private because we have only one user for Cloud Console
-     *
+     * 
      * @return CloudConsolePage
      */
     public CloudConsolePage loginAs(final String username, final String password)
@@ -175,7 +175,8 @@ public class CloudConsolePage extends SharePage
         return new CloudConsoleDashboardPage(drone);
     }
 
-    public String getCloudConsoleUrl(String shareUrl){
+    public String getCloudConsoleUrl(String shareUrl)
+    {
         String consoleUrl;
         if (shareUrl.contains("stagmy.alfresco.com"))
         {
@@ -188,7 +189,9 @@ public class CloudConsolePage extends SharePage
 
                 consoleUrl = shareUrl.substring(0, shareUrl.lastIndexOf("alfresco.me"));
                 consoleUrl = consoleUrl + "testcloudconsole.alfresco.com/";
-            } else {
+            }
+            else
+            {
                 throw new UnsupportedOperationException("cannot get cloud console url, pelase verify shareUrl is correct");
             }
         }

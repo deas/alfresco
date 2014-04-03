@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -80,7 +76,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
-
 
 /**
  * Alfresco Share factory, creates the appropriate page object that corresponds
@@ -167,8 +162,7 @@ public class FactorySharePage implements PageFactory
     }
 
     /**
-         * Creates the appropriate page object based on the current page the
-         * {@link WebDrone} is on.
+     * Creates the appropriate page object based on the current page the {@link WebDrone} is on.
      * 
      * @param drone WebDrone Alfresco unmanned web browser client
      * @return SharePage the page object response
@@ -196,7 +190,7 @@ public class FactorySharePage implements PageFactory
             catch (NoSuchElementException nse)
             {
             }
-            
+
             // Check for Share Dialogue
             try
             {
@@ -353,6 +347,12 @@ public class FactorySharePage implements PageFactory
         {
             return "repository";
         }
+        // The admin console has an unusual url which we handle here
+        // 'application' by itself would be inappropriate
+        if (url.contains("/admin-console/application"))
+        {
+            return "admin-console";
+        }
 
         // Get the last element of url
         StringTokenizer st = new StringTokenizer(url, "/");
@@ -404,7 +404,7 @@ public class FactorySharePage implements PageFactory
         }
         return val;
     }
-    
+
     /**
      * Helper method to return right Page for Share Dialogue displayed
      * 
@@ -422,38 +422,36 @@ public class FactorySharePage implements PageFactory
                 if (dialogueID.contains("createSite"))
                 {
                     sharePage = new CreateSitePage(drone);
-                    
+
                 }
-                else if(dialogueID.contains("createFolder"))
+                else if (dialogueID.contains("createFolder"))
                 {
                     sharePage = new NewFolderPage(drone);
                 }
-                else if(dialogueID.contains("upload"))
+                else if (dialogueID.contains("upload"))
                 {
                     sharePage = new UploadFilePage(drone);
                 }
-                else if(dialogueID.contains("taggable-cntrl-picker"))
+                else if (dialogueID.contains("taggable-cntrl-picker"))
                 {
                     sharePage = new TagPage(drone);
                 }
-                else if(dialogueID.contains("editDetails"))
+                else if (dialogueID.contains("editDetails"))
                 {
                     sharePage = new EditDocumentPropertiesPage(drone);
                 }
-                
-                else if(dialogueID.contains("copyMoveTo"))
+
+                else if (dialogueID.contains("copyMoveTo"))
                 {
                     sharePage = new CopyOrMoveContentPage(drone);
                 }
-            }          
+            }
         }
         catch (NoSuchElementException nse)
         {
         }
-        
+
         return sharePage;
     }
-    
-    
-   
- }
+
+}

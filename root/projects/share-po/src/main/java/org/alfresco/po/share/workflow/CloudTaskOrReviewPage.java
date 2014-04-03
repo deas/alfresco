@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -46,12 +42,12 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-
 /**
  * Represent elements found on the HTML page relating to the CloudTaskOrReviewPage page load.
-  * @author Siva Kaliyappan
-  * @since 1.6.2
-  */
+ * 
+ * @author Siva Kaliyappan
+ * @since 1.6.2
+ */
 public class CloudTaskOrReviewPage extends WorkFlowPage
 {
 
@@ -71,7 +67,6 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
     private static final By REQUIRED_APPROVAL_PERCENTAGE = By.cssSelector("input[id$='_requiredApprovalPercentage']");
     private static final By DESTINATION_NETWORK = By.cssSelector("span[id$='_hwf_cloudDestination-tenant']");
 
-    
     private static final By DESTINATION_SITE = By.cssSelector("span[id$='_hwf_cloudDestination-site']");
     private static final By DESTINATION_FOLDER = By.cssSelector("span[id$='_hwf_cloudDestination-folder']");
     private static final By APPROVAL_PERCENTAGE_HELP_ICON = By.cssSelector("img[id$='_prop_hwf_requiredApprovalPercentage-help-icon']");
@@ -108,7 +103,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Constructor.
-     *
+     * 
      * @param drone WebDriver to access page
      */
     public CloudTaskOrReviewPage(WebDrone drone)
@@ -121,9 +116,9 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
     public CloudTaskOrReviewPage render(RenderTime timer)
     {
         elementRender(timer, MESSAGE_ELEMENT, DESTINATION_NETWORK_ELEMENT, DESTINATION_SITE_ELEMENT, DESTINATION_FOLDER_ELEMENT, DESTINATION_BUTTON_ELEMENT,
-                    ASSIGNEE_OR_REVIEWERS_LABEL_ELEMENT, ASSIGNMENT_BUTTON_ELEMENT, AFTER_COMPLETION_DROPDOWN_ELEMENT, LOCK_ON_PREMISE_ELEMENT,
-                    ADD_ITEM_BUTTON_ELEMENT, REMOVE_ALL_BUTTON_ELEMENT, SELECTED_ITEMS_SECTION_ELEMENT, WORKFLOW_DESCRIPTION_HELP_ICON_ELEMENT, PRIORITY_DROPDOWN_ELEMENT,
-                    DUE_DATE_ELEMENT);
+                ASSIGNEE_OR_REVIEWERS_LABEL_ELEMENT, ASSIGNMENT_BUTTON_ELEMENT, AFTER_COMPLETION_DROPDOWN_ELEMENT, LOCK_ON_PREMISE_ELEMENT,
+                ADD_ITEM_BUTTON_ELEMENT, REMOVE_ALL_BUTTON_ELEMENT, SELECTED_ITEMS_SECTION_ELEMENT, WORKFLOW_DESCRIPTION_HELP_ICON_ELEMENT,
+                PRIORITY_DROPDOWN_ELEMENT, DUE_DATE_ELEMENT);
         return this;
     }
 
@@ -144,6 +139,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
     /**
      * Method to fill in the details for form and submit.
      * formDetails to get the form details
+     * 
      * @return HtmlPage
      */
     @Override
@@ -154,19 +150,19 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
             throw new UnsupportedOperationException("siteName cannot be blank");
         }
 
-        if(formDetails.getMessage() != null)
+        if (formDetails.getMessage() != null)
         {
             enterMessageText(formDetails.getMessage());
         }
 
-        if(formDetails.getDueDate() != null)
+        if (formDetails.getDueDate() != null)
         {
             enterDueDateText(formDetails.getDueDate());
         }
 
         selectTask(formDetails.getTaskType());
 
-        if(isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK))
+        if (isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK))
         {
             enterRequiredApprovalPercentage(formDetails.getApprovalPercentage());
         }
@@ -177,17 +173,17 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
         AssignmentPage assignmentPage = selectAssignmentPage().render();
 
-        if(isTaskTypeSelected(TaskType.SIMPLE_CLOUD_TASK))
+        if (isTaskTypeSelected(TaskType.SIMPLE_CLOUD_TASK))
         {
-            if(StringUtils.isEmpty(formDetails.getAssignee()))
+            if (StringUtils.isEmpty(formDetails.getAssignee()))
             {
                 throw new UnsupportedOperationException("Assignee cannot be null");
             }
             assignmentPage.selectAssignee(formDetails.getAssignee());
         }
-        else if(isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK))
+        else if (isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK))
         {
-            if(formDetails.getReviewers().size() < 1 || isReviewersBlank(formDetails.getReviewers()))
+            if (formDetails.getReviewers().size() < 1 || isReviewersBlank(formDetails.getReviewers()))
             {
                 throw new UnsupportedOperationException("At least one reviewer should be present");
             }
@@ -195,19 +191,20 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         }
 
         selectLockOnPremiseCheckbox(formDetails.isLockOnPremise());
-        
+
         selectAfterCompleteDropDown(formDetails.getContentStrategy());
         selectPriorityDropDown(formDetails.getTaskPriority());
         return submit(SUBMIT_BUTTON, ElementState.DELETE_FROM_DOM);
     }
-    
+
     /**
      * Verify if workflow text is present on the page
+     * 
      * @return true if exists
      */
     public boolean isTaskTypeSelected(TaskType taskType)
     {
-        if(taskType == null)
+        if (taskType == null)
         {
             throw new IllegalArgumentException("Task Type can't be null.");
         }
@@ -215,15 +212,14 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         return taskTypeDropDown.getFirstSelectedOption().getText().equals(taskType.getType());
     }
 
-
     /**
      * Selects specific tasks on the pageS
-     *
+     * 
      * @return true if exists
      */
     public void selectTask(TaskType taskType)
     {
-        if(taskType == null)
+        if (taskType == null)
         {
             throw new IllegalArgumentException("Task Type can't be null.");
         }
@@ -231,39 +227,43 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         Select select = new Select(dropDown);
         select.selectByIndex(taskType.ordinal());
     }
-    
-	/**
-	 * Method to check for test in WorkFlow page
-	 * 
-	 * @param selector
-	 * @param text
-	 * @return
-	 */
-	protected boolean isTextPresent(By selector, String text)
-	{
-	    if(StringUtils.isEmpty(text))
-	    {
-	        throw new IllegalArgumentException("text can't empty or null.");
-	    }
-	    if(selector == null)
-	    {
-	        throw new IllegalArgumentException("selector can't be null"); 
-	    }
-		boolean display = false;
-		String workflowText = null;
 
-		try {
-			workflowText = drone.findAndWait(selector).getText().trim();
-		} catch (NoSuchElementException e) {
-			logger.info("Workflow drop down button not Present", e);
-		}
+    /**
+     * Method to check for test in WorkFlow page
+     * 
+     * @param selector
+     * @param text
+     * @return
+     */
+    protected boolean isTextPresent(By selector, String text)
+    {
+        if (StringUtils.isEmpty(text))
+        {
+            throw new IllegalArgumentException("text can't empty or null.");
+        }
+        if (selector == null)
+        {
+            throw new IllegalArgumentException("selector can't be null");
+        }
+        boolean display = false;
+        String workflowText = null;
 
-		if (workflowText != null) {
-			display = workflowText.contains(text);
-		}
+        try
+        {
+            workflowText = drone.findAndWait(selector).getText().trim();
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.info("Workflow drop down button not Present", e);
+        }
 
-		return display;
-	}
+        if (workflowText != null)
+        {
+            display = workflowText.contains(text);
+        }
+
+        return display;
+    }
 
     /**
      * Returns the WebElement for message textarea.
@@ -329,15 +329,18 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
                 try
                 {
                     msg = drone.findAndWait(By.cssSelector("div.bd>span.message"), TIME_LEFT);
-                    
+
                     if (msg != null && msg.getText().equalsIgnoreCase("No network is enabled for sync"))
                     {
-                        drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), "No network is enabled for sync", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                        drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), "No network is enabled for sync",
+                                SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                         throw new PageException("No network is enabled for sync");
                     }
                 }
-                catch (TimeoutException nse) {}
-                
+                catch (TimeoutException nse)
+                {
+                }
+
                 try
                 {
                     if (drone.findAndWait(By.cssSelector("div[id$='cloudDestination-cloud-folder-title']"), TIME_LEFT).isDisplayed())
@@ -345,8 +348,12 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
                         return new DestinationAndAssigneePage(drone);
                     }
                 }
-                catch (TimeoutException nse) {}
-                catch (StaleElementReferenceException se) {}
+                catch (TimeoutException nse)
+                {
+                }
+                catch (StaleElementReferenceException se)
+                {
+                }
 
                 try
                 {
@@ -355,8 +362,12 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
                         return new CloudSignInPage(drone);
                     }
                 }
-                catch (TimeoutException nse) {}
-                catch (StaleElementReferenceException se) {}
+                catch (TimeoutException nse)
+                {
+                }
+                catch (StaleElementReferenceException se)
+                {
+                }
 
                 time.end();
             }
@@ -367,7 +378,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         }
         catch (TimeoutException te)
         {
-            throw new PageOperationException("Exceeded time to find destination button : ",te);
+            throw new PageOperationException("Exceeded time to find destination button : ", te);
         }
     }
 
@@ -375,7 +386,6 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
      * Mimics the action of selecting the Lock on premise checkbox.
      * 
      * @param toCheck
-     * 
      * @return HtmlPage response page object
      */
     public void selectLockOnPremiseCheckbox(boolean toCheck)
@@ -397,7 +407,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         drone.findAndWait(ASSIGNMENT_BUTTON).click();
         return new AssignmentPage(drone);
     }
-    
+
     /**
      * @return
      */
@@ -427,7 +437,6 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
     /**
      * Mimics the action of selecting the View more actions button on an added
      * document.
-     * 
      */
     public DocumentDetailsPage selectViewMoreActionsBtn(String filename)
     {
@@ -445,7 +454,8 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
             throw new IllegalArgumentException("action selector should not be null.");
         }
         WebElement filerow = findFileRow(filename);
-        if(filerow != null){
+        if (filerow != null)
+        {
             filerow.findElement(action).click();
         }
         else
@@ -461,7 +471,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
      */
     private WebElement findFileRow(String filename)
     {
-        if(StringUtils.isEmpty(filename))
+        if (StringUtils.isEmpty(filename))
         {
             throw new IllegalArgumentException("File Name can't null or empty.");
         }
@@ -486,7 +496,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
      */
     public void selectAfterCompleteDropDown(KeepContentStrategy strategy)
     {
-        if(strategy == null)
+        if (strategy == null)
         {
             throw new IllegalArgumentException("Keep Content Strategy can't be empty.");
         }
@@ -499,7 +509,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
      */
     public void selectPriorityDropDown(Priority priority)
     {
-        if(priority == null)
+        if (priority == null)
         {
             throw new IllegalArgumentException("Priority can't be empty.");
         }
@@ -509,15 +519,16 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to enter Required Approval Percentage
+     * 
      * @param percentage
      */
     public void enterRequiredApprovalPercentage(int percentage)
     {
-        if(percentage < 0)
+        if (percentage < 0)
         {
             throw new IllegalArgumentException("Percentage cannot be -ve value");
         }
-        if(percentage > 100)
+        if (percentage > 100)
         {
             throw new IllegalArgumentException("Percentage cannot be greater than 100");
         }
@@ -536,6 +547,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to get Cloud Destination Network
+     * 
      * @return
      */
     public String getDestinationNetwork()
@@ -545,6 +557,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to get Destination Cloud Site
+     * 
      * @return
      */
     public String getDestinationSite()
@@ -554,6 +567,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to get Destination Cloud Folder
+     * 
      * @return
      */
     public String getDestinationFolder()
@@ -565,6 +579,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
      * Method to check Destination network, site, folder,
      * Destination select button, Assignee label and Assignee select button
      * are present.
+     * 
      * @return
      */
     public boolean isSimpleCloudTaskElementsPresent()
@@ -576,6 +591,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
      * Method to check Destination network, site, folder,
      * Destination select button, Reviewer label and Reviewer select button,
      * Required Approval Percentage field and Approval percentage Help Icon are present.
+     * 
      * @return
      */
     public boolean isCloudReviewTaskElementsPresent()
@@ -592,23 +608,26 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to check if Select Assignee button is Enabled or Disabled
+     * 
      * @return True if Select button is Enabled
      */
     public boolean isSelectAssigneeButtonEnabled()
     {
-        if(isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK))
+        if (isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK))
         {
             throw new PageOperationException("Selected Task Type is: \"Cloud Review Task\"");
         }
         return isSelectAssigneeOrReviewerButtonEnabled();
     }
+
     /**
      * Method to check if Select Reviewers button is Enabled or Disabled
+     * 
      * @return True if Select button is Enabled
      */
     public boolean isSelectReviewersButtonEnabled()
     {
-        if(isTaskTypeSelected(TaskType.SIMPLE_CLOUD_TASK))
+        if (isTaskTypeSelected(TaskType.SIMPLE_CLOUD_TASK))
         {
             throw new PageOperationException("Selected Task Type is: \"Simple Cloud Task\"");
         }
@@ -617,6 +636,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to check if Select Assignee/Reviewers button is Enabled or Disabled
+     * 
      * @return True if Select button is Enabled
      */
     private boolean isSelectAssigneeOrReviewerButtonEnabled()
@@ -627,7 +647,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         }
         catch (NoSuchElementException nse)
         {
-            if(logger.isErrorEnabled())
+            if (logger.isErrorEnabled())
             {
                 logger.error("Unable to find Select button for selecting Assignee/Reviewers");
             }
@@ -637,11 +657,12 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to get Reviewers List for Cloud Review Task. If no users found, it returns empty list
+     * 
      * @return List of Reviewers
      */
     public List<String> getReviewers()
     {
-        if(isTaskTypeSelected(TaskType.SIMPLE_CLOUD_TASK))
+        if (isTaskTypeSelected(TaskType.SIMPLE_CLOUD_TASK))
         {
             throw new PageOperationException("Can not get Reviewers for Simple Cloud Task");
         }
@@ -650,22 +671,23 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to get Assignee for Simple Cloud Task. If no users found, return empty string.
+     * 
      * @return
      */
     public String getAssignee()
     {
-        if(isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK))
+        if (isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK))
         {
             throw new PageOperationException("Can not get Assignee for Cloud Review Task");
         }
 
         List<String> assignee = getAssigneeOrReviewersList();
 
-        if(assignee.size() > 1)
+        if (assignee.size() > 1)
         {
             throw new PageOperationException("Assignee can not be more than one");
         }
-        else if(assignee.size() == 0)
+        else if (assignee.size() == 0)
         {
             return "";
         }
@@ -675,6 +697,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to check if an Assignee is present
+     * 
      * @return True if an Assignee is present
      */
     public boolean isAssigneePresent()
@@ -684,6 +707,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to check if Reviewers are present
+     * 
      * @return True if Reviewer(s) present
      */
     public boolean isReviewersPresent()
@@ -693,6 +717,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to get Assignee or Reviewers List. If No users found, returns empty list
+     * 
      * @return
      */
     private List<String> getAssigneeOrReviewersList()
@@ -701,7 +726,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         try
         {
             List<WebElement> userElements = drone.findAll(ASSIGNEE_OR_REVIEWERS);
-            for(WebElement user: userElements)
+            for (WebElement user : userElements)
             {
                 users.add(user.getText());
             }
@@ -709,7 +734,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         }
         catch (NoSuchElementException nse)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("No Assignee/Reviewers found", nse);
             }
@@ -719,11 +744,12 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to select Approval percentage help icon and
+     * 
      * @return
      */
     public String getRequiredApprovalPercentageHelpText()
     {
-        if(isTaskTypeSelected(TaskType.SIMPLE_CLOUD_TASK))
+        if (isTaskTypeSelected(TaskType.SIMPLE_CLOUD_TASK))
         {
             throw new PageOperationException("Required Approval Percentage is not available for Simple Cloud Task");
         }
@@ -744,6 +770,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to get After Completion Dropdown options
+     * 
      * @return
      */
     public List<String> getAfterCompletionOptions()
@@ -754,7 +781,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
             Select afterCompletionOptions = new Select(drone.find(AFTER_COMPLETION_DROPDOWN));
             List<WebElement> optionElements = afterCompletionOptions.getOptions();
 
-            for(WebElement option: optionElements)
+            for (WebElement option : optionElements)
             {
                 options.add(option.getText());
             }
@@ -768,6 +795,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to get Selected After Completion Option
+     * 
      * @return
      */
     public KeepContentStrategy getSelectedAfterCompletionOption()
@@ -785,6 +813,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
     /**
      * Method to verify if Lock On-Premise checkbox is selected
+     * 
      * @return True if Lock On-Premise checkbox is checked
      */
     public boolean isLockOnPremiseSelected()
@@ -802,6 +831,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
     /**
      * Method to fill in the details for form and cancel.
      * formDetails to get the form details
+     * 
      * @return HtmlPage
      */
     @Override
@@ -814,14 +844,14 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
         enterMessageText(formDetails.getMessage());
 
-        if(formDetails.getDueDate() != null)
+        if (formDetails.getDueDate() != null)
         {
             enterDueDateText(formDetails.getDueDate());
         }
 
         selectTask(formDetails.getTaskType());
 
-        if(isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK))
+        if (isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK))
         {
             enterRequiredApprovalPercentage(formDetails.getApprovalPercentage());
         }
@@ -832,17 +862,17 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
         AssignmentPage assignmentPage = selectAssignmentPage().render();
 
-        if(isTaskTypeSelected(TaskType.SIMPLE_CLOUD_TASK))
+        if (isTaskTypeSelected(TaskType.SIMPLE_CLOUD_TASK))
         {
-            if(StringUtils.isEmpty(formDetails.getAssignee()))
+            if (StringUtils.isEmpty(formDetails.getAssignee()))
             {
                 throw new UnsupportedOperationException("Assignee cannot be null");
             }
             assignmentPage.selectAssignee(formDetails.getAssignee());
         }
-        else if(isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK))
+        else if (isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK))
         {
-            if(formDetails.getReviewers().size() < 1 || isReviewersBlank(formDetails.getReviewers()))
+            if (formDetails.getReviewers().size() < 1 || isReviewersBlank(formDetails.getReviewers()))
             {
                 throw new UnsupportedOperationException("At least one reviewer should be present");
             }
@@ -850,7 +880,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         }
 
         selectLockOnPremiseCheckbox(formDetails.isLockOnPremise());
-        
+
         selectAfterCompleteDropDown(formDetails.getContentStrategy());
         selectPriorityDropDown(formDetails.getTaskPriority());
         WebElement cancelButton = drone.findAndWait(CANCEL_BUTTON);
@@ -860,5 +890,3 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         return FactorySharePage.resolvePage(drone);
     }
 }
-
-

@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,7 +22,7 @@ import org.openqa.selenium.WebElement;
 /**
  * Alfresco Share factory, creates the appropriate page object that corresponds
  * to the document library view type.
- *
+ * 
  * @author Chiran
  * @since 4.3
  */
@@ -54,18 +50,18 @@ public final class FactoryShareFileDirectoryInfo
         {
             switch (viewType)
             {
-            case SIMPLE_VIEW:
-                return new SimpleViewFileDirectoryInfo(nodeRef, webElement, drone);
-            case DETAILED_VIEW:
-                return new DetailedViewFileDirectoryInfo(nodeRef, webElement, drone);
-            case GALLERY_VIEW:
-                return new GalleryViewFileDirectoryInfo(nodeRef, webElement, drone);
-            case FILMSTRIP_VIEW:
-                return new FilmStripViewFileDirectoryInfo(nodeRef, webElement, drone);
-            case TABLE_VIEW:
-                return new TableViewFileDirectoryInfo(nodeRef, webElement, drone);
-            default:
-                throw new PageException(String.format("%s does not match any known file directory view name", viewType.name()));
+                case SIMPLE_VIEW:
+                    return new SimpleViewFileDirectoryInfo(nodeRef, webElement, drone);
+                case DETAILED_VIEW:
+                    return new DetailedViewFileDirectoryInfo(nodeRef, webElement, drone);
+                case GALLERY_VIEW:
+                    return new GalleryViewFileDirectoryInfo(nodeRef, webElement, drone);
+                case FILMSTRIP_VIEW:
+                    return new FilmStripViewFileDirectoryInfo(nodeRef, webElement, drone);
+                case TABLE_VIEW:
+                    return new TableViewFileDirectoryInfo(nodeRef, webElement, drone);
+                default:
+                    throw new PageException(String.format("%s does not match any known file directory view name", viewType.name()));
             }
         }
         catch (Exception ex)
@@ -74,4 +70,3 @@ public final class FactoryShareFileDirectoryInfo
         }
     }
 }
-

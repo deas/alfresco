@@ -1,22 +1,19 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share.site.wiki;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -52,7 +49,7 @@ public class WikiPage extends SitePage
     private static final By CANCEL_BUTTON = By.cssSelector("a[id$='default-cancel-button-button']");
     private static final By DEFAULT_CONTENT_TOOLBAR = By.cssSelector("div[id$='default-content_toolbargroup']>span");
     private static final By BUTTON_CREATE = By.cssSelector("button[id$='default-create-button-button']");
-    private static final By CREATE_WIKI_TITLE = By.cssSelector("input[id$='createform_x002e_wiki-create_x0023_default-title']");   
+    private static final By CREATE_WIKI_TITLE = By.cssSelector("input[id$='createform_x002e_wiki-create_x0023_default-title']");
     private static final By FONT_STYLE_SELECT = By.cssSelector("a[id$='default-content_fontselect_open']");
     private static final By FONT_SIZE_SELECT = By.cssSelector("a[id$='default-content_fontsizeselect_open']");
     private static final By IMAGE_LIB = By.cssSelector(".mceIcon.mce_alfresco-imagelibrary");
@@ -60,29 +57,25 @@ public class WikiPage extends SitePage
     private static final By BUTTON_SAVE = By.cssSelector("button[id$='default-save-button-button']");
     private static final By REMOVE_FORMAT = By.cssSelector(".mceIcon.mce_removeformat");
     private static final By DELETE_WIKI = By.cssSelector("button[id$='default-delete-button-button']");
-    private static final By EDIT_WIKI =By.cssSelector("a[href*='action=edit']");
+    private static final By EDIT_WIKI = By.cssSelector("a[href*='action=edit']");
 
     private TinyMceEditor tinyMCEEditor = new TinyMceEditor(drone);
 
     public enum ImageType
     {
-        JPG,
-        PNG,
-        BMP;
+        JPG, PNG, BMP;
     }
-    
+
     public enum Mode
     {
-        ADD,
-        EDIT;        
+        ADD, EDIT;
     }
-    
+
     public enum FONT_ATTR
     {
-        face,
-        size;        
+        face, size;
     }
-    
+
     public WikiPage(WebDrone drone)
     {
         super(drone);
@@ -123,14 +116,14 @@ public class WikiPage extends SitePage
         }
         catch (TimeoutException toe)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Time out finding " + CANCEL_BUTTON.toString(), toe);
             }
         }
         catch (ElementNotVisibleException visibleException)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Element Not Visible: " + CANCEL_BUTTON.toString(), visibleException);
             }
@@ -213,22 +206,22 @@ public class WikiPage extends SitePage
         }
     }
 
- /*   *//**
+    /*   *//**
      * Click bullet list button on wiki text formatter.
-     *//*
-    public void clickBulletList()
-    {
-        try
-        {
-            drone.findAndWait(BULLET_LIST).click();
-        }
-        catch (TimeoutException toe)
-        {
-            logger.error("Time out finding " + BULLET_LIST.toString());
-        }
-
-    }
-*/
+     */
+    /*
+     * public void clickBulletList()
+     * {
+     * try
+     * {
+     * drone.findAndWait(BULLET_LIST).click();
+     * }
+     * catch (TimeoutException toe)
+     * {
+     * logger.error("Time out finding " + BULLET_LIST.toString());
+     * }
+     * }
+     */
     /**
      * Click Font Style button on wiki text formatter.
      */
@@ -269,10 +262,9 @@ public class WikiPage extends SitePage
         }
     }
 
-
-
     /**
-     * Retrieve formatted wiki text. 
+     * Retrieve formatted wiki text.
+     * 
      * @param type
      * @return
      */
@@ -294,6 +286,7 @@ public class WikiPage extends SitePage
 
     /**
      * Check for image library is displayed.
+     * 
      * @return
      */
     public boolean isImageLibraryDisplayed()
@@ -305,7 +298,7 @@ public class WikiPage extends SitePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding " + IMAGE_LIB+" or "+IMAGE_RSLT, toe);
+            logger.error("Time out finding " + IMAGE_LIB + " or " + IMAGE_RSLT, toe);
         }
         return false;
     }
@@ -334,7 +327,7 @@ public class WikiPage extends SitePage
     }
 
     /**
-     * Click on remove format button. 
+     * Click on remove format button.
      */
     public void clickOnRemoveFormatting()
     {
@@ -347,7 +340,7 @@ public class WikiPage extends SitePage
             logger.error("Time out finding " + REMOVE_FORMAT, toe);
         }
     }
-    
+
     /**
      * Click to view images library.
      */
@@ -357,36 +350,37 @@ public class WikiPage extends SitePage
         {
             drone.findAndWaitForElements(By.cssSelector("#image_results>img")).get(0).click();
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
             logger.error("Time out finding image", toe);
         }
     }
-    
+
     /**
      * Check if image is rendered in wiki text area.
+     * 
      * @return
      */
     public int imageCount(Mode mode)
-    {        
+    {
         String frameId;
-       try
-       {
-            switch(mode)
+        try
+        {
+            switch (mode)
             {
-            case EDIT:
-                   frameId= WIKI_EDIT_IFRAME;
-                   break;
-            default:
-                   frameId =WIKI_FORMAT_IFRAME;
+                case EDIT:
+                    frameId = WIKI_EDIT_IFRAME;
+                    break;
+                default:
+                    frameId = WIKI_FORMAT_IFRAME;
             }
             drone.switchToFrame(frameId);
-            int totalImage =  drone.findAndWaitForElements(By.cssSelector("#tinymce>p>img")).size();
-            drone.switchToDefaultContent();                   
+            int totalImage = drone.findAndWaitForElements(By.cssSelector("#tinymce>p>img")).size();
+            drone.switchToDefaultContent();
             return totalImage;
-             
+
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
             logger.error("Time out rendering image", toe);
         }
@@ -396,23 +390,22 @@ public class WikiPage extends SitePage
     /**
      * Delete wiki page created.
      */
-    public void deleteWiki(){
-        
+    public void deleteWiki()
+    {
+
         try
         {
             By popupDeleteButton = By.cssSelector(drone.getElement("delete.wiki.popup"));
-            drone.findAndWait(DELETE_WIKI).click();   
-            drone.findAndWait(popupDeleteButton).click(); 
+            drone.findAndWait(DELETE_WIKI).click();
+            drone.findAndWait(popupDeleteButton).click();
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
             logger.error("Unable to find delete wiki button", toe);
         }
     }
-    
-    
+
     /**
-     * 
      * @param type
      * @return
      */
@@ -432,7 +425,7 @@ public class WikiPage extends SitePage
             String selector = AlfrescoVersion.Enterprise41 == alfrescoVersion ? "#tinymce>ul>li>font" : "#tinymce>ul>li>span>font";
             return By.cssSelector(selector);
         }
-        else if("IMG".equals(type))
+        else if ("IMG".equals(type))
         {
             return By.cssSelector("#tinymce>p>img");
         }
@@ -441,19 +434,18 @@ public class WikiPage extends SitePage
             return By.cssSelector("#tinymce");
         }
     }
-    
-    
+
     /**
      * Get TinyMCEEditor object to navigate TinyMCE functions.
      * 
      * @return
      */
     public TinyMceEditor getTinyMCEEditor()
-    {       
+    {
         tinyMCEEditor.setTinyMce(WIKI_FORMAT_IFRAME);
         return tinyMCEEditor;
     }
-    
+
     /**
      * Copy Image using CTRL+C
      */
@@ -461,19 +453,19 @@ public class WikiPage extends SitePage
     {
         try
         {
-            drone.switchToDefaultContent(); 
+            drone.switchToDefaultContent();
             drone.switchToFrame(WIKI_FORMAT_IFRAME);
-            WebElement element = drone.findAndWait(By.cssSelector("#tinymce>p>img"));            
-            element.sendKeys(Keys.chord(Keys.CONTROL, "a")); 
-            element.sendKeys(Keys.chord(Keys.CONTROL, "c"));            
+            WebElement element = drone.findAndWait(By.cssSelector("#tinymce>p>img"));
+            element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+            element.sendKeys(Keys.chord(Keys.CONTROL, "c"));
             drone.switchToDefaultContent();
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
             logger.error("Time out finding image", toe);
         }
     }
-    
+
     /**
      * Pasting image using CTRL+V
      */
@@ -481,39 +473,39 @@ public class WikiPage extends SitePage
     {
         try
         {
-            drone.switchToDefaultContent(); 
+            drone.switchToDefaultContent();
             drone.switchToFrame(WIKI_FORMAT_IFRAME);
-            WebElement element = drone.findAndWait(By.cssSelector("#tinymce"));      
-            element.sendKeys(Keys.chord(Keys.CONTROL, "v"));       
-            element.sendKeys(Keys.chord(Keys.CONTROL, "v"));      
-            drone.switchToDefaultContent();        
+            WebElement element = drone.findAndWait(By.cssSelector("#tinymce"));
+            element.sendKeys(Keys.chord(Keys.CONTROL, "v"));
+            element.sendKeys(Keys.chord(Keys.CONTROL, "v"));
+            drone.switchToDefaultContent();
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
             logger.error("Time out finding image", toe);
         }
     }
-    
+
     /**
      * Edit Wiki Page.
+     * 
      * @return
      */
     public WikiPage editWikiPage()
     {
         try
-        {            
+        {
             drone.findAndWait(EDIT_WIKI).click();
             drone.waitUntilElementClickable(DEFAULT_CONTENT_TOOLBAR, maxPageLoadingTime);
             return new WikiPage(drone);
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
             logger.error("Time out finding image", toe);
         }
         throw new PageException();
-     }
-    
-    
+    }
+
     /**
      * @param type
      * @return
@@ -521,20 +513,19 @@ public class WikiPage extends SitePage
     public String verifyEditText(String type)
     {
         try
-        {            
+        {
             drone.switchToFrame(WIKI_EDIT_IFRAME);
             String richText = drone.findAndWait(getCSSToRetrieveText(type)).getText();
             drone.switchToDefaultContent();
-            return richText;  
+            return richText;
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
             logger.error("Time out finding image", toe);
         }
         throw new PageException();
     }
-        
-    
+
     /**
      * @param type
      * @return
@@ -542,14 +533,14 @@ public class WikiPage extends SitePage
     public String getFontAttributeValue(FONT_ATTR type)
     {
         try
-        {            
+        {
             drone.switchToFrame(WIKI_EDIT_IFRAME);
             String attrValue = drone.findAndWait(By.cssSelector("#tinymce>ul>li>font")).getAttribute(type.name());
 
             drone.switchToDefaultContent();
-            return attrValue;  
+            return attrValue;
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
             logger.error("Time out finding attribute of font element", toe);
         }

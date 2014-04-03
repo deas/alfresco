@@ -108,14 +108,14 @@ public class IfSelectorEnterpImpl extends AbstractIfSelector
     @Deprecated
     public void selectHasTag()
     {
-        //todo: necessary to complete( see method super.selectWithButton(..) )
+        // todo: necessary to complete( see method super.selectWithButton(..) )
         super.selectWithButton(IfOptions.HAS_TAG.numberPosition);
     }
 
     @Deprecated
     public void selectHasCategory()
     {
-        //todo: necessary to complete( see method super.selectWithButton(..) )
+        // todo: necessary to complete( see method super.selectWithButton(..) )
         super.selectWithButton(IfOptions.HAS_CATEGORY.numberPosition);
     }
 
@@ -127,7 +127,7 @@ public class IfSelectorEnterpImpl extends AbstractIfSelector
     @Deprecated
     public void selectHasAspect()
     {
-        //todo: necessary to complete( see method super.selectWithButton(..) )
+        // todo: necessary to complete( see method super.selectWithButton(..) )
         super.selectWithButton(IfOptions.HAS_ASPECT.numberPosition);
     }
 
@@ -135,8 +135,7 @@ public class IfSelectorEnterpImpl extends AbstractIfSelector
     public void selectShowMove()
     {
         super.selectIFOption(IfOptions.SHOW_MORE.numberPosition);
-        //todo if need to testCases.
+        // todo if need to testCases.
     }
-
 
 }

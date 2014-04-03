@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -44,7 +40,7 @@ public class PeopleFinderPage extends SharePage
     private static final By SEACH_INPUT = By.cssSelector("input[id$='people-finder_x0023_default-search-text']");
     private static Log logger = LogFactory.getLog(PeopleFinderPage.class);
     private List<ShareLink> shareLinks;
-    
+
     /**
      * Constructor.
      * 
@@ -54,35 +50,42 @@ public class PeopleFinderPage extends SharePage
     {
         super(drone);
     }
+
     @SuppressWarnings("unchecked")
     @Override
     public PeopleFinderPage render(RenderTime timer)
     {
-        while(true)
+        while (true)
         {
             timer.start();
             synchronized (this)
             {
-                try{ this.wait(100L); } catch (InterruptedException e) {}
+                try
+                {
+                    this.wait(100L);
+                }
+                catch (InterruptedException e)
+                {
+                }
             }
             try
             {
-               //Check button is displayed and is not disabled
+                // Check button is displayed and is not disabled
                 WebElement searchBtn = drone.find(SEARCH_BUTTON);
-                if(searchBtn.isEnabled())
+                if (searchBtn.isEnabled())
                 {
-                   if(hasNoResultMessage())
+                    if (hasNoResultMessage())
                     {
                         break;
                     }
-                    if(isVisibleResults())
+                    if (isVisibleResults())
                     {
                         break;
                     }
-                    //This is the default html content hence it left to last.
-                    if(isHelpScreenDisplayed())
+                    // This is the default html content hence it left to last.
+                    if (isHelpScreenDisplayed())
                     {
-                        if(!isVisibleResults() && !hasNoResultMessage())
+                        if (!isVisibleResults() && !hasNoResultMessage())
                         {
                             break;
                         }
@@ -91,31 +94,31 @@ public class PeopleFinderPage extends SharePage
             }
             catch (NoSuchElementException nse)
             {
-                //Repeat till we see it
+                // Repeat till we see it
             }
             finally
             {
                 timer.end();
             }
         }
-        
+
         return this;
     }
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     @Override
     public PeopleFinderPage render()
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public PeopleFinderPage render(final long time)
     {
         return render(new RenderTime(time));
     }
-         
+
     /**
      * Verify if people finder title is present on the page
      * 
@@ -125,9 +128,11 @@ public class PeopleFinderPage extends SharePage
     {
         return isBrowserTitle("People Finder");
     }
+
     /**
      * Completes the search form on the people
      * finders page.
+     * 
      * @param person String name
      * @return PeopleFinderPage page response
      */
@@ -139,9 +144,10 @@ public class PeopleFinderPage extends SharePage
         button.click();
         return FactorySharePage.resolvePage(drone);
     }
-    
+
     /**
      * Checks for people finder help screen on the page.
+     * 
      * @return true is splash screen is displayed
      */
     protected boolean isHelpScreenDisplayed()
@@ -149,15 +155,18 @@ public class PeopleFinderPage extends SharePage
         boolean screenDisplayed = false;
         try
         {
-            WebElement element = drone.find(By.cssSelector("div[id$='default-help']")); 
+            WebElement element = drone.find(By.cssSelector("div[id$='default-help']"));
             screenDisplayed = element.isDisplayed();
         }
-        catch (NoSuchElementException te){ }
+        catch (NoSuchElementException te)
+        {
+        }
         return screenDisplayed;
     }
-    
+
     /**
      * Checks if results table is displayed
+     * 
      * @return true if visible
      */
     private boolean isVisibleResults()
@@ -182,7 +191,7 @@ public class PeopleFinderPage extends SharePage
         boolean noResults = true;
         try
         {
-            //Search for no data message
+            // Search for no data message
             WebElement message = drone.find(By.cssSelector("tbody.yui-dt-message"));
             noResults = message.isDisplayed();
         }
@@ -192,36 +201,39 @@ public class PeopleFinderPage extends SharePage
         }
         return noResults;
     }
-    
+
     /**
      * Gets the names of the search result.
+     * 
      * @return List of names from search result
      */
     public synchronized List<ShareLink> getResults()
     {
-        if(shareLinks == null)
+        if (shareLinks == null)
         {
             populateData();
         }
         return shareLinks;
     }
 
-    private synchronized void populateData() 
+    private synchronized void populateData()
     {
         shareLinks = new ArrayList<ShareLink>();
         try
         {
             List<WebElement> elements = drone.findAll(By.cssSelector("tbody.yui-dt-data > tr"));
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace(String.format("Search results has yeilded %d results", elements.size()));
             }
-            for(WebElement element:elements)
+            for (WebElement element : elements)
             {
                 WebElement result = element.findElement(By.tagName("a"));
                 shareLinks.add(new ShareLink(result, drone));
             }
         }
-        catch (TimeoutException nse){}
+        catch (TimeoutException nse)
+        {
+        }
     }
 }

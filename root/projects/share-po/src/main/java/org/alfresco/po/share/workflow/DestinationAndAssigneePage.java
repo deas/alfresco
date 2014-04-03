@@ -1,19 +1,16 @@
 package org.alfresco.po.share.workflow;
+
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -44,7 +41,7 @@ import org.openqa.selenium.WebElement;
 
 /**
  * Represent elements found on the HTML page relating to the verify Destination And Assignee page load.
- *
+ * 
  * @author Siva Kaliyappan, Ranjith Manyam
  * @since 1.6.2
  */
@@ -58,7 +55,7 @@ public class DestinationAndAssigneePage extends SharePage
     private static final By NETWORK = By.cssSelector("button[id*='-cloud-folder-network-']");
     private static final By SUBMIT_SYNC_BUTTON = By.cssSelector("button[id$='cloud-folder-ok-button']");
     private static final By FOLDER_LABELS = By.cssSelector("div[id$='-cloud-folder-treeview'] [id^='ygtvlabel']");
-    private static final By INCLUDE_SUB_FOLDER =By.cssSelector("input[id$='includeSubFolders']");
+    private static final By INCLUDE_SUB_FOLDER = By.cssSelector("input[id$='includeSubFolders']");
     private static final By LOCK_ON_PREM = By.cssSelector("input[id $='lockSourceCopy']");
     private static final By BUTTON_CANCEL = By.cssSelector("button[id$='-cloud-folder-cancel-button']");
     private static final By CLOSE_BUTTON = By.cssSelector("div[id$='-cloud-folder-dialog']>a.container-close");
@@ -74,9 +71,10 @@ public class DestinationAndAssigneePage extends SharePage
     private final RenderElement closeButtonElement = getVisibleRenderElement(CLOSE_BUTTON);
 
     private static final long FOLDER_LOAD_TIME = 2000;
+
     /**
      * Constructor.
-     *
+     * 
      * @param drone WebDriver to access page
      */
     public DestinationAndAssigneePage(WebDrone drone)
@@ -88,8 +86,8 @@ public class DestinationAndAssigneePage extends SharePage
     @Override
     public DestinationAndAssigneePage render(RenderTime timer)
     {
-        elementRender(timer, headerElement, networkRenderElement, siteRenderElement, folderPathElement, submitSyncButtonElement,
-                    cancelButtonElement, createNewFolderIconElement, closeButtonElement);
+        elementRender(timer, headerElement, networkRenderElement, siteRenderElement, folderPathElement, submitSyncButtonElement, cancelButtonElement,
+                createNewFolderIconElement, closeButtonElement);
         return this;
     }
 
@@ -109,14 +107,15 @@ public class DestinationAndAssigneePage extends SharePage
 
     /**
      * Method to select the siteName
+     * 
      * @param siteName
      */
     public void selectSite(String siteName)
     {
-        if(StringUtils.isEmpty(siteName))
+        if (StringUtils.isEmpty(siteName))
         {
             throw new IllegalArgumentException("Site Name can't be null or empty.");
-        }      
+        }
         try
         {
             List<WebElement> availableElements = drone.findAndWaitForElements(SITE_ELEMENTS);
@@ -127,33 +126,35 @@ public class DestinationAndAssigneePage extends SharePage
                     WebElement siteLink = webElement.findElement(SELECT_SITE);
                     if (siteLink.getText().equals(siteName))
                     {
-                        if(!siteLink.isDisplayed())
+                        if (!siteLink.isDisplayed())
                         {
                             siteLink.click();
                         }
                         siteLink.click();
-                        if(logger.isTraceEnabled())
+                        if (logger.isTraceEnabled())
                         {
                             logger.trace("Site " + siteName + " selected");
                         }
                         //drone.waitUntilElementDeletedFromDom(By.cssSelector("div[id$='default-cloud-folder-treeview'] td[class='ygtvcell ygtvloading']"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-                        //drone.waitForElement(FOLDER_LABELS, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                        // drone.waitForElement(FOLDER_LABELS, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                         try
                         {
                             drone.waitForElement(By.id("AlfrescoWebdronez1"), SECONDS.convert(FOLDER_LOAD_TIME, MILLISECONDS));
-                        } 
-                        catch (TimeoutException e) {}
-                        //drone.waitFor(FOLDER_LOAD_TIME);
+                        }
+                        catch (TimeoutException e)
+                        {
+                        }
+                        // drone.waitFor(FOLDER_LOAD_TIME);
                         return;
                     }
                 }
             }
-        } 
+        }
         catch (TimeoutException exception)
         {
             logger.error("Time out while finding elements!!", exception);
-        }       
-        throw new PageException("could not found Site name:"+siteName);
+        }
+        throw new PageException("could not found Site name:" + siteName);
     }
 
     /**
@@ -166,12 +167,13 @@ public class DestinationAndAssigneePage extends SharePage
 
     /**
      * Method to check the given folder's permissions
+     * 
      * @param folderName
      * @return true if the given folder class is set to ".no-permission"
      */
     public boolean isSyncPermitted(String folderName)
     {
-        if(StringUtils.isEmpty(folderName))
+        if (StringUtils.isEmpty(folderName))
         {
             throw new IllegalArgumentException("Folder Name can't be null or empty.");
         }
@@ -180,31 +182,34 @@ public class DestinationAndAssigneePage extends SharePage
         {
             List<WebElement> folderList = getFoldersList();
 
-            for(WebElement element : folderList)
+            for (WebElement element : folderList)
             {
-                if(logger.isTraceEnabled())
+                if (logger.isTraceEnabled())
                 {
-                    logger.trace("FolderName: "+element.getText());
+                    logger.trace("FolderName: " + element.getText());
                 }
-                if(element.getText().equals(folderName))
+                if (element.getText().equals(folderName))
                 {
                     return !element.getAttribute("class").equals("no-permission");
                 }
             }
 
         }
-        catch (TimeoutException e) {}
-
-        if(logger.isTraceEnabled())
+        catch (TimeoutException e)
         {
-            logger.trace("Folder \"" +folderName + "\" is NOT displayed" );
         }
 
-        throw new  PageOperationException("Folder "+ folderName +" not found");
+        if (logger.isTraceEnabled())
+        {
+            logger.trace("Folder \"" + folderName + "\" is NOT displayed");
+        }
+
+        throw new PageOperationException("Folder " + folderName + " not found");
     }
 
     /**
      * Helper method to get all folder web elements
+     * 
      * @return
      */
     private List<WebElement> getFoldersList()
@@ -221,13 +226,14 @@ public class DestinationAndAssigneePage extends SharePage
     }
 
     /**
-     *  Method to check if given site exists or not.
+     * Method to check if given site exists or not.
+     * 
      * @param siteName
      * @return True if site displayed
      */
     public boolean isSiteDisplayed(String siteName)
     {
-        if(StringUtils.isEmpty(siteName))
+        if (StringUtils.isEmpty(siteName))
         {
             throw new IllegalArgumentException("Site Name Empty or Null.");
         }
@@ -253,14 +259,14 @@ public class DestinationAndAssigneePage extends SharePage
     }
 
     /**
-     *  Method to check if given Network exists or not.
-     *
+     * Method to check if given Network exists or not.
+     * 
      * @param networkName
      * @return True if Network displayed
      */
     public boolean isNetworkDisplayed(String networkName)
     {
-        if(StringUtils.isEmpty(networkName))
+        if (StringUtils.isEmpty(networkName))
         {
             throw new IllegalArgumentException("NetWork Name Empty or Null.");
         }
@@ -273,7 +279,7 @@ public class DestinationAndAssigneePage extends SharePage
                 {
                     if (networkName.equalsIgnoreCase(network.getText()))
                     {
-                        if(logger.isTraceEnabled())
+                        if (logger.isTraceEnabled())
                         {
                             logger.trace("Network is: " + network);
                         }
@@ -290,12 +296,13 @@ public class DestinationAndAssigneePage extends SharePage
 
     /**
      * Method to check if given folder exists or not
+     * 
      * @param folderName
      * @return True if a specified folder displayed
      */
     public boolean isFolderDisplayed(String folderName)
     {
-        if(StringUtils.isEmpty(folderName))
+        if (StringUtils.isEmpty(folderName))
         {
             throw new IllegalArgumentException("Folder Name can't be null or empty.");
         }
@@ -304,37 +311,38 @@ public class DestinationAndAssigneePage extends SharePage
             List<WebElement> folderNames = getFoldersList();
             for (WebElement webElement : folderNames)
             {
-                if(folderName.equals(webElement.getText()))
+                if (folderName.equals(webElement.getText()))
                 {
-                    if(logger.isTraceEnabled())
+                    if (logger.isTraceEnabled())
                     {
-                        logger.trace("Folder \"" +folderName + "\" is displayed" );
+                        logger.trace("Folder \"" + folderName + "\" is displayed");
                     }
                     return true;
                 }
             }
         }
-        catch (TimeoutException e) {}
-        if(logger.isTraceEnabled())
+        catch (TimeoutException e)
         {
-            logger.trace("Folder \"" +folderName + "\" is NOT displayed");
+        }
+        if (logger.isTraceEnabled())
+        {
+            logger.trace("Folder \"" + folderName + "\" is NOT displayed");
         }
         return false;
     }
 
-
-
     /**
      * Method to select the given Network
+     * 
      * @param network - The Network Name to be selected.
      */
     public void selectNetwork(String network)
     {
-        if(StringUtils.isEmpty(network))
+        if (StringUtils.isEmpty(network))
         {
             throw new IllegalArgumentException("Network can't null or empty.");
         }
-        
+
         List<WebElement> availableNetworks = null;
         try
         {
@@ -355,24 +363,24 @@ public class DestinationAndAssigneePage extends SharePage
                 }
             }
         }
-        throw new PageOperationException("could not found Network:"+network);
+        throw new PageOperationException("could not found Network:" + network);
     }
-    
+
     /**
      * Un-select Include sub folder check box.
      */
     public void unSelectIncludeSubFolders()
     {
-       try
-       {
-           drone.findAndWait(INCLUDE_SUB_FOLDER).click();
-       }
-       catch(TimeoutException toe)
-       {
-           logger.error("Time out loading :"+INCLUDE_SUB_FOLDER, toe);
-       }
+        try
+        {
+            drone.findAndWait(INCLUDE_SUB_FOLDER).click();
+        }
+        catch (TimeoutException toe)
+        {
+            logger.error("Time out loading :" + INCLUDE_SUB_FOLDER, toe);
+        }
     }
-    
+
     /**
      * @return
      */
@@ -382,16 +390,16 @@ public class DestinationAndAssigneePage extends SharePage
         {
             return drone.findAndWait(INCLUDE_SUB_FOLDER).isSelected();
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
-                logger.trace("Time out loading :"+INCLUDE_SUB_FOLDER, toe);
+                logger.trace("Time out loading :" + INCLUDE_SUB_FOLDER, toe);
             }
         }
-       return false;
+        return false;
     }
-    
+
     /**
      * Select "Lock (on-premise) copy".
      */
@@ -401,14 +409,15 @@ public class DestinationAndAssigneePage extends SharePage
         {
             drone.findAndWait(LOCK_ON_PREM).click();
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
-            logger.error("Time out loading :"+LOCK_ON_PREM);
+            logger.error("Time out loading :" + LOCK_ON_PREM);
         }
     }
-    
+
     /**
      * Check Lock (On-Premise) copy selected.
+     * 
      * @return
      */
     public boolean isLockOnPremCopy()
@@ -417,76 +426,80 @@ public class DestinationAndAssigneePage extends SharePage
         {
             return drone.findAndWait(LOCK_ON_PREM).isSelected();
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
-                logger.trace("Time out loading :"+INCLUDE_SUB_FOLDER, toe);
+                logger.trace("Time out loading :" + INCLUDE_SUB_FOLDER, toe);
             }
         }
         return false;
     }
-    
+
     /**
      * This method accepts string array of
-     * folders. 
+     * folders.
+     * 
      * @ForMultiLevelFolder folder, subFolder, superSubFolder...
      * @FotSingleLevelFolder folder.
      * @param folderPath
      */
     public void selectFolder(String... folderPath)
     {
-        if(folderPath == null || folderPath.length < 1)
+        if (folderPath == null || folderPath.length < 1)
         {
             throw new IllegalArgumentException("Invalid Folder path!!");
-        }        
+        }
         for (String folder : folderPath)
         {
             List<WebElement> folderNames = getFoldersList();
-            for(WebElement syncFolder : folderNames)
+            for (WebElement syncFolder : folderNames)
             {
-                if(syncFolder.getText().equals(folder))
+                if (syncFolder.getText().equals(folder))
                 {
-                    if(!syncFolder.isEnabled())
+                    if (!syncFolder.isEnabled())
                     {
                         throw new PageOperationException("Sync Folder is disabled");
                     }
-                    
+
                     syncFolder.click();
-                    
-                    if(logger.isTraceEnabled())
+
+                    if (logger.isTraceEnabled())
                     {
-                        logger.trace("Folder \"" +folder + "\" selected" );
+                        logger.trace("Folder \"" + folder + "\" selected");
                     }
-                    
-                    if(folderPath.length > 1)
+
+                    if (folderPath.length > 1)
                     {
 //                        drone.waitUntilElementDeletedFromDom(By.cssSelector("div[id$='default-cloud-folder-treeview'] td[class='ygtvcell ygtvloading']"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
 //                        drone.waitForElement(By.cssSelector("div[id$='default-cloud-folder-treeview'] td[class^='ygtvcell']>a.ygtvspacer"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-                          try
-                          {
-                              drone.waitForElement(By.id("AlfrescoWebdronez1"), SECONDS.convert(WAIT_TIME_3000, MILLISECONDS));
-                          }
-                          catch (TimeoutException e) {}
-                          //drone.waitFor(FOLDER_LOAD_TIME);
+                        try
+                        {
+                            drone.waitForElement(By.id("AlfrescoWebdronez1"), SECONDS.convert(WAIT_TIME_3000, MILLISECONDS));
+                        }
+                        catch (TimeoutException e)
+                        {
+                        }
+                        // drone.waitFor(FOLDER_LOAD_TIME);
                     }
-                    
+
                     break;
                 }
-            }   
-        }                    
-    }    
-   
+            }
+        }
+    }
+
     /**
      * Click on submit button to submit sync properties.
+     * 
      * @return
-     */    
+     */
     public HtmlPage selectSubmitButtonToSync()
     {
         try
         {
             WebElement syncButton = drone.findAndWait(SUBMIT_SYNC_BUTTON);
-            if(!syncButton.isEnabled())
+            if (!syncButton.isEnabled())
             {
                 throw new PageOperationException("Sync Button is disabled");
             }
@@ -499,21 +512,21 @@ public class DestinationAndAssigneePage extends SharePage
                 drone.waitUntilElementPresent(By.cssSelector("div#message>div.bd>span"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                 drone.waitUntilElementDeletedFromDom(By.cssSelector("div#message>div.bd>span"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             }
-            
+
             return FactorySharePage.resolvePage(drone);
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
             logger.error("Submit button not found!!", toe);
         }
         throw new PageException();
     }
-    
+
     /**
      * Click cancel button on pop up to cancel cloud synce data selection.
      */
     public HtmlPage selectCancelButton()
-    {        
+    {
         try
         {
             WebElement cancelButton = drone.findAndWait(BUTTON_CANCEL);
@@ -522,9 +535,9 @@ public class DestinationAndAssigneePage extends SharePage
             drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             return FactorySharePage.resolvePage(drone);
         }
-        catch(TimeoutException toe)
+        catch (TimeoutException toe)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Time out finding cancel button");
             }
@@ -533,7 +546,6 @@ public class DestinationAndAssigneePage extends SharePage
     }
 
     /**
-     * 
      * @return
      */
     public CreateNewFolderInCloudPage selectCreateNewFolder()
@@ -545,7 +557,7 @@ public class DestinationAndAssigneePage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Unable to find \"Create New Folder\" element", nse);
             }
@@ -566,9 +578,9 @@ public class DestinationAndAssigneePage extends SharePage
             drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             return FactorySharePage.resolvePage(drone);
         }
-        catch(NoSuchElementException nse)
+        catch (NoSuchElementException nse)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Unable to find Close button", nse);
             }
@@ -578,6 +590,7 @@ public class DestinationAndAssigneePage extends SharePage
 
     /**
      * Method to verify Sync button is enable or not
+     * 
      * @return
      */
     public boolean isSyncButtonEnabled()

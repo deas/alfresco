@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,7 +29,7 @@ import org.openqa.selenium.WebElement;
 /**
  * When the users empty the trashcan they will be presented with confirmation Dialog.
  * This page is validate the confirmation dialog.
- *
+ * 
  * @author Subashni Prasanna
  * @since 1.7.0
  */
@@ -47,7 +43,7 @@ public class TrashCanEmptyConfirmationPage extends TrashCanPage
     {
         super(drone);
     }
-   
+
     /**
      * Basic Render method
      */
@@ -75,75 +71,77 @@ public class TrashCanEmptyConfirmationPage extends TrashCanPage
 
     /**
      * Is confirmation Dialog displayed
-     * @return - Boolean
      * 
+     * @return - Boolean
      */
     public boolean isConfirmationDialogDisplayed()
     {
-      boolean displayed = false;
-       try
-       {
-           WebElement prompt = drone.findAndWait(EMPTY_CONFIRMATION_PROMPT);
-           displayed = prompt.isDisplayed();
-       }
-       catch (TimeoutException e)
-       {
-           displayed = false;
-       }
-       return displayed;
+        boolean displayed = false;
+        try
+        {
+            WebElement prompt = drone.findAndWait(EMPTY_CONFIRMATION_PROMPT);
+            displayed = prompt.isDisplayed();
+        }
+        catch (TimeoutException e)
+        {
+            displayed = false;
+        }
+        return displayed;
     }
 
     /**
      * Click on Cancel button in the confirmation dialog should take the control back to trashcan Page
+     * 
      * @return - TrashCanPage
      * @throws - PageOperationException
      */
     public TrashCanPage clickCancelButton() throws PageOperationException
     {
-     try
-     {
-        List<WebElement> buttons =  drone.findAndWaitForElements(CONFIRMATION_BUTTON);
-        for(WebElement buttonElement : buttons)
+        try
         {
-           if(buttonElement.getText().equalsIgnoreCase("Cancel"))
-           {
-               buttonElement.click();
-               return new TrashCanPage(drone);
-           }
-        }
-     }
-     catch (TimeoutException te)
-     {
-         throw new PageOperationException("Cancel button is not visible", te);
-     }
-     return new TrashCanPage(drone);
-    }
-     
-     /**
-      * Click on Cancel button in the confirmation dialog should take the control back to trashcan Page
-      * @return - TrashCanPage
-      * @throws - PageOperationException
-      */
-     public TrashCanPage clickOkButton() throws PageOperationException
-     {
-      try
-      {
-         List<WebElement> buttons =  drone.findAndWaitForElements(CONFIRMATION_BUTTON);
-         for(WebElement buttonElement : buttons)
-         {
-            if(buttonElement.getText().equalsIgnoreCase("OK"))
+            List<WebElement> buttons = drone.findAndWaitForElements(CONFIRMATION_BUTTON);
+            for (WebElement buttonElement : buttons)
             {
-                buttonElement.click();
-                drone.waitForElement(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-                drone.waitUntilElementDeletedFromDom(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-                return new TrashCanPage(drone);
+                if (buttonElement.getText().equalsIgnoreCase("Cancel"))
+                {
+                    buttonElement.click();
+                    return new TrashCanPage(drone);
+                }
             }
-         }
-      }
-      catch (TimeoutException te)
-      {
-          throw new PageOperationException("Ok button is not visible", te);
-      }
-      return new TrashCanPage(drone);
+        }
+        catch (TimeoutException te)
+        {
+            throw new PageOperationException("Cancel button is not visible", te);
+        }
+        return new TrashCanPage(drone);
+    }
+
+    /**
+     * Click on Cancel button in the confirmation dialog should take the control back to trashcan Page
+     * 
+     * @return - TrashCanPage
+     * @throws - PageOperationException
+     */
+    public TrashCanPage clickOkButton() throws PageOperationException
+    {
+        try
+        {
+            List<WebElement> buttons = drone.findAndWaitForElements(CONFIRMATION_BUTTON);
+            for (WebElement buttonElement : buttons)
+            {
+                if (buttonElement.getText().equalsIgnoreCase("OK"))
+                {
+                    buttonElement.click();
+                    drone.waitForElement(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                    drone.waitUntilElementDeletedFromDom(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                    return new TrashCanPage(drone);
+                }
+            }
+        }
+        catch (TimeoutException te)
+        {
+            throw new PageOperationException("Ok button is not visible", te);
+        }
+        return new TrashCanPage(drone);
     }
 }

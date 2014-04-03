@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,27 +33,28 @@ public class ConfigureSiteNoticeTinyMceEditor extends TinyMceEditor
     private Log logger = LogFactory.getLog(ConfigureSiteNoticeTinyMceEditor.class);
     public static final String frame1 = "page_x002e_component-1-2_x002e_site_x007e_";
     public static final String frame2 = "_x007e_dashboard_x0023_default-configDialog-text_ifr";
-    
+
     public ConfigureSiteNoticeTinyMceEditor(WebDrone drone)
     {
         super(drone);
     }
-     
+
     /**
      * Get text from TinyMCE editor.
+     * 
      * @param siteName
      * @return String
      */
     public String getTextFromConfigureTextEditor(String siteName)
-    {    
-        if(siteName == null)
+    {
+        if (siteName == null)
         {
             throw new IllegalArgumentException("SiteName is required");
         }
-        
+
         try
-        {   
-            setTinyMce(frame1+siteName.toLowerCase()+frame2);
+        {
+            setTinyMce(frame1 + siteName.toLowerCase() + frame2);
             drone.switchToFrame(getFrameId());
             String text = drone.find(By.cssSelector(TINYMCE_CONTENT)).getText();
             drone.switchToDefaultContent();
@@ -77,38 +74,39 @@ public class ConfigureSiteNoticeTinyMceEditor extends TinyMceEditor
      */
     public void setTinyMceOfConfigureDialogBox(String siteName)
     {
-        setTinyMce(frame1+siteName.toLowerCase()+frame2);
+        setTinyMce(frame1 + siteName.toLowerCase() + frame2);
     }
-    
+
     /**
      * Click to select color code on text.
      */
     public void clickColorCode()
-    {        
+    {
         selectTextFromEditor();
         clickElementOnRichTextFormatter("a[id$='default-configDialog-text_forecolor_open']");
         setFormatType(FormatType.COLOR_CODE);
-        clickElementOnRichTextFormatter(getCSSOfFormatType());       
+        clickElementOnRichTextFormatter(getCSSOfFormatType());
     }
 
     /**
      * Click to select color code on text.
      */
     public void clickBackgroundColorCode()
-    {        
+    {
         selectTextFromEditor();
         clickElementOnRichTextFormatter("a[id$='default-configDialog-text_backcolor_open']");
         setFormatType(FormatType.COLOR_CODE);
-        clickElementOnRichTextFormatter("#_mce_item_70");       
+        clickElementOnRichTextFormatter("#_mce_item_70");
     }
 
     /**
-     * Click on TinyMCE editor's format option.   
-     * @param formatType 
+     * Click on TinyMCE editor's format option.
+     * 
+     * @param formatType
      */
     public void clickTextFormatterFromConfigureDialog(FormatType formatType)
-    {     
+    {
         setFormatType(formatType);
-        clickElementOnRichTextFormatter(getCSSOfFormatType());      
+        clickElementOnRichTextFormatter(getCSSOfFormatType());
     }
 }

@@ -13,10 +13,7 @@ public class ActionSelectorCloudImpl extends AbstractActionSelector
 
     private enum PerformActions
     {
-        COPY(0),
-        MOVE(1),
-        TRANSFORM_AND_COPY_CONTENT(2),
-        TRANSFORM_AND_COPY_IMAGE(3);
+        COPY(0), MOVE(1), TRANSFORM_AND_COPY_CONTENT(2), TRANSFORM_AND_COPY_IMAGE(3);
 
         private final int numberPosition;
 

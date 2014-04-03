@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,7 +29,7 @@ import org.openqa.selenium.By;
  */
 public class MyProfilePage extends SharePage
 {
-    
+
     private final By editProfileButton = By.cssSelector("button[id$='-button-edit-button'], button[id$='-button-following-button']");
 
     /**
@@ -60,14 +56,14 @@ public class MyProfilePage extends SharePage
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public MyProfilePage render(final long time)
     {
         return render(new RenderTime(time));
     }
-    
+
     /**
      * Verify if home page banner web element is present
      * 

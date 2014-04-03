@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,7 +27,7 @@ import org.openqa.selenium.WebElement;
 /**
  * Abstract site navigation for the different types
  * of site navigation, base to collaboration based sites
- *
+ * 
  * @author Michael Suzuki
  * @version 1.7.1
  */
@@ -55,44 +51,54 @@ public abstract class AbstractSiteNavigation extends HtmlElement
     private final String siteNavPlaceHolder;
     private final String dashboardLink;
     private AlfrescoVersion alfrescoVersion;
+
     public AbstractSiteNavigation(WebDrone drone)
     {
         super(drone);
         alfrescoVersion = drone.getProperties().getVersion();
-        siteNavPlaceHolder = alfrescoVersion.isDojoSupported() ? "div[id^='alfresco_layout_LeftAndRight']": "div#alf-hd";
+        siteNavPlaceHolder = alfrescoVersion.isDojoSupported() ? "div[id^='alfresco_layout_LeftAndRight']" : "div#alf-hd";
         setWebElement(drone.findAndWait(By.cssSelector(siteNavPlaceHolder)));
-        dashboardLink = alfrescoVersion.isDojoSupported() ? "div#HEADER_SITE_DASHBOARD": String.format(SITE_LINK_NAV_PLACEHOLER,1);
+        dashboardLink = alfrescoVersion.isDojoSupported() ? "div#HEADER_SITE_DASHBOARD" : String.format(SITE_LINK_NAV_PLACEHOLER, 1);
     }
+
     /**
      * Check if the site navigation link is highlighted.
+     * 
      * @param By by selector of site nav link
      * @return if link is highlighted
      */
     public boolean isLinkActive(By by)
     {
-        if(by == null) { throw new UnsupportedOperationException("By selector is required"); }
+        if (by == null)
+        {
+            throw new UnsupportedOperationException("By selector is required");
+        }
         try
         {
             String active = alfrescoVersion.isDojoSupported() ? "Selected" : "active-page";
             WebElement element = getDrone().findAndWait(by);
             String value = element.getAttribute("class");
-            if(value != null && !value.isEmpty())
+            if (value != null && !value.isEmpty())
             {
                 return value.contains(active);
             }
         }
-        catch (TimeoutException e) { }
+        catch (TimeoutException e)
+        {
+        }
         return false;
     }
-    
+
     /**
      * Check if the site dashboard navigation link is highlighted.
+     * 
      * @return if link is highlighted
      */
     public boolean isDashboardActive()
     {
         return isLinkActive(By.cssSelector(dashboardLink));
     }
+
     /**
      * Action of selecting on Site Dash board link.
      */
@@ -101,16 +107,20 @@ public abstract class AbstractSiteNavigation extends HtmlElement
         find(By.cssSelector(dashboardLink)).click();
         return FactorySharePage.resolvePage(drone);
     }
+
     /**
      * Checks if dash board link is displayed.
+     * 
      * @return true if displayed
      */
     public boolean isDashboardDisplayed()
     {
         return isLinkDisplayed(By.cssSelector(dashboardLink));
     }
+
     /**
      * Select the drop down on the page and clicks on the link.
+     * 
      * @param title String title label of site nav
      * @return HtmlPage page object result of selecting the link.
      */
@@ -120,8 +130,10 @@ public abstract class AbstractSiteNavigation extends HtmlElement
         link.click();
         return FactorySharePage.resolvePage(getDrone());
     }
+
     /**
      * Select the drop down on the page and clicks on the link.
+     * 
      * @param by css locator
      * @return HtmlPage page object result of selecting the link.
      */
@@ -130,24 +142,27 @@ public abstract class AbstractSiteNavigation extends HtmlElement
         WebElement link = find(by);
         link.click();
     }
-    
+
     /**
      * Checks if item is displayed.
+     * 
      * @return true if displayed
      */
     public boolean isLinkDisplayed(final By by)
     {
-        if(by != null)
+        if (by != null)
         {
             try
             {
                 return drone.find(by).isDisplayed();
             }
-            catch (NoSuchElementException nse) { }
+            catch (NoSuchElementException nse)
+            {
+            }
         }
         return false;
     }
-    
+
     protected AlfrescoVersion getAlfrescoVersion()
     {
         return alfrescoVersion;

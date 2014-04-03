@@ -3,10 +3,11 @@ package org.alfresco.po.share.enums;
 import org.alfresco.webdrone.WebDroneUtil;
 
 /**
-*Enum to contain all the view Type
-* @author Chiran
-* @author Shan Nagarajan
-*/
+ * Enum to contain all the view Type
+ * 
+ * @author Chiran
+ * @author Shan Nagarajan
+ */
 public enum ViewType
 {
     SIMPLE_VIEW("Simple"),
@@ -17,7 +18,7 @@ public enum ViewType
     AUDIO_VIEW("Audio"),
     MEDIA_VIEW("Media");
 
-   private  String name;
+    private String name;
 
     private ViewType(String name)
     {
@@ -31,7 +32,7 @@ public enum ViewType
 
     /**
      * Finds the view type based on the name passed.
-     *
+     * 
      * @param name
      * @return {@link ViewType}
      */

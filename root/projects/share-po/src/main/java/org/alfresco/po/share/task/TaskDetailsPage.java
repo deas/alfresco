@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -40,7 +36,7 @@ import org.openqa.selenium.WebElement;
  * Task Details Page.
  * 
  * @author Shan Nagarajan
- * @since  1.7.1
+ * @since 1.7.1
  */
 public class TaskDetailsPage extends SharePage
 {
@@ -56,7 +52,7 @@ public class TaskDetailsPage extends SharePage
     private static final By EDIT_BUTTON = By.cssSelector("button[id$='_default-edit-button']");
 
     private static final boolean isViewMoreActionDisplayed = false;
-    
+
     public TaskDetailsPage(WebDrone drone)
     {
         super(drone);
@@ -66,7 +62,7 @@ public class TaskDetailsPage extends SharePage
     @Override
     public TaskDetailsPage render(RenderTime timer)
     {
-       elementRender(timer, menuTitle, workflowDetails);
+        elementRender(timer, menuTitle, workflowDetails);
         return this;
     }
 
@@ -86,6 +82,7 @@ public class TaskDetailsPage extends SharePage
 
     /**
      * Method to get Task Details Header (Eg: Details: Task name (Task))
+     * 
      * @return Task Details Header
      */
     public String getTaskDetailsHeader()
@@ -94,7 +91,6 @@ public class TaskDetailsPage extends SharePage
     }
 
     /**
-     * 
      * @return
      */
     public String getComment()
@@ -104,6 +100,7 @@ public class TaskDetailsPage extends SharePage
 
     /**
      * Method to get Required Approval percentage value
+     * 
      * @return
      */
     public int getRequiredApprovalPercentage()
@@ -113,14 +110,17 @@ public class TaskDetailsPage extends SharePage
 
     /**
      * Method to get Actual Approval percentage value
+     * 
      * @return
      */
     public int getActualApprovalPercentage()
     {
         return Integer.parseInt(getElementText(By.xpath("//span[@class='viewmode-label' and contains(text(), 'Actual approval percentage:')]/../span[@class='viewmode-value']")));
     }
+
     /**
-     * Mimics the action clicking My Tasks List hyper link. 
+     * Mimics the action clicking My Tasks List hyper link.
+     * 
      * @return {@link MyTasksPage}
      */
     public MyTasksPage clickMyTasksList()
@@ -138,6 +138,7 @@ public class TaskDetailsPage extends SharePage
 
     /**
      * Method to get Info section of Task Details page
+     * 
      * @return
      */
     public TaskInfo getTaskDetailsInfo()
@@ -161,6 +162,7 @@ public class TaskDetailsPage extends SharePage
 
     /**
      * Method to get Task Status
+     * 
      * @return
      */
     public TaskStatus getTaskStatus()
@@ -182,6 +184,7 @@ public class TaskDetailsPage extends SharePage
 
     /**
      * Method to get the list of Items in a Task
+     * 
      * @return {@link List< TaskItem >}
      */
     public List<TaskItem> getTaskItems()
@@ -191,7 +194,7 @@ public class TaskDetailsPage extends SharePage
         {
             List<WebElement> itemsRows = getTaskItemElements();
 
-            for(WebElement item: itemsRows)
+            for (WebElement item : itemsRows)
             {
                 taskItems.add(new TaskItem(item, drone, isViewMoreActionDisplayed));
             }
@@ -208,12 +211,13 @@ public class TaskDetailsPage extends SharePage
 
     /**
      * Method to get the List of TaskItem object for a given File Name
+     * 
      * @param fileName
      * @return {@link List< TaskItem >}
      */
     public List<TaskItem> getTaskItem(String fileName)
     {
-        if(StringUtils.isEmpty(fileName))
+        if (StringUtils.isEmpty(fileName))
         {
             throw new IllegalArgumentException("FileName cannot be empty");
         }
@@ -223,7 +227,7 @@ public class TaskDetailsPage extends SharePage
         {
             for (WebElement item : workFlowDetailsItemElements)
             {
-                if(item.findElement(By.cssSelector("h3.name")).getText().equals(fileName))
+                if (item.findElement(By.cssSelector("h3.name")).getText().equals(fileName))
                 {
                     taskItems.add(new TaskItem(item, drone, isViewMoreActionDisplayed));
                 }
@@ -238,6 +242,7 @@ public class TaskDetailsPage extends SharePage
 
     /**
      * Method to select Edit button
+     * 
      * @return {@link EditTaskPage}
      */
     public EditTaskPage selectEditButton()
@@ -255,6 +260,7 @@ public class TaskDetailsPage extends SharePage
 
     /**
      * Method to verify Edit Button is present or not
+     * 
      * @return True if present
      */
     public boolean isEditButtonPresent()
@@ -271,6 +277,7 @@ public class TaskDetailsPage extends SharePage
 
     /**
      * Method to select Task History link
+     * 
      * @return {@link TaskHistoryPage}
      */
     public TaskHistoryPage selectTaskHistoryLink()

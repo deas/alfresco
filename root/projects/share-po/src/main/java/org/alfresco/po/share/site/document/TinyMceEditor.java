@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,7 +29,8 @@ import org.owasp.esapi.ESAPI;
 /**
  * @author nshah
  */
-public class TinyMceEditor extends HtmlElement {
+public class TinyMceEditor extends HtmlElement
+{
     private Log logger = LogFactory.getLog(TinyMceEditor.class);
 
     private static final String TINY_MCE_SELECT_ALL_COMMAND = "tinyMCE.activeEditor.selection.select(tinyMCE.activeEditor.getBody(),true);";
@@ -43,7 +40,6 @@ public class TinyMceEditor extends HtmlElement {
     private static final String CSS_STR_BOLD = ".mceIcon.mce_bold";
     public static final String FRAME_ID = "template_x002e_comments_x002e_folder-details_x0023_default-add-content_ifr";
     public static final String TINYMCE_CONTENT = "body[id$='tinymce']";
-
 
     private static final String CSS_STR_ITALIC = ".mceIcon.mce_italic";
     private static final String CSS_STR_UNDER_LINED = ".mceIcon.mce_underline";
@@ -65,8 +61,7 @@ public class TinyMceEditor extends HtmlElement {
     private String frameId = FRAME_ID;
     private FormatType formatType;
 
-
-    public enum FormatType 
+    public enum FormatType
     {
         BOLD,
         ITALIC,
@@ -89,24 +84,24 @@ public class TinyMceEditor extends HtmlElement {
         BOLD_EDIT;
     }
 
-    public String getFrameId() 
+    public String getFrameId()
     {
         return frameId;
     }
 
-    public void setFrameId(String frameId) 
+    public void setFrameId(String frameId)
     {
         this.frameId = frameId;
     }
 
-    public void setFormatType(FormatType formatType) 
+    public void setFormatType(FormatType formatType)
     {
         this.formatType = formatType;
     }
 
-    public String getCSSOfFormatType() 
+    public String getCSSOfFormatType()
     {
-        switch (formatType) 
+        switch (formatType)
         {
             case BOLD:
                 return CSS_STR_BOLD;
@@ -128,7 +123,7 @@ public class TinyMceEditor extends HtmlElement {
                 return CSS_UNDO;
             case REDO:
                 return CSS_REDO;
-            //temporary solution
+                // temporary solution
             case BOLD_EDIT:
                 return "DIV[class='comments-list']>DIV[class='comment-form'] " + CSS_STR_BOLD;
             default:
@@ -137,8 +132,10 @@ public class TinyMceEditor extends HtmlElement {
         }
     }
 
-    public String getCSSOfText(FormatType formatType) {
-        switch (formatType) {
+    public String getCSSOfText(FormatType formatType)
+    {
+        switch (formatType)
+        {
             case BOLD_FMT_TXT:
                 return CSS_STR_BOLD_FMT_TXT;
             case ITALIC_FMT_TXT:
@@ -158,8 +155,7 @@ public class TinyMceEditor extends HtmlElement {
         }
     }
 
-
-    public void setTinyMce(String frameId) 
+    public void setTinyMce(String frameId)
     {
         setFrameId(frameId);
     }
@@ -167,7 +163,7 @@ public class TinyMceEditor extends HtmlElement {
     /**
      * Constructor
      */
-    public TinyMceEditor(WebDrone drone) 
+    public TinyMceEditor(WebDrone drone)
     {
         super(drone);
     }
@@ -175,14 +171,14 @@ public class TinyMceEditor extends HtmlElement {
     /**
      * @param txt
      */
-    public void addContent(String txt) 
+    public void addContent(String txt)
     {
-        try 
+        try
         {
             String setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", txt);
             drone.executeJavaScript(setCommentJs);
-        } 
-        catch (NoSuchElementException noSuchElementExp) 
+        }
+        catch (NoSuchElementException noSuchElementExp)
         {
             logger.error("Element : " + txt + " is not present", noSuchElementExp);
         }
@@ -190,11 +186,11 @@ public class TinyMceEditor extends HtmlElement {
 
     /**
      * This method sets the given text into Site Content Configure text editor.
-     *
+     * 
      * @param text
      */
 
-    public void setText(String text) 
+    public void setText(String text)
     {
         if (text == null)
         {
@@ -207,30 +203,29 @@ public class TinyMceEditor extends HtmlElement {
             drone.executeJavaScript(setCommentJs);
             setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", text);
             drone.executeJavaScript(setCommentJs);
-        } 
-        catch (NoSuchElementException noSuchElementExp) 
+        }
+        catch (NoSuchElementException noSuchElementExp)
         {
             throw new PageException("Unable to find text css in tinyMCE editor.", noSuchElementExp);
         }
     }
 
-
     /**
      * This method sets the given text into Site Content Configure text editor.
-     *
+     * 
      * @param text
      * @param encoder Encode the text before adding it to the text editor.
      */
-    public void setText(String text, Encoder encoder) 
+    public void setText(String text, Encoder encoder)
     {
         String encodedComment = text;
-        if (encoder == null) 
+        if (encoder == null)
         {
             // Assume no encoding
             encoder = Encoder.ENCODER_NOENCODER;
         }
 
-        switch (encoder) 
+        switch (encoder)
         {
             case ENCODER_HTML:
                 encodedComment = ESAPI.encoder().encodeForHTML(text);
@@ -246,11 +241,10 @@ public class TinyMceEditor extends HtmlElement {
         setText(encodedComment);
     }
 
-
     /**
      * Click on TinyMCE editor's format option.
      */
-    public void clickTextFormatter(FormatType formatType) 
+    public void clickTextFormatter(FormatType formatType)
     {
         setFormatType(formatType);
         selectTextFromEditor();
@@ -260,7 +254,7 @@ public class TinyMceEditor extends HtmlElement {
     /**
      * Click to select color code on text.
      */
-    public void clickColorCode() 
+    public void clickColorCode()
     {
         selectTextFromEditor();
         setFormatType(FormatType.COLOR);
@@ -272,7 +266,7 @@ public class TinyMceEditor extends HtmlElement {
     /**
      * click to undo to default format.
      */
-    public void clickUndo() 
+    public void clickUndo()
     {
         setFormatType(FormatType.UNDO);
         clickElementOnRichTextFormatter(getCSSOfFormatType());
@@ -281,25 +275,26 @@ public class TinyMceEditor extends HtmlElement {
     /**
      * Click to Redo the undo operation.
      */
-    public void clickRedo() 
+    public void clickRedo()
     {
         setFormatType(FormatType.REDO);
         clickElementOnRichTextFormatter(getCSSOfFormatType());
     }
 
-    public String getColourAttribute() 
+    public String getColourAttribute()
     {
-        try 
+        try
         {
             drone.switchToFrame(getFrameId());
             WebElement element = drone.findAndWait(By.xpath(XPATH_COLOUR_FONT));
-            if (!CSS_COLOR_ATT.equals(element.getAttribute("color")) || CSS_COLOR_ATT.equals(element.getAttribute("style"))) {
+            if (!CSS_COLOR_ATT.equals(element.getAttribute("color")) || CSS_COLOR_ATT.equals(element.getAttribute("style")))
+            {
                 drone.switchToDefaultContent();
                 return "BLUE";
             }
 
-        } 
-        catch (NoSuchElementException noSuchElementExp) 
+        }
+        catch (NoSuchElementException noSuchElementExp)
         {
             logger.error("Element :" + XPATH_COLOUR_FONT + " does not exist", noSuchElementExp);
         }
@@ -309,28 +304,28 @@ public class TinyMceEditor extends HtmlElement {
     /**
      * Click to remove formatting from text.
      */
-    public void removeFormatting() 
+    public void removeFormatting()
     {
-        try 
+        try
         {
             drone.findAndWait(By.cssSelector(CSS_REMOVE_FORMAT)).click();
-        } 
-        catch (NoSuchElementException noSuchElementExp) 
+        }
+        catch (NoSuchElementException noSuchElementExp)
         {
             logger.error("Element :" + CSS_REMOVE_FORMAT + " does not exist", noSuchElementExp);
         }
     }
 
-    public void selectTextFromEditor() {
-        //This select all in the edit pane
+    public void selectTextFromEditor()
+    {
+        // This select all in the edit pane
         /**
          * @author Michael Suzuki
-         * Changed to use tinymce directly as its 
-         * faster to edit with tinymce object instead
-         * of using the ui.
-         *
-         * The script below will select every thing
-         * inside the editing pane. 
+         *         Changed to use tinymce directly as its
+         *         faster to edit with tinymce object instead
+         *         of using the ui.
+         *         The script below will select every thing
+         *         inside the editing pane.
          */
         drone.executeJavaScript(TINY_MCE_SELECT_ALL_COMMAND);
     }
@@ -340,44 +335,44 @@ public class TinyMceEditor extends HtmlElement {
      */
     protected void clickElementOnRichTextFormatter(String cssString)
     {
-        try 
+        try
         {
             drone.switchToDefaultContent();
             drone.findAndWait(By.cssSelector(cssString)).click();
-        } 
-        catch (NoSuchElementException noSuchElementExp) 
+        }
+        catch (NoSuchElementException noSuchElementExp)
         {
             logger.error("Element :" + cssString + " does not exist", noSuchElementExp);
         }
     }
 
-    public String getText() 
+    public String getText()
     {
-        try 
+        try
         {
             drone.switchToFrame(getFrameId());
             String text = drone.find(By.cssSelector(TINYMCE_CONTENT)).getText();
             drone.switchToDefaultContent();
             return text;
-        } 
-        catch (NoSuchElementException noSuchElementExp) 
+        }
+        catch (NoSuchElementException noSuchElementExp)
         {
             logger.error("Element : does not exist", noSuchElementExp);
             throw new PageException("Unable to find text in tinyMCE editor.", noSuchElementExp);
         }
     }
 
-    public String getContent() 
+    public String getContent()
     {
-        try 
+        try
         {
             drone.switchToFrame(getFrameId());
             WebElement element = drone.findAndWait(By.cssSelector(TINYMCE_CONTENT));
             String contents = (String) drone.executeJavaScript("return arguments[0].innerHTML;", element);
             drone.switchToDefaultContent();
             return contents;
-        } 
-        catch (NoSuchElementException noSuchElementExp) 
+        }
+        catch (NoSuchElementException noSuchElementExp)
         {
             logger.error("Element :body[id$='tinymce'] does not exist", noSuchElementExp);
             throw new PageException("Unable to find content in tinyMCE editor.", noSuchElementExp);

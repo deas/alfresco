@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,7 +33,7 @@ import org.openqa.selenium.WebElement;
  * Site Welcome dashlet object, holds all element of the HTML relating to site welcome dashlet.
  * 
  * @author Shan Nagarajan
- * @since  1.6.1
+ * @since 1.6.1
  */
 public class SiteWelcomeDashlet extends AbstractDashlet implements Dashlet
 {
@@ -66,27 +62,33 @@ public class SiteWelcomeDashlet extends AbstractDashlet implements Dashlet
                 timer.start();
                 synchronized (this)
                 {
-                    try { this.wait(50L);}catch (InterruptedException e){ }
+                    try
+                    {
+                        this.wait(50L);
+                    }
+                    catch (InterruptedException e)
+                    {
+                    }
                 }
                 try
                 {
-                    if(isWelcomeMessageDisplayed())
+                    if (isWelcomeMessageDisplayed())
                     {
                         dashlet = drone.find(By.cssSelector(DASHLET_CONTAINER_PLACEHOLDER));
                         if (logger.isTraceEnabled())
                         {
-                            logger.trace("== found it == "+ dashlet.isDisplayed());
+                            logger.trace("== found it == " + dashlet.isDisplayed());
                         }
                         break;
                     }
                 }
                 catch (NoSuchElementException e)
                 {
-                    
+
                 }
                 catch (StaleElementReferenceException ste)
                 {
-                    //DOM has changed therefore page should render once change is completed
+                    // DOM has changed therefore page should render once change is completed
                 }
                 finally
                 {
@@ -96,8 +98,7 @@ public class SiteWelcomeDashlet extends AbstractDashlet implements Dashlet
         }
         catch (PageRenderTimeException te)
         {
-            throw new NoSuchDashletExpection(this.getClass().getName()
-                        + " failed to find welcome dashlet", te);
+            throw new NoSuchDashletExpection(this.getClass().getName() + " failed to find welcome dashlet", te);
         }
         return this;
     }
@@ -154,8 +155,10 @@ public class SiteWelcomeDashlet extends AbstractDashlet implements Dashlet
     {
         return getList(OPTIONS_CSS_LOCATION);
     }
+
     /**
      * Check if welcome message is displayed.
+     * 
      * @return true if displayed.
      */
     public boolean isWelcomeMessageDisplayed()
@@ -164,8 +167,12 @@ public class SiteWelcomeDashlet extends AbstractDashlet implements Dashlet
         {
             return drone.find(By.cssSelector(DASHLET_CONTAINER_PLACEHOLDER)).isDisplayed();
         }
-        catch (NoSuchElementException e) { }
-        catch (StaleElementReferenceException ste){}
+        catch (NoSuchElementException e)
+        {
+        }
+        catch (StaleElementReferenceException ste)
+        {
+        }
         return false;
     }
 }

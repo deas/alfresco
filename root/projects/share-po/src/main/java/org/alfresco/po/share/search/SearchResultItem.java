@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,6 +29,7 @@ import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebElement;
+
 /**
  * Holds the information of a search result item.
  * When completing a search the resulting page yeilds results
@@ -43,7 +40,7 @@ import org.openqa.selenium.WebElement;
  */
 public class SearchResultItem
 {
-    private WebDrone drone ;
+    private WebDrone drone;
     private static final String ITEM_NAME_CSS_HOLDER = "h3.itemname a";
     private static final String DOWNLOAD_LINK = "div>a>img[title='Download']";
     private static final String THUMBNAIL_LINK = "div.thumbnail-cell";
@@ -51,13 +48,15 @@ public class SearchResultItem
     private static final String FOLDER_CSS = "img[src$='folder.png']";
     private static final String FOLDER_PATH_CSS = "a";
     private static final String CONTENT_DETAILS_CSS = "div.details";
-    
+
     private WebElement webElement;
     private String title;
+
     /**
      * Constructor
-     * @param element {@link WebElement} 
-     * @param drone 
+     * 
+     * @param element {@link WebElement}
+     * @param drone
      */
     public SearchResultItem(WebElement element, WebDrone drone)
     {
@@ -67,11 +66,12 @@ public class SearchResultItem
 
     /**
      * Title of search result item.
+     * 
      * @return String title
      */
     public String getTitle()
     {
-        if(title == null)
+        if (title == null)
         {
             try
             {
@@ -87,6 +87,7 @@ public class SearchResultItem
 
     /**
      * Select the link of the search result item.
+     * 
      * @return true if link found and selected
      */
     public void click()
@@ -94,11 +95,10 @@ public class SearchResultItem
         WebElement link = webElement.findElement(By.cssSelector(ITEM_NAME_CSS_HOLDER));
         link.click();
     }
-    
+
     /**
      * Method to Click on Download link of result item present on search results.
-     *  Note : This thumbnail css used in this method works only on chrome browser. 
-     * 
+     * Note : This thumbnail css used in this method works only on chrome browser.
      */
     public void clickOnDownloadIcon()
     {
@@ -108,36 +108,38 @@ public class SearchResultItem
         {
             WebElement thumbnail = webElement.findElement(By.cssSelector(THUMBNAIL_LINK));
             drone.mouseOverOnElement(thumbnail);
-            
+
             while (true)
             {
                 download = webElement.findElement(By.cssSelector(DOWNLOAD_LINK));
-                
+
                 try
                 {
                     timer.start();
-                    
+
                     if (download.isDisplayed())
                     {
                         download.click();
                         break;
                     }
                 }
-                catch (ElementNotVisibleException e){}
+                catch (ElementNotVisibleException e)
+                {
+                }
                 finally
                 {
                     timer.end();
                 }
             }
         }
-        catch(ElementNotVisibleException e)
+        catch (ElementNotVisibleException e)
         {
             throw new PageException("Download link is not visible on Search Results Item", e);
         }
     }
-    
+
     /**
-     * Method to Click on viewInBrowser link of result item present on search results. 
+     * Method to Click on viewInBrowser link of result item present on search results.
      * Note : This thumbnail css used in this method works only on chrome browser.
      * 
      * @return String, url of the current window.
@@ -148,22 +150,22 @@ public class SearchResultItem
         String mainWindow;
         Set<String> windows;
         String newTab;
-        String url;        
+        String url;
         RenderTime timer = new RenderTime(10000);
-        
+
         try
         {
             WebElement thumbnail = webElement.findElement(By.cssSelector(THUMBNAIL_LINK));
             drone.mouseOverOnElement(thumbnail);
-           
+
             while (true)
             {
                 viewInBrowser = webElement.findElement(By.cssSelector(VIEW_IN_BROWSER_LINK));
-                
+
                 try
                 {
                     timer.start();
-                   
+
                     if (viewInBrowser.isDisplayed())
                     {
                         mainWindow = drone.getWindowHandle();
@@ -175,27 +177,32 @@ public class SearchResultItem
                         url = drone.getCurrentUrl();
                         drone.closeWindow();
                         drone.switchToWindow(mainWindow);
-                        
+
                         return url;
                     }
                 }
-                catch(NoSuchWindowException ne) {}
-                catch (ElementNotVisibleException e) { }
+                catch (NoSuchWindowException ne)
+                {
+                }
+                catch (ElementNotVisibleException e)
+                {
+                }
                 finally
                 {
                     timer.end();
                 }
             }
         }
-        catch(ElementNotVisibleException e) 
-        { 
+        catch (ElementNotVisibleException e)
+        {
             throw new ElementNotVisibleException("View in browser link is not visible in Search Results Item", e);
         }
-        
+
     }
-    
+
     /**
      * This method finds whether the selected item is folder or not, if yes returns true otherwise false.
+     * 
      * @return boolean
      */
     public boolean isFolder()
@@ -204,7 +211,9 @@ public class SearchResultItem
         {
             return webElement.findElement(By.cssSelector(FOLDER_CSS)).isDisplayed();
         }
-        catch (Exception e) { }
+        catch (Exception e)
+        {
+        }
 
         return false;
     }
@@ -237,7 +246,9 @@ public class SearchResultItem
                 }
             }
         }
-        catch (NoSuchElementException ne){ }
+        catch (NoSuchElementException ne)
+        {
+        }
         return Collections.emptyList();
     }
 }

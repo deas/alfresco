@@ -1,23 +1,18 @@
 /*
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share;
-
 
 import java.util.List;
 
@@ -42,12 +37,13 @@ public class RemoveUserFromGroupPage extends SharePage
 {
     private static final String CONFIRM_MESSAGE = "div[class='yui-module yui-overlay yui-panel' ]>div[class='bd']";
     private static Log logger = LogFactory.getLog(CopyOrMoveContentPage.class);
-    
+
     public enum Action {
         Yes,
         No
     }
-      /**
+
+    /**
      * Constructor.
      * 
      * @param drone WebDriver to access page
@@ -71,50 +67,50 @@ public class RemoveUserFromGroupPage extends SharePage
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public RemoveUserFromGroupPage render(final long time)
     {
         return render(new RenderTime(time));
     }
-    
+
     /**
-     * Action of selecting "Yes" or "No" on Remove User from group page. 
+     * Action of selecting "Yes" or "No" on Remove User from group page.
      * 
-     * @param - Enum action - Yes/no    
+     * @param - Enum action - Yes/no
      * @return - HtmlPage
      */
-    public HtmlPage  selectAction(Action action)
-    {        
+    public HtmlPage selectAction(Action action)
+    {
         try
         {
-           List<WebElement> buttons =  drone.findAll(By.cssSelector(".button-group span span button"));
-           for (WebElement button : buttons)
+            List<WebElement> buttons = drone.findAll(By.cssSelector(".button-group span span button"));
+            for (WebElement button : buttons)
             {
-                if(action.name().equals(button.getText()))
+                if (action.name().equals(button.getText()))
                 {
                     button.click();
                     canResume();
                     return FactorySharePage.resolvePage(drone);
-                }               
-                
+                }
+
             }
-        
+
         }
-        catch(NoSuchElementException nse)
+        catch (NoSuchElementException nse)
         {
             throw new PageOperationException("not present in this page", nse);
         }
         throw new PageOperationException("not present in this page");
-    }    
-    
+    }
+
     /**
      * Get the Title in Remove user pop up window
-     *   
+     * 
      * @return - String
      */
-    
+
     public String getTitle()
     {
         try
@@ -125,8 +121,7 @@ public class RemoveUserFromGroupPage extends SharePage
         {
             throw new PageOperationException("Not visible Element: Remove user from Goup", toe);
         }
-        
+
     }
-    
-    
+
 }

@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -41,7 +37,7 @@ import org.openqa.selenium.WebElement;
 /**
  * Upload file page object, holds all element of the HTML page relating to
  * share's upload file page in site.
- *
+ * 
  * @author Michael Suzuki
  * @since 1.0
  */
@@ -56,12 +52,10 @@ public class UploadFilePage extends ShareDialogue
      */
     public UploadFilePage(WebDrone drone)
     {
-    	super(drone);
-    	boolean isHtml5 = alfrescoVersion.isFileUploadHtml5();
-    	uploadFolderIcon = isHtml5 ? By.cssSelector("img.title-folder") :
-    		By.cssSelector("form[id$='_default-htmlupload-form']");
-    	uploadField = isHtml5 ? By.cssSelector("input.dnd-file-selection-button") :
-    		By.cssSelector("input[id$='default-filedata-file']");
+        super(drone);
+        boolean isHtml5 = alfrescoVersion.isFileUploadHtml5();
+        uploadFolderIcon = isHtml5 ? By.cssSelector("img.title-folder") : By.cssSelector("form[id$='_default-htmlupload-form']");
+        uploadField = isHtml5 ? By.cssSelector("input.dnd-file-selection-button") : By.cssSelector("input[id$='default-filedata-file']");
     }
 
     @SuppressWarnings("unchecked")
@@ -87,15 +81,15 @@ public class UploadFilePage extends ShareDialogue
         return render(new RenderTime(time));
     }
 
-
     /**
      * Action that selects the submit upload button.
+     * 
      * @return boolean true if submited.
      */
     private void submitUpload()
     {
         By selector;
-        if(alfrescoVersion.isCloud())
+        if (alfrescoVersion.isCloud())
         {
             selector = By.id("template_x002e_dnd-upload_x002e_documentlibrary_x0023_default-cancelOk-button-button");
         }
@@ -107,29 +101,33 @@ public class UploadFilePage extends ShareDialogue
         {
             HtmlElement okButton = new HtmlElement(drone.find(selector), drone);
             String ready = okButton.click();
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
-                logger.trace(String.format("operation completed in: %s",ready));
+                logger.trace(String.format("operation completed in: %s", ready));
             }
             drone.waitUntilElementDisappears(selector, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         }
-        catch (TimeoutException te){}
+        catch (TimeoutException te)
+        {
+        }
     }
 
     public boolean isUploadInputDisplayed()
     {
-    	try
-    	{
-    		return drone.find(uploadField).isDisplayed();
-    	}
-    	catch (Exception e){ }
-    	return false;
+        try
+        {
+            return drone.find(uploadField).isDisplayed();
+        }
+        catch (Exception e)
+        {
+        }
+        return false;
     }
 
     /**
      * Uploads a file by entering the file location into the input field and
      * submitting the form.
-     *
+     * 
      * @param filePath String file location to upload
      * @return {@link SharePage} DocumentLibrary or a RepositoryPage response
      */
@@ -142,9 +140,9 @@ public class UploadFilePage extends ShareDialogue
 
     public HtmlPage upload(final String filePath)
     {
-    	WebElement uploadFileInput = drone.find(uploadField);
-    	uploadFileInput.sendKeys(filePath);
-        if(!alfrescoVersion.isFileUploadHtml5())
+        WebElement uploadFileInput = drone.find(uploadField);
+        uploadFileInput.sendKeys(filePath);
+        if (!alfrescoVersion.isFileUploadHtml5())
         {
             submitUpload();
         }
@@ -155,14 +153,13 @@ public class UploadFilePage extends ShareDialogue
         }
         return FactorySharePage.getPage(drone.getCurrentUrl(), drone);
     }
-    
+
     /**
      * Clicks on the cancel link.
      */
     public void cancel()
     {
-        List<WebElement> cancelButton = drone.findAll(By
-                .cssSelector("button[id$='default-cancelOk-button-button']"));
+        List<WebElement> cancelButton = drone.findAll(By.cssSelector("button[id$='default-cancelOk-button-button']"));
         for (WebElement webElement : cancelButton)
         {
             if (webElement.isDisplayed() && webElement.isEnabled())

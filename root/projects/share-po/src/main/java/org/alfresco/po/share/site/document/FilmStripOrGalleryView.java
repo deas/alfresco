@@ -44,7 +44,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getDescription()
      */
     @Override
@@ -58,7 +57,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getContentEditInfo()
      */
     @Override
@@ -72,14 +70,13 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getTags()
      */
     @Override
     public List<String> getTags()
     {
         clickInfoIcon(false);
-        
+
         List<String> tags = super.getTags();
         focusOnDocLibFooter();
         return tags;
@@ -87,7 +84,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getCategories()
      */
     @Override
@@ -99,7 +95,8 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         return cats;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectDelete()
      */
     @Override
@@ -111,7 +108,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectEditProperties()
      */
     @Override
@@ -123,7 +119,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectViewInBrowser()
      */
     @Override
@@ -135,7 +130,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectFavourite()
      */
     @Override
@@ -148,7 +142,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectLike()
      */
     @Override
@@ -161,7 +154,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isLiked()
      */
     @Override
@@ -175,7 +167,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isFavourite()
      */
     @Override
@@ -189,7 +180,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getLikeCount()
      */
     @Override
@@ -203,7 +193,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#hasTags()
      */
     @Override
@@ -217,7 +206,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getContentNodeRef()
      */
     @Override
@@ -231,7 +219,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#addTag(java.lang.String)
      */
     @Override
@@ -250,12 +237,13 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     public void clickOnAddTag()
     {
         clickInfoIcon();
-        
+
         try
         {
             WebElement tagInfo = drone.findFirstDisplayedElement(By.xpath(TAG_INFO));
             getDrone().mouseOver(tagInfo);
-            drone.waitForElement(By.xpath(String.format(TAG_ICON, getName())), SECONDS.convert(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime(), MILLISECONDS));
+            drone.waitForElement(By.xpath(String.format(TAG_ICON, getName())),
+                    SECONDS.convert(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime(), MILLISECONDS));
             WebElement addTagBtn = drone.findAndWait(By.xpath(String.format(TAG_ICON, getName())));
             addTagBtn.click();
             getDrone().waitForElement(By.cssSelector(INPUT_TAG_NAME), SECONDS.convert(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime(), MILLISECONDS));
@@ -264,7 +252,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         {
             logger.error("Unable to find the add tag icon", e);
         }
-        catch(TimeoutException te)
+        catch (TimeoutException te)
         {
             logger.error("Exceeded time to find the tag info area ", te);
         }
@@ -276,9 +264,8 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         }
     }
 
-     /*
+    /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#removeTagButtonIsDisplayed(java.lang.String)
      */
     @Override
@@ -290,7 +277,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickOnTagRemoveButton(java.lang.String)
      */
     @Override
@@ -302,7 +288,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isCloudSynced()
      */
     @Override
@@ -316,7 +301,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isPartOfWorkflow()
      */
     @Override
@@ -330,7 +314,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectDownloadFolderAsZip()
      */
     @Override
@@ -345,7 +328,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         {
             throw new AlfrescoVersionException("Option Download Folder as Zip is not available for this version of Alfresco");
         }
-        
+
         clickInfoIcon(false);
         super.downloadFolderAsZip();
         focusOnDocLibFooter();
@@ -353,7 +336,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectDownload()
      */
     @Override
@@ -365,7 +347,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectViewFolderDetails()
      */
     @Override
@@ -377,7 +358,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickOnTagNameLink(java.lang.String)
      */
     @Override
@@ -388,7 +368,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectSyncToCloud()
      */
     @Override
@@ -400,7 +379,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectEditInGoogleDocs()
      */
     @Override
@@ -412,7 +390,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectUnSyncFromCloud()
      */
     @Override
@@ -424,21 +401,19 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isViewCloudSyncInfoLinkPresent()
      */
     @Override
     public boolean isViewCloudSyncInfoLinkPresent()
     {
         clickInfoIcon(false);
-        boolean viewCloudSyncInfo = super.isViewCloudSyncInfoLinkPresent(); 
+        boolean viewCloudSyncInfo = super.isViewCloudSyncInfoLinkPresent();
         focusOnDocLibFooter();
         return viewCloudSyncInfo;
     }
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickOnViewCloudSyncInfo()
      */
     @Override
@@ -450,7 +425,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectInlineEdit()
      */
     @Override
@@ -462,7 +436,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getCloudSyncType()
      */
     @Override
@@ -474,21 +447,19 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isLocked()
      */
     @Override
     public boolean isLocked()
     {
         clickInfoIcon(false);
-        boolean lock = super.isLocked(); 
+        boolean lock = super.isLocked();
         focusOnDocLibFooter();
         return lock;
     }
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isInlineEditLinkPresent()
      */
     @Override
@@ -500,7 +471,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isEditOfflineLinkPresent()
      */
     @Override
@@ -512,7 +482,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isEditInGoogleDocsPresent()
      */
     @Override
@@ -524,7 +493,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isDeletePresent()
      */
     @Override
@@ -538,7 +506,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isDeletePresent()
      */
     @Override
@@ -550,7 +517,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectManageRules()
      */
     @Override
@@ -562,7 +528,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isUnSyncFromCloudLinkPresent()
      */
     @Override
@@ -574,7 +539,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isSyncFailedIconPresent(long)
      */
     @Override
@@ -588,7 +552,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectRequestSync()
      */
     @Override
@@ -600,7 +563,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isRequestToSyncLinkPresent()
      */
     @Override
@@ -612,7 +574,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isSyncToCloudLinkPresent()
      */
     @Override
@@ -624,7 +585,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectManagePermission()
      */
     @Override
@@ -636,7 +596,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectCopyTo()
      */
     @Override
@@ -648,7 +607,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectMoveTo()
      */
     @Override
@@ -660,7 +618,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#delete()
      */
     @Override
@@ -673,7 +630,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectStartWorkFlow()
      */
     @Override
@@ -685,7 +641,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectUploadNewVersion()
      */
 
@@ -707,7 +662,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isManagePermissionLinkPresent()
      */
     @Override
@@ -719,7 +673,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isEditPropertiesLinkPresent()
      */
     @Override
@@ -731,7 +684,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectEditOffline()
      */
     @Override
@@ -743,7 +695,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectCancelEditing()
      */
     @Override
@@ -755,7 +706,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectManageAspects()
      */
     @Override
@@ -765,7 +715,8 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         return super.selectManageAspects();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isInfoPopUpDisplayed()
      */
     @Override
@@ -780,8 +731,9 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         }
         return false;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#clickInfoIcon()
      */
     @Override
@@ -789,7 +741,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     {
         clickInfoIcon(false);
     }
-    
+
     /**
      * @param hasMoreLink
      */
@@ -804,7 +756,8 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#selectMoreLink()
      */
     @Override
@@ -821,7 +774,8 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isInfoIconVisible()
      */
     @Override
@@ -846,8 +800,8 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     {
         try
         {
-           //drone.mouseOver(drone.findAndWait(By.linkText(getName())));
-            drone.mouseOver(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']",getName()))));
+            // drone.mouseOver(drone.findAndWait(By.linkText(getName())));
+            drone.mouseOver(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']", getName()))));
             return findAndWait(By.cssSelector("a.alf-show-detail"));
         }
         catch (TimeoutException e)
@@ -857,7 +811,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
         throw new PageException("File directory info with title was not found");
     }
-    
+
     private void focusOnDocLibFooter()
     {
         drone.mouseOverOnElement(drone.findAndWait(By.xpath("//div[contains(@id,'default-doclistBarBottom')]")));
@@ -894,7 +848,8 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         super.contentNameClickCancel();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#isShareLinkVisible()
      */
     @Override
@@ -903,8 +858,9 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         clickInfoIcon(false);
         return super.isShareLinkVisible();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickShareLink()
      */
     @Override
@@ -912,7 +868,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     {
         clickInfoIcon(false);
         return super.clickShareLink();
-    }    
+    }
 
     @Override
     public String getContentInfo()
@@ -921,7 +877,8 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         return super.getContentInfo();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickOnCategoryNameLink(java.lang.String)
      */
     @Override
@@ -930,8 +887,9 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         clickInfoIcon(true);
         return super.clickOnCategoryNameLink(categoryName);
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#clickCommentsLink()
      */
     @Override
@@ -940,8 +898,9 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         clickInfoIcon(false);
         return super.clickCommentsLink();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#getCommentsToolTip()
      */
     @Override
@@ -950,8 +909,9 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         clickInfoIcon(false);
         return super.getCommentsToolTip();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#getCommentsCount()
      */
     @Override
@@ -960,8 +920,9 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         clickInfoIcon(false);
         return super.getCommentsCount();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isCommentLinkPresent()
      */
     @Override
@@ -998,8 +959,9 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         }
         return title;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickContentNameFromInfoMenu()
      */
     @Override
@@ -1022,8 +984,9 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         }
         throw new PageException("Unable to find and click the file name link");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#selectModifier()
      */
     @Override

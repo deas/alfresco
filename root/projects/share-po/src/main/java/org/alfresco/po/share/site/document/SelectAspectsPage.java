@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -44,13 +40,13 @@ import com.sun.jna.platform.unix.X11.XSizeHints.Aspect;
 
 /**
  * Select Aspects page object, this page comes from Document Detail Page's Manage Aspects.
- *
+ * 
  * @author Shan Nagarajan
- * @since  1.6.1
+ * @since 1.6.1
  */
 public class SelectAspectsPage extends SharePage
 {
-    
+
     private static final By AVAILABLE_ASPECT_TABLE = By.cssSelector("div[id$='aspects-left']>table>tbody.yui-dt-data>tr");
     private static final By CURRENTLY_ADDED_ASPECT_TABLE = By.cssSelector("div[id$='aspects-right']>table>tbody.yui-dt-data>tr");
     private static final By HEADER_ASPECT_TABLE = By.cssSelector("td>div>h3");
@@ -58,9 +54,7 @@ public class SelectAspectsPage extends SharePage
     private static final By APPLY_CHANGE = By.cssSelector("button[id$='aspects-ok-button']");
     private static final By CANCEL = By.cssSelector("button[id$='aspects-cancel-button']");
     private static Log logger = LogFactory.getLog(SelectAspectsPage.class);
-    private static final By TITLE  = By.cssSelector("div[id$='aspects-title']");
-    
-   
+    private static final By TITLE = By.cssSelector("div[id$='aspects-title']");
 
     /**
      * Constructor.
@@ -91,7 +85,7 @@ public class SelectAspectsPage extends SharePage
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     /**
      * remove the {@link Aspect} if it is available to add.
      * 
@@ -102,7 +96,7 @@ public class SelectAspectsPage extends SharePage
     {
         return addRemoveAspects(aspects, CURRENTLY_ADDED_ASPECT_TABLE);
     }
-    
+
     /**
      * Add the {@link Aspect} if it is available to add.
      * 
@@ -113,17 +107,17 @@ public class SelectAspectsPage extends SharePage
     {
         return addRemoveAspects(aspects, AVAILABLE_ASPECT_TABLE);
     }
-    
+
     public Set<DocumentAspect> getAvailableAspects()
     {
-        return  getavailableAspectMap(AVAILABLE_ASPECT_TABLE).keySet();
+        return getavailableAspectMap(AVAILABLE_ASPECT_TABLE).keySet();
     }
-    
+
     public Set<DocumentAspect> getSelectedAspects()
     {
-        return  getavailableAspectMap(CURRENTLY_ADDED_ASPECT_TABLE).keySet();
+        return getavailableAspectMap(CURRENTLY_ADDED_ASPECT_TABLE).keySet();
     }
-    
+
     private Map<DocumentAspect, ShareLink> getavailableAspectMap(By by)
     {
         List<WebElement> availableElements = null;
@@ -132,11 +126,13 @@ public class SelectAspectsPage extends SharePage
         {
             availableElements = drone.findAndWaitForElements(by);
         }
-        catch (TimeoutException exception){ }
-        
-        if(availableElements != null && !availableElements.isEmpty())
+        catch (TimeoutException exception)
         {
-            //Convert List into Map
+        }
+
+        if (availableElements != null && !availableElements.isEmpty())
+        {
+            // Convert List into Map
             availableAspectMap = new HashMap<DocumentAspect, ShareLink>();
             for (WebElement webElement : availableElements)
             {
@@ -151,7 +147,7 @@ public class SelectAspectsPage extends SharePage
                 {
                     logger.error("Not able to find the header or link element on this row.", e);
                 }
-                catch (Exception e) 
+                catch (Exception e)
                 {
                     logger.error("Exception while finding & adding aspects : ", e);
                 }
@@ -159,7 +155,7 @@ public class SelectAspectsPage extends SharePage
         }
         return availableAspectMap;
     }
-    
+
     /**
      * Add the {@link Aspect} if it is available to add.
      * 
@@ -168,25 +164,25 @@ public class SelectAspectsPage extends SharePage
      */
     private HtmlPage addRemoveAspects(List<DocumentAspect> aspects, By by)
     {
-        if(aspects == null || aspects.isEmpty())
+        if (aspects == null || aspects.isEmpty())
         {
-           throw new UnsupportedOperationException("Aspets can't be empty or null."); 
+            throw new UnsupportedOperationException("Aspets can't be empty or null.");
         }
         Map<DocumentAspect, ShareLink> availableAspectMap = getavailableAspectMap(by);
-        
-        if(availableAspectMap != null && !availableAspectMap.isEmpty()) 
+
+        if (availableAspectMap != null && !availableAspectMap.isEmpty())
         {
             for (DocumentAspect aspect : aspects)
             {
                 ShareLink link = availableAspectMap.get(aspect);
-                if(link != null )
+                if (link != null)
                 {
                     try
                     {
                         link.click();
-                        if(logger.isTraceEnabled())
+                        if (logger.isTraceEnabled())
                         {
-                            logger.trace( aspect + "Aspect Added.");
+                            logger.trace(aspect + "Aspect Added.");
                         }
                     }
                     catch (StaleElementReferenceException exception)
@@ -194,18 +190,20 @@ public class SelectAspectsPage extends SharePage
                         drone.find(CANCEL).click();
                         throw new PageException("Unexpected Refresh on Page lost reference to the Aspects.", exception);
                     }
-                } 
+                }
                 else
                 {
                     logger.error("Not able to find in the available aspects bucket " + aspect.toString());
                 }
             }
         }
-        
+
         return this;
     }
+
     /**
-     * Click on {@link cancel} in {@link selectAspectsPage}  
+     * Click on {@link cancel} in {@link selectAspectsPage}
+     * 
      * @return {@link SelectAspectsPage}
      */
     public HtmlPage clickCancel()
@@ -214,13 +212,16 @@ public class SelectAspectsPage extends SharePage
         {
             drone.find(CANCEL).click();
             return drone.getCurrentPage();
-        } catch (NoSuchElementException nse)
+        }
+        catch (NoSuchElementException nse)
         {
             throw new PageException("Not able find the cancel button: ", nse);
         }
     }
+
     /**
-     * Click on {@link ApplyChanges} in {@link selectAspectsPage}  
+     * Click on {@link ApplyChanges} in {@link selectAspectsPage}
+     * 
      * @return {@link SelectAspectsPage}
      */
     public HtmlPage clickApplyChanges()
@@ -231,12 +232,13 @@ public class SelectAspectsPage extends SharePage
             drone.waitForElement(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), "Successfully updated aspects", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             return drone.getCurrentPage();
-        } catch (NoSuchElementException nse)
+        }
+        catch (NoSuchElementException nse)
         {
-            throw new PageException("Not able find the apply change button: ", nse);  
+            throw new PageException("Not able find the apply change button: ", nse);
         }
     }
-    
+
     @Override
     public String getTitle()
     {

@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,7 +33,7 @@ import org.openqa.selenium.WebElement;
  * Create content page object, Where user can create content.
  * 
  * @author Shan Nagarajan,Subashni Prasanna
- * @since  1.6.1
+ * @since 1.6.1
  */
 public class CreatePlainTextContentPage extends InlineEditPage
 {
@@ -51,10 +47,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
 
     public enum Fields
     {
-        NAME,
-        TITLE,
-        DESCRIPTION,
-        CONTENT;
+        NAME, TITLE, DESCRIPTION, CONTENT;
     }
 
     public CreatePlainTextContentPage(WebDrone drone)
@@ -66,7 +59,8 @@ public class CreatePlainTextContentPage extends InlineEditPage
     @Override
     public CreatePlainTextContentPage render(RenderTime timer)
     {
-        elementRender(timer, getVisibleRenderElement(NAME), getVisibleRenderElement(TITLE), getVisibleRenderElement(DESCRIPTION), getVisibleRenderElement(CONTENT), getVisibleRenderElement(SUBMIT_BUTTON), getVisibleRenderElement(CANCEL_BUTTON));
+        elementRender(timer, getVisibleRenderElement(NAME), getVisibleRenderElement(TITLE), getVisibleRenderElement(DESCRIPTION),
+                getVisibleRenderElement(CONTENT), getVisibleRenderElement(SUBMIT_BUTTON), getVisibleRenderElement(CANCEL_BUTTON));
         return this;
     }
 
@@ -93,9 +87,9 @@ public class CreatePlainTextContentPage extends InlineEditPage
      * @param details - Document Content
      * @return {@link DocumentDetailsPage}
      */
-    public HtmlPage create(ContentDetails details) 
+    public HtmlPage create(ContentDetails details)
     {
-        if(details == null || details.getName() == null || details.getName().trim().isEmpty())
+        if (details == null || details.getName() == null || details.getName().trim().isEmpty())
         {
             throw new UnsupportedOperationException("Name can't be null or empty");
         }
@@ -110,8 +104,8 @@ public class CreatePlainTextContentPage extends InlineEditPage
     }
 
     /**
-     * Create the content with name, title and description.  Checks the form fields for validation messages.
-     * If there are any it does not save the form but returns it.  If there are no validation messages it
+     * Create the content with name, title and description. Checks the form fields for validation messages.
+     * If there are any it does not save the form but returns it. If there are no validation messages it
      * saves the form and returns {@link CreatePlainTextContentPage}.
      * 
      * @param details A ContentDetails object containing name, title description and content. The name field is mandatory.
@@ -119,7 +113,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
      */
     public HtmlPage createWithValidation(ContentDetails details)
     {
-        if(details == null)
+        if (details == null)
         {
             throw new UnsupportedOperationException("ContentDetails can't be null");
         }
@@ -131,7 +125,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
         validationPresent = validationPresent || isMessagePresent(DESCRIPTION);
         validationPresent = validationPresent || isMessagePresent(CONTENT);
 
-        if(!validationPresent)
+        if (!validationPresent)
         {
             WebElement createButton = drone.find(SUBMIT_BUTTON);
             String id = createButton.getAttribute("id");
@@ -143,6 +137,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
 
     /**
      * Cancel button interaction on the form
+     * 
      * @return {@link DocumentLibraryPage}
      */
     public DocumentLibraryPage cancel(ContentDetails details)
@@ -155,6 +150,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
 
     /**
      * Click the Cancel button without completing the form
+     * 
      * @return
      */
     public HtmlPage cancel()
@@ -164,23 +160,23 @@ public class CreatePlainTextContentPage extends InlineEditPage
         return FactorySharePage.resolvePage(drone);
     }
 
-    protected void createContent(ContentDetails details) 
+    protected void createContent(ContentDetails details)
     {
-        if(details.getName() != null)
+        if (details.getName() != null)
         {
             WebElement nameElement = drone.find(NAME);
             nameElement.clear();
             nameElement.sendKeys(details.getName());
         }
 
-        if(details.getTitle() != null)
+        if (details.getTitle() != null)
         {
             WebElement titleElement = drone.find(TITLE);
             titleElement.clear();
             titleElement.sendKeys(details.getTitle());
         }
 
-        if(details.getDescription() != null)
+        if (details.getDescription() != null)
         {
             WebElement descriptionElement = drone.find(DESCRIPTION);
             descriptionElement.clear();
@@ -191,7 +187,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
 
     protected void createContentField(ContentDetails details)
     {
-        if(details.getContent() != null)
+        if (details.getContent() != null)
         {
             WebElement contentElement = drone.find(CONTENT);
             contentElement.clear();
@@ -201,6 +197,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
 
     /**
      * Returns the validation message, if any, for the given Field.
+     * 
      * @param field The reqired field
      * @return The validation message or an empty string if there is no message.
      */
@@ -235,7 +232,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
         {
             message = getValidationMessage(locator);
         }
-        catch(NoSuchElementException e)
+        catch (NoSuchElementException e)
         {
         }
 
@@ -244,6 +241,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
 
     /**
      * Returns a map of validation messages for all the fields in the form.
+     * 
      * @param field The reqired field
      * @return The validation message or an empty string if there is no message.
      */
@@ -252,25 +250,25 @@ public class CreatePlainTextContentPage extends InlineEditPage
         Map<Fields, String> messages = new HashMap<>();
 
         String message = getMessage(NAME);
-        if(message.length() > 0)
+        if (message.length() > 0)
         {
             messages.put(Fields.NAME, message);
         }
 
         message = getMessage(TITLE);
-        if(message.length() > 0)
+        if (message.length() > 0)
         {
             messages.put(Fields.TITLE, message);
         }
 
         message = getMessage(DESCRIPTION);
-        if(message.length() > 0)
+        if (message.length() > 0)
         {
             messages.put(Fields.DESCRIPTION, message);
         }
 
         message = getMessage(CONTENT);
-        if(message.length() > 0)
+        if (message.length() > 0)
         {
             messages.put(Fields.CONTENT, message);
         }
@@ -282,7 +280,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
     {
         String message = getMessage(locator);
 
-        if(message.length() > 0)
+        if (message.length() > 0)
         {
             return true;
         }

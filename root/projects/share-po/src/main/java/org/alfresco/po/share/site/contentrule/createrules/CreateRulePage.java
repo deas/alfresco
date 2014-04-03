@@ -21,7 +21,7 @@ import org.openqa.selenium.support.ui.Select;
 
 /**
  * CreateRulePage page object, holds all element of the HTML page relating to Create Rule Page
- *
+ * 
  * @author Aliaksei Boole
  * @since 1.0
  */
@@ -32,44 +32,33 @@ public class CreateRulePage extends SitePage
     @SuppressWarnings("unused")
     private static boolean isHaveCreatedRules = false;
 
-    //Drop down selects.
-    private static final By WHEN_OPTIONS_SELECT   = By
-            .cssSelector("ul[id$=ruleConfigType-configs] select[class$='config-name']");
-    private static final By IF_OPTIONS_SELECT     = By
-            .cssSelector("ul[id$=ruleConfigIfCondition-configs] select[class$='config-name']");
-    private static final By ACTION_OPTIONS_SELECT = By
-            .cssSelector("ul[id$=ruleConfigAction-configs]>li select[class$='config-name']");
+    // Drop down selects.
+    private static final By WHEN_OPTIONS_SELECT = By.cssSelector("ul[id$=ruleConfigType-configs] select[class$='config-name']");
+    private static final By IF_OPTIONS_SELECT = By.cssSelector("ul[id$=ruleConfigIfCondition-configs] select[class$='config-name']");
+    private static final By ACTION_OPTIONS_SELECT = By.cssSelector("ul[id$=ruleConfigAction-configs]>li select[class$='config-name']");
     @SuppressWarnings("unused")
-    private static final By IF_ERRORS_OCCURS_RUN_SCRIPTS_SELECT = By
-            .xpath("//div[@class='form-field scriptRef']/select[contains(@id,'default-scriptRef')]");
+    private static final By IF_ERRORS_OCCURS_RUN_SCRIPTS_SELECT = By.xpath("//div[@class='form-field scriptRef']/select[contains(@id,'default-scriptRef')]");
 
-    //textField
-    private static final By NAME_FIELD        = By.cssSelector("input[name='title']");
+    // textField
+    private static final By NAME_FIELD = By.cssSelector("input[name='title']");
     private static final By DESCRIPTION_FIELD = By.cssSelector("textarea[name='description']");
 
-    //CheckBoxes
-    private static final By CHECK_BOX_DISABLE            = By
-            .cssSelector("div[class='form-field disabled'] input[title='Disable rule']");
-    private static final By CHECK_BOX_APPLY_TO_SUBFOLDER = By
-            .cssSelector("div[class='form-field applyToChildren'] input[title='Rule applies to subfolders']");
+    // CheckBoxes
+    private static final By CHECK_BOX_DISABLE = By.cssSelector("div[class='form-field disabled'] input[title='Disable rule']");
+    private static final By CHECK_BOX_APPLY_TO_SUBFOLDER = By.cssSelector("div[class='form-field applyToChildren'] input[title='Rule applies to subfolders']");
     private static final By CHECK_BOX_RULE_IN_BACKGROUND = By
             .cssSelector("div[class='form-field executeAsynchronously'] input[title='Run rule in background']");
 
-    //Messages
-    private static final By     BALLOON_TEXT_MESSAGE         = By
-            .cssSelector("div[class='balloon'] div[class='text'] div");
-    public static final  String BALLOON_TEXT_VALUE_NOT_EMPTY = "The value cannot be empty.";
+    // Messages
+    private static final By BALLOON_TEXT_MESSAGE = By.cssSelector("div[class='balloon'] div[class='text'] div");
+    public static final String BALLOON_TEXT_VALUE_NOT_EMPTY = "The value cannot be empty.";
 
-    //Buttons
-    private static final By CANCEL_BUTTON                    = By
-            .cssSelector("span[id*='cancel-button'] button[id*='cancel-button']");
-    private static final By CREATE_BUTTON                    = By
-            .cssSelector("span[id*='create-button'] button[id*='create-button']");
-    private static final By CREATE_AND_CREATE_ANOTHER_BUTTON = By
-            .cssSelector("span[id*='createAnother-button'] button[id*='createAnother-button']");
+    // Buttons
+    private static final By CANCEL_BUTTON = By.cssSelector("span[id*='cancel-button'] button[id*='cancel-button']");
+    private static final By CREATE_BUTTON = By.cssSelector("span[id*='create-button'] button[id*='create-button']");
+    private static final By CREATE_AND_CREATE_ANOTHER_BUTTON = By.cssSelector("span[id*='createAnother-button'] button[id*='createAnother-button']");
 
-    private static final By CREATED_ALERT  = By.xpath(".//*[@id='message']/div/span");
-
+    private static final By CREATED_ALERT = By.xpath(".//*[@id='message']/div/span");
 
     public CreateRulePage(WebDrone drone)
     {
@@ -78,9 +67,7 @@ public class CreateRulePage extends SitePage
 
     public enum Block
     {
-        IF_BLOCK("ul[id$=ruleConfigIfCondition-configs]"),
-        WHEN_BLOCK("ul[id$=ruleConfigType-configs]"),
-        ACTION_BLOCK("ul[id$=ruleConfigAction-configs]");
+        IF_BLOCK("ul[id$=ruleConfigIfCondition-configs]"), WHEN_BLOCK("ul[id$=ruleConfigType-configs]"), ACTION_BLOCK("ul[id$=ruleConfigAction-configs]");
 
         private final By selector;
 
@@ -92,8 +79,7 @@ public class CreateRulePage extends SitePage
 
     public enum AddRemoveAction
     {
-        ADD("span[class*='add-config'] button"),
-        REMOVE("span[class*='remove-config'] button");
+        ADD("span[class*='add-config'] button"), REMOVE("span[class*='remove-config'] button");
 
         private final By actionSelector;
 
@@ -103,15 +89,12 @@ public class CreateRulePage extends SitePage
         }
     }
 
-
     @SuppressWarnings("unchecked")
     @Override
     public CreateRulePage render(RenderTime timer)
     {
-        elementRender(timer,
-                      getVisibleRenderElement(WHEN_OPTIONS_SELECT),
-                      getVisibleRenderElement(IF_OPTIONS_SELECT),
-                      getVisibleRenderElement(ACTION_OPTIONS_SELECT));
+        elementRender(timer, getVisibleRenderElement(WHEN_OPTIONS_SELECT), getVisibleRenderElement(IF_OPTIONS_SELECT),
+                getVisibleRenderElement(ACTION_OPTIONS_SELECT));
         return this;
     }
 
@@ -119,7 +102,7 @@ public class CreateRulePage extends SitePage
     @Override
     public CreateRulePage render()
     {
-        //this page has big render time
+        // this page has big render time
         return render(new RenderTime(maxPageLoadingTime + 20000));
     }
 
@@ -134,7 +117,7 @@ public class CreateRulePage extends SitePage
     {
         WebElement blockElement = drone.findAndWait(block.selector);
         List<WebElement> operationButton = blockElement.findElements(operation.actionSelector);
-        operationButton.get(operationButton.size()-1).click();
+        operationButton.get(operationButton.size() - 1).click();
     }
 
     public WhenSelectorImpl getWhenOptionObj()
@@ -142,7 +125,8 @@ public class CreateRulePage extends SitePage
         return new WhenSelectorImpl(drone);
     }
 
-    public IfErrorEnterpImpl getIfErrorObj() {
+    public IfErrorEnterpImpl getIfErrorObj()
+    {
         return new IfErrorEnterpImpl(drone);
     }
 
@@ -191,7 +175,7 @@ public class CreateRulePage extends SitePage
             inputField.sendKeys(text);
         }
     }
-    
+
     /**
      * Clicks on the checkbox to apply rule for subfolders
      */
@@ -207,7 +191,6 @@ public class CreateRulePage extends SitePage
         runRuleInBackgroundCheckbox.click();
     }
 
-    
     public String getNameFieldText()
     {
         return getTextFromInput(NAME_FIELD);
@@ -249,7 +232,6 @@ public class CreateRulePage extends SitePage
         element.click();
     }
 
-
     public boolean isNameFieldAndDescriptionEmpty()
     {
         WebElement nameFieldText = drone.findAndWait(NAME_FIELD);
@@ -260,8 +242,7 @@ public class CreateRulePage extends SitePage
     public boolean isDefaultSelectsChoiceCorrect()
     {
         Select whenSelect = new Select(drone.findAndWait(WHEN_OPTIONS_SELECT));
-        boolean isWhenDefaultTextCorrect = "Items are created or enter this folder"
-                .equals(whenSelect.getFirstSelectedOption().getText());
+        boolean isWhenDefaultTextCorrect = "Items are created or enter this folder".equals(whenSelect.getFirstSelectedOption().getText());
         Select ifSelect = new Select(drone.findAndWait(IF_OPTIONS_SELECT));
         boolean isIfDefaultTextCorrect = "All Items".equals(ifSelect.getFirstSelectedOption().getText());
         Select actionSelect = new Select(drone.findAndWait(ACTION_OPTIONS_SELECT));
@@ -327,9 +308,7 @@ public class CreateRulePage extends SitePage
         WebElement createButton = drone.findAndWait(CREATE_BUTTON);
         WebElement anotherCreateButton = drone.findAndWait(CREATE_AND_CREATE_ANOTHER_BUTTON);
         WebElement cancelButton = drone.findAndWait(CANCEL_BUTTON);
-        return (isElementEnableAndDisplay(createButton) &&
-                isElementEnableAndDisplay(anotherCreateButton) &&
-                isElementEnableAndDisplay(cancelButton));
+        return (isElementEnableAndDisplay(createButton) && isElementEnableAndDisplay(anotherCreateButton) && isElementEnableAndDisplay(cancelButton));
     }
 
     private boolean isElementEnableAndDisplay(WebElement element)
@@ -344,14 +323,14 @@ public class CreateRulePage extends SitePage
 
     private void waitUntilCreatedAlert()
     {
-        try 
+        try
         {
             drone.waitUntilElementPresent(CREATED_ALERT, 5);
             drone.waitUntilElementDeletedFromDom(CREATED_ALERT, 5);
-        } 
-        catch (TimeoutException ex) 
+        }
+        catch (TimeoutException ex)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Throw exception", ex);
             }
@@ -360,9 +339,7 @@ public class CreateRulePage extends SitePage
 
     public boolean isPageCorrect()
     {
-        return (isButtonsCorrectByDefault() &&
-                isCheckBoxesCorrectByDefault() &&
-                isNameFieldAndDescriptionEmpty());
+        return (isButtonsCorrectByDefault() && isCheckBoxesCorrectByDefault() && isNameFieldAndDescriptionEmpty());
     }
 
     public boolean isBalloonMessageDisplayed(String text)

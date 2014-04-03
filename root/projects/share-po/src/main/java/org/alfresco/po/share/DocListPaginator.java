@@ -85,7 +85,7 @@ public class DocListPaginator
             {
                 // Click the page selector to open the drop down menu
                 pageSelector.click();
-                
+
                 // Compose the selector for the drop down menu
                 String menuId = this.pageSelector.getAttribute("id") + MENU_ELEMENT_SUFFIX;
                 String menuSelector = StringUtils.replace(MENU_ELEMENT_SELECTOR_TEMPLATE, "?", menuId);
@@ -100,7 +100,7 @@ public class DocListPaginator
                     WebElement firstPage = menu.findElement(FIRST_MENU_ROW);
 
                     // First page found - click it
-                    if(TestUtils.usableElement(firstPage))
+                    if (TestUtils.usableElement(firstPage))
                     {
                         firstPage.click();
                     }
@@ -112,16 +112,16 @@ public class DocListPaginator
             catch (TimeoutException te)
             {
             }
-            
+
         }
-        
+
         // Return the resolved page
         return FactorySharePage.resolvePage(drone);
     }
 
     /**
      * Checks if there is a prev page available.
-     *
+     * 
      * @return true, if successful
      */
     public boolean hasPrevPage()
@@ -131,7 +131,7 @@ public class DocListPaginator
 
     /**
      * Gets the previous page button.
-     *
+     * 
      * @return the previous page button
      */
     public WebElement getPrevPageButton()
@@ -175,7 +175,7 @@ public class DocListPaginator
 
     /**
      * Checks if there is a next page available.
-     *
+     * 
      * @return true, if successful
      */
     public boolean hasNextPage()
@@ -185,7 +185,7 @@ public class DocListPaginator
 
     /**
      * Gets the next page button.
-     *
+     * 
      * @return the next page button
      */
     public WebElement getNextPageButton()

@@ -12,9 +12,7 @@ public class WhenSelectorImpl extends AbstractWhenSelector
 {
     private enum WhenOptions
     {
-        INBOUND(0),
-        UPDATE(1),
-        OUTBOUND(2);
+        INBOUND(0), UPDATE(1), OUTBOUND(2);
 
         private final int numberPosition;
 

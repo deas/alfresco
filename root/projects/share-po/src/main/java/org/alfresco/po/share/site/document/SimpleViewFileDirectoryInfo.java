@@ -1,18 +1,14 @@
 /*
-* Copyright (C) 2005-2014 Alfresco Software Limited.
- *
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,7 +22,6 @@ import org.openqa.selenium.WebElement;
 
 /**
  * @author cbairaajoni
- *
  */
 public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
 {
@@ -37,17 +32,19 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
         rowElementXPath = "../../..";
         resolveStaleness();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getDescription()
      */
     @Override
     public String getDescription()
     {
-       throw new UnsupportedOperationException("Description is not available in Simple View File Directory Info.");
+        throw new UnsupportedOperationException("Description is not available in Simple View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#addTag(java.lang.String)
      */
     @Override
@@ -55,8 +52,9 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("Adding Tag functionality is not available in Simple View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getTags()
      */
     @Override
@@ -65,7 +63,8 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
         throw new UnsupportedOperationException("Tags are not available in Simple View File Directory Info.");
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickOnAddTag()
      */
     @Override
@@ -74,7 +73,8 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
         throw new UnsupportedOperationException("Add Tag icon is not available in Simple View File Directory Info.");
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickOnTagRemoveButton(java.lang.String)
      */
     @Override
@@ -83,7 +83,8 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
         throw new UnsupportedOperationException("Remove Tag icon is not available in Simple View File Directory Info.");
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickOnTagSaveButton()
      */
     @Override
@@ -92,7 +93,8 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
         throw new UnsupportedOperationException("Saving Tag functionality is not available in Simple View File Directory Info.");
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickOnTagCancelButton()
      */
     @Override
@@ -100,8 +102,9 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("Cancelling Tag functionality is not available in Simple View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectFavourite()
      */
     @Override
@@ -110,7 +113,8 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
         throw new UnsupportedOperationException("Favourite selection is not available in Simple View File Directory Info.");
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectLike()
      */
     @Override
@@ -119,7 +123,8 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
         throw new UnsupportedOperationException("Selecting Like functionality is not available in Simple View File Directory Info.");
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isLiked()
      */
     @Override
@@ -128,7 +133,8 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
         throw new UnsupportedOperationException("Like functionality is not available in Simple View File Directory Info.");
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#isFavourite()
      */
     @Override
@@ -137,7 +143,8 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
         throw new UnsupportedOperationException("Favourites are not available in Simple View File Directory Info.");
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getLikeCount()
      */
     @Override
@@ -145,8 +152,9 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("Cancelling Tag functionality is not available in Simple View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getCategories()
      */
     @Override
@@ -154,8 +162,9 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("Categories are not available in Simple View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickShareLink()
      */
     @Override
@@ -163,16 +172,18 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("ShareLink is not available in Simple View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickOnCategoryNameLink(java.lang.String)
      */
     public DocumentLibraryPage clickOnCategoryNameLink(String categoryName)
     {
         throw new UnsupportedOperationException("ShareLink is not available in Simple View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#clickCommentsLink()
      */
     @Override
@@ -180,8 +191,9 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("CommentsLink is not available in Simple View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#getCommentsToolTip()
      */
     @Override
@@ -189,8 +201,9 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("CommentsToolTip is not available in Simple View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#getCommentsCount()
      */
     @Override
@@ -198,8 +211,9 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("Comments Count is not available in Simple View File Directory Info.");
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isCommentLinkPresent()
      */
     @Override

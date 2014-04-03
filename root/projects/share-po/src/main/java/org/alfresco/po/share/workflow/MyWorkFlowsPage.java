@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -64,9 +60,10 @@ public class MyWorkFlowsPage extends SharePage
     private RenderElement loadingElement = new RenderElement(By.cssSelector(".yui-dt-loading"), ElementState.INVISIBLE);
     private RenderElement startWorkFlowButtonRender = RenderElement.getVisibleRenderElement(START_WORKFLOW_BUTTON);
     private RenderElement content = new RenderElement(By.cssSelector("div.yui-dt-liner"), ElementState.PRESENT);
+
     /**
      * Constructor.
-     *
+     * 
      * @param drone
      *            WebDriver to access page
      */
@@ -99,7 +96,7 @@ public class MyWorkFlowsPage extends SharePage
 
     /**
      * Verify if people finder title is present on the page
-     *
+     * 
      * @return true if exists
      */
     protected boolean isTitlePresent()
@@ -109,7 +106,7 @@ public class MyWorkFlowsPage extends SharePage
 
     /**
      * Clicks on Start workflow button.
-     *
+     * 
      * @return {@link org.alfresco.webdrone.share.workflow.StartWorkFlowPage}
      */
     public HtmlPage selectStartWorkflowButton()
@@ -132,7 +129,7 @@ public class MyWorkFlowsPage extends SharePage
      */
     private List<WebElement> findWorkFlowRow(String workFlowName)
     {
-        if(StringUtils.isEmpty(workFlowName))
+        if (StringUtils.isEmpty(workFlowName))
         {
             throw new IllegalArgumentException("Workflow Name can't be empty");
         }
@@ -145,8 +142,9 @@ public class MyWorkFlowsPage extends SharePage
             {
                 for (WebElement workFlowRow : workFlowRows)
                 {
-                    
-                    if (StringUtils.deleteWhitespace(workFlowName).equals(StringUtils.deleteWhitespace(workFlowRow.findElement(By.cssSelector("h3 a")).getText())))
+
+                    if (StringUtils.deleteWhitespace(workFlowName).equals(
+                            StringUtils.deleteWhitespace(workFlowRow.findElement(By.cssSelector("h3 a")).getText())))
                     {
                         workflowRowsElements.add(workFlowRow);
                     }
@@ -155,7 +153,7 @@ public class MyWorkFlowsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("No workflow found", nse);
             }
@@ -168,17 +166,18 @@ public class MyWorkFlowsPage extends SharePage
 
     /**
      * Method to get workflow details for a given workflow
+     * 
      * @param workFlowName
      * @return {@link WorkFlowDetails}
      */
     public List<WorkFlowDetails> getWorkFlowDetails(String workFlowName)
     {
-        if(StringUtils.isEmpty(workFlowName))
+        if (StringUtils.isEmpty(workFlowName))
         {
             throw new IllegalArgumentException("Workflow Name cannot be null");
         }
         List<WebElement> workFlowRow = findWorkFlowRow(workFlowName);
-        if(workFlowRow.size() > 0)
+        if (workFlowRow.size() > 0)
         {
             List<WorkFlowDetails> workFlowDetailsList = new ArrayList<WorkFlowDetails>();
             for (WebElement workflow : workFlowRow)
@@ -192,7 +191,7 @@ public class MyWorkFlowsPage extends SharePage
 
                 try
                 {
-                    if(workflow.findElement(By.cssSelector("div[class^='started']>span")).isDisplayed())
+                    if (workflow.findElement(By.cssSelector("div[class^='started']>span")).isDisplayed())
                     {
                         workFlowDetails.setEndDate(workflow.findElement(By.cssSelector("div[class^='ended']>span")).getText());
                     }
@@ -211,27 +210,28 @@ public class MyWorkFlowsPage extends SharePage
 
     /**
      * Method to select a given WorkFlow
+     * 
      * @param workFlowName
      * @return
      */
     public HtmlPage selectWorkFlow(String workFlowName)
     {
-        if(StringUtils.isEmpty(workFlowName))
+        if (StringUtils.isEmpty(workFlowName))
         {
             throw new IllegalArgumentException("Workflow Name cannot be null");
         }
         List<WebElement> workFlowRow = findWorkFlowRow(workFlowName);
 
-        if(workFlowRow.size() == 0)
+        if (workFlowRow.size() == 0)
         {
             throw new PageException("No WorkFlows exists with name: " + workFlowName);
         }
-        else if(workFlowRow.size() == 1)
+        else if (workFlowRow.size() == 1)
         {
             workFlowRow.get(0).findElement(By.cssSelector("td.yui-dt-col-title>div.yui-dt-liner>h3>a[title='View History']")).click();
             return FactorySharePage.resolvePage(drone);
         }
-        else if(workFlowRow.size() > 1)
+        else if (workFlowRow.size() > 1)
         {
             throw new PageException("More than 1 WorkFlows exists with name: " + workFlowName);
         }
@@ -241,12 +241,13 @@ public class MyWorkFlowsPage extends SharePage
 
     /**
      * Method to check if a given workflow is displayed in MyWorkFlows page
+     * 
      * @param workFlowName
      * @return True if workflow exists
      */
     public boolean isWorkFlowPresent(String workFlowName)
     {
-        if(StringUtils.isEmpty(workFlowName))
+        if (StringUtils.isEmpty(workFlowName))
         {
             throw new IllegalArgumentException("Work flow name is required");
         }
@@ -256,12 +257,15 @@ public class MyWorkFlowsPage extends SharePage
             WebElement workFlowRow = drone.findAndWait(By.xpath(xpathExpression));
             return workFlowRow.isDisplayed();
         }
-        catch (Exception e){ }
+        catch (Exception e)
+        {
+        }
         return false;
     }
 
     /**
      * Method to get the page subtitle (Active workflows, Completed workflows etc)
+     * 
      * @return
      */
     public String getSubTitle()
@@ -278,7 +282,7 @@ public class MyWorkFlowsPage extends SharePage
 
     /**
      * Clicks on Active WorkFlows link.
-     *
+     * 
      * @return {@link MyWorkFlowsPage}
      */
     public HtmlPage selectActiveWorkFlows()
@@ -290,7 +294,7 @@ public class MyWorkFlowsPage extends SharePage
 
     /**
      * Clicks on Active WorkFlows link.
-     *
+     * 
      * @return {@link MyWorkFlowsPage}
      */
     public HtmlPage selectCompletedWorkFlows()
@@ -302,27 +306,28 @@ public class MyWorkFlowsPage extends SharePage
 
     /**
      * Method to cancel given workflow. If more than one workflow found, cancel all workflows.
+     * 
      * @param workFlowName
      */
     public HtmlPage cancelWorkFlow(String workFlowName)
     {
         List<WebElement> workFlowRow = findWorkFlowRow(workFlowName);
-        if(workFlowRow.size() < 1)
+        if (workFlowRow.size() < 1)
         {
             throw new PageException("No workflows found with name: " + workFlowName);
         }
         try
         {
-            for (int i=(workFlowRow.size()-1); i>=0; i--)
+            for (int i = (workFlowRow.size() - 1); i >= 0; i--)
             {
                 workFlowRow = findWorkFlowRow(workFlowName);
                 drone.mouseOverOnElement(workFlowRow.get(i));
                 workFlowRow.get(i).findElement(By.cssSelector("td.yui-dt-last>div.yui-dt-liner>div.workflow-cancel-link>a>span")).click();
                 drone.waitForElement(By.cssSelector("div#prompt"), TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
                 List<WebElement> buttons = drone.findAll(By.cssSelector("div#prompt>div.ft>span.button-group>span.yui-button>span.first-child>button"));
-                for(WebElement button: buttons)
+                for (WebElement button : buttons)
                 {
-                    if(button.getText().equals("Yes"))
+                    if (button.getText().equals("Yes"))
                     {
                         button.click();
                         drone.waitUntilElementPresent(By.cssSelector("div#message>div.bd>span"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
@@ -341,30 +346,31 @@ public class MyWorkFlowsPage extends SharePage
 
     /**
      * Method to delete given workflow. If more than one workflow found, delete all workflows.
+     * 
      * @param workFlowName
      */
     public void deleteWorkFlow(String workFlowName)
     {
-        if(StringUtils.isEmpty(workFlowName))
+        if (StringUtils.isEmpty(workFlowName))
         {
             throw new IllegalArgumentException("Workflow Name cannot be null");
         }
         List<WebElement> workFlowRow = findWorkFlowRow(workFlowName);
-        if(workFlowRow.size() < 1)
+        if (workFlowRow.size() < 1)
         {
             throw new PageException("No workflows found with name: " + workFlowName);
         }
         try
         {
-            for (WebElement workFlow: workFlowRow)
+            for (WebElement workFlow : workFlowRow)
             {
                 drone.mouseOverOnElement(workFlow);
                 workFlow.findElement(By.cssSelector("td.yui-dt-last>div.yui-dt-liner>div.workflow-delete-link>a")).click();
                 drone.waitForElement(By.cssSelector("div#prompt"), TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
                 List<WebElement> buttons = drone.findAll(By.cssSelector("div#prompt>div.ft>span.button-group>span.yui-button>span.first-child>button"));
-                for(WebElement button: buttons)
+                for (WebElement button : buttons)
                 {
-                    if(button.getText().equals("Yes"))
+                    if (button.getText().equals("Yes"))
                     {
                         button.click();
                         break;
@@ -376,6 +382,8 @@ public class MyWorkFlowsPage extends SharePage
         {
             throw new PageException("Cancel workflow link doesn't exists for workflow: " + workFlowName, nse);
         }
-        catch (NoSuchElementException nse) { }
+        catch (NoSuchElementException nse)
+        {
+        }
     }
 }

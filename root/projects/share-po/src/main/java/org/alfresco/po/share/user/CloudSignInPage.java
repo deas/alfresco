@@ -1,19 +1,16 @@
 package org.alfresco.po.share.user;
+
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -35,10 +32,9 @@ import org.openqa.selenium.WebElement;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-
 /**
  * User Cloud SignIn page object holds all elements of HTML page objects relating to Cloud Sync connect page.
- *
+ * 
  * @author Siva Kaliyappan
  * @since 1.6.2
  */
@@ -53,10 +49,10 @@ public class CloudSignInPage extends SharePage
     private static final By SIGN_UP_LINK = By.cssSelector("a.theme-color-1:first-of-type");
     private static final By FORGOT_PASSWORD_LINK = By.cssSelector("a[href$='forgot-password']");
     private final Log logger = LogFactory.getLog(CloudSignInPage.class);
-    
+
     /**
      * Constructor.
-     *
+     * 
      * @param drone WebDriver to access page
      */
     public CloudSignInPage(WebDrone drone)
@@ -87,10 +83,10 @@ public class CloudSignInPage extends SharePage
 
     }
 
-     /**
+    /**
      * Logs user into the site by first finding the login panel,populating the
      * fields and submitting the form.
-     *
+     * 
      * @param username String username value
      * @param password String password value
      * @return true if exists
@@ -112,7 +108,7 @@ public class CloudSignInPage extends SharePage
         drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         try
         {
-            if(isDisconnectButtonDisplayed())
+            if (isDisconnectButtonDisplayed())
             {
                 return new CloudSyncPage(drone);
             }
@@ -129,7 +125,7 @@ public class CloudSignInPage extends SharePage
 
     /**
      * Returns true if Disconnect Button is displayed
-     *
+     * 
      * @return boolean
      */
     public boolean isDisconnectButtonDisplayed()
@@ -142,7 +138,7 @@ public class CloudSignInPage extends SharePage
         {
             try
             {
-                if(drone.find(By.cssSelector("button[id$='default-button-delete-button']")).isDisplayed())
+                if (drone.find(By.cssSelector("button[id$='default-button-delete-button']")).isDisplayed())
                 {
                     return true;
                 }
@@ -165,19 +161,22 @@ public class CloudSignInPage extends SharePage
             catch (StaleElementReferenceException se)
             {
             }
-            
+
             try
             {
                 return !drone.find(By.cssSelector("div[id$='cloudDestination-cloud-folder-treeview']")).isDisplayed();
             }
-            catch (NoSuchElementException nse) {}
-            catch (StaleElementReferenceException se) {}
+            catch (NoSuchElementException nse)
+            {
+            }
+            catch (StaleElementReferenceException se)
+            {
+            }
             time.end();
             continue;
         }
 
     }
-
 
     public void selectCancelButton()
     {
@@ -200,7 +199,7 @@ public class CloudSignInPage extends SharePage
     {
         drone.findAndWait(FORGOT_PASSWORD_LINK).click();
     }
-    
+
     /**
      * Method to get the Cloud SignIn page dialog header
      * 
@@ -208,14 +207,15 @@ public class CloudSignInPage extends SharePage
      */
 
     @Override
-    public String getPageTitle() {
+    public String getPageTitle()
+    {
         try
         {
             return drone.findAndWait(SIGN_IN_HEADER).getText();
         }
         catch (TimeoutException e)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Error getting the title");
             }
@@ -225,6 +225,7 @@ public class CloudSignInPage extends SharePage
 
     /**
      * Verify if the Forgot Password Link is displayed
+     * 
      * @return true if the link displayed else false.
      */
     public boolean isForgotPasswordLinkDisplayed()
@@ -235,7 +236,7 @@ public class CloudSignInPage extends SharePage
         }
         catch (NoSuchElementException e)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Forgot password link is not visible", e);
             }
@@ -245,6 +246,7 @@ public class CloudSignInPage extends SharePage
 
     /**
      * Method to get Forgot password link URL
+     * 
      * @return
      */
     public String getForgotPasswordURL()
@@ -255,7 +257,7 @@ public class CloudSignInPage extends SharePage
         }
         catch (TimeoutException e)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Forgot password link is not visible", e);
             }

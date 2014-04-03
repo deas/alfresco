@@ -1,29 +1,26 @@
 package org.alfresco.po.share.workflow;
+
 /*
-* Copyright (C) 2005-2013 Alfresco Software Limited.
-*
-* This file is part of Alfresco
-*
-* Alfresco is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* Alfresco is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * This file is part of Alfresco
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 
 /**
- * This enum holda the task type details needed for workflow form  P
- *
+ * This enum holda the task type details needed for workflow form P
+ * 
  * @author Siva Kaliyappan
  * @since 1.6.2
  */
@@ -32,7 +29,7 @@ public enum TaskType
 
     SIMPLE_CLOUD_TASK(By.cssSelector("option[value='task']"), "Simple Cloud Task"),
     CLOUD_REVIEW_TASK(By.cssSelector("option[value='review']"), "Cloud Review Task");
-    
+
     public By getSelector()
     {
         return selector;
@@ -54,13 +51,13 @@ public enum TaskType
 
     /**
      * Returns {@link TaskType} based on given value.
-     *
+     * 
      * @param value
      * @return {@link TaskType}
      */
     public static TaskType getTaskType(String value)
     {
-        if(StringUtils.isEmpty(value))
+        if (StringUtils.isEmpty(value))
         {
             throw new IllegalArgumentException("Value can't be empty or null.");
         }
@@ -74,5 +71,3 @@ public enum TaskType
         throw new IllegalArgumentException("Invalid Tasktype Value: " + value);
     }
 }
-
-

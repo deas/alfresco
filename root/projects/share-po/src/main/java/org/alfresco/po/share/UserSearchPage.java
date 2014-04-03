@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -46,7 +42,7 @@ public class UserSearchPage extends SharePage
     private static final String USER_SEARCH_RESULTS_ROW = "tbody.yui-dt-data > tr";
     private static final String USER_SEARCH_RESULTS_STATUS = "div[id$='default-search-bar']";
     private static final By ERROR_MESSAGE = By.cssSelector("div.yui-dialog>div>div.bd>span.message");
-    
+
     /**
      * Constructor.
      * 
@@ -61,22 +57,30 @@ public class UserSearchPage extends SharePage
     @Override
     public UserSearchPage render(RenderTime timer)
     {
-        while(true)
+        while (true)
         {
             timer.start();
             synchronized (this)
             {
-                try{ this.wait(100L); } catch (InterruptedException e) {}
+                try
+                {
+                    this.wait(100L);
+                }
+                catch (InterruptedException e)
+                {
+                }
             }
             try
             {
-                if(isSearchComplete() && !isMessageDisplayed())
+                if (isSearchComplete() && !isMessageDisplayed())
                 {
                     break;
                 }
             }
-            catch (NoSuchElementException nse) { }
-        	timer.end();
+            catch (NoSuchElementException nse)
+            {
+            }
+            timer.end();
         }
         return this;
     }
@@ -87,14 +91,14 @@ public class UserSearchPage extends SharePage
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public UserSearchPage render(final long time)
     {
         return render(new RenderTime(time));
     }
-         
+
     /**
      * Verify if Admin Console title is present on the page
      * 
@@ -104,20 +108,22 @@ public class UserSearchPage extends SharePage
     {
         return isBrowserTitle("Admin Console");
     }
+
     /**
      * Completes the search form on the user
      * finders page.
+     * 
      * @param user String name
      * @return UserSearchPage page response
      */
     public UserSearchPage searchFor(final String user)
     {
-        //Null check
-        if(user == null)
+        // Null check
+        if (user == null)
         {
             throw new UnsupportedOperationException("user name is required");
         }
-        
+
         WebElement input = drone.findAndWait(By.cssSelector(USER_SEARCH_BOX));
         input.clear();
         input.sendKeys(user);
@@ -125,9 +131,10 @@ public class UserSearchPage extends SharePage
         button.click();
         return new UserSearchPage(drone);
     }
-    
+
     /**
      * Checks if the search is complete by waiting for text 'Searching for' to dissapear.
+     * 
      * @return true if search is complete
      */
     protected boolean isSearchComplete()
@@ -135,15 +142,18 @@ public class UserSearchPage extends SharePage
         boolean searchComplete = false;
         try
         {
-            WebElement element = drone.find(By.cssSelector(USER_SEARCH_RESULTS_STATUS)); 
+            WebElement element = drone.find(By.cssSelector(USER_SEARCH_RESULTS_STATUS));
             searchComplete = !element.getText().contains("Searching for");
         }
-        catch (NoSuchElementException te){ }
+        catch (NoSuchElementException te)
+        {
+        }
         return searchComplete;
     }
-    
+
     /**
      * Checks if results table is displayed
+     * 
      * @return true if visible
      */
     private synchronized boolean isResultRowDisplayed()
@@ -176,6 +186,7 @@ public class UserSearchPage extends SharePage
         }
         return message;
     }
+
     /**
      * Checks if no result message is displayed.
      * 
@@ -186,12 +197,12 @@ public class UserSearchPage extends SharePage
         boolean hasResults = false;
         try
         {
-            //Search for 0 results message
+            // Search for 0 results message
             String message = getResultsStatus();
-            if(message != null)
+            if (message != null)
             {
                 hasResults = !(message.endsWith("found 0 results.") || message.equals("No Results."));
-                if(hasResults)
+                if (hasResults)
                 {
                     hasResults = isResultRowDisplayed();
                 }
@@ -202,7 +213,7 @@ public class UserSearchPage extends SharePage
         }
         return hasResults;
     }
-    
+
     /**
      * Clicks on New User button to invoke New User Page.
      * 
@@ -221,7 +232,7 @@ public class UserSearchPage extends SharePage
         }
         throw new PageException("Not able to find the New User Link.");
     }
-    
+
     /**
      * Clicks on Upload User CSV File Button.
      * 
@@ -234,17 +245,20 @@ public class UserSearchPage extends SharePage
             WebElement button = drone.find(By.cssSelector(UPLOAD_USER_CSV_BUTTON));
             button.click();
         }
-        catch (NoSuchElementException te){}
+        catch (NoSuchElementException te)
+        {
+        }
         return new UploadFilePage(drone);
     }
-    
+
     /**
      * Check if javascript message about successful user creation is displayed.
+     * 
      * @return true if message displayed
      */
     protected boolean isMessageDisplayed()
     {
-        try 
+        try
         {
             return drone.find(By.cssSelector("span.message")).isDisplayed();
         }
@@ -257,10 +271,11 @@ public class UserSearchPage extends SharePage
             drone.refresh();
             return isMessageDisplayed();
         }
-    }   
-    
+    }
+
     /**
      * Check if javascript message about empty user search string is displayed.
+     * 
      * @return true if error message displayed
      */
     protected boolean isErrorDisplayed()
@@ -272,7 +287,7 @@ public class UserSearchPage extends SharePage
             if (errMessage != null && errMessage.isDisplayed())
             {
                 errMessage.getText().equals("Enter at least 1 character(s)");
-                drone.waitUntilElementDisappears(ERROR_MESSAGE, (WAIT_TIME_3000)/1000);
+                drone.waitUntilElementDisappears(ERROR_MESSAGE, (WAIT_TIME_3000) / 1000);
                 return true;
             }
         }
@@ -282,7 +297,7 @@ public class UserSearchPage extends SharePage
         }
         return false;
     }
-    
+
     /**
      * Clicks on given userName present in userSearch List and it opens the User profile page.
      * 
@@ -290,17 +305,19 @@ public class UserSearchPage extends SharePage
      */
     public UserProfilePage clickOnUser(String userName)
     {
-        if(StringUtils.isEmpty(userName))
+        if (StringUtils.isEmpty(userName))
         {
             throw new IllegalArgumentException("user name is required");
         }
-        
+
         try
         {
             drone.findAndWait(By.partialLinkText(userName)).click();
             return new UserProfilePage(drone);
         }
-        catch (TimeoutException te) { }
+        catch (TimeoutException te)
+        {
+        }
         throw new PageException("Unable to find the userName to open the userProfie Page for : " + userName);
     }
 }

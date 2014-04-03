@@ -1,22 +1,19 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share.site;
+
 import static org.alfresco.po.share.AlfrescoVersion.Enterprise41;
 
 import java.util.List;
@@ -45,6 +42,7 @@ public class SiteNavigation extends AbstractSiteNavigation
     protected final By moreButton;
     private final String documentLibLink;
     private final By customizeDashboardLink;
+
     /**
      * Constructor.
      */
@@ -52,28 +50,27 @@ public class SiteNavigation extends AbstractSiteNavigation
     {
         super(drone);
         siteMembersCSS = drone.getElement("site.members");
-        documentLibLink = getAlfrescoVersion().isDojoSupported() ? LABEL_DOCUMENTLIBRARY_PLACEHOLDER: String.format(SITE_LINK_NAV_PLACEHOLER,3);
-        customizeDashboardLink =  getAlfrescoVersion().isDojoSupported() ? By.id("HEADER_CUSTOMIZE_SITE_DASHBOARD_text") : CUSTOMISE_DASHBOARD_BTN;
+        documentLibLink = getAlfrescoVersion().isDojoSupported() ? LABEL_DOCUMENTLIBRARY_PLACEHOLDER : String.format(SITE_LINK_NAV_PLACEHOLER, 3);
+        customizeDashboardLink = getAlfrescoVersion().isDojoSupported() ? By.id("HEADER_CUSTOMIZE_SITE_DASHBOARD_text") : CUSTOMISE_DASHBOARD_BTN;
         moreButton = getAlfrescoVersion().isDojoSupported() ? By.cssSelector("span.alf-menu-arrow") : By.cssSelector("button[id$='_default-more-button']");
     }
 
     /**
      * Mimics the action of selecting the site
-     * 
      * project library link.
      * 
      * @return HtmlPage site document lib page object
      */
     public HtmlPage selectSiteProjectLibrary()
     {
-        if(getAlfrescoVersion().isDojoSupported())
+        if (getAlfrescoVersion().isDojoSupported())
         {
             extractLink(PROJECT_LIBRARY).click();
             return new DocumentLibraryPage(getDrone());
         }
         return select(PROJECT_LIBRARY);
     }
-    
+
     /**
      * Mimics the action of selecting the site
      * document library link.
@@ -82,16 +79,16 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public HtmlPage selectSiteDocumentLibrary()
     {
-        if(getAlfrescoVersion().isDojoSupported())
+        if (getAlfrescoVersion().isDojoSupported())
         {
-            //  extractLink(drone.getLanguageValue("document.library")).click();
+            // extractLink(drone.getLanguageValue("document.library")).click();
             extractLink(DOCUMENT_LIBRARY).click();
             return new DocumentLibraryPage(getDrone());
         }
         // return drone.getLanguageValue("document.library");
         return select(DOCUMENT_LIBRARY);
     }
-    
+
     /**
      * Mimics the action of selecting the site
      * document library link.
@@ -100,13 +97,14 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public HtmlPage selectSiteWikiPage()
     {
-        if(getAlfrescoVersion().isDojoSupported())
+        if (getAlfrescoVersion().isDojoSupported())
         {
             extractLink(WIKI).click();
             return new DocumentLibraryPage(getDrone());
         }
         return select(WIKI);
     }
+
     /**
      * Mimcs the action of selecting on the configuration
      * drop down that has been introduced in Alfresco Enterprise 4.2
@@ -115,20 +113,20 @@ public class SiteNavigation extends AbstractSiteNavigation
     {
         findElement(CONFIGURATION_DROPDOWN).click();
     }
-    
+
     /**
      * Mimics the action clicking the configure button.
      * This Features available only in the Enterprise 4.2 and Cloud 2.
      */
     public void selectConfigure()
     {
-        if(AlfrescoVersion.Enterprise41.equals(getAlfrescoVersion()))
+        if (AlfrescoVersion.Enterprise41.equals(getAlfrescoVersion()))
         {
-           throw new UnsupportedOperationException("It is not supported for this version of Alfresco : " + getAlfrescoVersion()); 
+            throw new UnsupportedOperationException("It is not supported for this version of Alfresco : " + getAlfrescoVersion());
         }
         findAndWait(CONFIGURE_ICON).click();
     }
-    
+
     /**
      * Mimics the action of clicking more button.
      */
@@ -136,30 +134,31 @@ public class SiteNavigation extends AbstractSiteNavigation
     {
         findElement(moreButton).click();
     }
-    
+
     /**
      * Mimics the action of clicking the Customize Site.
      * This features is not available in the cloud.
+     * 
      * @return {@link CustomizeSitePage}
      */
     public CustomizeSitePage selectCustomizeSite()
     {
         try
         {
-            if(Enterprise41.equals(getAlfrescoVersion()))
+            if (Enterprise41.equals(getAlfrescoVersion()))
             {
                 selectMore();
                 List<WebElement> elements = findAllWithWait(MORE_BUTTON_LINK);
                 for (WebElement webElement : elements)
                 {
                     ShareLink link = new ShareLink(webElement, getDrone());
-                    if(CUSTOMIZE_LINK_TEXT.equalsIgnoreCase(link.getDescription()))
+                    if (CUSTOMIZE_LINK_TEXT.equalsIgnoreCase(link.getDescription()))
                     {
                         link.click();
                         break;
                     }
                 }
-            } 
+            }
             else
             {
                 selectConfigure();
@@ -167,29 +166,30 @@ public class SiteNavigation extends AbstractSiteNavigation
             }
             return new CustomizeSitePage(getDrone());
         }
-        catch (TimeoutException te) { }
+        catch (TimeoutException te)
+        {
+        }
         throw new PageException("Not able to find Customize Site Link.");
     }
-    
+
     /**
-     * 
      * @return {@link CustomiseSiteDashboardPage}
      */
     public CustomiseSiteDashboardPage selectCustomizeDashboard()
     {
-        if(getAlfrescoVersion().isDojoSupported())
+        if (getAlfrescoVersion().isDojoSupported())
         {
             selectConfigurationDropdown();
         }
         find(customizeDashboardLink).click();
         return new CustomiseSiteDashboardPage(getDrone());
-        
+
     }
-    
+
     private WebElement extractLink(final String title)
     {
         List<WebElement> list;
-        if(AlfrescoVersion.Cloud2 == getAlfrescoVersion())
+        if (AlfrescoVersion.Cloud2 == getAlfrescoVersion())
         {
             list = findElements(By.cssSelector("span"));
         }
@@ -197,10 +197,10 @@ public class SiteNavigation extends AbstractSiteNavigation
         {
             list = findElements(By.cssSelector("span.alf-menu-bar-label-node"));
         }
-        for(WebElement element : list)
+        for (WebElement element : list)
         {
             String name = element.getText();
-            if(title.equalsIgnoreCase(name))
+            if (title.equalsIgnoreCase(name))
             {
                 return element;
             }
@@ -210,11 +210,12 @@ public class SiteNavigation extends AbstractSiteNavigation
 
     /**
      * Selects on edit site details link.
+     * 
      * @return {@link HtmlPage} page response
      */
     public HtmlPage selectEditSite()
     {
-        if(getAlfrescoVersion().isDojoSupported())
+        if (getAlfrescoVersion().isDojoSupported())
         {
             selectConfigurationDropdown();
             find(By.id("HEADER_EDIT_SITE_DETAILS_text")).click();
@@ -245,8 +246,8 @@ public class SiteNavigation extends AbstractSiteNavigation
         {
             throw new PageException("Unable to find the InviteMembersPage.", e);
         }
-   }
-    
+    }
+
     /**
      * This method returns the MembersPage object.
      * 
@@ -256,7 +257,7 @@ public class SiteNavigation extends AbstractSiteNavigation
     {
         try
         {
-            if(Enterprise41 == getAlfrescoVersion())
+            if (Enterprise41 == getAlfrescoVersion())
             {
                 findElement(By.cssSelector(INVITE_BUTTON)).click();
             }
@@ -264,14 +265,14 @@ public class SiteNavigation extends AbstractSiteNavigation
             {
                 drone.findAndWait(By.cssSelector(".alf-user-icon")).click();
             }
-        } 
+        }
         catch (TimeoutException e)
         {
             throw new PageException("Unable to find the InviteMembersPage.", e);
         }
         return new InviteMembersPage(getDrone());
     }
-    
+
     /**
      * Check if the site navigation has document library link highlighted.
      * 

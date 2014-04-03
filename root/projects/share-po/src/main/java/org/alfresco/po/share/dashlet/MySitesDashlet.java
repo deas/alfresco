@@ -97,6 +97,7 @@ public class MySitesDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Render logic to determine if loaded and ready for use.
+     * 
      * @param timer - {@link RenderTime}
      * @param waitForLoading boolean to whether check for waiting for Loading text to disappear.
      * @return {@link MySitesDashlet}
@@ -128,7 +129,9 @@ public class MySitesDashlet extends AbstractDashlet implements Dashlet
                     }
 
                 }
-                catch (NoSuchElementException e){ }
+                catch (NoSuchElementException e)
+                {
+                }
                 finally
                 {
                     timer.end();
@@ -160,8 +163,8 @@ public class MySitesDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Checks the site is favourite.
-     * @param siteName Site Name checked for is in Favourite.
      * 
+     * @param siteName Site Name checked for is in Favourite.
      * @return
      */
     public boolean isSiteFavourite(String siteName)

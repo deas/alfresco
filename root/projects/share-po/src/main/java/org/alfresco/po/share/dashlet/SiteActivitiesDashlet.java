@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -43,7 +39,7 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
     private List<ShareLink> userLinks;
     private List<ShareLink> documetLinks;
     private List<String> activityDescriptions;
-    
+
     /**
      * Constructor.
      */
@@ -57,16 +53,18 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public SiteActivitiesDashlet render(final long time)
     {
         return render(new RenderTime(time));
     }
+
     /**
      * Populates all the possible links that appear on the dashlet
      * data view, the links are of user, document or site.
+     * 
      * @param selector css placeholder for the dashlet data
      */
     private synchronized void populateData()
@@ -77,26 +75,28 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
         try
         {
             List<WebElement> links = drone.findAll(By.cssSelector("div[id$='default-activityList'] > div.activity"));
-            for(WebElement div:links)
+            for (WebElement div : links)
             {
                 WebElement userLink = div.findElement(By.cssSelector("a:nth-of-type(1)"));
                 userLinks.add(new ShareLink(userLink, drone));
 
                 WebElement documentLink = div.findElement(By.cssSelector("a:nth-of-type(2)"));
                 documetLinks.add(new ShareLink(documentLink, drone));
-                
+
                 WebElement desc = div.findElement(By.cssSelector("div.content>span.detail"));
                 activityDescriptions.add(desc.getText());
             }
         }
-        catch (NoSuchElementException nse) 
+        catch (NoSuchElementException nse)
         {
-            throw new PageException("Unable to access dashlet data" , nse);
+            throw new PageException("Unable to access dashlet data", nse);
         }
     }
+
     /**
-     * Selects the document link on the activity that appears on my activities dashlet 
+     * Selects the document link on the activity that appears on my activities dashlet
      * by matching the name to the link.
+     * 
      * @param name identifier
      * @return {@link ShareLink} target link
      */
@@ -104,9 +104,11 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
     {
         return selectLink(name, LinkType.Document);
     }
+
     /**
-     * Selects the user link on an activity that appears on my activities dashlet 
+     * Selects the user link on an activity that appears on my activities dashlet
      * by matching the name to the link.
+     * 
      * @param name identifier
      * @return {@link ShareLink} target link
      */
@@ -114,81 +116,95 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
     {
         return selectLink(name, LinkType.User);
     }
+
     /**
      * Find the match and selects on the link.
+     * 
      * @param name identifier to match against link title
      * @param enum that determines document, site or user type link
      */
     private synchronized ShareLink selectLink(final String name, LinkType type)
     {
-        if(name == null) { throw new UnsupportedOperationException("Name value of link is required");}
-        if(userLinks == null || documetLinks == null)
+        if (name == null)
+        {
+            throw new UnsupportedOperationException("Name value of link is required");
+        }
+        if (userLinks == null || documetLinks == null)
         {
             populateData();
         }
         switch (type)
         {
-            case Document: return extractLink(name, documetLinks);
-            case User: return extractLink(name, userLinks);
-            default: throw new IllegalArgumentException("Invalid link type specified");
+            case Document:
+                return extractLink(name, documetLinks);
+            case User:
+                return extractLink(name, userLinks);
+            default:
+                throw new IllegalArgumentException("Invalid link type specified");
         }
     }
+
     /**
      * Extracts the link from the ShareLink List that matches
      * the title.
+     * 
      * @param name Title identifier
      * @param list Collection of ShareList
      * @return ShareLink link match
      */
     private ShareLink extractLink(final String name, List<ShareLink> list)
     {
-        if(StringUtils.isEmpty(name))
+        if (StringUtils.isEmpty(name))
         {
             throw new IllegalArgumentException("title of item is required");
         }
-        if(!list.isEmpty())
+        if (!list.isEmpty())
         {
-            for(ShareLink link: list)
+            for (ShareLink link : list)
             {
-                if(name.equalsIgnoreCase(link.getDescription()))
+                if (name.equalsIgnoreCase(link.getDescription()))
                 {
                     return link;
                 }
             }
         }
-        throw new PageException(String.format("Link searched: %s can not be found on the page",name));
+        throw new PageException(String.format("Link searched: %s can not be found on the page", name));
     }
-    
+
     @SuppressWarnings("unchecked")
     public synchronized SiteActivitiesDashlet render(RenderTime timer)
     {
-        if(renderBasic(timer, DASHLET_CONTAINER_PLACEHOLDER))
+        if (renderBasic(timer, DASHLET_CONTAINER_PLACEHOLDER))
         {
             return this;
         }
         throw new PageException(this.getClass().getName() + " failed to render in time");
     }
-    
+
     /**
      * Get Activities based on the link type.
-     * @param linktype Document, User or Site 
+     * 
+     * @param linktype Document, User or Site
      * @return {@link ShareLink} collection
      */
-    public synchronized List<ShareLink> getSiteActivities(LinkType linktype) {
-        if(linktype == null)
+    public synchronized List<ShareLink> getSiteActivities(LinkType linktype)
+    {
+        if (linktype == null)
         {
             throw new UnsupportedOperationException("LinkType is required");
         }
         populateData();
-        switch (linktype) 
+        switch (linktype)
         {
-            case Document: return documetLinks;
-            case User: return userLinks;
-            default: throw new IllegalArgumentException("Invalid link type specified");
+            case Document:
+                return documetLinks;
+            case User:
+                return userLinks;
+            default:
+                throw new IllegalArgumentException("Invalid link type specified");
         }
     }
-    
-    
+
     /**
      * Get Activities descriptions.
      * 

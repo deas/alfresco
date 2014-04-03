@@ -1,23 +1,20 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.alfresco.po.share.search;
+
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -69,9 +66,10 @@ public class AdvanceSearchPage extends SharePage
     {
         super(drone);
     }
-    
+
     /**
      * Check whether Search button is displayed correctly.
+     * 
      * @return true if page is displayed correctly
      */
     protected boolean isSearchButtonDisplayed()
@@ -85,9 +83,10 @@ public class AdvanceSearchPage extends SharePage
             return false;
         }
     }
-    
+
     /**
-     * Check whether Date Modifier are not displayed. 
+     * Check whether Date Modifier are not displayed.
+     * 
      * @return true if search button
      */
     protected boolean isDateModifierFromDisplayed()
@@ -103,7 +102,8 @@ public class AdvanceSearchPage extends SharePage
     }
 
     /**
-     * Content keyword is Displayed  and enter search text in the keyword.
+     * Content keyword is Displayed and enter search text in the keyword.
+     * 
      * @param String keyWordSearchText
      */
     public void inputKeyword(final String keyWordSearchText)
@@ -119,6 +119,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value entered in the keyword field.
+     * 
      * @return String
      */
     public String getKeyword()
@@ -128,6 +129,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Enter the text value in the Name field.
+     * 
      * @param String NameSearchText
      */
     public void inputName(final String nameSearchText)
@@ -143,6 +145,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value entered in the Name field.
+     * 
      * @return String
      */
     public String getName()
@@ -152,6 +155,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Enter the text value in the title field.
+     * 
      * @param String titleSearchText
      */
     public void inputTitle(final String titleSearchText)
@@ -167,6 +171,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value enetered in the title field.
+     * 
      * @return String
      */
     public String getTitle()
@@ -176,6 +181,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Enter the text value in the description field.
+     * 
      * @param String descriptionSearchText
      */
     public void inputDescription(final String descriptionSearchText)
@@ -191,6 +197,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value entered in the description field.
+     * 
      * @return String
      */
     public String getDescription()
@@ -200,6 +207,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Enter the text value in the modifier field.
+     * 
      * @param String modifierSearchText
      */
     public void inputModifier(final String modifierSearchText)
@@ -215,6 +223,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value entered in the modifier field.
+     * 
      * @return String .
      */
     public String getModifier()
@@ -224,6 +233,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Enter the date in the from date field.
+     * 
      * @param String fromDateText
      */
     public void inputFromDate(final String fromDateText)
@@ -239,6 +249,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value entered in the from date field.
+     * 
      * @return String
      */
     public String getFromDate()
@@ -248,6 +259,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Enter the date in the To date field.
+     * 
      * @param String ToDateText
      */
     public void inputToDate(final String toDateText)
@@ -263,6 +275,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value entered in the To date Field.
+     * 
      * @return String
      */
     public String getToDate()
@@ -272,6 +285,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Select the Mime type.
+     * 
      * @param String mimeType
      */
     public void selectMimeType(final String mimeType)
@@ -287,6 +301,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Click on Search button.
+     * 
      * @return {@link SharePage}
      */
     public HtmlPage clickSearch()
@@ -296,7 +311,8 @@ public class AdvanceSearchPage extends SharePage
     }
 
     /**
-     * This function will help to find element in the content and folder serach form. 
+     * This function will help to find element in the content and folder serach form.
+     * 
      * @return - WebElement
      */
     protected WebElement findElementDisplayed(By elementId)
@@ -311,8 +327,10 @@ public class AdvanceSearchPage extends SharePage
         }
         throw new NoSuchElementException("Element Not found");
     }
+
     /**
      * Select Folder search in the drop down.
+     * 
      * @return {@link HtmlPage}
      */
     public HtmlPage searchLink(final String searchType)
@@ -334,18 +352,19 @@ public class AdvanceSearchPage extends SharePage
                 {
                     searchelement.click();
                     return new AdvanceSearchCRMPage(drone);
-               }
+                }
             }
-            throw new PageException(searchType +" Search Page not found");
+            throw new PageException(searchType + " Search Page not found");
         }
         catch (TimeoutException te)
         {
             throw new PageException("Search link is not visible", te);
         }
     }
-    
+
     /**
-     * Check whether Modified From Date is valid or not. 
+     * Check whether Modified From Date is valid or not.
+     * 
      * @return true if date is valid otherwise false.
      */
     public boolean isValidFromDate()
@@ -368,8 +387,12 @@ public class AdvanceSearchPage extends SharePage
         {
             elementRender(timer, contentSearchFormDropdownElement, searchButtonElement);
         }
-        catch (NoSuchElementException e) {}
-        catch (TimeoutException e) {}
+        catch (NoSuchElementException e)
+        {
+        }
+        catch (TimeoutException e)
+        {
+        }
 
         return this;
     }

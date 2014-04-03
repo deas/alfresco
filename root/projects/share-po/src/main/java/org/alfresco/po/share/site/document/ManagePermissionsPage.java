@@ -66,12 +66,13 @@ public class ManagePermissionsPage extends SharePage
     private final By userListInhrtPerm = By.cssSelector("div[id$='default-inheritedPermissions'] tr[class^='yui-dt-rec']");
     private final By deleteAction = By.cssSelector("td[class*='yui-dt-col-actions'] div div.action-set");
     private final By areYouSureButtonGroup = By.cssSelector("span.button-group span span button");
-    private final By userPermissionDeleteAction =  By.cssSelector("a[class$='action-link']");
+    private final By userPermissionDeleteAction = By.cssSelector("a[class$='action-link']");
+
     public enum ButtonType
     {
         Yes, No;
     }
-    
+
     /**
      * Default constructor is not provided as the client should pass the {@link FromClass} while creating ManagePermissionsPage.
      * 
@@ -133,6 +134,7 @@ public class ManagePermissionsPage extends SharePage
         drone.find(addUserButton).click();
         return this.new UserSearchPage(drone);
     }
+
     /**
      * @param areYouSure
      */
@@ -140,12 +142,13 @@ public class ManagePermissionsPage extends SharePage
     {
         for (WebElement button : drone.findAll(areYouSureButtonGroup))
         {
-            if(areYouSure.toString().equals(button.getText()))
+            if (areYouSure.toString().equals(button.getText()))
             {
                 button.click();
             }
         }
     }
+
     /**
      * @param turnOn
      * @param areYouSure
@@ -195,7 +198,9 @@ public class ManagePermissionsPage extends SharePage
             drone.findAndWait(By.cssSelector("div[class$='inherited-on']"), WAIT_TIME_3000);
             return true;
         }
-        catch (TimeoutException e){ }
+        catch (TimeoutException e)
+        {
+        }
         return false;
     }
 
@@ -308,10 +313,10 @@ public class ManagePermissionsPage extends SharePage
         {
             throw new PageOperationException("Unable to find Access Specific Button", te);
         }
-        
+
         getRoleOption(drone, userRole).click();
     }
-    
+
     /**
      * Check if user is already added for permission.
      * 
@@ -533,9 +538,7 @@ public class ManagePermissionsPage extends SharePage
         }
         return false;
     }
-    
-    
-  
+
     /**
      * Page object for searching user and selecting user. Ideally should not live w/o
      * ManagePersmissions instance. Hence its an inner class with private constructor.
@@ -619,9 +622,10 @@ public class ManagePermissionsPage extends SharePage
         {
             return searchAndSelect(groupName, null);
         }
-        
+
         /**
          * Returns if "EVERYONE" is available in search result.
+         * 
          * @param searchText
          * @return
          */
@@ -629,23 +633,23 @@ public class ManagePermissionsPage extends SharePage
         {
             try
             {
-                //By USERNAME_SPAN = By.cssSelector("h3>span");
-            
-                for (UserSearchRow  element: searchUserAndGroup(searchText))
+                // By USERNAME_SPAN = By.cssSelector("h3>span");
+
+                for (UserSearchRow element : searchUserAndGroup(searchText))
                 {
-                    if(element.getUserName().contains("EVERYONE"))
-                     {
+                    if (element.getUserName().contains("EVERYONE"))
+                    {
                         return true;
-                     }
+                    }
                 }
-            }catch(NoSuchElementException nse)
+            }
+            catch (NoSuchElementException nse)
             {
                 throw new PageException("User with username containing - '" + searchText + "' not found", nse);
             }
             return false;
         }
 
-        
         /**
          * @param groupName
          * @param userProfile
@@ -667,10 +671,11 @@ public class ManagePermissionsPage extends SharePage
             else
             {
                 throw new UnsupportedOperationException(" Name search text cannot be blank - min three characters required");
-            }           
+            }
             return selectUserOrGroup(searchUserAndGroup(searchText), searchText, isGroupSearch, userProfile);
-                
+
         }
+
         /**
          * @param searchText
          * @return
@@ -682,7 +687,7 @@ public class ManagePermissionsPage extends SharePage
             drone.find(SEARCH_USER_INPUT).clear();
             drone.find(SEARCH_USER_INPUT).sendKeys(searchText);
             drone.find(SEARCH_USER_BUTTON).click();
-            if(searchText.length() < SEARCH_TEXT_MIN_LEN)
+            if (searchText.length() < SEARCH_TEXT_MIN_LEN)
             {
                 WebElement element = drone.find(By.cssSelector(".message"));
                 throw new UnsupportedOperationException(element.getText());
@@ -691,12 +696,12 @@ public class ManagePermissionsPage extends SharePage
             {
                 this.render();
                 By DATA_ROWS = By.cssSelector("div.finder-wrapper tbody.yui-dt-data tr");
-                for (WebElement  element : drone.findAndWaitForElements(DATA_ROWS, maxPageLoadingTime))
+                for (WebElement element : drone.findAndWaitForElements(DATA_ROWS, maxPageLoadingTime))
                 {
                     searchRows.add(new UserSearchRow(drone, element));
                 }
             }
-           
+
             return searchRows;
         }
 
@@ -707,7 +712,7 @@ public class ManagePermissionsPage extends SharePage
          * @param userProfile
          * @return
          */
-        public ManagePermissionsPage selectUserOrGroup(List<UserSearchRow> searchRows, String searchText, boolean isGroupSearch,  UserProfile userProfile)
+        public ManagePermissionsPage selectUserOrGroup(List<UserSearchRow> searchRows, String searchText, boolean isGroupSearch, UserProfile userProfile)
         {
             if (StringUtils.isEmpty(searchText))
             {
@@ -723,12 +728,12 @@ public class ManagePermissionsPage extends SharePage
                         return new ManagePermissionsPage(drone);
                     }
 
-                } else
+                }
+                else
                 {
                     if (null == userProfile)
                     {
-                        throw new IllegalArgumentException(
-                                "User profile is null");
+                        throw new IllegalArgumentException("User profile is null");
                     }
                     String fullName = searchRow.getUserName();
                     String[] name = fullName.split(" ");
@@ -743,12 +748,12 @@ public class ManagePermissionsPage extends SharePage
 
                 }
             }
-            throw new PageException("User with username containing - '"
-                    + searchText + "' not found");
+            throw new PageException("User with username containing - '" + searchText + "' not found");
         }
-        
+
         /**
          * Verify if user or group exist in the search list.
+         * 
          * @param searchText
          * @return
          */
@@ -756,16 +761,17 @@ public class ManagePermissionsPage extends SharePage
         {
             try
             {
-                //By USERNAME_SPAN = By.cssSelector("h3>span");
+                // By USERNAME_SPAN = By.cssSelector("h3>span");
 
-                for (UserSearchRow  element: searchUserAndGroup(searchText))
+                for (UserSearchRow element : searchUserAndGroup(searchText))
                 {
-                    if(element.getUserName().contains(searchText))
-                     {
+                    if (element.getUserName().contains(searchText))
+                    {
                         return true;
-                     }
+                    }
                 }
-            }catch(NoSuchElementException nse)
+            }
+            catch (NoSuchElementException nse)
             {
                 throw new PageException("User with username containing - '" + searchText + "' not found", nse);
             }
@@ -849,7 +855,7 @@ public class ManagePermissionsPage extends SharePage
             return isExist;
         }
     }
-    
+
     /**
      * @param name
      * @param role
@@ -864,11 +870,11 @@ public class ManagePermissionsPage extends SharePage
                 if (webElement.findElement(userNameLocator).getText().contains(name))
                 {
                     String currentRole = StringUtils.replace(webElement.findElement(userRoleLocator).getText().toUpperCase(), " ", "");
-                    if(role.equals(UserRole.valueOf(currentRole)))
-                        {
-                             drone.mouseOverOnElement(webElement);
-                             return webElement.findElement(userPermissionDeleteAction);
-                        }
+                    if (role.equals(UserRole.valueOf(currentRole)))
+                    {
+                        drone.mouseOverOnElement(webElement);
+                        return webElement.findElement(userPermissionDeleteAction);
+                    }
                 }
         }
         catch (NoSuchElementException toe)
@@ -878,9 +884,10 @@ public class ManagePermissionsPage extends SharePage
         }
         throw new PageOperationException("User name is not found!!");
     }
-    
+
     /**
      * Check if delete action is present for the user and permission.
+     * 
      * @param name
      * @param role
      * @return
@@ -895,10 +902,10 @@ public class ManagePermissionsPage extends SharePage
         }
         return false;
     }
-    
-    
+
     /**
-     * Delete the user and permission. 
+     * Delete the user and permission.
+     * 
      * @param name
      * @param role
      * @return

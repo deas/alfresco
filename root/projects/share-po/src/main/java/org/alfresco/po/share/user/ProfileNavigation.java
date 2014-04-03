@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -41,9 +37,9 @@ public class ProfileNavigation
     private static final By TRASHCAN_LINK = By.cssSelector("div>a[href='user-trashcan']");
     private static final By LANGUAGE_LINK = By.cssSelector("div>a[href='change-locale']");
     private final Log logger = LogFactory.getLog(ProfileNavigation.class);
-    
+
     private final WebDrone drone;
-    
+
     /**
      * Constructor
      * 
@@ -61,16 +57,16 @@ public class ProfileNavigation
      */
     public CloudSyncPage selectCloudSyncPage()
     {
-    	AlfrescoVersion version = drone.getProperties().getVersion();
+        AlfrescoVersion version = drone.getProperties().getVersion();
         if (version.isCloud())
         {
             throw new UnsupportedOperationException("Cloud sync functionality available only for Enterprise.");
         }
-        try 
+        try
         {
             drone.findAndWait(CLOUD_SYNC_LINK).click();
         }
-        catch (TimeoutException exception) 
+        catch (TimeoutException exception)
         {
             String message = "Not able to find the Cloud Sync Link";
             logger.error(message + exception);
@@ -78,12 +74,12 @@ public class ProfileNavigation
         }
         return new CloudSyncPage(drone);
     }
-    
+
     /**
      * Click on the trashcan link
      * 
      * @return - {@link TrashCanPage}
-     * @author sprasanna 
+     * @author sprasanna
      */
 
     public TrashCanPage selectTrashCan()
@@ -94,12 +90,13 @@ public class ProfileNavigation
 
     /**
      * Method to select Language link
+     * 
      * @return
      */
     public LanguageSettingsPage selectLanguage()
     {
-    	AlfrescoVersion version = drone.getProperties().getVersion();
-        if(!version.isCloud())
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        if (!version.isCloud())
         {
             throw new UnsupportedOperationException("Language Settings are not available for Environment: " + version.toString());
         }

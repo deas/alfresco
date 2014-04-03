@@ -1,8 +1,10 @@
 package org.alfresco.po.share;
 
 import org.alfresco.po.share.dashlet.Dashlet;
+
 /**
  * Interface of Alfresco Dashboard view.
+ * 
  * @author Michael Suzuki
  * @since 1.4
  */
@@ -15,5 +17,5 @@ public interface Dashboard
      * @return HtmlPage page object
      * @throws Exception
      */
-     Dashlet getDashlet(final String name);
+    Dashlet getDashlet(final String name);
 }

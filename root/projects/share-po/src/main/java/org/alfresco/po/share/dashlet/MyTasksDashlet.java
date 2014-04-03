@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -43,7 +39,7 @@ import org.openqa.selenium.WebElement;
 public class MyTasksDashlet extends AbstractDashlet implements Dashlet
 {
     private static Log logger = LogFactory.getLog(MyTasksDashlet.class);
-    
+
     private static final String DATA_LIST_CSS_LOCATION = "h3.filename > a";
     private static final String DIV_DASHLET_CONTENT_PLACEHOLDER = "div.dashlet.my-tasks";
     private static final String ACCEPT_BUTTON = "button[id*='accept-button']";
@@ -62,13 +58,14 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public MyTasksDashlet render(final long time)
     {
         return render(new RenderTime(time));
     }
+
     /**
      * The collection of tasks displayed on my tasks dashlet.
      * 
@@ -78,6 +75,7 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
     {
         return getList(DATA_LIST_CSS_LOCATION);
     }
+
     /**
      * Selects a task that appears on my tasks dashlet by the matching name and
      * clicks on the link.
@@ -97,7 +95,13 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
                 timer.start();
                 synchronized (this)
                 {
-                    try{ this.wait(100L); } catch (InterruptedException e) {}
+                    try
+                    {
+                        this.wait(100L);
+                    }
+                    catch (InterruptedException e)
+                    {
+                    }
                 }
                 if (isEmpty(DIV_DASHLET_CONTENT_PLACEHOLDER))
                 {
@@ -112,18 +116,18 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
                 timer.end();
             }
         }
-        catch (PageRenderTimeException te) 
+        catch (PageRenderTimeException te)
         {
-            throw new PageException(this.getClass().getName() + " failed to render in time",te);
+            throw new PageException(this.getClass().getName() + " failed to render in time", te);
         }
         return this;
     }
-    
-	/**
-	 * Selects the accept button on Invitation page.
-	 * 
-	 * @return {@link MyTasksDashlet}
-	 */
+
+    /**
+     * Selects the accept button on Invitation page.
+     * 
+     * @return {@link MyTasksDashlet}
+     */
     public MyTasksDashlet acceptInvitaton()
     {
         drone.findAndWait(By.cssSelector(ACCEPT_BUTTON)).click();
@@ -131,12 +135,12 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
         return this;
     }
 
-	/**
-	 * This method clicks on specific task which appears on my-tasks dashlet.
-	 * 
-	 * @param task
-	 * @return {@link MyTasksDashlet}
-	 */
+    /**
+     * This method clicks on specific task which appears on my-tasks dashlet.
+     * 
+     * @param task
+     * @return {@link MyTasksDashlet}
+     */
     public MyTasksDashlet clickOnTask(String task)
     {
         if (task == null)
@@ -156,13 +160,13 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
             }
 
             return this;
-        } 
+        }
         catch (Exception e)
         {
             throw new PageException("Unable to find the List of Tasks.", e);
         }
     }
-    
+
     /**
      * select StartWorkFlow... link from myTasks dashlet.
      * 
@@ -184,7 +188,7 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
         {
             logger.error("Exceeded time to find the web element", exception);
         }
-        
+
         throw new PageException("Unable to find assign workflow.");
     }
 }

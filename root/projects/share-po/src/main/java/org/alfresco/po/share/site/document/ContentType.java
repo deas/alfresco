@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,13 +28,10 @@ import org.openqa.selenium.By;
  */
 public enum ContentType
 {
-    PLAINTEXT             (By.cssSelector("a[href$='mimeType=text/plain']")), 
-    HTML                  (By.cssSelector("a[href$='mimeType=text/html']")), 
-    XML                   (By.cssSelector("a[href$='mimeType=text/xml']")), 
-    GOOGLEDOCS            (By.cssSelector("span.document-file")), 
-    GOOGLESPREADSHEET     (By.cssSelector("span.spreadsheet-file")),
-    GOOGLEPRESENTATION    (By.cssSelector("span.presentation-file"));
-      
+    PLAINTEXT(By.cssSelector("a[href$='mimeType=text/plain']")), HTML(By.cssSelector("a[href$='mimeType=text/html']")), XML(By
+            .cssSelector("a[href$='mimeType=text/xml']")), GOOGLEDOCS(By.cssSelector("span.document-file")), GOOGLESPREADSHEET(By
+            .cssSelector("span.spreadsheet-file")), GOOGLEPRESENTATION(By.cssSelector("span.presentation-file"));
+
     private By contentLocator;
     private boolean isGoogleCreate = true;
 
@@ -46,24 +39,25 @@ public enum ContentType
     {
         return contentLocator;
     }
-       
+
     ContentType(By contentType)
     {
-         this.contentLocator = contentType;
-       
-     }
+        this.contentLocator = contentType;
+
+    }
 
     /**
      * Returns the corresponding page object based on the enum.
-     * @param 
+     * 
+     * @param
      * @return SitePage
-     * @throws Exception 
+     * @throws Exception
      */
-    
+
     public HtmlPage getContentCreationPage(WebDrone drone)
     {
-        
-        switch(this)
+
+        switch (this)
         {
             case PLAINTEXT:
             case XML:
@@ -73,9 +67,9 @@ public enum ContentType
             case GOOGLEDOCS:
                 return new GoogleDocsAuthorisation(drone, null, isGoogleCreate);
             case GOOGLESPREADSHEET:
-                return new GoogleDocsAuthorisation(drone,null,isGoogleCreate);
+                return new GoogleDocsAuthorisation(drone, null, isGoogleCreate);
             case GOOGLEPRESENTATION:
-                return new GoogleDocsAuthorisation(drone,null,isGoogleCreate);
+                return new GoogleDocsAuthorisation(drone, null, isGoogleCreate);
             default:
                 break;
         }

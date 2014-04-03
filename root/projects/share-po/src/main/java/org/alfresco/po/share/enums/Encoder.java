@@ -3,16 +3,17 @@ package org.alfresco.po.share.enums;
 import org.alfresco.webdrone.WebDroneUtil;
 
 /**
-*Enum to contain all the possible Encoders
-* @author Meenal Bhave
-*/
+ * Enum to contain all the possible Encoders
+ * 
+ * @author Meenal Bhave
+ */
 public enum Encoder
 {
     ENCODER_HTML("Html"),
     ENCODER_JAVASCRIPT("JavaScript"),
     ENCODER_NOENCODER("No");
 
-   private  String name;
+    private String name;
 
     private Encoder(String name)
     {
@@ -26,7 +27,7 @@ public enum Encoder
 
     /**
      * Gets appropriate Encoder type.
-     *
+     * 
      * @param name
      * @return {@link Encoder}
      */

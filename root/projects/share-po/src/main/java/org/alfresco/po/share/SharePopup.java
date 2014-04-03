@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,11 +29,11 @@ import org.openqa.selenium.WebElement;
  * @since 1.7.0
  */
 public class SharePopup extends SharePage
-{      
+{
     private static final String FAILURE_PROMPT = "div[id='prompt']";
     private static final String DEFAULT_BUTTON = "span.yui-button";
     private static final String ERROR_BODY = "div.bd";
-    
+
     /**
      * Constructor.
      * 
@@ -52,20 +48,26 @@ public class SharePopup extends SharePage
     @Override
     public SharePopup render(RenderTime timer)
     {
-        while(true)
+        while (true)
         {
             timer.start();
             synchronized (this)
             {
-                try{ this.wait(100L); } catch (InterruptedException e) {}
+                try
+                {
+                    this.wait(100L);
+                }
+                catch (InterruptedException e)
+                {
+                }
             }
-        	if(isShareMessageDisplayed())
-        	{
-        		break;
-        	}
-        	timer.end();
+            if (isShareMessageDisplayed())
+            {
+                break;
+            }
+            timer.end();
         }
-        
+
         return this;
     }
 
@@ -75,17 +77,18 @@ public class SharePopup extends SharePage
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public SharePopup render(final long time)
     {
         return render(new RenderTime(time));
-    }         
-    
+    }
+
     /**
      * Helper method to handle the error popup displayed in Share
      * Clicks on the OK button to return to the original page
+     * 
      * @return SharePage
      * @throws ShareException with the Error message
      */
@@ -94,26 +97,26 @@ public class SharePopup extends SharePage
         if (isShareMessageDisplayed())
         {
             String message = getShareMessage();
-            clickOK().render();            
+            clickOK().render();
             throw new ShareException(message);
         }
 
         return FactorySharePage.resolvePage(drone);
     }
-    
+
     /**
      * Helper method to click on the OK button to return to the original page
-     * 
      */
     public HtmlPage clickOK()
     {
         WebElement popupMessage = getErrorPromptElement();
         popupMessage.findElement(By.cssSelector(DEFAULT_BUTTON)).click();
-        return FactorySharePage.resolvePage(drone);          
+        return FactorySharePage.resolvePage(drone);
     }
-    
+
     /**
      * Helper method to get the error message in the Share Error Popup
+     * 
      * @return String Share Error Message displayed in the popup
      */
     public String getShareMessage()
@@ -128,9 +131,10 @@ public class SharePopup extends SharePage
         }
         return null;
     }
-    
+
     /**
-     * Helper method to return true if Share Error popup is displayed 
+     * Helper method to return true if Share Error popup is displayed
+     * 
      * @return boolean <tt>true</tt> is Share Error popup is displayed
      */
     public boolean isShareMessageDisplayed()
@@ -148,9 +152,10 @@ public class SharePopup extends SharePage
         }
         return false;
     }
-    
+
     /**
      * Helper method to return WebElement for the failure prompt
+     * 
      * @return WebElement
      */
     private WebElement getErrorPromptElement()
@@ -166,5 +171,5 @@ public class SharePopup extends SharePage
             return null;
         }
     }
-       
+
 }

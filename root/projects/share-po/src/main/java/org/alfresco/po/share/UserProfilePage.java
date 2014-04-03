@@ -1,22 +1,19 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share;
+
 import java.util.List;
 
 import org.alfresco.webdrone.RenderTime;
@@ -46,7 +43,8 @@ public class UserProfilePage extends SharePage
 
     /**
      * Constructor.
-     * @param drone 
+     * 
+     * @param drone
      */
     public UserProfilePage(WebDrone drone)
     {
@@ -60,26 +58,38 @@ public class UserProfilePage extends SharePage
         try
         {
             webElementRender(timer);
-            while(true)
+            while (true)
             {
                 timer.start();
                 synchronized (this)
                 {
-                    try{ this.wait(100L); } catch (InterruptedException e) {}
+                    try
+                    {
+                        this.wait(100L);
+                    }
+                    catch (InterruptedException e)
+                    {
+                    }
                 }
                 try
                 {
-                    if(!isJSMessageDisplayed())
+                    if (!isJSMessageDisplayed())
                     {
                         break;
                     }
                 }
-                catch (NoSuchElementException nse) { }
-                    timer.end();
+                catch (NoSuchElementException nse)
+                {
+                }
+                timer.end();
             }
         }
-        catch (NoSuchElementException e) {}
-        catch (TimeoutException e) {}
+        catch (NoSuchElementException e)
+        {
+        }
+        catch (TimeoutException e)
+        {
+        }
         return this;
     }
 
@@ -99,6 +109,7 @@ public class UserProfilePage extends SharePage
 
     /**
      * Gets the buttons present on Delete confirmation window.
+     * 
      * @return List<WebElement>
      */
     private List<WebElement> getButtons()
@@ -107,7 +118,9 @@ public class UserProfilePage extends SharePage
         {
             return drone.findAndWaitForElements(buttonGroup);
         }
-        catch (TimeoutException te) {}
+        catch (TimeoutException te)
+        {
+        }
         throw new PageException("Not able to find the Button group.");
     }
 
@@ -121,7 +134,7 @@ public class UserProfilePage extends SharePage
         try
         {
             drone.findAndWait(deleteUser).click();
-            
+
             List<WebElement> buttons = getButtons();
 
             for (WebElement button : buttons)
@@ -133,10 +146,12 @@ public class UserProfilePage extends SharePage
                 }
             }
         }
-        catch (TimeoutException te) {}
+        catch (TimeoutException te)
+        {
+        }
         throw new PageException("Not able to find the Delete User Button.");
     }
-    
+
     /**
      * This method clicks on Edit User.
      * 
@@ -149,10 +164,12 @@ public class UserProfilePage extends SharePage
             drone.findAndWait(editUser).click();
             return new EditUserPage(drone);
         }
-        catch (TimeoutException te) {}
+        catch (TimeoutException te)
+        {
+        }
         throw new PageException("Not able to find the Edit User Button.");
     }
-    
+
     /**
      * This method clicks on GoBack.
      * 
@@ -165,7 +182,9 @@ public class UserProfilePage extends SharePage
             drone.findAndWait(goBackButton).click();
             return new UserSearchPage(drone);
         }
-        catch (TimeoutException te) {}
+        catch (TimeoutException te)
+        {
+        }
         throw new PageException("Not able to find the GoBack Button.");
     }
 }

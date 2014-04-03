@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -94,10 +90,12 @@ public class CreateSitePage extends ShareDialogue
         {
             return drone.find(CREATE_SITE_FORM).isDisplayed();
         }
-        catch (NoSuchElementException nse){ }
+        catch (NoSuchElementException nse)
+        {
+        }
         return false;
     }
-    
+
     /**
      * Create a new site based on the site type.
      * 
@@ -114,6 +112,7 @@ public class CreateSitePage extends ShareDialogue
     {
         return createNewSite(siteName, description, isPriavte, isModerated, SiteType.COLLABORATION);
     }
+
     /**
      * Create a new site based on the site type.
      * 
@@ -130,7 +129,7 @@ public class CreateSitePage extends ShareDialogue
                                   final boolean isModerated,
                                   final String siteType)
     {
-        if(siteType == null)
+        if (siteType == null)
         {
             throw new IllegalArgumentException("Site type is required");
         }
@@ -140,15 +139,14 @@ public class CreateSitePage extends ShareDialogue
         return createSite(siteName, description, siteType);
     }
 
-    protected HtmlPage createSite(final String siteName, final String description,
-            final String siteType)
+    protected HtmlPage createSite(final String siteName, final String description, final String siteType)
     {
-        switch (siteType) 
+        switch (siteType)
         {
             case SiteType.COLLABORATION:
                 WebElement inputSiteName = drone.findAndWait(INPUT_TITLE);
                 inputSiteName.sendKeys(siteName);
-                if(description != null)
+                if (description != null)
                 {
                     WebElement inputDescription = drone.find(INPUT_DESCRIPTION);
                     inputDescription.clear();
@@ -156,11 +154,10 @@ public class CreateSitePage extends ShareDialogue
                 }
                 selectSiteType(siteType);
                 return selectOk();
-                //drone.find(SUBMIT_BUTTON).click();
-                //return new SiteDashboardPage(drone);
-            default: 
-                throw new PageOperationException("No site type match found for: " + siteType +
-                        " out of the following possible options: Collaboration");
+                // drone.find(SUBMIT_BUTTON).click();
+                // return new SiteDashboardPage(drone);
+            default:
+                throw new PageOperationException("No site type match found for: " + siteType + " out of the following possible options: Collaboration");
         }
 
     }
@@ -183,21 +180,21 @@ public class CreateSitePage extends ShareDialogue
      */
     public void selectSiteVisibility(final boolean isPrivate, final boolean isModerated)
     {
-        if(isPrivate)
+        if (isPrivate)
         {
-            drone.find(PRIVATE_CHECKBOX).click();  
+            drone.find(PRIVATE_CHECKBOX).click();
             return;
         }
         else
         {
             drone.find(PUBLIC_CHECKBOX).click();
-            if(isModerated)
+            if (isModerated)
             {
-            	drone.find(MODERATED_CHECKBOX).click();
+                drone.find(MODERATED_CHECKBOX).click();
             }
         }
     }
-    
+
     /**
      * Create a new public site action.
      * 
@@ -208,7 +205,7 @@ public class CreateSitePage extends ShareDialogue
     {
         return createNewSite(siteName, null, false, false);
     }
-    
+
     /**
      * Create a new public site action.
      * 
@@ -220,7 +217,7 @@ public class CreateSitePage extends ShareDialogue
     {
         return createNewSite(siteName, desc, false, false);
     }
-    
+
     /**
      * Create a new private site action.
      * 
@@ -229,8 +226,9 @@ public class CreateSitePage extends ShareDialogue
      */
     public HtmlPage createPrivateSite(final String siteName)
     {
-        return createNewSite(siteName,null,true, false);
+        return createNewSite(siteName, null, true, false);
     }
+
     /**
      * Create a new private site action.
      * 
@@ -240,8 +238,9 @@ public class CreateSitePage extends ShareDialogue
      */
     public HtmlPage createPrivateSite(final String siteName, String desc)
     {
-        return createNewSite(siteName,desc,true, false);
+        return createNewSite(siteName, desc, true, false);
     }
+
     /**
      * Create a new public moderated site action.
      * 
@@ -252,6 +251,7 @@ public class CreateSitePage extends ShareDialogue
     {
         return createNewSite(siteName, null, false, true);
     }
+
     /**
      * Create a new public moderated site action.
      * 
@@ -263,6 +263,7 @@ public class CreateSitePage extends ShareDialogue
     {
         return createNewSite(siteName, desc, false, true);
     }
+
     /**
      * Clicks on the cancel button on the create site form.
      */
@@ -270,9 +271,10 @@ public class CreateSitePage extends ShareDialogue
     {
         drone.findAndWait(CANCEL_BUTTON).click();
     }
-    
+
     /**
      * Checks if the check box with the label private is ticked.
+     * 
      * @return true if selected
      */
     public boolean isPrivate()
@@ -286,9 +288,10 @@ public class CreateSitePage extends ShareDialogue
             return false;
         }
     }
-    
+
     /**
      * Checks if the check box with the label private is ticked.
+     * 
      * @return true if selected
      */
     public boolean isModerate()
@@ -302,50 +305,55 @@ public class CreateSitePage extends ShareDialogue
             return false;
         }
     }
+
     /**
      * Action of selecting site type drop down.
+     * 
      * @param type of site
      */
     public void selectSiteType(String siteType)
     {
         WebElement dropdown = drone.find(By.tagName("select"));
-        //Check option size if only one in dropdown return.
+        // Check option size if only one in dropdown return.
         List<WebElement> options = dropdown.findElements(By.tagName("option"));
-        if(options.isEmpty() || options.size() > 1)
+        if (options.isEmpty() || options.size() > 1)
         {
             WebElement siteOption;
-            switch (siteType) 
+            switch (siteType)
             {
-            case SiteType.COLLABORATION:
-                siteOption = dropdown.findElement(By.cssSelector("option:nth-of-type(1)"));
-                break;
-            default:
-                throw new PageOperationException("No suitable site type was found");
+                case SiteType.COLLABORATION:
+                    siteOption = dropdown.findElement(By.cssSelector("option:nth-of-type(1)"));
+                    break;
+                default:
+                    throw new PageOperationException("No suitable site type was found");
             }
             siteOption.click();
         }
     }
-    
+
     /**
      * Get the value of site name from site create form.
+     * 
      * @return String site name
      */
     public String getSiteName()
     {
         return drone.find(By.name("title")).getAttribute("value");
     }
-    
+
     /**
      * Get the value of site description from site create form.
+     * 
      * @return String site description
      */
     public String getDescription()
     {
         return drone.find(By.name("description")).getAttribute("value");
     }
-    
+
     /**
      * Get the value of site url from site create form.
+     * 
      * @return String site short name for url
      */
     public String getSiteUrl()

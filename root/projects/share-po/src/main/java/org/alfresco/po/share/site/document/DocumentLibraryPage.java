@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -586,19 +582,19 @@ public class DocumentLibraryPage extends SitePage
 
         switch (viewType)
         {
-        case GALLERY_VIEW:
-            xpath = ".//div[@class='alf-gallery-item-thumbnail']/div[@class='alf-label']/a[text()='%s']";
-            break;
-        case FILMSTRIP_VIEW:
-            FilmStripViewFileDirectoryInfo fileDirInfo = (FilmStripViewFileDirectoryInfo) getFileDirectoryInfo(title);
-            fileDirInfo.selectThumbnail();
-            fileDirInfo.clickInfoIcon();
-            break;
-        case TABLE_VIEW:
-            xpath = "//td[contains(@class,'yui-dt-col-name')]/div/span/a[text()='%s']";
-            break;
-        default:
-            break;
+            case GALLERY_VIEW:
+                xpath = ".//div[@class='alf-gallery-item-thumbnail']/div[@class='alf-label']/a[text()='%s']";
+                break;
+            case FILMSTRIP_VIEW:
+                FilmStripViewFileDirectoryInfo fileDirInfo = (FilmStripViewFileDirectoryInfo) getFileDirectoryInfo(title);
+                fileDirInfo.selectThumbnail();
+                fileDirInfo.clickInfoIcon();
+                break;
+            case TABLE_VIEW:
+                xpath = "//td[contains(@class,'yui-dt-col-name')]/div/span/a[text()='%s']";
+                break;
+            default:
+                break;
         }
 
         String search = String.format(xpath, title);
@@ -883,6 +879,22 @@ public class DocumentLibraryPage extends SitePage
         return tagNames;
     }
 
+<<<<<<< .working
+=======
+    public boolean isItemVisble(String contentName)
+    {
+        WebDroneUtil.checkMandotaryParam("contentName", contentName);
+        try
+        {
+            return null != findFileOrFolder(contentName);
+        }
+        catch (Exception e)
+        {
+        }
+        return false;
+    }
+>>>>>>> .merge-right.r65083
+
     /**
      * Check the uploaded content has uploaded successfully
      * 
@@ -957,20 +969,21 @@ public class DocumentLibraryPage extends SitePage
         {
             switch (viewType)
             {
-            case GALLERY_VIEW:
-                row = drone.findAndWait(By.xpath(String.format("//h3/span/a[text()='%s']/../../../../../../..", title)), WAIT_TIME_3000);
-                nodeRef = row.findElement(By.cssSelector("input[id$='gallery-item']")).getAttribute("value");
-                break;
-            case FILMSTRIP_VIEW:
-                nodeRef = drone.findAndWait(By.xpath(String.format(".//div[@class='alf-filmstrip-nav']//div[@class='alf-label'][text()='%s']/..//img", title)),
-                        WAIT_TIME_3000).getAttribute("id");
-                row = drone.findAndWait(By.xpath(String.format(".//div[@class='alf-filmstrip-nav']//div[@class='alf-label'][text()='%s']", title)),
-                        WAIT_TIME_3000);
-                break;
-            default:
-                row = drone.findAndWait(By.xpath(String.format("//h3/span/a[text()='%s']/../../../../..", title)), WAIT_TIME_3000);
-                nodeRef = row.findElement(THUMBNAIL_IMAGE).getAttribute("id");
-                break;
+                case GALLERY_VIEW:
+                    row = drone.findAndWait(By.xpath(String.format("//h3/span/a[text()='%s']/../../../../../../..", title)), WAIT_TIME_3000);
+                    nodeRef = row.findElement(By.cssSelector("input[id$='gallery-item']")).getAttribute("value");
+                    break;
+                case FILMSTRIP_VIEW:
+                    nodeRef = drone.findAndWait(
+                            By.xpath(String.format(".//div[@class='alf-filmstrip-nav']//div[@class='alf-label'][text()='%s']/..//img", title)), WAIT_TIME_3000)
+                            .getAttribute("id");
+                    row = drone.findAndWait(By.xpath(String.format(".//div[@class='alf-filmstrip-nav']//div[@class='alf-label'][text()='%s']", title)),
+                            WAIT_TIME_3000);
+                    break;
+                default:
+                    row = drone.findAndWait(By.xpath(String.format("//h3/span/a[text()='%s']/../../../../..", title)), WAIT_TIME_3000);
+                    nodeRef = row.findElement(THUMBNAIL_IMAGE).getAttribute("id");
+                    break;
             }
 
             return getFileDirectoryInfo(nodeRef, row);
@@ -1007,14 +1020,14 @@ public class DocumentLibraryPage extends SitePage
             String message = drone.find(By.cssSelector(".message")).getText();
             switch (optype)
             {
-            case SYNC:
-                return "Sync was created".equals(message) ? true : false;
-            case UNSYNC:
-                return "Sync has been removed".equals(message) ? true : false;
-            case REQ_TO_SYNC:
-                return "Successfully requested Sync".equalsIgnoreCase(message) ? true : false;
-            default:
-                throw new PageOperationException(message);
+                case SYNC:
+                    return "Sync was created".equals(message) ? true : false;
+                case UNSYNC:
+                    return "Sync has been removed".equals(message) ? true : false;
+                case REQ_TO_SYNC:
+                    return "Successfully requested Sync".equalsIgnoreCase(message) ? true : false;
+                default:
+                    throw new PageOperationException(message);
             }
         }
         catch (TimeoutException toe)
@@ -1124,13 +1137,10 @@ public class DocumentLibraryPage extends SitePage
         return FactoryShareFileDirectoryInfo.getPage(nodeRef, webElement, drone, viewType);
     }
 
-
-
     protected void setViewType(ViewType viewType)
     {
         this.viewType = viewType;
     }
-
 
     /**
      * Returns the current view type if it set already or by calling render it sets the view type.
@@ -1153,7 +1163,8 @@ public class DocumentLibraryPage extends SitePage
         {
             drone.findAndWait(By.cssSelector(".favourites>a")).click();
             return FactorySharePage.resolvePage(drone);
-        } catch (TimeoutException te)
+        }
+        catch (TimeoutException te)
         {
             logger.error("Exceeded time to find the the css", te);
         }

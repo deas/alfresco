@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,16 +30,17 @@ import org.openqa.selenium.WebElement;
  * In Line Edit Page Object, Where user edit the content.
  * 
  * @author Shan Nagarajan
- * @since  1.6.1
+ * @since 1.6.1
  */
 public class EditTextDocumentPage extends CreatePlainTextContentPage
 {
     private static final Log logger = LogFactory.getLog(EditTextDocumentPage.class);
+
     public EditTextDocumentPage(WebDrone drone)
     {
         super(drone);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public EditTextDocumentPage render(RenderTime timer)
@@ -76,7 +73,7 @@ public class EditTextDocumentPage extends CreatePlainTextContentPage
     {
         return create(details);
     }
-    
+
     /**
      * Save the {@link ContentDetails}.
      * 
@@ -88,7 +85,7 @@ public class EditTextDocumentPage extends CreatePlainTextContentPage
         createWithValidation(details);
         return FactorySharePage.resolvePage(drone);
     }
-    
+
     /**
      * Get the {@link ContentDetails} when try to do in line edit.
      * 
@@ -98,26 +95,26 @@ public class EditTextDocumentPage extends CreatePlainTextContentPage
     {
         ContentDetails details = null;
         WebElement element = drone.find(NAME);
-        if(element != null)
+        if (element != null)
         {
-            details =  new ContentDetails();
+            details = new ContentDetails();
             details.setName(element.getAttribute("value"));
-            
+
             element = drone.findAndWait(TITLE);
-            if(element != null)
+            if (element != null)
             {
                 details.setTitle(element.getAttribute("value"));
             }
-            
+
             element = drone.find(DESCRIPTION);
-            if(element != null)
+            if (element != null)
             {
                 details.setDescription(element.getText());
             }
-            
+
             element = drone.findAndWait(CONTENT);
-            
-            if(element != null)
+
+            if (element != null)
             {
                 details.setContent(element.getAttribute("value"));
             }
@@ -139,7 +136,7 @@ public class EditTextDocumentPage extends CreatePlainTextContentPage
         }
         catch (TimeoutException te)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Cancel button doesn't exist", te);
             }

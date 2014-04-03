@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,9 +30,9 @@ import org.openqa.selenium.WebElement;
 
 /**
  * User cloud Sync page object holds all elements of HTML page objects relating to Cloud Sync connect page.
- *
+ * 
  * @author Siva Kaliyappan
- * @since  1.6.2
+ * @since 1.6.2
  */
 public class CloudSyncPage extends SharePage
 {
@@ -47,19 +43,19 @@ public class CloudSyncPage extends SharePage
 
     /**
      * Constructor.
-     *
+     * 
      * @param drone WebDriver to access page
      */
     public CloudSyncPage(WebDrone drone)
     {
         super(drone);
     }
-    
+
     public ProfileNavigation getProfileNav()
     {
         return new ProfileNavigation(drone);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public CloudSyncPage render(RenderTime timer)
@@ -95,7 +91,7 @@ public class CloudSyncPage extends SharePage
 
     /**
      * Verify if cloud Auth page web element is present
-     *
+     * 
      * @return true if exists
      */
     public boolean isTitlePresent()
@@ -105,7 +101,7 @@ public class CloudSyncPage extends SharePage
 
     /**
      * Retrieves the link based on the given cssSelector.
-     *
+     * 
      * @return boolean
      */
     public boolean isDisconnectButtonDisplayed()
@@ -116,7 +112,7 @@ public class CloudSyncPage extends SharePage
         }
         catch (NoSuchElementException e)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Disconnect button not Present", e);
             }
@@ -150,8 +146,7 @@ public class CloudSyncPage extends SharePage
     }
 
     /**
-     * This method tries to connect to cloud account. Else throws
-     * {@link PageException} if already connected.
+     * This method tries to connect to cloud account. Else throws {@link PageException} if already connected.
      * 
      * @return
      */
@@ -170,14 +165,13 @@ public class CloudSyncPage extends SharePage
     }
 
     /**
-     * This method tries to disconnect to cloud account. Else throws
-     * {@link PageException} if already disconnected.
+     * This method tries to disconnect to cloud account. Else throws {@link PageException} if already disconnected.
      * 
      * @return
      */
     public CloudSyncPage disconnectCloudAccount()
     {
-    	if (!isDisconnectButtonDisplayed())
+        if (!isDisconnectButtonDisplayed())
         {
             throw new PageException("User is already disconnected");
         }
@@ -188,7 +182,7 @@ public class CloudSyncPage extends SharePage
             drone.waitUntilNotVisible(By.cssSelector("span.message"), "Cloud account successfully disconnected", maxPageLoadingTime);
             return new CloudSyncPage(drone);
         }
-         catch (NoSuchElementException e)
+        catch (NoSuchElementException e)
         {
         }
         catch (TimeoutException e)

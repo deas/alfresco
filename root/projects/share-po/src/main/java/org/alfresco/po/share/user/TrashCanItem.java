@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -58,7 +54,7 @@ public class TrashCanItem extends HtmlElement
     protected static final By TRASHCAN_SELECT_ITEM_CHECKBOX = By.cssSelector("input[id^='checkbox']");
     protected static final By TRASHCAN_BUTTON = By.cssSelector("td[class$='yui-dt-col-actions yui-dt-last'] button");
     private boolean deleteInitiator = false;
- 
+
     /**
      * Constructor
      * 
@@ -82,7 +78,7 @@ public class TrashCanItem extends HtmlElement
         String name = "";
         try
         {
-         name = webElement.findElement(TRASHCAN_ITEM_NAME).getText();
+            name = webElement.findElement(TRASHCAN_ITEM_NAME).getText();
         }
         catch (NoSuchElementException nse)
         {
@@ -90,56 +86,58 @@ public class TrashCanItem extends HtmlElement
         }
         return name;
     }
-    
+
     /**
      * Method to check whether the trashCan item is file
-     * @return - Boolean
      * 
+     * @return - Boolean
      */
-    public boolean isTrashCanItemFile() 
+    public boolean isTrashCanItemFile()
     {
         try
         {
-           return  webElement.findElement(TRASHCAN_ITEM_FILE).isDisplayed();
+            return webElement.findElement(TRASHCAN_ITEM_FILE).isDisplayed();
         }
         catch (NoSuchElementException nse)
         {
             return false;
         }
     }
-    
+
     /**
      * Method to check whether the trashCan item folder
+     * 
      * @return Boolean
      */
-    public boolean isTrashCanItemFolder() 
+    public boolean isTrashCanItemFolder()
     {
         try
         {
-           return  webElement.findElement(TRASHCAN_ITEM_FOLDER).isDisplayed();
+            return webElement.findElement(TRASHCAN_ITEM_FOLDER).isDisplayed();
         }
         catch (NoSuchElementException nse)
         {
             return false;
         }
     }
-    
+
     /**
      * Method to check whether the trashCan item is Site
+     * 
      * @return - Boolean
      */
-    public boolean isTrashCanItemSite() 
+    public boolean isTrashCanItemSite()
     {
         try
         {
-           return  webElement.findElement(TRASHCAN_TIEM_SITE).isDisplayed();
+            return webElement.findElement(TRASHCAN_TIEM_SITE).isDisplayed();
         }
         catch (NoSuchElementException nse)
         {
             return false;
         }
     }
-    
+
     /**
      * Method to get Description and Folder name
      * 
@@ -195,7 +193,7 @@ public class TrashCanItem extends HtmlElement
      */
     public String getFolderPath() throws PageOperationException
     {
-        String  itemPath = "";
+        String itemPath = "";
         try
         {
             for (WebElement desc : webElement.findElements(TRASHCAN_DESC_LIST))
@@ -226,7 +224,7 @@ public class TrashCanItem extends HtmlElement
     {
         try
         {
-          webElement.findElement(TRASHCAN_SELECT_ITEM_CHECKBOX).click();
+            webElement.findElement(TRASHCAN_SELECT_ITEM_CHECKBOX).click();
         }
         catch (NoSuchElementException nse)
         {
@@ -273,7 +271,7 @@ public class TrashCanItem extends HtmlElement
                 buttonName = button.getText();
                 if (buttonName.equalsIgnoreCase(trashCanActionType.getTrashCanValues()))
                 {
-                    returnPage =  submit(By.id(button.getAttribute("id")), ElementState.INVISIBLE);
+                    returnPage = submit(By.id(button.getAttribute("id")), ElementState.INVISIBLE);
                     break;
                 }
             }
@@ -286,11 +284,12 @@ public class TrashCanItem extends HtmlElement
         catch (NoSuchElementException nse)
         {
             throw new PageOperationException("The trashcan list is empty so cannot select an item", nse);
-        }        
+        }
     }
+
     /**
-     * <li>Click the element which passed and wait for given ElementState on the same element.</li>
-     * <li>If the Element State not changed, then render the {@link SharePopup} Page, if it is rendered the return {@link SharePopup} page.</li>
+     * <li>Click the element which passed and wait for given ElementState on the same element.</li> <li>If the Element State not changed, then render the
+     * {@link SharePopup} Page, if it is rendered the return {@link SharePopup} page.</li>
      * 
      * @param locator
      * @param elementState
@@ -304,8 +303,8 @@ public class TrashCanItem extends HtmlElement
             String id = button.getAttribute("id");
             button.click();
             By locatorById = By.id(id);
-            long elementWaitInSeconds = ((WebDroneImpl)drone).getDefaultWaitTime()/1000;
-            long popupRendertime = ((WebDroneImpl)drone).getDefaultWaitTime()/1000;
+            long elementWaitInSeconds = ((WebDroneImpl) drone).getDefaultWaitTime() / 1000;
+            long popupRendertime = ((WebDroneImpl) drone).getDefaultWaitTime() / 1000;
             RenderTime time = new RenderTime(maxTime);
             time.start();
             while (true)
@@ -345,7 +344,9 @@ public class TrashCanItem extends HtmlElement
             }
             return FactorySharePage.resolvePage(drone);
         }
-        catch (NoSuchElementException te){ }
+        catch (NoSuchElementException te)
+        {
+        }
         throw new PageException("Not able to find the Page, may be locator missing in the page : " + locator.toString());
     }
 }

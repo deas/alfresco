@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,30 +29,27 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.support.ui.Select;
 
 /**
- *
- * 
  * @author Ranjith Manyam
  * @since 1.9.0
  */
 public class LanguageSettingsPage extends SharePage
 {
     @SuppressWarnings("unused")
-	private static Log logger = LogFactory.getLog(LanguageSettingsPage.class);
+    private static Log logger = LogFactory.getLog(LanguageSettingsPage.class);
     protected static final By LANGUAGE_DROP_DOWN = By.cssSelector("select[id$='_default-language']");
     protected static final By OK_BUTTON = By.cssSelector("button[id$='_default-button-ok-button']");
     protected static final By CANCEL_BUTTON = By.cssSelector("button[id$='_default-button-cancel-button']");
 
     /*
      * Constructor
-     *
      */
     public LanguageSettingsPage(WebDrone drone)
     {
         super(drone);
     }
-    
+
     /*
-     *Render logic
+     * Render logic
      */
     @SuppressWarnings("unchecked")
     public LanguageSettingsPage render(RenderTime timer)
@@ -86,6 +79,7 @@ public class LanguageSettingsPage extends SharePage
 
     /**
      * Method to change the language from Language settings page
+     * 
      * @param language
      * @return {@link HtmlPage}
      */
@@ -106,6 +100,7 @@ public class LanguageSettingsPage extends SharePage
 
     /**
      * Method to check if the given language is selected or not
+     * 
      * @param language
      * @return True if the given language is selected
      */
@@ -124,6 +119,7 @@ public class LanguageSettingsPage extends SharePage
 
     /**
      * Method to get the selected language
+     * 
      * @return {@link Language}
      */
     public Language getSelectedLanguage()

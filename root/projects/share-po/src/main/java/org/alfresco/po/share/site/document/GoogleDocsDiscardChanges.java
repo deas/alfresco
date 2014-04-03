@@ -1,4 +1,3 @@
-
 package org.alfresco.po.share.site.document;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -17,6 +16,7 @@ import org.openqa.selenium.WebElement;
 /**
  * When the user Click on Discard button ,
  * they will b shown a message to discard which will contain Ok and Cancel.
+ * 
  * @author Subashni Prasanna
  * @since 1.5
  */
@@ -61,6 +61,7 @@ public class GoogleDocsDiscardChanges extends EditInGoogleDocsPage
 
     /**
      * Check the confirmation message is displayed.
+     * 
      * @return true if the message displayed
      */
     public boolean isDiscardPromptDisplayed()
@@ -80,6 +81,7 @@ public class GoogleDocsDiscardChanges extends EditInGoogleDocsPage
 
     /**
      * Click OK Button on the confirmation dialog.
+     * 
      * @return - DocumentDetailsPage
      */
     public HtmlPage clickOkButton()
@@ -102,6 +104,7 @@ public class GoogleDocsDiscardChanges extends EditInGoogleDocsPage
 
     /**
      * Click on Cancel Button on the confirmation dialog.
+     * 
      * @return - EditInGoogleDocsPage
      */
     public EditInGoogleDocsPage clickCancelButton()
@@ -119,5 +122,5 @@ public class GoogleDocsDiscardChanges extends EditInGoogleDocsPage
         }
         return new EditInGoogleDocsPage(drone, isGoogleCreate);
     }
-    
+
 }

@@ -46,7 +46,7 @@ public class ActionsSet
 
     /**
      * Checks if the menu contains a named action
-     *
+     * 
      * @param actionName the action name
      * @return true, if successful
      */
@@ -63,7 +63,7 @@ public class ActionsSet
 
         return false;
     }
-    
+
     /**
      * Click action by name.
      * 
@@ -97,11 +97,11 @@ public class ActionsSet
         // Find the dialog
         WebElement dialog = this.drone.find(DIALOG);
 
-        if(TestUtils.usableElement(dialog))
+        if (TestUtils.usableElement(dialog))
         {
             // Within the dialog find the buttons
             List<WebElement> dialogButtons = dialog.findElements(DIALOG_BUTTONS);
-            
+
             // Iterate over the dialogButtons and click the button that matches the named dialog button name
             for (WebElement button : dialogButtons)
             {

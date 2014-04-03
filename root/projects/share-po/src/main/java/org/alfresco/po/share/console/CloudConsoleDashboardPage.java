@@ -62,7 +62,8 @@ public class CloudConsoleDashboardPage extends CloudConsolePage
         return new InviteUsersTab(drone);
     }
 
-    public boolean isDashboardOpened(){
+    public boolean isDashboardOpened()
+    {
         boolean isDashboardOpened;
         try
         {

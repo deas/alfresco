@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,9 +33,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 /**
- * 
- * @author 
- *
+ * @author
  */
 public class CategoryPage extends AbstractEditProperties
 {
@@ -153,7 +147,10 @@ public class CategoryPage extends AbstractEditProperties
      */
     private HtmlPage addRemoveCategories(List<Categories> categories, By by)
     {
-        if (categories == null || categories.isEmpty()) { throw new UnsupportedOperationException("Categories can't be empty or null."); }
+        if (categories == null || categories.isEmpty())
+        {
+            throw new UnsupportedOperationException("Categories can't be empty or null.");
+        }
         List<WebElement> availableElements = null;
         Map<Categories, ShareLink> availableCategoriesMap = null;
         try
@@ -218,7 +215,7 @@ public class CategoryPage extends AbstractEditProperties
 
         return this;
     }
-    
+
     /**
      * Get {@link List} of {@link Categories} which can be add able.
      * 
@@ -230,7 +227,7 @@ public class CategoryPage extends AbstractEditProperties
         List<WebElement> elements = drone.findAndWaitForElements(AVAILABLE_CATEGORIES_TABLE);
         for (WebElement webElement : elements)
         {
-            if(webElement.findElement(By.cssSelector(".addIcon")).isDisplayed())
+            if (webElement.findElement(By.cssSelector(".addIcon")).isDisplayed())
             {
                 categories.add(Categories.getCategory(webElement.findElement(By.cssSelector(".item-name>a")).getText()));
             }
@@ -250,16 +247,17 @@ public class CategoryPage extends AbstractEditProperties
         for (WebElement webElement : elements)
         {
             String categoryName = webElement.findElement(By.cssSelector("h3.name")).getText();
-            if(categoryName != null && categoryName.trim().length() > 0)
+            if (categoryName != null && categoryName.trim().length() > 0)
             {
                 categories.add(Categories.getCategory(categoryName));
             }
         }
         return categories;
     }
-    
+
     /**
-     * Click on {@link cancel} in {@link CategoryPage}  
+     * Click on {@link cancel} in {@link CategoryPage}
+     * 
      * @return {@link EditDocumentPropertiesPage}
      */
     public HtmlPage clickCancel()
@@ -268,14 +266,16 @@ public class CategoryPage extends AbstractEditProperties
         {
             drone.find(CANCEL_BUTTON).click();
             return drone.getCurrentPage();
-        } catch (NoSuchElementException nse)
+        }
+        catch (NoSuchElementException nse)
         {
             throw new PageException("Not able find the cancel button: ", nse);
         }
     }
-    
+
     /**
-     * Click on {@link ApplyChanges} in {@link selectAspectsPage}  
+     * Click on {@link ApplyChanges} in {@link selectAspectsPage}
+     * 
      * @return {@link SelectAspectsPage}
      */
     public HtmlPage clickOk()
@@ -284,9 +284,10 @@ public class CategoryPage extends AbstractEditProperties
         {
             drone.find(OK_BUTTON).click();
             return drone.getCurrentPage();
-        } catch (NoSuchElementException nse)
+        }
+        catch (NoSuchElementException nse)
         {
-            throw new PageException("Not able find the ok button: ", nse);  
+            throw new PageException("Not able find the ok button: ", nse);
         }
     }
 }

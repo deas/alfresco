@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,7 +22,7 @@ import org.alfresco.webdrone.exception.PageException;
 /**
  * Alfresco Share factory, creates the appropriate page object that corresponds
  * to the browser view.
- *
+ * 
  * @author Siva Kaliyappan
  * @since 1.6.2
  */
@@ -36,9 +32,9 @@ public final class FactoryShareWorkFlow
     /**
      * Constructor.
      */
-    private FactoryShareWorkFlow() 
+    private FactoryShareWorkFlow()
     {
-   }
+    }
 
     /**
      * Gets the sub WorkFlow HTML element from the StartWorkFlow page.
@@ -51,11 +47,11 @@ public final class FactoryShareWorkFlow
     @SuppressWarnings("unchecked")
     public static <T extends WorkFlowPage> T getPage(final WebDrone drone, final WorkFlowType workFlowType)
     {
-        if(drone == null)
+        if (drone == null)
         {
             throw new IllegalArgumentException("WebDrone can't be null.");
         }
-        if(workFlowType == null)
+        if (workFlowType == null)
         {
             throw new IllegalArgumentException("Workflow Type can't be null.");
         }

@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -41,9 +37,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
-
 /**
- * @author Charu To get the list of groups and group members this page is used 
+ * @author Charu To get the list of groups and group members this page is used
  */
 public class GroupsPage extends SharePage
 {
@@ -55,7 +50,7 @@ public class GroupsPage extends SharePage
     private static final String BUTTON_ADD = ".groups-newgroup-button";
     private static final String GROUP_NAMES = "a[class$='groups-item-group']";
     private static Log logger = LogFactory.getLog(CopyOrMoveContentPage.class);
-    private static final String USER_NAMES = "a[class*='groups-item-user']>span[class$='-item-label']";    
+    private static final String USER_NAMES = "a[class*='groups-item-user']>span[class$='-item-label']";
     public static String ADD_GROUP = "td[class*='yui-dt-col-actions'] button";
     public static String ADD_USER = "td[class*='yui-dt-col-actions'] button";
 
@@ -124,12 +119,11 @@ public class GroupsPage extends SharePage
         }
         return nameOfGroups;
     }
-    
+
     /**
-     * Select Group name  from available group list in the Groups page
+     * Select Group name from available group list in the Groups page
      * 
-     * @param groupName -To select this group name from the list of groups 
-     * 
+     * @param groupName -To select this group name from the list of groups
      * @return {@link GroupsPage}
      */
     public GroupsPage selectGroup(String groupName)
@@ -158,7 +152,6 @@ public class GroupsPage extends SharePage
      * Assert method to verify any group name is present in the list of groups in groups page
      * 
      * @param groupName -To verify this group name is present in the the list of groups
-     * 
      * @return Boolean
      */
     public boolean isGroupPresent(String GroupName)
@@ -175,7 +168,7 @@ public class GroupsPage extends SharePage
                     return true;
                 }
             }
-        } 
+        }
         catch (NoSuchElementException e)
         {
             if (logger.isTraceEnabled())
@@ -196,96 +189,95 @@ public class GroupsPage extends SharePage
         try
         {
             List<UserProfile> listOfUsers = new ArrayList<UserProfile>();
-            List<WebElement> groupMembers = drone.findAndWaitForElements(By.cssSelector(USER_NAMES));            
+            List<WebElement> groupMembers = drone.findAndWaitForElements(By.cssSelector(USER_NAMES));
             for (WebElement webElement : groupMembers)
             {
                 UserProfile profile = new UserProfile();
                 String text = webElement.getText();
                 StringTokenizer userInfo = new StringTokenizer(text);
-                
+
                 int userDispalySize = 0;
                 int userInfoSize = userInfo.countTokens();
-                
+
                 while (userInfo.hasMoreElements())
                 {
-                   
-                        if (userDispalySize == 0)
-                        {
-                            profile.setfName((String) userInfo.nextElement());
-                        } else if (userDispalySize == 1 && userInfoSize>2 )
-                        {
-                            profile.setlName((String) userInfo.nextElement());
-                        } else if (userDispalySize == 2 || (userDispalySize==1 && userInfoSize == 2) )
-                        {
-                            profile.setUsername((String) userInfo.nextElement());
-                        }
+
+                    if (userDispalySize == 0)
+                    {
+                        profile.setfName((String) userInfo.nextElement());
+                    }
+                    else if (userDispalySize == 1 && userInfoSize > 2)
+                    {
+                        profile.setlName((String) userInfo.nextElement());
+                    }
+                    else if (userDispalySize == 2 || (userDispalySize == 1 && userInfoSize == 2))
+                    {
+                        profile.setUsername((String) userInfo.nextElement());
+                    }
                     userDispalySize++;
                 }
                 listOfUsers.add(profile);
             }
             return listOfUsers;
 
-        } catch (TimeoutException e)
+        }
+        catch (TimeoutException e)
         {
             logger.error("Unable to get the list of members : ", e);
         }
 
         throw new PageOperationException("Unable to get the list of members  : ");
     }
-    
+
     /**
      * click on Add user button in GroupsPage
      * 
      * @return AddUserPage
-     *//*
-    public AddUserPage clickAddUser()
-    {
-        try
-        {
-            WebElement addUserButton = drone.findAndWait(By.cssSelector(BUTTON_ADD_USER));
-
-            if (addUserButton.isDisplayed() && addUserButton.isEnabled())
-            {
-                addUserButton.click();
-                return new AddUserPage(drone);
-            }
-
-        } catch (TimeoutException nse)
-        {
-            logger.error("Unable to find Add User button");
-        }
-        throw new PageOperationException("Not found element is : " + BUTTON_ADD_USER);
-    }
-
-    *//**
+     */
+    /*
+     * public AddUserPage clickAddUser()
+     * {
+     * try
+     * {
+     * WebElement addUserButton = drone.findAndWait(By.cssSelector(BUTTON_ADD_USER));
+     * if (addUserButton.isDisplayed() && addUserButton.isEnabled())
+     * {
+     * addUserButton.click();
+     * return new AddUserPage(drone);
+     * }
+     * } catch (TimeoutException nse)
+     * {
+     * logger.error("Unable to find Add User button");
+     * }
+     * throw new PageOperationException("Not found element is : " + BUTTON_ADD_USER);
+     * }
+     *//**
      * Click on Add Group button in GroupsPage
      * 
      * @return AddGroupPage
-     *//*
-    public AddGroupPage clickAddGroup()
-    {
-        try
-        {
-            WebElement addGroupButton = drone.findAndWait(By.cssSelector(BUTTON_ADD_GROUP));
-
-            if (addGroupButton.isDisplayed())
-            {
-                addGroupButton.click();
-                return new AddGroupPage(drone);
-            }
-
-        } catch (TimeoutException nse)
-        {
-            logger.error("Unable to find Add Group button");
-        }
-        throw new PageOperationException("Not found element is : " + BUTTON_ADD_GROUP);
-    }
-*/
+     */
+    /*
+     * public AddGroupPage clickAddGroup()
+     * {
+     * try
+     * {
+     * WebElement addGroupButton = drone.findAndWait(By.cssSelector(BUTTON_ADD_GROUP));
+     * if (addGroupButton.isDisplayed())
+     * {
+     * addGroupButton.click();
+     * return new AddGroupPage(drone);
+     * }
+     * } catch (TimeoutException nse)
+     * {
+     * logger.error("Unable to find Add Group button");
+     * }
+     * throw new PageOperationException("Not found element is : " + BUTTON_ADD_GROUP);
+     * }
+     */
     /**
      * Click on Remove icon on members list in group page
      * 
-     *@param userName -To remove the userName from the list of Users in the groups page
-     * 
+     * @param userName -To remove the userName from the list of Users in the groups page
      * @return RemoveUserFromGroupPage
      */
     public RemoveUserFromGroupPage removeUser(String userName)
@@ -303,7 +295,8 @@ public class GroupsPage extends SharePage
             drone.mouseOver(element);
             element.click();
             return new RemoveUserFromGroupPage(getDrone());
-        } catch (TimeoutException e)
+        }
+        catch (TimeoutException e)
         {
             if (logger.isTraceEnabled())
             {
@@ -330,7 +323,8 @@ public class GroupsPage extends SharePage
                 return true;
             }
 
-        } catch (NoSuchElementException e)
+        }
+        catch (NoSuchElementException e)
         {
             if (logger.isTraceEnabled())
             {
@@ -339,13 +333,13 @@ public class GroupsPage extends SharePage
         }
         return false;
     }
-    
+
     /**
-     * Verify User is the member of group 
+     * Verify User is the member of group
      * 
      * @return Boolean
      */
-    public boolean isUserGroupMember( String fName, String lName, String groupName)
+    public boolean isUserGroupMember(String fName, String lName, String groupName)
     {
         List<UserProfile> userProfiles = this.getMembersList();
 
@@ -362,17 +356,17 @@ public class GroupsPage extends SharePage
         }
         return false;
     }
-    
+
     /**
-     * Verify User is Admin 
+     * Verify User is Admin
      * 
      * @return Boolean
      */
-    
+
     public Boolean isUserAdmin(String fName, String lName)
-    {                
-        String siteAdmin="ALFRESCO_ADMINISTRATORS";
-        
+    {
+        String siteAdmin = "ALFRESCO_ADMINISTRATORS";
+
         selectGroup(siteAdmin);
         List<UserProfile> userProfiles = this.getMembersList();
 
@@ -390,7 +384,4 @@ public class GroupsPage extends SharePage
         return false;
     }
 
-
-    
-    
 }

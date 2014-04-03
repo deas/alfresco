@@ -24,8 +24,8 @@ import org.alfresco.webdrone.Version;
  */
 public enum AlfrescoVersion implements Version
 {
-    //The current
-    Share(null,4.3,true),
+    // The current
+    Share(null, 4.3, true),
     Enterprise(null),
     Enterprise41(Enterprise, 4.1, false),
     Enterprise42(Enterprise, 4.2, true),

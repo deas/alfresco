@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -45,23 +41,25 @@ public class RepositoryPage extends DocumentLibraryPage
     /**
      * Constructor.
      * 
-     * @param drone             WebDriver to access page
-     * @param subfolderName     a subfolder name when drilling down
+     * @param drone WebDriver to access page
+     * @param subfolderName a subfolder name when drilling down
      */
     public RepositoryPage(WebDrone drone, final String subfolderName)
     {
         super(drone, subfolderName);
     }
+
     /**
      * Constructor.
      * 
-     * @param drone             WebDriver to access page
-     * @param shouldHaveFiles    a subfolder name when drilling down
+     * @param drone WebDriver to access page
+     * @param shouldHaveFiles a subfolder name when drilling down
      */
     public RepositoryPage(WebDrone drone, final boolean shouldHaveFiles)
     {
         super(drone);
     }
+
     @SuppressWarnings("unchecked")
     @Override
     public RepositoryPage render(RenderTime timer)
@@ -84,7 +82,7 @@ public class RepositoryPage extends DocumentLibraryPage
         return render(new RenderTime(time));
     }
 
-      /**
+    /**
      * Verify if people finder title is present on the page
      * 
      * @return true if exists

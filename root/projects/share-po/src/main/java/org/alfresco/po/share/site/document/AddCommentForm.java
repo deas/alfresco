@@ -11,10 +11,8 @@ public class AddCommentForm extends AbstractCommentForm
     private final static String FORM_DIV_CSS = "div[id$='default-add-actual-form-container']";
     private final static By FORM_DIV = By.cssSelector(FORM_DIV_CSS);
     private final static By AVATAR = By.cssSelector(FORM_DIV_CSS + ">img");
-    private final static By CANCEL_BUTTON = By.cssSelector(FORM_DIV_CSS
-            + " span[class~='yui-reset-button']>span>button");
-    private final static By SUBMIT_BUTTON = By.cssSelector(FORM_DIV_CSS
-            + " span[class~='yui-submit-button']>span>button");
+    private final static By CANCEL_BUTTON = By.cssSelector(FORM_DIV_CSS + " span[class~='yui-reset-button']>span>button");
+    private final static By SUBMIT_BUTTON = By.cssSelector(FORM_DIV_CSS + " span[class~='yui-submit-button']>span>button");
 
     public AddCommentForm(WebDrone drone)
     {

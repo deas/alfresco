@@ -1,23 +1,20 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.alfresco.po.share.search;
+
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -42,7 +39,7 @@ public class AdvanceSearchCRMPage extends AdvanceSearchPage
     protected static final By CRM_CONTRACT_NAME = By.cssSelector("input[id$='prop_crm_contractName']");
     protected static final By CRM_CASE_NUMBER = By.cssSelector("input[id$='prop_crm_caseNumber']");
     protected static final By CRM_CASE_NAME = By.cssSelector("input[id$='prop_crm_caseName']");
-   
+
     public AdvanceSearchCRMPage(WebDrone drone)
     {
         super(drone);
@@ -53,12 +50,16 @@ public class AdvanceSearchCRMPage extends AdvanceSearchPage
     {
         try
         {
-            elementRender(timer, getVisibleRenderElement(CRM_ACCOUNT_IDENTIFIER),getVisibleRenderElement(CRM_ACCOUNT_NAME),
-                        getVisibleRenderElement(CRM_OPPOR_NAME),getVisibleRenderElement(CRM_CONTRACT_NUMBER),getVisibleRenderElement(CRM_CONTRACT_NAME),
-                        getVisibleRenderElement(CRM_CASE_NUMBER), getVisibleRenderElement(CRM_CASE_NAME));
+            elementRender(timer, getVisibleRenderElement(CRM_ACCOUNT_IDENTIFIER), getVisibleRenderElement(CRM_ACCOUNT_NAME),
+                    getVisibleRenderElement(CRM_OPPOR_NAME), getVisibleRenderElement(CRM_CONTRACT_NUMBER), getVisibleRenderElement(CRM_CONTRACT_NAME),
+                    getVisibleRenderElement(CRM_CASE_NUMBER), getVisibleRenderElement(CRM_CASE_NAME));
         }
-        catch (NoSuchElementException e) {}
-        catch (TimeoutException e) {}
+        catch (NoSuchElementException e)
+        {
+        }
+        catch (TimeoutException e)
+        {
+        }
 
         return this;
     }
@@ -79,11 +80,12 @@ public class AdvanceSearchCRMPage extends AdvanceSearchPage
 
     /**
      * Enter the text value in the CrmAccountIdentifier field.
+     * 
      * @param String accountIdentifier
      */
     public void inputCrmAccountId(final String accountIdentifier)
     {
-        if (accountIdentifier == null || accountIdentifier.isEmpty() )
+        if (accountIdentifier == null || accountIdentifier.isEmpty())
         {
             throw new UnsupportedOperationException("Search term is required to perform a search");
         }
@@ -91,14 +93,15 @@ public class AdvanceSearchCRMPage extends AdvanceSearchPage
         nameElement.clear();
         nameElement.sendKeys(accountIdentifier);
     }
-  
+
     /**
-     * Enter the text value in the CrmAccountName  field.
+     * Enter the text value in the CrmAccountName field.
+     * 
      * @param String accountName
      */
     public void inputCrmAccountName(final String accountName)
     {
-        if (accountName == null || accountName.isEmpty() )
+        if (accountName == null || accountName.isEmpty())
         {
             throw new UnsupportedOperationException("Search term is required to perform a search");
         }
@@ -106,14 +109,15 @@ public class AdvanceSearchCRMPage extends AdvanceSearchPage
         nameElement.clear();
         nameElement.sendKeys(accountName);
     }
-  
+
     /**
      * Enter the text value in the CrmOpportunityName field.
+     * 
      * @param String opportunityName
      */
     public void inputCrmOpporName(final String opporName)
     {
-        if (opporName == null || opporName.isEmpty() )
+        if (opporName == null || opporName.isEmpty())
         {
             throw new UnsupportedOperationException("Search term is required to perform a search");
         }
@@ -121,14 +125,15 @@ public class AdvanceSearchCRMPage extends AdvanceSearchPage
         nameElement.clear();
         nameElement.sendKeys(opporName);
     }
-    
+
     /**
      * Enter the text value in the CrmContractNumber field.
+     * 
      * @param String contractNumber
      */
     public void inputCrmContractNumber(final String contractNumber)
     {
-        if (contractNumber == null || contractNumber.isEmpty() )
+        if (contractNumber == null || contractNumber.isEmpty())
         {
             throw new UnsupportedOperationException("Search term is required to perform a search");
         }
@@ -136,14 +141,15 @@ public class AdvanceSearchCRMPage extends AdvanceSearchPage
         nameElement.clear();
         nameElement.sendKeys(contractNumber);
     }
-    
+
     /**
      * Enter the text value in the CrMContractName field.
+     * 
      * @param String ContractName
      */
     public void inputCrmContractName(final String contractName)
     {
-        if (contractName == null || contractName.isEmpty() )
+        if (contractName == null || contractName.isEmpty())
         {
             throw new UnsupportedOperationException("Search term is required to perform a search");
         }
@@ -154,11 +160,12 @@ public class AdvanceSearchCRMPage extends AdvanceSearchPage
 
     /**
      * Enter the text value in the CrmCaseNumber field.
+     * 
      * @param String CaseNumber
      */
     public void inputCrmCaseNumber(final String caseNumber)
     {
-        if (caseNumber == null || caseNumber.isEmpty() )
+        if (caseNumber == null || caseNumber.isEmpty())
         {
             throw new UnsupportedOperationException("Search term is required to perform a search");
         }
@@ -166,14 +173,15 @@ public class AdvanceSearchCRMPage extends AdvanceSearchPage
         nameElement.clear();
         nameElement.sendKeys(caseNumber);
     }
-    
+
     /**
      * Enter the text value in the CrmCaseName field.
+     * 
      * @param String caseName
      */
     public void inputCrmCaseName(final String caseName)
     {
-        if (caseName == null || caseName.isEmpty() )
+        if (caseName == null || caseName.isEmpty())
         {
             throw new UnsupportedOperationException("Search term is required to perform a search");
         }
@@ -181,5 +189,5 @@ public class AdvanceSearchCRMPage extends AdvanceSearchPage
         nameElement.clear();
         nameElement.sendKeys(caseName);
     }
-    
+
 }
