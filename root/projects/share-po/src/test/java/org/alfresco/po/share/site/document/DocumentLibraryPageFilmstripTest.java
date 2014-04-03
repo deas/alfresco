@@ -108,58 +108,7 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
         assertFalse(documentLibPage.isPreviousFilmstripArrowPresent());
     }
 
-    // Looks like a bug
-    // https://issues.alfresco.com/jira/browse/MNT-10621
-    @Test(enabled = true, priority = 3)
-    public void testSendKeysForFilmstrip() throws Exception
-    {
-
-        documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
-
-        documentLibPage.sendKeyRightArrowForFilmstrip().render();
-
-        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file2.getName());
-
-        documentLibPage.sendKeyLeftArrowForFilmstrip().render();
-
-        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file1.getName());
-
-        documentLibPage.sendKeyDownArrowForFilmstrip().render();
-
-        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file2.getName());
-
-        documentLibPage.sendKeyUpArrowForFilmstrip().render();
-
-        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file1.getName());
-
-    }
-
-    @Test(priority=4)
-    public void testGetSelectedFIlesForFilmstrip() throws Exception
-    {
-        documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
-        assertEquals(documentLibPage.getSelectedFIlesForFilmstrip().size(), 0);
-
-        FileDirectoryInfo fileInfo = documentLibPage.getFileDirectoryInfo(file1.getName());
-        fileInfo.selectCheckbox();
-
-        List<String> selectFiles = documentLibPage.getSelectedFIlesForFilmstrip();
-        assertTrue(selectFiles.contains(file1.getName()), selectFiles.toString());
-        assertFalse(selectFiles.contains(file2.getName()), selectFiles.toString());
-    }
-
-    @Test(priority = 5)
-    public void testToggleNavHandleForFilmstrip() throws Exception
-    {
-        documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
-        boolean isTapeDiaplyed = documentLibPage.isFilmstripTapeDisplpayed();
-        documentLibPage.toggleNavHandleForFilmstrip();
-        assertEquals(documentLibPage.isFilmstripTapeDisplpayed(), !isTapeDiaplyed);
-        documentLibPage.toggleNavHandleForFilmstrip();
-        assertEquals(documentLibPage.isFilmstripTapeDisplpayed(), isTapeDiaplyed);
-    }
-
-    @Test(priority = 6)
+    @Test(priority = 10)
     public void testArrowsOnTape() throws Exception
     {
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
@@ -186,12 +135,61 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
         assertFalse(documentLibPage.isPreviousFilmstripTapeArrowPresent());
 
         documentLibPage = documentLibPage.selectNextFilmstripTape().render();
-
-        assertTrue(documentLibPage.isPreviousFilmstripTapeArrowPresent());
-
         documentLibPage = documentLibPage.selectPreviousFilmstripTape().render();
 
         assertTrue(documentLibPage.isNextFilmstripTapeArrowPresent());
         assertFalse(documentLibPage.isPreviousFilmstripTapeArrowPresent());
+    }
+
+    @Test(priority = 3)
+    public void testGetSelectedFIlesForFilmstrip() throws Exception
+    {
+        documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
+        // documentLibPage = documentLibPage.getNavigation().selectDesellectAll().render();
+        assertEquals(documentLibPage.getSelectedFIlesForFilmstrip().size(), 0);
+
+        FileDirectoryInfo fileInfo = documentLibPage.getFileDirectoryInfo(file1.getName());
+        fileInfo.selectCheckbox();
+
+        List<String> selectFiles = documentLibPage.getSelectedFIlesForFilmstrip();
+        assertTrue(selectFiles.contains(file1.getName()), selectFiles.toString());
+        assertFalse(selectFiles.contains(file2.getName()), selectFiles.toString());
+    }
+
+    @Test(priority = 5)
+    public void testToggleNavHandleForFilmstrip() throws Exception
+    {
+        documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
+        boolean isTapeDiaplyed = documentLibPage.isFilmstripTapeDisplpayed();
+        documentLibPage.toggleNavHandleForFilmstrip();
+        assertEquals(documentLibPage.isFilmstripTapeDisplpayed(), !isTapeDiaplyed);
+        documentLibPage.toggleNavHandleForFilmstrip();
+        assertEquals(documentLibPage.isFilmstripTapeDisplpayed(), isTapeDiaplyed);
+    }
+
+    // Looks like a bug
+    // https://issues.alfresco.com/jira/browse/MNT-10621
+    @Test(enabled = true, priority = 4)
+    public void testSendKeysForFilmstrip() throws Exception
+    {
+
+        documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
+
+        documentLibPage.sendKeyRightArrowForFilmstrip().render();
+
+        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file2.getName());
+
+        documentLibPage.sendKeyLeftArrowForFilmstrip().render();
+
+        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file1.getName());
+
+        documentLibPage.sendKeyDownArrowForFilmstrip().render();
+
+        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file2.getName());
+
+        documentLibPage.sendKeyUpArrowForFilmstrip().render();
+
+        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file1.getName());
+
     }
 }
