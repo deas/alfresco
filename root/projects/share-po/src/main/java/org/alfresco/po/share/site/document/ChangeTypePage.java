@@ -28,6 +28,7 @@ import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 /**
  * This is the pop up dialog to select the folder type.
@@ -42,6 +43,8 @@ public class ChangeTypePage extends SharePage
 
     private static final By TYPE_DROPDOWN = By.cssSelector("div[style^='visibility: visible;'] form select");
     private static final By CANCEL_BUTTON = By.cssSelector("div[style^='visibility: visible;'] form button[id$='-cancel-button']");
+    protected static final By OK_BUTTON = By.cssSelector("div[style^='visibility: visible;'] form button[id$='-ok-button']");
+
 
     protected ChangeTypePage(WebDrone drone)
     {
@@ -115,6 +118,23 @@ public class ChangeTypePage extends SharePage
     public FolderDetailsPage selectCancel()
     {
         drone.find(CANCEL_BUTTON).click();
+        return new FolderDetailsPage(drone);
+    }
+
+
+    public void selectChangeType(final String changeType)
+    {
+        if (changeType == null)
+        {
+            throw new UnsupportedOperationException("Search term is required to perform a search");
+        }
+        WebElement dropDown = drone.find(TYPE_DROPDOWN);
+        Select select = new Select(dropDown);
+        select.selectByVisibleText(changeType);
+    }
+
+    public FolderDetailsPage selectSave(){
+        drone.find(OK_BUTTON).click();
         return new FolderDetailsPage(drone);
     }
 

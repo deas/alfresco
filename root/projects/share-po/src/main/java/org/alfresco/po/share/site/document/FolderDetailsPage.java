@@ -26,6 +26,7 @@ import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
@@ -47,6 +48,9 @@ public class FolderDetailsPage extends DetailsPage
         private static final String CSS_PANEL = "div.panel-body";
         private static final String NODE_PATH = "div.node-path";
         private static final String DOWNLOAD_TITLE = "Download as Zip";
+    private static final String VIEW_ON_GOOGLE_MAPS = "//span[text()='View on Google Maps']";
+
+
         private final By changeTypeLink;
 
         /**
@@ -251,4 +255,16 @@ public class FolderDetailsPage extends DetailsPage
         }
         return actionNames;
     }
+    public boolean isViewOnGoogleMapsLinkVisible()
+    {
+        try
+        {
+            return drone.find(By.xpath(VIEW_ON_GOOGLE_MAPS)).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+    }
+
 }
