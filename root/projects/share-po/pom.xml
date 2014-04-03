@@ -86,6 +86,10 @@
                     <artifactId>nekohtml</artifactId>
                 </exclusion>
                 <exclusion>
+                    <artifactId>javax.servlet</artifactId>
+                    <groupId>servlet-api</groupId>
+                </exclusion>
+                <exclusion>
                     <artifactId>xercesImpl</artifactId>
                     <groupId>xerces</groupId>
                 </exclusion>
