@@ -62,10 +62,13 @@ public class LiveSearchDropdown extends SharePage
     private static final String DOCUMENT_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodeDocs'] div.alf-livesearch-item";
     
     //Sites Results
-    private static final String SITES_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodeSites'] div.alf-livesearch-item>a";
+    private static final String SITES_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodeSites'] div.alf-livesearch-item";
     
     //People Results
-    private static final String PEOPLE_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodePeople'] div.alf-livesearch-item>a";
+    private static final String PEOPLE_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodePeople'] div.alf-livesearch-item";
+    
+    //See more document results
+    private static final String MORE_RESULTS = "div[id='uniqName_0_2'] a[title='More results...']";
     
     /**
      * Constructor
@@ -118,7 +121,7 @@ public class LiveSearchDropdown extends SharePage
             {
                 for (WebElement element : elements)
                 {
-                    results.add(new LiveSearchDocumentResult(element));
+                    results.add(new LiveSearchDocumentResult(element, drone));
                 }
             }
         }
@@ -142,9 +145,9 @@ public class LiveSearchDropdown extends SharePage
      * 
      * @return Collections of search result
      */
-    public List<String> getSearchSitesResults()
+    public List<LiveSearchSiteResult> getSearchSitesResults()
     {
-        List<String> results = new ArrayList<String>();
+        List<LiveSearchSiteResult> results = new ArrayList<LiveSearchSiteResult>();
         try
         {
             List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(SITES_RESULTS));
@@ -152,7 +155,7 @@ public class LiveSearchDropdown extends SharePage
             {
                 for (WebElement element : elements)
                 {
-                    results.add(element.getText());
+                    results.add(new LiveSearchSiteResult(element, drone));
                 }
             }
         }
@@ -171,24 +174,22 @@ public class LiveSearchDropdown extends SharePage
 
     
     
-    
     /**
-     * Gets the people search results as a collection.
+     * Gets the people search results as a collection of .
      * 
      * @return Collections of search result
      */
-    public List<String> getSearchPeopleResults()
+    public List<LiveSearchPeopleResult> getSearchPeopleResults()
     {
-        List<String> results = new ArrayList<String>();
+        List<LiveSearchPeopleResult> results = new ArrayList<LiveSearchPeopleResult>();
         try
         {
-
             List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(PEOPLE_RESULTS));
             if (elements.size() > 0)
             {
                 for (WebElement element : elements)
                 {
-                    results.add(element.getText());
+                    results.add(new LiveSearchPeopleResult(element, drone));
                 }
             }
         }
@@ -285,7 +286,30 @@ public class LiveSearchDropdown extends SharePage
     }
 
 
-
+    /**
+     * Clicks on see more results arrow
+     * @return
+     */
+    public void clickToSeeMoreDocumentResults()
+    {
+        try
+        {
+            WebElement expandDocumentResults = drone.findAndWait(By.cssSelector(MORE_RESULTS));
+            expandDocumentResults.click();
+         
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No see more results icon " + nse);
+            throw new PageException("Unable to find see more results icon.", nse);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find see more results icon. " + te);
+            throw new PageException("Unable to find see more results icon. ", te);
+        }
+         
+    }
 
 
 
