@@ -90,6 +90,10 @@
         </classes>
     </test>
 
-
+    <test name="Comments tests for 'Folder Details Page'" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.FolderDetailsCommentsTest"/>
+        </classes>
+    </test>
 
 </suite>

@@ -79,6 +79,7 @@
 			<class name="org.alfresco.share.newfeatures.NodeBrowserTests" />
 		</classes>
 	</test>
+
    <test name="Table View Tests" verbose="1">
       <classes>
          <class name="org.alfresco.share.site.document.TableViewDocLibTest">
@@ -228,7 +229,7 @@
 
     <test name="Comments tests for 'Folder Details Page'" verbose="1">
         <classes>
-            <class name="org.alfresco.share.site.document.FolderDetailsCommentsTests"/>
+            <class name="org.alfresco.share.site.document.FolderDetailsCommentsTest"/>
         </classes>
     </test>
 

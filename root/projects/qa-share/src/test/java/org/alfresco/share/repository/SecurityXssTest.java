@@ -37,7 +37,6 @@ import org.alfresco.po.share.site.document.DetailsPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPage.Fields;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
 import org.alfresco.po.share.site.document.EditTextDocumentPage;
 import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.site.document.InlineEditPage;
