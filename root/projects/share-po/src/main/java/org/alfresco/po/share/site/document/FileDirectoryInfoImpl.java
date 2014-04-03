@@ -1421,8 +1421,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     @Override
     public HtmlPage selectManageRules()
     {
-        WebElement btn = drone.find(By.cssSelector("div.folder-manage-rules > a"));
-        btn.click();
+        findElement(By.cssSelector("div.folder-manage-rules > a")).click();
         return drone.getCurrentPage();
     }
 

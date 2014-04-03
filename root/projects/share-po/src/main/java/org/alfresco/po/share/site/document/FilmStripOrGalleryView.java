@@ -5,7 +5,9 @@ package org.alfresco.po.share.site.document;
 
 import java.util.List;
 
+import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.exception.AlfrescoVersionException;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.webdrone.HtmlPage;
@@ -318,6 +320,16 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void selectDownloadFolderAsZip()
     {
+        AlfrescoVersion version = getDrone().getProperties().getVersion();
+        if (!isFolder())
+        {
+            throw new UnsupportedOperationException("Download folder as zip is available for folders only.");
+        }
+        if (AlfrescoVersion.Enterprise41.equals(version) || version.isCloud())
+        {
+            throw new AlfrescoVersionException("Option Download Folder as Zip is not available for this version of Alfresco");
+        }
+        
         clickInfoIcon(false);
         super.downloadFolderAsZip();
         focusOnDocLibFooter();
@@ -503,7 +515,9 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     public boolean isDeletePresent()
     {
         clickInfoIcon(true);
-        return super.isDeletePresent();
+        boolean deletePresent = super.isDeletePresent();
+        focusOnDocLibFooter();
+        return deletePresent;
     }
 
     /*
@@ -817,7 +831,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         try
         {
            //drone.mouseOver(drone.findAndWait(By.linkText(getName())));
-            drone.mouseOverOnElement(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']",getName()))));
+            drone.mouseOver(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']",getName()))));
             return findAndWait(By.cssSelector("a.alf-show-detail"));
         }
         catch (TimeoutException e)

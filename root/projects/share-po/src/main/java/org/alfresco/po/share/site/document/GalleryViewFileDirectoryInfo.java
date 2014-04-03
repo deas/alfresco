@@ -48,7 +48,7 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
         
         if(isFolder())
         {
-            THUMBNAIL = "div.alf-gallery-item-thumbnail>div+div+span a";  
+            THUMBNAIL = "div.alf-gallery-item-thumbnail span a";  
         }
         else
         {
@@ -62,7 +62,7 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
     @Override
     public HtmlPage selectThumbnail()
     {
-        drone.mouseOverOnElement(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']",getName()))));
+        drone.mouseOver(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']",getName()))));
         return super.selectThumbnail();
     }
     
@@ -94,7 +94,7 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
     @Override
     public void selectCheckbox()
     {
-        drone.mouseOverOnElement(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']",getName()))));
+        drone.mouseOver(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']",getName()))));
         super.selectCheckbox();
     }
 }

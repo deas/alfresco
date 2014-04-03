@@ -287,8 +287,6 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         Assert.assertNotNull(thisRow.getContentNodeRef(), "Node Reference is null");
         logger.info("NodeRef:" + thisRow.getContentNodeRef());
         
-        Assert.assertFalse(thisRow.isVersionVisible());
-        Assert.assertFalse(thisRow.isCheckBoxVisible());
         Assert.assertTrue(thisRow.getVersionInfo().equalsIgnoreCase("1.0"));
         Assert.assertTrue(thisRow.getContentNameFromInfoMenu().equalsIgnoreCase(file.getName()));
     }
@@ -351,7 +349,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
     public void test117SelectThumbnailForFile() throws Exception
     {
         // Get File
-        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
         DocumentDetailsPage detailsPage = thisRow.selectThumbnail().render();
         Assert.assertNotNull(detailsPage);
     }
