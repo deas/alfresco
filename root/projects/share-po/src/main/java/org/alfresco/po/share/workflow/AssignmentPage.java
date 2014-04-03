@@ -203,7 +203,8 @@ public class AssignmentPage extends SharePage
         try
         {
             searchForUser(userName);
-            return drone.findAndWaitForElements(LIST_CLOUD_REVIEWER);
+            drone.waitForElement(LIST_CLOUD_REVIEWER, SECONDS.convert(drone.getDefaultWaitTime(), MILLISECONDS));
+            return drone.findDisplayedElements(LIST_CLOUD_REVIEWER);
         }
         catch (TimeoutException toe)
         {
