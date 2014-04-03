@@ -1,26 +1,36 @@
 package org.alfresco.share.util;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.exception.ShareException;
+import org.alfresco.po.share.site.document.Categories;
+import org.alfresco.po.share.site.document.CategoryPage;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
 import org.alfresco.po.share.site.document.DetailsPage;
+import org.alfresco.po.share.site.document.DocumentAspect;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
 import org.alfresco.po.share.site.document.FileDirectoryInfo;
+import org.alfresco.po.share.site.document.FolderDetailsPage;
+import org.alfresco.po.share.site.document.SelectAspectsPage;
 import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.testng.Assert;
 import org.testng.SkipException;
 
 public class ShareUserRepositoryPage extends AbstractTests
@@ -530,4 +540,149 @@ public class ShareUserRepositoryPage extends AbstractTests
     {
         return ShareUserSitePage.getInLineEditContentDetails(drone, contentName);
     }
+    
+    public enum Operation 
+    {
+        REMOVE, ADD_AND_CANCEL, SAVE;
+    }
+    
+    /**
+     * Select operation to be performed on Tag.
+     * @param drone
+     * @param operation
+     * @param tagName
+     */
+    public static void operationOnTag(WebDrone drone, Operation operation, String tagName)
+    {
+        EditDocumentPropertiesPage editPropPopUp = (EditDocumentPropertiesPage) getSharePage(drone);
+        TagPage tagPage = (editPropPopUp).getTag().render();
+        if (Operation.REMOVE.equals(operation))
+        {
+            tagPage.removeTagValue(tagName).render();
+        }
+        else
+        {
+            tagPage = tagPage.enterTagValue(tagName).render();
+            if (Operation.ADD_AND_CANCEL.equals(operation))
+            {
+                tagPage.clickCancelButton().render();
+            }
+            else
+            // Save the tag
+            {
+                tagPage.clickOkButton().render();
+            }
+        }
+    }
+    
+    /**
+     * Add categories from EditDocumentPropertiesPopUp.
+     * @param drone
+     * @param folderName
+     * @param category
+     */
+    public static void addCategories(WebDrone drone, String folderName, Categories category, boolean isOk )
+    {
+        CategoryPage categoryPage = ((EditDocumentPropertiesPage)getSharePage(drone)).getCategory();
+        categoryPage.add(Arrays.asList(category));
+        List<Categories> addedCategories = categoryPage.getAddedCatgories();
+
+        Assert.assertTrue(addedCategories.size() > 0);
+
+        Assert.assertTrue(addedCategories.contains(category));
+        if(isOk)
+        {
+            categoryPage.clickOk();
+        }
+        else
+        {
+            categoryPage.clickCancel();
+        }
+    }
+    
+    /**
+     * REturn EditDocumentPropertiesPopup from RepositoryPage or documentLibrary page.
+     * @param drone
+     * @param folderName
+     * @return
+     */
+    public static EditDocumentPropertiesPage returnEditDocumentProperties(WebDrone drone, String folderName)
+    {        
+        SharePage sharePage = getSharePage(drone);        
+        return ((DocumentLibraryPage)sharePage).getFileDirectoryInfo(folderName).selectEditProperties().render();
+       
+    }
+    
+    
+    /**
+     * Add aspect.
+     * @param drone
+     * @param folderName
+     * @param aspect
+     */
+    public static void addAspect(WebDrone drone, String folderName, DocumentAspect aspect)
+    {
+        RepositoryPage repositoryPage = (RepositoryPage)getSharePage(drone);
+        
+        // Select more options in folder1 and click on Manage Aspects
+        SelectAspectsPage selectAspectsPage = repositoryPage.getFileDirectoryInfo(folderName).selectManageAspects().render();
+
+        // Get several aspects in left hand side
+        List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
+        
+        aspects.add(aspect);
+
+        // Add several aspects to right hand side
+        selectAspectsPage = selectAspectsPage.add(aspects).render();
+
+        // Verify assert added to currently selected right hand side
+        Assert.assertTrue(selectAspectsPage.getSelectedAspects().contains(aspect));
+
+        // Click on Apply changes on select aspects page
+        selectAspectsPage.clickApplyChanges().render();
+    }
+    
+    /**
+     * Get properties.
+     * @param drone
+     * @param folderName
+     * @param aspect
+     * @return
+     */
+    public static Map<String, Object> getProperties(WebDrone drone, String folderName)
+    {
+        RepositoryPage repositorypage = (RepositoryPage)getSharePage(drone);
+        FolderDetailsPage folderDetailsPage = repositorypage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
+        return folderDetailsPage.getProperties();
+    }
+    
+    /**
+     * Copy folder to destination. 
+     * @param drone
+     * @param folderName
+     * @param destinationFolderName
+     */
+    public static void copyToFolderInDestination(WebDrone drone, String folderName, String destinationFolderName)
+    {
+      
+      RepositoryPage repoPage = (RepositoryPage) ShareUser.getSharePage(drone);
+
+      CopyOrMoveContentPage copyOrMoveContentPage = repoPage.getFileDirectoryInfo(folderName).selectCopyTo().render();
+    
+      copyOrMoveContentPage = copyOrMoveContentPage.selectDestination(destinationFolderName).render();
+    
+      copyOrMoveContentPage.selectOkButton().render();
+    }
+    
+    /**
+     * Add tag from repository page.
+     * @param drone
+     * @param folderName
+     * @param tagName
+     */
+    public static void addTag(WebDrone drone, String folderName, String tagName)
+    {
+        ((RepositoryPage)getSharePage(drone)).getFileDirectoryInfo(folderName).addTag(tagName);  
+    }
+
 }
