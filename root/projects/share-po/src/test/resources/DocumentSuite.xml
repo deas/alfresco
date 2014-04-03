@@ -128,11 +128,11 @@
             <class name="org.alfresco.po.share.site.document.ManagePermissionsTest" />
         </classes>
     </test>
-    <test name="RevertToVersionPageTest">
-        <classes>
-            <class name="org.alfresco.po.share.site.document.RevertToVersionPageTest" />
-        </classes>
-    </test>
+<!--     <test name="RevertToVersionPageTest"> -->
+<!--         <classes> -->
+<!--             <class name="org.alfresco.po.share.site.document.RevertToVersionPageTest" /> -->
+<!--         </classes> -->
+<!--     </test> -->
     <test name="SelectSyncToCloudTest">
         <classes>
             <class name="org.alfresco.po.share.site.document.SelectSyncToCloudTest" />
@@ -153,9 +153,9 @@
             <class name="org.alfresco.po.share.site.document.TableViewFileDirectoryInfoTest" />
         </classes>
     </test>
-    <test name="TagPageTest">
-        <classes>
-            <class name="org.alfresco.po.share.site.document.TagPageTest" />
-        </classes>
-    </test>
+<!--     <test name="TagPageTest"> -->
+<!--         <classes> -->
+<!--             <class name="org.alfresco.po.share.site.document.TagPageTest" /> -->
+<!--         </classes> -->
+<!--     </test> -->
 </suite>
