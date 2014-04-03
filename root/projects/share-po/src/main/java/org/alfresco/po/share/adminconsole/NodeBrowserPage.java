@@ -38,6 +38,7 @@ public class NodeBrowserPage extends SharePage
                 super(drone);
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public NodeBrowserPage render(RenderTime renderTime)
         {
@@ -50,6 +51,7 @@ public class NodeBrowserPage extends SharePage
                 return this;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public NodeBrowserPage render(long l)
         {
@@ -57,6 +59,7 @@ public class NodeBrowserPage extends SharePage
                 return render(new RenderTime(l));
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public NodeBrowserPage render()
         {
@@ -92,7 +95,7 @@ public class NodeBrowserPage extends SharePage
                 }
                 catch (TimeoutException e)
                 {
-                        results = Collections.EMPTY_LIST;
+                        results = Collections.emptyList();
                 }
                 return results.size() > 0;
         }

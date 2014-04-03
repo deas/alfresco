@@ -26,6 +26,7 @@ import org.openqa.selenium.WebElement;
 
 
 // "extends SharePage" should be changed to "extends Page" we should re-locate method "render" from SharePage to Page
+@SuppressWarnings("unused")
 public class CloudConsolePage extends SharePage
 {
     private static final By USERNAME_INPUT = By.cssSelector("input[id$='edit-name']");

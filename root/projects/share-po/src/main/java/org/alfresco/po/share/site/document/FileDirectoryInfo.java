@@ -468,7 +468,7 @@ public interface FileDirectoryInfo
      /**
      * @return
      */
-    public boolean isCommentLinkPresent();
+     boolean isCommentLinkPresent();
 
      /**
       * Performs the find with an added resolveStaleness.
@@ -484,57 +484,57 @@ public interface FileDirectoryInfo
      * 
      * @return boolean
      */
-    public abstract boolean isShareLinkVisible();
+    boolean isShareLinkVisible();
 
     /**
      * Checks if view in browser icon is visible.
      * 
      * @return boolean
      */
-    public abstract boolean isViewInBrowserVisible();
+    boolean isViewInBrowserVisible();
 
     /**
      * Sends the keys that needs to be entered for new tag.
      * 
      * @param tagName
      */
-    public abstract void enterTagString(final String tagName);
+    void enterTagString(final String tagName);
 
     /**
      * Hovers over the edit icon and clicks the edit button.
      */
-    public abstract void contentNameEnableEdit();
+    void contentNameEnableEdit();
 
     /**
      * Enters the new content name in the box
      * 
      * @param newContentName
      */
-    public abstract void contentNameEnter(String newContentName);
+    void contentNameEnter(String newContentName);
 
     /**
      * Clicks the save link for content name editing.
      */
-    public abstract void contentNameClickSave();
+    void contentNameClickSave();
 
     /**
      * Clicks the cancel link for content name editing.
      */
-    public abstract void contentNameClickCancel();
+    void contentNameClickCancel();
 
     /**
      * Hovers over the edit icon and clicks the edit button.
      * Enters the new content name in the box.
      * Clicks the save link for content name editing.
      */
-    public abstract void renameContent(String newContentName);
+    void renameContent(String newContentName);
     
     /**
      * Returns the modified date string as displayed on-screen.
      * 
      * @return
      */
-    public String getModified();
+    String getModified();
     
     /**
      * Clicks on the modifier's name
@@ -543,7 +543,7 @@ public interface FileDirectoryInfo
      * 
      * @throws UnsupportedOperationException if this operation is not supported in the current view.
      */
-    public HtmlPage selectModifier();
+    HtmlPage selectModifier();
     
     /**
      * Gets the modifier's name as displayed on-screen.
@@ -552,7 +552,7 @@ public interface FileDirectoryInfo
      * 
      * @throws UnsupportedOperationException if this operation is not supported in the current view.
      */
-    public String getModifier();
+    String getModifier();
     
     /**
      * Returns the created date as displayed on-screen.
@@ -561,7 +561,7 @@ public interface FileDirectoryInfo
      * 
      * @throws UnsupportedOperationException if this operation is not supported in the current view.
      */
-    public String getCreated();
+    String getCreated();
     
     /**
      * Clicks on the creator's name.
@@ -570,7 +570,7 @@ public interface FileDirectoryInfo
      * 
      * @throws UnsupportedOperationException if this operation is not supported in the current view.
      */
-    public HtmlPage selectCreator();
+    HtmlPage selectCreator();
     
     /**
      * Gets the creator's name as displayed on screen.
@@ -579,7 +579,7 @@ public interface FileDirectoryInfo
      * 
      * @throws UnsupportedOperationException if this operation is not supported in the current view.
      */
-    public String getCreator();
+    String getCreator();
 
     /**
      * This method is used to get the File or Foder height in document library page.
@@ -615,5 +615,5 @@ public interface FileDirectoryInfo
     /**
      * This method is used to click on more link, on file directory info.
      */
-    public void selectMoreLink();
+    void selectMoreLink();
 }

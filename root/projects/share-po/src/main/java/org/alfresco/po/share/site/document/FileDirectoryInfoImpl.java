@@ -1786,7 +1786,9 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
                 // Select to get focus
                 editIcon.click();
                 if (findElement(By.cssSelector(INPUT_CONTENT_NAME)).isDisplayed())
+                {
                     break;
+                }
             }
             catch (NoSuchElementException e)
             {
@@ -1828,7 +1830,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         catch (NoSuchElementException e)
         {
             logger.error("Input should be displayed" + e.getMessage());
-            throw new PageException("Input should be displayed", e);
+            throw new PageOperationException("Input should be displayed", e);
         }
         
     }
@@ -1836,46 +1838,44 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     @Override
     public void contentNameClickSave()
     {
+        ClickLinkText(By.cssSelector(INPUT_CONTENT_NAME), "Save");
+    }
+
+    private void ClickLinkText(By by, String linkText)
+    {
+        String expectionMessage = "";
         try
         {
-            WebElement inputBox = findElement(By.cssSelector(INPUT_CONTENT_NAME));
+            WebElement inputBox = findElement(by);
             if (inputBox.isDisplayed())
             {
-                findAndWait(By.linkText("Save")).click();
+                findAndWait(By.linkText(linkText)).click();
+                return;
             }
             else
             {
-                throw new PageException("Input is not displayed displayed");
+                throw new PageOperationException("Input is not displayed displayed");
             }
         }
         catch (TimeoutException ex)
         {
-            logger.error("Exceeded time to find the Save button css." + ex.getMessage());
-            throw new PageException("Exceeded time to find the Save button css.", ex);
+            expectionMessage = ex.getMessage();
+            logger.error("Exceeded time to find the " + linkText + " button css." + expectionMessage);
+            
         }
-
+        catch (NoSuchElementException ex)
+        {
+            expectionMessage = ex.getMessage();
+            logger.error("Not able to find the input css." + expectionMessage);
+            
+        }
+        throw new PageOperationException("Exceeded time to find the " + linkText + " button css."+ expectionMessage);
     }
 
     @Override
     public void contentNameClickCancel()
     {
-        try
-        {
-            WebElement inputBox = findElement(By.cssSelector(INPUT_CONTENT_NAME));
-            if (inputBox.isDisplayed())
-            {
-                findAndWait(By.linkText("Cancel")).click();
-            }
-            else
-            {
-                throw new PageException("Input is not displayed displayed");
-            }
-        }
-        catch (TimeoutException ex)
-        {
-            logger.error("Exceeded time to find the Save button css." + ex.getMessage());
-            throw new PageException("Exceeded time to find the Save button css.", ex);
-        }
+        ClickLinkText(By.cssSelector(INPUT_CONTENT_NAME), "Cancel");
     }
 
     @Override

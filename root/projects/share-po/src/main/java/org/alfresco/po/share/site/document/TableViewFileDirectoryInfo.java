@@ -19,7 +19,6 @@
 package org.alfresco.po.share.site.document;
 
 import org.alfresco.po.share.FactorySharePage;
-import org.alfresco.po.share.UserProfilePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
