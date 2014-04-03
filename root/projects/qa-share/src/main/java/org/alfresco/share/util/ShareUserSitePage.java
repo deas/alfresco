@@ -484,6 +484,10 @@ public class ShareUserSitePage extends AbstractTests
                 docPage = docPage.getNavigation().selectTableView().render();
                 logger.info("Opened Table View");
                 return docPage;
+        case FILMSTRIP_VIEW:
+            docPage = docPage.getNavigation().selectFilmstripView().render();
+            logger.info("Opened Filmstrip View");
+            return docPage;
             default:
                 logger.info("Failed to find specified View: View not changed");
                 return docPage;
