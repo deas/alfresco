@@ -273,10 +273,10 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     public void testSelectViewInBrowser()
     {
         documentLibPage = drone.getCurrentPage().render();
-        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName());
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file2.getName());
         String mainWinHandle = drone.getWindowHandle();
         thisRow.selectViewInBrowser();
-        assertTrue(drone.getCurrentUrl().toLowerCase().contains(file1.getName().toLowerCase()));
+        assertTrue(drone.getCurrentUrl().toLowerCase().contains(file2.getName().toLowerCase()));
         drone.closeWindow();
         drone.switchToWindow(mainWinHandle);
     }

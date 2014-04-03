@@ -742,6 +742,18 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
     }
     
     @Test(enabled = true, groups = "Enterprise4.2", priority = 46)
+    public void testSelectViewInBrowser()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
+        String mainWinHandle = drone.getWindowHandle();
+        thisRow.selectViewInBrowser();
+        assertTrue(drone.getCurrentUrl().toLowerCase().contains(file.getName().toLowerCase()));
+        drone.closeWindow();
+        drone.switchToWindow(mainWinHandle);
+    }
+
+    @Test(enabled = true, groups = "Enterprise4.2", priority = 47)
     public void clickOnCategoryLink()
     {
         documentLibPage = drone.getCurrentPage().render();
@@ -784,15 +796,5 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         Assert.assertTrue(documentLibPage.isFileVisible(folderName));
     }
 
-    @Test(enabled = true, groups = "Enterprise4.2", priority = 47)
-    public void testSelectViewInBrowser()
-    {
-        documentLibPage = drone.getCurrentPage().render();
-        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
-        String mainWinHandle = drone.getWindowHandle();
-        thisRow.selectViewInBrowser();
-        assertTrue(drone.getCurrentUrl().toLowerCase().contains(file.getName().toLowerCase()));
-        drone.closeWindow();
-        drone.switchToWindow(mainWinHandle);
-    }
+
 }
