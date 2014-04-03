@@ -2162,4 +2162,13 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
         return cnt;
     }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#clickContentNameFromInfoMenu()
+     */
+    @Override
+    public HtmlPage clickContentNameFromInfoMenu()
+    {
+        throw new UnsupportedOperationException("Info menu is not available in this view type.");
+    }
 }

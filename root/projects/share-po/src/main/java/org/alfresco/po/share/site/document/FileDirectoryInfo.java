@@ -675,4 +675,10 @@ public interface FileDirectoryInfo
      */
     public String getContentNameFromInfoMenu();
 
+    /**
+     * Clicks on the name link present on Info menu of Gallery or FilmStrip view.
+     * 
+     * @return HtmlPage
+     */
+    HtmlPage clickContentNameFromInfoMenu();
 }

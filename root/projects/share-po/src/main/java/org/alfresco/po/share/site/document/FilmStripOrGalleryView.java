@@ -5,6 +5,7 @@ package org.alfresco.po.share.site.document;
 
 import java.util.List;
 
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.webdrone.HtmlPage;
@@ -949,5 +950,29 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
             getName();
         }
         return title;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickContentNameFromInfoMenu()
+     */
+    @Override
+    public HtmlPage clickContentNameFromInfoMenu()
+    {
+        clickInfoIcon(false);
+        try
+        {
+            findAndWait(By.cssSelector("h3.filename a")).click();
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Timeout Reached", te);
+        }
+        catch (StaleElementReferenceException stale)
+        {
+            resolveStaleness();
+            clickContentNameFromInfoMenu();
+        }
+        throw new PageException("Unable to find and click the file name link");
     }
 }

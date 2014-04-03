@@ -815,4 +815,18 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         thisRow = documentLibPage.getFileDirectoryInfo(tempFile.getName());
         Assert.assertTrue(thisRow.getCommentsCount()==0);
     }
+    
+    @Test(groups = "Enterprise4.2", priority = 48)
+    public void fileNameLinkTest() throws IOException
+    {
+        // File
+        File tempFile = SiteUtil.prepareFile();
+        
+        UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
+        documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(tempFile.getName());
+        
+        DocumentDetailsPage detailsPage = thisRow.clickContentNameFromInfoMenu().render();
+        Assert.assertTrue(detailsPage.isDocumentDetailsPage());
+    }
 }
