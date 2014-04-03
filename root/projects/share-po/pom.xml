@@ -52,6 +52,12 @@
             <groupId>org.alfresco</groupId>
             <artifactId>webdrone</artifactId>
             <version>2.5-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>xercesImpl</artifactId>
+                    <groupId>xerces</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -73,6 +79,10 @@
                 <exclusion>
                     <groupId>net.sourceforge.nekohtml</groupId>
                     <artifactId>nekohtml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>xercesImpl</artifactId>
+                    <groupId>xerces</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
