@@ -345,7 +345,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_143390() throws Exception
+    public void dataPrep_Dashlets_Enterprise40x_14339() throws Exception
     {
         removeAspectDataPrep(getTestName());
     }
@@ -379,7 +379,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_143411() throws Exception
+    public void dataPrep_Dashlets_Enterprise40x_14341() throws Exception
     {
         addAspectDataPrep(getTestName());
     }
@@ -493,15 +493,19 @@ public class ManageAspectTest extends AbstractAspectTests
         removeAspectDataPrep(getTestName());
     }
 
+    // TODO: Test not found in ComAlfOne, Enterprise40x, check and correct the testid
     @Test(groups="EnterpriseOnly")
     public void Enterprise40x_85866()
-    {
+    {        
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
         String fileName = getFileName(testName) + ".txt";
 
+        // TODO: Remove try, catch as failures are being handled by testng listeners
         try{
+            
+            // TODO: Test fails to add GoogleDocsEditable Aspect. 
             // Login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
@@ -518,7 +522,7 @@ public class ManageAspectTest extends AbstractAspectTests
             aspectsPage = aspectsPage.add(aspects).render();
             documentDetailsPage = aspectsPage.clickApplyChanges().render();
 
-            documentDetailsPage = documentDetailsPage.render();
+            documentDetailsPage = getSharePage(drone).render();
             assertTrue(documentDetailsPage.isEditInGoogleDocsLinkVisible());
 
             // Select 'Edit Offline'
