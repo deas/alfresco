@@ -546,15 +546,15 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
                 assertTrue(documentLibPage.getFiles().get(0).getName().equalsIgnoreCase(tempFile.getName()));
 
                 documentLibPage.clickOnRecentlyAdded();
-                assertEquals(documentLibPage.getFiles().size(), 4);
+                assertEquals(documentLibPage.getFiles().size(), 6);
                 documentLibPage.clickOnMyFavourites();
                 assertEquals(documentLibPage.getFiles().size(), 1);
                 documentLibPage.clickOnRecentlyModified();
-                assertEquals(documentLibPage.getFiles().size(), 4);
+                assertEquals(documentLibPage.getFiles().size(), 6);
                 documentLibPage.clickOnMyFavourites();
                 assertEquals(documentLibPage.getFiles().size(), 1);
                 documentLibPage.clickOnAllDocuments();
-                assertEquals(documentLibPage.getFiles().size(), 4);
+                assertEquals(documentLibPage.getFiles().size(), 6);
         }
 
         @Test(dependsOnMethods = "testFilterLinks", groups = { "alfresco-one" }, expectedExceptions = IllegalArgumentException.class)
