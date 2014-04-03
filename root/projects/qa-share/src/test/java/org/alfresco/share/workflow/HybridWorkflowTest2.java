@@ -3,13 +3,7 @@ package org.alfresco.share.workflow;
 import java.util.List;
 
 import org.alfresco.po.share.SharePopup;
-import org.alfresco.po.share.site.document.ContentDetails;
-import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
-import org.alfresco.po.share.site.document.EditTextDocumentPage;
-import org.alfresco.po.share.site.document.MimeType;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.workflow.CloudTaskOrReviewPage;
 import org.alfresco.po.share.workflow.KeepContentStrategy;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
@@ -190,7 +184,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         String descOfFile = fileName + " modified by " + System.currentTimeMillis();
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-        EditDocumentPropertiesPopup editDocumentProperties = ShareUserSitePage.getEditPropertiesFromDocLibPage(drone, opSiteName, fileName);
+        EditDocumentPropertiesPage editDocumentProperties = ShareUserSitePage.getEditPropertiesFromDocLibPage(drone, opSiteName, fileName);
         editDocumentProperties.setDocumentTitle(modifiedFileTitle + user1);
         editDocumentProperties.setDescription(descOfFile + user1);
         editDocumentProperties.selectSave().render();
@@ -631,7 +625,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         String descOfFile = fileName + " modified by " + System.currentTimeMillis();
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-        EditDocumentPropertiesPopup editDocumentProperties = ShareUserSitePage.getEditPropertiesFromDocLibPage(drone, opSiteName, fileName);
+        EditDocumentPropertiesPage editDocumentProperties = ShareUserSitePage.getEditPropertiesFromDocLibPage(drone, opSiteName, fileName);
         editDocumentProperties.setDocumentTitle(modifiedFileTitle + user1);
         editDocumentProperties.setDescription(descOfFile + user1);
         editDocumentProperties.selectSave().render();
@@ -1401,7 +1395,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         String descOfFile = fileName + " modified by " + System.currentTimeMillis();
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-        EditDocumentPropertiesPopup editDocumentProperties = ShareUserSitePage.getEditPropertiesFromDocLibPage(drone, opSiteName, fileName);
+        EditDocumentPropertiesPage editDocumentProperties = ShareUserSitePage.getEditPropertiesFromDocLibPage(drone, opSiteName, fileName);
         editDocumentProperties.setDocumentTitle(modifiedFileTitle + user1 + "OP");
         editDocumentProperties.setDescription(descOfFile + user1 + "OP");
         editDocumentProperties.selectSave().render();
@@ -2167,7 +2161,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         String descOfFile = fileName + " modified by " + System.currentTimeMillis();
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-        EditDocumentPropertiesPopup editDocumentProperties = ShareUserSitePage.getEditPropertiesFromDocLibPage(drone, opSiteName, fileName);
+        EditDocumentPropertiesPage editDocumentProperties = ShareUserSitePage.getEditPropertiesFromDocLibPage(drone, opSiteName, fileName);
         editDocumentProperties.setDocumentTitle(modifiedFileTitle + user1);
         editDocumentProperties.setDescription(descOfFile + user1);
         editDocumentProperties.selectSave().render();

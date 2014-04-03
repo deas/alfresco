@@ -11,16 +11,7 @@ package org.alfresco.share.cloudsync;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.DestinationAndAssigneeBean;
 import org.alfresco.po.share.site.SiteDashboardPage;
-import org.alfresco.po.share.site.document.ContentDetails;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryNavigation;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
-import org.alfresco.po.share.site.document.EditTextDocumentPage;
-import org.alfresco.po.share.site.document.FileDirectoryInfo;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.po.share.site.document.RevertToVersionPage;
-import org.alfresco.po.share.site.document.SyncInfoPage;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.user.CloudSignInPage;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
 import org.alfresco.share.util.AbstractCloudSyncTest;
@@ -1015,7 +1006,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
             // Load site document library from search
             documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSiteName);
             // Select Edit Properties, enter description and save
-            EditDocumentPropertiesPopup editDocumentPropertiesPopup = documentLibraryPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
+            EditDocumentPropertiesPage editDocumentPropertiesPopup = documentLibraryPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
             editDocumentPropertiesPopup.setDescription(docDescription);
             documentLibraryPage = editDocumentPropertiesPopup.selectSave().render();
 
@@ -1852,7 +1843,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
             // Verify the document is synced
             Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName).isCloudSynced(), "Verify if the document is synced");
 
-            EditDocumentPropertiesPopup editDocumentPropertiesPopup = documentLibraryPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
+            EditDocumentPropertiesPage editDocumentPropertiesPopup = documentLibraryPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
 
             editDocumentPropertiesPopup.setDescription(propertyDescription);
             documentLibraryPage = editDocumentPropertiesPopup.selectSave().render();
@@ -1957,7 +1948,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
             // Verify the document is synced
             Assert.assertTrue(AbstractCloudSyncTest.checkIfContentIsSynced(drone, folderName));
 
-            EditDocumentPropertiesPopup editDocumentPropertiesPopup = documentLibraryPage.getFileDirectoryInfo(folderName).selectEditProperties().render();
+            EditDocumentPropertiesPage editDocumentPropertiesPopup = documentLibraryPage.getFileDirectoryInfo(folderName).selectEditProperties().render();
 
             editDocumentPropertiesPopup.setDescription(propertyDescription);
             documentLibraryPage = editDocumentPropertiesPopup.selectSave().render();
@@ -2104,7 +2095,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
 
             documentLibraryPage = documentLibraryPage.selectFolder(folderName).render();
             // Select Edit Properties for File1, set description and save.
-            EditDocumentPropertiesPopup editDocumentPropertiesPopup = documentLibraryPage.getFileDirectoryInfo(fileName1).selectEditProperties().render();
+            EditDocumentPropertiesPage editDocumentPropertiesPopup = documentLibraryPage.getFileDirectoryInfo(fileName1).selectEditProperties().render();
             editDocumentPropertiesPopup.setDescription(propertyDescription);
             documentLibraryPage = editDocumentPropertiesPopup.selectSave().render();
 
@@ -2268,7 +2259,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
             documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
 
             // Edit File1's properties and set Description
-            EditDocumentPropertiesPopup editDocumentPropertiesPopup = documentLibraryPage.getFileDirectoryInfo(fileName1).selectEditProperties().render();
+            EditDocumentPropertiesPage editDocumentPropertiesPopup = documentLibraryPage.getFileDirectoryInfo(fileName1).selectEditProperties().render();
             editDocumentPropertiesPopup.setDescription(file1Description);
             documentLibraryPage = editDocumentPropertiesPopup.selectSave().render();
             drone.refresh();

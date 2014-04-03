@@ -29,16 +29,8 @@ import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.site.UploadFilePage;
-import org.alfresco.po.share.site.document.ConfirmDeletePage;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
-import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
-import org.alfresco.po.share.site.document.FileDirectoryInfo;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.po.share.site.document.ManagePermissionsPage;
-import org.alfresco.po.share.site.document.SelectAspectsPage;
 import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.share.util.AbstractTests;
@@ -1533,7 +1525,7 @@ public class FilmStripDocLibTest extends AbstractTests
         assertTrue(fileInfo.isInfoPopUpDisplayed());
 
         // Return to the document's Info panel and click the "Edit Properties" action;
-        EditDocumentPropertiesPopup propDialog = fileInfo.selectEditProperties().render();
+        EditDocumentPropertiesPage propDialog = fileInfo.selectEditProperties().render();
         // "Edit Properties" form is displayed;
         assertTrue(propDialog.isEditPropertiesPopupVisible());
         docLibPage = propDialog.selectCancel().render();
@@ -1713,7 +1705,7 @@ public class FilmStripDocLibTest extends AbstractTests
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
         // Return to the document's Info panel and click the "Edit Properties" action;
-        EditDocumentPropertiesPopup propDialog = folderInfo.selectEditProperties().render();
+        EditDocumentPropertiesPage propDialog = folderInfo.selectEditProperties().render();
         // "Edit Properties" form is displayed;
         assertTrue(propDialog.isEditPropertiesPopupVisible());
         docLibPage = propDialog.selectCancel().render();

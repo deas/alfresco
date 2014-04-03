@@ -9,11 +9,7 @@ package org.alfresco.share.cloudsync;
 
 import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.enums.UserRole;
-import org.alfresco.po.share.site.document.ConfirmDeletePage;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryNavigation;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
 import org.alfresco.share.util.AbstractCloudSyncTest;
 import org.alfresco.share.util.ShareUser;
@@ -691,7 +687,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
             destinationPage.selectSite(cloudSiteName);
             destinationPage.selectFolder(folderName1);
 
-            EditDocumentPropertiesPopup editDocumentPropertiesPopup = cloudDocLibPage.getFileDirectoryInfo(folderName1).selectEditProperties().render();
+            EditDocumentPropertiesPage editDocumentPropertiesPopup = cloudDocLibPage.getFileDirectoryInfo(folderName1).selectEditProperties().render();
             editDocumentPropertiesPopup.setName(newFolderName1);
             cloudDocLibPage = editDocumentPropertiesPopup.selectSave().render();
             DocumentLibraryPage opDocLibPage = destinationPage.selectSubmitButtonToSync().render();

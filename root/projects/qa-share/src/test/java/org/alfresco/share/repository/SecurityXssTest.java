@@ -136,7 +136,7 @@ public class SecurityXssTest extends AbstractTests
 
         repoPage = ShareUserRepositoryPage.createContentInFolderWithValidation(drone, contentDetails, ContentType.PLAINTEXT, folderName).render();
 
-        EditDocumentPropertiesPopup editDocPropsPage = repoPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocPropsPage = repoPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
 
         assertEquals(editDocPropsPage.getName(), contentDetails.getName());
         assertEquals(editDocPropsPage.getDescription(), contentDetails.getDescription());
@@ -189,7 +189,7 @@ public class SecurityXssTest extends AbstractTests
 
         repoPage = ShareUserRepositoryPage.createContentInFolderWithValidation(drone, contentDetails, ContentType.HTML, folderName).render();
 
-        EditDocumentPropertiesPopup editDocPropsPage = repoPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocPropsPage = repoPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
 
         assertEquals(editDocPropsPage.getName(), contentDetails.getName());
         assertEquals(editDocPropsPage.getDescription(), contentDetails.getDescription());
@@ -242,7 +242,7 @@ public class SecurityXssTest extends AbstractTests
 
         repoPage = ShareUserRepositoryPage.createContentInFolderWithValidation(drone, contentDetails, ContentType.XML, folderName).render();
 
-        EditDocumentPropertiesPopup editDocPropsPage = repoPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocPropsPage = repoPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
 
         assertEquals(editDocPropsPage.getName(), contentDetails.getName());
         assertEquals(editDocPropsPage.getDescription(), contentDetails.getDescription());
@@ -282,7 +282,7 @@ public class SecurityXssTest extends AbstractTests
 
         RepositoryPage repoPage = ShareUserRepositoryPage.createFolderInRepositoryWithValidation(drone, subFolderName, title, description).render();
 
-        EditDocumentPropertiesPopup editDocPropsPage = repoPage.getFileDirectoryInfo(subFolderName).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocPropsPage = repoPage.getFileDirectoryInfo(subFolderName).selectEditProperties().render();
 
         assertEquals(editDocPropsPage.getName(), subFolderName);
         assertEquals(editDocPropsPage.getDescription(), description);

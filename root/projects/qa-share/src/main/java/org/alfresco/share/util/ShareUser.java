@@ -33,23 +33,8 @@ import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UpdateFilePage;
-import org.alfresco.po.share.site.document.ConfirmDeletePage;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
-import org.alfresco.po.share.site.document.ContentDetails;
-import org.alfresco.po.share.site.document.ContentType;
-import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
-import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
-import org.alfresco.po.share.site.document.DetailsPage;
-import org.alfresco.po.share.site.document.DocumentAspect;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryNavigation;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
-import org.alfresco.po.share.site.document.EditTextDocumentPage;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.po.share.site.document.ManagePermissionsPage;
-import org.alfresco.po.share.site.document.SelectAspectsPage;
-import org.alfresco.po.share.site.document.SyncInfoPage;
 import org.alfresco.po.share.user.Language;
 import org.alfresco.po.share.user.LanguageSettingsPage;
 import org.alfresco.po.share.user.MyProfilePage;
@@ -1234,7 +1219,7 @@ public class ShareUser extends AbstractTests
     public static DocumentLibraryPage createContentWithSpecificProps(WebDrone drone, ContentDetails contentDetails) throws Exception
     {
         DocumentLibraryPage documentLibPage = null;
-        EditDocumentPropertiesPopup editDocPropertiesPage = null;
+        EditDocumentPropertiesPage editDocPropertiesPage = null;
         String fileName = contentDetails.getName();
         String title = contentDetails.getTitle();
         String desc = contentDetails.getDescription();
@@ -1878,7 +1863,7 @@ public class ShareUser extends AbstractTests
     {
         DocumentLibraryPage documentLibraryPage = drone.getCurrentPage().render();
 
-        EditDocumentPropertiesPopup editProp = documentLibraryPage.getFileDirectoryInfo(contentName).selectEditProperties().render();
+        EditDocumentPropertiesPage editProp = documentLibraryPage.getFileDirectoryInfo(contentName).selectEditProperties().render();
         editProp.setDescription(description);
         return editProp.selectSave().render();
     }
@@ -1886,7 +1871,7 @@ public class ShareUser extends AbstractTests
     public static DocumentLibraryPage editProperties(WebDrone drone, String contentName, String newContentName, String title, String description) {
         DocumentLibraryPage documentLibraryPage = drone.getCurrentPage().render();
 
-        EditDocumentPropertiesPopup editProp = documentLibraryPage.getFileDirectoryInfo(contentName).selectEditProperties().render();
+        EditDocumentPropertiesPage editProp = documentLibraryPage.getFileDirectoryInfo(contentName).selectEditProperties().render();
 
         if (newContentName != null) {
             editProp.setName(newContentName);

@@ -26,22 +26,7 @@ import java.util.List;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UpdateFilePage;
-import org.alfresco.po.share.site.document.ContentDetails;
-import org.alfresco.po.share.site.document.ContentType;
-import org.alfresco.po.share.site.document.DetailsPage;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
-import org.alfresco.po.share.site.document.EditInGoogleDocsPage;
-import org.alfresco.po.share.site.document.EditTextDocumentPage;
-import org.alfresco.po.share.site.document.FileDirectoryInfo;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.po.share.site.document.GalleryViewFileDirectoryInfo;
-import org.alfresco.po.share.site.document.GoogleDocsAuthorisation;
-import org.alfresco.po.share.site.document.GoogleDocsUpdateFilePage;
-import org.alfresco.po.share.site.document.GoogleSignUpPage;
-import org.alfresco.po.share.site.document.InlineEditPage;
-import org.alfresco.po.share.site.document.MimeType;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.workflow.NewWorkflowPage;
 import org.alfresco.po.share.workflow.Priority;
@@ -1152,7 +1137,7 @@ public class GalleryViewTest extends AbstractTests
         FileDirectoryInfo thisRow = docLibPage.getFileDirectoryInfo(updatedFileName);
 
         //  verify the changes are successful..
-        EditDocumentPropertiesPopup editDocPropertiesPage = thisRow.selectEditProperties().render();
+        EditDocumentPropertiesPage editDocPropertiesPage = thisRow.selectEditProperties().render();
         
         Assert.assertTrue(editDocPropertiesPage.getName().equals(updatedFileName));
         Assert.assertTrue(editDocPropertiesPage.getDocumentTitle().equals(newTitle));

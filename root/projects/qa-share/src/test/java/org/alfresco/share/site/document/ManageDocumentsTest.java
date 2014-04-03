@@ -471,7 +471,7 @@ public class ManageDocumentsTest extends AbstractTests
         }
     }
 
-    @Test(groups = { "DataPrepDocumentLibrary" })
+    @Test(groups = "DataPrepDocumentLibrary")
     public void dataPrep_Enterprise40x_13813() throws Exception
     {
         try
@@ -555,5 +555,4 @@ public class ManageDocumentsTest extends AbstractTests
             testCleanup(drone, testName);
         }
     }
-
 }

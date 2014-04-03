@@ -12,16 +12,8 @@ import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.DestinationAndAssigneeBean;
 import org.alfresco.po.share.site.SiteFinderPage;
-import org.alfresco.po.share.site.document.ContentDetails;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryNavigation;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
-import org.alfresco.po.share.site.document.EditTextDocumentPage;
-import org.alfresco.po.share.site.document.ManagePermissionsPage;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.ButtonType;
-import org.alfresco.po.share.site.document.SyncInfoPage;
-import org.alfresco.po.share.site.document.UserProfile;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
 import org.alfresco.share.util.AbstractCloudSyncTest;
 import org.alfresco.share.util.ShareUser;
@@ -580,7 +572,7 @@ public class CloudSyncAccessTest2 extends AbstractCloudSyncTest
             docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
             // Confirm Write access on folder
-            EditDocumentPropertiesPopup editDocumentProp = docLibPage.getFileDirectoryInfo(folderName).selectEditProperties().render();
+            EditDocumentPropertiesPage editDocumentProp = docLibPage.getFileDirectoryInfo(folderName).selectEditProperties().render();
             editDocumentProp.setDescription(propDescription);
             docLibPage = editDocumentProp.selectSave().render();
 
@@ -965,7 +957,7 @@ public class CloudSyncAccessTest2 extends AbstractCloudSyncTest
 
         DocumentLibraryPage docLibPage = ShareUserSitePage.createFolder(drone, folderName, folderName);
 
-        EditDocumentPropertiesPopup documentProp = docLibPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
+        EditDocumentPropertiesPage documentProp = docLibPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
 
         documentProp.setDescription(fileDesc);
         docLibPage = documentProp.selectSave().render();

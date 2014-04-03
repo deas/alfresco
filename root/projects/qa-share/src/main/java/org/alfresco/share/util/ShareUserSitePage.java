@@ -283,12 +283,13 @@ public class ShareUserSitePage extends AbstractTests
     /**
      * Get Edit Document PRoperties pop up.
      * 
+     *
      * @param drone
      * @param siteName
      * @param fileOrFolderName
      * @return
      */
-    public static EditDocumentPropertiesPopup getEditPropertiesFromDocLibPage(WebDrone drone, String siteName, String fileOrFolderName)
+    public static EditDocumentPropertiesPage getEditPropertiesFromDocLibPage(WebDrone drone, String siteName, String fileOrFolderName)
     {
         logger.info("Editing " + fileOrFolderName + " properties from DocumentLibraryPage.");
 
@@ -410,7 +411,7 @@ public class ShareUserSitePage extends AbstractTests
      */
     public static DocumentLibraryPage editContentProperties(WebDrone drone, String contentName, String modifyDetails, boolean doSave)
     {
-        EditDocumentPropertiesPopup editDocumentPropertiesPopup = getFileDirectoryInfo(drone, contentName).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = getFileDirectoryInfo(drone, contentName).selectEditProperties().render();
         editDocumentPropertiesPopup.setDescription(modifyDetails);
         if (doSave)
         {
@@ -640,7 +641,7 @@ public class ShareUserSitePage extends AbstractTests
         FileDirectoryInfo thisRow = docLibPage.getFileDirectoryInfo(contentName);
 
         // Click on Edit in propertis link from gallery view.
-        EditDocumentPropertiesPopup editDocPropertiesPage = thisRow.selectEditProperties().render();
+        EditDocumentPropertiesPage editDocPropertiesPage = thisRow.selectEditProperties().render();
 
         if (!StringUtils.isEmpty(newName))
         {

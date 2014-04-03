@@ -29,23 +29,9 @@ import java.util.Map;
 
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.enums.ViewType;
-import org.alfresco.po.share.site.document.Categories;
-import org.alfresco.po.share.site.document.CategoryPage;
-import org.alfresco.po.share.site.document.ConfirmDeletePage;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
-import org.alfresco.po.share.site.document.ContentDetails;
-import org.alfresco.po.share.site.document.ContentType;
-import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
-import org.alfresco.po.share.site.document.DocumentAspect;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
-import org.alfresco.po.share.site.document.FileDirectoryInfo;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.po.share.site.document.Links;
-import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.ButtonType;
-import org.alfresco.po.share.site.document.SelectAspectsPage;
-import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
@@ -239,7 +225,7 @@ public class RepositoryFolderTests1 extends AbstractTests
             RepositoryPage repositoryPage = repositorypage.render();
 
             // Select folder and click on edit properties
-            EditDocumentPropertiesPopup editDocumentPropertiesPopup = repositoryPage.getFileDirectoryInfo(folderName).selectEditProperties().render();
+            EditDocumentPropertiesPage editDocumentPropertiesPopup = repositoryPage.getFileDirectoryInfo(folderName).selectEditProperties().render();
 
             // Edit the folder name
             editDocumentPropertiesPopup.setName(folderName + "1");
@@ -261,7 +247,7 @@ public class RepositoryFolderTests1 extends AbstractTests
             String[] basefolderPath = new String[] { baseFolderName };
             repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, basefolderPath);
 
-            EditDocumentPropertiesPopup editDocumentPropertiespopup = repositorypage.getFileDirectoryInfo(folderName + "1").selectEditProperties().render();
+            EditDocumentPropertiesPage editDocumentPropertiespopup = repositorypage.getFileDirectoryInfo(folderName + "1").selectEditProperties().render();
             // TODO: Remove chained share-po code, use util as above
             ((TagPage) editDocumentPropertiespopup.getTag().render().enterTagValue(tagName + "1")).clickOkButton();
             editDocumentPropertiesPopup.selectSave().render();
@@ -470,7 +456,7 @@ public class RepositoryFolderTests1 extends AbstractTests
 
         // TODO: Create util to edit categoriess starting with doclib or detailed view
         // Select more options in folder1 and click on Edit properties
-        EditDocumentPropertiesPopup editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folder1).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folder1).selectEditProperties().render();
 
         // Click on select button beneath category
         // editDocumentPropertiesPopup.
@@ -575,7 +561,7 @@ public class RepositoryFolderTests1 extends AbstractTests
         selectAspectsPage.clickApplyChanges().render();
 
         // Select more options in folder1 and click on Edit properties
-        EditDocumentPropertiesPopup editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folder1).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folder1).selectEditProperties().render();
 
         // Click on select button beneath category
         // editDocumentPropertiesPopup.
@@ -697,7 +683,7 @@ public class RepositoryFolderTests1 extends AbstractTests
         // repositorypage =
         // ShareUserRepositoryPage.openUserFromUserHomesFolderOfRepository(drone,
         // testUser);
-        EditDocumentPropertiesPopup editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folder1).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folder1).selectEditProperties().render();
 
         // Edit folder details
         editDocumentPropertiesPopup.setName(folder1 + "1");
@@ -838,7 +824,7 @@ public class RepositoryFolderTests1 extends AbstractTests
         // repositorypage =
         // ShareUserRepositoryPage.openUserFromUserHomesFolderOfRepository(drone,
         // testUser);
-        EditDocumentPropertiesPopup editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folder1).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folder1).selectEditProperties().render();
 
         // Edit folder details
         editDocumentPropertiesPopup.setName(folder1 + "1");
@@ -970,7 +956,7 @@ public class RepositoryFolderTests1 extends AbstractTests
         // Click on Apply changes on select aspects page
         selectAspectsPage.clickApplyChanges().render();
 
-        EditDocumentPropertiesPopup editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folderCat).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folderCat).selectEditProperties().render();
         // Add category and click ok
         CategoryPage categoryPage = editDocumentPropertiesPopup.getCategory();
         // Verify added category is displayed beneath categories part

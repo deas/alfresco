@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
@@ -17,13 +18,7 @@ import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.po.share.RepositoryPage;
-import org.alfresco.po.share.site.document.ConfirmDeletePage;
-import org.alfresco.po.share.site.document.DocumentLibraryNavigation;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
-import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
-import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
@@ -144,7 +139,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractTests
 
         // add a tag to the file
         String tag = "tag" + System.currentTimeMillis();
-        EditDocumentPropertiesPopup editDocumentPropertiesPopup = repositoryPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = repositoryPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
         TagPage tagPage = editDocumentPropertiesPopup.getTag().render();
         tagPage = tagPage.enterTagValue(tag).render();
         tagPage.clickOkButton();

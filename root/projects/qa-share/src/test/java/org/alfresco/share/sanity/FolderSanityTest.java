@@ -3,13 +3,7 @@ package org.alfresco.share.sanity;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.po.share.site.document.DetailsPage;
-import org.alfresco.po.share.site.document.DocumentAspect;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
-import org.alfresco.po.share.site.document.FileDirectoryInfo;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.po.share.site.document.ManagePermissionsPage;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.ButtonType;
 import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.ShareUser;
@@ -138,7 +132,7 @@ public class FolderSanityTest extends AbstractTests
         //Edit Properties (Edit metadata)
         //TODO : Chiran: Missing step to add category. 
         // TODO: Chiran: Need to make the below functionality as util method
-        EditDocumentPropertiesPopup editDocPropertiesPage = contentRow.selectEditProperties().render();
+        EditDocumentPropertiesPage editDocPropertiesPage = contentRow.selectEditProperties().render();
         editDocPropertiesPage.setDescription(description);
         docLibPage = editDocPropertiesPage.selectSave().render();
 

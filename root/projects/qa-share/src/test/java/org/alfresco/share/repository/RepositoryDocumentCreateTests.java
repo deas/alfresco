@@ -3,6 +3,7 @@ package org.alfresco.share.repository;
 import java.io.File;
 import java.util.List;
 
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
@@ -11,14 +12,6 @@ import org.alfresco.webdrone.WebDroneImpl;
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.site.UploadFilePage;
-import org.alfresco.po.share.site.document.ContentDetails;
-import org.alfresco.po.share.site.document.ContentType;
-import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
-import org.alfresco.po.share.site.document.EditTextDocumentPage;
-import org.alfresco.po.share.site.document.FileDirectoryInfo;
-import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -279,7 +272,7 @@ public class RepositoryDocumentCreateTests extends AbstractTests
         String descriptionNew = testName + " enterprise40x_5436 description new";
         String tagNew = testName + " enterprise40x_5436 tag new";
 
-        EditDocumentPropertiesPopup editDocumentPropertiesPopup = repositoryPage.getFileDirectoryInfo(sampleFile.getName()).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = repositoryPage.getFileDirectoryInfo(sampleFile.getName()).selectEditProperties().render();
 
         String fileName = getTestName() + System.currentTimeMillis();
 
@@ -324,7 +317,7 @@ public class RepositoryDocumentCreateTests extends AbstractTests
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
         // edit file properties
-        EditDocumentPropertiesPopup editDocumentPropertiesPopup = repositoryPage.getFileDirectoryInfo(sampleFile.getName()).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = repositoryPage.getFileDirectoryInfo(sampleFile.getName()).selectEditProperties().render();
 
         String titleNew = testName + " enterprise40x_5437 title new";
         String descriptionNew = testName + " enterprise40x_5437 description new";

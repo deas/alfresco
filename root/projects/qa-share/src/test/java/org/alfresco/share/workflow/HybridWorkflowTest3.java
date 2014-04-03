@@ -12,6 +12,7 @@ import org.alfresco.po.share.dashlet.MyTasksDashlet;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
@@ -4063,7 +4064,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         CreateUserAPI.upgradeCloudAccount(hybridDrone, ADMIN_USERNAME, trailDomainName, "1000");
 
         // Modifying the synced document name in OP.
-        EditDocumentPropertiesPopup editDocumentProperties = ShareUserSitePage.getEditPropertiesFromDocLibPage(drone, opSiteName, opFileName);
+        EditDocumentPropertiesPage editDocumentProperties = ShareUserSitePage.getEditPropertiesFromDocLibPage(drone, opSiteName, opFileName);
         editDocumentProperties.setDescription(titleAndDescription);
         editDocumentProperties.selectSave().render();
 
@@ -4073,7 +4074,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         ShareUser.login(hybridDrone, cloudUser1, DEFAULT_PASSWORD);
 
         // Modifying the synced document name to its actual name in Cloud.
-        EditDocumentPropertiesPopup editDocumentPropertiesCloud = ShareUserSitePage.getEditPropertiesFromDocLibPage(hybridDrone, cloudSite1Name, opFileName);
+        EditDocumentPropertiesPage editDocumentPropertiesCloud = ShareUserSitePage.getEditPropertiesFromDocLibPage(hybridDrone, cloudSite1Name, opFileName);
         editDocumentPropertiesCloud.setDocumentTitle(titleAndDescription);
         editDocumentPropertiesCloud.selectSave().render();
 
