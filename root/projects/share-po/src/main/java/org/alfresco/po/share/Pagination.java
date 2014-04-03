@@ -34,8 +34,6 @@ public class Pagination
 {
     private static final String PAGINATOR = "div[id*='paginator']";
 
-    private Pagination(){};
-    
     /**
      * Checks for next or previous pagination button.
      * and verify if click able.
@@ -64,7 +62,7 @@ public class Pagination
      * @param css that identifies which button to select
      * @return Search result page
      */
-    public static HtmlPage selectPagiantionButton(WebDrone drone, final String css)
+    public static HtmlPage selectPaginationButton(WebDrone drone, final String css)
     {
         try
         {

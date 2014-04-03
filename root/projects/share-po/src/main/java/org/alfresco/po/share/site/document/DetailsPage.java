@@ -80,6 +80,7 @@ public abstract class DetailsPage extends SitePage
         private static final String PAGE_SHARE_PANEL = "div.panel-body>div.link-info>a";
         private static final String COMMENT_LINK = ".theme-color-1.comment.template_x002e_node-header_x002e_folder-details_x0023_default";
         private static final String MANAGE_PERMISSIONS = "div[class$='-permissions'] a";
+        private final static By PAGINATION = By.xpath(".//*[@id='template_x002e_comments_x002e_folder-details_x0023_default-paginator-top']");
         private Log logger = LogFactory.getLog(DetailsPage.class);
         private SyncInfoPage syncInfoPage;
         private static final By NODE_PATH = By.cssSelector("div.node-path span a");
@@ -1097,7 +1098,7 @@ public abstract class DetailsPage extends SitePage
         }
 
         /**
-         * Open DeleteConfirmForm for comment. Verify that all buttons and text correct. Click Cancel(Close form)!
+         * Open DeleteConfirmForm for comment. Verify that all buttons and text correct.
          *
          * @param comment
          * @return
@@ -1108,12 +1109,7 @@ public abstract class DetailsPage extends SitePage
                 drone.mouseOver(commentWebElement);
                 WebElement delete = commentWebElement.findElement(By.name(".onConfirmDeleteCommentClick"));
                 delete.click();
-                boolean result = isDeleteDialogDisplay() && isDeleteDialogTextCorrect() && isDeleteDialogButtonsEnableAndDisplay();
-                WebElement prompt = drone.findAndWaitById(PROMPT_PANEL_ID);
-                List<WebElement> elements = prompt.findElements(By.tagName("button"));
-                WebElement cancel = findButton("Cancel", elements);
-                cancel.click();
-                return result;
+                return isDeleteDialogDisplay() && isDeleteDialogTextCorrect() && isDeleteDialogButtonsEnableAndDisplay();
         }
 
         private boolean isDeleteDialogDisplay()
@@ -1137,5 +1133,21 @@ public abstract class DetailsPage extends SitePage
                         result = button.isDisplayed() && button.isEnabled();
                 }
                 return result;
+        }
+
+        /**
+         * Close Confrim Delete Comment form.
+         */
+        public void cancelDeleteComment()
+        {
+                WebElement prompt = drone.findAndWaitById(PROMPT_PANEL_ID);
+                List<WebElement> elements = prompt.findElements(By.tagName("button"));
+                WebElement cancel = findButton("Cancel", elements);
+                cancel.click();
+        }
+
+        public PaginationForm getCommentsPagination()
+        {
+                return new PaginationForm(drone, PAGINATION);
         }
 }

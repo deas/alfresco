@@ -64,7 +64,7 @@ public class PaginationTest extends AbstractTest
 
         boolean next = Pagination.hasPaginationButton(drone, "a.yui-pg-next");
         Assert.assertTrue(next);
-        repoResult = Pagination.selectPagiantionButton(drone, "a.yui-pg-next").render();
+        repoResult = Pagination.selectPaginationButton(drone, "a.yui-pg-next").render();
         int paginationPosition = result.getPaginationPosition();
         Assert.assertEquals(paginationPosition, 2);
     }

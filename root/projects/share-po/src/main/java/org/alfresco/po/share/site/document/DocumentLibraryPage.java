@@ -679,7 +679,7 @@ public class DocumentLibraryPage extends SitePage
      */
     public void selectNextPage()
     {
-        Pagination.selectPagiantionButton(drone, PAGINATION_BUTTON_NEXT);
+        Pagination.selectPaginationButton(drone, PAGINATION_BUTTON_NEXT);
     }
     
     /**
@@ -687,7 +687,7 @@ public class DocumentLibraryPage extends SitePage
      */
     public void selectPreviousPage()
     {
-        Pagination.selectPagiantionButton(drone, PAGINATION_BUTTON_PREVIOUS);
+        Pagination.selectPaginationButton(drone, PAGINATION_BUTTON_PREVIOUS);
     }
 
 
