@@ -102,7 +102,7 @@ public abstract class PublicAPIAbstract extends AbstractTests
         AuthenticationDetailsProvider authenticationDetailsProvider = new UserAuthenticationDetailsProviderImpl(userDataService, "admin", "admin");
         AuthenticatedHttp authenticatedHttp = new AuthenticatedHttp(httpClientProvider, authenticationDetailsProvider);
         configureUrlParams(drone);
-        if (dronePropertiesMap.get(drone).getAlfrescoVersion().isCloud())
+        if (isAlfrescoVersionCloud(drone))
         {
             this.httpClient = new PublicApiHttpClient("https", location, port, "", "", authenticatedHttp);
             httpClientForWorkflow = new WorkflowApiHttpClient("https", location, port, "", "", authenticatedHttp);
