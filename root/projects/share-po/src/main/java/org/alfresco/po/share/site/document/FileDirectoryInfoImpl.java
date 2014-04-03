@@ -1914,15 +1914,6 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
      * {@inheritDoc}
      */
     @Override
-    public HtmlPage selectModifier()
-    {
-        throw new UnsupportedOperationException("Modifier is not available in current view.");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public String getModifier()
     {
         throw new UnsupportedOperationException("Modifier is not available in current view.");
@@ -2170,5 +2161,26 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     public HtmlPage clickContentNameFromInfoMenu()
     {
         throw new UnsupportedOperationException("Info menu is not available in this view type.");
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#selectModifier()
+     */
+    @Override
+    public HtmlPage selectModifier()
+    {
+        try
+        {
+            WebElement creatorLink = findAndWait(By.cssSelector("a[href$='profile']"));
+            creatorLink.click();
+            
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch (TimeoutException ex)
+        {
+            logger.error("Exceeded time to find the comments tooltip element" + ex.getMessage());
+        }
+        
+        throw new PageOperationException("Error in finding and clicking on modifier link.");
     }
 }

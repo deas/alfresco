@@ -67,6 +67,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
     private final String cloudUserPassword = "spr!nkles";
     private File testLockedFile;
     private File tempFile;
+    private File tempFileForProfile;
 
     /**
      * Pre test setup of a dummy file to upload.
@@ -89,6 +90,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         file = SiteUtil.prepareFile("alfresco123");
         testLockedFile = SiteUtil.prepareFile("Alfresco456");   
         tempFile = SiteUtil.prepareFile();
+        tempFileForProfile = SiteUtil.prepareFile();
         createData();
     }
 
@@ -158,6 +160,8 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         documentLibPage = ((DocumentLibraryPage) documentLibPage.getNavigation().selectGalleryView()).render();
         uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
+        uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
+        documentLibPage = uploadForm.uploadFile(tempFileForProfile.getCanonicalPath()).render();
     }
     
 
@@ -819,14 +823,17 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
     @Test(groups = "Enterprise4.2", priority = 48)
     public void fileNameLinkTest() throws IOException
     {
-        // File
-        File tempFile = SiteUtil.prepareFile();
-        
-        UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
-        documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
-        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(tempFile.getName());
-        
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(tempFileForProfile.getName());
         DocumentDetailsPage detailsPage = thisRow.clickContentNameFromInfoMenu().render();
         Assert.assertTrue(detailsPage.isDocumentDetailsPage());
+        documentLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+    }
+    
+    @Test(groups = "Enterprise4.2", priority = 48)
+    public void selectModifierTest() throws IOException
+    {
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(tempFileForProfile.getName());
+        MyProfilePage profilePage = thisRow.selectModifier().render();
+        Assert.assertTrue(profilePage.getTitle().contains("User Profile Page"));
     }
 }

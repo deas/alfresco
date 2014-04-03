@@ -975,4 +975,14 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         }
         throw new PageException("Unable to find and click the file name link");
     }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#selectModifier()
+     */
+    @Override
+    public HtmlPage selectModifier()
+    {
+        clickInfoIcon(false);
+        return super.selectModifier();
+    }
 }
