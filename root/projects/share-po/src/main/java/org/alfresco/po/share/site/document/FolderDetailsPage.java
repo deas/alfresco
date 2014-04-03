@@ -29,6 +29,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This class supports the Folder Details page and extends the
  * DetailsPage for common functionalities.
@@ -224,4 +227,27 @@ public class FolderDetailsPage extends DetailsPage
         }
         return false;
     }        
+
+    /**
+     * Get Folder Action List
+     * @return List<String>
+     */
+    public List<String> getFolderActionList()
+    {
+        List<String> actionNames = new ArrayList<String>();
+        String text = null;
+
+        List<WebElement> actions = drone.findAndWaitForElements(By.xpath("//div[contains(@id, 'default-actionSet')]/div/a/span"));
+
+        for(WebElement action : actions)
+        {
+            text = action.getText();
+
+            if(text != null)
+            {
+                actionNames.add(text);
+            }
+        }
+        return actionNames;
+    }
 }

@@ -374,6 +374,13 @@ public interface FileDirectoryInfo
      boolean isSyncFailedIconPresent(long waitTime);
 
     /**
+     * Verify if the Rule icon is displayed or not
+     * @param waitTime
+     * @return
+     */
+    boolean isRuleIconPresent(long waitTime);
+
+    /**
      * Select the link Request Sync from
      * the actions drop down.
      */
@@ -503,6 +510,20 @@ public interface FileDirectoryInfo
      * @param tagName
      */
     void enterTagString(final String tagName);
+
+    /**
+     * Sends the keys that needs to be entered in inlineTagEdit input
+     *
+     * @param keysToSend
+     */
+    void sendKeysToTagInput(CharSequence... keysToSend);
+
+    /**
+     * Checks if tag is highlighted in inlineTagEdit input
+     *
+     * @param tagName
+     */
+    boolean isTagHighlightedOnEdit(final String tagName);
 
     /**
      * Hovers over the edit icon and clicks the edit button.
