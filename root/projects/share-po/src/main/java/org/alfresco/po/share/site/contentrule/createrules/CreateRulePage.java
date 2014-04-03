@@ -12,6 +12,8 @@ import org.alfresco.po.share.site.contentrule.createrules.selectors.AbstractIfSe
 import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.*;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
@@ -25,6 +27,8 @@ import org.openqa.selenium.support.ui.Select;
  */
 public class CreateRulePage extends SitePage
 {
+    private final Log logger = LogFactory.getLog(this.getClass());
+
     @SuppressWarnings("unused")
     private static boolean isHaveCreatedRules = false;
 
@@ -343,7 +347,7 @@ public class CreateRulePage extends SitePage
             drone.waitUntilElementPresent(CREATED_ALERT, 5);
             drone.waitUntilElementDeletedFromDom(CREATED_ALERT, 5);
         } catch (TimeoutException ex) {
-            ex.printStackTrace();
+            logger.info("Throw exception",ex);
         }
     }
 
