@@ -502,7 +502,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     @Override
     public void enterTagString(final String tagName)
     {
-        WebElement inputTagName = findAndWait(By.cssSelector(INPUT_TAG_NAME));
+        WebElement inputTagName = findAndWait(By.xpath("//td[contains(@class,'yui-dt-col-fileName')]/div/div[@class='detail']/form/div/span[@class='inlineTagEditAutoCompleteWrapper']/input"));
         inputTagName.clear();
         inputTagName.sendKeys(tagName + "\n");
     }
@@ -631,41 +631,34 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     public void clickOnAddTag()
     {
         // hover over tag area
-        RenderTime timer = new RenderTime(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime() * 2);
-        while (true)
+        try
         {
-            try
-            {
-                timer.start();
-                WebElement tagInfo = findAndWait(By.xpath("//div[@class='detail']/span[@class='insitu-edit']/../span[@class='item']"));
-                getDrone().mouseOver(tagInfo);
-                // Wait till pencil icon appears
-                WebElement addTagBtn = findElement(By.cssSelector(ADD_TAG));
-                // Select to get focus
-                addTagBtn.click();
-                if (findElement(By.cssSelector(INPUT_TAG_NAME)).isDisplayed())
-                {
-                    break;
-                }
-            }
-            catch (NoSuchElementException e)
-            {
-                logger.error("Unable to find the add tag icon"+ e.getMessage());
-            }
-            catch(TimeoutException te)
-            {
-                logger.error("Exceeded time to find the tag info area "+ te.getMessage());
-            }
-            catch (ElementNotVisibleException e2)
-            {
-            }
-            catch (StaleElementReferenceException stale)
-            {
-            }
-            finally
-            {
-                timer.end();
-            }
+            WebElement tagInfo = findAndWait(By.xpath("//div[@class='detail']/span[@class='insitu-edit']/../span[@class='item']"));
+            getDrone().mouseOver(tagInfo);
+            getDrone().waitForElement(By.cssSelector(ADD_TAG), SECONDS.convert(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime(), MILLISECONDS));
+            resolveStaleness();
+            // Wait till pencil icon appears
+
+            WebElement addTagBtn = findAndWait(By.xpath("//td[contains(@class,'yui-dt-col-fileName')]/div/div[@class='detail']/span[@class='insitu-edit']"));
+            logger.info("is Add Tag button displayed? : " + addTagBtn.isDisplayed());
+            logger.info("is Add Tag button displayed? : " + addTagBtn.isEnabled());
+            // Select to get focus
+            addTagBtn.click();
+            getDrone().waitForElement(By.cssSelector(INPUT_TAG_NAME), SECONDS.convert(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime(), MILLISECONDS));
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.error("Unable to find the add tag icon"+ e.getMessage());
+        }
+        catch(TimeoutException te)
+        {
+            logger.error("Exceeded time to find the tag info area "+ te.getMessage());
+        }
+        catch (ElementNotVisibleException e2)
+        {
+        }
+        catch (StaleElementReferenceException stale)
+        {
         }
     }
 
