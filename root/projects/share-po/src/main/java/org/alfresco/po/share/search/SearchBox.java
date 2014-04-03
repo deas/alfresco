@@ -48,7 +48,7 @@ public class SearchBox extends HtmlElement
         super(drone);
         String searchField = isDojoSupport ? "input.alf-search-box-text" : "input[id$='searchText']";
         selector = By.cssSelector(searchField);
-        liveSearchDropdownSelector = By.cssSelector("div[id='uniqName_0_2'] div[data-dojo-attach-point='titleNodeDocs']");
+        liveSearchDropdownSelector = By.cssSelector("div[data-dojo-attach-point='titleNodeDocs']");
     }
 
     /**

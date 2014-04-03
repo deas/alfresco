@@ -43,28 +43,28 @@ public class LiveSearchDropdown extends SharePage
     private static Log logger = LogFactory.getLog(LiveSearchDropdown.class);
 
     // Documents Title
-    private static final String DOCUMENTS_TITLE = "div[id='uniqName_0_2'] div[data-dojo-attach-point='titleNodeDocs']";
-
+    private static final String DOCUMENTS_TITLE = "div[data-dojo-attach-point='titleNodeDocs']";
+    
     // Sites Title
-    private static final String SITES_TITLE = "div[id='uniqName_0_2'] div[data-dojo-attach-point='titleNodeSites']";
-
+    private static final String SITES_TITLE = "div[data-dojo-attach-point='titleNodeSites']";
+    
     // People Title
-    private static final String PEOPLE_TITLE = "div[id='uniqName_0_2'] div[data-dojo-attach-point='titleNodePeople']";
-
+    private static final String PEOPLE_TITLE = "div[data-dojo-attach-point='titleNodePeople']";
+    
     // Close button
-    private static final String CLOSE_DROPDOWN = "div[id='uniqName_0_2'] div.alf-livesearch-clear a[title='Clear']";
+    private static final String CLOSE_DROPDOWN = "div.alf-livesearch-clear a[title='Clear']";
 
     // Document results
-    private static final String DOCUMENT_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodeDocs'] div.alf-livesearch-item";
-
+    private static final String DOCUMENT_RESULTS = "div[data-dojo-attach-point='containerNodeDocs'] div.alf-livesearch-item";
+    
     // Sites Results
-    private static final String SITES_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodeSites'] div.alf-livesearch-item";
-
+    private static final String SITES_RESULTS = "div[data-dojo-attach-point='containerNodeSites'] div.alf-livesearch-item";
+    
     // People Results
-    private static final String PEOPLE_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodePeople'] div.alf-livesearch-item";
+    private static final String PEOPLE_RESULTS = "div[data-dojo-attach-point='containerNodePeople'] div.alf-livesearch-item";
 
     // See more document results
-    private static final String MORE_RESULTS = "div[id='uniqName_0_2'] a[title='More results...']";
+    private static final String MORE_RESULTS = "a[title='More results...']";
 
     /**
      * Constructor
@@ -88,8 +88,10 @@ public class LiveSearchDropdown extends SharePage
     @Override
     public LiveSearchDropdown render(RenderTime timer)
     {
-        elementRender(timer, getVisibleRenderElement(By.cssSelector(DOCUMENTS_TITLE)), getVisibleRenderElement(By.cssSelector(CLOSE_DROPDOWN)), getVisibleRenderElement(By
-                .cssSelector(SITES_TITLE)), getVisibleRenderElement(By.cssSelector(PEOPLE_TITLE)));
+        elementRender(timer, getVisibleRenderElement(By.cssSelector(DOCUMENTS_TITLE)),
+                             getVisibleRenderElement(By.cssSelector(CLOSE_DROPDOWN)), 
+                             getVisibleRenderElement(By.cssSelector(SITES_TITLE)), 
+                             getVisibleRenderElement(By.cssSelector(PEOPLE_TITLE)));
         return this;
     }
 
