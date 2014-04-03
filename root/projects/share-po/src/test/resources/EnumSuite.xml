@@ -11,4 +11,9 @@
             <class name="org.alfresco.po.share.enums.UserRoleTest" />
         </classes>
     </test>
+    <test name="ZoomStyleTest">
+        <classes>
+            <class name="org.alfresco.po.share.enums.ZoomStyleTest" />
+        </classes>
+    </test>
 </suite>
