@@ -112,7 +112,7 @@ public class ShareDialogue extends SharePage
      */
     public HtmlPage clickCancel()
     {
-        WebElement button = drone.findElementDisplayed(CANCEL_BUTTON);
+        WebElement button = drone.findFirstDisplayedElement(CANCEL_BUTTON);
         button.click();
         return FactorySharePage.resolvePage(drone);
     }

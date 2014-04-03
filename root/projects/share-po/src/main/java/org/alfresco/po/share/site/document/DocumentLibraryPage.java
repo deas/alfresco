@@ -26,6 +26,7 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneUtil;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
@@ -879,8 +880,6 @@ public class DocumentLibraryPage extends SitePage
         return tagNames;
     }
 
-<<<<<<< .working
-=======
     public boolean isItemVisble(String contentName)
     {
         WebDroneUtil.checkMandotaryParam("contentName", contentName);
@@ -893,7 +892,6 @@ public class DocumentLibraryPage extends SitePage
         }
         return false;
     }
->>>>>>> .merge-right.r65083
 
     /**
      * Check the uploaded content has uploaded successfully
