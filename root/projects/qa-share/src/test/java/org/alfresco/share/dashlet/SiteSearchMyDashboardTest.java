@@ -1469,7 +1469,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.logout(drone);
     }
-/*
+
     @Test(groups = { "Enterprise4.2" })
     public void alf_10733() throws Exception
     {
@@ -1790,5 +1790,5 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.logout(drone);
     }
-*/
+
 }

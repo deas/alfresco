@@ -126,4 +126,15 @@
         </classes>
     </test>
 
+    <test name="SiteSearch Site Dashboard Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.dashlet.SiteSearchDashletTest">
+                <methods>
+                    <include name="alf_10619"/>
+                    <include name="alf_10630"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>
