@@ -3,6 +3,9 @@
  */
 package org.alfresco.po.share.site.document;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import java.util.List;
 
 import org.alfresco.po.share.AlfrescoVersion;
@@ -12,6 +15,7 @@ import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneImpl;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
@@ -31,6 +35,8 @@ import org.openqa.selenium.WebElement;
 public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 {
     private static Log logger = LogFactory.getLog(FilmStripOrGalleryView.class);
+    protected String TAG_INFO = "//div[@class='detail']/span[@class='insitu-edit']/../span[@class='item']";
+    protected String TAG_ICON = "//h3/span/a[text()='%s']/../../../../../../../div/div[starts-with(@class,'alf-detail')]/div/div/div/span[@title='Tag']";
 
     public FilmStripOrGalleryView(String nodeRef, WebElement webElement, WebDrone drone)
     {
@@ -250,17 +256,39 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickOnAddTag()
      */
     @Override
     public void clickOnAddTag()
     {
-        clickInfoIcon(false);
-        super.clickOnAddTag();
+        clickInfoIcon();
+        
+        try
+        {
+            WebElement tagInfo = drone.findFirstDisplayedElement(By.xpath(TAG_INFO));
+            getDrone().mouseOver(tagInfo);
+            drone.waitForElement(By.xpath(String.format(TAG_ICON, getName())), SECONDS.convert(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime(), MILLISECONDS));
+            WebElement addTagBtn = drone.findAndWait(By.xpath(String.format(TAG_ICON, getName())));
+            addTagBtn.click();
+            getDrone().waitForElement(By.cssSelector(INPUT_TAG_NAME), SECONDS.convert(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime(), MILLISECONDS));
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.error("Unable to find the add tag icon"+ e.getMessage());
+        }
+        catch(TimeoutException te)
+        {
+            logger.error("Exceeded time to find the tag info area "+ te.getMessage());
+        }
+        catch (ElementNotVisibleException e2)
+        {
+        }
+        catch (StaleElementReferenceException stale)
+        {
+        }
     }
 
-    /*
+     /*
      * (non-Javadoc)
      * 
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#removeTagButtonIsDisplayed(java.lang.String)

@@ -414,15 +414,15 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
     public void testClickOnRemoveAddTag() throws Exception
     {
         String tagName = "foldertag2";
-        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(tempFileForProfile.getName());
         thisRow.addTag(tagName);
         documentLibPage = documentLibPage.render();
-        thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        thisRow = documentLibPage.getFileDirectoryInfo(tempFileForProfile.getName());
         thisRow.clickOnAddTag();
         thisRow.clickOnTagRemoveButton(tagName);
         thisRow.clickOnTagSaveButton();
         documentLibPage = documentLibPage.render();
-        thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        thisRow = documentLibPage.getFileDirectoryInfo(tempFileForProfile.getName());
         Assert.assertFalse(thisRow.hasTags());
     }
     

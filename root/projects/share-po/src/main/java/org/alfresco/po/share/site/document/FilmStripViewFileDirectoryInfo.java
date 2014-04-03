@@ -39,6 +39,7 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
         THUMBNAIL = THUMBNAIL_TYPE + "/../..";
         resolveStaleness();
         THUMBNAIL_ROOT = drone.findAndWait(By.xpath(THUMBNAIL));
+        TAG_ICON = "//h3[@class='filename']/span/a[text()='%s']/../../../div/span[@class='insitu-edit']";
     }
 
     /**
