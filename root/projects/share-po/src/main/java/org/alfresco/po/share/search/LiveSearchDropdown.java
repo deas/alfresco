@@ -20,7 +20,9 @@ import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -260,7 +262,59 @@ public class LiveSearchDropdown extends SharePage
             throw new PageException("Unable to find live search people title.", nse);
         }
     }
+    
+    /**
+     * 
+     * Checks if live search returns document search results
+     * 
+     * @return
+     */
+    public boolean hasDocumentSearchResults()
+    {
+        boolean hasDocumentSearchResults = false;
+        List<LiveSearchDocumentResult> liveSearchDocumentResults = getSearchDocumentResults();
+        if(liveSearchDocumentResults.size() > 0)
+        {
+            hasDocumentSearchResults = true;
+        }
+        return hasDocumentSearchResults;
+    }
 
+    /**
+     * 
+     * Checks if live search returns sites search results
+     * 
+     * @return
+     */
+    public boolean hasSitesSearchResults()
+    {
+        boolean hasSitesSearchResults = false;
+        List<LiveSearchSiteResult> liveSearchSiteResults = getSearchSitesResults();
+        if(liveSearchSiteResults.size() > 0)
+        {
+            hasSitesSearchResults = true;
+        }
+        return hasSitesSearchResults;
+    }
+    
+    /**
+     * 
+     * Checks if live search returns people search results
+     * 
+     * @return
+     */
+    public boolean hasPeopleSearchResults()
+    {
+        boolean hasPeopleSearchResults = false;
+        List<LiveSearchPeopleResult> liveSearchPeopleResults = getSearchPeopleResults();
+        if(liveSearchPeopleResults.size() > 0)
+        {
+            hasPeopleSearchResults = true;
+        }
+        return hasPeopleSearchResults;
+    }   
+    
+    
     /**
      * Clicks on see more results arrow
      * 
@@ -285,6 +339,34 @@ public class LiveSearchDropdown extends SharePage
             throw new PageException("Unable to find see more results icon. ", te);
         }
 
+    }
+    
+    /**
+     * Clicks on any link in live search results 
+     * 
+     * @param liveSearchItem
+     * @return
+     */
+    public HtmlPage selectLiveSearchItem(String liveSearchItem)
+    {
+        if (liveSearchItem == null || liveSearchItem.isEmpty())
+        {
+            throw new IllegalArgumentException("Live search item is required");
+        }
+        try
+        {
+            drone.findAndWait(By.xpath(String.format("//a[text()='%s']", liveSearchItem))).click();
+            return FactorySharePage.resolvePage(drone);
+        }catch (NoSuchElementException nse)
+        {
+            logger.error(String.format("Live search result %s item not found ", liveSearchItem) + nse);
+            throw new PageException(String.format("Live search result %s item not found", liveSearchItem), nse);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error(String.format("Live search result %s item not found", liveSearchItem) + te);
+            throw new PageException(String.format("Live search result %s item not found", liveSearchItem), te);
+        }
     }
 
 }
