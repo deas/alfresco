@@ -1026,7 +1026,7 @@ public class DocumentDetailsPage extends DetailsPage
         try
         {
             String workFlowInfo = drone.find(WORKFLOW_INFO).getText();
-            if(workFlowInfo.equals("This document is part of the following workflow(s):"))
+            if(workFlowInfo.equals("This document is part of the following workflow(s):") || workFlowInfo.equals("This document is part of the following task(s):"))
             {
                 return true;
             }
