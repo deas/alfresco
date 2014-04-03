@@ -43,7 +43,6 @@ public class NewWorkflowPage extends WorkFlowPage
     private static final By SUBMIT_BUTTON = By.cssSelector("button[id$='-form-submit-button']");
     @RenderWebElement
     private static final By CANCEL_BUTTON = By.cssSelector("button[id$='-form-cancel-button']");
-    @SuppressWarnings("unused")
     @RenderWebElement
     private static final By PRIORITY_DROPDOWN = By.cssSelector("select[id$='_bpm_workflowPriority']");
 

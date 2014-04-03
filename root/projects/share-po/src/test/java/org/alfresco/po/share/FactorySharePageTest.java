@@ -128,14 +128,14 @@ public class FactorySharePageTest
     private final String siteGroupsPage= baseUrl+"%s/page/site/sitemsitesapitests1383578859371/site-groups";
     private final String addGroupsPage= baseUrl+"%s/page/site/sitemsitesapitests1383578859371/add-groups";
     private final String repositoryWithFolder= baseUrl+"%s/page/repository#filter=path|/Folderhtc-RepositoryFolderTests3|&page=1";
-    private final String adminConsolePage= baseUrl+"%s/page/console/admin-console/application";
-    private final String manageSitesPage= baseUrl+"%s/page/console/admin-console/manage-sites";
-    
     private final String createNewTopicPage = baseUrl+"%s/page/site/new-site/discussions-createtopic";
     private final String topicDetailsPage = baseUrl+"%s/page/site/new-site/discussions-topicview?topicId=post-1394637958079_1640&listViewLinkBack=true";
     private final String topicsListPage = baseUrl+"%s/page/site/new-site/discussions-topiclist";
     private final String customiseUserDashboardPage = baseUrl+"%s/page/customise-user-dashboard";
     private final String nodeBrowserPage  = baseUrl+"%s/page/console/admin-console/node-browser";
+    private final String adminConsolePage= baseUrl+"%s/page/console/admin-console/application";
+    private final String manageSitesPage= baseUrl+"%s/page/console/admin-console/manage-sites";
+    
 
     @Test(groups={"unit"})
     public void resolveUrls()

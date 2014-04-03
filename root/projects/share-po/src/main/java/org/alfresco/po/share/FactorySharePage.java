@@ -154,6 +154,8 @@ public class FactorySharePage implements PageFactory
         pages.put("user-cloud-auth", CloudSyncPage.class);
         pages.put("node-browser", NodeBrowserPage.class);
         pages.put("page", LoginPage.class);
+        pages.put("admin-console", AdminConsolePage.class);
+        pages.put("manage-sites", ManageSitesPage.class);
     }
 
     public HtmlPage getPage(WebDrone drone)

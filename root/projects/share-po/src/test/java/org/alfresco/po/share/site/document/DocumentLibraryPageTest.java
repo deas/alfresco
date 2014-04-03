@@ -175,6 +175,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
                 assertEquals(results.size(), 2);
                 assertNotNull(documentLibPage.getFileDirectoryInfo(file1.getName()));
         }
+
         @Test(dependsOnMethods = "uploadFile", groups = "alfresco-one")
         public void editProperites()
         {
@@ -198,7 +199,6 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
                 documentLibPage = editPage.selectCancel().render();
                 fileInfo = documentLibPage.getFiles().get(1);
                 assertEquals(fileInfo.getName(), NEW_TEST_FILENAME);
-
         }
 
         @Test(dependsOnMethods = "cancelEditProperties", groups = "alfresco-one")

@@ -898,6 +898,7 @@ public class DocumentLibraryPage extends SitePage
      * 
      * @param - String
      * @return - Boolean
+     * @deprecated as of 2.1, use isItemVisble to determine if file exists
      */
     public synchronized boolean isContentUploadedSucessful(String contentName)
     {

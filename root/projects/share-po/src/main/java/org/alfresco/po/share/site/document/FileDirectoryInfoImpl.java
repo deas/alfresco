@@ -72,8 +72,6 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     private static final String TAG_INFO = "span[title='Tag'] + form + span.item";
     private static final String TAG_COLLECTION = TAG_INFO + " > span.tag > a";
     private static final String ADD_TAG = "span[title='Tag']";
-    @SuppressWarnings("unused")
-    private static final String TAG_NAME = "a.tag-link";
     private static final String IMG_FOLDER = "/documentlibrary/images/folder";
     private static final String FAVOURITE_CONTENT = "a[class*='favourite-action']";
     private static final String LIKE_CONTENT = "a[class*='like-action']";
@@ -1654,7 +1652,6 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             selectCopyOrMoveTo(linkText);
         }
         throw new PageOperationException(linkText + " link is not displayed for selected data row");
-
     }
 
     /*

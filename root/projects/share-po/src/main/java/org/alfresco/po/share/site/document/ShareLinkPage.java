@@ -35,7 +35,6 @@ import org.openqa.selenium.TimeoutException;
 public class ShareLinkPage extends SharePage
 {
     private static Log logger = LogFactory.getLog(ShareLinkPage.class);
-    @SuppressWarnings("unused")
     @RenderWebElement
     private static final By shareLinkDivLocator = By.cssSelector("div.visible div.bd");
     @RenderWebElement
