@@ -1047,4 +1047,42 @@ public class DocumentDetailsPage extends DetailsPage
 	}
 
 
+    /**
+     * Selects the Change Type link from Folder actions.
+     *
+     * @return {@link ChangeTypePage} response
+     */
+    public ChangeTypePage selectChangeType()
+    {
+        if (alfrescoVersion.isCloud())
+        {
+            throw new UnsupportedOperationException("Operation available only for Enterprise version");
+        }
+        By changeTypeLink;
+        switch (alfrescoVersion)
+        {
+            case Enterprise41:
+                changeTypeLink = By.cssSelector("div.document-change-type a");
+                break;
+
+            default:
+                changeTypeLink = By.cssSelector("div#onActionChangeType a");
+                break;
+        }
+        drone.findAndWait(changeTypeLink).click();
+        return new ChangeTypePage(drone);
+    }
+
+    /**
+     * Method to download the document to the specified version.
+     * @param versionNumber revision number
+     */
+    public void selectDownloadPreviousVersion(String versionNumber)
+    {
+        WebElement downloadButton = drone.findAndWait(By.cssSelector("a[rel='"+versionNumber+"'] + a.download"));
+        downloadButton.click();
+        // Assumes driver capability settings to save file in a specific location when
+    }
+
+
 }

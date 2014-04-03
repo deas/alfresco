@@ -8,7 +8,7 @@ import org.openqa.selenium.By;
  */
 public class AddCommentForm extends AbstractCommentForm
 {
-        private final static String FORM_DIV_CSS = "#template_x002e_comments_x002e_folder-details_x0023_default-add-actual-form-container";
+        private final static String FORM_DIV_CSS = "div[id$='default-add-actual-form-container']";
         private final static By FORM_DIV = By.cssSelector(FORM_DIV_CSS);
         private final static By AVATAR = By.cssSelector(FORM_DIV_CSS + ">img");
         private final static By CANCEL_BUTTON = By.cssSelector(FORM_DIV_CSS + " span[class~='yui-reset-button']>span>button");

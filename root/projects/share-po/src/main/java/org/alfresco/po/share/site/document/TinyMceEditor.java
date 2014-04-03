@@ -55,7 +55,7 @@ public class TinyMceEditor extends HtmlElement {
     private static final String CSS_STR_BULLET_FMT_TXT = "#tinymce>ul>li";
     private static final String CSS_STR_NUMBER_FMT_TXT = "#tinymce>ol>li";
     private static final String CSS_STR_TEXT_TAG = "#tinymce>p";
-    private static final String CSS_STR_FORE_COLOUR = "#template_x002e_comments_x002e_folder-details_x0023_default-add-content_forecolor_open";
+    private static final String CSS_STR_FORE_COLOUR = "a[id$='default-add-content_forecolor_open']";
     private static final String CSS_BLUE_COLOUR_CODE = "a[title=Blue]";
     private static final String CSS_BLACK_COLOUR_CODE = "div.mce_forecolor td>a[title='Black']";
     private static final String CSS_COLOR_FONT = "#tinymce>p>font";
