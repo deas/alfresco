@@ -34,7 +34,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
- * Integration test to verify people finder page elements are in place.
+ * Functional test to test ShareDialogue
  * 
  * @author Meenal Bhave
  * @since 4.3HBG
@@ -42,6 +42,8 @@ import org.testng.annotations.Test;
 @Listeners(FailedTestListener.class)
 public class ShareDialoguePageTest extends AbstractTest
 {
+    private static Log logger = LogFactory.getLog(ShareDialoguePageTest.class);
+    
     private DashBoardPage dashBoard;
     private SitePage site;
     private DocumentLibraryPage documentLibPage;
@@ -50,8 +52,6 @@ public class ShareDialoguePageTest extends AbstractTest
     private ShareDialogue dialogue;
     
     private String siteName;
-    private static Log logger = LogFactory.getLog(ShareDialoguePageTest.class);
-    
     private static String fileName;
     private static String folderName;
     private static String folderDescription;
@@ -93,6 +93,8 @@ public class ShareDialoguePageTest extends AbstractTest
         documentLibPage.getNav().selectCreateSite().render();
         dialogue = FactorySharePage.resolvePage(drone).render();
         Assert.assertTrue(dialogue.isShareDialogueDisplayed());
+        
+        dialogue.resolveShareDialoguePage();
 
         logger.info("Title: " + dialogue.getDialogueTitle());
     }
@@ -116,7 +118,9 @@ public class ShareDialoguePageTest extends AbstractTest
 
         dialogue = FactorySharePage.resolvePage(drone).render();
         Assert.assertTrue(dialogue.isShareDialogueDisplayed());
-
+        
+        dialogue.resolveShareDialoguePage();
+        
         logger.info("Title: " + dialogue.getDialogueTitle());    
     }
     
@@ -135,6 +139,8 @@ public class ShareDialoguePageTest extends AbstractTest
 
         dialogue = FactorySharePage.resolvePage(drone).render();
         Assert.assertTrue(dialogue.isShareDialogueDisplayed());
+        
+        dialogue.resolveShareDialoguePage();
 
         logger.info("Title: " + dialogue.getDialogueTitle());
     }
@@ -156,6 +162,8 @@ public class ShareDialoguePageTest extends AbstractTest
         
         dialogue = FactorySharePage.resolvePage(drone).render();
         Assert.assertTrue(dialogue.isShareDialogueDisplayed());
+        
+        dialogue.resolveShareDialoguePage();
 
         logger.info("Title: " + dialogue.getDialogueTitle());
     }

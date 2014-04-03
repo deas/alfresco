@@ -17,6 +17,8 @@ package org.alfresco.po.share;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -29,16 +31,12 @@ import org.openqa.selenium.WebElement;
  */
 public class ShareDialogue extends SharePage
 {
-    // private static final By SHARE_DIALOGUE = By.cssSelector("div.hd");
-    // private static final By CLOSE_BUTTON = By.cssSelector("a.container-close");
-    // private static final By TITLE_TEXT = By.cssSelector("div.bd");
-
+    private static Log logger = LogFactory.getLog(ShareDialoguePageTest.class);
+    
     private static final By SHARE_DIALOGUE_PARENT = By.xpath("//div[@class='hd']/..");
-    private static final By SHARE_DIALOGUE_HEADER = By.xpath("//div[@class='hd']");
+    private static final By SHARE_DIALOGUE_HEADER = By.cssSelector("div.hd");
     private static final By CLOSE_BUTTON = By.cssSelector("a.container-close");
-    private static final By TITLE_TEXT_FILE_UPLOAD = By.xpath("//div[@class='hd']//span");
-
-    // TODO: Identify UploadFile: //div[contains(@class,'hd') and contains(@id,'flash-upload')]
+    private static final By TITLE_TEXT_UPLOAD_FILE = By.cssSelector("span");
 
     /**
      * Constructor.
@@ -96,7 +94,6 @@ public class ShareDialogue extends SharePage
      */
     public HtmlPage clickClose()
     {
-        WebElement dialogue = getDialogue();
         WebElement closeButton = drone.findElementDisplayed(CLOSE_BUTTON);
         closeButton.click();
         return FactorySharePage.resolvePage(drone);
@@ -109,21 +106,22 @@ public class ShareDialogue extends SharePage
      */
     public String getDialogueTitle()
     {
+        String title = "";
         try
         {
-            WebElement dialogue = getDialogue().findElement(SHARE_DIALOGUE_HEADER);
-            String title = dialogue.getText();
-//            // TODO: There are 2 types of dialogues for now, with 2 diff css for getTitle. Other needs to be implemented
-//            if (dialogue instanceof UploadFilePage)
-//            {
-//                title = dialogue.findElement(By.cssSelector("span")).getText();
-//            }
+            WebElement dialogue = getDialogueHeader();            
+            title = dialogue.getText();
+            if (title.isEmpty())
+            {
+                WebElement dialogueUploadFile = dialogue.findElement(TITLE_TEXT_UPLOAD_FILE);
+                title = dialogueUploadFile.getText();
+            }                
             return title;
         }
         catch (NoSuchElementException nse)
         {
         }
-        return null;
+        return title;
     }
 
     /**
@@ -148,7 +146,7 @@ public class ShareDialogue extends SharePage
     }
 
     /**
-     * Helper method to return WebElement for the failure prompt
+     * Helper method to return Parent WebElement for the Share Dialogue
      * 
      * @return WebElement
      */
@@ -165,22 +163,76 @@ public class ShareDialogue extends SharePage
             return null;
         }
     }
-
-    // /**
-    // * This function will return visible element with the specified selector
-    // * @return - WebElement
-    // */
-    // protected WebElement findElementDisplayed(By selector)
-    // {
-    // List<WebElement> elementList = drone.findAll(selector);
-    // for (WebElement elementSelected : elementList)
-    // {
-    // if (elementSelected.isDisplayed())
-    // {
-    // return elementSelected;
-    // }
-    // }
-    // throw new NoSuchElementException("Element Not found");
-    // }
-
+    
+    /**
+     * Helper method to return WebElement for the Share Dialogue
+     * 
+     * @return WebElement
+     */
+    private WebElement getDialogueHeader()
+    {
+        try
+        {
+            WebElement shareDialogueHeader = drone.findElementDisplayed(SHARE_DIALOGUE_HEADER);
+            return shareDialogueHeader;
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new NoSuchElementException(nse.getMessage());
+        }
+    }
+    
+    /**
+     * Helper method to return right Page for Share Dialogue displayed
+     * 
+     * @return HtmlPage
+     */
+    public String resolveShareDialoguePage()
+    {
+        String pageName = "";
+        try
+        {
+            WebElement dialogue = getDialogueHeader();
+            if (dialogue != null && dialogue.isDisplayed())
+            {
+                String dialogueID = dialogue.getAttribute("id");
+                if (dialogueID.contains("createSite"))
+                {
+                    pageName = "Create Site Page";
+                    logger.info(pageName);
+                }
+                else if(dialogueID.contains("createFolder"))
+                {
+                    pageName = "Create Folder Page";
+                    logger.info(pageName);
+                }
+                else if(dialogueID.contains("upload"))
+                {
+                    pageName = "Upload File Page";
+                    logger.info(pageName);
+                }
+                else if(dialogueID.contains("editDetails"))
+                {
+                    pageName = "Edit Properties Page";
+                    logger.info(pageName);
+                }
+                else if(dialogueID.contains("taggable-cntrl-picker"))
+                {
+                    pageName = "Tags Page";
+                    logger.info(pageName);
+                }
+                else if(dialogueID.contains("copyMoveTo"))
+                {
+                    pageName = "CopyOrMoveContent Page";
+                    logger.info(pageName);
+                }
+            }          
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        
+        return pageName;
+        //return drone.getCurrentPage().render();
+    }
 }
