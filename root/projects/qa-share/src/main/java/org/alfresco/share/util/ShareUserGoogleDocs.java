@@ -40,7 +40,7 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      * @param drone
      * @return EditInGoogleDocsPage
      */
-    protected EditInGoogleDocsPage signIntoEditGoogleDocFromDetailsPage(WebDrone drone)
+    public EditInGoogleDocsPage signIntoEditGoogleDocFromDetailsPage(WebDrone drone)
     {
         DocumentDetailsPage detailsPage = ((DocumentDetailsPage) ShareUser.getSharePage(drone)).render();
         GoogleDocsAuthorisation googleAuthorisationPage = detailsPage.editInGoogleDocs().render();
@@ -143,7 +143,7 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      * @param googleAuth
      * @return EditInGoogleDocsPage
      */
-    protected EditInGoogleDocsPage signInGoogleDocs(GoogleDocsAuthorisation googleAuth)
+    public static EditInGoogleDocsPage signInGoogleDocs(GoogleDocsAuthorisation googleAuth)
     {
         GoogleSignUpPage signUpPage = googleAuth.submitAuth().render();
         return signUpPage.signUp(googleUserName, googlePassword).render();
@@ -157,7 +157,7 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      * @param isMinorVersion
      * @return GoogleDocsUpdateFilePage
      */
-    protected GoogleDocsUpdateFilePage saveGoogleDocWithVersionAndComment(WebDrone drone, String comments, boolean isMinorVersion)
+    public static GoogleDocsUpdateFilePage saveGoogleDocWithVersionAndComment(WebDrone drone, String comments, boolean isMinorVersion)
     {
         EditInGoogleDocsPage googleDocsPage = (EditInGoogleDocsPage) ShareUser.getSharePage(drone);
         GoogleDocsUpdateFilePage googleUpdatefile = googleDocsPage.selectSaveToAlfresco().render();

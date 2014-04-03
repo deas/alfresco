@@ -117,6 +117,7 @@ public abstract class AbstractTests
     public static long maxWaitTime_CloudSync = 60000;
     public static long refreshDuration = 25000;
     public static Integer retrySearchCount = 3;
+    public static long maxDownloadWaitTime = 3000;
     // Test Data Related options
     protected static final String DATAPREP_OPTION = "SKIP";
     // if data is expected to be pre-loaded

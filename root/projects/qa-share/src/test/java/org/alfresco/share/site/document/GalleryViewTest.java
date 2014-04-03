@@ -21,13 +21,23 @@ package org.alfresco.share.site.document;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.alfresco.po.share.enums.UserRole;
-import org.alfresco.po.share.site.SitePage;
+import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.UpdateFilePage;
-import org.alfresco.po.share.site.document.*;
+import org.alfresco.po.share.site.document.ContentDetails;
+import org.alfresco.po.share.site.document.ContentType;
+import org.alfresco.po.share.site.document.DetailsPage;
+import org.alfresco.po.share.site.document.DocumentDetailsPage;
+import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
+import org.alfresco.po.share.site.document.EditInGoogleDocsPage;
+import org.alfresco.po.share.site.document.FileDirectoryInfo;
+import org.alfresco.po.share.site.document.FolderDetailsPage;
+import org.alfresco.po.share.site.document.GalleryViewFileDirectoryInfo;
+import org.alfresco.po.share.site.document.GoogleDocsAuthorisation;
+import org.alfresco.po.share.site.document.GoogleDocsUpdateFilePage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.workflow.NewWorkflowPage;
 import org.alfresco.po.share.workflow.Priority;
@@ -36,7 +46,9 @@ import org.alfresco.po.share.workflow.WorkFlowFormDetails;
 import org.alfresco.po.share.workflow.WorkFlowType;
 import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserGoogleDocs;
 import org.alfresco.share.util.ShareUserMembers;
+import org.alfresco.share.util.ShareUserRepositoryPage;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.WebDroneType;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -69,8 +81,7 @@ public class GalleryViewTest extends AbstractTests
         testUser = testName + "@" + DOMAIN_FREE;
     }
 
-    // TODO: Add to group AlfrescoOne
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8751() throws Exception
     {
         String testName = getTestName();
@@ -104,7 +115,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Verify that google docs is opened successfully.</li>
      * </ul>
      */
-    @Test(groups = "GalleryView", timeOut = 400000)
+    @Test(groups = "GoogleDocs", timeOut = 400000)
     public void alf_8751() throws Exception
     {
         /** Start Test */
@@ -130,8 +141,7 @@ public class GalleryViewTest extends AbstractTests
         // Open Gallery View
         docLibPage = ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
 
-        // TODO: Replace PO code with ShareUserSitePage util, for easy maintenance after changes to PO impl
-        FileDirectoryInfo thisRow = docLibPage.getFileDirectoryInfo(fileName1);
+        FileDirectoryInfo thisRow = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
         Assert.assertTrue(thisRow.isInfoIconVisible());
 
@@ -141,21 +151,17 @@ public class GalleryViewTest extends AbstractTests
 
         String version = thisRow.getVersionInfo();
 
-        // TODO: Use / Amend the existing util: ShareUserGoogleDocs.signIntoEditGoogleDocFromDetailsPage, saveGoogleDoc
         // Select EditInGoogleDocs
         GoogleDocsAuthorisation googleAuthorisationPage = thisRow.selectEditInGoogleDocs().render();
         googleAuthorisationPage.render();
 
-        GoogleSignUpPage signUpPage = googleAuthorisationPage.submitAuth().render();
-        EditInGoogleDocsPage googleDocsPage = signUpPage.signUp(googleUserName, googlePassword).render();
+        EditInGoogleDocsPage googleDocsPage = ShareUserGoogleDocs.signInGoogleDocs(googleAuthorisationPage);
 
         // Verify the Document is opened in google docs or not.
         Assert.assertTrue(googleDocsPage.isGoogleDocsIframeVisible());
 
-        GoogleDocsUpdateFilePage googleUpdatefile = googleDocsPage.selectSaveToAlfresco().render();
+        GoogleDocsUpdateFilePage googleUpdatefile = ShareUserGoogleDocs.saveGoogleDocWithVersionAndComment(customDrone, comment, true);
         googleUpdatefile.render();
-        googleUpdatefile.selectMinorVersionChange();
-        googleUpdatefile.setComment(comment);
         docLibPage = googleUpdatefile.submit().render();
 
         Assert.assertNotNull(docLibPage);
@@ -163,7 +169,7 @@ public class GalleryViewTest extends AbstractTests
         Assert.assertNotEquals(thisRow.getVersionInfo(), version);
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8748() throws Exception
     {
         String testName = getTestName();
@@ -200,7 +206,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Verify both versions should not be same.</li>
      * </ul>
      */
-    @Test(groups = "GalleryView", timeOut = 400000)
+    @Test(groups = "AlfrescoOne")
     public void alf_8748() throws Exception
     {
         /** Start Test */
@@ -228,25 +234,21 @@ public class GalleryViewTest extends AbstractTests
 
         docLibPage = ShareUser.openDocumentLibrary(customDrone);
 
-        // TODO: Use or Amend the ShareUserSitePage util to edit various props
-        FileDirectoryInfo thisRow = docLibPage.getFileDirectoryInfo(fileName1);
-
-        // Select InlineEdit for the file
-        InlineEditPage inlineEditPage = thisRow.selectInlineEdit().render();
-        EditTextDocumentPage docPage = inlineEditPage.getInlineEditDocumentPage(MimeType.TEXT).render();
-        ContentDetails contentDetails = docPage.getDetails();
+        ContentDetails contentDetails = new ContentDetails();
         contentDetails.setName(fileName1);
         contentDetails.setDescription(fileName1);
 
         // Save the modified changes
-        docLibPage = docPage.save(contentDetails).render();
+        ShareUserRepositoryPage.editTextDocumentInLine(customDrone, fileName1, contentDetails).render();
+        
         detailsPage = ShareUser.openDocumentDetailPage(customDrone, fileName1);
         String newDocVersion = detailsPage.getDocumentVersion();
+        
         // Verify the both versions are not same.
         Assert.assertNotEquals(docVersion, newDocVersion);
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8747() throws Exception
     {
         String testName = getTestName();
@@ -284,7 +286,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Verify that folder is moved into moveFolder.</li>
      * </ul>
      */
-    @Test(groups = "GalleryView", timeOut = 400000)
+    @Test(groups = "AlfrescoOne")
     public void alf_8747() throws Exception
     {
         /** Start Test */
@@ -318,9 +320,8 @@ public class GalleryViewTest extends AbstractTests
         // Verifying that file is moved successfully.
         Assert.assertTrue(docLibPage.isFileVisible(fileName1));
 
-        // TODO: Use: ShareUser.openDocumentLibrary
         // Open document library Documents view.
-        docLibPage.getSiteNav().selectSiteDocumentLibrary().render();
+        ShareUser.openDocumentLibrary(customDrone);
 
         // move the testFolder to moveFolder
         ShareUserSitePage.copyOrMoveToFolder(customDrone, siteName, folderName, moveFolderPath, false);
@@ -332,7 +333,7 @@ public class GalleryViewTest extends AbstractTests
         Assert.assertTrue(docLibPage.isFileVisible(folderName));
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8712() throws Exception
     {
         String testName = getTestName();
@@ -363,7 +364,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>verify upload is successfull.</li>
      * </ul>
      */
-    @Test(groups = "GalleryView", timeOut = 400000)
+    @Test(groups = "AlfrescoOne")
     public void alf_8712() throws Exception
     {
         /** Start Test */
@@ -388,25 +389,22 @@ public class GalleryViewTest extends AbstractTests
         // Open document library in GalleryView.
         DocumentLibraryPage docLibPage = ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
 
-        // TODO: Use ShareUserSitePage util to uploadNewVersion
         FileDirectoryInfo thisRow = docLibPage.getFileDirectoryInfo(fileName1);
 
         String version = thisRow.getVersionInfo();
 
         // Upload New version of the document.
         UpdateFilePage updatePage = thisRow.selectUploadNewVersion().render();
-        updatePage.selectMinorVersionChange();
-        updatePage.uploadFile(newFileName.getCanonicalPath());
-        updatePage.setComment(comment);
-        SitePage sitePage = updatePage.submit().render();
-        docLibPage = (DocumentLibraryPage) sitePage;
+
+        docLibPage = (DocumentLibraryPage) ShareUserSitePage.UploadNewVersion(customDrone, updatePage, false, newFileName.getName(), comment);
+        
         Assert.assertNotNull(docLibPage);
         thisRow = docLibPage.getFileDirectoryInfo(fileName1);
 
         Assert.assertNotEquals(thisRow.getVersionInfo(), version);
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8745() throws Exception
     {
         String testName = getTestName();
@@ -437,7 +435,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Verify the file is downloaded successfully in given folder.</li>
      * </ul>
      */
-    @Test(groups = "Download", timeOut = 400000)
+    @Test(groups = "Download")
     public void alf_8745() throws Exception
     {
         /** Start Test */
@@ -463,16 +461,15 @@ public class GalleryViewTest extends AbstractTests
         thisRow.selectDownload();
         docLibPage.waitForFile(downloadDirectory + fileName1);
 
-        // TODO: Consider Adding this to SharePage method / ShareUser util, instead of adding to all tests with hardcoded waitime
         // Thread needs to be stopped for some time to make sure the file download stream has been closed properly
         // otherwise download part will not be closed and will throws an exception.
-        webDriverWait(customDrone, 3000);
+        webDriverWait(customDrone, maxDownloadWaitTime);
 
         // Verify the file is downloaded or not.
         Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory).contains(fileName1));
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8749() throws Exception
     {
         String testName = getTestName();
@@ -512,7 +509,7 @@ public class GalleryViewTest extends AbstractTests
      * <task_name> is displayed</li>
      * </ul>
      */
-    @Test(groups = "GalleryView", timeOut = 400000)
+    @Test(groups = "AlfrescoOne", enabled=false)
     public void alf_8749() throws Exception
     {
         /** Start Test */
@@ -545,58 +542,33 @@ public class GalleryViewTest extends AbstractTests
 
         Assert.assertTrue(thisRow.isInfoPopUpDisplayed());
 
-        // TODO: Missing steps - Uncomment
-        if (isAlfrescoVersionCloud(customDrone))
-        {
-            // Select more , select start workflow
-            /*
-             * StartWorkFlowPage startWorkFlow = thisRow.selectStartWorkFlow().render();
-             * //select New Task
-             * NewWorkflowPage newWorkflowPage = startWorkFlow.getWorkflowPage(WorkFlowType.NEW_WORKFLOW).render();
-             * WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
-             * formDetails.setDueDate(dueDate);
-             * formDetails.setTaskPriority(Priority.MEDIUM);
-             * formDetails.setAssignee(testUser);
-             * formDetails.setMessage(simpleTaskWF);
-             * // Start workflow
-             * docLibPage = newWorkflowPage.startWorkflow(formDetails).render();
-             * Assert.assertTrue(docLibPage.isFileVisible(fileName1));
-             * thisRow = docLibPage.getFileDirectoryInfo(fileName1);
-             * DocumentDetailsPage detailsPage = thisRow.selectThumbnail().render();
-             * //Verify the document is part of work flow.
-             * Assert.assertTrue(detailsPage.isPartOfWorkflow());
-             */
-        }
-        else
-        {
-            // Select more , select start workflow
-            StartWorkFlowPage startWorkFlow = thisRow.selectStartWorkFlow().render();
+        // Select more , select start workflow/task
+        StartWorkFlowPage startWorkFlow = thisRow.selectStartWorkFlow().render();
 
-            // select Adhoc Workflow
-            NewWorkflowPage newWorkflowPage = startWorkFlow.getWorkflowPage(WorkFlowType.NEW_WORKFLOW).render();
+        // select Adhoc Workflow/task
+        NewWorkflowPage newWorkflowPage = startWorkFlow.getWorkflowPage(WorkFlowType.NEW_WORKFLOW).render();
 
-            WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
-            formDetails.setDueDate(dueDate);
-            formDetails.setTaskPriority(Priority.MEDIUM);
-            formDetails.setAssignee(testUser);
-            List<String> reviewers = new ArrayList<String>();
-            reviewers.add(testUser);
-            formDetails.setReviewers(reviewers);
-            formDetails.setMessage(simpleTaskWF);
+        WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
+        formDetails.setDueDate(dueDate);
+        formDetails.setTaskPriority(Priority.MEDIUM);
+        formDetails.setAssignee(testUser);
+        List<String> reviewers = new ArrayList<String>();
+        reviewers.add(testUser);
+        formDetails.setReviewers(reviewers);
+        formDetails.setMessage(simpleTaskWF);
 
-            // Start workflow
-            docLibPage = newWorkflowPage.startWorkflow(formDetails).render();
-            Assert.assertTrue(docLibPage.isFileVisible(fileName1));
+        // Start workflow / task 
+        docLibPage = newWorkflowPage.startWorkflow(formDetails).render();
+        Assert.assertTrue(docLibPage.isFileVisible(fileName1));
 
-            thisRow = docLibPage.getFileDirectoryInfo(fileName1);
-            DocumentDetailsPage detailsPage = thisRow.selectThumbnail().render();
+        thisRow = docLibPage.getFileDirectoryInfo(fileName1);
+        DocumentDetailsPage detailsPage = thisRow.selectThumbnail().render();
 
-            // Verify the document is part of work flow.
-            Assert.assertTrue(detailsPage.isPartOfWorkflow());
-        }
+        // Verify the document is part of work flow/task.
+        Assert.assertTrue(detailsPage.isPartOfWorkflow());
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8742() throws Exception
     {
         String testName = getTestName();
@@ -627,7 +599,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Verify the file is downloaded successfully in given folder.</li>
      * </ul>
      */
-    @Test(groups = "GalleryView", timeOut = 400000)
+    @Test(groups = "AlfrescoOne")
     public void alf_8742() throws Exception
     {
         /** Start Test */
@@ -667,7 +639,7 @@ public class GalleryViewTest extends AbstractTests
         // verify the document details page is opened
         Assert.assertTrue(detailsPage.isDocumentDetailsPage());
 
-        ShareUser.openDocumentLibrary(customDrone);
+        docLibPage = ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
         // For Folder:
         thisRow = docLibPage.getFileDirectoryInfo(folderName);
 
@@ -686,7 +658,7 @@ public class GalleryViewTest extends AbstractTests
         Assert.assertTrue(docLibPage.isDocumentLibrary());
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8741() throws Exception
     {
         String testName = getTestName();
@@ -717,7 +689,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Verify the User profile page is opened.</li>
      * </ul>
      */
-    @Test(groups = "GalleryView", timeOut = 400000)
+    @Test(groups = "AlfrescoOne")
     public void alf_8741() throws Exception
     {
         /** Start Test */
@@ -761,9 +733,9 @@ public class GalleryViewTest extends AbstractTests
         MyProfilePage profilePage = thisRow.selectModifier().render();
 
         // verify the user profile page is opened
-        Assert.assertTrue(profilePage.getTitle().contains("User Profile Page"));
+        Assert.assertTrue(profilePage.getTitle().contains(customDrone.getValue("user.profile.page.text")));
 
-        ShareUser.openSitesDocumentLibrary(customDrone, siteName);
+        docLibPage = ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
 
         // For Folder:
         thisRow = docLibPage.getFileDirectoryInfo(folderName);
@@ -779,12 +751,11 @@ public class GalleryViewTest extends AbstractTests
         // Click on user link
         profilePage = thisRow.selectModifier().render();
 
-        // TODO: Do not hard code. Fix to work with language.property files for localization
         // verify the user profile page is opened
-        Assert.assertTrue(profilePage.getTitle().contains("User Profile Page"));
+        Assert.assertTrue(profilePage.getTitle().contains(customDrone.getValue("user.profile.page.text")));
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8719() throws Exception
     {
         String testName = getTestName();
@@ -815,7 +786,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Select name edit link and rename, click cancel, verify name is not changed successfully for file/folder</li>
      * </ul>
      */
-    @Test(groups = "GalleryView", timeOut = 400000)
+    @Test(groups = "AlfrescoOne")
     public void alf_8719() throws Exception
     {
         /** Start Test */
@@ -909,7 +880,7 @@ public class GalleryViewTest extends AbstractTests
         Assert.assertFalse(docLibPage.isFileVisible(notUpdatedFolderName));
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8723() throws Exception
     {
         String testName = getTestName();
@@ -929,7 +900,7 @@ public class GalleryViewTest extends AbstractTests
     }
 
     // This test includes 8716/8723
-    @Test(groups = "GalleryView", timeOut = 400000)
+    @Test(groups = "AlfrescoOne")
     public void alf_8723() throws Exception
     {
         /** Start Test */
@@ -947,8 +918,8 @@ public class GalleryViewTest extends AbstractTests
         String newComment = "test Updated";
         String noNewComment = "test Updated cancelled";
 
-        // TODO: Fix to work with localisation
-        String COMMENT_TOOLTIP = "Comment on this Document";
+        String COMMENT_TOOLTIP = customDrone.getValue("comment.on.document.text");
+        String FOLDER_COMMENT_TOOLTIP = customDrone.getValue("comment.on.folder.text");
 
         // User login.
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
@@ -1002,12 +973,12 @@ public class GalleryViewTest extends AbstractTests
         Assert.assertTrue(thisRow.getCommentsCount() == 0);
 
         // For Folder:
-        docLibPage = ShareUser.openDocumentLibrary(customDrone);
+        docLibPage = ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
         thisRow = docLibPage.getFileDirectoryInfo(folderName);
 
         // Verify the comments link and tooltip
         Assert.assertTrue(thisRow.isCommentLinkPresent());
-        Assert.assertTrue(thisRow.getCommentsToolTip().equalsIgnoreCase(COMMENT_TOOLTIP));
+        Assert.assertTrue(thisRow.getCommentsToolTip().equalsIgnoreCase(FOLDER_COMMENT_TOOLTIP));
 
         // Add the comment
         FolderDetailsPage folderDetailsPage = thisRow.clickCommentsLink().render();
@@ -1042,7 +1013,7 @@ public class GalleryViewTest extends AbstractTests
         Assert.assertTrue(thisRow.getCommentsCount() == 0);
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8728() throws Exception
     {
         String testName = getTestName();
@@ -1061,7 +1032,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
     }
 
-    @Test(groups = "GalleryView", timeOut = 400000)
+    @Test(groups = "AlfrescoOne")
     public void alf_8728() throws Exception
     {
         /** Start Test */
@@ -1093,7 +1064,7 @@ public class GalleryViewTest extends AbstractTests
         Assert.assertTrue(htmlSource.contains(content));
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8729() throws Exception
     {
         String testName = getTestName();
@@ -1113,7 +1084,7 @@ public class GalleryViewTest extends AbstractTests
     }
 
     // This test includes 8666/8729
-    @Test(groups = "GalleryView", timeOut = 400000)
+    @Test(groups = "AlfrescoOne")
     public void alf_8729() throws Exception
     {
         /** Start Test */
@@ -1147,8 +1118,7 @@ public class GalleryViewTest extends AbstractTests
         // File: Edit the name,title,description and save
         DocumentLibraryPage docLibPage = ShareUserSitePage.editProperties(customDrone, fileName1, updatedFileName, newTitle, description, true);
 
-        // TODO: Use shareUserSite Util
-        FileDirectoryInfo thisRow = docLibPage.getFileDirectoryInfo(updatedFileName);
+        FileDirectoryInfo thisRow = ShareUserSitePage.getFileDirectoryInfo(customDrone, updatedFileName);
 
         // Verify the changes are successful.
         EditDocumentPropertiesPage editDocPropertiesPage = thisRow.selectEditProperties().render();
@@ -1197,7 +1167,7 @@ public class GalleryViewTest extends AbstractTests
         Assert.assertFalse(editDocPropertiesPage.getDescription().equals(cancelledDescription));
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8722() throws Exception
     {
         String testName = getTestName();
@@ -1235,7 +1205,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Verify that folder is copied succesfully</li>
      * </ul>
      */
-    @Test(groups = "GalleryView", timeOut = 400000)
+    @Test(groups = "AlfrescoOne")
     public void alf_8722() throws Exception
     {
         /** Start Test */
@@ -1301,7 +1271,7 @@ public class GalleryViewTest extends AbstractTests
         Assert.assertTrue(docLibPage.isFileVisible(subFolder));
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8743() throws Exception
     {
         String testName = getTestName();
@@ -1342,7 +1312,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Verify the folder is displayed</li>
      * </ul>
      */
-    @Test(groups = "DocLibToolBar", timeOut = 400000)
+    @Test(groups = "DocLibToolBar")
     public void alf_8743() throws Exception
     {
         /** Start Test */
@@ -1423,7 +1393,7 @@ public class GalleryViewTest extends AbstractTests
         Assert.assertTrue(docLibPage.isFileVisible(folderName));
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8721() throws Exception
     {
         String testName = getTestName();
@@ -1456,7 +1426,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>folder is deleted successfully.</li>
      * </ul>
      */
-    @Test(groups = "DocLibToolBar", timeOut = 400000)
+    @Test(groups = "DocLibToolBar")
     public void alf_8721() throws Exception
     {
         /** Start Test */
@@ -1498,7 +1468,7 @@ public class GalleryViewTest extends AbstractTests
         Assert.assertFalse(docLibPage.isFileVisible(folderName));
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8664() throws Exception
     {
         String testName = getTestName();
@@ -1529,7 +1499,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Verify the folder is downloaded successfully in given folder.</li>
      * </ul>
      */
-    @Test(groups = "Download", timeOut = 400000)
+    @Test(groups = "Download")
     public void alf_8664() throws Exception
     {
         /** Start Test */
@@ -1555,16 +1525,15 @@ public class GalleryViewTest extends AbstractTests
         thisRow.selectDownloadFolderAsZip();
         docLibPage.waitForFile(downloadDirectory + folderName + ZIP_EXTENSION);
 
-        // TODO: Move to waitForFile or util method as above
         // Thread needs to be stopped for some time to make sure the file download stream has been closed properly
         // otherwise download part will not be closed and will throws an exception.
-        webDriverWait(customDrone, 3000);
+        webDriverWait(customDrone, maxDownloadWaitTime);
 
         // Verify the file is downloaded or not.
         Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory).contains(folderName + ZIP_EXTENSION));
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8679() throws Exception
     {
         String testName = getTestName();
@@ -1592,7 +1561,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Add folder and file to doclib</li>
      * </ul>
      */
-    @Test(groups = "GalleryView", timeOut = 400000, enabled = false)
+    @Test(groups = "AlfrescoOne", enabled = false)
     public void alf_8679() throws Exception
     {
         /** Start Test */
@@ -1615,8 +1584,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUserSitePage.createFolder(customDrone, folderName, "");
 
         // Open document library in Gallery view.
-        // TODO: Replace this statement if already in Selected DocLib. Use ShareUserSitePage.selectView instead - in all methods
-        ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
+        ShareUserSitePage.selectView(customDrone, ViewType.GALLERY_VIEW);
 
         // Turn off the "Inherit permissions" option, add any users/groups to "Locally Set Permissions", set any role to users/groups and click "Save" button;
         DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUserMembers.managePermissionsOnContent(customDrone, accessUser, folderName,
@@ -1643,7 +1611,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Add folder and file to doclib</li>
      * </ul>
      */
-    @Test(groups = "DocLibToolBar", timeOut = 400000, enabled = false)
+    @Test(groups = "DocLibToolBar", enabled = false)
     public void alf_8667() throws Exception
     {
         /** Start Test */
@@ -1680,7 +1648,7 @@ public class GalleryViewTest extends AbstractTests
     }
 
     // ALF-8678:Action "Manage Aspects " for folder
-    @Test(groups = "DocLibToolBar", timeOut = 400000, enabled = false)
+    @Test(groups = "DocLibToolBar", enabled = false)
     public void alf_8678() throws Exception
     {
         /** Start Test */
@@ -1719,7 +1687,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Add folder and file to doclib</li>
      * </ul>
      */
-    @Test(groups = "DocLibToolBar", timeOut = 400000, enabled = false)
+    @Test(groups = "DocLibToolBar", enabled = false)
     public void alf_8734() throws Exception
     {
         /** Start Test */
@@ -1785,7 +1753,7 @@ public class GalleryViewTest extends AbstractTests
          */
     }
 
-    // @Test(groups="DataPrepDocLibToolBar", timeOut = 400000)
+    // @Test(groups="DataPrepDocLibToolBar")
     public void dataprep_ALF_8755() throws Exception
     {
         String testName = getTestName();
@@ -1809,7 +1777,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.uploadFileInFolder(customDrone, testFile1Info);
     }
 
-    // @Test(groups="DocLibToolBar", timeOut = 400000, enabled=false)
+    // @Test(groups="DocLibToolBar", enabled=false)
     public void alf_8755() throws Exception
     {
         /** Start Test */
@@ -1848,7 +1816,7 @@ public class GalleryViewTest extends AbstractTests
     }
 
     // This test includes 8717 / 8715
-    @Test(groups = "GalleryView", timeOut = 400000, enabled = false)
+    @Test(groups = "AlfrescoOne", enabled = false)
     public void alf_8717() throws Exception
     {
         /** Start Test */
@@ -1887,7 +1855,7 @@ public class GalleryViewTest extends AbstractTests
         // Verify that my favourites page should not display the folder.
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne", enabled = false)
     public void dataprep_ALF_8663() throws Exception
     {
         String testName = getTestName();
@@ -1906,7 +1874,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
     }
 
-    @Test(groups = "GalleryView", timeOut = 400000, enabled = false)
+    @Test(groups = "AlfrescoOne", enabled = false)
     public void alf_8663() throws Exception
     {
         /** Start Test */
@@ -1930,7 +1898,7 @@ public class GalleryViewTest extends AbstractTests
         // TODO: Method to verify the gallery items and maximized and minimized.
     }
 
-    @Test(groups = "DataPrepGalleryView", timeOut = 400000)
+    @Test(groups = "DataPrepAlfrescoOne", enabled = false)
     public void dataprep_ALF_8718() throws Exception
     {
         String testName = getTestName();
@@ -1967,7 +1935,7 @@ public class GalleryViewTest extends AbstractTests
      * <li>Verify the Unlike tool tip after liking the folder</li>
      * </ul>
      */
-    @Test(groups = "GalleryView", timeOut = 400000, enabled = false)
+    @Test(groups = "AlfrescoOne", enabled = false)
     public void alf_8718() throws Exception
     {
         /** Start Test */

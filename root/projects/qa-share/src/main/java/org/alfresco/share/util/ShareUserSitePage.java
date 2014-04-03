@@ -364,7 +364,7 @@ public class ShareUserSitePage extends AbstractTests
     /**
      * private method to do upload new version
      */
-    private static HtmlPage UploadNewVersion(WebDrone drone, UpdateFilePage updatePage, boolean majorVersion, String fileName, String comments)
+    public static HtmlPage UploadNewVersion(WebDrone drone, UpdateFilePage updatePage, boolean majorVersion, String fileName, String comments)
     //throws Exception
     {
         String fileContents = "New File being created on repository page:" + fileName;

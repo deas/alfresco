@@ -1917,14 +1917,14 @@ public class ShareUser extends AbstractTests
 
         if (!(sharePage instanceof DocumentLibraryPage))
         {
-            ShareUser.openSitesDocumentLibrary(customDrone, siteName);
+            docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
         }
         else
         {
             docLibPage = (DocumentLibraryPage) sharePage;
         }
-
-        return docLibPage.getNavigation().selectGalleryView().render();
+        DocumentLibraryNavigation docLibNavigation = docLibPage.getNavigation().render();
+        return docLibNavigation.selectGalleryView().render();
     }
 
 
