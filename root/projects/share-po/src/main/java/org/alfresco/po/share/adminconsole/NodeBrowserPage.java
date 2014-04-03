@@ -160,9 +160,6 @@ public class NodeBrowserPage extends SharePage
         checkNotNull(text);
         WebElement inputField = drone.findAndWait(selector);
         inputField.clear();
-        if (text != null)
-        {
-            inputField.sendKeys(text);
-        }
+        inputField.sendKeys(text);
     }
 }

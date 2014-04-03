@@ -75,7 +75,7 @@ public class DocListPaginator
     public HtmlPage gotoFirstResultsPage()
     {
         // If we're on page 1 return
-        if (pageNumber.equals(new Integer(1)))
+        if (pageNumber == 1)
         {
             return FactorySharePage.resolvePage(drone);
         }
