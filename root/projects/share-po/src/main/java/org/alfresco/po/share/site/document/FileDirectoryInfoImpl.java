@@ -220,7 +220,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         try
         {
             // Find if multiple tags are present
-            List<WebElement> tagList = findAllWithWait(By.xpath("//div[@class='detail']/span[@class='insitu-edit']/../span[@class='item']/span/a"));
+            List<WebElement> tagList = findAllWithWait(By.cssSelector(TAG_COLLECTION));
             for (WebElement tag : tagList)
             {
                 tagsList.add(tag.getText());
@@ -268,10 +268,10 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            WebElement deleteLink = findElement(By.cssSelector("div[class$='delete'] a"));
+            WebElement deleteLink = findAndWait(By.cssSelector("div[class$='delete'] a"));
             deleteLink.click();
         }
-        catch (NoSuchElementException e)
+        catch (TimeoutException e)
         {
             throw new PageOperationException(e.getMessage());
         }
@@ -462,7 +462,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            List<WebElement> tagList = findElements(By.xpath("//div[@class='detail']/span[@class='insitu-edit']/../span[@class='item']/span/a"));
+            List<WebElement> tagList = findElements(By.cssSelector(TAG_COLLECTION));
             if (tagList.size() > 0)
             {
                 return true;
@@ -614,7 +614,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            return findAllWithWait(By.xpath("//span[@class='inlineTagEditTag']"));
+            return findAllWithWait(By.cssSelector(INLINE_TAGS));
         }
         catch (TimeoutException e)
         {
