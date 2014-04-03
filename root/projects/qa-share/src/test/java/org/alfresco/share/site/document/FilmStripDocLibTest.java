@@ -88,6 +88,7 @@ public class FilmStripDocLibTest extends AbstractTests
         String fileName = getFileName(testName);
         String[] testUserInfo = new String[] { testUser };
 
+        // TODO: Remove try and catch in all methods, Ref. FailedTestNg listener
         try
         {
             // User
@@ -130,6 +131,7 @@ public class FilmStripDocLibTest extends AbstractTests
 
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
+        // TODO: Implement using ShareUserSitePage.selectView util in all tests
         docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
 
         // The view is changed to Filmstrip mode;
@@ -270,6 +272,7 @@ public class FilmStripDocLibTest extends AbstractTests
                 documentLibPage = documentLibPage.getNavigation().selectAll().render();
 
                 // Select Copy To
+                // TODO: Remove po chains, write or use util to cpy / move
                 CopyOrMoveContentPage copyContent = documentLibPage.getNavigation().render().selectCopyTo().render();
 
                 // Keep the selected Destination: Current Site > DocumentLibrary Folder
@@ -430,6 +433,7 @@ public class FilmStripDocLibTest extends AbstractTests
         assertFalse(folderInfo.isInfoPopUpDisplayed());
 
         // Click the "Info" icon on the top right corner of the panel;
+        // TODO: Replace PO code with ShareUserSitePage util, easy to maintain, fix if PO impl changes
         FileDirectoryInfo fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
 
         // Item Name with version
@@ -1260,6 +1264,7 @@ public class FilmStripDocLibTest extends AbstractTests
         docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
         assertTrue(docLibPage.isFileVisible(folderName + "-Updated"));
 
+        // TODO: Step commented, not implemented?
         // // to reuse the file renaming back to original
         // folderInfo = docLibPage.getFileDirectoryInfo(folderName + "-Updated");
         // folderInfo.renameContent(folderName);
@@ -1440,6 +1445,7 @@ public class FilmStripDocLibTest extends AbstractTests
             assertTrue(folderInfo.getLikeCount().equals("0"));
         }
 
+        // TODO: Remove cast
         HtmlPage folDetailPage = folderInfo.clickCommentsLink().render();
         folDetailPage = ((FolderDetailsPage) folDetailPage).addComment("test").render();
 
@@ -1451,6 +1457,8 @@ public class FilmStripDocLibTest extends AbstractTests
         docLibPage.getNavigation().selectAll();
         ConfirmDeletePage deleteConf = docLibPage.getNavigation().selectDelete().render();
         deleteConf.selectAction(Action.Delete);
+        
+        // TODO: Add Render to confirm the step succeeds
     }
 
     /**
@@ -1553,6 +1561,7 @@ public class FilmStripDocLibTest extends AbstractTests
         // "Editing has been cancelled" message is displayed;
         assertFalse(docLibPage.getFileDirectoryInfo(fileName1).isEdited());
 
+        // TODO: Use util available in ShareUserSitePage
         // Return to the document's Info panel and click the "Copy to..." action;
         CopyOrMoveContentPage copyToForm = fileInfo.selectCopyTo().render();
         // "Copy %itemname% to..." form is opened;
