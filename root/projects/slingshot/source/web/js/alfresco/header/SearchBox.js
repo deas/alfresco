@@ -320,7 +320,7 @@ define(["dojo/_base/declare",
                {
                   this.alfLog("log", "Search request for: ", terms);
 
-                  var url = "search?t=" + encodeURIComponent(terms);
+                  var url = "search?t=" + encodeURIComponent(terms) + "&a=true&r=false";
                   if (this.site != null)
                   {
                      url = "site/" + this.site + "/" + url;
