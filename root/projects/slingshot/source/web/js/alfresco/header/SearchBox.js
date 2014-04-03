@@ -188,6 +188,13 @@ define(["dojo/_base/declare",
        * @default true
        */
       advancedSearch: true,
+
+      /**
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      liveSearch: true,
       
       /**
        * @instance
@@ -260,27 +267,30 @@ define(["dojo/_base/declare",
             this._searchMenu.placeAt(this._searchMenuNode);
             this._searchMenu.startup();
          }
-         
-         // construct the live search panel
-         this._LiveSearch = new LiveSearch({
-            searchBox: this
-         });
-         this._LiveSearch.placeAt(this._searchLiveNode);
-         
-         // event handlers to hide/show the panel
-         on(window, "click", lang.hitch(this, function(evt) {
-            DomStyle.set(this._LiveSearch.containerNode, "display", "none");
-         }));
-         on(this._searchTextNode, "click", lang.hitch(this, function(evt) {
-            if (this.resultsCounts["docs"] > 0 || this.resultsCounts["sites"] > 0 || this.resultsCounts["people"] > 0)
-            {
-               DomStyle.set(this._LiveSearch.containerNode, "display", "block");
-            }
-            evt.stopPropagation();
-         }));
-         on(this._LiveSearch, "click", function(evt) {
-            evt.stopPropagation();
-         });
+
+         if (this.liveSearch)
+         {
+            // construct the live search panel
+            this._LiveSearch = new LiveSearch({
+               searchBox: this
+            });
+            this._LiveSearch.placeAt(this._searchLiveNode);
+
+            // event handlers to hide/show the panel
+            on(window, "click", lang.hitch(this, function(evt) {
+               DomStyle.set(this._LiveSearch.containerNode, "display", "none");
+            }));
+            on(this._searchTextNode, "click", lang.hitch(this, function(evt) {
+               if (this.resultsCounts["docs"] > 0 || this.resultsCounts["sites"] > 0 || this.resultsCounts["people"] > 0)
+               {
+                  DomStyle.set(this._LiveSearch.containerNode, "display", "block");
+               }
+               evt.stopPropagation();
+            }));
+            on(this._LiveSearch, "click", function(evt) {
+               evt.stopPropagation();
+            });
+         }
          
          this.addAccessibilityLabel();
       },
@@ -316,31 +326,34 @@ define(["dojo/_base/declare",
             }
             default:
             {
-               if (terms.length >= this._minimumSearchLength && terms !== this.lastSearchText)
+               if (this.liveSearch)
                {
-                  DomStyle.set(this._LiveSearch.containerNode, "display", "block");
-                  
-                  this.lastSearchText = terms;
-                  
-                  // abort previous XHR requests to ensure we don't display results from a previous potentially slower query
-                  for (var i=0; i<this._requests.length; i++)
+                  if (terms.length >= this._minimumSearchLength && terms !== this.lastSearchText)
                   {
-                     this._requests[i].cancel();
+                     DomStyle.set(this._LiveSearch.containerNode, "display", "block");
+
+                     this.lastSearchText = terms;
+
+                     // abort previous XHR requests to ensure we don't display results from a previous potentially slower query
+                     for (var i=0; i<this._requests.length; i++)
+                     {
+                        this._requests[i].cancel();
+                     }
+                     this._requests = [];
+
+                     // execute our live search queries in a few ms if user has not continued typing
+                     var then = Date.now();
+                     if (this._timeoutHandle)
+                     {
+                        clearTimeout(this._timeoutHandle);
+                     }
+                     var _this = this;
+                     this._timeoutHandle = setTimeout(function() {
+                        _this.liveSearchDocuments(terms, 0);
+                        _this.liveSearchSites(terms, 0);
+                        _this.liveSearchPeople(terms, 0);
+                     }, this._keyRepeatWait);
                   }
-                  this._requests = [];
-                  
-                  // execute our live search queries in a few ms if user has not continued typing
-                  var then = Date.now();
-                  if (this._timeoutHandle)
-                  {
-                     clearTimeout(this._timeoutHandle);
-                  }
-                  var _this = this;
-                  this._timeoutHandle = setTimeout(function() {
-                     _this.liveSearchDocuments(terms, 0);
-                     _this.liveSearchSites(terms, 0);
-                     _this.liveSearchPeople(terms, 0);
-                  }, this._keyRepeatWait);
                }
             }
          }
@@ -464,10 +477,10 @@ define(["dojo/_base/declare",
                   // construct each Person item as a LiveSearchItem widget
                   array.forEach(response.items, function(item) {
                      var fullName = item.firstName + " " + item.lastName;
-                     var meta = this.encodeHTML(item.jobtitle) + (item.location ? (", "+this.encodeHTML(item.location)) : "");
+                     var meta = this.encodeHTML(item.jobtitle || "") + (item.location ? (", "+this.encodeHTML(item.location)) : "");
                      var itemLink = new LiveSearchItem({
                         cssClass: "alf-livesearch-icon",
-                        title: this.encodeHTML(item.jobtitle),
+                        title: this.encodeHTML(item.jobtitle || ""),
                         label: this.encodeHTML(fullName + " (" + item.userName + ")"),
                         link: AlfConstants.URL_PAGECONTEXT + "user/" + encodeURIComponent(item.userName) + "/profile",
                         icon: AlfConstants.PROXY_URI + "slingshot/profile/avatar/" + encodeURIComponent(item.userName) + "/thumbnail/avatar32",
