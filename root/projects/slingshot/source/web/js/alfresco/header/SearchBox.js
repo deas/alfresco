@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -20,26 +20,94 @@
 /**
  * @module alfresco/header/SearchBox
  * @extends dijit/_WidgetBase
- * @mixes dijit/_OnDijitClickMixin
  * @mixes dijit/_TemplatedMixin
- * @mixes module:alfresco/core/Core
  * @author Dave Draper
+ * @author Kevin Roast
  */
 define(["dojo/_base/declare",
         "dojo/_base/lang",
+        "dojo/_base/array",
         "dijit/_WidgetBase",
-        "dijit/_OnDijitClickMixin",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/SearchBox.html",
+        "dojo/text!./templates/LiveSearch.html",
+        "dojo/text!./templates/LiveSearchItem.html",
         "alfresco/core/Core",
+        "alfresco/core/CoreXhr",
         "alfresco/header/AlfMenuBar",
-        "dojo/_base/fx",
+        "service/constants/Default",
+        "dojo/json",
         "dojo/dom-attr",
+        "dojo/dom-style",
         "dojo/dom-construct",
+        "dojo/date/stamp",
         "dojo/on"], 
-        function(declare, lang, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin, template,  AlfCore, AlfMenuBar, fx, domAttr, domConstruct, on) {
+        function(declare, lang, array, _Widget, _Templated, SearchBoxTemplate, LiveSearchTemplate, LiveSearchItemTemplate, AlfCore, AlfXhr, AlfMenuBar, AlfConstants, JSON, DomAttr, DomStyle, DomConstruct, Stamp, on) {
 
-   return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, AlfCore], {
+   /**
+    * LiveSearch widget
+    */
+   var LiveSearch = declare([_Widget, _Templated, AlfCore], {
+      
+      searchBox: null,
+      
+      /**
+       * DOM element container for Documents
+       * 
+       * @instance
+       * @type {object}
+       */
+      containerNodeDocs: null,
+      
+      /**
+       * DOM element container for Sites
+       * 
+       * @instance
+       * @type {object}
+       */
+      containerNodeSites: null,
+      
+      /**
+       * DOM element container for People
+       * 
+       * @instance
+       * @type {object}
+       */
+      containerNodePeople: null,
+      
+      /**
+       * @instance
+       * @type {string}
+       */
+      templateString: LiveSearchTemplate,
+      
+      onSearchDocsMoreClick: function alfresco_header_LiveSearch_onSearchDocsMoreClick(evt) {
+         this.searchBox.liveSearchDocuments(this.searchBox.lastSearchText, this.searchBox.resultsCounts["docs"]);
+         evt.preventDefault();
+      },
+      
+      onSearchClearClick: function alfresco_header_LiveSearch_onSearchClearClick(evt) {
+         this.searchBox.clearResults();
+         evt.preventDefault();
+      },
+   });
+   
+   /**
+    * LiveSearchItem widget
+    */
+   var LiveSearchItem = declare([_Widget, _Templated, AlfCore], {
+
+      /**
+       * @instance
+       * @type {string}
+       */
+      templateString: LiveSearchItemTemplate
+   });
+
+   /**
+    * alfresco/header/SearchBox widget
+    */ 
+   return declare([_Widget, _Templated, AlfCore, AlfXhr], {
 
       /**
        * The scope to use for i18n messages.
@@ -56,7 +124,7 @@ define(["dojo/_base/declare",
        * @type {object[]}
        * @default [{cssFile:"./css/SearchBox.css"}]
        */
-      cssRequirements: [{cssFile:"./css/SearchBox.css"}],
+      cssRequirements: [{cssFile: "./css/SearchBox.css"}],
 
       /**
        * An array of the i18n files to use with this widget.
@@ -72,7 +140,7 @@ define(["dojo/_base/declare",
        * @instance
        * @type {String}
        */
-      templateString: template,
+      templateString: SearchBoxTemplate,
 
       /**
        * @instance
@@ -84,16 +152,9 @@ define(["dojo/_base/declare",
       /**
        * @instance
        * @type {integer}
-       * @default 250
+       * @default 144
        */
-      _focusedWidth: "250",
-
-      /**
-       * @instance
-       * @type {integer}
-       * @default 100
-       */
-      _blurredWidth: "100",
+      _blurredWidth: "144",
 
       /**
        * @instance
@@ -108,19 +169,46 @@ define(["dojo/_base/declare",
        * @default true
        */
       advancedSearch: true,
+      
+      /**
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      lastSearchText: null,
+      
+      _keyRepeatWait: 250,
+      
+      _minimumSearchLength: 2,
+      
+      _resultPageSize: 5,
+      
+      _LiveSearch: null,
+      
+      _requests: null,
+      
+      /**
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      resultsCounts: null,
 
       /**
        * @instance
        */
       postCreate: function alfresco_header_SearchBox__postCreate() {
 
-         var _this = this;
-         domAttr.set(this._searchTextNode, "id", "HEADER_SEARCHBOX_FORM_FIELD");
-         domAttr.set(this._searchTextNode, "value", this.message("search.instruction"));
-         on(this._searchTextNode, "keydown", function(evt) {
-            _this.onSearchBoxKeyDown(evt);
-         });
-
+         this._requests = [];
+         this.resultsCounts = {};
+         
+         DomAttr.set(this._searchTextNode, "id", "HEADER_SEARCHBOX_FORM_FIELD");
+         DomAttr.set(this._searchTextNode, "placeholder", this.message("search.instruction"));
+         on(this._searchTextNode, "keyup", lang.hitch(this, function(evt) {
+            this.onSearchBoxKeyUp(evt);
+         }));
+         
+         // construct the optional advanced search menu
          if (this.advancedSearch)
          {
             var currSite = lang.getObject("Alfresco.constants.SITE");
@@ -153,54 +241,218 @@ define(["dojo/_base/declare",
             this._searchMenu.placeAt(this._searchMenuNode);
             this._searchMenu.startup();
          }
-
+         
+         // construct the live search panel
+         this._LiveSearch = new LiveSearch({
+            searchBox: this
+         });
+         this._LiveSearch.placeAt(this._searchLiveNode);
+         
+         // event handlers to hide/show the panel
+         on(window, "click", lang.hitch(this, function(evt) {
+            DomStyle.set(this._LiveSearch.containerNode, "display", "none");
+         }));
+         on(this._searchTextNode, "click", lang.hitch(this, function(evt) {
+            if (this.resultsCounts["docs"] > 0 || this.resultsCounts["sites"] > 0 || this.resultsCounts["people"] > 0)
+            {
+               DomStyle.set(this._LiveSearch.containerNode, "display", "block");
+            }
+            evt.stopPropagation();
+         }));
+         on(this._LiveSearch, "click", function(evt) {
+            evt.stopPropagation();
+         });
+         
          this.addAccessibilityLabel();
-
       },
 
       /**
-       * Handles keydown events that occur on the <input> element used for capturing search terms.
+       * Handles keyup events that occur on the <input> element used for capturing search terms.
        * @instance
-       * @param {object} evt The keydown event
+       * @param {object} evt The keyup event
        */
-      onSearchBoxKeyDown: function alfresco_header_SearchBox__onSearchBoxKeyDown(evt) {
-         if (evt.keyCode === 13)
+      onSearchBoxKeyUp: function alfresco_header_SearchBox__onSearchBoxKeyUp(evt) {
+         var terms = lang.trim(this._searchTextNode.value);
+         switch (evt.keyCode)
          {
-            var terms = lang.trim(this._searchTextNode.value);
-            if (terms.length !== 0)
+            case 13:
             {
-               this.alfLog("log", "Search request for: ", terms);
-
-               var url = "search?t=" + encodeURIComponent(terms);
-               if (this.site != null)
+               if (terms.length !== 0)
                {
-                  url = "site/" + this.site + "/" + url;
-               }
+                  this.alfLog("log", "Search request for: ", terms);
 
-               this.alfPublish("ALF_NAVIGATE_TO_PAGE", { 
-                  url: url,
-                  type: "SHARE_PAGE_RELATIVE",
-                  target: "CURRENT"
-               });
+                  var url = "search?t=" + encodeURIComponent(terms);
+                  if (this.site != null)
+                  {
+                     url = "site/" + this.site + "/" + url;
+                  }
+   
+                  this.alfPublish("ALF_NAVIGATE_TO_PAGE", { 
+                     url: url,
+                     type: "SHARE_PAGE_RELATIVE",
+                     target: "CURRENT"
+                  });
+               }
+               break;
+            }
+            default:
+            {
+               if (terms.length >= this._minimumSearchLength && terms !== this.lastSearchText)
+               {
+                  DomStyle.set(this._LiveSearch.containerNode, "display", "block");
+                  
+                  this.lastSearchText = terms;
+                  
+                  // abort previous XHR requests to ensure we don't display results from a previous potentially slower query
+                  for (var i=0; i<this._requests.length; i++)
+                  {
+                     this._requests[i].cancel();
+                  }
+                  this._requests = [];
+                  
+                  // execute our live search queries in a few ms if user has not continued typing
+                  var then = Date.now();
+                  if (this._timeoutHandle)
+                  {
+                     clearTimeout(this._timeoutHandle);
+                  }
+                  var _this = this;
+                  this._timeoutHandle = setTimeout(function() {
+                     _this.liveSearchDocuments(terms, 0);
+                     _this.liveSearchSites(terms, 0);
+                     _this.liveSearchPeople(terms, 0);
+                  }, this._keyRepeatWait);
+               }
             }
          }
       },
-
-      /**
-       * When the search node gains focus then search instruction should be removed. 
-       * @instance
-       */
-      onSearchNodeFocus: function alfresco_header_SearchBox__onSearchNodeFocus() {
-         domAttr.set(this._searchTextNode, "value", "");
-         this._searchTextNode.focus();
+      
+      liveSearchDocuments: function alfresco_header_SearchBox_liveSearchDocuments(terms, startIndex) {
+         this._requests.push(
+            this.serviceXhr({
+               url: AlfConstants.PROXY_URI + "slingshot/live-search-docs?t=" + encodeURIComponent(terms) + "&maxResults=" + this._resultPageSize + "&startIndex=" + startIndex,
+               method: "GET",
+               successCallback: function(response) {
+                  if (startIndex === 0)
+                  {
+                     this._LiveSearch.containerNodeDocs.innerHTML = "";
+                  }
+                  // construct each Document item as a LiveSearchItem widget
+                  array.forEach(response.items, function(item) {
+                     // construct the meta-data - site information, modified by and title description as tooltip
+                     var site = (item.site ? "site/" + item.site.shortName + "/" : ""),
+                         info = (item.site ? ("("+item.site.title+") - ") : "") + Stamp.fromISOString(item.modifiedOn).toGMTString() + " - " + item.modifiedBy,
+                         desc = this.encodeHTML(item.title);
+                     if (item.description) desc += (desc.length !== 0 ? "\r\n" : "") + this.encodeHTML(item.description);
+                     // build the widget for the item - including the thumbnail url for the document
+                     var itemLink = new LiveSearchItem({
+                        title: desc,
+                        label: this.encodeHTML(item.name),
+                        link: AlfConstants.URL_PAGECONTEXT + site + "document-details?nodeRef=" + item.nodeRef,
+                        icon: AlfConstants.PROXY_URI + "api/node/" + item.nodeRef.replace(":/", "") + "/content/thumbnails/doclib?c=queue&ph=true&lastModified=" + (item.lastThumbnailModification || 1),
+                        alt: this.encodeHTML(item.name),
+                        meta: this.encodeHTML(info)
+                     });
+                     itemLink.placeAt(this._LiveSearch.containerNodeDocs);
+                  }, this);
+                  // the more [+] action is added if more results are potentially available
+                  DomStyle.set(this._LiveSearch.nodeDocsMore, "display", response.hasMoreRecords ? "block" : "none");
+                  // record the count of results
+                  if (startIndex === 0)
+                  {
+                     this.resultsCounts["docs"] = 0;
+                  }
+                  this.resultsCounts["docs"] += response.items.length;
+               },
+               failureCallback: function(response) {
+                  DomStyle.set(this._LiveSearch.nodeDocsMore, "display", "none");
+                  if (startIndex === 0)
+                  {
+                     this._LiveSearch.containerNodeDocs.innerHTML = "";
+                     this.resultsCounts["docs"] = 0;
+                  }
+               },
+               callbackScope: this
+            }));
       },
 
-      /**
-       * When the search node loses focus the search instruction should be reset.
-       * @instance
-       */
-      onSearchNodeBlur: function alfresco_header_SearchBox__onSearchNodeBlur() {
-         domAttr.set(this._searchTextNode, "value", this.message("search.instruction"));
+      liveSearchSites: function alfresco_header_SearchBox_liveSearchSites(terms, startIndex) {
+         this._requests.push(
+            this.serviceXhr({
+               url: AlfConstants.PROXY_URI + "slingshot/live-search-sites?t=" + encodeURIComponent(terms) + "&maxResults=" + this._resultPageSize,
+               method: "GET",
+               successCallback: function(response) {
+                  this._LiveSearch.containerNodeSites.innerHTML = "";
+                  // construct each Site item as a LiveSearchItem widget
+                  array.forEach(response.items, function(item) {
+                     var itemLink = new LiveSearchItem({
+                        title: this.encodeHTML(item.description),
+                        label: this.encodeHTML(item.title),
+                        link: AlfConstants.URL_PAGECONTEXT + "site/" + item.shortName + "/dashboard",
+                        icon: AlfConstants.URL_RESCONTEXT + "components/images/filetypes/generic-site-32.png",
+                        alt: this.encodeHTML(item.title),
+                        meta: item.description ? this.encodeHTML(item.description) : "&nbsp;"
+                     });
+                     itemLink.placeAt(this._LiveSearch.containerNodeSites);
+                  }, this);
+                  this.resultsCounts["sites"] = response.items.length;
+               },
+               failureCallback: function(response) {
+                  this._LiveSearch.containerNodeSites.innerHTML = "";
+                  this.resultsCounts["sites"] = 0;
+               },
+               callbackScope: this
+            }));
+      },
+      
+      liveSearchPeople: function alfresco_header_SearchBox_liveSearchPeople(terms, startIndex) {
+         this._requests.push(
+            this.serviceXhr({
+               url: AlfConstants.PROXY_URI + "slingshot/live-search-people?t=" + encodeURIComponent(terms) + "&maxResults=" + this._resultPageSize,
+               method: "GET",
+               successCallback: function(response) {
+                  this._LiveSearch.containerNodePeople.innerHTML = "";
+                  // construct each Person item as a LiveSearchItem widget
+                  array.forEach(response.items, function(item) {
+                     var fullName = item.firstName + " " + item.lastName;
+                     var meta = this.encodeHTML(item.jobtitle) + (item.location ? (", "+this.encodeHTML(item.location)) : "");
+                     var itemLink = new LiveSearchItem({
+                        title: this.encodeHTML(item.jobtitle),
+                        label: this.encodeHTML(fullName + " (" + item.userName + ")"),
+                        link: AlfConstants.URL_PAGECONTEXT + "user/" + encodeURIComponent(item.userName) + "/profile",
+                        icon: AlfConstants.PROXY_URI + "slingshot/profile/avatar/" + encodeURIComponent(item.userName) + "/thumbnail/avatar32",
+                        alt: this.encodeHTML(fullName),
+                        meta: meta ? meta : "&nbsp;"
+                     });
+                     itemLink.placeAt(this._LiveSearch.containerNodePeople);
+                  }, this);
+                  this.resultsCounts["people"] = response.items.length;
+               },
+               failureCallback: function(response) {
+                  this._LiveSearch.containerNodePeople.innerHTML = "";
+                  this.resultsCounts["people"] = 0;
+               },
+               callbackScope: this
+            }));
+      },
+      
+      clearResults: function alfresco_header_SearchBox_clearResults()
+      {
+         this._searchTextNode.value = "";
+         this.lastSearchText = "";
+         
+         for (var i=0; i<this._requests.length; i++)
+         {
+            this._requests[i].cancel();
+         }
+         this._requests = [];
+         
+         this.resultsCounts = {};
+         this._LiveSearch.containerNodeDocs.innerHTML = "";
+         this._LiveSearch.containerNodePeople.innerHTML = "";
+         this._LiveSearch.containerNodeSites.innerHTML = "";
+         
+         DomStyle.set(this._LiveSearch.nodeDocsMore, "display", "none");
       },
 
       /**
@@ -208,12 +460,11 @@ define(["dojo/_base/declare",
        * @instance
        */
       addAccessibilityLabel: function alfresco_header_SearchBox__addAccessibilityLabel() {
-         domConstruct.create("label", {
+         DomConstruct.create("label", {
             "for": "HEADER_SEARCHBOX_FORM_FIELD",
             innerHTML: this.message("search.label"),
             "class": "hidden"
          }, this._searchTextNode, "before");
       }
-
    });
 });

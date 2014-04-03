@@ -99,7 +99,7 @@ define(["dojo/_base/declare",
                   headers[this.getCsrfHeader()] = this.getCsrfToken();
                }
                
-               xhr(config.url, {
+               return xhr(config.url, {
                   handleAs: (config.handleAs) ? config.handleAs : "text",
                   method: (config.method) ? config.method : "POST",
                   data: (config.data) ? JSON.stringify(config.data) : null,
