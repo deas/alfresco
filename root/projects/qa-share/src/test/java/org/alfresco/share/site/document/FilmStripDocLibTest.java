@@ -29,12 +29,21 @@ import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.site.UploadFilePage;
-import org.alfresco.po.share.site.document.*;
+import org.alfresco.po.share.site.document.ConfirmDeletePage;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
+import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
+import org.alfresco.po.share.site.document.DocumentDetailsPage;
+import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
+import org.alfresco.po.share.site.document.FileDirectoryInfo;
+import org.alfresco.po.share.site.document.FolderDetailsPage;
+import org.alfresco.po.share.site.document.ManagePermissionsPage;
+import org.alfresco.po.share.site.document.SelectAspectsPage;
 import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.WebDroneType;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.HtmlPage;
@@ -88,30 +97,18 @@ public class FilmStripDocLibTest extends AbstractTests
         String fileName = getFileName(testName);
         String[] testUserInfo = new String[] { testUser };
 
-        // TODO: Remove try and catch in all methods, Ref. FailedTestNg listener
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName });
-            ShareUser.logout(customDrone);
-            //
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
-        
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName });
+        ShareUser.logout(customDrone);
+        //
+
     }
 
     /**
@@ -129,10 +126,9 @@ public class FilmStripDocLibTest extends AbstractTests
         // User login.
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
+        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName).render();
 
-        // TODO: Implement using ShareUserSitePage.selectView util in all tests
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
         assertTrue(docLibPage.isFilmStripViewDisplayed());
@@ -158,31 +154,19 @@ public class FilmStripDocLibTest extends AbstractTests
         String fileName1 = getFileName(testName + "1");
         String fileName2 = getFileName(testName + "2");
         String[] testUserInfo = new String[] { testUser };
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
-
-            // Upload FIles
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
+        ShareUser.logout(customDrone);
 
     }
 
@@ -202,7 +186,7 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Navigate to filmstrip view
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
         assertTrue(docLibPage.isFilmStripViewDisplayed());
@@ -211,7 +195,7 @@ public class FilmStripDocLibTest extends AbstractTests
         assertEquals(docLibPage.getDisplyedFilmstripItem(), fileName1);
 
         // No Metadata displayed
-        assertFalse(docLibPage.getFileDirectoryInfo(fileName1).isInfoPopUpDisplayed());
+        assertFalse(ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).isInfoPopUpDisplayed());
 
         // There are elements of navigation
         assertTrue(docLibPage.isNextFilmstripArrowPresent());
@@ -221,6 +205,9 @@ public class FilmStripDocLibTest extends AbstractTests
 
         // It is possible browsing of documents
         docLibPage.selectNextFilmstripItem().render();
+
+        // down arrow pointer in the middle
+        docLibPage.toggleNavHandleForFilmstrip();
 
         assertEquals(docLibPage.getDisplyedFilmstripItem(), fileName2);
     }
@@ -245,50 +232,38 @@ public class FilmStripDocLibTest extends AbstractTests
         String folderName = getFolderName(testName);
         String[] testUserInfo = new String[] { testUser };
 
-        try
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
+
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
+        DocumentLibraryPage documentLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName).render();
+        for (int i = 3; i < 5; i++)
         {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
-
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
-
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
-
-            // Upload FIles
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
-            DocumentLibraryPage documentLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName).render();
-            for (int i = 3; i < 5; i++)
-            {
-                File file = SiteUtil.prepareFile(siteName + i);
-                UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
-                documentLibPage = uploadForm.uploadFile(file.getCanonicalPath()).render();
-            }
-
-            for (int i = 0; i < 2; i++)
-            {
-                documentLibPage = documentLibPage.getNavigation().selectAll().render();
-
-                // Select Copy To
-                // TODO: Remove po chains, write or use util to cpy / move
-                CopyOrMoveContentPage copyContent = documentLibPage.getNavigation().render().selectCopyTo().render();
-
-                // Keep the selected Destination: Current Site > DocumentLibrary Folder
-                documentLibPage = copyContent.selectOkButton().render();
-            }
-            ShareUser.logout(customDrone);
-
+            File file = SiteUtil.prepareFile(siteName + i);
+            UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
+            documentLibPage = uploadForm.uploadFile(file.getCanonicalPath()).render();
         }
-        catch (Throwable e)
+
+        for (int i = 0; i < 2; i++)
         {
-            reportError(customDrone, testName, e);
+            documentLibPage = documentLibPage.getNavigation().selectAll().render();
+
+            // Select Copy To
+            // TODO: write or use util to cpy / move
+            CopyOrMoveContentPage copyContent = documentLibPage.getNavigation().selectCopyTo().render();
+
+            // Keep the selected Destination: Current Site > DocumentLibrary Folder
+            documentLibPage = copyContent.selectOkButton().render();
         }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        ShareUser.logout(customDrone);
 
     }
 
@@ -308,7 +283,7 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
         assertTrue(docLibPage.isFilmStripViewDisplayed());
@@ -372,30 +347,19 @@ public class FilmStripDocLibTest extends AbstractTests
         String fileName1 = getFileName(testName + "1");
         String folderName = getFolderName(testName);
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, new String[] { testUser });
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, new String[] { testUser });
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Upload FIles
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
+        ShareUser.logout(customDrone);
 
     }
 
@@ -415,13 +379,13 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
         assertTrue(docLibPage.isFilmStripViewDisplayed());
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // Verify that only thumbnails of items are displayed without metadata;
         // Gets the list of visible files from thumbnails.
@@ -433,11 +397,10 @@ public class FilmStripDocLibTest extends AbstractTests
         assertFalse(folderInfo.isInfoPopUpDisplayed());
 
         // Click the "Info" icon on the top right corner of the panel;
-        // TODO: Replace PO code with ShareUserSitePage util, easy to maintain, fix if PO impl changes
-        FileDirectoryInfo fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
         // Item Name with version
-        assertTrue(fileInfo.getContentEditInfo().contains(fileName1), fileInfo.getContentEditInfo() + " should contain " + fileName1);
+        assertTrue(fileInfo.getContentEditInfo().contains(testUser), fileInfo.getContentEditInfo() + " should contain " + testUser);
 
         // Download icon
         fileInfo.selectDownload();
@@ -460,18 +423,18 @@ public class FilmStripDocLibTest extends AbstractTests
 
         // Tags
         fileInfo.addTag(testName.toLowerCase());
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         assertTrue(fileInfo.getTags().contains(testName.toLowerCase()), fileInfo.getTags() + " should contain " + testName);
 
         // Favorite icon and label
         fileInfo.selectFavourite();
 
         // Like icon and label
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         fileInfo.selectLike();
 
         // Comment icon and label
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         fileInfo.clickInfoIcon();
         fileInfo.selectMoreLink();
         assertTrue(fileInfo.isCommentLinkPresent(), "comment link should be visible");
@@ -502,31 +465,19 @@ public class FilmStripDocLibTest extends AbstractTests
         String fileName1 = getFileName(testName);
         String folderName = getFolderName(testName);
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Upload FIles
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
-
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
+        ShareUser.logout(customDrone);
     }
 
     /**
@@ -548,7 +499,7 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
         assertTrue(docLibPage.isFilmStripViewDisplayed());
@@ -579,32 +530,21 @@ public class FilmStripDocLibTest extends AbstractTests
         String folderName = getFolderName(testName);
         String[] testUserInfo = new String[] { testUser };
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
-            // ShareUser.openSiteDashboard(customDrone, siteName);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // ShareUser.openSiteDashboard(customDrone, siteName);
 
-            // Upload FIles
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
-            ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
+        ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
+        ShareUser.logout(customDrone);
 
     }
 
@@ -624,13 +564,13 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
         assertTrue(docLibPage.isFilmStripViewDisplayed());
         
 
-        FileDirectoryInfo fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         // Select any item and click the checkbox on the left top corner of the panel;
         fileInfo.selectThumbnail();
         fileInfo.selectCheckbox();
@@ -669,29 +609,18 @@ public class FilmStripDocLibTest extends AbstractTests
         String testUser = getUserNameFreeDomain(testName);
         String fileName1 = getFileName(testName + "1");
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Upload FIles
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.logout(customDrone);
 
     }
 
@@ -702,62 +631,68 @@ public class FilmStripDocLibTest extends AbstractTests
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
-        String fileName1 = getFileName(testName + "1");
+        String fileName1 = getFileName(testName + System.currentTimeMillis());
 
         // User login.
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
         assertTrue(docLibPage.isFilmStripViewDisplayed());
 
-        FileDirectoryInfo fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
         String tagName0 = "tag0";
         String tagName1 = "tag1";
         fileInfo.addTag(tagName0);
+
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         fileInfo.addTag(tagName1);
 
         // Click the "Edit" icon;
         // Steps 2 and 3
         fileInfo.clickOnAddTag();
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         assertTrue(fileInfo.removeTagButtonIsDisplayed(tagName0));
 
         // Step 4
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         fileInfo.clickOnTagRemoveButton(tagName0);
 
         // Tags added step 5
         String tagName2 = "tag2";
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         fileInfo.enterTagString(tagName2);
 
         // step 6
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         fileInfo.clickOnTagCancelButton();
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         List<String> tags = fileInfo.getTags();
         assertFalse(tags.contains(tagName2), tags + " should contain " + testName);
         assertTrue(tags.contains(tagName0), tags + " should contain " + testName);
         assertTrue(tags.contains(tagName1), tags + " should contain " + testName);
 
         // step 7
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         fileInfo.clickOnAddTag();
         fileInfo.clickOnTagRemoveButton(tagName0);
         fileInfo.enterTagString(tagName2);
         fileInfo.clickOnTagSaveButton();
         docLibPage = customDrone.getCurrentPage().render();
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         tags = fileInfo.getTags();
         assertFalse(tags.contains(tagName0), tags + " should contain " + testName);
         assertTrue(tags.contains(tagName2), tags + " should contain " + testName);
         assertTrue(tags.contains(tagName1), tags + " should contain " + testName);
+        
+
     }
 
     /**
@@ -778,29 +713,18 @@ public class FilmStripDocLibTest extends AbstractTests
         String testUser = getUserNameFreeDomain(testName);
         String folderName = getFolderName(testName);
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Upload FIles
-            ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Upload FIles
+        ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
+        ShareUser.logout(customDrone);
 
     }
 
@@ -811,15 +735,16 @@ public class FilmStripDocLibTest extends AbstractTests
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
-        String folderName = getFolderName(testName);
+        String folderName = getFolderName(testName + System.currentTimeMillis());
 
         // User login.
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
+        ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
         assertTrue(docLibPage.isFilmStripViewDisplayed());
@@ -829,6 +754,8 @@ public class FilmStripDocLibTest extends AbstractTests
         String tagName0 = "tag0";
         String tagName1 = "tag1";
         folderInfo.addTag(tagName0);
+
+        folderInfo = docLibPage.getFileDirectoryInfo(folderName);
         folderInfo.addTag(tagName1);
 
         // Click the "Edit" icon;
@@ -889,31 +816,20 @@ public class FilmStripDocLibTest extends AbstractTests
         String fileName1 = getFileName(testName + "1");
         String fileName2 = getFileName(testName + "2");
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Upload FIles
-            ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Upload FIles
+        ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
+        ShareUser.logout(customDrone);
 
     }
 
@@ -936,13 +852,13 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.uploadFileInFolder(customDrone, new String[] { deleteFile });
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
         assertTrue(docLibPage.isFilmStripViewDisplayed());
 
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
-        FileDirectoryInfo fileInfo1 = docLibPage.getFileDirectoryInfo(fileName1);
+        FileDirectoryInfo fileInfo1 = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         FileDirectoryInfo fileInfo2 = docLibPage.getFileDirectoryInfo(fileName2);
 
         // Select any item and click the checkbox on the left top corner of the panel;
@@ -985,7 +901,7 @@ public class FilmStripDocLibTest extends AbstractTests
         docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName).render();
         
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
-        fileInfo1 = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo1 = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         folderInfo.selectThumbnail();
         folderInfo.selectCheckbox();
         fileInfo1.selectThumbnail();
@@ -1024,30 +940,19 @@ public class FilmStripDocLibTest extends AbstractTests
         String fileName1 = getFileName(testName + "1");
         String fileName2 = getFileName(testName + "2");
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Upload FIles
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
+        ShareUser.logout(customDrone);
 
     }
 
@@ -1056,13 +961,15 @@ public class FilmStripDocLibTest extends AbstractTests
      * 
      * @throws Exception
      */
-    @Test(groups = "AlfrescoOne", enabled = false)
+    @Test(groups = "AlfrescoOne", enabled = true)
     public void ALF_14201() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
+        String fileName1 = getFileName(testName + "1");
+        String fileName2 = getFileName(testName + "2");
 
         // User login.
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
@@ -1070,16 +977,21 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).selectThumbnail().render();
 
         // The view is changed to Filmstrip mode;
         assertTrue(docLibPage.isFilmStripViewDisplayed());
 
-        docLibPage.sendKeyRightArrowForFilmstrip();
+        docLibPage = docLibPage.sendKeyRightArrowForFilmstrip().render();
+        assertEquals(docLibPage.getDisplyedFilmstripItem(), fileName2);
 
-        docLibPage.sendKeyLeftArrowForFilmstrip();
+        docLibPage = docLibPage.sendKeyLeftArrowForFilmstrip().render();
+        assertEquals(docLibPage.getDisplyedFilmstripItem(), fileName1);
 
         // Select document with several pages. Navigate up and down using keys.
+        // Cannot be implemented
+        docLibPage = docLibPage.getFileDirectoryInfo(fileName2).selectThumbnail().render();
 
     }
 
@@ -1102,30 +1014,19 @@ public class FilmStripDocLibTest extends AbstractTests
         String fileName1 = getFileName(testName + "1");
         String fileName2 = getFileName(testName + "2");
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Upload FIles
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
+        ShareUser.logout(customDrone);
 
     }
 
@@ -1145,10 +1046,10 @@ public class FilmStripDocLibTest extends AbstractTests
 
         docLibPage = ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // Rename file name.
-        FileDirectoryInfo fileInfo1 = docLibPage.getFileDirectoryInfo(fileName1);
+        FileDirectoryInfo fileInfo1 = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
         // - Mouse-over on the document's name;
         // Click the "Edit" icon;
@@ -1160,16 +1061,16 @@ public class FilmStripDocLibTest extends AbstractTests
         // and click "Cancel" link;
         fileInfo1.contentNameClickCancel();
 
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
         assertTrue(docLibPage.isFileVisible(fileName1));
 
-        fileInfo1 = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo1 = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
         // - Mouse-over on the document's name, click 'Edit" icon, 
         // type any new name and click "Save" button;
         fileInfo1.renameContent(fileName1 + "-Updated");
 
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
         assertTrue(docLibPage.isFileVisible(fileName1 + "-Updated"));
 
     }
@@ -1193,30 +1094,19 @@ public class FilmStripDocLibTest extends AbstractTests
         String fileName1 = getFileName(testName + "1");
         String folderName = getFolderName(testName);
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Upload FIles
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
+        ShareUser.logout(customDrone);
 
     }
 
@@ -1237,7 +1127,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // Rename file name.
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
@@ -1252,7 +1142,7 @@ public class FilmStripDocLibTest extends AbstractTests
         // and click "Cancel" link;
         folderInfo.contentNameClickCancel();
 
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
         assertTrue(docLibPage.isFileVisible(folderName));
 
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
@@ -1261,13 +1151,9 @@ public class FilmStripDocLibTest extends AbstractTests
         // type any new name and click "Save" button;
         folderInfo.renameContent(folderName + "-Updated");
 
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
         assertTrue(docLibPage.isFileVisible(folderName + "-Updated"));
 
-        // TODO: Step commented, not implemented?
-        // // to reuse the file renaming back to original
-        // folderInfo = docLibPage.getFileDirectoryInfo(folderName + "-Updated");
-        // folderInfo.renameContent(folderName);
     }
 
     /**
@@ -1288,29 +1174,18 @@ public class FilmStripDocLibTest extends AbstractTests
         String testUser = getUserNameFreeDomain(testName);
         String fileName1 = getFileName(testName + "1");
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Upload FIles
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.logout(customDrone);
     }
 
     @Test(groups = "AlfrescoOne")
@@ -1328,9 +1203,9 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
-        FileDirectoryInfo fileInfo1 = docLibPage.getFileDirectoryInfo(fileName1);
+        FileDirectoryInfo fileInfo1 = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
         // Favorite icon and label
         boolean beforeStatus = fileInfo1.isFavourite();
@@ -1338,7 +1213,7 @@ public class FilmStripDocLibTest extends AbstractTests
         assertTrue(fileInfo1.isFavourite() != beforeStatus);
 
         // Like icon and label also checks unlinking if doc is liked
-        fileInfo1 = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo1 = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         beforeStatus = fileInfo1.isLiked();
         fileInfo1.selectLike();
         assertTrue(fileInfo1.isLiked() != beforeStatus);
@@ -1357,7 +1232,7 @@ public class FilmStripDocLibTest extends AbstractTests
 
         docLibPage = ShareUser.openDocumentLibrary(customDrone);
 
-        fileInfo1 = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo1 = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         assertTrue(fileInfo1.getCommentsCount() > 0, "Got comments count: " + fileInfo1.getCommentsCount());
     }
     
@@ -1378,29 +1253,18 @@ public class FilmStripDocLibTest extends AbstractTests
         String siteName = getSiteName(testName);
         String testUser = getUserNameFreeDomain(testName);
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Upload FIles
-            // ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Upload FIles
+        // ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
+        ShareUser.logout(customDrone);
 
     }
 
@@ -1420,7 +1284,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
@@ -1445,9 +1309,8 @@ public class FilmStripDocLibTest extends AbstractTests
             assertTrue(folderInfo.getLikeCount().equals("0"));
         }
 
-        // TODO: Remove cast
-        HtmlPage folDetailPage = folderInfo.clickCommentsLink().render();
-        folDetailPage = ((FolderDetailsPage) folDetailPage).addComment("test").render();
+        FolderDetailsPage folDetailPage = folderInfo.clickCommentsLink().render();
+        folDetailPage = folDetailPage.addComment("test").render();
 
         docLibPage = ((FolderDetailsPage) folDetailPage).getSiteNav().selectSiteDocumentLibrary().render();
 
@@ -1456,9 +1319,8 @@ public class FilmStripDocLibTest extends AbstractTests
 
         docLibPage.getNavigation().selectAll();
         ConfirmDeletePage deleteConf = docLibPage.getNavigation().selectDelete().render();
-        deleteConf.selectAction(Action.Delete);
+        deleteConf.selectAction(Action.Delete).render();
         
-        // TODO: Add Render to confirm the step succeeds
     }
 
     /**
@@ -1480,30 +1342,19 @@ public class FilmStripDocLibTest extends AbstractTests
         String fileName1 = getFileName(testName + "1");
         String fileName2 = getFileName(testName + "2");
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Upload FIles
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
+        ShareUser.logout(customDrone);
 
     }
 
@@ -1523,9 +1374,9 @@ public class FilmStripDocLibTest extends AbstractTests
         docLibPage = ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
-        FileDirectoryInfo fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
         // Click on the document's Info panel icon;
         fileInfo.clickInfoIcon();
@@ -1537,7 +1388,7 @@ public class FilmStripDocLibTest extends AbstractTests
         // "Edit Properties" form is displayed;
         assertTrue(propDialog.isEditPropertiesPopupVisible());
         docLibPage = propDialog.selectCancel().render();
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
          
         // Close the "Edit Properties" form and return to the document's Info panel and click the 'Upload new version' action;
         // fileInfo.clickInfoIcon();
@@ -1546,42 +1397,41 @@ public class FilmStripDocLibTest extends AbstractTests
         uploadForm.selectCancel();
          
         docLibPage = ShareUser.openDocumentLibrary(customDrone);
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         // click the "Edit Offline" action;
         docLibPage = fileInfo.selectEditOffline().render();
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
         // "This document is locked by you for offline editing" message displays above document's name on Info panel;
-        assertEquals(docLibPage.getFileDirectoryInfo(fileName1).getContentInfo(), "This document is locked by you for offline editing.", "Got content info: "
-                + docLibPage.getFileDirectoryInfo(fileName1).getContentInfo());
+        assertEquals(ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).getContentInfo(), "This document is locked by you for offline editing.",
+                "Got content info: " + ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).getContentInfo());
          
         // Return to the document's Info Panel and click the "Cancel Editing" button;
         docLibPage = fileInfo.selectCancelEditing().render();
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         // "Editing has been cancelled" message is displayed;
-        assertFalse(docLibPage.getFileDirectoryInfo(fileName1).isEdited());
+        assertFalse(ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).isEdited());
 
-        // TODO: Use util available in ShareUserSitePage
         // Return to the document's Info panel and click the "Copy to..." action;
         CopyOrMoveContentPage copyToForm = fileInfo.selectCopyTo().render();
         // "Copy %itemname% to..." form is opened;
         assertEquals(copyToForm.getDialogTitle(), "Copy " + fileName1 + " to...");
         docLibPage = copyToForm.selectCancelButton().render();
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
          
         // Close the "Copy %itemname% to..." form, return to the document's Info panel and click the "Move to..." action.
         CopyOrMoveContentPage moveToForm = fileInfo.selectMoveTo().render();
         // "Move %itemname% to..." form is opened;
         assertEquals(moveToForm.getDialogTitle(), "Move " + fileName1 + " to...");
         docLibPage = moveToForm.selectCancelButton().render();
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
         // Close "Move %itemname% to..." form, return to the document's Info panel and click the "Delete Document" action.
         ConfirmDeletePage deleteConf = fileInfo.selectDelete().render();
         // Confirmation about deleting document is displayed;
         docLibPage = deleteConf.selectAction(Action.Cancel).render();
          
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         // "Start workflow" action;
         StartWorkFlowPage workFlowPage = fileInfo.selectStartWorkFlow().render();
         if (!isAlfrescoVersionCloud(customDrone))
@@ -1594,14 +1444,14 @@ public class FilmStripDocLibTest extends AbstractTests
         }
 
         docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
          
         // Click the "Cancel", return to the document's Info panel and click 'Manage Permissions' action from the info panel for the document;
         ManagePermissionsPage managePerm = fileInfo.selectManagePermission().render();
         assertTrue(managePerm.getTitle().contains("Manage Permissions"));
 
         docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
         // Step - 1
         // Click the "Download" action;#
@@ -1620,7 +1470,7 @@ public class FilmStripDocLibTest extends AbstractTests
         docLibPage1.getFileDirectoryInfo(fileName1).selectViewInBrowser();
         // The document is opened in browser. If the document cannot be previewed in the browser, download dialog should be displayed;
         // assertTrue(drone.getTitle().contains(fileName1));
-        drone.closeTab();
+        // drone.closeTab();
     }
 
     /**
@@ -1643,31 +1493,20 @@ public class FilmStripDocLibTest extends AbstractTests
         String fileName2 = getFileName(testName + "2");
         String folderName = getFolderName(testName);
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Upload FIles
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
-            ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
+        ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
+        ShareUser.logout(customDrone);
 
     }
 
@@ -1687,7 +1526,7 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
@@ -1774,30 +1613,19 @@ public class FilmStripDocLibTest extends AbstractTests
         String fileName2 = getFileName(testName + "2");
         String folderName = getFolderName(testName);
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
-            // Upload FIles
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
-            ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
+        ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
+        ShareUser.logout(customDrone);
 
     }
 
@@ -1817,10 +1645,10 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
-        FileDirectoryInfo fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
         // Select any folder and click the down arrow pointer;
         docLibPage.toggleNavHandleForFilmstrip();
@@ -1838,7 +1666,7 @@ public class FilmStripDocLibTest extends AbstractTests
 
         // Select any document and click the down arrow pointer;
         fileInfo.selectThumbnail();
-        fileInfo = docLibPage.getFileDirectoryInfo(fileName1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         docLibPage.toggleNavHandleForFilmstrip();
         assertFalse(fileInfo.isCheckBoxVisible());
         assertFalse(fileInfo.isInfoIconVisible());
@@ -1877,28 +1705,17 @@ public class FilmStripDocLibTest extends AbstractTests
         String testUser = getUserNameFreeDomain(testName);
         String folderName = getFolderName(testName);
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
-            ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
 
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        ShareUser.logout(customDrone);
 
     }
 
@@ -1916,7 +1733,7 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
         assertTrue(docLibPage.isFilmStripViewDisplayed());
@@ -1955,27 +1772,16 @@ public class FilmStripDocLibTest extends AbstractTests
         String siteName = getSiteName(testName);
         String testUser = getUserNameFreeDomain(testName);
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
 
-            // User login
-            ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            ShareUser.logout(customDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-            testCleanup(customDrone, testName);
-        }
+        ShareUser.logout(customDrone);
 
     }
 
@@ -1987,7 +1793,7 @@ public class FilmStripDocLibTest extends AbstractTests
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
-        // String folderName = getFolderName(testName);
+        String folderName = getFolderName(testName);
         // String fileName1 = getFileName(testName + "1");
         // String fileName2 = getFileName(testName + "2");
 
@@ -1997,17 +1803,17 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = docLibPage.getNavigation().selectFilmstripView().render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
         assertTrue(docLibPage.isFilmStripViewDisplayed());
 
-        docLibPage = docLibPage.getNavigation().selectDetailedView().render();
+        FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
-        // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        folderInfo.selectThumbnail();
 
-        // Check different types of icons.
+        // We are checking this using the class folder which creates the folder icon.
+        assertTrue(folderInfo.isFolder());
 
     }
 
