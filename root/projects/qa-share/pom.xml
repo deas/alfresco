@@ -2,7 +2,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>qa-share</artifactId>
-	<version>qashare-sprints-SNAPSHOT</version>
     <prerequisites>
         <maven>3.0.4</maven>
     </prerequisites>
@@ -15,7 +14,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <webdrone.version>2.5-SNAPSHOT</webdrone.version>
-        <share-po.version>4.3.0-SNAPSHOT</share-po.version>
+        <share-po.version>${project.version}</share-po.version>
         <office.component>libreofficecomponent</office.component>
         <enable.hybrid>false</enable.hybrid>
     </properties>
