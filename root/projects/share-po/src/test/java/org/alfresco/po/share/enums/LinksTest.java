@@ -29,6 +29,7 @@ import org.testng.annotations.Test;
  * @author nshah
  *
  */
+@Test(groups="unit")
 public class LinksTest
 {
    

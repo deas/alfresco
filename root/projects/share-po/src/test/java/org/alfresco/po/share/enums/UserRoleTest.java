@@ -5,7 +5,7 @@ import static org.testng.Assert.assertTrue;
 import java.util.NoSuchElementException;
 
 import org.testng.annotations.Test;
-
+@Test(groups="unit")
 public class UserRoleTest {
 
   @Test
