@@ -1480,6 +1480,27 @@ public class ShareUser extends AbstractTests
     }
 
     /**
+     * This method is used to add the aspects on DocumentLibrary Page.
+     * User should be on Folder/Document Details page.
+     * @param drone
+     * @param aspects
+     * @param contentName
+     * @return
+     */
+    public static DocumentLibraryPage addAspects(WebDrone drone, List<DocumentAspect> aspects, String contentName)
+    {
+        if (isAlfrescoVersionCloud(drone))
+        {
+            throw new UnsupportedOperationException("Add Aspects is not supported for Cloud");
+        }
+
+        DocumentLibraryPage documentLibraryPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
+        documentLibraryPage.selectFile(contentName).render();
+        DetailsPage detailsPage = addAspects(drone, aspects);
+        return detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+    }
+
+    /**
      * Create user with Group Name.
      * 
      * @param driver
@@ -1919,5 +1940,20 @@ public class ShareUser extends AbstractTests
         }
 
         return docLibPage.getNavigation().selectGalleryView().render();
+    }
+
+
+    /**
+     * Method to get Name of the SahreLink
+     * @param shareLink
+     * @return
+     */
+    public static String getName(ShareLink shareLink)
+    {
+        if(shareLink == null)
+        {
+            throw new UnsupportedOperationException("ShareLink cannot be null");
+        }
+        return shareLink.getDescription();
     }
 }
