@@ -38,7 +38,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import com.sun.jna.platform.unix.X11.XSizeHints.Aspect;
 
 /**
@@ -58,6 +59,7 @@ public class SelectAspectsPage extends SharePage
     private static final By CANCEL = By.cssSelector("button[id$='aspects-cancel-button']");
     private static Log logger = LogFactory.getLog(SelectAspectsPage.class);
     private static final By TITLE  = By.cssSelector("div[id$='aspects-title']");
+    
    
 
     /**
@@ -226,8 +228,8 @@ public class SelectAspectsPage extends SharePage
         try
         {
             drone.find(APPLY_CHANGE).click();
-            //drone.waitForElement(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-            //drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), "Successfully updated aspects", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            drone.waitForElement(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), "Successfully updated aspects", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             return drone.getCurrentPage();
         } catch (NoSuchElementException nse)
         {
