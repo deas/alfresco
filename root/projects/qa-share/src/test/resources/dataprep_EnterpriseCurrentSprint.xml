@@ -13,7 +13,7 @@
 
 	<test name="Site Search Site Dashlet Tests" verbose="1">
 		<classes>
-			<class name="org.alfresco.share.dashlet.SavedSearchSiteDashboardAdvancedTest"/>
+			<class name="org.alfresco.share.dashlet.SiteSearchDashletTest"/>
 		</classes>
 	</test>
     
