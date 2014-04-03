@@ -489,6 +489,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             clickOnAddTag();
             enterTagString(tagName);
+            resolveStaleness();
             findAndWait(By.linkText("Save")).click();
             domEventCompleted();
         }
@@ -502,7 +503,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     @Override
     public void enterTagString(final String tagName)
     {
-        WebElement inputTagName = findAndWait(By.xpath("//td[contains(@class,'yui-dt-col-fileName')]/div/div[@class='detail']/form/div/span[@class='inlineTagEditAutoCompleteWrapper']/input"));
+        WebElement inputTagName = findAndWait(By.xpath("//form/div/span[@class='inlineTagEditAutoCompleteWrapper']/input"));
         inputTagName.clear();
         inputTagName.sendKeys(tagName + "\n");
     }
@@ -639,7 +640,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             resolveStaleness();
             // Wait till pencil icon appears
 
-            WebElement addTagBtn = findAndWait(By.xpath("//td[contains(@class,'yui-dt-col-fileName')]/div/div[@class='detail']/span[@class='insitu-edit']"));
+            WebElement addTagBtn = findAndWait(By.xpath("//div[@class='detail']/span[@class='insitu-edit']"));
             logger.info("is Add Tag button displayed? : " + addTagBtn.isDisplayed());
             logger.info("is Add Tag button displayed? : " + addTagBtn.isEnabled());
             // Select to get focus

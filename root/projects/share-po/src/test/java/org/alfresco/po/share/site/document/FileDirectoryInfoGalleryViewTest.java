@@ -74,7 +74,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @BeforeClass(groups={"alfresco-one","Enterprise4.2","Cloud2","Hybrid"})
+    @BeforeClass(groups={"alfresco-one"})
     private void prepare() throws Exception
     {
         siteName = "site" + System.currentTimeMillis();
@@ -96,7 +96,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
 
 
 
-    @AfterClass(groups={"alfresco-one","Enterprise4.2","Cloud2","Hybrid"})
+    @AfterClass(groups={"alfresco-one"})
     public void teardown()
     {
         SiteUtil.deleteSite(drone, siteName);
@@ -414,10 +414,10 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
     public void testClickOnRemoveAddTag() throws Exception
     {
         String tagName = "foldertag2";
-        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
         thisRow.addTag(tagName);
         documentLibPage = documentLibPage.render();
-        thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
+        thisRow = documentLibPage.getFileDirectoryInfo(folderName);
         thisRow.clickOnAddTag();
         thisRow.clickOnTagRemoveButton(tagName);
         thisRow.clickOnTagSaveButton();
