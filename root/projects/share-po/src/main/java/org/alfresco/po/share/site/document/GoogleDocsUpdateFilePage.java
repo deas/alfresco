@@ -127,7 +127,7 @@ public class GoogleDocsUpdateFilePage extends UpdateFilePage
         {
             try
             {
-                drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div.bd>span.message"), text, elementWaitInSeconds);
+                drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div.bd>span.message"), text, maxPageLoadingTime);
             }
             catch (TimeoutException e)
             {
@@ -149,7 +149,13 @@ public class GoogleDocsUpdateFilePage extends UpdateFilePage
             break;
         }
 
+        HtmlPage page = drone.getCurrentPage();
+        
+        if(page instanceof DocumentLibraryPage)
+        {
+            return new DocumentLibraryPage(drone);
+        }
+        
         return new DocumentDetailsPage(drone, getDocumentVersion());
     }
-
 }
