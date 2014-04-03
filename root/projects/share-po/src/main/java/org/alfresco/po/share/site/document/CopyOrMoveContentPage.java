@@ -199,8 +199,8 @@ public class CopyOrMoveContentPage  extends SharePage
         try
         {
             drone.findAndWait(copyMoveOkButtonCss).click();
-//            drone.waitForElement(By.cssSelector("div.bd>span.message"),
-//                    SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            drone.waitForElement(By.cssSelector("div.bd>span.message"),
+                    SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             drone.waitUntilElementDeletedFromDom(By.cssSelector("div.bd>span.message"),
                     SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             return FactorySharePage.resolvePage(drone);
