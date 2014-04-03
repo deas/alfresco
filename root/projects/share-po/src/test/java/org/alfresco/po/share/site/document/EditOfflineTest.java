@@ -58,6 +58,7 @@ public class EditOfflineTest extends AbstractDocumentTest
 
         UploadFilePage upLoadPage = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = upLoadPage.uploadFile(file.getCanonicalPath()).render();
+        documentLibPage = documentLibPage.getNavigation().selectDetailedView().render();
     }
 
     @AfterClass(groups="alfresco-one")
