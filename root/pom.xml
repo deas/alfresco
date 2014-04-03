@@ -675,11 +675,26 @@
             <maven.license.url>http://www.alfresco.com/legal</maven.license.url>
         </properties>
     </profile>
+
     <!-- Profile to build alfresco-cloud -->
     <profile>
         <id>cloud</id>
         <modules>
             <module>privatemodules</module>
+        </modules>
+    </profile>
+
+    <!-- Profile to add all sub-projects - handy to change the version -->
+    <profile>
+        <id>allprojects</id>
+        <modules>
+            <module>packaging</module>
+            <module>privatemodules/funtests</module>
+            <module>privatemodules/packaging</module>
+            <module>projects/qa-share</module>
+            <module>projects/share-po</module>
+            <module>projects/share</module>
+            <module>projects/system-build-test</module>
         </modules>
     </profile>
 
