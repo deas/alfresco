@@ -220,7 +220,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         try
         {
             // Find if multiple tags are present
-            List<WebElement> tagList = findAllWithWait(By.cssSelector(TAG_COLLECTION));
+            List<WebElement> tagList = findAllWithWait(By.xpath("//div[@class='detail']/span[@class='insitu-edit']/../span[@class='item']/span/a"));
             for (WebElement tag : tagList)
             {
                 tagsList.add(tag.getText());
@@ -462,7 +462,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            List<WebElement> tagList = findElements(By.cssSelector(TAG_COLLECTION));
+            List<WebElement> tagList = findElements(By.xpath("//div[@class='detail']/span[@class='insitu-edit']/../span[@class='item']/span/a"));
             if (tagList.size() > 0)
             {
                 return true;
@@ -490,7 +490,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             clickOnAddTag();
             enterTagString(tagName);
             resolveStaleness();
-            findAndWait(By.linkText("Save")).click();
+            clickOnTagSaveButton();
             domEventCompleted();
         }
         catch (TimeoutException te)
@@ -614,7 +614,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            return findAllWithWait(By.cssSelector(INLINE_TAGS));
+            return findAllWithWait(By.xpath("//span[@class='inlineTagEditTag']"));
         }
         catch (TimeoutException e)
         {
@@ -743,7 +743,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            findAndWait(By.linkText("Save")).click();
+            findAndWait(By.xpath("//form[@class='insitu-edit']/a[text()='Save']")).click();
         }
         catch (TimeoutException ex)
         {
@@ -761,7 +761,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            findAndWait(By.linkText("Cancel")).click();
+            findAndWait(By.xpath("//form[@class='insitu-edit']/a[text()='Cancel']")).click();
         }
         catch (TimeoutException ex)
         {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+* Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -197,14 +197,5 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
     public int getCommentsCount()
     {
         throw new UnsupportedOperationException("Comments Count is not available in Simple View File Directory Info.");
-    }
-    
-    /* (non-Javadoc)
-     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isCommentLinkPresent()
-     */
-    @Override
-    public boolean isCommentLinkPresent()
-    {
-        throw new UnsupportedOperationException("Comments Link is not available in Simple View File Directory Info.");
     }
 }
