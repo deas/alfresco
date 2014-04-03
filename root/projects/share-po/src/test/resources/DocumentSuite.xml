@@ -52,6 +52,11 @@
             <class name="org.alfresco.po.share.site.document.DocumentDetailsPageTest" />
         </classes>
     </test>
+    <test name="DocumentDetailsPagePreviewTest">
+        <classes>
+            <class name="org.alfresco.po.share.site.document.DocumentDetailsPagePreviewTest" />
+        </classes>
+    </test>
     <test name="DocumentLibraryPageFilmStripTest">
         <classes>
             <class name="org.alfresco.po.share.site.document.DocumentLibraryPageFilmstripTest" />

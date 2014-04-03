@@ -26,6 +26,7 @@ import java.nio.charset.Charset;
 
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.dashlet.MySitesDashlet;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
@@ -68,14 +69,28 @@ public class SiteUtil
     {
     	return prepareFile(null);
     }
+    /**
+     * Prepare a plain text file in system temp directory to be used
+     * in test for uploads.
+     * 
+     * @param name Name to give the file, without the file extension. If null a default name will be used.
+     * @param data Content to write to the file
+     */
+    public static File prepareFile(final String name, String data)
+    {
+        return prepareFile(name, data, ".txt");
+    }
     
     /**
      * Prepare a file in system temp directory to be used
      * in test for uploads.
-     * @param String name to give a file.
+     * 
+     * @param name Name to give the file, without the file extension. If null a default name will be used.
+     * @param data Content to write to the file
+     * @param extension File extension to append to the end of the filename
      * @return {@link File} simple text file.
      */
-    public static File prepareFile(final String name, String data)
+    public static File prepareFile(final String name, String data, String extension)
     {
 
         File file = null;
@@ -83,7 +98,7 @@ public class SiteUtil
         try
         {
             String fileName = (name != null && !name.isEmpty() ? name :"myfile");
-            file = File.createTempFile(fileName, ".txt");
+            file = File.createTempFile(fileName, extension);
             
             writer = new OutputStreamWriter(new FileOutputStream(file),
                                                             Charset.forName("UTF-8").newEncoder());
@@ -114,6 +129,14 @@ public class SiteUtil
         }
         return file;
     }
+
+    /**
+     * Prepare a text file in system temp directory to be used
+     * in test for uploads, containing default content.
+     * 
+     * @param name Name to give the file, without the file extension. If null a default name will be used.
+     * @return {@link File} simple text file.
+     */
     public static File prepareFile(final String name){
         return prepareFile(name , "this is a sample test upload file");
 
