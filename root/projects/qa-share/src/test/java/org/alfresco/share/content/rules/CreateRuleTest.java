@@ -52,7 +52,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14018() throws Exception {
+    public void dataPrep_ALF_14018() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -64,7 +64,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Remove Aspect-Classifiable
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14018() throws Exception {
+    public void ALF_14018() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -146,7 +146,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14019() throws Exception {
+    public void dataPrep_ALF_14019() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -158,7 +158,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Remove Aspect-Effectivity
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14019() throws Exception {
+    public void ALF_14019() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -240,7 +240,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14020() throws Exception {
+    public void dataPrep_ALF_14020() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -252,7 +252,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Remove Aspect-Templatable
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14020() throws Exception {
+    public void ALF_14020() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -326,7 +326,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14021() throws Exception {
+    public void dataPrep_ALF_14021() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -338,7 +338,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Remove Aspect-Emailed
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14021() throws Exception {
+    public void ALF_14021() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -420,7 +420,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14022() throws Exception {
+    public void dataPrep_ALF_14022() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -432,7 +432,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Remove Aspect-Email Alias
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14022() throws Exception {
+    public void ALF_14022() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -507,7 +507,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14023() throws Exception {
+    public void dataPrep_ALF_14023() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -519,7 +519,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Remove Aspect-Summarizable
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14023() throws Exception {
+    public void ALF_14023() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -601,7 +601,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14024() throws Exception {
+    public void dataPrep_ALF_14024() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -613,7 +613,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Remove Aspect-Dublin Core
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14024() throws Exception {
+    public void ALF_14024() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -695,7 +695,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14025() throws Exception {
+    public void dataPrep_ALF_14025() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -707,7 +707,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Remove Aspect-Complianceable
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14025() throws Exception {
+    public void ALF_14025() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -789,7 +789,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14026() throws Exception {
+    public void dataPrep_ALF_14026() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -801,7 +801,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Remove Aspect-Versionable
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14026() throws Exception {
+    public void ALF_14026() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -874,7 +874,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14028() throws Exception {
+    public void dataPrep_ALF_14028() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -886,7 +886,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Remove Aspect -Inline Editable
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14028() throws Exception {
+    public void ALF_14028() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -959,7 +959,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14029() throws Exception {
+    public void dataPrep_ALF_14029() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -971,7 +971,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Remove Aspect-Taggeble
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14029() throws Exception {
+    public void ALF_14029() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -1044,7 +1044,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14030() throws Exception {
+    public void dataPrep_ALF_14030() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -1056,7 +1056,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Remove Aspect-EXIF
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14030() throws Exception {
+    public void ALF_14030() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -1138,7 +1138,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14031() throws Exception {
+    public void dataPrep_ALF_14031() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -1150,7 +1150,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Remove Aspect-Geographic
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14031() throws Exception {
+    public void ALF_14031() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -1232,7 +1232,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_14034() throws Exception {
+    public void dataPrep_ALF_14034() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -1244,7 +1244,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Specialize Type
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14034() throws Exception {
+    public void ALF_14034() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -1302,7 +1302,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_15271() throws Exception {
+    public void dataPrep_ALF_15271() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -1314,7 +1314,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Create combined rule - copy action
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_15271() throws Exception {
+    public void ALF_15271() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -1411,8 +1411,9 @@ public class CreateRuleTest extends AbstractTests {
         Assert.assertEquals(docLibPage.getFileDirectoryInfo(fileName1).getDescription(), newOriginalDescription1);
     }
 
+    //If error Execute script
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_14017() throws Exception {
+    public void ALF_14017() throws Exception {
 
         // upload .js file to Data Dictionary/Web Scripts Extensions
         String siteName = getSiteName(testName + System.currentTimeMillis());
@@ -1497,7 +1498,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_8483() throws Exception {
+    public void dataPrep_ALF_8483() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -1509,7 +1510,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Deleting a folder with Rule set
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_8483() throws Exception {
+    public void ALF_8483() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String folderName = getFolderName(testName) + System.currentTimeMillis();
@@ -1615,7 +1616,7 @@ public class CreateRuleTest extends AbstractTests {
 
     //Running rule script to move documents
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_8497() throws Exception {
+    public void ALF_8497() throws Exception {
 
         // upload .js file to Data Dictionary/Web Scripts Extensions
         String sourceFolder = "Source Folder_" + System.currentTimeMillis();
@@ -1713,7 +1714,7 @@ public class CreateRuleTest extends AbstractTests {
     }
 
     @Test(groups = {"DataPrepEnterpriseOnly"})
-    public void dataPrep_Enterprise40x_8499() throws Exception {
+    public void dataPrep_ALF_8499() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
@@ -1725,7 +1726,7 @@ public class CreateRuleTest extends AbstractTests {
 
     // Two corresponding inverse rules
     @Test(groups = {"EnterpriseOnly"})
-    public void Enterprise40x_8499() throws Exception {
+    public void ALF_8499() throws Exception {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName + System.currentTimeMillis());
