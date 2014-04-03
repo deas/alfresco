@@ -15,6 +15,8 @@ import java.io.File;
 import java.util.List;
 
 import org.alfresco.po.share.AbstractTest;
+import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.util.FailedTestListener;
@@ -68,6 +70,11 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
     @AfterClass
     public void teardown()
     {
+        SiteFinderPage siteFinder = SiteUtil.searchSite(drone, siteName).render();
+        SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
+        DocumentLibraryPage docPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
+        docPage.getNavigation().selectDetailedView();
+
         SiteUtil.deleteSite(drone, siteName);
     }
 

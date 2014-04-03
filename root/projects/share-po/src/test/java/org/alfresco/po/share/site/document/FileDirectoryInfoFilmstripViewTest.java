@@ -7,10 +7,11 @@
  */
 package org.alfresco.po.share.site.document;
 
+import static org.alfresco.po.share.site.document.DocumentAspect.CLASSIFIABLE;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
-import static org.alfresco.po.share.site.document.DocumentAspect.CLASSIFIABLE;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,8 +99,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
     @AfterClass(alwaysRun=true)
     public void teardown()
     {
-        SiteFinderPage siteFinder = ((SharePage) drone.getCurrentPage()).getNav().selectSearchForSites().render();
-        siteFinder = siteFinder.searchForSite(siteName).render();
+        SiteFinderPage siteFinder = SiteUtil.searchSite(drone, siteName).render();
         SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
         DocumentLibraryPage docPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
         docPage.getNavigation().selectDetailedView();
