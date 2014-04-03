@@ -128,7 +128,7 @@ public class ManageDocLibItemsTest extends AbstractTests
                 for (int i = 1; i < folderNames.length; i++)
                 {
                         documentLibraryPage.selectFolder(folderNames[i]);
-                        assertTrue(documentLibraryPage.isFileVisible(fileName), String.format("File didn't copy to folder or folder broken.(%s)", folderNames[i]));
+                        assertTrue(documentLibraryPage.isFileVisible(fileName), String.format("File didn't copy to folder or folder broken.(%s) ACE-932!!!", folderNames[i]));
                         documentLibraryPage.getNavigation().clickFolderUp();
                 }
         }
