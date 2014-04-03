@@ -13,6 +13,7 @@ import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.*;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
@@ -338,8 +339,12 @@ public class CreateRulePage extends SitePage
 
     private void waitUntilCreatedAlert()
     {
-        drone.waitUntilElementPresent(CREATED_ALERT, 5);
-        drone.waitUntilElementDeletedFromDom(CREATED_ALERT, 5);
+        try {
+            drone.waitUntilElementPresent(CREATED_ALERT, 5);
+            drone.waitUntilElementDeletedFromDom(CREATED_ALERT, 5);
+        } catch (TimeoutException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public boolean isPageCorrect()
