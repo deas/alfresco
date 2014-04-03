@@ -15,7 +15,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <webdrone.version>2.5-SNAPSHOT</webdrone.version>
         <share-po.version>WAT2-SNAPSHOT</share-po.version>
-<!--        <share-po.version>${project.version}</share-po.version> -->
         <office.component>libreofficecomponent</office.component>
         <enable.hybrid>false</enable.hybrid>
     </properties>
@@ -71,13 +70,13 @@
         <dependency>		 
              <groupId>org.alfresco</groupId>
              <artifactId>share-po</artifactId>
-             <version>${share-po.version}</version>
+             <version>WAT2-SNAPSHOT</version>
              <scope>compile</scope>
         </dependency>
 		<dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>webdrone</artifactId>
-            <version>${webdrone.version}</version>
+            <version>2.5-SNAPSHOT</version>
         </dependency>
 		<dependency>
 			<groupId>org.alfresco</groupId>
