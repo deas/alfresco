@@ -91,7 +91,7 @@ public class ContentFormatPageTest extends AbstractTest
         folderDetailsPage = thisRow.selectViewFolderDetails().render();
         folderDetailsPage.addComment(commentText);  
         textEditor = folderDetailsPage.getContentPage();
-        textEditor.setTinyMce(TinyMceEditor.FRAME_ID);
+        //textEditor.setTinyMce(TinyMceEditor.FRAME_ID);
         textEditor.addContent(commentText);        
     }
 

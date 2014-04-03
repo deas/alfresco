@@ -74,7 +74,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @BeforeClass(alwaysRun=true)
+    @BeforeClass(groups={"alfresco-one","Enterprise4.2","Cloud2","Hybrid"})
     private void prepare() throws Exception
     {
         siteName = "site" + System.currentTimeMillis();
@@ -96,7 +96,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
 
 
 
-    @AfterClass(alwaysRun=true)
+    @AfterClass(groups={"alfresco-one","Enterprise4.2","Cloud2","Hybrid"})
     public void teardown()
     {
         SiteUtil.deleteSite(drone, siteName);
