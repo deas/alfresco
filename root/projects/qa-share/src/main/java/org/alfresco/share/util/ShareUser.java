@@ -277,7 +277,6 @@ public class ShareUser extends AbstractUtils
         SitePage site = (SitePage) getSharePage(driver);
 
         DocumentLibraryPage docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
-        // Assert.assertTrue(docPage.getTitle().contains(PAGE_TITLE_DOCLIB));
         logger.info("Opened Document Library");
         return docPage;
     }
@@ -447,31 +446,6 @@ public class ShareUser extends AbstractUtils
             throw new SkipException("Skip test. Error in Create Folder: " + ex.getMessage());
         }
     }
-
-    /**
-     * Creates a new folder at the Path specified, Starting from the Document
-     * Library Page. Assumes User is logged in and a specific Site is open.
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @param fileName
-     *            String Name of the folder to be created
-     * @param parentFolderPath
-     *            String Description of the folder to be created
-     * @return DocumentLibraryPage
-     */
-    /*
-     * public static DocumentLibraryPage createFolder(WebDrone driver, String
-     * folderName, String folderDesc) { DocumentLibraryPage docPage = null; //
-     * Open Document Library SharePage thisPage = getSharePage(driver); if
-     * (!(thisPage instanceof DocumentLibraryPage)) { docPage =
-     * openDocumentLibrary(driver); } NewFolderPage newFolderPage =
-     * docPage.getNavigation().createNewFolder(); docPage =
-     * newFolderPage.createNewFolder(folderName, folderDesc).render();
-     * Assert.assertEquals(docPage.isFileVisible(folderName), true,
-     * "Folder Creation Failed"); logger.info("Folder Created" + folderName);
-     * return docPage; }
-     */
 
     /*
      * Navigates to the Path specified, starting from the Document Library Page.
@@ -1273,120 +1247,6 @@ public class ShareUser extends AbstractUtils
         return documentLibPage;
     }
 
-    // /**
-    // * This method assings role to the content selected at document library
-    // page.
-    // * @IMP Note: This is to be called when user is in document library page.
-    // * @param drone
-    // * @param user
-    // * @param contentName
-    // * @param userRole
-    // * @param toggleInheritPermission
-    // * @return
-    // */
-    // public static HtmlPage setRoleOnCntntFrmDocLib(WebDrone drone, String
-    // user, String contentName, UserRole userRole, boolean
-    // toggleInheritPermission)
-    // {
-    // DocumentLibraryPage docLibPage =
-    // ((DocumentLibraryPage)getSharePage(drone)).render();
-    // ManagePermissionsPage mangPermPage =
-    // docLibPage.getFileDirectoryInfo(contentName).selectManagePermission().render();
-    //
-    // UserProfile userProfile = new UserProfile();
-    // userProfile.setUsername(user);
-    //
-    // mangPermPage =
-    // mangPermPage.selectAddUser().searchAndSelectUser(userProfile);
-    // mangPermPage.setAccessType(userRole);
-    // mangPermPage =
-    // mangPermPage.toggleInheritPermission(toggleInheritPermission);
-    // return mangPermPage.selectSave().render();
-    // }
-
-    //
-    // /**
-    // * This method used to open the manage permissions page from details page
-    // and turn on/off toggleInheritPermissions and
-    // * add the user with role in manage permissions list.
-    // * User should be on Details page
-    // * @param driver
-    // * @param user
-    // * @param role
-    // * @param turnOnInheritPermission
-    // * @return {@link DocumentDetailsPage}
-    // */
-    // public static DocumentDetailsPage
-    // addUserAndInheritPermissionFromDetailsPage(WebDrone driver, String user,
-    // UserRole role, boolean turnOnInheritPermission)
-    // {
-    // selectManagePermissionsFromDetailsPage(driver, turnOnInheritPermission);
-    // return addUserIntoInhertedPermissions(driver, user, role,
-    // turnOnInheritPermission);
-    // }
-
-    /*    *//**
-     * This method used to add the user with role in manage permissions
-     * list. User should be on manage permissions page
-     * 
-     * @param driver
-     * @param user2
-     * @return {@link DocumentDetailsPage}
-     */
-    /*
-     * public static DocumentDetailsPage
-     * addUserIntoInheritedPermissions(WebDrone driver, String user, UserRole
-     * role) { UserProfile userProfile = new UserProfile();
-     * userProfile.setUsername(user);
-     * ManagePermissionsPage managePermissionsPage = (ManagePermissionsPage)
-     * getSharePage(driver); ManagePermissionsPage.UserSearchPage userSearchPage
-     * = managePermissionsPage.selectAddUser().render(); managePermissionsPage =
-     * userSearchPage.searchAndSelectUser(userProfile).render();
-     * //Add role to User managePermissionsPage.setAccessType(role);
-     * return managePermissionsPage.selectSave().render(); }
-     */
-
-    // /**
-    // * This method used to open the manage permissions page from details page
-    // and turn on/off toggleInheritPermissions
-    // * User should be on Details page
-    // * @param drone
-    // * @param turnOnInheritPermission
-    // * @return {@link ManagePermissionsPage}
-    // */
-    // public static ManagePermissionsPage
-    // selectManagePermissionsFromDetailsPage(WebDrone drone, boolean
-    // turnOnInheritPermission)
-    // {
-    // SharePage sharePage = getSharePage(drone);
-    // ManagePermissionsPage managePermissionsPage = null;
-    //
-    // if (sharePage.isBrowserTitle("Document Details"))
-    // {
-    // managePermissionsPage = ((DocumentDetailsPage)
-    // sharePage).selectManagePermissions().render();
-    // }
-    // else
-    // {
-    // throw new
-    // PageException("Manage permissions is accessible from Document Library and Document Details page only.");
-    // }
-    //
-    // if ((!managePermissionsPage.isInheritPermissionEnabled() &&
-    // turnOnInheritPermission)
-    // || (managePermissionsPage.isInheritPermissionEnabled() &&
-    // !turnOnInheritPermission))
-    // {
-    // managePermissionsPage =
-    // managePermissionsPage.toggleInheritPermission(turnOnInheritPermission).render();
-    // DocumentDetailsPage detailsPage =
-    // managePermissionsPage.selectSave().render();
-    // managePermissionsPage = detailsPage.selectManagePermissions().render();
-    // }
-    //
-    // return managePermissionsPage;
-    // }
-    //
     /**
      * This method is used to get sync status (with retry) for a content from
      * document library page and returns true if the content synced otherwise
@@ -1781,30 +1641,6 @@ public class ShareUser extends AbstractUtils
         }
     }
 
-    // /**
-    // * This method used to add the group with role in manage permissions list.
-    // * User should be on manage permissions page
-    // * @param driver
-    // * @param user2
-    // * @return DocumentDetailsPage, DocumentLibraryPage
-    // */
-    // public static HtmlPage addGroupIntoInhertedPermissions(WebDrone driver,
-    // String groupName, UserRole role, boolean toggleInheritPermission)
-    // {
-    // ManagePermissionsPage managePermissionsPage = (ManagePermissionsPage)
-    // getSharePage(driver);
-    // ManagePermissionsPage.UserSearchPage userSearchPage =
-    // managePermissionsPage.selectAddUser().render();
-    // managePermissionsPage =
-    // userSearchPage.searchAndSelectGroup(groupName).render();
-    //
-    // //Add role to User
-    // managePermissionsPage.setAccessType(role);
-    // managePermissionsPage =
-    // managePermissionsPage.toggleInheritPermission(toggleInheritPermission);
-    // return managePermissionsPage.selectSave().render();
-    // }
-
     /**
      * Util method to change the language from My Profile page (Only applicable
      * to Cloud2 env)
@@ -1942,11 +1778,11 @@ public class ShareUser extends AbstractUtils
 
 
     /**
-     * Method to get Name of the SahreLink
+     * Method to get Name of the ShareLink
      * @param shareLink
      * @return
      */
-    public static String getName(ShareLink shareLink)
+    public static String getShareLinkName(ShareLink shareLink)
     {
         if(shareLink == null)
         {

@@ -203,7 +203,7 @@ public class SiteSearchDashletTest extends AbstractUtils
 
         // Search
         List<SiteSearchItem> items = ShareUserDashboard.searchSiteSearchDashlet(drone, fileName);
-        Assert.assertEquals(ShareUser.getName(items.get(0).getItemName()), fileName);
+        Assert.assertEquals(ShareUser.getShareLinkName(items.get(0).getItemName()), fileName);
 
         DocumentDetailsPage detailsPage = items.get(0).getItemName().click().render();
         Assert.assertTrue(detailsPage != null);
@@ -250,10 +250,10 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.openSiteDashboard(drone, siteName);
 
         List<SiteSearchItem> items = ShareUserDashboard.searchSiteSearchDashlet(drone, "test");
-        Assert.assertEquals(ShareUser.getName(items.get(0).getItemName()), fileName);
+        Assert.assertEquals(ShareUser.getShareLinkName(items.get(0).getItemName()), fileName);
 
         items = ShareUserDashboard.searchSiteSearchDashlet(drone, "doc");
-        Assert.assertEquals(ShareUser.getName(items.get(0).getItemName()), fileName);
+        Assert.assertEquals(ShareUser.getShareLinkName(items.get(0).getItemName()), fileName);
     }
 
     @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" }, enabled = false)
@@ -348,10 +348,10 @@ public class SiteSearchDashletTest extends AbstractUtils
         Assert.assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_CONTENT_DASHLET, fileName, true, siteName));
 
         List<SiteSearchItem> items = ShareUserDashboard.searchSiteSearchDashlet(drone, ".txt");
-        Assert.assertEquals(ShareUser.getName(items.get(0).getItemName()), fileName);
+        Assert.assertEquals(ShareUser.getShareLinkName(items.get(0).getItemName()), fileName);
 
         items = ShareUserDashboard.searchSiteSearchDashlet(drone, fileName);
-        Assert.assertEquals(ShareUser.getName(items.get(0).getItemName()), fileName);
+        Assert.assertEquals(ShareUser.getShareLinkName(items.get(0).getItemName()), fileName);
 
         DocumentDetailsPage detailsPage = items.get(0).getItemName().click().render();
         Assert.assertTrue(detailsPage != null);
@@ -362,7 +362,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.openSiteDashboard(drone, siteName);
 
         items = ShareUserDashboard.searchSiteSearchDashlet(drone, ".txt");
-        Assert.assertEquals(ShareUser.getName(items.get(0).getItemName()), newFileName);
+        Assert.assertEquals(ShareUser.getShareLinkName(items.get(0).getItemName()), newFileName);
     }
 
     @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
@@ -403,7 +403,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         {
             items = ShareUserDashboard.searchSiteSearchDashlet(drone, searchTerm);
             Assert.assertEquals(items.size(), 1);
-            Assert.assertEquals(ShareUser.getName(items.get(0).getItemName()), fileName);
+            Assert.assertEquals(ShareUser.getShareLinkName(items.get(0).getItemName()), fileName);
         }
     }
 
@@ -451,7 +451,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         {
             logger.info("Search Term: " + searchTerm);
             items = ShareUserDashboard.searchSiteSearchDashlet(drone, searchTerm);
-            Assert.assertEquals(ShareUser.getName(items.get(0).getItemName()), fileName);
+            Assert.assertEquals(ShareUser.getShareLinkName(items.get(0).getItemName()), fileName);
         }
         ShareUser.logout(drone);
     }
@@ -501,7 +501,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         {
             items = ShareUserDashboard.searchSiteSearchDashlet(drone, searchTerm);
             Assert.assertEquals(items.size(), 1);
-            Assert.assertEquals(ShareUser.getName(items.get(0).getItemName()), fileName);
+            Assert.assertEquals(ShareUser.getShareLinkName(items.get(0).getItemName()), fileName);
         }
         ShareUser.logout(drone);
     }
