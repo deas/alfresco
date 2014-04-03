@@ -1,22 +1,17 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-
 
 package org.alfresco.po.share.search;
 
@@ -36,11 +31,10 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
-
 /**
  * Interactions with live search dropdown
+ * 
  * @author jcule
- *
  */
 public class LiveSearchDropdown extends SharePage
 {
@@ -58,18 +52,18 @@ public class LiveSearchDropdown extends SharePage
     // Close button
     private static final String CLOSE_DROPDOWN = "div[id='uniqName_0_2'] div.alf-livesearch-clear a[title='Clear']";
 
-    // Document results 
+    // Document results
     private static final String DOCUMENT_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodeDocs'] div.alf-livesearch-item";
-    
-    //Sites Results
+
+    // Sites Results
     private static final String SITES_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodeSites'] div.alf-livesearch-item";
-    
-    //People Results
+
+    // People Results
     private static final String PEOPLE_RESULTS = "div[id='uniqName_0_2'] div[data-dojo-attach-point='containerNodePeople'] div.alf-livesearch-item";
-    
-    //See more document results
+
+    // See more document results
     private static final String MORE_RESULTS = "div[id='uniqName_0_2'] a[title='More results...']";
-    
+
     /**
      * Constructor
      * 
@@ -92,10 +86,8 @@ public class LiveSearchDropdown extends SharePage
     @Override
     public LiveSearchDropdown render(RenderTime timer)
     {
-        elementRender(timer, getVisibleRenderElement(By.cssSelector(DOCUMENTS_TITLE)),
-                getVisibleRenderElement(By.cssSelector(CLOSE_DROPDOWN)),
-                getVisibleRenderElement(By.cssSelector(SITES_TITLE)),
-                getVisibleRenderElement(By.cssSelector(PEOPLE_TITLE))); 
+        elementRender(timer, getVisibleRenderElement(By.cssSelector(DOCUMENTS_TITLE)), getVisibleRenderElement(By.cssSelector(CLOSE_DROPDOWN)), getVisibleRenderElement(By
+                .cssSelector(SITES_TITLE)), getVisibleRenderElement(By.cssSelector(PEOPLE_TITLE)));
         return this;
     }
 
@@ -116,7 +108,7 @@ public class LiveSearchDropdown extends SharePage
         List<LiveSearchDocumentResult> results = new ArrayList<LiveSearchDocumentResult>();
         try
         {
-            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(DOCUMENT_RESULTS));
+            List<WebElement> elements = drone.findAll(By.cssSelector(DOCUMENT_RESULTS));
             if (elements.size() > 0)
             {
                 for (WebElement element : elements)
@@ -124,24 +116,19 @@ public class LiveSearchDropdown extends SharePage
                     results.add(new LiveSearchDocumentResult(element, drone));
                 }
             }
+
         }
         catch (NoSuchElementException nse)
         {
             logger.error("No live search document results " + nse);
             throw new PageException("Unable to find document search results.", nse);
         }
-        catch (TimeoutException te)
-        {
-            logger.error("No live search document results " + te);
-            throw new PageException("Document search results are not visible", te);
-        }
         return results;
-        
+
     }
 
-    
     /**
-     * Gets the sites search results as a collection.
+     * Gets the sites search results as a collection of LiveSearchSiteResult.
      * 
      * @return Collections of search result
      */
@@ -150,7 +137,7 @@ public class LiveSearchDropdown extends SharePage
         List<LiveSearchSiteResult> results = new ArrayList<LiveSearchSiteResult>();
         try
         {
-            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(SITES_RESULTS));
+            List<WebElement> elements = drone.findAll(By.cssSelector(SITES_RESULTS));
             if (elements.size() > 0)
             {
                 for (WebElement element : elements)
@@ -164,16 +151,9 @@ public class LiveSearchDropdown extends SharePage
             logger.error("No live search sites results " + nse);
             throw new PageException("Unable to find sites search results.", nse);
         }
-        catch (TimeoutException te)
-        {
-            logger.error("No live search sites results " + te);
-            throw new PageException("Sites search results are not visible", te);
-        }
         return results;
     }
 
-    
-    
     /**
      * Gets the people search results as a collection of .
      * 
@@ -184,7 +164,7 @@ public class LiveSearchDropdown extends SharePage
         List<LiveSearchPeopleResult> results = new ArrayList<LiveSearchPeopleResult>();
         try
         {
-            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(PEOPLE_RESULTS));
+            List<WebElement> elements = drone.findAll(By.cssSelector(PEOPLE_RESULTS));
             if (elements.size() > 0)
             {
                 for (WebElement element : elements)
@@ -198,17 +178,11 @@ public class LiveSearchDropdown extends SharePage
             logger.error("No live search people results " + nse);
             throw new PageException("Unable to find people search results.", nse);
         }
-        catch (TimeoutException te)
-        {
-            logger.error("No live search people results " + te);
-            throw new PageException("People search results are not visible", te);
-        }
         return results;
     }
-    
+
     /**
      * clicks on close button
-     * 
      */
     public void closeLiveSearchDropdown()
     {
@@ -227,11 +201,12 @@ public class LiveSearchDropdown extends SharePage
             logger.error("NClose live search dropdown button not present " + te);
             throw new PageException("Close live search dropdown button is not visible", te);
         }
-        
+
     }
-    
+
     /**
      * Checks if documents title is displayed
+     * 
      * @return
      */
     public boolean isDocumentsTitleVisible()
@@ -247,9 +222,10 @@ public class LiveSearchDropdown extends SharePage
             throw new PageException("Unable to find live search documents title.", nse);
         }
     }
-    
+
     /**
      * Checks if sites title is displayed
+     * 
      * @return
      */
     public boolean isSitesTitleVisible()
@@ -266,9 +242,9 @@ public class LiveSearchDropdown extends SharePage
         }
     }
 
-
     /**
      * Checks if people title is displayed
+     * 
      * @return
      */
     public boolean isPeopleTitleVisible()
@@ -285,9 +261,9 @@ public class LiveSearchDropdown extends SharePage
         }
     }
 
-
     /**
      * Clicks on see more results arrow
+     * 
      * @return
      */
     public void clickToSeeMoreDocumentResults()
@@ -296,7 +272,7 @@ public class LiveSearchDropdown extends SharePage
         {
             WebElement expandDocumentResults = drone.findAndWait(By.cssSelector(MORE_RESULTS));
             expandDocumentResults.click();
-         
+
         }
         catch (NoSuchElementException nse)
         {
@@ -308,9 +284,7 @@ public class LiveSearchDropdown extends SharePage
             logger.error("Unable to find see more results icon. " + te);
             throw new PageException("Unable to find see more results icon. ", te);
         }
-         
+
     }
-
-
 
 }
