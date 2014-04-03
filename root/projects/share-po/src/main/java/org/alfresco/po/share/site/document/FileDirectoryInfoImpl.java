@@ -619,7 +619,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             try
             {
                 timer.start();
-                WebElement tagInfo = findAndWait(By.cssSelector(TAG_INFO));
+                WebElement tagInfo = findAndWait(By.xpath("//div[@class='detail']/span[@class='insitu-edit']/../span[@class='item']"));
                 getDrone().mouseOver(tagInfo);
                 // Wait till pencil icon appears
                 WebElement addTagBtn = findElement(By.cssSelector(ADD_TAG));
@@ -632,6 +632,11 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             }
             catch (NoSuchElementException e)
             {
+                logger.error("Unable to find the add tag icon"+ e.getMessage());
+            }
+            catch(TimeoutException te)
+            {
+                logger.error("Exceeded time to find the tag info area "+ te.getMessage());
             }
             catch (ElementNotVisibleException e2)
             {
@@ -788,14 +793,17 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     @Override
     public HtmlPage selectThumbnail()
     {
-        WebElement contentThumbnail = findElement(By.cssSelector(THUMBNAIL));
-        String href = contentThumbnail.getAttribute("href");
-        contentThumbnail.click();
-        if (href != null && href.contains("document-details"))
+        try
         {
-            return new DocumentDetailsPage(getDrone());
+            findElement(By.cssSelector(THUMBNAIL)).click();
+            return FactorySharePage.resolvePage(drone);
         }
-        return new DocumentLibraryPage(getDrone());
+        catch(NoSuchElementException e)
+        {
+            logger.error("Unable to find and click thumbnail icon "+ e.getMessage());
+        }
+        
+        throw new PageOperationException("Unable to click find and click on Thumbnail icon");
     }
 
     /**

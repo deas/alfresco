@@ -157,11 +157,11 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         documentLibPage = newFolderPage.createNewFolder(folderName, folderDescription).render();
         uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = uploadForm.uploadFile(file.getCanonicalPath()).render();
-        documentLibPage = ((DocumentLibraryPage) documentLibPage.getNavigation().selectGalleryView()).render();
         uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
         uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = uploadForm.uploadFile(tempFileForProfile.getCanonicalPath()).render();
+        documentLibPage = ((DocumentLibraryPage) documentLibPage.getNavigation().selectGalleryView()).render();
     }
     
 
@@ -329,15 +329,6 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         Assert.assertTrue(thisRow.isFavourite());
     }
 
-    @Test(groups={"alfresco-one"}, priority=15)
-    public void test115SelectDownloadForFile() throws Exception
-    {
-        // Get File
-        FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(file.getName());
-        thisRow.selectDownload();
-        Assert.assertNotNull(documentLibPage);
-    }
-
     @Test(groups={"alfresco-one"}, priority=16)
     public void test116IsDeleteLinkPresent()
     {
@@ -349,7 +340,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
     public void test117SelectThumbnailForFile() throws Exception
     {
         // Get File
-        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
         DocumentDetailsPage detailsPage = thisRow.selectThumbnail().render();
         Assert.assertNotNull(detailsPage);
     }
@@ -396,23 +387,6 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         assertTrue(thisRow.isEditInGoogleDocsPresent());
     }
     
-    @Test(expectedExceptions = UnsupportedOperationException.class, groups = { "Enterprise4.2" }, priority=21)
-    public void test121SelectDownloadFolderAsZipForFile() throws Exception
-    {
-        // Get File
-        FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(file.getName());
-        thisRow.selectDownloadFolderAsZip();
-    }
-
-    @Test(groups = "Enterprise4.2", priority=23)
-    public void test123SelectDownloadFolderAsZipForFolder() throws Exception
-    {
-        // Get folder
-        FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(folderName);
-        thisRow.selectDownloadFolderAsZip();
-        drone.waitUntilElementDisappears(By.cssSelector("div[id*='archive-and-download'] a"), 2000);
-    }
-
     @Test(groups={"alfresco-one"}, priority=24)
     public void testGetDescription() throws Exception
     {
@@ -833,5 +807,35 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(tempFileForProfile.getName());
         MyProfilePage profilePage = thisRow.selectModifier().render();
         Assert.assertTrue(profilePage.getTitle().contains("User Profile Page"));
+        SiteFinderPage siteFinder = profilePage.getNav().selectSearchForSites().render();
+        siteFinder = siteFinder.searchForSite(siteName).render();
+        SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
+        documentLibPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
+    }
+    
+    @Test(expectedExceptions = UnsupportedOperationException.class, groups = { "Enterprise4.2" }, priority=49)
+    public void test121SelectDownloadFolderAsZipForFile() throws Exception
+    {
+        // Get File
+        FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(file.getName());
+        thisRow.selectDownloadFolderAsZip();
+    }
+
+    @Test(groups = "Enterprise4.2", priority=50)
+    public void test123SelectDownloadFolderAsZipForFolder() throws Exception
+    {
+        // Get folder
+        FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(folderName);
+        thisRow.selectDownloadFolderAsZip();
+        drone.waitUntilElementDisappears(By.cssSelector("div[id*='archive-and-download'] a"), 2000);
+    }
+
+    @Test(groups={"alfresco-one"}, priority=51)
+    public void test115SelectDownloadForFile() throws Exception
+    {
+        // Get File
+        FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(file.getName());
+        thisRow.selectDownload();
+        Assert.assertNotNull(documentLibPage);
     }
 }
