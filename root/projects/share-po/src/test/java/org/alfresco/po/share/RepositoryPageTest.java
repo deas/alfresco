@@ -59,11 +59,29 @@ public class RepositoryPageTest extends AbstractDocumentTest
     private static final String MY_FOLDER = "aa--" + System.currentTimeMillis();
     private File sampleFile;
     private String contentName = "Test" + System.currentTimeMillis();
+    private String userName = "RepositoryPageTest" + System.currentTimeMillis() + "@test.com";
+    private String firstName = userName;
+    private String lastName = userName;
     
     @BeforeClass(groups={"Repository", "Enterprise4.2"})
     public void createSite()throws Exception
     {
-        ShareUtil.loginAs(drone, shareUrl, username, password).render();
+        if (!alfrescoVersion.isCloud())
+        {
+            DashBoardPage dashBoard = loginAs(username, password);
+            UserSearchPage page = dashBoard.getNav().getUsersPage().render();
+            NewUserPage newPage = page.selectNewUser().render();
+            newPage.createEnterpriseUserWithGroup(userName, firstName, lastName, userName, userName, "ALFRESCO_ADMINISTRATORS");
+            UserSearchPage userPage = dashBoard.getNav().getUsersPage().render();
+            userPage.searchFor(userName).render();
+            Assert.assertTrue(userPage.hasResults());
+            logout(drone);
+            loginAs(userName, userName);
+        }
+        else
+        {
+            loginAs(cloudUserName, cloudUserPassword);
+        }
         sampleFile = SiteUtil.prepareFile("ab--" + System.currentTimeMillis());
         logger.info("===completed create site");
     }

@@ -12,8 +12,11 @@ import static org.testng.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
+import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.NewUserPage;
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.UserSearchPage;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.util.FailedTestListener;
@@ -41,13 +44,15 @@ public class FileDirectoryInfoMoreTest extends AbstractDocumentTest
 
     private static String siteName;
     private static String folderName;
-    private String uname = "m1user" + System.currentTimeMillis();
     @SuppressWarnings("unused")
     private static String folderDescription;
     private static DocumentLibraryPage documentLibPage;
     private File testSyncFailedFile;
     private File googleTestFile;
     private String folder2Name;
+    private String userName = "FileDirectoryInfoMoreTest" + System.currentTimeMillis() + "@test.com";
+    private String firstName = userName;
+    private String lastName = userName;
 
     /**
      * Pre test setup of a dummy file to upload.
@@ -61,8 +66,22 @@ public class FileDirectoryInfoMoreTest extends AbstractDocumentTest
         folderName = "The first folder";
         folder2Name = "The Second Folder";
         folderDescription = String.format("Description of %s", folderName);
-        createEnterpriseUser(uname);
-        loginAs(uname, UNAME_PASSWORD).render();
+        if (!alfrescoVersion.isCloud())
+        {
+            DashBoardPage dashBoard = loginAs(username, password);
+            UserSearchPage page = dashBoard.getNav().getUsersPage().render();
+            NewUserPage newPage = page.selectNewUser().render();
+            newPage.createEnterpriseUserWithGroup(userName, firstName, lastName, userName, userName, "ALFRESCO_ADMINISTRATORS");
+            UserSearchPage userPage = dashBoard.getNav().getUsersPage().render();
+            userPage.searchFor(userName).render();
+            Assert.assertTrue(userPage.hasResults());
+            logout(drone);
+            loginAs(userName, userName);
+        }
+        else
+        {
+            loginAs(cloudUserName, cloudUserPassword);
+        }
         if(isHybridEnabled())
         {
             signInToCloud(drone, cloudUserName, cloudUserPassword);

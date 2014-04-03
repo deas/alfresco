@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.po.share.AbstractTest;
+import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.NewUserPage;
+import org.alfresco.po.share.UserSearchPage;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.util.FailedTestListener;
@@ -43,7 +46,9 @@ public class FolderDetailsPageTest extends AbstractTest
     private static String folderDescription;
     private static DocumentLibraryPage documentLibPage;
     private FolderDetailsPage folderDetailsPage;
-    private String uname = "fdpt1user" + System.currentTimeMillis();
+    private String userName = "FolderDetailsPageTest" + System.currentTimeMillis() + "@test.com";
+    private String firstName = userName;
+    private String lastName = userName;
 
     /**
      * Pre test setup of a dummy file to upload.
@@ -54,13 +59,26 @@ public class FolderDetailsPageTest extends AbstractTest
     public void prepare() throws Exception
     {
         if (logger.isTraceEnabled())
-            logger.trace("====prepare====");
+        logger.trace("====prepare====");
         siteName = "site" + System.currentTimeMillis();
         folderName = "The first folder";
         folderDescription = String.format("Description of %s", folderName);
-        createEnterpriseUser(uname);
-        loginAs(uname, UNAME_PASSWORD).render();
-        drone.navigateTo(shareUrl);
+        if (!alfrescoVersion.isCloud())
+        {
+            DashBoardPage dashBoard = loginAs(username, password);
+            UserSearchPage page = dashBoard.getNav().getUsersPage().render();
+            NewUserPage newPage = page.selectNewUser().render();
+            newPage.createEnterpriseUserWithGroup(userName, firstName, lastName, userName, userName, "ALFRESCO_ADMINISTRATORS");
+            UserSearchPage userPage = dashBoard.getNav().getUsersPage().render();
+            userPage.searchFor(userName).render();
+            Assert.assertTrue(userPage.hasResults());
+            logout(drone);
+            loginAs(userName, userName);
+        }
+        else
+        {
+            loginAs(cloudUserName, cloudUserPassword);
+        }
         SiteUtil.createSite(drone, siteName, "description", "Public");
     }
 
