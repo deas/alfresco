@@ -50,8 +50,6 @@ public class ShareDialoguePageTest extends AbstractTest
     private SitePage site;
     private DocumentLibraryPage documentLibPage;
     private DocumentDetailsPage docDetailsPage;
-    @SuppressWarnings("unused")
-    private EditDocumentPropertiesPopup editPropPopup;
     private EditDocumentPropertiesPage editPropPage;
     private ShareDialogue dialogue;
     
@@ -168,7 +166,7 @@ public class ShareDialoguePageTest extends AbstractTest
     public void resolveEditPropertiesDialogue() throws Exception
     {
         // Edit Properties
-        editPropPopup = documentLibPage.getFileDirectoryInfo(fileName).selectEditProperties().render();      
+        documentLibPage.getFileDirectoryInfo(fileName).selectEditProperties().render();      
         
         dialogue = FactorySharePage.resolvePage(drone).render();
         Assert.assertTrue(dialogue.isShareDialogueDisplayed());

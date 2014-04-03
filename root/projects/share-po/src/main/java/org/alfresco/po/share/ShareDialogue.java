@@ -44,6 +44,7 @@ public class ShareDialogue extends SharePage
     private static final By SHARE_DIALOGUE_HEADER = By.cssSelector("div.hd");
     private static final By CLOSE_BUTTON = By.cssSelector("a.container-close");
     private static final By TITLE_TEXT_UPLOAD_FILE = By.cssSelector("span");
+    private static final By CANCEL_BUTTON = By.cssSelector("button[id*='cancel']");
 
     /**
      * Constructor.
@@ -109,6 +110,16 @@ public class ShareDialogue extends SharePage
         {
             throw new PageOperationException("Not able find the close button " + e);
         }
+        return FactorySharePage.resolvePage(drone);
+    }
+    
+    /**
+     * Helper method to click on the Cancel button to return to the original page
+     */
+    public HtmlPage clickCancel()
+    {
+        WebElement button = drone.findElementDisplayed(CANCEL_BUTTON);
+        button.click();
         return FactorySharePage.resolvePage(drone);
     }
 
