@@ -16,8 +16,7 @@ public class NodeBrowserTest extends AbstractTest
         public void checkThatFactoryReturnNodeBrowserPage() throws Exception
         {
                 SharePage page = loginAs("admin", "admin");
-                page.getNav().getNodeBrowserPage();
-                NodeBrowserPage nodeBrowserPage = (NodeBrowserPage) drone.getCurrentPage();
+                page.getNav().getNodeBrowserPage().render();
         }
 
         @Test(groups = "Enterprise-only", timeOut = 400000)
