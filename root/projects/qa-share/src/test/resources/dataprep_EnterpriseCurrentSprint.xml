@@ -22,6 +22,46 @@
             <class name="org.alfresco.share.site.document.ManageDocLibItemsTest"/>
         </classes>
     </test>
-        
+
+    <test name="Create Rule Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.content.rules.CreateRuleTest"/>
+        </classes>
+    </test>
+
+    <test name="Folder Action Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.FolderActionsTest">
+                <methods>
+                    <include name="dataPrep_ALF_2921"/>
+                    <include name="dataPrep_ALF_2922"/>
+                    <include name="dataPrep_ALF_2923"/>
+                    <include name="dataPrep_ALF_2924"/>
+                    <include name="dataPrep_ALF_2925"/>
+                    <include name="dataPrep_ALF_2926"/>
+                    <include name="dataPrep_ALF_2927"/>
+                    <include name="dataPrep_ALF_2928"/>
+                    <include name="dataPrep_ALF_2929"/>
+                    <include name="dataPrep_ALF_2930"/>
+                    <include name="dataPrep_ALF_2931"/>
+                    <include name="dataPrep_ALF_2932"/>
+                    <include name="dataPrep_ALF_2933"/>
+                    <include name="dataPrep_ALF_2935"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Manage Documents Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.ManageDocumentsTest"/>
+        </classes>
+    </test>
+
+    <test name="Manage Folders Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.ManageFoldersTest"/>
+        </classes>
+    </test>
 
 </suite>

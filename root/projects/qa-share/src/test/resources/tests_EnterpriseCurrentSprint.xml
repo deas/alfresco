@@ -25,5 +25,58 @@
         </classes>
     </test>
 
+    <test name="Create Rule Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.content.rules.CreateRuleTest"/>
+        </classes>
+    </test>
+
+    <test name="Folder Actions Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.FolderActionsTest">
+                <methods>
+                    <include name="ALF_2921"/>
+                    <include name="ALF_2922"/>
+                    <include name="ALF_2923"/>
+                    <include name="ALF_2924"/>
+                    <include name="ALF_2925"/>
+                    <include name="ALF_2926"/>
+                    <include name="ALF_2927"/>
+                    <include name="ALF_2928"/>
+                    <include name="ALF_2929"/>
+                    <include name="ALF_2930"/>
+                    <include name="ALF_2931"/>
+                    <include name="ALF_2932"/>
+                    <include name="ALF_2933"/>
+                    <include name="ALF_2935"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Manage Documents Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.ManageDocumentsTest"/>
+        </classes>
+    </test>
+
+    <test name="Manage Folders Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.ManageFoldersTest"/>
+        </classes>
+    </test>
+
+    <test name="Comments tests for 'Folder Details Page'" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.FolderDetailsCommentsTests"/>
+        </classes>
+    </test>
+
+    <test name="Node Browser Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.newfeatures.NodeBrowserTests"/>
+        </classes>
+    </test>
+
 
 </suite>
