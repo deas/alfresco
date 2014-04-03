@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
 public class DashBoardPage extends SharePage implements Dashboard
 {
 
-    private static final Log LOGGER = LogFactory.getLog(DashBoardPage.class);
+    private final Log logger = LogFactory.getLog(DashBoardPage.class);
 
     /**
      * Constructor.
@@ -87,7 +87,7 @@ public class DashBoardPage extends SharePage implements Dashboard
         }
         catch (Exception e)
         {
-            LOGGER.error(e);
+            logger.error(e);
         }
         return false;
     }
