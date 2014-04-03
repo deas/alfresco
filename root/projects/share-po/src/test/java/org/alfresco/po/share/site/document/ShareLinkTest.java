@@ -40,6 +40,7 @@ public class ShareLinkTest extends AbstractDocumentTest
     private String lastName = userName;
     private static DocumentLibraryPage documentLibPage;
     private File file;
+    private File tempFile;
     private final String cloudUserName = "user1@premiernet.test";
     private final String cloudUserPassword = "spr!nkles";
 
@@ -50,6 +51,7 @@ public class ShareLinkTest extends AbstractDocumentTest
         createUser();
         SiteUtil.createSite(drone, siteName, "description", "Public");
         file = SiteUtil.prepareFile("alfresco123");
+        tempFile = SiteUtil.prepareFile("tempFile123");
         createData();
     }
 
@@ -98,6 +100,8 @@ public class ShareLinkTest extends AbstractDocumentTest
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
         UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = uploadForm.uploadFile(file.getCanonicalPath()).render();
+        uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
+        documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
         documentLibPage = ((DocumentLibraryPage) documentLibPage.getNavigation().selectGalleryView()).render();
     }
     
@@ -131,12 +135,13 @@ public class ShareLinkTest extends AbstractDocumentTest
         ShareLinkPage shareLinkPage = thisRow.clickShareLink().render();
         Assert.assertTrue(shareLinkPage.isEmailLinkPresent());
         documentLibPage = shareLinkPage.clickOnUnShareButton().render();
+        documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
     }
     
     @Test(groups={"alfresco-one"}, priority=4)
     public void testOtherShareLinks()
     {
-        FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(file.getName());
+        FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(tempFile.getName());
         ShareLinkPage shareLinkPage = thisRow.clickShareLink().render();
 
         Assert.assertTrue(shareLinkPage.isFaceBookLinkPresent());
