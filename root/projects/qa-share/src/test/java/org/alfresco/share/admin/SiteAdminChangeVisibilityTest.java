@@ -75,17 +75,19 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
     private void prepare() throws Exception
     {
         this.testContext = new OpCloudTestContext(this);
-        String domain = this.testContext.createNetworkName("acme");
+        String domain = "acme-" + UNIQUE_TESTDATA_STRING + ".test";
 
-        // TODO: Remove redundant util createUserName: getUserNameForDomain("johndoe", domain); does the same
-        this.user1 = this.testContext.createUserName("johndoe", domain);
-        this.user2 = this.testContext.createUserName("joebloggs", domain);
+        this.user1 = getUserNameForDomain("johndoe", domain);
+        this.user2 = getUserNameForDomain("joebloggs", domain);
 
         // Create user1
-        // TODO: Remove redundant util: CreateUserAPI.CreateActivateUserAsTenantAdmin does the same
-        createTestUser(ADMIN_USERNAME, user1, "John", "Doe", DEFAULT_PASSWORD);
+        String[] testUserInfo1 = new String[] { user1, "John", "Doe"};
+        createTestUser(ADMIN_USERNAME, testUserInfo1);
+        
         // Create user2
-        createTestUser(ADMIN_USERNAME, user2, "Joe", "Bloggs", DEFAULT_PASSWORD);
+        String[] testUserInfo2 = new String[] { user1, "Joe", "Bloggs"};
+        createTestUser(ADMIN_USERNAME, testUserInfo2);
+        
         // Add the created users, so they can be cleaned up
         this.testContext.addUser(user1, user2);
 
@@ -94,9 +96,9 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
             logger.trace("Users created " + user1 + ", " + user2 + "]");
         }
 
-        this.user1PublicSite = this.testContext.createSiteName("u1PubSite");
-        this.user1ModeratedSite = this.testContext.createSiteName("u1ModSite");
-        this.user1PrivateSite = this.testContext.createSiteName("u1PriSite");
+        this.user1PublicSite = getSiteName("u1PubSite");
+        this.user1ModeratedSite = getSiteName("u1ModSite");
+        this.user1PrivateSite = getSiteName("u1PriSite");
 
         // login as user1 to create sites
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
@@ -151,7 +153,7 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
             logger.trace("Starting teardown for " + testName);
         }
         // TODO: Remove cleanup as it was advised to keep the test data as is after test run for easy test analysis
-        this.testContext.cleanupSites(user1, DEFAULT_PASSWORD);
+        SiteUtil.deleteSitesAsUser(drone, user1, testContext.getCreatedSites().get(user1));
     }
 
     /**
@@ -179,9 +181,6 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
 
         // Open user2 dash board page
         ShareUser.openUserDashboard(drone);
-
-        // TODO: Move the navigation inside the util, passing drone as param and reduce PO dependencies.
-        // ManageSitesPage manageSitesPage = dashBoard.getNav().selectManageSitesPage().render();
 
         // ACE_508_02 Public to Private
         testSiteVisibility(drone, user1PublicSite, SiteVisibility.PUBLIC, SiteVisibility.PRIVATE);
@@ -257,9 +256,7 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
      */
     private void testSiteVisibility(WebDrone drone, String siteName, SiteVisibility from, SiteVisibility to)
     {
-        // TODO: Define this as a util in main/share/util, implementing only assert in testClass
-        DashBoardPage dashBoard = getSharePage(drone).render();
-        ManageSitesPage manageSitesPage = dashBoard.getNav().selectManageSitesPage().render();
+        ManageSitesPage manageSitesPage = ShareUser.navigateToManageSites(drone);
         
         ManagedSiteRow managedSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(siteName);
         assertNotNull(managedSiteRow);
@@ -281,18 +278,10 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
      * @param password the invitee's password
      * @throws Exception
      */
-    private void createTestUser(String inviterUsername, String userName, String firstName, String lastName, String password) throws Exception
+    private void createTestUser(String inviterUsername, String... userName) throws Exception
     {
         boolean created = false;
-        if (isAlfrescoVersionCloud(drone))
-        {
-            created = CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, new String[] { userName, firstName, lastName, password });
-        }
-        else
-        {
-            created = ShareUser.createEnterpriseUserWithGroup(drone, inviterUsername, userName, firstName, lastName, password, SITE_ADMIN_GROUP);
-        }
-        assertTrue(created);
+        created = CreateUserAPI.createActivateUserWithGroup(drone, inviterUsername, SITE_ADMIN_GROUP, userName);
     }
 
     /**
@@ -304,7 +293,8 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
     // TODO: Redundant code. ShareUser.CreatSite can directly be called
     private void createTestSite(String siteName, String siteVisibility)
     {
-        boolean created = SiteUtil.createSite(drone, siteName, siteVisibility);
+        boolean created = false;
+        created = SiteUtil.createSite(drone, siteName, siteVisibility);
         assertTrue(created);
     }
 }

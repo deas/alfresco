@@ -1,5 +1,7 @@
 package org.alfresco.share.admin;
 
+import static org.testng.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +12,9 @@ import org.alfresco.po.share.enums.SiteVisibility;
 import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.SiteUtil;
+import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.WebDrone;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -29,6 +34,8 @@ public class BecomeSiteManagerTest extends AbstractTests
 {
     /** Constants */
     private static final String BECOME_SITE_MANAGER_BUTTON = "Become Site Manager";
+    
+    // TODO: Consider using uniqueTestDataString in qa-share.properties
     private static final String PREFIX = "aaaa-tc797-";
     
     // TODO: Create groups enum in Share-po project, since many new test classes define and use it
@@ -48,40 +55,37 @@ public class BecomeSiteManagerTest extends AbstractTests
     @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
     {
-        traceLog("Starting setup for BecomeSiteManagerTest");
-
         super.setup();
         this.testContext = new OpCloudTestContext(this);
         
-        // TODO: Redundant createNetworkName, createUserName. Replace with getUserNameForDoamin(username, domain)
-        String network = testContext.createNetworkName("acme");
+        String network = "acme-" + System.currentTimeMillis() + ".test";
 
         // Create two users - one site administrator and one not
-        String user1 = testContext.createUserName("AmandaAdmin", network);
-        createTestUser(drone, user1, DEFAULT_PASSWORD, SITE_ADMIN_GROUP);
-        testContext.addUser(user1);
-
-        String user2 = testContext.createUserName("JaneUser", network);
+        String siteAdminUser = getUserNameForDomain("AmandaAdmin", network);
+        String testUser = getUserNameForDomain("JaneUser", network);
         
-        createTestUserWithoutGroup(drone, user2, DEFAULT_PASSWORD);
-        testContext.addUser(user2);
+        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, SITE_ADMIN_GROUP, siteAdminUser);
+        testContext.addUser(siteAdminUser);
+        
+        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, null, testUser);
+        testContext.addUser(testUser);
 
         users = new ArrayList<>(testContext.getCreatedUsers());
 
         // Login as the site administrator
-        dashBoardPage = ShareUser.loginAs(drone, users.get(0), DEFAULT_PASSWORD);
+        ShareUser.login(drone, siteAdminUser);
 
         // Create a private site managed by the site administrator
-        createTestSite(drone, testContext, PREFIX, SiteVisibility.PRIVATE, users.get(0));
+        createTestSite(drone, testContext, PREFIX, SiteVisibility.PRIVATE, siteAdminUser);
 
         // Logout
         ShareUser.logout(drone);
 
         // Login as the non site administrator
-        dashBoardPage = ShareUser.loginAs(drone, users.get(1), DEFAULT_PASSWORD);
+        ShareUser.login(drone, testUser);
 
         // Create a private site managed by the non site administrator
-        createTestSite(drone, testContext, PREFIX, SiteVisibility.PRIVATE, users.get(1));
+        createTestSite(drone, testContext, PREFIX, SiteVisibility.PRIVATE, testUser);
 
         // Logout
         ShareUser.logout(drone);
@@ -168,5 +172,21 @@ public class BecomeSiteManagerTest extends AbstractTests
         dashBoardPage = null;
         sites = null;
         users = null;
+    }
+    
+    /**
+     * Creates a test site.
+     *
+     * @param siteVisibility the SiteVisibility of the created site
+     */
+    // TODO: Move ShareUtil out of AbstractTest, this includes non share code
+    public static void createTestSite(WebDrone drone, OpCloudTestContext testContext, String prefix, SiteVisibility siteVisibility, String createdUsername)
+    {
+        String siteName = getSiteName(prefix + "site-");
+        boolean created = SiteUtil.createSite(drone, siteName, siteVisibility.getDisplayValue());
+        
+
+        assertTrue(created);
+        testContext.addSite(createdUsername, siteName);
     }
 }

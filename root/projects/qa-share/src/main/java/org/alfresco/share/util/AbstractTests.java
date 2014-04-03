@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.alfresco.share.util;
 
 import java.awt.AWTException;
@@ -53,9 +52,7 @@ import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.ShareProperties;
 import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.console.CloudConsolePage;
-import org.alfresco.po.share.enums.SiteVisibility;
 import org.alfresco.share.search.SearchKeys;
-import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -82,8 +79,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
-
-import static org.testng.Assert.assertTrue;
 
 /**
  * Class includes: Abstract test holds all common methods, These will be used
@@ -1170,92 +1165,6 @@ public abstract class AbstractTests
         for (int i = 0; i < length; i++)
             rv.append(from[rnd.nextInt((from.length - 1))]);
         return rv.toString();
-    }
-    /**
-     * Creates a test user, abstracting out the differences.
-     *
-     * @param drone Webdrone instance
-     * @param userName the desired username (should be a valid email address)
-     * @param password User's password, usually DEFAULT_PASSWORD
-     * @throws Exception
-     */
-
-    // TODO: Remove redundant util. Use CreateUserAPI.CreateActivateUser
-    public static void createTestUserWithoutGroup(WebDrone drone, String userName, String password) throws Exception
-    {
-        createTestUser(drone, userName, password, null);
-    }
-
-    /**
-     * Creates a test user, abstracting out the differences.
-     *
-     * TODO: This should probably have added logic around AsTenantAdmin or not.
-     *
-     * @param drone Webdrone instance
-     * @param userName the desired username (should be a valid email address)
-     * @param password User's password, usually DEFAULT_PASSWORD
-     * @param groupMembership (this should be optional) the name of a group to join (on premise only)
-     * @throws Exception
-     */
-    // TODO: Add to CreateUserAPI util, CreateUserWithGroup(..., groupName), calling ShareUser.createEnterpriseUserWithGroup
-    public static void createTestUser(WebDrone drone, String userName, String password, String groupMembership) throws Exception
-    {
-        String firstName = "firstName-" + System.currentTimeMillis();
-        String lastName = "lastName-" + System.currentTimeMillis();
-        boolean created;
-        if (isAlfrescoVersionCloud(drone))
-        {
-            created = CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, userName,
-                firstName, lastName, password);
-        }
-        else if (groupMembership == null)
-        {
-            created = ShareUser.createEnterpriseUser(drone, ADMIN_USERNAME, userName, firstName, lastName,
-                password);
-        }
-        else
-        {
-            created = ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, userName, firstName, lastName,
-                password, groupMembership);
-        }
-        
-        // TODO: Remove assert from utils
-        assertTrue(created);
-    }
-
-    /**
-     * Creates a test site.
-     *
-     * @param siteVisibility the SiteVisibility of the created site
-     */
-    // TODO: Move ShareUtil out of AbstractTest, this includes non share code
-    public static void createTestSite(WebDrone drone, OpCloudTestContext testContext, String prefix, SiteVisibility siteVisibility, String createdUsername)
-    {
-        String siteName = testContext.createSiteName(prefix + "site-");
-        boolean created = SiteUtil.createSite(drone, siteName, siteVisibility.getDisplayValue());
-        
-        // TODO: Remove assert from utils
-        assertTrue(created);
-        testContext.addSite(createdUsername, siteName);
-    }
-
-    /**
-     * Creates the test sites.
-     *
-     * @param numOfSites the number of sites required
-     */
-    // TODO: Move code to SiteUtil to CreateMultipleSites. Move out of AbstractTest
-    public static void createTestSites(WebDrone drone, OpCloudTestContext testContext, String prefix, SiteVisibility siteVisibility, String createdUsername, int numOfSites) throws InterruptedException
-    {
-        for (int i = 0; i < numOfSites; i++)
-        {
-            createTestSite(drone, testContext, prefix, siteVisibility, createdUsername);
-
-            // TODO: Remove this silly code. (once create site uses API)
-            // sleep needed because the SiteUtil.createSite method doesn't work when called lots in quick succession.
-            // TODO: Remove, manage this with appropriate use of page.render.wait.time
-            Thread.sleep(1000l);
-        }
     }
 
     /**

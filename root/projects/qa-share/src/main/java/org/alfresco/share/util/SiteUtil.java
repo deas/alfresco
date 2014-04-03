@@ -10,7 +10,7 @@
  *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -23,11 +23,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.dashlet.MySitesDashlet;
+import org.alfresco.po.share.enums.SiteVisibility;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.EditSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
@@ -216,7 +219,7 @@ public class SiteUtil extends AbstractTests
      * @param loginUserName
      * @param siteName String site name
      */
-    public static void deleteSitesAsUser(WebDrone drone, String loginUserName, String... siteNames)
+    public static void deleteSitesAsUser(WebDrone drone, String loginUserName, Set<String> siteNames)
     {
         try
         {
@@ -267,10 +270,10 @@ public class SiteUtil extends AbstractTests
             try
             {
                 siteResults.deleteSite(site);
-            
-            logger.info("deleted Site: " + site);
+
+                logger.info("deleted Site: " + site);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.info("Error deleting sites:" + site);
             }
@@ -311,7 +314,7 @@ public class SiteUtil extends AbstractTests
         SiteFinderPage siteFinder = share.getNav().selectSearchForSites();
         return siteFinder.render();
     }
-    
+
     /**
      * Method to search for a site and select the site from search results
      * 
@@ -325,26 +328,27 @@ public class SiteUtil extends AbstractTests
         SiteDashboardPage siteDashboardPage = siteFinderPage.selectSite(siteName);
         return siteDashboardPage;
     }
-    
+
     /**
      * Method to navigate to site dashboard url, based on siteshorturl, rather than sitename
      * This is to be used to navigate only as a util, not to test getting to the site dashboard
+     * 
      * @param drone
      * @param siteShortURL
      * @return {@link SiteDashBoardPage}
      */
     public static SiteDashboardPage openSiteURL(WebDrone drone, String siteShortURL)
     {
-        String url = drone.getCurrentUrl(); 
+        String url = drone.getCurrentUrl();
         String target = url.substring(0, url.indexOf("/page/")) + SITE_DASH_LOCATION_SUFFIX + getSiteShortname(siteShortURL) + "/dashboard";
         drone.navigateTo(target);
         SiteDashboardPage siteDashboardPage = (SiteDashboardPage) ShareUser.getSharePage(drone);
-        
+
         return siteDashboardPage.render();
     }
-    
+
     /**
-     * From the User DashBoard, navigate to the Site DashBoard using the 'Site' in My-Sites Dashlet. 
+     * From the User DashBoard, navigate to the Site DashBoard using the 'Site' in My-Sites Dashlet.
      * Assumes User is logged in.
      * 
      * @param driver WebDrone Instance
@@ -357,7 +361,7 @@ public class SiteUtil extends AbstractTests
         // Assumes User is logged in
 
         // Open User DashBoard
-        DashBoardPage dashBoard = ShareUser.openUserDashboard(driver);        
+        DashBoardPage dashBoard = ShareUser.openUserDashboard(driver);
 
         MySitesDashlet dashlet = dashBoard.getDashlet(DASHLET_SITES).render(refreshDuration);
 
@@ -367,10 +371,11 @@ public class SiteUtil extends AbstractTests
 
         return siteDashPage;
     }
-    
+
     /**
      * Method to navigate to sites document library url, based on siteshorturl, rather than sitename
      * This is to be used to navigate only as a util, not to test getting to the site document library
+     * 
      * @param drone
      * @param siteShortURL
      * @return {@link SiteDashBoardPage}
@@ -378,15 +383,16 @@ public class SiteUtil extends AbstractTests
     public static DocumentLibraryPage openSiteDocumentLibraryURL(WebDrone drone, String siteShortURL)
     {
         openSiteURL(drone, siteShortURL);
-        String doclibUrl = drone.getCurrentUrl().replace(SITE_DASH_SUFFIX, SITE_DOCLIB_SUFFIX);         
+        String doclibUrl = drone.getCurrentUrl().replace(SITE_DASH_SUFFIX, SITE_DOCLIB_SUFFIX);
         drone.navigateTo(doclibUrl);
         DocumentLibraryPage siteDocLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
-        
+
         return siteDocLibPage;
     }
-    
+
     /**
      * Create a new site or handle exception if site already exists.
+     * 
      * @param drone
      * @param siteName
      * @param desc
@@ -396,7 +402,7 @@ public class SiteUtil extends AbstractTests
      */
     public static boolean createSite(WebDrone drone, final String siteName, String desc, String siteVisibility, boolean handleDuplicateSite)
     {
-    	if (siteName == null || siteName.isEmpty())
+        if (siteName == null || siteName.isEmpty())
         {
             throw new IllegalArgumentException("site name is required");
         }
@@ -434,9 +440,9 @@ public class SiteUtil extends AbstractTests
             }
             else
             {
-	            
+
                 siteCreated = false;
-                openSiteURL(drone, getSiteShortname(siteName));	            	            
+                openSiteURL(drone, getSiteShortname(siteName));
             }
             return siteCreated;
         }
@@ -463,5 +469,29 @@ public class SiteUtil extends AbstractTests
         EditSitePage editSitePage = site.getSiteNav().selectEditSite().render();
         editSitePage.selectSiteVisibility(isPrivate, isModerated);
         editSitePage.selectOk();
+    }
+
+    /**
+     * Create many sites for the logged in user
+     * @param drone
+     * @param prefix
+     * @param siteVisibility
+     * @param numOfSites
+     * @return {@link Set} of SiteNames
+     */
+    public static Set<String> createManySites(WebDrone drone, String prefix, SiteVisibility siteVisibility, int numOfSites)
+    {
+        Set<String> siteNames = new HashSet<String>();
+
+        for (int i = 0; i < numOfSites; i++)
+        {
+            String siteName = getSiteName(prefix + i);
+            boolean siteCreated = createSite(drone, siteName, siteVisibility.getDisplayValue());
+            if (siteCreated)
+            {
+                siteNames.add(siteName);
+            }
+        }
+        return siteNames;
     }
 }

@@ -8,8 +8,11 @@
 
 package org.alfresco.share.util.api;
 
+import static org.testng.Assert.assertTrue;
+
 import org.alfresco.json.JSONUtil;
 import org.alfresco.po.share.enums.TenantTypes;
+import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.webdrone.WebDrone;
@@ -57,10 +60,8 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
         String[] authDetails = getAuthDetails(invitingUserEmail);
 
-        String[] headers =
-        { "Content-Type", "application/json;charset=utf-8", "key", getHeaderKey() };
-        String[] body =
-        { "source", "test-rest-client-script", "email", newUserEmailID };
+        String[] headers = { "Content-Type", "application/json;charset=utf-8", "key", getHeaderKey() };
+        String[] body = { "source", "test-rest-client-script", "email", newUserEmailID };
 
         HttpClient client = null;
         HttpPost request = null;
@@ -76,8 +77,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
             String regKey = getParameter("registration", "key", result);
             String regId = getParameter("registration", "id", result);
-            return new String[]
-            { regKey, regId };
+            return new String[] { regKey, regId };
         }
         finally
         {
@@ -86,7 +86,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
     }
 
     public static Boolean activateUser(WebDrone drone, String invitingUserEmail, String fName, String lName, String password, String regKey, String regId)
-        throws Exception
+            throws Exception
     {
         if (!isAlfrescoVersionCloud(drone))
         {
@@ -98,10 +98,8 @@ public class CreateUserAPI extends AlfrescoHttpClient
         logger.info("Using Url - " + reqURL + " for activateUser");
 
         String[] authDetails = getAuthDetails(invitingUserEmail);
-        String[] headers =
-        { "Content-Type", "application/json;charset=utf-8", "key", getHeaderKey() };
-        String[] body =
-        { "firstName", fName, "lastName", lName, "password", password, "key", regKey, "id", regId };
+        String[] headers = { "Content-Type", "application/json;charset=utf-8", "key", getHeaderKey() };
+        String[] body = { "firstName", fName, "lastName", lName, "password", password, "key", regKey, "id", regId };
 
         HttpPost request = generatePostRequest(reqURL, headers, body);
         HttpClient client = getHttpClientWithBasicAuth(reqURL, authDetails[0], authDetails[1]);
@@ -143,7 +141,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
         else
         {
             result = ShareUser.createEnterpriseUserWithGroup(drone, invitingUserEmail, newUserDetails[0], newUserDetails[0], newUserDetails[0],
-                getAuthDetails(newUserDetails[0])[1], "ALFRESCO_ADMINISTRATORS");
+                    getAuthDetails(newUserDetails[0])[1], "ALFRESCO_ADMINISTRATORS");
         }
 
         return result;
@@ -255,10 +253,8 @@ public class CreateUserAPI extends AlfrescoHttpClient
         String reqURL = getAPIURL(drone) + apiContextCloudInternal + "domains/" + domain + "/account";
 
         String[] authDetails = getAuthDetails(authUser);
-        String[] headers =
-        { "Content-Type", "application/json;charset=utf-8", "key", getHeaderKey() };
-        String[] body =
-        { "accountTypeId", accountTypeID };
+        String[] headers = { "Content-Type", "application/json;charset=utf-8", "key", getHeaderKey() };
+        String[] body = { "accountTypeId", accountTypeID };
 
         HttpPut request = generatePutRequest(reqURL, headers, body);
         HttpClient client = getHttpClientWithBasicAuth(reqURL, authDetails[0], authDetails[1]);
@@ -345,10 +341,8 @@ public class CreateUserAPI extends AlfrescoHttpClient
         String reqURL = getAPIURL(drone) + apiContextCloudInternal + "domains/" + domain + "/account/networkadmins";
 
         String[] authDetails = getAuthDetails(authUser);
-        String[] headers =
-        { "Content-Type", "application/json;charset=utf-8", "key", getHeaderKey() };
-        String[] body =
-        { "username", userNametoBePromoted };
+        String[] headers = { "Content-Type", "application/json;charset=utf-8", "key", getHeaderKey() };
+        String[] body = { "username", userNametoBePromoted };
 
         HttpPost request = generatePostRequest(reqURL, headers, body);
         HttpClient client = getHttpClientWithBasicAuth(reqURL, authDetails[0], authDetails[1]);
@@ -384,8 +378,8 @@ public class CreateUserAPI extends AlfrescoHttpClient
      * @return true is user invitation-acceptance succeeds
      * @throws Exception
      */
-    public static Boolean inviteUserToSiteWithRoleAndAccept(WebDrone drone, String invitingUsername, String email, String siteShortname, String role,
-        String message) throws Exception
+    public static Boolean inviteUserToSiteWithRoleAndAccept(WebDrone drone, String invitingUsername, String email, String siteShortname, String role, String message)
+            throws Exception
     {
         Boolean result = false;
 
@@ -446,7 +440,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
      * @throws Exception
      */
     public static String[] inviteUserToSite(WebDrone drone, String invitingUsername, String email, String siteShortname, String role, String message)
-        throws Exception
+            throws Exception
     {
         if (!isAlfrescoVersionCloud(drone))
         {
@@ -459,8 +453,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
         String[] authDetails = getAuthDetails(invitingUsername);
 
-        String[] headers =
-        { "key", getHeaderKey() };
+        String[] headers = { "key", getHeaderKey() };
 
         HttpClient client = null;
         HttpPost request = null;
@@ -482,8 +475,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
             String regKey = getParameter("invitations", "key", result);
             String regId = getParameter("invitations", "id", result);
-            return new String[]
-            { regKey, regId };
+            return new String[] { regKey, regId };
         }
         finally
         {
@@ -513,8 +505,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
         logger.info("Request Url - " + reqURL);
 
         String[] authDetails = getAuthDetails(invitedUserEmail);
-        String[] headers =
-        { "key", getHeaderKey() };
+        String[] headers = { "key", getHeaderKey() };
 
         HttpGet request = generateGetRequest(reqURL, headers);
         HttpClient client = getHttpClientWithBasicAuth(reqURL, authDetails[0], authDetails[1]);
@@ -527,5 +518,38 @@ public class CreateUserAPI extends AlfrescoHttpClient
         }
         logger.error("Invite could not be actioned by user: " + invitedUserEmail);
         return false;
+    }
+
+    /**
+     * Use this method for Enterprise and Cloud to create user and add it to specific group
+     * Implementation for cloud requires the tenant to be upgraded from free network
+     * Hence This requires admin console / admin access
+     * Implementation for Enterprise requires admin user who can create and add users to specified group
+     * 
+     * @param drone
+     * @param invitingUserEmail
+     * @param newUserDetails
+     * @return boolean <true> when user creation succeeds
+     * @throws Exception
+     */
+    public synchronized static boolean createActivateUserWithGroup(WebDrone drone, String invitingUserEmail, String groupName, String... newUserDetails)
+            throws Exception
+    {
+        Boolean result = false;
+        String tenantType = TenantTypes.Premium.getTenantType();
+
+        if (isAlfrescoVersionCloud(drone))
+        {
+            result = CreateActivateUser(drone, invitingUserEmail, newUserDetails);
+            upgradeCloudAccount(drone, invitingUserEmail, getUserDomain(newUserDetails[0]), tenantType);
+            result = promoteUserAsAdmin(drone, invitingUserEmail, newUserDetails[0], getUserDomain(newUserDetails[0]));
+        }
+        else
+        {
+            result = ShareUser.createEnterpriseUserWithGroup(drone, invitingUserEmail, newUserDetails[0], newUserDetails[0], newUserDetails[0],
+                    getAuthDetails(newUserDetails[0])[1], groupName);
+        }
+
+        return result;
     }
 }

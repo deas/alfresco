@@ -1,5 +1,8 @@
 package org.alfresco.share.unit;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
@@ -70,8 +73,13 @@ public class UtilsTest extends AbstractTests
 
             DocumentLibraryPage doclib = SiteUtil.openSiteDocumentLibraryURL(drone, siteurl);
             Assert.assertTrue(doclib.isDocumentLibrary());
+            
+            Set<String> siteCollection = new HashSet<>();
+            siteCollection.add(siteName);
+            siteCollection.add(siteName + "M");
+            siteCollection.add(siteName + "PR");
 
-            SiteUtil.deleteSitesAsUser(drone, testUser, new String[] { siteName, siteName + "M", siteName + "PR" });
+            SiteUtil.deleteSitesAsUser(drone, testUser, siteCollection);
 
             ShareUser.createSite(drone, siteName + "PR", SITE_VISIBILITY_PRIVATE);
             ShareUser.createSite(drone, siteName + "M", SITE_VISIBILITY_MODERATED);

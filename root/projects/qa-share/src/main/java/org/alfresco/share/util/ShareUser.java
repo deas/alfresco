@@ -20,6 +20,7 @@ import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.UserSearchPage;
+import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.dashlet.ActivityShareLink;
 import org.alfresco.po.share.dashlet.MyActivitiesDashlet;
 import org.alfresco.po.share.dashlet.MyActivitiesDashlet.LinkType;
@@ -1940,5 +1941,13 @@ public class ShareUser extends AbstractTests
             throw new UnsupportedOperationException("ShareLink cannot be null");
         }
         return shareLink.getDescription();
+    }
+    
+    public static ManageSitesPage navigateToManageSites(WebDrone drone)
+    {
+        DashBoardPage dashBoard = getSharePage(drone).render();
+        ManageSitesPage manageSitesPage = dashBoard.getNav().selectManageSitesPage().render();
+
+        return manageSitesPage;
     }
 }
