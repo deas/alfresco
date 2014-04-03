@@ -31,7 +31,7 @@ import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
+import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
 import org.alfresco.po.share.task.TaskStatus;
@@ -116,7 +116,7 @@ public class CloudReviewTaskTest extends AbstractTest
         documentLibraryPage = upLoadPage.uploadFile(file2.getCanonicalPath()).render();
         upLoadPage = documentLibraryPage.getNavigation().selectFileUpload().render();
         documentLibraryPage = upLoadPage.uploadFile(file3.getCanonicalPath()).render();
-        EditDocumentPropertiesPopup editDocumentPropertiesPopup = documentLibraryPage.getFileDirectoryInfo(file1.getName()).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = documentLibraryPage.getFileDirectoryInfo(file1.getName()).selectEditProperties().render();
         editDocumentPropertiesPopup.setDescription(file1Description);
         documentLibraryPage = editDocumentPropertiesPopup.selectSave().render();
 

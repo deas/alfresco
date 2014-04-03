@@ -36,25 +36,31 @@ import org.alfresco.po.share.search.AllSitesResultsPage;
 import org.alfresco.po.share.search.RepositoryResultsPage;
 import org.alfresco.po.share.search.SiteResultsPage;
 import org.alfresco.po.share.site.AddGroupsPage;
+import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.InviteMembersPage;
-import org.alfresco.po.share.site.contentrule.FolderRulesPreRender;
-import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
+import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SiteGroupsPage;
 import org.alfresco.po.share.site.SiteMembersPage;
+import org.alfresco.po.share.site.UploadFilePage;
+import org.alfresco.po.share.site.contentrule.FolderRulesPreRender;
+import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
 import org.alfresco.po.share.site.datalist.DataListPage;
+import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
 import org.alfresco.po.share.site.document.CreateHtmlContentPage;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
+import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
 import org.alfresco.po.share.site.document.EditInGoogleDocsPage;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.InlineEditPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
+import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
@@ -93,6 +99,7 @@ public class FactorySharePage implements PageFactory
     protected static final String FAILURE_PROMPT = "div[id='prompt']";
     protected static final String SHARE_DIALOGUE = "div.hd";
     protected static ConcurrentHashMap<String, Class<? extends SharePage>> pages;
+    private static final By SHARE_DIALOGUE_HEADER = By.cssSelector("div.hd");
 
     static
     {
@@ -195,7 +202,7 @@ public class FactorySharePage implements PageFactory
                 WebElement shareDialogue = drone.findFirstDisplayedElement(By.cssSelector(SHARE_DIALOGUE));
                 if (shareDialogue.isDisplayed())
                 {
-                    return new ShareDialogue(drone);
+                    return resolveShareDialoguePage(drone);
                 }
             }
             catch (NoSuchElementException nse)
@@ -392,4 +399,55 @@ public class FactorySharePage implements PageFactory
         }
         return val;
     }
-}
+    
+    /**
+     * Helper method to return right Page for Share Dialogue displayed
+     * 
+     * @return HtmlPage
+     */
+    private static HtmlPage resolveShareDialoguePage(WebDrone drone)
+    {
+        SharePage sharePage = null;
+        try
+        {
+            WebElement dialogue = drone.findFirstDisplayedElement(SHARE_DIALOGUE_HEADER);
+            if (dialogue != null && dialogue.isDisplayed())
+            {
+                String dialogueID = dialogue.getAttribute("id");
+                if (dialogueID.contains("createSite"))
+                {
+                    sharePage = new CreateSitePage(drone);
+                    
+                }
+                else if(dialogueID.contains("createFolder"))
+                {
+                    sharePage = new NewFolderPage(drone);
+                }
+                else if(dialogueID.contains("upload"))
+                {
+                    sharePage = new UploadFilePage(drone);
+                }
+                else if(dialogueID.contains("editDetails"))
+                {
+                    sharePage = new EditDocumentPropertiesPage(drone);
+                }
+                else if(dialogueID.contains("taggable-cntrl-picker"))
+                {
+                    sharePage = new TagPage(drone);
+                }
+                else if(dialogueID.contains("copyMoveTo"))
+                {
+                    sharePage = new CopyOrMoveContentPage(drone);
+                }
+            }          
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        
+        return sharePage;
+    }
+    
+    
+   
+ }

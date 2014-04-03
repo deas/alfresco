@@ -540,7 +540,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(1);
         Assert.assertEquals(fileInfo.getName(), file.getName());
         Assert.assertTrue(fileInfo.isEditPropertiesLinkPresent());
-        EditDocumentPropertiesPopup editPage = fileInfo.selectEditProperties().render();
+        EditDocumentPropertiesPage editPage = fileInfo.selectEditProperties().render();
         Assert.assertNotNull(editPage);
         editPage.setDescription("the description");
         documentLibPage = editPage.selectSave().render();
@@ -757,7 +757,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
          // Click on Apply changes on select aspects page
         selectAspectsPage.clickApplyChanges().render();
         
-        EditDocumentPropertiesPopup editDocumentPropertiesPopup = documentLibPage.getFileDirectoryInfo(folderName).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = documentLibPage.getFileDirectoryInfo(folderName).selectEditProperties().render();
         // Add category and click ok
         CategoryPage categoryPage = editDocumentPropertiesPopup.getCategory().render();
         // Verify added category is displayed beneath categories part

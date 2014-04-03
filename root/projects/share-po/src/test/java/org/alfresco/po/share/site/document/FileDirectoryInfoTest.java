@@ -563,7 +563,7 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
          // Click on Apply changes on select aspects page
         selectAspectsPage.clickApplyChanges().render();
         
-        EditDocumentPropertiesPopup editDocumentPropertiesPopup = documentLibPage.getFileDirectoryInfo(folderName).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = documentLibPage.getFileDirectoryInfo(folderName).selectEditProperties().render();
         // Add category and click ok
         CategoryPage categoryPage = editDocumentPropertiesPopup.getCategory().render();
         // Verify added category is displayed beneath categories part

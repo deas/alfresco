@@ -30,6 +30,7 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
@@ -73,19 +74,29 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
 	        timer.start();
 	        try
 	        {
-	            if(isEditPropertiesVisible() && isSaveButtonVisible())
-	            {
-	                if(tagName == null || tagName.isEmpty())
+	            if(isShareDialogueDisplayed()){
+	            
+	                if(isEditPropertiesPopupVisible())
 	                {
 	                    break;
 	                }
-	                else
+	            }
+	            else
+	            {
+	                if(isEditPropertiesVisible() && isSaveButtonVisible())
 	                {
-	                    if(isTagVisible(tagName))
+	                    if(tagName == null || tagName.isEmpty())
 	                    {
 	                        break;
 	                    }
-	                }
+	                    else
+	                    {
+	                        if(isTagVisible(tagName))
+	                        {
+	                            break;
+	                        }
+	                    }
+	                }    
 	            }
 	        }
 	        catch (Exception e) {}
@@ -94,7 +105,9 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
 	            timer.end();
 	        }
 	    }
-		return this;
+        return this;
+	    
+	
 	}
 
 	/**
@@ -146,7 +159,14 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
 	{
 		try
 		{
+		    if(!isShareDialogueDisplayed())
+		    {
 			return drone.find(By.cssSelector("div#bd div.share-form")).isDisplayed();
+		    }
+		    else
+		    {
+		        return true;
+		    }
 		}
 		catch (NoSuchElementException nse)
 		{
@@ -257,6 +277,10 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
 	 */
 	protected String getMimeType()
 	{
+	    if(isShareDialogueDisplayed())
+        {
+            throw new UnsupportedOperationException("This operation is not supported");
+        }
 		WebElement selected = drone.find(By.cssSelector("select[id$='prop_mimetype'] option[selected='selected']"));
 		return selected.getText();
 	}
@@ -278,6 +302,11 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
      * @param mimeType String identifier as seen on the dropdown
      */
     public void selectMimeType(final MimeType mimeType) {
+        
+        if(isShareDialogueDisplayed())
+        {
+            throw new UnsupportedOperationException("This operation is not supported");
+        }
         WebElement dropDown = drone.find(By.cssSelector("select[id$='prop_mimetype']"));
         Select select = new Select(dropDown);
         String value = select.getFirstSelectedOption().getAttribute("value");
@@ -408,5 +437,32 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
         {
         }
         return false;
+    }
+    
+    
+    /**
+     * Verify if edit properties element, 
+     * that contains the form is visible.
+     * @return true if displayed
+     */
+    public boolean isEditPropertiesPopupVisible()
+    {
+        
+        if(!isShareDialogueDisplayed())
+        {
+            throw new UnsupportedOperationException("This operation is unsupported.");
+        }
+        try
+        {
+            return drone.find(By.cssSelector("form.bd")).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+        catch (StaleElementReferenceException ste)
+        {
+            return false;
+        }
     }
 }

@@ -20,7 +20,7 @@ package org.alfresco.po.share.site;
 
 import java.util.List;
 
-import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.webdrone.ElementState;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
@@ -38,7 +38,7 @@ import org.openqa.selenium.WebElement;
  * @author Michael Suzuki
  * @since 1.0
  */
-public class CreateSitePage extends SharePage
+public class CreateSitePage extends ShareDialogue
 {
     protected static final By MODERATED_CHECKBOX = By.cssSelector("input[id$='-isModerated']");
     protected static final By PRIVATE_CHECKBOX = By.cssSelector("input[id$='-isPrivate']");

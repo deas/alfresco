@@ -24,7 +24,6 @@ import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.ShareDialogue;
-import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
@@ -42,7 +41,7 @@ import org.openqa.selenium.WebElement;
  * @author Michael Suzuki, Jamie Allison
  * @since  1.0
  */
-public class NewFolderPage extends SharePage
+public class NewFolderPage extends ShareDialogue
 {
     private final By folderTitleCss = By.cssSelector("input[id$='default-createFolder_prop_cm_title']");
     private final By name = By.cssSelector("input[id$='default-createFolder_prop_cm_name']");
@@ -191,7 +190,7 @@ public class NewFolderPage extends SharePage
         HtmlPage page = FactorySharePage.resolvePage(drone);
         if(page instanceof ShareDialogue)
         {
-            return ((ShareDialogue) page).resolveShareDialoguePage();
+            return FactorySharePage.resolvePage(drone);
         }
         return page;
     }

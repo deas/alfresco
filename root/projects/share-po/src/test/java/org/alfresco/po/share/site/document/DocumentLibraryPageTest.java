@@ -176,7 +176,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(1);
         Assert.assertEquals(fileInfo.getName(), file1.getName());
         Assert.assertTrue(fileInfo.isEditPropertiesLinkPresent());
-        EditDocumentPropertiesPopup editPage = fileInfo.selectEditProperties().render();
+        EditDocumentPropertiesPage editPage = fileInfo.selectEditProperties().render();
         Assert.assertNotNull(editPage);
         editPage.setDescription("the description");
         editPage.setName(NEW_TEST_FILENAME);
@@ -187,7 +187,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
     public void cancelEditProperties()
     {
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(1);
-        EditDocumentPropertiesPopup editPage = fileInfo.selectEditProperties().render();
+        EditDocumentPropertiesPage editPage = fileInfo.selectEditProperties().render();
         editPage.setDocumentTitle("hello world");
         editPage.setName("helloworld");
         documentLibPage = editPage.selectCancel().render();

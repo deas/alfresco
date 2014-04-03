@@ -74,9 +74,9 @@ public interface FileDirectoryInfo
      * Selects the edit properties link on the select data row on
      * DocumentLibrary Page.
      *
-     * @return {@link EditDocumentPropertiesPopup} response
+     * @return {@link EditDocumentPropertiesPage} response
      */
-     EditDocumentPropertiesPopup selectEditProperties();
+     EditDocumentPropertiesPage selectEditProperties();
 
     /**
      * Selects the view in browser link on the select data row on

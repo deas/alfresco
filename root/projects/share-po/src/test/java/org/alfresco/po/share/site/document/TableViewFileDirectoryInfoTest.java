@@ -116,7 +116,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         documentLibPage = documentLibPage.getNavigation().selectTableView().render();
 
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
-        EditDocumentPropertiesPopup editPage = fileInfo.selectEditProperties().render();
+        EditDocumentPropertiesPage editPage = fileInfo.selectEditProperties().render();
         editPage.setDescription(FILE_DESCRIPTION);
         editPage.setDocumentTitle(FILE_TITLE);
         documentLibPage = editPage.selectSave().render();

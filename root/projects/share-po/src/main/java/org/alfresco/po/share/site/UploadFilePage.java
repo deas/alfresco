@@ -24,6 +24,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.List;
 
 import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.webdrone.HtmlElement;
@@ -44,7 +45,7 @@ import org.openqa.selenium.WebElement;
  * @author Michael Suzuki
  * @since 1.0
  */
-public class UploadFilePage extends SharePage
+public class UploadFilePage extends ShareDialogue
 {
     private Log logger = LogFactory.getLog(this.getClass());
     private final By uploadField;

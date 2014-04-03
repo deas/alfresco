@@ -224,8 +224,8 @@ public class SelectAspectsPage extends SharePage
         try
         {
             drone.find(APPLY_CHANGE).click();
-            drone.waitForElement(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-            drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), "Successfully updated aspects", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            //drone.waitForElement(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            //drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), "Successfully updated aspects", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             return drone.getCurrentPage();
         } catch (NoSuchElementException nse)
         {

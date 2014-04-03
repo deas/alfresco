@@ -26,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.alfresco.po.share.FactorySharePage;
-import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
@@ -47,7 +47,7 @@ import org.openqa.selenium.WebElement;
  * @author cbairaajoni
  *
  */
-public class CopyOrMoveContentPage  extends SharePage
+public class CopyOrMoveContentPage  extends ShareDialogue
 {
     private static Log logger = LogFactory.getLog(CopyOrMoveContentPage.class);
 

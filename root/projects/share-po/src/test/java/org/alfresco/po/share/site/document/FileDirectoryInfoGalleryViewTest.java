@@ -510,7 +510,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(1);
         Assert.assertEquals(fileInfo.getName(), file.getName());
         Assert.assertTrue(fileInfo.isEditPropertiesLinkPresent());
-        EditDocumentPropertiesPopup editPage = fileInfo.selectEditProperties().render();
+        EditDocumentPropertiesPage editPage = fileInfo.selectEditProperties().render();
         Assert.assertNotNull(editPage);
         editPage.setDescription("the description");
         documentLibPage = editPage.selectSave().render();

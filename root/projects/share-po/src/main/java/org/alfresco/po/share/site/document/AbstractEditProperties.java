@@ -6,6 +6,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
@@ -18,7 +19,7 @@ import org.openqa.selenium.WebElement;
  * @author Michael Suzuki
  * @since 1.4
  */
-public abstract class AbstractEditProperties extends SitePage
+public abstract class AbstractEditProperties extends ShareDialogue
 {
     protected AbstractEditProperties(WebDrone drone)
     {

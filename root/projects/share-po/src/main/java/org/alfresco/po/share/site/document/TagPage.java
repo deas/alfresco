@@ -150,7 +150,7 @@ public class TagPage extends AbstractEditProperties
             HtmlPage page = FactorySharePage.resolvePage(drone);
             if(page instanceof ShareDialogue)
             {
-                return ((ShareDialogue) page).resolveShareDialoguePage();
+                return FactorySharePage.resolvePage(drone);
             }
             return page;
         }

@@ -97,7 +97,7 @@ public class ShareDialoguePageTest extends AbstractTest
         Assert.assertTrue(dialogue.isShareDialogueDisplayed());
         
         dialogue.getShareDialoguePageName();
-        CreateSitePage page = dialogue.resolveShareDialoguePage().render();
+        CreateSitePage page = FactorySharePage.resolvePage(drone).render();
         Assert.assertNotNull(page);
 
         logger.info("Title: " + dialogue.getDialogueTitle());
@@ -125,7 +125,7 @@ public class ShareDialoguePageTest extends AbstractTest
         
         dialogue.getShareDialoguePageName();
         
-        NewFolderPage page = dialogue.resolveShareDialoguePage().render();
+        NewFolderPage page = FactorySharePage.resolvePage(drone).render();
         Assert.assertNotNull(page);
         
         logger.info("Title: " + dialogue.getDialogueTitle());    
@@ -149,7 +149,7 @@ public class ShareDialoguePageTest extends AbstractTest
         
         dialogue.getShareDialoguePageName();
         
-        UploadFilePage page = dialogue.resolveShareDialoguePage().render();
+        UploadFilePage page = FactorySharePage.resolvePage(drone).render();
         Assert.assertNotNull(page);
 
         logger.info("Title: " + dialogue.getDialogueTitle());
@@ -173,7 +173,7 @@ public class ShareDialoguePageTest extends AbstractTest
         
         dialogue.getShareDialoguePageName();
         
-        EditDocumentPropertiesPopup page = dialogue.resolveShareDialoguePage().render();
+        EditDocumentPropertiesPage page = FactorySharePage.resolvePage(drone).render();
         Assert.assertNotNull(page);
 
         logger.info("Title: " + dialogue.getDialogueTitle());
@@ -199,7 +199,7 @@ public class ShareDialoguePageTest extends AbstractTest
         
         dialogue.getShareDialoguePageName();
         
-        TagPage page = dialogue.resolveShareDialoguePage().render();
+        TagPage page = FactorySharePage.resolvePage(drone).render();
         Assert.assertNotNull(page);
 
         logger.info("Title: " + dialogue.getDialogueTitle());

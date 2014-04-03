@@ -287,11 +287,11 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectEditProperties()
      */
     @Override
-    public EditDocumentPropertiesPopup selectEditProperties()
+    public EditDocumentPropertiesPage selectEditProperties()
     {
         WebElement editProperties = findElement(EDIT_PROP_ICON);
         editProperties.click();
-        return new EditDocumentPropertiesPopup(getDrone());
+        return new EditDocumentPropertiesPage(getDrone());
     }
 
     /*

@@ -382,7 +382,7 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectEditProperties()
      */
     @Override
-    public EditDocumentPropertiesPopup selectEditProperties()
+    public EditDocumentPropertiesPage selectEditProperties()
     {
         WebElement actions = selectAction();
         getDrone().mouseOverOnElement(actions);

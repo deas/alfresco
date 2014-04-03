@@ -40,12 +40,11 @@ public class ShareDialogue extends SharePage
 {
     private static Log logger = LogFactory.getLog(ShareDialogue.class);
     
-    private static final By SHARE_DIALOGUE_PARENT = By.xpath("//div[@class='hd']/..");
-    private static final By SHARE_DIALOGUE_HEADER = By.cssSelector("div.hd");
+    private static final By SHARE_DIALOGUE_PARENT = By.xpath("//div[@class='hd']/..");   
     private static final By CLOSE_BUTTON = By.cssSelector("a.container-close");
     private static final By TITLE_TEXT_UPLOAD_FILE = By.cssSelector("span");
     private static final By CANCEL_BUTTON = By.cssSelector("button[id*='cancel']");
-
+    private static final By SHARE_DIALOGUE_HEADER = By.cssSelector("div.hd");
     /**
      * Constructor.
      * 
@@ -188,23 +187,7 @@ public class ShareDialogue extends SharePage
         }
     }
     
-    /**
-     * Helper method to return WebElement for the Share Dialogue
-     * 
-     * @return WebElement
-     */
-    private WebElement getDialogueHeader()
-    {
-        try
-        {
-            WebElement shareDialogueHeader = drone.findFirstDisplayedElement(SHARE_DIALOGUE_HEADER);
-            return shareDialogueHeader;
-        }
-        catch (NoSuchElementException nse)
-        {
-            throw new NoSuchElementException(nse.getMessage());
-        }
-    }
+
     
     /**
      * Helper method to return right PageName for Share Dialogue displayed
@@ -257,50 +240,21 @@ public class ShareDialogue extends SharePage
     }
     
     /**
-     * Helper method to return right Page for Share Dialogue displayed
+     * Helper method to return WebElement for the Share Dialogue
      * 
-     * @return HtmlPage
+     * @return WebElement
      */
-    public HtmlPage resolveShareDialoguePage()
+    private WebElement getDialogueHeader()
     {
-        SharePage sharePage = null;
         try
         {
-            WebElement dialogue = getDialogueHeader();
-            if (dialogue != null && dialogue.isDisplayed())
-            {
-                String dialogueID = dialogue.getAttribute("id");
-                if (dialogueID.contains("createSite"))
-                {
-                    sharePage = new CreateSitePage(drone);
-                    
-                }
-                else if(dialogueID.contains("createFolder"))
-                {
-                    sharePage = new NewFolderPage(drone);
-                }
-                else if(dialogueID.contains("upload"))
-                {
-                    sharePage = new UploadFilePage(drone);
-                }
-                else if(dialogueID.contains("editDetails"))
-                {
-                    sharePage = new EditDocumentPropertiesPopup(drone);
-                }
-                else if(dialogueID.contains("taggable-cntrl-picker"))
-                {
-                    sharePage = new TagPage(drone);
-                }
-                else if(dialogueID.contains("copyMoveTo"))
-                {
-                    sharePage = new CopyOrMoveContentPage(drone);
-                }
-            }          
+            WebElement shareDialogueHeader = drone.findFirstDisplayedElement(SHARE_DIALOGUE_HEADER);
+            return shareDialogueHeader;
         }
         catch (NoSuchElementException nse)
         {
+            throw new NoSuchElementException(nse.getMessage());
         }
-        
-        return sharePage;
     }
+    
 }

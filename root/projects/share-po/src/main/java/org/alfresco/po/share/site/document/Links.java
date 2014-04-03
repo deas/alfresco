@@ -30,7 +30,8 @@ public enum Links
     DELETE_CONTENT   ("div[id$='onActionDelete']", DetailsPageType.COMMON),       
     MANAGE_ASPECTS    ("div[id$='onActionManageAspects']", DetailsPageType.COMMON), //
     MANAGE_PERMISSION_DOC   (".document-manage-granular-permissions", DetailsPageType.DOCUMENT), 
-    MANAGE_PERMISSION_FOL   (".document-manage-granular-permissions", DetailsPageType.FOLDER), 
+    MANAGE_PERMISSION_FOL   (".document-manage-granular-permissions", DetailsPageType.FOLDER),
+    MANAGE_PERMISSION_REPO   (".document-manage-repo-permissions", DetailsPageType.FOLDER),
     CHNAGE_TYPE     ("div[id$='onActionChangeType']", DetailsPageType.COMMON),
     EDIT_PROPERTIES (".document-edit-metadata", DetailsPageType.COMMON),   
     

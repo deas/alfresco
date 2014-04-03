@@ -127,7 +127,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectEditProperties()
      */
     @Override
-    public EditDocumentPropertiesPopup selectEditProperties()
+    public EditDocumentPropertiesPage selectEditProperties()
     {
         clickInfoIcon(false);
         return super.selectEditProperties();

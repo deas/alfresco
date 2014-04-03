@@ -33,8 +33,10 @@ import org.openqa.selenium.StaleElementReferenceException;
  * @author Michael Suzuki
  * @since 1.3.1
  */
+@Deprecated
 public class EditDocumentPropertiesPopup extends AbstractEditProperties
 {
+    @Deprecated
     public EditDocumentPropertiesPopup(WebDrone drone)
 	{
 		super(drone);
