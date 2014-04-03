@@ -18,31 +18,22 @@
  */
 package org.alfresco.share.site.document;
 
+import static org.alfresco.po.share.site.document.DocumentAspect.*;
 import static org.alfresco.share.util.ShareUser.openSiteDashboard;
+import static org.alfresco.po.share.site.document.Links.*;
 import static org.testng.Assert.assertEquals;
-import static org.alfresco.po.share.site.document.DocumentAspect.AUDIO;
-import static org.alfresco.po.share.site.document.DocumentAspect.CLASSIFIABLE;
-import static org.alfresco.po.share.site.document.DocumentAspect.EXIF;
-import static org.alfresco.po.share.site.document.DocumentAspect.GEOGRAPHIC;
-import static org.alfresco.po.share.site.document.DocumentAspect.INDEX_CONTROL;
-import static org.alfresco.po.share.site.document.DocumentAspect.RESTRICTABLE;
-import static org.alfresco.po.share.site.document.DocumentAspect.VERSIONABLE;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.po.share.site.document.ContentDetails;
-import org.alfresco.po.share.site.document.ContentType;
-import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
-import org.alfresco.po.share.site.document.DocumentAspect;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
-import org.alfresco.po.share.site.document.SelectAspectsPage;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.alfresco.share.util.ShareUser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -353,6 +344,207 @@ public class ManageAspectTest extends AbstractAspectTests
         {
             testCleanup(drone, testName);
         }
+    }
+
+    @Test(groups={"DataPrepDocumentLibrary"})
+    public void dataPrep_Dashlets_Enterprise40x_143390() throws Exception
+    {
+        removeAspectDataPrep(getTestName());
+    }
+
+    @Test(groups="EnterpriseOnly")
+    public void Enterprise40x_14339()
+    {
+        AspectTestProptery proptery = new AspectTestProptery();
+        proptery.setTestName(getTestName());
+        proptery.setAspect(DUBLIN_CORE);
+        proptery.setExpectedProprtyKey(getDublinCoreAspectKey());
+
+        removeAspectTest(proptery);
+    }
+
+    @Test(groups={"DataPrepDocumentLibrary"})
+    public void dataPrep_Dashlets_Enterprise40x_14340() throws Exception
+    {
+        removeAspectDataPrep(getTestName());
+    }
+
+    @Test(groups="EnterpriseOnly")
+    public void Enterprise40x_14340()
+    {
+        AspectTestProptery proptery = new AspectTestProptery();
+        proptery.setTestName(getTestName());
+        proptery.setAspect(SUMMARIZABLE);
+        proptery.setExpectedProprtyKey(getSummarisableAspectKey());
+
+        removeAspectTest(proptery);
+    }
+
+    @Test(groups={"DataPrepDocumentLibrary"})
+    public void dataPrep_Dashlets_Enterprise40x_143411() throws Exception
+    {
+        addAspectDataPrep(getTestName());
+    }
+
+    @Test(groups="EnterpriseOnly")
+    public void Enterprise40x_14341()
+    {
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+        String fileName = getFileName(testName) + "-" + System.currentTimeMillis();
+        try{
+            // Login
+            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+            // Open Site DashBoard
+            openSiteDashboard(drone, siteName);
+            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
+
+            //Create File
+            ContentDetails contentDetails = new ContentDetails();
+            contentDetails.setName(fileName);
+
+            CreatePlainTextContentPage contentPage = documentLibraryPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
+            DocumentDetailsPage documentDetailsPage = contentPage.create(contentDetails).render();
+
+            // Add aspect
+            SelectAspectsPage aspectsPage = documentDetailsPage.selectManageAspects();
+
+            List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
+            aspects.add(VERSIONABLE);
+            aspectsPage = aspectsPage.add(aspects).render();
+            documentDetailsPage = aspectsPage.clickApplyChanges().render();
+
+            //TODO: Shan: Do we check notification as in Testlink: Successfully updated aspects'?
+            documentDetailsPage = documentDetailsPage.render();
+
+            EditDocumentPropertiesPage propertiesPage = documentDetailsPage.selectEditProperties();
+            propertiesPage.render();
+
+            propertiesPage.setAuthor(testUser);
+            documentDetailsPage = propertiesPage.selectSave().render();
+            documentDetailsPage.render();
+
+            assertEquals(documentDetailsPage.getDocumentVersion(), "1.1");
+
+            // Remove aspect
+            aspectsPage = documentDetailsPage.selectManageAspects();
+            aspectsPage = aspectsPage.remove(aspects).render();
+            documentDetailsPage = aspectsPage.clickApplyChanges().render();
+
+            // Edit some properties
+            propertiesPage = documentDetailsPage.selectEditProperties();
+            propertiesPage.render();
+
+            propertiesPage.setAuthor(testUser + "1");
+            documentDetailsPage = propertiesPage.selectSave().render();
+            documentDetailsPage.render();
+
+            assertEquals(documentDetailsPage.getDocumentVersion(), "1.0");
+        }
+        catch (Throwable e)
+        {
+            reportError(drone, testName, e);
+        }
+        finally
+        {
+            testCleanup(drone, testName);
+        }
+
+
+    }
+
+    @Test(groups={"DataPrepDocumentLibrary"})
+    public void dataPrep_Dashlets_Enterprise40x_14342() throws Exception
+    {
+        removeAspectDataPrep(getTestName());
+    }
+
+    @Test(groups="EnterpriseOnly")
+    public void Enterprise40x_14342()
+    {
+        AspectTestProptery proptery = new AspectTestProptery();
+        proptery.setTestName(getTestName());
+        proptery.setAspect(EMAILED);
+        proptery.setExpectedProprtyKey(getEmailedAspectKey());
+
+        removeAspectTest(proptery);
+    }
+
+    @Test(groups={"DataPrepDocumentLibrary"})
+    public void dataPrep_Dashlets_Enterprise40x_14344() throws Exception
+    {
+        removeAspectDataPrep(getTestName());
+    }
+
+    @Test(groups="EnterpriseOnly")
+    public void Enterprise40x_14344()
+    {
+        AspectTestProptery proptery = new AspectTestProptery();
+        proptery.setTestName(getTestName());
+        proptery.setAspect(INLINE_EDITABLE);
+        proptery.setExpectedProprtyKey(getEmailedAspectKey());
+
+        removeAspectTest(proptery);
+    }
+
+    @Test(groups={"DataPrepDocumentLibrary"})
+    public void dataPrep_Dashlets_Enterprise40x_85866() throws Exception
+    {
+        removeAspectDataPrep(getTestName());
+    }
+
+    @Test(groups="EnterpriseOnly")
+    public void Enterprise40x_85866()
+    {
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+        String fileName = getFileName(testName) + ".txt";
+
+        try{
+            // Login
+            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+            // Open Site DashBoard
+            openSiteDashboard(drone, siteName);
+            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
+            DocumentDetailsPage documentDetailsPage = documentLibraryPage.selectFile(fileName);
+
+            // Add aspect
+            SelectAspectsPage aspectsPage = documentDetailsPage.selectManageAspects();
+
+            List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
+            aspects.add(GOOGLE_DOCS_EDITABLE);
+            aspectsPage = aspectsPage.add(aspects).render();
+            documentDetailsPage = aspectsPage.clickApplyChanges().render();
+
+            documentDetailsPage = documentDetailsPage.render();
+            assertTrue(documentDetailsPage.isEditInGoogleDocsLinkVisible());
+
+            // Select 'Edit Offline'
+            documentLibraryPage = ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+            FileDirectoryInfo fileDirectoryInfo = documentLibraryPage.getFileDirectoryInfo(fileName);
+            fileDirectoryInfo.selectEditOffline().render();
+
+            // Check the file is downloaded successfully
+            String editedFileName = getFileName(testName) + " (Working Copy).txt";
+            documentLibraryPage.waitForFile(downloadDirectory + editedFileName);
+
+            assertEquals(fileDirectoryInfo.getContentInfo(), "This document is locked by you for offline editing.");
+
+        }
+        catch (Throwable e)
+        {
+            reportError(drone, testName, e);
+        }
+        finally
+        {
+            testCleanup(drone, testName);
+        }
+
+
     }
 
 }

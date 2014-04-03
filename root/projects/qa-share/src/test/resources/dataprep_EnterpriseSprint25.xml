@@ -215,22 +215,20 @@
         <classes>
             <class name="org.alfresco.share.site.document.FolderActionsTest">
                 <methods>
-                    <include name="dataPrep_Dashlets_Enterprise40x_14329" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14330" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14332" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14333" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14334" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14335" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14336" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14337" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14351" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14353" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14354" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14355" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14356" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14357" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14358" />
-                    <include name="dataPrep_Dashlets_Enterprise40x_14033" />
+                    <include name="dataPrep_ALF_2921" />
+                    <include name="dataPrep_ALF_2922" />
+                    <include name="dataPrep_ALF_2923" />
+                    <include name="dataPrep_ALF_2924" />
+                    <include name="dataPrep_ALF_2925" />
+                    <include name="dataPrep_ALF_2926" />
+                    <include name="dataPrep_ALF_2927" />
+                    <include name="dataPrep_ALF_2928" />
+                    <include name="dataPrep_ALF_2929" />
+                    <include name="dataPrep_ALF_2930" />
+                    <include name="dataPrep_ALF_2931" />
+                    <include name="dataPrep_ALF_2932" />
+                    <include name="dataPrep_ALF_2933" />
+                    <include name="dataPrep_ALF_2935" />
                 </methods>
             </class>
         </classes>

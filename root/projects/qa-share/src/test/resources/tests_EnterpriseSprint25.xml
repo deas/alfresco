@@ -232,26 +232,24 @@
         </classes>
     </test>
 
- <test name="Folders Actions Test" verbose="1">
+ <test name="Folder Actions Test" verbose="1">
         <classes>
             <class name="org.alfresco.share.site.document.FolderActionsTest" >
                 <methods>
-                    <include name="Enterprise40x_14329" />
-                    <include name="Enterprise40x_14330" />
-                    <include name="Enterprise40x_14332" />
-                    <include name="Enterprise40x_14333" />
-                    <include name="Enterprise40x_14334" />
-                    <include name="Enterprise40x_14335" />
-                    <include name="Enterprise40x_14336" />
-                    <include name="Enterprise40x_14337" />
-                    <include name="Enterprise40x_14351" />
-                    <include name="Enterprise40x_14353" />
-                    <include name="Enterprise40x_14354" />
-                    <include name="Enterprise40x_14355" />
-                    <include name="Enterprise40x_14356" />
-                    <include name="Enterprise40x_14357" />
-                    <include name="Enterprise40x_14358" />
-                    <include name="Enterprise40x_14033" />
+                    <include name="ALF_2921" />
+                    <include name="ALF_2922" />
+                    <include name="ALF_2923" />
+                    <include name="ALF_2924" />
+                    <include name="ALF_2925" />
+                    <include name="ALF_2926" />
+                    <include name="ALF_2927" />
+                    <include name="ALF_2928" />
+                    <include name="ALF_2929" />
+                    <include name="ALF_2930" />
+                    <include name="ALF_2931" />
+                    <include name="ALF_2932" />
+                    <include name="ALF_2933" />
+                    <include name="ALF_2935" />
             </methods>
             </class>
         </classes>

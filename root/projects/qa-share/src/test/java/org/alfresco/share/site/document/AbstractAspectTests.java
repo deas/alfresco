@@ -511,7 +511,7 @@ public class AbstractAspectTests extends AbstractTests
         return restrictableAspectKey;
     }
 
-    public Set<String> getAliaAbleAspectKey()
+    public Set<String> getAliasAbleAspectKey()
     {
         Set<String> aliasAbleAspectKey = new HashSet<String>();
         aliasAbleAspectKey.add("Alias");
@@ -543,7 +543,20 @@ public class AbstractAspectTests extends AbstractTests
     {
         Set<String> emailedAspectKey = new HashSet<String>();
 
-        emailedAspectKey.add("Addresses");
+        emailedAspectKey.add("Addressees");
+        emailedAspectKey.add("Subject");
+        emailedAspectKey.add("Originator");
+        emailedAspectKey.add("SentDate");
+        emailedAspectKey.add("Addressee");
+
+        return emailedAspectKey;
+    }
+
+    public Set<String> getInlineEditableKey()
+    {
+        Set<String> emailedAspectKey = new HashSet<String>();
+
+        emailedAspectKey.add("Addressees");
         emailedAspectKey.add("Subject");
         emailedAspectKey.add("Originator");
         emailedAspectKey.add("Sent Date");

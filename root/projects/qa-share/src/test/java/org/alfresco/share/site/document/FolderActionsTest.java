@@ -59,14 +59,14 @@ public class FolderActionsTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14329() throws Exception
+    public void dataPrep_ALF_2926() throws Exception
     {
         addAspectDataPrep(getTestName());
 
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14329()
+    public void ALF_2926()
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -77,14 +77,14 @@ public class FolderActionsTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14351() throws Exception
+    public void dataPrep_ALF_2932() throws Exception
     {
         removeAspectDataPrepFolder(getTestName());
 
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14351()
+    public void ALF_2932()
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -95,14 +95,14 @@ public class FolderActionsTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14330() throws Exception
+    public void dataPrep_ALF_2927() throws Exception
     {
         addAspectDataPrep(getTestName());
 
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14330()
+    public void ALF_2927()
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -112,14 +112,14 @@ public class FolderActionsTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14333() throws Exception
+    public void dataPrep_ALF_2928() throws Exception
     {
         addAspectDataPrep(getTestName());
 
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14333()
+    public void ALF_2928()
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -129,14 +129,14 @@ public class FolderActionsTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14334() throws Exception
+    public void dataPrep_ALF_2929() throws Exception
     {
         addAspectDataPrep(getTestName());
 
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14334()
+    public void ALF_2929()
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -146,14 +146,14 @@ public class FolderActionsTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14335() throws Exception
+    public void dataPrep_ALF_2930() throws Exception
     {
         addAspectDataPrep(getTestName());
 
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14335()
+    public void ALF_2930()
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -163,14 +163,14 @@ public class FolderActionsTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14336() throws Exception
+    public void dataPrep_ALF_2936() throws Exception
     {
         addAspectDataPrep(getTestName());
 
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14336()
+    public void ALF_2936()
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -180,14 +180,14 @@ public class FolderActionsTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14337() throws Exception
+    public void dataPrep_ALF_2931() throws Exception
     {
         addAspectDataPrep(getTestName());
 
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14337()
+    public void ALF_2931()
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -198,14 +198,14 @@ public class FolderActionsTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_10773() throws Exception
+    public void dataPrep_ALF_2921() throws Exception
     {
         addAspectDataPrep(getTestName());
 
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_10773()
+    public void ALF_2921()
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -217,14 +217,14 @@ public class FolderActionsTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14353() throws Exception
+    public void dataPrep_ALF_2933() throws Exception
     {
         removeAspectDataPrepFolder(getTestName());
 
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14353()
+    public void ALF_2933()
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -236,32 +236,32 @@ public class FolderActionsTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_13354() throws Exception
+    public void dataPrep_ALF_2922() throws Exception
     {
         removeAspectDataPrepFolder(getTestName());
 
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_13354()
+    public void ALF_2922()
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
         proptery.setAspect(ALIASABLE_EMAIL);
-        proptery.setExpectedProprtyKey(getAliaAbleAspectKey());
+        proptery.setExpectedProprtyKey(getAliasAbleAspectKey());
 
         removeAspectFolderKey(proptery);
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_13355() throws Exception
+    public void dataPrep_ALF_2923() throws Exception
     {
         removeAspectDataPrepFolder(getTestName());
 
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_13355()
+    public void ALF_2923()
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -271,33 +271,37 @@ public class FolderActionsTest extends AbstractAspectTests
         removeAspectFolderKey(proptery);
     }
 
+    /*
+     * the following test is commented because visibility of the aspect isn't set by default in share-form.config file
+     */
+
+//    @Test(groups={"DataPrepDocumentLibrary"})
+//    public void dataPrep_ALF_2934() throws Exception
+//    {
+//        removeAspectDataPrepFolder(getTestName());
+//
+//    }
+//
+//    @Test(groups="EnterpriseOnly")
+//    public void ALF_2934()
+//    {
+//        AspectTestProptery proptery = new AspectTestProptery();
+//        proptery.setTestName(getTestName());
+//        proptery.setAspect(DUBLIN_CORE);
+//        proptery.setExpectedProprtyKey(getDublinCoreAspectKey());
+//
+//        removeAspectFolderKey(proptery);
+//    }
+
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14356() throws Exception
+    public void dataPrep_ALF_2924() throws Exception
     {
         removeAspectDataPrepFolder(getTestName());
 
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14356()
-    {
-        AspectTestProptery proptery = new AspectTestProptery();
-        proptery.setTestName(getTestName());
-        proptery.setAspect(DUBLIN_CORE);
-        proptery.setExpectedProprtyKey(getDublinCoreAspectKey());
-
-        removeAspectFolderKey(proptery);
-    }
-
-    @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_13357() throws Exception
-    {
-        removeAspectDataPrepFolder(getTestName());
-
-    }
-
-    @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_13357()
+    public void ALF_2924()
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -309,7 +313,7 @@ public class FolderActionsTest extends AbstractAspectTests
 
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_14033() throws Exception
+    public void dataPrep_ALF_2925() throws Exception
     {
         try
         {
@@ -343,7 +347,7 @@ public class FolderActionsTest extends AbstractAspectTests
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_14033()
+    public void ALF_2925()
     {
         /** Start Test */
         testName = getTestName();
@@ -418,22 +422,24 @@ public class FolderActionsTest extends AbstractAspectTests
 
     }
 
-
-    @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14358() throws Exception
-    {
-        removeAspectDataPrepFolder(getTestName());
-
-    }
-
-    @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14358()
-    {
-        AspectTestProptery proptery = new AspectTestProptery();
-        proptery.setTestName(getTestName());
-        proptery.setAspect(EMAILED);
-        proptery.setExpectedProprtyKey(getEmailedAspectKey());
-
-        removeAspectFolderKey(proptery);
-    }
+    /*
+     * the following test is commented because visibility of the aspect isn't set by default in share-form.config file
+     */
+//    @Test(groups={"DataPrepDocumentLibrary"})
+//    public void dataPrep_ALF_2936() throws Exception
+//    {
+//        removeAspectDataPrepFolder(getTestName());
+//
+//    }
+//
+//    @Test(groups="EnterpriseOnly")
+//    public void ALF_2935()
+//    {
+//        AspectTestProptery proptery = new AspectTestProptery();
+//        proptery.setTestName(getTestName());
+//        proptery.setAspect(EMAILED);
+//        proptery.setExpectedProprtyKey(getEmailedAspectKey());
+//
+//        removeAspectFolderKey(proptery);
+//    }
 }
