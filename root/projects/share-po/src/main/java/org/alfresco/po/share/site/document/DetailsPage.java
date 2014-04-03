@@ -18,6 +18,7 @@
  */
 package org.alfresco.po.share.site.document;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -52,9 +53,9 @@ import org.owasp.esapi.ESAPI;
  * <li>Functionality here is to support below details: Title,
  * Modified Details, Like(counter), Favourite, Comment(counter) Comment
  * Navigation, Properties, Permissions, Share Panel, Tag Panel.</li>
- *          
+ *
  * @author  Naved Shah
- * @version 1.7.0 
+ * @version 1.7.0
  */
 public abstract class DetailsPage extends SitePage
 {
@@ -80,13 +81,13 @@ public abstract class DetailsPage extends SitePage
     private static final String COMMENT_LINK = ".theme-color-1.comment.template_x002e_node-header_x002e_folder-details_x0023_default";
     private static final String MANAGE_PERMISSIONS = "div[class$='-permissions'] a";
     private Log logger = LogFactory.getLog(DetailsPage.class);
-    private SyncInfoPage syncInfoPage;    
+    private SyncInfoPage syncInfoPage;
     private static final By NODE_PATH = By.cssSelector("div.node-path span a");
     protected DetailsPage(WebDrone drone)
     {
         super(drone);
     }
-    
+
     /**
      * @param type
      * @return Verify if the page viewed is the @type@ details page.
@@ -106,7 +107,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Gets the page detail title.
-     * 
+     *
      * @return String page detail page title
      */
     public String getContentTitle()
@@ -117,7 +118,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Get all the comments that are displayed on the page.
-     * 
+     *
      * @return List<String> collection of comments
      */
     public List<String> getComments()
@@ -161,7 +162,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Checks for the number of positive votes.
-     * 
+     *
      * @return String number of votes
      */
     public String getLikeCount()
@@ -180,12 +181,12 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Get the detail permissions from view.
-     * 
+     *
      * @return {@link Map} of key values.
      */
     public Map<String, String> getPermissionsOfDetailsPage()
     {
-        
+
         Map<String, String> prop = new HashMap<String, String>();
         try
         {
@@ -212,7 +213,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Get the detail properties from view.
-     * 
+     *
      * @return {@link Map} of Key and Values.
      */
     public Map<String, Object> getProperties()
@@ -223,7 +224,7 @@ public abstract class DetailsPage extends SitePage
             for (WebElement webElement : drone.findAndWaitForElements(By.cssSelector(".form-field")))
             {
                 String key = webElement.findElement(PROP_FROM_LABEL).getText().trim().replace(":", "").replace(" ", "");
-                
+
                 if(key.equalsIgnoreCase("Categories"))
                 {
                     WebElement value = webElement.findElement(PROP_FROM_VALUE);
@@ -268,7 +269,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Get the tags displayed on the tags section on the details details page.
-     * 
+     *
      * @return Collection of String tag name
      */
     public List<String> getTagList()
@@ -295,7 +296,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Mimics the action of selecting the Favourite icon on the details page.
-     * 
+     *
      * @return {@link DetailsPage}
      */
     public HtmlPage selectFavourite()
@@ -315,7 +316,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Gets the Favourites status on the document page.
-     * 
+     *
      * @return Boolean
      */
     public boolean isFavourite()
@@ -342,7 +343,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Gets the Like status on the details page.
-     * 
+     *
      * @return
      */
     public boolean isLiked()
@@ -365,7 +366,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Gets the Tool Tip for Favourites action on the details page.
-     * 
+     *
      * @return
      */
     public String getToolTipForFavourite()
@@ -389,7 +390,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Gets the Tool Tip Like action on the details page.
-     * 
+     *
      * @return String
      */
     public String getToolTipForLike()
@@ -413,7 +414,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Mimics the action of selecting edit properties on the details page.
-     * 
+     *
      * @return WebDrone (Drone object which has to be casted at runtime)
      */
     public EditDocumentPropertiesPage selectEditProperties()
@@ -438,15 +439,15 @@ public abstract class DetailsPage extends SitePage
         }
         throw new PageException("Properties not present in the page");
     }
-    
+
     /**
      * Adding a comment to a details by selecting add to prompt the input field,
      * as this is based on a rich editor JavaScript was used to enter the
      * comment.
-     * 
+     *
      * @param comment
      *            String user comment
-     * @param encoder Encoder as html, javascript, no encoder           
+     * @param encoder Encoder as html, javascript, no encoder
      * @return {@link HtmlPage} page response
      */
     public HtmlPage addComment(String comment, Encoder encoder)
@@ -457,7 +458,7 @@ public abstract class DetailsPage extends SitePage
             // Assume no encoding
             encoder = Encoder.ENCODER_NOENCODER;
         }
-        
+
         switch (encoder)
         {
             case ENCODER_HTML:
@@ -470,7 +471,7 @@ public abstract class DetailsPage extends SitePage
                 break;
             default:
                 logger.info("Comment is not encoded");
-        }        
+        }
         return addComment(encodedComment);
     }
 
@@ -478,7 +479,7 @@ public abstract class DetailsPage extends SitePage
      * Adding a comment to a details by selecting add to prompt the input field,
      * as this is based on a rich editor JavaScript was used to enter the
      * comment.
-     * 
+     *
      * @param comment
      *            String user comment
      * @return {@link HtmlPage} page response
@@ -487,7 +488,7 @@ public abstract class DetailsPage extends SitePage
     {
         WebElement addComment = null;
         WebElement tinymceaddCommentButton = null;
-        
+
         try
         {
             addComment = drone.findAndWait(By.cssSelector(ADD_COMMENT_BUTTON));
@@ -511,7 +512,7 @@ public abstract class DetailsPage extends SitePage
             }
             catch(TimeoutException te) {}
         }
-        
+
         if ((addComment != null && addComment.isDisplayed()) || (tinymceaddCommentButton != null && tinymceaddCommentButton.isDisplayed()))
         {
 
@@ -583,7 +584,7 @@ public abstract class DetailsPage extends SitePage
                 logger.trace("Add Comment has been executed");
             }
             // check to ensure js completed
-            if (addCommentButtonId != null && drone.findAndWait(By.id(addCommentButtonId)).isDisplayed())
+            if (isErrorBalloonMessageDisplay() || addCommentButtonId != null && drone.findAndWait(By.id(addCommentButtonId)).isDisplayed())
             {
                 if (logger.isTraceEnabled())
                 {
@@ -606,7 +607,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Removes the comment on detail page.
-     * 
+     *
      * @param comment
      *            to remove
      * @return DetailsPage page object response
@@ -679,7 +680,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Verifies the modified information is present in the page object.
-     * 
+     *
      * @return
      */
     public boolean isModifiedByDetailsPresent()
@@ -705,7 +706,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Verify the share panel is present or not in the page.
-     * 
+     *
      * @return
      */
     public boolean isSharePanePresent()
@@ -727,8 +728,8 @@ public abstract class DetailsPage extends SitePage
     }
 
     /**
-     * Get Rich Text Editor to edit the contents of Comments etc.
-     * 
+     * Get Rich Text or to edit the contents of Comments etc.
+     *
      * @return
      */
     public TinyMceEditor getContentPage()
@@ -770,10 +771,10 @@ public abstract class DetailsPage extends SitePage
         }
         throw new PageException("Comment link is not present!");
     }
-    
+
     /**
      * The number of comments value displayed on the span comment count.
-     * 
+     *
      * @return int total number of comments
      */
     public int getCommentCount()
@@ -785,14 +786,14 @@ public abstract class DetailsPage extends SitePage
         }
         catch(NoSuchElementException e) {}
         catch(NumberFormatException ne) {}
-        
+
         return 0;
     }
-    
+
     /**
      * Mimics the action of selecting the Manage Permission icon on the document
      * page.
-     * 
+     *
      * @return {@link ManagePermissionsPage}
      */
     public ManagePermissionsPage selectManagePermissions()
@@ -802,7 +803,7 @@ public abstract class DetailsPage extends SitePage
         logger.trace(" -- Got it --");
         return new ManagePermissionsPage(drone);
     }
-    
+
     /**
      * Get Sync info page details.
      * @return
@@ -819,14 +820,14 @@ public abstract class DetailsPage extends SitePage
         catch(NoSuchElementException nse) {}
         catch(TimeoutException toe)
         {
-            logger.error("This content is not Synced, Can not return SyncInfoPage!!"); 
+            logger.error("This content is not Synced, Can not return SyncInfoPage!!");
         }
-        throw new PageException("This content is not Synced, Can not return SyncInfoPage!!"); 
+        throw new PageException("This content is not Synced, Can not return SyncInfoPage!!");
     }
 
     /**
      * Mimics the action of select the manage aspects.
-     * 
+     *
      * @return {@link SelectAspectsPage}
      */
     public SelectAspectsPage selectManageAspects()
@@ -842,9 +843,9 @@ public abstract class DetailsPage extends SitePage
         }
         return new SelectAspectsPage(drone);
     }
-    
+
     /**
-     * Mimics the action of return to the repository Page 
+     * Mimics the action of return to the repository Page
      * @return RepositoryPage
      */
     public RepositoryPage navigateToFolderInRepositoryPage() throws PageOperationException
@@ -866,9 +867,9 @@ public abstract class DetailsPage extends SitePage
           throw new PageOperationException("Cannot go back to document library");
       }
     }
-    
+
     /**
-     * Mimics the action of return to the parent folder from details Page 
+     * Mimics the action of return to the parent folder from details Page
      * @return RepositoryPage
      */
     public RepositoryPage navigateToParentFolder() throws PageOperationException
@@ -892,7 +893,7 @@ public abstract class DetailsPage extends SitePage
             {
                 folderLink = path.get((parentNodes-1));
             }
-            
+
             folderLink.click();
            return new RepositoryPage(drone);
        }
@@ -901,17 +902,17 @@ public abstract class DetailsPage extends SitePage
           throw new PageOperationException("Cannot go back to document library");
       }
     }
-    
+
     /**
      * Checks if link is displayed.
      * @return true if visible
      */
     public boolean isLinkPresent(Links linkType)
     {
-        DetailsPageType type ; 
+        DetailsPageType type ;
         try
         {
-            
+
             if(this instanceof FolderDetailsPage)
             {
                 type = DetailsPageType.FOLDER;
@@ -924,21 +925,21 @@ public abstract class DetailsPage extends SitePage
             }
             return drone.find(By.cssSelector(linkType.getLink(type))).isDisplayed();
         }
-        catch (NoSuchElementException nse)        
+        catch (NoSuchElementException nse)
         {
             logger.error("LinkType is not present Css value is :");
         }
         return false;
     }
-    
+
     /**
      * Editing a comment to a details by selecting the edit link,
      * as this is based on a rich editor JavaScript was used to enter the
      * comment.
-     * 
+     *
      * @param comment String user comment
      * @param newComment String user new comment
-     * 
+     *
      * @return {@link HtmlPage} page response
      */
     public HtmlPage editComment(final String comment, final String newComment)
@@ -948,10 +949,10 @@ public abstract class DetailsPage extends SitePage
             WebElement editCommentLink = drone.findAndWait(By.xpath(String.format("//div[@class='comment-content']/p[text()='%s']/../..", comment)));
             drone.mouseOverOnElement(editCommentLink);
             editCommentLink.findElement(By.cssSelector("span.comment-actions a")).click();
-            
+
             String setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", newComment);
             drone.executeJavaScript(setCommentJs);
-            
+            // check to ensure js completed
             return FactorySharePage.resolvePage(drone);
         }
         catch (TimeoutException te)
@@ -960,17 +961,25 @@ public abstract class DetailsPage extends SitePage
         }
         throw new PageException("Edit comment form has not been rendered in time");
     }
-    
+
     /**
      * Mimics the action of saving the edited comments on details page.
-     * 
+     *
      * @return {@link DetailsPage}
      */
     public HtmlPage saveEditComments()
     {
         try
         {
-            getVisibleElement(By.cssSelector("button[id$='submit-button']")).click();
+            WebElement saveButton = getVisibleElement(By.cssSelector("button[id$='submit-button']"));
+            saveButton.click();
+            if (isErrorBalloonMessageDisplay() || !saveButton.isDisplayed())
+            {
+                if (logger.isTraceEnabled())
+                {
+                    logger.trace("Adding comment JavaScript executed successfully");
+                }
+            }
             drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             return FactorySharePage.resolvePage(drone);
         }
@@ -980,10 +989,10 @@ public abstract class DetailsPage extends SitePage
         }
         throw new PageException("Error in saving the edit comments.");
     }
-    
+
     /**
      * Mimics the action of cancelling the edited comments on details page.
-     * 
+     *
      * @return {@link DetailsPage}
      */
     public void cancelEditComments()
@@ -998,4 +1007,98 @@ public abstract class DetailsPage extends SitePage
             throw new PageException("Error in cancelling the edit comments.");
         }
     }
+
+    public AddCommentForm clickAddCommentButton()
+    {
+        WebElement addComment = drone.findAndWait(By.cssSelector(ADD_COMMENT_BUTTON));
+        addComment.click();
+        return new AddCommentForm(drone);
+    }
+
+    public EditCommentForm clickEditCommentButton(String comment)
+    {
+        checkNotNull(comment);
+        WebElement commentElement = getCommentWebElement(comment);
+        drone.mouseOver(commentElement);
+        WebElement edit = commentElement.findElement(By.name(".onEditCommentClick"));
+        edit.click();
+        return new EditCommentForm(drone);
+    }
+
+    public boolean isCommentCorrect(String comment)
+    {
+        checkNotNull(comment);
+        return isCommentButtonsEnableAndDisplay(comment) &&
+                isCommentAvatarDisplay(comment) &&
+                isCommentatorNameDisplayAndEnable(comment);
+    }
+
+    private boolean isCommentButtonsEnableAndDisplay(String comment)
+    {
+        WebElement commentElement = getCommentWebElement(comment);
+        drone.mouseOver(commentElement);
+        WebElement edit = commentElement.findElement(By.name(".onEditCommentClick"));
+        WebElement delete = commentElement.findElement(By.name(".onConfirmDeleteCommentClick"));
+        return edit.isEnabled() && delete.isEnabled() && edit.isDisplayed() && delete.isDisplayed();
+    }
+
+    private boolean isCommentAvatarDisplay(String comment)
+    {
+        WebElement commentElement = getCommentWebElement(comment);
+        WebElement avatar = commentElement.findElement(By.xpath(".//a[contains(@href,'profile')]"));
+        return avatar.isDisplayed();
+    }
+
+    private boolean isCommentatorNameDisplayAndEnable(String comment)
+    {
+        WebElement commentElement = getCommentWebElement(comment);
+        WebElement commentatorName = commentElement.findElement(By.xpath(".//img[@alt='Avatar']"));
+        return commentatorName.isDisplayed() && commentatorName.isEnabled();
+    }
+
+    public String getCommentChangeTime(String comment)
+    {
+        WebElement commentElement = getCommentWebElement(comment);
+        WebElement timeElement = commentElement.findElement(By.xpath(".//span[@class='info']/span"));
+        return  timeElement.getAttribute("title");
+    }
+
+    public boolean isErrorBalloonMessageDisplay()
+    {
+        try
+        {
+            return drone.findAndWait(By.cssSelector(".balloon>.text>div"), 1000).isDisplayed();
+        }
+        catch (TimeoutException e)
+        {
+            return false;
+        }
+    }
+
+    private WebElement getCommentWebElement(String comment)
+    {
+        List<WebElement> comments = drone.findAndWaitForElements(By.xpath("//div[@class='comment-details']"));
+
+        if (logger.isTraceEnabled())
+        {
+            logger.trace(String.format("Are there comments on the page : %s ", comments.isEmpty()));
+        }
+
+        for (WebElement commentElement : comments)
+        {
+            WebElement targetComment = commentElement.findElement(By.xpath(DIV_COMMENT_CONTENT));
+            String commentOnPage = targetComment.getText();
+            if (comment.equalsIgnoreCase(commentOnPage))
+            {
+                if (logger.isTraceEnabled())
+                {
+                    logger.trace(String.format("We have found a match to comment ' %s ' : true", comment));
+                }
+                return commentElement;
+            }
+        }
+        throw new NoSuchElementException("Required comment didn't found!");
+    }
+
+
 }
