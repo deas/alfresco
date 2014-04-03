@@ -39,7 +39,7 @@
             <class name="org.alfresco.po.share.workflow.NewWorkflowPageTest" />
         </classes>
     </test>
-    <test name="NewWorkflowPageTest2">
+    <test name="NewWorkflowPageTest3">
         <classes>
             <class name="org.alfresco.po.share.workflow.NewWorkflowPageTest" />
         </classes>
