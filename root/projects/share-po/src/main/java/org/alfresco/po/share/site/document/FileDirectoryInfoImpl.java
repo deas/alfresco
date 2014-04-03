@@ -2279,7 +2279,8 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
                     if (categoryName.equalsIgnoreCase(tagText))
                     {
                         tag.click();
-                        return new DocumentLibraryPage(getDrone());
+                        drone.refresh();
+                        return drone.getCurrentPage().render();
                     }
                 }
             }

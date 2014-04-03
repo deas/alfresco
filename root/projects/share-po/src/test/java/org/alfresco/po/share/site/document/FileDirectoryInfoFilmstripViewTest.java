@@ -770,7 +770,15 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
 
         documentLibPage =  editDocumentPropertiesPopup.selectSave().render();
         
-        documentLibPage = documentLibPage.getFileDirectoryInfo(folderName).clickOnCategoryNameLink(Categories.LANGUAGES.getValue()).render();
+        FileDirectoryInfo fileDirInfo = documentLibPage.getFileDirectoryInfo(folderName);
+        
+        documentLibPage = fileDirInfo.clickOnCategoryNameLink(Categories.LANGUAGES.getValue()).render();
+        int i = 0;
+        do{
+            i++;
+            drone.refresh();        
+        }while(!documentLibPage.isFileVisible(folderName)  && i < 5);
+        
         Assert.assertTrue(documentLibPage.isFileVisible(folderName));
     }
 }
