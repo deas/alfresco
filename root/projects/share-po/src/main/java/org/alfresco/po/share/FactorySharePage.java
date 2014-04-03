@@ -189,7 +189,7 @@ public class FactorySharePage implements PageFactory
             // Check for Share Dialogue
             try
             {
-                WebElement shareDialogue = drone.findElementDisplayed(By.cssSelector(SHARE_DIALOGUE));
+                WebElement shareDialogue = drone.findFirstDisplayedElement(By.cssSelector(SHARE_DIALOGUE));
                 if (shareDialogue.isDisplayed())
                 {
                     return new ShareDialogue(drone);

@@ -23,6 +23,7 @@ import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
@@ -100,8 +101,14 @@ public class ShareDialogue extends SharePage
      */
     public HtmlPage clickClose()
     {
-        WebElement closeButton = drone.findElementDisplayed(CLOSE_BUTTON);
-        closeButton.click();
+        try
+        {
+            drone.findFirstDisplayedElement(CLOSE_BUTTON).click();
+        } 
+        catch (NoSuchElementException e)
+        {
+            throw new PageOperationException("Not able find the close button " + e);
+        }
         return FactorySharePage.resolvePage(drone);
     }
 
@@ -160,7 +167,7 @@ public class ShareDialogue extends SharePage
     {
         try
         {
-            WebElement shareDialogue = drone.findElementDisplayed(SHARE_DIALOGUE_PARENT);
+            WebElement shareDialogue = drone.findFirstDisplayedElement(SHARE_DIALOGUE_PARENT);
 
             return shareDialogue;
         }
@@ -179,7 +186,7 @@ public class ShareDialogue extends SharePage
     {
         try
         {
-            WebElement shareDialogueHeader = drone.findElementDisplayed(SHARE_DIALOGUE_HEADER);
+            WebElement shareDialogueHeader = drone.findFirstDisplayedElement(SHARE_DIALOGUE_HEADER);
             return shareDialogueHeader;
         }
         catch (NoSuchElementException nse)
