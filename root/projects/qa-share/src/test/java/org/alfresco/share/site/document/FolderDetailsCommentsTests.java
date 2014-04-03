@@ -59,7 +59,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14359()
+        public void ALF_2880()
         {
                 AddCommentForm addCommentForm = folderDetailsPage.clickAddCommentButton();
                 assertTrue(addCommentForm.isDisplay(), "Comment form didn't display.");
@@ -76,7 +76,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14360()
+        public void ALF_2881()
         {
                 String text = "latest";
                 folderDetailsPage.addComment(text);
@@ -89,7 +89,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14361()
+        public void ALF_2882()
         {
                 String text = "";
                 folderDetailsPage.addComment(text);
@@ -104,7 +104,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14362()
+        public void ALF_2883()
         {
                 String text = getRandomString(2000);
                 folderDetailsPage.addComment(text);
@@ -114,7 +114,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14363()
+        public void ALF_2884()
         {
                 String text = "\"|{}+_)(*&^%$#@! <>?~ *";
                 folderDetailsPage.addComment(text);
@@ -124,7 +124,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14364()
+        public void ALF_2885()
         {
                 String text = "désir Bedürfnis è il あなたの名前は何ですか ¿Cuál";
                 folderDetailsPage.addComment(text);
@@ -134,7 +134,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14365()
+        public void ALF_2886()
         {
                 String text = getRandomString(5);
                 folderDetailsPage.addComment(text);
@@ -152,7 +152,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14366()
+        public void ALF_2887()
         {
                 String text = getRandomString(5);
                 folderDetailsPage.addComment(text);
@@ -169,7 +169,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14367()
+        public void ALF_2888()
         {
                 String text = getRandomString(5);
                 folderDetailsPage.addComment(text);
@@ -183,7 +183,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14368()
+        public void ALF_2889()
         {
                 String text = getRandomString(5);
                 folderDetailsPage.addComment(text);
@@ -197,7 +197,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14369()
+        public void ALF_2890()
         {
                 String text = getRandomString(5);
                 folderDetailsPage.addComment(text);
@@ -211,7 +211,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14370()
+        public void ALF_2891()
         {
                 String text = getRandomString(5);
 
@@ -224,7 +224,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14371() throws Exception
+        public void ALF_2892() throws Exception
         {
                 String text = getRandomString(5);
                 folderDetailsPage.addComment(text);
@@ -263,7 +263,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14372() throws Exception
+        public void ALF_2893() throws Exception
         {
                 precondition21Comments();
                 PaginationForm pagination = folderDetailsPage.getCommentsPagination();
@@ -279,7 +279,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14373() throws Exception
+        public void ALF_2894() throws Exception
         {
                 String text = getRandomString(5);
                 AddCommentForm commentForm = folderDetailsPage.clickAddCommentButton();
@@ -306,7 +306,7 @@ public class FolderDetailsCommentsTests extends AbstractTests
         }
 
         @Test(groups = { "Comments" }, timeOut = 400000)
-        public void enterprise40x_14374() throws Exception
+        public void ALF_2895() throws Exception
         {
                 String text = getRandomString(5);
                 RepositoryPage repositoryPage = folderDetailsPage.navigateToParentFolder();
