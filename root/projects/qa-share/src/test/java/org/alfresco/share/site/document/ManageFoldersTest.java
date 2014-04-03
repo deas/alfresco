@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.share.site.document;
 
 import org.alfresco.po.share.AlfrescoVersion;
@@ -47,41 +65,33 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13821() throws Exception
+    public void dataPrep_ALF_2903() throws Exception
     {
-        try
-        {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
 
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
 
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
 
-            ShareUser.logout(drone);
+        ShareUser.logout(drone);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13821()
+    public void ALF_2903()
     {
         /** Start Test */
         testName = getTestName();
@@ -133,41 +143,34 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13819() throws Exception
+    public void dataPrep_ALF_2901() throws Exception
     {
-        try
-        {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
 
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
 
-            ShareUser.logout(drone);
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
+        ShareUser.logout(drone);
+
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13819()
+    public void ALF_2901()
     {
         /** Start Test */
         testName = getTestName();
@@ -202,60 +205,54 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13820() throws Exception
+    public void dataPrep_ALF_2902() throws Exception
     {
-        try
+
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
+
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
+
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+
+        // Create Rule
+        FolderRulesPage rulesPage = documentLibraryPage.render(maxWaitTime).getFileDirectoryInfo(folderName).selectManageRules().render();
+        CreateRulePage createRulePage = rulesPage.openCreateRulePage().render();
+        createRulePage.fillNameField(folderName);
+        createRulePage.fillDescriptionField(folderName);
+
+        if (!alfrescoVersion.isCloud())
         {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
-
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
-
-            // User
-            //CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            //ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
-
-            // Create Folder
-            //ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
-
-            // Create Rule
-            FolderRulesPage rulesPage = documentLibraryPage.render(maxWaitTime).getFileDirectoryInfo(folderName).selectManageRules().render();
-            CreateRulePage createRulePage = rulesPage.openCreateRulePage().render();
-            createRulePage.fillNameField(folderName);
-            createRulePage.fillDescriptionField(folderName);
-
-            if (!alfrescoVersion.isCloud())
-            {
-                ActionSelectorEnterpImpl actionSelector = createRulePage.getActionOptionsObj();
-                actionSelector.selectExtractMetadata();
-            }
-            else
-            {
-                ActionSelectorCloudImpl actionSelectorCloud = createRulePage.getActionOptionsObj();
-                actionSelectorCloud.selectCopy(siteName, "Documents");
-            }
-
-            createRulePage.clickCreate();
-
-            ShareUser.logout(drone);
-
+            ActionSelectorEnterpImpl actionSelector = createRulePage.getActionOptionsObj();
+            actionSelector.selectExtractMetadata();
         }
-        catch (Exception e)
+        else
         {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
+            ActionSelectorCloudImpl actionSelectorCloud = createRulePage.getActionOptionsObj();
+            actionSelectorCloud.selectCopy(siteName, "Documents");
         }
+
+        createRulePage.clickCreate();
+
+        ShareUser.logout(drone);
+
+
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13820()
+    public void ALF_2902()
     {
         /** Start Test */
         testName = getTestName();
@@ -291,41 +288,34 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_8958() throws Exception
+    public void dataPrep_ALF_2920() throws Exception
     {
-        try
-        {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
 
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
 
-            ShareUser.logout(drone);
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
+        ShareUser.logout(drone);
+
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_8958()
+    public void ALF_2920()
     {
         /** Start Test */
         testName = getTestName();
@@ -369,41 +359,34 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13823() throws Exception
+    public void dataPrep_ALF_2904() throws Exception
     {
-        try
-        {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
 
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
 
-            ShareUser.logout(drone);
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
+        ShareUser.logout(drone);
+
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13823()
+    public void ALF_2904()
     {
         /** Start Test */
         testName = getTestName();
@@ -476,41 +459,34 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13824() throws Exception
+    public void dataPrep_ALF_2905() throws Exception
     {
-        try
-        {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
 
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
 
-            ShareUser.logout(drone);
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
+        ShareUser.logout(drone);
+
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13824()
+    public void ALF_2905()
     {
         /** Start Test */
         testName = getTestName();
@@ -520,7 +496,7 @@ public class ManageFoldersTest extends AbstractTests
         String folderName = getFolderName(testName);
         String testUser = getUserNameFreeDomain(testName);
         String tagName = "testtag";
-        DocumentLibraryPage documentLibraryPage = null;
+        DocumentLibraryPage documentLibraryPage;
 
         try
         {
@@ -564,41 +540,33 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13826() throws Exception
+    public void dataPrep_ALF_2906() throws Exception
     {
-        try
-        {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
 
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
 
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
 
-            ShareUser.logout(drone);
+        ShareUser.logout(drone);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13826()
+    public void ALF_2906()
     {
         /** Start Test */
         testName = getTestName();
@@ -607,7 +575,7 @@ public class ManageFoldersTest extends AbstractTests
         String siteName = getSiteName(testName);
         String folderName = getFolderName(testName);
         String testUser = getUserNameFreeDomain(testName);
-        DocumentLibraryPage documentLibraryPage = null;
+        DocumentLibraryPage documentLibraryPage;
 
         try
         {
@@ -636,7 +604,7 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13827() throws Exception
+    public void dataPrep_ALF_2907() throws Exception
     {
         try
         {
@@ -670,7 +638,7 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13827()
+    public void ALF_2907()
     {
         /** Start Test */
         testName = getTestName();
@@ -680,7 +648,7 @@ public class ManageFoldersTest extends AbstractTests
         String folderName = getFolderName(testName);
         String testUser = getUserNameFreeDomain(testName);
         String[] tagList = new String[] { "caf\u00E9", "fr\u00FChst\u00FCck", "propriet\u00E0", "\u30D7\u30ED\u30D1\u30C6\u30A3", "ma\u00F1ana" };
-        DocumentLibraryPage documentLibraryPage = null;
+        DocumentLibraryPage documentLibraryPage;
 
         try
         {
@@ -738,41 +706,33 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13828() throws Exception
+    public void dataPrep_ALF_2908() throws Exception
     {
-        try
-        {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
 
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
 
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
 
-            ShareUser.logout(drone);
+        ShareUser.logout(drone);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13828()
+    public void ALF_2908()
     {
         /** Start Test */
         testName = getTestName();
@@ -830,41 +790,33 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13829() throws Exception
+    public void dataPrep_ALF_2909() throws Exception
     {
-        try
-        {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
 
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
 
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
 
-            ShareUser.logout(drone);
+        ShareUser.logout(drone);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13829()
+    public void ALF_2909()
     {
         /** Start Test */
         testName = getTestName();
@@ -967,41 +919,33 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13830() throws Exception
+    public void dataPrep_ALF_2910() throws Exception
     {
-        try
-        {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
 
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
 
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
 
-            ShareUser.logout(drone);
+        ShareUser.logout(drone);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13830()
+    public void ALF_2910()
     {
         /** Start Test */
         testName = getTestName();
@@ -1053,57 +997,49 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13831() throws Exception
+    public void dataPrep_ALF_2911() throws Exception
     {
-        try
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
+        String tagName = getTestName().toLowerCase();
+
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
+
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        documentLibraryPage = ShareUser.openDocumentLibrary(drone);
+        FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
+        info.clickOnAddTag();
+        info.enterTagString(tagName);
+        while (!documentLibraryPage.getAllTagNames().contains(tagName))
         {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
-            String tagName = getTestName().toLowerCase();
-
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
-
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
-
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
-            documentLibraryPage = ShareUser.openDocumentLibrary(drone);
-            FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
-            info.clickOnAddTag();
-            info.enterTagString(tagName);
-            while (!documentLibraryPage.getAllTagNames().contains(tagName))
+            try
             {
-                try
-                {
-                    info.clickOnTagSaveButton();
-                }
-                catch (Throwable ex)
-                {
-                    logger.info(ex.getMessage());
-                }
+                info.clickOnTagSaveButton();
             }
-
-            ShareUser.logout(drone);
-
+            catch (Throwable ex)
+            {
+                logger.info(ex.getMessage());
+            }
         }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
+
+        ShareUser.logout(drone);
+
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13831()
+    public void ALF_2911()
     {
         /** Start Test */
         testName = getTestName();
@@ -1147,57 +1083,49 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13832() throws Exception
+    public void dataPrep_ALF_2912() throws Exception
     {
-        try
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
+        String tagName = getTestName().toLowerCase();
+
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
+
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
+        FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
+        info.clickOnAddTag();
+        info.enterTagString(tagName);
+        while (!documentLibraryPage.getAllTagNames().contains(tagName))
         {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
-            String tagName = getTestName().toLowerCase();
-
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
-
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
-
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
-            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
-            FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
-            info.clickOnAddTag();
-            info.enterTagString(tagName);
-            while (!documentLibraryPage.getAllTagNames().contains(tagName))
+            try
             {
-                try
-                {
-                    info.clickOnTagSaveButton();
-                }
-                catch (Throwable ex)
-                {
-                    logger.info(ex.getMessage());
-                }
+                info.clickOnTagSaveButton();
             }
-
-            ShareUser.logout(drone);
-
+            catch (Throwable ex)
+            {
+                logger.info(ex.getMessage());
+            }
         }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
+
+        ShareUser.logout(drone);
+
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13832()
+    public void ALF_2912()
     {
         /** Start Test */
         testName = getTestName();
@@ -1271,56 +1199,49 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13834() throws Exception
+    public void dataPrep_ALF_2913() throws Exception
     {
-        try
+
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
+        String tagName = getTestName().toLowerCase();
+
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
+
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
+        FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
+        info.clickOnAddTag();
+        info.enterTagString(tagName);
+        while (!documentLibraryPage.getAllTagNames().contains(tagName))
         {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
-            String tagName = getTestName().toLowerCase();
-
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
-
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
-
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
-            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
-            FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
-            info.clickOnAddTag();
-            info.enterTagString(tagName);
-            while (!documentLibraryPage.getAllTagNames().contains(tagName))
+            try
             {
-                try
-                {
-                    info.clickOnTagSaveButton();
-                }
-                catch (Throwable ex)
-                {
-                    logger.info(ex.getMessage());
-                }
+                info.clickOnTagSaveButton();
             }
-            ShareUser.logout(drone);
+            catch (Throwable ex)
+            {
+                logger.info(ex.getMessage());
+            }
+        }
+        ShareUser.logout(drone);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13834()
+    public void ALF_2913()
     {
         /** Start Test */
         testName = getTestName();
@@ -1360,56 +1281,49 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13835() throws Exception
+    public void dataPrep_ALF_2914() throws Exception
     {
-        try
+
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
+        String tagName = getTestName().toLowerCase();
+
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
+
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
+        FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
+        info.clickOnAddTag();
+        info.enterTagString(tagName);
+        while (!documentLibraryPage.getAllTagNames().contains(tagName))
         {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
-            String tagName = getTestName().toLowerCase();
-
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
-
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
-
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
-            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
-            FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
-            info.clickOnAddTag();
-            info.enterTagString(tagName);
-            while (!documentLibraryPage.getAllTagNames().contains(tagName))
+            try
             {
-                try
-                {
-                    info.clickOnTagSaveButton();
-                }
-                catch (Throwable ex)
-                {
-                    logger.info(ex.getMessage());
-                }
+                info.clickOnTagSaveButton();
             }
-            ShareUser.logout(drone);
+            catch (Throwable ex)
+            {
+                logger.info(ex.getMessage());
+            }
+        }
+        ShareUser.logout(drone);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13835()
+    public void ALF_2914()
     {
         /** Start Test */
         testName = getTestName();
@@ -1485,56 +1399,49 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13836() throws Exception
+    public void dataPrep_ALF_2915() throws Exception
     {
-        try
+
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
+        String tagName = getTestName().toLowerCase();
+
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
+
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
+        FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
+        info.clickOnAddTag();
+        info.enterTagString(tagName);
+        while (!documentLibraryPage.getAllTagNames().contains(tagName))
         {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
-            String tagName = getTestName().toLowerCase();
-
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
-
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
-
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
-            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
-            FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
-            info.clickOnAddTag();
-            info.enterTagString(tagName);
-            while (!documentLibraryPage.getAllTagNames().contains(tagName))
+            try
             {
-                try
-                {
-                    info.clickOnTagSaveButton();
-                }
-                catch (Throwable ex)
-                {
-                    logger.info(ex.getMessage());
-                }
+                info.clickOnTagSaveButton();
             }
-            ShareUser.logout(drone);
+            catch (Throwable ex)
+            {
+                logger.info(ex.getMessage());
+            }
+        }
+        ShareUser.logout(drone);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13836()
+    public void ALF_2915()
     {
         /** Start Test */
         testName = getTestName();
@@ -1605,56 +1512,48 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13837() throws Exception
+    public void dataPrep_ALF_2916() throws Exception
     {
-        try
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
+        String tagName = getTestName().toLowerCase();
+
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
+
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
+        FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
+        info.clickOnAddTag();
+        info.enterTagString(tagName);
+        while (!documentLibraryPage.getAllTagNames().contains(tagName))
         {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
-            String tagName = getTestName().toLowerCase();
-
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
-
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
-
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
-            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
-            FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
-            info.clickOnAddTag();
-            info.enterTagString(tagName);
-            while (!documentLibraryPage.getAllTagNames().contains(tagName))
+            try
             {
-                try
-                {
-                    info.clickOnTagSaveButton();
-                }
-                catch (Throwable ex)
-                {
-                    logger.info(ex.getMessage());
-                }
+                info.clickOnTagSaveButton();
             }
-            ShareUser.logout(drone);
+            catch (Throwable ex)
+            {
+                logger.info(ex.getMessage());
+            }
+        }
+        ShareUser.logout(drone);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13837()
+    public void ALF_2916()
     {
         /** Start Test */
         testName = getTestName();
@@ -1779,56 +1678,48 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13838() throws Exception
+    public void dataPrep_ALF_2917() throws Exception
     {
-        try
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
+        String tagName = getTestName().toLowerCase();
+
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
+
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
+        FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
+        info.clickOnAddTag();
+        info.enterTagString(tagName);
+        while (!documentLibraryPage.getAllTagNames().contains(tagName))
         {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
-            String tagName = getTestName().toLowerCase();
-
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
-
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
-
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
-            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
-            FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
-            info.clickOnAddTag();
-            info.enterTagString(tagName);
-            while (!documentLibraryPage.getAllTagNames().contains(tagName))
+            try
             {
-                try
-                {
-                    info.clickOnTagSaveButton();
-                }
-                catch (Throwable ex)
-                {
-                    logger.info(ex.getMessage());
-                }
+                info.clickOnTagSaveButton();
             }
-            ShareUser.logout(drone);
+            catch (Throwable ex)
+            {
+                logger.info(ex.getMessage());
+            }
+        }
+        ShareUser.logout(drone);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13838()
+    public void ALF_2917()
     {
         /** Start Test */
         testName = getTestName();
@@ -1871,58 +1762,49 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13839() throws Exception
+    public void dataPrep_ALF_2918() throws Exception
     {
-        try
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
+        String[] tagList = new String[] { "!@#$%^&()_+.,;'`=-{}[]", "ma\u00F1ana", ShareUser.getRandomStringWithNumders(255) };
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
+
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+
+        // Create Folder
+        ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+        DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
+        FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
+        for (String tagName : tagList)
         {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String folderName = getFolderName(testName);
-            String[] tagList = new String[] { "!@#$%^&()_+.,;'`=-{}[]", "ma\u00F1ana", ShareUser.getRandomStringWithNumders(255) };
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
-
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
-
-            // Create Folder
-            ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
-            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
-            FileDirectoryInfo info = documentLibraryPage.getFileDirectoryInfo(folderName);
-            for (String tagName : tagList)
+            info.clickOnAddTag();
+            info.enterTagString(tagName);
+            while (!documentLibraryPage.getAllTagNames().contains(tagName))
             {
-                info.clickOnAddTag();
-                info.enterTagString(tagName);
-                while (!documentLibraryPage.getAllTagNames().contains(tagName))
+                try
                 {
-                    try
-                    {
-                        info.clickOnTagSaveButton();
-                    }
-                    catch (Throwable ex)
-                    {
-                        logger.info(ex.getMessage());
-                    }
+                    info.clickOnTagSaveButton();
+                }
+                catch (Throwable ex)
+                {
+                    logger.info(ex.getMessage());
                 }
             }
-            ShareUser.logout(drone);
-
         }
-        catch (Exception e)
-        {
-            saveScreenShot(customDrone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
+        ShareUser.logout(drone);
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13839()
+    public void ALF_2918()
     {
         /** Start Test */
         testName = getTestName();
@@ -2003,7 +1885,7 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13840() throws Exception
+    public void dataPrep_ALF_2919() throws Exception
     {
         try
         {
@@ -2054,7 +1936,7 @@ public class ManageFoldersTest extends AbstractTests
     }
 
     @Test(groups = "ManageFolders")
-    public void Enterprise40x_13840()
+    public void ALF_2919()
     {
         /** Start Test */
         testName = getTestName();

@@ -1,6 +1,5 @@
-// TODO: Add copyright Info
 /*
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -11,7 +10,7 @@
  *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -65,41 +64,32 @@ public class ManageDocumentsTest extends AbstractTests
 
     // TODO: Are these tests relevant to cloud? If so, can these be moved to ComAlfOne, if not, pl group them as EnterpriseOnly, move to Enterprise package
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_8565() throws Exception
+    public void dataPrep_ALF_2898() throws Exception
     {
-        // TODO: Listener used to report error and take screen shot, remove try, catch for all test / methods
-        try
-        {
-            String testName = getTestName();
-            String testUser = getUserNameFreeDomain(testName);
-            String siteName = getSiteName(testName);
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
 
-            // User
-            String[] testUserInfo = new String[] { testUser };
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        String[] testUserInfo = new String[] { testUser };
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            // Create Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
-            ShareUser.openSiteDashboard(drone, siteName);
+        // Create Site
+        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.openSiteDashboard(drone, siteName);
 
-            // Upload File
-            String fileName = getFileName(testName) + ".txt";
-            String[] fileInfo = { fileName, DOCLIB };
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        // Upload File
+        String fileName = getFileName(testName) + ".txt";
+        String[] fileInfo = { fileName, DOCLIB };
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(drone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_8565()
+    public void ALF_2898()
     {
         /** Start Test */
         testName = getTestName();
@@ -115,34 +105,36 @@ public class ManageDocumentsTest extends AbstractTests
         {
             // Login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            
-            // TODO: Don't use render if util returns / renders a specific page object. Also, remove render(maxWaitTime) webdrone.page.render.wait.time is used by default for render 
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render(maxWaitTime);
-            
-            // TODO: Remove if condition, if test always expects the editOfflinelink. Adjust the dataprep / test to cater for this. i.e. Upload new file within the test
+
+            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+            // TODO: Remove if condition, if test always expects the editOfflinelink. Adjust the dataprep / test to cater for this. i.e. Upload new file within
+            // the test
             // Click Edit Offline button;
             if (documentLibraryPage.getFileDirectoryInfo(fileName).isEditOfflineLinkPresent())
             {
                 documentLibraryPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectEditOffline().render();
                 assertEquals(documentLibraryPage.getFileDirectoryInfo(fileName).getContentInfo(), "This document is locked by you for offline editing.");
             }
-            
-            // TODO: Avoid navigateTo URL. Use DetailsPage.selectEditProperties
+
             // Navigate to Details page of document and click Edit Properties;
+            // navigateTo is used as DetailsPage.selectEditProperties is not available for edited offline files; but available from Properties panel;
             documentLibraryPage.selectFile(fileName);
             String url = drone.getCurrentUrl();
             drone.navigateTo(url.replace("document-details", "edit-metadata"));
             EditDocumentPropertiesPage editDocumentPropertiesPage = drone.getCurrentPage().render();
+            // Try to rename file;
+            // Field Name is disable, user could not edit it.
             try
             {
                 editDocumentPropertiesPage.setName(fileName + "edited");
             }
-            // TODO: Do not catch throwable, get current page and expect specific page such as EditDocumentPropertiesPage
             catch (Throwable ex)
             {
                 logger.info("Editing not available as file input is disabled");
             }
 
+            // File is not renamed
             documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(drone, getSiteShortname(siteName));
             Assert.assertEquals(documentLibraryPage.getFiles().get(0).getName(), fileName);
 
@@ -151,59 +143,36 @@ public class ManageDocumentsTest extends AbstractTests
         {
             reportError(drone, testName, e);
         }
-        // TODO: Pl remove any code that resets testdata condition, for result analysis
-        finally
-        {
-            // Cancel Editing
-            try
-            {
-                ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-                documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render(maxWaitTime);
-                documentLibraryPage.getFileDirectoryInfo(fileName).selectCancelEditing().render();
-            }
-            catch (Throwable ex)
-            {
-                logger.info(ex.getMessage());
-            }
-            testCleanup(drone, testName);
-        }
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_10772() throws Exception
+    public void dataPrep_ALF_2897() throws Exception
     {
-        try
-        {
-            String testName = getTestName();
-            String testUser = getUserNameFreeDomain(testName);
-            String siteName = getSiteName(testName);
 
-            // User
-            String[] testUserInfo = new String[] { testUser };
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        // User
+        String[] testUserInfo = new String[] { testUser };
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Create Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
-            ShareUser.openSiteDashboard(drone, siteName);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            // Upload File
-            String fileName = getFileName(testName) + "\u65E5\u672C\u8A9E\u30D5\u30A1.txt";
-            String[] fileInfo = { fileName, DOCLIB };
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        // Create Site
+        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.openSiteDashboard(drone, siteName);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(drone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
+        // Upload File
+        String fileName = getFileName(testName) + "\u65E5\u672C\u8A9E\u30D5\u30A1.txt";
+        String[] fileInfo = { fileName, DOCLIB };
+        ShareUser.uploadFileInFolder(drone, fileInfo);
+
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_10772()
+    public void ALF_2897()
     {
         /** Start Test */
         testName = getTestName();
@@ -223,7 +192,7 @@ public class ManageDocumentsTest extends AbstractTests
 
             // Login
             ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName).render(maxWaitTime);
+            documentLibraryPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName).render();
             // Click "Download" button;
             // Download file
             FileDirectoryInfo fileDirectoryInfo = documentLibraryPage.getFileDirectoryInfo(fileName);
@@ -254,44 +223,36 @@ public class ManageDocumentsTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_8364() throws Exception
+    public void dataPrep_ALF_2896() throws Exception
     {
-        try
-        {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
 
-            // User
-            String testUser1 = getUserNameFreeDomain(testName + "1");
-            String[] testUserInfo1 = new String[] { testUser1 };
+        // User
+        String testUser1 = getUserNameFreeDomain(testName + "1");
+        String[] testUserInfo1 = new String[] { testUser1 };
 
-            String testUser2 = getUserNameFreeDomain(testName + "2");
-            String[] testUserInfo2 = new String[] { testUser2 };
+        String testUser2 = getUserNameFreeDomain(testName + "2");
+        String[] testUserInfo2 = new String[] { testUser2 };
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo1);
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo2);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo1);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo2);
 
-            // Login
-            ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openSitesDocumentLibrary(drone, siteName).render(maxWaitTime);
+        // Login
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
 
-            // invite userB
-            // Invite user to Site as Collaborator and log-out the current user.
-            ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName, UserRole.COLLABORATOR);
-            ShareUser.logout(drone);
+        // invite userB
+        // Invite user to Site as Collaborator and log-out the current user.
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName, UserRole.COLLABORATOR);
+        ShareUser.logout(drone);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(drone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_8364()
+    public void ALF_2896()
     {
         /** Start Test */
         testName = getTestName();
@@ -311,7 +272,7 @@ public class ManageDocumentsTest extends AbstractTests
 
             // Login
             ShareUser.login(customDrone, testUser1, DEFAULT_PASSWORD);
-            ShareUser.openSitesDocumentLibrary(customDrone, siteName).render(maxWaitTime);
+            ShareUser.openSitesDocumentLibrary(customDrone, siteName).render();
 
             // Upload File
             String[] fileInfo = { fileName, DOCLIB };
@@ -327,7 +288,7 @@ public class ManageDocumentsTest extends AbstractTests
 
             // Login user 2
             ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
-            DocumentLibraryPage documentLibraryPage2 = ShareUser.openSitesDocumentLibrary(drone, siteName).render(maxWaitTime);
+            DocumentLibraryPage documentLibraryPage2 = ShareUser.openSitesDocumentLibrary(drone, siteName);
             documentLibraryPage2.getFileDirectoryInfo(fileName).isLocked();
             Assert.assertTrue(documentLibraryPage2.getFileDirectoryInfo(fileName).getContentInfo()
                     .contains(String.format("This document is locked by %s", testUser1)));
@@ -361,7 +322,7 @@ public class ManageDocumentsTest extends AbstractTests
             try
             {
                 ShareUser.login(customDrone, testUser1, DEFAULT_PASSWORD);
-                documentLibraryPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName).render(maxWaitTime);
+                documentLibraryPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName).render();
                 // Click Edit Offline button;
                 if (!documentLibraryPage.getFileDirectoryInfo(fileName).isEditOfflineLinkPresent())
                 {
@@ -387,58 +348,52 @@ public class ManageDocumentsTest extends AbstractTests
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13811() throws Exception
+    public void dataPrep_ALF_2899() throws Exception
     {
-        try
-        {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String fileName = getFileName(testName) + ".txt";
 
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String fileName = getFileName(testName) + ".txt";
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Upload File
-            String[] fileInfo = { fileName, DOCLIB };
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render();
 
-            ShareUser.logout(drone);
+        // Upload File
+        String[] fileInfo = { fileName, DOCLIB };
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(drone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
+        ShareUser.logout(drone);
+
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13811()
+    public void ALF_2899()
     {
-        DocumentLibraryPage documentLibraryPage = null;
+        /** Start Test */
+        testName = getTestName();
+
+        /** Test Data Setup */
+        String siteName = getSiteName(testName);
+        String fileName = getFileName(testName) + ".txt";
+        String testUser = getUserNameFreeDomain(testName);
+
+        DocumentLibraryPage documentLibraryPage;
 
         try
         {
-            /** Start Test */
-            testName = getTestName();
-
-            /** Test Data Setup */
-            String siteName = getSiteName(testName);
-            String fileName = getFileName(testName) + ".txt";
-            String testUser = getUserNameFreeDomain(testName);
 
             // Login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render(maxWaitTime);
+            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
             // start the new workflow
             StartWorkFlowPage startWorkFlowPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectStartWorkFlow().render();
@@ -471,59 +426,49 @@ public class ManageDocumentsTest extends AbstractTests
         }
     }
 
-    @Test(groups = "DataPrepDocumentLibrary")
-    public void dataPrep_Enterprise40x_13813() throws Exception
+    @Test(groups = { "DataPrepDocumentLibrary" })
+    public void dataPrep_ALF_2900() throws Exception
     {
-        try
-        {
-            String testName = getTestName();
-            String siteName = getSiteName(testName);
-            String fileName = getFileName(testName) + ".txt";
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String fileName = getFileName(testName) + ".txt";
 
-            // User
-            String testUser = getUserNameFreeDomain(testName);
-            String[] testUserInfo = new String[] { testUser };
+        // User
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render();
 
-            // Upload File
-            String[] fileInfo = { fileName, DOCLIB };
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        // Upload File
+        String[] fileInfo = { fileName, DOCLIB };
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            ShareUser.logout(drone);
-
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(drone, testName);
-            logger.error("Error in dataPrep: " + testName, e);
-        }
+        ShareUser.logout(drone);
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13813()
+    public void ALF_2900()
     {
-        DocumentLibraryPage documentLibraryPage = null;
+        /** Start Test */
+        testName = getTestName();
+
+        /** Test Data Setup */
+        String siteName = getSiteName(testName);
+        String fileName = getFileName(testName) + ".txt";
+        String testUser = getUserNameFreeDomain(testName);
+        DocumentLibraryPage documentLibraryPage;
 
         try
         {
-            /** Start Test */
-            testName = getTestName();
-
-            /** Test Data Setup */
-            String siteName = getSiteName(testName);
-            String fileName = getFileName(testName) + ".txt";
-            String testUser = getUserNameFreeDomain(testName);
-
             // Login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render(maxWaitTime);
+            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
             // start the new workflow
             StartWorkFlowPage startWorkFlowPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectStartWorkFlow().render();
