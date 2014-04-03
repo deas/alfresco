@@ -282,6 +282,11 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         // NodeRef
         Assert.assertNotNull(thisRow.getContentNodeRef(), "Node Reference is null");
         logger.info("NodeRef:" + thisRow.getContentNodeRef());
+        
+        Assert.assertFalse(thisRow.isVersionVisible());
+        Assert.assertFalse(thisRow.isCheckBoxVisible());
+        Assert.assertTrue(thisRow.getVersionInfo().equalsIgnoreCase("1.0"));
+        Assert.assertTrue(thisRow.getContentNameFromInfoMenu().equalsIgnoreCase(file.getName()));
     }
 
     @Test(groups={"alfresco-one"}, priority=11)

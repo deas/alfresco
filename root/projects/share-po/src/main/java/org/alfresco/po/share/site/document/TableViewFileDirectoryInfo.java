@@ -166,4 +166,10 @@ public class TableViewFileDirectoryInfo extends SimpleDetailTableView
     {
         throw new UnsupportedOperationException("Comments Link is not available in Simple View File Directory Info.");
     }
+
+    @Override
+    public String getVersionInfo()
+    {
+        throw new UnsupportedOperationException("Version info not available in Table view.");
+    }
 }

@@ -4,8 +4,11 @@ import java.util.List;
 
 import org.alfresco.po.share.UserProfilePage;
 import org.alfresco.po.share.site.UpdateFilePage;
+import org.alfresco.po.share.user.MyProfilePage;
+import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.webdrone.HtmlPage;
+import org.openqa.selenium.WebElement;
 
 public interface FileDirectoryInfo
 {
@@ -645,4 +648,31 @@ public interface FileDirectoryInfo
      * @return {@link DocumentLibraryPage}
      */
      DocumentLibraryPage clickOnCategoryNameLink(String categoryName);
+
+    /**
+     * This method retrieves the version of content.
+     */
+    public String getVersionInfo();
+
+    /**
+     * Checks to see if version is visible on the page.
+     * 
+     * @return boolean
+     */
+    public boolean isVersionVisible();
+
+    /**
+     * Checks to see if checkbox is visible on the page.
+     * 
+     * @return boolean
+     */
+    public boolean isCheckBoxVisible();
+
+    /**
+     * Gets the name of content from info menu.
+     * 
+     * @return boolean
+     */
+    public String getContentNameFromInfoMenu();
+
 }

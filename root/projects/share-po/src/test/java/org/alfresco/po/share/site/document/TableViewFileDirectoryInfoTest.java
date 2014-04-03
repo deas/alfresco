@@ -205,4 +205,32 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         documentLibPage = drone.getCurrentPage().render();
         Assert.assertEquals(documentLibPage.getFileDirectoryInfo(file2.getName()).getName(), file2.getName());
     }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class, groups = { "alfresco-one" }, dependsOnMethods = "cancelRenameContentTest")
+    public void testGetContentNameFromInfoMenu() throws Exception
+    {
+        // Get File
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName());
+
+        thisRow.getContentNameFromInfoMenu();
+    }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class, groups = { "alfresco-one" }, dependsOnMethods = "testGetContentNameFromInfoMenu")
+    public void testGetVersionInfo() throws Exception
+    {
+        // Get File
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName());
+
+        thisRow.getVersionInfo();
+    }
+
+    @Test(groups = { "alfresco-one" }, dependsOnMethods = "testGetVersionInfo")
+    public void testCheckboxAndVersionMenu() throws Exception
+    {
+        // Get File
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName());
+
+        Assert.assertFalse(thisRow.isVersionVisible());
+        Assert.assertTrue(thisRow.isCheckBoxVisible());
+    }
 }

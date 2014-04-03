@@ -37,8 +37,6 @@ package org.alfresco.po.share.workflow;
  */
 import java.io.File;
 
-import org.testng.Assert;
-
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
@@ -46,6 +44,7 @@ import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -91,7 +90,7 @@ public class StartWorkFlowPageTest extends AbstractTest
     public void navigateToStartWorkFlow() throws Exception
     {
         DocumentLibraryPage docsPage = drone.getCurrentPage().render();
-        DocumentDetailsPage documentDetailsPage = docsPage.selectFile(file.getName());
+        DocumentDetailsPage documentDetailsPage = docsPage.selectFile(file.getName()).render();
         StartWorkFlowPage startWorkFlowPage = documentDetailsPage.selectStartWorkFlowPage();
         Assert.assertTrue(startWorkFlowPage.isWorkFlowTextPresent());
     }
@@ -105,7 +104,7 @@ public class StartWorkFlowPageTest extends AbstractTest
     public void selectStartWorkFlowIcon() throws Exception
     {
         documentLibraryPage = openSiteDocumentLibraryFromSearch(drone, siteName).render();
-        DocumentDetailsPage documentDetailsPage = documentLibraryPage.selectFile(file.getName());
+        DocumentDetailsPage documentDetailsPage = documentLibraryPage.selectFile(file.getName()).render();
         StartWorkFlowPage startWorkFlowPage = documentDetailsPage.selectStartWorkFlowIcon().render();
         Assert.assertTrue(startWorkFlowPage.isWorkFlowTextPresent());
     }

@@ -12,7 +12,6 @@ import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 import static org.alfresco.po.share.site.document.DocumentAspect.CLASSIFIABLE;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +52,7 @@ import org.testng.annotations.Test;
  * @author Chiran
  */
 @Listeners(FailedTestListener.class)
-@Test(groups="BambooBug")
+// @Test(groups="BambooBug")
 public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
 {
     private final Log logger = LogFactory.getLog(this.getClass());
@@ -193,6 +192,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
     public void test101SelectManageRules()
     {
      // Get folder
+        documentLibPage = documentLibPage.render();
         FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(folderName);
         FolderRulesPage page = thisRow.selectManageRules().render();
         Assert.assertNotNull(page);
@@ -283,10 +283,17 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
     {
         // Get File
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
+        documentLibPage = thisRow.selectThumbnail().render();
 
         // NodeRef
         Assert.assertNotNull(thisRow.getContentNodeRef(), "Node Reference is null");
         logger.info("NodeRef:" + thisRow.getContentNodeRef());
+
+        thisRow.selectThumbnail();
+        Assert.assertFalse(thisRow.isVersionVisible());
+        Assert.assertTrue(thisRow.isCheckBoxVisible());
+        Assert.assertTrue(thisRow.getVersionInfo().equalsIgnoreCase("1.0"));
+        Assert.assertTrue(thisRow.getContentNameFromInfoMenu().equalsIgnoreCase(file.getName()));
     }
 
     @Test(groups={"alfresco-one"}, priority=11)
@@ -447,11 +454,14 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         Assert.assertFalse(thisRow.hasTags());
     }
     
-    @Test(enabled = true, groups = { "Enterprise4.2" }, priority = 28)
+   /* 
+    * MNT-10630, once this issue is fixed we can enable the below test.
+    * @Test(enabled = true, groups = { "Enterprise4.2" }, priority = 28)
     public void test124SelectStartWorkFlow() throws Exception
     {
         // Select SyncToCloud
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
+        thisRow.selectThumbnail();
         StartWorkFlowPage startWorkFlowPage = thisRow.selectStartWorkFlow().render();
         Assert.assertTrue(startWorkFlowPage.getTitle().contains("Start Workflow"));
         
@@ -460,7 +470,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
         documentLibPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
         Assert.assertNotNull(documentLibPage);
-    }
+    }*/
     
 
     @Test(enabled = false, groups = { "Hybrid" }, priority = 29)
@@ -602,7 +612,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
          // Verify CloudSync icon is not displayed
          Assert.assertFalse(thisRow.isCloudSynced(), "Verifying Cloud Sync icon is not be displayed");
          Assert.assertFalse(thisRow.isViewCloudSyncInfoLinkPresent());
-     }*/
+     }
     
     @Test(enabled = true, groups = { "Hybrid" }, priority = 38)
     public void isSyncFailedIconPresent() throws IOException
@@ -636,7 +646,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         documentLibPage = documentLibPage.getFileDirectoryInfo(testSyncFailedFile.getName()).selectRequestSync().render();
         // Verify the Sync Failed icon is displayed
         Assert.assertNotNull(documentLibPage);
-    }
+    }*/
     
     @Test(groups="Enterprise4.2", priority=39)
     public void testCopyToFolder() throws Exception

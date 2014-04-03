@@ -286,6 +286,10 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         // NodeRef
         Assert.assertNotNull(thisRow.getContentNodeRef(), "Node Reference is null");
         logger.info("NodeRef:" + thisRow.getContentNodeRef());
+
+        Assert.assertFalse(thisRow.isVersionVisible());
+        Assert.assertTrue(thisRow.isCheckBoxVisible());
+        Assert.assertTrue(thisRow.getVersionInfo().equalsIgnoreCase("1.0"));
     }
 
     @Test(groups = { "alfresco-one" }, priority = 11)
@@ -531,6 +535,15 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         drone.refresh();
         documentLibPage = drone.getCurrentPage().render();
         Assert.assertEquals(documentLibPage.getFileDirectoryInfo(folderName).getName(), folderName);
+    }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class, groups = { "alfresco-one" }, priority = 32)
+    public void testGetContentNameFromInfoMenu() throws Exception
+    {
+        // Get File
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
+
+        thisRow.getContentNameFromInfoMenu();
     }
     
     @Test(enabled = true, groups = "Enterprise4.2", priority = 31)

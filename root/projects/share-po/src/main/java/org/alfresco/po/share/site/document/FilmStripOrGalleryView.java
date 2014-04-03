@@ -922,4 +922,32 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         clickInfoIcon(false);
         return super.isCommentLinkPresent();
     }
+
+    @Override
+    public String getVersionInfo()
+    {
+        clickInfoIcon(false);
+        return super.getVersionInfo();
+    }
+
+    @Override
+    public String getContentNameFromInfoMenu()
+    {
+        clickInfoIcon(false);
+        String title = "";
+        try
+        {
+            title = findAndWait(By.cssSelector("h3.filename a")).getText();
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Timeout Reached", te);
+        }
+        catch (StaleElementReferenceException stale)
+        {
+            resolveStaleness();
+            getName();
+        }
+        return title;
+    }
 }

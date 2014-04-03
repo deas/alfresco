@@ -549,7 +549,7 @@ public class DocumentLibraryPage extends SitePage
             break;
         case FILMSTRIP_VIEW:
             FilmStripViewFileDirectoryInfo fileDirInfo = (FilmStripViewFileDirectoryInfo) getFileDirectoryInfo(title);
-            fileDirInfo.clickOnTitle();
+            fileDirInfo.selectThumbnail();
             fileDirInfo.clickInfoIcon();
             break;
         case TABLE_VIEW:

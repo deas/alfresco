@@ -90,6 +90,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     protected static final By INLINE_EDIT_LINK = By.cssSelector("div.document-inline-edit>a[title='Inline Edit']>span");
     protected static final By EDIT_OFFLINE_LINK = By.cssSelector("div.document-edit-offline>a[title='Edit Offline']>span");
     protected static final By MORE_ACTIONS_MENU = By.cssSelector("div.more-actions");
+    protected static final By FILE_VERSION_IDENTIFIER = By.cssSelector("span.document-version");
     protected String THUMBNAIL = "td.yui-dt-col-thumbnail>div>span>a";
     protected String THUMBNAIL_TYPE = "td.yui-dt-col-thumbnail>div>span";
     protected final By REQUEST_TO_SYNC = By.cssSelector("div#onActionCloudSyncRequest>a[title='Request Sync']");
@@ -2007,6 +2008,62 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     public boolean isInfoIconVisible()
     {
         throw new UnsupportedOperationException("Info Icon is not available in this view type.");
+    }
+
+    @Override
+    public String getContentNameFromInfoMenu()
+    {
+        throw new UnsupportedOperationException("Info menu is not available in this view type.");
+    }
+
+    @Override
+    public String getVersionInfo()
+    {
+        if (isFolder())
+        {
+            throw new UnsupportedOperationException("Only available for file.");
+        }
+        String version = "";
+        try
+        {
+            version = findAndWait(By.xpath(".//span[@class='document-version']")).getText();
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Timeout Reached", te);
+        }
+        catch (StaleElementReferenceException stale)
+        {
+            resolveStaleness();
+            getVersionInfo();
+        }
+        return version;
+    }
+
+    @Override
+    public boolean isCheckBoxVisible()
+    {
+        try
+        {
+            return findElement(By.cssSelector(SELECT_CHECKBOX)).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isVersionVisible()
+    {
+        try
+        {
+            return findElement(FILE_VERSION_IDENTIFIER).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        return false;
     }
     
     /* (non-Javadoc)

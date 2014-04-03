@@ -441,4 +441,12 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
     {
         drone.mouseOverOnElement(drone.findAndWait(By.xpath("//h3[@class='filename']/span/a[text()='"+ getName()+"']")));
     }
+
+    @Override
+    public String getVersionInfo()
+    {
+        WebElement actions = selectAction();
+        getDrone().mouseOverOnElement(actions);
+        return super.getVersionInfo();
+    }
 }

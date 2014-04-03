@@ -50,7 +50,7 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
     {
         try
         {
-            clickOnTitle();
+            selectThumbnail();
             return findAndWait(By.cssSelector("a.alf-show-detail"));
         }
         catch (TimeoutException e)
@@ -87,16 +87,6 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
         }
     }
 
-    /**
-     * Click on title.
-     */
-    @Override
-    public void clickOnTitle()
-    {
-        THUMBNAIL_ROOT.click();
-        domEventCompleted();
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -105,7 +95,8 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
     @Override
     public HtmlPage selectThumbnail()
     {
-        clickOnTitle();
+        THUMBNAIL_ROOT.click();
+        domEventCompleted();
         return FactorySharePage.resolvePage(drone);
     }
 

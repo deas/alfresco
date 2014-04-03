@@ -7,9 +7,6 @@
  */
 package org.alfresco.po.share.site.document;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-
 import java.io.File;
 import java.util.List;
 
@@ -299,6 +296,11 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
         // NodeRef
         Assert.assertNotNull(thisRow.getContentNodeRef(), "Node Reference is null");
         logger.info("NodeRef:" + thisRow.getContentNodeRef());
+        
+        Assert.assertFalse(thisRow.isVersionVisible());
+        Assert.assertTrue(thisRow.isCheckBoxVisible());
+        Assert.assertTrue(thisRow.getVersionInfo().equalsIgnoreCase("1.0"));
+        // Assert.assertTrue(thisRow.getContentNameFromInfoMenu().equalsIgnoreCase(file.getName()));
     }
 
     @Test(groups={"alfresco-one"}, priority=11)
@@ -359,7 +361,7 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
     public void test116IsDeleteLinkPresent()
     {
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
-        assertTrue(thisRow.isDeletePresent());
+        Assert.assertTrue(thisRow.isDeletePresent());
     }
 
     @Test(groups={"alfresco-one"}, priority=17)
@@ -377,7 +379,7 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
         SitePage page = drone.getCurrentPage().render();
         try
         {
-            assertNotNull(page);
+            Assert.assertNotNull(page);
             documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
 
             // Get File
@@ -408,7 +410,7 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
     public void test120IsEditInGoogleDocsPresent()
     {
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
-        assertTrue(thisRow.isEditInGoogleDocsPresent());
+        Assert.assertTrue(thisRow.isEditInGoogleDocsPresent());
     }
     
     @Test(expectedExceptions = PageOperationException.class, groups = { "Enterprise4.2" }, priority=21)
@@ -496,7 +498,7 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
         DestinationAndAssigneePage destinationAndAssigneePage = (DestinationAndAssigneePage) thisRow.selectSyncToCloud().render();
         Assert.assertEquals(destinationAndAssigneePage.getSyncToCloudTitle(), "Sync " + file.getName() + " to The Cloud");
         destinationAndAssigneePage.selectSubmitButtonToSync();
-        assertTrue(thisRow.isCloudSynced(), "File should be synced");
+        Assert.assertTrue(thisRow.isCloudSynced(), "File should be synced");
     }
 
 
@@ -566,13 +568,22 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
         Assert.assertEquals(documentLibPage.getFileDirectoryInfo(folderName).getName(), folderName);
     }
 
-    @Test(expectedExceptions =UnsupportedOperationException.class, groups={"alfresco-one"}, priority=35)
+    @Test(expectedExceptions = UnsupportedOperationException.class, groups = { "alfresco-one" }, priority = 35)
     public void testFileOrFolderHeight() throws Exception
     {
         // Get folder
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
         // Like
         thisRow.getFileOrFolderHeight();
+    }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class, groups = { "alfresco-one" }, priority = 36)
+    public void testGetContentNameFromInfoMenu() throws Exception
+    {
+        // Get File
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
+
+        thisRow.getContentNameFromInfoMenu();
     }
     
     @Test(expectedExceptions =UnsupportedOperationException.class, groups={"alfresco-one"}, priority=35)
