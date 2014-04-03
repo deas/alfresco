@@ -41,7 +41,7 @@ public class TinyMceEditor extends HtmlElement {
     private static final String CSS_REMOVE_FORMAT = ".mceIcon.mce_removeformat";
     private static final String CSS_COLOR_ATT = "rich.txt.editor.color.code";
     private static final String CSS_STR_BOLD = ".mceIcon.mce_bold";
-    public static final By FRAME_ID_SELECTOR = By.cssSelector("iframe[id$='content_ifr']");
+    public static final String FRAME_ID = "template_x002e_comments_x002e_folder-details_x0023_default-add-content_ifr";
     public static final String TINYMCE_CONTENT = "body[id$='tinymce']";
 
 
@@ -62,7 +62,7 @@ public class TinyMceEditor extends HtmlElement {
     private static final String CSS_UNDO = ".mceIcon.mce_undo";
     private static final String CSS_REDO = ".mceIcon.mce_redo";
     private static final String CSS_BULLET_TEXT = "#tinymce>ul>li";
-    private String frameId;
+    private String frameId = FRAME_ID;
     private FormatType formatType;
 
 
@@ -162,7 +162,6 @@ public class TinyMceEditor extends HtmlElement {
      */
     public TinyMceEditor(WebDrone drone) {
         super(drone);
-        this.frameId = drone.findFirstDisplayedElement(FRAME_ID_SELECTOR).getAttribute("id");
     }
 
     /**
