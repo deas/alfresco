@@ -14,7 +14,7 @@
             <exclude name="download" />
         </run>
     </groups>
-    <test name="Dashlets">
+<!--     <test name="Dashlets">
         <packages>
             <package name="org.alfresco.po.share.dashlet" />
         </packages>
@@ -33,13 +33,13 @@
         <packages>
             <package name="org.alfresco.po.share.site" />
         </packages>
-    </test>
+    </test> -->
     <test name="Workflow">
         <packages>
             <package name="org.alfresco.po.share.workflow" />
         </packages>
     </test>
-    <test name="Task">
+   <!--  <test name="Task">
         <packages>
             <package name="org.alfresco.po.share.task" />
         </packages>
@@ -58,7 +58,7 @@
         <packages>
             <package name="org.alfresco.po.share.enums" />
         </packages>
-    </test>
+    </test> -->
     <test name="Document">
         <packages>
              <package name="org.alfresco.po.share.site.document" />
