@@ -488,14 +488,14 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_85866() throws Exception
+    public void dataPrep_Dashlets_Enterprise40x_8586() throws Exception
     {
         removeAspectDataPrep(getTestName());
     }
 
     // TODO: Test not found in ComAlfOne, Enterprise40x, check and correct the testid
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_85866()
+    public void Enterprise40x_8586()
     {        
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);

@@ -80,7 +80,12 @@
 					<exclude name="enterprise40x_5606" />
 				</methods>
 			</class>
-			<class name="org.alfresco.share.site.document.ManageAspectTest" />
+			<class name="org.alfresco.share.site.document.ManageAspectTest" >
+			    <methods>
+                    <exclude name="Enterprise40x_14344" />
+                    <exclude name="Enterprise40x_8586" />
+                </methods>
+            </class>
 		</classes>
 	</test>
 </suite>
