@@ -18,7 +18,7 @@
  */
 package org.alfresco.share;
 
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
  * @author nshah
  * Dated: 06/03/2014
  */
-public class HeaderBarTest extends AbstractTests
+public class HeaderBarTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(SiteDashBoardTest.class);
 

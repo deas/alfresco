@@ -32,7 +32,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
-public class ShareUserAdmin extends AbstractTests
+public class ShareUserAdmin extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ShareUser.class);
 

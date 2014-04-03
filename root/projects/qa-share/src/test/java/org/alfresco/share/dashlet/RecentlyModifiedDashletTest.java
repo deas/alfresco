@@ -32,7 +32,7 @@ import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.user.MyProfilePage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
@@ -48,7 +48,7 @@ import org.testng.annotations.Test;
  * @author Shan Nagarajan
  */
 @Listeners(FailedTestListener.class)
-public class RecentlyModifiedDashletTest extends AbstractTests
+public class RecentlyModifiedDashletTest extends AbstractUtils
 {
 
     private static Log logger = LogFactory.getLog(RecentlyModifiedDashletTest.class);

@@ -28,7 +28,7 @@ import java.util.List;
 import org.alfresco.po.share.dashlet.SiteContentDashlet;
 import org.alfresco.po.share.dashlet.SiteContentFilter;
 import org.alfresco.po.share.site.SiteDashboardPage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.apache.commons.logging.Log;
@@ -39,7 +39,7 @@ import org.testng.annotations.Test;
 /**
  * @author Shan Nagarajan
  */
-public class RecentlyModifiedSiteContentDashlet extends AbstractTests
+public class RecentlyModifiedSiteContentDashlet extends AbstractUtils
 {
 
     private static Log logger = LogFactory.getLog(RecentlyModifiedSiteContentDashlet.class);
@@ -68,7 +68,7 @@ public class RecentlyModifiedSiteContentDashlet extends AbstractTests
         ShareUser.login(drone,  testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);        
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);        
     }
     
     @Test

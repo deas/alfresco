@@ -2,7 +2,7 @@ package org.alfresco.share.site.document;
 
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -20,7 +20,7 @@ import static org.testng.Assert.assertEquals;
 /**
  * @author Aliaksei Boole
  */
-public class ManageDocLibItemsTest extends AbstractTests
+public class ManageDocLibItemsTest extends AbstractUtils
 {
         private static Log logger = LogFactory.getLog(ManageDocLibItemsTest.class);
 

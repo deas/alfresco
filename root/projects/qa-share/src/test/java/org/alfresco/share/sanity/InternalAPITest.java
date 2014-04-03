@@ -20,7 +20,7 @@ package org.alfresco.share.sanity;
  */
 
 import org.alfresco.po.share.enums.UserRole;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
  * 
  * @author Meenal Bhave
  */
-public class InternalAPITest extends AbstractTests
+public class InternalAPITest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(InternalAPITest.class);
 

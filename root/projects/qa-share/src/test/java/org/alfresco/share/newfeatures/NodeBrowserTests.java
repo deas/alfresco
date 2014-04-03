@@ -5,7 +5,7 @@ package org.alfresco.share.newfeatures;
 
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.adminconsole.NodeBrowserPage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
@@ -23,7 +23,7 @@ import static org.testng.Assert.*;
  * @author Aliaksei Boole
  */
 @Listeners(FailedTestListener.class)
-public class NodeBrowserTests extends AbstractTests
+public class NodeBrowserTests extends AbstractUtils
 {
         private static final Logger logger = Logger.getLogger(NodeBrowserTests.class);
         private NodeBrowserPage nodeBrowserPage;

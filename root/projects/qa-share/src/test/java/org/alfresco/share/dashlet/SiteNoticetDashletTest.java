@@ -24,7 +24,7 @@ import org.alfresco.po.share.dashlet.SiteNoticeDashlet;
 import org.alfresco.po.share.enums.Dashlet;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.TinyMceEditor.FormatType;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ConfigureSiteNoticeActions;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserDashboard;
@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
  * @author Chiran
  */
 @Listeners(FailedTestListener.class)
-public class SiteNoticetDashletTest extends AbstractTests
+public class SiteNoticetDashletTest extends AbstractUtils
 {
 
     private static Log logger = LogFactory.getLog(SiteNoticetDashletTest.class);

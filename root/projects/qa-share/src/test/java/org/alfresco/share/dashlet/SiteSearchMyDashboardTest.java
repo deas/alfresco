@@ -37,7 +37,7 @@ import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
 import org.alfresco.po.share.site.document.EditTextDocumentPage;
 import org.alfresco.po.share.site.document.SelectAspectsPage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserDashboard;
 import org.alfresco.share.util.ShareUserSitePage;
@@ -54,7 +54,7 @@ import org.testng.annotations.Test;
  * @author Ranjith Manyam
  */
 @Listeners(FailedTestListener.class)
-public class SiteSearchMyDashboardTest extends AbstractTests
+public class SiteSearchMyDashboardTest extends AbstractUtils
 {
 
     private static Log logger = LogFactory.getLog(SiteSearchMyDashboardTest.class);

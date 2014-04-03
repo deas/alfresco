@@ -27,7 +27,7 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.admin.ManagedSiteRow;
 import org.alfresco.po.share.enums.SiteVisibility;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserAdmin;
@@ -46,7 +46,7 @@ import org.testng.annotations.Test;
  * @author Jamal Kaabi-Mofrad
  */
 @Listeners(FailedTestListener.class)
-public class SiteAdminChangeVisibilityTest extends AbstractTests
+public class SiteAdminChangeVisibilityTest extends AbstractUtils
 {
 
     private static final Logger logger = Logger.getLogger(SiteAdminChangeVisibilityTest.class);

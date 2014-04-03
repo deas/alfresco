@@ -47,7 +47,7 @@ import org.alfresco.po.share.workflow.AssignmentPage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.po.share.workflow.WorkFlow;
 import org.alfresco.po.share.workflow.WorkFlowType;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
@@ -65,7 +65,7 @@ import org.testng.annotations.Test;
  * @since 4.3
  */
 @Listeners(FailedTestListener.class)
-public class SecurityXssTest extends AbstractTests
+public class SecurityXssTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(SecurityXssTest.class);
 

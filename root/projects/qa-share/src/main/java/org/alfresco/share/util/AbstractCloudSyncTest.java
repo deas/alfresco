@@ -49,7 +49,7 @@ import org.testng.annotations.AfterClass;
  * 
  * @author Abhijeet Bharade
  */
-public abstract class AbstractCloudSyncTest extends AbstractTests
+public abstract class AbstractCloudSyncTest extends AbstractUtils
 {
 
     private static Log logger = LogFactory.getLog(AbstractCloudSyncTest.class);

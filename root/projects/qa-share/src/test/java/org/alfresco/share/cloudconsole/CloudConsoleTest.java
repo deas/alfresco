@@ -2,7 +2,7 @@ package org.alfresco.share.cloudconsole;
 
 import org.alfresco.po.share.console.CloudConsolePage;
 import org.alfresco.po.share.console.CloudConsoleSearchResultPage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 // TODO: Move CloudConsole in cloud package: This contains cloud specific tests (as ComAlfOne)
 @Listeners(FailedTestListener.class)
-public class CloudConsoleTest extends AbstractTests
+public class CloudConsoleTest extends AbstractUtils
 {
 
     private static Log logger = LogFactory.getLog(CloudConsoleTest.class);

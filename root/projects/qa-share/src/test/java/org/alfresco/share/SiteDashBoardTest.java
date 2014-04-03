@@ -8,7 +8,7 @@ import org.alfresco.po.share.dashlet.SiteContentFilter;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.share.util.ShareUserSitePage;
@@ -19,7 +19,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class SiteDashBoardTest extends AbstractTests
+public class SiteDashBoardTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(SiteDashBoardTest.class);
 
@@ -61,7 +61,7 @@ public class SiteDashBoardTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
     }
 
@@ -169,7 +169,7 @@ public class SiteDashBoardTest extends AbstractTests
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
             // Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // Open Site DashBoard
             // ShareUser.openSiteDashboard(drone, siteName);
@@ -225,7 +225,7 @@ public class SiteDashBoardTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**
@@ -300,7 +300,7 @@ public class SiteDashBoardTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**
@@ -494,7 +494,7 @@ public class SiteDashBoardTest extends AbstractTests
         ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
 
         ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
 

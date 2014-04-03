@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang.WordUtils;
 import org.testng.ITestResult;
@@ -36,9 +36,9 @@ public class ScreenshotReportNGUtils extends ReportNGUtils {
                 "</script>\n" +
                 "\n");
         Object instace = result.getInstance();
-        if (instace instanceof AbstractTests)
+        if (instace instanceof AbstractUtils)
         {
-            AbstractTests abstractTests = (AbstractTests) instace;
+            AbstractUtils abstractTests = (AbstractUtils) instace;
             Map<String, WebDrone> droneMap = abstractTests.getDroneMap();
             for(Map.Entry<String, WebDrone> entry: droneMap.entrySet())
             {

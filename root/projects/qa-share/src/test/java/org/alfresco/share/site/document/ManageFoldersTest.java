@@ -27,7 +27,7 @@ import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.ActionS
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -48,7 +48,7 @@ import java.util.List;
  */
 
 @Listeners(FailedTestListener.class)
-public class ManageFoldersTest extends AbstractTests
+public class ManageFoldersTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ManageFoldersTest.class);
     protected String testUser;

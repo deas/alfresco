@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 @Listeners(FailedTestListener.class)
-public class CreateRuleTest extends AbstractTests {
+public class CreateRuleTest extends AbstractUtils {
 
     private static Log logger = LogFactory.getLog(CreateRuleTest.class);
 
@@ -76,7 +76,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -170,7 +170,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -264,7 +264,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -350,7 +350,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -445,7 +445,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -531,7 +531,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -625,7 +625,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -719,7 +719,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -813,7 +813,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -898,7 +898,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -983,7 +983,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -1068,7 +1068,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -1162,7 +1162,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -1255,7 +1255,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Creating folder
@@ -1329,7 +1329,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Any site is created, e.g. test-site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Any two folders are created in the site, e.g. folder1 and folder2
@@ -1436,7 +1436,7 @@ public class CreateRuleTest extends AbstractTests {
 
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Create File
@@ -1739,7 +1739,7 @@ public class CreateRuleTest extends AbstractTests {
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Creating folder

@@ -14,7 +14,7 @@ import org.alfresco.po.share.DocListPaginator;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.admin.ManagedSiteRow;
 import org.alfresco.po.share.enums.SiteVisibility;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.SiteUtil;
@@ -36,7 +36,7 @@ import org.testng.annotations.Test;
  */
 
 //TODO: Add FailedTest listener enabling error reporting + screenshots
-public class ManageSitesPageTest extends AbstractTests
+public class ManageSitesPageTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ManageSitesPageTest.class);
     private static final int NUM_OF_SITES_PER_TYPE = 1; // TODO: this was reduced from 25 due to speed. Increase again once API Create Site call is functional.

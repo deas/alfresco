@@ -33,7 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.SkipException;
 
-public class ShareUserRepositoryPage extends AbstractTests
+public class ShareUserRepositoryPage extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ShareUserRepositoryPage.class);
 

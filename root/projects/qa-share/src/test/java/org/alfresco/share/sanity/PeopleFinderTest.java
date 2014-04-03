@@ -30,7 +30,7 @@ import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.UserProfilePage;
 import org.alfresco.po.share.dashlet.MyActivitiesDashlet;
 import org.alfresco.po.share.user.MyProfilePage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
@@ -41,7 +41,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(FailedTestListener.class)
-public class PeopleFinderTest extends AbstractTests
+public class PeopleFinderTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(PeopleFinderTest.class);
 

@@ -18,7 +18,7 @@ import org.alfresco.po.share.search.SortType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class ShareUserSearchPage extends AbstractTests
+public class ShareUserSearchPage extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ShareUser.class);
 

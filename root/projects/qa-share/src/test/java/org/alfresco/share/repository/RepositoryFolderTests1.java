@@ -37,7 +37,7 @@ import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.ButtonType;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
 import org.alfresco.share.util.ShareUserRepositoryPage.Operation;
@@ -57,7 +57,7 @@ import org.testng.annotations.Test;
  *
  */
 @Listeners(FailedTestListener.class)
-public class RepositoryFolderTests1 extends AbstractTests
+public class RepositoryFolderTests1 extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(RepositoryFolderTests1.class);
 

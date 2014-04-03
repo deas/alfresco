@@ -20,7 +20,7 @@ package org.alfresco.share;
 
 import org.alfresco.po.share.LoginPage;
 import org.alfresco.po.share.SharePage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.WebDrone;
@@ -31,7 +31,7 @@ import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class LoginTest extends AbstractTests
+public class LoginTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(LoginTest.class);
     

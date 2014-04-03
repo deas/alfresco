@@ -44,7 +44,7 @@ import static org.testng.Assert.*;
  */
 
 @Listeners(FailedTestListener.class)
-public class ManageDocumentsTest extends AbstractTests
+public class ManageDocumentsTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ManageDocumentsTest.class);
     protected String testUser;
@@ -78,7 +78,7 @@ public class ManageDocumentsTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         ShareUser.openSiteDashboard(drone, siteName);
 
         // Upload File
@@ -161,7 +161,7 @@ public class ManageDocumentsTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         ShareUser.openSiteDashboard(drone, siteName);
 
         // Upload File

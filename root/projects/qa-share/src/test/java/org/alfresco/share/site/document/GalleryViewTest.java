@@ -44,7 +44,7 @@ import org.alfresco.po.share.workflow.Priority;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.po.share.workflow.WorkFlowFormDetails;
 import org.alfresco.po.share.workflow.WorkFlowType;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserGoogleDocs;
 import org.alfresco.share.util.ShareUserMembers;
@@ -66,7 +66,7 @@ import org.testng.annotations.Test;
  * @author cbairaajoni
  */
 @Listeners(FailedTestListener.class)
-public class GalleryViewTest extends AbstractTests
+public class GalleryViewTest extends AbstractUtils
 {
     private String testUser;
 
@@ -97,7 +97,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**
@@ -185,7 +185,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Open Site Library
         ShareUser.openDocumentLibrary(customDrone);
@@ -265,7 +265,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Open Site Library
         ShareUser.openDocumentLibrary(customDrone);
@@ -349,7 +349,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**
@@ -420,7 +420,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**
@@ -485,7 +485,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**
@@ -584,7 +584,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**
@@ -674,7 +674,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**
@@ -771,7 +771,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**
@@ -896,7 +896,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     // This test includes 8716/8723
@@ -1029,7 +1029,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     @Test(groups = "AlfrescoOne")
@@ -1080,7 +1080,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     // This test includes 8666/8729
@@ -1184,7 +1184,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Open Site Library
         ShareUser.openDocumentLibrary(customDrone);
@@ -1287,7 +1287,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**
@@ -1409,7 +1409,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**
@@ -1484,7 +1484,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**
@@ -1549,7 +1549,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**
@@ -1771,7 +1771,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Creating files.
         ShareUser.uploadFileInFolder(customDrone, testFile1Info);
@@ -1871,7 +1871,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     @Test(groups = "AlfrescoOne", enabled = false)
@@ -1914,7 +1914,7 @@ public class GalleryViewTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     /**

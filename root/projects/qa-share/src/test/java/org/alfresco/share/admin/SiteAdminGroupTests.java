@@ -27,7 +27,7 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.GroupsPage;
 import org.alfresco.po.share.RemoveUserFromGroupPage;
 import org.alfresco.po.share.RemoveUserFromGroupPage.Action;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserAdmin;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
@@ -40,7 +40,7 @@ import org.testng.annotations.Test;
 
 
 @Listeners(FailedTestListener.class)
-public class SiteAdminGroupTests extends AbstractTests
+public class SiteAdminGroupTests extends AbstractUtils
 {
     private static final Logger logger = Logger.getLogger(SiteAdminGroupTests.class);
     public String siteAdmin = "SITE_ADMINISTRATORS";        

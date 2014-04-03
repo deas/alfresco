@@ -30,7 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.SkipException;
 
-public class ShareUserSitePage extends AbstractTests
+public class ShareUserSitePage extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ShareUser.class);
     protected static final String DEFAULT_FOLDER = "Documents";

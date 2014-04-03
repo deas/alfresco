@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.ButtonType;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
  * @author Chiran
  */
 @Listeners(FailedTestListener.class)
-public class FolderSanityTest extends AbstractTests
+public class FolderSanityTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(FolderSanityTest.class);
 

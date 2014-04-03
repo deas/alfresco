@@ -29,7 +29,7 @@ import org.joda.time.format.DateTimeFormat;
  * @author Ranjith Manyam
  * 
  */
-public class ShareUserWorkFlow extends AbstractTests
+public class ShareUserWorkFlow extends AbstractUtils
 {
 
     private static Log logger = LogFactory.getLog(ShareUserWorkFlow.class);

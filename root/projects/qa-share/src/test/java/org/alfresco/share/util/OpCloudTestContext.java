@@ -18,7 +18,7 @@
  */
 
 package org.alfresco.share.util;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +46,7 @@ public class OpCloudTestContext
     private Map<String, Set<String>> createdSites;
     private WebDrone drone;
 
-    public OpCloudTestContext(AbstractTests concreteTest)
+    public OpCloudTestContext(AbstractUtils concreteTest)
     {
         if (concreteTest == null)
         {

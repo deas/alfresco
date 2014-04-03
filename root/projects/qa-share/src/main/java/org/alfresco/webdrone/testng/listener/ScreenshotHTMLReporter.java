@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.VelocityContext;
@@ -44,9 +44,9 @@ public class ScreenshotHTMLReporter extends HTMLReporter implements ITestListene
     @Override
     public void onTestFailure(ITestResult tr) {
         Object instace = tr.getInstance();
-        if (instace instanceof AbstractTests)
+        if (instace instanceof AbstractUtils)
         {
-            AbstractTests abstractTests = (AbstractTests) instace;
+            AbstractUtils abstractTests = (AbstractUtils) instace;
             Map<String, WebDrone> droneMap = abstractTests.getDroneMap();
             saveScreenShots(tr, droneMap);
         }

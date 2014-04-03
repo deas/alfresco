@@ -32,7 +32,7 @@ import org.alfresco.po.share.workflow.WorkFlowDetailsPage;
 import org.alfresco.po.share.workflow.WorkFlowFormDetails;
 import org.alfresco.po.share.workflow.WorkFlowType;
 import org.alfresco.share.util.AbstractCloudSyncTest;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.AbstractWorkflow;
 import org.alfresco.share.util.EditTaskAction;
 import org.alfresco.share.util.ShareUser;
@@ -591,7 +591,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         ShareUser.login(drone, opUser1, DEFAULT_PASSWORD);
 
         // Open Document library, Upload a file
-        DocumentLibraryPage docLibPage = SiteUtil.openSiteDocumentLibraryURL(drone, AbstractTests.getSiteShortname(opSiteName));
+        DocumentLibraryPage docLibPage = SiteUtil.openSiteDocumentLibraryURL(drone, AbstractUtils.getSiteShortname(opSiteName));
 
         // Sselect StartWorkflow
         StartWorkFlowPage startWorkFlowPage = docLibPage.getFileDirectoryInfo(fileName).selectStartWorkFlow().render();

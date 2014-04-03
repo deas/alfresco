@@ -15,7 +15,7 @@ import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.TinyMceEditor;
 import org.alfresco.po.share.site.document.TinyMceEditor.FormatType;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -33,7 +33,7 @@ import org.testng.annotations.Test;
  * @author cbairaajoni
  */
 @Listeners(FailedTestListener.class)
-public class SiteDocumentLibraryTest extends AbstractTests
+public class SiteDocumentLibraryTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(SiteDocumentLibraryTest.class);
 
@@ -78,7 +78,7 @@ public class SiteDocumentLibraryTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
 
         String[] fileInfo = { fileName };
         ShareUser.uploadFileInFolder(drone, fileInfo);
@@ -214,7 +214,7 @@ public class SiteDocumentLibraryTest extends AbstractTests
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
             // Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
 
             ShareUserSitePage.createFolder(drone, folderName, folderDescription).render();
 
@@ -267,7 +267,7 @@ public class SiteDocumentLibraryTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
 
         ShareUser.openSitesDocumentLibrary(drone, siteName).render(maxWaitTime);
 
@@ -340,7 +340,7 @@ public class SiteDocumentLibraryTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render();
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render();
 
         ShareUser.openSitesDocumentLibrary(drone, siteName).render();
 
@@ -438,7 +438,7 @@ public class SiteDocumentLibraryTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render();
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render();
 
         ShareUser.openSitesDocumentLibrary(drone, siteName).render();
 
@@ -565,7 +565,7 @@ public class SiteDocumentLibraryTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render();
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render();
 
         ShareUser.openSitesDocumentLibrary(drone, siteName).render();
 

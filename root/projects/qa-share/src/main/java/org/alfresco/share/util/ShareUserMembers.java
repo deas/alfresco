@@ -34,7 +34,7 @@ import org.testng.SkipException;
 /**
  * @author cbairaajoni
  */
-public class ShareUserMembers extends AbstractTests
+public class ShareUserMembers extends AbstractUtils
 {
 
     private static Log logger = LogFactory.getLog(ShareUserMembers.class);

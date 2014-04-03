@@ -3,7 +3,7 @@ package org.alfresco.share.unit;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
 import org.alfresco.share.util.ShareUserSitePage;
@@ -23,7 +23,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(FailedTestListener.class)
-public class UtilsTest extends AbstractTests
+public class UtilsTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(UtilsTest.class);
 
@@ -116,7 +116,7 @@ public class UtilsTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Creating folder
         ShareUserSitePage.createFolder(drone, folderName1, null);
@@ -192,7 +192,7 @@ public class UtilsTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Creating folder
         ShareUserSitePage.createFolder(drone, folderName1, null);

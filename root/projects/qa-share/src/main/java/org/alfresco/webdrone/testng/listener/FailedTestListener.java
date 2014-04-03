@@ -20,7 +20,7 @@ package org.alfresco.webdrone.testng.listener;
 
 import java.io.IOException;
 
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.ITestResult;
@@ -73,9 +73,9 @@ public class FailedTestListener extends TestListenerAdapter
     private void takeSaveScreenShotSource(ITestResult tr)
     {
         Object instace = tr.getInstance();
-        if (instace instanceof AbstractTests)
+        if (instace instanceof AbstractUtils)
         {
-            AbstractTests abstractTests = (AbstractTests) instace;
+            AbstractUtils abstractTests = (AbstractUtils) instace;
             if (abstractTests.getDrone() != null)
             {
                 String fileName = tr.getInstanceName() + "." + tr.getName();

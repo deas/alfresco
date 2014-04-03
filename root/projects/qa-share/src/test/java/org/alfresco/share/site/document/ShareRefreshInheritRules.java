@@ -9,7 +9,7 @@ import org.alfresco.po.share.site.contentrule.FolderRulesPageWithRules;
 import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
 import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.ActionSelectorCloudImpl;
 import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.ActionSelectorEnterpImpl;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.share.util.ShareUserSitePage;
@@ -25,7 +25,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(FailedTestListener.class)
-public class ShareRefreshInheritRules extends AbstractTests
+public class ShareRefreshInheritRules extends AbstractUtils
 {
 
     private static final Logger logger = Logger.getLogger(ShareRefreshInheritRules.class);

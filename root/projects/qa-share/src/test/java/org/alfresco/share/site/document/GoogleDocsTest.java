@@ -13,7 +13,7 @@ import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.EditInGoogleDocsPage;
 import org.alfresco.po.share.site.document.GoogleDocsUpdateFilePage;
 import org.alfresco.share.util.AbstractCloudSyncTest;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ActivityType;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserGoogleDocs;
@@ -98,7 +98,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
             // Site creation
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         }
         catch (Throwable e)
         {
@@ -199,7 +199,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         }
         catch (Throwable e)
         {
@@ -299,7 +299,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // Uploading encrypted file.
             String[] fileInfo = { encryptedFileName };
@@ -385,7 +385,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         }
         catch (Throwable e)
         {
@@ -496,7 +496,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             ShareUser.openDocumentLibrary(drone);
 
@@ -626,7 +626,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         }
         catch (Throwable e)
         {
@@ -758,7 +758,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             ShareUser.login(hybridDrone, testUser, DEFAULT_PASSWORD);
 
             // Creating Site
-            ShareUser.createSite(hybridDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(hybridDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // Cloud logout.
             ShareUser.logout(hybridDrone);
@@ -877,7 +877,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             String[] fileInfo1 = { TEST_DOC_FILE };
             ShareUser.uploadFileInFolder(drone, fileInfo1);
@@ -966,7 +966,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         }
         catch (Throwable e)
         {
@@ -1096,7 +1096,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         String url = drone.getCurrentUrl();
 
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Open Site Library
         ShareUser.openDocumentLibrary(drone);
@@ -1142,7 +1142,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, siteAdmin, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         }
         catch (Throwable e)
         {
@@ -1279,7 +1279,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, siteAdmin, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         }
         catch (Throwable e)
         {
@@ -1413,7 +1413,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, siteAdmin, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         }
         catch (Throwable e)
         {
@@ -1550,7 +1550,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             ShareUser.openDocumentLibrary(drone);
 
@@ -1664,7 +1664,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, siteAdmin, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             ShareUser.openSitesDocumentLibrary(drone, siteName);
 
@@ -1851,7 +1851,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, siteAdmin, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             ShareUser.openSitesDocumentLibrary(drone, siteName);
 
@@ -1998,7 +1998,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             ShareUser.openSitesDocumentLibrary(drone, siteName);
 
@@ -2158,7 +2158,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             ShareUser.openSitesDocumentLibrary(drone, siteName);
 
@@ -2329,7 +2329,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User login
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             ShareUser.openSitesDocumentLibrary(drone, siteName);
 

@@ -16,7 +16,7 @@ import org.alfresco.po.share.site.document.TinyMceEditor.FormatType;
 import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.po.share.site.wiki.WikiPage.FONT_ATTR;
 import org.alfresco.po.share.site.wiki.WikiPage.Mode;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -33,7 +33,7 @@ import org.testng.annotations.Test;
  * @description This class is to test Wiki page.   
  */
 @Listeners(FailedTestListener.class)
-public class WikiPageTest extends AbstractTests
+public class WikiPageTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(WikiPageTest.class);
 
@@ -72,7 +72,7 @@ public class WikiPageTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         
         CustomizeSitePage customizeSizePage = ShareUser.customizeSite(drone, siteName);
         
@@ -246,7 +246,7 @@ public class WikiPageTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         ShareUser.logout(drone);
 

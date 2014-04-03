@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.po.share.site.document.*;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
 import org.alfresco.share.util.ShareUserSitePage;
@@ -39,7 +39,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(FailedTestListener.class)
-public class RepositoryDocumentWorkflowsTests extends AbstractTests
+public class RepositoryDocumentWorkflowsTests extends AbstractUtils
 {
     private static final Logger logger = Logger.getLogger(RepositoryDocumentWorkflowsTests.class);
 

@@ -46,7 +46,7 @@ import org.alfresco.po.share.enums.Dashlet;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.user.MyProfilePage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserDashboard;
 import org.alfresco.share.util.ShareUserMembers;
@@ -76,7 +76,7 @@ import org.testng.annotations.Test;
  * @author jcule
  */
 @Listeners(FailedTestListener.class)
-public class SiteDashboardMyDiscussionTests extends AbstractTests
+public class SiteDashboardMyDiscussionTests extends AbstractUtils
 {
 
     private static Log logger = LogFactory.getLog(SiteDashboardMyDiscussionTests.class);

@@ -2,7 +2,7 @@ package org.alfresco.share;
 
 import java.util.Calendar;
 
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.po.share.DashBoardPage;
@@ -12,7 +12,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class MyDashBoardTest extends AbstractTests
+public class MyDashBoardTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(MyDashBoardTest.class);
 
@@ -252,7 +252,7 @@ public class MyDashBoardTest extends AbstractTests
             ShareUser.login(drone, testUser, testUserPass);
 
             // createSite
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // Search for Site
             ShareUser.openUserDashboard(drone);

@@ -18,7 +18,7 @@ import org.testng.xml.XmlSuite;
  * @author mbhave
  * 
  */
-public class TestDataSetup extends AbstractTests
+public class TestDataSetup extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(TestDataSetup.class);
     private static final String PROP_FILE = "src/main/resources/webdrone.properties";

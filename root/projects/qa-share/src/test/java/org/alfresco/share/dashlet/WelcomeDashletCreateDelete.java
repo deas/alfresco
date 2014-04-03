@@ -26,7 +26,7 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.dashlet.SiteWelcomeDashlet;
 import org.alfresco.po.share.site.SiteDashboardPage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -46,7 +46,7 @@ import org.testng.annotations.Test;
  * 
  * @author Shan Nagarajan
  */
-public class WelcomeDashletCreateDelete extends AbstractTests
+public class WelcomeDashletCreateDelete extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(WelcomeDashletCreateDelete.class);
 
@@ -130,7 +130,7 @@ public class WelcomeDashletCreateDelete extends AbstractTests
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
             // Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // Check Welcome Dashlet
             SiteWelcomeDashlet welcomeDashlet = checkWelcomeDashlet(siteName);
@@ -148,7 +148,7 @@ public class WelcomeDashletCreateDelete extends AbstractTests
             // successfully by deleteSite
 
             // Create Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // Check Welcome Dashlet
             checkWelcomeDashlet(siteName);

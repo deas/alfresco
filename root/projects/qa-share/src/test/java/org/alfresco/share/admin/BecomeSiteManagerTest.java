@@ -9,7 +9,7 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.admin.ManagedSiteRow;
 import org.alfresco.po.share.enums.SiteVisibility;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserAdmin;
@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
  */
 
 // TODO: Add FailedTest listener enabling error reporting + screenshots
-public class BecomeSiteManagerTest extends AbstractTests
+public class BecomeSiteManagerTest extends AbstractUtils
 {
     /** Constants */
     private static final String BECOME_SITE_MANAGER_BUTTON = "Become Site Manager";

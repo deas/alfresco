@@ -31,7 +31,7 @@ import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.site.document.SortField;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -47,7 +47,7 @@ import org.testng.annotations.Test;
  */
 
 @Listeners(FailedTestListener.class)
-public class TableViewDocLibTest extends AbstractTests
+public class TableViewDocLibTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(TableViewDocLibTest.class);
 
@@ -88,7 +88,7 @@ public class TableViewDocLibTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // TODO: Testlink: Remove Precondition : Several folders and documents were created/uploaded is not relevant
     }
@@ -142,7 +142,7 @@ public class TableViewDocLibTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload 2 files
         ShareUser.openSitesDocumentLibrary(drone, siteName);
@@ -196,7 +196,7 @@ public class TableViewDocLibTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     @Test(groups = "AlfrescoOne")
@@ -288,7 +288,7 @@ public class TableViewDocLibTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     @Test(groups = "AlfrescoOne")
@@ -346,7 +346,7 @@ public class TableViewDocLibTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     @Test(groups = "AlfrescoOne")
@@ -431,7 +431,7 @@ public class TableViewDocLibTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     @Test(groups = "AlfrescoOne")
@@ -496,7 +496,7 @@ public class TableViewDocLibTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
     }
 
     @Test(groups = "AlfrescoOne")

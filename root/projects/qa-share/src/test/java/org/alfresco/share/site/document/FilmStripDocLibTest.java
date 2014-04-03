@@ -41,7 +41,7 @@ import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.document.SelectAspectsPage;
 import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.WebDroneType;
@@ -60,7 +60,7 @@ import org.testng.annotations.Test;
  * @author Abhijeet Bharade
  */
 @Listeners(FailedTestListener.class)
-public class FilmStripDocLibTest extends AbstractTests
+public class FilmStripDocLibTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(FilmStripDocLibTest.class);
 
@@ -104,7 +104,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName });
         ShareUser.logout(customDrone);
         //
@@ -162,7 +162,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
@@ -241,7 +241,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
@@ -357,7 +357,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
@@ -477,7 +477,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
@@ -543,7 +543,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         // ShareUser.openSiteDashboard(customDrone, siteName);
 
         // Upload FIles
@@ -623,7 +623,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
@@ -727,7 +727,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
@@ -830,7 +830,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
@@ -954,7 +954,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
@@ -1028,7 +1028,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
@@ -1108,7 +1108,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
@@ -1188,7 +1188,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
@@ -1267,7 +1267,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         // ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
@@ -1356,7 +1356,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
@@ -1502,7 +1502,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload FIles
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
@@ -1622,7 +1622,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         // Upload FIles
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName2 });
@@ -1714,7 +1714,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
 
         ShareUser.logout(customDrone);
@@ -1781,7 +1781,7 @@ public class FilmStripDocLibTest extends AbstractTests
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         ShareUser.logout(customDrone);
 

@@ -6,7 +6,7 @@ import java.util.List;
 import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.service.cmr.site.SiteVisibility;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.SiteUtil;
@@ -21,7 +21,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(FailedTestListener.class)
-public class ShareRefreshCopyToSites extends AbstractTests
+public class ShareRefreshCopyToSites extends AbstractUtils
 {
 
     private static final Logger logger = Logger.getLogger(ShareRefreshCopyToSites.class);

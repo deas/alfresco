@@ -9,7 +9,7 @@ import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentEditOfflinePage;
 import org.alfresco.po.share.site.document.FileDirectoryInfo;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
 import org.alfresco.share.util.WebDroneType;
@@ -24,7 +24,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(FailedTestListener.class)
-public class RepositoryDocumentDownloadTests extends AbstractTests
+public class RepositoryDocumentDownloadTests extends AbstractUtils
 {
     private static final Logger logger = Logger.getLogger(RepositoryDocumentDownloadTests.class);
 

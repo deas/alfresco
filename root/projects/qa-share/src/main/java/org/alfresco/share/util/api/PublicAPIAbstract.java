@@ -45,7 +45,7 @@ import org.alfresco.rest.workflow.api.tests.WorkflowApiClient.DeploymentsClient;
 import org.alfresco.rest.workflow.api.tests.WorkflowApiClient.ProcessesClient;
 import org.alfresco.rest.workflow.api.tests.WorkflowApiClient.TasksClient;
 import org.alfresco.rest.workflow.api.tests.WorkflowApiHttpClient;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.BeforeClass;
@@ -58,7 +58,7 @@ import org.testng.annotations.BeforeClass;
  * 
  * @author Abhijeet Bharade
  */
-public abstract class PublicAPIAbstract extends AbstractTests
+public abstract class PublicAPIAbstract extends AbstractUtils
 {
     private PublicApiHttpClient httpClient;
     static WorkflowApiHttpClient httpClientForWorkflow;

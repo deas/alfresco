@@ -1,7 +1,7 @@
 package org.alfresco.share.util.api;
 
 import java.io.IOException;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.HttpUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +30,7 @@ import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class AlfrescoHttpClient extends AbstractTests
+public class AlfrescoHttpClient extends AbstractUtils
 {
     private static final int TIMEOUT_MILLISEC = (int) refreshDuration; // = 10 seconds
     private static Log logger = LogFactory.getLog(AlfrescoHttpClient.class);

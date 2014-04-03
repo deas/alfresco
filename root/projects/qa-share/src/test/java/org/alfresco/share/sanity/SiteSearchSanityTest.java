@@ -27,7 +27,7 @@ import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SiteFinderPage.ButtonType;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -48,7 +48,7 @@ import org.testng.annotations.Test;
  * @author Abhijeet Bharade
  */
 @Listeners(FailedTestListener.class)
-public class SiteSearchSanityTest extends AbstractTests
+public class SiteSearchSanityTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(SiteSearchSanityTest.class);
 

@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.po.share.site.document.*;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -43,7 +43,7 @@ import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -64,7 +64,7 @@ import org.testng.Assert;
  * @author Shan Nagarajan
  * @since 1.1
  */
-public class AbstractAspectTests extends AbstractTests
+public class AbstractAspectTests extends AbstractUtils
 {
     private Log logger = LogFactory.getLog(this.getClass());
 
@@ -89,7 +89,7 @@ public class AbstractAspectTests extends AbstractTests
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
             // Create Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             if (addDoc)
             {
@@ -223,7 +223,7 @@ public class AbstractAspectTests extends AbstractTests
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
             // Create Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             if (addFold)
             {

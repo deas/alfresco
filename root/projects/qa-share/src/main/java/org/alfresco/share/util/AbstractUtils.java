@@ -86,7 +86,7 @@ import org.testng.annotations.Parameters;
  * 
  * @author Meenal Bhave
  */
-public abstract class AbstractTests
+public abstract class AbstractUtils
 {
     // Test Run Options
     protected static final Boolean deleteSiteFlag = true; // Indicates if Site
@@ -95,7 +95,7 @@ public abstract class AbstractTests
                                                           // -> using
                                                           // ShareUser.deleteSiteAPI
 
-    private static Log logger = LogFactory.getLog(AbstractTests.class);
+    private static Log logger = LogFactory.getLog(AbstractUtils.class);
     protected static ApplicationContext ctx;
     protected static String shareUrl;
     protected static String cloudUrlForHybrid;
@@ -403,12 +403,12 @@ public abstract class AbstractTests
         }
         try 
         {
-            saveOsScreenShot(methodName);
-        } 
+			saveOsScreenShot(methodName);
+		} 
         catch (AWTException e) 
         {
-            logger.error("Not able to take the OS screen shot: " + e.getMessage());
-        }
+        	logger.error("Not able to take the OS screen shot: " + e.getMessage());
+		}
     }
     
     /**
@@ -417,8 +417,8 @@ public abstract class AbstractTests
      */
     public void saveOsScreenShot(String methodName) throws IOException, AWTException
     {
-        Robot robot = new Robot();
-        BufferedImage screenShot = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+    	Robot robot = new Robot();
+    	BufferedImage screenShot = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
         ImageIO.write(screenShot, "png", new File("target/webdrone-" + methodName+ "_OS" +".png"));
     }
 

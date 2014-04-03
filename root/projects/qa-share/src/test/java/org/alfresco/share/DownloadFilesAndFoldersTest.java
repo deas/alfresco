@@ -9,7 +9,7 @@ import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  *
  */
 @Listeners(FailedTestListener.class)
-public class DownloadFilesAndFoldersTest extends AbstractTests
+public class DownloadFilesAndFoldersTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(DownloadFilesAndFoldersTest.class);   
     private static final String FILE_ZIP_EXT = ".zip";
@@ -80,7 +80,7 @@ public class DownloadFilesAndFoldersTest extends AbstractTests
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
             
             // Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
             
             // Creating folder.
             ShareUserSitePage.createFolder(drone, folderName, null);
@@ -204,7 +204,7 @@ public class DownloadFilesAndFoldersTest extends AbstractTests
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
             
             // Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
             
             // Creating folder.
             ShareUserSitePage.createFolder(drone, folderName1, null);
@@ -309,7 +309,7 @@ public class DownloadFilesAndFoldersTest extends AbstractTests
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
             
             // Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
             
             ShareUser.openSitesDocumentLibrary(drone, siteName).render(maxWaitTime);
             
@@ -425,7 +425,7 @@ public class DownloadFilesAndFoldersTest extends AbstractTests
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
             
             // Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render();
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render();
             
             ShareUser.openSitesDocumentLibrary(drone, siteName).render();
             

@@ -13,7 +13,7 @@ import org.alfresco.po.share.search.AdvanceSearchPage;
 import org.alfresco.po.share.search.SearchResultItem;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.share.util.ShareUserSearchPage;
@@ -26,7 +26,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @SuppressWarnings("unused")
-public class AdvanceSearchTest2 extends AbstractTests
+public class AdvanceSearchTest2 extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(AdvanceSearchTest2.class);
 
@@ -91,7 +91,7 @@ public class AdvanceSearchTest2 extends AbstractTests
 
             ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             String[] fileInfo = { fileName };
             ShareUser.uploadFileInFolder(drone, fileInfo);
@@ -334,7 +334,7 @@ public class AdvanceSearchTest2 extends AbstractTests
 
             ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             ShareUserSitePage.createFolder(drone, folderName, folderDescription);
         }
@@ -432,7 +432,7 @@ public class AdvanceSearchTest2 extends AbstractTests
 
             ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         }
         catch (Throwable e)
         {
@@ -535,7 +535,7 @@ public class AdvanceSearchTest2 extends AbstractTests
 
             ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // Creating folders
             ShareUserSitePage.createFolder(drone, folders[0], null);
@@ -687,7 +687,7 @@ public class AdvanceSearchTest2 extends AbstractTests
 
             ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // Creating folders
             ShareUserSitePage.createFolder(drone, folders[0], null);
@@ -828,7 +828,7 @@ public class AdvanceSearchTest2 extends AbstractTests
 
             ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // Creating folders
             ShareUserSitePage.createFolder(drone, folders[0], null);
@@ -969,7 +969,7 @@ public class AdvanceSearchTest2 extends AbstractTests
 
             ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // Creating folders
             ShareUserSitePage.createFolder(drone, folders[0], null);
@@ -1106,7 +1106,7 @@ public class AdvanceSearchTest2 extends AbstractTests
 
             ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // Creating folders
             ShareUserSitePage.createFolder(drone, folders[0], folderTitles[0], null);
@@ -1212,7 +1212,7 @@ public class AdvanceSearchTest2 extends AbstractTests
 
             ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
             
             ShareUser.openDocumentLibrary(drone); 
             
@@ -1344,7 +1344,7 @@ public class AdvanceSearchTest2 extends AbstractTests
 
             ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // Creating folders
             ShareUserSitePage.createFolder(drone, folders[0], descriptions[0]);
@@ -1450,7 +1450,7 @@ public class AdvanceSearchTest2 extends AbstractTests
 
             ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
             
             ShareUser.openDocumentLibrary(drone);
             
@@ -1592,7 +1592,7 @@ public class AdvanceSearchTest2 extends AbstractTests
             ShareUser.login(drone, mainUser, testPassword);
 
             // Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PRIVATE).render(maxWaitTime);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE).render(maxWaitTime);
 
             // Creating folders
             ShareUserSitePage.createFolder(drone, folders[0], null, null);
@@ -1720,7 +1720,7 @@ public class AdvanceSearchTest2 extends AbstractTests
             ShareUser.login(drone, mainUser, testPassword);
 
             // Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_MODERATED).render(maxWaitTime);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_MODERATED).render(maxWaitTime);
 
             // Creating folders
             ShareUserSitePage.createFolder(drone, folders[0], null, null);
@@ -1782,7 +1782,7 @@ public class AdvanceSearchTest2 extends AbstractTests
     public void ALF_4975()
     {
         /** Start Test */
-        testName = AbstractTests.getTestName();
+        testName = AbstractUtils.getTestName();
         String testUser = getUserNameFreeDomain(testName + "1");
         String siteName = getSiteName(testName);
 
@@ -1987,7 +1987,7 @@ public class AdvanceSearchTest2 extends AbstractTests
             ShareUser.login(drone, mainUser, testPassword);
 
             // Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
 
             // Creating folders
             ShareUserSitePage.createFolder(drone, folders[0], null, null);
@@ -2113,7 +2113,7 @@ public class AdvanceSearchTest2 extends AbstractTests
             ShareUser.login(drone, testUser, testPassword);
 
             // Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
 
             ContentDetails contentDetails = new ContentDetails();
             contentDetails.setName("test 1");
@@ -2217,7 +2217,7 @@ public class AdvanceSearchTest2 extends AbstractTests
             ShareUser.login(drone, testUser, testPassword);
 
             // Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
 
             // Creating documents with quoted
             ContentDetails contentDetails = new ContentDetails();

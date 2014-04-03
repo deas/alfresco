@@ -28,7 +28,7 @@ import org.alfresco.po.share.admin.ActionsSet;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.admin.ManagedSiteRow;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserAdmin;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -40,7 +40,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(FailedTestListener.class)
-public class DeleteSiteTests extends AbstractTests
+public class DeleteSiteTests extends AbstractUtils
 {
     private static final Logger logger = Logger.getLogger(SiteAdminGroupTests.class);
     public String siteAdmin = "SITE_ADMINISTRATORS";
@@ -91,7 +91,7 @@ public class DeleteSiteTests extends AbstractTests
         ShareUser.login(drone, testUser2);
 
         // Create public site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Logout User2
         ShareUser.logout(drone);
@@ -168,7 +168,7 @@ public class DeleteSiteTests extends AbstractTests
         ShareUser.login(drone, testUser2Info);
 
         // Create public site
-        ShareUser.createSite(drone, site1, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, site1, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Logout User2
         ShareUser.logout(drone);
@@ -234,7 +234,7 @@ public class DeleteSiteTests extends AbstractTests
         ShareUser.login(drone, cloudUser);
 
         // Create public site
-        ShareUser.createSite(drone, site1, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, site1, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Navigate to manageSites page
         DashBoardPage dashBoard = ShareUser.openUserDashboard(drone);
@@ -303,7 +303,7 @@ public class DeleteSiteTests extends AbstractTests
         ShareUser.login(drone, testUser2Info);
 
         // Create public site
-        ShareUser.createSite(drone, site1, AbstractTests.SITE_VISIBILITY_PRIVATE);
+        ShareUser.createSite(drone, site1, AbstractUtils.SITE_VISIBILITY_PRIVATE);
 
         // Logout User2
         ShareUser.logout(drone);
@@ -360,7 +360,7 @@ public class DeleteSiteTests extends AbstractTests
         ShareUser.login(drone, ADMIN_USERNAME);
 
         // Create public site
-        ShareUser.createSite(drone, site1, AbstractTests.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+        ShareUser.createSite(drone, site1, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
 
         // Upload file in Site Document library
         String[] fileInfo = { fileName };

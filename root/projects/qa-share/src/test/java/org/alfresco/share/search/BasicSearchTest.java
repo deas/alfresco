@@ -1,6 +1,6 @@
 package org.alfresco.share.search;
 
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSearchPage;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -14,7 +14,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(FailedTestListener.class)
-public class BasicSearchTest extends AbstractTests
+public class BasicSearchTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(BasicSearchTest.class);    
 
@@ -81,7 +81,7 @@ public class BasicSearchTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // UpLoad Files
         for (int index = 0; index <= fileTypes; index++)
@@ -212,7 +212,7 @@ public class BasicSearchTest extends AbstractTests
             ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
             // Site
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // UpLoad Files
             String[] fileInfo = { fileName };

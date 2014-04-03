@@ -10,7 +10,7 @@ import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.document.ConfirmDeletePage;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
-import org.alfresco.share.util.AbstractTests;
+import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.share.util.ShareUserRepositoryPage;
@@ -25,7 +25,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(FailedTestListener.class)
-public class RepositoryFolderTests3 extends AbstractTests
+public class RepositoryFolderTests3 extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(RepositoryFolderTests3.class);
 

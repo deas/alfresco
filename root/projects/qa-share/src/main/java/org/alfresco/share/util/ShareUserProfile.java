@@ -17,7 +17,7 @@ import org.alfresco.po.share.user.TrashCanValues;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class ShareUserProfile extends AbstractTests
+public class ShareUserProfile extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ShareUserProfile.class);
 

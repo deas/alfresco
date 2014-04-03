@@ -56,7 +56,7 @@ import org.testng.Assert;
  * @author Michael Suzuki, Meenal Bhave
  * @since 1.0
  */
-public class SiteUtil extends AbstractTests
+public class SiteUtil extends AbstractUtils
 {
     private static final String SITE_DASH_LOCATION_SUFFIX = "/page/site/";
     private static final String SITE_DASH_SUFFIX = "dashboard";

@@ -48,7 +48,7 @@ import static org.testng.Assert.assertTrue;
  */
 
 @Listeners(FailedTestListener.class)
-public class DocumentDetailsActionsTest extends AbstractTests
+public class DocumentDetailsActionsTest extends AbstractUtils
 {
 
     private static Log logger = LogFactory.getLog(DocumentDetailsActionsTest.class);
@@ -80,7 +80,7 @@ public class DocumentDetailsActionsTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         ShareUser.openSiteDashboard(drone, siteName);
 
         // Upload File
@@ -157,7 +157,7 @@ public class DocumentDetailsActionsTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         ShareUser.openSiteDashboard(drone, siteName);
 
     }
@@ -223,7 +223,7 @@ public class DocumentDetailsActionsTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         ShareUser.openSiteDashboard(drone, siteName);
 
         // Upload File
@@ -304,7 +304,7 @@ public class DocumentDetailsActionsTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         ShareUser.openSiteDashboard(drone, siteName);
 
         // Upload File
@@ -385,7 +385,7 @@ public class DocumentDetailsActionsTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         ShareUser.openSiteDashboard(drone, siteName);
 
         // Upload File
@@ -466,7 +466,7 @@ public class DocumentDetailsActionsTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
         ShareUser.openSiteDashboard(drone, siteName);
 
         // Upload File

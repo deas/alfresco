@@ -24,7 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
-public class ShareUserDashboard extends AbstractTests
+public class ShareUserDashboard extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ShareUserDashboard.class);
     protected static final String DEFAULT_FOLDER = "Documents";
