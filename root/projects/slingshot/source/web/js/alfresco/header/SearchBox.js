@@ -356,7 +356,7 @@ define(["dojo/_base/declare",
                      });
                      itemLink.placeAt(this._LiveSearch.containerNodeDocs);
                   }, this);
-                  // the more [+] action is added if more results are potentially available
+                  // the more action is added if more results are potentially available
                   DomStyle.set(this._LiveSearch.nodeDocsMore, "display", response.hasMoreRecords ? "block" : "none");
                   // record the count of results
                   if (startIndex === 0)
