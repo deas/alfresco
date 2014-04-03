@@ -378,6 +378,23 @@ public class DocumentDetailsPage extends DetailsPage
     }
 
     /**
+     * Get status banner message (This document is locked by you., This document is locked by you for offline editing., Last sync failed.)
+     * @return String status banner text message
+     */
+    public synchronized String getContentInfo()
+    {
+        try
+        {
+            return drone.findAndWait(By.cssSelector(CHECKEDOUT_MESSAGE_PLACEHOLDER + ">span")).getText();
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded the time to find Info banner.");
+        }
+        return "";
+    }
+
+    /**
      * Select the edit off line link.
      * @return {@link HtmlPage} edit off line page.
      */
