@@ -340,9 +340,9 @@ define(["dojo/_base/declare",
                   // construct each Document item as a LiveSearchItem widget
                   array.forEach(response.items, function(item) {
                      // construct the meta-data - site information, modified by and title description as tooltip
-                     var site = (item.site ? "site/" + item.site.shortName + "/" : ""),
-                         info = (item.site ? ("("+item.site.title+") - ") : "") + Stamp.fromISOString(item.modifiedOn).toGMTString() + " - " + item.modifiedBy,
-                         desc = this.encodeHTML(item.title);
+                     var site = (item.site ? "site/" + item.site.shortName + "/" : "");
+                     var info = (item.site ? ("(<a href='" + AlfConstants.URL_PAGECONTEXT + site + "documentlibrary'>" + this.encodeHTML(item.site.title) + "</a>) - ") : "") + Stamp.fromISOString(item.modifiedOn).toGMTString() + " - <a href='" + AlfConstants.URL_PAGECONTEXT + "user/" + this.encodeHTML(item.modifiedBy) + "/profile'>" + this.encodeHTML(item.modifiedBy) + "</a>";
+                     var desc = this.encodeHTML(item.title);
                      if (item.description) desc += (desc.length !== 0 ? "\r\n" : "") + this.encodeHTML(item.description);
                      // build the widget for the item - including the thumbnail url for the document
                      var itemLink = new LiveSearchItem({
@@ -352,7 +352,7 @@ define(["dojo/_base/declare",
                         link: AlfConstants.URL_PAGECONTEXT + site + "document-details?nodeRef=" + item.nodeRef,
                         icon: AlfConstants.PROXY_URI + "api/node/" + item.nodeRef.replace(":/", "") + "/content/thumbnails/doclib?c=queue&ph=true&lastModified=" + (item.lastThumbnailModification || 1),
                         alt: this.encodeHTML(item.name),
-                        meta: this.encodeHTML(info)
+                        meta: info
                      });
                      itemLink.placeAt(this._LiveSearch.containerNodeDocs);
                   }, this);
