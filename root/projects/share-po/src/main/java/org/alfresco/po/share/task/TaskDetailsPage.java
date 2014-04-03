@@ -132,7 +132,7 @@ public class TaskDetailsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find \"My Tasks List\" link" + nse.getMessage());
+            throw new PageOperationException("Unable to find \"My Tasks List\" link" + nse);
         }
     }
 
@@ -154,7 +154,7 @@ public class TaskDetailsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find More Info element" + nse.getMessage());
+            throw new PageOperationException("Unable to find More Info element" + nse);
         }
         return info;
     }
@@ -232,7 +232,7 @@ public class TaskDetailsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find Task Item element" + nse.getMessage());
+            throw new PageOperationException("Unable to find Task Item element" + nse);
         }
     }
 
@@ -249,7 +249,7 @@ public class TaskDetailsPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to locate Edit button" + nse.getMessage());
+            throw new PageOperationException("Unable to locate Edit button" + nse);
         }
     }
 

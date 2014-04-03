@@ -181,7 +181,7 @@ public class EditTaskPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find Approve button" + nse.getMessage());
+            throw new PageOperationException("Unable to find Approve button" + nse);
         }
     }
 
@@ -203,7 +203,7 @@ public class EditTaskPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find Save and Close button" + nse.getMessage());
+            throw new PageOperationException("Unable to find Save and Close button" + nse);
         }
     }
 
@@ -261,7 +261,7 @@ public class EditTaskPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find More Info element" + nse.getMessage());
+            throw new PageOperationException("Unable to find More Info element" + nse);
         }
         return info;
     }

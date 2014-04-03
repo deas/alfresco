@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.po.share.SharePage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -115,7 +116,7 @@ public class ChangeTypePage extends SharePage
      * 
      * @return {@link FolderDetailsPage}
      */
-    public FolderDetailsPage selectCancel()
+    public HtmlPage selectCancel()
     {
         drone.find(CANCEL_BUTTON).click();
         return new FolderDetailsPage(drone);
@@ -133,7 +134,12 @@ public class ChangeTypePage extends SharePage
         select.selectByVisibleText(changeType);
     }
 
-    public FolderDetailsPage selectSave(){
+    /**
+     * Clicks on save button to close the dlg.
+     * 
+     * @return {@link FolderDetailsPage}
+     */
+    public HtmlPage selectSave(){
         drone.find(OK_BUTTON).click();
         return new FolderDetailsPage(drone);
     }

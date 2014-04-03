@@ -255,7 +255,7 @@ public class InviteMembersPage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Time exceeded to find the invitees list." + e.getMessage());
+                logger.trace("Time exceeded to find the invitees list." + e);
             }
         }
 
@@ -296,7 +296,7 @@ public class InviteMembersPage extends SharePage
             {
                 if(logger.isTraceEnabled())
                 {
-                    logger.trace("Unable to find the invitee css." + e.getMessage());
+                    logger.trace("Unable to find the invitee css." + e);
                 }
             }
         }

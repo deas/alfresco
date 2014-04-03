@@ -49,7 +49,7 @@ import org.openqa.selenium.support.ui.Select;
  */
 public class ConfigureSavedSearchDialogBoxPage extends SharePage
 {
-    private static final Log LOGGER = LogFactory.getLog(ConfigureSavedSearchDialogBoxPage.class);
+    private final Log logger = LogFactory.getLog(ConfigureSavedSearchDialogBoxPage.class);
     private static final By CONFIGURE_SEARCH_DIALOG_BOX = By
             .cssSelector("div[id$='default-configDialog-configDialog_c'][style*='visibility: visible']>div[id$='_default-configDialog-configDialog']");
     private static final By CONFIGURE_SEARCH_DIALOG_HEADER = By
@@ -138,7 +138,7 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
         }
         catch (NoSuchElementException te)
         {
-            LOGGER.error("Unable to find the OK button." + te.getMessage());
+            logger.error("Unable to find the OK button." + te);
             throw new PageOperationException("Unable to click the OK Button.", te);
         }
     }
@@ -179,7 +179,7 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
         }
         catch (NoSuchElementException te)
         {
-            LOGGER.error("Unable to find the " + buttonName + " button." + te.getMessage());
+            logger.error("Unable to find the " + buttonName + " button." + te);
             throw new PageOperationException("Unable to click the " + buttonName + " Button.");
         }
     }
@@ -205,7 +205,7 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
         }
         catch (NoSuchElementException te)
         {
-            LOGGER.error("Unable to find the Search Term box." + te.getMessage());
+            logger.error("Unable to find the Search Term box." + te);
             throw new PageOperationException("Unable to find the Search Term box.", te);
         }
     }
@@ -230,7 +230,7 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
         }
         catch (NoSuchElementException te)
         {
-            LOGGER.error("Unable to find the Title box." + te.getMessage());
+            logger.error("Unable to find the Title box." + te);
             throw new PageOperationException("Unable to find the Title box.", te);
         }
     }
@@ -249,7 +249,7 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
         }
         catch (NoSuchElementException te)
         {
-            LOGGER.error("Unable to find the Search SearchLimit drop down." + te.getMessage());
+            logger.error("Unable to find the Search SearchLimit drop down." + te);
             throw new PageOperationException("Unable to find the Search SearchLimit drop down.", te);
         }
     }
@@ -302,7 +302,7 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
         }
         catch (TimeoutException elementException)
         {
-            LOGGER.error("Exceeded time to find the help ballon text");
+            logger.error("Exceeded time to find the help ballon text");
         }
         throw new UnsupportedOperationException("Not able to find the help text");
     }

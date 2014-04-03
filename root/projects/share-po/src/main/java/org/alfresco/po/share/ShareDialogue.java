@@ -14,12 +14,6 @@
  */
 package org.alfresco.po.share;
 
-import org.alfresco.po.share.site.CreateSitePage;
-import org.alfresco.po.share.site.NewFolderPage;
-import org.alfresco.po.share.site.UploadFilePage;
-import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPopup;
-import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -253,7 +247,7 @@ public class ShareDialogue extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new NoSuchElementException(nse.getMessage());
+            throw new NoSuchElementException("Unable to find the css " + nse);
         }
     }
     

@@ -245,7 +245,7 @@ public abstract class AbstractTest
         } 
         catch (AWTException e) 
         {
-            logger.error("Not able to take the OS screen shot: " + e.getMessage());
+            logger.error("Not able to take the OS screen shot: " + e);
         }
     }
     

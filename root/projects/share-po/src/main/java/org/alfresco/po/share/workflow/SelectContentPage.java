@@ -409,7 +409,7 @@ public class SelectContentPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find Close Button" + nse.getMessage());
+            throw new PageOperationException("Unable to find Close Button" + nse);
         }
     }
 
@@ -424,7 +424,7 @@ public class SelectContentPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find Cancel Button" + nse.getMessage());
+            throw new PageOperationException("Unable to find Cancel Button" + nse);
         }
     }
 

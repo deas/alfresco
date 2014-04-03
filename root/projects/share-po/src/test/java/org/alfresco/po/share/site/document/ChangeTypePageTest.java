@@ -80,7 +80,7 @@ public class ChangeTypePageTest extends AbstractTest
     @Test(dependsOnMethods = "getTypesTest")
     public void selectCancelTest() throws Throwable
     {
-        folderDetailsPage = changeTypePage.selectCancel();
+        folderDetailsPage = changeTypePage.selectCancel().render();
         assertTrue(folderDetailsPage.isBrowserTitle("Folder Details"), "The dialog should be displyed");
     }
 }

@@ -9,31 +9,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * User: aliaksei.bul
- * Date: 08.07.13
- * Time: 12:12
+ * User: aliaksei.bul Date: 08.07.13 Time: 12:12
  */
 public abstract class AbstractIfSelector
 {
     private WebDrone drone;
 
-    private static final By IF_OPTIONS_SELECT    = By
-            .cssSelector("ul[id$=ruleConfigIfCondition-configs] select[class$='config-name']");
+    private static final By IF_OPTIONS_SELECT = By.cssSelector("ul[id$=ruleConfigIfCondition-configs] select[class$='config-name']");
     private static final By SIMILARITY_IF_SELECT = By.cssSelector("select[param='operation']");
-    private static final By IS_SELECT            = By.cssSelector("select[title='is']");
+    private static final By IS_SELECT = By.cssSelector("select[title='is']");
 
-    protected static final By COMPARE_FIELD      = By.cssSelector("input[param='value']");
-    private static final   By COMPARE_DATE_FIELD = By.cssSelector("input[class='datepicker-date']");
-    private static final   By COMPARE_TIME_FIELD = By.cssSelector("input[class='datepicker-time']");
-    private static final   By SELECT_BUTTON      = By.cssSelector("span[class*='has-tag'] button");
+    protected static final By COMPARE_FIELD = By.cssSelector("input[param='value']");
+    private static final By COMPARE_DATE_FIELD = By.cssSelector("input[class='datepicker-date']");
+    private static final By COMPARE_TIME_FIELD = By.cssSelector("input[class='datepicker-time']");
+    private static final By SELECT_BUTTON = By.cssSelector("span[class*='has-tag'] button");
 
     public enum SizeCompareOption
     {
-        EQUALS(0),
-        GREATER_THAN(1),
-        GREATER_THAN_EQUAL(2),
-        LESS_THAN(3),
-        LESS_THAN_EQUAL(4);
+        EQUALS(0), GREATER_THAN(1), GREATER_THAN_EQUAL(2), LESS_THAN(3), LESS_THAN_EQUAL(4);
 
         private final int numberPosition;
 
@@ -45,10 +38,7 @@ public abstract class AbstractIfSelector
 
     public enum StringCompareOption
     {
-        BEGINS(0),
-        CONTAINS(1),
-        ENDS(2),
-        EQUALS(3);
+        BEGINS(0), CONTAINS(1), ENDS(2), EQUALS(3);
 
         private final int numberPosition;
 
@@ -57,7 +47,6 @@ public abstract class AbstractIfSelector
             this.numberPosition = numberPosition;
         }
     }
-
 
     protected AbstractIfSelector(WebDrone drone)
     {
@@ -72,7 +61,7 @@ public abstract class AbstractIfSelector
         {
             ifSelects.add(new Select(ifOption));
         }
-        ifSelects.get(ifSelects.size()-1).selectByIndex(ifOptionNumber);
+        ifSelects.get(ifSelects.size() - 1).selectByIndex(ifOptionNumber);
     }
 
     private void selectIfSimilarity(int similarityNumber)
@@ -83,13 +72,13 @@ public abstract class AbstractIfSelector
         {
             similaritySelects.add(new Select(similarityInStringOption));
         }
-        similaritySelects.get(similaritySelects.size()-1).selectByIndex(similarityNumber);
+        similaritySelects.get(similaritySelects.size() - 1).selectByIndex(similarityNumber);
     }
 
     public void fillField(By selector, String text)
     {
         List<WebElement> similarityStringFields = drone.findAndWaitForElements(selector);
-        similarityStringFields.get(similarityStringFields.size()-1).sendKeys(text);
+        similarityStringFields.get(similarityStringFields.size() - 1).sendKeys(text);
     }
 
     protected void selectAllItems(int optionNumber)
@@ -172,16 +161,15 @@ public abstract class AbstractIfSelector
         {
             mimeTypeSelects.add(new Select(mimeTypeElement));
         }
-        mimeTypeSelects.get(mimeTypeSelects.size()-1).selectByVisibleText(visibleText);
+        mimeTypeSelects.get(mimeTypeSelects.size() - 1).selectByVisibleText(visibleText);
     }
 
     protected void selectWithButton(int optionNumber)
     {
         selectIFOption(optionNumber);
         List<WebElement> selectButtons = drone.findAndWaitForElements(SELECT_BUTTON);
-        selectButtons.get(selectButtons.size()-1).click();
-        //todo need add logic for work with Popup menu
+        selectButtons.get(selectButtons.size() - 1).click();
+        // todo need add logic for work with Popup menu
     }
-
 
 }

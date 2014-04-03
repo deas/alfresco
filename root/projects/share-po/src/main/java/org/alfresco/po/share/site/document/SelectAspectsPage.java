@@ -18,13 +18,14 @@
  */
 package org.alfresco.po.share.site.document;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
+
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
@@ -37,7 +38,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-import java.util.Set;
+
+import com.sun.jna.platform.unix.X11.XSizeHints.Aspect;
 
 /**
  * Select Aspects page object, this page comes from Document Detail Page's Manage Aspects.
@@ -149,7 +151,7 @@ public class SelectAspectsPage extends SharePage
                 }
                 catch (Exception e) 
                 {
-                    logger.error("Exception while finding & adding aspects : " + e.getMessage());
+                    logger.error("Exception while finding & adding aspects : " + e);
                 }
             }
         }
@@ -212,7 +214,7 @@ public class SelectAspectsPage extends SharePage
             return drone.getCurrentPage();
         } catch (NoSuchElementException nse)
         {
-            throw new PageException("Not able find the cancel button: " + nse.getMessage());
+            throw new PageException("Not able find the cancel button: " + nse);
         }
     }
     /**
@@ -229,7 +231,7 @@ public class SelectAspectsPage extends SharePage
             return drone.getCurrentPage();
         } catch (NoSuchElementException nse)
         {
-            throw new PageException("Not able find the apply change button: " + nse.getMessage());  
+            throw new PageException("Not able find the apply change button: " + nse);  
         }
     }
     

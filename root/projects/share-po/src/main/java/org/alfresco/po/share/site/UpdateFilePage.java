@@ -184,7 +184,7 @@ public class UpdateFilePage extends SharePage
         }
         catch(TimeoutException e)
         {
-            logger.error ("Exceeded time to find the cancel button." + e.getMessage());
+            logger.error ("Exceeded time to find the cancel button." + e);
             throw new PageException("Unable to find the cancel button css : "+ cancelButton, e);
         }
     }

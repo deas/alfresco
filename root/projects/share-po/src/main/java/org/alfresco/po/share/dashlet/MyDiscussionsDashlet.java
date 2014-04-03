@@ -127,7 +127,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to find empty dashlet message." + nse.getMessage());
+            logger.error("Unable to find empty dashlet message." + nse);
         }
         throw new PageOperationException("Error in finding the css for empty dashlet message.");
     }
@@ -148,7 +148,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            logger.info("Unable to find the help icon." + te.getMessage());
+            logger.info("Unable to find the help icon." + te);
         }
 
         return false;
@@ -170,7 +170,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            logger.info("Unable to find the new topic icon." + te.getMessage());
+            logger.info("Unable to find the new topic icon." + te);
         }
 
         return false;
@@ -188,7 +188,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to find the help icon." + nse.getMessage());
+            logger.error("Unable to find the help icon." + nse);
             throw new PageOperationException("Unable to click the Help icon");
         }
     }
@@ -206,7 +206,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to find the New Topic icon." + nse.getMessage());
+            logger.error("Unable to find the New Topic icon." + nse);
 
         }
         throw new PageOperationException("Unable to click the New Topic icon");

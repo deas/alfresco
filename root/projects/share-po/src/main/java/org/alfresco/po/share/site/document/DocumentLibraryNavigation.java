@@ -349,7 +349,7 @@ public class DocumentLibraryNavigation extends SharePage
         catch (TimeoutException e)
         {
             String expectionMessage = "Not able to find the download as zip Link";
-            logger.error(expectionMessage + e.getMessage());
+            logger.error(expectionMessage + e);
             throw new PageException(expectionMessage, e);
         }
     }
@@ -366,7 +366,7 @@ public class DocumentLibraryNavigation extends SharePage
         catch (TimeoutException e)
         {
             String exceptionMessage = "Not able to find the Select Dropdown";
-            logger.error(exceptionMessage + e.getMessage());
+            logger.error(exceptionMessage + e);
             throw new PageException(exceptionMessage, e);
         }
     }
@@ -412,7 +412,7 @@ public class DocumentLibraryNavigation extends SharePage
         catch (TimeoutException e)
         {
             String exceptionMessage = "Not able to find select All option";
-            logger.error(exceptionMessage + e.getMessage());
+            logger.error(exceptionMessage + e);
             throw new PageException(exceptionMessage, e);
         }
     }
@@ -450,7 +450,7 @@ public class DocumentLibraryNavigation extends SharePage
         catch (TimeoutException e)
         {
             String exceptionMessage = "Not able to find the \"Sync to Cloud\" Link";
-            logger.error(exceptionMessage + e.getMessage());
+            logger.error(exceptionMessage + e);
             throw new PageOperationException(exceptionMessage, e);
         }
     }
@@ -547,7 +547,7 @@ public class DocumentLibraryNavigation extends SharePage
         catch (TimeoutException e)
         {
             String exceptionMessage = "Not able to find the \"Request Sync\" Link";
-            logger.error(exceptionMessage + e.getMessage());
+            logger.error(exceptionMessage + e);
             throw new PageOperationException(exceptionMessage, e);
         }
     }
@@ -577,7 +577,7 @@ public class DocumentLibraryNavigation extends SharePage
         catch (TimeoutException e)
         {
             String exceptionMessage = "Not able to find the \"Delete\" Link";
-            logger.error(exceptionMessage + e.getMessage());
+            logger.error(exceptionMessage + e);
             throw new PageOperationException(exceptionMessage, e);
         }
     }
@@ -608,7 +608,7 @@ public class DocumentLibraryNavigation extends SharePage
         catch (TimeoutException e)
         {
             String exceptionMessage = "Not able to find the \"Copy To\" Link";
-            logger.error(exceptionMessage + e.getMessage());
+            logger.error(exceptionMessage + e);
             throw new PageOperationException(exceptionMessage, e);
         }
     }
@@ -637,7 +637,7 @@ public class DocumentLibraryNavigation extends SharePage
         } catch (TimeoutException e)
         {
             String exceptionMessage = "Not able to find the \"Move To\" Link";
-            logger.error(exceptionMessage + e.getMessage());
+            logger.error(exceptionMessage + e);
             throw new PageOperationException(exceptionMessage, e);
         }
     }
@@ -666,7 +666,7 @@ public class DocumentLibraryNavigation extends SharePage
         } catch (TimeoutException e)
         {
             String exceptionMessage = "Not able to find the \"Deselect All\" Link";
-            logger.error(exceptionMessage + e.getMessage());
+            logger.error(exceptionMessage + e);
             throw new PageOperationException(exceptionMessage, e);
         }
     }
@@ -696,7 +696,7 @@ public class DocumentLibraryNavigation extends SharePage
         catch (TimeoutException e)
         {
             String exceptionMessage = "Not able to find the \"StartWorkFlow\" Link";
-            logger.error(exceptionMessage + e.getMessage());
+            logger.error(exceptionMessage + e);
             throw new PageOperationException(exceptionMessage, e);
         }
     }
@@ -762,7 +762,7 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
             throw new PageException("Exceeded the time to find css.", e);
         }
     }
@@ -781,11 +781,11 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch(NoSuchElementException nse)
         {
-            logger.error("Exceeded the time to find css." + nse.getMessage());
+            logger.error("Exceeded the time to find css." + nse);
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
         }
         throw new PageOperationException("Not able to select film strip view");
     }
@@ -815,7 +815,7 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
             throw new PageException("Exceeded the time to find css.", e);
         }
     }
@@ -845,7 +845,7 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
             throw new PageException("Exceeded the time to find css.");
         }
     }
@@ -864,11 +864,11 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch(NoSuchElementException nse)
         {
-            logger.error("Exceeded the time to find css." + nse.getMessage());
+            logger.error("Exceeded the time to find css." + nse);
         }
         catch(TimeoutException te)
         {
-            logger.error("Exceeded the time to find css." + te.getMessage());
+            logger.error("Exceeded the time to find css." + te);
         }
         closeOptionMenu();
         throw new PageOperationException("Not able to find the Hide Folder Option");
@@ -895,11 +895,11 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch(NoSuchElementException nse)
         {
-            logger.error("Exceeded the time to find css." + nse.getMessage());
+            logger.error("Exceeded the time to find css." + nse);
         }
         catch(TimeoutException te)
         {
-            logger.error("Exceeded the time to find css." + te.getMessage());
+            logger.error("Exceeded the time to find css." + te);
         }
         closeOptionMenu();
         throw new PageOperationException("Not able to find the Show Folder Option");
@@ -932,11 +932,11 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch(NoSuchElementException nse)
         {
-            logger.error("Exceeded the time to find css." + nse.getMessage());
+            logger.error("Exceeded the time to find css." + nse);
         }
         catch(TimeoutException te)
         {
-            logger.error("Exceeded the time to find css." + te.getMessage());
+            logger.error("Exceeded the time to find css." + te);
         }
         closeOptionMenu();
         throw new PageOperationException("Not able to find the Hide Breadcrump Option");
@@ -956,11 +956,11 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch(NoSuchElementException nse)
         {
-            logger.error("Exceeded the time to find css." + nse.getMessage());
+            logger.error("Exceeded the time to find css." + nse);
         }
         catch(TimeoutException te)
         {
-            logger.error("Exceeded the time to find css." + te.getMessage());
+            logger.error("Exceeded the time to find css." + te);
         }
         closeOptionMenu();
         throw new PageOperationException("Not able to find the Show Breadcrump Option");
@@ -1078,11 +1078,11 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch(NoSuchElementException nse)
         {
-            logger.error("Unable to find css." + nse.getMessage());
+            logger.error("Unable to find css." + nse);
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
         }
         throw new PageException("Unable to select the Gallery view.");
     }
@@ -1157,11 +1157,11 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch(NoSuchElementException nse)
         {
-            logger.error("Exceeded the time to find css." + nse.getMessage());
+            logger.error("Exceeded the time to find css." + nse);
         }
         catch(TimeoutException te)
         {
-            logger.error("Exceeded the time to find css." + te.getMessage());
+            logger.error("Exceeded the time to find css." + te);
         }
         closeOptionMenu();
         throw new PageOperationException("Not able to find the Set Default View Option");
@@ -1181,11 +1181,11 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch(NoSuchElementException nse)
         {
-            logger.error("Exceeded the time to find css." + nse.getMessage());
+            logger.error("Exceeded the time to find css." + nse);
         }
         catch(TimeoutException te)
         {
-            logger.error("Exceeded the time to find css." + te.getMessage());
+            logger.error("Exceeded the time to find css." + te);
         }
         closeOptionMenu();
         throw new PageOperationException("Not able to find the Remove Default View Option");
@@ -1230,11 +1230,11 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch(NoSuchElementException nse)
         {
-            logger.error("Unable to find css." + nse.getMessage());
+            logger.error("Unable to find css." + nse);
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
         }
         throw new PageException("Unable to select the sort field " + sortField);
     }
@@ -1266,11 +1266,11 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch(NoSuchElementException nse)
         {
-            logger.error("Unable to find css." + nse.getMessage());
+            logger.error("Unable to find css." + nse);
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
         }
         throw new PageException("Unable to find the current sort field ");
     }
@@ -1278,30 +1278,30 @@ public class DocumentLibraryNavigation extends SharePage
     /**
      * Determines the sort direction.
      * 
-     * @return	<code>true</code> if the page is sorted ascending, otherwise <code>false</code>
+     * @return <code>true</code> if the page is sorted ascending, otherwise <code>false</code>
      */
     public boolean isSortAscending()
     {
-    	try
-    	{
-	    	WebElement sortEl = drone.findAndWait(By.cssSelector("span[id$='default-sortAscending-button']"));
-	    	String classValue = sortEl.getAttribute("class");
-	    	
-	    	if(classValue == null)
-	    	{
-	    		return true;
-	    	}
-	    	
-	    	//if class sort-descending exists then ascending is true.
-	    	return !classValue.contains("sort-descending");    		
-    	}
-        catch(NoSuchElementException nse)
+        try
         {
-            logger.error("Unable to find css." + nse.getMessage());
+            WebElement sortEl = drone.findAndWait(By.cssSelector("span[id$='default-sortAscending-button']"));
+            String classValue = sortEl.getAttribute("class");
+
+            if (classValue == null)
+            {
+                return true;
+            }
+
+            // if class sort-descending exists then ascending is true.
+            return !classValue.contains("sort-descending");
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Unable to find css." + nse);
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
         }
         throw new PageException("Unable to find the sort button.");
     }
@@ -1316,31 +1316,31 @@ public class DocumentLibraryNavigation extends SharePage
     /**
      * Set the sort direction to ascending.
      * 
-     * @return	The refreshed HtmlPage.
+     * @return The refreshed HtmlPage.
      */
     public HtmlPage sortAscending()
     {
-    	if(!isSortAscending())
-    	{
-    		clickSortOrder();
-    	}
-    	
-    	return FactorySharePage.resolvePage(drone);
+        if (!isSortAscending())
+        {
+            clickSortOrder();
+        }
+
+        return FactorySharePage.resolvePage(drone);
     }
-    
+
     /**
      * Set the sort direction to descending.
      * 
-     * @return	The refreshed HtmlPage.
+     * @return The refreshed HtmlPage.
      */
     public HtmlPage sortDescending()
     {
-    	if(isSortAscending())
-    	{
-    		clickSortOrder();
-    	}
-    	
-    	return FactorySharePage.resolvePage(drone);
+        if (isSortAscending())
+        {
+            clickSortOrder();
+        }
+
+        return FactorySharePage.resolvePage(drone);
     }
     
     /**
@@ -1360,7 +1360,7 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch (NumberFormatException e)
         {
-            throw new PageOperationException("Unable to convert String into int:" + e.getMessage());
+            throw new PageOperationException("Unable to convert String into int:" + e);
         }
 
         switch (size)
@@ -1422,7 +1422,7 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded time to find the Zoom Control bar css" + e.getMessage());
+            logger.error("Exceeded time to find the Zoom Control bar css" + e);
         }
 
         throw new PageOperationException("Error in Selecting zoom.");
@@ -1437,9 +1437,9 @@ public class DocumentLibraryNavigation extends SharePage
     {
         try
         {
-            return findZoomControl().isDisplayed();
+            return drone.find(ZOOM_CONTROL_BAR_THUMBNAIL_CSS).isDisplayed();
         }
-        catch(PageOperationException poe) {}
+        catch(NoSuchElementException ne) {}
         
         return false;
     }

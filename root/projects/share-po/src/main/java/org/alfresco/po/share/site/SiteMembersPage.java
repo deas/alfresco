@@ -140,11 +140,11 @@ public class SiteMembersPage extends SharePage
         }
         catch (NoSuchElementException e)
         {
-            if(logger.isTraceEnabled()){ logger.error("Unable to find the users list css." + e.getMessage());}
+            if(logger.isTraceEnabled()){ logger.error("Unable to find the users list css." + e);}
         }
         catch (TimeoutException e)
         {
-            if(logger.isTraceEnabled()){ logger.error("Time exceeded to find the users list css." + e.getMessage());}
+            if(logger.isTraceEnabled()){ logger.error("Time exceeded to find the users list css." + e);}
         }
         return Collections.emptyList();
     }
@@ -178,7 +178,7 @@ public class SiteMembersPage extends SharePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded time to find the list of roles." + e.getMessage());
+            logger.error("Exceeded time to find the list of roles." + e);
         }
        
         return listOfRoles;
@@ -265,7 +265,7 @@ public class SiteMembersPage extends SharePage
         } 
         catch (TimeoutException e)
         {
-            throw new PageException("Unable to find the InviteMembersPage."+e.getMessage());
+            throw new PageException("Unable to find the InviteMembersPage."+e);
         }
         return new InviteMembersPage(getDrone());
 

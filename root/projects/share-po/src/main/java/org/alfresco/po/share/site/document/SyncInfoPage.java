@@ -202,7 +202,7 @@ public class SyncInfoPage extends SharePage
         }
         catch(TimeoutException e) 
         {
-            logger.error("Unable to find Close button on Sync Info page" + e.getMessage());
+            logger.error("Unable to find Close button on Sync Info page" + e);
             throw new PageException("Not able to click on Sync Info close button.", e);
         }
     }
@@ -219,7 +219,7 @@ public class SyncInfoPage extends SharePage
         }
         catch(TimeoutException e) 
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
         }
         
         throw new PageException("Not able to find Sync Info status.");
@@ -250,7 +250,7 @@ public class SyncInfoPage extends SharePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
         }
 
         throw new PageException("Not able to find Sync Info Location.");
@@ -268,7 +268,7 @@ public class SyncInfoPage extends SharePage
         }
         catch(TimeoutException e) 
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
         }
         
         throw new PageException("Not able to find Sync Info Location.");

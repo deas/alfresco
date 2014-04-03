@@ -254,7 +254,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (NoSuchElementException e)
         {
-            throw new PageOperationException("Not able to find categories" + e.getMessage());
+            throw new PageOperationException("Not able to find categories" + e);
         }
         return categories;
     }
@@ -273,11 +273,11 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException e)
         {
-            throw new PageOperationException(e.getMessage());
+            throw new PageOperationException("Exceeded time to find the css " + e);
         }
         catch (StaleElementReferenceException st)
         {
-            throw new StaleElementReferenceException(st.getMessage());
+            throw new StaleElementReferenceException("Unable to find the css " + st);
         }
         return new ConfirmDeletePage(drone);
     }
@@ -618,7 +618,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
             throw new PageException("Exceeded the time to find css.", e);
         }
 
@@ -650,11 +650,11 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             }
             catch (NoSuchElementException e)
             {
-                logger.error("Unable to find the add tag icon" + e.getMessage());
+                logger.error("Unable to find the add tag icon" + e);
             }
             catch (TimeoutException te)
             {
-                logger.error("Exceeded time to find the tag info area " + te.getMessage());
+                logger.error("Exceeded time to find the tag info area " + te);
             }
             catch (ElementNotVisibleException e2)
             {
@@ -732,7 +732,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
                 }
                 catch (NoSuchElementException e)
                 {
-                    logger.error("Unable to find the remove tag button." + e.getMessage());
+                    logger.error("Unable to find the remove tag button." + e);
                 }
             }
         }
@@ -752,7 +752,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException ex)
         {
-            logger.error("Exceeded time to find the Save button css." + ex.getMessage());
+            logger.error("Exceeded time to find the Save button css." + ex);
             throw new PageException("Exceeded time to find the Save button css.", ex);
         }
     }
@@ -770,7 +770,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException ex)
         {
-            logger.error("Exceeded time to find the Save button css." + ex.getMessage());
+            logger.error("Exceeded time to find the Save button css." + ex);
             throw new PageException("Exceeded time to find the Save button css.", ex);
         }
     }
@@ -817,7 +817,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch(NoSuchElementException e)
         {
-            logger.error("Unable to find and click thumbnail icon "+ e.getMessage());
+            logger.error("Unable to find and click thumbnail icon "+ e);
         }
         
         throw new PageOperationException("Unable to click find and click on Thumbnail icon");
@@ -1081,7 +1081,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
             throw new PageException("Exceeded the time to find css.", e);
         }
         throw new PageException("Not able to tag name: " + tagName);
@@ -1270,7 +1270,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
         }
         throw new PageException("Not able to click on view cloud sync info link.");
     }
@@ -1300,7 +1300,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
         }
         throw new PageException("Not able to click on view cloud sync info link.");
     }
@@ -2031,7 +2031,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (NoSuchElementException e)
         {
-            logger.error("Input should be displayed" + e.getMessage());
+            logger.error("Input should be displayed" + e);
             throw new PageOperationException("Input should be displayed", e);
         }
 
@@ -2061,15 +2061,13 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException ex)
         {
-            expectionMessage = ex.getMessage();
-            logger.error("Exceeded time to find the " + linkText + " button css." + expectionMessage);
-
+            expectionMessage = "Exceeded time to find the " + linkText + " button css." + ex;
+            logger.error(expectionMessage);
         }
         catch (NoSuchElementException ex)
         {
-            expectionMessage = ex.getMessage();
-            logger.error("Not able to find the input css." + expectionMessage);
-
+            expectionMessage = "Not able to find the input css." + ex;
+            logger.error(expectionMessage);
         }
         throw new PageOperationException("Exceeded time to find the " + linkText + " button css." + expectionMessage);
     }
@@ -2292,7 +2290,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e.getMessage());
+            logger.error("Exceeded the time to find css." + e);
             throw new PageException("Exceeded the time to find css.", e);
         }
         throw new PageException("Not able to category name: " + categoryName);
@@ -2353,11 +2351,11 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (NumberFormatException nfe)
         {
-            logger.error("Unable to convert comments count string value into int" + nfe.getMessage());
+            logger.error("Unable to convert comments count string value into int" + nfe);
         }
         catch (TimeoutException ex)
         {
-            logger.error("Exceeded time to find the comments tooltip element" + ex.getMessage());
+            logger.error("Exceeded time to find the comments tooltip element" + ex);
         }
 
         return cnt;
@@ -2389,7 +2387,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (TimeoutException ex)
         {
-            logger.error("Exceeded time to find the comments tooltip element" + ex.getMessage());
+            logger.error("Exceeded time to find the comments tooltip element" + ex);
         }
 
         throw new PageOperationException("Error in finding and clicking on modifier link.");

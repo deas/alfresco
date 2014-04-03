@@ -306,7 +306,7 @@ public class ManagePermissionsPage extends SharePage
         }
         catch (TimeoutException te)
         {
-            throw new PageOperationException("Unable to find Access Specific Button" + te.getMessage());
+            throw new PageOperationException("Unable to find Access Specific Button" + te);
         }
         
         getRoleOption(drone, userRole).click();

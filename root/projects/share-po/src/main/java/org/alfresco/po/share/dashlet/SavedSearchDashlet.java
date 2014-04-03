@@ -161,7 +161,7 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            logger.error("Unable to find the help icon." + te.getMessage());
+            logger.error("Unable to find the help icon." + te);
             throw new PageOperationException("Unable to click the Help icon", te);
         }
     }
@@ -230,7 +230,7 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            throw new UnsupportedOperationException("Exceeded time to find the title." + te.getMessage());
+            throw new UnsupportedOperationException("Exceeded time to find the title." + te);
         }
     }
 
@@ -247,7 +247,7 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            throw new UnsupportedOperationException("Exceeded time to find the title." + te.getMessage());
+            throw new UnsupportedOperationException("Exceeded time to find the title." + te);
         }
     }
 
@@ -278,14 +278,14 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Not able to find the element: " + e.getMessage());
+                logger.trace("Not able to find the element: " + e);
             }
         }
         catch (NoSuchElementException e)
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Not able to find the element: " + e.getMessage());
+                logger.trace("Not able to find the element: " + e);
             }
         }
         return Collections.emptyList();
@@ -312,7 +312,7 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            logger.error("Unable to find the Edit (Configure) icon." + te.getMessage());
+            logger.error("Unable to find the Edit (Configure) icon." + te);
             throw new PageOperationException("Unable to click the Edit (Configure) icon", te);
         }
     }

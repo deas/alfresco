@@ -1,13 +1,12 @@
 package org.alfresco.po.share.site.document;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.po.share.ShareDialogue;
-import org.alfresco.po.share.site.SitePage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.openqa.selenium.By;
@@ -19,6 +18,7 @@ import org.openqa.selenium.WebElement;
  * @author Michael Suzuki
  * @since 1.4
  */
+@SuppressWarnings("unchecked")
 public abstract class AbstractEditProperties extends ShareDialogue
 {
     protected AbstractEditProperties(WebDrone drone)
@@ -140,7 +140,7 @@ public abstract class AbstractEditProperties extends ShareDialogue
         }
         catch (NoSuchElementException e)
         {
-            throw new PageOperationException("Not able to find categories" + e.getMessage());
+            throw new PageOperationException("Not able to find categories" + e);
         }
         return categories;
     }

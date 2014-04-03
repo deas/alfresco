@@ -225,7 +225,7 @@ public class CustomiseUserDashboardPage extends SharePage
         }
         catch (TimeoutException te)
         {
-            logger.info("Exceeded time to find the Available dashlet names " + te.getMessage());
+            logger.info("Exceeded time to find the Available dashlet names " + te);
         }
 
         if (newDashlet != null)
@@ -241,7 +241,7 @@ public class CustomiseUserDashboardPage extends SharePage
             }
             catch (NoSuchElementException te)
             {
-                logger.info("Unable to find the Columns css " + te.getMessage());
+                logger.info("Unable to find the Columns css " + te);
             }
 
             if (columnNumber <= noOfColumns)
@@ -265,7 +265,7 @@ public class CustomiseUserDashboardPage extends SharePage
                 }
                 catch (TimeoutException te)
                 {
-                    logger.info("Exceeded time to find the Available dashlet names " + te.getMessage());
+                    logger.info("Exceeded time to find the Available dashlet names " + te);
                 }
             }
             else
@@ -291,7 +291,7 @@ public class CustomiseUserDashboardPage extends SharePage
         }
         catch (NoSuchElementException te)
         {
-            logger.info("Unable to find the Save button css " + te.getMessage());
+            logger.info("Unable to find the Save button css " + te);
         }
 
         return new DashBoardPage(drone);

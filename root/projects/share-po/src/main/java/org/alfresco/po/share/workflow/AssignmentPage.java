@@ -208,7 +208,7 @@ public class AssignmentPage extends SharePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding element" + toe.getMessage());
+            logger.error("Time out finding element" + toe);
         }
         throw new PageException();
     }
@@ -237,11 +237,11 @@ public class AssignmentPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Element Not found" + nse.getMessage());
+            logger.error("Element Not found" + nse);
         }
         catch (TimeoutException toe)
         {
-            logger.error("Timed out: " + toe.getMessage());
+            logger.error("Timed out: " + toe);
         }
     }
 

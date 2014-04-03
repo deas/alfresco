@@ -9,9 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * User: aliaksei.bul
- * Date: 08.07.13
- * Time: 12:12
+ * User: aliaksei.bul Date: 08.07.13 Time: 12:12
  */
 public abstract class AbstractWhenSelector
 {
@@ -22,8 +20,7 @@ public abstract class AbstractWhenSelector
         this.drone = drone;
     }
 
-    private static final By WHEN_OPTIONS_SELECT = By
-            .cssSelector("ul[id$=ruleConfigType-configs] select[class$='config-name']");
+    private static final By WHEN_OPTIONS_SELECT = By.cssSelector("ul[id$=ruleConfigType-configs] select[class$='config-name']");
 
     protected void selectWhenOption(int whenOptionNumber)
     {
@@ -33,7 +30,6 @@ public abstract class AbstractWhenSelector
         {
             whenSelects.add(new Select(whenOption));
         }
-        whenSelects.get(whenSelects.size()-1).selectByIndex(whenOptionNumber);
+        whenSelects.get(whenSelects.size() - 1).selectByIndex(whenOptionNumber);
     }
 }
-

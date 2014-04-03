@@ -11,56 +11,53 @@ import org.openqa.selenium.WebElement;
  */
 public abstract class AbstractCommentForm extends HtmlElement
 {
-        private final static By FORM_TITLE = By.cssSelector("div[class='comment-form']>h2.thin.dark");
+    private final static By FORM_TITLE = By.cssSelector("div[class='comment-form']>h2.thin.dark");
 
+    private final TinyMceEditor tinyMceEditor;
 
+    public AbstractCommentForm(WebDrone drone)
+    {
+        super(drone);
+        tinyMceEditor = new TinyMceEditor(drone);
+    }
 
-        private final TinyMceEditor tinyMceEditor;
+    public String getTitle()
+    {
+        return drone.findAndWait(FORM_TITLE).getText();
+    }
 
-        public AbstractCommentForm(WebDrone drone)
+    public TinyMceEditor getTinyMceEditor()
+    {
+        return tinyMceEditor;
+    }
+
+    protected void click(By locator)
+    {
+        WebElement element = drone.findAndWait(locator);
+        element.click();
+    }
+
+    protected boolean isDisplay(By locator)
+    {
+        try
         {
-                super(drone);
-                tinyMceEditor = new TinyMceEditor(drone);
+            return drone.findAndWait(locator, 2000).isDisplayed();
         }
-
-        public String getTitle()
+        catch (TimeoutException e)
         {
-                return drone.findAndWait(FORM_TITLE).getText();
+            return false;
         }
+    }
 
-        public TinyMceEditor getTinyMceEditor()
+    public boolean isButtonsEnable(By submit, By cancel)
+    {
+        try
         {
-                return tinyMceEditor;
+            return drone.findAndWait(submit).isEnabled() && drone.findAndWait(cancel).isEnabled();
         }
-
-        protected void click(By locator)
+        catch (TimeoutException e)
         {
-                WebElement element = drone.findAndWait(locator);
-                element.click();
+            return false;
         }
-
-        protected boolean isDisplay(By locator)
-        {
-                try
-                {
-                        return drone.findAndWait(locator, 2000).isDisplayed();
-                }
-                catch (TimeoutException e)
-                {
-                        return false;
-                }
-        }
-
-        public boolean isButtonsEnable(By submit, By cancel)
-        {
-                try
-                {
-                        return drone.findAndWait(submit).isEnabled() &&
-                                drone.findAndWait(cancel).isEnabled();
-                }
-                catch (TimeoutException e)
-                {
-                        return false;
-                }
-        }
+    }
 }

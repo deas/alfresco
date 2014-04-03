@@ -183,7 +183,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
         }
         catch (TimeoutException toe)
         {
-            LOGGER.error("Unable to find Assignee with exception" + toe.getMessage());
+            LOGGER.error("Unable to find Assignee with exception" + toe);
         }
         return "";
     }

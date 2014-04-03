@@ -106,7 +106,7 @@ public class TopicDetailsPage extends SitePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable find topic title on Topic Details Page." + nse.getMessage());
+            logger.error("Unable find topic title on Topic Details Page." + nse);
 
         }
         throw new PageOperationException("Cannot find topic title on Topic Details Page.");
@@ -126,7 +126,7 @@ public class TopicDetailsPage extends SitePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable find topic creation date on Topic Details Page." + nse.getMessage());
+            logger.error("Unable find topic creation date on Topic Details Page." + nse);
 
         }
         throw new PageOperationException("Cannot find topic creation date on Topic Details Page.");
@@ -146,7 +146,7 @@ public class TopicDetailsPage extends SitePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable find topic created by text on Topic Details Page." + nse.getMessage());
+            logger.error("Unable find topic created by text on Topic Details Page." + nse);
 
         }
         throw new PageOperationException("Cannot find topic created by on Topic Details Page.");
@@ -167,7 +167,7 @@ public class TopicDetailsPage extends SitePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable find topic author on Topic Details Page." + nse.getMessage());
+            logger.error("Unable find topic author on Topic Details Page." + nse);
 
         }
         throw new PageOperationException("Cannot find topic author on Topic Details Page.");
@@ -187,7 +187,7 @@ public class TopicDetailsPage extends SitePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable find topic text on Topic Details Page." + nse.getMessage());
+            logger.error("Unable find topic text on Topic Details Page." + nse);
 
         }
         throw new PageOperationException("Cannot find topic text on Topic Details Page.");
@@ -208,7 +208,7 @@ public class TopicDetailsPage extends SitePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable find topic replies on Topic Details Page." + nse.getMessage());
+            logger.error("Unable find topic replies on Topic Details Page." + nse);
 
         }
         throw new PageOperationException("Cannot find topic replies on Topic Details Page.");
@@ -230,7 +230,7 @@ public class TopicDetailsPage extends SitePage
         {
             if (logger.isDebugEnabled())
             {
-                logger.debug("Exceeded the time to find css title on Topic Details Page." + te.getMessage());
+                logger.debug("Exceeded the time to find css title on Topic Details Page." + te);
             }
         }
         throw new PageOperationException("Cannot find topic title on Topic Details Page.");
@@ -252,7 +252,7 @@ public class TopicDetailsPage extends SitePage
         {
             if (logger.isDebugEnabled())
             {
-                logger.debug("Exceeded the time to find css author on Topic Details Page." + te.getMessage());
+                logger.debug("Exceeded the time to find css author on Topic Details Page." + te);
             }
         }
         throw new PageOperationException("Cannot find topic author on Topic Details Page.");
@@ -274,7 +274,7 @@ public class TopicDetailsPage extends SitePage
         {
             if (logger.isDebugEnabled())
             {
-                logger.debug("Exceeded the time to find css for topic tags link on Topic Details Page." + te.getMessage());
+                logger.debug("Exceeded the time to find css for topic tags link on Topic Details Page." + te);
             }
         }
         throw new PageOperationException("Cannot find topic tags link on Topic Details Page.");
@@ -321,7 +321,7 @@ public class TopicDetailsPage extends SitePage
         {
             if (logger.isDebugEnabled())
             {
-                logger.error("Exceeded the time to find css for topic reply link on Topic Details Page." + te.getMessage());
+                logger.error("Exceeded the time to find css for topic reply link on Topic Details Page." + te);
             }
         }
         throw new PageOperationException("Cannot find topic reply link on Topic Details Page.");
@@ -343,7 +343,7 @@ public class TopicDetailsPage extends SitePage
         {
             if (logger.isDebugEnabled())
             {
-                logger.error("Exceeded the time to find css for topic reply link on Topic Details Page." + te.getMessage());
+                logger.error("Exceeded the time to find css for topic reply link on Topic Details Page." + te);
             }
         }
         throw new PageOperationException("Cannot find topic reply link on Topic Details Page.");
@@ -367,7 +367,7 @@ public class TopicDetailsPage extends SitePage
         {
             if (logger.isDebugEnabled())
             {
-                logger.error("Exceeded the time to find css for topic edit link on Topic Details Page." + te.getMessage());
+                logger.error("Exceeded the time to find css for topic edit link on Topic Details Page." + te);
             }
         }
         throw new PageOperationException("Cannot find topic edit link on Topic Details Page.");
@@ -388,7 +388,7 @@ public class TopicDetailsPage extends SitePage
         {
             if (logger.isDebugEnabled())
             {
-                logger.error("Exceeded the time to find css for topic delete link on Topic Details Page." + te.getMessage());
+                logger.error("Exceeded the time to find css for topic delete link on Topic Details Page." + te);
             }
         }
         throw new PageOperationException("Cannot find topic delete link on Topic Details Page.");
@@ -410,7 +410,7 @@ public class TopicDetailsPage extends SitePage
         {
             if (logger.isDebugEnabled())
             {
-                logger.error("Exceeded the time to find css for new topic link on Topic Details Page." + te.getMessage());
+                logger.error("Exceeded the time to find css for new topic link on Topic Details Page." + te);
             }
         }
         throw new PageOperationException("Cannot find new topic link on Topic Details Page.");

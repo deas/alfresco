@@ -73,7 +73,7 @@ public class ProfileNavigation
         catch (TimeoutException exception) 
         {
             String message = "Not able to find the Cloud Sync Link";
-            logger.error(message + exception.getMessage());
+            logger.error(message + exception);
             throw new PageException(message, exception);
         }
         return new CloudSyncPage(drone);
@@ -110,7 +110,7 @@ public class ProfileNavigation
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find Language link" + nse.getMessage());
+            throw new PageOperationException("Unable to find Language link" + nse);
         }
     }
 }

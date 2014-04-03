@@ -375,11 +375,11 @@ public abstract class SharePage extends Page
                     } 
                     catch (IllegalArgumentException e) 
                     {
-                        logger.error("Object may not be instance of By class " + e.getMessage());
+                        logger.error("Object may not be instance of By class " + e);
                     } 
                     catch (IllegalAccessException e) 
                     {
-                        logger.error("Not able access the field: " + field.getName() + e.getMessage());
+                        logger.error("Not able access the field: " + field.getName() + e);
                     }
                 }
                 else

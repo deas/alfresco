@@ -39,6 +39,7 @@ public class CreateRulePage extends SitePage
             .cssSelector("ul[id$=ruleConfigIfCondition-configs] select[class$='config-name']");
     private static final By ACTION_OPTIONS_SELECT = By
             .cssSelector("ul[id$=ruleConfigAction-configs]>li select[class$='config-name']");
+    @SuppressWarnings("unused")
     private static final By IF_ERRORS_OCCURS_RUN_SCRIPTS_SELECT = By
             .xpath("//div[@class='form-field scriptRef']/select[contains(@id,'default-scriptRef')]");
 

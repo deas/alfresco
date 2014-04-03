@@ -950,7 +950,7 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (TimeoutException te)
                 {
-                        logger.error("Exceeded time to find the edit comment link" + te.getMessage());
+                        logger.error("Exceeded time to find the edit comment link" + te);
                 }
                 throw new PageException("Edit comment form has not been rendered in time");
         }
@@ -978,7 +978,7 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (NoSuchElementException e)
                 {
-                        logger.error("Unable to find the edit comments save button css." + e.getMessage());
+                        logger.error("Unable to find the edit comments save button css." + e);
                 }
                 throw new PageException("Error in saving the edit comments.");
         }
@@ -996,7 +996,7 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (NoSuchElementException e)
                 {
-                        logger.error("Unable to find the edit comments cancel button css." + e.getMessage());
+                        logger.error("Unable to find the edit comments cancel button css." + e);
                         throw new PageException("Error in cancelling the edit comments.");
                 }
         }

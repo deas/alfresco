@@ -421,10 +421,7 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
     {
         try
         {
-            WebElement actions = selectAction();
-                getDrone().mouseOverOnElement(actions);
-            WebElement moreLink = findElement(By.cssSelector("a.show-more"));
-            moreLink.click();
+            selectMoreAction().click();
             return super.selectDelete();
         }
         catch (NoSuchElementException e) { }

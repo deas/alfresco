@@ -63,7 +63,7 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded time to find the css." + e.getMessage());
+            logger.error("Exceeded time to find the css." + e);
         }
 
         throw new PageException("File directory info with title was not found");
@@ -86,7 +86,10 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
         try
         {
             WebElement thumbnailType = drone.findAndWait(By.xpath(THUMBNAIL_TYPE));
-            logger.info("thumbnailType - " + thumbnailType.getAttribute("src"));
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("thumbnailType - " + thumbnailType.getAttribute("src"));
+            }
             return thumbnailType.getAttribute("src").contains("folder");
         }
         catch (Exception e)

@@ -130,7 +130,7 @@ public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
         }
         catch(TimeoutException te)
         {
-            logger.info("Unable to find the help icon."+ te.getMessage());
+            logger.info("Unable to find the help icon."+ te);
         }
         
         return false;
@@ -170,7 +170,7 @@ public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
         }
         catch(TimeoutException te)
         {
-            logger.info("Unable to find the help icon." + te.getMessage());
+            logger.info("Unable to find the help icon." + te);
             throw new PageOperationException("Unable to click the Help icon", te);
         }
     }

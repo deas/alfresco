@@ -78,11 +78,11 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
         }
         catch (NumberFormatException e)
         {
-            logger.error("Unable to convert String into int:" + e.getMessage());
+            logger.error("Unable to convert String into int:" + e);
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded time to find the css :" + e.getMessage());
+            logger.error("Exceeded time to find the css :" + e);
         }
 
         throw new PageOperationException("Error in finding the file size.");

@@ -794,7 +794,7 @@ public class DocumentLibraryPage extends SitePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Exceeded the time to find the All Tags css." + e.getMessage());
+                logger.trace("Exceeded the time to find the All Tags css." + e);
             }
             return Collections.emptyList();
         }
@@ -1006,11 +1006,11 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (TimeoutException te)
         {
-            logger.error("Exceeded time to find out the " + tagName + " count: " + te.getMessage());
+            logger.error("Exceeded time to find out the " + tagName + " count: " + te);
         }
         catch (NumberFormatException ne)
         {
-            logger.error("Unable to convert tags count string value into int : " + ne.getMessage());
+            logger.error("Unable to convert tags count string value into int : " + ne);
         }
 
         throw new PageException("Unable to find the given tag count : " + tagName);
@@ -1033,7 +1033,7 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (NoSuchElementException e)
         {
-            logger.error("Exceeded time to find the documents tree." + e.getMessage());
+            logger.error("Exceeded time to find the documents tree." + e);
         }
 
         return false;
@@ -1053,7 +1053,7 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded time to find the documents tree." + e.getMessage());
+            logger.error("Exceeded time to find the documents tree." + e);
         }
         throw new PageException("Unable to find the Documents Tree link." );
     }
@@ -1396,7 +1396,7 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (TimeoutException te)
         {
-            logger.error("Exceeded time to find the the css" + te.getMessage());
+            logger.error("Exceeded time to find the the css" + te);
         }
 
         throw new PageException("Error in selecting the My Favourties on DocLib Tree Menu.");

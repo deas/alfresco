@@ -25,10 +25,10 @@ import org.openqa.selenium.WebElement;
 
 /**
  * Alfresco Share factory, creates the appropriate page object that corresponds
- * to the browser view.
+ * to the document library view type.
  *
- * @author Siva Kaliyappan
- * @since 1.6.2
+ * @author Chiran
+ * @since 4.3
  */
 public final class FactoryShareFileDirectoryInfo
 {
@@ -72,9 +72,6 @@ public final class FactoryShareFileDirectoryInfo
         {
             throw new PageException("FileDirecotyInfo View object can not be matched: " + viewType.name(), ex);
         }
-
     }
-
 }
-
 
