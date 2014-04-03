@@ -515,7 +515,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     public void sendKeysToTagInput(CharSequence... keysToSend)
     {
         WebElement inputTagName = findAndWait(By.cssSelector(INPUT_TAG_NAME));
-        inputTagName.clear();
+        //inputTagName.clear();
         inputTagName.sendKeys(keysToSend);
     }
 
@@ -526,7 +526,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         try
         {
             WebElement highlightedTag = find(By.xpath(String.format(
-                    "//div[@class='inlineTagEdit']/span/span[contains(@class,'inlineTagEditTagPrimed')]/span[text()='%s']", tagName)));
+                    "//div[@class='inlineTagEdit']/span/span[contains(@class,'inlineTagEditTag')]/span[text()='%s']", tagName)));
             return highlightedTag.isDisplayed();
         }
         catch (TimeoutException e)
@@ -534,6 +534,24 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
 
         return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickTagOnEdit(String)
+     */
+    @Override
+    public void clickTagOnEdit(String tagName) {
+        try
+        {
+            WebElement InlineEditTag = find(By.xpath(String.format(
+                    "//div[@class='inlineTagEdit']/span/span[contains(@class,'inlineTagEditTag')]/span[text()=\"%s\"]", tagName)));
+            InlineEditTag.click();
+        }
+        catch (TimeoutException e)
+        {
+        }
+
     }
 
     /**

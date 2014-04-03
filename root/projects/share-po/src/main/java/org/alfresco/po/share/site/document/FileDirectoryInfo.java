@@ -526,6 +526,13 @@ public interface FileDirectoryInfo
     boolean isTagHighlightedOnEdit(final String tagName);
 
     /**
+     * Click on tag in inlineTagEdit input
+     *
+     * @param tagName
+     */
+    void clickTagOnEdit(final String tagName);
+
+    /**
      * Hovers over the edit icon and clicks the edit button.
      */
     void contentNameEnableEdit();
