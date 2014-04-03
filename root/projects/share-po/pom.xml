@@ -179,9 +179,9 @@
                     </excludedGroups>
                     <workingDirectory>target</workingDirectory>
                     <!--parallel>classes</parallel-->
-                    <systemPropertyVariables>
-                        <webdrone.element.wait.time>${webdrone.element.wait.time}</webdrone.element.wait.time>
-                    </systemPropertyVariables>
+                    <!--<systemPropertyVariables>-->
+                        <!--<webdrone.element.wait.time>${webdrone.element.wait.time}</webdrone.element.wait.time>-->
+                    <!--</systemPropertyVariables>-->
                 </configuration>
             </plugin>
 

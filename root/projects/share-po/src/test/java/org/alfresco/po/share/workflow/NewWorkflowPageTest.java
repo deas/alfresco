@@ -314,8 +314,7 @@ public class NewWorkflowPageTest extends AbstractTest
 
         TaskDetails taskDetails = myTasksPage.getTaskDetails(siteName);
         Assert.assertEquals(taskDetails.getStatus(), TaskStatus.ONHOLD.getTaskName());
-        Assert.assertEquals(taskDetails.getDueDateString(), "(None)");
-        Assert.assertNull(taskDetails.getDue());
+        Assert.assertEquals(taskDetails.getDue(), "(None)");
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "selectSaveButtonToReturnMyTasksPage")

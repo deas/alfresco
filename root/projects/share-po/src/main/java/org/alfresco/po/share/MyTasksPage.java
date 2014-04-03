@@ -302,7 +302,6 @@ public class MyTasksPage extends SharePage
             {
                 taskDetails.setTaskName(taskRow.findElement(By.cssSelector("div.yui-dt-liner>h3>a")).getText());
                 taskDetails.setDue(taskRow.findElement(By.cssSelector("div.due>span")).getText());
-                taskDetails.setDueDateString(taskRow.findElement(By.cssSelector("div.due>span")).getText());
                 taskDetails.setStartDate(taskRow.findElement(By.cssSelector("div[class^='started']>span")).getText());
                 taskDetails.setStatus(taskRow.findElement(By.cssSelector("div.status>span")).getText());
                 taskDetails.setType(taskRow.findElement(By.cssSelector("div.type>span")).getText());

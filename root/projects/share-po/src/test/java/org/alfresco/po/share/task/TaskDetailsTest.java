@@ -24,20 +24,17 @@ import org.testng.annotations.Test;
  * Purpose of this test is to test the <code>TaskDetails</code> Class.
  * 
  * @author Ranjith Manyam
- * @since 1.7.1
  */
 public class TaskDetailsTest
 {
 
-    @Test(groups="unit", enabled = false)
+    @Test(groups="unit", enabled = true)
     public void testSetDueDateString()
     {
         TaskDetails td = new TaskDetails();
-        td.setDueDateString("(None)");
-        Assert.assertEquals(td.getDueDateString(), "(None)");
-        Assert.assertNull(td.getDue());
-
-        td.setDueDateString("06 February, 2014");
-        Assert.assertEquals(td.getDueDateString(), "06 February, 2014");
+        td.setDue("(None)");
+        Assert.assertEquals(td.getDue(), "(None)");
+        td.setDue("06 February, 2014");
+        Assert.assertEquals(td.getDue(), "06 February, 2014");
     }
 }

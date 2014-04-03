@@ -32,8 +32,7 @@ public class TaskDetails
 {
 
     private String taskName;
-    private DateTime due;
-    private String dueDateString;
+    private String due;
     private DateTime startDate;
     private DateTime endDate;
     private String status;
@@ -51,31 +50,14 @@ public class TaskDetails
         this.taskName = taskName;
     }
 
-    public DateTime getDue()
+    public String getDue()
     {
         return due;
     }
 
     public void setDue(String due)
     {
-        try
-        {
-            this.due = DateTimeFormat.forPattern("dd MMMMM, yyyy").parseDateTime(due);
-        }
-        catch (IllegalArgumentException ie)
-        {
-            this.due = null;
-        }
-    }
-
-    public String getDueDateString()
-    {
-        return dueDateString;
-    }
-
-    public void setDueDateString(String due)
-    {
-        this.dueDateString = due;
+        this.due = due;
     }
 
     public DateTime getStartDate()

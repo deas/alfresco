@@ -19,6 +19,7 @@
 package org.alfresco.po.share.workflow;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.alfresco.po.share.AbstractTest;
@@ -55,6 +56,7 @@ public class MyWorkFlowsPageTest extends AbstractTest
 
     String workFlow1;
     String workFlow2;
+    String workFlow3;
     String dueDate;
     String workFlowComment;
     String uname;
@@ -72,7 +74,8 @@ public class MyWorkFlowsPageTest extends AbstractTest
         dashBoardPage = loginAs(uname, UNAME_PASSWORD);
         workFlow1 = "MyWF-" + System.currentTimeMillis() + "-1";
         workFlow2 = "MyWF-" + System.currentTimeMillis() + "-2";
-        dueDate = "17/09/2015";
+        workFlow3 = "MyWF-" + System.currentTimeMillis() + "-3";
+        dueDate = new DateTime().plusDays(2).toString("dd/MM/yyyy");
         workFlowComment = System.currentTimeMillis() + "-Comment";
     }
 
@@ -80,15 +83,21 @@ public class MyWorkFlowsPageTest extends AbstractTest
     public void afterClass()
     {
         SharePage sharePage = drone.getCurrentPage().render();
-        myWorkFlowsPage = sharePage.getNav().selectWorkFlowsIHaveStarted().render();
-        if(myWorkFlowsPage.isWorkFlowPresent(workFlow1))
+
+        List<String> workFlowList = Arrays.asList(workFlow1, workFlow3);
+
+        for(String workFlow: workFlowList)
         {
-            myWorkFlowsPage.cancelWorkFlow(workFlow1);
-        }
-        myWorkFlowsPage = myWorkFlowsPage.selectCompletedWorkFlows().render();
-        if(myWorkFlowsPage.isWorkFlowPresent(workFlow1))
-        {
-            myWorkFlowsPage.deleteWorkFlow(workFlow1);
+            myWorkFlowsPage = sharePage.getNav().selectWorkFlowsIHaveStarted().render();
+            if(myWorkFlowsPage.isWorkFlowPresent(workFlow))
+            {
+                myWorkFlowsPage.cancelWorkFlow(workFlow);
+            }
+            myWorkFlowsPage = myWorkFlowsPage.selectCompletedWorkFlows().render();
+            if(myWorkFlowsPage.isWorkFlowPresent(workFlow))
+            {
+                myWorkFlowsPage.deleteWorkFlow(workFlow);
+            }
         }
     }
 
@@ -190,7 +199,7 @@ public class MyWorkFlowsPageTest extends AbstractTest
         TaskDetails taskDetails = myTasksPage.getTaskDetails(workFlow1);
 
         Assert.assertEquals(taskDetails.getTaskName(), workFlow1);
-        Assert.assertEquals(taskDetails.getDue(), DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(dueDate));
+        Assert.assertEquals(taskDetails.getDue(), getDueDateOnMyTaskPage(dueDate));
         Assert.assertEquals(taskDetails.getStartDate().toLocalDate(), new DateTime().toLocalDate());
         Assert.assertNull(taskDetails.getEndDate());
         Assert.assertEquals(taskDetails.getStatus(), "Not Yet Started");
@@ -268,4 +277,38 @@ public class MyWorkFlowsPageTest extends AbstractTest
         Assert.assertFalse(myWorkFlowsPage.isWorkFlowPresent(workFlow2));
     }
 
+    private String getDueDateOnMyTaskPage(String dueDateString)
+    {
+        DateTime date = DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(dueDateString);
+        return date.toString(DateTimeFormat.forPattern("dd MMMM, yyyy"));
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "selectCancelWorkFlow")
+    public void selectStartWorkflowButtonWithDueDateNone() throws InterruptedException
+    {
+        dueDate = "";
+        StartWorkFlowPage startWorkFlowPage = myWorkFlowsPage.selectStartWorkflowButton().render();
+        NewWorkflowPage workFlow = startWorkFlowPage.getWorkflowPage(WorkFlowType.NEW_WORKFLOW).render();
+        WorkFlowFormDetails formDetails = getFormDetails(workFlow3);
+        myWorkFlowsPage = workFlow.startWorkflow(formDetails).render();
+        myWorkFlowsPage = myWorkFlowsPage.selectActiveWorkFlows().render();
+        Assert.assertTrue(myWorkFlowsPage.isWorkFlowPresent(workFlow3));
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "selectStartWorkflowButtonWithDueDateNone")
+    public void verifyTaskDetailsWithDueDateNone()
+    {
+        myTasksPage = workFlowDetailsPage.getNav().selectMyTasks().render();
+        Assert.assertEquals(myTasksPage.getSubTitle(), "Active Tasks");
+        TaskDetails taskDetails = myTasksPage.getTaskDetails(workFlow3);
+
+        Assert.assertEquals(taskDetails.getTaskName(), workFlow3);
+        Assert.assertEquals(taskDetails.getDue(), "(None)");
+        Assert.assertEquals(taskDetails.getStartDate().toLocalDate(), new DateTime().toLocalDate());
+        Assert.assertNull(taskDetails.getEndDate());
+        Assert.assertEquals(taskDetails.getStatus(), "Not Yet Started");
+        Assert.assertEquals(taskDetails.getType(), TaskDetailsType.TASK);
+        Assert.assertEquals(taskDetails.getDescription(), "Task allocated by colleague");
+        Assert.assertEquals(taskDetails.getStartedBy(), uname + "@test.com");
+    }
 }
