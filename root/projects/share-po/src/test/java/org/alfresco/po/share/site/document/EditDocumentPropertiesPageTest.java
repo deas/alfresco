@@ -18,6 +18,8 @@
  */
 package org.alfresco.po.share.site.document;
 
+import static org.testng.Assert.assertEquals;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +27,11 @@ import java.util.StringTokenizer;
 
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.UploadFilePage;
+import org.alfresco.po.share.site.document.EditDocumentPropertiesPage.Fields;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.testng.Assert;
@@ -152,5 +156,35 @@ public class EditDocumentPropertiesPageTest extends AbstractDocumentTest
 		Assert.assertEquals(editPage.getMimeType(), "XHTML");
 		Assert.assertEquals(editPage.getAuthor(), "me");
 		Assert.assertTrue(editPage.hasTags());
+		
+		editPage.clickOnCancel();
+    }
+    
+    @Test(dependsOnMethods="checkInputFieldsHaveUpdatedValues")
+    public void editPropertiesWithValidationAndSave() throws Exception
+    {
+        DocumentDetailsPage detailsPage = drone.getCurrentPage().render();
+        EditDocumentPropertiesPage editPage = detailsPage.selectEditProperties().render();
+        editPage.setName("");
+        editPage = editPage.selectSaveWithValidation().render();
+        
+        Map<Fields, String> messages = editPage.getMessages();
+        
+        Assert.assertEquals(messages.size(), 1);
+        Assert.assertFalse(messages.get(EditDocumentPropertiesPage.Fields.NAME).isEmpty());
+        
+        editPage.setName("new.txt");
+        TagPage tagPage = editPage.getTag().render();
+        SharePopup shareErrorPopup = tagPage.enterTagValue("////").render();
+        
+        assertEquals(shareErrorPopup.getShareMessage(), "Could not create new item.");
+
+        shareErrorPopup.clickOK().render();
+        
+        editPage = tagPage.clickOkButton().render();
+        detailsPage = editPage.selectSaveWithValidation().render();
+        
+        Map<String, Object> properties = detailsPage.getProperties();
+        Assert.assertEquals(properties.get("Name"), "new.txt");
     }
 }

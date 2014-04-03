@@ -31,6 +31,7 @@ import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -54,6 +55,20 @@ public class NewFolderPage extends SharePage
     private final RenderElement submitButtonElement = getVisibleRenderElement(submitButton);
     private final RenderElement cancelButtonElement = getVisibleRenderElement(cancelButton);
     
+    public enum Fields
+    {
+        NAME(By.cssSelector("input[id$='default-createFolder_prop_cm_name']")),
+        TITLE(By.cssSelector("input[id$='default-createFolder_prop_cm_title']")),
+        DESCRIPTION(By.cssSelector("textarea[id$='default-createFolder_prop_cm_description']"));
+        
+        private By locator;
+        
+        private Fields(By locator)
+        {
+            this.locator = locator;
+        }
+    }
+
     /**
      * Constructor.
      */
@@ -93,6 +108,14 @@ public class NewFolderPage extends SharePage
     }
 
     /**
+     * @see #createNewFolderWithValidation(String, String)
+     */
+    public HtmlPage createNewFolderWithValidation(final String folderName)
+    {
+        return createNewFolderWithValidation(folderName, null);
+    }
+
+    /**
      * Create a new folder action by completing and submitting the form.
      * 
      * @param folderName    mandatory folder name
@@ -118,6 +141,36 @@ public class NewFolderPage extends SharePage
      * 
      * @param folderName    mandatory folder name
      * @param description   optional folder description
+     * @return {@link HtmlPage} page response
+     */
+    public HtmlPage createNewFolderWithValidation(final String folderName, final String description)
+    {
+        typeNameWithValidation(folderName);
+        typeDescription(description);
+        boolean validationPresent = isMessagePresent(name);
+        validationPresent = validationPresent || isMessagePresent(folderTitleCss);
+        validationPresent = validationPresent || isMessagePresent(descriptionLocator);
+
+        if(!validationPresent)
+        {
+            WebElement okButton = drone.find(submitButton);
+            okButton.click();
+            
+            //Wait till the pop up disappears
+            waitUntilMessageAppearAndDisappear("Folder");
+            DocumentLibraryPage page = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
+            page.setShouldHaveFiles(true);
+            return page;
+        }
+        //TODO: change return when jira WEBDRONE-563 is implemented.
+        return this.render();
+    }
+    
+    /**
+     * Create a new folder action by completing and submitting the form.
+     * 
+     * @param folderName    mandatory folder name
+     * @param description   optional folder description
      * @param folderTitle  options folder Title
      * @return {@link HtmlPage} page response
      */
@@ -132,6 +185,20 @@ public class NewFolderPage extends SharePage
     }
     
     /**
+     * Create a new folder action by completing and submitting the form.
+     * 
+     * @param folderName    mandatory folder name
+     * @param description   optional folder description
+     * @param folderTitle   optional folder Title
+     * @return {@link HtmlPage} page response
+     */
+    public HtmlPage createNewFolderWithValidation(final String folderName, final String folderTitle, final String description)
+    {
+        typeTitle(folderTitle);
+        return createNewFolderWithValidation(folderName, description);
+    }
+    
+    /**
      * Clear & Type Folder Name on the Text box.
      * @param folderName
      */
@@ -141,6 +208,11 @@ public class NewFolderPage extends SharePage
         {
             throw new IllegalArgumentException("Folder Name input required.");
         }
+        clearAndType(name, folderName);
+    }
+    
+    private void typeNameWithValidation(final String folderName)
+    {
         clearAndType(name, folderName);
     }
     
@@ -210,4 +282,37 @@ public class NewFolderPage extends SharePage
         drone.waitUntilElementDisappears(By.cssSelector("div.bd>span.message"), timeInSeconds);
     }
     
+    /**
+     * Returns the validation message, if any, for the given Field.
+     * @param field The reqired field
+     * @return The validation message or an empty string if there is no message.
+     */
+    public String getMessage(Fields field)
+    {
+        String message = "";
+        try
+        {
+            message = getValidationMessage(field.locator);
+        }
+        catch(NoSuchElementException e)
+        {
+        }
+        return message;
+    }
+
+    private boolean isMessagePresent(By locator)
+    {
+        try
+        {
+            String message = getValidationMessage(locator);
+            if(message.length() > 0)
+            {
+                return true;
+            }
+        }
+        catch(NoSuchElementException e)
+        {
+        }
+        return false;
+    }
 }

@@ -113,6 +113,7 @@ public class FactorySharePage implements PageFactory
         pages.put("repository", RepositoryPage.class);
         pages.put("manage-permissions", ManagePermissionsPage.class);
         pages.put("plain", CreatePlainTextContentPage.class);
+        pages.put("xml", CreatePlainTextContentPage.class);
         pages.put("inline-edit", InlineEditPage.class);
         pages.put("edit-metadata", EditDocumentPropertiesPage.class);
         pages.put("site-members", SiteMembersPage.class);
@@ -186,19 +187,19 @@ public class FactorySharePage implements PageFactory
             {
             }
             
-            // Check for Share Dialogue
-            try
-            {
-                WebElement shareDialogue = drone.findFirstDisplayedElement(By.cssSelector(SHARE_DIALOGUE));
-                if (shareDialogue.isDisplayed())
-                {
-                    return new ShareDialogue(drone);
-                }
-            }
-            catch (NoSuchElementException nse)
-            {
-
-            }
+//            // Check for Share Dialogue
+//            try
+//            {
+//                WebElement shareDialogue = drone.findFirstDisplayedElement(By.cssSelector(SHARE_DIALOGUE));
+//                if (shareDialogue.isDisplayed())
+//                {
+//                    return new ShareDialogue(drone);
+//                }
+//            }
+//            catch (NoSuchElementException nse)
+//            {
+//
+//            }
 
             // Determine what page we're on based on url
             return getPage(drone.getCurrentUrl(), drone);

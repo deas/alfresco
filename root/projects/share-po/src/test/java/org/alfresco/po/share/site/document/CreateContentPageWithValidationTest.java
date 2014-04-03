@@ -90,7 +90,7 @@ public class CreateContentPageWithValidationTest extends AbstractDocumentTest
         contentDetails.setContent("Test Doc");
         contentPage = contentPage.createWithValidation(contentDetails).render();
         assertNotNull(contentPage);
-        assertTrue(contentPage.getMessage(Fields.NAME).length() > 0);
+        assertFalse(contentPage.getMessage(Fields.NAME).isEmpty());
         documentLibPage = contentPage.cancel().render();
         assertNotNull(documentLibPage);
     }
@@ -112,7 +112,7 @@ public class CreateContentPageWithValidationTest extends AbstractDocumentTest
         contentPage = contentPage.createWithValidation(contentDetails).render();
         assertNotNull(contentPage);
         Map<Fields, String> messages = contentPage.getMessages();
-        assertTrue(messages.get(Fields.NAME).length() > 0);
+        assertFalse(messages.get(Fields.NAME).isEmpty());
         documentLibPage = contentPage.cancel().render();
         assertNotNull(documentLibPage);
     }
@@ -150,69 +150,20 @@ public class CreateContentPageWithValidationTest extends AbstractDocumentTest
         DocumentDetailsPage detailsPage = contentPage.createWithValidation(contentDetails).render();
         assertNotNull(detailsPage);
         
-        SelectAspectsPage aspectsPage = detailsPage.selectManageAspects().render();
-        List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
-        aspects.add(DocumentAspect.VERSIONABLE);
-        aspects.add(DocumentAspect.CLASSIFIABLE);
-        aspectsPage = aspectsPage.add(aspects).render();
-        assertFalse(aspectsPage.getAvailableAspects().contains(DocumentAspect.VERSIONABLE));
-        assertTrue(aspectsPage.getSelectedAspects().contains(DocumentAspect.VERSIONABLE));
-        detailsPage = aspectsPage.clickApplyChanges().render();
-        EditTextDocumentPage editPage = detailsPage.selectInlineEdit();
-        editPage.render();
+        Map<String, Object> properties = detailsPage.getProperties();
+        
+        assertEquals(properties.get("Name"), "Test Doc");
+        
+        EditTextDocumentPage editPage = detailsPage.selectInlineEdit().render();
         contentDetails = editPage.getDetails();
-        assertEquals(contentDetails.getContent(), "Test Doc");
-        contentDetails.setContent("123456789");
-        editPage.save(contentDetails).render();
+        assertEquals(contentDetails.getName(), "Test Doc");
+        contentDetails.setName("");
+        InlineEditPage inlineEditPage = editPage.saveWithValidation(contentDetails).render();
+        editPage = inlineEditPage.getInlineEditDocumentPage(MimeType.TEXT).render();
+        Map<Fields, String> messages = editPage.getMessages();
+        assertTrue(messages.size() == 1);
+        assertNotNull(messages.get(CreatePlainTextContentPage.Fields.NAME));
+        detailsPage = editPage.selectCancel();
         documentLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
-   }
-    
-    /**
-     * Test case to cancel create content with plain text. Select manage aspects
-     * Add document aspect Verify added aspect removed from available aspects
-     * column Verify added aspect added in selected aspects column Click cancel
-     * 
-     * @throws Exception
-     */
-    @Test(dependsOnMethods = "createContent", groups = "Enterprise-only")
-    public void createCancelContent() throws Exception
-    {
-        CreatePlainTextContentPage contentPage = documentLibPage.getNavigation()
-                .selectCreateContent(ContentType.PLAINTEXT).render();
-        ContentDetails contentDetails = new ContentDetails();
-        contentDetails.setName("Test Doc Cancel");
-        contentDetails.setTitle("Test Cancel");
-        contentDetails.setDescription("Desc");
-        contentDetails.setContent("Test Doc");
-        DocumentDetailsPage detailsPage = contentPage.create(contentDetails).render();
-        assertNotNull(detailsPage);
-        SelectAspectsPage aspectsPage = detailsPage.selectManageAspects().render();
-        List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
-        aspects.add(DocumentAspect.VERSIONABLE);
-        aspects.add(DocumentAspect.CLASSIFIABLE);
-        aspectsPage = aspectsPage.add(aspects).render();
-        assertFalse(aspectsPage.getAvailableAspects().contains(DocumentAspect.VERSIONABLE));
-        assertTrue(aspectsPage.getSelectedAspects().contains(DocumentAspect.VERSIONABLE));
-        detailsPage = aspectsPage.clickCancel().render();
-        documentLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
-    }
-
-    /**
-     * Test case to cancel create content with plain text.
-     * 
-     * @throws Exception
-     */
-    @Test(dependsOnMethods="createCancelContent", groups="Enterprise-only")
-    public void cancelCreateContent() throws Exception
-    {
-        CreatePlainTextContentPage contentPage = documentLibPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
-        ContentDetails contentDetails = new ContentDetails();
-        contentDetails.setName("cancel create content");
-        contentDetails.setTitle("cancel create content title");
-        contentDetails.setDescription("cancel create content description");
-        contentDetails.setContent("cancel create content - test content");
-        DocumentLibraryPage documentLibraryPage = contentPage.cancel(contentDetails).render();
-        assertNotNull(documentLibraryPage);
-        assertFalse(documentLibraryPage.isContentUploadedSucessful("cancel create content"));
    }
 }

@@ -78,6 +78,18 @@ public class EditTextDocumentPage extends CreatePlainTextContentPage
     }
     
     /**
+     * Save the {@link ContentDetails}.
+     * 
+     * @param details - The {@link ContentDetails} to be saved.
+     * @return {@link DocumentDetailsPage}
+     */
+    public HtmlPage saveWithValidation(ContentDetails details)
+    {
+        createWithValidation(details);
+        return FactorySharePage.resolvePage(drone);
+    }
+    
+    /**
      * Get the {@link ContentDetails} when try to do in line edit.
      * 
      * @return {@link ContentDetails}

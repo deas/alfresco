@@ -18,7 +18,9 @@
  */
 package org.alfresco.po.share.site.document;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.webdrone.HtmlPage;
@@ -40,6 +42,13 @@ import org.openqa.selenium.support.ui.Select;
  */
 public class EditDocumentPropertiesPage extends AbstractEditProperties
 {
+    public enum Fields
+    {
+        NAME,
+        TITLE,
+        DESCRIPTION,
+        AUTHOR;
+    }
 
     private final String tagName;
     
@@ -306,6 +315,26 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
 	    return FactorySharePage.resolvePage(drone);
 	}
     /**
+     * Clicks on save button.
+     * @return {@link DocumentDetailsPage} page response or {@link EditDocumentPropertiesPage}
+     * if there is a validation message.
+     */
+    public HtmlPage selectSaveWithValidation()
+    {
+        boolean validationPresent = false;
+        validationPresent = isMessagePresent(INPUT_NAME_SELECTOR);
+        validationPresent = validationPresent || isMessagePresent(INPUT_TITLE_SELECTOR);
+        validationPresent = validationPresent || isMessagePresent(INPUT_DESCRIPTION_SELECTOR);
+        validationPresent = validationPresent || isMessagePresent(INPUT_AUTHOR_SELECTOR);
+        
+        if(!validationPresent)
+        {
+            clickSave();
+        }
+        // WEBDRONE-523: Amended to return HtmlPage rather than DocumentDetailsPage
+        return FactorySharePage.resolvePage(drone);
+    }
+    /**
      * Select cancel button.
      * @return {@link DocumentDetailsPage} page response
      */
@@ -314,5 +343,70 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
         clickOnCancel();
         // WEBDRONE-523: Amended to return HtmlPage rather than DocumentDetailsPage
         return FactorySharePage.resolvePage(drone);
+    }
+    
+    /**
+     * Returns a map of validation messages for all the fields in the form.
+     * @param field The reqired field
+     * @return The validation message or an empty string if there is no message.
+     */
+    public Map<Fields, String> getMessages()
+    {
+        Map<Fields, String> messages = new HashMap<>();
+        
+        String message = getMessage(INPUT_NAME_SELECTOR);
+        if(message.length() > 0)
+        {
+            messages.put(Fields.NAME, message);
+        }
+        
+        message = getMessage(INPUT_TITLE_SELECTOR);
+        if(message.length() > 0)
+        {
+            messages.put(Fields.TITLE, message);
+        }
+        
+        message = getMessage(INPUT_DESCRIPTION_SELECTOR);
+        if(message.length() > 0)
+        {
+            messages.put(Fields.DESCRIPTION, message);
+        }
+        
+        message = getMessage(INPUT_AUTHOR_SELECTOR);
+        if(message.length() > 0)
+        {
+            messages.put(Fields.AUTHOR, message);
+        }
+        
+        return messages;
+    }
+
+    private String getMessage(By locator)
+    {
+        String message = "";
+        try
+        {
+            message = getValidationMessage(locator);
+        }
+        catch(NoSuchElementException e)
+        {
+        }
+        return message;
+    }
+    
+    private boolean isMessagePresent(By locator)
+    {
+        try
+        {
+            String message = getValidationMessage(locator);
+            if(message.length() > 0)
+            {
+                return true;
+            }
+        }
+        catch(NoSuchElementException e)
+        {
+        }
+        return false;
     }
 }

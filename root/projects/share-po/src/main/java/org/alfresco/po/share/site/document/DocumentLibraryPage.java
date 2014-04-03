@@ -78,6 +78,7 @@ public class DocumentLibraryPage extends SitePage
     private final String hasTags;
     private String contentName;
     private ViewType viewType;
+    
     public enum Optype
     {
         REQ_TO_SYNC,  

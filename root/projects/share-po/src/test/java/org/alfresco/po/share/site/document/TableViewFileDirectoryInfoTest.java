@@ -210,7 +210,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     public void testGetContentNameFromInfoMenu() throws Exception
     {
         // Get File
-        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName());
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName() + " updated");
 
         thisRow.getContentNameFromInfoMenu();
     }
@@ -219,7 +219,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     public void testGetVersionInfo() throws Exception
     {
         // Get File
-        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName());
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName() + " updated");
 
         thisRow.getVersionInfo();
     }
@@ -228,7 +228,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     public void testCheckboxAndVersionMenu() throws Exception
     {
         // Get File
-        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName());
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName() + " updated");
 
         Assert.assertFalse(thisRow.isVersionVisible());
         Assert.assertTrue(thisRow.isCheckBoxVisible());
