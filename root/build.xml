@@ -1435,17 +1435,100 @@
       <copy todir="${dir.project.solr.instance.lib}"
             file="${dir.project.solr.dist}/${file.name.jar.solr}" />
 
-      <taskdef name="copy-libs-from-classpath"
-               classname="org.alfresco.devenv.ant.CopyLibrariesFromEclipseClasspath">
-         <classpath refid="classpath.compile" />
-      </taskdef>
-
-      <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.core}" libdir="${dir.project.3rdparty}" />
-      <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.datamodel}" libdir="${dir.project.3rdparty}" />
-      <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.legacylucene}" libdir="${dir.project.3rdparty}" />
-      <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.solrclient}" libdir="${dir.project.3rdparty}" />
-      <copy-libs-from-classpath destdir="${dir.project.solr.instance.lib}" projectdir="${dir.project.solr}" libdir="${dir.project.3rdparty}" />
-
+      <!-- Used to use the CopyLibrariesFromEclipseClasspath custom Ant task as copy-libs-from-classpath -->
+      <!-- But we want to stop committing the .classpath projects, so temporarily list all jars -->
+      <!-- until we move to a proper dependency management system... -->
+      <copy todir="${dir.project.solr.instance.lib}">
+        <fileset dir="${dir.project.3rdparty.lib}/commons">
+            <include name="commons-codec-*.jar"/>
+            <include name="commons-collections-*.jar"/>
+            <include name="commons-httpclient-*.jar"/>
+            <include name="commons-io-*.jar"/>
+            <include name="commons-logging-*.jar"/>
+        </fileset>
+        <fileset dir="${dir.project.3rdparty.lib}/jboss">
+            <include name="jboss-vfs-*GA.jar"/>
+        </fileset>
+        <fileset dir="${dir.project.3rdparty.lib}/jetty">
+            <include name="jetty-client-*.jar"/>
+            <include name="jetty-http-*.jar"/>
+            <include name="jetty-security-*.jar"/>
+            <include name="jetty-server-*.jar"/>
+            <include name="jetty-servlet-*.jar"/>
+            <include name="jetty-util-*.jar"/>
+            <include name="jetty-webapp-*.jar"/>
+        </fileset>
+        <fileset dir="${dir.project.3rdparty.lib}/j2ee">
+            <include name="servlet.jar"/>
+        </fileset>
+        <fileset dir="${dir.project.3rdparty.lib}/optional">
+            <include name="log4j-*.jar"/>
+        </fileset>
+        <fileset dir="${dir.project.3rdparty.lib}/spring-surf">
+            <include name="spring-surf-*.jar"/>
+            <include name="spring-surf-api-*.jar"/>
+            <include name="spring-surf-core-*.jar"/>
+            <include name="spring-surf-core-configservice-*.jar"/>
+            <include name="spring-webeditor-*.jar"/>
+            <include name="spring-webeditor-client-jsp-*.jar"/>
+            <include name="spring-webscripts-*.jar"/>
+            <include name="spring-webscripts-api-*.jar"/>
+        </fileset>
+        <fileset dir="${dir.project.3rdparty.lib}">
+            <include name="acegi-security-*.jar"/>
+            <include name="alfresco-xmlfactory-*.jar"/>
+            <include name="antlr-*.jar"/>
+            <include name="chemistry-abdera-*.jar"/>
+            <include name="chemistry-opencmis-client-api-*.jar"/>
+            <include name="chemistry-opencmis-client-bindings-*.jar"/>
+            <include name="chemistry-opencmis-client-impl-*.jar"/>
+            <include name="chemistry-opencmis-commons-api-*.jar"/>
+            <include name="chemistry-opencmis-commons-impl-*.jar"/>
+            <include name="chemistry-opencmis-server-bindings-*.jar"/>
+            <include name="chemistry-opencmis-server-support-*.jar"/>
+            <include name="chemistry-opencmis-test-browser-*.jar"/>
+            <include name="chemistry-opencmis-test-tck-*.jar"/>
+            <include name="dom4j-*.jar"/>
+            <include name="guessencoding-*.jar"/>
+            <include name="hibernate-*.jar"/>
+            <include name="jackson-core-asl-*.jar"/>
+            <include name="jaxb-impl-*.jar"/>
+            <include name="jaxb-xjc-*.jar"/>
+            <include name="jaxen-*.jar"/>
+            <include name="jibx-run-*.jar"/>
+            <include name="joda-time-*.jar"/>
+            <include name="json.jar"/>
+            <include name="jta.jar"/>
+            <include name="jug-asl-*.jar"/>
+            <include name="junit-dep-*.jar"/>
+            <include name="lucene-analyzers-*.jar"/>
+            <include name="lucene-core-*.jar"/>
+            <include name="lucene-regex-*.jar"/>
+            <include name="lucene-snowball-*.jar"/>
+            <include name="mockito-all-*.jar"/>
+            <include name="mybatis-*.jar"/>
+            <include name="mybatis-spring-*.jar"/>
+            <include name="org.springframework.aop-*.jar"/>
+            <include name="org.springframework.asm-*.jar"/>
+            <include name="org.springframework.beans-*.jar"/>
+            <include name="org.springframework.context-*.jar"/>
+            <include name="org.springframework.context.support-*.jar"/>
+            <include name="org.springframework.core-*.jar"/>
+            <include name="org.springframework.expression-*.jar"/>
+            <include name="org.springframework.jdbc-*.jar"/>
+            <include name="org.springframework.orm-*.jar"/>
+            <include name="org.springframework.transaction-*.jar"/>
+            <include name="org.springframework.web-*.jar"/>
+            <include name="org.springframework.web.servlet-*.jar"/>
+            <include name="quartz-*.jar"/>
+            <include name="slf4j-api-*.jar"/>
+            <include name="slf4j-log4j12-*.jar"/>
+            <include name="stax-api-*.jar"/>
+            <include name="tika-core-*.jar"/>
+            <include name="tika-parsers-*.jar"/>
+            <include name="xercesImpl-*.jar"/>
+        </fileset>
+      </copy>
    </target>
 
 
