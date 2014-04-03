@@ -513,7 +513,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         }
 
         @Test(dependsOnMethods = "selectStartWorkFlow", groups = "Enterprise4.2")
-        public void testMyFavourite() throws Exception
+        public void testFilterLinks() throws Exception
         {
                 SiteFinderPage siteFinder = ((SharePage) drone.getCurrentPage()).getNav().selectSearchForSites().render();
                 siteFinder = siteFinder.searchForSite(siteName).render();
@@ -544,9 +544,20 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
                 while (!documentLibPage.isFileVisible(tempFile.getName()) && i < 5);
                 assertTrue(documentLibPage.getFiles().size() == 1);
                 assertTrue(documentLibPage.getFiles().get(0).getName().equalsIgnoreCase(tempFile.getName()));
+
+                documentLibPage.clickOnRecentlyAdded();
+                assertEquals(documentLibPage.getFiles().size(), 4);
+                documentLibPage.clickOnMyFavourites();
+                assertEquals(documentLibPage.getFiles().size(), 1);
+                documentLibPage.clickOnRecentlyModified();
+                assertEquals(documentLibPage.getFiles().size(), 4);
+                documentLibPage.clickOnMyFavourites();
+                assertEquals(documentLibPage.getFiles().size(), 1);
+                documentLibPage.clickOnAllDocuments();
+                assertEquals(documentLibPage.getFiles().size(), 4);
         }
 
-        @Test(dependsOnMethods = "testMyFavourite", groups = { "alfresco-one" }, expectedExceptions = IllegalArgumentException.class)
+        @Test(dependsOnMethods = "testFilterLinks", groups = { "alfresco-one" }, expectedExceptions = IllegalArgumentException.class)
         public void selectZoomIllegalArgumentException()
         {
                 documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
@@ -666,6 +677,19 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
                 documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
                 FileDirectoryInfo fileDirectoryInfo = documentLibPage.getFileDirectoryInfo(tempFile.getName());
                 assertTrue(fileDirectoryInfo.getPreViewUrl().matches(urlRegexp));
+        }
+
+        @Test(dependsOnMethods = "testGetPreviewUrl", groups = { "alfresco-one" })
+        public void testPaginationForm()
+        {
+                documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
+                PaginationForm paginationForm = documentLibPage.getBottomPaginationForm();
+                assertTrue(paginationForm.isDisplay());
+                assertFalse(paginationForm.isPreviousButtonEnable());
+                assertFalse(paginationForm.isNextButtonEnable());
+                assertEquals(paginationForm.getCurrentPageNumber(), 1);
+                assertEquals(paginationForm.getPaginationLinks().size(), 1);
+                assertEquals(paginationForm.getPaginationInfo(), "1 - 8 of 8");
         }
 
 }

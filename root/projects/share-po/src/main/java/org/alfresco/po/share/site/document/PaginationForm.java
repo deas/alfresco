@@ -5,10 +5,7 @@ import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.WebDroneImpl;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
@@ -56,6 +53,33 @@ public class PaginationForm extends HtmlElement
                 getFormElement().findElement(PREVIOUS_PAGE_LINK).click();
                 waitUntilPageNumberChanged(beforePageNumber);
                 return drone.getCurrentPage().render();
+        }
+
+        public boolean isPreviousButtonEnable()
+        {
+                try
+                {
+                        getFormElement().findElement(PREVIOUS_PAGE_LINK);
+                        return true;
+                }
+                catch (NoSuchElementException e)
+                {
+                        return false;
+                }
+        }
+
+        public boolean isNextButtonEnable()
+        {
+                try
+                {
+
+                        getFormElement().findElement(NEXT_PAGE_LINK);
+                        return true;
+                }
+                catch (NoSuchElementException e)
+                {
+                        return false;
+                }
         }
 
         public List<WebElement> getPaginationLinks()
