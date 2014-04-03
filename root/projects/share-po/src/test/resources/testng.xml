@@ -14,54 +14,49 @@
             <exclude name="download" />
         </run>
     </groups>
-<!--     <test name="Dashlets">
-        <packages>
-            <package name="org.alfresco.po.share.dashlet" />
-        </packages>
+    <test name="EditOfflineTest1">
+        <classes>
+            <class name="org.alfresco.po.share.site.document.EditOfflineTest" />
+        </classes>
     </test>
-    <test name="SiteContent">
-        <packages>
-            <package name="org.alfresco.po.share.dashlet.sitecontent" />
-        </packages>
+    <test name="EditOfflineTest2">
+        <classes>
+            <class name="org.alfresco.po.share.site.document.EditOfflineTest" />
+        </classes>
     </test>
-    <test name="Search">
-        <packages>
-            <package name="org.alfresco.po.share.search" />
-        </packages>
+    <test name="EditOfflineTest3">
+        <classes>
+            <class name="org.alfresco.po.share.site.document.EditOfflineTest" />
+        </classes>
     </test>
-    <test name="Site">
-        <packages>
-            <package name="org.alfresco.po.share.site" />
-        </packages>
-    </test> -->
-    <test name="Workflow">
-        <packages>
-            <package name="org.alfresco.po.share.workflow" />
-        </packages>
+    <test name="NewWorkflowPageTest1">
+        <classes>
+            <class name="org.alfresco.po.share.workflow.NewWorkflowPageTest" />
+        </classes>
     </test>
-   <!--  <test name="Task">
-        <packages>
-            <package name="org.alfresco.po.share.task" />
-        </packages>
+        <test name="NewWorkflowPageTest2">
+        <classes>
+            <class name="org.alfresco.po.share.workflow.NewWorkflowPageTest" />
+        </classes>
     </test>
-    <test name="Download">
-        <packages>
-            <package name="org.alfresco.po.share.site.document.download" />
-        </packages>
+    <test name="NewWorkflowPageTest2">
+        <classes>
+            <class name="org.alfresco.po.share.workflow.NewWorkflowPageTest" />
+        </classes>
     </test>
-    <test name="Share">
-        <packages>
-            <package name="org.alfresco.po.share" />
-        </packages>
+    <test name="MyTasksTest1">
+        <classes>
+            <class name="org.alfresco.po.share.workflow.MyTasksTest" />
+        </classes>
     </test>
-    <test name="enums">
-        <packages>
-            <package name="org.alfresco.po.share.enums" />
-        </packages>
-    </test> -->
-    <test name="Document">
-        <packages>
-             <package name="org.alfresco.po.share.site.document" />
-        </packages>
+    <test name="MyTasksTest2">
+        <classes>
+            <class name="org.alfresco.po.share.workflow.MyTasksTest" />
+        </classes>
+    </test>
+    <test name="MyTasksTest3">
+        <classes>
+            <class name="org.alfresco.po.share.workflow.MyTasksTest" />
+        </classes>
     </test>
 </suite>
