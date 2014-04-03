@@ -953,8 +953,13 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (TimeoutException te)
                 {
-                        logger.error("Exceeded time to find the edit comment link" + te);
+                        logger.error("Exceeded time to find the edit comment link", te);
                 }
+                catch (NoSuchElementException te)
+                {
+                        logger.error("`Not able find the edit comment link", te);
+                }
+
                 throw new PageException("Edit comment form has not been rendered in time");
         }
 
