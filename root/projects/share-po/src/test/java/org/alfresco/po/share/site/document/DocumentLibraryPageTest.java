@@ -430,34 +430,6 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
                 assertTrue(documentLibPage.getTitle().contains("Document Library"));
         }
 
-        /**
-         * Select Delete and perform cancel and OK action
-         *
-         * @throws Exception
-         * @author sprasanna
-         */
-        @Test(groups = "BambooBug")
-        //@Test(dependsOnMethods="selectUploadNewVersion", groups="Enterprise4.2")
-        public void selectDeleteforContent() throws Exception
-        {
-                documentLibPage.render();
-                FileDirectoryInfo file;
-                ConfirmDeletePage confirmdialog;
-                int fileSize = 0;
-                File tempFile = SiteUtil.prepareFile();
-                UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
-                documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
-                file = documentLibPage.getFileDirectoryInfo(tempFile.getName());
-                confirmdialog = file.selectDelete().render();
-                documentLibPage = ((DocumentLibraryPage) confirmdialog.selectAction(Action.Cancel)).render();
-                fileSize = documentLibPage.getFiles().size();
-                assertTrue(documentLibPage.getTitle().contains("Document Library"));
-                file = documentLibPage.getFileDirectoryInfo(tempFile.getName());
-                confirmdialog = file.selectDelete().render();
-                documentLibPage = ((DocumentLibraryPage) confirmdialog.selectAction(Action.Delete)).render();
-                assertEquals(documentLibPage.getFiles().size(), fileSize - 1);
-        }
-
         @Test(dependsOnMethods = "selectUploadNewVersion", groups = "Enterprise4.2")
         public void testTagsCount() throws IOException
         {
@@ -546,15 +518,15 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
                 assertTrue(documentLibPage.getFiles().get(0).getName().equalsIgnoreCase(tempFile.getName()));
 
                 documentLibPage.clickOnRecentlyAdded();
-                assertEquals(documentLibPage.getFiles().size(), 6);
+                assertEquals(documentLibPage.getFiles().size(), 4);
                 documentLibPage.clickOnMyFavourites();
                 assertEquals(documentLibPage.getFiles().size(), 1);
                 documentLibPage.clickOnRecentlyModified();
-                assertEquals(documentLibPage.getFiles().size(), 6);
+                assertEquals(documentLibPage.getFiles().size(), 4);
                 documentLibPage.clickOnMyFavourites();
                 assertEquals(documentLibPage.getFiles().size(), 1);
                 documentLibPage.clickOnAllDocuments();
-                assertEquals(documentLibPage.getFiles().size(), 6);
+                assertEquals(documentLibPage.getFiles().size(), 4);
         }
 
         @Test(dependsOnMethods = "testFilterLinks", groups = { "alfresco-one" }, expectedExceptions = IllegalArgumentException.class)
