@@ -20,6 +20,10 @@ package org.alfresco.po.share;
 
 import org.alfresco.po.share.admin.AdminConsolePage;
 import org.alfresco.po.share.admin.ManageSitesPage;
+import org.alfresco.po.share.adminconsole.NodeBrowserPage;
+import org.alfresco.po.share.dashlet.mydiscussions.CreateNewTopicPage;
+import org.alfresco.po.share.dashlet.mydiscussions.TopicDetailsPage;
+import org.alfresco.po.share.dashlet.mydiscussions.TopicsListPage;
 import org.alfresco.po.share.search.AdvanceSearchFolderPage;
 import org.alfresco.po.share.search.AdvanceSearchPage;
 import org.alfresco.po.share.search.AllSitesResultsPage;
@@ -125,6 +129,11 @@ public class FactorySharePageTest
     private final String adminConsolePage= baseUrl+"%s/page/console/admin-console/application";
     private final String manageSitesPage= baseUrl+"%s/page/console/admin-console/manage-sites";
     
+    private final String createNewTopicPage = baseUrl+"%s/page/site/new-site/discussions-createtopic";
+    private final String topicDetailsPage = baseUrl+"%s/page/site/new-site/discussions-topicview?topicId=post-1394637958079_1640&listViewLinkBack=true";
+    private final String topicsListPage = baseUrl+"%s/page/site/new-site/discussions-topiclist";
+    private final String customiseUserDashboardPage = baseUrl+"%s/page/customise-user-dashboard";
+    private final String nodeBrowserPage  = baseUrl+"%s/page/console/admin-console/node-browser";
 
     @Test(groups={"unit"})
     public void resolveUrls()
@@ -269,7 +278,25 @@ public class FactorySharePageTest
             
             page = resolvePage(addGroupsPage, "add-groups", drone);
             Assert.assertTrue(page instanceof AddGroupsPage);
-            
+
+            page = resolvePage(createNewTopicPage, "discussions-createtopic", drone);
+            Assert.assertTrue(page instanceof CreateNewTopicPage);
+
+            page = resolvePage(topicDetailsPage, "discussions-topicview", drone);
+            Assert.assertTrue(page instanceof TopicDetailsPage);
+
+            page = resolvePage(topicsListPage, "discussions-topiclist", drone);
+            Assert.assertTrue(page instanceof TopicsListPage);
+
+            page = resolvePage(topicsListPage, "discussions-topiclist", drone);
+            Assert.assertTrue(page instanceof TopicsListPage);
+
+            page = resolvePage(customiseUserDashboardPage, "customise-user-dashboard", drone);
+            Assert.assertTrue(page instanceof CustomiseUserDashboardPage);
+
+            page = resolvePage(nodeBrowserPage, "node-browser", drone);
+            Assert.assertTrue(page instanceof NodeBrowserPage);
+
             //---------------admin console ----------------
             page = resolvePage(adminConsolePage, "admin-console", drone);
             Assert.assertTrue(page instanceof AdminConsolePage);
