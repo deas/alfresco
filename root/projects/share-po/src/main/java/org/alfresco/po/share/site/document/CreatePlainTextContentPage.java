@@ -162,32 +162,35 @@ public class CreatePlainTextContentPage extends InlineEditPage
 
     protected void createContent(ContentDetails details)
     {
-        if (details.getName() != null)
+        if (details != null)
         {
-            WebElement nameElement = drone.find(NAME);
-            nameElement.clear();
-            nameElement.sendKeys(details.getName());
+            if (details.getName() != null)
+            {
+                WebElement nameElement = drone.find(NAME);
+                nameElement.clear();
+                nameElement.sendKeys(details.getName());
+            }
+    
+            if (details.getTitle() != null)
+            {
+                WebElement titleElement = drone.find(TITLE);
+                titleElement.clear();
+                titleElement.sendKeys(details.getTitle());
+            }
+    
+            if (details.getDescription() != null)
+            {
+                WebElement descriptionElement = drone.find(DESCRIPTION);
+                descriptionElement.clear();
+                descriptionElement.sendKeys(details.getDescription());
+            }
+            createContentField(details);
         }
-
-        if (details.getTitle() != null)
-        {
-            WebElement titleElement = drone.find(TITLE);
-            titleElement.clear();
-            titleElement.sendKeys(details.getTitle());
-        }
-
-        if (details.getDescription() != null)
-        {
-            WebElement descriptionElement = drone.find(DESCRIPTION);
-            descriptionElement.clear();
-            descriptionElement.sendKeys(details.getDescription());
-        }
-        createContentField(details);
     }
 
     protected void createContentField(ContentDetails details)
     {
-        if (details.getContent() != null)
+        if (details != null && details.getContent() != null)
         {
             WebElement contentElement = drone.find(CONTENT);
             contentElement.clear();

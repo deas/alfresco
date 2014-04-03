@@ -22,6 +22,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+/**
+ * Represents the file data in Table View in the Dcoument Library
+ * 
+ * @author Jamie Allison
+ * @since  4.3.0
+ */
 public class TableViewFileDirectoryInfo extends SimpleDetailTableView
 {
 
