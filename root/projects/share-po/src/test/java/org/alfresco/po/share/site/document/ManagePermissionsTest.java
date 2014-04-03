@@ -113,6 +113,7 @@ public class ManagePermissionsTest extends AbstractTest
     {
         String name = null;
         pageUnderTest.setAccessType(name, UserRole.COLLABORATOR);
+        pageUnderTest.setAccessType(name, UserRole.CONSUMER);
     }
 
     @Test(dependsOnMethods="setAccessTypeWithNullName", expectedExceptions=IllegalArgumentException.class, expectedExceptionsMessageRegExp="UserProfile cannot be null")
@@ -120,6 +121,7 @@ public class ManagePermissionsTest extends AbstractTest
     {
         UserProfile name = null;
         pageUnderTest.setAccessType(name, UserRole.COLLABORATOR);
+        pageUnderTest.setAccessType(name, UserRole.CONSUMER);
     }
 
     @Test(dependsOnMethods="setAccessTypeWithNullProfile", expectedExceptions=IllegalArgumentException.class, expectedExceptionsMessageRegExp="Access type cannot be null")
@@ -207,8 +209,21 @@ public class ManagePermissionsTest extends AbstractTest
         {
             userName = "Auto Account";
         }
-        Assert.assertTrue(pageUnderTest.isDeleteActionPresent(userName, UserRole.COLLABORATOR));
-        pageUnderTest = pageUnderTest.deleteUserWithPermission(userName, UserRole.COLLABORATOR);
+        if(drone.getCurrentPage() instanceof ManagePermissionsPage)
+        {
+            
+        }
+        else
+        {
+            pageUnderTest = ((DocumentDetailsPage)drone.getCurrentPage()).selectManagePermissions().render();
+        }
+        UserProfile userProfile = new UserProfile();
+        userProfile.setUsername(username);
+     
+        pageUnderTest = pageUnderTest.selectAddUser().searchAndSelectUser(userProfile);
+        
+        Assert.assertTrue(pageUnderTest.isDeleteActionPresent(userName, UserRole.SITEMANAGER));
+        pageUnderTest = pageUnderTest.deleteUserWithPermission(userName, UserRole.SITEMANAGER);
         pageUnderTest.selectCancel().render();
     }
     
