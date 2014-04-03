@@ -1853,6 +1853,14 @@ function getHeaderModel() {
                }
             },
             {
+               id: "HEADER_USER_MENU_BAR",
+               name: "alfresco/header/AlfMenuBar",
+               align: "right",
+               config: {
+                  widgets: headerMenus.userItems
+               }
+            },
+            {
                id: "HEADER_SEARCH",
                name: "alfresco/header/SearchBox",
                align: "right",
@@ -1860,14 +1868,6 @@ function getHeaderModel() {
                   id: "HEADER_SEARCH_BOX",
                   site: page.url.templateArgs.site,
                   repository: (page.id == "repository" || page.id == "myfiles" || page.id == "sharedfiles")
-               }
-            },
-            {
-               id: "HEADER_USER_MENU_BAR",
-               name: "alfresco/header/AlfMenuBar",
-               align: "right",
-               config: {
-                  widgets: headerMenus.userItems
                }
             }
          ]

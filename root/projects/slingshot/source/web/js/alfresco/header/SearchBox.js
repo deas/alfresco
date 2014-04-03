@@ -95,7 +95,7 @@ define(["dojo/_base/declare",
       postMixInProperties: function alfresco_header_LiveSearch_postMixInProperties() {
          // construct our I18N labels ready for template
          this.label = {};
-         array.forEach(["documents", "sites", "people", "clear", "more"], lang.hitch(this, function(msg) {
+         array.forEach(["documents", "sites", "people", "more"], lang.hitch(this, function(msg) {
             this.label[msg] = this.message("search." + msg);
          }));
       },
@@ -103,12 +103,7 @@ define(["dojo/_base/declare",
       onSearchDocsMoreClick: function alfresco_header_LiveSearch_onSearchDocsMoreClick(evt) {
          this.searchBox.liveSearchDocuments(this.searchBox.lastSearchText, this.searchBox.resultsCounts["docs"]);
          evt.preventDefault();
-      },
-      
-      onSearchClearClick: function alfresco_header_LiveSearch_onSearchClearClick(evt) {
-         this.searchBox.clearResults();
-         evt.preventDefault();
-      },
+      }
    });
    
    /**
@@ -171,9 +166,9 @@ define(["dojo/_base/declare",
       /**
        * @instance
        * @type {integer}
-       * @default 212
+       * @default 130
        */
-      _width: "212",
+      _width: "130",
 
       /**
        * @instance
@@ -219,6 +214,17 @@ define(["dojo/_base/declare",
        * @default null
        */
       resultsCounts: null,
+
+      /**
+       * @instance
+       */
+      postMixInProperties: function alfresco_header_SearchBox_postMixInProperties() {
+         // construct our I18N labels ready for template
+         this.label = {};
+         array.forEach(["clear"], lang.hitch(this, function(msg) {
+            this.label[msg] = this.message("search." + msg);
+         }));
+      },
 
       /**
        * @instance
@@ -381,7 +387,13 @@ define(["dojo/_base/declare",
                   array.forEach(response.items, function(item) {
                      // construct the meta-data - site information, modified by and title description as tooltip
                      var site = (item.site ? "site/" + item.site.shortName + "/" : "");
-                     var info = (item.site ? ("<a href='" + AlfConstants.URL_PAGECONTEXT + site + "documentlibrary'>" + this.encodeHTML(item.site.title) + "</a> | ") : "") + Stamp.fromISOString(item.modifiedOn).toGMTString() + " | <a href='" + AlfConstants.URL_PAGECONTEXT + "user/" + this.encodeHTML(item.modifiedBy) + "/profile'>" + this.encodeHTML(item.modifiedBy) + "</a>";
+                     var info = '<a href="' + AlfConstants.URL_PAGECONTEXT + 'user/' + this.encodeHTML(item.modifiedBy) + '/profile">' + this.encodeHTML(item.modifiedBy) + '</a> | ';
+                     if (item.site)
+                     {
+                        info += '<a href="' + AlfConstants.URL_PAGECONTEXT + site + 'documentlibrary">' + this.encodeHTML(item.site.title) + '</a> | ';
+                     }
+                     info += Stamp.fromISOString(item.modifiedOn).toGMTString();
+
                      var desc = this.encodeHTML(item.title);
                      if (item.description) desc += (desc.length !== 0 ? "\r\n" : "") + this.encodeHTML(item.description);
                      // build the widget for the item - including the thumbnail url for the document
@@ -504,26 +516,28 @@ define(["dojo/_base/declare",
       clearResults: function alfresco_header_SearchBox_clearResults()
       {
          this._searchTextNode.value = "";
-         this.lastSearchText = "";
-         
-         for (var i=0; i<this._requests.length; i++)
+         if (this.liveSearch)
          {
-            this._requests[i].cancel();
+            this.lastSearchText = "";
+
+            for (var i=0; i<this._requests.length; i++)
+            {
+               this._requests[i].cancel();
+            }
+            this._requests = [];
+
+            this.resultsCounts = {};
+            this._LiveSearch.containerNodeDocs.innerHTML = "";
+            this._LiveSearch.containerNodePeople.innerHTML = "";
+            this._LiveSearch.containerNodeSites.innerHTML = "";
+            DomClass.remove(this._LiveSearch.titleNodeDocs, "wait");
+            DomClass.remove(this._LiveSearch.titleNodePeople, "wait");
+            DomClass.remove(this._LiveSearch.titleNodeSites, "wait");
+
+            DomStyle.set(this._LiveSearch.nodeDocsMore, "display", "none");
+
+            DomStyle.set(this._LiveSearch.containerNode, "display", "none");
          }
-         this._requests = [];
-         
-         this.resultsCounts = {};
-         this._LiveSearch.containerNodeDocs.innerHTML = "";
-         this._LiveSearch.containerNodePeople.innerHTML = "";
-         this._LiveSearch.containerNodeSites.innerHTML = "";
-         DomClass.remove(this._LiveSearch.titleNodeDocs, "wait");
-         DomClass.remove(this._LiveSearch.titleNodePeople, "wait");
-         DomClass.remove(this._LiveSearch.titleNodeSites, "wait");
-         
-         DomStyle.set(this._LiveSearch.nodeDocsMore, "display", "none");
-         
-         DomStyle.set(this._LiveSearch.containerNode, "display", "none");
-         
          this._searchTextNode.focus();
       },
 
@@ -537,6 +551,12 @@ define(["dojo/_base/declare",
             innerHTML: this.message("search.label"),
             "class": "hidden"
          }, this._searchTextNode, "before");
+      },
+
+      onSearchClearClick: function alfresco_header_LiveSearch_onSearchClearClick(evt) {
+         this.clearResults();
+         evt.preventDefault();
       }
+
    });
 });
