@@ -28,8 +28,9 @@ public enum Links
     COPY_TO         ("div[id$='onActionCopyTo']", DetailsPageType.COMMON), 
     MOVE_TO         ("div[id$='onActionMoveTo']", DetailsPageType.COMMON), 
     DELETE_CONTENT   ("div[id$='onActionDelete']", DetailsPageType.COMMON),       
-    MANAGE_ASPECTS    ("div[id$='onActionManageAspects']", DetailsPageType.COMMON), 
-    MANAGE_PERMISSION   (".document-manage-repo-permissions", DetailsPageType.COMMON), 
+    MANAGE_ASPECTS    ("div[id$='onActionManageAspects']", DetailsPageType.COMMON), //
+    MANAGE_PERMISSION_DOC   (".document-manage-granular-permissions", DetailsPageType.DOCUMENT), 
+    MANAGE_PERMISSION_FOL   (".document-manage-granular-permissions", DetailsPageType.FOLDER), 
     CHNAGE_TYPE     ("div[id$='onActionChangeType']", DetailsPageType.COMMON),
     EDIT_PROPERTIES (".document-edit-metadata", DetailsPageType.COMMON),   
     

@@ -137,7 +137,7 @@ public class DetailsPageTest extends AbstractTest
         Assert.assertTrue(docDetails.isLinkPresent(Links.MOVE_TO), "Move to is not present");
         Assert.assertTrue(docDetails.isLinkPresent(Links.DELETE_CONTENT), "Copy to is not present");
         Assert.assertTrue(docDetails.isLinkPresent(Links.MANAGE_ASPECTS), "Copy to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.MANAGE_PERMISSION), "Copy to is not present");
+        Assert.assertTrue(docDetails.isLinkPresent(Links.MANAGE_PERMISSION_DOC), "Copy to is not present");
         Assert.assertTrue(docDetails.isLinkPresent(Links.CHNAGE_TYPE), "Copy to is not present");
         Assert.assertTrue(docDetails.isLinkPresent(Links.EDIT_PROPERTIES), "Copy to is not present");
         Assert.assertTrue(docDetails.isLinkPresent(Links.DOWNLOAD_DOCUMENT), "Copy to is not present");
@@ -188,7 +188,7 @@ public class DetailsPageTest extends AbstractTest
         Assert.assertTrue(folderDetails.isLinkPresent(Links.MOVE_TO), "Move to is not present");
         Assert.assertTrue(folderDetails.isLinkPresent(Links.DELETE_CONTENT), "Copy to is not present");
         Assert.assertTrue(folderDetails.isLinkPresent(Links.MANAGE_ASPECTS), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isLinkPresent(Links.MANAGE_PERMISSION), "Copy to is not present");
+        Assert.assertTrue(folderDetails.isLinkPresent(Links.MANAGE_PERMISSION_FOL), "Copy to is not present");
         Assert.assertTrue(folderDetails.isLinkPresent(Links.CHNAGE_TYPE), "Copy to is not present");
         Assert.assertTrue(folderDetails.isLinkPresent(Links.EDIT_PROPERTIES), "Copy to is not present");
         Assert.assertTrue(folderDetails.isLinkPresent(Links.MANAGE_RULES), "Copy to is not present");

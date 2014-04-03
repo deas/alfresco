@@ -41,8 +41,7 @@ public class LinksTest
         assertEquals(Links.COPY_TO.getLink(DetailsPageType.COMMON), "div[id$='onActionCopyTo']");
         assertEquals(Links.MOVE_TO.getLink(DetailsPageType.COMMON), "div[id$='onActionMoveTo']");
         assertEquals(Links.DELETE_CONTENT.getLink(DetailsPageType.COMMON), "div[id$='onActionDelete']");
-        assertEquals(Links.MANAGE_ASPECTS.getLink(DetailsPageType.COMMON), ".onActionManageAspects");
-        assertEquals(Links.MANAGE_PERMISSION.getLink(DetailsPageType.COMMON), ".document-manage-granular-permissions");
+        assertEquals(Links.MANAGE_ASPECTS.getLink(DetailsPageType.COMMON), ".onActionManageAspects");        
         assertEquals(Links.CHNAGE_TYPE.getLink(DetailsPageType.COMMON), "div[id$='onActionChangeType']");
         assertEquals(Links.EDIT_PROPERTIES.getLink(DetailsPageType.COMMON), ".document-edit-metadata");
          
