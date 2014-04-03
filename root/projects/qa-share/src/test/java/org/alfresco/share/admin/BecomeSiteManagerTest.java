@@ -10,8 +10,6 @@ import org.alfresco.po.share.enums.SiteVisibility;
 import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -26,14 +24,14 @@ import org.testng.annotations.Test;
  * @author Richard Smith
  */
 
+// TODO: Add FailedTest listener enabling error reporting + screenshots
 public class BecomeSiteManagerTest extends AbstractTests
 {
-    /** The logger */
-    private static Log logger = LogFactory.getLog(BecomeSiteManagerTest.class);
-
     /** Constants */
     private static final String BECOME_SITE_MANAGER_BUTTON = "Become Site Manager";
     private static final String PREFIX = "aaaa-tc797-";
+    
+    // TODO: Create groups enum in Share-po project, since many new test classes define and use it
     private static final String SITE_ADMIN_GROUP = "SITE_ADMINISTRATORS";
 
     private DashBoardPage dashBoardPage;
@@ -50,34 +48,31 @@ public class BecomeSiteManagerTest extends AbstractTests
     @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
     {
-        if (logger.isTraceEnabled())
-            logger.trace("Starting BecomeSiteManagerTest setup");
+        traceLog("Starting setup for BecomeSiteManagerTest");
 
         super.setup();
         this.testContext = new OpCloudTestContext(this);
+        
+        // TODO: Redundant createNetworkName, createUserName. Replace with getUserNameForDoamin(username, domain)
         String network = testContext.createNetworkName("acme");
-
-        // Initialise arrays
-        sites = new ArrayList<>(2);
-        users = new ArrayList<>(2);
 
         // Create two users - one site administrator and one not
         String user1 = testContext.createUserName("AmandaAdmin", network);
         createTestUser(drone, user1, DEFAULT_PASSWORD, SITE_ADMIN_GROUP);
-        users.add(user1);
+        testContext.addUser(user1);
 
         String user2 = testContext.createUserName("JaneUser", network);
+        
         createTestUserWithoutGroup(drone, user2, DEFAULT_PASSWORD);
-        users.add(user2);
+        testContext.addUser(user2);
 
-        // Add the new users to the testContext for cleanup later
-        testContext.addUser(users.toArray(new String[users.size()]));
+        users = new ArrayList<>(testContext.getCreatedUsers());
 
         // Login as the site administrator
         dashBoardPage = ShareUser.loginAs(drone, users.get(0), DEFAULT_PASSWORD);
 
         // Create a private site managed by the site administrator
-        sites.add(createTestSite(drone, testContext, PREFIX, SiteVisibility.PRIVATE, users.get(0)));
+        createTestSite(drone, testContext, PREFIX, SiteVisibility.PRIVATE, users.get(0));
 
         // Logout
         ShareUser.logout(drone);
@@ -86,10 +81,12 @@ public class BecomeSiteManagerTest extends AbstractTests
         dashBoardPage = ShareUser.loginAs(drone, users.get(1), DEFAULT_PASSWORD);
 
         // Create a private site managed by the non site administrator
-        sites.add(createTestSite(drone, testContext, PREFIX, SiteVisibility.PRIVATE, users.get(1)));
+        createTestSite(drone, testContext, PREFIX, SiteVisibility.PRIVATE, users.get(1));
 
         // Logout
         ShareUser.logout(drone);
+
+        sites = new ArrayList<>(testContext.getCreatedSitesAsList());
     }
 
     /**
@@ -98,13 +95,14 @@ public class BecomeSiteManagerTest extends AbstractTests
     @Test
     public void hasButtonTest() throws Exception
     {
-        if (logger.isTraceEnabled())
-            logger.trace("Starting BecomeSiteManagerTest hasButtonTest");
+        traceLog("Starting Test1");
 
         // Login as the site administrator and navigate to manage sites
         dashBoardPage = ShareUser.loginAs(drone, users.get(0), DEFAULT_PASSWORD);
+        
         manageSitesPage = dashBoardPage.getNav().selectManageSitesPage().render();
 
+        // TODO: Remove step, as its part of manageSitesPage render from all tests
         // Load manage sites page elements
         manageSitesPage.loadElements();
 
@@ -134,11 +132,11 @@ public class BecomeSiteManagerTest extends AbstractTests
     @Test
     public void hasNoButtonTest() throws Exception
     {
-        if (logger.isTraceEnabled())
-            logger.trace("Starting BecomeSiteManagerTest hasNoButtonTest");
+        traceLog("Starting Test2");
 
         // Login as the site administrator and navigate to manage sites
         dashBoardPage = ShareUser.loginAs(drone, users.get(0), DEFAULT_PASSWORD);
+
         manageSitesPage = dashBoardPage.getNav().selectManageSitesPage().render();
 
         // Load manage sites page elements
@@ -159,20 +157,12 @@ public class BecomeSiteManagerTest extends AbstractTests
      * @throws Exception
      */
     @AfterClass(alwaysRun = true)
-    public void teardown()
+    public void teardown() throws Exception
     {
-        if (logger.isTraceEnabled())
-            logger.trace("Starting BecomeSiteManagerTest teardown");
+        traceLog("Starting teardown for BecomeSiteManagerTest");
 
-        try
-        {
-            testContext.cleanupAllSites();
-        }
-        catch (Exception e)
-        {
-            if (logger.isTraceEnabled())
-                logger.trace("Teardown of BecomeSiteManagerTest failed", e);
-        }
+        //TODO: Remove, since its advised to leave test data as is after execution for results analysis
+        testContext.cleanupAllSites();
 
         manageSitesPage = null;
         dashBoardPage = null;

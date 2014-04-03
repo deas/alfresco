@@ -31,6 +31,7 @@ import org.testng.annotations.Test;
  * @author David Webster
  */
 
+//TODO: Add FailedTest listener enabling error reporting + screenshots
 public class ManageSitesPageTest extends AbstractTests
 {
     /** The logger */

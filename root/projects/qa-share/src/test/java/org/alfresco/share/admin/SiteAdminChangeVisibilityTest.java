@@ -301,6 +301,7 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
      * @param siteName the name of the site
      * @param siteVisibility the site visibility (Public | Moderated | Private)
      */
+    // TODO: Redundant code. ShareUser.CreatSite can directly be called
     private void createTestSite(String siteName, String siteVisibility)
     {
         boolean created = SiteUtil.createSite(drone, siteName, siteVisibility);
