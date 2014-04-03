@@ -140,7 +140,10 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch(TimeoutException te)
         {
-            logger.info("Unable to find the help icon."+ te);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find the help icon.", te);
+            }
         }
         
         return false;
@@ -157,7 +160,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch(TimeoutException te)
         {
-            logger.error("Unable to find the help icon." + te);
+            logger.error("Unable to find the help icon.", te);
             throw new PageOperationException("Unable to click the Help icon", te);
         }
     }
@@ -190,7 +193,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         } 
         catch (TimeoutException elementException)
         {
-                logger.error("Exceeded time to find the help ballon text");
+                logger.error("Exceeded time to find the help ballon text", elementException);
         }
         throw new UnsupportedOperationException("Not able to find the help text");
     }
@@ -269,11 +272,11 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException e)
         {
-            logger.error("Not able to find the element: " + e);
+            logger.error("Not able to find the element: ", e);
         }
         catch (NoSuchElementException e)
         {
-            logger.error("Not able to find the element: " + e);
+            logger.error("Not able to find the element: ", e);
         }
         throw new PageOperationException("Not able to get the search items.");
     }
@@ -296,7 +299,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException e)
         {
-            logger.error("Not able to search " + e);
+            logger.error("Not able to search ", e);
         }
         return this;
     }

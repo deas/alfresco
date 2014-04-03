@@ -794,7 +794,7 @@ public class DocumentLibraryPage extends SitePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Exceeded the time to find the All Tags css." + e);
+                logger.trace("Exceeded the time to find the All Tags css.", e);
             }
             return Collections.emptyList();
         }
@@ -964,7 +964,7 @@ public class DocumentLibraryPage extends SitePage
         }
         catch(TimeoutException toe)
         {
-            logger.error("Message element not found!!");
+            logger.error("Message element not found!!", toe);
         }
         throw new PageOperationException("Message element not found!!");
     }
@@ -1006,11 +1006,11 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (TimeoutException te)
         {
-            logger.error("Exceeded time to find out the " + tagName + " count: " + te);
+            logger.error("Exceeded time to find out the " + tagName + " count: ", te);
         }
         catch (NumberFormatException ne)
         {
-            logger.error("Unable to convert tags count string value into int : " + ne);
+            logger.error("Unable to convert tags count string value into int : ", ne);
         }
 
         throw new PageException("Unable to find the given tag count : " + tagName);
@@ -1033,7 +1033,7 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (NoSuchElementException e)
         {
-            logger.error("Exceeded time to find the documents tree." + e);
+            logger.error("Exceeded time to find the documents tree.", e);
         }
 
         return false;
@@ -1053,7 +1053,7 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded time to find the documents tree." + e);
+            logger.error("Exceeded time to find the documents tree.", e);
         }
         throw new PageException("Unable to find the Documents Tree link." );
     }
@@ -1081,9 +1081,9 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (NoSuchElementException e)
         {
-            if(logger.isInfoEnabled())
+            if(logger.isTraceEnabled())
             {
-                logger.info("isFilmStripViewDisplayed - Filmstrip view not loaded");
+                logger.trace("isFilmStripViewDisplayed - Filmstrip view not loaded", e);
             }
         }
         return false;
@@ -1109,9 +1109,9 @@ public class DocumentLibraryPage extends SitePage
             }
             catch (NoSuchElementException nse)
             {
-                if(logger.isInfoEnabled())
+                if(logger.isTraceEnabled())
                 {
-                    logger.info("selectNextFilmstripItem - Filmstrip view not loaded");
+                    logger.trace("selectNextFilmstripItem - Filmstrip view not loaded", nse);
                 }
             }
             exceptionMessage = "Foreground "+ elementName + " not visible.";
@@ -1230,7 +1230,10 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.info("Element not present: " + elementName);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Element not present: " + elementName, nse);
+            }
         }
         return false;
     }
@@ -1247,7 +1250,10 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.info("getDisplyedFilmstripItem - Filmstrip view not loaded");
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("getDisplyedFilmstripItem - Filmstrip view not loaded", nse);
+            }
         }
         return "";
     }
@@ -1272,9 +1278,9 @@ public class DocumentLibraryPage extends SitePage
             }
             catch (NoSuchElementException nse)
             {
-                if(logger.isInfoEnabled())
+                if(logger.isTraceEnabled())
                 {
-                    logger.info("selectNextFilmstripItem - Filmstrip view not loaded");
+                    logger.trace("selectNextFilmstripItem - Filmstrip view not loaded", nse);
                 }
             }
             exceptionMessage = "Foreground "+ elementName + " not visible.";
@@ -1335,7 +1341,10 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.info("getSelectedFIlesForFilmstrip - No items selected");
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("getSelectedFIlesForFilmstrip - No items selected", nse);
+            }
         }
         return Collections.emptyList();
     }
@@ -1364,9 +1373,9 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (NoSuchElementException nse)
         {
-            if(logger.isInfoEnabled())
+            if(logger.isTraceEnabled())
             {
-                logger.info("isFilmstripTapeDisplpayed - Filmstrip view not loaded");
+                logger.trace("isFilmstripTapeDisplpayed - Filmstrip view not loaded");
             }
         }
         throw new PageOperationException("Filmstrip view not loaded - FilmStrip tape may not be displayed.");
@@ -1396,7 +1405,7 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (TimeoutException te)
         {
-            logger.error("Exceeded time to find the the css" + te);
+            logger.error("Exceeded time to find the the css", te);
         }
 
         throw new PageException("Error in selecting the My Favourties on DocLib Tree Menu.");
@@ -1420,9 +1429,9 @@ public class DocumentLibraryPage extends SitePage
         }
         catch (NoSuchElementException nse)
         {
-            if(logger.isInfoEnabled())
+            if(logger.isTraceEnabled())
             {
-                logger.info("My FAvourites is not loaded");
+                logger.trace("My FAvourites is not loaded", nse);
             }
         }
         throw new PageOperationException("My FAvourites not loaded - My FAvourites tape may not be displayed.");

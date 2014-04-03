@@ -123,7 +123,7 @@ public class CreateNewTopicPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to find page title." + nse);
+            logger.error("Unable to find page title.", nse);
         }
         throw new PageOperationException("Error in finding the css for create new topic page title.");
     }
@@ -139,7 +139,7 @@ public class CreateNewTopicPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to enter topic title." + nse);
+            logger.error("Unable to enter topic title.", nse);
         }
         throw new PageOperationException("Error in finding the css for topic title input field.");
 
@@ -161,7 +161,7 @@ public class CreateNewTopicPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to enter topic tag." + nse);
+            logger.error("Unable to enter topic tag.", nse);
         }
         throw new PageOperationException("Error in finding the css for topic tag input field.");
     }
@@ -178,7 +178,7 @@ public class CreateNewTopicPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to click on Add Tag button on Create New Topic Page." + nse);
+            logger.error("Unable to click on Add Tag button on Create New Topic Page.", nse);
         }
         throw new PageOperationException("Cannot find Add Tag button on Create New Topic Page.");
     }
@@ -195,7 +195,7 @@ public class CreateNewTopicPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to click on Save topic button on Create New Topic Page." + nse);
+            logger.error("Unable to click on Save topic button on Create New Topic Page.", nse);
 
         }
         throw new PageOperationException("Cannot find Save button on Create New Topic Page.");
@@ -214,7 +214,7 @@ public class CreateNewTopicPage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to click on Save topic button on Create New Topic Page." + nse);
+            logger.error("Unable to click on Save topic button on Create New Topic Page.", nse);
 
         }
         throw new PageOperationException("Cannot find Save button on Create New Topic Page.");

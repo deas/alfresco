@@ -39,7 +39,7 @@ import org.openqa.selenium.WebElement;
  */
 public class ConfigureSiteNoticeDialogBoxPage extends SharePage
 {
-    private static final Log LOGGER = LogFactory.getLog(ConfigureSiteNoticeDialogBoxPage.class);
+    private final Log logger = LogFactory.getLog(ConfigureSiteNoticeDialogBoxPage.class);
     private static final By CONFIGURE_SITE_NOTICE_DIALOG_BOX = By.cssSelector("div[id$='default-configDialog-configDialog']");
     private static final By TITLE_BOX = By.cssSelector("input[name='title']");
     private static final By OK_BUTTON = By.cssSelector("button[id$='default-configDialog-ok-button']");
@@ -116,7 +116,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
         }
         catch(TimeoutException te)
         {
-            LOGGER.error("Unable to find the OK button." + te);
+            logger.error("Unable to find the OK button.", te);
             throw new PageOperationException("Unable to click the OK Button.", te);
         }
     }
@@ -132,7 +132,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
         }
         catch(TimeoutException te)
         {
-            LOGGER.error("Unable to find the CANCEL button." + te);
+            logger.error("Unable to find the CANCEL button.", te);
             throw new PageOperationException("Unable to click the CANCEL Button.", te);
         }
     }
@@ -148,7 +148,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
         }
         catch(TimeoutException te)
         {
-            LOGGER.error("Unable to find the CLOSE button." + te);
+            logger.error("Unable to find the CLOSE button.", te);
             throw new PageOperationException("Unable to click the CLOSE Button.", te);
         }
     }
@@ -173,7 +173,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
         }
         catch(TimeoutException te)
         {
-            LOGGER.error("Unable to find the Title box." + te);
+            logger.error("Unable to find the Title box.", te);
             throw new PageOperationException("Unable to find the Title box.", te);
         }
     }

@@ -156,7 +156,7 @@ public class TagPage extends AbstractEditProperties
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to find the EnterTagName or CreateTag css." + nse);
+            logger.error("Unable to find the EnterTagName or CreateTag css.", nse);
         }
 
         throw new PageOperationException("Error in finding the Enter tag value css.");
@@ -177,7 +177,7 @@ public class TagPage extends AbstractEditProperties
         } 
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to find 'ok' button." + nse);
+            logger.error("Unable to find 'ok' button.", nse);
         }
         throw new PageOperationException("Error in finding 'ok' button");
     }
@@ -197,7 +197,7 @@ public class TagPage extends AbstractEditProperties
         } 
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to find 'cancel' button." + nse);
+            logger.error("Unable to find 'cancel' button.", nse);
         }
         throw new PageOperationException("Error in finding 'cancel' button");
     }
@@ -224,7 +224,7 @@ public class TagPage extends AbstractEditProperties
         } 
         catch (NoSuchElementException nse)
         {
-            logger.error("RemoveLink on Tag is not present." + nse);
+            logger.error("RemoveLink on Tag is not present.", nse);
         } 
         catch (PageOperationException pe)
         {
@@ -252,7 +252,7 @@ public class TagPage extends AbstractEditProperties
         } 
         catch (TimeoutException te)
         {
-            logger.error("Exceeded time to find the tags list." + te);
+            logger.error("Exceeded time to find the tags list.", te);
         }
 
         if(tags != null)
