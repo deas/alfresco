@@ -55,7 +55,6 @@ import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -150,12 +149,10 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         
         // open user dashboard and get My Discussions Dashlet
-        //ShareUser.openUserDashboard(drone);
         DashBoardPage dashBoardPage = ShareUserDashboard.addDashlet(drone, Dashlet.MY_DISCUSSIONS);
        
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone);
         
-        Assert.assertNotNull(myDiscussionsDashlet);
         dashBoardPage = myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render();
         Assert.assertNotNull(dashBoardPage);
         
@@ -244,9 +241,6 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
         
-        // TODO: Add this to util above to throw PageOperationException if myDiscussionsDashlet is null since every test checks this
-        Assert.assertNotNull(myDiscussionsDashlet);
-        
         // add a topic for the site
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
         Assert.assertNotNull(createNewTopicPage);
@@ -263,21 +257,8 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         Assert.assertNotNull(myDiscussionsDashlet);
         
         // Repeat search until the element is found or Timeout is hit
-        //TODO: No Webdriver Code in qa-share tests. Create a Method for PageObject and a Util for retry
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_ONE)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
-
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_ONE }, true);
+ 
         // click topic's name link
         topicDetailsPage = myDiscussionsDashlet.selectTopicTitle(TOPIC_USER_DETAILS_TITLE_ONE).click().render();
 
@@ -323,7 +304,7 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
      */
     // TODO: Rename testcase, testcase ID to match testlink for results submission util
     @Test(groups = "MyDashboardMyDiscussionTests")
-    public void ALF_10754_10755() throws Exception
+    public void ALF_10755() throws Exception
     {
         //create user
         String testName = getTestName();
@@ -343,7 +324,6 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         // Get My Discussions Dashlet
         ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
-        Assert.assertNotNull(myDiscussionsDashlet);
         
         // add a topic for the site
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
@@ -372,21 +352,8 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         dashBoardPage = myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render();
         
         // Repeat search until the element is found or Timeout is hit
-        //TODO: move somewhere to share po ?????
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_ONE + " Updated")));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
-
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_ONE + " Updated" }, true);
+ 
         List<ShareLink> topicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
         Assert.assertNotNull(topicsTitles);
         Assert.assertEquals(topicsTitles.size(), 1);
@@ -449,7 +416,6 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         // Get My Discussions Dashlet
         ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
-        Assert.assertNotNull(myDiscussionsDashlet);
         
         // add a topic for the site
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
@@ -523,7 +489,6 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         // Get My Discussions Dashlet
         ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
-        Assert.assertNotNull(myDiscussionsDashlet);
 
         // Click on New Topic button
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
@@ -570,21 +535,8 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         // Select Topics updated in the last day value from drop-down menu;
         myDiscussionsDashlet.clickHistoryButtton();
         myDiscussionsDashlet.selectTopicsHistoryFilter(LAST_DAY_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement titleThree = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_THREE)));
-            WebElement titleTwo = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_TWO)));
-            WebElement titleOne = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_ONE)));
-            if (titleThree.isDisplayed() && titleTwo.isEnabled() && titleOne.isDisplayed())
-            {
-                break;
-            }
-        }
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_THREE, TOPIC_USER_DETAILS_TITLE_TWO, TOPIC_USER_DETAILS_TITLE_ONE }, true);
+ 
         List<ShareLink> lastDayTopics = myDiscussionsDashlet.getTopics(LinkType.Topic);
 
         // Verify Topics updated in the last day are displayed
@@ -597,21 +549,8 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         // Select Topics updated in the last 7 days value from drop-down menu
         myDiscussionsDashlet.clickHistoryButtton();
         myDiscussionsDashlet.selectTopicsHistoryFilter(SEVEN_DAYS_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement titleThree = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_THREE)));
-            WebElement titleTwo = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_TWO)));
-            WebElement titleOne = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_ONE)));
-            if (titleThree.isDisplayed() && titleTwo.isEnabled() && titleOne.isDisplayed())
-            {
-                break;
-            }
-        }
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_THREE, TOPIC_USER_DETAILS_TITLE_TWO, TOPIC_USER_DETAILS_TITLE_ONE }, true);
+  
         List<ShareLink> sevenDaysTopics = myDiscussionsDashlet.getTopics(LinkType.Topic);
 
         // Verify Topics updated in the last 7 days are displayed
@@ -624,21 +563,8 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         // Select Topics updated in the last 14 days value from drop-down menu
         myDiscussionsDashlet.clickHistoryButtton();
         myDiscussionsDashlet.selectTopicsHistoryFilter(FOURTEEN_DAYS_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement titleThree = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_THREE)));
-            WebElement titleTwo = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_TWO)));
-            WebElement titleOne = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_ONE)));
-            if (titleThree.isDisplayed() && titleTwo.isEnabled() && titleOne.isDisplayed())
-            {
-                break;
-            }
-        }
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_THREE, TOPIC_USER_DETAILS_TITLE_TWO, TOPIC_USER_DETAILS_TITLE_ONE }, true);
+ 
         List<ShareLink> fourteenDaysTopics = myDiscussionsDashlet.getTopics(LinkType.Topic);
 
         // Verify Topics updated in the last 14 days are displayed
@@ -651,21 +577,8 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         // Select Topics updated in the last 28 days value from drop-down menu
         myDiscussionsDashlet.clickHistoryButtton();
         myDiscussionsDashlet.selectTopicsHistoryFilter(TWENTY_EIGHT_DAYS_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement titleThree = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_THREE)));
-            WebElement titleTwo = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_TWO)));
-            WebElement titleOne = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_ONE)));
-            if (titleThree.isDisplayed() && titleTwo.isEnabled() && titleOne.isDisplayed())
-            {
-                break;
-            }
-        }
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_THREE, TOPIC_USER_DETAILS_TITLE_TWO, TOPIC_USER_DETAILS_TITLE_ONE }, true);
+ 
         List<ShareLink> twentyEightDaysTopics = myDiscussionsDashlet.getTopics(LinkType.Topic);
 
         // Verify Topics updated in the last 28 days are displayed
@@ -714,7 +627,6 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         // Get My Discussions Dashlet
         ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
-        Assert.assertNotNull(myDiscussionsDashlet);
         
         // add a topic for the site
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
@@ -768,20 +680,8 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         //Selected "My Topics" and verify only topics created by site creator are displayed
         // Repeat search until the element is found or Timeout is hit
         //TODO: move somewhere to share po
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_ONE)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
-
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_ONE }, true);
+  
         List<ShareLink> myTopicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
         Assert.assertNotNull(myTopicsTitles);
         Assert.assertEquals(myTopicsTitles.get(0).getDescription(), TOPIC_USER_DETAILS_TITLE_ONE);
@@ -789,21 +689,8 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         dashBoardPage = myDiscussionsDashlet.selectTopicsFilter(ALL_TOPICS).render();
 
         //Selected "All Topics" and verify only topics created by site creator are displayed
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_TWO)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
-
-
+        
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_TWO }, true);
         List<ShareLink> allTopicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
         Assert.assertNotNull(allTopicsTitles);
         Assert.assertEquals(allTopicsTitles.get(0).getDescription(), TOPIC_USER_DETAILS_TITLE_TWO);
@@ -849,7 +736,6 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         // Get My Discussions Dashlet
         ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
-        Assert.assertNotNull(myDiscussionsDashlet);
 
         // invite user1 as e.g. contributor (any role except consumer)
         ShareUserMembers.inviteUserToSiteWithRole(drone, ADMIN_USERNAME, testUser1, siteName, UserRole.CONTRIBUTOR);
@@ -927,21 +813,8 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone);
         Assert.assertNotNull(myDiscussionsDashlet);
         dashBoardPage = myDiscussionsDashlet.selectTopicsFilter(ALL_TOPICS).render();
-        
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_TWO)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
-
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_TWO }, true);
+ 
         List<ShareLink> allTopics = myDiscussionsDashlet.getTopics(LinkType.Topic);
         Assert.assertNotNull(allTopics);
         Assert.assertEquals(allTopics.get(0).getDescription(), TOPIC_USER_DETAILS_TITLE_TWO);
@@ -962,6 +835,7 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone);
         Assert.assertNotNull(myDiscussionsDashlet);
         dashBoardPage = myDiscussionsDashlet.selectTopicsFilter(ALL_TOPICS).render();
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_TWO }, true);
 
         //Verify that invited user's name link is not active
         List<ShareLink> allUsers = myDiscussionsDashlet.getTopics(LinkType.User);
@@ -979,21 +853,8 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone);
         Assert.assertNotNull(myDiscussionsDashlet);
         dashBoardPage = myDiscussionsDashlet.selectTopicsFilter(ALL_TOPICS).render();
-
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_TWO)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
-
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_TWO }, true);
+ 
         // Click on the topic2 name link
         topicDetailsPage = myDiscussionsDashlet.selectTopicTitle(TOPIC_USER_DETAILS_TITLE_TWO).click().render();
 
@@ -1039,8 +900,7 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         // Open My Discussions dashlet
         ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
-        Assert.assertNotNull(myDiscussionsDashlet);
-
+  
         // Click on New Topic button
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
         Assert.assertNotNull(createNewTopicPage);
@@ -1083,39 +943,14 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone);
         Assert.assertNotNull(myDiscussionsDashlet);
         dashBoardPage = myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render();        
-        
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_ONE)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_ONE }, true);
 
         myDiscussionsDashlet.resizeDashlet(0, +400);
 
         // Verify that all items is correctly displayed
         dashBoardPage = myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render(); 
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement titleTwo = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_TWO)));
-            WebElement titleOne = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_ONE)));
-            if (titleOne.isDisplayed() && titleTwo.isDisplayed())
-            {
-                break;
-            }
-        }
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_TWO, TOPIC_USER_DETAILS_TITLE_ONE }, true);
+  
         List<ShareLink> expandedTopicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
         Assert.assertNotNull(expandedTopicsTitles);
 
@@ -1133,20 +968,10 @@ public class MyDashboardMyDiscussionTests extends AbstractTests
         myDiscussionsDashlet.resizeDashlet(0, -400);
 
         // Verify that all items is correctly displayed
-        dashBoardPage = myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render(); 
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_USER_DETAILS_TITLE_ONE)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }        List<ShareLink> narrowedTopicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
+        dashBoardPage = myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render();
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String [] { TOPIC_USER_DETAILS_TITLE_ONE }, true);
+
+        List<ShareLink> narrowedTopicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
         Assert.assertNotNull(narrowedTopicsTitles);
 
         Assert.assertEquals(narrowedTopicsTitles.size(), 2);

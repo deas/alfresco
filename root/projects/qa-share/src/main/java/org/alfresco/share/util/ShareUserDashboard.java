@@ -266,16 +266,22 @@ public class ShareUserDashboard extends AbstractTests
         SiteDashboardPage siteDashBoard = null;
         SharePage thisPage = ShareUser.getSharePage(driver);
         
-        if(!(thisPage instanceof SiteDashboardPage))
+        
+        if (thisPage instanceof SiteDashboardPage)
+        {
+            siteDashBoard = (SiteDashboardPage) thisPage; 
+            return siteDashBoard.getDashlet(MY_DISCUSSIONS).render();
+        }
+        else if (!(thisPage instanceof SiteDashboardPage))
         {
             siteDashBoard = ShareUser.openSiteDashboard(driver, siteName);
-        } 
+            return siteDashBoard.getDashlet(MY_DISCUSSIONS).render();
+        }
         else
         {
-            siteDashBoard = (SiteDashboardPage) thisPage;
+            throw new PageOperationException("Cannot open My Discussion Dashlet on site dashboard page");
         }
-
-        return siteDashBoard.getDashlet(MY_DISCUSSIONS).render();
+ 
     }
     
     /**
@@ -286,18 +292,25 @@ public class ShareUserDashboard extends AbstractTests
      */
     public static MyDiscussionsDashlet getMyDiscussionsDashlet(WebDrone driver)
     {
+          
         DashBoardPage dashBoard = null;
         SharePage thisPage = ShareUser.getSharePage(driver);
         
-        if(!(thisPage instanceof DashBoardPage))
-        {
-            dashBoard = ShareUser.openUserDashboard(driver);
-        } 
-        else
+        if (thisPage instanceof DashBoardPage)
         {
             dashBoard = (DashBoardPage) thisPage;
+            return dashBoard.getDashlet(MY_DISCUSSIONS).render();          
+        } 
+        else if (!(thisPage instanceof DashBoardPage))
+        {
+            dashBoard = ShareUser.openUserDashboard(driver);
+            return dashBoard.getDashlet(MY_DISCUSSIONS).render();           
         }
-        return dashBoard.getDashlet(MY_DISCUSSIONS).render();
+        else
+        {
+            throw new PageOperationException("Cannot open My Discussion Dashlet on user dashboard page");
+        }
+        
     }
 
     /**
@@ -384,4 +397,47 @@ public class ShareUserDashboard extends AbstractTests
         }
         throw new PageOperationException("Unable to select item");
     }
+    
+    /**
+     * Waits for the dashlet entries to appear in the my discussions dashlet
+     * 
+     * @param driver
+     * @param entry
+     * @param entryPresent
+     * @return
+     */
+    public static Boolean searchMyDiscussionDashletWithRetry(WebDrone driver, String [] entries, Boolean entryPresent)
+    {
+        Boolean found = true;
+        Boolean resultAsExpected = false;
+
+        // Repeat search until the element is found or Timeout is hit
+        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
+        {
+            if (searchCount > 1)
+            {
+                webDriverWait(driver, refreshDuration);
+                driver.refresh();
+            }
+
+            DashBoardPage dashBoardPage = (DashBoardPage) getSharePage(driver);
+            MyDiscussionsDashlet myDiscussionsDashlet = dashBoardPage.getDashlet(MY_DISCUSSIONS).render(); 
+
+            for (String entry : entries)
+            {
+                found =  found && myDiscussionsDashlet.isTopicTitleDisplayed(entry);
+            }
+            
+
+            resultAsExpected = (entryPresent.equals(found));
+            if (resultAsExpected)
+            {
+                break;
+            }
+        }
+
+        return resultAsExpected;
+    }
+    
+
 }

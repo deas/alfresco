@@ -34,7 +34,7 @@ import org.openqa.selenium.By;
 public class MyProfilePage extends SharePage
 {
     
-    private final By editProfileButton = By.cssSelector("button[id$='-button-edit-button']");
+    private final By editProfileButton = By.cssSelector("button[id$='-button-edit-button'], button[id$='-button-following-button']");
 
     /**
      * Constructor.

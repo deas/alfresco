@@ -71,6 +71,10 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
     private final static By NEW_TOPIC = By.xpath("//a[text()='New Topic']");
  
    
+    //topic title
+    private static final String TOPIC_TITLE = "//span[@class='nodeTitle']//a[text()='%s']";
+    
+    
     // Topics in the list
     private List<ShareLink> userLinks;
     private List<ShareLink> topicTitlesLinks;
@@ -457,12 +461,10 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
                 if (webElement.getText().equals(lastDayTopics.getDescription()))
                 {
                     webElement.click();
-                    return FactorySharePage.resolvePage(drone);
                 }
             }
         }
-        clickHistoryButtton();
-        throw new PageOperationException("Not able find the filte named " + lastDayTopics.getDescription());
+        return FactorySharePage.resolvePage(drone);
     }
 
     /**
@@ -642,6 +644,25 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         return topicStatusDetails;
    
     }
+    
+    /**
+     * Checks if topic title is dispalyed in the dashlet
+     * @return
+     */
+    
+    public boolean isTopicTitleDisplayed(String topicTitle)
+    {
+        try
+        {
+            WebElement content = drone.findAndWaitWithRefresh(By.xpath((String.format(TOPIC_TITLE, topicTitle))));
+            return content.isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+            return false;
+        }        
+    }
+      
 
     /**
      * This method gets the focus by placing mouse over on My Discussions Dashlet.
