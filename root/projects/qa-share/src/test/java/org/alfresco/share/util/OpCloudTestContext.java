@@ -41,6 +41,7 @@ public class OpCloudTestContext
 {
     private static final Logger logger = Logger.getLogger(OpCloudTestContext.class);
 
+    private long runId;
     private Set<String> createdUsers;
     private Map<String, Set<String>> createdSites;
     private WebDrone drone;
@@ -51,6 +52,8 @@ public class OpCloudTestContext
         {
             throw new IllegalArgumentException(concreteTest + " is a mandatory parameter.");
         }
+
+        this.setRunId(System.currentTimeMillis());
         this.createdUsers = new LinkedHashSet<String>();
         this.createdSites = new HashMap<String, Set<String>>();
         this.drone = concreteTest.drone;
@@ -130,5 +133,21 @@ public class OpCloudTestContext
             Set<String> sitesToBeDeleted = createdSites.get(username);
             SiteUtil.deleteSitesAsUser(drone, username, sitesToBeDeleted);
         }
+    }
+
+    /**
+     * @return the runId
+     */
+    public long getRunId()
+    {
+        return runId;
+    }
+
+    /**
+     * @param runId the runId to set
+     */
+    public void setRunId(long runId)
+    {
+        this.runId = runId;
     }
 }

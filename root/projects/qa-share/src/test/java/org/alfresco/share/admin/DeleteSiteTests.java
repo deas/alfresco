@@ -30,6 +30,7 @@ import org.alfresco.po.share.admin.ManagedSiteRow;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserAdmin;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.log4j.Logger;
@@ -79,8 +80,10 @@ public class DeleteSiteTests extends AbstractTests
     public void DeleteSiteTests_ACE_515_08() throws Exception
     {
         String testName = getTestName();
+        
         String user2 = getUserNameFreeDomain(testName + "1");
         String[] testUser2 = new String[] { user2 };
+        
         String siteName = getSiteName(testName) + System.currentTimeMillis();
         String actionName = "Delete Site";
 
@@ -97,8 +100,7 @@ public class DeleteSiteTests extends AbstractTests
         ShareUser.login(drone, ADMIN_USERNAME);
 
         // Navigate to manageSites page
-        DashBoardPage dashBoard = ShareUser.openUserDashboard(drone);
-        ManageSitesPage manageSitesPage = dashBoard.getNav().selectManageSitesPage().render();
+        ManageSitesPage manageSitesPage = ShareUserAdmin.navigateToManageSites(drone);
 
         // Find the created site
         ManagedSiteRow manageSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(siteName);
@@ -125,11 +127,14 @@ public class DeleteSiteTests extends AbstractTests
         // TODO: Why getTestName()+"3"?
         String testName1 = getTestName() + "3";
         String testUser1 = getUserNameFreeDomain(testName1);
+        
         String testName2 = getTestName() + "2";
         String testUser2 = getUserNameFreeDomain(testName2);
+        
         String[] testUser2Info = new String[] { testUser2 };
 
         // Create User1 and add to SiteAdmin group
+        // TODO: This won't work on Cloud, Use CreateUserAPI.createActivateUserWithGroup instead, else add group
         ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, testUser1, testUser1, testUser1, DEFAULT_PASSWORD, siteAdmin);
 
         // Create User2
@@ -151,9 +156,11 @@ public class DeleteSiteTests extends AbstractTests
     {
         String testName1 = getTestName() + "3";
         String testUser1 = getUserNameFreeDomain(testName1);
+        
         String testName2 = getTestName() + "2";
         String testUser2 = getUserNameFreeDomain(testName2);
         String[] testUser2Info = new String[] { testUser2 };
+        
         String site1 = getSiteName(testName1) + System.currentTimeMillis();
         String actionName = "Delete Site";
 
@@ -170,8 +177,8 @@ public class DeleteSiteTests extends AbstractTests
         ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
 
         // Navigate to manageSites page
-        DashBoardPage dashBoard = ShareUser.openUserDashboard(drone);
-        ManageSitesPage manageSitesPage = dashBoard.getNav().selectManageSitesPage().render();
+        ShareUser.openUserDashboard(drone);
+        ManageSitesPage manageSitesPage = ShareUserAdmin.navigateToManageSites(drone);
 
         // Find the created site
         ManagedSiteRow manageSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(site1);
@@ -231,7 +238,7 @@ public class DeleteSiteTests extends AbstractTests
 
         // Navigate to manageSites page
         DashBoardPage dashBoard = ShareUser.openUserDashboard(drone);
-        ManageSitesPage manageSitesPage = dashBoard.getNav().selectManageSitesNetworkAdmin().render();
+        ManageSitesPage manageSitesPage = ShareUserAdmin.navigateToManageSites(drone);
 
         // TODO: Do not use drone.refresh within the test code. Create util if this is necessary
         // TODO: Refresh ref to PO after refresh
@@ -280,9 +287,11 @@ public class DeleteSiteTests extends AbstractTests
     public void DeleteSiteTests_ACE_515_14() throws Exception
     {
         String testName1 = getTestName();
+        
         String testName2 = getTestName() + "1";
         String testUser2 = getUserNameFreeDomain(testName2);
         String[] testUser2Info = new String[] { testUser2 };
+        
         String site1 = getSiteName(testName1) + System.currentTimeMillis();
         String actionName = "Delete Site";
 
@@ -306,7 +315,7 @@ public class DeleteSiteTests extends AbstractTests
         DashBoardPage dashBoard = ShareUser.openUserDashboard(drone);
         
         // TODO: Create a util to return ManageSitesPage for Ent and cloud user. This way only 1 test can be implemented for both versions
-        ManageSitesPage manageSitesPage = dashBoard.getNav().selectManageSitesPage().render();
+        ManageSitesPage manageSitesPage = ShareUserAdmin.navigateToManageSites(drone);
 
         // Find the created site
         ManagedSiteRow manageSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(site1);
@@ -340,8 +349,11 @@ public class DeleteSiteTests extends AbstractTests
     public void DeleteSiteTests_ACE_515_26() throws Exception
     {
         String testName1 = getTestName();
+        
         String site1 = getSiteName(testName1) + System.currentTimeMillis();
+        
         String actionName = "Delete Site";
+        
         String fileName = getTestName();
 
         // //Login as RepoAdmin
@@ -359,11 +371,8 @@ public class DeleteSiteTests extends AbstractTests
         DocumentLibraryPage libpage = libPage.getFileDirectoryInfo(fileName).selectEditOffline().render();
         Assert.assertTrue(libpage.getFileDirectoryInfo(fileName).isEdited(), "The file is blocked for editing");
 
-        // Open userDashBoard
-        DashBoardPage dashBoard = ShareUser.openUserDashboard(drone);
-
         // Navigate to Manage sites page
-        ManageSitesPage manageSitesPage = dashBoard.getNav().selectManageSitesPage().render();
+        ManageSitesPage manageSitesPage = ShareUserAdmin.navigateToManageSites(drone);
 
         // Find site1 in the list of sites
         ManagedSiteRow manageSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(site1);

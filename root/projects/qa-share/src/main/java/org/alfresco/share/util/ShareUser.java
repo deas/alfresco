@@ -20,7 +20,6 @@ import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.UserSearchPage;
-import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.dashlet.ActivityShareLink;
 import org.alfresco.po.share.dashlet.MyActivitiesDashlet;
 import org.alfresco.po.share.dashlet.MyActivitiesDashlet.LinkType;
@@ -34,8 +33,23 @@ import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UpdateFilePage;
-import org.alfresco.po.share.site.document.*;
+import org.alfresco.po.share.site.document.ConfirmDeletePage;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
+import org.alfresco.po.share.site.document.ContentDetails;
+import org.alfresco.po.share.site.document.ContentType;
+import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
+import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
+import org.alfresco.po.share.site.document.DetailsPage;
+import org.alfresco.po.share.site.document.DocumentAspect;
+import org.alfresco.po.share.site.document.DocumentDetailsPage;
+import org.alfresco.po.share.site.document.DocumentLibraryNavigation;
+import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
+import org.alfresco.po.share.site.document.EditTextDocumentPage;
+import org.alfresco.po.share.site.document.FolderDetailsPage;
+import org.alfresco.po.share.site.document.ManagePermissionsPage;
+import org.alfresco.po.share.site.document.SelectAspectsPage;
+import org.alfresco.po.share.site.document.SyncInfoPage;
 import org.alfresco.po.share.user.Language;
 import org.alfresco.po.share.user.LanguageSettingsPage;
 import org.alfresco.po.share.user.MyProfilePage;
@@ -248,7 +262,7 @@ public class ShareUser extends AbstractTests
      * Open document Library: Top Level Assumes User is logged in and a Specific
      * Site is open.
      * 
-     * @param driver	WebDrone Instance
+     * @param driver    WebDrone Instance
      * @return DocumentLibraryPage
      */
     public static DocumentLibraryPage openDocumentLibrary(WebDrone driver)
@@ -411,7 +425,7 @@ public class ShareUser extends AbstractTests
      *            String Path for the folder to be created, under
      *            DocumentLibrary : such as constDoclib + file.seperator +
      *            parentFolderName1 + file.seperator + parentFolderName2
-     * @throws Excetion
+     * @throws Exception
      */
     public static void createFolderInFolder(WebDrone driver, String folderName, String folderDesc, String parentFolderPath) throws Exception
     {
@@ -440,9 +454,9 @@ public class ShareUser extends AbstractTests
      * 
      * @param driver
      *            WebDrone Instance
-     * @param folderName
+     * @param fileName
      *            String Name of the folder to be created
-     * @param folderDesc
+     * @param parentFolderPath
      *            String Description of the folder to be created
      * @return DocumentLibraryPage
      */
@@ -494,8 +508,7 @@ public class ShareUser extends AbstractTests
      * Navigates to the Path specified, Starting from the Document Library Page.
      * Assumes User is logged in and a specific Site is open.
      * 
-     * @param fileName
-     * @param parentFolderPath
+     * @param fileInfo
      *            : such as constDoclib + file.seperator + parentFolderName1
      * @throws SkipException
      *             if error in this API
@@ -714,7 +727,7 @@ public class ShareUser extends AbstractTests
     /**
      * Helper to search for an Element in the list of <List<ActivityShareLink>>.
      * 
-     * @param List
+     * @param entryList
      *            <List<ActivityShareLink>>
      * @param entry
      *            String entry to be found in the ShareLinks' list
@@ -735,7 +748,7 @@ public class ShareUser extends AbstractTests
     /**
      * Helper to search for an Element in the list of <ShareLinks>.
      * 
-     * @param List
+     * @param entryList
      *            <ShareLinks>
      * @param entry
      *            String entry to be found in the ShareLinks' list
@@ -758,7 +771,7 @@ public class ShareUser extends AbstractTests
      * 
      * @param driver
      *            WebDrone Instance
-     * @param siteSearchCriteria
+     * @param contentName
      *            String Criteria for site search
      * @return {@link DocumentDetailsPage}
      */
@@ -806,7 +819,7 @@ public class ShareUser extends AbstractTests
      * the specified network.
      * 
      * @param driver
-     * @param network
+     * @param tenantID
      */
     public static void selectTenant(WebDrone driver, String tenantID)
     {
@@ -835,9 +848,9 @@ public class ShareUser extends AbstractTests
      * @param password
      *            String password
      */
-    public static Boolean createEnterpriseUser(WebDrone driver, String invitingUsername, String userName, String fname, String lname, String password)
+    public static Boolean createEnterpriseUser(WebDrone driver, String invitingUsername, String userName, String fName, String lName, String password)
     {
-        return createEnterpriseUserWithGroup(driver, invitingUsername, userName, fname, lname, password, null);
+        return createEnterpriseUserWithGroup(driver, invitingUsername, userName, fName, lName, password, null);
     }
 
     /**
@@ -1385,8 +1398,7 @@ public class ShareUser extends AbstractTests
      * @param fileName
      * @return boolean
      */
-    // TODO: Ranjith: Use this method from AbstractCloudSyncTest, remove this
-    // one as redundant.
+    // TODO: Ranjith: Use this method from AbstractCloudSyncTest, remove this one as redundant.
     public static boolean checkIfContentIsSynced(WebDrone driver, String fileName)
     {
         DocumentLibraryPage docLibPage = (DocumentLibraryPage) getSharePage(driver);
@@ -1552,7 +1564,7 @@ public class ShareUser extends AbstractTests
      * This method uploads the new version for the document with the given file
      * from data folder. User should be on Document details page.
      * 
-     * @param newFileName
+     * @param fileName
      * @param drone
      * @return DocumentDetailsPage
      * @throws IOException
@@ -1751,7 +1763,7 @@ public class ShareUser extends AbstractTests
             ShareUser.login(driver, ADMIN_USERNAME, ADMIN_PASSWORD);
             DashBoardPage dash = (DashBoardPage) driver.getCurrentPage().render();
             GroupsPage page = dash.getNav().getGroupsPage();
-            NewGroupPage newGrp = page.navigateToAddAndEditGroups().render().navigateToNewGroupPage().render();
+            NewGroupPage newGrp = page.clickBrowse().render().navigateToNewGroupPage().render();
             page = newGrp.createGroup(groupName, groupName, ActionButton.CREATE_GROUP).render();
             if (page.getGroupList().contains(groupName))
             {
@@ -1942,12 +1954,36 @@ public class ShareUser extends AbstractTests
         }
         return shareLink.getDescription();
     }
-    
-    public static ManageSitesPage navigateToManageSites(WebDrone drone)
-    {
-        DashBoardPage dashBoard = getSharePage(drone).render();
-        ManageSitesPage manageSitesPage = dashBoard.getNav().selectManageSitesPage().render();
 
-        return manageSitesPage;
+    /**
+     * Method to add given comment to given file (Assume User is in Document Library Page)
+     * @param drone
+     * @param fileName
+     * @param comment
+     * @return {@link DocumentLibraryPage}
+     */
+    public static DocumentLibraryPage addComment(WebDrone drone, String fileName, String comment)
+    {
+        DocumentLibraryPage documentLibraryPage = getSharePage(drone).render();
+        DocumentDetailsPage detailsPage = documentLibraryPage.selectFile(fileName).render();
+        detailsPage = detailsPage.addComment(comment).render();
+        return detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
     }
+
+    /**
+     * Method to set author to given file (Assume User is in Document Library Page)
+     * @param drone
+     * @param fileName
+     * @param author
+     * @return {@link DocumentLibraryPage}
+     */
+    public static DocumentLibraryPage setAuthor(WebDrone drone, String fileName, String author)
+    {
+        DocumentLibraryPage documentLibraryPage = getSharePage(drone).render();
+        DocumentDetailsPage detailsPage = documentLibraryPage.selectFile(fileName).render();
+        EditDocumentPropertiesPage propertiesPage = detailsPage.selectEditProperties().render();
+        propertiesPage.setAuthor(author);
+        detailsPage = propertiesPage.selectSave().render();
+        return detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+    }    
 }

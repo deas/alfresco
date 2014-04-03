@@ -12,6 +12,7 @@ import org.alfresco.po.share.enums.SiteVisibility;
 import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserAdmin;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.WebDrone;
@@ -35,13 +36,11 @@ public class BecomeSiteManagerTest extends AbstractTests
     /** Constants */
     private static final String BECOME_SITE_MANAGER_BUTTON = "Become Site Manager";
     
-    // TODO: Consider using uniqueTestDataString in qa-share.properties
-    private static final String PREFIX = "aaaa-tc797-";
+    // TODO: Consider using uniqueTestDataString in qa-share.properties in place of PREFIX
     
     // TODO: Create groups enum in Share-po project, since many new test classes define and use it
     private static final String SITE_ADMIN_GROUP = "SITE_ADMINISTRATORS";
 
-    private DashBoardPage dashBoardPage;
     private ManageSitesPage manageSitesPage;
     private OpCloudTestContext testContext;
     private List<String> sites;
@@ -76,7 +75,7 @@ public class BecomeSiteManagerTest extends AbstractTests
         ShareUser.login(drone, siteAdminUser);
 
         // Create a private site managed by the site administrator
-        createTestSite(drone, testContext, PREFIX, SiteVisibility.PRIVATE, siteAdminUser);
+        createTestSite(drone, testContext, getSiteName("admin"), SiteVisibility.PRIVATE, siteAdminUser);
 
         // Logout
         ShareUser.logout(drone);
@@ -85,7 +84,7 @@ public class BecomeSiteManagerTest extends AbstractTests
         ShareUser.login(drone, testUser);
 
         // Create a private site managed by the non site administrator
-        createTestSite(drone, testContext, PREFIX, SiteVisibility.PRIVATE, testUser);
+        createTestSite(drone, testContext, getSiteName("testUser"), SiteVisibility.PRIVATE, testUser);
 
         // Logout
         ShareUser.logout(drone);
@@ -102,13 +101,13 @@ public class BecomeSiteManagerTest extends AbstractTests
         traceLog("Starting Test1");
 
         // Login as the site administrator and navigate to manage sites
-        dashBoardPage = ShareUser.loginAs(drone, users.get(0), DEFAULT_PASSWORD);
+        ShareUser.login(drone, users.get(0));
         
-        manageSitesPage = dashBoardPage.getNav().selectManageSitesPage().render();
+        manageSitesPage = ShareUserAdmin.navigateToManageSites(drone);
 
         // TODO: Remove step, as its part of manageSitesPage render from all tests
         // Load manage sites page elements
-        manageSitesPage.loadElements();
+        // manageSitesPage.loadElements();
 
         // Find the test site of the other test user and make sure it has a 'become manager' button
         ManagedSiteRow row = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(sites.get(1));
@@ -139,12 +138,13 @@ public class BecomeSiteManagerTest extends AbstractTests
         traceLog("Starting Test2");
 
         // Login as the site administrator and navigate to manage sites
-        dashBoardPage = ShareUser.loginAs(drone, users.get(0), DEFAULT_PASSWORD);
+        ShareUser.login(drone, users.get(0));
 
-        manageSitesPage = dashBoardPage.getNav().selectManageSitesPage().render();
+        manageSitesPage = ShareUserAdmin.navigateToManageSites(drone);
 
+        // TODO: Remove this line as loadElements is part of render
         // Load manage sites page elements
-        manageSitesPage.loadElements();
+        // manageSitesPage.loadElements();
 
         // Find the test site of the administrator and make sure it does not have a 'become manager' button
         ManagedSiteRow row = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(sites.get(0));
@@ -169,7 +169,6 @@ public class BecomeSiteManagerTest extends AbstractTests
         testContext.cleanupAllSites();
 
         manageSitesPage = null;
-        dashBoardPage = null;
         sites = null;
         users = null;
     }

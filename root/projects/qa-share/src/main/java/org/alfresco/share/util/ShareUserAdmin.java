@@ -22,6 +22,10 @@ import java.util.List;
 
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.GroupsPage;
+import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.admin.ManageSitesPage;
+import org.alfresco.po.share.admin.ManagedSiteRow;
+import org.alfresco.po.share.enums.SiteVisibility;
 import org.alfresco.po.share.site.document.UserProfile;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.logging.Log;
@@ -124,6 +128,55 @@ public class ShareUserAdmin extends AbstractTests
         }
         return false;
     }
+
+    /**
+     * Navigate to ManageSitesPage
+     * Assumes user is logged in
+     * @param drone
+     * @return
+     */
+    public static ManageSitesPage navigateToManageSites(WebDrone drone)
+    {
+        ManageSitesPage manageSitesPage;
+        
+        SharePage sharePage = getSharePage(drone).render();
+        
+        if (sharePage instanceof ManageSitesPage)
+        {
+            manageSitesPage = getSharePage(drone).render();  
+        }
+        else
+        {
+            manageSitesPage = sharePage.getNav().selectManageSitesPage().render();
+        }
+        return manageSitesPage;
+    }
+    
+    /**
+     * Changes Site visibility to the specified value
+     * Assumes Site Admin / Manager is logged in
+     * @param drone
+     * @param siteName
+     * @param siteVisibility
+     * @return ManageSitesPage
+     */
+    public static ManageSitesPage changeSiteVisibility(WebDrone drone, String siteName, SiteVisibility siteVisibility)
+    {
+        ManageSitesPage manageSitesPage = navigateToManageSites(drone);
+
+        ManagedSiteRow managedSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(siteName);
+        if (managedSiteRow != null)
+        {
+
+            managedSiteRow.getVisibility().selectValue(siteVisibility);
+        }
+        else
+        {
+            logger.error("Unable to change Site Visibility to: " + siteVisibility.getDisplayValue());
+        }
+
+        return manageSitesPage;
+}
 
 
 }

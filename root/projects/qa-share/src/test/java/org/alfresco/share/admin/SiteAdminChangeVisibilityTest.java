@@ -30,6 +30,7 @@ import org.alfresco.po.share.enums.SiteVisibility;
 import org.alfresco.share.util.AbstractTests;
 import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserAdmin;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.WebDrone;
@@ -75,7 +76,9 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
     private void prepare() throws Exception
     {
         this.testContext = new OpCloudTestContext(this);
+        
         String domain = "acme-" + UNIQUE_TESTDATA_STRING + ".test";
+        String sitePrefix = "u1" + this.testContext.getRunId();
 
         this.user1 = getUserNameForDomain("johndoe", domain);
         this.user2 = getUserNameForDomain("joebloggs", domain);
@@ -85,7 +88,7 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
         createTestUser(ADMIN_USERNAME, testUserInfo1);
         
         // Create user2
-        String[] testUserInfo2 = new String[] { user1, "Joe", "Bloggs"};
+        String[] testUserInfo2 = new String[] { user2, "Joe", "Bloggs"};
         createTestUser(ADMIN_USERNAME, testUserInfo2);
         
         // Add the created users, so they can be cleaned up
@@ -96,9 +99,9 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
             logger.trace("Users created " + user1 + ", " + user2 + "]");
         }
 
-        this.user1PublicSite = getSiteName("u1PubSite");
-        this.user1ModeratedSite = getSiteName("u1ModSite");
-        this.user1PrivateSite = getSiteName("u1PriSite");
+        this.user1PublicSite = getSiteName(sitePrefix + "Pub");
+        this.user1ModeratedSite = getSiteName(sitePrefix + "Mod");
+        this.user1PrivateSite = getSiteName(sitePrefix + "Pri");
 
         // login as user1 to create sites
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
@@ -256,7 +259,7 @@ public class SiteAdminChangeVisibilityTest extends AbstractTests
      */
     private void testSiteVisibility(WebDrone drone, String siteName, SiteVisibility from, SiteVisibility to)
     {
-        ManageSitesPage manageSitesPage = ShareUser.navigateToManageSites(drone);
+        ManageSitesPage manageSitesPage = ShareUserAdmin.navigateToManageSites(drone);
         
         ManagedSiteRow managedSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(siteName);
         assertNotNull(managedSiteRow);

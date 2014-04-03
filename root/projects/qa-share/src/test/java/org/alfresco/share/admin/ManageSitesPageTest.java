@@ -42,6 +42,7 @@ public class ManageSitesPageTest extends AbstractTests
     private static final int NUM_OF_SITES_PER_TYPE = 1; // TODO: this was reduced from 25 due to speed. Increase again once API Create Site call is functional.
     private static final int NUM_OF_USERS = 2;
     private static final int TOTAL_NUM_OF_SITES = NUM_OF_SITES_PER_TYPE * 3 * NUM_OF_USERS;
+    // TODO: Consider setting uniqueTestDataString in qa-share.properties
     private static final String PREFIX = "aaaa-tc497-";
     private static final String SITE_ADMIN_GROUP = "SITE_ADMINISTRATORS";
     private DashBoardPage dashBoardPage;
@@ -80,17 +81,19 @@ public class ManageSitesPageTest extends AbstractTests
         }
 
         users = new ArrayList<> (testContext.getCreatedUsers());
-
+        int userCount = 1;
+        
         for (String username : users)
         {
             // Create sites as multiple users & of multiple types in order to confirm list is able to display them
-            dashBoardPage = ShareUser.loginAs(drone, username, DEFAULT_PASSWORD);
-
-            createAndAddSitestoTestContext(username, SiteVisibility.PUBLIC);
-            createAndAddSitestoTestContext(username, SiteVisibility.PRIVATE);
-            createAndAddSitestoTestContext(username, SiteVisibility.MODERATED);            
+            ShareUser.loginAs(drone, username, DEFAULT_PASSWORD);
+            
+            createAndAddSitestoTestContext(username, userCount+"pub", SiteVisibility.PUBLIC);
+            createAndAddSitestoTestContext(username, userCount+"pri", SiteVisibility.PRIVATE);
+            createAndAddSitestoTestContext(username, userCount+"mod", SiteVisibility.MODERATED);            
             
             ShareUser.logout(drone);
+            userCount ++;
 
             traceLog("Created " + NUM_OF_SITES_PER_TYPE * 3 + " sites for user: " + username);
         }
@@ -102,21 +105,7 @@ public class ManageSitesPageTest extends AbstractTests
         manageSitesPage = dashBoardPage.getNav().selectManageSitesPage().render();
     }
 
-    /**
-     * This method will NOT delete the sites permanently.
-     * <p>
-     * All the deleted sites will be archived which can be accessed through the Trashcan
-     * 
-     * @throws Exception
-     */
-    @AfterClass
-    public void teardown() throws Exception
-    {
-        traceLog("Starting teardown for ManageSitesPageTest");
-
-        testContext.cleanupAllSites();
-    }
-
+    // TODO: Move this to share-po project
     /**
      * Constructor.
      */
@@ -141,6 +130,7 @@ public class ManageSitesPageTest extends AbstractTests
 
         paginationTest();
 
+        // TODO: Is the test not applicable to Cloud?
         if(!alfrescoVersion.isCloud())
         {
 
@@ -231,9 +221,9 @@ public class ManageSitesPageTest extends AbstractTests
         }
     }
     
-    private void createAndAddSitestoTestContext(String userName, SiteVisibility siteVisibility)
+    private void createAndAddSitestoTestContext(String userName, String sitePrefix, SiteVisibility siteVisibility)
     {
-        Set<String> siteNames = SiteUtil.createManySites(drone, PREFIX, SiteVisibility.PUBLIC, NUM_OF_SITES_PER_TYPE);
+        Set<String> siteNames = SiteUtil.createManySites(drone, sitePrefix, SiteVisibility.PUBLIC, NUM_OF_SITES_PER_TYPE);
         for (String siteName : siteNames)
         {
             testContext.addSite(userName, siteName);
