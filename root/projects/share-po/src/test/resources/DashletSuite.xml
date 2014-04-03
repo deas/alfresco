@@ -1,0 +1,69 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Dashlet Suite" verbose="6" preserve-order="true" parallel="tests" thread-count="1">
+    <test name="ConfigureSavedSearchDialogBoxPageTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.ConfigureSavedSearchDialogBoxPageTest" />
+        </classes>
+    </test>
+    <test name="MyActivitiesDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.MyActivitiesDashletTest" />
+        </classes>
+    </test>
+    <test name="MyDiscussionsDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.MyDiscussionsDashletTest" />
+        </classes>
+    </test>
+    <test name="MySiteDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.MySiteDashletTest" />
+        </classes>
+    </test>
+    <test name="MyTasksDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.MyTasksDashletTest" />
+        </classes>
+    </test>
+    <test name="SavedSearchDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.SavedSearchDashletTest" />
+        </classes>
+    </test>
+    <test name="SearchLimitTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.SearchLimitTest" />
+        </classes>
+    </test>
+    <test name="SiteAcitivitiesDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.SiteAcitivitiesDashletTest" />
+        </classes>
+    </test>
+    <test name="SiteContentDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.SiteContentDashletTest" />
+        </classes>
+    </test>
+    <test name="SiteMembersDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.SiteMembersDashletTest" />
+        </classes>
+    </test>
+    <test name="SiteNoticeDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.SiteNoticeDashletTest" />
+        </classes>
+    </test>
+    <test name="SiteSearchDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.SiteSearchDashletTest" />
+        </classes>
+    </test>
+    <test name="SiteWelcomeDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.SiteWelcomeDashletTest" />
+        </classes>
+    </test>
+</suite>
