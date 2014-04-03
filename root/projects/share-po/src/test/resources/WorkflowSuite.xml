@@ -96,4 +96,9 @@
             <class name="org.alfresco.po.share.workflow.WorkFlowTypeTest" />
         </classes>
     </test>
+    <test name="CalenderDatePickerTest ">
+        <classes>
+            <class name="org.alfresco.po.share.workflow.CalendarDatePickerTest" />
+        </classes>
+    </test>
 </suite>

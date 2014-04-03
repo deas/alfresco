@@ -153,6 +153,11 @@
             <class name="org.alfresco.po.share.site.document.TableViewFileDirectoryInfoTest" />
         </classes>
     </test>
+     <test name="ContentDetailsTest">
+         <classes>
+             <class name="org.alfresco.po.share.site.document.ContentDetailsTest" />
+         </classes>
+     </test>
 <!--     <test name="TagPageTest"> -->
 <!--         <classes> -->
 <!--             <class name="org.alfresco.po.share.site.document.TagPageTest" /> -->

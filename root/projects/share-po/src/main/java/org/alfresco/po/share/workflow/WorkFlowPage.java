@@ -36,6 +36,9 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 /**
  * Abstract of Workflowpage.
  * 
@@ -482,7 +485,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         {
             try
             {
-                drone.waitForElement(By.cssSelector("a.calnav"), maxPageLoadingTime);
+                drone.waitForElement(By.cssSelector("a.calnav"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                 calenderElement.findElement(By.cssSelector("a.calnav")).click();
 
                 WebElement monthAndYearSelector = drone.findAndWait(By.cssSelector("div.yui-cal-nav"));
@@ -495,6 +498,8 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
 
                 monthAndYearSelector.findElement(By.cssSelector("button[id$='_workflowDueDate-cntrl_nav_submit']")).click();
 
+                // Wait for the title to show the month
+                drone.waitUntilVisible(By.cssSelector("a.calnav"), dueDate.toString(DateTimeFormat.forPattern("MMMM yyyy")), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                 calenderElement = drone.findAndWait(By.cssSelector("table[id$='_workflowDueDate-cntrl']>tbody"));
 
                 List<WebElement> allDays = calenderElement.findElements(By.cssSelector("a.selector"));

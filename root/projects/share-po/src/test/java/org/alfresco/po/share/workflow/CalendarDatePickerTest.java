@@ -47,7 +47,7 @@ public class CalendarDatePickerTest extends AbstractTest
     DateTime due;
     
 
-    @BeforeClass(groups = "Hybrid")
+    @BeforeClass(groups = "Enterprise4.2")
     public void prepare() throws Exception
     {
         dashBoardPage = loginAs(username, password);
@@ -57,7 +57,7 @@ public class CalendarDatePickerTest extends AbstractTest
         due = DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(dueDate);
     }
 
-    @Test(groups = "Hybrid")
+    @Test(groups = "Enterprise4.2")
     public void enterRequiredApprovalPercentage() throws Exception
     {
         myWorkFlowsPage = dashBoardPage.getNav().selectWorkFlowsIHaveStarted().render();
@@ -69,21 +69,21 @@ public class CalendarDatePickerTest extends AbstractTest
         Assert.assertEquals(newWorkflowPage.getDueDate(), dueDate);
     }
 
-    @Test(groups = "Hybrid", expectedExceptions = IllegalArgumentException.class, dependsOnMethods = "enterRequiredApprovalPercentage")
+    @Test(groups = "Enterprise4.2", expectedExceptions = IllegalArgumentException.class, dependsOnMethods = "enterRequiredApprovalPercentage")
     public void selectDateFormCalendarWithException() throws Exception
     {
         newWorkflowPage.selectDateFromCalendar("");
         newWorkflowPage.selectDateFromCalendar("12 Dec 2015");
     }
 
-    @Test(groups = "Hybrid", expectedExceptions = UnsupportedOperationException.class, dependsOnMethods = "selectDateFormCalendarWithException")
+    @Test(groups = "Enterprise4.2", expectedExceptions = UnsupportedOperationException.class, dependsOnMethods = "selectDateFormCalendarWithException")
     public void selectDateFormCalendarWithUnsupportedException() throws Exception
     {
         DateTime dueDate = new DateTime().minusMonths(1).dayOfMonth().withMinimumValue();
         newWorkflowPage.selectDateFromCalendar(dueDate.toString("dd/MM/yyyy"));
     }
 
-    @Test(groups = "Hybrid", dependsOnMethods = "selectDateFormCalendarWithUnsupportedException")
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "selectDateFormCalendarWithUnsupportedException")
     public void selectDateFormCalendarOnTheSameMonth() throws Exception
     {
         newWorkflowPage.closeCalendarDatePicker();
@@ -92,7 +92,7 @@ public class CalendarDatePickerTest extends AbstractTest
         Assert.assertEquals(newWorkflowPage.getDueDate(), dueDate.toString("dd/MM/yyyy"));
     }
 
-    @Test(groups = "Hybrid", dependsOnMethods = "selectDateFormCalendarOnTheSameMonth")
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "selectDateFormCalendarOnTheSameMonth")
     public void selectDateFormCalendarOnNextMonth() throws Exception
     {
         DateTime dueDate = new DateTime().plusMonths(1).dayOfMonth().withMinimumValue();
@@ -100,7 +100,7 @@ public class CalendarDatePickerTest extends AbstractTest
         Assert.assertEquals(newWorkflowPage.getDueDate(), dueDate.toString("dd/MM/yyyy"));
     }
 
-    @Test(dependsOnMethods = "selectDateFormCalendarOnNextMonth")
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "selectDateFormCalendarOnNextMonth")
     public void getPriorityOptions()
     {
         List<String> options = newWorkflowPage.getPriorityOptions();

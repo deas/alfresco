@@ -21,4 +21,9 @@
             <class name="org.alfresco.po.share.task.TaskStatusTest" />
         </classes>
     </test>
+    <test name="TaskDetailsTest">
+        <classes>
+            <class name="org.alfresco.po.share.task.TaskDetailsTest" />
+        </classes>
+    </test>
 </suite>
