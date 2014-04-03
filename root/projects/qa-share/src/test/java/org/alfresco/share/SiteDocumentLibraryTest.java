@@ -311,7 +311,7 @@ public class SiteDocumentLibraryTest extends AbstractUtils
 
             docDetailsPage = libraryPage.selectFile(FILE_WITH_IMAP_FORMAT).render();
 
-            Assert.assertTrue(docDetailsPage.isFlashPreviewDisplayed());
+            Assert.assertTrue(docDetailsPage.getPreviewerClassName().endsWith("PdfJs"));
 
         }
         catch (Throwable e)
