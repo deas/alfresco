@@ -86,6 +86,8 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
                     drone.find(DASHLET_CONTAINER_PLACEHOLDER);
                     drone.find(HELP_ICON);
                     drone.find(DASHLET_TITLE);
+                    drone.find(SEARCH_BUTTON);
+                    drone.find(INPUT_BOX);
                     break;
                 }
                 catch (NoSuchElementException e)
