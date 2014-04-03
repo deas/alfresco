@@ -51,7 +51,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @BeforeClass
+    @BeforeClass@Test(groups={"alfresco-one"})
     public void prepare() throws Exception
     {
         siteName = "ddSiteTest" + System.currentTimeMillis();
@@ -64,7 +64,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
         fileExt = st.nextToken();
     }
 
-    @AfterMethod
+    @AfterMethod(groups={"alfresco-one"})
     public void deleteFile()
     {
         if (newfile != null)
@@ -73,7 +73,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
         }
     }
 
-    @AfterClass
+    @AfterClass(groups={"alfresco-one"})
     public void deleteSite()
     {
         SiteUtil.deleteSite(drone, siteName);
