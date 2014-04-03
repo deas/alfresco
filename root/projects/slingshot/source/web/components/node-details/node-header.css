@@ -1,11 +1,11 @@
 .node-header
 {
-    min-height: 7em;
+    min-height: 6.5em;
 }
 
 .node-header h1
 {
-   padding: 0.5em 0 0.2em;
+   padding: 0.5em 0 0.3em;
    word-wrap: break-word;
 }
 
@@ -92,7 +92,7 @@
 .node-header .node-thumbnail
 {
    float: left;
-   padding: 0.5em 0.5em 1em 0;
+   padding: 0.5em 0.5em 0.5em 0;
 }
 
 .node-header .node-action
@@ -107,7 +107,7 @@
    float: right;
    width: 20%;
    text-align: right;
-   padding-top: 4.5em;
+   padding-top: 3.75em;
 }
 
 .node-header .node-action .onDownloadDocumentClick a

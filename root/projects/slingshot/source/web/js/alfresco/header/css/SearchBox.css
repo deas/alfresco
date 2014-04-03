@@ -7,13 +7,16 @@
 }
 
 .alfresco-share .alf-search-box {
+   margin-top: 1px;
    background-color: #eee;
+   padding-top: 1px;
+   padding-bottom: 1px;
    border-radius: 16px;
-   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) inset;
-   color: #333;
-   margin: 3px 20px 3px 10px;
-   padding: 0 0 2px 8px;
-   max-height: 20px;
+   box-shadow: 1px 1px 3px #ccc inset;
+}
+
+.alfresco-share .alf-search-box-inner {
+   font-size: 116%;
 }
 
 .alfresco-share .alf-search-box-menu {
@@ -31,8 +34,7 @@
    margin-top: 1px;
 }
 
-.alfresco-share .alf-search-box-text:focus
-{
+.alfresco-share .alf-search-box-text:focus {
    outline:none;
 }
 
@@ -54,17 +56,21 @@
 
 .alfresco-share .alf-livesearch {
    position: absolute;
-   right: 16px;
-   min-width: 240px;
+   right: 4px;
+   min-width: 360px;
    background-color: #fff;
    border: 1px solid #ccc;
    border-bottom-left-radius: 6px;
    border-bottom-right-radius: 6px;
    box-shadow: 0.33px 0px 8px rgba(0, 0, 0, 0.3);
    color: #333;
-   margin: 2px;
+   margin-top: 2px;
    z-index: 1000;
    display: none;
+}
+
+.alfresco-share .alf-livesearch .wait {
+   background: url("./images/wait.gif") center no-repeat;
 }
 
 .alfresco-share .alf-livesearch .alf-livesearch-title {
@@ -105,7 +111,7 @@
 
 .alfresco-share .alf-livesearch-list > div {
    clear: both;
-   padding: 4px 2px 6px 2px;
+   padding: 4px 2px 4px 2px;
 }
 
 .alfresco-share .alf-livesearch-list .alf-livesearch-thumbnail {

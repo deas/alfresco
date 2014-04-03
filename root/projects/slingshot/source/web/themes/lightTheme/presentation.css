@@ -91,7 +91,7 @@ button:focus {outline:none;}
 .yui-overlay h1
 {
    font-family: Open Sans Condensed, Arial, sans-serif;
-   font-size: 200%;
+   font-size: 185%;
    font-weight: normal;
    top: -4px;
    left: 162px;
@@ -1659,7 +1659,7 @@ body.alfresco-guest
 
 .node-header h1
 {
-   padding: 0 0 0.2em !important;
+   padding: 0 0 0.3em !important;
 }
 
 .node-header .node-path
