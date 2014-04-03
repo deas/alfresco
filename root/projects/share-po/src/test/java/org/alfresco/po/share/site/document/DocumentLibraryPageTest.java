@@ -100,6 +100,11 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
     {
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        
+        documentLibPage.clickOnMyFavourites().render();
+        
+        documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        
         // documentLibPage = getDocumentLibraryPage(siteName).render();
         List<FileDirectoryInfo> files = documentLibPage.getFiles();
         Assert.assertEquals(files.size(), 0);
@@ -115,7 +120,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         Assert.assertEquals(folder.isTypeFolder(), true);
         Assert.assertEquals(folder.getName(), folderName);
         Assert.assertEquals(folder.getDescription(), folderDescription);
-        Assert.assertNotNull(documentLibPage.getFileDirectoryInfo(folderName));
+        Assert.assertNotNull(documentLibPage.getFileDirectoryInfo(folderName));       
     }
 
     @Test(dependsOnMethods = "createNewFolder", groups="alfresco-one")

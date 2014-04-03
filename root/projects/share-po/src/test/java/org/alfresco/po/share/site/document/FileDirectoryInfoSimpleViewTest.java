@@ -574,4 +574,13 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
         // Like
         thisRow.getFileOrFolderHeight();
     }
+    
+    @Test(expectedExceptions =UnsupportedOperationException.class, groups={"alfresco-one"}, priority=35)
+    public void testClickOnCategoryName() throws Exception
+    {
+        // Get folder
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
+        // Like
+        thisRow.clickOnCategoryNameLink(Categories.LANGUAGES.getValue());
+    }
 }

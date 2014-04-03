@@ -72,6 +72,7 @@ public class DocumentLibraryPage extends SitePage
     private static final By FILMSTRIP_NAV_HANDLE = By.cssSelector("div[id$='_default-filmstrip-nav-handle']");
     private static final By THUMBNAIL_IMAGE = By.cssSelector("td[class$='yui-dt-col-thumbnail'] img");
     private static final By DOCUMENTS_TREE_CSS = By.cssSelector("div.filter.doclib-filter h2");
+    private static final By MY_FAVOURITES = By.cssSelector("span.favourites > a");
     private final String subfolderName;
     private boolean shouldHaveFiles;
     private final String hasTags;
@@ -1374,4 +1375,30 @@ public class DocumentLibraryPage extends SitePage
 
         throw new PageException("Error in selecting the My Favourties on DocLib Tree Menu.");
    }
+    
+    /**
+     * Click on "My Favourites" it will take you to document library/Repository page.
+     * @return
+     */
+    public DocumentLibraryPage clickOnMyFavourites()
+    {
+        try
+        {
+            WebElement element = drone.find(MY_FAVOURITES);
+            if(element.isDisplayed())
+            {
+                element.click();
+                return new DocumentLibraryPage(drone);
+            }
+
+        }
+        catch (NoSuchElementException nse)
+        {
+            if(logger.isInfoEnabled())
+            {
+                logger.info("My FAvourites is not loaded");
+            }
+        }
+        throw new PageOperationException("My FAvourites not loaded - My FAvourites tape may not be displayed.");
+    }
 }

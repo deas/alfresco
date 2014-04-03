@@ -637,5 +637,12 @@ public interface FileDirectoryInfo
      * 
      * @return int
      */
-    int getCommentsCount();
+    int getCommentsCount();      
+    /**
+     * This method clicks on category Name link.
+     *
+     * @param categoryName
+     * @return {@link DocumentLibraryPage}
+     */
+     DocumentLibraryPage clickOnCategoryNameLink(String categoryName);
 }

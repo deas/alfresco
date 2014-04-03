@@ -109,6 +109,8 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     private static final By COMMENT_LINK = By.cssSelector("a.comment");
     private static final By QUICK_SHARE_LINK = By.cssSelector("a.quickshare-action");
     protected static final By VIEW_IN_BROWsER_ICON = By.cssSelector("div.document-view-content>a");
+    protected static final By CATEGORY_LINK = By.cssSelector("span.category > a");    
+
     private static final By EDIT_PROP_ICON = By.cssSelector("div.document-edit-properties>a");
     
     public FileDirectoryInfoImpl(String nodeRef,WebElement webElement, WebDrone drone)
@@ -2005,6 +2007,41 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     public boolean isInfoIconVisible()
     {
         throw new UnsupportedOperationException("Info Icon is not available in this view type.");
+    }
+    
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickOnTagNameLink(java.lang.String)
+     */
+    @Override
+    public DocumentLibraryPage clickOnCategoryNameLink(String categoryName)
+    {
+        if (categoryName == null)
+        {
+            throw new UnsupportedOperationException("Drone and category Name is required.");
+        }
+
+        try
+        {
+            List<WebElement> categoryList = findAllWithWait(CATEGORY_LINK);
+            if (categoryList != null)
+            {
+                for (WebElement tag : categoryList)
+                {
+                    String tagText = tag.getText();
+                    if (categoryName.equalsIgnoreCase(tagText))
+                    {
+                        tag.click();
+                        return new DocumentLibraryPage(getDrone());
+                    }
+                }
+            }
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded the time to find css." + e.getMessage());
+            throw new PageException("Exceeded the time to find css.", e);
+        }
+        throw new PageException("Not able to category name: " + categoryName);
     }
    
     /* (non-Javadoc)

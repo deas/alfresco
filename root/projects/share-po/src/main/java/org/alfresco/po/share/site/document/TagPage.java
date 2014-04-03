@@ -46,7 +46,7 @@ public class TagPage extends AbstractEditProperties
     protected static final By ENTER_TAG_VALUE = By.cssSelector("input.create-new-input");
     protected static final By CREATE_TAG = By.cssSelector("span.createNewIcon");
     protected static final By REMOVE_TAG = By.cssSelector("span.removeIcon");
-    protected static final By OK_BUTTON = By.cssSelector("button[id$='cntrl-ok-button']");
+    protected static final By OK_BUTTON = By.cssSelector("span[id$='taggable-cntrl-ok'] button[id$='cntrl-ok-button']");
     protected static final By CANCEL_BUTTON = By.cssSelector("button[id$='cntrl-cancel-button']");
     /**
      * Constructor.

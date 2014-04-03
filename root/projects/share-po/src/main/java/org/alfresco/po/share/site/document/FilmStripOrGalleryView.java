@@ -871,6 +871,16 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     {
         clickInfoIcon(false);
         return super.clickShareLink();
+    }    
+
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickOnCategoryNameLink(java.lang.String)
+     */
+    @Override
+    public DocumentLibraryPage clickOnCategoryNameLink(String categoryName)
+    {
+        clickInfoIcon(true);
+        return super.clickOnCategoryNameLink(categoryName);
     }
     
     /* (non-Javadoc)

@@ -165,6 +165,14 @@ public class SimpleViewFileDirectoryInfo extends SimpleDetailTableView
     }
     
     /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickOnCategoryNameLink(java.lang.String)
+     */
+    public DocumentLibraryPage clickOnCategoryNameLink(String categoryName)
+    {
+        throw new UnsupportedOperationException("ShareLink is not available in Simple View File Directory Info.");
+    }
+    
+    /* (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#clickCommentsLink()
      */
     @Override

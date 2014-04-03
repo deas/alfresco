@@ -10,10 +10,11 @@ package org.alfresco.po.share.site.document;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
-
+import static org.alfresco.po.share.site.document.DocumentAspect.CLASSIFIABLE;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.alfresco.po.share.DashBoardPage;
@@ -188,7 +189,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         }
     }
     
-    @Test(groups={"alfresco-one"}, priority=1)
+    @Test(groups={"alfresco-one"}, priority=46)
     public void test101SelectManageRules()
     {
      // Get folder
@@ -728,5 +729,38 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         drone.refresh();
         documentLibPage = drone.getCurrentPage().render();
         Assert.assertEquals(documentLibPage.getFileDirectoryInfo(folderName).getName(), folderName);
+    }
+    
+    @Test(enabled = true, groups = "Enterprise4.2", priority = 1)
+    public void clickOnCategoryLink()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        SelectAspectsPage selectAspectsPage = documentLibPage.getFileDirectoryInfo(folderName).selectManageAspects().render();
+
+        // Get several aspects in left hand side
+        List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
+        aspects.add(CLASSIFIABLE);
+
+        // Add several aspects to right hand side
+        selectAspectsPage = selectAspectsPage.add(aspects).render();
+
+         // Click on Apply changes on select aspects page
+        selectAspectsPage.clickApplyChanges().render();
+        
+        EditDocumentPropertiesPopup editDocumentPropertiesPopup = documentLibPage.getFileDirectoryInfo(folderName).selectEditProperties().render();
+        // Add category and click ok
+        CategoryPage categoryPage = editDocumentPropertiesPopup.getCategory();
+        // Verify added category is displayed beneath categories part
+        
+        // Select add category
+        categoryPage.add(Arrays.asList(Categories.LANGUAGES));
+
+        // Click on save button in edit document properties pop up page
+        documentLibPage = (DocumentLibraryPage) categoryPage.clickOk().render();
+
+        editDocumentPropertiesPopup.selectSave().render();
+        
+        documentLibPage = documentLibPage.getFileDirectoryInfo(folderName).clickOnCategoryNameLink(Categories.LANGUAGES.getValue()).render();
+        Assert.assertTrue(documentLibPage.isFileVisible(folderName));
     }
 }
