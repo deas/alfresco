@@ -51,7 +51,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @BeforeClass@Test(groups={"alfresco-one"})
+    @BeforeClass(groups={"alfresco-one"})
     public void prepare() throws Exception
     {
         siteName = "ddSiteTest" + System.currentTimeMillis();
