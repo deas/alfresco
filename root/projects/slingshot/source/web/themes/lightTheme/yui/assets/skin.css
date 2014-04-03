@@ -4448,7 +4448,7 @@ right: 0;
 left: auto;
 }
 .yui-skin-lightTheme .yui-navset .yui-nav,.yui-skin-lightTheme .yui-navset .yui-navset-top .yui-nav {
-border: solid #333;
+border: solid #ccc;
 border-width: 0 0 5px;
 Xposition: relative;
 zoom: 1;
@@ -4564,7 +4564,7 @@ bottom: -1px;
 }
 .yui-skin-lightTheme .yui-navset-bottom .yui-content,.yui-skin-lightTheme .yui-navset .yui-navset-bottom .yui-content {
 border: 1px solid #ccc;
-border-bottom-color: #333;
+border-bottom-color: #ccc;
 }
 .ygtvitem {
 }
