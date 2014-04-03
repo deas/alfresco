@@ -20,6 +20,7 @@ package org.alfresco.po.share.site.document;
 
 import java.util.List;
 
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
@@ -130,9 +131,9 @@ public class TagPage extends AbstractEditProperties
      * Enter the tag name and click to Add tag.
      * 
      * @param tagName
-     * @return TagPage
+     * @return 
      */
-    public TagPage enterTagValue(String tagName)
+    public HtmlPage enterTagValue(String tagName)
     {
         try
         {
@@ -143,7 +144,9 @@ public class TagPage extends AbstractEditProperties
             WebElement createButton = drone.find(CREATE_TAG);
             createButton.click();
             canResume();
-            return new TagPage(drone);
+            
+            //TODO: change return when jira WEBDRONE-563 is implemented.
+            return this.render();
         }
         catch (NoSuchElementException nse)
         {

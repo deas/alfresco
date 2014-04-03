@@ -126,7 +126,7 @@ public class EditDocumentPropertiesPageTest extends AbstractDocumentTest
         editPage.setName("my.txt");
         editPage.selectMimeType(MimeType.XHTML);
         TagPage tagPage = editPage.getTag().render();
-        tagPage = tagPage.enterTagValue(tagName);
+        tagPage = tagPage.enterTagValue(tagName).render();
         EditDocumentPropertiesPage editpage = tagPage.clickOkButton().render();
         detailsPage = editpage.selectSave().render();      
         Map<String, Object> properties = detailsPage.getProperties();
