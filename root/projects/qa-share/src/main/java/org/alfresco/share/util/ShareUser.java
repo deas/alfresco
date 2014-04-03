@@ -405,6 +405,7 @@ public class ShareUser extends AbstractTests
         }
         catch (Exception ex)
         {
+            logger.info("Throw exception",ex);
             logger.info("Skip test. Error in Create Site: " + ex);
         }
         return site;
