@@ -502,6 +502,13 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         documentLibPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
 
         documentLibPage = documentLibPage.selectMyFavouritesOnTreeMenu().render();
+        int i = 0;
+        do
+        {
+            i++;
+            drone.refresh();
+            documentLibPage = drone.getCurrentPage().render();
+        }while(!documentLibPage.isFileVisible(tempFile.getName())  && i < 5);
         Assert.assertTrue(documentLibPage.getFiles().size() == 1);
         Assert.assertTrue(documentLibPage.getFiles().get(0).getName().equalsIgnoreCase(tempFile.getName()));
     }
