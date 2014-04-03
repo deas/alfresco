@@ -11,7 +11,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.NewUserPage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.ShareUtil;
+import org.alfresco.po.share.UserSearchPage;
 import org.alfresco.po.share.enums.ZoomStyle;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
@@ -49,7 +53,9 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
     private File file2;
     private String uname = "dlpt1user" + System.currentTimeMillis();
     private File tempFile;
-
+    private String userName = "user" + System.currentTimeMillis() + "@test.com";
+    private String firstName = userName;
+    private String lastName = userName;
     /**
      * Pre test setup of a dummy file to upload.
      * 
@@ -64,14 +70,42 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         folderName3 = folderName + "-2";
         folderNameDelete = folderName + "delete";
         folderDescription = String.format("Description of %s", folderName);
-        createEnterpriseUser(uname);
-        loginAs(uname, UNAME_PASSWORD).render();
+        createUser();
         SiteUtil.createSite(drone, siteName, "description", "Public");
         file1 = SiteUtil.prepareFile();
         file2 = SiteUtil.prepareFile();
         tempFile = SiteUtil.prepareFile();
     }
 
+    /**
+     * Create User 
+     * @throws Exception 
+     */
+    private void createUser() throws Exception
+    {
+        if (!alfrescoVersion.isCloud())
+        {
+            DashBoardPage dashBoard = loginAs(username, password);
+            UserSearchPage page = dashBoard.getNav().getUsersPage().render();
+            NewUserPage newPage = page.selectNewUser().render();
+            newPage.inputFirstName(firstName);
+            newPage.inputLastName(lastName);
+            newPage.inputEmail(userName);
+            newPage.inputUsername(userName);
+            newPage.inputPassword(userName);
+            newPage.inputVerifyPassword(userName);
+            UserSearchPage userCreated = newPage.selectCreateUser().render();
+            userCreated.searchFor(userName).render();
+            Assert.assertTrue(userCreated.hasResults());
+            logout(drone);
+            loginAs(userName, userName);
+        }
+        else
+        {
+            ShareUtil.loginAs(drone, shareUrl, username, password).render();
+        }
+    }
+    
     @AfterClass(groups="alfresco-one")
     public void teardown()
     {
@@ -513,7 +547,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         Assert.assertTrue(documentLibPage.getFiles().get(0).getName().equalsIgnoreCase(tempFile.getName()));
     }
     
-    @Test(dependsOnMethods="testMyFavourite", groups={"alfresco-one", "BambooBug"})
+    @Test(dependsOnMethods="testMyFavourite", groups={"alfresco-one"})
     public void testZoom()
     {
         documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
@@ -523,6 +557,8 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
 
         Assert.assertTrue(navigation.isZoomControlVisible());
 
+        navigation.selectZoom(ZoomStyle.SMALLER);
+        
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(tempFile.getName()); 
         double fileHeightSize = thisRow.getFileOrFolderHeight();
         
