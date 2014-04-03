@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:mongo="http://www.springframework.org/schema/data/mongo"
     xmlns:util="http://www.springframework.org/schema/util"
@@ -10,7 +10,7 @@
           http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
           http://www.springframework.org/schema/beans
           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-          http://www.springframework.org/schema/util 
+          http://www.springframework.org/schema/util
           http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
    <import resource="classpath:share-po-context.xml"/>
@@ -41,7 +41,7 @@
         <property name="alfrescoVersion" value="${share.version}"/>
         <property name="popupRendertime" value="${webdrone.error.popup.render.time}" />
         <property name="elementWaitInSeconds" value="${webdrone.element.action.wait.seconds}" />
-    </bean>    
+    </bean>
 
     <bean id="shareTestProperties" class="org.alfresco.po.share.util.ShareTestProperty">
         <constructor-arg name="shareUrl" value="${share.target}" />
