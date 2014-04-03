@@ -480,7 +480,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         Assert.assertTrue(workFlowPage.getTitle().contains("Start Workflow"));
     }
     
-    @Test(dependsOnMethods = "selectStartWorkFlow", groups={"Enterprise4.2","BambooBug"})
+    @Test(dependsOnMethods = "selectStartWorkFlow", groups="Enterprise4.2")
     public void testMyFavourite() throws Exception
     {
         SiteFinderPage siteFinder = ((SharePage) drone.getCurrentPage()).getNav().selectSearchForSites().render();
@@ -513,7 +513,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         Assert.assertTrue(documentLibPage.getFiles().get(0).getName().equalsIgnoreCase(tempFile.getName()));
     }
     
-    @Test(dependsOnMethods="testMyFavourite", groups="alfresco-one")
+    @Test(dependsOnMethods="testMyFavourite", groups={"alfresco-one", "BambooBug"})
     public void testZoom()
     {
         documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
