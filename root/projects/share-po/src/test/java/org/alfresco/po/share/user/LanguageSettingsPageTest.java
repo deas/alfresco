@@ -47,7 +47,7 @@ public class LanguageSettingsPageTest extends AbstractTest
      * @throws Exception
      */
     @BeforeClass(groups = { "Cloud" })
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         dashboardPage = loginAs(cloudUserName, cloudUserPassword);
         myprofile = dashboardPage.getNav().selectMyProfile().render();

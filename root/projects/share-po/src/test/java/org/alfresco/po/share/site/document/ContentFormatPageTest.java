@@ -56,7 +56,7 @@ public class ContentFormatPageTest extends AbstractTest
      * @throws Exception
      */
     @BeforeClass(groups="alfresco-one")
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         if (logger.isTraceEnabled()) logger.trace("====prepare====");
         commentText = "This is Comment";

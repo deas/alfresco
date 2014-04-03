@@ -45,7 +45,7 @@ public class DownloadFileAndFolderTest extends AbstractDocumentTest
      * @throws Exception
      */
     @BeforeClass
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         siteName = "site" + System.currentTimeMillis();
         folderName = "The first folder";

@@ -42,7 +42,7 @@ public class SiteFinderPageTest extends AbstractTest
      * @throws Exception
      */
     @BeforeClass(groups="alfresco-one")
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         siteName = "site" + System.currentTimeMillis();
         siteNamePublic = siteName + "-2";

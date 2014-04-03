@@ -58,7 +58,7 @@ public class DocumentLibraryPageSortTest extends AbstractTest
      * @throws Exception
      */
     @BeforeClass
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         siteName = "site" + System.currentTimeMillis();
 

@@ -64,7 +64,7 @@ public class TrashCanPaginationTest extends AbstractTest
      * @throws Exception
      */
     @BeforeClass(groups = { "Enterprise4.2" })
-    private void setup() throws Exception
+    public void setup() throws Exception
     {
         if (!alfrescoVersion.isCloud())
         {

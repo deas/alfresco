@@ -34,10 +34,12 @@ import org.openqa.selenium.NoSuchElementException;
 public class ViewPublicLinkPage extends SharePage
 {
     private static Log logger = LogFactory.getLog(ViewPublicLinkPage.class);
+    @SuppressWarnings("unused")
     @RenderWebElement
     private static final By alfrescoImageLocator = By.cssSelector(".quickshare-header-left>img");
     @RenderWebElement
     private static final By documentDetailsLinkLocator = By.cssSelector("div.quickshare-header-right>a.brand-button");
+    @SuppressWarnings("unused")
     @RenderWebElement
     private static final By documentNameLocator = By.cssSelector(".quickshare-node-header h1");
     @RenderWebElement

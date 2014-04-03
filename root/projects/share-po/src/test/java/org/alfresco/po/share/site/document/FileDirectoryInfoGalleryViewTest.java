@@ -75,7 +75,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
      * @throws Exception
      */
     @BeforeClass(groups={"alfresco-one"})
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         siteName = "site" + System.currentTimeMillis();
         folderName = "The first folder";

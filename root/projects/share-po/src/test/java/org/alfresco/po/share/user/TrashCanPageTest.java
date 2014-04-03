@@ -70,7 +70,7 @@ public class TrashCanPageTest extends AbstractTest
      * @throws Exception
      */
     @BeforeClass(groups = { "Enterprise4.2" })
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         String fname = anotherUser.getfName();
         String lname = anotherUser.getlName();

@@ -104,7 +104,7 @@ public abstract class AbstractSiteNavigation extends HtmlElement
      */
     public HtmlPage selectSiteDashBoard()
     {
-        find(By.cssSelector(dashboardLink)).click();
+        drone.find(By.cssSelector(dashboardLink)).click();
         return FactorySharePage.resolvePage(drone);
     }
 
@@ -139,7 +139,7 @@ public abstract class AbstractSiteNavigation extends HtmlElement
      */
     protected void select(final By by)
     {
-        WebElement link = find(by);
+        WebElement link = drone.find(by);
         link.click();
     }
 

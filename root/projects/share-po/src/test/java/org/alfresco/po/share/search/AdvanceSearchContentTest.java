@@ -68,7 +68,7 @@ public class AdvanceSearchContentTest extends AbstractTest
      * @throws Exception
      */
     @BeforeClass(groups={"Enterprise-only"})
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         siteName = "AdvanceSearchContent" + System.currentTimeMillis();
         file = SiteUtil.prepareFile();

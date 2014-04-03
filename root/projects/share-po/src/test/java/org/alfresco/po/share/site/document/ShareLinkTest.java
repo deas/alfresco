@@ -46,7 +46,7 @@ public class ShareLinkTest extends AbstractDocumentTest
     private static String folderDescription;
 
     @BeforeClass(groups="alfresco-one")
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         siteName = "site" + System.currentTimeMillis();
         createUser();

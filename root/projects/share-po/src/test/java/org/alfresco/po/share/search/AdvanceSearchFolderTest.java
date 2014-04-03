@@ -50,7 +50,7 @@ public class AdvanceSearchFolderTest extends AbstractTest
      * @throws Exception
      */
     @BeforeClass
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         dashBoard = loginAs(username, password);
     }

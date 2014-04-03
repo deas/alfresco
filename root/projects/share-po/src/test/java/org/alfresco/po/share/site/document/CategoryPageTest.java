@@ -49,7 +49,7 @@ public class CategoryPageTest extends AbstractDocumentTest
      * @throws Exception
      */
     @BeforeClass(groups="alfresco-one")
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         dashBoard = loginAs(username, password).render();
         siteName = "CreateContentPageTest" + System.currentTimeMillis();

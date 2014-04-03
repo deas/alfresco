@@ -26,6 +26,7 @@ public class CloudConsoleDashboardPage extends CloudConsolePage
 {
     @RenderWebElement
     private static final By INVITE_USERS_TAB = By.cssSelector("li>a[href*='support/invite']");
+    @SuppressWarnings("unused")
     @RenderWebElement
     private static final By AUDIT_LOG_TAB = By.cssSelector("li>a[href*='audit']");
 

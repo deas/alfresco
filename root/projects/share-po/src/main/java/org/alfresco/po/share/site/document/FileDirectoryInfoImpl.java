@@ -531,7 +531,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
         try
         {
-            WebElement highlightedTag = find(By.xpath(String.format(
+            WebElement highlightedTag = drone.find(By.xpath(String.format(
                     "//div[@class='inlineTagEdit']/span/span[contains(@class,'inlineTagEditTag')]/span[text()='%s']", tagName)));
             return highlightedTag.isDisplayed();
         }
@@ -551,7 +551,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            WebElement InlineEditTag = find(By.xpath(String.format(
+            WebElement InlineEditTag = drone.find(By.xpath(String.format(
                     "//div[@class='inlineTagEdit']/span/span[contains(@class,'inlineTagEditTag')]/span[text()=\"%s\"]", tagName)));
             InlineEditTag.click();
         }
@@ -881,7 +881,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            WebElement thumbnailType = find(By.cssSelector(WORKFLOW_ICON));
+            WebElement thumbnailType = drone.find(By.cssSelector(WORKFLOW_ICON));
             return thumbnailType.isDisplayed();
         }
         catch (NoSuchElementException e)
@@ -1360,7 +1360,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         try
         {
             findAndWait(MORE_ACTIONS_MENU);
-            return find(INLINE_EDIT_LINK).isDisplayed();
+            return drone.find(INLINE_EDIT_LINK).isDisplayed();
         }
         catch (NoSuchElementException te)
         {
@@ -1385,7 +1385,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         try
         {
             findAndWait(MORE_ACTIONS_MENU);
-            return find(EDIT_OFFLINE_LINK).isDisplayed();
+            return drone.find(EDIT_OFFLINE_LINK).isDisplayed();
         }
         catch (NoSuchElementException te)
         {
@@ -1847,7 +1847,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            return find(By.cssSelector(EDITED_ICON)).isDisplayed();
+            return drone.find(By.cssSelector(EDITED_ICON)).isDisplayed();
         }
         catch (NoSuchElementException e)
         {
@@ -1952,7 +1952,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            WebElement icon = find(VIEW_IN_BROWsER_ICON);
+            WebElement icon = drone.find(VIEW_IN_BROWsER_ICON);
 
             return icon.isDisplayed();
         }

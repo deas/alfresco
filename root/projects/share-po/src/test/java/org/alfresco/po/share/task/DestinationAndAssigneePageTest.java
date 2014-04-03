@@ -61,7 +61,7 @@ public class DestinationAndAssigneePageTest extends AbstractTest
      * @throws Exception 
      */
     @BeforeClass
-    private void setUp() throws Exception
+    public void setUp() throws Exception
     {
         siteName1 = "Site-1" + System.currentTimeMillis();
         file1 = SiteUtil.prepareFile("File-1"+System.currentTimeMillis());

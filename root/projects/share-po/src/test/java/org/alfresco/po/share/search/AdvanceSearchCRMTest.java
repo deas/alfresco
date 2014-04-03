@@ -46,7 +46,7 @@ public class AdvanceSearchCRMTest extends AbstractTest
      * @throws Exception
      */
     @BeforeClass(groups={"Cloud2"})
-    private void prepare() throws Exception
+    public void prepare() throws Exception
     {
         dashBoard = loginAs(username, password);
     }

@@ -162,7 +162,7 @@ public class SiteNavigation extends AbstractSiteNavigation
             else
             {
                 selectConfigure();
-                find(CUSTOMIZE_SITE).click();
+                drone.find(CUSTOMIZE_SITE).click();
             }
             return new CustomizeSitePage(getDrone());
         }
@@ -181,7 +181,7 @@ public class SiteNavigation extends AbstractSiteNavigation
         {
             selectConfigurationDropdown();
         }
-        find(customizeDashboardLink).click();
+        drone.find(customizeDashboardLink).click();
         return new CustomiseSiteDashboardPage(getDrone());
 
     }
@@ -218,7 +218,7 @@ public class SiteNavigation extends AbstractSiteNavigation
         if (getAlfrescoVersion().isDojoSupported())
         {
             selectConfigurationDropdown();
-            find(By.id("HEADER_EDIT_SITE_DETAILS_text")).click();
+            drone.find(By.id("HEADER_EDIT_SITE_DETAILS_text")).click();
         }
         else
         {
