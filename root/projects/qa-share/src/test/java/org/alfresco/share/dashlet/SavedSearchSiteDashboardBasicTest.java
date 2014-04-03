@@ -53,41 +53,41 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
 
     private static Log logger = LogFactory.getLog(SavedSearchSiteDashboardBasicTest.class);
     private String siteDomain = "savedSearch.test";
-    private String expectedHelpBallonMsg = "Use this dashlet to set up a search and view the results.\n" +
-            "Configure the dashlet to save the search and set the title text of the dashlet.\n" +
-            "Only a Site Manager can configure the search and title - this dashlet is ideal for generating report views in a site.";
-    public static final  String BALLOON_TEXT_VALUE_NOT_EMPTY = "The value cannot be empty.";
+    private String expectedHelpBallonMsg = "Use this dashlet to set up a search and view the results.\n"
+            + "Configure the dashlet to save the search and set the title text of the dashlet.\n"
+            + "Only a Site Manager can configure the search and title - this dashlet is ideal for generating report views in a site.";
+    public static final String BALLOON_TEXT_VALUE_NOT_EMPTY = "The value cannot be empty.";
 
     @Override
-    @BeforeClass(alwaysRun=true)
+    @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
     {
         super.setup();
         testName = this.getClass().getSimpleName();
         logger.info("Start Tests in: " + testName);
     }
-    
-    @Test(groups={"DataPrepSavedSearchDashlet"})
+
+    @Test(groups = { "DataPrepSavedSearchDashlet" })
     public void dataPrep_ALF_10338() throws Exception
-    {        
+    {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
         String siteName = getSiteName(testName);
 
-        String[] testUserInfo = new String[] {testUser};
+        String[] testUserInfo = new String[] { testUser };
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        
+
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-        
+
         // Add Saved Search Dashlet
         ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
-        
+
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2"})
+    @Test(groups = { "Enterprise4.2" })
     public void alf_10338() throws Exception
     {
         String testName = getTestName();
@@ -118,8 +118,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         Assert.assertNotNull(searchDashlet);
     }
 
-
-    @Test(groups={"DataPrepSavedSearchDashlet"})
+    @Test(groups = { "DataPrepSavedSearchDashlet" })
     public void dataPrep_ALF_10339() throws Exception
     {
         String testName = getTestName();
@@ -127,27 +126,28 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         String siteName = getSiteName(testName);
         String contentPrefix = "Test-";
 
-        String[] testUserInfo = new String[] {testUser};
+        String[] testUserInfo = new String[] { testUser };
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
-        // TODO: For quicker file creation, consider using  ShareUser.createCopyOfAllContent(drone);
+        // TODO: For quicker file creation, consider using
+        // ShareUser.createCopyOfAllContent(drone);
         // Upload 30 Files
-        for(int i=1; i<=30; i++)
+        for (int i = 1; i <= 30; i++)
         {
             String fileName = contentPrefix + getFileName(testName) + "-" + i + ".txt";
             String[] fileInfo = { fileName, DOCLIB };
             ShareUser.uploadFileInFolder(drone, fileInfo);
         }
-        
+
         // Add Saved Search Dashlet
         ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2"})
+    @Test(groups = { "Enterprise4.2" })
     public void alf_10339() throws Exception
     {
         String testName = getTestName();
@@ -157,16 +157,17 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         String savedSearchTitle = "SiteDocs";
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        
+
         SiteUtil.openSiteDashboard(drone, siteName);
 
-        // Configure Saved Search dashlet with "Test", set the SearchLimit to 10 and verify Correct number of results displayed
+        // Configure Saved Search dashlet with "Test", set the SearchLimit to 10
+        // and verify Correct number of results displayed
         ShareUserDashboard.configureSavedSearch(drone, searchTerm, savedSearchTitle, SearchLimit.TEN);
 
         SavedSearchDashlet searchDashlet = ShareUserDashboard.getSavedSearchDashlet(drone);
 
         List<SiteSearchItem> searchResults = searchDashlet.getSearchItems();
-        for(SiteSearchItem result: searchResults)
+        for (SiteSearchItem result : searchResults)
         {
             Assert.assertTrue(result.getItemName().getDescription().startsWith("Test-"));
         }
@@ -181,7 +182,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         searchDashlet = ShareUserDashboard.getSavedSearchDashlet(drone);
 
         searchResults = searchDashlet.getSearchItems();
-        for(SiteSearchItem result: searchResults)
+        for (SiteSearchItem result : searchResults)
         {
             Assert.assertTrue(result.getItemName().getDescription().startsWith("Test-"));
         }
@@ -189,7 +190,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         Assert.assertEquals(searchResults.size(), SearchLimit.TWENTY_FIVE.getValue());
     }
 
-    @Test(groups={"DataPrepSavedSearchDashlet"})
+    @Test(groups = { "DataPrepSavedSearchDashlet" })
     public void dataPrep_ALF_10340() throws Exception
     {
         String testName = getTestName();
@@ -197,7 +198,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         String siteName = getSiteName(testName);
         String contentPrefix = "Test-";
 
-        String[] testUserInfo = new String[] {testUser};
+        String[] testUserInfo = new String[] { testUser };
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
@@ -210,7 +211,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2"})
+    @Test(groups = { "Enterprise4.2" })
     public void alf_10340() throws Exception
     {
         String testName = getTestName();
@@ -243,14 +244,14 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         Assert.assertEquals(searchDashlet.getContent(), "No results found.");
     }
 
-    @Test(groups={"DataPrepSavedSearchDashlet"})
+    @Test(groups = { "DataPrepSavedSearchDashlet" })
     public void dataPrep_ALF_10341() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
         String siteName = getSiteName(testName);
 
-        String[] testUserInfo = new String[] {testUser};
+        String[] testUserInfo = new String[] { testUser };
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
@@ -263,7 +264,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2"})
+    @Test(groups = { "Enterprise4.2" })
     public void alf_10341() throws Exception
     {
         String testName = getTestName();
@@ -296,7 +297,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         Assert.assertEquals(searchDashlet.getContent(), "No results found.");
     }
 
-    @Test(groups={"DataPrepSavedSearchDashlet"})
+    @Test(groups = { "DataPrepSavedSearchDashlet" })
     public void dataPrep_ALF_10342() throws Exception
     {
         String testName = getTestName();
@@ -305,7 +306,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         String fileName = getFileName(testName) + "-.txt";
         String[] fileInfo = { fileName, DOCLIB };
 
-        String[] testUserInfo = new String[] {testUser};
+        String[] testUserInfo = new String[] { testUser };
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
@@ -315,7 +316,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2"})
+    @Test(groups = { "Enterprise4.2" })
     public void alf_10342() throws Exception
     {
         String testName = getTestName();
@@ -359,7 +360,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
     // TODO - ALF-10345: Search Term - text (description)
     // TODO - ALF-10346: Search Term - tag
 
-    @Test(groups={"DataPrepSavedSearchDashlet"})
+    @Test(groups = { "DataPrepSavedSearchDashlet" })
     public void dataPrep_ALF_10347() throws Exception
     {
         String testName = getTestName();
@@ -368,7 +369,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         String fileName = "test.doc";
         String[] fileInfo = { fileName, DOCLIB };
 
-        String[] testUserInfo = new String[] {testUser};
+        String[] testUserInfo = new String[] { testUser };
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
@@ -378,7 +379,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2"})
+    @Test(groups = { "Enterprise4.2" })
     public void alf_10347() throws Exception
     {
         String testName = getTestName();
@@ -390,23 +391,19 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         ShareUser.openSiteDashboard(drone, siteName);
 
         // Configure Saved search with file name "test"
-        ShareUserDashboard.configureSavedSearch(drone, "test");
-        SavedSearchDashlet savedSearchDashlet = ShareUserDashboard.getSavedSearchDashlet(drone);
-        List<SiteSearchItem> items = savedSearchDashlet.getSearchItems();
-        Assert.assertEquals(items.get(0).getItemName().getDescription(), fileName);
+        List<SiteSearchItem> items = ShareUserDashboard.searchSavedSearchDashlet(drone, "test");
+        Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName));
         Assert.assertEquals(items.size(), 1);
 
         // Configure Saved search with file extension ".doc"
-        ShareUserDashboard.configureSavedSearch(drone, "doc");
-        savedSearchDashlet = ShareUserDashboard.getSavedSearchDashlet(drone);
-        items = savedSearchDashlet.getSearchItems();
-        Assert.assertEquals(items.get(0).getItemName().getDescription(), fileName);
+        items = ShareUserDashboard.searchSavedSearchDashlet(drone, "doc");
+        Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName));
         Assert.assertEquals(items.size(), 1);
     }
 
     // TODO - ALF-10348:Search Term - content
 
-    @Test(groups={"DataPrepSavedSearchDashlet"})
+    @Test(groups = { "DataPrepSavedSearchDashlet" })
     public void dataPrep_ALF_10349() throws Exception
     {
         String testName = getTestName();
@@ -414,7 +411,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         String siteName = "12345" + getSiteName(testName);
         String folderName = testName + "-Folder";
 
-        String[] testUserInfo = new String[] {testUser};
+        String[] testUserInfo = new String[] { testUser };
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
@@ -424,7 +421,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2"})
+    @Test(groups = { "Enterprise4.2" })
     public void alf_10349() throws Exception
     {
         String testName = getTestName();
@@ -435,24 +432,21 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.openSiteDashboard(drone, siteName);
         // Configure Saved search with Folder Name
-        ShareUserDashboard.configureSavedSearch(drone, folderName);
-        SavedSearchDashlet savedSearchDashlet = ShareUserDashboard.getSavedSearchDashlet(drone);
-        List<SiteSearchItem> items = savedSearchDashlet.getSearchItems();
-        Assert.assertEquals(items.get(0).getItemName().getDescription(), folderName);
+        List<SiteSearchItem> items = ShareUserDashboard.searchSavedSearchDashlet(drone, folderName);
+        Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, folderName));
     }
 
-
-    @Test(groups={"DataPrepSavedSearchDashlet"})
+    @Test(groups = { "DataPrepSavedSearchDashlet" })
     public void dataPrep_ALF_10350() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
 
-        String[] testUserInfo = new String[] {testUser};
+        String[] testUserInfo = new String[] { testUser };
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
     }
 
-    @Test(groups = { "Enterprise4.2"})
+    @Test(groups = { "Enterprise4.2" })
     public void alf_10350() throws Exception
     {
         String testName = getTestName();
@@ -475,31 +469,25 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         // Wait till index
         Assert.assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_CONTENT_DASHLET, fileName, true, siteName));
 
-        ShareUserDashboard.configureSavedSearch(drone, ".txt");
-        SavedSearchDashlet savedSearchDashlet = ShareUserDashboard.getSavedSearchDashlet(drone);
+        List<SiteSearchItem> items = ShareUserDashboard.searchSavedSearchDashlet(drone, ".txt");
+        Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName));
 
-        List<SiteSearchItem> items = savedSearchDashlet.getSearchItems();
-        Assert.assertEquals(items.get(0).getItemName().getDescription(), fileName);
+        items = ShareUserDashboard.searchSavedSearchDashlet(drone, fileName);
+        Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName));
 
-        ShareUserDashboard.configureSavedSearch(drone, fileName);
-        savedSearchDashlet = ShareUserDashboard.getSavedSearchDashlet(drone);
-        items = savedSearchDashlet.getSearchItems();
-        Assert.assertEquals(items.get(0).getItemName().getDescription(), fileName);
         DocumentDetailsPage detailsPage = items.get(0).getItemName().click().render();
-        Assert.assertTrue(detailsPage instanceof DocumentDetailsPage);
+        Assert.assertTrue(detailsPage != null);
         EditTextDocumentPage documentPage = detailsPage.selectInlineEdit().render();
         String newFileName = new StringBuffer(fileName).insert(4, '_').toString();
         contentDetails.setName(newFileName);
         documentPage.save(contentDetails).render();
         ShareUser.openSiteDashboard(drone, siteName);
 
-        ShareUserDashboard.configureSavedSearch(drone, ".txt");
-        savedSearchDashlet = ShareUserDashboard.getSavedSearchDashlet(drone);
-        items = savedSearchDashlet.getSearchItems();
-        Assert.assertEquals(items.get(0).getItemName().getDescription(), newFileName);
+        items = ShareUserDashboard.searchSavedSearchDashlet(drone, ".txt");
+        Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, newFileName));
     }
 
-    @Test(groups={"DataPrepSavedSearchDashlet"})
+    @Test(groups = { "DataPrepSavedSearchDashlet" })
     public void dataPrep_ALF_10351() throws Exception
     {
         String testName = getTestName();
@@ -508,7 +496,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         String fileName = getFileName(testName) + ".txt";
         String[] fileInfo = { fileName, DOCLIB, "Les études de l'admissibilité de la solution dans cette société financière." };
 
-        String[] testUserInfo = new String[] {testUser};
+        String[] testUserInfo = new String[] { testUser };
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
@@ -518,29 +506,25 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractTests
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2"})
+    @Test(groups = { "Enterprise4.2" })
     public void alf_10351() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
         String siteName = getSiteName(testName);
         String fileName = getFileName(testName) + ".txt";
-        String[] searchTerms = {"l'admissibilité", "l'admissibilite", "études", "etudes", "financière", "financiere"};
+        String[] searchTerms = { "l'admissibilité", "l'admissibilite", "études", "etudes", "financière", "financiere" };
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.openSiteDashboard(drone, siteName);
 
-        SavedSearchDashlet savedSearchDashlet;
         List<SiteSearchItem> items;
 
         // Loop through the search terms and verify the item is found
-        for(String searchTerm: searchTerms)
+        for (String searchTerm : searchTerms)
         {
-            ShareUserDashboard.configureSavedSearch(drone, searchTerm);
-            savedSearchDashlet = ShareUserDashboard.getSavedSearchDashlet(drone);
-
-            items = savedSearchDashlet.getSearchItems();
-            Assert.assertEquals(items.get(0).getItemName().getDescription(), fileName);
+            items = ShareUserDashboard.searchSavedSearchDashlet(drone, searchTerm);
+            Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName));
         }
     }
 }
