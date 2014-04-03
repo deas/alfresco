@@ -447,7 +447,6 @@ public class ManagePermissionsPage extends SharePage
     {
         try
         {
-            System.out.println();
             List<WebElement> userList = drone.findAndWaitForElements(userListLocator);
             for (WebElement webElement : userList)
             {

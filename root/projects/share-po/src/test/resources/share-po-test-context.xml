@@ -32,6 +32,10 @@
     <bean id="poProperties"  class="org.alfresco.po.share.ShareProperties">
         <constructor-arg name="alfrescoVersion" value="${share.version}" />
     </bean>
+    
+    <bean id="hybridProperties"  class="org.alfresco.po.share.ShareProperties">
+        <constructor-arg name="alfrescoVersion" value="${share.hybrid.version}" />
+    </bean>
 
     <bean id="sharePage" abstract="true" class="org.alfresco.po.share.SharePage">
         <property name="alfrescoVersion" value="${share.version}"/>
@@ -79,7 +83,7 @@
         <constructor-arg name="browser" value="${webdrone.hybrid.browser}" />
         <constructor-arg name="maxPageRenderWaitTime" value="${webdrone.hybrid.page.render.wait.time}" />
         <constructor-arg name="factoryPage" ref="factoryPage" />
-        <constructor-arg name="properties" ref="poProperties" />
+        <constructor-arg name="properties" ref="hybridProperties" />
                 <constructor-arg name="preferences">
             <util:map key-type="org.alfresco.webdrone.BrowserPreference" value-type="java.lang.Object">
                 <entry key-ref="language" value-ref="englishLocale" />
