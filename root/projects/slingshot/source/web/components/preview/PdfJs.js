@@ -329,8 +329,8 @@
        */
       report : function PdfJs_report()
       {
-         var canvassupport = false, 
-            skipbrowsertest = (this.attributes.skipbrowsertest && this.attributes.skipbrowsertest === "true") ? true : false,
+         var isBrowserSupported = true,
+            skipBrowserTest = this.attributes.skipbrowsertest === "true",
             srcMaxSize = this.attributes.srcMaxSize;
 
          if (srcMaxSize.match(/^\d+$/) && this.wp.options.size > parseInt(srcMaxSize))
@@ -338,10 +338,10 @@
             return this.wp.msg("PdfJs.tooLargeFile", Alfresco.util.formatFileSize(this.wp.options.size), parseInt(srcMaxSize));
          }
 
-         if (skipbrowsertest === false)
+         if (!skipBrowserTest)
          {
             // Test if canvas is supported
-            if (canvassupport = window.HTMLCanvasElement)
+            if (this._isCanvasSupported())
             {
                // Do some engine test as well, some support canvas but not the
                // rest for full html5
@@ -349,31 +349,45 @@
                {
                   // http://en.wikipedia.org/wiki/Google_Chrome
                   // Guessing for the same for safari
-                  canvassupport = false;
+                  isBrowserSupported = false;
                }
                // It actually works with ie9, but lack fo support for typed
                // arrays makes performance terrible.
                if (YAHOO.env.ua.ie > 0 && YAHOO.env.ua.ie < 10)
                {
-                  canvassupport = false;
+                  isBrowserSupported = false;
                }
                if (YAHOO.env.ua.gecko > 0 && YAHOO.env.ua.gecko < 5)
                {
                   // http://en.wikipedia.org/wiki/Gecko_(layout_engine)
-                  canvassupport = false;
+                  isBrowserSupported = false;
                }
             }
-         }
-         else
-         {
-            canvassupport = true;
+            else
+            {
+               isBrowserSupported = false;
+            }
          }
 
-         // If neither is supported, then report this, and bail out as viewer
-         if (canvassupport === false && skipbrowsertest === false)
+         // If browser is not supported then report this, and we should fall back to another viewer
+         if (!isBrowserSupported)
          {
             return this.wp.msg("label.browserReport", "&lt;canvas&gt; element");
          }
+      },
+
+      /**
+       * Sniff test to determine if the browser supports the canvas element
+       * 
+       * <p>Based on http://stackoverflow.com/questions/2745432/best-way-to-detect-that-html5-canvas-is-not-supported</p>
+       * 
+       * @method _isCanvasSupported
+       * @private
+       */
+      _isCanvasSupported: function PdfJs__isCanvasSupported()
+      {
+         var elem = document.createElement('canvas');
+         return !!(elem.getContext && elem.getContext('2d'));
       },
 
       /**
