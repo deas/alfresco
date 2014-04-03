@@ -54,6 +54,7 @@ public class DocumentDetailsPage extends DetailsPage
     private static final String EDIT_OFFLINE_LINK = "div.document-edit-offline>a";
     private static final String INLINE_EDIT_LINK = ".document-inline-edit>a";
     private static final String DOCUMENT_PROPERTIES_DISPLAYED_SIZE = "span[id$='-formContainer_prop_size']";
+    private static final String DOCUMENT_PREVIEWER = "div > div.web-preview > div.previewer";
     private static final String DOCUMENT_PREVIEW_WITH_FLASH_PLAYER = "div.web-preview.real";
     private static final String DOCUMENT_PREVIEW_WITHOUT_FLASH_PLAYER = "div[id$='default-previewer-div']>img";
     private static final String NO_DOCUMENT_PREVIEW = "div.message";
@@ -534,8 +535,7 @@ public class DocumentDetailsPage extends DetailsPage
      * 
      * @return boolean
      */
-    public boolean isPreviewDisplayed()
-    {
+    public boolean isFlashPreviewDisplayed() {
         try
         {
             return drone.findAndWait(By.cssSelector(DOCUMENT_PREVIEW_WITH_FLASH_PLAYER)).isDisplayed();
@@ -552,6 +552,28 @@ public class DocumentDetailsPage extends DetailsPage
         }
 
         return false;
+    }
+
+    /**
+     * Get the name of the WebPreview plugin which is in use
+     *
+     * @return String   The name the plugin used
+     */
+    public String getPreviewerClassName() {
+        try
+        {
+            return drone.find(By.cssSelector(DOCUMENT_PREVIEWER)).getAttribute("class");
+        }
+        catch (TimeoutException nse)
+        {
+            try
+            {
+                return drone.find(By.cssSelector(DOCUMENT_PREVIEWER)).getAttribute("class");
+            }
+            catch (TimeoutException e) { }
+        }
+
+        return null;
     }
 
     /**

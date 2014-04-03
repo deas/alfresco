@@ -274,7 +274,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
         if (logger.isTraceEnabled()) logger.trace("====testIsPreviewDisplayed====");
 
         DocumentDetailsPage docDetailsPage = drone.getCurrentPage().render();
-        Assert.assertTrue(docDetailsPage.isPreviewDisplayed());
+        Assert.assertTrue(docDetailsPage.isFlashPreviewDisplayed());
     }
     
     /**
