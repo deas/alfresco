@@ -766,7 +766,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         categoryPage.add(Arrays.asList(Categories.LANGUAGES));
 
         // Click on save button in edit document properties pop up page
-        documentLibPage = (DocumentLibraryPage) categoryPage.clickOk().render();
+        categoryPage.clickOk().render();
 
         editDocumentPropertiesPopup.selectSave().render();
         
