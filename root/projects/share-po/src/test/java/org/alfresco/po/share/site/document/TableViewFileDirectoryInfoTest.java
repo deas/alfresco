@@ -259,4 +259,11 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         Assert.assertFalse(thisRow.isVersionVisible());
         Assert.assertTrue(thisRow.isCheckBoxVisible());
     }
+    
+    @Test(groups = { "alfresco-one" }, expectedExceptions = UnsupportedOperationException.class, dependsOnMethods = "testCheckboxAndVersionMenu")
+    public void testisCommentOptionPresent() throws Exception
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        documentLibPage.getFileDirectoryInfo(file2.getName()).isCommentLinkPresent();
+    }
 }

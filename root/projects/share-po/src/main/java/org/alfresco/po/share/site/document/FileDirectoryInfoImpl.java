@@ -1903,19 +1903,10 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
                 try
                 {
-                        WebElement commentLink = findAndWait(COMMENT_LINK);
-                        return commentLink.isDisplayed();
+                       return findElement(COMMENT_LINK).isDisplayed();
                 }
-                catch (TimeoutException nse)
-                {
-                        // no log needed due to negative cases.
-                }
-                catch (Exception ex)
-                {
-                        // no log needed due to negative cases.
-                }
+                catch (NoSuchElementException nse) {}
                 return false;
-
         }
 
         /**

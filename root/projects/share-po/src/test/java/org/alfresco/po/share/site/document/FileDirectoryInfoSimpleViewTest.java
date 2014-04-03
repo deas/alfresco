@@ -538,13 +538,13 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
         Assert.assertFalse(documentLibPage.getFileDirectoryInfo(testLockedFile.getName()).isEditOfflineLinkPresent(), "Verify the Edit Offline option is NOT displayed");
     }
     
-    @Test(groups = { "alfresco-one" }, priority=32)
-    public void test128isCommentOptionPresent()
+    @Test(groups = { "alfresco-one" }, expectedExceptions = UnsupportedOperationException.class, priority=32)
+    public void test128isCommentOptionPresent() throws Exception
     {
         documentLibPage = drone.getCurrentPage().render();
-        Assert.assertFalse(documentLibPage.getFileDirectoryInfo(testLockedFile.getName()).isCommentLinkPresent(), "Verify the Comment option is displayed");
+        documentLibPage.getFileDirectoryInfo(testLockedFile.getName()).isCommentLinkPresent();
     }
-
+    
     @Test(enabled = true, groups = "alfresco-one", priority = 33)
     public void renameContentTest()
     {
@@ -586,7 +586,7 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
         thisRow.getContentNameFromInfoMenu();
     }
     
-    @Test(expectedExceptions =UnsupportedOperationException.class, groups={"alfresco-one"}, priority=35)
+    @Test(expectedExceptions =UnsupportedOperationException.class, groups={"alfresco-one"}, priority=37)
     public void testClickOnCategoryName() throws Exception
     {
         // Get folder

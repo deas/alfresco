@@ -803,7 +803,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         documentLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
     }
     
-    @Test(groups = "Enterprise4.2", priority = 48)
+    @Test(groups = "Enterprise4.2", priority = 49)
     public void selectModifierTest() throws IOException
     {
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(tempFileForProfile.getName());
@@ -815,7 +815,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         documentLibPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
     }
     
-    @Test(expectedExceptions = UnsupportedOperationException.class, groups = { "Enterprise4.2" }, priority=49)
+    @Test(expectedExceptions = UnsupportedOperationException.class, groups = { "Enterprise4.2" }, priority=50)
     public void test121SelectDownloadFolderAsZipForFile() throws Exception
     {
         // Get File
@@ -823,7 +823,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         thisRow.selectDownloadFolderAsZip();
     }
 
-    @Test(groups = "Enterprise4.2", priority=50)
+    @Test(groups = "Enterprise4.2", priority=51)
     public void test123SelectDownloadFolderAsZipForFolder() throws Exception
     {
         // Get folder
@@ -832,7 +832,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         drone.waitUntilElementDisappears(By.cssSelector("div[id*='archive-and-download'] a"), 2000);
     }
 
-    @Test(groups={"alfresco-one"}, priority=51)
+    @Test(groups={"alfresco-one"}, priority=52)
     public void test115SelectDownloadForFile() throws Exception
     {
         // Get File
