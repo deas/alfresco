@@ -27,13 +27,13 @@ import org.openqa.selenium.By;
  */
 public enum SitePageType
 {
-    BLOG("#template_x002e_customise-pages_x002e_customise-site_x0023_default-page-blog-postlist"),
-    CALENDER("#template_x002e_customise-pages_x002e_customise-site_x0023_default-page-calendar"),
-    DATA_LISTS("#template_x002e_customise-pages_x002e_customise-site_x0023_default-page-data-lists"),
-    DISCUSSIONS("#template_x002e_customise-pages_x002e_customise-site_x0023_default-page-discussions-topiclist"),
-    DOCUMENT_LIBRARY("#template_x002e_customise-pages_x002e_customise-site_x0023_default-page-documentlibrary"),
-    LINKS("#template_x002e_customise-pages_x002e_customise-site_x0023_default-page-links"),
-    WIKI("#template_x002e_customise-pages_x002e_customise-site_x0023_default-page-wiki-page");
+    BLOG("//li[contains(@id, '_default-page-blog-postlist')]"),
+    CALENDER("//li[contains(@id, '_default-page-calendar')]"),
+    DATA_LISTS("//li[contains(@id, '_default-page-data-lists')]"),
+    DISCUSSIONS("//li[contains(@id, '_default-page-discussions-topiclist')]"),
+    DOCUMENT_LIBRARY("//li[contains(@id, '_default-page-documentlibrary')]"),
+    LINKS("//li[contains(@id, '_default-page-links')]"),
+    WIKI("//li[contains(@id, '_default-page-wiki-page')]");
     
     private String id;
     
@@ -44,7 +44,7 @@ public enum SitePageType
     
     public By getLocator()
     {
-        return By.cssSelector(id);
+        return By.xpath(id);
     }
     
 }

@@ -83,8 +83,8 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
     {
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
 
-        assertTrue(documentLibPage.isFilmStripViewDisplayed());
-        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file1.getName());
+        assertTrue(documentLibPage.getFilmstripActions().isFilmStripViewDisplayed());
+        assertEquals(documentLibPage.getFilmstripActions().getDisplyedFilmstripItem(), file1.getName());
     }
 
     @Test(enabled = true, priority=2)
@@ -92,20 +92,20 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
     {
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
 
-        assertTrue(documentLibPage.isNextFilmstripArrowPresent());
-        assertFalse(documentLibPage.isPreviousFilmstripArrowPresent());
+        assertTrue(documentLibPage.getFilmstripActions().isNextFilmstripArrowPresent());
+        assertFalse(documentLibPage.getFilmstripActions().isPreviousFilmstripArrowPresent());
 
-        documentLibPage.selectNextFilmstripItem().render();
+        documentLibPage.getFilmstripActions().selectNextFilmstripItem().render();
 
-        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file2.getName());
-        assertFalse(documentLibPage.isNextFilmstripArrowPresent());
-        assertTrue(documentLibPage.isPreviousFilmstripArrowPresent());
+        assertEquals(documentLibPage.getFilmstripActions().getDisplyedFilmstripItem(), file2.getName());
+        assertFalse(documentLibPage.getFilmstripActions().isNextFilmstripArrowPresent());
+        assertTrue(documentLibPage.getFilmstripActions().isPreviousFilmstripArrowPresent());
 
-        documentLibPage.selectPreviousFilmstripItem().render();
+        documentLibPage.getFilmstripActions().selectPreviousFilmstripItem().render();
 
-        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file1.getName());
-        assertTrue(documentLibPage.isNextFilmstripArrowPresent());
-        assertFalse(documentLibPage.isPreviousFilmstripArrowPresent());
+        assertEquals(documentLibPage.getFilmstripActions().getDisplyedFilmstripItem(), file1.getName());
+        assertTrue(documentLibPage.getFilmstripActions().isNextFilmstripArrowPresent());
+        assertFalse(documentLibPage.getFilmstripActions().isPreviousFilmstripArrowPresent());
     }
 
     @Test(priority = 10)
@@ -131,14 +131,14 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
             documentLibPage = copyContent.selectOkButton().render();
         }
 
-        assertTrue(documentLibPage.isNextFilmstripTapeArrowPresent());
-        assertFalse(documentLibPage.isPreviousFilmstripTapeArrowPresent());
+        assertTrue(documentLibPage.getFilmstripActions().isNextFilmstripTapeArrowPresent());
+        assertFalse(documentLibPage.getFilmstripActions().isPreviousFilmstripTapeArrowPresent());
 
-        documentLibPage = documentLibPage.selectNextFilmstripTape().render();
-        documentLibPage = documentLibPage.selectPreviousFilmstripTape().render();
+        documentLibPage = documentLibPage.getFilmstripActions().selectNextFilmstripTape().render();
+        documentLibPage = documentLibPage.getFilmstripActions().selectPreviousFilmstripTape().render();
 
-        assertTrue(documentLibPage.isNextFilmstripTapeArrowPresent());
-        assertFalse(documentLibPage.isPreviousFilmstripTapeArrowPresent());
+        assertTrue(documentLibPage.getFilmstripActions().isNextFilmstripTapeArrowPresent());
+        assertFalse(documentLibPage.getFilmstripActions().isPreviousFilmstripTapeArrowPresent());
     }
 
     @Test(priority = 3)
@@ -146,12 +146,12 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
     {
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
         // documentLibPage = documentLibPage.getNavigation().selectDesellectAll().render();
-        assertEquals(documentLibPage.getSelectedFIlesForFilmstrip().size(), 0);
+        assertEquals(documentLibPage.getFilmstripActions().getSelectedFIlesForFilmstrip().size(), 0);
 
         FileDirectoryInfo fileInfo = documentLibPage.getFileDirectoryInfo(file1.getName());
         fileInfo.selectCheckbox();
 
-        List<String> selectFiles = documentLibPage.getSelectedFIlesForFilmstrip();
+        List<String> selectFiles = documentLibPage.getFilmstripActions().getSelectedFIlesForFilmstrip();
         assertTrue(selectFiles.contains(file1.getName()), selectFiles.toString());
         assertFalse(selectFiles.contains(file2.getName()), selectFiles.toString());
     }
@@ -160,11 +160,11 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
     public void testToggleNavHandleForFilmstrip() throws Exception
     {
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
-        boolean isTapeDiaplyed = documentLibPage.isFilmstripTapeDisplpayed();
-        documentLibPage.toggleNavHandleForFilmstrip();
-        assertEquals(documentLibPage.isFilmstripTapeDisplpayed(), !isTapeDiaplyed);
-        documentLibPage.toggleNavHandleForFilmstrip();
-        assertEquals(documentLibPage.isFilmstripTapeDisplpayed(), isTapeDiaplyed);
+        boolean isTapeDiaplyed = documentLibPage.getFilmstripActions().isFilmstripTapeDisplpayed();
+        documentLibPage.getFilmstripActions().toggleNavHandleForFilmstrip();
+        assertEquals(documentLibPage.getFilmstripActions().isFilmstripTapeDisplpayed(), !isTapeDiaplyed);
+        documentLibPage.getFilmstripActions().toggleNavHandleForFilmstrip();
+        assertEquals(documentLibPage.getFilmstripActions().isFilmstripTapeDisplpayed(), isTapeDiaplyed);
     }
 
     // Looks like a bug
@@ -175,21 +175,21 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
 
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
 
-        documentLibPage.sendKeyRightArrowForFilmstrip().render();
+        documentLibPage.getFilmstripActions().sendKeyRightArrowForFilmstrip().render();
 
-        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file2.getName());
+        assertEquals(documentLibPage.getFilmstripActions().getDisplyedFilmstripItem(), file2.getName());
 
-        documentLibPage.sendKeyLeftArrowForFilmstrip().render();
+        documentLibPage.getFilmstripActions().sendKeyLeftArrowForFilmstrip().render();
 
-        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file1.getName());
+        assertEquals(documentLibPage.getFilmstripActions().getDisplyedFilmstripItem(), file1.getName());
 
-        documentLibPage.sendKeyDownArrowForFilmstrip().render();
+        documentLibPage.getFilmstripActions().sendKeyDownArrowForFilmstrip().render();
 
-        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file2.getName());
+        assertEquals(documentLibPage.getFilmstripActions().getDisplyedFilmstripItem(), file2.getName());
 
-        documentLibPage.sendKeyUpArrowForFilmstrip().render();
+        documentLibPage.getFilmstripActions().sendKeyUpArrowForFilmstrip().render();
 
-        assertEquals(documentLibPage.getDisplyedFilmstripItem(), file1.getName());
+        assertEquals(documentLibPage.getFilmstripActions().getDisplyedFilmstripItem(), file1.getName());
 
     }
 }
