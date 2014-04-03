@@ -49,7 +49,8 @@ public class MySiteDashletTest extends AbstractTest
     private static Log logger = LogFactory.getLog(MySiteDashletTest.class);
     private DashBoardPage dashBoard;
     private String siteName;
-    
+    private String sampleSiteFullName = "Sample: Web Site Design Project";
+
     @BeforeClass(groups={"alfresco-one"})
     public void setup()throws Exception
     {
@@ -136,5 +137,6 @@ public class MySiteDashletTest extends AbstractTest
         dashBoard = page.getNav().selectMyDashBoard();
         MySitesDashlet dashlet = dashBoard.getDashlet("my-sites").render();
         Assert.assertTrue(dashlet.isSiteFavourite(siteName));
+        Assert.assertFalse(dashlet.isSiteFavourite(sampleSiteFullName));
     }
 }
