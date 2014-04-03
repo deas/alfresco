@@ -17,6 +17,7 @@ package org.alfresco.po.share.search;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.DashBoardPage;
@@ -45,6 +46,7 @@ import org.testng.annotations.Test;
  * 
  * @author jcule
  */
+@Test(groups={"Enterprise-only"})
 @Listeners(FailedTestListener.class)
 public class LiveSearchDropdownTest extends AbstractTest
 {
@@ -61,14 +63,15 @@ public class LiveSearchDropdownTest extends AbstractTest
         {
 
             dashBoard = loginAs(username, password);
-            siteName = "House-" + "livesearchdropdowntest" + System.currentTimeMillis();
+            String random = UUID.randomUUID().toString();
+            siteName = random;
+            fileName = random;
             SiteUtil.createSite(drone, siteName, "description", "Public");
             SitePage site = drone.getCurrentPage().render();
             DocumentLibraryPage docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
 
             CreatePlainTextContentPage contentPage = docPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
             ContentDetails contentDetails = new ContentDetails();
-            fileName = "House-" + "livesearchdropdowntest" + System.currentTimeMillis();
             contentDetails.setName(fileName);
             contentDetails.setTitle("House");
             contentDetails.setDescription("House");
