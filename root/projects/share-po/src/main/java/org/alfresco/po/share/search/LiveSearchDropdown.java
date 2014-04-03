@@ -52,7 +52,7 @@ public class LiveSearchDropdown extends SharePage
     private static final String PEOPLE_TITLE = "div[data-dojo-attach-point='titleNodePeople']";
     
     // Close button
-    private static final String CLOSE_DROPDOWN = "div.alf-livesearch-clear a[title='Clear']";
+    private static final String CLOSE_DROPDOWN = ".alf-search-box-clear a";
 
     // Document results
     private static final String DOCUMENT_RESULTS = "div[data-dojo-attach-point='containerNodeDocs'] div.alf-livesearch-item";
@@ -64,7 +64,7 @@ public class LiveSearchDropdown extends SharePage
     private static final String PEOPLE_RESULTS = "div[data-dojo-attach-point='containerNodePeople'] div.alf-livesearch-item";
 
     // See more document results
-    private static final String MORE_RESULTS = "a[title='More results...']";
+    private static final String MORE_RESULTS = "a[title='More']";
 
     /**
      * Constructor
@@ -112,7 +112,7 @@ public class LiveSearchDropdown extends SharePage
         List<LiveSearchDocumentResult> results = new ArrayList<LiveSearchDocumentResult>();
         try
         {
-            List<WebElement> elements = drone.findAll(By.cssSelector(DOCUMENT_RESULTS));
+            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(DOCUMENT_RESULTS));
             if (elements.size() > 0)
             {
                 for (WebElement element : elements)
@@ -122,10 +122,9 @@ public class LiveSearchDropdown extends SharePage
             }
 
         }
-        catch (NoSuchElementException nse)
+        catch (TimeoutException nse)
         {
             logger.error("No live search document results " + nse);
-            throw new PageException("Unable to find document search results.", nse);
         }
         return results;
 
@@ -141,7 +140,7 @@ public class LiveSearchDropdown extends SharePage
         List<LiveSearchSiteResult> results = new ArrayList<LiveSearchSiteResult>();
         try
         {
-            List<WebElement> elements = drone.findAll(By.cssSelector(SITES_RESULTS));
+            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(SITES_RESULTS));
             if (elements.size() > 0)
             {
                 for (WebElement element : elements)
@@ -150,10 +149,9 @@ public class LiveSearchDropdown extends SharePage
                 }
             }
         }
-        catch (NoSuchElementException nse)
+        catch (TimeoutException nse)
         {
             logger.error("No live search sites results " + nse);
-            throw new PageException("Unable to find sites search results.", nse);
         }
         return results;
     }
@@ -168,7 +166,7 @@ public class LiveSearchDropdown extends SharePage
         List<LiveSearchPeopleResult> results = new ArrayList<LiveSearchPeopleResult>();
         try
         {
-            List<WebElement> elements = drone.findAll(By.cssSelector(PEOPLE_RESULTS));
+            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector(PEOPLE_RESULTS));
             if (elements.size() > 0)
             {
                 for (WebElement element : elements)
@@ -177,10 +175,9 @@ public class LiveSearchDropdown extends SharePage
                 }
             }
         }
-        catch (NoSuchElementException nse)
+        catch (TimeoutException nse)
         {
             logger.error("No live search people results " + nse);
-            throw new PageException("Unable to find people search results.", nse);
         }
         return results;
     }

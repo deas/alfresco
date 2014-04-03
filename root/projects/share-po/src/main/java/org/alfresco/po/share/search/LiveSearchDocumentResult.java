@@ -42,9 +42,9 @@ public class LiveSearchDocumentResult
 {
     private static Log logger = LogFactory.getLog(LiveSearchDocumentResult.class);
     
-    private static final String DOCUMENT_RESULT_TITLE = "a";
-    private static final String DOCUMENT_RESULT_SITE_NAME = "span a:nth-of-type(1)";
-    private static final String DOCUMENT_RESULT_USER_NAME = "span a:nth-of-type(2)";
+    private static final String DOCUMENT_RESULT_TITLE = "a[href*='document-details']";
+    private static final String DOCUMENT_RESULT_SITE_NAME = "span a[href*='documentlibrary']";
+    private static final String DOCUMENT_RESULT_USER_NAME = "span a[href*='profile']";
     
     private WebDrone drone ;
     private WebElement webElement;

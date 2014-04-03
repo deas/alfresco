@@ -100,6 +100,7 @@ public class SearchBox extends HtmlElement
             WebElement input = drone.findAndWait(selector);
             input.clear();
             input.sendKeys(term);
+            input.click();
             if(logger.isTraceEnabled())
             {
                 logger.trace("Apply live search on the keyword: " + term);

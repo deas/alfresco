@@ -92,13 +92,13 @@ public class LiveSearchDropdownTest extends AbstractTest
         SharePage page = drone.getCurrentPage().render();
         page.getNav().selectMyDashBoard();
     }
-
+    
     @AfterClass
     public void deleteSite()
     {
         SiteUtil.deleteSite(drone, siteName);
     }
-
+    
     /**
      * Checks that the document search result contains document name,
      * site name and user name
@@ -106,7 +106,7 @@ public class LiveSearchDropdownTest extends AbstractTest
     @Test
     public void liveSearchDocumentResult()
     {
-        SearchBox search = dashBoard.getSearch();
+        SearchBox search = dashBoard.getSearch();        
         LiveSearchDropdown liveSearchResultPage;
         List<LiveSearchDocumentResult> liveSearchDocumentResults = new ArrayList<LiveSearchDocumentResult>();
 
@@ -138,6 +138,8 @@ public class LiveSearchDropdownTest extends AbstractTest
                 }
             }
         }
+        
+        Assert.assertTrue(liveSearchDocumentResults.size() > 0);
         for (LiveSearchDocumentResult liveSearchDocumentResult : liveSearchDocumentResults)
         {
             Assert.assertEquals(liveSearchDocumentResult.getTitle().getDescription(), fileName);
@@ -176,6 +178,7 @@ public class LiveSearchDropdownTest extends AbstractTest
         LiveSearchDropdown liveSearchResultPage = search.liveSearch(siteName).render();
         Assert.assertNotNull(liveSearchResultPage);
         List<LiveSearchSiteResult> liveSearchSitesResults = liveSearchResultPage.getSearchSitesResults();
+        Assert.assertTrue(liveSearchSitesResults.size() > 0);
         for (LiveSearchSiteResult liveSearchSiteResult : liveSearchSitesResults)
         {
             Assert.assertEquals(liveSearchSiteResult.getSiteName().getDescription(), siteName);
@@ -194,6 +197,8 @@ public class LiveSearchDropdownTest extends AbstractTest
         Assert.assertNotNull(liveSearchResultPage);
 
         List<LiveSearchPeopleResult> liveSearchPeopleResults = liveSearchResultPage.getSearchPeopleResults();
+        Assert.assertTrue(liveSearchPeopleResults.size() > 0);
+        
         for (LiveSearchPeopleResult liveSearchPeopleResult : liveSearchPeopleResults)
         {
             Assert.assertTrue(liveSearchPeopleResult.getUserName().getDescription().indexOf(username) != -1);
@@ -232,6 +237,7 @@ public class LiveSearchDropdownTest extends AbstractTest
         Assert.assertNotNull(liveSearchResultPage);
 
         List<LiveSearchDocumentResult> liveSearchDocumentResults = liveSearchResultPage.getSearchDocumentResults();
+        Assert.assertTrue(liveSearchDocumentResults.size() > 0);
         for (LiveSearchDocumentResult liveSearchDocumentResult : liveSearchDocumentResults)
         {
             DocumentDetailsPage documentDetailsPage = liveSearchDocumentResult.clickOnDocumentTitle().render();
@@ -252,6 +258,7 @@ public class LiveSearchDropdownTest extends AbstractTest
         Assert.assertNotNull(liveSearchResultPage);
 
         List<LiveSearchDocumentResult> liveSearchDocumentResults = liveSearchResultPage.getSearchDocumentResults();
+        Assert.assertTrue(liveSearchDocumentResults.size() > 0);
         for (LiveSearchDocumentResult liveSearchDocumentResult : liveSearchDocumentResults)
         {
             DocumentLibraryPage documentLibraryPage = liveSearchDocumentResult.clickOnDocumentSiteTitle().render();
@@ -272,6 +279,7 @@ public class LiveSearchDropdownTest extends AbstractTest
         Assert.assertNotNull(liveSearchResultPage);
 
         List<LiveSearchDocumentResult> liveSearchDocumentResults = liveSearchResultPage.getSearchDocumentResults();
+        Assert.assertTrue(liveSearchDocumentResults.size() > 0);
         for (LiveSearchDocumentResult liveSearchDocumentResult : liveSearchDocumentResults)
         {
             MyProfilePage myProfilePage = liveSearchDocumentResult.clickOnDocumentUserName().render();
@@ -292,6 +300,7 @@ public class LiveSearchDropdownTest extends AbstractTest
         Assert.assertNotNull(liveSearchResultPage);
 
         List<LiveSearchSiteResult> liveSearchSiteResults = liveSearchResultPage.getSearchSitesResults();
+        Assert.assertTrue(liveSearchSiteResults.size() > 0);
         for (LiveSearchSiteResult liveSearchSitesResult : liveSearchSiteResults)
         {
             SiteDashboardPage siteDashboardPage = liveSearchSitesResult.clickOnSiteTitle().render();
@@ -311,6 +320,7 @@ public class LiveSearchDropdownTest extends AbstractTest
         Assert.assertNotNull(liveSearchResultPage);
 
         List<LiveSearchPeopleResult> liveSearchPeopleResults = liveSearchResultPage.getSearchPeopleResults();
+        Assert.assertTrue(liveSearchPeopleResults.size() > 0);
         for (LiveSearchPeopleResult liveSearchPeopleResult : liveSearchPeopleResults)
         {
             MyProfilePage myProfilePage = liveSearchPeopleResult.clickOnUserName().render();
