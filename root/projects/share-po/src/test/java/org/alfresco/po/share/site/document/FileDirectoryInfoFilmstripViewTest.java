@@ -188,7 +188,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         }
     }
     
-    @Test(groups={"alfresco-one"}, priority=46)
+    @Test(groups = { "alfresco-one" }, priority = 1)
     public void test101SelectManageRules()
     {
      // Get folder
@@ -238,7 +238,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
 
         // Get ContentEditInfo
         Assert.assertNotNull(thisRow.getContentEditInfo());
-        Assert.assertTrue(thisRow.getContentEditInfo().contains("Created"), thisRow.getContentEditInfo());
+        Assert.assertTrue(thisRow.getContentEditInfo().contains(userName), thisRow.getContentEditInfo() + " should contain: " + userName);
     }
 
     @Test(groups={"alfresco-one"}, priority=5)
@@ -387,6 +387,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
     public void test119managePermissionTest()
     {
         documentLibPage.render();
+        documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
         Assert.assertTrue(thisRow.isManagePermissionLinkPresent());
         ManagePermissionsPage mangPermPage = (thisRow.selectManagePermission()).render();       
@@ -741,7 +742,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         Assert.assertEquals(documentLibPage.getFileDirectoryInfo(folderName).getName(), folderName);
     }
     
-    @Test(enabled = true, groups = "Enterprise4.2", priority = 1)
+    @Test(enabled = true, groups = "Enterprise4.2", priority = 46)
     public void clickOnCategoryLink()
     {
         documentLibPage = drone.getCurrentPage().render();
