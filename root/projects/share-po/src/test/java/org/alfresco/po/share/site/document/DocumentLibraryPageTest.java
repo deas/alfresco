@@ -48,6 +48,8 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
     private File file1;
     private File file2;
     private String uname = "dlpt1user" + System.currentTimeMillis();
+    private File tempFile;
+
     /**
      * Pre test setup of a dummy file to upload.
      * 
@@ -67,6 +69,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         SiteUtil.createSite(drone, siteName, "description", "Public");
         file1 = SiteUtil.prepareFile();
         file2 = SiteUtil.prepareFile();
+        tempFile = SiteUtil.prepareFile();
     }
 
     @AfterClass(groups="alfresco-one")
@@ -304,6 +307,10 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
     @Test(dependsOnMethods="clickSelectedItems", groups="Enterprise4.2")
     public void selectDownloadAsZip()
     {
+        if(documentLibPage.getNavigation().isSelectedItemMenuVisible())
+        {
+            documentLibPage = documentLibPage.getNavigation().clickSelectedItems().render();
+        }
         documentLibPage.getNavigation().selectDownloadAsZip();
     }
 
@@ -482,13 +489,18 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         documentLibPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
         documentLibPage = documentLibPage.getNavigation().selectDetailedView().render();
         
-        File tempFile = SiteUtil.prepareFile();
         UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(tempFile.getName());
+
         Assert.assertFalse(thisRow.isFavourite());
         thisRow.selectFavourite();
-        documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();;
+        
+        siteFinder = documentLibPage.getNav().selectSearchForSites().render();
+        siteFinder = siteFinder.searchForSite(siteName).render();
+        siteDash = siteFinder.selectSite(siteName).render();
+        documentLibPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
+
         documentLibPage = documentLibPage.selectMyFavouritesOnTreeMenu().render();
         Assert.assertTrue(documentLibPage.getFiles().size() == 1);
         Assert.assertTrue(documentLibPage.getFiles().get(0).getName().equalsIgnoreCase(tempFile.getName()));
@@ -497,64 +509,63 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
     @Test(dependsOnMethods="testMyFavourite", groups="alfresco-one")
     public void testZoom()
     {
+        documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
+        
         DocumentLibraryNavigation navigation = documentLibPage.getNavigation();
         documentLibPage = ((DocumentLibraryPage) navigation.selectGalleryView()).render();
 
         Assert.assertTrue(navigation.isZoomControlVisible());
-        
-        navigation.selectZoom(ZoomStyle.SMALLER);
-        ZoomStyle actualZoomStyle = navigation.getZoomStyle();
-        Assert.assertEquals(actualZoomStyle,ZoomStyle.SMALLER);
 
-        double fileHeightSize = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(tempFile.getName()); 
+        double fileHeightSize = thisRow.getFileOrFolderHeight();
         
         navigation.selectZoom(ZoomStyle.SMALLEST);
-        actualZoomStyle = navigation.getZoomStyle();
+        ZoomStyle actualZoomStyle = navigation.getZoomStyle();
         Assert.assertEquals(actualZoomStyle,ZoomStyle.SMALLEST);
         
-        double actualFileHeight = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        double actualFileHeight = documentLibPage.getFileDirectoryInfo(tempFile.getName()).getFileOrFolderHeight();
         Assert.assertTrue(fileHeightSize > actualFileHeight);
         
         navigation.selectZoom(ZoomStyle.BIGGER);
         actualZoomStyle = navigation.getZoomStyle();
         Assert.assertEquals(actualZoomStyle,ZoomStyle.BIGGER);
         
-        fileHeightSize = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        fileHeightSize = documentLibPage.getFileDirectoryInfo(tempFile.getName()).getFileOrFolderHeight();
         Assert.assertTrue(fileHeightSize > actualFileHeight);
         
         navigation.selectZoom(ZoomStyle.BIGGEST);
         actualZoomStyle = navigation.getZoomStyle();
         Assert.assertEquals(actualZoomStyle,ZoomStyle.BIGGEST);
         
-        actualFileHeight = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        actualFileHeight = documentLibPage.getFileDirectoryInfo(tempFile.getName()).getFileOrFolderHeight();
         Assert.assertTrue(fileHeightSize < actualFileHeight);
         
         navigation.selectZoom(ZoomStyle.BIGGER);
         actualZoomStyle = navigation.getZoomStyle();
         Assert.assertEquals(actualZoomStyle,ZoomStyle.BIGGER);
         
-        fileHeightSize = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        fileHeightSize = documentLibPage.getFileDirectoryInfo(tempFile.getName()).getFileOrFolderHeight();
         Assert.assertTrue(fileHeightSize < actualFileHeight);
         
         navigation.selectZoom(ZoomStyle.SMALLEST);
         actualZoomStyle = navigation.getZoomStyle();
         Assert.assertEquals(actualZoomStyle,ZoomStyle.SMALLEST);
         
-        actualFileHeight = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        actualFileHeight = documentLibPage.getFileDirectoryInfo(tempFile.getName()).getFileOrFolderHeight();
         Assert.assertTrue(actualFileHeight < fileHeightSize);
         
         navigation.selectZoom(ZoomStyle.SMALLER);
         actualZoomStyle = navigation.getZoomStyle();
         Assert.assertEquals(actualZoomStyle,ZoomStyle.SMALLER);
         
-        fileHeightSize = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        fileHeightSize = documentLibPage.getFileDirectoryInfo(tempFile.getName()).getFileOrFolderHeight();
         Assert.assertTrue(actualFileHeight < fileHeightSize);
         
         navigation.selectZoom(ZoomStyle.BIGGEST);
         actualZoomStyle = navigation.getZoomStyle();
         Assert.assertEquals(actualZoomStyle,ZoomStyle.BIGGEST);
         
-        actualFileHeight = documentLibPage.getFileDirectoryInfo(file1.getName()).getFileOrFolderHeight();
+        actualFileHeight = documentLibPage.getFileDirectoryInfo(tempFile.getName()).getFileOrFolderHeight();
         Assert.assertTrue(actualFileHeight > fileHeightSize);
         
         documentLibPage = ((DocumentLibraryPage) navigation.selectDetailedView()).render();
