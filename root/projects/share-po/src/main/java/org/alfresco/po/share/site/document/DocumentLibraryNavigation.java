@@ -992,7 +992,7 @@ public class DocumentLibraryNavigation extends SharePage
     {
         if(isNavigationBarVisible())
         {
-            WebElement folderUpElement = drone.find(By.cssSelector("button[id$='folderUp-button-button’]"));
+            WebElement folderUpElement = drone.findAndWait(By.cssSelector("button[id$='folderUp-button-button']"));
           if(folderUpElement.isEnabled())
           {
               folderUpElement.click();
