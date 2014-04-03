@@ -1145,7 +1145,15 @@ public class DocumentLibraryPage extends SitePage
      */
     public HtmlPage selectNextFilmstripTape()
     {
-        return clickFilmStripViewElement(FILMSTRIP_TAPE_NEXT, "Next Tape Arrow");
+        HtmlPage page = clickFilmStripViewElement(FILMSTRIP_TAPE_NEXT, "Next Tape Arrow");
+        try
+        {
+            drone.findAndWait(FILMSTRIP_TAPE_PREVIOUS, 3000);
+        }
+        catch (TimeoutException e)
+        {
+        }
+        return page;
     }
 
     /**
@@ -1153,7 +1161,15 @@ public class DocumentLibraryPage extends SitePage
      */
     public HtmlPage selectPreviousFilmstripTape()
     {
-        return clickFilmStripViewElement(FILMSTRIP_TAPE_PREVIOUS, "Previous Tape Arrow");
+        HtmlPage page = clickFilmStripViewElement(FILMSTRIP_TAPE_PREVIOUS, "Previous Tape Arrow");
+        try
+        {
+            drone.findAndWait(FILMSTRIP_TAPE_NEXT, 3000);
+        }
+        catch (TimeoutException e)
+        {
+        }
+        return page;
     }
 
     /**
