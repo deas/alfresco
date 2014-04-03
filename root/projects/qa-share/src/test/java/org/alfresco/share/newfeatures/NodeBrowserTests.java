@@ -53,8 +53,8 @@ public class NodeBrowserTests extends AbstractTests
          */
         // TODO: Use from WebDrone project, Move out of qa-share  
         public FirefoxProfile createFirefoxProfile(Locale locale)
-        {  
-            FirefoxProfile firefoxProfile = new FirefoxProfile();
+        {
+                FirefoxProfile firefoxProfile = new FirefoxProfile();
                 firefoxProfile.setPreference("intl.accept_languages", locale.getLanguage());
                 return firefoxProfile;
         }
@@ -72,11 +72,11 @@ public class NodeBrowserTests extends AbstractTests
                 nodeBrowserPage = page.getNav().getNodeBrowserPage();
         }
 
-        @Test(groups = { "Share" }, timeOut = 400000)
-        public void enterprise40x_13876()
+        @Test(groups = { "Share", "EnterpriseOnly" }, timeOut = 400000)
+        public void ALF_13876()
         {
-        // TODO: Create and Use Enums for selectable store, Query etc
-            // TODO: Create Util to search specifying store, query, search val and click search, rather than Page Object specific code duplicated
+                // TODO: Create and Use Enums for selectable store, Query etc
+                // TODO: Create Util to search specifying store, query, search val and click search, rather than Page Object specific code duplicated
                 nodeBrowserPage.selectStore("workspace://SpacesStore");
                 nodeBrowserPage.selectQueryType("storeroot");
                 nodeBrowserPage.clickSearchButton();
@@ -93,8 +93,8 @@ public class NodeBrowserTests extends AbstractTests
                 assertTrue(nodeBrowserPage.isOnSearchBar("search took [0-9]+ms"));
         }
 
-        @Test(groups = { "Share" }, timeOut = 400000)
-        public void enterprise40x_13886()
+        @Test(groups = { "Share", "EnterpriseOnly" }, timeOut = 400000)
+        public void ALF_13886()
         {
                 nodeBrowserPage.selectStore("workspace://SpacesStore");
                 nodeBrowserPage.selectQueryType("lucene");
@@ -105,53 +105,53 @@ public class NodeBrowserTests extends AbstractTests
 
         }
 
-        @Test(groups = { "Localization" }, timeOut = 400000)
-        public void enterprise40x_13888()
+        @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
+        public void ALF_13888()
         {
                 executeLocalizationTest(Locale.FRENCH, "la recherche a pris [0-9]+ms");
         }
 
-        @Test(groups = { "Localization" }, timeOut = 400000)
-        public void enterprise40x_13889()
+        @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
+        public void ALF_13889()
         {
                 executeLocalizationTest(Locale.GERMANY, "Suche dauerte [0-9]+ms");
         }
 
-        @Test(groups = { "Localization" }, timeOut = 400000)
-        public void enterprise40x_13890()
+        @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
+        public void ALF_13890()
         {
                 Locale spanish = new Locale("es", "SP");
                 executeLocalizationTest(spanish, "la búsqueda ha tardado [0-9]+ms");
         }
 
-        @Test(groups = { "Localization" }, timeOut = 400000)
-        public void enterprise40x_13891()
+        @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
+        public void ALF_13891()
         {
                 executeLocalizationTest(Locale.ITALIAN, "la ricerca ha richiesto [0-9]+ms");
         }
 
-        @Test(groups = { "Localization" }, timeOut = 400000)
-        public void enterprise40x_13892()
+        @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
+        public void ALF_13892()
         {
                 executeLocalizationTest(Locale.JAPANESE, "検索で[0-9]+msを取得済み");
         }
 
-        @Test(groups = { "Localization" }, timeOut = 400000)
-        public void enterprise40x_13893()
+        @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
+        public void ALF_13893()
         {
                 Locale dutch = new Locale("nl", "DU");
                 executeLocalizationTest(dutch, "zoeken duurde [0-9]+ms");
         }
 
-        @Test(groups = { "Localization" }, timeOut = 400000)
-        public void enterprise40x_13894()
+        @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
+        public void ALF_13894()
         {
                 Locale russian = new Locale("ru", "RUS");
                 executeLocalizationTest(russian, "поиск длился [0-9]+мс");
         }
 
-        @Test(groups = { "Localization" }, timeOut = 400000)
-        public void enterprise40x_13895()
+        @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
+        public void ALF_13895()
         {
                 Locale chinese = new Locale("zh_cn", "cn");
                 executeLocalizationTest(chinese, "搜索花费 [0-9]+ms");
@@ -195,7 +195,6 @@ public class NodeBrowserTests extends AbstractTests
                 quit(customDrone);
         }
 
-        // TODO: Redundant pl remove. AbstractTests > AfterClass does this
         /**
          * User logs out after group Share is executed
          */
@@ -205,7 +204,6 @@ public class NodeBrowserTests extends AbstractTests
                 quit(drone);
         }
 
-        // TODO: Redundant pl remove. AbstractTests > AfterClass does this
         private void quit(WebDrone drone)
         {
                 ShareUser.logout(drone);
@@ -214,7 +212,6 @@ public class NodeBrowserTests extends AbstractTests
                 logger.info("Close browser");
         }
 
-        // TODO: Redundant pl remove. AbstractTests > AfterClass does this
         @Override
         public void tearDown()
         {
