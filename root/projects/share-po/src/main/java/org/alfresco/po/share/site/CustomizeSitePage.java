@@ -26,7 +26,6 @@ import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
@@ -104,15 +103,10 @@ public class CustomizeSitePage extends SitePage
         SitePageType[] pageTypes = SitePageType.values();
         for (SitePageType pageType : pageTypes)
         {
-            try
+            if (currentPageElement.getText().contains(pageType.getDisplayText()))
             {
-                currentPageElement.findElement(pageType.getLocator());
+                currentPageTypes.add(pageType);
             }
-            catch (NoSuchElementException e)
-            {
-                continue;
-            }
-            currentPageTypes.add(pageType);
         }
         return currentPageTypes;
     }
