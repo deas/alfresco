@@ -404,8 +404,8 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
      * @throws Exception 
      * 
      */
-    
-    @Test(dependsOnMethods="selectUploadNewVersion", groups="Enterprise4.2")
+    @Test(groups = "BambooBug")
+    //@Test(dependsOnMethods="selectUploadNewVersion", groups="Enterprise4.2")
     public void selectDeleteforContent() throws Exception
     {
         documentLibPage.render();
@@ -426,7 +426,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         Assert.assertEquals(documentLibPage.getFiles().size(), fileSize-1);
     } 
     
-    @Test( dependsOnMethods="selectDeleteforContent" , groups="Enterprise4.2")
+    @Test( dependsOnMethods="selectUploadNewVersion" , groups="Enterprise4.2")
     public void testTagsCount() throws IOException
     {
         String tagName = "tagcount";
@@ -480,7 +480,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         Assert.assertTrue(workFlowPage.getTitle().contains("Start Workflow"));
     }
     
-    @Test(dependsOnMethods = "selectStartWorkFlow", groups="Enterprise4.2")
+    @Test(dependsOnMethods = "selectStartWorkFlow", groups={"Enterprise4.2","BambooBug"})
     public void testMyFavourite() throws Exception
     {
         SiteFinderPage siteFinder = ((SharePage) drone.getCurrentPage()).getNav().selectSearchForSites().render();
