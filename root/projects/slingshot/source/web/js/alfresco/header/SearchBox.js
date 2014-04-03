@@ -395,10 +395,10 @@ define(["dojo/_base/declare",
                   array.forEach(response.items, function(item) {
                      // construct the meta-data - site information, modified by and title description as tooltip
                      var site = (item.site ? "site/" + item.site.shortName + "/" : "");
-                     var info = '<a href="' + AlfConstants.URL_PAGECONTEXT + 'user/' + this.encodeHTML(item.modifiedBy) + '/profile">' + this.encodeHTML(item.modifiedBy) + '</a> | ';
+                     var info = "<a href='" + AlfConstants.URL_PAGECONTEXT + "user/" + this.encodeHTML(item.modifiedBy) + "/profile'>" + this.encodeHTML(item.modifiedBy) + "</a> | ";
                      if (item.site)
                      {
-                        info += '<a href="' + AlfConstants.URL_PAGECONTEXT + site + 'documentlibrary">' + this.encodeHTML(item.site.title) + '</a> | ';
+                        info += "<a href='" + AlfConstants.URL_PAGECONTEXT + site + "documentlibrary'>" + this.encodeHTML(item.site.title) + "</a> | ";
                      }
                      info += Stamp.fromISOString(item.modifiedOn).toGMTString();
 
