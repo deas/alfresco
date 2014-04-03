@@ -654,10 +654,20 @@ public abstract class SharePage extends Page
      */
     public String getValidationMessage(By locator)
     {
-        WebElement webElement = drone.find(locator);
-        String message = webElement.getAttribute("alf-validation-msg");
 
-        return (message == null ? "" : message);
+        try
+        {
+            return drone.find(locator).getAttribute("alf-validation-msg");
+        }
+        catch (NoSuchElementException exception)
+        {
+            if(logger.isTraceEnabled())
+            {
+                logger.trace(exception);
+            }
+        }
+
+        return "";
     }
 
     /**
