@@ -26,34 +26,42 @@ import java.util.concurrent.TimeUnit;
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.webdrone.RenderWebElement;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 /**
- *
+ * 
  * Abstract of Workflowpage.
+ * 
  * @author Siva Kaliyappan
  * @since 1.6.2
  */
-public abstract class WorkFlowPage extends SharePage implements WorkFlow 
+public abstract class WorkFlowPage extends SharePage implements WorkFlow
 {
     private static Log logger = LogFactory.getLog(WorkFlowPage.class);
 
     private static final By SUBMIT_BUTTON = By.cssSelector("button[id$='form-submit-button']");
     private static final By REMOVE_ALL_BUTTON = By.xpath("//div[contains(@id, '_packageItems-cntrl-itemGroupActions')]/span[2]/span/button");
-    private static final By NO_ITEM_SELECTED_MESSAGE = By.cssSelector("div[id$='_packageItems-cntrl-currentValueDisplay']>table>tbody.yui-dt-message>tr>td.yui-dt-empty>div");
+    private static final By NO_ITEM_SELECTED_MESSAGE = By
+            .cssSelector("div[id$='_packageItems-cntrl-currentValueDisplay']>table>tbody.yui-dt-message>tr>td.yui-dt-empty>div");
     private static final By ITEM_ROW = By.cssSelector("div[id$='_packageItems-cntrl-currentValueDisplay']>table>tbody.yui-dt-data>tr");
     private static final By ITEM_NAME = By.cssSelector("h3.name");
     private static final By ERROR_MESSAGE = By.cssSelector("div.balloon>div.text>div");
+    private static final By PRIORITY_DROPDOWN = By.cssSelector("select[id$='_bpm_workflowPriority']");
+
+    @RenderWebElement
+    protected static final By DUE_DATED_PICKER = By.cssSelector("img.datepicker-icon");
 
     private static final By WORKFLOW_COULD_NOT_BE_STARTED_PROMPT_HEADER = By.cssSelector("#prompt_h");
     private static final By WORKFLOW_COULD_NOT_BE_STARTED_MESSAGE = By.cssSelector("#prompt>div.bd");
@@ -61,24 +69,25 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
     protected static final By WORKFLOW_DESCRIPTION_HELP_ICON = By.cssSelector("img[id$='_prop_bpm_workflowDescription-help-icon']");
     protected static final By WORKFLOW_DESCRIPTION_HELP_MESSAGE = By.cssSelector("div[id$='_prop_bpm_workflowDescription-help']");
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param drone
-	 *            WebDriver to access page
-	 */
+    /**
+     * Constructor.
+     * 
+     * @param drone
+     *            WebDriver to access page
+     */
     public WorkFlowPage(WebDrone drone)
-	{
-		super(drone);
-	}
+    {
+        super(drone);
+    }
 
     /**
-     * @param messageString - The message that should be entered in message box
+     * @param messageString
+     *            - The message that should be entered in message box
      */
     @Override
     public void enterMessageText(String messageString)
     {
-        if(StringUtils.isEmpty(messageString))
+        if (StringUtils.isEmpty(messageString))
         {
             throw new IllegalArgumentException("Message cannot be Empty or null");
         }
@@ -93,7 +102,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
     @Override
     public void enterDueDateText(String date)
     {
-        if(StringUtils.isEmpty(date))
+        if (StringUtils.isEmpty(date))
         {
             throw new IllegalArgumentException("Date cannot be Empty or null");
         }
@@ -101,7 +110,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         workFlowDescription.clear();
         workFlowDescription.sendKeys(date);
     }
-    
+
     /**
      * Clicks on Select button for selecting reviewers
      * 
@@ -129,7 +138,6 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         return FactorySharePage.resolvePage(drone);
     }
 
-
     /**
      * @return
      */
@@ -145,7 +153,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         {
             if (StringUtils.isEmpty(cloudUser))
             {
-                    return true;
+                return true;
             }
         }
         return false;
@@ -157,9 +165,10 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
      * @return
      */
     abstract WebElement getMessageTextareaElement();
-    
+
     /**
      * Mimics the click Add Items button.
+     * 
      * @return {@link SelectContentPage}
      */
     public SelectContentPage clickAddItems()
@@ -167,17 +176,17 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         clickUnamedButton("Add");
         return new SelectContentPage(drone);
     }
-    
+
     private void clickUnamedButton(String name)
     {
-        if(StringUtils.isEmpty(name))
+        if (StringUtils.isEmpty(name))
         {
             throw new IllegalArgumentException("Name cannot be Empty or null");
         }
         List<WebElement> elements = drone.findAll(By.cssSelector("button[type='button']"));
         for (WebElement webElement : elements)
         {
-            if(name.equals(webElement.getText()))
+            if (name.equals(webElement.getText()))
             {
                 webElement.click();
                 break;
@@ -194,16 +203,17 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
 
     /**
      * Method to select given file from the given site.
+     * 
      * @param fileName
      * @param siteName
      */
     public void selectItem(String fileName, String siteName)
     {
-        if(StringUtils.isEmpty(fileName))
+        if (StringUtils.isEmpty(fileName))
         {
             throw new IllegalArgumentException("File Name cannot be Empty");
         }
-        if(StringUtils.isEmpty(siteName))
+        if (StringUtils.isEmpty(siteName))
         {
             throw new IllegalArgumentException("Site Name cannot be Empty");
         }
@@ -214,6 +224,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
 
     /**
      * Method to verify "No items selected" message is displayed
+     * 
      * @return True if "No items selected" message is displayed
      */
     public boolean isNoItemsSelectedMessagePresent()
@@ -230,6 +241,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
 
     /**
      * Method to verify Remove All button is Enabled
+     * 
      * @return True if Remove All button
      */
     public boolean isRemoveAllButtonEnabled()
@@ -258,6 +270,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
 
     /**
      * Method to get List of all selected workflow items
+     * 
      * @return {@link List<SelectedWorkFlowItem>}
      */
     public List<SelectedWorkFlowItem> getSelectedItems()
@@ -267,7 +280,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         {
             List<WebElement> itemsRows = getSelectedItemElements();
 
-            for(WebElement item: itemsRows)
+            for (WebElement item : itemsRows)
             {
                 selectedWorkFlowItems.add(new SelectedWorkFlowItem(item, drone));
             }
@@ -284,12 +297,13 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
 
     /**
      * Method to get the Selected Items List for a given file name
+     * 
      * @param fileName
      * @return {@link List<SelectedWorkFlowItem>}
      */
     public List<SelectedWorkFlowItem> getSelectedItem(String fileName)
     {
-        if(StringUtils.isEmpty(fileName))
+        if (StringUtils.isEmpty(fileName))
         {
             throw new IllegalArgumentException("FileName cannot be empty");
         }
@@ -297,7 +311,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         List<SelectedWorkFlowItem> selectedWorkFlowItems = new ArrayList<SelectedWorkFlowItem>();
         for (WebElement item : selectedItemElements)
         {
-            if(fileName.equals(item.findElement(ITEM_NAME).getText()))
+            if (fileName.equals(item.findElement(ITEM_NAME).getText()))
             {
                 selectedWorkFlowItems.add(new SelectedWorkFlowItem(item, drone));
             }
@@ -307,22 +321,23 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
 
     /**
      * Method to verify if the item is added or not
+     * 
      * @param fileName
      * @return True if the item is added
      */
     public boolean isItemAdded(String fileName)
     {
-        if(StringUtils.isEmpty(fileName))
+        if (StringUtils.isEmpty(fileName))
         {
             throw new IllegalArgumentException("File Name can't null or empty");
         }
         List<SelectedWorkFlowItem> selectedWorkFlowItems = getSelectedItem(fileName);
 
-        if(selectedWorkFlowItems.size()==0)
+        if (selectedWorkFlowItems.size() == 0)
         {
             return false;
         }
-        for(SelectedWorkFlowItem item: selectedWorkFlowItems)
+        for (SelectedWorkFlowItem item : selectedWorkFlowItems)
         {
             if (fileName.equals(item.getItemName()))
             {
@@ -334,6 +349,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
 
     /**
      * Method to verify Remove All button is Enabled
+     * 
      * @return True if Remove All button
      */
     public void selectRemoveAllButton()
@@ -357,7 +373,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         }
         catch (NoSuchElementException nse)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Unable to find Error PopUp");
             }
@@ -413,9 +429,9 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         catch (NoSuchElementException nse)
         {
             throw new PageOperationException("Unable find help icon" + nse);
-        }  
+        }
     }
-    
+
     /**
      * Find the help text and return, else throw {@link PageOperationException}.
      * 
@@ -430,6 +446,174 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         catch (NoSuchElementException nse)
         {
             throw new PageOperationException("Unable find help text, Please click the help icon first." + nse);
-        } 
+        }
+    }
+
+    /**
+     * Method to select a date from Calender date picker. The date should be in
+     * "dd/MM/yyyy" format
+     * 
+     * @param date
+     */
+    public void selectDateFromCalendar(String date)
+    {
+        if (StringUtils.isEmpty(date))
+        {
+            throw new IllegalArgumentException("Date cannot be empty");
+        }
+        DateTime dueDate;
+        int due;
+        try
+        {
+            dueDate = DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(date);
+            due = dueDate.getDayOfMonth();
+        }
+        catch (IllegalArgumentException iae)
+        {
+            throw new IllegalArgumentException("Due date should be in \"dd/MM/yyyy\" format");
+        }
+
+        DateTime today = new DateTime();
+
+        drone.waitForElement(DUE_DATED_PICKER, maxPageLoadingTime);
+        drone.find(DUE_DATED_PICKER).click();
+        WebElement calenderElement = drone.findAndWait(By.cssSelector("table[id$='_workflowDueDate-cntrl']"));
+
+        if (dueDate.isBeforeNow()
+                && !dueDate.toLocalDate().toString(DateTimeFormat.forPattern("dd-MM-yyyy"))
+                        .equals(today.toLocalDate().toString(DateTimeFormat.forPattern("dd-MM-yyyy"))))
+        {
+            throw new UnsupportedOperationException("Due date cannot be in past");
+        }
+        else
+        {
+            try
+            {
+                drone.waitForElement(By.cssSelector("a.calnav"), maxPageLoadingTime);
+                calenderElement.findElement(By.cssSelector("a.calnav")).click();
+
+                WebElement monthAndYearSelector = drone.findAndWait(By.cssSelector("div.yui-cal-nav"));
+
+                Select monthSelector = new Select(drone.find(By.cssSelector("select[id$='_workflowDueDate-cntrl_nav_month']")));
+                monthSelector.selectByValue(String.valueOf(dueDate.getMonthOfYear() - 1));
+
+                monthAndYearSelector.findElement(By.cssSelector("input[id$='_workflowDueDate-cntrl_nav_year']")).clear();
+                monthAndYearSelector.findElement(By.cssSelector("input[id$='_workflowDueDate-cntrl_nav_year']")).sendKeys(String.valueOf(dueDate.getYear()));
+
+                monthAndYearSelector.findElement(By.cssSelector("button[id$='_workflowDueDate-cntrl_nav_submit']")).click();
+
+                calenderElement = drone.findAndWait(By.cssSelector("table[id$='_workflowDueDate-cntrl']>tbody"));
+
+                List<WebElement> allDays = calenderElement.findElements(By.cssSelector("a.selector"));
+
+                for (WebElement day : allDays)
+                {
+                    if (Integer.parseInt(day.getText()) == (due))
+                    {
+                        day.click();
+                        break;
+                    }
+                }
+            }
+            catch (NoSuchElementException nse)
+            {
+                throw new PageOperationException("Unable to find element: " + nse.getMessage());
+            }
+            catch (TimeoutException te)
+            {
+                throw new PageOperationException("Timed out on waiting for: " + te.getMessage());
+            }
+        }
+
+    }
+
+    /**
+     * Method to close Calender Date Picker
+     */
+    public void closeCalendarDatePicker()
+    {
+        try
+        {
+            drone.find(By.cssSelector("div[id$='_workflowDueDate-cntrl'] span.close-icon.calclose")).click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find Close button on Calendar date picker");
+            }
+        }
+    }
+
+    /**
+     * Method to get the Due date entered in Due field
+     * @return
+     */
+    public String getDueDate()
+    {
+        try
+        {
+            String due = drone.find(By.cssSelector("input[id$='_workflowDueDate']")).getAttribute("value").substring(0, 10);
+
+            return (DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(due)).toString(DateTimeFormat.forPattern("dd/MM/yyyy"));
+        }
+        catch (NoSuchElementException nse)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find DueDate field" + nse.getMessage());
+            }
+        }
+        catch (IllegalArgumentException ie)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Unalbe to parse Due Date" + ie.getMessage());
+            }
+        }
+        return "";
+    }
+
+    /**
+     * Method to get Priority Dropdown options
+     * 
+     * @return
+     */
+    public List<String> getPriorityOptions()
+    {
+        List<String> options = new ArrayList<String>();
+        try
+        {
+            Select priorityOptions = new Select(drone.find(PRIORITY_DROPDOWN));
+            List<WebElement> optionElements = priorityOptions.getOptions();
+
+            for (WebElement option : optionElements)
+            {
+                options.add(option.getText());
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageOperationException("Unable to find After Completion Dropdown", nse);
+        }
+        return options;
+    }
+
+    /**
+     * Method to get Selected Priority Option
+     * 
+     * @return
+     */
+    public Priority getSelectedPriorityOption()
+    {
+        try
+        {
+            Select priorityOptions = new Select(drone.find(PRIORITY_DROPDOWN));
+            return Priority.getPriority(priorityOptions.getFirstSelectedOption().getText());
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageOperationException("Unable to find After Completion Dropdown", nse);
+        }
     }
 }

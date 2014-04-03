@@ -24,12 +24,10 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.RenderWebElement;
 import org.alfresco.webdrone.WebDrone;
-import org.alfresco.webdrone.exception.PageException;
-import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 
@@ -42,11 +40,17 @@ import org.openqa.selenium.WebElement;
  */
 public class NewWorkflowPage extends WorkFlowPage
 {
-
+    @RenderWebElement
     private static final By DUE_DATE = By.cssSelector("input[id$='workflowDueDate-cntrl-date']");
+    @RenderWebElement
     private static final By MESSAGE_TEXT = By.cssSelector("textarea[id$='prop_bpm_workflowDescription']");
+    @RenderWebElement
     private static final By SUBMIT_BUTTON = By.cssSelector("button[id$='-form-submit-button']");
+    @RenderWebElement
     private static final By CANCEL_BUTTON = By.cssSelector("button[id$='-form-cancel-button']");
+    @RenderWebElement
+    private static final By PRIORITY_DROPDOWN = By.cssSelector("select[id$='_bpm_workflowPriority']");
+
     /**
      * Constructor.
      *
@@ -56,40 +60,13 @@ public class NewWorkflowPage extends WorkFlowPage
     {
         super(drone);
     }
-
     @SuppressWarnings("unchecked")
     @Override
     public NewWorkflowPage render(RenderTime timer)
     {
-        try
-        {
-            while (true)
-            {
-                try
-                {
-                    timer.start();
-                    if (!alfrescoVersion.isCloud())
-                    {
-                        drone.find(MESSAGE_TEXT);
-                    }
-                    break;
-                }
-                catch (NoSuchElementException e)
-                {
-                }
-                finally
-                {
-                    timer.end();
-                }
-            }
-        }
-        catch (PageRenderTimeException te)
-        {
-            throw new PageException(this.getClass().getName() + " failed to render in time", te);
-        }
+        webElementRender(timer);
         return this;
     }
-
 
     @SuppressWarnings("unchecked")
     @Override
