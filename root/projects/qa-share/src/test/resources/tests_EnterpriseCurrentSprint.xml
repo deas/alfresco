@@ -78,5 +78,10 @@
         </classes>
     </test>
 
+    <test name="Document Details Actions Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.DocumentDetailsActionsTest"/>
+        </classes>
+    </test>
 
 </suite>
