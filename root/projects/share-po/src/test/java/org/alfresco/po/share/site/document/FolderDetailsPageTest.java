@@ -37,8 +37,6 @@ import org.testng.annotations.Test;
 public class FolderDetailsPageTest extends AbstractTest
 {
 
-
-
     private final Log logger = LogFactory.getLog(this.getClass());
 
     private static String siteName;
@@ -228,7 +226,7 @@ public class FolderDetailsPageTest extends AbstractTest
             logger.trace("====testDownloadAsZipFolder====");
         }
         Assert.assertTrue(folderDetailsPage.isDownloadAsZipAtTopRight());
-        //folderDetailsPage.selectDownloadFolderAsZip("folder").render();
+        folderDetailsPage.selectDownloadFolderAsZip("folder").render();
     }
 
     /*
