@@ -17,7 +17,6 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.WebDroneImpl;
 import org.alfresco.webdrone.exception.PageException;
-import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
@@ -106,19 +105,8 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public ConfirmDeletePage selectDelete()
     {
-        try
-        {
-            clickInfoIcon(true);
-            return super.selectDelete();
-        }
-        catch (NoSuchElementException e) { }
-        catch (StaleElementReferenceException st)
-        {
-            resolveStaleness();
-            selectDelete();
-        }
-        
-        throw new PageOperationException("Error in Select Delete.");
+        clickInfoIcon(true);
+        return super.selectDelete();
     }
 
     /*

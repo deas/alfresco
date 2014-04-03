@@ -18,6 +18,8 @@
  */
 package org.alfresco.po.share.site.document;
 
+import static org.testng.Assert.assertTrue;
+
 import java.io.File;
 
 import org.alfresco.po.share.AlfrescoVersion;
@@ -261,9 +263,21 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     }
     
     @Test(groups = { "alfresco-one" }, expectedExceptions = UnsupportedOperationException.class, dependsOnMethods = "testCheckboxAndVersionMenu")
-    public void testisCommentOptionPresent() throws Exception
+    public void testIsCommentOptionPresent() throws Exception
     {
         documentLibPage = drone.getCurrentPage().render();
         documentLibPage.getFileDirectoryInfo(file2.getName()).isCommentLinkPresent();
+    }
+    
+    @Test(enabled = true, groups = "alfresco-one", dependsOnMethods = "testIsCommentOptionPresent")
+    public void testSelectViewInBrowser()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName());
+        String mainWinHandle = drone.getWindowHandle();
+        thisRow.selectViewInBrowser();
+        assertTrue(drone.getCurrentUrl().toLowerCase().contains(file1.getName().toLowerCase()));
+        drone.closeWindow();
+        drone.switchToWindow(mainWinHandle);
     }
 }

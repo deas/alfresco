@@ -7,9 +7,9 @@
  */
 package org.alfresco.po.share.site.document;
 
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -451,7 +451,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         DestinationAndAssigneePage destinationAndAssigneePage = (DestinationAndAssigneePage) thisRow.selectSyncToCloud().render();
         Assert.assertEquals(destinationAndAssigneePage.getSyncToCloudTitle(), "Sync " + file.getName() + " to The Cloud");
         destinationAndAssigneePage.selectSubmitButtonToSync();
-        assertTrue("File should be synced", thisRow.isCloudSynced());
+        assertTrue(thisRow.isCloudSynced(), "File should be synced");
     }
 
 
@@ -529,7 +529,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         newWorkflowPage.cancelCreateWorkflow(formDetails).render();
         openSiteDocumentLibraryFromSearch(drone, siteName);
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
-        assertFalse("Document should not be part of workflow.", thisRow.isPartOfWorkflow());
+        assertFalse(thisRow.isPartOfWorkflow(), "Document should not be part of workflow.");
     }
     
     @Test(groups = { "alfresco-one" }, priority=35)
@@ -839,5 +839,17 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(file.getName());
         thisRow.selectDownload();
         Assert.assertNotNull(documentLibPage);
+    }
+
+    @Test(enabled = true, groups = "Enterprise4.2", priority = 53)
+    public void testSelectViewInBrowser()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
+        String mainWinHandle = drone.getWindowHandle();
+        thisRow.selectViewInBrowser();
+        assertTrue(drone.getCurrentUrl().toLowerCase().contains(file.getName().toLowerCase()));
+        drone.closeWindow();
+        drone.switchToWindow(mainWinHandle);
     }
 }

@@ -586,4 +586,16 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         }while(!documentLibPage.isFileVisible(folderName)  && i < 5);
         Assert.assertTrue(documentLibPage.isFileVisible(folderName));
     }
+
+    @Test(enabled = true, groups = "alfresco-one", priority = 32)
+    public void testSelectViewInBrowser()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
+        String mainWinHandle = drone.getWindowHandle();
+        thisRow.selectViewInBrowser();
+        assertTrue(drone.getCurrentUrl().toLowerCase().contains(file.getName().toLowerCase()));
+        drone.closeWindow();
+        drone.switchToWindow(mainWinHandle);
+    }
 }

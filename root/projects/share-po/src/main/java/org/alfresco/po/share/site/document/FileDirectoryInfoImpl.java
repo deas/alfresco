@@ -309,8 +309,11 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         Set<String> winSet = getDrone().getWindowHandles();
         List<String> winList = new ArrayList<String>(winSet);
         String newTab = winList.get(winList.size() - 1);
-        // close the original tab
-        getDrone().closeWindow();
+        // // close the original tab
+        
+        //DONOT CLOSE THE WINDOW
+        
+        // getDrone().closeWindow();
         // switch to new tab
         getDrone().switchToWindow(newTab);
     }

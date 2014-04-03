@@ -1292,18 +1292,18 @@ public class DocumentLibraryPage extends SitePage
          */
         public String getDisplyedFilmstripItem()
         {
-                try
+            try
+            {
+                return drone.findAndWait(FILMSTRIP_ITEM_DISLAYED).getText();
+            }
+        catch (TimeoutException nse)
+            {
+                if (logger.isTraceEnabled())
                 {
-                        return drone.find(FILMSTRIP_MAIN_DIV).findElement(FILMSTRIP_ITEM_DISLAYED).getText();
+                    logger.trace("getDisplyedFilmstripItem - Filmstrip view not loaded", nse);
                 }
-                catch (NoSuchElementException nse)
-                {
-                        if (logger.isTraceEnabled())
-                        {
-                                logger.trace("getDisplyedFilmstripItem - Filmstrip view not loaded", nse);
-                        }
-                }
-                return "";
+                throw new PageOperationException("Could not find the displayed file", nse);
+            }
         }
 
         private HtmlPage sendKeysFilmStripViewElement(String elementName, CharSequence... keysToSend)
