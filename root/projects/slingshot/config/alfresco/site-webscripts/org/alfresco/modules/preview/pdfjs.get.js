@@ -115,7 +115,6 @@ function main()
              id: "fullpage",
              title: "",
              type: "button",
-             icon: "components/documentlibrary/actions/default-16.png",
              label: msg.get("button.maximize"),
              useWrapper: true,
              wrapperClassName: "maximizebutton"

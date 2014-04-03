@@ -533,8 +533,7 @@
             else
             {*/
                this.widgets.maximize = Alfresco.util.createYUIButton(this, "fullpage", this.onMaximizeClick, {
-                  title: this.wp.msg("button.maximize.tip", 
-                        YAHOO.env.ua.os == "macintosh" ? this.wp.msg("key.meta") : this.wp.msg("key.ctrl"))
+                  title: this.wp.msg("button.maximize.tip", YAHOO.env.ua.os == "macintosh" ? this.wp.msg("key.meta") : this.wp.msg("key.ctrl"))
                });
                Dom.getElementsByClassName("maximizebutton", "span", this.controls, function setDisplay(el) {
                   Dom.setStyle(el, "display", "inline");
@@ -1663,9 +1662,9 @@
          {
             Dom.addClass(this.wp.getPreviewerElement(), "fullPage");
             this.widgets.maximize.set("label", this.wp.msg("button.minimize"));
-            this.widgets.maximize.set("title", this.wp.msg("button.minimize.tip"));
-          }
-          else
+            this.widgets.maximize.set("title", this.wp.msg("button.minimize.tip", YAHOO.env.ua.os == "macintosh" ? this.wp.msg("key.meta") : this.wp.msg("key.ctrl")));
+         }
+         else
          {
             Dom.removeClass(this.wp.getPreviewerElement(), "fullPage");
             this.widgets.maximize.set("label", this.wp.msg("button.maximize"));
