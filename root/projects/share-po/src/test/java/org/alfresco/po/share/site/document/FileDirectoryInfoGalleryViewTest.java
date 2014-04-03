@@ -422,7 +422,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         thisRow.clickOnTagRemoveButton(tagName);
         thisRow.clickOnTagSaveButton();
         documentLibPage = documentLibPage.render();
-        thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
+        thisRow = documentLibPage.getFileDirectoryInfo(folderName);
         Assert.assertFalse(thisRow.hasTags());
     }
     
