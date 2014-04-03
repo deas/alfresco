@@ -346,6 +346,7 @@ define(["dojo/_base/declare",
                      if (item.description) desc += (desc.length !== 0 ? "\r\n" : "") + this.encodeHTML(item.description);
                      // build the widget for the item - including the thumbnail url for the document
                      var itemLink = new LiveSearchItem({
+                        cssClass: "alf-livesearch-thumbnail",
                         title: desc,
                         label: this.encodeHTML(item.name),
                         link: AlfConstants.URL_PAGECONTEXT + site + "document-details?nodeRef=" + item.nodeRef,
@@ -386,6 +387,7 @@ define(["dojo/_base/declare",
                   // construct each Site item as a LiveSearchItem widget
                   array.forEach(response.items, function(item) {
                      var itemLink = new LiveSearchItem({
+                        cssClass: "alf-livesearch-icon",
                         title: this.encodeHTML(item.description),
                         label: this.encodeHTML(item.title),
                         link: AlfConstants.URL_PAGECONTEXT + "site/" + item.shortName + "/dashboard",
@@ -417,6 +419,7 @@ define(["dojo/_base/declare",
                      var fullName = item.firstName + " " + item.lastName;
                      var meta = this.encodeHTML(item.jobtitle) + (item.location ? (", "+this.encodeHTML(item.location)) : "");
                      var itemLink = new LiveSearchItem({
+                        cssClass: "alf-livesearch-icon",
                         title: this.encodeHTML(item.jobtitle),
                         label: this.encodeHTML(fullName + " (" + item.userName + ")"),
                         link: AlfConstants.URL_PAGECONTEXT + "user/" + encodeURIComponent(item.userName) + "/profile",
