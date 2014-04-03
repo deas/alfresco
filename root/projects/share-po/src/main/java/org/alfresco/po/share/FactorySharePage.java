@@ -46,6 +46,7 @@ import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SiteGroupsPage;
 import org.alfresco.po.share.site.SiteMembersPage;
 import org.alfresco.po.share.site.datalist.DataListPage;
+import org.alfresco.po.share.site.document.CreateHtmlContentPage;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
@@ -114,6 +115,7 @@ public class FactorySharePage implements PageFactory
         pages.put("manage-permissions", ManagePermissionsPage.class);
         pages.put("plain", CreatePlainTextContentPage.class);
         pages.put("xml", CreatePlainTextContentPage.class);
+        pages.put("html", CreateHtmlContentPage.class);
         pages.put("inline-edit", InlineEditPage.class);
         pages.put("edit-metadata", EditDocumentPropertiesPage.class);
         pages.put("site-members", SiteMembersPage.class);

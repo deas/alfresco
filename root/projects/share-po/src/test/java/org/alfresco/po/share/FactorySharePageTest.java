@@ -33,6 +33,7 @@ import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SiteGroupsPage;
 import org.alfresco.po.share.site.datalist.DataListPage;
+import org.alfresco.po.share.site.document.CreateHtmlContentPage;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
@@ -98,6 +99,10 @@ public class FactorySharePageTest
             "%s/page/site/site1376665231775/manage-permissions?nodeRef=workspace://SpacesStore/94d767d5-175a-4a5a-8f59-db855f6159f2";
     private final String createPlainText = baseUrl +
             "%s/page/create-content?destination=workspace://SpacesStore/e35f7167-d5ba-4730-a74c-b3f438bb2ab8&itemId=cm:content&mimeType=text/plain";
+    private final String createHtmlText = baseUrl +
+                "%s/page/site/editdocumentsitetest1393512596448/create-content?destination=workspace://SpacesStore/9c125f44-e298-403d-b16d-ed34ade47d42&itemId=cm:content&mimeType=text/html";
+    private final String createXmlText = baseUrl +
+                "%s/page/site/editdocumentsitetest1393512596448/create-content?destination=workspace://SpacesStore/9c125f44-e298-403d-b16d-ed34ade47d42&itemId=cm:content&mimeType=text/xml";
     private final String newuser = baseUrl + "%s/page/console/admin-console/users#state=panel%3Dcreate";
     private final String customizeSite = baseUrl + "%s/page/site/site1376665231775/customise-site";
     private final String customizeSiteDashboard = baseUrl + "%s/page/site/site1376665231775/customise-site-dashboard";
@@ -175,6 +180,12 @@ public class FactorySharePageTest
             Assert.assertTrue(page instanceof ManagePermissionsPage);
 
             page = resolvePage(createPlainText, "createPlainText", drone);
+            Assert.assertTrue(page instanceof CreatePlainTextContentPage);
+
+            page = resolvePage(createHtmlText, "createHtmlText", drone);
+            Assert.assertTrue(page instanceof CreateHtmlContentPage);
+
+            page = resolvePage(createXmlText, "createXmlText", drone);
             Assert.assertTrue(page instanceof CreatePlainTextContentPage);
 
             page = resolvePage(inlineEdit, "inlineEdit", drone);

@@ -67,7 +67,9 @@ public enum ContentType
         {
             case PLAINTEXT:
             case XML:
-                 return new CreatePlainTextContentPage(drone);
+                return new CreatePlainTextContentPage(drone);
+            case HTML:
+                return new CreateHtmlContentPage(drone);
             case GOOGLEDOCS:
                 return new GoogleDocsAuthorisation(drone, null, isGoogleCreate);
             case GOOGLESPREADSHEET:

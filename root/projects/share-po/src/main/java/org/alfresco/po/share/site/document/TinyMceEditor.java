@@ -20,6 +20,7 @@ package org.alfresco.po.share.site.document;
 
 import java.util.NoSuchElementException;
 
+import org.alfresco.po.share.enums.Encoder;
 import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -27,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.owasp.esapi.ESAPI;
 
 /**
  * @author nshah
@@ -210,6 +212,38 @@ public class TinyMceEditor extends HtmlElement
     }
     
 
+    /**
+     * This method sets the given text into Site Content Configure text editor.
+     * 
+     * @param text
+     * @param encoder Encode the text before adding it to the text editor.
+     */
+    public void setText(String text, Encoder encoder)
+    {
+        String encodedComment = text;
+        if (encoder == null)
+        {
+            // Assume no encoding
+            encoder = Encoder.ENCODER_NOENCODER;
+        }
+        
+        switch (encoder)
+        {
+            case ENCODER_HTML:
+                encodedComment = ESAPI.encoder().encodeForHTML(text);
+                logger.info("Text encoded as HTML");
+                break;
+            case ENCODER_JAVASCRIPT:
+                encodedComment = ESAPI.encoder().encodeForJavaScript(text);
+                logger.info("Text encoded as JavaScript");
+                break;
+            default:
+                logger.info("Text is not encoded");
+        }        
+        setText(encodedComment);
+    }
+
+    
     /**
      * Click on TinyMCE editor's format option.    
      */

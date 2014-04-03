@@ -170,7 +170,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
         return FactorySharePage.resolvePage(drone);
     }
     
-    private void createContent(ContentDetails details) 
+    protected void createContent(ContentDetails details) 
     {
         if(details.getName() != null)
         {
@@ -192,7 +192,11 @@ public class CreatePlainTextContentPage extends InlineEditPage
             descriptionElement.clear();
             descriptionElement.sendKeys(details.getDescription());
         }
-        
+        createContentField(details);
+    }
+    
+    protected void createContentField(ContentDetails details)
+    {
         if(details.getContent() != null)
         {
             WebElement contentElement = drone.find(CONTENT);
@@ -255,7 +259,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
         return messages;
     }
     
-    private boolean isMessagePresent(By locator)
+    protected boolean isMessagePresent(By locator)
     {
         try
         {

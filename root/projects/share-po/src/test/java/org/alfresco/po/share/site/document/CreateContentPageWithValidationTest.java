@@ -23,8 +23,6 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.alfresco.po.share.DashBoardPage;
@@ -165,5 +163,32 @@ public class CreateContentPageWithValidationTest extends AbstractDocumentTest
         assertNotNull(messages.get(CreatePlainTextContentPage.Fields.NAME));
         detailsPage = editPage.selectCancel();
         documentLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+   }
+
+    /**
+     * Test case to create content with plain text.
+     * 
+     * @throws Exception
+     */
+    @Test(dependsOnMethods = "createContent", groups="Enterprise-only")
+    public void createHtmlContent() throws Exception
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        CreatePlainTextContentPage contentPage = documentLibPage.getNavigation().selectCreateContent(ContentType.HTML).render();
+
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName("");
+        contentDetails.setTitle("Test");
+        contentDetails.setDescription("Desc");
+        contentDetails.setContent("Test Doc");
+        contentPage = contentPage.createWithValidation(contentDetails).render();
+        assertNotNull(contentPage);
+        assertFalse(contentPage.getMessage(CreatePlainTextContentPage.Fields.NAME).isEmpty());
+
+        contentDetails.setName("Test Html");
+        DetailsPage detailsPage = contentPage.createWithValidation(contentDetails).render();
+        Map<String, Object> properties = detailsPage.getProperties();
+        
+        assertEquals(properties.get("Name"), contentDetails.getName());
    }
 }
