@@ -33,7 +33,7 @@ import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.enums.Encoder;
 import org.alfresco.po.share.site.SitePage;
-import org.alfresco.po.share.site.document.Links.DetailsPageType;
+import org.alfresco.po.share.site.document.DocumentAction.DetailsPageType;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -892,7 +892,7 @@ public abstract class DetailsPage extends SitePage
          *
          * @return true if visible
          */
-        public boolean isLinkPresent(Links linkType)
+        public boolean isDocumentActionPresent(DocumentAction action)
         {
                 DetailsPageType type;
                 try
@@ -910,13 +910,16 @@ public abstract class DetailsPage extends SitePage
                         {
                                 throw new UnsupportedOperationException("This action is not supported.");
                         }
-                        return drone.find(By.cssSelector(linkType.getLink(type))).isDisplayed();
+                        return drone.find(By.cssSelector(action.getDocumentAction(type))).isDisplayed();
                 }
                 catch (NoSuchElementException nse)
-                {
-                        logger.error("LinkType is not present Css value is :", nse);
-                }
-                return false;
+                {                        
+                        if(logger.isTraceEnabled())
+                        {
+                            logger.trace("LinkType is not present Css value is :", nse);
+                        }
+                        return false;
+                }              
         }
 
         /**

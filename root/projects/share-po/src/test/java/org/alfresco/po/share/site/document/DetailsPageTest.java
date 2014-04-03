@@ -133,20 +133,20 @@ public class DetailsPageTest extends AbstractTest
 
         DocumentDetailsPage docDetails = drone.getCurrentPage().render();
            
-        Assert.assertTrue(docDetails.isLinkPresent(Links.COPY_TO), "Copy to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.MOVE_TO), "Move to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.DELETE_CONTENT), "Copy to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.MANAGE_ASPECTS), "Copy to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.MANAGE_PERMISSION_DOC), "Copy to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.CHNAGE_TYPE), "Copy to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.EDIT_PROPERTIES), "Copy to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.DOWNLOAD_DOCUMENT), "Copy to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.VIEW_IN_EXLPORER), "Copy to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.UPLOAD_DOCUMENT), "Copy to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.EDIT_OFFLINE), "Copy to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.GOOGLE_DOCS_EDIT), "Copy to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.START_WORKFLOW), "Copy to is not present");
-        Assert.assertTrue(docDetails.isLinkPresent(Links.PUBLISH_ACTION), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.COPY_TO), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MOVE_TO), "Move to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.DELETE_CONTENT), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MANAGE_ASPECTS), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MANAGE_PERMISSION_DOC), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.CHNAGE_TYPE), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.EDIT_PROPERTIES), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.DOWNLOAD_DOCUMENT), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.VIEW_IN_EXLPORER), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.UPLOAD_DOCUMENT), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.EDIT_OFFLINE), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.GOOGLE_DOCS_EDIT), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.START_WORKFLOW), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.PUBLISH_ACTION), "Copy to is not present");
     }    
     
     
@@ -179,21 +179,31 @@ public class DetailsPageTest extends AbstractTest
     }
     
     @Test(dependsOnMethods="addCommentsToFolder", groups = { "alfresco-one" })
-    public void isLinkPresentFolderTest() throws Exception
+    public void isDocumentActionPresent() throws Exception
     {
 
         FolderDetailsPage folderDetails = drone.getCurrentPage().render();
            
-        Assert.assertTrue(folderDetails.isLinkPresent(Links.COPY_TO), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isLinkPresent(Links.MOVE_TO), "Move to is not present");
-        Assert.assertTrue(folderDetails.isLinkPresent(Links.DELETE_CONTENT), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isLinkPresent(Links.MANAGE_ASPECTS), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isLinkPresent(Links.MANAGE_PERMISSION_FOL), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isLinkPresent(Links.CHNAGE_TYPE), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isLinkPresent(Links.EDIT_PROPERTIES), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isLinkPresent(Links.MANAGE_RULES), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isLinkPresent(Links.DOWNLOAD_FOLDER), "Copy to is not present");
-        Assert.assertTrue(folderDetails.isLinkPresent(Links.VIEW_IN_EXPLORER), "Copy to is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.COPY_TO), "Copy to is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.MOVE_TO), "Move to is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.DELETE_CONTENT), "Copy to is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.MANAGE_ASPECTS), "Copy to is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.MANAGE_PERMISSION_FOL), "Copy to is not present");       
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.CHNAGE_TYPE), "Copy to is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.EDIT_PROPERTIES), "Copy to is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.MANAGE_RULES), "Copy to is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.DOWNLOAD_FOLDER), "Copy to is not present");
+        Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.VIEW_IN_EXPLORER), "Copy to is not present");
 
     }    
+    
+    @Test(dependsOnMethods="isLinkPresentFolderTest", groups = { "alfresco-one" }, expectedExceptions={UnsupportedOperationException.class})
+    public void isLinkUnspportedTest() throws Exception
+    {
+        FolderDetailsPage folderDetailsNew = new FolderDetailsPage(drone);
+
+        folderDetailsNew.isDocumentActionPresent(DocumentAction.MANAGE_PERMISSION_DOC);
+
+    }    
+   
 }
