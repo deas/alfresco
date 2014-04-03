@@ -845,7 +845,7 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (TimeoutException te)
                 {
-                        throw new PageOperationException("Cannot go back to document library");
+                        throw new PageOperationException("Cannot go back to document library", te);
                 }
         }
 
@@ -914,7 +914,7 @@ public abstract class DetailsPage extends SitePage
                 }
                 catch (NoSuchElementException nse)
                 {
-                        logger.error("LinkType is not present Css value is :");
+                        logger.error("LinkType is not present Css value is :", nse);
                 }
                 return false;
         }
@@ -997,7 +997,7 @@ public abstract class DetailsPage extends SitePage
                 catch (NoSuchElementException e)
                 {
                         logger.error("Unable to find the edit comments cancel button css." + e);
-                        throw new PageException("Error in cancelling the edit comments.");
+                        throw new PageException("Error in cancelling the edit comments.", e);
                 }
         }
 

@@ -57,7 +57,7 @@ public class UserSearchRow implements SearchRow
         }
         catch(NoSuchElementException nse)
         {
-            throw new NoSuchElementException("ADD button is not present in the element");
+            throw new NoSuchElementException("ADD button is not present in the element", nse);
         }
 
     }

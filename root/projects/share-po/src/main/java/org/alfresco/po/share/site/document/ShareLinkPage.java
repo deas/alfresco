@@ -210,7 +210,7 @@ public class ShareLinkPage extends SharePage
         catch (TimeoutException ex)
         {
             logger.error("Exceeded time to find the Facebook link element", ex);
-            throw new PageException("Unable to find Facebook link");
+            throw new PageException("Unable to find Facebook link", ex);
         }
     }
 
@@ -245,7 +245,7 @@ public class ShareLinkPage extends SharePage
         catch (TimeoutException ex)
         {
             logger.error("Exceeded time to find the Twitter link element", ex);
-            throw new PageException("Unable to find Twitter link");
+            throw new PageException("Unable to find Twitter link", ex);
         }
     }
 
@@ -280,7 +280,7 @@ public class ShareLinkPage extends SharePage
         catch (TimeoutException ex)
         {
             logger.error("Exceeded time to find the Google+ link element", ex);
-            throw new PageException("Unable to find Google+ link");
+            throw new PageException("Unable to find Google+ link", ex);
         }
     }
 }

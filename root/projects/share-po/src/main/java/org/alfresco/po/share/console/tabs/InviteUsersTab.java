@@ -98,11 +98,14 @@ public class InviteUsersTab extends CloudConsolePage
     {
         drone.findAndWait(ANY_RESULTS, maxPageLoadingTime);
         List<WebElement> successList;
-        try {
+        try 
+        {
             successList = drone.findAndWaitForElements(SUCCESS_INVITES);
-        } catch (TimeoutException t){
+        } 
+        catch (TimeoutException t)
+        {
             //at the moment i should nit verify negative tests, if we need verify negative invites we should remove exception.
-            throw new UnsupportedOperationException("No success invitations");
+            throw new UnsupportedOperationException("No success invitations", t);
         }
 
         ArrayList<String> userSuccessList = new ArrayList<>();

@@ -188,8 +188,8 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to find the help icon." + nse);
-            throw new PageOperationException("Unable to click the Help icon");
+            logger.error("Unable to find the help icon.", nse);
+            throw new PageOperationException("Unable to click the Help icon", nse);
         }
     }
 
@@ -206,7 +206,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("Unable to find the New Topic icon." + nse);
+            logger.error("Unable to find the New Topic icon.", nse);
 
         }
         throw new PageOperationException("Unable to click the New Topic icon");

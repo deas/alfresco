@@ -910,7 +910,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageException("Unable to click download folder as a zip");
+            throw new PageException("Unable to click download folder as a zip", nse);
         }
     }
 
@@ -2094,7 +2094,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         catch (TimeoutException e)
         {
             logger.error("Error renaming content: ", e);
-            throw new PageException("Error While renaming content: " + newContentName);
+            throw new PageException("Error While renaming content: " + newContentName, e);
         }
     }
 

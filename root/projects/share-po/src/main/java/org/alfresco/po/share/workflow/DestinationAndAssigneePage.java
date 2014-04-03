@@ -504,7 +504,7 @@ public class DestinationAndAssigneePage extends SharePage
         }
         catch(TimeoutException toe)
         {
-            logger.error("Submit button not found!!");
+            logger.error("Submit button not found!!", toe);
         }
         throw new PageException();
     }
@@ -547,7 +547,7 @@ public class DestinationAndAssigneePage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Unable to find \"Create New Folder\" element");
+                logger.trace("Unable to find \"Create New Folder\" element", nse);
             }
         }
         throw new PageException("Unable to find \"Create New Folder\" element");
@@ -570,7 +570,7 @@ public class DestinationAndAssigneePage extends SharePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Unable to find Close button");
+                logger.trace("Unable to find Close button", nse);
             }
         }
         throw new PageException("Unable to find Close button");
@@ -588,7 +588,7 @@ public class DestinationAndAssigneePage extends SharePage
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find \"Sync\" button");
+            throw new PageOperationException("Unable to find \"Sync\" button", nse);
         }
     }
 }

@@ -845,8 +845,8 @@ public class DocumentLibraryNavigation extends SharePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Exceeded the time to find css." + e);
-            throw new PageException("Exceeded the time to find css.");
+            logger.error("Exceeded the time to find css.", e);
+            throw new PageException("Exceeded the time to find css.", e);
         }
     }
     

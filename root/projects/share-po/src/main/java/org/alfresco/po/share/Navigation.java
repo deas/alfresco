@@ -278,7 +278,7 @@ public class Navigation extends SharePage
                 }
                 catch (TimeoutException ne)
                 {
-                        throw new PageException("Advance Search is not visible");
+                        throw new PageException("Advance Search is not visible", ne);
                 }
         }
 

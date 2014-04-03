@@ -115,7 +115,7 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
             {
                 downloadFolderAsZip(contentActions,"retry");
             }
-            throw new PageException("Unable to click download folder as a zip");
+            throw new PageException("Unable to click download folder as a zip", nse);
         }
     }
     

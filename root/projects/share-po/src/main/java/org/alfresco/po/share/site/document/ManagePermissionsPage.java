@@ -641,7 +641,7 @@ public class ManagePermissionsPage extends SharePage
                 }
             }catch(NoSuchElementException nse)
             {
-                throw new PageException("User with username containing - '" + searchText + "' not found");
+                throw new PageException("User with username containing - '" + searchText + "' not found", nse);
             }
             return false;
         }
@@ -758,7 +758,7 @@ public class ManagePermissionsPage extends SharePage
             try
             {
                 //By USERNAME_SPAN = By.cssSelector("h3>span");
-            
+
                 for (UserSearchRow  element: searchUserAndGroup(searchText))
                 {
                     if(element.getUserName().contains(searchText))
@@ -768,7 +768,7 @@ public class ManagePermissionsPage extends SharePage
                 }
             }catch(NoSuchElementException nse)
             {
-                throw new PageException("User with username containing - '" + searchText + "' not found");
+                throw new PageException("User with username containing - '" + searchText + "' not found", nse);
             }
             return false;
         }

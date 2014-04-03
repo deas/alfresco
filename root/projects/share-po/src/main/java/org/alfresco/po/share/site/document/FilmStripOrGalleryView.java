@@ -828,8 +828,8 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         }
         catch (NoSuchElementException e)
         {
-            logger.error("Exceeded time to find the css." + e);
-            throw new PageException("Unable to find and click the more link");
+            logger.error("Exceeded time to find the css.", e);
+            throw new PageException("Unable to find and click the more link", e);
         }
     }
 

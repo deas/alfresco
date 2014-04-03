@@ -179,8 +179,8 @@ public class ConfigureSavedSearchDialogBoxPage extends SharePage
         }
         catch (NoSuchElementException te)
         {
-            logger.error("Unable to find the " + buttonName + " button." + te);
-            throw new PageOperationException("Unable to click the " + buttonName + " Button.");
+            logger.error("Unable to find the " + buttonName + " button.", te);
+            throw new PageOperationException("Unable to click the " + buttonName + " Button.", te);
         }
     }
 
