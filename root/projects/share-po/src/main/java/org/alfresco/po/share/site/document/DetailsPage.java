@@ -877,7 +877,9 @@ public abstract class DetailsPage extends SitePage
                         }
 
                         folderLink.click();
-                        return new RepositoryPage(drone);
+                        RepositoryPage repositoryPage = new RepositoryPage(drone);
+                        repositoryPage.setViewType(repositoryPage.getNavigation().getViewType());
+                        return repositoryPage;
                 }
                 catch (TimeoutException te)
                 {
@@ -937,6 +939,13 @@ public abstract class DetailsPage extends SitePage
                         String setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", newComment);
                         drone.executeJavaScript(setCommentJs);
                         // check to ensure js completed
+                        if (isErrorBalloonMessageDisplay() || newComment.equals(new TinyMceEditor(drone).getText()))
+                        {
+                                if (logger.isTraceEnabled())
+                                {
+                                        logger.trace("Adding comment JavaScript executed successfully");
+                                }
+                        }
                         return FactorySharePage.resolvePage(drone);
                 }
                 catch (TimeoutException te)
@@ -1017,10 +1026,17 @@ public abstract class DetailsPage extends SitePage
          */
         public boolean isCommentCorrect(String comment)
         {
-                checkNotNull(comment);
-                return isCommentButtonsEnableAndDisplay(comment) &&
-                        isCommentAvatarDisplay(comment) &&
-                        isCommentatorNameDisplayAndEnable(comment);
+                try
+                {
+                        checkNotNull(comment);
+                        return isCommentButtonsEnableAndDisplay(comment) &&
+                                isCommentAvatarDisplay(comment) &&
+                                isCommentatorNameDisplayAndEnable(comment);
+                }
+                catch (NoSuchElementException e)
+                {
+                        return false;
+                }
         }
 
         /**
@@ -1074,25 +1090,31 @@ public abstract class DetailsPage extends SitePage
 
         private WebElement getCommentWebElement(String comment)
         {
-                List<WebElement> comments = drone.findAndWaitForElements(By.xpath("//div[@class='comment-details']"));
-
-                if (logger.isTraceEnabled())
+                try
                 {
-                        logger.trace(String.format("Are there comments on the page : %s ", comments.isEmpty()));
-                }
-
-                for (WebElement commentElement : comments)
-                {
-                        WebElement targetComment = commentElement.findElement(By.xpath(DIV_COMMENT_CONTENT));
-                        String commentOnPage = targetComment.getText();
-                        if (comment.equalsIgnoreCase(commentOnPage))
+                        List<WebElement> comments = drone.findAndWaitForElements(By.xpath("//div[@class='comment-details']"));
+                        if (logger.isTraceEnabled())
                         {
-                                if (logger.isTraceEnabled())
-                                {
-                                        logger.trace(String.format("We have found a match to comment ' %s ' : true", comment));
-                                }
-                                return commentElement;
+                                logger.trace(String.format("Are there comments on the page : %s ", comments.isEmpty()));
                         }
+
+                        for (WebElement commentElement : comments)
+                        {
+                                WebElement targetComment = commentElement.findElement(By.xpath(DIV_COMMENT_CONTENT));
+                                String commentOnPage = targetComment.getText();
+                                if (comment.equals(commentOnPage))
+                                {
+                                        if (logger.isTraceEnabled())
+                                        {
+                                                logger.trace(String.format("We have found a match to comment ' %s ' : true", comment));
+                                        }
+                                        return commentElement;
+                                }
+                        }
+                }
+                catch (StaleElementReferenceException e)
+                {
+                        return getCommentWebElement(comment);
                 }
                 throw new NoSuchElementException("Required comment didn't found!");
         }

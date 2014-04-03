@@ -1,11 +1,15 @@
 package org.alfresco.po.share.site.document;
 
+import com.google.common.base.Predicate;
 import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneImpl;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
@@ -32,7 +36,7 @@ public class PaginationForm extends HtmlElement
                 return drone.findAndWait(FORM_XPATH);
         }
 
-        public int getCurrentPageCount()
+        public int getCurrentPageNumber()
         {
                 WebElement currentPageNumberElem = getFormElement().findElement(CURRENT_PAGE_SPAN);
                 return Integer.valueOf(currentPageNumberElem.getText());
@@ -40,13 +44,17 @@ public class PaginationForm extends HtmlElement
 
         public HtmlPage clickNext()
         {
+                int beforePageNumber = getCurrentPageNumber();
                 getFormElement().findElement(NEXT_PAGE_LINK).click();
+                waitUntilPageNumberChanged(beforePageNumber);
                 return drone.getCurrentPage().render();
         }
 
         public HtmlPage clickPrevious()
         {
+                int beforePageNumber = getCurrentPageNumber();
                 getFormElement().findElement(PREVIOUS_PAGE_LINK).click();
+                waitUntilPageNumberChanged(beforePageNumber);
                 return drone.getCurrentPage().render();
         }
 
@@ -63,7 +71,9 @@ public class PaginationForm extends HtmlElement
                         int currentLinkNumber = Integer.valueOf(paginationLink.getText());
                         if (currentLinkNumber == linkNumber)
                         {
+                                int beforePageNumber = getCurrentPageNumber();
                                 paginationLink.click();
+                                waitUntilPageNumberChanged(beforePageNumber);
                                 break;
                         }
                 }
@@ -85,5 +95,27 @@ public class PaginationForm extends HtmlElement
                 {
                         return false;
                 }
+        }
+
+        private void waitUntilPageNumberChanged(int beforePageNumber)
+        {
+                WebDriverWait wait = new WebDriverWait(((WebDroneImpl) drone).getDriver(), 5);
+                wait.until(paginationPageChanged(beforePageNumber));
+        }
+
+
+        private Predicate<WebDriver> paginationPageChanged(final int beforePageNumber)
+        {
+                return new Predicate<WebDriver>()
+                {
+                        @Override
+                        public boolean apply(WebDriver driver)
+                        {
+                                WebElement currentPageIndicator =
+                                        driver.findElement(FORM_XPATH)
+                                                .findElement(CURRENT_PAGE_SPAN);
+                                return Integer.valueOf(currentPageIndicator.getText()) != beforePageNumber;
+                        }
+                };
         }
 }

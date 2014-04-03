@@ -56,7 +56,7 @@ public class RepositoryPage extends DocumentLibraryPage
      * Constructor.
      * 
      * @param drone             WebDriver to access page
-     * @param subfolderName     a subfolder name when drilling down
+     * @param shouldHaveFiles    a subfolder name when drilling down
      */
     public RepositoryPage(WebDrone drone, final boolean shouldHaveFiles)
     {

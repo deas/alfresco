@@ -37,7 +37,7 @@ public class TinyMceEditor extends HtmlElement {
     private Log logger = LogFactory.getLog(TinyMceEditor.class);
 
     private static final String TINY_MCE_SELECT_ALL_COMMAND = "tinyMCE.activeEditor.selection.select(tinyMCE.activeEditor.getBody(),true);";
-    private static final String CSS_COLOUR_FONT = "#tinymce>p>font";
+    private static final String XPATH_COLOUR_FONT = "//font";
     private static final String CSS_REMOVE_FORMAT = ".mceIcon.mce_removeformat";
     private static final String CSS_COLOR_ATT = "rich.txt.editor.color.code";
     private static final String CSS_STR_BOLD = ".mceIcon.mce_bold";
@@ -268,14 +268,14 @@ public class TinyMceEditor extends HtmlElement {
     public String getColourAttribute() {
         try {
             drone.switchToFrame(getFrameId());
-            WebElement element = drone.findAndWait(By.cssSelector(CSS_COLOUR_FONT));
+            WebElement element = drone.findAndWait(By.xpath(XPATH_COLOUR_FONT));
             if (!CSS_COLOR_ATT.equals(element.getAttribute("color")) || CSS_COLOR_ATT.equals(element.getAttribute("style"))) {
                 drone.switchToDefaultContent();
                 return "BLUE";
             }
 
         } catch (NoSuchElementException noSuchElementExp) {
-            logger.error("Element :" + CSS_COLOUR_FONT + " does not exist");
+            logger.error("Element :" + XPATH_COLOUR_FONT + " does not exist");
         }
         return "";
     }
