@@ -23,7 +23,7 @@
             <class name="org.alfresco.share.site.document.TableViewDocLibTest" />
 			<class name="org.alfresco.share.dashlet.SiteSearchDashletTest" />
 			
-			<class name="org.alfresco.share.site.document.ShareRefreshDocLibToolBarContent"/>
+			<class name="org.alfresco.share.site.document.GalleryViewTest"/>
 
             <class name="org.alfresco.share.site.document.ManagePermissionTest" />
 
