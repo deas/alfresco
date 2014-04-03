@@ -696,6 +696,7 @@ public class ShareUserSitePage extends AbstractUtils
 
     /**
      * Edits the document using the in-line edit form.
+     * Assumes user is logged in and DocLib for the selected site is open
      * 
      * @param drone
      * @param fileName
@@ -706,17 +707,10 @@ public class ShareUserSitePage extends AbstractUtils
     public static HtmlPage editTextDocumentInLine(WebDrone drone, String fileName, ContentDetails details)
     {
         InlineEditPage inlineEditPage;
-        SharePage page = ShareUser.getSharePage(drone);
-        if(page instanceof DocumentLibraryPage)
-        {
-            DocumentLibraryPage docLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
 
-            inlineEditPage = docLibPage.getFileDirectoryInfo(fileName).selectInlineEdit().render();
-        }
-        else
-        {
-            inlineEditPage = (InlineEditPage)page;
-        }
+        DocumentLibraryPage docLibPage = ShareUser.getSharePage(drone).render();
+
+        inlineEditPage = docLibPage.getFileDirectoryInfo(fileName).selectInlineEdit().render();
         EditTextDocumentPage editTextDocumentPage = inlineEditPage.getInlineEditDocumentPage(MimeType.TEXT).render();
 
         return editTextDocumentPage.saveWithValidation(details).render();
