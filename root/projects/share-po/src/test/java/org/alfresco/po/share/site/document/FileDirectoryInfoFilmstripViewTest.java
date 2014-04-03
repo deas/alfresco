@@ -774,9 +774,11 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         
         documentLibPage = fileDirInfo.clickOnCategoryNameLink(Categories.LANGUAGES.getValue()).render();
         int i = 0;
-        do{
+        do
+        {
             i++;
-            drone.refresh();        
+            drone.refresh();
+            documentLibPage = drone.getCurrentPage().render();
         }while(!documentLibPage.isFileVisible(folderName)  && i < 5);
         
         Assert.assertTrue(documentLibPage.isFileVisible(folderName));
