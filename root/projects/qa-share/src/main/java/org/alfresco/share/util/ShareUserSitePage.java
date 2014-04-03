@@ -95,7 +95,7 @@ public class ShareUserSitePage extends AbstractUtils
                     else
                     {
                         logger.info("Navigating to Folder: " + path[i]);
-                        docPage.selectFolder(path[i]).render();
+                        docPage = docPage.selectFolder(path[i]).render();
                     }
                  }	
             }
@@ -720,5 +720,19 @@ public class ShareUserSitePage extends AbstractUtils
         EditTextDocumentPage editTextDocumentPage = inlineEditPage.getInlineEditDocumentPage(MimeType.TEXT).render();
 
         return editTextDocumentPage.saveWithValidation(details).render();
+    }
+
+    /**
+     * Assumes you are on Doclib page. Does the action of clicking on copy to action from document lib navigation.
+     * 
+     * @param drone
+     */
+    public static void copyToActionFromNavigation(WebDrone drone)
+    {
+        DocumentLibraryPage docLibPage = ShareUser.getSharePage(drone).render();
+        CopyOrMoveContentPage copyContent = docLibPage.getNavigation().selectCopyTo().render();
+
+        // Keep the selected Destination: Current Site > DocumentLibrary Folder
+        docLibPage = copyContent.selectOkButton().render();
     }
 }

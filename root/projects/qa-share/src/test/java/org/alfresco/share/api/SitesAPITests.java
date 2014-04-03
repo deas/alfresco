@@ -21,14 +21,18 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.dashlet.MySitesDashlet;
 import org.alfresco.po.share.dashlet.SiteMembersDashlet;
 import org.alfresco.po.share.enums.UserRole;
+import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.po.share.site.SitePageType;
 import org.alfresco.rest.api.tests.client.HttpResponse;
 import org.alfresco.rest.api.tests.client.PublicApiClient.ListResponse;
 import org.alfresco.rest.api.tests.client.PublicApiException;
@@ -59,7 +63,7 @@ import org.testng.annotations.Test;
  * @author Abhijeet Bharade
  */
 @Listeners(FailedTestListener.class)
-@Test(groups = { "AlfrescoOne", "Enterprise42", "Cloud2" })
+@Test(groups = { "AlfrescoOne" })
 public class SitesAPITests extends SitesAPI
 {
 
@@ -114,7 +118,15 @@ public class SitesAPITests extends SitesAPI
         ShareUser.login(drone, testUser);
 
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC, true);
+        CustomizeSitePage customizeSizePage = ShareUser.customizeSite(drone, siteName);
+
+        List<SitePageType> pageTypes = new ArrayList<SitePageType>();
+        pageTypes.add(SitePageType.WIKI);
+        pageTypes.add(SitePageType.BLOG);
+        customizeSizePage.addPages(pageTypes);
+
         ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
+
         ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC, true);
         ShareUser.createSite(drone, siteName2, SITE_VISIBILITY_PUBLIC, true);
         ShareUser.createSite(drone, siteName3, SITE_VISIBILITY_PUBLIC, true);
@@ -1240,15 +1252,15 @@ public class SitesAPITests extends SitesAPI
         assertEquals(response.getPaging().getMaxItems(), new Integer(2147483));
         assertEquals(response.getPaging().getSkipCount(), new Integer(2));
 
-        // params.clear();
-        // params.put(SKIP_COUNT, "0");
-        // params.put("maxItems", "1");
-        // response = getSiteContainers(testUser, DOMAIN, params, siteName);
-        //
-        // assertNotNull(response);
-        // assertTrue(response.getPaging().getHasMoreItems());
-        // assertEquals(response.getPaging().getMaxItems(), new Integer(3));
-        // assertEquals(response.getPaging().getSkipCount(), new Integer(0));
+        params.clear();
+        params.put(SKIP_COUNT, "0");
+        params.put("maxItems", "1");
+        response = getSiteContainers(testUser, DOMAIN, params, siteName);
+
+        assertNotNull(response);
+        assertTrue(response.getPaging().getHasMoreItems());
+        assertEquals(response.getPaging().getMaxItems(), new Integer(1));
+        assertEquals(response.getPaging().getSkipCount(), new Integer(0));
     }
 
     @Test

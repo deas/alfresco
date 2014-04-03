@@ -128,11 +128,10 @@ public class FilmStripDocLibTest extends AbstractUtils
 
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName).render();
 
-        // TODO: Remove call to render from utils that render specific page object
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
     }
 
     /**
@@ -187,31 +186,30 @@ public class FilmStripDocLibTest extends AbstractUtils
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Navigate to filmstrip view
-        // TODO: Remove call to render from utils that render specific page object
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
 
         // The first item is displayed in the foreground
-        assertEquals(docLibPage.getDisplyedFilmstripItem(), fileName1);
+        assertEquals(docLibPage.getFilmstripActions().getDisplyedFilmstripItem(), fileName1);
 
         // No Metadata displayed
         assertFalse(ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).isInfoPopUpDisplayed());
 
         // There are elements of navigation
-        assertTrue(docLibPage.isNextFilmstripArrowPresent());
+        assertTrue(docLibPage.getFilmstripActions().isNextFilmstripArrowPresent());
 
         // down arrow pointer in the middle
-        docLibPage.toggleNavHandleForFilmstrip();
+        docLibPage.getFilmstripActions().toggleNavHandleForFilmstrip();
 
         // It is possible browsing of documents
-        docLibPage.selectNextFilmstripItem().render();
+        docLibPage.getFilmstripActions().selectNextFilmstripItem().render();
 
         // down arrow pointer in the middle
-        docLibPage.toggleNavHandleForFilmstrip();
+        docLibPage.getFilmstripActions().toggleNavHandleForFilmstrip();
 
-        assertEquals(docLibPage.getDisplyedFilmstripItem(), fileName2);
+        assertEquals(docLibPage.getFilmstripActions().getDisplyedFilmstripItem(), fileName2);
     }
 
     /**
@@ -259,11 +257,7 @@ public class FilmStripDocLibTest extends AbstractUtils
             documentLibPage = documentLibPage.getNavigation().selectAll().render();
 
             // Select Copy To
-            // TODO: write or use util to cpy / move
-            CopyOrMoveContentPage copyContent = documentLibPage.getNavigation().selectCopyTo().render();
-
-            // Keep the selected Destination: Current Site > DocumentLibrary Folder
-            documentLibPage = copyContent.selectOkButton().render();
+            ShareUserSitePage.copyToActionFromNavigation(drone);
         }
         ShareUser.logout(customDrone);
 
@@ -274,10 +268,8 @@ public class FilmStripDocLibTest extends AbstractUtils
     {
         /** Start Test */
         String testName = getTestName();
-        String folderName = getFolderName(testName);
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
-        String fileName1 = getFileName(testName + "1");
 
         // User login.
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
@@ -285,42 +277,41 @@ public class FilmStripDocLibTest extends AbstractUtils
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        // TODO: Remove call to render from utils that render specific page object
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
 
-        String firstDiplayedItem = docLibPage.getDisplyedFilmstripItem();
+        String firstDiplayedItem = docLibPage.getFilmstripActions().getDisplyedFilmstripItem();
 
         // Click the right arrow pointer in the foreground;
-        docLibPage = docLibPage.selectNextFilmstripItem().render();
-        assertTrue(docLibPage.getDisplyedFilmstripItem().contains(testName));
-        String secondDisplayedItem = docLibPage.getDisplyedFilmstripItem();
+        docLibPage = docLibPage.getFilmstripActions().selectNextFilmstripItem().render();
+        assertTrue(docLibPage.getFilmstripActions().getDisplyedFilmstripItem().contains(testName));
+        String secondDisplayedItem = docLibPage.getFilmstripActions().getDisplyedFilmstripItem();
 
         // Click the left arrow pointer in the foreground;
-        docLibPage = docLibPage.selectPreviousFilmstripItem().render();
-        assertEquals(docLibPage.getDisplyedFilmstripItem(), firstDiplayedItem);
+        docLibPage = docLibPage.getFilmstripActions().selectPreviousFilmstripItem().render();
+        assertEquals(docLibPage.getFilmstripActions().getDisplyedFilmstripItem(), firstDiplayedItem);
 
         // Click on the arbitrary document or folder;
         FileDirectoryInfo fileInfo = docLibPage.getFileDirectoryInfo(secondDisplayedItem);
         docLibPage = fileInfo.selectThumbnail().render();
 
-        assertEquals(docLibPage.getDisplyedFilmstripItem(), secondDisplayedItem);
+        assertEquals(docLibPage.getFilmstripActions().getDisplyedFilmstripItem(), secondDisplayedItem);
 
         // Click the down arrow pointer in the middle for any document or folder;
-        docLibPage.toggleNavHandleForFilmstrip();
+        docLibPage.getFilmstripActions().toggleNavHandleForFilmstrip();
 
-        assertFalse(docLibPage.isFilmstripTapeDisplpayed());
-        docLibPage.toggleNavHandleForFilmstrip();
+        assertFalse(docLibPage.getFilmstripActions().isFilmstripTapeDisplpayed());
+        docLibPage.getFilmstripActions().toggleNavHandleForFilmstrip();
 
         // Click the right arrow pointer on the tape;
-        docLibPage = docLibPage.selectNextFilmstripTape().render();
-        assertTrue(docLibPage.isPreviousFilmstripArrowPresent());
+        docLibPage = docLibPage.getFilmstripActions().selectNextFilmstripTape().render();
+        assertTrue(docLibPage.getFilmstripActions().isPreviousFilmstripArrowPresent());
 
         // Click the left arrow pointer on the tape;
-        docLibPage = docLibPage.selectPreviousFilmstripTape().render();
-        assertTrue(docLibPage.isNextFilmstripArrowPresent());
+        docLibPage = docLibPage.getFilmstripActions().selectPreviousFilmstripTape().render();
+        assertTrue(docLibPage.getFilmstripActions().isNextFilmstripArrowPresent());
 
         // Select the folder and click on it in the foreground;
         docLibPage = docLibPage.selectFolder(firstDiplayedItem).render();
@@ -328,7 +319,7 @@ public class FilmStripDocLibTest extends AbstractUtils
 
         // Return to the Document Library page;
         docLibPage = ShareUser.openDocumentLibrary(customDrone);
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
     }
 
     /**
@@ -382,15 +373,13 @@ public class FilmStripDocLibTest extends AbstractUtils
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        // TODO: Remove call to render from utils that render specific page object
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        // TODO: Remove call to render from utils that render specific page object
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // Verify that only thumbnails of items are displayed without metadata;
         // Gets the list of visible files from thumbnails.
@@ -504,11 +493,10 @@ public class FilmStripDocLibTest extends AbstractUtils
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        // TODO: Remove call to render from utils that render specific page object
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
 
         // Verify the ability to play the video file and control the player;
 
@@ -570,11 +558,10 @@ public class FilmStripDocLibTest extends AbstractUtils
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        // TODO: Remove call to render from utils that render specific page object: in all places
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
         
 
         FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
@@ -583,7 +570,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         fileInfo.selectCheckbox();
         
         // The checkbox is checked, a blue border is diplayed around the thumbnail;
-        List<String> selectFiles = docLibPage.getSelectedFIlesForFilmstrip();
+        List<String> selectFiles = docLibPage.getFilmstripActions().getSelectedFIlesForFilmstrip();
         assertTrue(selectFiles.contains(fileName1), selectFiles.toString());
         assertFalse(selectFiles.contains(fileName2), selectFiles.toString());
 
@@ -593,7 +580,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         fileInfo2.selectThumbnail();
         fileInfo2.selectCheckbox();
 
-        selectFiles = docLibPage.getSelectedFIlesForFilmstrip();
+        selectFiles = docLibPage.getFilmstripActions().getSelectedFIlesForFilmstrip();
         assertTrue(selectFiles.contains(fileName1), selectFiles.toString());
         assertTrue(selectFiles.contains(fileName2), selectFiles.toString());
     }
@@ -648,10 +635,10 @@ public class FilmStripDocLibTest extends AbstractUtils
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
 
         FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
@@ -751,10 +738,10 @@ public class FilmStripDocLibTest extends AbstractUtils
         ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
 
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
@@ -859,10 +846,10 @@ public class FilmStripDocLibTest extends AbstractUtils
         ShareUser.uploadFileInFolder(customDrone, new String[] { deleteFile });
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
 
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
         FileDirectoryInfo fileInfo1 = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
@@ -916,7 +903,7 @@ public class FilmStripDocLibTest extends AbstractUtils
 
         // Deselect All
         docLibPage.getNavigation().selectDesellectAll();
-        List<String> selectFiles = docLibPage.getSelectedFIlesForFilmstrip();
+        List<String> selectFiles = docLibPage.getFilmstripActions().getSelectedFIlesForFilmstrip();
         assertFalse(selectFiles.contains(fileName1), selectFiles.toString());
         
         // Delete
@@ -984,17 +971,17 @@ public class FilmStripDocLibTest extends AbstractUtils
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
         docLibPage = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).selectThumbnail().render();
 
         // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
 
-        docLibPage = docLibPage.sendKeyRightArrowForFilmstrip().render();
-        assertEquals(docLibPage.getDisplyedFilmstripItem(), fileName2);
+        docLibPage = docLibPage.getFilmstripActions().sendKeyRightArrowForFilmstrip().render();
+        assertEquals(docLibPage.getFilmstripActions().getDisplyedFilmstripItem(), fileName2);
 
-        docLibPage = docLibPage.sendKeyLeftArrowForFilmstrip().render();
-        assertEquals(docLibPage.getDisplyedFilmstripItem(), fileName1);
+        docLibPage = docLibPage.getFilmstripActions().sendKeyLeftArrowForFilmstrip().render();
+        assertEquals(docLibPage.getFilmstripActions().getDisplyedFilmstripItem(), fileName1);
 
         // Select document with several pages. Navigate up and down using keys.
         // Cannot be implemented
@@ -1053,7 +1040,7 @@ public class FilmStripDocLibTest extends AbstractUtils
 
         docLibPage = ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // Rename file name.
         FileDirectoryInfo fileInfo1 = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
@@ -1068,7 +1055,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         // and click "Cancel" link;
         fileInfo1.contentNameClickCancel();
 
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
         assertTrue(docLibPage.isFileVisible(fileName1));
 
         fileInfo1 = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
@@ -1077,7 +1064,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         // type any new name and click "Save" button;
         fileInfo1.renameContent(fileName1 + "-Updated");
 
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
         assertTrue(docLibPage.isFileVisible(fileName1 + "-Updated"));
 
     }
@@ -1134,7 +1121,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // Rename file name.
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
@@ -1149,7 +1136,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         // and click "Cancel" link;
         folderInfo.contentNameClickCancel();
 
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
         assertTrue(docLibPage.isFileVisible(folderName));
 
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
@@ -1158,7 +1145,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         // type any new name and click "Save" button;
         folderInfo.renameContent(folderName + "-Updated");
 
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
         assertTrue(docLibPage.isFileVisible(folderName + "-Updated"));
 
     }
@@ -1210,7 +1197,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         FileDirectoryInfo fileInfo1 = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
@@ -1291,7 +1278,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
@@ -1381,7 +1368,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         docLibPage = ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
@@ -1528,7 +1515,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
@@ -1647,46 +1634,46 @@ public class FilmStripDocLibTest extends AbstractUtils
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
         FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
         // Select any folder and click the down arrow pointer;
-        docLibPage.toggleNavHandleForFilmstrip();
+        docLibPage.getFilmstripActions().toggleNavHandleForFilmstrip();
         assertFalse(folderInfo.isCheckBoxVisible());
         assertFalse(folderInfo.isInfoIconVisible());
-        assertFalse(docLibPage.isFilmstripTapeDisplpayed());
-        assertTrue(docLibPage.isNextFilmstripArrowPresent());
+        assertFalse(docLibPage.getFilmstripActions().isFilmstripTapeDisplpayed());
+        assertTrue(docLibPage.getFilmstripActions().isNextFilmstripArrowPresent());
 
         // Click up arrow pointer;
-        docLibPage.toggleNavHandleForFilmstrip();
+        docLibPage.getFilmstripActions().toggleNavHandleForFilmstrip();
         assertTrue(folderInfo.isCheckBoxVisible());
         assertTrue(folderInfo.isInfoIconVisible());
-        assertTrue(docLibPage.isFilmstripTapeDisplpayed());
-        assertTrue(docLibPage.isNextFilmstripArrowPresent());
+        assertTrue(docLibPage.getFilmstripActions().isFilmstripTapeDisplpayed());
+        assertTrue(docLibPage.getFilmstripActions().isNextFilmstripArrowPresent());
 
         // Select any document and click the down arrow pointer;
         fileInfo.selectThumbnail();
         fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
-        docLibPage.toggleNavHandleForFilmstrip();
+        docLibPage.getFilmstripActions().toggleNavHandleForFilmstrip();
         assertFalse(fileInfo.isCheckBoxVisible());
         assertFalse(fileInfo.isInfoIconVisible());
-        assertFalse(docLibPage.isFilmstripTapeDisplpayed());
-        assertTrue(docLibPage.isNextFilmstripArrowPresent());
-        assertTrue(docLibPage.isPreviousFilmstripArrowPresent());
+        assertFalse(docLibPage.getFilmstripActions().isFilmstripTapeDisplpayed());
+        assertTrue(docLibPage.getFilmstripActions().isNextFilmstripArrowPresent());
+        assertTrue(docLibPage.getFilmstripActions().isPreviousFilmstripArrowPresent());
 
         // Click right/left arrows pointers;
-        docLibPage = docLibPage.selectNextFilmstripItem().render();
-        assertFalse(docLibPage.isFilmstripTapeDisplpayed());
-        assertFalse(docLibPage.isNextFilmstripArrowPresent());
-        assertTrue(docLibPage.isPreviousFilmstripArrowPresent());
+        docLibPage = docLibPage.getFilmstripActions().selectNextFilmstripItem().render();
+        assertFalse(docLibPage.getFilmstripActions().isFilmstripTapeDisplpayed());
+        assertFalse(docLibPage.getFilmstripActions().isNextFilmstripArrowPresent());
+        assertTrue(docLibPage.getFilmstripActions().isPreviousFilmstripArrowPresent());
 
         // Click up arrow pointer;
-        docLibPage.toggleNavHandleForFilmstrip();
-        assertTrue(docLibPage.isFilmstripTapeDisplpayed());
-        assertFalse(docLibPage.isNextFilmstripArrowPresent());
-        assertTrue(docLibPage.isPreviousFilmstripArrowPresent());
+        docLibPage.getFilmstripActions().toggleNavHandleForFilmstrip();
+        assertTrue(docLibPage.getFilmstripActions().isFilmstripTapeDisplpayed());
+        assertFalse(docLibPage.getFilmstripActions().isNextFilmstripArrowPresent());
+        assertTrue(docLibPage.getFilmstripActions().isPreviousFilmstripArrowPresent());
     }
 
     /**
@@ -1735,10 +1722,10 @@ public class FilmStripDocLibTest extends AbstractUtils
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
 
         // The view is changed to simple view;
         docLibPage = docLibPage.getNavigation().selectSimpleView().render();
@@ -1805,10 +1792,10 @@ public class FilmStripDocLibTest extends AbstractUtils
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
+        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.isFilmStripViewDisplayed());
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
 
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
