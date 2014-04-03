@@ -1400,7 +1400,7 @@ public class DocumentLibraryPage extends SitePage
     {
         try
         {
-            drone.findAndWait(By.linkText("My Favorites")).click();
+            drone.findAndWait(By.cssSelector(".favourites>a")).click();
             return FactorySharePage.resolvePage(drone);
         }
         catch (TimeoutException te)
