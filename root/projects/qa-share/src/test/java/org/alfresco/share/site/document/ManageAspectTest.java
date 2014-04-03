@@ -20,9 +20,7 @@ package org.alfresco.share.site.document;
 
 import static org.alfresco.po.share.site.document.DocumentAspect.*;
 import static org.alfresco.share.util.ShareUser.openSiteDashboard;
-import static org.alfresco.po.share.site.document.Links.*;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
