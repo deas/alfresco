@@ -23,7 +23,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.admin.ManagedSiteRow;
 import org.alfresco.po.share.enums.SiteVisibility;
@@ -85,11 +84,11 @@ public class SiteAdminChangeVisibilityTest extends AbstractUtils
 
         // Create user1
         String[] testUserInfo1 = new String[] { user1, "John", "Doe"};
-        createTestUser(ADMIN_USERNAME, testUserInfo1);
+        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, SITE_ADMIN_GROUP, testUserInfo1);
         
         // Create user2
         String[] testUserInfo2 = new String[] { user2, "Joe", "Bloggs"};
-        createTestUser(ADMIN_USERNAME, testUserInfo2);
+        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, SITE_ADMIN_GROUP, testUserInfo2);
         
         // Add the created users, so they can be cleaned up
         this.testContext.addUser(user1, user2);
@@ -268,23 +267,6 @@ public class SiteAdminChangeVisibilityTest extends AbstractUtils
         
         managedSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(siteName);
         assertEquals(to, managedSiteRow.getVisibility().getValue());
-    }
-
-    /**
-     * Creates user as a network Admin in the Cloud or as a member of the
-     * SITE_ADMINISTRATORS group in the Enterprise (on-premise)
-     * 
-     * @param inviterUsername user name of the inviter
-     * @param userName the invitee's user name
-     * @param firstName the invitee's first name
-     * @param lastName the invitee's last name
-     * @param password the invitee's password
-     * @throws Exception
-     */
-    private void createTestUser(String inviterUsername, String... userName) throws Exception
-    {
-        boolean created = false;
-        created = CreateUserAPI.createActivateUserWithGroup(drone, inviterUsername, SITE_ADMIN_GROUP, userName);
     }
 
     /**

@@ -31,10 +31,7 @@ import static org.testng.Assert.assertTrue;
  * 
  */
 public class WorkFlowActionsTest extends AbstractWorkflow
-{
-
-    private String testDomain;
-    
+{    
     /**
      * Class includes: Tests from TestLink in Area: Hybrid Workflow/WorkFlow Actions
      */

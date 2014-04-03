@@ -15,7 +15,6 @@
 package org.alfresco.share.util.api;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -24,7 +23,6 @@ import org.alfresco.opencmis.CMISDispatcherRegistry.Binding;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.repo.content.filestore.FileContentWriter;
 import org.alfresco.rest.api.tests.client.PublicApiClient.CmisSession;
-import org.alfresco.rest.api.tests.client.PublicApiException;
 import org.alfresco.rest.api.tests.client.RequestContext;
 import org.alfresco.rest.api.tests.client.data.ContentData;
 import org.alfresco.service.cmr.repository.ContentReader;
@@ -38,13 +36,10 @@ import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
-import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
-import org.apache.chemistry.opencmis.commons.spi.CmisBinding;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.owasp.esapi.ESAPI;
 
 /**
  * Cmis Utils

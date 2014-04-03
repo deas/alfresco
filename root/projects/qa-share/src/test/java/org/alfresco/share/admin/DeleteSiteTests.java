@@ -237,7 +237,7 @@ public class DeleteSiteTests extends AbstractUtils
         ShareUser.createSite(drone, site1, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Navigate to manageSites page
-        DashBoardPage dashBoard = ShareUser.openUserDashboard(drone);
+        ShareUser.openUserDashboard(drone);
         ManageSitesPage manageSitesPage = ShareUserAdmin.navigateToManageSites(drone);
 
         // TODO: Do not use drone.refresh within the test code. Create util if this is necessary
@@ -312,7 +312,7 @@ public class DeleteSiteTests extends AbstractUtils
         ShareUser.login(drone, ADMIN_USERNAME);
 
         // Navigate to manageSites page
-        DashBoardPage dashBoard = ShareUser.openUserDashboard(drone);
+        ShareUser.openUserDashboard(drone);
         
         // TODO: Create a util to return ManageSitesPage for Ent and cloud user. This way only 1 test can be implemented for both versions
         ManageSitesPage manageSitesPage = ShareUserAdmin.navigateToManageSites(drone);

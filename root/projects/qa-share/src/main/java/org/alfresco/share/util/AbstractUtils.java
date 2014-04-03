@@ -10,7 +10,7 @@
  *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -223,8 +223,7 @@ public abstract class AbstractUtils
     Map<String, WebDrone> droneMap = new HashMap<String, WebDrone>();
 
     @BeforeSuite(alwaysRun = true)
-    @Parameters(
-    { "contextFileName" })
+    @Parameters({ "contextFileName" })
     public static void setupContext(@Optional("qashare-test-context.xml") String contextFileName)
     {
         List<String> contextXMLList = new ArrayList<String>();
@@ -291,15 +290,13 @@ public abstract class AbstractUtils
         maxWaitTime = ((WebDroneImpl) customDrone).getMaxPageRenderWaitTime();
     }
 
-        public void setupCustomDrone(WebDriver webDriver)
-        {
-                customDrone = new WebDroneImpl(webDriver,2000,5000,new ShareProperties(alfrescoVersion.toString()), new FactorySharePage());
-                droneMap.put("custom_drone", customDrone);
-                dronePropertiesMap.put(customDrone, testProperties);
-                maxWaitTime = ((WebDroneImpl) customDrone).getMaxPageRenderWaitTime();
-        }
-
-
+    public void setupCustomDrone(WebDriver webDriver)
+    {
+        customDrone = new WebDroneImpl(webDriver, 2000, 5000, new ShareProperties(alfrescoVersion.toString()), new FactorySharePage());
+        droneMap.put("custom_drone", customDrone);
+        dronePropertiesMap.put(customDrone, testProperties);
+        maxWaitTime = ((WebDroneImpl) customDrone).getMaxPageRenderWaitTime();
+    }
 
     @AfterClass(alwaysRun = true)
     public void tearDown()
@@ -309,11 +306,11 @@ public abstract class AbstractUtils
             logger.trace("shutting web drone");
         }
         // Close the browser
-        for(Map.Entry<String, WebDrone> entry: droneMap.entrySet())
+        for (Map.Entry<String, WebDrone> entry : droneMap.entrySet())
         {
             try
             {
-                if(entry.getValue() != null)
+                if (entry.getValue() != null)
                 {
                     ShareUtil.logout(entry.getValue());
                     entry.getValue().quit();
@@ -369,12 +366,12 @@ public abstract class AbstractUtils
 
     public void savePageSource(String methodName) throws IOException
     {
-        for(Map.Entry<String, WebDrone> entry: droneMap.entrySet())
+        for (Map.Entry<String, WebDrone> entry : droneMap.entrySet())
         {
-            if(entry.getValue() != null)
+            if (entry.getValue() != null)
             {
                 String htmlSource = ((WebDroneImpl) entry.getValue()).getDriver().getPageSource();
-                File file = new File(RESULTS_FOLDER + methodName + "_" + entry.getKey() +"_Source.html");
+                File file = new File(RESULTS_FOLDER + methodName + "_" + entry.getKey() + "_Source.html");
                 FileUtils.writeStringToFile(file, htmlSource);
             }
         }
@@ -392,34 +389,35 @@ public abstract class AbstractUtils
      */
     public void saveScreenShot(String methodName) throws IOException
     {
-        for(Map.Entry<String, WebDrone> entry: droneMap.entrySet())
+        for (Map.Entry<String, WebDrone> entry : droneMap.entrySet())
         {
-            if(entry.getValue() != null)
+            if (entry.getValue() != null)
             {
                 File file = entry.getValue().getScreenShot();
-                File tmp = new File(RESULTS_FOLDER + methodName + "_" + entry.getKey() +".png");
+                File tmp = new File(RESULTS_FOLDER + methodName + "_" + entry.getKey() + ".png");
                 FileUtils.copyFile(file, tmp);
             }
         }
-        try 
+        try
         {
-			saveOsScreenShot(methodName);
-		} 
-        catch (AWTException e) 
+            saveOsScreenShot(methodName);
+        }
+        catch (AWTException e)
         {
-        	logger.error("Not able to take the OS screen shot: " + e.getMessage());
-		}
+            logger.error("Not able to take the OS screen shot: " + e.getMessage());
+        }
     }
-    
+
     /**
      * Take OS Scren Shot
+     * 
      * @param methodName - Method Name
      */
     public void saveOsScreenShot(String methodName) throws IOException, AWTException
     {
-    	Robot robot = new Robot();
-    	BufferedImage screenShot = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
-        ImageIO.write(screenShot, "png", new File("target/webdrone-" + methodName+ "_OS" +".png"));
+        Robot robot = new Robot();
+        BufferedImage screenShot = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+        ImageIO.write(screenShot, "png", new File("target/webdrone-" + methodName + "_OS" + ".png"));
     }
 
     @BeforeMethod
@@ -523,7 +521,7 @@ public abstract class AbstractUtils
         {
             if (shareURL.equalsIgnoreCase(STAGURL))
             {
-                apiUrl = shareURL.replace("my.alfresco.com/share", "api.alfresco.com/"); 
+                apiUrl = shareURL.replace("my.alfresco.com/share", "api.alfresco.com/");
             }
         }
 
@@ -734,8 +732,7 @@ public abstract class AbstractUtils
     public static String getSiteShortname(String siteName)
     {
         String siteShortname = "";
-        String[] unallowedCharacters =
-        { "_", "!" };
+        String[] unallowedCharacters = { "_", "!" };
 
         for (String removeChar : unallowedCharacters)
         {
@@ -803,6 +800,7 @@ public abstract class AbstractUtils
      * @param waitMiliSec
      *            Wait duration in milliseconds
      */
+    @SuppressWarnings("deprecation")
     protected static void webDriverWait(WebDrone driver, long waitMiliSec)
     {
         if (waitMiliSec <= 0)
@@ -828,8 +826,7 @@ public abstract class AbstractUtils
      */
     public static String[] getAuthDetails(String authUsername)
     {
-        String[] authDetails =
-        { ADMIN_USERNAME, ADMIN_PASSWORD };
+        String[] authDetails = { ADMIN_USERNAME, ADMIN_PASSWORD };
 
         if (authUsername == null)
         {
@@ -909,7 +906,7 @@ public abstract class AbstractUtils
     /**
      * Helper to check the actual Result Vs expected
      * 
-     * @param actualResult  HttpResponse
+     * @param actualResult HttpResponse
      * @param expectedResult int
      * @return void
      */
@@ -1142,13 +1139,14 @@ public abstract class AbstractUtils
 
     /**
      * Getter method to get Drone Map
+     * 
      * @return droneMap
      */
     public Map<String, WebDrone> getDroneMap()
     {
         return droneMap;
     }
-    
+
     /**
      * This util method gets the random number for the given length of return
      * string.
@@ -1169,7 +1167,7 @@ public abstract class AbstractUtils
 
     /**
      * Compact proxy for the logger.trace method.
-     *
+     * 
      * @param string to log
      */
     public static void traceLog(String string)

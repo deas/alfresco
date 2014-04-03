@@ -29,22 +29,17 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-
 /**
  * @author Ranjith Manyam
- * 
  */
 @Listeners(FailedTestListener.class)
 public class WorkFlowOptionsMessageTest extends AbstractWorkflow
 {
-
-    private String testDomain;
-    
     /**
      * Class includes: Tests from TestLink in Area: Hybrid Workflow/WorkFlow Actions
      */
     @Override
-    @BeforeClass(alwaysRun=true)
+    @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
     {
         super.setup();
@@ -80,17 +75,17 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
      * <li>3) Login as OP User and set up Cloud Sync with cloudUser</li>
      * </ul>
      */
-    @Test(groups="DataPrepHybrid")
+    @Test(groups = "DataPrepHybrid")
     public void dataPrep_15186() throws Exception
     {
         dataPrep(getTestName());
-      //TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps. 
+        // TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps.
     }
 
     /**
      * ALF-15186:Message - Empty
      */
-     @Test(groups = "Hybrid", enabled = true)
+    @Test(groups = "Hybrid", enabled = true)
     public void ALF_15186() throws Exception
     {
         String testName = getTestName();
@@ -170,11 +165,12 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
 
             assertTrue(myTasksPage.isTaskPresent(defaultWorkFlowName));
 
-            /*      TaskHistoryPage taskHistoryPage = ShareUserWorkFlow.navigateToTaskHistoryPage(hybridDrone, defaultTaskName);
-
-            generalInfo = taskHistoryPage.getWorkFlowDetailsGeneralInfo();
-            assertEquals(generalInfo.getTitle(), WorkFlowTitle.HYBRID_ADHOC_TASK_PROCESS);
-            assertEquals(generalInfo.getMessage(), defaultWorkFlowName);*/
+            /*
+             * TaskHistoryPage taskHistoryPage = ShareUserWorkFlow.navigateToTaskHistoryPage(hybridDrone, defaultTaskName);
+             * generalInfo = taskHistoryPage.getWorkFlowDetailsGeneralInfo();
+             * assertEquals(generalInfo.getTitle(), WorkFlowTitle.HYBRID_ADHOC_TASK_PROCESS);
+             * assertEquals(generalInfo.getMessage(), defaultWorkFlowName);
+             */
 
             TaskDetailsPage taskDetailsPage = ShareUserWorkFlow.navigateToTaskDetailsPage(hybridDrone, defaultTaskName);
             TaskInfo taskDetailsInfo = taskDetailsPage.getTaskDetailsInfo();
@@ -210,17 +206,17 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
      * <li>3) Login as OP User and set up Cloud Sync with cloudUser</li>
      * </ul>
      */
-    @Test(groups="DataPrepHybrid")
+    @Test(groups = "DataPrepHybrid")
     public void dataPrep_15187() throws Exception
     {
         dataPrep(getTestName());
-      //TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps. 
+        // TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps.
     }
 
     /**
      * ALF-15187:Message - Single line
      */
-     @Test(groups = "Hybrid", enabled = true)
+    @Test(groups = "Hybrid", enabled = true)
     public void ALF_15187() throws Exception
     {
         String testName = getTestName();
@@ -302,9 +298,11 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
 
             TaskHistoryPage taskHistoryPage = ShareUserWorkFlow.navigateToTaskHistoryPage(hybridDrone, workFlowName);
 
-   /*         generalInfo = taskHistoryPage.getWorkFlowDetailsGeneralInfo();
-            assertEquals(generalInfo.getTitle(), WorkFlowTitle.HYBRID_ADHOC_TASK_PROCESS);
-            assertEquals(generalInfo.getMessage(), workFlowName);*/
+            /*
+             * generalInfo = taskHistoryPage.getWorkFlowDetailsGeneralInfo();
+             * assertEquals(generalInfo.getTitle(), WorkFlowTitle.HYBRID_ADHOC_TASK_PROCESS);
+             * assertEquals(generalInfo.getMessage(), workFlowName);
+             */
 
             TaskDetailsPage taskDetailsPage = ShareUserWorkFlow.navigateToTaskDetailsPage(hybridDrone, workFlowName);
             TaskInfo taskDetailsInfo = taskDetailsPage.getTaskDetailsInfo();
@@ -340,21 +338,21 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
      * <li>3) Login as OP User and set up Cloud Sync with cloudUser</li>
      * </ul>
      */
-    @Test(groups="DataPrepHybrid")
+    @Test(groups = "DataPrepHybrid")
     public void dataPrep_15188() throws Exception
     {
         dataPrep(getTestName() + "1");
-      //TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps. 
+        // TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps.
     }
 
     // TODO - Extra spaces in Message if the workflow is created with message contains multiple lines (ALF-20523)
     /**
      * ALF-15188:Message - Multiple lines
      */
-     @Test(groups = "Hybrid", enabled = true)
+    @Test(groups = "Hybrid", enabled = true)
     public void ALF_15188() throws Exception
     {
-        String testName = getTestName()+ "1";
+        String testName = getTestName() + "1";
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
         String cloudUser = getUserNameForDomain(testName, DOMAIN_HYBRID);
         String opSiteName = getSiteName(testName) + System.currentTimeMillis() + "-OP";
@@ -364,7 +362,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
         String[] fileInfo1 = { fileName1, DOCLIB };
 
         String workFlowName = testName + System.currentTimeMillis() + "-1-WF\n" + testName + System.currentTimeMillis() + "-2-WF";
-//        String workFlowName = testName + System.currentTimeMillis() + "-1-WF\n" + "   " + testName + System.currentTimeMillis() + "-2-WF";
+        // String workFlowName = testName + System.currentTimeMillis() + "-1-WF\n" + "   " + testName + System.currentTimeMillis() + "-2-WF";
         String dueDate = getDueDateString();
 
         try
@@ -387,7 +385,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
 
             WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
 
-//            formDetails.setMessage(workFlowName.replace("   ", ""));
+            // formDetails.setMessage(workFlowName.replace("   ", ""));
             formDetails.setMessage(workFlowName);
             formDetails.setDueDate(dueDate);
             formDetails.setTaskType(TaskType.SIMPLE_CLOUD_TASK);
@@ -436,14 +434,16 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
 
             TaskHistoryPage taskHistoryPage = ShareUserWorkFlow.navigateToTaskHistoryPage(hybridDrone, workFlowName);
 
-//TODO: Added issue since Hybrid Task is newly added workflow type, And code is Commented 
-            /*generalInfo = taskHistoryPage.getWorkFlowDetailsGeneralInfo();
-            assertEquals(generalInfo.getTitle(), WorkFlowTitle.HYBRID_ADHOC_TASK_PROCESS);
-            assertEquals(generalInfo.getMessage(), workFlowName);*/
+            // TODO: Added issue since Hybrid Task is newly added workflow type, And code is Commented
+            /*
+             * generalInfo = taskHistoryPage.getWorkFlowDetailsGeneralInfo();
+             * assertEquals(generalInfo.getTitle(), WorkFlowTitle.HYBRID_ADHOC_TASK_PROCESS);
+             * assertEquals(generalInfo.getMessage(), workFlowName);
+             */
 
             TaskDetailsPage taskDetailsPage = ShareUserWorkFlow.navigateToTaskDetailsPage(hybridDrone, workFlowName);
             TaskInfo taskDetailsInfo = taskDetailsPage.getTaskDetailsInfo();
-//            assertEquals(taskDetailsInfo.getMessage(), workFlowName.replace("   ", "").replace("\n", " "));
+            // assertEquals(taskDetailsInfo.getMessage(), workFlowName.replace("   ", "").replace("\n", " "));
             assertEquals(taskDetailsInfo.getMessage(), workFlowName.replace("\n", " "));
 
             ShareUser.logout(hybridDrone);
@@ -476,20 +476,20 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
      * <li>3) Login as OP User and set up Cloud Sync with cloudUser</li>
      * </ul>
      */
-    @Test(groups="DataPrepHybrid")
+    @Test(groups = "DataPrepHybrid")
     public void dataPrep_15189() throws Exception
     {
         dataPrep(getTestName() + "0");
-      //TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps. 
+        // TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps.
     }
 
     /**
      * ALF-15189:Message - Negative case
      */
-     @Test(groups = "Hybrid", enabled = true)
+    @Test(groups = "Hybrid", enabled = true)
     public void ALF_15189() throws Exception
     {
-        String testName = getTestName()+ "0";
+        String testName = getTestName() + "0";
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
         String cloudUser = getUserNameForDomain(testName, DOMAIN_HYBRID);
         String opSiteName = getSiteName(testName) + System.currentTimeMillis() + "-OP";
@@ -570,7 +570,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
 
             // Verify Workflows are created successfully
             assertTrue(myWorkFlowsPage.isWorkFlowPresent(workFlowName2.replace(" ", "")), "Verifying workflow2 exists");
-         
+
             ShareUser.logout(drone);
         }
         catch (Throwable t)

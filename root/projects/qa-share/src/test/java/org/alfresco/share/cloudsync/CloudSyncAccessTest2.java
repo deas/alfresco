@@ -8,10 +8,8 @@
 package org.alfresco.share.cloudsync;
 
 import org.alfresco.po.share.LoginPage;
-import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.DestinationAndAssigneeBean;
-import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.ButtonType;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
@@ -1611,8 +1609,6 @@ public class CloudSyncAccessTest2 extends AbstractCloudSyncTest
         DestinationAndAssigneeBean destAndAssBean = new DestinationAndAssigneeBean();
         destAndAssBean.setNetwork(hybridDomainPremium);
         destAndAssBean.setSiteName(siteName);
-
-        EditDocumentPropertiesPopup editProp;
 
         String folderDesc1 = "I am Folder1!!";
         String folderDesc2 = "I am Folder2!!";

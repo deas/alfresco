@@ -108,7 +108,7 @@
     
       <test name="Test for RepositoryFolder" verbose="1">
         <classes>
-            <class name=" org.alfresco.share.repository.RepositoryFolderTests1">
+            <class name="org.alfresco.share.repository.RepositoryFolderTests1">
              <methods>
                     <include name="Enterprise40x_5407"/>
                     <include name="Enterprise40x_5419"/>

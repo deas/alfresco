@@ -23,7 +23,6 @@ import org.alfresco.po.share.workflow.CurrentTaskType;
 import org.alfresco.po.share.workflow.KeepContentStrategy;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.po.share.workflow.Priority;
-import org.alfresco.po.share.workflow.SendEMailNotifications;
 import org.alfresco.po.share.workflow.TaskDetailsType;
 import org.alfresco.po.share.workflow.TaskHistoryPage;
 import org.alfresco.po.share.workflow.TaskType;

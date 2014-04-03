@@ -21,7 +21,6 @@ import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -42,8 +41,8 @@ public class ManageSitesPageTest extends AbstractUtils
     private static final int NUM_OF_SITES_PER_TYPE = 1; // TODO: this was reduced from 25 due to speed. Increase again once API Create Site call is functional.
     private static final int NUM_OF_USERS = 2;
     private static final int TOTAL_NUM_OF_SITES = NUM_OF_SITES_PER_TYPE * 3 * NUM_OF_USERS;
-    // TODO: Consider setting uniqueTestDataString in qa-share.properties
-    private static final String PREFIX = "aaaa-tc497-";
+    
+    // TODO: Consider setting uniqueTestDataString in qa-share.properties in place of PREFIX = "aaaa-tc497-";
     private static final String SITE_ADMIN_GROUP = "SITE_ADMINISTRATORS";
     private DashBoardPage dashBoardPage;
     private ManageSitesPage manageSitesPage;
@@ -67,7 +66,10 @@ public class ManageSitesPageTest extends AbstractUtils
         CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, SITE_ADMIN_GROUP, siteAdminUser);
         testContext.addUser(siteAdminUser);
         
-        traceLog("Starting ManageSitesPageTest setup");
+        if (logger.isTraceEnabled())
+        {
+            logger.trace("Starting ManageSitesPageTest setup");
+        }
 
         // Create our test users
         for (int i = 0; i < NUM_OF_USERS; i++)
@@ -122,7 +124,10 @@ public class ManageSitesPageTest extends AbstractUtils
     @Test
     public void ManageSitesPageTests() throws Exception
     {
-        traceLog("Starting ManageSitesPageTests");
+        if (logger.isTraceEnabled())
+        {
+            logger.trace("Starting ManageSitesPageTests");
+        }
 
         manageSitesPage.loadElements();
 
@@ -162,7 +167,10 @@ public class ManageSitesPageTest extends AbstractUtils
      */
     private void verifySitesExist()
     {
-        traceLog("Checking Sites exist in list");
+        if (logger.isTraceEnabled())
+        {
+            logger.trace("Checking Sites exist in list");
+        }
 
         for (int i = 0; i < TOTAL_NUM_OF_SITES;)
         {
@@ -183,7 +191,10 @@ public class ManageSitesPageTest extends AbstractUtils
      */
     private void paginationTest()
     {
-        traceLog("Testing pagination performs as expected");
+        if (logger.isTraceEnabled())
+        {
+            logger.trace("Testing pagination performs as expected");
+        }
 
         // Assumes sites are not being created, modified or deleted by parallel processes.
         DocListPaginator docListPaginator = manageSitesPage.getPaginator();

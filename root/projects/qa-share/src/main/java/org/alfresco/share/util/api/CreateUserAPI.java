@@ -8,11 +8,8 @@
 
 package org.alfresco.share.util.api;
 
-import static org.testng.Assert.assertTrue;
-
 import org.alfresco.json.JSONUtil;
 import org.alfresco.po.share.enums.TenantTypes;
-import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.webdrone.WebDrone;

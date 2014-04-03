@@ -584,7 +584,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
 
             // Login to Cloud as User1, open the site document library
             ShareUser.login(hybridDrone, user1, DEFAULT_PASSWORD);
-            DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudUserSiteName);
+            ShareUser.openSitesDocumentLibrary(hybridDrone, cloudUserSiteName);
 
             // Change the folder permissions to Consumer
             ShareUserMembers.managePermissionsOnContent(hybridDrone, user2, folderName1, UserRole.CONSUMER, false);

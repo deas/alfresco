@@ -20,17 +20,15 @@
      <bean id="shareProperties" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>classpath:webdrone.properties</value>
+                <value>classpath:webdrone.properties</value>                                                           
                 <value>classpath:sharepo.properties</value>
-                <value>classpath:sharepo.hybrid.properties</value>
-                <value>classpath:test.properties</value>
+                <value>classpath:sharepo.hybrid.properties</value>  
+                <value>classpath:test.properties</value>   
                 <value>classpath:qa-share.properties</value>
             </list>
         </property>
     </bean>
-    
-    
-
+            
     <bean id="httpClientProvider" class="org.alfresco.rest.api.tests.client.SharedHttpClientProvider">
          <constructor-arg name="alfrescoUrl" value="${share.target}" />
          <constructor-arg name="maxNumberOfConnections" value="2" />
