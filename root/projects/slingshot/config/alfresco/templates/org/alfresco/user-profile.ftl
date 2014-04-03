@@ -5,11 +5,11 @@
    <@markup id="alf-hd">
    <div id="alf-hd">
       <@region scope="global" id="share-header" chromeless="true"/>
-      <@region id="toolbar" scope="template" />
    </div>
    </@>
    <@markup id="bd">
    <div id="bd">
+      <@region id="toolbar" scope="template" />
       <@region id="user-profile" scope="template"  />
       <@region id="html-upload" scope="template" />
       <@region id="flash-upload" scope="template" />

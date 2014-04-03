@@ -1,0 +1,1 @@
+NOTE: The -min.js versions of the pdfjs files are supplied already minified in this directory. This is because for some reason YUI Compressor cannot correctly compress these files and at runtime they will cause errors. Please update the -min.js files (using JS-MIN or similar to compress) if pdfjs is updated.

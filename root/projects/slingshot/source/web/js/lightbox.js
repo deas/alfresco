@@ -365,8 +365,13 @@ function initLightbox()
 	// create link
 	var objLink = document.createElement("a");
 	objLink.setAttribute('href','#');
-	//objLink.setAttribute('title','Click to close');
-	objLink.onclick = function () {hideLightbox(); return false;}
+	objLink.onclick = function (e) {
+	   hideLightbox();
+	   if (e.stopPropagation)
+	      e.stopPropagation();
+	   else
+	      return false;
+   };
 	objLightbox.appendChild(objLink);
 
 	// preload and create close button image

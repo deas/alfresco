@@ -78,7 +78,17 @@
          <plugin>Audio</plugin>
       </condition>
 
-      <!-- Documents that has been converted to .swf -->
+      <!-- Documents that have been converted to .pdf -->
+
+      <condition mimeType="application/pdf">
+         <plugin progressiveLoading="true">PdfJs</plugin>
+      </condition>
+      
+      <condition thumbnail="pdf">
+         <plugin src="pdf" progressiveLoading="true">PdfJs</plugin>
+      </condition>
+
+      <!-- Documents that have been converted to .swf -->
 
       <condition thumbnail="webpreview">
          <plugin src="webpreview" paging="true">WebPreviewer</plugin>

@@ -91,7 +91,7 @@ button:focus {outline:none;}
 .yui-overlay h1
 {
    font-family: Open Sans Condensed, Arial, sans-serif;
-   font-size: 230%;
+   font-size: 200%;
    font-weight: normal;
    top: -4px;
    left: 162px;
@@ -247,7 +247,7 @@ h4 .lighter
 .yui-skin-lightTheme div.flat-button span.yui-radio-button-checked,
 .yui-skin-lightTheme div.flat-button span.yui-checkbox-button-checked
 {
-   background: #ccc none;
+   border: 1px solid #ccc;
 }
 
 /* DASHLETS */
