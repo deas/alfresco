@@ -70,7 +70,7 @@ public class ShareUserRepositoryPage extends AbstractTests
 
         // Assumes User is logged in
         RepositoryPage repositorypage = openRepository(driver);
-        
+
         repositorypage = ((RepositoryPage) ShareUserSitePage.selectView(driver, ViewType.DETAILED_VIEW)).render();
         logger.info("Opened RepositoryPage");
         return repositorypage;
@@ -124,7 +124,6 @@ public class ShareUserRepositoryPage extends AbstractTests
      */
     public static RepositoryPage uploadFileInRepository(WebDrone driver, File file) throws Exception
     {
-        
         RepositoryPage repositoryPage = ((RepositoryPage) ShareUserSitePage.uploadFile(driver, file)).render();
         return repositoryPage;
     }
@@ -305,7 +304,7 @@ public class ShareUserRepositoryPage extends AbstractTests
         {
             fileInfo[1] = REPO;
         }
-        
+
         openRepository(driver);
         RepositoryPage repositoryPage = ((RepositoryPage) ShareUser.uploadFileInFolder(driver, fileInfo)).render();
         return repositoryPage;
@@ -363,12 +362,12 @@ public class ShareUserRepositoryPage extends AbstractTests
             CreatePlainTextContentPage contentPage = repositoryPage.getNavigation().selectCreateContent(contentType).render();
 
             HtmlPage page = contentPage.createWithValidation(contentDetails).render();
-            
+
             if(page instanceof DocumentDetailsPage)
             {
                 DocumentDetailsPage detailsPage = page.render();
                 repositoryPage = detailsPage.navigateToFolderInRepositoryPage().render();
-                
+
                 return repositoryPage;
             }
             return page;
@@ -395,21 +394,21 @@ public class ShareUserRepositoryPage extends AbstractTests
         //http://127.0.0.1:8081/share  /page/repository#filter=path|%2FUser%2520Homes%2F userEnterprise42-5405%40freetht1.test-1  |&page=1
         String target = url.substring(0, url.indexOf("/page/")) + "/page/repository#filter=path|%2FSites%2F" + SiteUtil.getSiteShortname(siteName)
                 + "|&page=1";
-        
+
         drone.navigateTo(target);
         drone.waitForPageLoad(maxWaitTime);
         RepositoryPage repoPage = (RepositoryPage) ShareUser.getSharePage(drone);
 
         return repoPage.render();
     }
-    
+
     public static RepositoryPage openUserFromUserHomesFolderOfRepository(WebDrone drone, String usrName)
     {
         String url = drone.getCurrentUrl();      
         //http://127.0.0.1:8081/share  /page/repository#filter=path|%2FUser%2520Homes%2F userEnterprise42-5405%40freetht1.test-1  |&page=1
         String target = url.substring(0, url.indexOf("/page/")) + "/page/repository#filter=path|%2FUser%2520Homes%2F" + StringUtils.replace(usrName, "@", "%40")
                 + "|&page=1";
-        
+
         drone.navigateTo(target);
         drone.waitForPageLoad(maxWaitTime);
         RepositoryPage repoPage = (RepositoryPage) ShareUser.getSharePage(drone);
@@ -485,10 +484,10 @@ public class ShareUserRepositoryPage extends AbstractTests
     {        
         DetailsPage detailsPage = ShareUserSitePage.addTags(drone, contentName, tags).render();
         RepositoryPage repoPage = detailsPage.navigateToParentFolder().render();        
-        
+
         return repoPage;
     }
-    
+
     /**
      * Opens the content details page starting from the parent folder within DocumentLibrary
      * Assume that user currently in {@link RepositoryPage}.
@@ -506,5 +505,29 @@ public class ShareUserRepositoryPage extends AbstractTests
     public static DocumentDetailsPage uploadNewVersionFromDocDetail(WebDrone drone, boolean majorVersion, String fileName, String comments)
     {
         return ShareUserSitePage.uploadNewVersionFromDocDetail(drone, majorVersion, fileName, comments);
+    }
+
+    /**
+     * Edits the document using the in-line edit form.
+     * 
+     * @param drone
+     * @param fileName
+     * @param mimeType
+     * @param details
+     * @return
+     */
+    public static HtmlPage editTextDocumentInLine(WebDrone drone, String fileName, ContentDetails details)
+    {
+        return ShareUserSitePage.editTextDocumentInLine(drone, fileName, details);
+    }
+
+    /**
+     * @param drone
+     * @param contentName
+     * @return
+     */
+    public static ContentDetails getInLineEditContentDetails(WebDrone drone, String contentName)
+    {
+        return ShareUserSitePage.getInLineEditContentDetails(drone, contentName);
     }
 }

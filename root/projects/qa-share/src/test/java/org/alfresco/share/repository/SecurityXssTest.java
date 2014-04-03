@@ -32,7 +32,6 @@ import org.alfresco.po.share.enums.Encoder;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
-import org.alfresco.po.share.site.document.CreateHtmlContentPage;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
 import org.alfresco.po.share.site.document.DetailsPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
@@ -90,8 +89,7 @@ public class SecurityXssTest extends AbstractTests
         logger.info("Starting Tests: " + testName);
     }
 
-    // TODO: Group=EnterpriseOnly
-    @Test(groups = { "DataPrepRepoSecurity", "Enterprise42" })
+    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5361() throws Exception
     {
         String testName = getTestName();
@@ -100,11 +98,11 @@ public class SecurityXssTest extends AbstractTests
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        
+
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
     }
 
-    @Test(groups = "Enterprise42")
+    @Test(groups = "EnterpriseOnly")
     public void Enterprise40x_5361() throws Exception
     {
         String testName = getTestName();
@@ -133,7 +131,6 @@ public class SecurityXssTest extends AbstractTests
 
         contentPage.cancel();
 
-        // TODO: remove render for utils if correct page is being rendered by util
         repoPage = ShareUserRepositoryPage.openRepository(drone);
         contentDetails.setName(fileName);
 
@@ -146,7 +143,7 @@ public class SecurityXssTest extends AbstractTests
         assertEquals(editDocPropsPage.getDocumentTitle(), contentDetails.getTitle());
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "Enterprise42" })
+    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5362() throws Exception
     {
         String testName = getTestName();
@@ -155,11 +152,11 @@ public class SecurityXssTest extends AbstractTests
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        
+
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
     }
 
-    @Test(groups = "Enterprise42")
+    @Test(groups = "EnterpriseOnly")
     public void Enterprise40x_5362() throws Exception
     {
         String testName = getTestName();
@@ -176,7 +173,7 @@ public class SecurityXssTest extends AbstractTests
         contentDetails.setDescription(XSS_STRING_4);
         contentDetails.setContent(XSS_STRING_5);
 
-        CreateHtmlContentPage contentPage = ShareUserRepositoryPage.createContentInFolderWithValidation(drone, contentDetails, ContentType.HTML, folderName).render();
+        CreatePlainTextContentPage contentPage = ShareUserRepositoryPage.createContentInFolderWithValidation(drone, contentDetails, ContentType.HTML, folderName).render();
 
         Map<CreatePlainTextContentPage.Fields, String> messages = contentPage.getMessages();
 
@@ -199,7 +196,7 @@ public class SecurityXssTest extends AbstractTests
         assertEquals(editDocPropsPage.getDocumentTitle(), contentDetails.getTitle());
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "Enterprise42" })
+    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5363() throws Exception
     {
         String testName = getTestName();
@@ -208,11 +205,11 @@ public class SecurityXssTest extends AbstractTests
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        
+
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
     }
 
-    @Test(groups = "Enterprise42")
+    @Test(groups = "EnterpriseOnly")
     public void Enterprise40x_5363() throws Exception
     {
         String testName = getTestName();
@@ -252,7 +249,7 @@ public class SecurityXssTest extends AbstractTests
         assertEquals(editDocPropsPage.getDocumentTitle(), contentDetails.getTitle());
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "Enterprise42" })
+    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5364() throws Exception
     {
         String testName = getTestName();
@@ -264,7 +261,7 @@ public class SecurityXssTest extends AbstractTests
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
     }
 
-    @Test(groups = "Enterprise42")
+    @Test(groups = "EnterpriseOnly")
     public void Enterprise40x_5364() throws Exception
     {
         String testName = getTestName();
@@ -275,15 +272,15 @@ public class SecurityXssTest extends AbstractTests
 
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
-        RepositoryPage repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName).render();
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
 
         NewFolderPage newFolderPage = ShareUserRepositoryPage.createFolderInRepositoryWithValidation(drone, XSS_STRING_4, title, description).render();
         assertEquals(newFolderPage.getMessage(NewFolderPage.Fields.NAME), "Value contains illegal characters.");
 
         newFolderPage.selectCancel();
 
-        repoPage = ShareUserRepositoryPage.createFolderInRepositoryWithValidation(drone, subFolderName, title, description).render();
+        RepositoryPage repoPage = ShareUserRepositoryPage.createFolderInRepositoryWithValidation(drone, subFolderName, title, description).render();
 
         EditDocumentPropertiesPopup editDocPropsPage = repoPage.getFileDirectoryInfo(subFolderName).selectEditProperties().render();
 
@@ -292,7 +289,7 @@ public class SecurityXssTest extends AbstractTests
         assertEquals(editDocPropsPage.getDocumentTitle(), title);
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "Enterprise42" })
+    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5365() throws Exception
     {
         String testName = getTestName();
@@ -304,7 +301,7 @@ public class SecurityXssTest extends AbstractTests
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
     }
 
-    @Test(groups = "Enterprise42")
+    @Test(groups = "EnterpriseOnly")
     public void Enterprise40x_5365() throws Exception
     {
         String testName = getTestName();
@@ -318,7 +315,7 @@ public class SecurityXssTest extends AbstractTests
 
         ShareUserRepositoryPage.createFolderInRepository(drone, subFolderName, subFolderName, subFolderName);
 
-        DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, subFolderName).render();
+        DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, subFolderName);
         EditDocumentPropertiesPage editProps = detailsPage.selectEditProperties().render();
         editProps.setName(XSS_STRING_5);
         editProps.setDocumentTitle(XSS_STRING_1);
@@ -336,7 +333,7 @@ public class SecurityXssTest extends AbstractTests
         assertEquals(editProps.getDescription(), XSS_STRING_2);
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "Enterprise42" })
+    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5366() throws Exception
     {
         String testName = getTestName();
@@ -348,7 +345,7 @@ public class SecurityXssTest extends AbstractTests
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
     }
 
-    @Test(groups = "Enterprise42")
+    @Test(groups = "EnterpriseOnly")
     public void Enterprise40x_5366() throws Exception
     {
         String testName = getTestName();
@@ -362,7 +359,7 @@ public class SecurityXssTest extends AbstractTests
         String[] fileInfo = {fileName, REPO + SLASH + folderName};
         ShareUserRepositoryPage.uploadFileInFolderInRepository(drone, fileInfo);
 
-        DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, fileName).render();
+        DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, fileName);
         EditDocumentPropertiesPage editProps = detailsPage.selectEditProperties().render();
         editProps.setName(XSS_STRING_5);
         editProps.setDocumentTitle(XSS_STRING_4);
@@ -371,7 +368,7 @@ public class SecurityXssTest extends AbstractTests
 
         editProps = editProps.selectSaveWithValidation().render();
         Map<Fields, String> messages = editProps.getMessages();
-        
+
         assertEquals(messages.get(EditDocumentPropertiesPage.Fields.NAME), "Value contains illegal characters.");
         assertNull(messages.get(EditDocumentPropertiesPage.Fields.TITLE));
         assertNull(messages.get(EditDocumentPropertiesPage.Fields.DESCRIPTION));
@@ -388,7 +385,7 @@ public class SecurityXssTest extends AbstractTests
         assertEquals(editProps.getAuthor(), XSS_STRING_2);
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "Enterprise42" })
+    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5367() throws Exception
     {
         String testName = getTestName();
@@ -400,7 +397,7 @@ public class SecurityXssTest extends AbstractTests
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
     }
 
-    @Test(groups = "Enterprise42")
+    @Test(groups = "EnterpriseOnly")
     public void Enterprise40x_5367() throws Exception
     {
         String testName = getTestName();
@@ -412,7 +409,7 @@ public class SecurityXssTest extends AbstractTests
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
         ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
 
-        ShareUserRepositoryPage.createFolderInRepository(drone, subFolderName, subFolderName, subFolderName).render();
+        ShareUserRepositoryPage.createFolderInRepository(drone, subFolderName, subFolderName, subFolderName);
 
         DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, subFolderName);
 
@@ -430,7 +427,7 @@ public class SecurityXssTest extends AbstractTests
         assertTrue(comments.contains(XSS_STRING_5));
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "Enterprise42" })
+    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5368() throws Exception
     {
         String testName = getTestName();
@@ -442,7 +439,7 @@ public class SecurityXssTest extends AbstractTests
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
     }
 
-    @Test(groups = "Enterprise42")
+    @Test(groups = "EnterpriseOnly")
     public void Enterprise40x_5368() throws Exception
     {
         String testName = getTestName();
@@ -459,7 +456,7 @@ public class SecurityXssTest extends AbstractTests
         contentDetails.setDescription(fileName);
         contentDetails.setContent(fileName);
 
-        ShareUserRepositoryPage.createContentInFolder(drone, contentDetails, ContentType.PLAINTEXT, folderName).render();
+        ShareUserRepositoryPage.createContentInFolder(drone, contentDetails, ContentType.PLAINTEXT, folderName);
 
         DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, fileName);
 
@@ -477,7 +474,7 @@ public class SecurityXssTest extends AbstractTests
         assertTrue(comments.contains(XSS_STRING_5));
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "Enterprise42" })
+    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5369() throws Exception
     {
         String testName = getTestName();
@@ -489,7 +486,7 @@ public class SecurityXssTest extends AbstractTests
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
     }
 
-    @Test(groups = "Enterprise42")
+    @Test(groups = "EnterpriseOnly")
     public void Enterprise40x_5369() throws Exception
     {
         String testName = getTestName();
@@ -498,7 +495,7 @@ public class SecurityXssTest extends AbstractTests
 
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
-        RepositoryPage repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
         ContentDetails contentDetails =  new ContentDetails();
         contentDetails.setName(fileName);
@@ -506,19 +503,16 @@ public class SecurityXssTest extends AbstractTests
         contentDetails.setDescription(fileName);
         contentDetails.setContent(fileName);
 
-        repoPage = ShareUserRepositoryPage.createContentInFolder(drone, contentDetails, ContentType.PLAINTEXT, folderName).render();
+        ShareUserRepositoryPage.createContentInFolder(drone, contentDetails, ContentType.PLAINTEXT, folderName);
 
         contentDetails.setName(XSS_STRING_4);
         contentDetails.setTitle(XSS_STRING_3);
         contentDetails.setDescription(XSS_STRING_2);
         contentDetails.setContent(XSS_STRING_1);
 
-        // TODO: Consider adding a util to EditInline, passing contentDetails, MimeType, returning HtmlPage
-        InlineEditPage inlineEditPage = repoPage.getFileDirectoryInfo(fileName).selectInlineEdit().render();
-        EditTextDocumentPage editTextDocumentPage = (EditTextDocumentPage) inlineEditPage.getInlineEditDocumentPage(MimeType.TEXT);
-        inlineEditPage = editTextDocumentPage.saveWithValidation(contentDetails).render();
-        editTextDocumentPage = (EditTextDocumentPage) inlineEditPage.getInlineEditDocumentPage(MimeType.TEXT);
-        
+        InlineEditPage inlineEditPage = ShareUserRepositoryPage.editTextDocumentInLine(drone, fileName, contentDetails).render();
+        EditTextDocumentPage editTextDocumentPage = (EditTextDocumentPage)inlineEditPage.getInlineEditDocumentPage(MimeType.TEXT).render();
+
         Map<CreatePlainTextContentPage.Fields, String> messages = editTextDocumentPage.getMessages();
 
         assertEquals(messages.get(CreatePlainTextContentPage.Fields.NAME), "Value contains illegal characters.");
@@ -528,11 +522,9 @@ public class SecurityXssTest extends AbstractTests
 
         contentDetails.setName(fileName);
 
-        repoPage = editTextDocumentPage.saveWithValidation(contentDetails).render();
+        ShareUserRepositoryPage.editTextDocumentInLine(drone, fileName, contentDetails).render();
 
-        inlineEditPage = repoPage.getFileDirectoryInfo(fileName).selectInlineEdit().render();
-        editTextDocumentPage = (EditTextDocumentPage) inlineEditPage.getInlineEditDocumentPage(MimeType.TEXT);
-        ContentDetails details = editTextDocumentPage.getDetails();
+        ContentDetails details = ShareUserRepositoryPage.getInLineEditContentDetails(drone, fileName);
 
         assertEquals(details.getName(), contentDetails.getName());
         assertEquals(details.getDescription(), contentDetails.getDescription());
@@ -540,7 +532,7 @@ public class SecurityXssTest extends AbstractTests
         assertEquals(details.getContent(), contentDetails.getContent());
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "Enterprise42" })
+    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5370() throws Exception
     {
         String testName = getTestName();
@@ -552,7 +544,7 @@ public class SecurityXssTest extends AbstractTests
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
     }
 
-    @Test(groups = "Enterprise42")
+    @Test(groups = "EnterpriseOnly")
     public void Enterprise40x_5370() throws Exception
     {
         String testName = getTestName();
@@ -586,7 +578,7 @@ public class SecurityXssTest extends AbstractTests
         assertTrue(assignPage.isUserFound(ADMIN_USERNAME));
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "Enterprise42" })
+    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5371() throws Exception
     {
         String testName = getTestName();
@@ -598,7 +590,7 @@ public class SecurityXssTest extends AbstractTests
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
     }
 
-    @Test(groups = "Enterprise42")
+    @Test(groups = "EnterpriseOnly")
     public void Enterprise40x_5371() throws Exception
     {
         String testName = getTestName();
@@ -633,7 +625,7 @@ public class SecurityXssTest extends AbstractTests
         assertEquals(detailsPage.getCommentsOfLastCommit(), XSS_STRING_5);
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "Enterprise42" })
+    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5372() throws Exception
     {
         String testName = getTestName();
@@ -645,7 +637,7 @@ public class SecurityXssTest extends AbstractTests
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
     }
 
-    @Test(groups = "Enterprise42")
+    @Test(groups = "EnterpriseOnly")
     public void Enterprise40x_5372() throws Exception
     {
         String testName = getTestName();
@@ -659,7 +651,7 @@ public class SecurityXssTest extends AbstractTests
 
         ShareUserRepositoryPage.createFolderInRepository(drone, subFolderName, subFolderName);
 
-        DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, subFolderName).render();
+        DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, subFolderName);
         EditDocumentPropertiesPage editProps = detailsPage.selectEditProperties().render();
         TagPage tagPage = editProps.getTag().render();
 
@@ -669,7 +661,7 @@ public class SecurityXssTest extends AbstractTests
         assertEquals(shareErrorPopup.getShareMessage(), "Could not create new item.");
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "Enterprise42" })
+    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5373() throws Exception
     {
         String testName = getTestName();
@@ -681,7 +673,7 @@ public class SecurityXssTest extends AbstractTests
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
     }
 
-    @Test(groups = "Enterprise42")
+    @Test(groups = "EnterpriseOnly")
     public void Enterprise40x_5373() throws Exception
     {
         String testName = getTestName();
@@ -698,7 +690,7 @@ public class SecurityXssTest extends AbstractTests
 
         ShareUserRepositoryPage.uploadFileInRepository(drone, file1);
 
-        DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, fileName).render();
+        DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, fileName);
         EditDocumentPropertiesPage editProps = detailsPage.selectEditProperties().render();
         TagPage tagPage = editProps.getTag().render();
 

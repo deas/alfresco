@@ -135,20 +135,20 @@ public class TableViewDocLibTest extends AbstractTests
         File file1 = newFile(fileName1, "New file 1");
         File file2 = newFile(fileName2, "New file 2");
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // User login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+        // Site creation
+        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
 
-            // Upload 2 files
-            ShareUser.openSitesDocumentLibrary(drone, siteName);
-            ShareUserSitePage.uploadFile(drone, file1);
-            ShareUserSitePage.uploadFile(drone, file2);
-        }
+        // Upload 2 files
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        ShareUserSitePage.uploadFile(drone, file1);
+        ShareUserSitePage.uploadFile(drone, file2);
+    }
 
     @Test(groups = "AlfrescoOne")
     public void Alf_14379() throws Exception
@@ -189,15 +189,15 @@ public class TableViewDocLibTest extends AbstractTests
         String[] testUserInfo = new String[] { testUser };
 
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // User login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
-        }
+        // Site creation
+        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+    }
 
     @Test(groups = "AlfrescoOne")
     public void Alf_14392() throws Exception
@@ -217,7 +217,7 @@ public class TableViewDocLibTest extends AbstractTests
 
         // create folders and files for the test
         ShareUser.openSitesDocumentLibrary(drone, siteName);
-        
+
         ShareUserSitePage.createFolder(drone, folderName, folderName);
         ShareUserSitePage.navigateToFolder(drone, folderName);
         ShareUserSitePage.uploadFile(drone, file1);
@@ -230,7 +230,7 @@ public class TableViewDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUserSitePage.selectView(drone, ViewType.TABLE_VIEW);
 
         // TODO: Testlink steps missing. Steps say Click on column names to sort
-        
+
         // TODO: Testlink: Consider checking sorting works via sort options in TableView in the same test
         docLibPage = ShareUserSitePage.sortLibraryOn(drone, SortField.NAME, true);
         assertEquals(docLibPage.getNavigation().getCurrentSortField(), SortField.NAME);
@@ -281,15 +281,15 @@ public class TableViewDocLibTest extends AbstractTests
         String siteName = getSiteName(testName);
         String[] testUserInfo = new String[] { testUser };
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // User login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
-        }
+        // Site creation
+        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+    }
 
     @Test(groups = "AlfrescoOne")
     public void Alf_14544() throws Exception
@@ -339,15 +339,15 @@ public class TableViewDocLibTest extends AbstractTests
         String siteName = getSiteName(testName);
         String[] testUserInfo = new String[] { testUser };
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // User login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
-        }
+        // Site creation
+        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+    }
 
     @Test(groups = "AlfrescoOne")
     public void Alf_14548() throws Exception
@@ -386,7 +386,7 @@ public class TableViewDocLibTest extends AbstractTests
         assertTrue(docLibPage.getNavigation().isSetDefaultViewVisible());
 
         docLibPage = docLibPage.getNavigation().selectSetCurrentViewToDefault().render();
-        
+
         assertTrue(docLibPage.getNavigation().isRemoveDefaultViewVisible());
         assertFalse(docLibPage.getNavigation().isSetDefaultViewVisible());
 
@@ -424,15 +424,15 @@ public class TableViewDocLibTest extends AbstractTests
         String siteName = getSiteName(testName);
         String[] testUserInfo = new String[] { testUser };
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // User login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
-        }
+        // Site creation
+        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+    }
 
     @Test(groups = "AlfrescoOne")
     public void Alf_14549() throws Exception
@@ -489,15 +489,15 @@ public class TableViewDocLibTest extends AbstractTests
         String siteName = getSiteName(testName);
         String[] testUserInfo = new String[] { testUser };
 
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // User login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        // User login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            // Site creation
-            ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
-        }
+        // Site creation
+        ShareUser.createSite(drone, siteName, AbstractTests.SITE_VISIBILITY_PUBLIC);
+    }
 
     @Test(groups = "AlfrescoOne")
     public void Alf_14552() throws Exception
@@ -517,11 +517,11 @@ public class TableViewDocLibTest extends AbstractTests
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         ShareUser.openSitesDocumentLibrary(drone, siteName);
-        
+
         ShareUserSitePage.selectView(drone, ViewType.SIMPLE_VIEW);
-        
+
         ShareUserSitePage.createFolder(drone, folderName, folderName);
-        
+
         ShareUserSitePage.navigateToFolder(drone, folderName);
         ShareUserSitePage.createFolder(drone, subFolderName1, subFolderName1);
         ShareUserSitePage.createFolder(drone, subFolderName2, subFolderName2);
