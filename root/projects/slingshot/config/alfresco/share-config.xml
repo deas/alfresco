@@ -190,7 +190,7 @@
               context - search depending on current context, including repository, all sites, current site (default)
               always - always search full repository no matter what the context, disables search context options
          -->
-         <repository-search>context</repository-search>
+         <repository-search>always</repository-search>
       </search>
       
       <!-- sorting fields and labels -->

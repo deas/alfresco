@@ -453,6 +453,8 @@ define(["dojo/_base/declare",
          this._LiveSearch.containerNodeSites.innerHTML = "";
          
          DomStyle.set(this._LiveSearch.nodeDocsMore, "display", "none");
+         
+         this._searchTextNode.focus();
       },
 
       /**
