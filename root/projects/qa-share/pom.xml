@@ -202,7 +202,7 @@
 					</suiteXmlFiles>
 					<runOrder>alphabetical</runOrder>
 					<argLine>-Xms512m -Xmx1024m</argLine>
-					<!-- workingDirectory>target</workingDirectory -->
+					<workingDirectory>${basedir}</workingDirectory>
 					<parallel>classes</parallel>
 					<systemPropertyVariables>
 						<webdrone.max.waitTime>${webdrone.max.waitTime}</webdrone.max.waitTime>
