@@ -21,10 +21,7 @@ package org.alfresco.po.share.site.document;
 import java.io.File;
 
 import org.alfresco.po.share.AlfrescoVersion;
-import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.NewUserPage;
 import org.alfresco.po.share.ShareUtil;
-import org.alfresco.po.share.UserSearchPage;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
