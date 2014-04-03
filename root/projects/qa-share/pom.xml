@@ -43,8 +43,8 @@
         </snapshotRepository>
     </distributionManagement>
     <scm>
-        <connection>scm:svn:https://svn.alfresco.com/repos/qa/scripts/qa-share/branches/share_po_sprints</connection>
-        <developerConnection>scm:svn:https://svn.alfresco.com/repos/qa/scripts/qa-share/branches/share_po_sprints</developerConnection>
+        <connection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/BRANCHES/DEV/AUTO1/root/projects/qa-share</connection>
+        <developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/BRANCHES/DEV/AUTO1/root/projects/qa-share</developerConnection>
     </scm>
 
 	<dependencies>
