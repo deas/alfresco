@@ -22,6 +22,7 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.social.twitter.api.SavedSearch;
 
 
 public class ShareUserDashboard extends AbstractUtils
@@ -370,6 +371,36 @@ public class ShareUserDashboard extends AbstractUtils
         searchDashlet.search(searchTerm);
         List<SiteSearchItem> items = searchDashlet.getSearchItems();
         return items;
+    }
+
+    /**
+     * Method to perform search in Saved-Search-Dashlet
+     * Util assumes user is logged in and Site Dashboard/MyDashboard is open
+     *
+     * @param drone
+     * @param searchTerm
+     * @return List<SiteSearchItem> Search Results displayed
+     */
+    public static List<SiteSearchItem> searchSavedSearchDashlet(WebDrone drone, String searchTerm)
+    {
+        ShareUserDashboard.configureSavedSearch(drone, searchTerm);
+        SavedSearchDashlet savedSearchDashlet = ShareUserDashboard.getSavedSearchDashlet(drone);
+        return savedSearchDashlet.getSearchItems();
+    }
+
+    /**
+     * Method to perform search in Saved-Search-Dashlet
+     * Util assumes user is logged in and Site Dashboard/MyDashboard is open
+     * @param drone
+     * @param searchTerm
+     * @param searchLimit
+     * @return
+     */
+    public static List<SiteSearchItem> searchSavedSearchDashlet(WebDrone drone, String searchTerm, SearchLimit searchLimit)
+    {
+        ShareUserDashboard.configureSavedSearch(drone, searchTerm, searchLimit);
+        SavedSearchDashlet savedSearchDashlet = ShareUserDashboard.getSavedSearchDashlet(drone);
+        return savedSearchDashlet.getSearchItems();
     }
 
     /**

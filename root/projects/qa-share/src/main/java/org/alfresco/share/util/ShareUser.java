@@ -262,7 +262,7 @@ public class ShareUser extends AbstractUtils
      * Open document Library: Top Level Assumes User is logged in and a Specific
      * Site is open.
      * 
-     * @param driver    WebDrone Instance
+     * @param driver	WebDrone Instance
      * @return DocumentLibraryPage
      */
     public static DocumentLibraryPage openDocumentLibrary(WebDrone driver)

@@ -23,6 +23,7 @@ import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.document.MimeType;
 import org.alfresco.po.share.site.document.SortField;
 import org.alfresco.po.share.site.document.TagPage;
+import org.alfresco.po.share.site.document.TreeMenuNavigation;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
@@ -48,7 +49,7 @@ public class ShareUserSitePage extends AbstractUtils
      * Assumes a specific Site is open Opens the Document Library Page and navigates to the Path specified.
      * 
      * @param driver WebDrone Instance
-     * @param folderPath: String folder path relative to DocumentLibrary e.g. DOC_LIB + file.seperator + folderName1
+     * @param folderPath: String folder path relative to DocumentLibrary e.g. DOCLIB + file.seperator + folderName1
      * @throws SkipException if error in this API
      */
     public static DocumentLibraryPage navigateToFolder(WebDrone driver, String folderPath) throws Exception
@@ -721,6 +722,32 @@ public class ShareUserSitePage extends AbstractUtils
 
         return editTextDocumentPage.saveWithValidation(details).render();
     }
+    
+    /**
+     * Clicks on the I'm Editing link
+     * 
+     * @return DocumentLibraryPage filtered to show documents I'm editing
+     */
+    /*public static DocumentLibraryPage selectImEditing(WebDrone drone)
+    {
+        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
+        
+        TreeMenuNavigation treeMenu = docLibPage.getLeftMenus().render();
+
+        return treeMenu.selectDocumentNode(TreeMenuNavigation.DocumentsMenu.IM_EDITING).render();
+    }*/
+    
+    /**
+     * Clicks on the My Favourites link
+     * 
+     * @return DocumentLibraryPage filtered to show favourite documents
+     */
+    /*public static DocumentLibraryPage selectFavourites(WebDrone drone)
+    {
+        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
+
+        return docLibPage.clickOnMyFavourites().render();
+    }*/
 
     /**
      * Assumes you are on Doclib page. Does the action of clicking on copy to action from document lib navigation.

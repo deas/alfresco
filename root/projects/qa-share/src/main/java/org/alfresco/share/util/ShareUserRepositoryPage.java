@@ -24,6 +24,7 @@ import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
 import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.SelectAspectsPage;
+import org.alfresco.po.share.site.document.SortField;
 import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
@@ -685,5 +686,36 @@ public class ShareUserRepositoryPage extends AbstractUtils
     {
         ((RepositoryPage)getSharePage(drone)).getFileDirectoryInfo(folderName).addTag(tagName);  
     }
-
+    
+    /**
+     * Sorts the document library by the given field.
+     * 
+     * @param drone
+     * @param field         The field to sort by.
+     * @param sortAscending <code>true</code> if ascending. <code>false</code> if descending.
+     * @return {@link RepositoryPage}
+     */
+    public static RepositoryPage sortLibraryOn(WebDrone drone, SortField field, boolean sortAscending)
+    {
+        return (RepositoryPage)ShareUserSitePage.sortLibraryOn(drone, field, sortAscending);
+    }
+//    /**
+//     * Clicks on the I'm Editing link
+//     * 
+//     * @return RepositoryPage filtered to show documents I'm editing
+//     */
+//    public static RepositoryPage selectImEditing(WebDrone drone)
+//    {
+//        return (RepositoryPage)ShareUserSitePage.selectImEditing(drone);
+//    }
+//
+//    /**
+//     * Clicks on the My Favourites link
+//     * 
+//     * @return RepositoryPage filtered to show favourite documents
+//     */
+//    public static RepositoryPage selectFavourites(WebDrone drone)
+//    {
+//        return (RepositoryPage)ShareUserSitePage.selectFavourites(drone);
+//    }
 }

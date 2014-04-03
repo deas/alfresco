@@ -162,9 +162,6 @@ public class ManageDocLibItemsTest extends AbstractUtils
         @Test(groups = "Enterprise4.2")
         public void Enterprise40x_8561() throws Exception
         {
-                //Array with folderNames.
-                final String[] folderNames = { "my%folderha", "my%folder", "my%folder%25156722", "my%folder%156722again", "xyz%123" };
-
                 /** Start Test */
                 testName = getTestName();
 

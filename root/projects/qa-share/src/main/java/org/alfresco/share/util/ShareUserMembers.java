@@ -577,6 +577,38 @@ public class ShareUserMembers extends AbstractUtils
     }
 
     /**
+     * Add Inherited permission to User and Group with the default role. Assumes user is logged in and
+     * on ManagePermissionsPage
+     * 
+     * @param driver
+     * @param candidate
+     * @param isUser
+     *            <tt>true</tt> if username is specified, <tt>false</tt> if
+     *            group
+     * @param toggleInheritPermission
+     * @return
+     */
+    public static HtmlPage addUserOrGroupIntoInheritedPermissions(WebDrone driver, String candidate, boolean isUser, boolean toggleInheritPermission)
+    {
+
+        ManagePermissionsPage managePermissionPage = getSharePage(driver).render();
+        ManagePermissionsPage.UserSearchPage userSearchPage = managePermissionPage.selectAddUser().render();
+
+        if (isUser)
+        {
+            UserProfile userProfile = new UserProfile();
+            userProfile.setUsername(candidate);
+            managePermissionPage = userSearchPage.searchAndSelectUser(userProfile).render();
+        }
+        else
+        {
+            managePermissionPage = userSearchPage.searchAndSelectGroup(candidate).render();
+        }
+
+        return toggleInheritPermission(driver, toggleInheritPermission);
+    }
+
+    /**
      * Util to assign the specified <UserRole> to the specified <User> ofr the
      * Site. Assumes the SiteManager role is logged in.
      * 
