@@ -539,6 +539,8 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
     @Test(expectedExceptions = UnsupportedOperationException.class, groups = { "alfresco-one" }, priority = 32)
     public void testGetContentNameFromInfoMenu() throws Exception
     {
+        documentLibPage = drone.getCurrentPage().render();
+        documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
         // Get File
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
 
@@ -575,6 +577,13 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         editDocumentPropertiesPopup.selectSave().render();;
         
         documentLibPage = documentLibPage.getFileDirectoryInfo(folderName).clickOnCategoryNameLink(Categories.LANGUAGES.getValue()).render();
+        int i = 0;
+        do
+        {
+            i++;
+            drone.refresh();
+            documentLibPage = drone.getCurrentPage().render();
+        }while(!documentLibPage.isFileVisible(folderName)  && i < 5);
         Assert.assertTrue(documentLibPage.isFileVisible(folderName));
     }
 }
