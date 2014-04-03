@@ -5,7 +5,7 @@ public enum WebDroneType
 
     DownLoadDrone("downloadWebDrone"),
     FrenchDrone("frenchDrone"),
-    HybridDrone("hybridWebDrone");
+    HybridDrone("hybridDrone");
     
     private String name;
     

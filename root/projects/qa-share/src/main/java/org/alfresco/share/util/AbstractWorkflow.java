@@ -452,6 +452,7 @@ public abstract class AbstractWorkflow extends AbstractCloudSyncTest
 
                     webDriverWait(drone, 1000);
                     drone.refresh();
+                    myTasksPage = getSharePage(drone).render();
                 } finally
                 {
                     t.end();

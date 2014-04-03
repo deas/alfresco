@@ -12,6 +12,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -26,6 +27,8 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class AlfrescoHttpClient extends AbstractTests
 {
@@ -443,5 +446,48 @@ public class AlfrescoHttpClient extends AbstractTests
         }
         return false;
     }
+    
+    
+    public static HttpDelete generateDeleteRequest(String requestURL, String[] headers, String[] reqBody) throws Exception
+    {
+        boolean setRequestHeaders = false;
+        boolean setRequestBody = false;
 
+        // Parameters check
+        if (requestURL.isEmpty())
+        {
+            throw new IllegalArgumentException("Empty Request URL: Please correct");
+        }
+
+        HttpDelete request = new HttpDelete(requestURL);
+
+        setRequestHeaders = canSetHeaderOrBody(headers);
+
+        setRequestBody = canSetHeaderOrBody(reqBody);
+
+        // Headers
+        if (setRequestHeaders)
+        {
+            for (int i = 0; i < headers.length; i = i + 2)
+            {
+                request.addHeader(headers[i], headers[i + 1]);
+            }
+        }
+
+        // Body
+        if (setRequestBody)
+        {
+            JSONObject json = new JSONObject();
+
+            for (int i = 0; i < reqBody.length; i = i + 2)
+            {
+                json.put(reqBody[i], reqBody[i + 1]);
+            }
+            logger.info("Message Body: " + json);
+
+            //Ignore: Body for Delete Request
+        }
+
+        return request;
+    }       
 }

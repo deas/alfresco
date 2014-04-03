@@ -177,6 +177,7 @@ public class SiteDashBoardTest extends AbstractTests
             // uploadFile
             ShareUser.uploadFileInFolder(drone, fileInfo);
 
+            // TODO: Un-quarantine test once https://issues.alfresco.com/jira/browse/WEBDRONE-614 is fixed
             // Check Like count is zero
             String likeCount = ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getLikeCount();
             Assert.assertEquals(likeCount, "0", "Test: 711: Fail: Incorrect Like Count. Expected 0 when no likes");

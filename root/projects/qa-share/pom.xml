@@ -247,21 +247,19 @@
 								<configuration>
 									<target>
 										<echo>Recreating database...</echo>
-										<sql driver="org.postgresql.Driver" url="jdbc:postgresql:template1"
-											userid="alfresco" password="alfresco" autocommit="true">drop
-											database if exists alfresco; create database alfresco</sql>
-										<echo>Downloading Alfresco installer...</echo>
-										<scp
-                                            remoteFile="tomcat@pbld01.alfresco.com:/data/nightlybuilds/Enterprise?${enterprise.installer.version}/*/ALL/alfresco-enterprise-*-installer-linux-x64.???"
-                                            localTofile="target/alf-installer.bin" keyfile="${user.home}/.ssh/id_rsa" />
-                                        <chmod file="target/alf-installer.bin" perm="a+x"
-											verbose="true" />
-										<echo>Installing Alfresco...</echo>
-										<exec executable="${basedir}/target/alf-installer.bin"
-											dir="target" failonerror="true">
-											<arg
-												line="--mode unattended --alfresco_admin_password admin --disable-components postgres,alfrescowcmqs,${office.component} --jdbc_username alfresco --jdbc_password alfresco --prefix ${basedir}/target/alf-installation" />
-										</exec>
+                                        <sql driver="org.postgresql.Driver" url="jdbc:postgresql:template1" userid="alfresco" password="alfresco" autocommit="true">drop database if exists alfresco; create database alfresco</sql>
+                                        <echo>Downloading Alfresco installer...</echo>
+                                        
+                                        <sshexec username="tomcat" host="pbld01.alfresco.com" keyfile="${user.home}/.ssh/id_rsa" outputproperty="installerPath" command="ls -rt /data/bamboo/artifacts/${enterprise.installer.version}/ALL/alfresco-enterprise-*-installer-linux-x64.??? | tail -1 | tr ' ' '?' " />
+                                        <scp remoteFile="tomcat@pbld01.alfresco.com:${installerPath}" localTofile="target/alf-installer.bin" keyfile="${user.home}/.ssh/id_rsa" />
+                                        
+                                        <chmod file="target/alf-installer.bin" perm="a+x" verbose="true" />
+                                        <echo>Installing Alfresco...</echo>
+                                        <exec executable="${basedir}/target/alf-installer.bin" dir="target" failonerror="true">
+                                            <arg line="--mode unattended --alfresco_admin_password admin --disable-components postgres,alfrescowcmqs --jdbc_username alfresco --jdbc_password alfresco --prefix ${basedir}/target/alf-installation" />
+                                        </exec>
+										
+
 									</target>
 								</configuration>
 							</execution>

@@ -271,7 +271,7 @@ public abstract class AbstractTests
 
     public void setupHybridDrone() throws Exception
     {
-        hybridDrone = (WebDrone) ctx.getBean("hybridWebDrone");
+        hybridDrone = (WebDrone) ctx.getBean("hybridDrone");
         droneMap.put("hybrid_drone", hybridDrone);
         hybridShareTestProperties = (ShareTestProperty) ctx.getBean("hybridShareTestProperties");
         dronePropertiesMap.put(hybridDrone, hybridShareTestProperties);

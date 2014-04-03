@@ -27,6 +27,7 @@ import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.share.util.api.PublicAPIRestClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -165,5 +166,37 @@ public class InternalAPITest extends AbstractTests
         {
             testCleanup(drone, testName);
         }
+    }
+    
+    @Test(groups = { "Sanity", "AlfrescoOne" })
+    public void unitTestCreateDPEntv_2() throws Exception
+    {
+        String envName = (System.currentTimeMillis() + "dp").substring(6, 14);
+        String productType = "myalfresco";
+        String buildNo = "4.3-341";
+        String configType = "stable";
+        String configVersion = "rel32rc12";
+        Boolean premiumMode = false;
+        String baseAMIID = "ami-57c8fb3e&U1hPHWGs";
+        Boolean layer7Enabled = false;
+        
+        HttpResponse response;
+        
+        response = PublicAPIRestClient.createDPEnv(envName, productType, buildNo, configType, configVersion, premiumMode, baseAMIID, layer7Enabled);
+        checkResult(response, 200);
+        
+        response = PublicAPIRestClient.createDPEnv(envName, productType, buildNo, configType, configVersion, premiumMode, baseAMIID, layer7Enabled);
+        checkResult(response, 500);
+    }
+    
+    @Test(groups = { "Sanity", "AlfrescoOne" })
+    public void unitTestDeleteDPEntv_3() throws Exception
+    {
+        String envName = "NEWDPENV5";
+        
+        HttpResponse response;         
+       
+        response = PublicAPIRestClient.deleteDPEnv(envName);
+        checkResult(response, 200);
     }
 }
