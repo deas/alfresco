@@ -188,25 +188,25 @@
     <test name="Create Rule Test" verbose="1">
         <classes>
             <class name="org.alfresco.share.content.rules.CreateRuleTest">
-            <methods>
-                <include name="dataPrep_Enterprise40x_14018" />
-                <include name="dataPrep_Enterprise40x_14019" />
-                <include name="dataPrep_Enterprise40x_14020" />
-                <include name="dataPrep_Enterprise40x_14021" />
-                <include name="dataPrep_Enterprise40x_14022" />
-                <include name="dataPrep_Enterprise40x_14023" />
-                <include name="dataPrep_Enterprise40x_14024" />
-                <include name="dataPrep_Enterprise40x_14025" />
-                <include name="dataPrep_Enterprise40x_14026" />
-                <include name="dataPrep_Enterprise40x_14028" />
-                <include name="dataPrep_Enterprise40x_14029" />
-                <include name="dataPrep_Enterprise40x_14030" />
-                <include name="dataPrep_Enterprise40x_14031" />
-                <include name="dataPrep_Enterprise40x_14034" />
-                <include name="dataPrep_Enterprise40x_15271" />
-                <include name="dataPrep_Enterprise40x_8483" />
-                <include name="dataPrep_Enterprise40x_8499" />
-            </methods>
+                <methods>
+                    <include name="dataPrep_ALF_14018"/>
+                    <include name="dataPrep_ALF_14019"/>
+                    <include name="dataPrep_ALF_14020"/>
+                    <include name="dataPrep_ALF_14021"/>
+                    <include name="dataPrep_ALF_14022"/>
+                    <include name="dataPrep_ALF_14023"/>
+                    <include name="dataPrep_ALF_14024"/>
+                    <include name="dataPrep_ALF_14025"/>
+                    <include name="dataPrep_ALF_14026"/>
+                    <include name="dataPrep_ALF_14028"/>
+                    <include name="dataPrep_ALF_14029"/>
+                    <include name="dataPrep_ALF_14030"/>
+                    <include name="dataPrep_ALF_14031"/>
+                    <include name="dataPrep_ALF_14034"/>
+                    <include name="dataPrep_ALF_15271"/>
+                    <include name="dataPrep_ALF_8483"/>
+                    <include name="dataPrep_ALF_8499"/>
+                </methods>
             </class>
         </classes>
     </test>
