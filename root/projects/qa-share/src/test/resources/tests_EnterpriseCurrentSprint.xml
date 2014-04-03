@@ -19,5 +19,11 @@
         </classes>
     </test>
 
+    <test name="Manage DocLib Items Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.ManageDocLibItemsTest"/>
+        </classes>
+    </test>
+
 
 </suite>
