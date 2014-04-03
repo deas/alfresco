@@ -1,0 +1,23 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Test for Sprint 25" verbose="1" preserve-order="true" parallel="tests" thread-count="5">
+	<groups>
+		<run>
+			<exclude name="DataPrep.*" />
+			<exclude name="Download" />
+		</run>
+	</groups>
+ 
+	<listeners>
+		<listener
+			class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+	</listeners>
+
+    <test name="Site Search Site Dashlet Tests" verbose="1" preserve-order="true">
+        <classes>
+            <class name="org.alfresco.share.dashlet.SiteSearchDashletTest"/>
+
+        </classes>
+    </test>
+
+
+</suite>
