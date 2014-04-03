@@ -312,7 +312,11 @@ define(["dojo/_base/declare",
          {
             case 13:
             {
-               if (terms.length !== 0)
+               if (terms.length === 0)
+               {
+                  this.clearResults();
+               }
+               else
                {
                   this.alfLog("log", "Search request for: ", terms);
 
@@ -360,6 +364,10 @@ define(["dojo/_base/declare",
                         _this.liveSearchPeople(terms, 0);
                      }, this._keyRepeatWait);
                   }
+               }
+               if (terms.length === 0)
+               {
+                  this.clearResults();
                }
             }
          }
