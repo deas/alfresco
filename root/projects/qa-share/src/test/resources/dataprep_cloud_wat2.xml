@@ -7,7 +7,7 @@
             <exclude name="Hybrid.*" />
         </run>
     </groups>
-    <test name="" verbose="1" parallel="classes" thread-count="1">
+    <test name="WAT2 Data Prep Cloud Suite" verbose="1" parallel="classes" thread-count="1">
         <classes>
             <class name="org.alfresco.share.search.LiveSearchTest"></class>
         </classes>
