@@ -131,7 +131,7 @@ public class RepositoryFolderTests3 extends AbstractTests
             repositorypage = ShareUserRepositoryPage.addTagsInRepo(drone, folderName2, Arrays.asList(tagName));
 
             // TODO: Watch and fix: This could be inconsistent, as count may not have been updated straight away.
-            // tagsCount = repositorypage.getTagsCountUnderTagsTreeMenuOnDocumentLibrary(tagName);
+            // tagsCount = repositorypage.getTagsCountUnderTagsTreeMenu(tagName);
 
             // Select folder and and click on delete folder from More actions
             ConfirmDeletePage conformDeletePage = repositorypage.getFileDirectoryInfo(folderName1).selectDelete().render();

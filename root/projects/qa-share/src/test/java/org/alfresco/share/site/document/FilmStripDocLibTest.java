@@ -128,6 +128,7 @@ public class FilmStripDocLibTest extends AbstractTests
 
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName).render();
 
+        // TODO: Remove call to render from utils that render specific page object
         docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
@@ -186,6 +187,7 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Navigate to filmstrip view
+        // TODO: Remove call to render from utils that render specific page object
         docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
@@ -283,6 +285,7 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
+        // TODO: Remove call to render from utils that render specific page object
         docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
@@ -379,12 +382,14 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
+        // TODO: Remove call to render from utils that render specific page object
         docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
         assertTrue(docLibPage.isFilmStripViewDisplayed());
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
+        // TODO: Remove call to render from utils that render specific page object
         docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // Verify that only thumbnails of items are displayed without metadata;
@@ -499,6 +504,7 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
+        // TODO: Remove call to render from utils that render specific page object
         docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;
@@ -564,6 +570,7 @@ public class FilmStripDocLibTest extends AbstractTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
+        // TODO: Remove call to render from utils that render specific page object: in all places
         docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW).render();
 
         // The view is changed to Filmstrip mode;

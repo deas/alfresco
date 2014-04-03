@@ -56,7 +56,6 @@ import org.testng.annotations.Test;
 
 /**
  * @author Ranjith Manyam
- * 
  */
 public class CloudReviewTaskTest extends AbstractWorkflow
 {
@@ -114,24 +113,20 @@ public class CloudReviewTaskTest extends AbstractWorkflow
      * Review Task - Task Done ALF-15162:Cloud Review Task - Task Done - Details
      * ALF-15163:Cloud Review Task - Task Done - Edit Task Details (OP)
      * ALF-15164:Cloud Review Task - Task Done - Complete (OP)
-     * 
      * <ul>
      * <li>1) Login as Cloud User (Cloud) and create a site</li>
      * <li>2) Login as User1 (OP), create a site and upload a document</li>
      * <li>3) Start a "Cloud Task or Review" workflow</li>
-     * <li>4) Select uploaded file, Fill the form details and start workflow
-     * (Task Type : Cloud Review Task, Priority: Medium, Keep Content Strategy:
-     * Delete Content, Destination: CloudSite, Reviewer: CloudUser)</li>
+     * <li>4) Select uploaded file, Fill the form details and start workflow (Task Type : Cloud Review Task, Priority: Medium, Keep Content Strategy: Delete
+     * Content, Destination: CloudSite, Reviewer: CloudUser)</li>
      * <li>5) Select the workflow to open WorkFlow Details Page</li>
      * <li>6) Verify WorkFlow Details General Info section</li>
      * <li>7) Verify WorkFlow Details More Info section</li>
      * <li>8) Verify WorkFlow Item Details</li>
      * <li>9) Verify "No Tasks" message is displayed in "Current Tasks" table</li>
      * <li>10) Verify WorkFlow Details History</li>
-     * <li>11) Open Site Document Library, verify the document is prat of the
-     * workflow, document is synced and verify Sync Status</li>
-     * <li>12) Login as Cloud User User, Verify the Document is Synced and it is
-     * part of WorkFlow</li>
+     * <li>11) Open Site Document Library, verify the document is prat of the workflow, document is synced and verify Sync Status</li>
+     * <li>12) Login as Cloud User User, Verify the Document is Synced and it is part of WorkFlow</li>
      * <li>13) Navigate to MyTasks page and Verify Task is displayed</li>
      * <li>14) Verify Task Details are displayed correctly on MyTasks page</li>
      * <li>15) Select the Task to go to Task Details page</li>
@@ -143,54 +138,37 @@ public class CloudReviewTaskTest extends AbstractWorkflow
      * <li>21) Verify Task Info in Edit Task Page</li>
      * <li>22) Verify Task item details in Edit Task Page</li>
      * <li>23) Verify Status Drop down options</li>
-     * <li>24) Select "In Progress" Status, Comment (Eg: InProgress Comment) and
-     * Click on Save button</li>
-     * <li>25) Verify Status now changed to "In Progress" and Cloud Comment
-     * updated in Task Details Page</li>
-     * <li>26) Select Edit button, select "Completed" option from Status drop
-     * down, update Comment and click on "Approve" button</li>
-     * <li>28) Verify Status now changed to "Completed" and Comment is updated
-     * in Task Details Page</li>
-     * <li>29) Navigate to My Tasks page and verify Task is disappeared from
-     * Active Tasks list</li>
+     * <li>24) Select "In Progress" Status, Comment (Eg: InProgress Comment) and Click on Save button</li>
+     * <li>25) Verify Status now changed to "In Progress" and Cloud Comment updated in Task Details Page</li>
+     * <li>26) Select Edit button, select "Completed" option from Status drop down, update Comment and click on "Approve" button</li>
+     * <li>28) Verify Status now changed to "Completed" and Comment is updated in Task Details Page</li>
+     * <li>29) Navigate to My Tasks page and verify Task is disappeared from Active Tasks list</li>
      * <li>30) Select Completed Tasks and verify the task is present</li>
-     * <li>31) Select the Task to goto Task Details Page and Verify Edit button
-     * is not present, Task Status is "Completed" and Correct value is displayed
-     * in Comments</li>
+     * <li>31) Select the Task to goto Task Details Page and Verify Edit button is not present, Task Status is "Completed" and Correct value is displayed in
+     * Comments</li>
      * <li>32) Login as OP user and navigate to My Tasks page</li>
      * <li>33) Verify a new task is displayed for OP user</li>
-     * <li>34) Navigate to My WorkFlows page and select the WorkFlow to open
-     * WorkFlow Details page</li>
+     * <li>34) Navigate to My WorkFlows page and select the WorkFlow to open WorkFlow Details page</li>
      * <li>35) Verify WorkFlow General Info, More Info sections</li>
-     * <li>36) Verify "No Tasks" message is not displayed in Current Tasks table
-     * </li>
+     * <li>36) Verify "No Tasks" message is not displayed in Current Tasks table</li>
      * <li>37) Verify Current Tasks table</li>
      * <li>38) Verify History table</li>
      * <li>39) Select "Task Details" link from Current Tasks table</li>
-     * <li>40) Verify Task Details page header and Edit button is present in
-     * Task Details page</li>
+     * <li>40) Verify Task Details page header and Edit button is present in Task Details page</li>
      * <li>41) Verify Task Info section</li>
      * <li>42) Verify Task Status is "Not yet started"</li>
      * <li>43) Verify Item details</li>
-     * <li>44) Verify "Required Approval Percentage" and
-     * "Actual Approval Percentage"</li>
+     * <li>44) Verify "Required Approval Percentage" and "Actual Approval Percentage"</li>
      * <li>45) Verify Comment given by Cloud is displayed correctly</li>
      * <li>46) Select "Edit" button to goto Edit Task Page</li>
-     * <li>47) Verify Task Info, Item details, Status drop down options on Edit
-     * Task page</li>
+     * <li>47) Verify Task Info, Item details, Status drop down options on Edit Task page</li>
      * <li>48) Select "On Hold" status option and select Cancel button</li>
-     * <li>49) Verify Task Status has not been changed to "On Hold". It is Still
-     * "Not yet Started" in Task Details Page</li>
-     * <li>50) Select Edit button, select Status as "In Progress" and click on
-     * Save button</li>
-     * <li>51) Verify the status is now changed to "In Progress" in Task Details
-     * page</li>
-     * <li>52) Select Edit button, select Task Status as "Completed" and Select
-     * "Task Done" button</li>
-     * <li>53) Verify Task status is now changed to "Completed" on Task Details
-     * page</li>
-     * <li>54) Navigate to My Tasks page and verify task is disappeared from
-     * Active Tasks list</li>
+     * <li>49) Verify Task Status has not been changed to "On Hold". It is Still "Not yet Started" in Task Details Page</li>
+     * <li>50) Select Edit button, select Status as "In Progress" and click on Save button</li>
+     * <li>51) Verify the status is now changed to "In Progress" in Task Details page</li>
+     * <li>52) Select Edit button, select Task Status as "Completed" and Select "Task Done" button</li>
+     * <li>53) Verify Task status is now changed to "Completed" on Task Details page</li>
+     * <li>54) Navigate to My Tasks page and verify task is disappeared from Active Tasks list</li>
      * <li>55) Select "Completed" tasks and verify task is present</li>
      * <li>56) Navigate to Workflows I've started</li>
      * <li>57) Verify the workflow is not displayed anymore in Active WorkFlows</li>
@@ -804,18 +782,14 @@ public class CloudReviewTaskTest extends AbstractWorkflow
      * ALF-15162:Cloud Review Task - Task Done - Details ALF-15163:Cloud Review
      * Task - Task Done - Edit Task Details (OP) ALF-15164:Cloud Review Task -
      * Task Done - Complete (OP)
-     * 
      * <ul>
      * <li>1) Login as Cloud User (Cloud) and create a site</li>
      * <li>2) Login as User1 (OP), create a site and upload a document</li>
      * <li>3) Start a "Cloud Task or Review" workflow</li>
-     * <li>4) Select uploaded file, Fill the form details and start workflow
-     * (Task Type : Cloud Review Task, Priority: Medium, Keep Content Strategy:
-     * Delete Content, Destination: CloudSite, Reviewer: CloudUser)</li>
-     * <li>5) Open Site Document Library, verify the document is prat of the
-     * workflow, document is synced and verify Sync Status</li>
-     * <li>6) Login as Cloud User User, Verify the Document is Synced and it is
-     * part of WorkFlow</li>
+     * <li>4) Select uploaded file, Fill the form details and start workflow (Task Type : Cloud Review Task, Priority: Medium, Keep Content Strategy: Delete
+     * Content, Destination: CloudSite, Reviewer: CloudUser)</li>
+     * <li>5) Open Site Document Library, verify the document is prat of the workflow, document is synced and verify Sync Status</li>
+     * <li>6) Login as Cloud User User, Verify the Document is Synced and it is part of WorkFlow</li>
      * <li>7) Navigate to MyTasks page and Verify Task is displayed</li>
      * <li>8) Select the Task to go to Task Details page</li>
      * <li>9) Verify Task Info section on Task Details page</li>
@@ -826,43 +800,31 @@ public class CloudReviewTaskTest extends AbstractWorkflow
      * <li>14) Verify Task Info in Edit Task Page</li>
      * <li>15) Verify Task item details in Edit Task Page</li>
      * <li>16) Verify Status Drop down options</li>
-     * <li>17) Select Edit button, select "Completed" option from Status drop
-     * down, update Comment and click on "Reject" button</li>
-     * <li>18) Verify Status now changed to "Completed" and Comment is updated
-     * in Task Details Page</li>
-     * <li>19) Navigate to My Tasks page and verify Task is disappeared from
-     * Active Tasks list</li>
+     * <li>17) Select Edit button, select "Completed" option from Status drop down, update Comment and click on "Reject" button</li>
+     * <li>18) Verify Status now changed to "Completed" and Comment is updated in Task Details Page</li>
+     * <li>19) Navigate to My Tasks page and verify Task is disappeared from Active Tasks list</li>
      * <li>20) Select Completed Tasks and verify the task is present</li>
-     * <li>21) Select the Task to goto Task Details Page and Verify Edit button
-     * is not present, Task Status is "Completed" and Correct value is displayed
-     * in Comments</li>
+     * <li>21) Select the Task to goto Task Details Page and Verify Edit button is not present, Task Status is "Completed" and Correct value is displayed in
+     * Comments</li>
      * <li>22) Login as OP user and navigate to My Tasks page</li>
      * <li>23) Verify a new task is displayed for OP user</li>
-     * <li>24) Navigate to My WorkFlows page and select the WorkFlow to open
-     * WorkFlow Details page</li>
+     * <li>24) Navigate to My WorkFlows page and select the WorkFlow to open WorkFlow Details page</li>
      * <li>25) Verify WorkFlow General Info, More Info sections</li>
-     * <li>26) Verify "No Tasks" message is not displayed in Current Tasks table
-     * </li>
+     * <li>26) Verify "No Tasks" message is not displayed in Current Tasks table</li>
      * <li>27) Verify Current Tasks table</li>
      * <li>28) Verify History table</li>
      * <li>29) Select "Task Details" link from Current Tasks table</li>
-     * <li>30) Verify Task Details page header and Edit button is present in
-     * Task Details page</li>
+     * <li>30) Verify Task Details page header and Edit button is present in Task Details page</li>
      * <li>31) Verify Task Info section</li>
      * <li>32) Verify Task Status is "Not yet started"</li>
      * <li>33) Verify Item details</li>
-     * <li>34) Verify "Required Approval Percentage" and
-     * "Actual Approval Percentage"</li>
+     * <li>34) Verify "Required Approval Percentage" and "Actual Approval Percentage"</li>
      * <li>35) Verify Comment given by Cloud is displayed correctly</li>
      * <li>36) Select "Edit" button to goto Edit Task Page</li>
-     * <li>37) Verify Task Info, Item details, Status drop down options on Edit
-     * Task page</li>
-     * <li>38) Select Edit button, select Task Status as "Completed" and Select
-     * "Task Done" button</li>
-     * <li>39) Verify Task status is now changed to "Completed" on Task Details
-     * page</li>
-     * <li>40) Navigate to My Tasks page and verify task is disappeared from
-     * Active Tasks list</li>
+     * <li>37) Verify Task Info, Item details, Status drop down options on Edit Task page</li>
+     * <li>38) Select Edit button, select Task Status as "Completed" and Select "Task Done" button</li>
+     * <li>39) Verify Task status is now changed to "Completed" on Task Details page</li>
+     * <li>40) Navigate to My Tasks page and verify task is disappeared from Active Tasks list</li>
      * <li>41) Select "Completed" tasks and verify task is present</li>
      * <li>42) Navigate to Workflows I've started</li>
      * <li>43) Verify the workflow is not displayed anymore in Active WorkFlows</li>
@@ -880,13 +842,13 @@ public class CloudReviewTaskTest extends AbstractWorkflow
         String testName = getTestName();
 
         String uniqueString = String.valueOf(System.currentTimeMillis()).substring(7, 12);
-        
+
         String user1 = getUserNameForDomain(testName + "-op", DOMAIN_HYBRID);
         String cloudUser = getUserNameForDomain(testName + "-cl", DOMAIN_HYBRID);
-        
+
         String opSiteName = getSiteName(testName).replace(testName, "") + uniqueString + "-OP";
         String cloudSite = getSiteName(testName).replace(testName, "") + uniqueString + "-CL";
-        
+
         String fileName = getFileName(testName) + ".txt";
         String[] fileInfo = { fileName, DOCLIB };
 
