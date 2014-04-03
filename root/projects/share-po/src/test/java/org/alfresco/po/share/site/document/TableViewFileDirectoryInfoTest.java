@@ -20,7 +20,11 @@ package org.alfresco.po.share.site.document;
 
 import java.io.File;
 
+import org.alfresco.po.share.AlfrescoVersion;
+import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.NewUserPage;
 import org.alfresco.po.share.ShareUtil;
+import org.alfresco.po.share.UserSearchPage;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
@@ -51,6 +55,8 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     private static DocumentLibraryPage documentLibPage;
     private File file1;
     private File file2;
+    private String userName;
+    private String userFullName;
 
     /**
      * Pre test setup of a dummy file to upload.
@@ -60,15 +66,26 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     @BeforeClass(groups="alfresco-one")
     private void prepare() throws Exception
     {
-        siteName = "site" + System.currentTimeMillis();
+        siteName = "TableView" + System.currentTimeMillis();
+        userName = siteName;
+        userFullName = userName + "@test.com" + " " + userName + "@test.com";
 
-        ShareUtil.loginAs(drone, shareUrl, username, password).render();
-        
-        
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        if(version.isCloud())
+        {
+            ShareUtil.loginAs(drone, shareUrl, username, password).render();
+        }
+        else
+        {
+            createEnterpriseUser(userName);
+
+            ShareUtil.loginAs(drone, shareUrl, userName, "password").render();
+        }
+
         SiteUtil.createSite(drone, siteName, "description", "Public");
         file1 = SiteUtil.prepareFile();
         file2 = SiteUtil.prepareFile();
-        
+
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
 
@@ -76,7 +93,6 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         documentLibPage = uploadForm.uploadFile(file1.getCanonicalPath()).render();
         uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = uploadForm.uploadFile(file2.getCanonicalPath()).render();
-        
     }
 
     @AfterClass(groups="alfresco-one")
@@ -91,7 +107,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
         documentLibPage = documentLibPage.getNavigation().selectTableView().render();
-        
+
         Assert.assertEquals(documentLibPage.getViewType(), ViewType.TABLE_VIEW);
     }
 
@@ -100,6 +116,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     {
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.getNavigation().selectTableView().render();
 
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
         EditDocumentPropertiesPopup editPage = fileInfo.selectEditProperties().render();
@@ -115,10 +132,11 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     {
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.getNavigation().selectTableView().render();
 
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
 
-        Assert.assertEquals(fileInfo.getCreator(), "Administrator");
+        Assert.assertEquals(fileInfo.getCreator(), userFullName);
     }
 
     @Test(dependsOnMethods = "getCreator", groups="alfresco-one")
@@ -126,6 +144,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     {
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.getNavigation().selectTableView().render();
 
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
         MyProfilePage profile = fileInfo.selectCreator().render();
@@ -146,6 +165,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     {
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.getNavigation().selectTableView().render();
 
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
         Assert.assertNotNull(fileInfo.getCreated());
@@ -156,10 +176,11 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     {
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.getNavigation().selectTableView().render();
 
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
 
-        Assert.assertEquals(fileInfo.getModifier(), "Administrator");
+        Assert.assertEquals(fileInfo.getModifier(), userFullName);
     }
 
     @Test(dependsOnMethods = "getModifier", groups="alfresco-one")
@@ -167,6 +188,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     {
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.getNavigation().selectTableView().render();
 
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
         MyProfilePage profile = fileInfo.selectModifier().render();
@@ -179,6 +201,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     {
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.getNavigation().selectTableView().render();
 
         FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(0);
         Assert.assertNotNull(fileInfo.getModified());
@@ -189,6 +212,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     {
         documentLibPage = drone.getCurrentPage().render();
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName());
+        documentLibPage = documentLibPage.getNavigation().selectTableView().render();
 
         thisRow.renameContent(file1.getName() + " updated");
         Assert.assertEquals(documentLibPage.getFileDirectoryInfo(file1.getName() + " updated").getName(), file1.getName() + " updated");
@@ -198,6 +222,8 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     public void cancelRenameContentTest()
     {
         documentLibPage = drone.getCurrentPage().render();
+        documentLibPage = documentLibPage.getNavigation().selectTableView().render();
+
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file2.getName());
         thisRow.contentNameEnableEdit();
         thisRow.contentNameEnter(file2.getName() + " not updated");
@@ -209,6 +235,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     @Test(expectedExceptions = UnsupportedOperationException.class, groups = { "alfresco-one" }, dependsOnMethods = "cancelRenameContentTest")
     public void testGetContentNameFromInfoMenu() throws Exception
     {
+        documentLibPage = documentLibPage.getNavigation().selectTableView().render();
         // Get File
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName() + " updated");
 
@@ -218,6 +245,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     @Test(expectedExceptions = UnsupportedOperationException.class, groups = { "alfresco-one" }, dependsOnMethods = "testGetContentNameFromInfoMenu")
     public void testGetVersionInfo() throws Exception
     {
+        documentLibPage = documentLibPage.getNavigation().selectTableView().render();
         // Get File
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName() + " updated");
 
@@ -227,6 +255,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
     @Test(groups = { "alfresco-one" }, dependsOnMethods = "testGetVersionInfo")
     public void testCheckboxAndVersionMenu() throws Exception
     {
+        documentLibPage = documentLibPage.getNavigation().selectTableView().render();
         // Get File
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file1.getName() + " updated");
 
