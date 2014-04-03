@@ -1,5 +1,7 @@
 package org.alfresco.po.share.site.document;
 
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
 import org.alfresco.po.share.enums.Encoder;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -19,7 +21,7 @@ public class CreateHtmlContentPage extends CreatePlainTextContentPage
     @Override
     public CreateHtmlContentPage render(RenderTime timer)
     {
-        super.render(timer);
+        elementRender(timer, getVisibleRenderElement(NAME), getVisibleRenderElement(TITLE), getVisibleRenderElement(DESCRIPTION), getVisibleRenderElement(CONTENT), getVisibleRenderElement(SUBMIT_BUTTON), getVisibleRenderElement(CANCEL_BUTTON));
         return this;
     }
 
