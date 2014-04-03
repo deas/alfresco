@@ -499,8 +499,8 @@ public abstract class AbstractTests
         String shareURL = dronePropertiesMap.get(drone).getShareUrl();
         logger.info("getAPIURL: -- Using URL - " + shareURL);
         String apiUrl = shareURL.replace("my.alfresco.me/share", "api.alfresco.me/");
-        apiUrl = shareURL.replace("my.alfresco.me:/share", "api.alfresco.me/");
-        apiUrl = shareURL.replace("my.alfresco.me:443/share", "api.alfresco.me/");
+        apiUrl = apiUrl.replace("my.alfresco.me:/share", "api.alfresco.me/");
+        apiUrl = apiUrl.replace("my.alfresco.me:443/share", "api.alfresco.me/");
 
         if (!dronePropertiesMap.get(drone).getAlfrescoVersion().isCloud())
         {
