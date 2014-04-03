@@ -2150,10 +2150,13 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     @Override
     public HtmlPage clickShareLink()
     {
+        if(isFolder())
+        {
+           throw new UnsupportedOperationException("Share Link is not Supported for the Folder"); 
+        }
         try
         {
             findAndWait(QUICK_SHARE_LINK).click();
-
             return new ShareLinkPage(drone);
         }
         catch (TimeoutException ex)

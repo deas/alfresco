@@ -1362,18 +1362,13 @@ public class DocumentLibraryNavigation extends SharePage
         {
             throw new PageOperationException("Unable to convert String into int:", e);
         }
-
-        switch (size)
+        
+        try
         {
-        case 0:
-            return ZoomStyle.SMALLEST;
-        case 20:
-            return ZoomStyle.SMALLER;
-        case 40:
-            return ZoomStyle.BIGGER;
-        case 60:
-            return ZoomStyle.BIGGEST;
-        default:
+            return ZoomStyle.getZoomStyle(size);
+        } 
+        catch (IllegalArgumentException e)
+        {
             throw new PageOperationException("Unable to find the ZoomStyle for the zoomSize:" + size);
         }
     }

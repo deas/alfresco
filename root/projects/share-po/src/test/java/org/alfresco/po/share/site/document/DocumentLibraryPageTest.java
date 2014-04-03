@@ -547,7 +547,18 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         Assert.assertTrue(documentLibPage.getFiles().get(0).getName().equalsIgnoreCase(tempFile.getName()));
     }
     
-    @Test(dependsOnMethods="testMyFavourite", groups={"alfresco-one"})
+    @Test(dependsOnMethods="testMyFavourite", groups={"alfresco-one"}, expectedExceptions=IllegalArgumentException.class)
+    public void selectZoomIllegalArgumentException()
+    {
+        documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
+
+        DocumentLibraryNavigation navigation = documentLibPage.getNavigation();
+        documentLibPage = ((DocumentLibraryPage) navigation.selectGalleryView()).render();
+
+        navigation.selectZoom(null);
+    }
+    
+    @Test(dependsOnMethods="selectZoomIllegalArgumentException", groups={"alfresco-one"})
     public void testZoom()
     {
         documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
@@ -613,4 +624,26 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         
         documentLibPage = ((DocumentLibraryPage) navigation.selectDetailedView()).render();
     }
+    
+    @Test(dependsOnMethods="testZoom", groups={"alfresco-one"}, expectedExceptions=UnsupportedOperationException.class)
+    public void selectZoomUnsupportedOperationException()
+    {
+        documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
+
+        DocumentLibraryNavigation navigation = documentLibPage.getNavigation();
+        documentLibPage = ((DocumentLibraryPage) navigation.selectDetailedView()).render();
+
+        navigation.selectZoom(ZoomStyle.BIGGEST);
+    }
+
+    @Test(dependsOnMethods="selectZoomUnsupportedOperationException", groups={"alfresco-one"})
+    public void isZoomControlVisibleFalse()
+    {
+        documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
+
+        DocumentLibraryNavigation navigation = documentLibPage.getNavigation();
+        documentLibPage = ((DocumentLibraryPage) navigation.selectDetailedView()).render();
+        Assert.assertFalse(navigation.isZoomControlVisible());
+    }
+
  }  

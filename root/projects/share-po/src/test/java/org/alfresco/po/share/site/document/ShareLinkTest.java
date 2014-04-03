@@ -13,6 +13,7 @@ import java.util.Set;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.NewUserPage;
 import org.alfresco.po.share.UserSearchPage;
+import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.util.FailedTestListener;
@@ -41,8 +42,8 @@ public class ShareLinkTest extends AbstractDocumentTest
     private static DocumentLibraryPage documentLibPage;
     private File file;
     private File tempFile;
-    private final String cloudUserName = "user1@premiernet.test";
-    private final String cloudUserPassword = "spr!nkles";
+    private static String folderName1;
+    private static String folderDescription;
 
     @BeforeClass(groups="alfresco-one")
     private void prepare() throws Exception
@@ -96,12 +97,17 @@ public class ShareLinkTest extends AbstractDocumentTest
      */
     public void createData() throws Exception
     {
+        folderName1 = "The first folder";
+        folderDescription = String.format("Description of %s", folderName1);
+
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
         UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = uploadForm.uploadFile(file.getCanonicalPath()).render();
         uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
+        NewFolderPage newFolderPage = documentLibPage.getNavigation().selectCreateNewFolder();
+        documentLibPage = newFolderPage.createNewFolder(folderName1, folderDescription).render();
         documentLibPage = ((DocumentLibraryPage) documentLibPage.getNavigation().selectGalleryView()).render();
     }
     
@@ -165,6 +171,13 @@ public class ShareLinkTest extends AbstractDocumentTest
         Assert.assertTrue(isWindowOpened("Google+"));
         drone.closeWindow();
         drone.switchToWindow(mainWindow);
+    }
+    
+    @Test(groups={"alfresco-one"}, priority=5, expectedExceptions=UnsupportedOperationException.class)
+    public void clickShareLinkFolder()
+    {
+        FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(folderName1);
+        thisRow.clickShareLink().render();
     }
 
     private boolean isWindowOpened(String windowName)

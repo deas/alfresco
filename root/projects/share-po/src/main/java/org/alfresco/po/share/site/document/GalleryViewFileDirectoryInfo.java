@@ -18,7 +18,6 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -78,11 +77,7 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
         }
         catch (NumberFormatException e)
         {
-            logger.error("Unable to convert String into int:" + e);
-        }
-        catch (TimeoutException e)
-        {
-            logger.error("Exceeded time to find the css :" + e);
+            logger.error("Unable to convert String into int:", e);
         }
 
         throw new PageOperationException("Error in finding the file size.");

@@ -60,7 +60,6 @@ public class ViewPublicLinkPage extends SharePage
     public ViewPublicLinkPage render(RenderTime timer)
     {
         webElementRender(timer);
-        
         return this;
     }
 
@@ -91,7 +90,6 @@ public class ViewPublicLinkPage extends SharePage
         }
         catch (NoSuchElementException ex)
         {
-            logger.error("Public link View is not loaded");
         }
 
       return false;

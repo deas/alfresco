@@ -17,12 +17,11 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.po.share.site.document;
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.RenderWebElement;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
@@ -40,12 +39,19 @@ import org.openqa.selenium.TimeoutException;
 public class ShareLinkPage extends SharePage
 {
     private static Log logger = LogFactory.getLog(ShareLinkPage.class);
+    @RenderWebElement
     private static final By shareLinkDivLocator = By.cssSelector("div.visible div.bd");
+    @RenderWebElement
     private static final By viewLinkLocator = By.cssSelector("div.visible span>a.quickshare-action-view");
+    @RenderWebElement
     private static final By unShareLinkLocator = By.cssSelector("div.visible span>a.quickshare-action-unshare");
+    @RenderWebElement
     private static final By emailLinkLocator = By.cssSelector("div.visible a.linkshare-action-email");
+    @RenderWebElement
     private static final By facebookLinkLocator = By.cssSelector("div.visible a.linkshare-action-facebook");
+    @RenderWebElement
     private static final By twitterLinkLocator = By.cssSelector("div.visible a.linkshare-action-twitter");
+    @RenderWebElement
     private static final By googlePlusLinkLocator = By.cssSelector("div.visible a.linkshare-action-google-plus");
    
     /**
@@ -60,10 +66,7 @@ public class ShareLinkPage extends SharePage
     @Override
     public ShareLinkPage render(RenderTime timer)
     {
-        elementRender(timer, getVisibleRenderElement(shareLinkDivLocator), getVisibleRenderElement(viewLinkLocator),
-                getVisibleRenderElement(unShareLinkLocator), getVisibleRenderElement(emailLinkLocator), getVisibleRenderElement(facebookLinkLocator),
-                getVisibleRenderElement(twitterLinkLocator), getVisibleRenderElement(googlePlusLinkLocator));
-        
+        webElementRender(timer);
         return this;
     }
 
@@ -94,7 +97,6 @@ public class ShareLinkPage extends SharePage
         }
         catch (NoSuchElementException ex)
         {
-            logger.error("Public View link is not present.");
         }
 
       return false;
@@ -134,7 +136,6 @@ public class ShareLinkPage extends SharePage
         }
         catch (NoSuchElementException ex)
         {
-            logger.error("Public unshare link is not present.");
         }
 
       return false;
@@ -173,7 +174,6 @@ public class ShareLinkPage extends SharePage
         }
         catch (NoSuchElementException ex)
         {
-            logger.error("Email link is not present.");
         }
 
       return false;
@@ -192,7 +192,6 @@ public class ShareLinkPage extends SharePage
         }
         catch (NoSuchElementException ex)
         {
-            logger.error("Facebook link is not present.");
         }
 
       return false;
@@ -207,7 +206,7 @@ public class ShareLinkPage extends SharePage
         {
             drone.find(facebookLinkLocator).click();
         }
-        catch (TimeoutException ex)
+        catch (NoSuchElementException ex)
         {
             logger.error("Exceeded time to find the Facebook link element", ex);
             throw new PageException("Unable to find Facebook link", ex);
@@ -242,7 +241,7 @@ public class ShareLinkPage extends SharePage
         {
             drone.find(twitterLinkLocator).click();
         }
-        catch (TimeoutException ex)
+        catch (NoSuchElementException ex)
         {
             logger.error("Exceeded time to find the Twitter link element", ex);
             throw new PageException("Unable to find Twitter link", ex);
@@ -262,7 +261,7 @@ public class ShareLinkPage extends SharePage
         }
         catch (NoSuchElementException ex)
         {
-            logger.error("Google+ link is not present.");
+            logger.error("Google+ link is not present.", ex);
         }
 
       return false;
@@ -277,7 +276,7 @@ public class ShareLinkPage extends SharePage
         {
             drone.find(googlePlusLinkLocator).click();
         }
-        catch (TimeoutException ex)
+        catch (NoSuchElementException ex)
         {
             logger.error("Exceeded time to find the Google+ link element", ex);
             throw new PageException("Unable to find Google+ link", ex);
