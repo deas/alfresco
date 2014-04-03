@@ -1181,6 +1181,7 @@ public class DocumentLibraryPage extends SitePage
         try
         {
             drone.findAndWait(By.cssSelector("div.alf-filmstrip.alf-gallery.documents.alf-filmstrip-content-only"), 2000);
+            drone.findAndWait(By.cssSelector("div[id$='_default-filmstrip-nav-carousel']"), 2000);
         }
         catch (TimeoutException e)
         {
