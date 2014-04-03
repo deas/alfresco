@@ -206,7 +206,7 @@
           * @type String
           * @default "false"
           */
-         progressiveLoading: "true",
+         progressiveLoading: "false",
 
          /**
           * Disabled page Linking.
