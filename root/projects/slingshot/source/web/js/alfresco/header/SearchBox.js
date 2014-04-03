@@ -166,9 +166,9 @@ define(["dojo/_base/declare",
       /**
        * @instance
        * @type {integer}
-       * @default 130
+       * @default 180
        */
-      _width: "130",
+      _width: "180",
 
       /**
        * @instance

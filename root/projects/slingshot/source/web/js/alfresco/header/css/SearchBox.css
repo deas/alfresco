@@ -11,13 +11,8 @@
    background-color: #eee;
    border-radius: 12px;
    box-shadow: 1px 1px 3px #ccc inset;
-   padding-left: 8px;
    padding-left: 4px;
    padding-bottom: 1px;
-}
-
-.alfresco-share .alf-search-box-inner {
-   font-size: 100%;
 }
 
 .alfresco-share .alf-search-box-menu {
@@ -31,12 +26,12 @@
    margin-right: 8px;
    margin-left: -6px;
    position: relative;
-   top: 1px;
+   top: 2px;
    margin-top: 1px;
 }
 
 .alfresco-share .alf-search-box-text:focus {
-   outline:none;
+   outline: none;
 }
 
 /* This defines the search icon for use in popup menu items only */
@@ -71,7 +66,8 @@
    min-width: 360px;
    background-color: #fff;
    border: 1px solid #ccc;
-   border-radius: 5px;
+   border-bottom-left-radius: 6px;
+ 	border-bottom-right-radius: 6px;
    box-shadow: 0.33px 0px 8px rgba(0, 0, 0, 0.3);
    color: #333;
    margin-top: 3px;
@@ -87,11 +83,13 @@
 .alfresco-share .alf-livesearch .alf-livesearch-title {
    clear: both;
    font-size: 115%;
-   padding: 15px 9px 5px 9px;
+   padding: 9px 9px 5px 9px;
 }
 
 .alfresco-share .alf-livesearch .alf-livesearch-more {
    display: none;
+   margin-top: -8px;
+   margin-bottom: 4px;
 }
 
 .alfresco-share .alf-livesearch .alf-livesearch-more span {
@@ -130,7 +128,7 @@
 
 .alfresco-share .alf-livesearch-list .alf-livesearch-item span,
 .alfresco-share .alf-livesearch-list .alf-livesearch-item span a {
-   color: #ccc;
+   color: #888;
 }
 
 .alfresco-share .alf-livesearch-list .alf-livesearch-item span {
