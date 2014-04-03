@@ -39,7 +39,7 @@ import org.openqa.selenium.WebElement;
  * Create folder page object, holds all element of the HTML page relating to
  * share's create folder page.
  * 
- * @author Michael Suzuki
+ * @author Michael Suzuki, Jamie Allison
  * @since  1.0
  */
 public class NewFolderPage extends SharePage
@@ -49,25 +49,18 @@ public class NewFolderPage extends SharePage
     private final By descriptionLocator = By.cssSelector("textarea[id$='default-createFolder_prop_cm_description']");
     private final By submitButton = By.cssSelector("button[id$='default-createFolder-form-submit-button']");
     private final By cancelButton = By.cssSelector("button[id$='createFolder-form-cancel-button']");
-    
+
     private final RenderElement folderTitleElement = getVisibleRenderElement(folderTitleCss);
     private final RenderElement nameElement = getVisibleRenderElement(name);
     private final RenderElement descriptionElement = getVisibleRenderElement(descriptionLocator);
     private final RenderElement submitButtonElement = getVisibleRenderElement(submitButton);
     private final RenderElement cancelButtonElement = getVisibleRenderElement(cancelButton);
-    
+
     public enum Fields
     {
-        NAME(By.cssSelector("input[id$='default-createFolder_prop_cm_name']")),
-        TITLE(By.cssSelector("input[id$='default-createFolder_prop_cm_title']")),
-        DESCRIPTION(By.cssSelector("textarea[id$='default-createFolder_prop_cm_description']"));
-        
-        private By locator;
-        
-        private Fields(By locator)
-        {
-            this.locator = locator;
-        }
+        NAME,
+        TITLE,
+        DESCRIPTION;
     }
 
     /**
@@ -109,14 +102,6 @@ public class NewFolderPage extends SharePage
     }
 
     /**
-     * @see #createNewFolderWithValidation(String, String)
-     */
-    public HtmlPage createNewFolderWithValidation(final String folderName)
-    {
-        return createNewFolderWithValidation(folderName, null);
-    }
-
-    /**
      * Create a new folder action by completing and submitting the form.
      * 
      * @param folderName    mandatory folder name
@@ -129,53 +114,14 @@ public class NewFolderPage extends SharePage
         typeDescription(description);
         WebElement okButton = drone.find(submitButton);
         okButton.click();
-        
+
         //Wait till the pop up disappears
         waitUntilMessageAppearAndDisappear("Folder");
         DocumentLibraryPage page = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
         page.setShouldHaveFiles(true);
         return page;
     }
-    
-    /**
-     * Create a new folder action by completing and submitting the form.
-     * 
-     * @param folderName    mandatory folder name
-     * @param description   optional folder description
-     * @return {@link HtmlPage} page response
-     */
-    public HtmlPage createNewFolderWithValidation(final String folderName, final String description)
-    {
-        boolean validationPresent = false;
-        
-        typeNameWithValidation(folderName);
-        typeDescription(description);
-        
-        WebElement okButton = drone.find(submitButton);
-        okButton.click();
-        
-        HtmlPage htmlPage = FactorySharePage.resolvePage(drone);
-        if(htmlPage instanceof ShareDialogue)
-        {
-            htmlPage = ((ShareDialogue) htmlPage).resolveShareDialoguePage().render();
-        
-            validationPresent = isMessagePresent(name);
-            validationPresent = validationPresent || isMessagePresent(folderTitleCss);
-            validationPresent = validationPresent || isMessagePresent(descriptionLocator);
-        }
-        
-        if(!validationPresent)
-        {
-            //Wait till the pop up disappears
-            waitUntilMessageAppearAndDisappear("Folder");
-            DocumentLibraryPage page = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
-            page.setShouldHaveFiles(true);
-            htmlPage = page;
-        }
 
-        return htmlPage.render();
-    }
-    
     /**
      * Create a new folder action by completing and submitting the form.
      * 
@@ -193,7 +139,27 @@ public class NewFolderPage extends SharePage
         typeTitle(folderTitle);
         return createNewFolder(folderName, description);
     }
-    
+
+    /**
+     * @see #createNewFolderWithValidation(String, String)
+     */
+    public HtmlPage createNewFolderWithValidation(final String folderName)
+    {
+        return createNewFolderWithValidation(folderName, null);
+    }
+
+    /**
+     * Create a new folder action by completing and submitting the form.
+     * 
+     * @param folderName    mandatory folder name
+     * @param description   optional folder description
+     * @return {@link HtmlPage} page response
+     */
+    public HtmlPage createNewFolderWithValidation(final String folderName, final String description)
+    {
+        return createNewFolderWithValidation(folderName, null, description);
+    }
+
     /**
      * Create a new folder action by completing and submitting the form.
      * 
@@ -204,10 +170,32 @@ public class NewFolderPage extends SharePage
      */
     public HtmlPage createNewFolderWithValidation(final String folderName, final String folderTitle, final String description)
     {
-        typeTitle(folderTitle);
-        return createNewFolderWithValidation(folderName, description);
+        String validationMessage = "";
+
+        validationMessage += typeNameWithValidation(folderName);
+        validationMessage += typeTitle(folderTitle);
+        validationMessage += typeDescription(description);
+
+        if(validationMessage.isEmpty())
+        {
+            WebElement okButton = drone.find(submitButton);
+            okButton.click();
+
+            //Wait till the pop up disappears
+            waitUntilMessageAppearAndDisappear("Folder");
+            DocumentLibraryPage page = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
+            page.setShouldHaveFiles(true);
+            return page;
+        }
+
+        HtmlPage page = FactorySharePage.resolvePage(drone);
+        if(page instanceof ShareDialogue)
+        {
+            return ((ShareDialogue) page).resolveShareDialoguePage();
+        }
+        return page;
     }
-    
+
     /**
      * Clear & Type Folder Name on the Text box.
      * @param folderName
@@ -220,43 +208,50 @@ public class NewFolderPage extends SharePage
         }
         clearAndType(name, folderName);
     }
-    
-    private void typeNameWithValidation(final String folderName)
+
+    private String typeNameWithValidation(final String folderName)
     {
-        clearAndType(name, folderName);
+        String fName = (folderName == null ? "" : folderName);
+
+        return clearAndType(name, fName);
     }
-    
+
     /**
      * Clear & Type the Folder Title for box.
      * @param folderTitle
      */
-    public void typeTitle(final String folderTitle)
+    public String typeTitle(final String folderTitle)
     {
         if(folderTitle != null && !folderTitle.isEmpty())
         {
-            clearAndType(folderTitleCss, folderTitle);
-        } 
+            return clearAndType(folderTitleCss, folderTitle);
+        }
+        return "";
     }
-    
+
     /**
      * Clear & Type the Description for box.
      * @param description
      */
-    public void typeDescription(final String description)
+    public String typeDescription(final String description)
     {
         if (description != null && !description.isEmpty())
         {
-            clearAndType(descriptionLocator, description);
+            return clearAndType(descriptionLocator, description);
         }
+        return "";
     }
-    
-    private void clearAndType(By by, String text)
+
+    private String clearAndType(By by, String text)
     {
         WebElement element = drone.find(by);
         element.clear();
         element.sendKeys(text);
+        //element.sendKeys(Keys.TAB);
+
+        return getValidationMessage(element);
     }
-    
+
     /**
      * Mimics the action of clicking the cancel button.
      * 
@@ -279,7 +274,7 @@ public class NewFolderPage extends SharePage
     {
         waitUntilMessageAppearAndDisappear(text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
     }
-    
+
     /**
      * Wait until the black message box appear with text then wait until same black message disappear with text.
      * 
@@ -291,7 +286,7 @@ public class NewFolderPage extends SharePage
         //drone.waitUntilVisible(By.cssSelector("div.bd>span.message"), text, timeInSeconds);
         drone.waitUntilElementDisappears(By.cssSelector("div.bd>span.message"), timeInSeconds);
     }
-    
+
     /**
      * Returns the validation message, if any, for the given Field.
      * @param field The reqired field
@@ -300,29 +295,35 @@ public class NewFolderPage extends SharePage
     public String getMessage(Fields field)
     {
         String message = "";
-        try
+
+        switch (field)
         {
-            message = getValidationMessage(field.locator);
+            case NAME:
+                message = getMessage(name);
+                break;
+            case TITLE:
+                message = getMessage(folderTitleCss);
+                break;
+            case DESCRIPTION:
+                message = getMessage(descriptionLocator);
+                break;
         }
-        catch(NoSuchElementException e)
-        {
-        }
+
         return message;
     }
 
-    private boolean isMessagePresent(By locator)
+    private String getMessage(By locator)
     {
+        String message = "";
+
         try
         {
-            String message = getValidationMessage(locator);
-            if(message.length() > 0)
-            {
-                return true;
-            }
+            message = getValidationMessage(locator);
         }
         catch(NoSuchElementException e)
         {
         }
-        return false;
+
+        return message;
     }
 }

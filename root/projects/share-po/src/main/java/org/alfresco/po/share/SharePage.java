@@ -59,14 +59,14 @@ public abstract class SharePage extends Page
     protected AlfrescoVersion alfrescoVersion;
     protected long popupRendertime;
     protected long elementWaitInSeconds;
-    
+
     protected SharePage(WebDrone drone)
     {
         super(drone);
         alfrescoVersion = drone.getProperties().getVersion();
         dojoSupport = alfrescoVersion.isDojoSupported();
     }
-    
+
     /**
      * Check if javascript message is displayed.
      * The message details the background action taking place.
@@ -118,16 +118,16 @@ public abstract class SharePage extends Page
         By selector;
         switch (alfrescoVersion)
         {
-        case Enterprise41:
-            selector = By.cssSelector("span.logo a img");
-            break;
-        case Enterprise42:
-            selector = By.cssSelector("div.logo img");
-            break;
-        //Latest share 
-        default:
-            selector = By.cssSelector("div.alfresco-logo-Logo img");
-            break;
+            case Enterprise41:
+                selector = By.cssSelector("span.logo a img");
+                break;
+            case Enterprise42:
+                selector = By.cssSelector("div.logo img");
+                break;
+                //Latest share 
+            default:
+                selector = By.cssSelector("div.alfresco-logo-Logo img");
+                break;
         }
         return drone.find(selector).isDisplayed();
     }
@@ -142,15 +142,15 @@ public abstract class SharePage extends Page
         String selector;
         switch (alfrescoVersion) 
         {
-        case Enterprise41:
-        	selector = "h1.theme-color-3";
-            break;
-        case Cloud2:
-            selector = "div.alf-menu-title span.alf-menu-title-text";
-            break;
-        default:
-        	selector = "a.alf-menu-title-text";
-            break;
+            case Enterprise41:
+                selector = "h1.theme-color-3";
+                break;
+            case Cloud2:
+                selector = "div.alf-menu-title span.alf-menu-title-text";
+                break;
+            default:
+                selector = "a.alf-menu-title-text";
+                break;
         }
         return drone.find(By.cssSelector(selector)).getText().trim();
     }
@@ -264,7 +264,7 @@ public abstract class SharePage extends Page
     {
         drone.executeJavaScript("var singleMode=Alfresco.util.ComponentManager.findFirst('Alfresco.HtmlUpload'); Alfresco.util.ComponentManager.findFirst('Alfresco.FileUpload').uploader=singleMode;");
     }
-    
+
     /**
      * Verifies if a user is currently logged in
      * 
@@ -282,7 +282,7 @@ public abstract class SharePage extends Page
         }
         return loggedin;
     }
-    
+
     /**
      * Get copy right text from alfresco footer.
      * @return String copy right text.
@@ -342,7 +342,7 @@ public abstract class SharePage extends Page
     {
         return canResume(WAIT_TIME_3000);
     }
-    
+
     /**
      * Waits for given {@link ElementState} of all render elements when rendering a page.
      * If the given element not reach element state, it will time out and throw 
@@ -390,7 +390,7 @@ public abstract class SharePage extends Page
         }
         elementRender(renderTime, elements.toArray(new RenderElement[elements.size()]));
     }
-    
+
     /**
      * Waits for given {@link ElementState} of all render elements when rendering a page.
      * If the given element not reach element state, it will time out and throw 
@@ -430,7 +430,7 @@ public abstract class SharePage extends Page
         }
     }
 
- 
+
     /**
      * Wait for file to be present given path for maximum page loading time.
      * @param pathname Absolute Path Name with File Name.
@@ -439,7 +439,7 @@ public abstract class SharePage extends Page
     {
         waitForFile(new RenderTime(time), pathname);
     }
-    
+
     /**
      * Wait for file to be present given path for maximum page loading time.
      * @param pathname Absolute Path Name with File Name.
@@ -473,7 +473,7 @@ public abstract class SharePage extends Page
             }
         }
     }
-    
+
     /**
      * <li>Click the element which passed and wait for given ElementState on the same element.</li>
      * <li>If the Element State not changed, then render the {@link SharePopup} Page, if it is rendered the return {@link SharePopup} page.</li>
@@ -572,7 +572,7 @@ public abstract class SharePage extends Page
     {
         this.elementWaitInSeconds = elementWaitInSeconds;
     }   
-	
+
     /**
      * Helper to consistently get the Site Short Name.
      *
@@ -592,7 +592,7 @@ public abstract class SharePage extends Page
 
         return siteShortName.toLowerCase();
     }
-    
+
     /**
      * Wait until the black message box appear with text then wait until same black message disappear with text.
      * 
@@ -615,11 +615,11 @@ public abstract class SharePage extends Page
         String messageSelector = "div#message, div.bd";
         if(AlfrescoVersion.Enterprise41.equals(drone.getProperties().getVersion()))
         {
-                messageSelector = "div.bd";
+            messageSelector = "div.bd";
         }
         return new RenderElement(By.cssSelector(messageSelector), ElementState.INVISIBLE);
     }
-    
+
     /**
      * Find the all the elements for given locator and returns the first visible {@link WebElement}.
      * It could be used to elemanate the hidden element with same locators.
@@ -644,7 +644,7 @@ public abstract class SharePage extends Page
     {
         return dojoSupport;
     }
-    
+
     /**
      * Returns the validation message from the validation popup balloon for the web element
      * or an empty string if there is no message or the field is not validated.
@@ -656,7 +656,21 @@ public abstract class SharePage extends Page
     {
         WebElement webElement = drone.find(locator);
         String message = webElement.getAttribute("alf-validation-msg");
-        
+
+        return (message == null ? "" : message);
+    }
+
+    /**
+     * Returns the validation message from the validation popup balloon for the web element
+     * or an empty string if there is no message or the field is not validated.
+     * 
+     * @param element
+     * @return The validation message
+     */
+    public String getValidationMessage(WebElement webElement)
+    {
+        String message = webElement.getAttribute("alf-validation-msg");
+
         return (message == null ? "" : message);
     }
 }
