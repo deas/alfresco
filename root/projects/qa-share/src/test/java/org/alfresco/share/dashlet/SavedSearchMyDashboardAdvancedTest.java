@@ -502,8 +502,7 @@ public class SavedSearchMyDashboardAdvancedTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Create File
-        ContentDetails contentDetails = new ContentDetails();
-        contentDetails.setName(fileName);
+        ContentDetails contentDetails = new ContentDetails(fileName);
         DocumentLibraryPage documentLibraryPage = ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
         documentLibraryPage.getSiteNav().selectSiteDashBoard().render();
 
@@ -516,8 +515,6 @@ public class SavedSearchMyDashboardAdvancedTest extends AbstractUtils
         searchTerms.add("created: \"" + getDate("yyyy-MMM-dd") + "\"" +  " and modifier: " + testUser);
         searchTerms.add("created: [" + getDate("yyyy-MM-dd")+ " TO TODAY]" +  " and modifier: " + testUser);
         searchTerms.add("created: [" + getDate("yyyy-MM-dd") + " TO NOW]" +  " and modifier: " + testUser);
-
-        SavedSearchDashlet savedSearchDashlet;
 
         ShareUser.openUserDashboard(drone);
 

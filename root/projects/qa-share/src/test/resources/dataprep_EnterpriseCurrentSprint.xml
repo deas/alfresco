@@ -106,4 +106,10 @@
             </class>
         </classes>
     </test>
+
+    <test name="SiteSearch MyDashboard Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.dashlet.SiteSearchMyDashboardTest"/>
+        </classes>
+    </test>
 </suite>

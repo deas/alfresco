@@ -42,6 +42,7 @@ import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.ShareUserWorkFlow;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.joda.time.DateTime;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -84,6 +85,47 @@ public class HybridWorkflowTest1 extends AbstractWorkflow
         // Login to User1, set up the cloud sync
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         signInToAlfrescoInTheCloud(drone, cloudUser, DEFAULT_PASSWORD);
+        ShareUser.logout(drone);
+    }
+
+    @Test (groups="Hybrid", enabled = true)
+    public void ALF_15136() throws Exception
+    {
+        // Login as OP user
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        // Start Simple Cloud Task Workflow
+        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startCloudReviewTaskWorkFlow(drone);
+
+        Assert.assertTrue(cloudTaskOrReviewPage.isCloudReviewTaskElementsPresent(), "Verifying Cloud Task or Review fields displayed");
+
+        cloudTaskOrReviewPage.clickHelpIcon();
+        Assert.assertEquals(cloudTaskOrReviewPage.getHelpText(), "This field must have between 0 and 250 characters.");
+        cloudTaskOrReviewPage.clickHelpIcon();
+
+        cloudTaskOrReviewPage.selectTask(TaskType.SIMPLE_CLOUD_TASK);
+        Assert.assertTrue(cloudTaskOrReviewPage.isTaskTypeSelected(TaskType.SIMPLE_CLOUD_TASK));
+
+        cloudTaskOrReviewPage.selectTask(TaskType.CLOUD_REVIEW_TASK);
+        Assert.assertTrue(cloudTaskOrReviewPage.isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK));
+
+        String manualEntryDueDate = new DateTime().plusDays(5).toString("dd/MM/yyyy");
+
+        cloudTaskOrReviewPage.enterDueDateText(manualEntryDueDate);
+        Assert.assertEquals(cloudTaskOrReviewPage.getDueDate(), manualEntryDueDate);
+
+        cloudTaskOrReviewPage.selectDateFromCalendar(getDueDateString());
+        Assert.assertEquals(cloudTaskOrReviewPage.getDueDate(), getDueDateString());
+
+        List<String> options = cloudTaskOrReviewPage.getPriorityOptions();
+        Assert.assertEquals(options.size(), Priority.values().length);
+        Assert.assertTrue(options.contains(Priority.HIGH.getPriority()));
+        Assert.assertTrue(options.contains(Priority.LOW.getPriority()));
+        Assert.assertTrue(options.contains(Priority.MEDIUM.getPriority()));
+
+        cloudTaskOrReviewPage.selectPriorityDropDown(Priority.LOW);
+        Assert.assertEquals(cloudTaskOrReviewPage.getSelectedPriorityOption(), Priority.LOW);
+
         ShareUser.logout(drone);
     }
 
