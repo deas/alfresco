@@ -35,7 +35,7 @@
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/junit-dep-4.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="/3rd Party/lib/antlr-3.4-complete.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/xercesImpl-2.10.0-alfresco-patched.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/alfresco-xmlfactory-1.0.1.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/alfresco-xmlfactory-1.0.2.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-api-0.10.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-bindings-0.10.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-impl-0.10.0.jar"/>
