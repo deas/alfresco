@@ -179,11 +179,11 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/SearchSuite.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/DashletSuite.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/DocumentSuite.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/DownloadSuite.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/EnumSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/SearchSuite.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/SiteContentSuite.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/SitesSuite.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/TasksSuite.xml</suiteXmlFile>

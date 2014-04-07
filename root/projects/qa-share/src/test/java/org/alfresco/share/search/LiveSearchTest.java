@@ -335,18 +335,7 @@ public class LiveSearchTest extends AbstractUtils
         //search for searchTerm2
         liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm2);
         liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
-        
         liveSearchDropdown.clickToSeeMoreDocumentResults();
-        liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
-        
-        liveSearchDropdown.clickToSeeMoreDocumentResults();
-        liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
-        
-        liveSearchDropdown.clickToSeeMoreDocumentResults();
-        liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
-        
-        liveSearchDropdown.clickToSeeMoreDocumentResults();
-        liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
         Assert.assertTrue(liveSearchDocumentResults.size() == 21); 
         
         ShareUser.logout(drone);
@@ -699,7 +688,7 @@ public class LiveSearchTest extends AbstractUtils
      * (it should be enabled only for the system tenants)
      */
     
-    @Test(groups = { "Cloud-only" })
+    @Test(groups={"CloudOnly"})
     public void liveSearch_ACE_1063_06()
     {
 

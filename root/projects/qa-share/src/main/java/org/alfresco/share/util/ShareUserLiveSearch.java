@@ -101,7 +101,7 @@ public class ShareUserLiveSearch extends AbstractUtils
         List<String> userNames = new ArrayList<String>();
         for (LiveSearchDocumentResult liveSearchDocumentResult : liveSearchDocumentResults)
         {
-            userNames.add(liveSearchDocumentResult.getUserName().getDescription());
+            userNames.add(liveSearchDocumentResult.getUserName().getDescription().toLowerCase());
         }
         return userNames;
     }

@@ -49,6 +49,7 @@ import org.testng.annotations.Test;
  * 
  * @author jcule
  */
+@Test(groups={"alfresco-one"})
 @Listeners(FailedTestListener.class)
 public class LiveSearchDropdownTest extends AbstractTest
 {
