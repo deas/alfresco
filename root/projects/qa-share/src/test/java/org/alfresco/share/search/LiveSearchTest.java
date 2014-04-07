@@ -334,9 +334,9 @@ public class LiveSearchTest extends AbstractUtils
         
         //search for searchTerm2
         liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm2);
-        liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
         liveSearchDropdown.clickToSeeMoreDocumentResults();
-        Assert.assertTrue(liveSearchDocumentResults.size() == 21); 
+        liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+        Assert.assertTrue(liveSearchDocumentResults.size() > 5); 
         
         ShareUser.logout(drone);
         
