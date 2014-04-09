@@ -507,25 +507,33 @@ public abstract class AbstractUtils
      */
     public static String getAPIURL(WebDrone drone)
     {
-        String shareURL = dronePropertiesMap.get(drone).getShareUrl();
-        logger.info("getAPIURL: -- Using URL - " + shareURL);
-        String apiUrl = shareURL.replace("my.alfresco.me/share", "api.alfresco.me/");
-        apiUrl = apiUrl.replace("my.alfresco.me:/share", "api.alfresco.me/");
-        apiUrl = apiUrl.replace("my.alfresco.me:443/share", "api.alfresco.me/");
-
-        if (!dronePropertiesMap.get(drone).getAlfrescoVersion().isCloud())
+        String apiUrl = dronePropertiesMap.get(drone).getApiUrl();
+        if (apiUrl == null || "".equals(apiUrl))
         {
-            apiUrl = shareURL.replace("share", apiContextEnt);
+            String shareURL = dronePropertiesMap.get(drone).getShareUrl();
+            logger.info("getAPIURL: -- Using URL - " + shareURL);
+            apiUrl = shareURL.replace("my.alfresco.me/share", "api.alfresco.me/");
+            apiUrl = apiUrl.replace("my.alfresco.me:/share", "api.alfresco.me/");
+            apiUrl = apiUrl.replace("my.alfresco.me:443/share", "api.alfresco.me/");
+
+            if (!dronePropertiesMap.get(drone).getAlfrescoVersion().isCloud())
+            {
+                apiUrl = shareURL.replace("share", apiContextEnt);
+            }
+            else
+            {
+                if (shareURL.equalsIgnoreCase(STAGURL))
+                {
+                    apiUrl = shareURL.replace("my.alfresco.com/share", "api.alfresco.com/");
+                }
+            }
+
+            logger.info("getAPIURL: -- derived apiUrl - " + apiUrl);
         }
         else
         {
-            if (shareURL.equalsIgnoreCase(STAGURL))
-            {
-                apiUrl = shareURL.replace("my.alfresco.com/share", "api.alfresco.com/");
-            }
+            logger.info("getAPIURL: -- configured apiUrl - " + apiUrl);
         }
-
-        logger.info("getAPIURL: -- derived apiUrl - " + apiUrl);
 
         return apiUrl;
     }

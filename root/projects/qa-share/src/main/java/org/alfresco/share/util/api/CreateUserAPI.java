@@ -57,7 +57,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
         String[] authDetails = getAuthDetails(invitingUserEmail);
 
-        String[] headers = { "Content-Type", "application/json;charset=utf-8", "key", getHeaderKey() };
+        String[] headers = getRequestHeaders("application/json;charset=utf-8");
         String[] body = { "source", "test-rest-client-script", "email", newUserEmailID };
 
         HttpClient client = null;
@@ -95,7 +95,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
         logger.info("Using Url - " + reqURL + " for activateUser");
 
         String[] authDetails = getAuthDetails(invitingUserEmail);
-        String[] headers = { "Content-Type", "application/json;charset=utf-8", "key", getHeaderKey() };
+        String[] headers = getRequestHeaders("application/json;charset=utf-8");
         String[] body = { "firstName", fName, "lastName", lName, "password", password, "key", regKey, "id", regId };
 
         HttpPost request = generatePostRequest(reqURL, headers, body);
@@ -250,7 +250,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
         String reqURL = getAPIURL(drone) + apiContextCloudInternal + "domains/" + domain + "/account";
 
         String[] authDetails = getAuthDetails(authUser);
-        String[] headers = { "Content-Type", "application/json;charset=utf-8", "key", getHeaderKey() };
+        String[] headers = getRequestHeaders("application/json;charset=utf-8");
         String[] body = { "accountTypeId", accountTypeID };
 
         HttpPut request = generatePutRequest(reqURL, headers, body);
@@ -338,7 +338,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
         String reqURL = getAPIURL(drone) + apiContextCloudInternal + "domains/" + domain + "/account/networkadmins";
 
         String[] authDetails = getAuthDetails(authUser);
-        String[] headers = { "Content-Type", "application/json;charset=utf-8", "key", getHeaderKey() };
+        String[] headers = getRequestHeaders("application/json;charset=utf-8");
         String[] body = { "username", userNametoBePromoted };
 
         HttpPost request = generatePostRequest(reqURL, headers, body);
@@ -450,7 +450,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
         String[] authDetails = getAuthDetails(invitingUsername);
 
-        String[] headers = { "key", getHeaderKey() };
+        String[] headers = getRequestHeaders(null);
 
         HttpClient client = null;
         HttpPost request = null;
@@ -502,7 +502,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
         logger.info("Request Url - " + reqURL);
 
         String[] authDetails = getAuthDetails(invitedUserEmail);
-        String[] headers = { "key", getHeaderKey() };
+        String[] headers = getRequestHeaders(null);
 
         HttpGet request = generateGetRequest(reqURL, headers);
         HttpClient client = getHttpClientWithBasicAuth(reqURL, authDetails[0], authDetails[1]);

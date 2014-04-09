@@ -1,6 +1,8 @@
 package org.alfresco.share.util.api;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.HttpUtil;
 import org.apache.commons.logging.Log;
@@ -46,6 +48,23 @@ public class AlfrescoHttpClient extends AbstractUtils
             return null;
         }
         return HEADER_KEY;
+    }
+    
+    public static String[] getRequestHeaders(String contentType)
+    {
+        ArrayList<String> headers = new ArrayList<String>(2);
+        String headerKey = getHeaderKey();
+        if (headerKey != null)
+        {
+            headers.add("key");
+            headers.add(headerKey);
+        }
+        if (contentType != null)
+        {
+            headers.add("Content-Type");
+            headers.add(contentType);
+        }
+        return headers.toArray(new String[headers.size()]);
     }
 
     @SuppressWarnings("finally")
