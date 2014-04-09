@@ -198,6 +198,7 @@
                 <solr.war.exploded.folder>${solr.nossl.war.target.folder}</solr.war.exploded.folder>
                 <!-- We configure the solr config to point to the customized no-ssl folder -->
                 <solr.config.folder>${solr.nossl.instance.target.folder}</solr.config.folder>
+                <ALFRESCO_SOLR_DIR>${solr.config.folder}</ALFRESCO_SOLR_DIR>
             </properties>
             <build>
                 <plugins>
@@ -278,7 +279,34 @@
                             </execution>
                         </executions>
                     </plugin>
-
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-context-config</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <outputDirectory>${solr.war.exploded.folder}/META-INF</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>source/test-web/META-INF</directory>
+                                            <includes>
+                                                <include>context.xml</include>
+                                            </includes>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                                    <delimiters>
+                                        <delimiter>@@</delimiter>
+                                    </delimiters>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <artifactId>maven-war-plugin</artifactId>
                         <executions>
