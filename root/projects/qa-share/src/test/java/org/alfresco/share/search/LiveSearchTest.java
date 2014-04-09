@@ -112,7 +112,7 @@ public class LiveSearchTest extends AbstractUtils
      * 6) Checks that all the links in live search results work properly
      * 7) User logs out
      */
-    @Test
+    @Test(groups={"TestLiveSearch"})
     public void liveSearch_ACE_1063_01()
     {
 
@@ -202,28 +202,12 @@ public class LiveSearchTest extends AbstractUtils
         String siteName = getSiteName(testName);
         
         // Files
-        String[] fileName = new String[21];
-        fileName[0] = getFileName(testName + "." + "xlsx");
-        fileName[1] = getFileName(testName + "." + "txt");
-        fileName[2] = getFileName(testName + "." + "msg");
-        fileName[3] = getFileName(testName + "." + "pdf");
-        fileName[4] = getFileName(testName + "." + "xml");
-        fileName[5] = getFileName(testName + "." + "html");
-        fileName[6] = getFileName(testName + "." + "eml");
-        fileName[7] = getFileName(testName + "." + "opd");
-        fileName[8] = getFileName(testName + "." + "ods");
-        fileName[9] = getFileName(testName + "." + "odt");
-        fileName[10] = getFileName(testName + "." + "xls");
-        fileName[11] = getFileName(testName + "." + "xsl");
-        fileName[12] = getFileName(testName + "." + "doc");
-        fileName[13] = getFileName(testName + "." + "docx");
-        fileName[14] = getFileName(testName + "." + "pptx");
-        fileName[15] = getFileName(testName + "." + "pot");
-        fileName[16] = getFileName(testName + "." + "xsd");
-        fileName[17] = getFileName(testName + "." + "js");
-        fileName[18] = getFileName(testName + "." + "java");
-        fileName[19] = getFileName(testName + "." + "css");
-        fileName[20] = getFileName(testName + "." + "rtf");
+        String[] extensions = {"xlsx", "txt", "msg", "pdf", "xml", "html", "eml", "opd", "ods", "odt", "xls", "xsl", "doc", "docx", "pptx", "pot", "xsd", "js", "java", "css", "rtf"};
+        String[] fileName = new String[extensions.length];
+        for (int i = 0; i < extensions.length; i++)
+        {
+            fileName[i] = getFileName(testName + "." + extensions[i]);
+        }
 
         Integer fileTypes = fileName.length - 1;
 
@@ -280,7 +264,7 @@ public class LiveSearchTest extends AbstractUtils
      * 11) User logs out
      * 
      */
-    @Test
+    @Test(groups={"TestLiveSearch"})
     public void liveSearch_ACE_1063_02()
     {
 
@@ -405,7 +389,7 @@ public class LiveSearchTest extends AbstractUtils
      * 10)User logs out
      * 
      */
-    @Test
+    @Test(groups={"TestLiveSearch"})
     public void liveSearch_ACE_1063_03()
     {
 
@@ -494,7 +478,7 @@ public class LiveSearchTest extends AbstractUtils
      * 6) User logs out    
      *  
      */
-    @Test
+    @Test(groups={"TestLiveSearch"})
     public void liveSearch_ACE_1063_04()
     {
         testName = getTestName();
@@ -601,7 +585,7 @@ public class LiveSearchTest extends AbstractUtils
      * 6) User logs out        
      * 
      */
-    @Test
+    @Test(groups={"TestLiveSearch"})
     public void liveSearch_ACE_1063_05()
     {
         testName = getTestName();
@@ -688,7 +672,7 @@ public class LiveSearchTest extends AbstractUtils
      * (it should be enabled only for the system tenants)
      */
     
-    @Test(groups={"CloudOnly"})
+    @Test(groups={"CloudOnly","TestLiveSearch"})
     public void liveSearch_ACE_1063_06()
     {
 
@@ -765,7 +749,7 @@ public class LiveSearchTest extends AbstractUtils
      * 5) Checks that the site with name "n3w s1t3 creat3ed 99" is not returned in live search sites results
      */
     
-    @Test
+    @Test(groups={"TestLiveSearch"})
     public void liveSearch_ACE_1063_07()
     {
 
@@ -802,10 +786,10 @@ public class LiveSearchTest extends AbstractUtils
     public void dataPrep_LiveSearch_ACE_1063_08() throws Exception
     {
         String testName = getTestName();
-        String testUser1 = "n3w us3r creat3ed 77" + "@" + "alfresco.com";
+        String testUser1 = "n3w.us3r.77" + "@" + "alfresco.com";
         String[] testUserInfo1 = new String[] { testUser1 };
         
-        String testUser2 = "n3w us3r creat3ed 55" + "@" + "alfresco.com";
+        String testUser2 = "n3w.us3r.55" + "@" + "alfresco.com";
         String[] testUserInfo2 = new String[] { testUser2 };
  
         
@@ -832,18 +816,18 @@ public class LiveSearchTest extends AbstractUtils
     
     /**
      * 1) User logs in
-     * 2) Performs live search with searchterm1 = siteName1 = "n3w s1t3 88"
-     * 4) Checks that the site with name "n3w s1t3 creat3ed 88" is returned in live search sites results
-     * 5) Checks that the site with name "n3w s1t3 creat3ed 99" is not returned in live search sites results
+     * 2) Performs live search with searchterm1 = siteName1 = "n3w us3r 77"
+     * 4) Checks that the user with name "n3w.us3r.77" is returned in live search sites results
+     * 5) Checks that the user with name "n3w.us3r.55" is not returned in live search sites results
      */
     
-    @Test
+    @Test(groups={"TestLiveSearch"})
     public void liveSearch_ACE_1063_08()
     {
  
         testName = getTestName();
-        String testUser1 = "n3w us3r creat3ed 77" + "@" + "alfresco.com";
-        String testUser2 = "n3w us3r creat3ed 55" + "@" + "alfresco.com";
+        String testUser1 = "n3w.us3r.77" + "@" + "alfresco.com";
+        String testUser2 = "n3w.us3r.55" + "@" + "alfresco.com";
         ShareUser.login(drone, testUser1, testPassword);
         
         String searchTerm = "n3w us3r 77";
