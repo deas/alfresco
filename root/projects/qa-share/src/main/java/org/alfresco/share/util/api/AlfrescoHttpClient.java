@@ -100,6 +100,11 @@ public class AlfrescoHttpClient extends AbstractUtils
                     logger.info("Http Client with Basic Auth: Success");
                 }
             }
+            else
+            {
+                logger.warn("Got status code " + response.getStatusLine().getStatusCode() + " for GET " + apiUrl);
+                response.getEntity().writeTo(System.out);
+            }
         }
         catch (IOException ioe)
         {
