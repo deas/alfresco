@@ -29,7 +29,7 @@
                </div>
             </div>
          </#if>
-         <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
+         <div class="body scrollableList" <#if args.height??>style="height: ${args.height?html}px;"</#if>>
          <#if numLinks?? && numLinks!=0>
             <#list links as link>
                <div class="detail-list-item <#if link_index = 0>first-item<#elseif !link_has_next>last-item</#if>">

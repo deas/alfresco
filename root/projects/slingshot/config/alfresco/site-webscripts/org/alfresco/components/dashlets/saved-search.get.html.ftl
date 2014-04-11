@@ -27,7 +27,7 @@
    <@uniqueIdDiv>
       <div class="dashlet savedsearch">
          <div class="title" id="${el}-title">${msg("header.title")}</div>
-         <div id="${el}-list" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
+         <div id="${el}-list" class="body scrollableList" <#if args.height??>style="height: ${args.height?html}px;"</#if>>
             <div id="${el}-search-results"></div>
          </div>
       </div>

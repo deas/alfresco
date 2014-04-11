@@ -17,7 +17,7 @@
       <#assign el=args.htmlid?html>
       <div class="dashlet" id="${el}-my-docs-dashlet">
          <div class="title">${msg("header")}</div>
-         <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
+         <div class="body scrollableList" <#if args.height??>style="height: ${args.height?html}px;"</#if>>
 
             <div id="${el}-message" class="my-docs-editing-message hidden"></div>
             <div id="${el}-my-docs" class="my-docs-editing">

@@ -46,7 +46,7 @@
                <div class="clear"></div>
             </div>
          </div>
-         <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
+         <div class="body scrollableList" <#if args.height??>style="height: ${args.height?html}px;"</#if>>
             <div id="${id}-documents"></div>
          </div>
       </div>

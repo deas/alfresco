@@ -15,7 +15,7 @@
    <@uniqueIdDiv>
       <div class="dashlet calendar">
          <div class="title">${msg("label.header")}</div>
-         <div id="${args.htmlid}-eventsContainer" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
+         <div id="${args.htmlid}-eventsContainer" class="body scrollableList" <#if args.height??>style="height: ${args.height?html}px;"</#if>>
          </div>
       </div>
    </@>

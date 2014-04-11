@@ -48,7 +48,7 @@
                <div class="clear"></div>
             </div>
          </div>
-         <div id="${id}-list" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
+         <div id="${id}-list" class="body scrollableList" <#if args.height??>style="height: ${args.height?html}px;"</#if>>
             <div id="${id}-filtered-topics"></div>
          </div>
       </div>

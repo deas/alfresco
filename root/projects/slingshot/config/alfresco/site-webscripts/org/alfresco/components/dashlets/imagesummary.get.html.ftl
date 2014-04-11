@@ -39,7 +39,7 @@
       </div>
       <div class="dashlet">
          <div class="title">${msg("header.title")}</div>
-         <div id="${el}-list" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
+         <div id="${el}-list" class="body scrollableList" <#if args.height??>style="height: ${args.height?html}px;"</#if>>
             <div class="dashlet-padding">
                <div id="${el}-wait" class="images-wait hidden"></div>
                <div id="${el}-message" class="images-message hidden"></div>

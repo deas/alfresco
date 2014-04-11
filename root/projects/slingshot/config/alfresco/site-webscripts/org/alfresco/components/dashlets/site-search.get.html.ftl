@@ -46,7 +46,7 @@
             </div>
             <div class="clear"></div>
          </div>
-         <div id="${el}-list" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
+         <div id="${el}-list" class="body scrollableList" <#if args.height??>style="height: ${args.height?html}px;"</#if>>
             <div id="${el}-search-results"></div>
          </div>
       </div>

@@ -19,9 +19,9 @@
       <div class="dashlet my-workspaces">
          <div class="title">${msg("header.myWorkspaces")}</div>
          <#if (sites?? && sites?size > 0)>
-            <div id="${args.htmlid}-workspaces" class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
+            <div id="${args.htmlid}-workspaces" class="body scrollableList" <#if args.height??>style="height: ${args.height?html}px;"</#if>>
          <#else>
-            <div class="body scrollableList" <#if args.height??>style="height: ${args.height}px;"</#if>>
+            <div class="body scrollableList" <#if args.height??>style="height: ${args.height?html}px;"</#if>>
                <div class="dashlet-padding">
                   <h3>${msg("label.noWorkspaces")}</h3>
                </div>

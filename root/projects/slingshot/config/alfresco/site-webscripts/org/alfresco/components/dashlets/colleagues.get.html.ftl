@@ -81,7 +81,7 @@
 
    <#-- LIST -->
    <@markup id="list">
-      <div class="body scrollableList" style="<#if args.height??>height: ${args.height}px;</#if>">
+      <div class="body scrollableList" style="<#if args.height??>height: ${args.height?html}px;</#if>">
          <#if (memberships?size == 1 && memberships[0].authority.userName = user.id)>
 
             <#-- LIST - EMPTY -->
