@@ -29,7 +29,7 @@
          <div class="title" id="${el}-title"><#if args.title?? && args.title != "">${args.title?html}<#else>${msg("notice.defaultTitle")}</#if></div>
          <div class="body scrollableList"<#if args.height??> style="height: ${args.height}px;"</#if>>
             <div id="${el}-text" class="text-content">
-               <#if args.text?? && args.text != "">${args.text}<#else><p>${msg("notice.defaultText")}</p></#if>
+               <#if text?? && text != "">${text}<#else><p>${msg("notice.defaultText")}</p></#if>
             </div>
          </div>
       </div>

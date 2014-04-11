@@ -27,6 +27,9 @@ function main()
       hasConfigPermission = true; // User dashboard
    }
 
+   var text = stringUtils.stripUnsafeHTML(args.text || "");
+   model.text = text;
+
    // Component definition
    var dashlet = {
       id: "Notice",
@@ -36,7 +39,7 @@ function main()
          siteId : siteId,
          componentId : objectId,         // Reference to allow saving of component properties
          title: stringUtils.stripUnsafeHTML(args.title || ""),
-         text: stringUtils.stripUnsafeHTML(args.text || "")
+         text: text
       }
    };
 

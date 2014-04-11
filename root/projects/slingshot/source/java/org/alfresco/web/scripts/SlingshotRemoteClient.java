@@ -85,7 +85,7 @@ public class SlingshotRemoteClient extends RemoteClient
                     }
                     
                     // examine the mimetype to see if additional processing is required
-                    if (mimetype.equals("text/html") || mimetype.equals("application/xhtml+xml") || mimetype.equals("text/xml"))
+                    if (mimetype.contains("text/html") || mimetype.contains("application/xhtml+xml") || mimetype.contains("text/xml"))
                     {
                         // found HTML content we need to process in-memory and perform stripping on
                         ByteArrayOutputStream bos = new ByteArrayOutputStream(bufferSize);
@@ -111,12 +111,12 @@ public class SlingshotRemoteClient extends RemoteClient
                             // convert to appropriate string format
                             String content = encoding != null ? new String(bos.toByteArray(), encoding) : new String(bos.toByteArray());
 
-                            if (mimetype.equals("text/html") || mimetype.equals("application/xhtml+xml"))
+                            if (mimetype.contains("text/html") || mimetype.contains("application/xhtml+xml"))
                             {
                                 // process with HTML stripper
                                 content = StringUtils.stripUnsafeHTMLDocument(content, false);
                             }
-                            else if (mimetype.equals("text/xml"))
+                            else if (mimetype.contains("text/xml"))
                             {
                                 // If docType is set to xml browsers (at least IE & Chrome) will treat it like it
                                 // does for a svg+xml document
@@ -129,7 +129,7 @@ public class SlingshotRemoteClient extends RemoteClient
                                     content = StringUtils.stripUnsafeHTMLDocument(content, false);
                                 }
                             }
-                            else if (mimetype.equals("text/x-component"))
+                            else if (mimetype.contains("text/x-component"))
                             {
                                 // IE supports "behaviour" which means that css can load a .htc file that could
                                 // contain XSS code in the form of jscript, vbscript etc, to stop it form being
@@ -153,7 +153,7 @@ public class SlingshotRemoteClient extends RemoteClient
                         }
                         processed = true;
                     }
-                    else if ((mimetype.equals("application/x-shockwave-flash") || mimetype.equals("image/svg+xml")) && !swfEnabled)
+                    else if ((mimetype.contains("application/x-shockwave-flash") || mimetype.contains("image/svg+xml")) && !swfEnabled)
                     {
                         String msg = I18NUtil.getMessage("security.insecuremimetype");
                         try
