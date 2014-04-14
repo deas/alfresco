@@ -10,30 +10,30 @@ public class SharePropertiesTest
     {
         ShareProperties prop = new ShareProperties();
         Assert.assertNotNull(prop);
-        Assert.assertEquals(prop.getVersion(), "alfresco-share");
-        Assert.assertEquals(prop.getLocale(), "en");
+        Assert.assertEquals(prop.getVersion(), AlfrescoVersion.Share);
+        Assert.assertEquals(prop.getLocale().toString(), "en");
     }
     @Test
     public void createPropertiesWithFrenchLocale()
     {
         ShareProperties prop = new ShareProperties("Enterprise41","fr");
         Assert.assertNotNull(prop);
-        Assert.assertEquals(prop.getVersion(), "Enterprise41");
-        Assert.assertEquals(prop.getLocale(), "fr");
+        Assert.assertEquals(prop.getVersion(), AlfrescoVersion.Enterprise41);
+        Assert.assertEquals(prop.getLocale().toString(), "fr");
     }
     @Test
     public void createSharePropertiesVersion41()
     {
         ShareProperties prop = new ShareProperties("Enterprise41");
         Assert.assertNotNull(prop);
-        Assert.assertEquals(prop.getVersion(), "Enterprise41");
+        Assert.assertEquals(prop.getVersion(), AlfrescoVersion.Enterprise41);
     }
     @Test
     public void createSharePropertiesVersion42()
     {
         ShareProperties prop = new ShareProperties("Enterprise42");
         Assert.assertNotNull(prop);
-        Assert.assertEquals(prop.getVersion(), "Enterprise42");
+        Assert.assertEquals(prop.getVersion(), AlfrescoVersion.Enterprise42);
     }
     @Test
     public void createSharePropertiesWithNull()
@@ -42,14 +42,17 @@ public class SharePropertiesTest
         Assert.assertNotNull(prop);
         Assert.assertEquals(prop.getVersion(), AlfrescoVersion.Share);
     }
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test
     public void createSharePropertiesWithNull2()
     {
-        new ShareProperties("",null);
+        ShareProperties prop = new ShareProperties("",null);
+        Assert.assertEquals(prop.getVersion(), AlfrescoVersion.Share);
     }
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test
     public void createSharePropertiesWithBlanks()
     {
-        new ShareProperties("","");
+        ShareProperties prop = new ShareProperties("","");
+        Assert.assertEquals(prop.getVersion(), AlfrescoVersion.Share);
+
     }
 }
