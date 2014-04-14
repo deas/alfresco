@@ -34,6 +34,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import org.openqa.selenium.NoSuchElementException;
 
 /**
  * Integration test to verify search page elements are in place.
@@ -118,40 +119,50 @@ public class SearchResultsPageTest extends AbstractTest
     {
         SearchBox search = dashBoard.getSearch();
         SearchResultsPage result = search.search("a").render();
-        RepositoryResultsPage repoResults = result.selectRepository().render();
-        repoResults = repoResults.search("email").render();
-        
-        boolean hasPagination = repoResults.paginationDisplayed();
+        SearchResultsPage resultsPage = result;
+        try
+        {
+            resultsPage = result.selectRepository().render();
+            resultsPage = ((RepositoryResultsPage) resultsPage).search("email").render();
+        }
+        catch (NoSuchElementException e)
+        {
+            // The repository could not be selected since the "Search" config elements <repository-search>
+            // hadn't been configured to "context" meaning the repo-link will no be on the page
+            resultsPage = ((AllSitesResultsPage) resultsPage).search("email").render();
+        }
+
+        boolean hasPagination = resultsPage.paginationDisplayed();
         Assert.assertTrue(hasPagination);
-        int count = repoResults.count();
+        int count = resultsPage.count();
         Assert.assertTrue(count > 76);
-        
+
         int maxPaginationPagePosition = 2;
-        Assert.assertEquals(repoResults.paginationCount(), maxPaginationPagePosition);
-        
-        int paginationPosition = repoResults.getPaginationPosition();
+        Assert.assertEquals(resultsPage.paginationCount(), maxPaginationPagePosition);
+
+        int paginationPosition = resultsPage.getPaginationPosition();
         Assert.assertEquals(paginationPosition, 1);
-        
-        Assert.assertTrue(repoResults.hasNextPage());
-        
+
+        Assert.assertTrue(resultsPage.hasNextPage());
+
         //Select next button
-        repoResults.selectNextPage().render();
-        paginationPosition = repoResults.getPaginationPosition();
+        resultsPage.selectNextPage().render();
+        paginationPosition = resultsPage.getPaginationPosition();
         Assert.assertEquals(paginationPosition,2);
-        
-        Assert.assertFalse(repoResults.hasNextPage());
-        Assert.assertTrue(repoResults.hasPrevioudPage());
+
+        Assert.assertFalse(resultsPage.hasNextPage());
+        Assert.assertTrue(resultsPage.hasPrevioudPage());
         //Select previous button
-        repoResults.selectPreviousPage().render();
-        Assert.assertTrue(repoResults.hasNextPage());
-        Assert.assertFalse(repoResults.hasPrevioudPage());
+        resultsPage.selectPreviousPage().render();
+        Assert.assertTrue(resultsPage.hasNextPage());
+        Assert.assertFalse(resultsPage.hasPrevioudPage());
         //Select by number
-        repoResults.paginationSelect(maxPaginationPagePosition).render();
-        paginationPosition = repoResults.getPaginationPosition();
+        resultsPage.paginationSelect(maxPaginationPagePosition).render();
+        paginationPosition = resultsPage.getPaginationPosition();
         Assert.assertEquals(2, paginationPosition);
-        
-        Assert.assertFalse(repoResults.hasNextPage());
-        Assert.assertTrue(repoResults.hasPrevioudPage());
+
+        Assert.assertFalse(resultsPage.hasNextPage());
+        Assert.assertTrue(resultsPage.hasPrevioudPage());
     }
     
     /**
