@@ -12,7 +12,7 @@
 
     <modules>
         <module>mmt</module>
-        <module>warinstallation</module>
+        <module>distribution</module>
     </modules>
 
     <properties>

@@ -4,16 +4,12 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-packaging</artifactId>
-        <version>4.3.0-SNAPSHOT</version>
+        <version>4.3.0-BF-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>alfresco-warinstall</artifactId>
+    <artifactId>alfresco-distribution</artifactId>
     <packaging>pom</packaging>
-    <name>Alfresco WAR Installation Packaging</name>
-
-    <properties>
-        <root.folder>${project.build.directory}/content</root.folder>
-    </properties>
+    <name>Alfresco Distribution (WAR Installation)</name>
 
     <dependencies>
         <!-- WAR files -->
@@ -28,6 +24,11 @@
             <artifactId>${share.war.artifactId}</artifactId>
             <version>${project.version}</version>
             <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-mmt</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- JAR files, to extract alfresco/extension -->
@@ -83,7 +84,7 @@
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
-                        <descriptor>src/assembly/warinstallation.xml</descriptor>
+                        <descriptor>src/assembly/distribution.xml</descriptor>
                     </descriptors>
                 </configuration>
             </plugin>

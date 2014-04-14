@@ -8,7 +8,6 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>alfresco-mmt</artifactId>
-    <packaging>pom</packaging>
     <name>Alfresco Module Management Tool</name>
 
     <dependencies>
@@ -17,18 +16,78 @@
             <artifactId>alfresco-repository</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>de.schlichtherle.truezip</groupId>
+            <artifactId>truezip-driver-zip</artifactId>
+            <version>7.5.5</version>
+        </dependency>
+        <dependency>
+            <groupId>de.schlichtherle.truezip</groupId>
+            <artifactId>truezip-file</artifactId>
+            <version>7.5.5</version>
+        </dependency>
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>source/java</directory>
-                <includes>
-                    <include>log4j.properties</include>
-                    <include>logging.properties</include>
-                </includes>
-            </resource>
-        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>make-mmt</id>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <manifestEntries>
+                                <Main-Class>org.alfresco.repo.module.tool.ModuleManagementTool</Main-Class>
+                            </manifestEntries>
+                        </transformer>
+                    </transformers>
+                    <artifactSet>
+                        <includes>
+                            <include>de.schlichtherle.truezip:*</include>
+                            <include>org.alfresco:alfresco-core</include>
+                            <include>org.alfresco:alfresco-repository</include>
+                            <include>org.apache.commons:commons-compress</include>
+                            <include>org.safehaus.jug:jug</include>
+                            <include>org.springframework.extensions.surf:spring-surf-core</include>
+                            <include>org.tukaani:xz</include>
+                        </includes>
+                    </artifactSet>
+                    <filters>
+                        <filter>
+                            <artifact>org.alfresco:alfresco-core</artifact>
+                            <includes>
+                                <include>org/alfresco/error/AlfrescoRuntimeException.class</include>
+                                <include>org/alfresco/util/Pair.class</include>
+                                <include>org/alfresco/util/VersionNumber.class</include>
+                            </includes>
+                        </filter>
+                        <filter>
+                            <artifact>org.alfresco:alfresco-repository</artifact>
+                            <includes>
+                                <include>org/alfresco/repo/module/tool/default-file-mapping.properties</include>
+                                <include>org/alfresco/repo/module/**/*.class</include>
+                                <include>org/alfresco/service/cmr/module/**/*.class</include>
+                            </includes>
+                        </filter>
+                        <filter>
+                            <artifact>org.springframework.extensions.surf:spring-surf-core</artifact>
+                            <includes>
+                                <include>org/springframework/extensions/surf/util/I18NUtil.class</include>
+                                <include>org/springframework/extensions/surf/util/ISO8601DateFormat.class</include>
+                                <include>org/springframework/extensions/surf/exception/PlatformRuntimeException.class</include>
+                            </includes>
+                        </filter>
+                    </filters>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
 </project>
