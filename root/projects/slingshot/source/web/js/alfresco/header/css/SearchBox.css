@@ -101,12 +101,16 @@
 }
 
 .alfresco-share .alf-livesearch-list {
-   padding: 2px 6px 6px 6px;
+   padding: 2px 0px 6px 0px;
 }
 
 .alfresco-share .alf-livesearch-list > div {
    clear: both;
-   padding: 5px 2px 5px 2px;
+   padding: 5px 8px 5px 8px;
+}
+
+.alfresco-share .alf-livesearch-list > div:hover {
+   background-color: #f1f1f1;
 }
 
 .alfresco-share .alf-livesearch-list .alf-livesearch-thumbnail {
@@ -124,13 +128,10 @@
 .alfresco-share .alf-livesearch-list .alf-livesearch-item {
    margin-left: 40px;
    line-height: 1.3em;
+   font-size: 93%;
 }
 
 .alfresco-share .alf-livesearch-list .alf-livesearch-item span,
 .alfresco-share .alf-livesearch-list .alf-livesearch-item span a {
-   color: #888;
-}
-
-.alfresco-share .alf-livesearch-list .alf-livesearch-item span {
-   font-size: 85%;
+   color: #888888;
 }

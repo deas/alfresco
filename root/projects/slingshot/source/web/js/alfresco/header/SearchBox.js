@@ -124,6 +124,15 @@ define(["dojo/_base/declare",
    return declare([_Widget, _Templated, AlfCore, AlfXhr], {
 
       /**
+       * Declare the dependencies on "legacy" JS files that this is wrapping.
+       *
+       * @instance
+       * @type {string[]}
+       * @default ["/js/alfresco.js"]
+       */
+      nonAmdDependencies: ["/js/alfresco.js"],
+
+      /**
        * The scope to use for i18n messages.
        * 
        * @instance
@@ -395,12 +404,14 @@ define(["dojo/_base/declare",
                   array.forEach(response.items, function(item) {
                      // construct the meta-data - site information, modified by and title description as tooltip
                      var site = (item.site ? "site/" + item.site.shortName + "/" : "");
-                     var info = "<a href='" + AlfConstants.URL_PAGECONTEXT + "user/" + this.encodeHTML(item.modifiedBy) + "/profile'>" + this.encodeHTML(item.modifiedBy) + "</a> | ";
+                     var info = "";
                      if (item.site)
                      {
                         info += "<a href='" + AlfConstants.URL_PAGECONTEXT + site + "documentlibrary'>" + this.encodeHTML(item.site.title) + "</a> | ";
                      }
-                     info += Stamp.fromISOString(item.modifiedOn).toGMTString();
+                     info += "<a href='" + AlfConstants.URL_PAGECONTEXT + "user/" + this.encodeHTML(item.modifiedBy) + "/profile'>" + this.encodeHTML(item.modifiedBy) + "</a> | ";
+                     info += Alfresco.util.relativeTime(item.modifiedOn) + " | ";
+                     info += Alfresco.util.formatFileSize(item.size)
 
                      var desc = this.encodeHTML(item.title);
                      if (item.description) desc += (desc.length !== 0 ? "\r\n" : "") + this.encodeHTML(item.description);
