@@ -132,6 +132,7 @@ public class SiteTest extends AbstractTest
         drone.navigateTo(String.format("%s/page/site-finder",shareUrl));
         SiteFinderPage siteFinder = drone.getCurrentPage().render();
         siteFinder = siteFinder.searchForSite(siteName).render();
+        siteFinder = siteSearchRetry(siteFinder, siteName);
         SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
         DocumentLibraryPage docPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
         
@@ -230,6 +231,7 @@ public class SiteTest extends AbstractTest
     {
         SiteFinderPage siteFinder = dashBoard.getNav().selectSearchForSites().render();
         siteFinder = siteFinder.searchForSite(siteName).render();
+        siteFinder = siteSearchRetry(siteFinder, siteName);
         boolean hasResults = siteFinder.hasResults();
         Assert.assertTrue(hasResults);
         siteFinder = siteFinder.deleteSite(siteName).render();

@@ -8,8 +8,12 @@ import org.alfresco.po.share.NewUserPage;
 import org.alfresco.po.share.UserSearchPage;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.TestNGException;
@@ -26,6 +30,8 @@ import org.testng.annotations.Test;
 @Listeners(FailedTestListener.class)
 public class InviteMembersPageTest extends AbstractTest
 {
+    private static Log logger = LogFactory.getLog(InviteMembersPageTest.class);
+    
     InviteMembersPage membersPage;
     String user;
     WebElement invitee;
@@ -150,8 +156,16 @@ public class InviteMembersPageTest extends AbstractTest
     @AfterClass(groups="Enterprise-only")
     public void deleteSite() throws Exception
     {
-        SiteFinderPage siteFinder = dashBoard.getNav().selectSearchForSites().render();
-        siteFinder = siteFinder.searchForSite(siteName).render();
-        siteFinder = siteFinder.deleteSite(siteName).render();
-    }
+        try
+        {
+            if(drone != null && !StringUtils.isEmpty(siteName))
+            {
+                SiteUtil.deleteSite(drone, siteName);
+                closeWebDrone();
+            }
+        }
+        catch (Exception e)
+        {
+            logger.error("Problem deleting site", e);
+        }    }
 }

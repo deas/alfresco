@@ -97,6 +97,7 @@ public class EditTaskPageTest extends AbstractTaskTest
         DashBoardPage dash = loginAs(otherUser, "password");
         siteFinder = dash.getNav().selectSearchForSites().render();
         siteFinder = siteFinder.searchForSite(modSiteName).render();
+        siteFinder = siteSearchRetry(siteFinder, modSiteName);
         siteFinder.joinSite(modSiteName).render();
         ShareUtil.logout(drone);
         // Rejecting the request to join

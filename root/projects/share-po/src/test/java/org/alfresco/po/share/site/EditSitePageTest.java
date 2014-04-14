@@ -37,6 +37,7 @@ public class EditSitePageTest extends AbstractTest
     public void testSelectSiteVisibility()
     {
         SiteFinderPage siteFinder = SiteUtil.searchSite(drone, siteName);
+        siteFinder = siteSearchRetry(siteFinder, siteName);
         SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
         EditSitePage siteDetails = siteDash.getSiteNav().selectEditSite().render();
         Assert.assertTrue(!siteDetails.isPrivate());

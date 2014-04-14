@@ -47,6 +47,7 @@ import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.WebDroneImpl;
+import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -386,6 +387,7 @@ public abstract class AbstractTest
         SharePage sharePage = drone.getCurrentPage().render();
         SiteFinderPage siteFinderPage = sharePage.getNav().selectSearchForSites().render();
         siteFinderPage.searchForSite(siteName).render();
+        siteFinderPage = siteSearchRetry(siteFinderPage, siteName);
         SiteDashboardPage siteDashboardPage = siteFinderPage.selectSite(siteName).render();
         DocumentLibraryPage documentLibPage = siteDashboardPage.getSiteNav().selectSiteDocumentLibrary().render();
         return documentLibPage;
@@ -473,4 +475,41 @@ public abstract class AbstractTest
         }
         return false;
     }
+    
+    /**
+     * 
+     * Searching with retry for sites to handle solr lag
+     * 
+     * @param finderPage
+     * @param siteName
+     * @return
+     */
+    protected SiteFinderPage siteSearchRetry(SiteFinderPage finderPage, String siteName)
+    {
+        int counter = 0;
+        int waitInMilliSeconds = 2000;
+        while(counter < retrySearchCount)
+        {
+            SiteFinderPage siteSearchResults = finderPage.searchForSite(siteName).render();
+            
+            if (siteSearchResults.hasResults())
+            {
+                return siteSearchResults;
+            }
+            else
+            {
+                counter++;
+                drone.getCurrentPage().render();
+            }
+            //double wait time to not over do solr search
+            waitInMilliSeconds = (waitInMilliSeconds*2);
+            synchronized (this)
+            {
+                try{ this.wait(waitInMilliSeconds); } catch (InterruptedException e) {}
+            }
+        }
+        throw new PageException("site search failed");
+    }
+
+    
 }
