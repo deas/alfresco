@@ -19,6 +19,7 @@
 package org.alfresco.po.share.site;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.DashBoardPage;
@@ -36,6 +37,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+
 
 /**
  * Site CRUD integration test.
@@ -236,7 +239,8 @@ public class SiteTest extends AbstractTest
         Assert.assertTrue(hasResults);
         siteFinder = siteFinder.deleteSite(siteName).render();
         hasResults = siteFinder.hasResults();
-        Assert.assertFalse(hasResults);
+        List<String> sites = siteFinder.getSiteList();
+        Assert.assertFalse(sites.contains(siteName));
     }
     
     @Test(dependsOnMethods = "searchForSiteThatDoesntExists")
