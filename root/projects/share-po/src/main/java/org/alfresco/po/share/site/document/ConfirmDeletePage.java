@@ -14,6 +14,8 @@
  */
 package org.alfresco.po.share.site.document;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 import java.util.List;
@@ -99,6 +101,10 @@ public class ConfirmDeletePage extends SharePage
                 if (action.name().equals(button.getText()))
                 {
                     button.click();
+                    if (Action.Delete.equals(action))
+                    {
+                        drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div.bd>span.message"), "was deleted", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                    }
                     return drone.getCurrentPage();
                 }
 

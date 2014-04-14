@@ -530,7 +530,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         Assert.assertTrue(documentLibPage.getTitle().contains("Document Library"));
         file = documentLibPage.getFileDirectoryInfo(tempFile.getName());
         confirmdialog = file.selectDelete().render();
-        documentLibPage = ((DocumentLibraryPage) confirmdialog.selectAction(Action.Delete)).render();
+        documentLibPage = confirmdialog.selectAction(Action.Delete).render();
         Assert.assertEquals(documentLibPage.getFiles().size(), fileSize-1);
     } 
     
