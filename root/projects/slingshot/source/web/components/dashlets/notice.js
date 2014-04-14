@@ -114,7 +114,7 @@
                      var title = Dom.get(this.configDialog.id + "-title").value,
                         text = Dom.get(this.configDialog.id + "-text").value;
                      // Write the title and text into the dashlet
-                     Dom.get(this.id + "-title").innerHTML = $encodeHTML(title.trim() != "" ? title : this.msg("notice.defaultTitle"));
+                     Dom.get(this.id + "-title").innerHTML = $encodeHTML(YAHOO.lang.trim(title) != "" ? title : this.msg("notice.defaultTitle"));
                      Dom.get(this.id + "-text").innerHTML = text != "" ? text : "<p>" + this.msg("notice.defaultText") + "</p>";
                   },
                   scope: this
@@ -161,6 +161,16 @@
                   scope: this
                }
             });
+
+            if (YAHOO.env.ua.ie > 0)
+            {
+               // ACE-1174: change z-index to hide inserted images
+               var hidePanel = function (p_event, p_args)
+               {
+                   Dom.setStyle(p_args[1].panel.element, "z-index", -1);
+               }
+               YAHOO.Bubbling.subscribe("hidePanel", hidePanel, this.configDialog);
+            }
          }
          else
          {
