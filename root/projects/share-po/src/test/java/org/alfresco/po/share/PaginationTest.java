@@ -21,11 +21,13 @@ package org.alfresco.po.share;
 import org.alfresco.po.share.search.AllSitesResultsPage;
 import org.alfresco.po.share.search.RepositoryResultsPage;
 import org.alfresco.po.share.search.SearchBox;
+import org.alfresco.po.share.search.SearchResultsPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import org.openqa.selenium.NoSuchElementException;
 
 /**
  * Tests the {@link Pagination} class
@@ -52,20 +54,30 @@ public class PaginationTest extends AbstractTest
         boolean hasPagination = result.paginationDisplayed();
         Assert.assertFalse(hasPagination);
 
-        RepositoryResultsPage repoResult = result.selectRepository().render();
-        repoResult = repoResult.search("email").render();
-        hasPagination = result.paginationDisplayed();
+        SearchResultsPage resultsPage = result;
+        try
+        {
+            resultsPage = result.selectRepository().render();
+            resultsPage = ((RepositoryResultsPage) resultsPage).search("email").render();
+        }
+        catch (NoSuchElementException e)
+        {
+            // The repository could not be selected since the "Search" config elements <repository-search>
+            // hadn't been configured to "context" meaning the repo-link will no be on the page
+            resultsPage = ((AllSitesResultsPage) resultsPage).search("email").render();
+        }
+        hasPagination = resultsPage.paginationDisplayed();
         if (!hasPagination)
         {
             saveScreenShot("PaginationTest.pagination.empty");
         }
         Assert.assertTrue(hasPagination);
-        Assert.assertTrue(repoResult.count() > 76);
+        Assert.assertTrue(resultsPage.count() > 76);
 
         boolean next = Pagination.hasPaginationButton(drone, "a.yui-pg-next");
         Assert.assertTrue(next);
-        repoResult = Pagination.selectPaginationButton(drone, "a.yui-pg-next").render();
-        int paginationPosition = result.getPaginationPosition();
+        resultsPage = Pagination.selectPaginationButton(drone, "a.yui-pg-next").render();
+        int paginationPosition = resultsPage.getPaginationPosition();
         Assert.assertEquals(paginationPosition, 2);
     }
 }
