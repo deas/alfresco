@@ -11,10 +11,12 @@ import java.io.File;
 import java.io.IOException;
 
 import org.alfresco.po.share.AbstractTest;
+import org.alfresco.po.share.preview.PdfJsPlugin;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
+import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
@@ -80,6 +82,15 @@ public class DocumentDetailsPagePreviewTest extends AbstractDocumentTest
 
         Assert.assertTrue(docDetailsPage.isDocumentDetailsPage());
         Assert.assertTrue(docDetailsPage.getPreviewerClassName().endsWith("PdfJs"));
+
+        try
+        {
+            docDetailsPage.getPdfJsPreview();
+        }
+        catch(PageRenderTimeException e)
+        {
+            Assert.assertTrue(false, "PdfJs preview could not be rendered");
+        }
     }
 
 }

@@ -1,11 +1,11 @@
 package org.alfresco.share.site.document;
 
 import org.alfresco.po.share.preview.PdfJsPlugin;
+import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.ShareUserPdfJsPreview;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
@@ -44,11 +44,13 @@ public class PdfJsPreviewTest extends AbstractUtils
     
     /**
      * DataPreparation method - ACE_1292_01
-     *   
-     * 1) Login
-     * 2) Create User
-     * 3) Create Site
-     * 4) Create and upload PDF file with content
+     * 
+     * <ol>
+     * <li>Login</li>
+     * <li>Create User</li>
+     * <li>Create Site</li>
+     * <li>Create and upload PDF file with content</li>
+     * </ol>
      * 
      * @throws Exception
      */
@@ -93,9 +95,11 @@ public class PdfJsPreviewTest extends AbstractUtils
     {
         ShareUser.openSiteDashboard(drone, siteName);
         ShareUser.openDocumentLibrary(drone);
-        ShareUser.openDocumentDetailPage(drone, docName);
+        DocumentDetailsPage detailsPage = ShareUser.openDocumentDetailPage(drone, docName);
 
-        PdfJsPlugin viewer = ShareUserPdfJsPreview.preview(drone);
+        Assert.assertEquals(detailsPage.getPreviewerClassName(), "previewer PdfJs");
+        PdfJsPlugin viewer = detailsPage.getPdfJsPreview();
+
         Assert.assertEquals(viewer.getMainViewNumDisplayedPages(), 3);
         Assert.assertEquals(viewer.getNumClaimedPages(), 3);
 
@@ -120,16 +124,18 @@ public class PdfJsPreviewTest extends AbstractUtils
     /**
      * Check that a 3-page PDF file is displayed correctly in the viewer
      * 
-     * 1) User logs in and navigates to the previously-uploaded content in the test site
-     * 2) Check that the number of pages displayed in the main view is correct
-     * 3) Check that the total number of pages shown in the toolbar is correct
-     * 4) Check that the Previous page button is DISABLED and the Next button is ENABLED
-     * 5) Click the next button and check the Next and Previous buttons are ENABLED
-     * 6) Click the next button and check the Previous page button is ENABLED and the Next button is DISABLED
-     * 7) Check that the zoom out and zoom in buttons are ENABLED
-     * 8) Check the sidebar is not displayed
-     * 9) Click the sidebar button, make sure the sidebar displays and that the number of pages shown there is correct
-     * 10) User logs out
+     * <ol>
+     * <li>User logs in and navigates to the previously-uploaded content in the test site</li>
+     * <li>Check that the number of pages displayed in the main view is correct</li>
+     * <li>Check that the total number of pages shown in the toolbar is correct</li>
+     * <li>Check that the Previous page button is DISABLED and the Next button is ENABLED</li>
+     * <li>Click the next button and check the Next and Previous buttons are ENABLED</li>
+     * <li>Click the next button and check the Previous page button is ENABLED and the Next button is DISABLED</li>
+     * <li>Check that the zoom out and zoom in buttons are ENABLED</li>
+     * <li>Check the sidebar is not displayed</li>
+     * <li>Click the sidebar button, make sure the sidebar displays and that the number of pages shown there is correct</li>
+     * <li>User logs out</li>
+     * </ol>
      */
     @Test(groups={"TestPdfJsPreview"})
     public void pdfJsPreview_ACE_1292_01()
@@ -149,10 +155,12 @@ public class PdfJsPreviewTest extends AbstractUtils
      * 
      * DataPreparation method - ACE_1292_02
      * 
-     * 1) Login
-     * 2) Create User
-     * 3) Create Site
-     * 4) Create and upload MS Word file with content
+     * <ol>
+     * <li>Login</li>
+     * <li>Create User</li>
+     * <li>Create Site</li>
+     * <li>Create and upload MS Word file with content</li>
+     * </ol>
      *  
      * @throws Exception
      */
@@ -192,10 +200,22 @@ public class PdfJsPreviewTest extends AbstractUtils
             testCleanup(drone, testName);
         }
     }
-    
-    
+
     /**
-     * Upload a Word document and check that it is displayed correctly in the viewer
+     * Check that a 3-page Word document is displayed correctly in the viewer
+     * 
+     * <ol>
+     * <li>User logs in and navigates to the previously-uploaded content in the test site</li>
+     * <li>Check that the number of pages displayed in the main view is correct</li>
+     * <li>Check that the total number of pages shown in the toolbar is correct</li>
+     * <li>Check that the Previous page button is DISABLED and the Next button is ENABLED</li>
+     * <li>Click the next button and check the Next and Previous buttons are ENABLED</li>
+     * <li>Click the next button and check the Previous page button is ENABLED and the Next button is DISABLED</li>
+     * <li>Check that the zoom out and zoom in buttons are ENABLED</li>
+     * <li>Check the sidebar is not displayed</li>
+     * <li>Click the sidebar button, make sure the sidebar displays and that the number of pages shown there is correct</li>
+     * <li>User logs out</li>
+     * </ol>
      */
     @Test(groups={"TestPdfJsPreview"})
     public void pdfJsPreview_ACE_1292_02()

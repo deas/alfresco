@@ -5,6 +5,8 @@ import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 import java.util.List;
 
 import org.alfresco.po.share.SharePage;
+import org.alfresco.webdrone.ElementState;
+import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -19,7 +21,7 @@ public class PdfJsPlugin extends SharePage
     private static Log logger = LogFactory.getLog(PdfJsPlugin.class);
 
     // Controls container
-    private static final String CLASS_CONTROLS_DIV = ".controls";
+    private static final String VIEWER_CONTROLS_DIV = ".controls";
 
     // <span> containing the total number of pages
     private static final String CONTROLS_NUM_PAGES = ".controls .numPages";
@@ -35,6 +37,9 @@ public class PdfJsPlugin extends SharePage
 
     // Main document container
     private static final String VIEWER_MAIN_PAGES = ".viewer.documentView .page";
+
+    // Big spinner is present while the document is being loaded / transformed
+    private static final String VIEWER_MAIN_SPINNER = ".viewer.documentView .spinner";
 
     // Thumbnails container
     private static final String SIDEBAR_PAGES = ".sidebar .documentView .page";
@@ -54,13 +59,20 @@ public class PdfJsPlugin extends SharePage
         return render(new RenderTime(maxPageLoadingTime));
     }
 
+    /**
+     * Verifies if the page has rendered completely by checking the page load is
+     * complete and in addition it will observe key HTML elements have rendered.
+     *
+     * @param timer Max time to wait
+     * @return {@link PdfJsPlugin}
+     */
     @SuppressWarnings("unchecked")
     @Override
     public PdfJsPlugin render(RenderTime timer)
     {
         elementRender(timer, getVisibleRenderElement(By.cssSelector(VIEWER_MAIN_DIV)),
-                getVisibleRenderElement(By.cssSelector(SIDEBAR_DIV)),
-                getVisibleRenderElement(By.className(CLASS_CONTROLS_DIV)));
+                getVisibleRenderElement(By.cssSelector(VIEWER_CONTROLS_DIV)),
+                new RenderElement(By.cssSelector(VIEWER_MAIN_SPINNER), ElementState.INVISIBLE)); // Spinner disappears when the content is loaded
         return this;
     }
 

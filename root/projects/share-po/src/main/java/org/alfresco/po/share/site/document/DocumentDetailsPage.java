@@ -20,6 +20,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import java.io.File;
 
 import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.preview.PdfJsPlugin;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.user.CloudSignInPage;
 import org.alfresco.po.share.util.FileDownloader;
@@ -30,6 +31,7 @@ import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
+import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
@@ -612,6 +614,16 @@ public class DocumentDetailsPage extends DetailsPage
             }
         }
         return false;
+    }
+
+    /**
+     * Return the PdfJs web preview plugin. If this plugin is not in use then a {@link PageRenderTimeException} exception will be thrown.
+     * 
+     * @return {@link PdfJsPlugin}
+     */
+    public PdfJsPlugin getPdfJsPreview()
+    {
+        return new PdfJsPlugin(drone).render();
     }
 
     /**
