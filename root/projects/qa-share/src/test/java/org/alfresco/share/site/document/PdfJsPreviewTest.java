@@ -89,18 +89,47 @@ public class PdfJsPreviewTest extends AbstractUtils
         }
     }
     
-    
+    private void testDocument(String siteName, String docName)
+    {
+        ShareUser.openSiteDashboard(drone, siteName);
+        ShareUser.openDocumentLibrary(drone);
+        ShareUser.openDocumentDetailPage(drone, docName);
+
+        PdfJsPlugin viewer = ShareUserPdfJsPreview.preview(drone);
+        Assert.assertEquals(viewer.getMainViewNumDisplayedPages(), 3);
+        Assert.assertEquals(viewer.getNumClaimedPages(), 3);
+
+        Assert.assertEquals(viewer.getCurrentPageNum(), 1);
+        Assert.assertFalse(viewer.isToolbarButtonEnabled("previous"));
+        Assert.assertTrue(viewer.isToolbarButtonEnabled("next"));
+        viewer.clickToolbarButton("next");
+        Assert.assertEquals(viewer.getCurrentPageNum(), 2);
+        Assert.assertTrue(viewer.isToolbarButtonEnabled("previous"));
+        Assert.assertTrue(viewer.isToolbarButtonEnabled("next"));
+        viewer.clickToolbarButton("next");
+        Assert.assertEquals(viewer.getCurrentPageNum(), 3);
+        Assert.assertTrue(viewer.isToolbarButtonEnabled("previous"));
+        Assert.assertFalse(viewer.isToolbarButtonEnabled("next"));
+        Assert.assertFalse(viewer.isSidebarVisible());
+
+        viewer.clickToolbarButton("sidebarBtn");
+        Assert.assertTrue(viewer.isSidebarVisible());
+        Assert.assertEquals(viewer.getSidebarNumDisplayedPages(), 3);
+    }
     
     /**
+     * Check that a 3-page PDF file is displayed correctly in the viewer
      * 
-     * 
-     * 1) User logs in
-     * 2) Performs live search with testName as a search term
-     * 3) Checks that the created document is displayed in document search results 
-     * 4) Checks that the created site is displayed in site search results
-     * 5) Checks that the created user name is displayed in people search results
-     * 6) Checks that all the links in live search results work properly
-     * 7) User logs out
+     * 1) User logs in and navigates to the previously-uploaded content in the test site
+     * 2) Check that the number of pages displayed in the main view is correct
+     * 3) Check that the total number of pages shown in the toolbar is correct
+     * 4) Check that the Previous page button is DISABLED and the Next button is ENABLED
+     * 5) Click the next button and check the Next and Previous buttons are ENABLED
+     * 6) Click the next button and check the Previous page button is ENABLED and the Next button is DISABLED
+     * 7) Check that the zoom out and zoom in buttons are ENABLED
+     * 8) Check the sidebar is not displayed
+     * 9) Click the sidebar button, make sure the sidebar displays and that the number of pages shown there is correct
+     * 10) User logs out
      */
     @Test(groups={"TestPdfJsPreview"})
     public void pdfJsPreview_ACE_1292_01()
@@ -109,12 +138,8 @@ public class PdfJsPreviewTest extends AbstractUtils
         testName = getTestName();
         String testUser = testName + "@" + DOMAIN_FREE;
         ShareUser.login(drone, testUser, testPassword);
-        ShareUser.openSiteDashboard(drone, getSiteName(testName));
-        ShareUser.openDocumentLibrary(drone);
-        ShareUser.openDocumentDetailPage(drone, TESTFILE_PDF);
 
-        PdfJsPlugin viewer = ShareUserPdfJsPreview.preview(drone);
-        Assert.assertEquals(viewer.getMainViewNumDisplayedPages(), 3);
+        testDocument(getSiteName(testName), TESTFILE_PDF);
 
         ShareUser.logout(drone);
     }
@@ -179,12 +204,8 @@ public class PdfJsPreviewTest extends AbstractUtils
         testName = getTestName();
         String testUser = testName + "@" + DOMAIN_FREE;
         ShareUser.login(drone, testUser, testPassword);
-        ShareUser.openSiteDashboard(drone, getSiteName(testName));
-        ShareUser.openDocumentLibrary(drone);
-        ShareUser.openDocumentDetailPage(drone, TESTFILE_DOC);
 
-        PdfJsPlugin viewer = ShareUserPdfJsPreview.preview(drone);
-        Assert.assertEquals(viewer.getMainViewNumDisplayedPages(), 3);
+        testDocument(getSiteName(testName), TESTFILE_DOC);
 
         ShareUser.logout(drone);
     }

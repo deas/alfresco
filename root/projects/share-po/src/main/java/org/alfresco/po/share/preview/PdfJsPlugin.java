@@ -19,7 +19,13 @@ public class PdfJsPlugin extends SharePage
     private static Log logger = LogFactory.getLog(PdfJsPlugin.class);
 
     // Controls container
-    private static final String CLASS_CONTROLS_DIV = "controls";
+    private static final String CLASS_CONTROLS_DIV = ".controls";
+
+    // <span> containing the total number of pages
+    private static final String CONTROLS_NUM_PAGES = ".controls .numPages";
+
+    // <input> containing the current page number
+    private static final String CONTROLS_PAGE_NUM = ".controls input[id$=\"pageNumber\"]";
 
     // Sidebar container
     private static final String SIDEBAR_DIV = ".sidebar";
@@ -29,6 +35,12 @@ public class PdfJsPlugin extends SharePage
 
     // Main document container
     private static final String VIEWER_MAIN_PAGES = ".viewer.documentView .page";
+
+    // Thumbnails container
+    private static final String SIDEBAR_PAGES = ".sidebar .documentView .page";
+
+    // Generic button, can add [id$="-blah"] to get a specific one
+    private static final String VIEWER_CONTROLS_BUTTON = ".controls span.yui-button";
 
     public PdfJsPlugin(WebDrone drone)
     {
@@ -78,16 +90,97 @@ public class PdfJsPlugin extends SharePage
         }
     }
 
+    public WebElement getToolbarButton(String btnId)
+    {
+        try
+        {
+            return drone.find(By.cssSelector(VIEWER_CONTROLS_BUTTON + "[id$=\"-" + btnId + "\"] button"));
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No button with ID " + btnId, nse);
+            return null;
+        }
+    }
+
+    public boolean isToolbarButtonEnabled(String btnId)
+    {
+        WebElement button = getToolbarButton(btnId);
+        if (button != null)
+        {
+            logger.info("id: " + button.getAttribute("id") + ", disabled: " + button.getAttribute("disabled"));
+            return !("disabled".equalsIgnoreCase(button.getAttribute("disabled")) || "true".equalsIgnoreCase(button.getAttribute("disabled")));
+        }
+        else
+        {
+            logger.error("No button with ID " + btnId);
+            throw new PageException("Unable to find button with ID " + btnId);
+        }
+    }
+
+    public void clickToolbarButton(String btnId)
+    {
+        WebElement button = getToolbarButton(btnId);
+        if (button != null)
+        {
+            logger.info("id: " + button.getAttribute("id") + ", disabled: " + button.getAttribute("disabled"));
+            button.click();
+        }
+        else
+        {
+            logger.error("No button with ID " + btnId);
+            throw new PageException("Unable to find button with ID " + btnId);
+        }
+    }
+
+    /**
+     * Return the current page number
+     * 
+     * @return
+     */
+    public int getCurrentPageNum()
+    {
+        try
+        {
+            WebElement span = drone.findFirstDisplayedElement(By.cssSelector(CONTROLS_PAGE_NUM));
+            return Integer.parseInt(span.getAttribute("value"), 10);
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No pages found " + nse);
+            throw new PageException("Unable to find page number field.", nse);
+        }
+    }
+
+    /**
+     * Return the claimed number of pages shown in the toolbar
+     * 
+     * @return
+     */
+    public int getNumClaimedPages()
+    {
+        try
+        {
+            WebElement span = drone.findFirstDisplayedElement(By.cssSelector(CONTROLS_NUM_PAGES));
+            return Integer.parseInt(span.getText(), 10);
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No pages found " + nse);
+            throw new PageException("Unable to find any pages.", nse);
+        }
+    }
+
     /**
      * Return the number of pages present within the main view
      * 
      * @return
      */
-    public int getMainViewNumDisplayedPages()
+    public int getNumDisplayedPages(String viewerClass)
     {
         try
         {
-            List<WebElement> pages = drone.findDisplayedElements(By.cssSelector(VIEWER_MAIN_PAGES));
+            List<WebElement> pages = drone.findDisplayedElements(By.cssSelector(viewerClass));
             return pages.size();
         }
         catch (NoSuchElementException nse)
@@ -95,6 +188,26 @@ public class PdfJsPlugin extends SharePage
             logger.error("No pages found " + nse);
             throw new PageException("Unable to find any pages.", nse);
         }
+    }
+
+    /**
+     * Return the number of pages present within the main view
+     * 
+     * @return
+     */
+    public int getMainViewNumDisplayedPages()
+    {
+        return getNumDisplayedPages(VIEWER_MAIN_PAGES);
+    }
+
+    /**
+     * Return the number of pages present within the main view
+     * 
+     * @return
+     */
+    public int getSidebarNumDisplayedPages()
+    {
+        return getNumDisplayedPages(SIDEBAR_PAGES);
     }
 
 }

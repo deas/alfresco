@@ -87,6 +87,7 @@
                     <exclude name="Enterprise40x_8586" />
                 </methods>
             </class>
+            <class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
 		</classes>
 	</test>
 </suite>
