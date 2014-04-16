@@ -584,7 +584,6 @@ public class LiveSearchTest extends AbstractUtils
         List<String> documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
         Assert.assertTrue(documentTitles.contains("H0us8 my 31"));
         Assert.assertFalse(documentTitles.contains("T3chn0 my"));
-        Assert.assertFalse(liveSearchDropdown.isMoreResultsVisible());
 
         // Checks site result
         List<LiveSearchSiteResult> liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
@@ -600,6 +599,16 @@ public class LiveSearchTest extends AbstractUtils
         liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
         documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
         Assert.assertTrue(documentTitles.contains("H0us8 my 31"));
+        
+        Assert.assertFalse(documentTitles.contains("T3chn0 my"));
+        
+        // Checks site result
+        liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
+        Assert.assertTrue(liveSearchSitesResults.size() == 0);
+
+        // Checks people result
+        liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
+        Assert.assertTrue(liveSearchPeopleResults.size() == 0);
         
         ShareUser.logout(drone);
     }
