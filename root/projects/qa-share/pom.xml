@@ -17,6 +17,7 @@
         <share-po.version>${project.version}</share-po.version>
         <office.component>libreofficecomponent</office.component>
         <enable.hybrid>false</enable.hybrid>
+        <uniqueTestRunName>TestReports</uniqueTestRunName>
     </properties>
 
 	<repositories>
@@ -170,6 +171,7 @@
 	</dependencies>
 
 	<build>
+        <directory>target/${uniqueTestRunName}</directory>
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <resources>
