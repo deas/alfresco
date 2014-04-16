@@ -56,7 +56,7 @@ public class PdfJsPreviewTest extends AbstractUtils
      */
     
     @Test(groups={"DataPrepPdfJsPreview"})
-    public void dataPrep_PdfJsPreview_ACE_1292_01() throws Exception
+    public void dataPrep_PdfJsPreview_ALF_3035() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + DOMAIN_FREE;
@@ -138,7 +138,7 @@ public class PdfJsPreviewTest extends AbstractUtils
      * </ol>
      */
     @Test(groups={"TestPdfJsPreview"})
-    public void pdfJsPreview_ACE_1292_01()
+    public void ALF_3035()
     {
         // Search name is the same as the test name
         testName = getTestName();
@@ -166,7 +166,7 @@ public class PdfJsPreviewTest extends AbstractUtils
      */
     
     @Test(groups={"DataPrepPdfJsPreview"})
-    public void dataPrep_PdfJsPreview_ACE_1292_02() throws Exception
+    public void dataPrep_PdfJsPreview_ALF_3036() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + DOMAIN_FREE;
@@ -218,7 +218,7 @@ public class PdfJsPreviewTest extends AbstractUtils
      * </ol>
      */
     @Test(groups={"TestPdfJsPreview"})
-    public void pdfJsPreview_ACE_1292_02()
+    public void ALF_3036()
     {
         // Search name is the same as the test name
         testName = getTestName();

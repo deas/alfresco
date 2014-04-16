@@ -61,7 +61,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ACE_1063_01() throws Exception
+    public void dataPrep_LiveSearch_ALF_3023() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + "alfresco.com";
@@ -109,7 +109,7 @@ public class LiveSearchTest extends AbstractUtils
      * 7) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void liveSearch_ACE_1063_01()
+    public void ALF_3023()
     {
 
         // live search term is document title
@@ -188,7 +188,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ACE_1063_02() throws Exception
+    public void dataPrep_LiveSearch_ALF_3024() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + "alfresco.com";
@@ -257,7 +257,7 @@ public class LiveSearchTest extends AbstractUtils
      * 11) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void liveSearch_ACE_1063_02()
+    public void ALF_3024()
     {
 
         testName = getTestName();
@@ -329,7 +329,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ACE_1063_03() throws Exception
+    public void dataPrep_LiveSearch_ALF_3025() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + "alfresco.com";
@@ -378,7 +378,7 @@ public class LiveSearchTest extends AbstractUtils
      * 10)User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void liveSearch_ACE_1063_03()
+    public void ALF_3025()
     {
 
         testName = getTestName();
@@ -428,7 +428,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ACE_1063_04() throws Exception
+    public void dataPrep_LiveSearch_ALF_3026() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + "alfresco.com";
@@ -464,7 +464,7 @@ public class LiveSearchTest extends AbstractUtils
      * 6) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void liveSearch_ACE_1063_04()
+    public void ALF_3026()
     {
         testName = getTestName();
         String testUser = testName + "@" + "alfresco.com";
@@ -501,7 +501,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ACE_1063_05() throws Exception
+    public void dataPrep_LiveSearch_ALF_3027() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + "alfresco.com";
@@ -560,19 +560,22 @@ public class LiveSearchTest extends AbstractUtils
 
     /**
      * 1) User logs in
-     * 2) Performs live search with search term "house my 3"
-     * 3) Checks that document search results return document with title "House my 3"
+     * 2) Performs live search with search term "house my 31"
+     * 3) Checks that document search results return document with title "House my 31"
      * 4) Checks that document search results don't return document with title "Techno my"
      * 5) Checks that there are no sites returned
-     * 6) User logs out
+     * 6) Performs live search with search term "house 31"
+     * 7) Checks that document search results return document with title "House my 31"
+     * 8) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void liveSearch_ACE_1063_05()
+    public void ALF_3027()
     {
         testName = getTestName();
         String testUser = testName + "@" + "alfresco.com";
         String searchTerm = "H0us8 my 31";
-
+        String searchTerm1 = "H0us8 31";
+        
         ShareUser.login(drone, testUser, testPassword);
 
         // Check document results
@@ -590,7 +593,14 @@ public class LiveSearchTest extends AbstractUtils
         // Checks people result
         List<LiveSearchPeopleResult> liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
         Assert.assertTrue(liveSearchPeopleResults.size() == 0);
-
+        
+        liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm1);
+        
+        // Check document results
+        liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+        documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+        Assert.assertTrue(documentTitles.contains("H0us8 my 31"));
+        
         ShareUser.logout(drone);
     }
 
@@ -605,7 +615,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "DataPrepLiveSearch", "Cloud-only" })
-    public void dataPrep_LiveSearch_ACE_1063_06() throws Exception
+    public void dataPrep_LiveSearch_ALF_3028() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + DOMAIN_FREE;
@@ -650,7 +660,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "CloudOnly", "TestLiveSearch" })
-    public void liveSearch_ACE_1063_06()
+    public void ALF_3028()
     {
 
         // live search term is document title
@@ -682,7 +692,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ACE_1063_07() throws Exception
+    public void dataPrep_LiveSearch_ALF_3029() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + "alfresco.com";
@@ -725,7 +735,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "TestLiveSearch" })
-    public void liveSearch_ACE_1063_07()
+    public void ALF_3029()
     {
 
         // live search term is document title
@@ -757,7 +767,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ACE_1063_08() throws Exception
+    public void dataPrep_LiveSearch_ALF_3030() throws Exception
     {
         String testName = getTestName();
         String testUser1 = "n3w.us3r.77" + "@" + "alfresco.com";
@@ -795,7 +805,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "TestLiveSearch" })
-    public void liveSearch_ACE_1063_08()
+    public void ALF_3030()
     {
 
         testName = getTestName();
@@ -829,7 +839,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "DataPrepLiveSearch", "EnterpriseOnly" })
-    public void dataPrep_LiveSearch_ACE_1063_09() throws Exception
+    public void dataPrep_LiveSearch_ALF_3032() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + "alfresco.com";
@@ -878,7 +888,7 @@ public class LiveSearchTest extends AbstractUtils
      * 5) Verify there are no sites and people results
      */
     @Test(groups = { "TestLiveSearch", "EnterpriseOnly" })
-    public void liveSearch_ACE_1063_09()
+    public void ALF_3032()
     {
         // live search term is document title
         testName = getTestName();
@@ -922,7 +932,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ACE_1063_10() throws Exception
+    public void dataPrep_LiveSearch_ALF_3033() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + "alfresco.com";
@@ -968,7 +978,7 @@ public class LiveSearchTest extends AbstractUtils
      * 5) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void liveSearch_ACE_1063_10()
+    public void ALF_3033()
     {
 
         // live search term is document title
