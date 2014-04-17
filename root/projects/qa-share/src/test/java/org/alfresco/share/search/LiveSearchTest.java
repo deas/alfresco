@@ -575,6 +575,7 @@ public class LiveSearchTest extends AbstractUtils
         String testUser = testName + "@" + "alfresco.com";
         String searchTerm = "H0us8 my 31";
         String searchTerm1 = "H0us8 31";
+        String searchTerm2 = "T3chn0";
         
         ShareUser.login(drone, testUser, testPassword);
 
@@ -584,6 +585,7 @@ public class LiveSearchTest extends AbstractUtils
         List<String> documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
         Assert.assertTrue(documentTitles.contains("H0us8 my 31"));
         Assert.assertFalse(documentTitles.contains("T3chn0 my"));
+        
 
         // Checks site result
         List<LiveSearchSiteResult> liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
@@ -609,6 +611,14 @@ public class LiveSearchTest extends AbstractUtils
         // Checks people result
         liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
         Assert.assertTrue(liveSearchPeopleResults.size() == 0);
+        
+        liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm2);
+        
+        // Check document results
+        liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+        documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+        Assert.assertTrue(documentTitles.contains("H0us8 my 21"));
+        
         
         ShareUser.logout(drone);
     }
