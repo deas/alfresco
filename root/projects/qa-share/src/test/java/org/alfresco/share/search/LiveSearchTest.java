@@ -566,6 +566,8 @@ public class LiveSearchTest extends AbstractUtils
      * 5) Checks that there are no sites returned
      * 6) Performs live search with search term "house 31"
      * 7) Checks that document search results return document with title "House my 31"
+     * 8) Performs live search with search term "T3chn0"
+     * 9) Checks that document search results return document with title "H0us8 my 21"
      * 8) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
