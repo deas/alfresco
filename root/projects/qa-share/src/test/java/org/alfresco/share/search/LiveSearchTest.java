@@ -563,12 +563,8 @@ public class LiveSearchTest extends AbstractUtils
      * 2) Performs live search with search term "house my 31"
      * 3) Checks that document search results return document with title "House my 31"
      * 4) Checks that document search results don't return document with title "Techno my"
-     * 5) Checks that there are no sites returned
-     * 6) Performs live search with search term "house 31"
-     * 7) Checks that document search results return document with title "House my 31"
-     * 8) Performs live search with search term "T3chn0"
-     * 9) Checks that document search results return document with title "H0us8 my 21"
-     * 8) User logs out
+     * 5) Checks that there are no sites and people results returned
+     * 6) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
     public void ALF_3027()
@@ -576,19 +572,17 @@ public class LiveSearchTest extends AbstractUtils
         testName = getTestName();
         String testUser = testName + "@" + "alfresco.com";
         String searchTerm = "H0us8 my 31";
-        String searchTerm1 = "H0us8 31";
-        String searchTerm2 = "T3chn0";
         
         ShareUser.login(drone, testUser, testPassword);
 
         // Check document results
+        
         LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm);
         List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
         List<String> documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
         Assert.assertTrue(documentTitles.contains("H0us8 my 31"));
         Assert.assertFalse(documentTitles.contains("T3chn0 my"));
         
-
         // Checks site result
         List<LiveSearchSiteResult> liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
         Assert.assertTrue(liveSearchSitesResults.size() == 0);
@@ -597,34 +591,82 @@ public class LiveSearchTest extends AbstractUtils
         List<LiveSearchPeopleResult> liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
         Assert.assertTrue(liveSearchPeopleResults.size() == 0);
         
-        liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm1);
-        
-        // Check document results
-        liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
-        documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
-        Assert.assertTrue(documentTitles.contains("H0us8 my 31"));
-        
-        Assert.assertFalse(documentTitles.contains("T3chn0 my"));
-        
-        // Checks site result
-        liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchSitesResults.size() == 0);
-
-        // Checks people result
-        liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchPeopleResults.size() == 0);
-        
-        liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm2);
-        
-        // Check document results
-        liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
-        documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
-        Assert.assertTrue(documentTitles.contains("H0us8 my 21"));
-        
-        
         ShareUser.logout(drone);
     }
 
+    /**
+     * 1) User logs in
+     * 2) Performs live search with search term "h0us8 31"
+     * 3) Checks that document search results return document with title "House my 31"
+     * 4) Checks that document search results don't return document with title "T3chn0 my"
+     * 5) Checks that there are no sites and people results returned
+     * 6) User logs out
+     */
+    @Test(groups = { "TestLiveSearch" })
+    public void ALF_3039()
+    {
+        testName = getTestName();
+        String testUser = "MyAlfresco-3027" + "@" + "alfresco.com";
+        String searchTerm = "H0us8 31";
+        
+        ShareUser.login(drone, testUser, testPassword);
+
+        // Check document results
+        LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm);
+        
+        // Check document results
+        List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+        List<String> documentTitles  = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+        Assert.assertTrue(documentTitles.contains("H0us8 my 31"));
+        Assert.assertFalse(documentTitles.contains("T3chn0 my"));
+        
+        // Checks site result
+        List<LiveSearchSiteResult> liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
+        Assert.assertTrue(liveSearchSitesResults.size() == 0);
+
+        // Checks people result
+        List<LiveSearchPeopleResult> liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
+        Assert.assertTrue(liveSearchPeopleResults.size() == 0);
+        
+        ShareUser.logout(drone);
+    }
+    
+    
+    /**
+     * 1) User logs in
+     * 2) Performs live search with search term "T3chn0"
+     * 3) Checks that document search results return document with title "H0us8 my 21"
+     * 4) Checks that there are no sites and people results returned
+     * 5) User logs out
+     */
+    @Test(groups = { "TestLiveSearch" })
+    public void ALF_3040()
+    {
+        testName = getTestName();
+        String testUser = "MyAlfresco-3027" + "@" + "alfresco.com";
+        String searchTerm = "T3chn0";
+        
+        ShareUser.login(drone, testUser, testPassword);
+
+        // Check document results
+        LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm);
+ 
+        // Check document results
+        List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+        List<String> documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+        Assert.assertTrue(documentTitles.contains("H0us8 my 21"));
+       
+        // Checks site result
+        List<LiveSearchSiteResult> liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
+        Assert.assertTrue(liveSearchSitesResults.size() == 0);
+
+        // Checks people result
+        List<LiveSearchPeopleResult> liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
+        Assert.assertTrue(liveSearchPeopleResults.size() == 0);
+        
+        ShareUser.logout(drone);
+    }
+    
     /**
      * DataPreparation method - ACE_1063_06
      * 1) Login
@@ -1009,6 +1051,7 @@ public class LiveSearchTest extends AbstractUtils
         ShareUser.login(drone, testUser, testPassword);
 
         LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, testName);
+
         List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
 
         // Checks document titles

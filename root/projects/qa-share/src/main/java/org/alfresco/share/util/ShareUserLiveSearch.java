@@ -39,7 +39,6 @@ public class ShareUserLiveSearch extends AbstractUtils
         SharePage sharePage = ShareUser.getSharePage(driver);
         SearchBox searchBox= sharePage.getSearch();
         LiveSearchDropdown liveSearchDropdown  = searchBox.liveSearch(searchTerm).render();
-        webDriverWait(driver, refreshDuration);
         return liveSearchDropdown;
     }
    
