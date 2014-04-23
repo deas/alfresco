@@ -594,6 +594,67 @@ public class LiveSearchTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
+    
+    @Test(groups = { "DataPrepLiveSearch" })
+    public void dataPrep_LiveSearch_ALF_3039() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = testName + "@" + "alfresco.com";
+        String[] testUserInfo = new String[] { testUser };
+        String siteName = getSiteName(testName);
+
+        String[] folders = { "H0us8 1", "H0us8 2", "H0us8 3" };
+        String[] folderTitles_Descriptions = { "H0us8", "T3chn0" };
+        String[] filesWithTitle = { "H0us8 my 11", "H0us8 my 21", "H0us8 my 31", "T3chn0 my" };
+
+        try
+        {
+            CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
+
+            ShareUser.login(drone, testUser, testPassword);
+
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+            // Creating files with given Title.
+            ContentDetails contentDetails = new ContentDetails();
+            contentDetails.setName(filesWithTitle[0]);
+            contentDetails.setTitle(folderTitles_Descriptions[0]);
+            contentDetails.setDescription(folderTitles_Descriptions[0]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+            contentDetails.setName(filesWithTitle[1]);
+            contentDetails.setTitle(folderTitles_Descriptions[1]);
+            contentDetails.setDescription(folderTitles_Descriptions[0]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+            contentDetails.setName(filesWithTitle[2]);
+            contentDetails.setTitle(folderTitles_Descriptions[0]);
+            contentDetails.setDescription(folderTitles_Descriptions[1]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+            contentDetails.setName(filesWithTitle[3]);
+            contentDetails.setTitle(folderTitles_Descriptions[0]);
+            contentDetails.setDescription(folderTitles_Descriptions[0]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+            // Creating folders
+            ShareUserSitePage.createFolder(drone, folders[0], folderTitles_Descriptions[0], folderTitles_Descriptions[0]);
+            ShareUserSitePage.createFolder(drone, folders[1], folderTitles_Descriptions[1], folderTitles_Descriptions[0]);
+            ShareUserSitePage.createFolder(drone, folders[2], folderTitles_Descriptions[0], folderTitles_Descriptions[1]);
+
+        }
+        catch (Throwable e)
+        {
+            reportError(drone, testName, e);
+        }
+        finally
+        {
+            testCleanup(drone, testName);
+        }
+    }
+    
+    
+     
     /**
      * 1) User logs in
      * 2) Performs live search with search term "h0us8 31"
@@ -606,7 +667,7 @@ public class LiveSearchTest extends AbstractUtils
     public void ALF_3039()
     {
         testName = getTestName();
-        String testUser = "MyAlfresco-3027" + "@" + "alfresco.com";
+        String testUser = testName + "@" + "alfresco.com";
         String searchTerm = "H0us8 31";
         
         ShareUser.login(drone, testUser, testPassword);
@@ -630,7 +691,64 @@ public class LiveSearchTest extends AbstractUtils
         
         ShareUser.logout(drone);
     }
-    
+      
+    @Test(groups = { "DataPrepLiveSearch" })
+    public void dataPrep_LiveSearch_ALF_3040() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = testName + "@" + "alfresco.com";
+        String[] testUserInfo = new String[] { testUser };
+        String siteName = getSiteName(testName);
+
+        String[] folders = { "H0us8 1", "H0us8 2", "H0us8 3" };
+        String[] folderTitles_Descriptions = { "H0us8", "T3chn0" };
+        String[] filesWithTitle = { "H0us8 my 11", "H0us8 my 21", "H0us8 my 31", "T3chn0 my" };
+
+        try
+        {
+            CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
+
+            ShareUser.login(drone, testUser, testPassword);
+
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+            // Creating files with given Title.
+            ContentDetails contentDetails = new ContentDetails();
+            contentDetails.setName(filesWithTitle[0]);
+            contentDetails.setTitle(folderTitles_Descriptions[0]);
+            contentDetails.setDescription(folderTitles_Descriptions[0]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+            contentDetails.setName(filesWithTitle[1]);
+            contentDetails.setTitle(folderTitles_Descriptions[1]);
+            contentDetails.setDescription(folderTitles_Descriptions[0]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+            contentDetails.setName(filesWithTitle[2]);
+            contentDetails.setTitle(folderTitles_Descriptions[0]);
+            contentDetails.setDescription(folderTitles_Descriptions[1]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+            contentDetails.setName(filesWithTitle[3]);
+            contentDetails.setTitle(folderTitles_Descriptions[0]);
+            contentDetails.setDescription(folderTitles_Descriptions[0]);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+            // Creating folders
+            ShareUserSitePage.createFolder(drone, folders[0], folderTitles_Descriptions[0], folderTitles_Descriptions[0]);
+            ShareUserSitePage.createFolder(drone, folders[1], folderTitles_Descriptions[1], folderTitles_Descriptions[0]);
+            ShareUserSitePage.createFolder(drone, folders[2], folderTitles_Descriptions[0], folderTitles_Descriptions[1]);
+
+        }
+        catch (Throwable e)
+        {
+            reportError(drone, testName, e);
+        }
+        finally
+        {
+            testCleanup(drone, testName);
+        }
+    }    
     
     /**
      * 1) User logs in
@@ -643,7 +761,7 @@ public class LiveSearchTest extends AbstractUtils
     public void ALF_3040()
     {
         testName = getTestName();
-        String testUser = "MyAlfresco-3027" + "@" + "alfresco.com";
+        String testUser = testName + "@" + "alfresco.com";
         String searchTerm = "T3chn0";
         
         ShareUser.login(drone, testUser, testPassword);
