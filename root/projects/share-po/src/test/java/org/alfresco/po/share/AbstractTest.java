@@ -491,8 +491,7 @@ public abstract class AbstractTest
         while(counter < retrySearchCount)
         {
             SiteFinderPage siteSearchResults = finderPage.searchForSite(siteName).render();
-            
-            if (siteSearchResults.hasResults())
+            if(siteSearchResults.getSiteList().contains(siteName))
             {
                 return siteSearchResults;
             }
