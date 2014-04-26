@@ -18,6 +18,10 @@
  */
 package org.alfresco.util;
 
+import java.util.Arrays;
+
+import org.springframework.util.StringUtils;
+
 
 /**
  * Helper class to provide conversions between different search languages
@@ -346,5 +350,12 @@ public class SearchLanguageConversion
             sb.append(c);
         }
         return sb.toString(); 
+    }
+    
+    public static String[] tokenizeString(String query)
+    {
+        String trimmed = StringUtils.trimWhitespace(query);
+        if (trimmed == null || trimmed.length() < 1) return new String[]{query};
+        return trimmed.split(" ");
     }
 }

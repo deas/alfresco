@@ -126,4 +126,20 @@ public class SearchLanguageConversionTest extends TestCase
         String converted = SearchLanguageConversion.convert(SearchLanguageConversion.DEF_LUCENE, SearchLanguageConversion.DEF_SQL_LIKE, lucene);
         assertEquals(sql, converted);
     }
+    
+    public void testTokenizeString()
+    {
+        String[] res = SearchLanguageConversion.tokenizeString("");
+        assertTrue(res.length == 1);
+        res = SearchLanguageConversion.tokenizeString("bob");
+        assertTrue(res.length == 1);
+        assertEquals("bob", res[0]);
+        res = SearchLanguageConversion.tokenizeString("   bob   ");
+        assertTrue(res.length == 1);
+        assertEquals("bob", res[0]);
+        res = SearchLanguageConversion.tokenizeString("   bob hope ");
+        assertTrue(res.length == 2);
+        assertEquals("bob", res[0]);
+        assertEquals("hope", res[1]);
+    }
 }
