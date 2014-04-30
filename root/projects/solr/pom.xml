@@ -237,6 +237,29 @@
                                     </resources>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>copy-context-config</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <outputDirectory>${solr.war.exploded.folder}/META-INF</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>source/test-web/META-INF</directory>
+                                            <includes>
+                                                <include>context.xml</include>
+                                            </includes>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                                    <delimiters>
+                                        <delimiter>@@</delimiter>
+                                    </delimiters>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
 
@@ -281,34 +304,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy-context-config</id>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <phase>prepare-package</phase>
-                                <configuration>
-                                    <outputDirectory>${solr.war.exploded.folder}/META-INF</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>source/test-web/META-INF</directory>
-                                            <includes>
-                                                <include>context.xml</include>
-                                            </includes>
-                                            <filtering>true</filtering>
-                                        </resource>
-                                    </resources>
-                                    <useDefaultDelimiters>false</useDefaultDelimiters>
-                                    <delimiters>
-                                        <delimiter>@@</delimiter>
-                                    </delimiters>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
+
                     <plugin>
                         <artifactId>maven-war-plugin</artifactId>
                         <executions>
@@ -345,6 +341,7 @@
                             </execution>
                         </executions>
                     </plugin> 
+
                     <plugin>
                         <artifactId>maven-jar-plugin</artifactId>
                         <executions>
@@ -401,6 +398,7 @@
                             </execution>
                         </executions>
                     </plugin>
+
                     <plugin>
                         <artifactId>maven-war-plugin</artifactId>
                         <configuration>
@@ -414,6 +412,7 @@
                             </webResources>
                         </configuration>
                     </plugin>
+
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
