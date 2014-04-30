@@ -181,30 +181,8 @@
         <dependency>
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>
-            <version>1.1.3</version>
+            <version>1.1.6</version>
             <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>maven-cobertura-plugin</artifactId>
-                    <groupId>maven-plugins</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>maven-findbugs-plugin</artifactId>
-                    <groupId>maven-plugins</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>icu4j</artifactId>
-                    <groupId>com.ibm.icu</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jdom</artifactId>
-                    <groupId>jdom</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>xom</artifactId>
-                    <groupId>xom</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- Use patched FreeMarker to fix ALF-10188 -->
         <dependency>
