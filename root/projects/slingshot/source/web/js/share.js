@@ -2399,12 +2399,6 @@ Alfresco.Share.userAvatar = function(userName, size)
       $relTime = Alfresco.util.relativeTime;
 
    /**
-    * Use the getDomId function to get unique names for global event handling
-    */
-   var FAVOURITE_EVENTCLASS = Alfresco.util.generateDomId(null, "favourite"),
-      LIKE_EVENTCLASS = Alfresco.util.generateDomId(null, "like");
-
-   /**
     * SimpleDocList constructor.
     *
     * @param {String} htmlid The HTML id of the parent element
@@ -2414,6 +2408,12 @@ Alfresco.Share.userAvatar = function(userName, size)
    Alfresco.component.SimpleDocList = function SimpleDocList_constructor(htmlId)
    {
       Alfresco.component.SimpleDocList.superclass.constructor.call(this, "Alfresco.component.SimpleDocList", htmlId, ["button", "container", "datasource", "datatable", "animation"]);
+
+      /**
+      * Use the getDomId function to get unique names for global event handling
+      */
+      this.FAVOURITE_EVENTCLASS=Alfresco.util.generateDomId(null, "favourite");
+      this.LIKE_EVENTCLASS=Alfresco.util.generateDomId(null, "like");
 
       this.previewTooltips = [];
       this.metadataTooltips = [];
@@ -2440,11 +2440,11 @@ Alfresco.Share.userAvatar = function(userName, size)
 
       if (record.getData("isFavourite"))
       {
-         html = '<a class="favourite-action ' + FAVOURITE_EVENTCLASS + ' enabled" title="' + scope.msg(i18n + "remove.tip") + '" tabindex="0"></a>';
+         html = '<a class="favourite-action ' + scope.FAVOURITE_EVENTCLASS + ' enabled" title="' + scope.msg(i18n + "remove.tip") + '" tabindex="0"></a>';
       }
       else
       {
-         html = '<a class="favourite-action ' + FAVOURITE_EVENTCLASS + '" title="' + scope.msg(i18n + "add.tip") + '" tabindex="0">' + scope.msg(i18n + "add.label") + '</a>';
+         html = '<a class="favourite-action ' + scope.FAVOURITE_EVENTCLASS + '" title="' + scope.msg(i18n + "add.tip") + '" tabindex="0">' + scope.msg(i18n + "add.label") + '</a>';
       }
 
       return html;
@@ -2466,11 +2466,11 @@ Alfresco.Share.userAvatar = function(userName, size)
 
       if (likes.isLiked)
       {
-         html = '<a class="like-action ' + LIKE_EVENTCLASS + ' enabled" title="' + scope.msg(i18n + "remove.tip") + '" tabindex="0"></a>';
+         html = '<a class="like-action ' + scope.LIKE_EVENTCLASS + ' enabled" title="' + scope.msg(i18n + "remove.tip") + '" tabindex="0"></a>';
       }
       else
       {
-         html = '<a class="like-action ' + LIKE_EVENTCLASS + '" title="' + scope.msg(i18n + "add.tip") + '" tabindex="0">' + scope.msg(i18n + "add.label") + '</a>';
+         html = '<a class="like-action ' + scope.LIKE_EVENTCLASS + '" title="' + scope.msg(i18n + "add.tip") + '" tabindex="0">' + scope.msg(i18n + "add.label") + '</a>';
       }
 
       html += '<span class="likes-count">' + $html(likes.totalLikes) + '</span>';
@@ -2639,7 +2639,7 @@ Alfresco.Share.userAvatar = function(userName, size)
             }
             return true;
          };
-         YAHOO.Bubbling.addDefaultAction(FAVOURITE_EVENTCLASS, fnFavouriteHandler);
+         YAHOO.Bubbling.addDefaultAction(this.FAVOURITE_EVENTCLASS, fnFavouriteHandler);
 
          // Hook like/unlike events
          var fnLikesHandler = function SimpleDocList_fnLikesHandler(layer, args)
@@ -2651,7 +2651,7 @@ Alfresco.Share.userAvatar = function(userName, size)
             }
             return true;
          };
-         YAHOO.Bubbling.addDefaultAction(LIKE_EVENTCLASS, fnLikesHandler);
+         YAHOO.Bubbling.addDefaultAction(this.LIKE_EVENTCLASS, fnLikesHandler);
       },
 
       /**
