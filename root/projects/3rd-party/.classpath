@@ -200,7 +200,7 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="lib/quartz-1.8.3-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/PDFRenderer-0.9.1-patched.jar" sourcepath="src/PDFRenderer-0.9.1-patched-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/hazelcast-2.4.jar" sourcepath="src/hazelcast-2.4-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/hazelcast-3.1.5.jar" sourcepath="src/hazelcast-3.1.5-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/junit-dep-4.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jaxen-1.1.6.jar" sourcepath="src/jaxen-1.1.6-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mmt-dependencies/truezip-file-7.5.5.jar" sourcepath="lib/mmt-dependencies/truezip-file-7.5.5-sources.jar"/>
