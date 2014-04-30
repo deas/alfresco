@@ -30,6 +30,8 @@ import java.util.TreeSet;
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.util.SiteHelper;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
@@ -145,9 +147,16 @@ public class PublishServiceImpl implements PublishService
         enqueuePublishedNodes(nodes.toArray(new NodeRef[nodes.size()]));
     }
 
-    public void enqueueRemovedNodes(NodeRef... nodes)
+    public void enqueueRemovedNodes(final NodeRef... nodes)
     {
-        enqueueNodes(true, nodes);
+        AuthenticationUtil.runAsSystem(new RunAsWork<Void>()
+        {
+            public Void doWork() throws Exception
+            {
+                enqueueNodes(true, nodes);
+                return null;
+            }
+        });
     }
 
     public void enqueueRemovedNodes(Collection<NodeRef> nodes)
