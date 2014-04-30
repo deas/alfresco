@@ -327,12 +327,11 @@
    <!-- Edit Offline -->
    <bean id="evaluator.doclib.action.offlineEdit" parent="evaluator.doclib.action.notEditBrowser" />
    
-   <!-- Cancel editing - should work for content being edited online (locked) plus working copies -->
+   <!-- Cancel editing - should work for working copies -->
    <bean id="evaluator.doclib.action.cancelEditing" parent="evaluator.doclib.action.chainedMatchOne">
       <property name="evaluators">
          <list>
             <ref bean="evaluator.doclib.action.cancelOfflineEdit" />
-            <ref bean="evaluator.doclib.action.cancelOnlineEdit" />
          </list>
       </property>
    </bean>
@@ -341,15 +340,6 @@
          <list>
             <ref bean="evaluator.doclib.action.isWorkingCopy" />
             <ref bean="evaluator.doclib.action.editableByCurrentUser" />
-         </list>
-      </property>
-   </bean>
-   <bean id="evaluator.doclib.action.cancelOnlineEdit" parent="evaluator.doclib.action.chainedMatchAll">
-      <property name="evaluators">
-         <list>
-            <ref bean="evaluator.doclib.metadata.isLocked" />
-            <ref bean="evaluator.doclib.action.notHasWorkingCopy" />
-            <ref bean="evaluator.doclib.action.cancelLockedBlacklist" />
          </list>
       </property>
    </bean>

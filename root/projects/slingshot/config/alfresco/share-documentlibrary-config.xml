@@ -1134,6 +1134,17 @@
             <evaluator>evaluator.doclib.action.cancelEditing</evaluator>
          </action>
 
+         <!-- Cancel editing (unlock) -->
+         <action id="document-cancel-editing-unlock" type="javascript" label="actions.document.cancel-editing">
+            <param name="function">onActionCancelEditing</param>
+            <permissions>
+               <permission allow="true">Unlock</permission>
+            </permissions>
+            <evaluator>evaluator.doclib.metadata.isLocked</evaluator>
+            <evaluator>evaluator.doclib.action.notHasWorkingCopy</evaluator>
+            <evaluator>evaluator.doclib.action.cancelLockedBlacklist</evaluator>
+         </action>
+
          <!-- Manage folder rules -->
          <action id="folder-manage-rules" type="pagelink" label="actions.folder.rules">
             <param name="page">folder-rules?nodeRef={node.nodeRef}</param>
@@ -1270,6 +1281,7 @@
             <action index="270" id="document-delete" />
             <action index="280" id="document-assign-workflow" />
             <action index="290" id="document-cancel-editing" />
+            <action index="295" id="document-cancel-editing-unlock" icon="document-cancel-editing"/>
             <action index="297" id="document-manage-granular-permissions" />
             <action index="300" id="document-publish" />
             <action index="310" id="document-view-googlemaps" />
@@ -1300,6 +1312,7 @@
             <action index="260" id="document-delete" />
             <action index="270" id="document-assign-workflow" />
             <action index="280" id="document-cancel-editing" />
+            <action index="285" id="document-cancel-editing-unlock" icon="document-cancel-editing"/>
             <action index="290" id="document-manage-granular-permissions" />
             <action index="300" id="document-manage-repo-permissions" />
             <action index="310" id="document-manage-aspects" />
