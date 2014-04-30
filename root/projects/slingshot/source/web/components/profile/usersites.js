@@ -63,7 +63,7 @@
       
       changeSiteNotification: function UserSites_changeSiteNotification(event)
       {
-         var element = event.target;
+         var element = event.target || event.srcElement;
          var action = element.name;
          if(element.id.indexOf(this.id+"_notification_") === 0)
          {
