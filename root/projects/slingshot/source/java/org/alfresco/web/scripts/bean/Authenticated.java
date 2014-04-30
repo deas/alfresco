@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -26,6 +26,7 @@ import org.springframework.extensions.surf.UserFactory;
 import org.springframework.extensions.webscripts.DeclarativeWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.springframework.extensions.webscripts.connector.User;
 import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest;
 
 /**
@@ -33,24 +34,36 @@ import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest
  */
 public class Authenticated extends DeclarativeWebScript
 {
-	/* (non-Javadoc)
+   /* (non-Javadoc)
      * @see org.alfresco.web.scripts.DeclarativeWebScript#executeImpl(org.alfresco.web.scripts.WebScriptRequest, org.alfresco.web.scripts.WebScriptResponse)
      */
     @Override
-    protected Map<String, Object> executeImpl(WebScriptRequest req, Status status)
+    protected Map<String, Object> executeImpl(final WebScriptRequest req, final Status status)
     {
         if (req instanceof WebScriptServletRequest)
         {
-            WebScriptServletRequest webScriptServletRequest = (WebScriptServletRequest)req;
-            HttpSession session = webScriptServletRequest.getHttpServletRequest().getSession(false);
+            final WebScriptServletRequest webScriptServletRequest = (WebScriptServletRequest)req;
+            final HttpSession session = webScriptServletRequest.getHttpServletRequest().getSession(false);
             
-            if (session == null ||
-                session.getAttribute(UserFactory.SESSION_ATTRIBUTE_KEY_USER_ID) == null ||
-                UserFactory.USER_GUEST.equals(session.getAttribute(UserFactory.SESSION_ATTRIBUTE_KEY_USER_ID)))
+            boolean isAllowedToViewPage = false;
+            if (session != null)
             {
-               status.setCode(401);
-               status.setMessage("There is no User ID in session.");
-               status.setRedirect(true);
+                final String userID = (String)session.getAttribute(UserFactory.SESSION_ATTRIBUTE_KEY_USER_ID);
+                if (userID != null && !UserFactory.USER_GUEST.equals(userID))
+                {
+                    final User user = (User)session.getAttribute(UserFactory.SESSION_ATTRIBUTE_KEY_USER_OBJECT);
+                    final String auth = webScriptServletRequest.getHttpServletRequest().getParameter("a");
+                    if (user != null)
+                    {
+                        isAllowedToViewPage = auth != null && auth.equals("admin") ? user.isAdmin() : true;
+                    }
+                }
+            }
+            if (!isAllowedToViewPage)
+            {
+                status.setCode(401);
+                status.setMessage("There is no user ID in session or user is not permitted to view the page");
+                status.setRedirect(true);
             }
         }
         return null;

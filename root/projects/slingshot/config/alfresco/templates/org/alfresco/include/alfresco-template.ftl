@@ -127,7 +127,7 @@ if (Alfresco.constants.PORTLET)
 <#-- Security - ensure user has a currently authenticated Session when viewing a user auth page e.g. when Back button is used -->
 <#if page?? && (page.authentication="user" || page.authentication="admin")>
 Alfresco.util.Ajax.jsonGet({
-   url: Alfresco.constants.URL_CONTEXT + "service/modules/authenticated?noCache=" + new Date().getTime()
+   url: Alfresco.constants.URL_CONTEXT + "service/modules/authenticated?noCache=" + new Date().getTime() + "&a=${page.authentication?html}"
 });
 </#if>
    //]]></script>
