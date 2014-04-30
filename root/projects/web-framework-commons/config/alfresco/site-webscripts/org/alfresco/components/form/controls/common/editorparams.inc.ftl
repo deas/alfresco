@@ -23,7 +23,6 @@
       theme_advanced_buttons2: "link,unlink,image,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,undo,redo,separator,forecolor,backcolor",
       theme_advanced_buttons3: "fullscreen,table,emotions"
    <#elseif appearance == "explorer">
-      forced_root_block : false,
       force_p_newlines : false,
       plugins: "table",
       theme_advanced_resizing: true,
