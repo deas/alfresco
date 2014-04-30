@@ -63,7 +63,7 @@ public class SlingshotRemoteClient extends RemoteClient
             org.apache.commons.httpclient.HttpMethod method, String contentType, int bufferSize) throws IOException
     {
         boolean processed = false;
-        if (res != null && getRequestMethod() == HttpMethod.GET)
+        if (res != null && getRequestMethod() == HttpMethod.GET && method.getStatusCode() >= 200 && method.getStatusCode() < 300)
         {
             // only match if content is not an attachment - don't interfere with downloading of file content 
             Header cd = method.getResponseHeader("Content-Disposition");
