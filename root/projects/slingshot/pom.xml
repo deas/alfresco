@@ -314,7 +314,6 @@
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <useCache>true</useCache>
                     <overlays>
                         <overlay>
                             <groupId>${project.groupId}</groupId>
@@ -336,8 +335,6 @@
                             <type>zip</type>
                         </overlay>
                     </overlays>
-                   <archiveClasses>false</archiveClasses>
-                   <attachClasses>true</attachClasses>
                 </configuration>
                 <!-- This allows overlays to be prepared on the FS for minification and faster run -->
                 <executions>

@@ -19,6 +19,7 @@
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-web-editor</artifactId>
             <version>${project.version}</version>
+            <classifier>classes</classifier>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>

@@ -446,6 +446,7 @@
                 <version>2.4</version>
                 <configuration>
                     <warSourceDirectory>source/web</warSourceDirectory>
+                    <attachClasses>true</attachClasses>
                     <useCache>true</useCache>
                     <recompressZippedFiles>false</recompressZippedFiles>
                 </configuration>

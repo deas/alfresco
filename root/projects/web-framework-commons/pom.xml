@@ -71,10 +71,8 @@
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
 					<configuration>
-						<!-- This allows this to an empty overlay -->
+						<!-- This allows an empty overlay -->
 						<failOnMissingWebXml>false</failOnMissingWebXml>
-						<archiveClasses>false</archiveClasses>
-						<attachClasses>true</attachClasses>
 					</configuration>            
                 </plugin>
             </plugins>
