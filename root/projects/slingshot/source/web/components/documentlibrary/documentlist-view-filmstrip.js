@@ -597,6 +597,7 @@
       });
       scope.widgets.filmstripCarousel.render();
       scope.widgets.filmstripCarousel.show();
+      scope.widgets.filmstripCarousel.focus();
       
       var numNavItemsVisible = Math.floor((containerWidth - (NAV_PADDING_X * 2)) / (NAV_ITEM_WIDTH + NAV_ITEM_PADDING_X));
       scope.widgets.filmstripNavCarousel = new YAHOO.widget.Carousel(this.getFilmstripNavCarouselContainerId(scope), {
