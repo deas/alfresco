@@ -37,6 +37,7 @@ import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.model.FileNotFoundException;
+import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
@@ -62,6 +63,8 @@ import org.springframework.util.StringUtils;
 public class VtiPathHelper extends AbstractLifecycleBean
 {
     private final static Log logger = LogFactory.getLog("org.alfresco.module.vti.handler");
+    public final static String ALTERNATE_PATH_DOCUMENT_IDENTIFICATOR = "_IDX_NODE_";
+    public final static String ALTERNATE_PATH_SITE_IDENTIFICATOR = "_IDX_SITE_";
 
     private NodeService nodeService;
     private FileFolderService fileFolderService;
@@ -203,11 +206,38 @@ public class VtiPathHelper extends AbstractLifecycleBean
         {
             try
             {
-                List<String> splitPath = Arrays.asList(initialURL.split("/"));
-                fileInfo = fileFolderService.resolveNamePath(rootNodeRef, splitPath);
+                String alternateIdentificator = ALTERNATE_PATH_SITE_IDENTIFICATOR;
+                if (initialURL.contains(ALTERNATE_PATH_DOCUMENT_IDENTIFICATOR))
+                {
+                    alternateIdentificator = ALTERNATE_PATH_DOCUMENT_IDENTIFICATOR;
+                }
+                if (initialURL.contains(alternateIdentificator))
+                {
+                    String[] parts = initialURL.split("/");
+                    for (int i = 0; i < parts.length; i++)
+                    {
+                        if (parts[i].contains(alternateIdentificator))
+                        {
+                            fileInfo = getFileFolderService().getFileInfo(new NodeRef(rootNodeRef.getStoreRef(), parts[i].replace(alternateIdentificator, "")));
+                            break;
+                        }
+                    }
+                }
             }
-            catch (FileNotFoundException e)
+            catch (InvalidNodeRefException e)
             {
+            }
+            
+            if (fileInfo == null)
+            {
+                try
+                {
+                    List<String> splitPath = Arrays.asList(initialURL.split("/"));
+                    fileInfo = fileFolderService.resolveNamePath(rootNodeRef, splitPath);
+                }
+                catch (FileNotFoundException e)
+                {
+                }
             }
         }
 
@@ -230,6 +260,12 @@ public class VtiPathHelper extends AbstractLifecycleBean
     {
         FileInfo childFileInfo = null;
 
+        if(!parentFileInfo.isFolder())
+        {
+            //Alternate path was used and provided parentFileInfo is file that we are editing
+            return parentFileInfo;
+        }
+        
         try
         {
             childFileInfo = fileFolderService.resolveNamePath(parentFileInfo.getNodeRef(), Collections.singletonList(childName));

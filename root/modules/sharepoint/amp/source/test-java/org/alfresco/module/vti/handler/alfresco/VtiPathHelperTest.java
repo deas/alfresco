@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
+import org.alfresco.model.ContentModel;
 import org.alfresco.module.vti.handler.VtiHandlerException;
 import org.alfresco.repo.site.SiteModel;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -118,5 +119,28 @@ public class VtiPathHelperTest extends AbstractVtiPathHelperTestBase<VtiPathHelp
         
         assertEquals("/mysite/documentLibrary/path/to/file.txt",
                     pathHelper.getPathForURL("/prefix/mysite/documentLibrary/path/to/file.txt"));
+    }
+
+    @Test
+    public void resolvePathFileInfoAlternate() throws FileNotFoundException
+    {
+        String nodeUUID = "e403c9d7-943a-4839-ae8f-6b14e1b8107f";
+        NodeRef nodeRef = new NodeRef(ROOT_NODE_REF.getStoreRef(), nodeUUID);
+        FileInfo nodeFileInfo = makeFileInfo(nodeRef, ContentModel.TYPE_CONTENT);
+
+        String siteUUID = "2c122359-7fe2-4927-83ef-afe612cdf1c1";
+        NodeRef siteRef = new NodeRef(ROOT_NODE_REF.getStoreRef(), siteUUID);
+        FileInfo siteFileInfo = makeFileInfo(siteRef, ContentModel.TYPE_CONTENT);
+
+        when(fileFolderService.getFileInfo(nodeRef)).thenReturn(nodeFileInfo);
+        when(fileFolderService.getFileInfo(siteRef)).thenReturn(siteFileInfo);
+
+        String documentUrl = "/alfresco/_IDX_SITE_" + siteUUID + "/_IDX_NODE_" + nodeUUID + "/file1.docx";
+        FileInfo resolvedNode = pathHelper.resolvePathFileInfo(documentUrl);
+        assertEquals(nodeFileInfo, resolvedNode);
+        
+        String siteUrl = "/alfresco/_IDX_SITE_" + siteUUID + "/";
+        FileInfo resolvedSite = pathHelper.resolvePathFileInfo(siteUrl);
+        assertEquals(siteFileInfo, resolvedSite);
     }
 }

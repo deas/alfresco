@@ -664,6 +664,50 @@
             record.onlineEditUrl = Alfresco.util.onlineEditUrl(this.doclistMetadata.custom.vtiServer, record.location);
          }
 
+ 
+         if (record.onlineEditUrl.length > 260)
+         {
+            //Try to use alternate edit online URL: http://{host}:{port}/{context}/_IDX_SITE_{site_uuid}/_IDX_NODE_{document_uuid}/{document_name}
+            Alfresco.util.Ajax.request(
+            {
+               method: Alfresco.util.Ajax.GET,
+               url: Alfresco.constants.PROXY_URI+"/api/sites/" + record.location.site.name,
+               successCallback:
+               {
+                  fn: function(response)
+                  {
+                     var siteUUID = response.json.node.split("/").pop();
+                     var docUUID = record.nodeRef.split("/").pop();
+                     record.onlineEditUrl = record.onlineEditUrl.split(record.location.site.name)[0] + "_IDX_SITE_" + siteUUID + "/_IDX_NODE_" + docUUID + "/" + record.displayName;
+                     if (record.onlineEditUrl.length > 260)
+                     {
+                        var ext = record.displayName.split(".").pop();
+                        var recordName = record.displayName.split(".")[0];
+                        var exceed = record.onlineEditUrl.length - 260;
+                        record.onlineEditUrl = record.onlineEditUrl.replace(record.displayName, recordName.substring(0, recordName.length - exceed - 1) + "." + ext);
+                     }
+                     this.actionEditOnlineInternal(record);
+                  },
+                  scope: this
+               },
+               failureCallback:
+               {
+                  fn: function(response)
+                  {
+                     this.actionEditOnlineInternal(record);
+                  },
+                  scope: this
+               }
+            });
+         }
+         else
+         {
+            this.actionEditOnlineInternal(record);
+         }
+      },
+
+      actionEditOnlineInternal: function dlA_onActionEditOnline(record)
+      {
          if (record.onlineEditUrl.length > 260)
          {
             Alfresco.util.PopupManager.displayMessage(

@@ -174,6 +174,17 @@ public class AlfrescoDwsServiceHandler extends AbstractAlfrescoDwsServiceHandler
             else
             {
                 String siteName = uri.substring(uri.lastIndexOf('/') + 1);
+                if(siteName.contains(VtiPathHelper.ALTERNATE_PATH_SITE_IDENTIFICATOR))
+                {
+                    try
+                    {
+                        NodeRef siteRef = new NodeRef(pathHelper.getRootNodeRef().getStoreRef(), siteName.replace(VtiPathHelper.ALTERNATE_PATH_SITE_IDENTIFICATOR, ""));
+                        siteName = nodeService.getProperty(siteRef, ContentModel.PROP_NAME).toString();
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
                 redirectTo = redirectTo.replace("...", siteName);
             }
 
