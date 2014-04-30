@@ -309,6 +309,20 @@
             scope: this,
             correctScope: true
          });
+
+         this.widgets.enterListener = new KeyListener(this.widgets.filedata,
+         {
+            keys: KeyListener.KEY.ENTER
+         },
+         {
+            fn: function enter_key_pressed(obj)
+            {
+               this.widgets.filedata.click();
+            },
+            scope: this,
+            correctScope: true
+         });
+         this.widgets.enterListener.enable();
       },
 
       /**

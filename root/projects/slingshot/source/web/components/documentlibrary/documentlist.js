@@ -693,11 +693,11 @@
 
       if (record.isFavourite)
       {
-         html = '<a class="favourite-action enabled" title="' + scope.msg(i18n + "remove.tip") + '" tabindex="0"></a>';
+         html = '<a href="#" class="favourite-action enabled" title="' + scope.msg(i18n + "remove.tip") + '" tabindex="0"></a>';
       }
       else
       {
-         html = '<a class="favourite-action" title="' + scope.msg(i18n + "add.tip") + '" tabindex="0">' + scope.msg(i18n + "add.label") + '</a>';
+         html = '<a href="#" class="favourite-action" title="' + scope.msg(i18n + "add.tip") + '" tabindex="0">' + scope.msg(i18n + "add.label") + '</a>';
       }
 
       return html;
@@ -720,11 +720,11 @@
 
       if (likes.isLiked)
       {
-         html = '<a class="like-action enabled" title="' + scope.msg(i18n + "remove.tip") + '" tabindex="0"></a>';
+         html = '<a href="#" class="like-action enabled" title="' + scope.msg(i18n + "remove.tip") + '" tabindex="0"></a>';
       }
       else
       {
-         html = '<a class="like-action" title="' + scope.msg(i18n + "add.tip") + '" tabindex="0">' + scope.msg(i18n + "add.label") + '</a>';
+         html = '<a href="#" class="like-action" title="' + scope.msg(i18n + "add.tip") + '" tabindex="0">' + scope.msg(i18n + "add.label") + '</a>';
       }
 
       html += '<span class="likes-count">' + $html(likes.totalLikes) + '</span>';

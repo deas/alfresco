@@ -740,6 +740,19 @@
             
             // Enable the Esc key listener
             this.widgets.escapeListener.enable();
+            this.widgets.enterListener = new KeyListener(this.widgets.fileSelectionOverlayButton._button,
+            {
+               keys: KeyListener.KEY.ENTER
+            },
+            {
+               fn: function enter_key_pressed(obj)
+               {
+                  this.fileSelectionInput.click();
+               },
+               scope: this,
+               correctScope: true
+            });
+            this.widgets.enterListener.enable();
             this.panel.setFirstLastFocusable();
             this.panel.show();
          }

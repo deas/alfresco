@@ -1,5 +1,15 @@
 /* Center text and buttons inside p elements */
 
+embed:focus
+{
+   outline: 1px dotted;
+}
+
+object:focus
+{
+   outline: 1px dotted;
+}
+
 .flash-upload p
 {
    text-align: center;

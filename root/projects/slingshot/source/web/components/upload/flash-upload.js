@@ -468,6 +468,28 @@
             scope: this,
             correctScope: true
          });
+         
+         if (this.uploader._swf && this.uploader._swf.tagName.toLowerCase() == "embed")
+         {
+            this.widgets.uploaderListener = new KeyListener(this.uploader._swf,
+            {
+               keys: KeyListener.KEY.TAB
+            },
+            {
+               fn: function change_swf_focus_on_first_element(obj)
+               {
+                  this.widgets.panel.setFirstLastFocusable();
+                  this.widgets.panel.firstElement.focus();
+               },
+               scope: this,
+               correctScope: true
+            });
+         }
+
+         YAHOO.lang.later(this, 2000, function()
+         {
+            Dom.addClass(this.id + "-flashuploader-div", "hidden");
+         });
       },
 
       /**
@@ -557,6 +579,25 @@
             }
          }
          this.widgets.panel.setFirstLastFocusable();
+
+         if (this.uploader._swf && this.uploader._swf.tagName.toLowerCase() == "embed")
+         {
+            this.widgets.panel.firstElement = this.uploader._swf;
+            this.widgets.lastElListener = new KeyListener(this.widgets.panel.lastElement,
+         {
+            keys: KeyListener.KEY.TAB
+         },
+         {
+            fn: function change_last_element_focus_on_swf(obj)
+            {
+               this.widgets.panel.firstElement = this.uploader._swf;
+            },
+               scope: this,
+               correctScope: true
+            });
+            this.widgets.lastElListener.enable();
+            this.widgets.uploaderListener.enable();
+         }
 
          // Show the upload panel
          this.widgets.panel.show();

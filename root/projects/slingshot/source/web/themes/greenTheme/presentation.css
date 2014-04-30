@@ -8,7 +8,6 @@ input[type="file"] > input[type="button"]::-moz-focus-inner
 {
     border: none;
 }
-button:focus {outline:none;}
 
 .yui-overlay,
 .sticky-wrapper,

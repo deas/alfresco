@@ -27,7 +27,6 @@ input[type="file"] > input[type="button"]::-moz-focus-inner
 {
     border: none;
 }
-button:focus {outline:none;}
 
 .yui-overlay,
 .alfresco-share .sticky-wrapper,
