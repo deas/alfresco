@@ -1128,7 +1128,8 @@
                }
                
                item = arrItems[arrItems.length - 1];
-               navButton.set("label", this.options.objectRenderer.renderItem(item, 16, '<div><span class="item-icon">{icon}</span><span class="item-name">{name}</span></div>'));
+               var value = item.type == "st:site" ? "{title}" : "{name}";
+               navButton.set("label", this.options.objectRenderer.renderItem(item, 16, '<div><span class="item-icon">{icon}</span><span class="item-name">' + value + '</span></div>'));
                
                // Navigation Up button
                if (arrItems.length > 1)
@@ -1145,7 +1146,9 @@
                for (i = 0, ii = arrItems.length; i < ii; i++)
                {
                   item = arrItems[i];
-                  menuItem = new YAHOO.widget.MenuItem(this.options.objectRenderer.renderItem(item, 16, indent + '<span class="item-icon">{icon}</span><span class="item-name">{name}</span>'),
+				  
+                  var value = item.type == "st:site" ? "{title}" : "{name}";
+                  menuItem = new YAHOO.widget.MenuItem(this.options.objectRenderer.renderItem(item, 16, indent + '<span class="item-icon">{icon}</span><span class="item-name">' + value + '</span>'),
                   {
                      value: item.nodeRef
                   });
@@ -2532,14 +2535,15 @@
                return;
             }
 
+            var value = oRecord.getData("type") == "st:site" ? "{title}" : "{name}";
             if (oRecord.getData("isContainer") ||
                 (!oRecord.getData("isContainer") && (scope.options.allowNavigationToContentChildren || oRecord.getData("type") == "cm:category")))
             {
-               template += '<h3 class="item-name"><a href="#" class="theme-color-1 parent-' + scope.eventGroup + '">{name}</a></h3>';
+               template += '<h3 class="item-name"><a href="#" class="theme-color-1 parent-' + scope.eventGroup + '">' + value + '</a></h3>';
             }
             else
             {
-               template += '<h3 class="item-name">{name}</h3>';
+               template += '<h3 class="item-name">' + value + '</h3>';
             }
 
             if (!scope.options.compactMode)
