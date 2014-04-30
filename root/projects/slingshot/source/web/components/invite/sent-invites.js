@@ -507,7 +507,8 @@
             method: "GET",
             dataObj:
             {
-               inviteId: record.getData('inviteId')
+               inviteId: record.getData('inviteId'),
+               siteShortName: encodeURIComponent(this.options.siteId)
             },
             responseContentType : "application/json",
             successMessage: this.msg("message.cancel.success"),
