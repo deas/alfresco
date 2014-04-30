@@ -277,7 +277,9 @@
             fn: me._searchEnterHandler,
             scope: this,
             correctScope: true
-         }, "keydown").enable();
+         }, "keydown");
+		 
+         this.widgets.enterListener.enable();
          
          // trigger the initial search
          YAHOO.Bubbling.fire("onSearch",
@@ -910,6 +912,12 @@
          }
          // disables Search button
          this.widgets.searchButton.set("disabled", true);
+
+         // disables  KeyListener (Enter)
+         if (this.widgets.enterListener)
+         {
+            this.widgets.enterListener.disable();
+         }
       },
  
       /** 
@@ -942,6 +950,12 @@
          }
          // enables  Search button
          this.widgets.searchButton.set("disabled", false);
+
+         // enables  KeyListener (Enter)
+         if (this.widgets.enterListener)
+         {
+            this.widgets.enterListener.enable();
+         }
       },
       
       /**
