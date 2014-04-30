@@ -722,6 +722,19 @@ Alfresco.forms.validation = Alfresco.forms.validation || {};
       },
       
       /**
+       * Retrieves fields by type
+       * 
+       * @method getFieldsByType
+       * @param type {string} The type
+       * @return {string} fields by type
+       */	  
+      getFieldsByType: function(type)
+      {
+         var nodes = Selector.query(type);
+         return nodes;
+      },
+	  
+      /**
        * Retrieves the data currently held by the form.
        * 
        * @method getFormData

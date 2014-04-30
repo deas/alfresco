@@ -189,6 +189,7 @@ public class FormUIGet extends DeclarativeWebScript
     protected static final String MODEL_PARAMETERS = "parameters";
     protected static final String MODEL_MAX_LENGTH = "maxLength";
     protected static final String MODEL_GROUP = "group";
+    protected static final String MODEL_INDEX_TOKENISATION_MODE = "indexTokenisationMode";
     
     private static final String TYPE_INT ="int";
     private static final String TYPE_LONG ="long";
@@ -1686,6 +1687,14 @@ public class FormUIGet extends DeclarativeWebScript
         {
             field.setValue(fieldDefinition.getString(MODEL_DEFAULT_VALUE));
         }
+        
+        if (fieldDefinition.has(MODEL_INDEX_TOKENISATION_MODE))
+        {
+            if (fieldDefinition.getString(MODEL_INDEX_TOKENISATION_MODE).toUpperCase().equals("FALSE"))
+            {
+                field.setIndexTokenisationMode(fieldDefinition.getString(MODEL_INDEX_TOKENISATION_MODE));
+            }
+        }
     }
     
     /**
@@ -2702,6 +2711,8 @@ public class FormUIGet extends DeclarativeWebScript
         protected boolean transitory = false;
         protected boolean repeating = false;
         
+        protected String indexTokenisationMode;
+        
         Field()
         {
             this.kind = FIELD;
@@ -2897,6 +2908,16 @@ public class FormUIGet extends DeclarativeWebScript
             return this.repeating;
         }
         
+        public String getIndexTokenisationMode()
+        {
+            return indexTokenisationMode;
+        }
+
+        public void setIndexTokenisationMode(String indexTokenisationMode)
+        {
+            this.indexTokenisationMode = indexTokenisationMode;
+        }
+
         @Override
         public String toString()
         {
@@ -2918,6 +2939,7 @@ public class FormUIGet extends DeclarativeWebScript
             buffer.append(" mandatory=").append(this.mandatory);
             buffer.append(" repeating=").append(this.repeating);
             buffer.append(" transitory=").append(this.transitory);
+            buffer.append(" indexTokenisationMode=").append(this.indexTokenisationMode);
             buffer.append(" ").append(this.control);
             buffer.append(")");
             return buffer.toString();
