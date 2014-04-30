@@ -25,7 +25,7 @@ public class EditUserPageTest extends AbstractTest
     private DashBoardPage dashBoard;
     private String userinfo = "user" + System.currentTimeMillis() + "@test.com";
 
-    @BeforeClass(groups = { "Enterprise-only", "Cloud-only" })
+    @BeforeClass(groups = { "Enterprise-only", "Cloud-only" }, alwaysRun=true)
     public void setup() throws Exception
     {
         dashBoard = loginAs(username, password);
