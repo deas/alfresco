@@ -290,6 +290,29 @@
             this.showConfig.adobeFlashEnabled = this.options.adobeFlashEnabled && this.canAccessSession;
          }
 
+         // MNT-11084 Full screen/window view: Actions works incorrectly;
+         if (this.options.zIndex !== undefined && this.options.zIndex > 0 && (this.uploader.widgets.panel !== undefined || this.uploader.panel !== undefined))
+         {
+            var uploader = this.uploader.widgets.panel;
+            if (this.uploader.panel !== undefined) 
+            {
+               var uploader = this.uploader.panel;
+            }
+            var index = this.options.zIndex + 2;
+            var onBeforeShow = function () 
+            {
+               elements = Dom.getElementsByClassName("mask");
+               if (elements.length > 0)
+               {
+                  Dom.setStyle(elements[0], "zIndex", index - 1);
+               }
+
+               Dom.setStyle(uploader.element, "zIndex", index);
+               uploader.cfg.setProperty("zIndex", index, true);
+            }
+            uploader.beforeShowEvent.subscribe(onBeforeShow, uploader, true);
+         }
+
          // Let the uploader instance show itself
          this.uploader.show(this.showConfig);
       },

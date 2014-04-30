@@ -480,7 +480,8 @@
             jsNode = record.jsNode,
             content = jsNode.isContainer ? "folder" : "document",
             displayName = record.displayName,
-            isCloud = (this.options.syncMode === "CLOUD")
+            isCloud = (this.options.syncMode === "CLOUD"),
+            zIndex = 0;
 
          var displayPromptText = this.msg("message.confirm.delete", displayName);
          if (jsNode.hasAspect("sync:syncSetMemberNode"))
@@ -495,11 +496,17 @@
             }
          }
 
+         if (this.fullscreen !== undefined && ( this.fullscreen.isWindowOnly || Dom.hasClass(this.id, 'alf-fullscreen')))
+         {
+            zIndex = 1000;
+         }
+
          Alfresco.util.PopupManager.displayPrompt(
          {
             title: this.msg("actions." + content + ".delete"),
             text: displayPromptText,
             noEscape: true,
+            zIndex: zIndex,
             buttons: [
             {
                text: this.msg("button.delete"),
@@ -1136,6 +1143,12 @@
             version = record.workingCopy.workingCopyVersion;
          }
 
+         var zIndex = 0;
+         if (this.fullscreen !== undefined && ( this.fullscreen.isWindowOnly || Dom.hasClass(this.id, 'alf-fullscreen')))
+         {
+            zIndex = 1000;
+         } 
+
          var singleUpdateConfig =
          {
             updateNodeRef: nodeRef.toString(),
@@ -1154,6 +1167,9 @@
                scope: this
             }
          };
+
+         this.fileUpload.options.zIndex = zIndex;
+
          if ($isValueSet(this.options.siteId))
          {
             singleUpdateConfig.siteId = this.options.siteId;
@@ -1330,6 +1346,12 @@
 
          allowedViewModes.push(DLGF.VIEW_MODE_USERHOME)
 
+         var zIndex = 0;
+         if (this.fullscreen !== undefined && ( this.fullscreen.isWindowOnly || Dom.hasClass(this.id, 'alf-fullscreen')))
+         {
+            zIndex = 1000;
+         } 
+
          this.modules.copyMoveTo.setOptions(
          {
             allowedViewModes: allowedViewModes,
@@ -1339,7 +1361,8 @@
             path: this.currentPath,
             files: record,
             rootNode: this.options.rootNode,
-            parentId: this.getParentNodeRef(record)
+            parentId: this.getParentNodeRef(record),
+            zIndex: zIndex
          }).showDialog();
       },
 

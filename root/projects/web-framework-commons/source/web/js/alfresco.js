@@ -6931,7 +6931,7 @@ Alfresco.util.PopupManager = function()
                   effect: c.effect,
                   modal: c.modal,
                   visible: c.visible,
-                  zIndex: this.zIndex++
+                  zIndex: c.zIndex + this.zIndex++
                });
 
          // Show the title if it exists
@@ -6958,6 +6958,25 @@ Alfresco.util.PopupManager = function()
          // Add the dialog to the dom, center it and show it.
          prompt.render(parent);
          prompt.center();
+
+         // MNT-11084 Full screen/window view: Actions works incorrectly; 
+         if (c.zIndex !== undefined && c.zIndex > 0)
+         {
+            var index = c.zIndex + this.zIndex - 1;
+            var onBeforeShow = function () 
+            {
+               element = Dom.get("prompt_mask");
+               if (element !== undefined)
+               {
+                  Dom.setStyle(element, "zIndex", index - 1 );
+               }
+
+               Dom.setStyle(prompt.element, "zIndex", index);
+               prompt.cfg.setProperty("zIndex", index, true);
+            }
+            prompt.beforeShowEvent.subscribe(onBeforeShow, prompt, true);
+         }
+
          prompt.show();
       },
 

@@ -779,6 +779,25 @@
             });
          }
 
+         // MNT-11084 Full screen/window view: Actions works incorrectly;
+         if (this.options.zIndex !== undefined && this.options.zIndex > 0)
+         {
+            var index = this.options.zIndex + 2;
+            var dialog = this.widgets.dialog;
+            var onBeforeShow = function () 
+            {
+               elements = Dom.getElementsByClassName("mask");
+               if (elements.length > 0)
+               {
+                  Dom.setStyle(elements[0], "zIndex", index - 1);
+               }
+
+               Dom.setStyle(dialog.element, "zIndex", index);
+               dialog.cfg.setProperty("zIndex", index, true);
+            }
+            this.widgets.dialog.beforeShowEvent.subscribe(onBeforeShow, this.widgets.dialog, true);
+         }
+
          // Show the dialog
          this.widgets.escapeListener.enable();
          this.widgets.dialog.show();
