@@ -254,6 +254,8 @@
                var createContentMenu = this.widgets.createContent.getMenu(),
                    groupIndex = 0;
 
+               // MNT-11142 Create menu in the document library not disappearing when clicking outside the menu
+               createContentMenu.cfg.config.clicktohide.value = true;
                // Create content actions
                if (this.options.createContentActions.length !== 0)
                {
