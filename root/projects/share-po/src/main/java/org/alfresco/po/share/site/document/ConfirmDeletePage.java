@@ -97,18 +97,19 @@ public class ConfirmDeletePage extends SharePage
         {
             By buttonSelector = By.cssSelector(".button-group span span button");
             List<WebElement> buttons = drone.findAll(buttonSelector);
+            long elementWaitTime = SECONDS.convert(maxPageLoadingTime, MILLISECONDS);
             for (WebElement button : buttons)
             {
                 if (action.name().equals(button.getText()))
                 {
                     button.click();
-                    drone.waitUntilElementDisappears(buttonSelector, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                    drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div#prompt>div.hd"), "Delete", elementWaitTime);
                     if (Action.Delete.equals(action))
                     {
                         By deleteMessageSelector = By.cssSelector("div.bd>span.message");
-                        String deleteMessage = "was deleted";
-                        drone.waitUntilVisible(deleteMessageSelector, deleteMessage, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-                        drone.waitUntilNotVisibleWithParitalText(deleteMessageSelector, deleteMessage, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                        String deleteMessage = "deleted";
+                        drone.waitUntilVisible(deleteMessageSelector, deleteMessage, elementWaitTime);
+                        drone.waitUntilNotVisibleWithParitalText(deleteMessageSelector, deleteMessage, elementWaitTime);
                     }
                     return drone.getCurrentPage();
                 }
