@@ -2664,7 +2664,28 @@
          Event.delegate(this.id, "click", function DL__setupDataTable_onIndicatorAction(event, target)
          {
             var action = target.getAttribute("data-action"),
-               record = me.widgets.dataTable.getRecord(target).getData();
+               rec = me.widgets.dataTable.getRecord(target),
+               record;
+			 
+            // MNT-10630 Sync Info Link is not working on Gallery View of document library page.			 
+            if (rec == null)
+            {
+               var id = me.currentActionsMenu.id;
+               var records = me.widgets.dataTable.getRecordSet( )._records;
+               for (i = 0; i < records.length; i++)
+               {
+		  if (id.indexOf(records[i]._sId) > 0)
+		  {
+		     rec = me.widgets.dataTable.getRecord(records[i]._sId);
+		     target =  rec._sId;
+		  }
+               } 				
+            }	 
+			
+            if (rec != null)
+            {
+               record = rec.getData();
+            }
 
             // Look for method in Alfresco.DocumentList or Global scopes & call it with the record as the only param
             if (YAHOO.lang.isFunction(me[action]))

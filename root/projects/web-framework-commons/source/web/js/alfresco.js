@@ -2659,7 +2659,9 @@ Alfresco.util.createBalloon = function(p_context, p_params, showEvent, hideEvent
        */
       show: function Balloon_show()
       {
-         if (this.content.innerHTML && this.content.innerHTML.length > 0 && Alfresco.util.isVisible(this.context))
+         // MNT-10630 Sync Info Link is not working on Gallery View of document library page.
+         // delete Alfresco.util.isVisible(this.context)
+         if (this.content.innerHTML && this.content.innerHTML.length > 0)
          {
             // Reregister to ensure we're tracked.
             Alfresco.util.ComponentManager.reregister(this);
