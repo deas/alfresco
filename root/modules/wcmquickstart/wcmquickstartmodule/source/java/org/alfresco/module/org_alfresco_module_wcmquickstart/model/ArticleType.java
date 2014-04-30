@@ -17,8 +17,6 @@
  */
 package org.alfresco.module.org_alfresco_module_wcmquickstart.model;
 
-import java.util.List;
-
 import org.alfresco.repo.node.NodeServicePolicies;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
@@ -70,25 +68,21 @@ public class ArticleType implements WebSiteModel
 	 */
 	public void init()
 	{
-	    policyComponent.bindClassBehaviour(NodeServicePolicies.BeforeDeleteNodePolicy.QNAME, WebSiteModel.TYPE_ARTICLE, 
-	            new JavaBehaviour(this, "beforeDeleteNode", NotificationFrequency.EVERY_EVENT));
+        policyComponent.bindAssociationBehaviour(
+                NodeServicePolicies.OnDeleteAssociationPolicy.QNAME,
+                WebSiteModel.TYPE_VISITOR_FEEDBACK,
+                WebSiteModel.ASSOC_RELEVANT_ASSET,
+                new JavaBehaviour(this, "onDeleteAssociation", NotificationFrequency.EVERY_EVENT));
 	}
-
-    public void beforeDeleteNode(NodeRef nodeRef)
+    
+    public void onDeleteAssociation(AssociationRef nodeAssocRef)
     {
-        //Mark any related feedback for deletion
-        if (nodeService.exists(nodeRef))
+        NodeRef sourceRef = nodeAssocRef.getSourceRef();
+        
+        if (nodeService.exists(sourceRef) && !nodeService.hasAspect(sourceRef, ContentModel.ASPECT_PENDING_DELETE))
         {
-            List<AssociationRef> assocs = nodeService.getSourceAssocs(nodeRef, ASSOC_RELEVANT_ASSET);
-            for (AssociationRef assoc : assocs)
-            {
-                //Currently we just delete the feedback node directly - do we need to do this asynchronously?
-                NodeRef nodeToDelete = assoc.getSourceRef();
-                if (nodeService.exists(nodeToDelete) && !nodeService.hasAspect(nodeToDelete, ContentModel.ASPECT_PENDING_DELETE))
-                {
-                    nodeService.deleteNode(nodeToDelete);
-                }
-            }
+            // Delete the source
+            nodeService.deleteNode(sourceRef);
         }
     }
     
