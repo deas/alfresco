@@ -86,7 +86,7 @@ public class SiteAdminGroupTests extends AbstractUtils
      */    
     
     @Test (groups = "EnterpriseOnly")
-    public void ACE_564_02() throws Exception
+    public void ALF_2942() throws Exception
     {
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);      
                 
@@ -110,7 +110,7 @@ public class SiteAdminGroupTests extends AbstractUtils
      */  
     //cover this test in share po as page object
     @Test(groups = "EnterpriseOnly")
-    public void ACE_564_04() throws Exception
+    public void ALF_2943() throws Exception
     {
         String admin ="Administrator";
         String uname ="admin";
@@ -138,7 +138,7 @@ public class SiteAdminGroupTests extends AbstractUtils
      * </ul>
      */    
     @Test(groups = "EnterpriseOnly")
-    public void ACE_564_06() throws Exception
+    public void ALF_2944() throws Exception
     {        
         String testname = getTestName();
         String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
@@ -179,7 +179,7 @@ public class SiteAdminGroupTests extends AbstractUtils
      */    
     
     @Test(groups = "EnterpriseOnly")
-    public void ACE_564_08() throws Exception
+    public void ALF_2945() throws Exception
     {
         String testname = getTestName();
         String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
@@ -231,7 +231,7 @@ public class SiteAdminGroupTests extends AbstractUtils
      * </ul>
      */    
     @Test(groups = "EnterpriseOnly")
-    public void ACE_564_10() throws Exception
+    public void ALF_2946() throws Exception
     {
         String testname = getTestName();
         String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());

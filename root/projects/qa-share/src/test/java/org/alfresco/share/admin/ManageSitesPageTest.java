@@ -121,8 +121,8 @@ public class ManageSitesPageTest extends AbstractUtils
     /**
      * Test to find a bootstrapped site by name.
      */
-    @Test
-    public void ManageSitesPageTests() throws Exception
+    @Test(groups = "AlfrescoOne")
+    public void ALF_2954() throws Exception
     {
         if (logger.isTraceEnabled())
         {
