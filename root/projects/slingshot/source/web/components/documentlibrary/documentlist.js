@@ -2490,7 +2490,7 @@
                   var showFoldersFunc = function fnShowFolders()
                   {
                      // Find new menu item, see MNT-10195
-                     var menuItemElement = Dom.getElementsByClassName("showFolders");
+                     var menuItemElement = Dom.getElementsByClassName("showFolders")[0];
 
                      me.options.showFolders = true;
                      menuItemElement.innerHTML = this.msg("button.folders.hide");
