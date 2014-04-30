@@ -192,24 +192,19 @@ var extMouseWheel = function()
 		// (this is called from within the Flash app):
 		initCaptureFor: function(aFlashObjectId)
 		{
-			if (uaContains('Mac') || uaContains('Safari'))
-			{
-				// find flash object's div container
-				var parentdiv = document.getElementById(aFlashObjectId).parentNode;
-				while(parentdiv != null && parentdiv.nodeName != "DIV")
-					parentdiv = parentdiv.parentNode;
+			// find flash object's div container
+			var parentdiv = document.getElementById(aFlashObjectId).parentNode;
+			while(parentdiv != null && parentdiv.nodeName != "DIV")
+				parentdiv = parentdiv.parentNode;
 				
-				if (parentdiv != undefined && parentdiv != null)
-				{
-					f[aFlashObjectId] = parentdiv;
+			if (parentdiv != undefined && parentdiv != null)
+			{
+				f[aFlashObjectId] = parentdiv;
 					
-					if (parentdiv.addEventListener) parentdiv.addEventListener('DOMMouseScroll', onWheelHandler, false); // Firefox
-					parentdiv.onmousewheel = onWheelHandler; // Safari
+				if (parentdiv.addEventListener) parentdiv.addEventListener('DOMMouseScroll', onWheelHandler, false); // Firefox
+				parentdiv.onmousewheel = onWheelHandler; // Safari
 					
-					return true;
-				}
-				else
-					return false;
+				return true;
 			}
 			else
 				return false;
