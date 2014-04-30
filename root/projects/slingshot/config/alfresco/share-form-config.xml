@@ -438,7 +438,34 @@
    <!-- trx:transferTarget content type (editing) -->
    <config evaluator="node-type" condition="trx:transferTarget">
       <forms>
+         <!-- Default form configuration for the trx:transferTarget type -->
          <form>
+              <field-visibility>
+               <show id="cm:name" />
+               <show id="cm:title" force="true" />
+               <show id="cm:description" force="true" />
+               <show id="trx:endpointhost" />
+               <show id="trx:endpointport" />
+               <show id="trx:endpointpath" />
+               <show id="trx:endpointprotocol" />
+               <show id="trx:username" for-mode="edit"/>
+               <show id="trx:password" for-mode="edit"/>
+               <show id="trx:enabled" force="true" />
+            </field-visibility>
+            <appearance>
+               <field id="cm:title">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl" />
+               </field>
+               <field id="trx:password">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl">
+                     <control-param name="password">true</control-param>
+                  </control>
+               </field>
+            </appearance>
+         </form>
+
+         <!-- Document Library pop-up Edit Metadata form -->
+         <form id="doclib-simple-metadata">
               <field-visibility>
                <show id="cm:name" />
                <show id="cm:title" force="true" />
@@ -469,7 +496,35 @@
    <!-- trx:fileTransferTarget content type (editing) -->
    <config evaluator="node-type" condition="trx:fileTransferTarget">
       <forms>
+         <!-- Default form configuration for the trx:fileTransferTarget type -->
          <form>
+              <field-visibility>
+               <show id="cm:name" />
+               <show id="cm:title" force="true" />
+               <show id="cm:description" force="true" />
+               <show id="trx:endpointhost" />
+               <show id="trx:endpointport" />
+               <show id="trx:endpointpath" />
+               <show id="trx:endpointprotocol" />
+               <show id="trx:username" for-mode="edit"/>
+               <show id="trx:password" for-mode="edit"/>
+               <show id="trx:fileTransferRootNode" />
+               <show id="trx:enabled" force="true" />
+            </field-visibility>
+            <appearance>
+               <field id="cm:title">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl" />
+               </field>
+               <field id="trx:password">
+                  <control template="/org/alfresco/components/form/controls/textfield.ftl">
+                     <control-param name="password">true</control-param>
+                  </control>
+               </field>
+            </appearance>
+         </form>
+
+         <!-- Document Library pop-up Edit Metadata form -->
+         <form id="doclib-simple-metadata">
               <field-visibility>
                <show id="cm:name" />
                <show id="cm:title" force="true" />
