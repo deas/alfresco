@@ -308,7 +308,14 @@
             var isoValue = "";
             
             // Check if time should be submitted as well 
-            isoValue = Alfresco.util.toISO8601(selDate, {"milliseconds":true});
+            if (this.options.submitTime)
+            {
+            	isoValue = Alfresco.util.toISO8601(selDate, {"milliseconds":true});
+            }
+            else
+            {
+            	isoValue = Alfresco.util.toISO8601(selDate, {"selector":"date"});
+            }
             
             Dom.get(this.currentValueHtmlId).value = isoValue;
             
