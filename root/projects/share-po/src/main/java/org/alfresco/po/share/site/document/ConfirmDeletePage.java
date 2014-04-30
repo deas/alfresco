@@ -103,6 +103,13 @@ public class ConfirmDeletePage extends SharePage
                 {
                     button.click();
                     drone.waitUntilElementDisappears(buttonSelector, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                    if (Action.Delete.equals(action))
+                    {
+                        By deleteMessageSelector = By.cssSelector("div.bd>span.message");
+                        String deleteMessage = "was deleted";
+                        drone.waitUntilVisible(deleteMessageSelector, deleteMessage, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                        drone.waitUntilNotVisibleWithParitalText(deleteMessageSelector, deleteMessage, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                    }
                     return drone.getCurrentPage();
                 }
 
