@@ -17,7 +17,7 @@
   <groupId>org.alfresco</groupId>
   <artifactId>alfresco-parent</artifactId>
   <packaging>pom</packaging>
-  <version>4.3.0-SNAPSHOT</version>
+  <version>4.3.0-BF-SNAPSHOT</version>
   <name>Alfresco Project</name>
 
   <url>http://www.alfresco.org/</url>
@@ -133,11 +133,11 @@
     <sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
     <sonar.exclusions></sonar.exclusions>
     <sonar.skippedModules></sonar.skippedModules>
-    <sonar.branch>HEAD</sonar.branch>
+    <sonar.branch>HEAD-BUG-FIX</sonar.branch>
 
     <!-- Community build specific properties -->
-    <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD</maven.scm.connection>
-    <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD</maven.scm.developerConnection>
+    <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD-BUG-FIX</maven.scm.connection>
+    <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD-BUG-FIX</maven.scm.developerConnection>
     <maven.scm.url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</maven.scm.url>
     <maven.repository.url>https://artifacts.alfresco.com/nexus/content/groups/public</maven.repository.url>
     <maven.distributionManagement.snapshot.url>https://artifacts.alfresco.com/nexus/content/repositories/snapshots</maven.distributionManagement.snapshot.url>
@@ -155,7 +155,7 @@
     <dependency.opencmis.version>0.10.0</dependency.opencmis.version>
     <dependency.antlr.version>3.4</dependency.antlr.version>
     <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
-    <dependency.surf.version>1.2.1-M8</dependency.surf.version>
+    <dependency.surf.version>1.2.1-M10</dependency.surf.version>
     <dependency.activiti.version>5.13-alf-20140107</dependency.activiti.version>
     <dependency.poi.version>3.10-beta2-20130720</dependency.poi.version>
     <dependency.dojo.version>1.8.3</dependency.dojo.version>
@@ -724,8 +724,8 @@
         </modules>
         <properties>
             <!-- Enterprise specific properties -->
-            <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-enterprise-mirror/alfresco/HEAD</maven.scm.connection>
-            <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD</maven.scm.developerConnection>
+            <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-enterprise-mirror/alfresco/HEAD-BUG-FIX</maven.scm.connection>
+            <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD-BUG-FIX</maven.scm.developerConnection>
             <maven.scm.url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</maven.scm.url>
             <maven.repository.url>https://artifacts.alfresco.com/nexus/content/groups/private</maven.repository.url>
             <maven.distributionManagement.snapshot.url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</maven.distributionManagement.snapshot.url>
