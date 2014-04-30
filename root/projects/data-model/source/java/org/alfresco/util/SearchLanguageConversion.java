@@ -18,7 +18,9 @@
  */
 package org.alfresco.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.util.StringUtils;
 
@@ -356,6 +358,31 @@ public class SearchLanguageConversion
     {
         String trimmed = StringUtils.trimWhitespace(query);
         if (trimmed == null || trimmed.length() < 1) return new String[]{query};
-        return trimmed.split(" ");
+        List<String> split = new ArrayList<String>();
+        
+        char[] toSplit = trimmed.toCharArray();
+        StringBuffer buff = new StringBuffer();
+        
+        for (char c : toSplit) {
+            if (Character.isWhitespace(c))
+            {
+                if (buff.length() > 0)
+                {
+                    split.add(buff.toString());
+                    buff = new StringBuffer();
+                }
+            }
+            else 
+            {
+                buff.append(c);
+            }
+        }
+        
+        if (buff.length() > 0)
+        {
+            split.add(buff.toString());
+        }
+
+        return split.toArray(new String[split.size()]);
     }
 }

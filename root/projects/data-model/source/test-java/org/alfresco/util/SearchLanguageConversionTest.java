@@ -141,5 +141,14 @@ public class SearchLanguageConversionTest extends TestCase
         assertTrue(res.length == 2);
         assertEquals("bob", res[0]);
         assertEquals("hope", res[1]);
+        res = SearchLanguageConversion.tokenizeString("   bob    hope ");
+        assertTrue(res.length == 2);
+        assertEquals("bob", res[0]);
+        assertEquals("hope", res[1]);
+        res = SearchLanguageConversion.tokenizeString("    bob  no    hope  ");
+        assertTrue(res.length == 3);
+        assertEquals("bob", res[0]);
+        assertEquals("no", res[1]);
+        assertEquals("hope", res[2]);
     }
 }
