@@ -1875,3 +1875,8 @@ body.brand-bg-1 .sticky-wrapper
 {
    width: 99.5% !important;
 }
+
+table.mceLayout
+{
+   width: 100% !important;
+}
