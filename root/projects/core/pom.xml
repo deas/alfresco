@@ -70,21 +70,6 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
-      <exclusions>
-        <exclusion>
-            <groupId>javax.jms</groupId>
-            <artifactId>jms</artifactId>
-        </exclusion>
-        <exclusion>
-            <groupId>com.sun.jdmk</groupId>
-            <artifactId>jmxtools</artifactId>
-        </exclusion>
-        <exclusion>
-            <groupId>com.sun.jmx</groupId>
-            <artifactId>jmxri</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.json</groupId>
@@ -106,12 +91,6 @@
       <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
       <version>1.8.3-alfresco-patched</version>
-      <exclusions>
-        <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
         <groupId>org.springframework.extensions.surf</groupId>
@@ -158,7 +137,6 @@
     <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
-        <version>2.3</version>
     </dependency>
 
     <!-- provided dependencies -->
@@ -175,12 +153,6 @@
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.5.11</version>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-            <artifactId>log4j</artifactId>
-            <groupId>log4j</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

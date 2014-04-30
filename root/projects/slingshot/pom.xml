@@ -181,14 +181,11 @@
         <dependency>
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>
-            <version>1.1.6</version>
             <scope>runtime</scope>
         </dependency>
-        <!-- Use patched FreeMarker to fix ALF-10188 -->
         <dependency>
-            <groupId>org.alfresco</groupId>
+            <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.20-alfresco-patched</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
