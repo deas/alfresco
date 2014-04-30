@@ -468,7 +468,7 @@
                   desc += '<div class="detail"><span>' + me.msg("label.company") + ":</span> " + $html(organization) + '</div>';
                }
             }
-            if (userStatus !== null && me.options.viewMode !== Alfresco.PeopleFinder.VIEW_MODE_COMPACT)
+            if (userStatus !== null && userStatus.length > 0 && me.options.viewMode !== Alfresco.PeopleFinder.VIEW_MODE_COMPACT)
             {
                desc += '<div class="user-status">' + $html(userStatus) + ' <span>(' + Alfresco.util.relativeTime(Alfresco.util.fromISO8601(userStatusTime.iso8601)) + ')</span></div>';
             }

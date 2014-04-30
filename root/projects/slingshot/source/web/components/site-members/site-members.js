@@ -432,7 +432,7 @@
          {
             desc += '<div><span class="attr-name">' + this.msg('label.company') + ':</span>&nbsp;<span class="attr-value">' + $html(organization) + '</span></div>';
          }
-         if (userStatus && userStatusTime)
+         if (typeof userStatus != "undefined" && userStatus.length > 0)
          {
             desc += '<div class="user-status">' + $html(userStatus) + ' <span>(' + Alfresco.util.relativeTime(Alfresco.util.fromISO8601(userStatusTime.iso8601)) + ')</span></div>';
          }

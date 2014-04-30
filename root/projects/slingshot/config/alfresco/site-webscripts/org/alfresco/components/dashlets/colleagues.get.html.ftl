@@ -120,7 +120,7 @@
                         <div>${msg("role." + m.role)}</div>
                      </@markup>
 
-                     <#if m.authority.userStatus??>
+                     <#if m.authority.userStatus?? && (m.authority.userStatus?length > 0)>
 
                         <#-- LIST - ITEM - STATUS -->
                         <@markup id="list-item-status">
