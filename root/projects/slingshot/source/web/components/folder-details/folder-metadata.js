@@ -41,6 +41,10 @@
    Alfresco.FolderMetadata = function FolderMetadata_constructor(htmlId)
    {
       Alfresco.FolderMetadata.superclass.constructor.call(this, "Alfresco.FolderMetadata", htmlId);
+
+      // Decoupled event listeners
+      YAHOO.Bubbling.on("metadataRefresh", this.doRefresh, this);
+
       return this;
    };
 
@@ -123,6 +127,17 @@
       {
          var formEl = Dom.get(this.id + "-formContainer");
          formEl.innerHTML = response.serverResponse.responseText;
+      },
+
+      /**
+       * Refresh component in response to metadataRefresh event
+       *
+       * @method doRefresh
+       */
+      doRefresh: function FolderMetadata_doRefresh()
+      {
+         YAHOO.Bubbling.unsubscribe("metadataRefresh", this.doRefresh, this);
+         this.refresh('components/folder-details/folder-metadata?nodeRef={nodeRef}' + (this.options.site ? '&site={site}' :  '') + (this.options.formId ? '&formId={formId}' :  ''));
       }
    });
 
