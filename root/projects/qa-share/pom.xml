@@ -18,6 +18,8 @@
         <office.component>libreofficecomponent</office.component>
         <enable.hybrid>false</enable.hybrid>
         <uniqueTestRunName>TestReports</uniqueTestRunName>
+        <!-- Default suite allows a single test to be run via -Dtest=... in this case the suite will be ignored then anyway -->
+        <testng.xml>src/test/resources/tests_debug.xml</testng.xml>
     </properties>
 
 	<repositories>
