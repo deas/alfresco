@@ -99,6 +99,16 @@ public class SlingshotRemoteClient extends RemoteClient
                                 int read = input.read(buffer);
                                 while (read != -1)
                                 {
+                                    // halt on binary file - we assume this is HTML - it might not be - effectively a DNS attack
+                                    for (int i=0; i<read; i++)
+                                    {
+                                        if (buffer[i] == 0x00)
+                                        {
+                                            res.setContentLength(0);
+                                            out.close();
+                                            return;
+                                        }
+                                    }
                                     bos.write(buffer, 0, read);
                                     read = input.read(buffer);
                                 }
