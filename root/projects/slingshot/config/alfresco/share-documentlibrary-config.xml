@@ -1080,6 +1080,7 @@
                <permission allow="true">ChangePermissions</permission>
             </permissions>
             <evaluator>evaluator.doclib.action.siteBased</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.isWorkingCopy</evaluator>
          </action>
 
          <!-- Manage permissions (repository roles) -->
@@ -1089,6 +1090,7 @@
                <permission allow="true">ChangePermissions</permission>
             </permissions>
             <evaluator negate="true">evaluator.doclib.action.siteBased</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.isWorkingCopy</evaluator>
          </action>
 
          <!-- Manage aspects -->
