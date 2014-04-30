@@ -145,7 +145,7 @@
     <maven.license.name>GNU Lesser General Public License v3.0 or later</maven.license.name>
     <maven.license.url>http://www.gnu.org/licenses/lgpl-3.0-standalone.html</maven.license.url>
 
-    <alfresco.googledocs.version>2.0.7-16com</alfresco.googledocs.version>
+    <alfresco.googledocs.version>2.0.7-17</alfresco.googledocs.version>
 
     <!-- Centralized dependency versions -->
     <dependency.lucene.version>2.4.1</dependency.lucene.version>

@@ -84,6 +84,13 @@
                                 <include>org/springframework/extensions/surf/exception/PlatformRuntimeException.class</include>
                             </includes>
                         </filter>
+                        <filter>
+                            <!-- Duplicated file in truezip-driver-file, need to filter this one -->
+                            <artifact>de.schlichtherle.truezip:truezip-driver-zip</artifact>
+                            <excludes>
+                                <exclude>META-INF/services/de.schlichtherle.truezip.fs.spi.FsDriverService</exclude>
+                            </excludes>
+                        </filter>
                     </filters>
                 </configuration>
             </plugin>
