@@ -148,7 +148,10 @@ var extMouseWheel = function()
 		
 		if (delta)
 		{
-			
+			if(event.currentTarget == null)
+			{
+				event.currentTarget = event.srcElement.parentNode;
+			}
 			var thisFlashMovieId = null;
 			for (var j in f)
 				if (f[j] != null && f[j] == event.currentTarget) thisFlashMovieId = j;
