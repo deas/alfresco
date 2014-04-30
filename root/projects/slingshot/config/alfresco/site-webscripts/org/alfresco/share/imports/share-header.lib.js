@@ -1545,7 +1545,7 @@ function getTitleBarModel() {
             });
 
             // If on the dashboard then add the customize dashboard option...
-            if (page.titleId == "page.siteDashboard.title")
+            if (page.titleId == "page.siteDashboard.title" || page.titleId == "page.meeting_workspace.title")
             {
                // Add Customize Dashboard
                siteConfig.config.widgets.push({
