@@ -212,6 +212,21 @@
             elCell, nodeRef.split("/")[3], "button.recover",
             function(event, obj) 
             {
+               if (!this.isRecoverEnabled())
+               {
+                  return;
+               }
+               
+               this._disableRecover();
+               
+               this.restoringPopup = Alfresco.util.PopupManager.displayMessage(
+               {
+                  displayTime: 0,
+                  effect: null,
+                  spanClass: "wait",
+                  text: me.msg("message.recover.inprogress")
+               });
+
                // make ajax call to Recover the item
                Alfresco.util.Ajax.request(
                {
@@ -223,7 +238,12 @@
                      obj: obj,
                      scope: this
                   },
-                  failureMessage: this.msg("message.recover.failure", nodeName)
+                  failureCallback: 
+                  {
+                     fn: this._onRecoverFailure,
+                     obj: obj,
+                     scope: this
+                  }
                });
             },
             {
@@ -281,6 +301,30 @@
       },
       
       /**
+       * Enables recover actions
+       */
+      _enableRecover: function UT_enableRecover()
+      {
+         this._isRecoverEnabled = true;
+      },
+      
+      /**
+       * Disables recover actions
+       */
+      _disableRecover: function UT_disableRecover()
+      {
+         this._isRecoverEnabled = false;
+      },
+      
+      /**
+       * Indicates is recover action is enabled
+       */
+      isRecoverEnabled: function UT_isRecoverEnabled()
+      {
+         return this._isRecoverEnabled !== false;
+      },
+      
+      /**
        * Callback handler used when a deleted item was recovered
        * 
        * @method _onRecoverSuccess
@@ -289,9 +333,32 @@
        */
       _onRecoverSuccess: function UT__onRecoverSuccess(response, obj)
       {
+         this.restoringPopup.destroy();
+         this._enableRecover();
+         
          Alfresco.util.PopupManager.displayMessage(
          {
             text: this.msg("message.recover.success", obj.name)
+         });
+         
+         this.refreshDataTable();
+      },
+      
+      /**
+       * Callback handler used when a deleted item wasn't recovered
+       * 
+       * @method _onRecoverSuccess
+       * @param response {object}
+       * @param obj {object}
+       */
+      _onRecoverFailure: function UT__onRecoverFailure(response, obj)
+      {
+         this.restoringPopup.destroy();
+         this._enableRecover();
+         
+         Alfresco.util.PopupManager.displayMessage(
+         {
+            text: this.msg("message.recover.failure", obj.name)
          });
          
          this.refreshDataTable();
@@ -413,8 +480,25 @@
             case "recover-item":
                var failed = [],
                    total = 0;
+               
+               if (!me.isRecoverEnabled())
+               {
+                  return;
+               }
+               
+               me._disableRecover();
+               
+               me.restoringPopup = Alfresco.util.PopupManager.displayMessage(
+               {
+                  displayTime: 0,
+                  effect: null,
+                  spanClass: "wait",
+                  text: me.msg("message.recover.inprogress")
+               });
+
                for (var i=0; i<items.length; i++)
                {
+                  var index = i;
                   // make ajax call to Recover the item
                   Alfresco.util.Ajax.request(
                   {
@@ -422,7 +506,7 @@
                      method: "PUT",
                      failureCallback: {
                         fn: function() {
-                           failed.push(items[i].getData("name"));
+                           failed.push(items[index].getData("name"));
                            total++;
                         },
                         obj: items[i],
@@ -440,6 +524,9 @@
                var completeFn = function() {
                   if (total === items.length)
                   {
+                     me.restoringPopup.destroy();
+                     me._enableRecover();
+                     
                      Alfresco.util.PopupManager.displayPrompt(
                      {
                         title: me.msg("message.recover.report"),
