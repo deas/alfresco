@@ -192,7 +192,14 @@ define(["dojo/_base/declare",
        * @default true
        */
       advancedSearch: true,
-
+      
+      /**
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      allsites: false,
+      
       /**
        * @instance
        * @type {boolean}
@@ -329,7 +336,7 @@ define(["dojo/_base/declare",
                {
                   this.alfLog("log", "Search request for: ", terms);
 
-                  var url = "search?t=" + encodeURIComponent(terms) + "&a=true&r=false";
+                  var url = "search?t=" + encodeURIComponent(terms) + (this.allsites ? "&a=true&r=false" : "&a=false&r=true");
                   if (this.site != null)
                   {
                      url = "site/" + this.site + "/" + url;
