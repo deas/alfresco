@@ -2051,10 +2051,16 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
                     return mpq;
 
                 }
+                // Word delimiter factory and other odd things generate complex token patterns
+                // Smart skip token  sequences with small tokens that generate toomany wildcards
+                // Fall back to the larger pattern
+                // e.g Site1* will not do (S ite 1*) or (Site 1*)  if 1* matches too much (S ite1*)  and (Site1*) will still be OK 
+                // If we skip all (for just 1* in the input) this is still an issue.
                 else
                 {
+                    boolean skippedTokens = false;
                     BooleanQuery q = newBooleanQuery(true);
-                    for(LinkedList<org.apache.lucene.analysis.Token> tokenSequence : fixedTokenSequences)
+                    TOKEN_SEQUENCE: for(LinkedList<org.apache.lucene.analysis.Token> tokenSequence : fixedTokenSequences)
                     {
                         // phrase query:
                         MultiPhraseQuery mpq = newMultiPhraseQuery();
@@ -2077,7 +2083,12 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
                                 {
                                     mpq.add(new Term[] { term }, position);
                                 }
-                                checkTermCount(field, queryText, mpq);
+                                if(exceedsTermCount(mpq))
+                                {
+                                    // We could duplicate the token sequence without the failing wildcard expansion and try again ??
+                                    skippedTokens = true;
+                                    continue TOKEN_SEQUENCE;
+                                }
                                 if(nextToken.getPositionIncrement() > 0)
                                 {
                                     position += nextToken.getPositionIncrement();
@@ -2098,10 +2109,18 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
                                 {
                                     mpq.add(term);
                                 }
-                                checkTermCount(field, queryText, mpq);
+                                if(exceedsTermCount(mpq))
+                                {
+                                    skippedTokens = true;
+                                    continue TOKEN_SEQUENCE;
+                                }
                             }
                         }
                         q.add(mpq, BooleanClause.Occur.SHOULD);
+                    }
+                    if(skippedTokens && (q.clauses().size() == 0))
+                    {
+                        throw new LuceneQueryParserException("Query skipped all token sequences as wildcards generated too many clauses: "+field+" "+queryText );
                     }
                     return q;
                 }
@@ -2162,6 +2181,19 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
      */
     private void checkTermCount(String field, String queryText, MultiPhraseQuery mpq)
     {
+        if(exceedsTermCount(mpq))
+        {
+            throw new LuceneQueryParserException("Wildcard has generated too many clauses: "+field+" "+queryText );
+        }
+    }
+    
+    /**
+     * 
+     * @param mpq
+     * @return
+     */
+    private boolean exceedsTermCount(MultiPhraseQuery mpq)
+    {
         int termCount = 0;
         for (Iterator<?> iter = mpq.getTermArrays().iterator(); iter.hasNext(); /**/) 
         {
@@ -2169,11 +2201,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
             termCount += arr.length;
             if(termCount > BooleanQuery.getMaxClauseCount())
             {
-                throw new LuceneQueryParserException("Wildcard has generated too many clauses: "+field+" "+queryText );
+                return true;
             }
         }
-        
-        
+        return false;
     }
 
     /**
