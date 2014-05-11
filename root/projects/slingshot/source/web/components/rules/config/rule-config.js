@@ -1647,6 +1647,7 @@
             datePickerParentEl.appendChild(datePickerEl);
             var options = {
                showTime: showTime,
+               submitTime: showTime,
                mandatory: paramDef.isMandatory,
                currentValue: (value && value != "") ? value : Alfresco.util.toISO8601(new Date()) 
             };
