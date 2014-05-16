@@ -168,6 +168,8 @@ import org.springframework.util.FileCopyUtils;
 
 public class CoreTracker implements CloseHook
 {
+    private static final String PROP_PREFIX_PARENT_TYPE = "alfresco.metadata.ignore.datatype.";
+
     protected final static Logger log = LoggerFactory.getLogger(CoreTracker.class);
 
     private AlfrescoCoreAdminHandler adminHandler;
@@ -305,6 +307,14 @@ public class CoreTracker implements CloseHook
     private boolean transformContent = true;
 
     private int maxLiveSearchers;
+
+    // Metadata pulling control
+
+    private boolean skipDescendantAuxDocsForSpecificTypes;
+
+    private Set<QName> typesForSkippingDescendantAuxDocs = new HashSet<QName>();
+
+    private BooleanQuery skippingDocsQuery;
 
     //
 
@@ -457,6 +467,28 @@ public class CoreTracker implements CloseHook
 
         core.addCloseHook(this);
         log.info("Solr built for Alfresco version: " + alfrescoVersion);
+        skipDescendantAuxDocsForSpecificTypes = Boolean.parseBoolean(p.getProperty("alfresco.metadata.skipDescendantAuxDocsForSpecificTypes", "false"));
+
+        if (skipDescendantAuxDocsForSpecificTypes)
+        {
+            int i = 0;
+            skippingDocsQuery = new BooleanQuery();
+            for (String key = new StringBuilder(PROP_PREFIX_PARENT_TYPE).append(i).toString(); p.containsKey(key); key = new StringBuilder(PROP_PREFIX_PARENT_TYPE).append(++i)
+                    .toString())
+            {
+                String qName = p.getProperty(key);
+                if ((null != qName) && !qName.isEmpty())
+                {
+                    QName typeQName = QName.resolveToQName(dataModel.getNamespaceDAO(), qName);
+                    TypeDefinition type = dataModel.getDictionaryService().getType(typeQName);
+                    if (null != type)
+                    {
+                        typesForSkippingDescendantAuxDocs.add(typeQName);
+                        skippingDocsQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_TYPE, typeQName.toString())), Occur.SHOULD);
+                    }
+                }
+            }
+        }
     }
 
     protected AlfrescoHttpClient getRepoClient(SolrResourceLoader loader)
@@ -2340,7 +2372,7 @@ public class CoreTracker implements CloseHook
                         continue;
                     }
                     LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-                    updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited);
+                    updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited, solrIndexSearcher.getDocSet(skippingDocsQuery));
                 }
 
 
@@ -2419,7 +2451,7 @@ public class CoreTracker implements CloseHook
                             {
                                 log.debug("... cascade updating aux doc");
                                 LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-                                updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited);
+                                updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited, solrIndexSearcher.getDocSet(skippingDocsQuery));
                             }
                             else
                             {
@@ -2681,7 +2713,7 @@ public class CoreTracker implements CloseHook
 
     }
 
-    private void updateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite, SolrIndexSearcher solrIndexSearcher, LinkedHashSet<Long> stack) throws AuthenticationException, IOException, JSONException
+    private void updateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite, SolrIndexSearcher solrIndexSearcher, LinkedHashSet<Long> stack, DocSet skippingDocs) throws AuthenticationException, IOException, JSONException
     {
         if(stack.contains(parentNodeMetaData.getId()))
         {
@@ -2694,7 +2726,7 @@ public class CoreTracker implements CloseHook
             try
             {
                 stack.add(parentNodeMetaData.getId());
-                doUpdateDescendantAuxDocs(parentNodeMetaData, overwrite, solrIndexSearcher, stack);
+                doUpdateDescendantAuxDocs(parentNodeMetaData, overwrite, solrIndexSearcher, stack, skippingDocs);
             }
             finally
             {
@@ -2705,8 +2737,13 @@ public class CoreTracker implements CloseHook
         
     }
         
-    private void doUpdateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite, SolrIndexSearcher solrIndexSearcher, LinkedHashSet<Long> stack) throws AuthenticationException, IOException, JSONException
+    private void doUpdateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite, SolrIndexSearcher solrIndexSearcher, LinkedHashSet<Long> stack, DocSet skippingDocs) throws AuthenticationException, IOException, JSONException
     {
+        if (skipDescendantAuxDocsForSpecificTypes && typesForSkippingDescendantAuxDocs.contains(parentNodeMetaData.getType()))
+        {
+            return;
+        }
+
         HashSet<Long>childIds = new HashSet<Long>();
 
         if (parentNodeMetaData.getChildIds() != null)
@@ -2725,67 +2762,111 @@ public class CoreTracker implements CloseHook
             int current = -1;
             while ((current = openBitSet.nextSetBit(current + 1)) != -1)
             {
-                CacheEntry entry = indexedByDocId.get(current);
-                childIds.add(entry.getDbid());
+                if (!skippingDocs.exists(current))
+                {
+                    CacheEntry entry = indexedByDocId.get(current);
+                    childIds.add(entry.getDbid());
+                }
             }
         }
         else
         {
             for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
             {
-                CacheEntry entry = indexedByDocId.get(it.nextDoc());
-                childIds.add(entry.getDbid());
+                int current = it.nextDoc();
+                if (!skippingDocs.exists(current))
+                {
+                    CacheEntry entry = indexedByDocId.get(current);
+                    childIds.add(entry.getDbid());
+                }
             }
         }
 
         for (Long childId : childIds)
         { 
-            NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
-            nmdp.setFromNodeId(childId);
-            nmdp.setToNodeId(childId);
-            nmdp.setIncludeAclId(true);
-            nmdp.setIncludeAspects(true);
-            nmdp.setIncludeChildAssociations(false);
-            nmdp.setIncludeChildIds(true);
-            nmdp.setIncludeNodeRef(true);
-            nmdp.setIncludeOwner(true);
-            nmdp.setIncludeParentAssociations(true);
-            nmdp.setIncludePaths(true);
-            nmdp.setIncludeProperties(false);
-            nmdp.setIncludeType(true);
-            nmdp.setIncludeTxnId(true);
-            List<NodeMetaData> nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
-
-            for (NodeMetaData nodeMetaData : nodeMetaDatas)
+            if (!shouldElementBeIgnored(childId, solrIndexSearcher, skippingDocs))
             {
-                if (mayHaveChildren(nodeMetaData))
-                {
-                    updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, stack);
-                }
+                NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
+                nmdp.setFromNodeId(childId);
+                nmdp.setToNodeId(childId);
+                nmdp.setIncludeAclId(true);
+                nmdp.setIncludeAspects(true);
+                nmdp.setIncludeChildAssociations(false);
+                nmdp.setIncludeChildIds(true);
+                nmdp.setIncludeNodeRef(true);
+                nmdp.setIncludeOwner(true);
+                nmdp.setIncludeParentAssociations(true);
+                nmdp.setIncludePaths(true);
+                nmdp.setIncludeProperties(false);
+                nmdp.setIncludeType(true);
+                nmdp.setIncludeTxnId(true);
 
-                // Avoid adding aux docs for stuff yet to be indexed or unindexed (via the index control aspect)
-                log.info(".. checking aux doc exists in index before we update it");
+                List<NodeMetaData> nodeMetaDatas = client.getNodesMetaData(nmdp, 1);
+
+                for (NodeMetaData nodeMetaData : nodeMetaDatas)
+                {
+                    if (mayHaveChildren(nodeMetaData))
+                    {
+                        updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, stack, skippingDocs);
+                    }
+
+                    // Avoid adding aux docs for stuff yet to be indexed or unindexed (via the index control aspect)
+                    log.info(".. checking aux doc exists in index before we update it");
                 Query query = new TermQuery(new Term(QueryConstants.FIELD_ID, "AUX-" + childId));
-                DocSet auxSet = solrIndexSearcher.getDocSet(query);
-                if (auxSet.size() > 0)
-                {
-                    log.debug("... cascade update aux doc "+childId);
+                    DocSet auxSet = solrIndexSearcher.getDocSet(query);
+                    if (auxSet.size() > 0)
+                    {
+                        log.debug("... cascade update aux doc " + childId);
 
-                    SolrInputDocument aux = createAuxDoc(nodeMetaData);
-                    AddUpdateCommand auxDocCmd = new AddUpdateCommand();
-                    auxDocCmd.overwriteCommitted = overwrite;
-                    auxDocCmd.overwritePending = overwrite;
-                    auxDocCmd.solrDoc = aux;
-                    auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
+                        SolrInputDocument aux = createAuxDoc(nodeMetaData);
+                        AddUpdateCommand auxDocCmd = new AddUpdateCommand();
+                        auxDocCmd.overwriteCommitted = overwrite;
+                        auxDocCmd.overwritePending = overwrite;
+                        auxDocCmd.solrDoc = aux;
+                        auxDocCmd.doc = CoreTracker.toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(), dataModel);
 
-                    core.getUpdateHandler().addDoc(auxDocCmd);
+                        core.getUpdateHandler().addDoc(auxDocCmd);
+                    }
+                    else
+                    {
+                        log.debug("... no aux doc found to update " + childId);
+                    }
                 }
-                else
-                {
-                    log.debug("... no aux doc found to update "+childId);
-                }   
             }
         }
+    }
+
+    private boolean shouldElementBeIgnored(long dbId, SolrIndexSearcher solrIndexSearcher, DocSet skippingDocs) throws IOException
+    {
+        boolean result = false;
+
+        if (skipDescendantAuxDocsForSpecificTypes && !typesForSkippingDescendantAuxDocs.isEmpty())
+        {
+            BooleanQuery query = new BooleanQuery();
+            query.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(dbId))), Occur.MUST);
+
+            DocSet docSet = solrIndexSearcher.getDocSet(query);
+
+            int index = -1;
+            if (docSet instanceof BitDocSet)
+            {
+                BitDocSet source = (BitDocSet) docSet;
+                OpenBitSet openBitSet = source.getBits();
+                index = openBitSet.nextSetBit(index + 1);
+            }
+            else
+            {
+                DocIterator it = docSet.iterator();
+                if (it.hasNext())
+                {
+                    index = it.nextDoc();
+                }
+            }
+
+            result = (-1 != index) && skippingDocs.exists(index);
+        }
+
+        return result;
     }
 
 
