@@ -259,19 +259,15 @@
          form.init();
 
          // Register the ESC key to close the dialog
-         var escapeListener = new KeyListener(document,
-         {
-            keys: KeyListener.KEY.ESCAPE
-         },
-         {
-            fn: function(id, keyEvent)
+         YAHOO.util.Event.addListener(document, "keydown", 
+            function(e)
             {
-               this.onCancelClick();
+               if(e.keyCode == 27)
+               {
+                  this.onCancelClick();
+               }
             },
-            scope: this,
-            correctScope: true
-         });
-         escapeListener.enable();                  
+         this, true);
 
          // Load in the Authority Finder component from the server
          Alfresco.util.Ajax.request(
@@ -318,7 +314,36 @@
             singleSelectMode: true,
             minSearchTermLength: 3
          });
+         var hidePickerListener = function(e)
+         {
+         if(!e) var e = window.event;
 
+            if(e.keyCode == 27)
+            {
+               // Close dialog
+               this.hide();
+               //e.cancelBubble is supported by IE - this will kill the bubbling process.
+               e.cancelBubble = true;
+               e.returnValue = false;
+
+               //e.stopPropagation for other browsers
+               if ( e.stopPropagation ) e.stopPropagation();
+               if ( e.preventDefault ) e.preventDefault();
+            }
+         };
+         this.widgets.authorityPicker.hidePickerListener = hidePickerListener;
+         this.widgets.authorityPicker.beforeShowEvent.subscribe(
+            function()
+            {
+               YAHOO.util.Event.addListener(this.element, "keydown", this.hidePickerListener, this, true);
+            }
+         );
+         this.widgets.authorityPicker.beforeHideEvent.subscribe(
+            function()
+            {
+               YAHOO.util.Event.removeListener(this.element, "keydown", this.hidePickerListener);
+            }
+         );
          this.widgets.selectRecipientsButton.set("disabled", false);
       },
 
