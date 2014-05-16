@@ -807,6 +807,7 @@
             {
                text: this.msg("message.minimum-length", this.options.minSearchTermLength)
             });
+            this._enableItems();
             return;
          }
          
