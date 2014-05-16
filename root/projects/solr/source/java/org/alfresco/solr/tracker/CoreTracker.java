@@ -480,7 +480,7 @@ public class CoreTracker implements CloseHook
                 if ((null != qName) && !qName.isEmpty())
                 {
                     QName typeQName = QName.resolveToQName(dataModel.getNamespaceDAO(), qName);
-                    TypeDefinition type = dataModel.getDictionaryService().getType(typeQName);
+                    TypeDefinition type = dataModel.getDictionaryService(CMISStrictDictionaryService.DEFAULT).getType(typeQName);
                     if (null != type)
                     {
                         typesForSkippingDescendantAuxDocs.add(typeQName);
