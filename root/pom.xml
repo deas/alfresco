@@ -57,6 +57,12 @@
       <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
     </repository>
   </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>alfresco-public</id>
+      <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+    </pluginRepository>
+  </pluginRepositories>
 
   <distributionManagement>
       <!-- For now internal releases repositories -->
@@ -517,6 +523,9 @@
                 <groupId>org.alfresco.maven.plugin</groupId>
                 <artifactId>alfresco-maven-plugin</artifactId>
                 <version>1.1.1</version>
+                <configuration>
+                    <attachClasses>true</attachClasses>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>

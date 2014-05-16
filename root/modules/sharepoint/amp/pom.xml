@@ -6,6 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>alfresco-spp</artifactId>
     <name>Alfresco Sharepoint Protocol</name>
+    <packaging>amp</packaging>
     <parent>
         <artifactId>alfresco-parent</artifactId>
         <groupId>org.alfresco</groupId>
@@ -18,11 +19,7 @@
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-remote-api</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ibm.icu</groupId>
-            <artifactId>icu4j</artifactId>
-            <version>3.6.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
@@ -63,17 +60,31 @@
     </dependencies>	
 
     <build>
-        <!-- CLOUD-1790/ALF-18573 Excluding context file - only used in AMP -->
         <resources>
             <resource>
                 <directory>config</directory>
                 <excludes>
+                    <!-- CLOUD-1790/ALF-18573 Excluding context file from jar - only used in AMP -->
                     <exclude>alfresco/module/org.alfresco.module.vti/module-context.xml</exclude>
+                    <!-- Exclude module.properties file where it is committed, and brings it to the top -->
+                    <exclude>alfresco/module/org.alfresco.module.vti/module.properties</exclude>
                 </excludes>
+            </resource>
+            <resource>
+                <directory>config/alfresco/module/org.alfresco.module.vti</directory>
+                <includes>
+                    <include>module.properties</include>
+                </includes>
             </resource>
         </resources>
 
         <plugins>
+            <plugin>
+                <groupId>org.alfresco.maven.plugin</groupId>
+                <artifactId>alfresco-maven-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
