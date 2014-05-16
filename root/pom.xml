@@ -150,14 +150,14 @@
     <!-- Centralized dependency versions -->
     <dependency.lucene.version>2.4.1</dependency.lucene.version>
     <dependency.jibx.version>1.2.5</dependency.jibx.version>
-    <dependency.tika.version>1.5-20130720-alfresco-patched</dependency.tika.version>
-    <dependency.vorbisJava.version>0.3-20130206</dependency.vorbisJava.version>
+    <dependency.tika.version>1.6-20140428-alfresco-patched</dependency.tika.version>
+    <dependency.vorbisJava.version>0.4</dependency.vorbisJava.version>
     <dependency.opencmis.version>0.10.0</dependency.opencmis.version>
     <dependency.antlr.version>3.4</dependency.antlr.version>
     <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
     <dependency.surf.version>1.2.1-M10</dependency.surf.version>
     <dependency.activiti.version>5.13-alf-20140107</dependency.activiti.version>
-    <dependency.poi.version>3.10-beta2-20130720</dependency.poi.version>
+    <dependency.poi.version>3.10-FINAL</dependency.poi.version>
     <dependency.dojo.version>1.8.3</dependency.dojo.version>
   </properties>
   

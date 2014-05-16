@@ -33,11 +33,13 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-discovery-0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-el.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-validator-1.4.0.jar" sourcepath="src/commons-validator-1.4.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/tika-core-1.5-20130720-alfresco-patched.jar" sourcepath="src/tika-core-1.5-20130720-alfresco-patched.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/tika-parsers-1.5-20130720-alfresco-patched.jar" sourcepath="src/tika-parsers-1.5-20130720-alfresco-patched.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-core-0.3-20130206.jar" sourcepath="src/vorbis-java-core-0.3-20130206-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-tika-0.3-20130206.jar" sourcepath="src/vorbis-java-tika-0.3-20130206-source.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xz-1.2.jar" sourcepath="src/xz-1.2-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/tika-core-1.6-20140428-alfresco-patched.jar" sourcepath="src/tika-core-1.6-20140428-alfresco-patched.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/tika-parsers-1.6-20140428-alfresco-patched.jar" sourcepath="src/tika-parsers-1.6-20140428-alfresco-patched.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-core-0.4.jar" sourcepath="src/vorbis-java-core-0.4-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/vorbis-java-tika-0.4.jar" sourcepath="src/vorbis-java-tika-0.4-source.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xz-1.5.jar" sourcepath="src/xz-1.5-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/java-libpst-0.7.jar" sourcepath="src/java-libpst-0.7-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jhighlight-1.0.jar" sourcepath="src/jhighlight-1.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/isoparser-1.0-RC-1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/aspectjrt-1.6.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/myfaces-api-1.1.8.jar" sourcepath="src/myfaces-api-1.1.8-sources.jar"/>
@@ -91,9 +93,9 @@
 	<classpathentry kind="lib" path="lib/wsdl4j-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/xml-resolver-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/geronimo-jaxws_2.1_spec-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-3.10-beta2-20130720.jar" sourcepath="src/poi-3.10-beta2-20130720-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.10-beta2-20130720.jar" sourcepath="src/poi-3.10-beta2-20130720-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.10-beta2-20130720.jar" sourcepath="src/poi-3.10-beta2-20130720-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-3.10-FINAL.jar" sourcepath="src/poi-3.10-FINAL-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-scratchpad-3.10-FINAL.jar" sourcepath="src/poi-3.10-FINAL-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.10-FINAL.jar" sourcepath="src/poi-3.10-FINAL-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/ooxml-schemas-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/optional/log4j-1.2.17.jar"/>
@@ -144,9 +146,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/wss4j-1.5.12.jar" sourcepath="src/wss4j-src-1.5.12.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-abdera-0.1-incubating-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-tck-atompub-0.1-incubating-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/pdfbox-1.8.2-alfresco-patched.jar" sourcepath="src/pdfbox-1.8.2-patched-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.8.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jempbox-1.8.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/pdfbox-1.8.4-alfresco-patched.jar" sourcepath="src/pdfbox-1.8.4-patched-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.8.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jempbox-1.8.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/juniversalchardet-1.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/urlrewritefilter-4.0.4.jar" sourcepath="src/urlrewritefilter-4.0.4-sources.jar"/>
 	<classpathentry kind="lib" path="lib/activiti/livetribe-jsr223-2.0.6.jar"/>
