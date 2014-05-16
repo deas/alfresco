@@ -308,6 +308,7 @@
             {
                dataWebScript: Alfresco.constants.URL_SERVICECONTEXT + "components/people-finder/authority-query",
                viewMode: Alfresco.AuthorityFinder.VIEW_MODE_COMPACT,
+               siteId: this.options.site,
                singleSelectMode: true,
                minSearchTermLength: 3,
                authorityType: (this.options.showGroups) ? Alfresco.AuthorityFinder.AUTHORITY_TYPE_ALL : Alfresco.AuthorityFinder.AUTHORITY_TYPE_USERS

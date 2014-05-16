@@ -98,6 +98,18 @@ var getMappings = function()
          fn: mapGroup
       });
 
+      if(args.defGroupsFor != null)
+      {
+         url = "/api/groups?shortNameFilter=" + encodeURIComponent("*" + args.defGroupsFor + "_*");
+         mappings.push(
+         {
+            type: MAPPING_TYPE.API,
+            url: url,
+            rootObject: "data",
+            fn: mapGroup
+         });
+      }
+	  
       mappings.push(
       {
          type: MAPPING_TYPE.STATIC,

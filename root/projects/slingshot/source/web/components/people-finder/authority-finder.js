@@ -754,7 +754,7 @@
        */
       _buildSearchParams: function AuthorityFinder__buildSearchParams(searchTerm)
       {
-         return "filter=" + (this.options.wildcardPrefix ? "*" : "") + encodeURIComponent(searchTerm);
+         return "filter=" + (this.options.wildcardPrefix ? "*" : "") + encodeURIComponent(searchTerm) + (this.options.siteId ? "&defGroupsFor=" + encodeURIComponent(this.options.siteId) : "");
       }
    });
 })();
