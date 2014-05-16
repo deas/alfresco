@@ -126,6 +126,25 @@ function main()
       // else skip this component since it lacks regionId or shortName
    }
    
+   // clean undefined elements from columns
+   var cleanArray = function (actual)
+   {
+      var newArray = new Array();
+      for(var i = 0; i < actual.length; i++)
+      {
+         if (actual[i])
+         {
+            newArray.push(actual[i]);
+         }
+      }
+      return newArray;
+   }
+
+   for (var i = 0; i < columns.length; i++)
+   {
+      columns[i] = cleanArray(columns[i]);
+   }
+   
    // Get current template
    var currentTemplate = sitedata.findTemplate(dashboardId),
       currentNoOfColumns = getNoOfColumns(currentTemplate),
