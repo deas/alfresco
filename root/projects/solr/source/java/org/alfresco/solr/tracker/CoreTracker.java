@@ -2843,7 +2843,7 @@ public class CoreTracker implements CloseHook
         if (skipDescendantAuxDocsForSpecificTypes && !typesForSkippingDescendantAuxDocs.isEmpty())
         {
             BooleanQuery query = new BooleanQuery();
-            query.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_DBID, NumericEncoder.encode(dbId))), Occur.MUST);
+            query.add(new TermQuery(new Term(QueryConstants.FIELD_DBID, NumericEncoder.encode(dbId))), Occur.MUST);
 
             DocSet docSet = solrIndexSearcher.getDocSet(query);
 
