@@ -18,11 +18,14 @@
  */
 package org.alfresco.po.share.util;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
+
+import javax.imageio.ImageIO;
 
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.SharePage;
@@ -35,6 +38,7 @@ import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.NoSuchElementException;
+import org.testng.SkipException;
 
 /**
  * Utility class to manage site related operations
@@ -43,12 +47,12 @@ import org.openqa.selenium.NoSuchElementException;
  * <li>Deletes site by calling REST API.</li>
  * <li>Gets NodeRef value by site name.</li>
  * </ul>
- * 
+ *
  * @author Michael Suzuki
  * @author Shan Nagarajan
  * @since 1.0
  */
-public class SiteUtil 
+public class SiteUtil
 {
     private static final String SITE_FINDER_LOCATION_SUFFIX = "/page/site-finder";
     private final static Log logger = LogFactory.getLog(SiteUtil.class);
@@ -57,21 +61,25 @@ public class SiteUtil
     /**
      * Constructor.
      */
-    private SiteUtil(){}
-    
+    private SiteUtil()
+    {
+    }
+
     /**
      * Prepare a file in system temp directory to be used
      * in test for uploads.
+     *
      * @return {@link File} simple text file.
      */
     public static File prepareFile()
     {
-    	return prepareFile(null);
+        return prepareFile(null);
     }
+
     /**
      * Prepare a plain text file in system temp directory to be used
      * in test for uploads.
-     * 
+     *
      * @param name Name to give the file, without the file extension. If null a default name will be used.
      * @param data Content to write to the file
      */
@@ -79,13 +87,13 @@ public class SiteUtil
     {
         return prepareFile(name, data, ".txt");
     }
-    
+
     /**
      * Prepare a file in system temp directory to be used
      * in test for uploads.
-     * 
-     * @param name Name to give the file, without the file extension. If null a default name will be used.
-     * @param data Content to write to the file
+     *
+     * @param name      Name to give the file, without the file extension. If null a default name will be used.
+     * @param data      Content to write to the file
      * @param extension File extension to append to the end of the filename
      * @return {@link File} simple text file.
      */
@@ -96,11 +104,10 @@ public class SiteUtil
         OutputStreamWriter writer = null;
         try
         {
-            String fileName = (name != null && !name.isEmpty() ? name :"myfile");
+            String fileName = (name != null && !name.isEmpty() ? name : "myfile");
             file = File.createTempFile(fileName, extension);
-            
-            writer = new OutputStreamWriter(new FileOutputStream(file),
-                                                            Charset.forName("UTF-8").newEncoder());
+
+            writer = new OutputStreamWriter(new FileOutputStream(file));
             writer.write(data);
             writer.close();
         }
@@ -132,94 +139,98 @@ public class SiteUtil
     /**
      * Prepare a text file in system temp directory to be used
      * in test for uploads, containing default content.
-     * 
+     *
      * @param name Name to give the file, without the file extension. If null a default name will be used.
      * @return {@link File} simple text file.
      */
-    public static File prepareFile(final String name){
-        return prepareFile(name , "this is a sample test upload file");
+    public static File prepareFile(final String name)
+    {
+        return prepareFile(name, "this is a sample test upload file");
 
     }
 
-    
+
     /**
      * Create site using share
-     * 
+     *
      * @param webDrone
-     * @param siteName String site name
+     * @param siteName      String site name
      * @param SiteVisiblity
      * @return true if site created
      * @throws Exception if error
      */
-    public static boolean createSite(WebDrone drone , final String siteName, String desc, String siteVisibility)
+    public static boolean createSite(WebDrone drone, final String siteName, String desc, String siteVisibility)
     {
-       if (siteName == null || siteName.isEmpty()) throw new UnsupportedOperationException("site name is required");
-       boolean siteCreated = false;
-       DashBoardPage dashBoard;
-       SiteDashboardPage site= null;
-       try
-       {
-           SharePage page = drone.getCurrentPage().render();
-           dashBoard = page.getNav().selectMyDashBoard().render();
-           CreateSitePage createSite;
-           try
-           {
-               createSite = dashBoard.getNav().selectCreateSite().render();
-           }
-           catch (PageRenderTimeException e)
-           {
-               if(logger.isTraceEnabled())
-               {
-                   logger.trace("Unable to see create site modal, retry create site");
-               }
-               createSite = dashBoard.getNav().selectCreateSite().render();
-           }
-           if(siteVisibility.equalsIgnoreCase("Moderated"))
-           {
-               site = createSite.createModerateSite(siteName, desc).render();
-           }
-           else if(siteVisibility.equalsIgnoreCase("Public"))
-           {
-                site = createSite.createNewSite(siteName,desc).render();
-           }
-           else if(siteVisibility.equalsIgnoreCase("Private"))
-           {
-                site = createSite.createPrivateSite(siteName,desc).render();
-           }
-           
-           if(siteName.equalsIgnoreCase(site.getPageTitle()))
-           {    
-               siteCreated = true;
-           }       
-           return siteCreated;
-       }
-       catch (UnsupportedOperationException une)
-       {
-           String msg = String.format(ERROR_MESSAGE_PATTERN,siteName);
-           throw new RuntimeException(msg, une);
-       }
-       catch (NoSuchElementException nse)
-       {
-           return false;
-       }
-     }
-    
-    public static boolean createSite(WebDrone drone , final String siteName, String siteVisibility) 
-    {
-        return createSite(drone,siteName,null,siteVisibility);
+        if (siteName == null || siteName.isEmpty())
+            throw new UnsupportedOperationException("site name is required");
+        boolean siteCreated = false;
+        DashBoardPage dashBoard;
+        SiteDashboardPage site = null;
+        try
+        {
+            SharePage page = drone.getCurrentPage().render();
+            dashBoard = page.getNav().selectMyDashBoard().render();
+            CreateSitePage createSite;
+            try
+            {
+                createSite = dashBoard.getNav().selectCreateSite().render();
+            }
+            catch (PageRenderTimeException e)
+            {
+                if (logger.isTraceEnabled())
+                {
+                    logger.trace("Unable to see create site modal, retry create site");
+                }
+                createSite = dashBoard.getNav().selectCreateSite().render();
+            }
+            if (siteVisibility.equalsIgnoreCase("Moderated"))
+            {
+                site = createSite.createModerateSite(siteName, desc).render();
+            }
+            else if (siteVisibility.equalsIgnoreCase("Public"))
+            {
+                site = createSite.createNewSite(siteName, desc).render();
+            }
+            else if (siteVisibility.equalsIgnoreCase("Private"))
+            {
+                site = createSite.createPrivateSite(siteName, desc).render();
+            }
+
+            if (siteName.equalsIgnoreCase(site.getPageTitle()))
+            {
+                siteCreated = true;
+            }
+            return siteCreated;
+        }
+        catch (UnsupportedOperationException une)
+        {
+            String msg = String.format(ERROR_MESSAGE_PATTERN, siteName);
+            throw new RuntimeException(msg, une);
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
     }
-    
-    /***
+
+    public static boolean createSite(WebDrone drone, final String siteName, String siteVisibility)
+    {
+        return createSite(drone, siteName, null, siteVisibility);
+    }
+
+    /**
      * Deletes site using share
-     * 
+     *
      * @param siteName String site name
      * @return true if site deleted
      */
     public static boolean deleteSite(WebDrone drone, final String siteName)
     {
-        if (drone == null) throw new IllegalArgumentException("WebDrone is required");
-        if (siteName == null || siteName.isEmpty()) throw new IllegalArgumentException("site name is required");
-       
+        if (drone == null)
+            throw new IllegalArgumentException("WebDrone is required");
+        if (siteName == null || siteName.isEmpty())
+            throw new IllegalArgumentException("site name is required");
+
         try
         {
             // Alfresco.cloud.constants.CURRENT_TENANT
@@ -227,13 +238,13 @@ public class SiteUtil
             String target = url.replaceFirst("^*/page.*", SITE_FINDER_LOCATION_SUFFIX);
             drone.navigateTo(target);
             int count = 0;
-            while(count < 5)
+            while (count < 5)
             {
-                if(target.equalsIgnoreCase(drone.getCurrentUrl()))
+                if (target.equalsIgnoreCase(drone.getCurrentUrl()))
                 {
                     break;
                 }
-                count ++;
+                count++;
             }
             SiteFinderPage siteFinder = drone.getCurrentPage().render();
             siteFinder = siteFinder.searchForSite(siteName).render();
@@ -248,29 +259,32 @@ public class SiteUtil
             String msg = String.format(ERROR_MESSAGE_PATTERN, siteName);
             throw new RuntimeException(msg, une);
         }
-        catch (PageException e) {}
+        catch (PageException e)
+        {
+        }
         return false;
     }
-    
-    /***
+
+    /**
      * Search site using share.
-     * 
+     *
      * @param siteName String site name
      * @return site name
      */
     public static SiteFinderPage searchSite(WebDrone drone, final String siteName)
     {
-        
-        if (siteName == null || siteName.isEmpty()) throw new UnsupportedOperationException("site name is required");
+
+        if (siteName == null || siteName.isEmpty())
+            throw new UnsupportedOperationException("site name is required");
         try
         {
             //Alfresco.cloud.constants.CURRENT_TENANT 
             String url = drone.getCurrentUrl();
             String target = url.substring(0, url.indexOf("/page/")) + SITE_FINDER_LOCATION_SUFFIX;
             drone.navigateTo(target);
-            SiteFinderPage siteFinder = drone.getCurrentPage().render(); 
+            SiteFinderPage siteFinder = drone.getCurrentPage().render();
             siteFinder = siteFinder.searchForSite(siteName).render();
-            return siteFinder;               
+            return siteFinder;
         }
         catch (UnsupportedOperationException une)
         {
@@ -281,8 +295,31 @@ public class SiteUtil
         {
             logger.error("Site not found!");
         }
-        
-        throw new PageException("Page is not found!!");
 
+        throw new PageException("Page is not found!!");
+    }
+
+    /**
+     * This method create in Temp directory jpg file for uploading.
+     *
+     * @param jpgName
+     * @return File object for created Image.
+     */
+    public static File prepareJpg(String jpgName)
+    {
+        BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+        Graphics g = image.getGraphics();
+        g.drawString("Test Publish file.", 10, 20);
+        try
+        {
+            File jpgFile = File.createTempFile(jpgName, ".jpg");
+            ImageIO.write(image, "jpg", jpgFile);
+            return jpgFile;
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        throw new SkipException("Can't create JPG file");
     }
 }

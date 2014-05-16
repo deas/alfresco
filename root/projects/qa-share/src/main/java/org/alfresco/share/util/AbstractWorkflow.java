@@ -426,9 +426,8 @@ public abstract class AbstractWorkflow extends AbstractCloudSyncTest
     public static boolean checkIfTaskIsPresent(WebDrone drone, String taskName, boolean isTaskExpected)
     {
         MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
-        myTasksPage.render();
 
-        RenderTime t = new RenderTime(maxWaitTime_CloudSync);
+        RenderTime t = new RenderTime(maxWaitTimeCloudSync);
         try
         {
             while (true)

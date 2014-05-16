@@ -10,7 +10,7 @@
  *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -18,16 +18,46 @@
  */
 package org.alfresco.share;
 
+import java.util.List;
+
+import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.MyTasksPage;
+import org.alfresco.po.share.PeopleFinderPage;
+import org.alfresco.po.share.RepositoryPage;
+import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.admin.AdminConsolePage;
+import org.alfresco.po.share.dashlet.MySitesDashlet;
+import org.alfresco.po.share.enums.UserRole;
+import org.alfresco.po.share.search.AdvanceSearchPage;
+import org.alfresco.po.share.site.CreateSitePage;
+import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.po.share.site.SiteFinderPage;
+import org.alfresco.po.share.site.SitePage;
+import org.alfresco.po.share.site.document.MyFilesPage;
+import org.alfresco.po.share.site.document.SharedFilesPage;
+import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.share.util.AbstractUtils;
+import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUser.SiteOperation;
+import org.alfresco.share.util.ShareUserMembers;
+import org.alfresco.share.util.SiteUtil;
+import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.Keys;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import org.testng.collections.CollectionUtils;
 
 /**
- * @author nshah
- * Dated: 06/03/2014
+ * This Class covers the test for Header.
+ * 
+ * @author nshah Dated: 06/03/2014
  */
+@Listeners(FailedTestListener.class)
 public class HeaderBarTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(SiteDashBoardTest.class);
@@ -52,474 +82,806 @@ public class HeaderBarTest extends AbstractUtils
         testUser = testName + "@" + DOMAIN_FREE;
         logger.info("[Suite ] : Start Tests in: " + testName);
     }
-    
+
     @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_9296() throws Exception
+    public void dataPrep_ALF_9296() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        // User
-        String[] testUserInfo = new String[] { testUser };
-        
+
         // Create one user
-        
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser });
+    }
+
+    @Test(groups = { "SiteDashboard" })
+    public void ALF_9296() throws Exception
+    {
+
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName + System.currentTimeMillis());
+        String siteNameNew = getSiteName(testName + System.currentTimeMillis() + "new");
+
         // Login through created user.
-        
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
         // Navigate to My sites- Dashlet page
+
+        DashBoardPage dashBoard = ShareUser.openUserDashboard(drone);
+        Assert.assertTrue(dashBoard.getNav().isCreateSitePresent());
         
-        // Verify/assert to check Create site link is present
+        ShareUser.selectMyDashBoard(drone);
 
         // Create a site by clicking on create site link.
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+
+        // Verify/Assert for new site is present in dashlets.
+        SitePage sitePage = ShareUser.navigateToSiteThroughDashlet(drone, siteName, SiteOperation.Open).render();
+        Assert.assertNotNull(sitePage);
+        Assert.assertEquals(true, sitePage.isSite(siteName));
         
-        // Verify/Assert for new site is present in dashlates.
+        // Navigate back to Site Dashlet page.
+        dashBoard = ShareUser.navigateToSiteThroughDashlet(drone, siteName, SiteOperation.Delete).render();
+        Assert.assertFalse(dashBoard.getNav().selectSearchForSites().render().getSiteList().contains(siteName));
+
+        ShareUser.createSite(drone, siteNameNew, SITE_VISIBILITY_PUBLIC);
         
-        // Navigate back to Site Dashlat page.
-        
-        // Click on Delete icon of newly created site. 
-        
-        //Verify that newly creats site does not exist anymore.
-        
-        // Verify create site link is till present.
-        
-        // Create another site.
-        
-        // Verify another site is created.
+        // Verify create site link is still present.
+        Assert.assertNotNull(sitePage);
+        Assert.assertEquals(true, sitePage.isSite(siteNameNew));
+
     }
-    
-    
+
     @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_9297() throws Exception
+    public void dataPrep_ALF_9297() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-
-        // User
-        String[] testUserInfo = new String[] { testUser };
 
         // Create one user
-        
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser });
+    }
+
+    @Test(groups = { "SiteDashboard" })
+    public void ALF_9297() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String publicSiteName = getSiteName(testName + System.currentTimeMillis() + "private");
+        String privateSiteName = getSiteName(testName + System.currentTimeMillis() + "public");
+        String moderateSiteName = getSiteName(testName + System.currentTimeMillis() + "moderate");
+
         // Login through created user.
-        
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
         // Navigate to My sites- Dashlet page
-        
-        // Create 3 sites with private, public ,publi with Moderated Site Memebrship.
-        
-        // NAvigate to Site Finder's page.
-        
+
+        // Create 3 sites: private, public, Moderated
+        ShareUser.createSite(drone, publicSiteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, moderateSiteName, SITE_VISIBILITY_MODERATED);
+        ShareUser.createSite(drone, privateSiteName, SITE_VISIBILITY_PRIVATE);
+
         // search site and check available options are present.
-        
-        //Click on available site.
+        List<String> sitesVisited = SiteUtil.getSiteList(drone, siteName);
+        Assert.assertTrue(sitesVisited.size() > 0);
+
+        // Click on available site.
+        Assert.assertTrue(SiteUtil.isSiteFound(drone, publicSiteName));
+        Assert.assertTrue(SiteUtil.isSiteFound(drone, privateSiteName));
+        Assert.assertTrue(SiteUtil.isSiteFound(drone, moderateSiteName));
         
         // Verify Site finder option is present in Sites menu
+        SiteDashboardPage siteDashBoardPage = ShareUser.openSiteDashboard(drone, publicSiteName).render();
+        Assert.assertTrue(siteDashBoardPage.getNav().selectSearchForSites().render() instanceof SiteFinderPage);
 
     }
-    
-    
+
     @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_9298() throws Exception
+    public void dataPrep_ALF_9298() throws Exception
     {
+
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
+        String publicSiteName = getSiteName(testName);
 
-        // User
-        String[] testUserInfo = new String[] { testUser };
+        // Create one user every time since reusing if user will change the position of Site listed in Site Menu
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser });
 
-        // Create one user
-        
         // Login through created user.
-        
-//        1. Click Tab key;
-//
-//        2. Open Home page again c lick Right arrow key then Enter key;
-//
-//        3. Open Home page again and click Tab key thrice then Enter key;
-//
-//        4. Open Home page again click Tab then Right arrow key trice then Enter key;
-//
-//        5. With Down Arrow key hightlight the site created in preconditions;
-//
-//        6. Open Home page again click Tab then Right arrow key thrice then Enter key;
-//
-//        7. With Down Arrow key choose Site Finder option;
-//
-//        8. Open Home page again click Tab then Right arrow key thrice then Enter key;
-//
-//        9. With Down Arrow key choose Create Site option;
-//
-//        10. Close the form and Click Tab then Right arrow key trice thhen Enter key;
-//
-//        11. With Down arrow key choose Favourites and click Right arrow key;
-//
-//        12. Click Tab then Right arrow key four time then Enter key;
-//
-//        13. Click Enter;
-//
-//        14. Open Home page again and with Tab key (click several times) navigate to People link -> press Enter;
-//
-//        15. Open Home page again with Tab key (click several times) navigate to Repository link -> press Enter;
-//
-//        16. Open Home page again with Tab key (click several times) navigate to Admin Tools link -> press Enter;
-//
-//        17. Open Home page again with Tab key (click several times) navigate to <user_name> link -> press Down arrow;
-//
-//        18 . Click Tab and down arrow key;
-//
-//        19. Click Enter key;
-//
-//        20. Open Home page again and click Tab key several times to Navigate to Search input field;
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        // Create Site
+        ShareUser.createSite(drone, publicSiteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.logout(drone);
 
     }
-    
-    //TODO: for cloud as well 
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_14186() throws Exception
+
+    @Test(groups = { "SiteDashboard", "BambooBug" })
+    public void ALF_9298() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
 
-        // User
-        String[] testUserInfo = new String[] { testUser };
-  
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        ShareUser.openUserDashboard(drone);
+
+        SharePage sharePage = ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.ARROW_RIGHT, Keys.RETURN).render();
+        Assert.assertTrue(sharePage instanceof MyFilesPage, "Could not navigate to MyfilesPage using keys: QA-597");
+
+        ShareUser.openUserDashboard(drone);
+
+        sharePage = ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.RETURN).render();
+        Assert.assertTrue(sharePage instanceof SharedFilesPage, "Could not navigate to SharedFilesPage");
+
+        ShareUser.openUserDashboard(drone);
+
+        sharePage = ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.ARROW_RIGHT, Keys.RETURN).render();
+        Assert.assertTrue(sharePage instanceof DashBoardPage, "Expected page is DashBoardPage but found: " + getSharePage(drone).getTitle());
+
+        ShareUser.navigateMenuUsingKeys(drone, Keys.RETURN);
+
+        ShareUser.openUserDashboard(drone);
+        Assert.assertTrue(
+                ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.ARROW_RIGHT, Keys.RETURN, Keys.RETURN) instanceof SiteDashboardPage,
+                "Expected page is SiteDashBoardPage but found: " + getSharePage(drone).getTitle());
+
+        ShareUser.openUserDashboard(drone);
+        Assert.assertTrue(
+                ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.ARROW_RIGHT, Keys.RETURN, Keys.ARROW_DOWN, Keys.RETURN) instanceof SiteFinderPage,
+                "Expected page is SiteFinderPage but found: " + getSharePage(drone).getTitle());
+
+        ShareUser.openUserDashboard(drone);
+        Assert.assertTrue(
+                ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.ARROW_RIGHT, Keys.RETURN) instanceof DashBoardPage,
+                "Expected page is DashBoardPage but found: " + getSharePage(drone).getTitle());
+
+        ShareUser.navigateMenuUsingKeys(drone, Keys.RETURN);
+
+        ShareUser.openUserDashboard(drone);
+        Assert.assertTrue(ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.ARROW_RIGHT, Keys.RETURN, Keys.ARROW_DOWN,
+                Keys.ARROW_DOWN, Keys.RETURN) instanceof CreateSitePage, "Expected page is CreateSitePAge but found: " + getSharePage(drone).getTitle());
+
+        ((CreateSitePage) getSharePage(drone)).clickCancel();
+
+        ShareUser.openUserDashboard(drone);
+        Assert.assertTrue(ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.ARROW_RIGHT, Keys.RETURN, Keys.ARROW_DOWN,
+                Keys.ARROW_DOWN, Keys.ARROW_DOWN, Keys.RETURN, Keys.RETURN) instanceof SiteDashboardPage, "Expected page is SiteDashBoardPage but found: "
+                + getSharePage(drone).getTitle());
+
+        ShareUser.openUserDashboard(drone);
+        Assert.assertTrue(
+                ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.ARROW_RIGHT, Keys.ARROW_RIGHT, Keys.RETURN, Keys.RETURN) instanceof MyTasksPage,
+                "Expected page is MyTaskPage but found: " + getSharePage(drone).getTitle());
+
+        ShareUser.openUserDashboard(drone);
+        Assert.assertTrue(ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.ARROW_RIGHT, Keys.ARROW_RIGHT, Keys.RETURN,
+                Keys.ARROW_DOWN, Keys.RETURN) instanceof MyWorkFlowsPage, "Expected page is MyWorkFlowPage but found: " + getSharePage(drone).getTitle());
+
+        ShareUser.openUserDashboard(drone);
+        Assert.assertTrue(ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.RETURN) instanceof PeopleFinderPage,
+                "Expected page is PeopleFinderPage but found: " + getSharePage(drone).getTitle());
+
+        ShareUser.openUserDashboard(drone);
+        Assert.assertTrue(
+                ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.RETURN) instanceof RepositoryPage,
+                "Expected page is RepositoryPage but found: " + getSharePage(drone).getTitle());
+
+        ShareUser.openUserDashboard(drone);
+        Assert.assertTrue(ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.RETURN,
+                Keys.RETURN) instanceof AdvanceSearchPage, "Expected page is AdvanceSearchPage but found: " + getSharePage(drone).getTitle());
+
+        ShareUser.logout(drone);
+
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+        sharePage = ShareUser.navigateMenuUsingKeys(drone, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.TAB, Keys.RETURN).render();
+        Assert.assertTrue(sharePage instanceof AdminConsolePage, "Expected page is AdminConsolePage but found: " + getSharePage(drone).getTitle());
+        ShareUser.logout(drone);
+
+    }
+
+    // TODO: for cloud as well
+    @Test(groups = { "SiteDashboard" })
+    public void ALF_14186() throws Exception
+    {
         // Login through Admin user.
-        
-        // Navigate to User DashBoard
-        
-        // Verify Presence of Tasks link in the header bar.
-        
-        // Click on Tasks link.
-        
-        // Verify Two drop down list with Two links{My Task, Workflows}
-        
-        // Click on My Tasks link.
-        
-        // Verify My Tasks page.
-        
-        // Go to Tasks > and click  Workflows i have started 
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
-        // Verify Workflows i have started page.     
+        // Navigate to User DashBoard
+        DashBoardPage dashBoard = ShareUser.openUserDashboard(drone);
+
+        // TODO: Use util: ShareUserWorkFlow.navigateToMyTasksPage(drone)?
+        MyTasksPage taskPage = dashBoard.getNav().selectMyTasks().render();
+
+        Assert.assertNotNull(taskPage);
+
+        dashBoard = ShareUser.openUserDashboard(drone);
+
+        if (!isAlfrescoVersionCloud(drone))
+        {
+            MyWorkFlowsPage myWorkFlowsPage = dashBoard.getNav().selectWorkFlowsIHaveStarted().render();
+            Assert.assertNotNull(myWorkFlowsPage);
+        }
     }
-    
-    
-    
+
     @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_9291() throws Exception
+    public void dataPrep_ALF_9291() throws Exception
     {
         String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-
-        // User
-        String[] testUserInfo = new String[] { testUser };
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
 
         // Create one user
-        
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser1 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser2 });
+    }
+
+    @Test(groups = { "SiteDashboard" })
+    public void ALF_9291() throws Exception
+    {
+
+        String testName = getTestName();
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
+        String siteName2 = getSiteName(testName + System.currentTimeMillis() + "2");
+        String siteName1 = getSiteName(testName + System.currentTimeMillis() + "1");
+
         // Login through created user.
-        
-        //Navigate to User DashBoard 
-        
-        // Verify My Dash let is present
-        
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+        // Navigate to User DashBoard
+        ShareUser.openUserDashboard(drone);
+
         // Create a different new site.
-        
+        ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName2, SITE_VISIBILITY_PUBLIC);
+
         // log out user
-        
+        ShareUser.logout(drone);
+
         // Create a any new user using admin
-        
+        ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
         // login as a new user
-        
-        // Verify that there is no site exists in Sites > recent site menu 
-        
+        ShareUser.openUserDashboard(drone);
+
+        MySitesDashlet dashlet = ShareUser.getDashlet(drone, "my-sites").render();
+
+        // Verify that there is no site exists in Sites > recent site menu
+        Assert.assertFalse(CollectionUtils.hasElements(dashlet.getSites()));
+
     }
+
     @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_9292() throws Exception
+    public void dataPrep_ALF_9292() throws Exception
     {
-        // Create one user1
-        
+        String testName = getTestName();
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
+
+        // Create one user
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser1 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser2 });
+
+    }
+
+    @Test(groups = { "SiteDashboard" })
+    public void ALF_9292() throws Exception
+    {
+        String testName = getTestName();
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
+        String siteName2 = getSiteName(testName + System.currentTimeMillis() + "2");
+        String siteName1 = getSiteName(testName + System.currentTimeMillis() + "1");
+
         // Login through created user.
-        
-        // Navigate to User DashBoard. 
-        
-        // Verify My Dash let is present.
-        
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+        // Navigate to User DashBoard
+        ShareUser.openUserDashboard(drone);
+
         // Create a different new site.
-        
+        ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName2, SITE_VISIBILITY_PUBLIC);
+
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName1, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName2, UserRole.COLLABORATOR);
+
         // log out user
-        
-        // Create a any new user2 using admin
-        
-        // invite user2 to new site created, user2 will accept the invite
-        
-        // login as a new user2
-        
-        // Verify that there is newly created(invited) site exists in Sites > recent site menu 
-        
-        
-       
+        ShareUser.logout(drone);
+
+        // Create a any new user using admin
+        ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
+
+        // login as a new user
+        ShareUser.openSiteDashboard(drone, siteName1);
+        SiteDashboardPage dashBoard = ShareUser.openSiteDashboard(drone, siteName2);
+        Assert.assertTrue(dashBoard.getNav().getRecentSitesPresent().contains(siteName1));
+        Assert.assertTrue(dashBoard.getNav().getRecentSitesPresent().contains(siteName2));
+
     }
+
     @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_9293() throws Exception
+    public void dataPrep_ALF_9293() throws Exception
     {
         String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-
-        // User
-        String[] testUserInfo = new String[] { testUser };
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
 
         // Create one user1
-        
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser1 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser2 });
+
+    }
+
+    @Test(groups = { "SiteDashboard" })
+    public void ALF_9293() throws Exception
+    {
+
+        String testName = getTestName();
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
+        String siteName1 = getSiteName(testName + System.currentTimeMillis() + "1");
+        String siteName2 = getSiteName(testName + System.currentTimeMillis() + "2");
+        String siteName3 = getSiteName(testName + System.currentTimeMillis() + "3");
+        String siteName4 = getSiteName(testName + System.currentTimeMillis() + "4");
+        String siteName5 = getSiteName(testName + System.currentTimeMillis() + "5");
+        String siteName6 = getSiteName(testName + System.currentTimeMillis() + "6");
+
         // Login through created user.
-        
-        // Navigate to User DashBoard. 
-        
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+        // Navigate to User DashBoard.
         // Verify My Dash let is present.
-        
         // Create a 6 new site.
-        
+        ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName2, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName3, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName4, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName5, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName6, SITE_VISIBILITY_PUBLIC);
+
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName1, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName2, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName3, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName4, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName5, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName6, UserRole.COLLABORATOR);
+
         // log out user
-        
+        ShareUser.logout(drone);
+
         // Create a any new user2 using admin
-        
-        // invite user2 to new site created, user2 will accept the invite
-        
-        // login as a new user2
-        
-        // Join other 5 sites.
-        
+        ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
+
+        ShareUser.openSiteDashboard(drone, siteName1);
+        ShareUser.openSiteDashboard(drone, siteName2);
+        ShareUser.openSiteDashboard(drone, siteName3);
+        ShareUser.openSiteDashboard(drone, siteName4);
+        ShareUser.openSiteDashboard(drone, siteName5);
+        SiteDashboardPage dashBoard = ShareUser.openSiteDashboard(drone, siteName6);
+
         // VErify recent sites show maximum 5 sites shown.
-       
+        List<String> siteNames = dashBoard.getNav().getRecentSitesPresent();
+        Assert.assertTrue(siteNames.size() == 5);
+        Assert.assertFalse(siteNames.contains(siteName1));
+
     }
+
     @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_9294() throws Exception
+    public void dataPrep_ALF_9294() throws Exception
     {
         String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-
-        // User
-        String[] testUserInfo = new String[] { testUser };
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
 
         // Create one user1
-        
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser1 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser2 });
+
+    }
+
+    @Test(groups = { "SiteDashboard" })
+    public void ALF_9294() throws Exception
+    {
+
+        String testName = getTestName();
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
+        String siteName1 = getSiteName(testName + System.currentTimeMillis() + "one");
+        String siteName2 = getSiteName(testName + System.currentTimeMillis() + "two");
+        String siteName3 = getSiteName(testName + System.currentTimeMillis() + "three");
+        String siteName4 = getSiteName(testName + System.currentTimeMillis() + "four");
+        String siteName5 = getSiteName(testName + System.currentTimeMillis() + "five");
+        String siteName6 = getSiteName(testName + System.currentTimeMillis() + "six");
+
         // Login through created user.
-        
-        // Navigate to User DashBoard. 
-        
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+        // Navigate to User DashBoard.
         // Verify My Dash let is present.
-        
         // Create a 6 new site.
-        
+        ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC).render();
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName1, UserRole.COLLABORATOR);
+        ShareUser.createSite(drone, siteName2, SITE_VISIBILITY_PUBLIC).render();
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName2, UserRole.COLLABORATOR);
+        ShareUser.createSite(drone, siteName3, SITE_VISIBILITY_PUBLIC).render();
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName3, UserRole.COLLABORATOR);
+        ShareUser.createSite(drone, siteName4, SITE_VISIBILITY_PUBLIC).render();
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName4, UserRole.COLLABORATOR);
+        ShareUser.createSite(drone, siteName5, SITE_VISIBILITY_PUBLIC).render();
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName5, UserRole.COLLABORATOR);
+        ShareUser.createSite(drone, siteName6, SITE_VISIBILITY_PUBLIC).render();
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName6, UserRole.COLLABORATOR);
+
         // log out user
-        
+        ShareUser.logout(drone);
+
         // Create a any new user2 using admin
-        
-        // invite user2 to new site created, user2 will accept the invite
-        
-        // login as a new user2
-        
-        // Join other 5 sites.
-        
-        // VErify recent sites show the last join site on the top.
-        
+        ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
+
+        SiteDashboardPage dashBoard = ShareUser.openSiteDashboard(drone, siteName1);
+        dashBoard.getNav().isSiteFavourtie();
+        dashBoard.getNav().setSiteAsFavourite();
+
+        ShareUser.openSiteDashboard(drone, siteName2);
+        dashBoard.getNav().isSiteFavourtie();
+        dashBoard.getNav().setSiteAsFavourite();
+
+        ShareUser.openSiteDashboard(drone, siteName3);
+        ShareUser.openSiteDashboard(drone, siteName4);
+        ShareUser.openSiteDashboard(drone, siteName5);
+        dashBoard = ShareUser.openSiteDashboard(drone, siteName6);
+
+        // VErify recent sites show maximum 5 sites shown.
+        List<String> siteNames = dashBoard.getNav().getRecentSitesPresent();
+        Assert.assertTrue(siteNames.size() == 5);
+        Assert.assertTrue(siteName6.equals(siteNames.get(0)));
+
     }
-    
-    
+
     @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_9304() throws Exception
+    public void dataPrep_ALF_9304() throws Exception
     {
         String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-
-        // User
-        String[] testUserInfo = new String[] { testUser };
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
 
         // Create one user1
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser1 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser2 });
+    }
+
+    @Test(groups = { "SiteDashboard" })
+    public void ALF_9304() throws Exception
+    {
+
+        String testName = getTestName();
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
+        String siteName1 = getSiteName(testName + System.currentTimeMillis() + "1");
+        String siteName2 = getSiteName(testName + System.currentTimeMillis() + "2");
+        String siteName3 = getSiteName(testName + System.currentTimeMillis() + "3");
+        String siteName4 = getSiteName(testName + System.currentTimeMillis() + "4");
+        String siteName5 = getSiteName(testName + System.currentTimeMillis() + "5");
+        String siteName6 = getSiteName(testName + System.currentTimeMillis() + "6");
+
+        // Login through created user.
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+        // Navigate to User DashBoard.
+        // Verify My Dash let is present.
+        // Create a 6 new site.
+        ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName2, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName3, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName4, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName5, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName6, SITE_VISIBILITY_PUBLIC);
+
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName1, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName2, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName3, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName4, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName5, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName6, UserRole.COLLABORATOR);
+
+        // log out user
+        ShareUser.logout(drone);
+
+        // Create a any new user2 using admin
+        ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
+
+        SiteDashboardPage dashBoard = ShareUser.openSiteDashboard(drone, siteName1);
+        dashBoard.getNav().isSiteFavourtie();
+        dashBoard.getNav().setSiteAsFavourite();
+
+        ShareUser.openSiteDashboard(drone, siteName2);
+        dashBoard.getNav().isSiteFavourtie();
+        dashBoard.getNav().setSiteAsFavourite();
+
+        ShareUser.openSiteDashboard(drone, siteName3);
+        ShareUser.openSiteDashboard(drone, siteName4);
+        ShareUser.openSiteDashboard(drone, siteName5);
+        dashBoard = ShareUser.openSiteDashboard(drone, siteName6);
+
+        Assert.assertTrue(dashBoard.getNav().doesAnyFavouriteSiteExist());
+        List<String> sites = dashBoard.getNav().getFavouriteSites();
+        Assert.assertTrue(sites.contains(siteName1));
+        Assert.assertTrue(sites.contains(siteName2));
+
+    }
+
+    @Test(groups = { "DataPrepSiteDashboard" })
+    public void dataPrep_ALF_9305() throws Exception
+    {
+        String testName = getTestName();
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
+
+        // Create one user1
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser1 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser2 });
+
+    }
+
+    @Test(groups = { "SiteDashboard" })
+    public void ALF_9305() throws Exception
+    {
+
+        String testName = getTestName();
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
+        String siteName1 = getSiteName(testName + System.currentTimeMillis() + "1");
+        String siteName2 = getSiteName(testName + System.currentTimeMillis() + "2");
+        String siteName3 = getSiteName(testName + System.currentTimeMillis() + "3");
+
+        // Login through created user.
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+        // Navigate to User DashBoard.
+        // Verify My Dash let is present.
+        // Create a 3 new site.
+        ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName2, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName3, SITE_VISIBILITY_PUBLIC);
+
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName1, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName2, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName3, UserRole.COLLABORATOR);
+
+        // log out user
+        ShareUser.logout(drone);
+
+        // Create a any new user2 using admin
+        ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
+
+        ShareUser.openSiteDashboard(drone, siteName1);
+        ShareUser.openSiteDashboard(drone, siteName2);
+        SiteDashboardPage dashBoard = ShareUser.openSiteDashboard(drone, siteName3);
+
+        Assert.assertFalse(dashBoard.getNav().doesAnyFavouriteSiteExist());
+
+    }
+
+    @Test(groups = { "DataPrepSiteDashboard" })
+    public void dataPrep_ALF_9306() throws Exception
+    {
+        String testName = getTestName();
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
+
+        // Create one user1
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser1 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser2 });
+    }
+
+    @Test(groups = { "SiteDashboard" })
+    public void ALF_9306() throws Exception
+    {
+
+        String testName = getTestName();
+        String testUser1 = getUserNameFreeDomain(testName + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + "-2");
+        String siteName1 = getSiteName(testName + System.currentTimeMillis() + "1");
+        String siteName2 = getSiteName(testName + System.currentTimeMillis() + "2");
+        String siteName3 = getSiteName(testName + System.currentTimeMillis() + "3");
+        String siteName4 = getSiteName(testName + System.currentTimeMillis() + "4");
+        String siteName5 = getSiteName(testName + System.currentTimeMillis() + "5");
+        String siteName6 = getSiteName(testName + System.currentTimeMillis() + "6");
+
+        // Login through created user.
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+        // Navigate to User DashBoard.
+        // Verify My Dash let is present.
+        // Create a 6 new site.
+        ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName2, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName3, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName4, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName5, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName6, SITE_VISIBILITY_PUBLIC);
+
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName1, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName2, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName3, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName4, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName5, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName6, UserRole.COLLABORATOR);
+
+        // log out user
+        ShareUser.logout(drone);
+
+        // Create a any new user2 using admin
+        ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
+
+        SiteDashboardPage dashBoard = ShareUser.openSiteDashboard(drone, siteName1);
+        dashBoard.getNav().isSiteFavourtie();
+        dashBoard.getNav().setSiteAsFavourite();
+
+        ShareUser.openSiteDashboard(drone, siteName2);
+        dashBoard.getNav().isSiteFavourtie();
+        dashBoard.getNav().setSiteAsFavourite();
+
+        ShareUser.openSiteDashboard(drone, siteName3);
+        dashBoard.getNav().isSiteFavourtie();
+        dashBoard.getNav().setSiteAsFavourite();
+        ShareUser.openSiteDashboard(drone, siteName4);
+        dashBoard.getNav().isSiteFavourtie();
+        dashBoard.getNav().setSiteAsFavourite();
+        ShareUser.openSiteDashboard(drone, siteName5);
+        dashBoard.getNav().isSiteFavourtie();
+        dashBoard.getNav().setSiteAsFavourite();
+        dashBoard = ShareUser.openSiteDashboard(drone, siteName6);
+        dashBoard.getNav().isSiteFavourtie();
+        dashBoard.getNav().setSiteAsFavourite();
+
+        Assert.assertTrue(dashBoard.getNav().doesAnyFavouriteSiteExist());
+        List<String> sites = dashBoard.getNav().getFavouriteSites();
+        Assert.assertTrue(sites.contains(siteName1));
+        Assert.assertTrue(sites.contains(siteName2));
+        Assert.assertTrue(sites.contains(siteName3));
+        Assert.assertTrue(sites.contains(siteName4));
+        Assert.assertTrue(sites.contains(siteName5));
+        Assert.assertTrue(sites.contains(siteName6));
+
+    }
+
+    // TODO: No data prep is needed for this because user has to be new.
+    @Test(groups = { "SiteDashboard" })
+    public void ALF_9307() throws Exception
+    {
+        String testName = getTestName();
+        String testUser1 = getUserNameFreeDomain(testName + System.currentTimeMillis() + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + System.currentTimeMillis() + "-2");
+        String siteName1 = getSiteName(testName + System.currentTimeMillis() + "1");
+      
+
+        // Create one user1
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser1 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser2 });
+
+        // Login through created user.
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+        // Navigate to User DashBoard.
+        // Verify My Dash let is present.
+        // Create a 6 new site.
+        ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC);
+        
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName1, UserRole.COLLABORATOR);
        
-        // Login as Admin
-        
-        // Navigate to User DashBoard. 
-        
-        // Verify My Sites Dash let is present.
-        
-        // Create a new site1, site2.
-        
-        // invite user1 oto join new site
-        
-        // log out
-        
-        // login as user2 and join the other site.
-        
-        // Add both the sites as favourites
-        
-        // Verify added sites are displayed as part of favourite group. 
-        
-        
-    }
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_9305() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
+        // log out user
+        ShareUser.logout(drone);
 
-        // User
-        String[] testUserInfo = new String[] { testUser };
+        // Create a any new user2 using admin
+        ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
+
+        SiteDashboardPage dashBoard = ShareUser.openSiteDashboard(drone, siteName1);
+        Assert.assertFalse(dashBoard.getNav().isSiteFavourtie());
+        dashBoard.getNav().setSiteAsFavourite();
+        Assert.assertTrue(dashBoard.getNav().isSiteFavourtie());
+        
+        Assert.assertTrue(dashBoard.getNav().doesAnyFavouriteSiteExist());
+        List<String> sites = dashBoard.getNav().getFavouriteSites();
+        Assert.assertTrue(sites.contains(siteName1));    
+
+    }
+
+    @Test(groups = { "SiteDashboard" })
+    public void ALF_9308() throws Exception
+    {
+
+        String testName = getTestName();
+        String testUser1 = getUserNameFreeDomain(testName + System.currentTimeMillis() + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + System.currentTimeMillis() + "-2");
+        String siteName1 = getSiteName(testName + System.currentTimeMillis() + "1");
+        String siteName2 = getSiteName(testName + System.currentTimeMillis() + "2");
+        String siteName3 = getSiteName(testName + System.currentTimeMillis() + "3");
+
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser1 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser2 });
+
+        // Login through created user.
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+        // Navigate to User DashBoard.
+        // Verify My Dash let is present.
+        // Create a 6 new site.
+        ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName2, SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName3, SITE_VISIBILITY_PUBLIC);
+
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName1, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName2, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName3, UserRole.COLLABORATOR);
+
+        // log out user
+        ShareUser.logout(drone);
+
+        // Create a any new user2 using admin
+        ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
+
+        SiteDashboardPage dashBoard = ShareUser.openSiteDashboard(drone, siteName1);
+        Assert.assertFalse(dashBoard.getNav().isSiteFavourtie());
+        dashBoard.getNav().setSiteAsFavourite();
+        Assert.assertTrue(dashBoard.getNav().isSiteFavourtie());
+        dashBoard.getNav().removeFavourite();
+        Assert.assertFalse(dashBoard.getNav().isSiteFavourtie());
+
+        ShareUser.openSiteDashboard(drone, siteName2);
+        Assert.assertFalse(dashBoard.getNav().isSiteFavourtie());
+        dashBoard.getNav().setSiteAsFavourite();
+        Assert.assertTrue(dashBoard.getNav().isSiteFavourtie());
+        dashBoard.getNav().removeFavourite();
+        Assert.assertFalse(dashBoard.getNav().isSiteFavourtie());
+
+        ShareUser.openSiteDashboard(drone, siteName3);
+        Assert.assertFalse(dashBoard.getNav().isSiteFavourtie());
+        dashBoard.getNav().setSiteAsFavourite();
+        Assert.assertTrue(dashBoard.getNav().isSiteFavourtie());
+        dashBoard.getNav().removeFavourite();
+        Assert.assertFalse(dashBoard.getNav().isSiteFavourtie());
+
+        Assert.assertFalse(dashBoard.getNav().doesAnyFavouriteSiteExist());
+        List<String> sites = dashBoard.getNav().getFavouriteSites();
+        Assert.assertFalse(CollectionUtils.hasElements(sites));
+
+    }
+
+    @Test(groups = { "SiteDashboard" })
+    public void ALF_9309() throws Exception
+    {
+
+        String testName = getTestName();
+        String testUser1 = getUserNameFreeDomain(testName + System.currentTimeMillis() + "-1");
+        String testUser2 = getUserNameFreeDomain(testName + System.currentTimeMillis() + "-2");
+        String siteName1 = getSiteName(testName + System.currentTimeMillis() + "1");
 
         // Create one user1
-        
-        // Login as Admin
-        
-        // Navigate to User DashBoard. 
-        
-        // Verify My Sites Dash let is present.
-        
-        // Create a new site.
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser1 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser2 });
 
-        // Invited user1 to join the site.
-        
-        // user1 logs in 
-        
-        // user1 does not make joined site as its favourite.
-        
-        //Verify that user1 does not see joined site in its favourites option. 
-        
-    }
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_9306() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
+        // Login through created user.
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
 
-        // User
-        String[] testUserInfo = new String[] { testUser };
+        ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC);
 
-        // Create one user1
-        
-        // Login as Admin
-        
-        // Navigate to User DashBoard. 
-        
-        // Verify My Sites Dash let is present.
-        
-        // Create 10 new site.
+        ShareUser.logout(drone);
 
-        // Invited user1 to join the site.
-        
-        // user1 logs in 
-        
-        // user1 does make all 10 joined site as its favourite.
-        
-        //Verify that user1 does  see joined site in its favourites option.
-        
-    }
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_9307() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
+        // Login as user2
+        ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
 
-        // User
-        String[] testUserInfo = new String[] { testUser };
-        // Create one user1
-        
-        // Login as Admin
-        
-        // Navigate to User DashBoard. 
-        
-        // Verify My Sites Dash let is present.
-        
-        // Create 10 new site.
+        SiteDashboardPage dashBoard = SiteUtil.openSiteFromSearch(drone, siteName1);
+        Assert.assertFalse(dashBoard.getNav().isSiteFavourtie());
+        dashBoard.getNav().setSiteAsFavourite();
+        Assert.assertTrue(dashBoard.getNav().isSiteFavourtie());
+        dashBoard.getNav().removeFavourite();
+        Assert.assertFalse(dashBoard.getNav().isSiteFavourtie());
 
-        // Invited user1 to join the site.
-        
-        // user1 logs in 
-        
-        // user1 does make all 10 joined site as its favourite.
-        
-        // USer1 naivgates to one of the site
-        
-        // USer1 verifies that Sites menu has option "Add current site as favourite"
-        
-        // Add current site to faourite.
-        
-        // verify added site appears as favourite site
-        
-    }
-    
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_9308() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
+        Assert.assertFalse(dashBoard.getNav().doesAnyFavouriteSiteExist());
+        List<String> sites = dashBoard.getNav().getFavouriteSites();
+        Assert.assertFalse(CollectionUtils.hasElements(sites));
 
-        // User
-        String[] testUserInfo = new String[] { testUser };
-        // Create one user1
-        
-        // Login as Admin
-        
-        // Navigate to User DashBoard. 
-        
-        // Verify My Sites Dash let is present.
-        
-        // Create 10 new site.
-
-        // Invited user1 to join the site.
-        
-        // user1 logs in 
-        
-        // user1 does make all 10 joined site as its favourite.
-        
-        // USer1 naivgates to one of the site
-        
-        // USer1 verifies that Sites menu has option "Add current site as favourite"
-        
-        // Add current site to faourite.
-        
-        // verify added site appears as favourite site
-        
-        // USer1 removes the favourite site from favourites list.
-        
-        // Verify favourite site is not favourite any more. 
-        
-    }
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_SiteDashBoard_9309() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-
-        // User
-        String[] testUserInfo = new String[] { testUser };
-
-        // Create one user1
-        
-        // Login as Admin
-        
-        // Navigate to User DashBoard. 
-        
-        // Verify My Sites Dash let is present.
-        
-        // Create  new site.
-        
-        // user1 logs in     
-        
-        // USer1 naivgates to one of the site created by Admin
-        
-        // User1 verifies that Sites menu has option "Add current site as favourite"
-        
-        // Add current site to faourite.
-        
-        // verify added site appears as favourite site
-        
     }
 }

@@ -259,7 +259,7 @@ public class NodesAPITests extends NodesAPI
         ShareUser.login(drone, testUser);
         doclibPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render();
         FileDirectoryInfo fileDirInfo = doclibPage.getFileDirectoryInfo(fileName2);
-        assertTrue(fileDirInfo.getTags().contains("tag4"), fileDirInfo.getTags().toString());
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, fileName2, "tags", "tag4", true), fileDirInfo.getTags().toString());
 
         // Post Tag: Invalid User
         try

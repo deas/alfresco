@@ -24,8 +24,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -67,7 +65,6 @@ public class AlfrescoHttpClient extends AbstractUtils
         return headers.toArray(new String[headers.size()]);
     }
 
-    @SuppressWarnings("finally")
     public static HttpClient getHttpClientWithBasicAuth(String apiUrl, String username, String password)
     {
         if (null == apiUrl || apiUrl.isEmpty())
@@ -81,53 +78,11 @@ public class AlfrescoHttpClient extends AbstractUtils
 
         DefaultHttpClient httpclient = new DefaultHttpClient(httpParams);
 
-        HttpResponse response = null;
+        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(new AuthScope(AuthScope.ANY), new UsernamePasswordCredentials(username, password));
+        httpclient.setCredentialsProvider(credentialsProvider);
 
-        try
-        {
-            CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-            credentialsProvider.setCredentials(new AuthScope(AuthScope.ANY), new UsernamePasswordCredentials(username, password));
-            httpclient.setCredentialsProvider(credentialsProvider);
-
-            HttpGet httpget = new HttpGet(apiUrl);
-            HttpContext httpContext = new BasicHttpContext();
-
-            response = httpclient.execute(httpget, httpContext);
-            if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK)
-            {
-                if (logger.isTraceEnabled())
-                {
-                    logger.info("Http Client with Basic Auth: Success");
-                }
-            }
-            else
-            {
-                logger.warn("Got status code " + response.getStatusLine().getStatusCode() + " for GET " + apiUrl);
-                response.getEntity().writeTo(System.out);
-            }
-        }
-        catch (IOException ioe)
-        {
-            String msg = String.format("Unable to obtain http client with given credentials,%n "
-                    + "    Response failed when posting to %s Username: %s Password: %s", apiUrl, username, password);
-            throw new RuntimeException(msg, ioe);
-        }
-        finally
-        {
-
-            if (response != null)
-            {
-                try
-                {
-                    EntityUtils.consume(response.getEntity());
-                }
-                catch (IOException ioe)
-                {
-
-                }
-            }
-            return httpclient;
-        }
+        return httpclient;
     }
 
     protected static void releaseResources(HttpRequestBase request, HttpResponse response)
@@ -319,7 +274,7 @@ public class AlfrescoHttpClient extends AbstractUtils
         return request;
     }
 
-    public static String getParameter(String entity, String paramName, String response) throws Exception
+    public static String getParameterValue(String entity, String paramName, String response) throws Exception
     {
         String key = "";
         String result = null;
@@ -327,19 +282,28 @@ public class AlfrescoHttpClient extends AbstractUtils
         try
         {
             JSONObject json = new JSONObject(response);
-            JSONArray jArray = json.optJSONArray(entity);
-            if (null == jArray)
+            
+            if(paramName.isEmpty())
             {
-                JSONObject object = json.optJSONObject(entity);
-                key = object.getString(paramName);
+                // Get the value of Entity directly
+                result = json.get(entity).toString();
             }
             else
             {
-                JSONObject object = jArray.getJSONObject(0);
-                key = object.getString(paramName);
+                // Get the value of a specific parameter for the entity
+                JSONArray jArray = json.optJSONArray(entity);
+                if (null == jArray)
+                {
+                    JSONObject object = json.optJSONObject(entity);
+                    key = object.getString(paramName);
+                }
+                else
+                {
+                    JSONObject object = jArray.getJSONObject(0);
+                    key = object.getString(paramName);
+                }
+                result = key;
             }
-            result = key;
-
         }
         catch (Exception e)
         {

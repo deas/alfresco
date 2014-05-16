@@ -19,7 +19,6 @@ package org.alfresco.share.repository;
 
 import static org.alfresco.po.share.site.document.DocumentAspect.CLASSIFIABLE;
 
-import java.util.List;
 import java.util.Map;
 
 import org.alfresco.po.share.RepositoryPage;
@@ -33,10 +32,10 @@ import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
 import org.alfresco.po.share.site.document.DocumentAction;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
-import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.ButtonType;
+import org.alfresco.po.share.site.document.UserProfile;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
@@ -53,8 +52,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
- * @author nshah
- *
+ * @author jcule
  */
 @Listeners(FailedTestListener.class)
 public class RepositoryFolderTests1 extends AbstractUtils
@@ -82,17 +80,15 @@ public class RepositoryFolderTests1 extends AbstractUtils
     {
         super.setup();
         testName = this.getClass().getSimpleName();
-        testUser = testUser + "@" + DOMAIN_FREE;
+        testUser = getUserNameFreeDomain(testName);
         logger.info("[Suite ] : Start Tests in: " + testName);
         dataPrepRepositoryFolderTests(testName);
-
     }
 
-    @Test(groups = "DataPrepRepository")
-    public void dataPrepRepositoryFolderTests(String testName) throws Exception
+    private void dataPrepRepositoryFolderTests(String testName) throws Exception
     {
         String testUser = getUserNameFreeDomain(testName);
-        String baseFolderName = getFolderName(testName);
+        baseFolderName = getFolderName(testName);
         String baseFolderTitle = "Base folder for FolderTests";
         String description = "Base folder for FolderTests";
         String[] testUserInfo = new String[] { testUser };
@@ -108,7 +104,8 @@ public class RepositoryFolderTests1 extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, baseFolderName, baseFolderTitle, description);
         }
-        // Create OP user.
+
+        // Create Admin User.
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
     }
 
@@ -122,18 +119,11 @@ public class RepositoryFolderTests1 extends AbstractUtils
     @Test
     public void Enterprise40x_5405()
     {
-        String testUser = getUserNameFreeDomain(testName);
+        String testName = getTestName();
+
         String folderName = getFolderName(testName) + System.currentTimeMillis();
-        String folderTitle = (testUser) + System.currentTimeMillis();
+        String folderTitle = (testName) + System.currentTimeMillis();
         String description = (testName) + System.currentTimeMillis();
-
-        /** Start Test */
-
-        testName = getTestName();
-        /** Test Data Setup */
-
-        // String testUser = getUserNameFreeDomain(testName);
-        /** Test Steps */
 
         // Login
         ShareUser.login(drone, testUser, testUserPass);
@@ -186,14 +176,13 @@ public class RepositoryFolderTests1 extends AbstractUtils
 
         Assert.assertTrue(folderDetailsPage.isDocumentActionPresent(DocumentAction.MANAGE_ASPECTS), "Verifying change type is present");
 
+        // Check another tab
         String url = drone.getCurrentUrl();
         drone.createNewTab();
         drone.navigateTo(url);
 
-        // Check another tab
-        // ShareUser.login(anotherDrone, testUser, testUserPass);
         // TODO - Doesn't match Steps 6, 7 and 8 from test link
-        folderDetailsPage = (FolderDetailsPage) ShareUser.getSharePage(drone);
+        folderDetailsPage = ShareUser.getSharePage(drone).render();
         ManagePermissionsPage managePermissionPage = folderDetailsPage.selectManagePermissions().render();
         Assert.assertTrue(managePermissionPage.isInheritPermissionEnabled());
         folderDetailsPage = managePermissionPage.selectCancel().render();
@@ -201,12 +190,11 @@ public class RepositoryFolderTests1 extends AbstractUtils
 
         // Check another browser.
         WebDrone anotherDrone = getSecondDrone();
-
         anotherDrone.navigateTo(url);
 
         ShareUser.login(anotherDrone, testUser, testUserPass);
 
-        folderDetailsPage = (FolderDetailsPage) ShareUser.getSharePage(drone);
+        folderDetailsPage = ShareUser.getSharePage(drone).render();
 
         managePermissionPage = folderDetailsPage.selectManagePermissions().render();
         Assert.assertTrue(managePermissionPage.isInheritPermissionEnabled());
@@ -234,11 +222,15 @@ public class RepositoryFolderTests1 extends AbstractUtils
     public void Enterprise40x_5407() throws Exception
     {
         String testName = getTestName();
+
         String folderName = getFolderName(testName) + System.currentTimeMillis();
+        String newFolderName = folderName + "1";
 
         String description = testName + System.currentTimeMillis();
         String tagName = testName + System.currentTimeMillis();
-      
+
+        ShareUser.login(drone, testUser, testUserPass);
+
         // Navigate to repository page
         RepositoryPage repositorypage = ShareUserRepositoryPage.openRepository(drone);
 
@@ -248,24 +240,20 @@ public class RepositoryFolderTests1 extends AbstractUtils
         // verify created folder is present in the main repository
         Assert.assertTrue(repositorypage.isFileVisible(folderName), "verifying folder present in repository");
 
-        // Add tag to the folder in repository        
-        ShareUserSitePage.selectView(drone, ViewType.DETAILED_VIEW).render();
+        // Add tag to the folder in repository
+        ShareUserRepositoryPage.selectView(drone, ViewType.DETAILED_VIEW).render();
 
-        ShareUserRepositoryPage.addTag(drone, folderName, tagName);
-
-        repositorypage = ((RepositoryPage) getSharePage(drone));
+        repositorypage = ShareUserRepositoryPage.addTag(drone, folderName, tagName);
 
         // Select folder and click on edit properties
         EditDocumentPropertiesPage editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folderName).selectEditProperties().render();
 
         // Edit the folder name
-        editDocumentPropertiesPopup.setName(folderName + "1");
+        editDocumentPropertiesPopup.setName(newFolderName);
 
         // Remove tag value by clicking on remove tag button
 
         ShareUserRepositoryPage.operationOnTag(drone, Operation.REMOVE, tagName);
-
-        // Combined with test case Enterprise40x_5408
 
         // Adding tag value and click on cancel button
 
@@ -278,25 +266,20 @@ public class RepositoryFolderTests1 extends AbstractUtils
 
         repositorypage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderPath);
 
-        editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folderName + "1").selectEditProperties().render();
+        editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(newFolderName).selectEditProperties().render();
 
         ShareUserRepositoryPage.operationOnTag(drone, Operation.SAVE, tagName + "1");
 
         editDocumentPropertiesPopup.selectSave().render();
 
         // Verify Name field changed successfully
-        Assert.assertEquals(repositorypage.getFileDirectoryInfo(folderName + "1").getName(), folderName + "1", "verifying folder name is changed successfully");
+        Assert.assertEquals(repositorypage.getFileDirectoryInfo(newFolderName).getName(), newFolderName, "verifying folder name is changed successfully");
 
         // Verify Tag Value changed successfully
+        ShareUserSitePage.clickOnTagNameInTreeMenu(drone, tagName + "1").render();
 
-        drone.refresh();
-
-        RepositoryPage Repositorypage = repositorypage.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(tagName + "1").render();
-
-        drone.refresh();
-
-        List<FileDirectoryInfo> allFiles = Repositorypage.render().getFiles();
-        Assert.assertTrue(allFiles.size() == 1);
+        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, newFolderName, "tags", tagName + "1", true));
+        Assert.assertEquals(ShareUserSitePage.getContentCount(drone), 1);
 
     }
 
@@ -321,8 +304,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
      * <ul>
      * <li>Select More options for any folder in repository</li>
      * <li>Click on Manage Permissions from More options</li>
-     * <li>Verify options Inherit permissions, Inherit Permissions list, Locally
-     * set permissions panels are displayed</li>
+     * <li>Verify options Inherit permissions, Inherit Permissions list, Locally set permissions panels are displayed</li>
      * <li>Change privileges for any group and cancel</li>
      * <li>Verify group privileges are discarded</li>
      * </ul>
@@ -331,20 +313,16 @@ public class RepositoryFolderTests1 extends AbstractUtils
     public void Enterprise40x_5419() throws Exception
     {
         String testName = getTestName();
-        String folder1 = getFolderName(testName + System.currentTimeMillis());
-        // String folderTitle1 = testName + System.currentTimeMillis();
-        String description = testName + System.currentTimeMillis();
-        String Title = "Manage Permissions";
-        String GroupName = "EVERYONE";
-   
-        /** Start Test */
-        testName = getTestName();
 
-        /** Test Data Setup */
         String testUser1 = getUserNameFreeDomain(testName);
         String testUser2 = getUserNameFreeDomain(testName + "2");
 
-        /** Test Steps */
+        String folder1 = getFolderName(testName + System.currentTimeMillis());
+        String description = testName + System.currentTimeMillis();
+        String Title = "Manage Permissions";
+
+        String GroupName = "EVERYONE";
+
         // Login
         ShareUser.login(drone, testUser1, testUserPass);
 
@@ -366,6 +344,10 @@ public class RepositoryFolderTests1 extends AbstractUtils
         // Verify Inherit permissions options in Manage Permissions page
         Assert.assertTrue(managePermissionsPage.isInheritPermissionEnabled());
 
+        UserProfile profile = new UserProfile();
+        profile.setfName("xyz");
+        profile.setUsername("xyz");
+        Assert.assertFalse(managePermissionsPage.isDirectPermissionForUser(profile));
 
         // Logout as user1
         ShareUser.logout(drone);
@@ -373,7 +355,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
         // Login as testuser2
         ShareUser.login(drone, testUser2, testUserPass);
 
-        // Navigate to repository page        
+        // Navigate to repository page
         repositorypage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderPath);
 
         ManagePermissionsPage managepermissionsPage = repositorypage.getFileDirectoryInfo(folder1).selectManagePermission().render();
@@ -387,25 +369,12 @@ public class RepositoryFolderTests1 extends AbstractUtils
     public void dataPrep_Enterprise40x_5422() throws Exception
     {
         String testName = getTestName();
+
         String testUser = getUserNameFreeDomain(testName);
-        String baseFolderName = getFolderName(testName);
-        String baseFolderTitle = "Base folder for FolderTests";
-        String description = "Base folder for FolderTests";
-        baseFolderPath = REPO + SLASH + baseFolderName;
         String[] testUserInfo = new String[] { testUser };
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
-        // Navigate to repository page
-        RepositoryPage repositorypage = ShareUserRepositoryPage.openRepository(drone);
-
-        // Create new folder
-        if (!repositorypage.isFileVisible(baseFolderName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, baseFolderName, baseFolderTitle, description);
-        }
-
-        // Create OP user.
-        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);        
+        // Create Admin user.
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
     }
 
     /**
@@ -414,8 +383,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
      * <li>Select More options for any folder in repository</li>
      * <li>Click on Edit meta data from More options</li>
      * <li>Verify edit meta data form is displayed correctly</li>
-     * <li>Click on select button beneath category in edit document properties
-     * page</li>
+     * <li>Click on select button beneath category in edit document properties page</li>
      * <li>Move any category from left hand side to right hand side</li>
      * <li>Click ok button</li>
      * <li>verify changes are applied successfully</li>
@@ -425,35 +393,31 @@ public class RepositoryFolderTests1 extends AbstractUtils
     public void Enterprise40x_5422()
     {
         String testName = getTestName();
-        String folder1 = getFolderName(testName + System.currentTimeMillis());      
-        testUser = getUserNameFreeDomain(testName);
+        String folder1 = getFolderName(testName + System.currentTimeMillis());
+        String testUser = getUserNameFreeDomain(testName);
 
         // Login
         ShareUser.login(drone, testUser, testUserPass);
 
         // Navigate to repository page
-        RepositoryPage repositorypage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
         // Create new folder
-        ShareUserRepositoryPage.createFolderInRepository(drone, folder1, folder1);
+        RepositoryPage repositorypage = ShareUserRepositoryPage.createFolderInRepository(drone, folder1, folder1);
 
         // verify created folders are present in the main repository
         Assert.assertTrue(repositorypage.isFileVisible(folder1), "verifying folder present in repository");
-        
-        
+
         ShareUserRepositoryPage.addAspect(drone, folder1, CLASSIFIABLE);
 
         // Select more options in folder1 and click on Edit properties
         EditDocumentPropertiesPage editDocumentPropertiesPopup = ShareUserRepositoryPage.returnEditDocumentProperties(drone, folder1);
 
         ShareUserRepositoryPage.addCategories(drone, folder1, Categories.TAGS, true);
+        editDocumentPropertiesPopup.selectSave().render();
 
-        repositorypage = editDocumentPropertiesPopup.selectSave().render();
-
-        // View folder details page and verify category is displayed under
-        // properties panel
-
-        FolderDetailsPage folderDetailsPage = repositorypage.getFileDirectoryInfo(folder1).selectViewFolderDetails().render();
+        // View folder details page and verify category is displayed under properties panel
+        FolderDetailsPage folderDetailsPage = ShareUserSitePage.openDetailsPage(drone, folder1).render();
         Map<String, Object> props = folderDetailsPage.getProperties();
 
         Assert.assertEquals(props.get("Categories").toString(), "[" + Categories.TAGS + "]");
@@ -468,8 +432,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
      * <li>Select More options for any folder in repository</li>
      * <li>Click on Edit meta data from More options</li>
      * <li>Verify edit meta data form is displayed correctly</li>
-     * <li>Click on select button beneath category in edit document properties
-     * page</li>
+     * <li>Click on select button beneath category in edit document properties page</li>
      * <li>Move any category from left hand side to right hand side</li>
      * <li>Click Cancel button</li>
      * <li>Verify changes are not applied successfully</li>
@@ -479,15 +442,13 @@ public class RepositoryFolderTests1 extends AbstractUtils
     public void Enterprise40x_5423()
     {
         String folder1 = getFolderName(testName + System.currentTimeMillis());
-        testUser = getUserNameFreeDomain(testName);
 
-        // Login
         ShareUser.login(drone, testUser, testUserPass);
-        // Navigate to repository page
-        RepositoryPage repositorypage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
+
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
         // Create new folder
-        ShareUserRepositoryPage.createFolderInRepository(drone, folder1, folder1);
+        RepositoryPage repositorypage = ShareUserRepositoryPage.createFolderInRepository(drone, folder1, folder1);
 
         // verify created folders are present in the main repository
         Assert.assertTrue(repositorypage.isFileVisible(folder1), "verifying folder present in repository");
@@ -498,16 +459,9 @@ public class RepositoryFolderTests1 extends AbstractUtils
         EditDocumentPropertiesPage editDocumentPropertiesPopup = ShareUserRepositoryPage.returnEditDocumentProperties(drone, folder1);
 
         ShareUserRepositoryPage.addCategories(drone, folder1, Categories.TAGS, true);
-//        
-//        editDocumentPropertiesPopup.selectSave().render();
-//
-//        repositorypage = (RepositoryPage) getSharePage(drone);
-
         repositorypage = editDocumentPropertiesPopup.selectCancel().render();
 
-        // View folder details page and verify category is not displayed under
-        // properties panel
-
+        // View folder details page and verify category is not displayed under properties panel
         Assert.assertEquals(ShareUserRepositoryPage.getProperties(drone, folder1).get("Categories"), "(None)");
 
         ShareUser.logout(drone);
@@ -519,26 +473,9 @@ public class RepositoryFolderTests1 extends AbstractUtils
         String testName = getTestName();
 
         String testUser = getUserNameFreeDomain(testName);
-
-        String baseFolderName = getFolderName(testName);
-        String baseFolderTitle = "Base folder for FolderTests";
-        String description = "Base folder for FolderTests";
-        baseFolderPath = REPO + SLASH + baseFolderName;
-
         String[] testUserInfo = new String[] { testUser };
 
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-
-        // Navigate to repository page
-        RepositoryPage repositorypage = ShareUserRepositoryPage.openRepository(drone);
-
-        // Create new folder
-        if (!repositorypage.isFileVisible(baseFolderName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, baseFolderName, baseFolderTitle, description);
-        }
-
-        // Create OP user.
+        // Create Admin user.
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
     }
 
@@ -564,7 +501,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
     public void Enterprise40x_5425()
     {
         String testUser = getUserNameFreeDomain(testName);
-        
+
         String folder1 = getFolderName(testName + System.currentTimeMillis());
         String tagName = getTestName();
 
@@ -594,25 +531,18 @@ public class RepositoryFolderTests1 extends AbstractUtils
         editDocumentPropertiesPopup.setDocumentTitle(folder1 + "1");
         editDocumentPropertiesPopup.setDescription(description + "1");
 
-        // Add tag value     
+        // Add tag value
         ShareUserRepositoryPage.operationOnTag(drone, Operation.SAVE, tagName + "1");
-
         editDocumentPropertiesPopup.selectSave();
+
         // Add category
-
-        // editdocumentPropertiesPage.selectcategory
         editDocumentPropertiesPopup = ShareUserRepositoryPage.returnEditDocumentProperties(drone, folder1 + "1");
+        
         ShareUserRepositoryPage.addCategories(drone, folder1 + "1", Categories.TAGS, true);
-
         editDocumentPropertiesPopup.selectSave().render();
 
-        // Verify edited folder details with selected category is displayed
-        // correctly under tag value
-        // Verify Added category is displayed correctly in folder details
-        // page under properties panel
-
-        Assert.assertTrue((ShareUserRepositoryPage.getProperties(drone, folder1 + "1").get("Categories").toString()).contains(Categories.TAGS.getValue()
-                .toUpperCase()));
+        // Verify Added category is displayed correctly in folder details page under properties panel
+        Assert.assertTrue((ShareUserRepositoryPage.getProperties(drone, folder1 + "1").get("Categories").toString()).contains(Categories.TAGS.getValue().toUpperCase()));
     }
 
     @Test(groups = "DataPrepRepository")
@@ -621,26 +551,9 @@ public class RepositoryFolderTests1 extends AbstractUtils
         String testName = getTestName();
 
         String testUser = getUserNameFreeDomain(testName);
-
-        String baseFolderName = getFolderName(testName);
-        String baseFolderTitle = "Base folder for FolderTests";
-        String description = "Base folder for FolderTests";
-        baseFolderPath = REPO + SLASH + baseFolderName;
-
         String[] testUserInfo = new String[] { testUser };
 
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-
-        // Navigate to repository page
-        RepositoryPage repositorypage = ShareUserRepositoryPage.openRepository(drone);
-
-        // Create new folder
-        if (!repositorypage.isFileVisible(baseFolderName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, baseFolderName, baseFolderTitle, description);
-        }
-
-        // Create OP user.
+        // Create Admin user.
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
     }
 
@@ -661,6 +574,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
      * <li>Click cancel button</li>
      * <li>verify changes are not applied successfully</li>
      * </ul>
+     * @throws Exception 
      */
     @Test
     public void Enterprise40x_5426()
@@ -686,7 +600,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
 
         ShareUserRepositoryPage.addAspect(drone, folder1, CLASSIFIABLE);
 
-        // Select more options in folder1 and click on Edit properties      
+        // Select more options in folder1 and click on Edit properties
         EditDocumentPropertiesPage editDocumentPropertiesPopup = ShareUserRepositoryPage.returnEditDocumentProperties(drone, folder1);
 
         // Edit folder details
@@ -696,7 +610,6 @@ public class RepositoryFolderTests1 extends AbstractUtils
 
         // Add tag value
         ShareUserRepositoryPage.operationOnTag(drone, Operation.SAVE, tagName + "1");
-
         editDocumentPropertiesPopup.selectSave().render();
 
         // Add category
@@ -705,16 +618,11 @@ public class RepositoryFolderTests1 extends AbstractUtils
         editDocumentPropertiesPopup = ShareUserRepositoryPage.returnEditDocumentProperties(drone, folder1 + "1");
 
         ShareUserRepositoryPage.addCategories(drone, folder1, Categories.TAGS, false);
-
         editDocumentPropertiesPopup.selectSave().render();
 
-        // Verify edited folder details with selected category is displayed
-        // correctly under tag value
-        // Verify Added category is displayed correctly in folder details
-        // page under properties panel
-     
-        Assert.assertFalse((ShareUserRepositoryPage.getProperties(drone, folder1 + "1").get("Categories").toString()).contains(Categories.TAGS.getValue()
-                .toUpperCase()));
+        // Verify Added category is displayed correctly in folder details page under properties panel
+        Assert.assertFalse((ShareUserRepositoryPage.getProperties(drone, folder1 + "1").get("Categories").toString()).contains(Categories.TAGS.getValue().toUpperCase()));
+                
     }
 
     @Test(groups = "DataPrepRepository")
@@ -723,13 +631,12 @@ public class RepositoryFolderTests1 extends AbstractUtils
         String testName = getTestName();
 
         String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
 
         String baseFolderName = getFolderName(testName);
         String baseFolderTitle = "Base folder for FolderTests";
         String description = "Base folder for FolderTests";
         baseFolderPath = REPO + SLASH + baseFolderName;
-
-        String[] testUserInfo = new String[] { testUser };
 
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
@@ -759,52 +666,49 @@ public class RepositoryFolderTests1 extends AbstractUtils
     {
         String testName = getTestName();
 
-        String parentFolder = "1" + "-" + System.currentTimeMillis();
-        String folderFav = "a" + System.currentTimeMillis();
-        String folderCat = "aa" + System.currentTimeMillis();
-        String folderTag = "aaa" + System.currentTimeMillis();
-        String tagName = testName + System.currentTimeMillis();
+        String testUser = getUserNameFreeDomain(testName);
 
         String opSiteName = testName + System.currentTimeMillis();
 
-        String testUser = getUserNameFreeDomain(testName);
+        String parentFolder = "1" + "-" + System.currentTimeMillis();
+        String[] destFolder = new String[] { "Repository", PAGE_TITLE_USERHOMES, parentFolder };
+        String destFolderPath = REPO + SLASH + PAGE_TITLE_USERHOMES + SLASH + parentFolder;
+
+        String folderFav = "a" + System.currentTimeMillis();
+        String folderCat = "aa" + System.currentTimeMillis();
+        String folderTag = "aaa" + System.currentTimeMillis();
+
+        String tagName = testName + System.currentTimeMillis();
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Navigate to repository page
         RepositoryPage repositorypage = ShareUserRepositoryPage.openRepository(drone);
-        // TODO - Can this be a CONSTANT? Also consider localization
+
+        // TODO - Put this is share-po language property files for localization
         repositorypage.selectFolder(PAGE_TITLE_USERHOMES).render();
 
         ShareUserRepositoryPage.createFolderInRepository(drone, parentFolder, parentFolder);
 
-        repositorypage.selectFolder(parentFolder).render();
+        ShareUserSitePage.selectContent(drone, parentFolder).render();
 
-        // Create new folder
-        repositorypage = (RepositoryPage) ShareUserSitePage.createFolder(drone, folderFav, folderFav, folderFav);
-        // Select Favourite
-        repositorypage.getFileDirectoryInfo(folderFav).selectFavourite();
-        // Create another folder
-        repositorypage = (RepositoryPage) ShareUserSitePage.createFolder(drone, folderCat, folderCat, folderCat);
+        // Create new folder: Make it Favourite
+        ShareUserSitePage.createFolder(drone, folderFav, folderFav, folderFav);
+        ShareUserSitePage.getFileDirectoryInfo(drone, folderFav).selectFavourite();
 
+        // Create another folder: Add aspect
+        ShareUserSitePage.createFolder(drone, folderCat, folderCat, folderCat).render();
         ShareUserRepositoryPage.addAspect(drone, folderCat, CLASSIFIABLE);
 
-        EditDocumentPropertiesPage editDocumentPropertiesPopup = ShareUserRepositoryPage.returnEditDocumentProperties(drone, folderCat);
+        ShareUserRepositoryPage.returnEditDocumentProperties(drone, folderCat);
 
-
-        ShareUserRepositoryPage.addCategories(drone, folderCat, Categories.LANGUAGES, true);
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = ShareUserRepositoryPage.addCategories(drone, folderCat, Categories.LANGUAGES, true);
 
         editDocumentPropertiesPopup.selectSave().render();
 
         ShareUserSitePage.createFolder(drone, folderTag, folderTag, folderTag);
 
         editDocumentPropertiesPopup = ShareUserRepositoryPage.returnEditDocumentProperties(drone, folderTag);
-        // repositorypage.getFileDirectoryInfo(folderTag).selectEditProperties().render();
-
-        // Add tag value
-        // TagPage tagPage = editDocumentPropertiesPopup.getTag().render();
-        // tagPage.enterTagValue(tagName + "1");
-        // tagPage.clickOkButton();
 
         ShareUserRepositoryPage.operationOnTag(drone, Operation.SAVE, tagName + "1");
 
@@ -813,128 +717,81 @@ public class RepositoryFolderTests1 extends AbstractUtils
         ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
 
         // verify created 3 folders are present in the main repository
-        ShareUserRepositoryPage.openRepository(drone);
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, destFolderPath);
 
-        repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, PAGE_TITLE_USERHOMES, parentFolder);
+        repositorypage = ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, folderFav, destFolder, true);
 
-        repositorypage = ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, folderFav, new String[] { "Repository", PAGE_TITLE_USERHOMES, parentFolder },
-                true);
-
-        repositorypage.clickOnMyFavourites().render();
-
-        repositorypage = (RepositoryPage) ShareUser.getSharePage(drone).render();
+        repositorypage = repositorypage.clickOnMyFavourites().render();
 
         Assert.assertTrue(repositorypage.isFileVisible(folderFav));
 
-        ShareUserRepositoryPage.openRepository(drone);
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, destFolderPath);
 
-        repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, PAGE_TITLE_USERHOMES, parentFolder);
+        ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, folderTag, destFolder, true);
 
-        repositorypage = ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, folderTag, new String[] { "Repository", PAGE_TITLE_USERHOMES, parentFolder },
-                true);
+        ShareUserSitePage.getFileDirectoryInfo(drone, folderTag).clickOnTagNameLink(tagName + "1").render();
 
-        repositorypage.getFileDirectoryInfo(folderTag).clickOnTagNameLink(tagName + "1").render();
+        ShareUserSitePage.getDocLibInfoWithRetry(drone, "Copy of " + folderTag, "isContentVisible", "Copy of " + folderTag, true);
 
-        repositorypage = (RepositoryPage) ShareUser.getSharePage(drone);
-        
-        ShareUser.refreshDocumentLibrary(drone);
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, destFolderPath);
 
-        Assert.assertTrue(repositorypage.isFileVisible("Copy of " + folderTag));// Copy
-                                                                                // of
-                                                                                // a
-                                                                                // (a)
+        ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, folderCat, destFolder, true);
 
-        ShareUserRepositoryPage.openRepository(drone);
+        ShareUserSitePage.getFileDirectoryInfo(drone, folderCat).clickOnCategoryNameLink(Categories.LANGUAGES.name()).render();
+        ShareUserSitePage.getDocLibInfoWithRetry(drone, "Copy of " + folderCat, "isContentVisible", "Copy of " + folderCat, true);
 
-        repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, PAGE_TITLE_USERHOMES, parentFolder);
+        // copy: site
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, destFolderPath);
 
-        repositorypage = ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, folderCat, new String[] { "Repository", PAGE_TITLE_USERHOMES, parentFolder },
-                true);
-
-        repositorypage.getFileDirectoryInfo(folderCat).clickOnCategoryNameLink(Categories.LANGUAGES.name());
-
-        repositorypage = (RepositoryPage) ShareUser.getSharePage(drone);
-        
-        ShareUser.refreshDocumentLibrary(drone);
-
-        Assert.assertTrue(repositorypage.isFileVisible("Copy of " + folderCat));// Copy
-                                                                                // of
-                                                                                // a
-                                                                                // (a)
-
-        repositorypage = ShareUserRepositoryPage.openRepository(drone);
-
-        repositorypage.selectFolder(PAGE_TITLE_USERHOMES).render();
-
-        repositorypage.selectFolder(parentFolder).render();
-
-        // /copy to
-        // site................................................................................................................................
-
-        repositorypage = ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, folderFav, new String[] { "Repository", PAGE_TITLE_USERHOMES, parentFolder },
-                true);
+        repositorypage = ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, folderFav, destFolder, true);
 
         Assert.assertTrue(repositorypage.isFileVisible(folderFav));
         Assert.assertTrue(repositorypage.isFileVisible("Copy of " + folderFav));
 
-        repositorypage = ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, folderTag, new String[] { "Repository", PAGE_TITLE_USERHOMES, parentFolder },
-                true);
+        ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, folderTag, destFolder, true);
+        ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, folderCat, destFolder, true);
 
-        repositorypage = ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, folderCat, new String[] { "Repository", PAGE_TITLE_USERHOMES, parentFolder },
-                true);
-        //
         DocumentLibraryPage docLibPage = ShareUser.openSiteDocumentLibraryFromSearch(drone, opSiteName);
 
         docLibPage.isFileVisible(folderFav);
         docLibPage.isFileVisible(folderTag);
         docLibPage.isFileVisible(folderCat);
 
-        repositorypage = ShareUserRepositoryPage.openRepository(drone);
-        repositorypage.selectFolder(PAGE_TITLE_USERHOMES).render();
-        repositorypage.selectFolder(parentFolder).render();
+        repositorypage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, destFolderPath);
 
-        repositorypage.getFileDirectoryInfo(folderFav).selectCheckbox();
-        repositorypage.getFileDirectoryInfo(folderCat).selectCheckbox();
-        repositorypage.getFileDirectoryInfo(folderTag).selectCheckbox();
+        ShareUserSitePage.getFileDirectoryInfo(drone, folderFav).selectCheckbox();
+        ShareUserSitePage.getFileDirectoryInfo(drone, folderCat).selectCheckbox();
+        ShareUserSitePage.getFileDirectoryInfo(drone, folderTag).selectCheckbox();
 
+        // TODO: Add util to take action on selected content from DocLib Navigation menu
         ConfirmDeletePage deletePage = repositorypage.getNavigation().render().selectDelete().render();
-        repositorypage = deletePage.selectAction(Action.Delete).render();
+        deletePage.selectAction(Action.Delete).render();
 
-        repositorypage.getFileDirectoryInfo("Copy of " + folderTag).clickOnTagNameLink(tagName + "1").render();
-        repositorypage = (RepositoryPage) ShareUser.getSharePage(drone);
+        repositorypage = ShareUserSitePage.getFileDirectoryInfo(drone, "Copy of " + folderTag).clickOnTagNameLink(tagName + "1").render();
+
         Assert.assertTrue(repositorypage.isFileVisible("Copy of " + folderTag));
         Assert.assertFalse(repositorypage.isFileVisible(folderTag));
 
-        ShareUserRepositoryPage.openRepository(drone);
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, destFolderPath);
 
-        repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, PAGE_TITLE_USERHOMES, parentFolder);
+        repositorypage = ShareUserSitePage.getFileDirectoryInfo(drone, "Copy of " + folderCat).clickOnCategoryNameLink(Categories.LANGUAGES.name()).render();
 
-        repositorypage.getFileDirectoryInfo("Copy of " + folderCat).clickOnCategoryNameLink(Categories.LANGUAGES.name());
-
-        repositorypage = (RepositoryPage) ShareUser.getSharePage(drone);
-
-        Assert.assertTrue(repositorypage.isFileVisible("Copy of " + folderCat));// Copy
-                                                                                // of
-                                                                                // a
-                                                                                // (a)
+        Assert.assertTrue(repositorypage.isFileVisible("Copy of " + folderCat));
 
         Assert.assertFalse(repositorypage.isFileVisible(folderCat));
 
-        ShareUserRepositoryPage.openRepository(drone);
+        repositorypage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, destFolderPath);
 
-        repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, PAGE_TITLE_USERHOMES, parentFolder);
-
-        repositorypage.getFileDirectoryInfo("Copy of " + folderTag).selectCheckbox();
-        repositorypage.getFileDirectoryInfo("Copy of " + folderCat).selectCheckbox();
-        repositorypage.getFileDirectoryInfo("Copy of " + folderFav).selectCheckbox();
+        ShareUserSitePage.getFileDirectoryInfo(drone, "Copy of " + folderTag).selectCheckbox();
+        ShareUserSitePage.getFileDirectoryInfo(drone, "Copy of " + folderCat).selectCheckbox();
+        ShareUserSitePage.getFileDirectoryInfo(drone, "Copy of " + folderFav).selectCheckbox();
 
         deletePage = repositorypage.getNavigation().render().selectDelete().render();
-        repositorypage = deletePage.selectAction(Action.Delete).render();
-        // TODO - May need extra setps to check these aren't displayed when
-        // browsing by tags/categories or in My Favorites
-        
-        ShareUser.logout(drone);
+        deletePage.selectAction(Action.Delete).render();
 
+        // TODO - May need extra setps to check these aren't displayed when browsing by tags/categories or in My Favorites
+
+        ShareUser.logout(drone);
     }
 
     /**
@@ -968,6 +825,9 @@ public class RepositoryFolderTests1 extends AbstractUtils
         String description3 = testName + System.currentTimeMillis() + "2";
 
         String subFolderPath = baseFolderPath + SLASH + folder1;
+
+        ShareUser.login(drone, testUser, testUserPass);
+
         // Navigate to repository page
         RepositoryPage repositorypage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
@@ -993,7 +853,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
         contentDetails.setContent(Content1);
 
         // Create content 1 in folder1
-        //ShareUserRepositoryPage.navigateToFolderInRepository(drone, folder1);
+        // ShareUserRepositoryPage.navigateToFolderInRepository(drone, folder1);
         subFolderPath = folder1;
         ShareUserRepositoryPage.createContentInFolder(drone, contentDetails, ContentType.PLAINTEXT, subFolderPath);
 
@@ -1064,30 +924,32 @@ public class RepositoryFolderTests1 extends AbstractUtils
         String folder1 = getFolderName(testName + System.currentTimeMillis());
         String folder2 = getFolderName(testName + System.currentTimeMillis() + "1");
 
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+
         // Navigate to repository page
         RepositoryPage repositorypage = ShareUserRepositoryPage.openRepository(drone);
 
         // Create new folder
-        ShareUserRepositoryPage.createFolderInFolderInRepository(drone, folder1, description, baseFolderPath);       
-        
+        ShareUserRepositoryPage.createFolderInFolderInRepository(drone, folder1, description, baseFolderPath);
+
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        
-        repositorypage =ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderPath);        
+
+        repositorypage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderPath);
 
         repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folder1);
-               
+
         // Create sub folder2 in folder1
-        repositorypage = (RepositoryPage)ShareUserSitePage.createFolder(drone, folder2, folder2);
-        
+        repositorypage = (RepositoryPage) ShareUserSitePage.createFolder(drone, folder2, folder2);
+
         Assert.assertTrue(folder2.equals(repositorypage.getFileDirectoryInfo(folder2).getName()));
         Assert.assertTrue(repositorypage.getFileDirectoryInfo(folder2).getContentEditInfo().contains("Administrator"));
-        
+
         ShareUserRepositoryPage.openRepositoryDetailedView(drone);
-        
-        repositorypage =ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderPath);        
+
+        repositorypage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderPath);
 
         repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folder1);
-        
+
         Assert.assertTrue(folder2.equals(repositorypage.getFileDirectoryInfo(folder2).getName()));
         Assert.assertTrue(repositorypage.getFileDirectoryInfo(folder2).getContentEditInfo().contains("Administrator"));
 
@@ -1104,16 +966,17 @@ public class RepositoryFolderTests1 extends AbstractUtils
     {
         String testName = getTestName();
 
-        String folder1 = getFolderName(testName + System.currentTimeMillis());        
+        String folder1 = getFolderName(testName + System.currentTimeMillis());
         String folder4 = getFolderName(testName + System.currentTimeMillis() + "-3");
-        
+
         String file2 = getFileName(testName + System.currentTimeMillis() + "4.txt");
 
         String Title2 = testName + System.currentTimeMillis() + "1";
         String Description2 = getTestName() + System.currentTimeMillis() + "1";
         String Content2 = getTestName() + System.currentTimeMillis() + "2";
-      
-      
+
+        ShareUser.login(drone, testUser, testUserPass);
+
         // Navigate to repository page
         RepositoryPage repositorypage = ShareUserRepositoryPage.openRepository(drone);
 
@@ -1129,18 +992,18 @@ public class RepositoryFolderTests1 extends AbstractUtils
 
         // Create content 2 in folder1
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        //String[] subFolderPath = new String[] { baseFolderName, folder1 };
-        repositorypage =ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderPath);        
+        // String[] subFolderPath = new String[] { baseFolderName, folder1 };
+        repositorypage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderPath);
 
         ShareUserRepositoryPage.createContentInFolder(drone, contentdetails2, ContentType.PLAINTEXT, folder1);
 
         ShareUserSitePage.createFolder(drone, folder4, folder4);
-        
+
         // Click on hide folders under options
         repositorypage = repositorypage.getNavigation().selectHideFolders().render();
         Assert.assertFalse(repositorypage.isFileVisible(folder4));
         repositorypage = repositorypage.getNavigation().selectShowFolders().render();
-        Assert.assertTrue(repositorypage.isFileVisible(folder4));  
+        Assert.assertTrue(repositorypage.isFileVisible(folder4));
 
     }
 
@@ -1150,7 +1013,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
      * <li>Verify pagination button navigates to selected page</li>
      * </ul>
      */
-    @Test(enabled = false)
+    @Test
     public void Enterprise40x_5336() throws Exception
     {
         String testName = getTestName();
@@ -1162,14 +1025,14 @@ public class RepositoryFolderTests1 extends AbstractUtils
         String Description2 = getTestName() + System.currentTimeMillis() + "1";
 
         String guestHomePath = REPO + SLASH + "Guest Home";
-        String baseFolderName = "Folderht1-RepositoryFolderTests";
+
+        ShareUser.login(drone, testUser, testUserPass);
 
         // Navigate to repository page
         RepositoryPage repositorypage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
         // Navigate to folder
-        String[] basefolderPath = new String[] { baseFolderName };
-        repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, basefolderPath);
+        repositorypage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderPath);
 
         // Create sub folder1 in folder
         ShareUserSitePage.createFolder(drone, subfolder1, Description1);
@@ -1184,6 +1047,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
 
         // verify folder1 is copied successfully
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
+
         RepositoryPage repage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, guestHomePath);
         Assert.assertTrue(repage.isFileVisible(subfolder1), "Verifying copied folder is present in site doclib");
         Assert.assertTrue(repage.isFileVisible(subfolder2), "Verifying copied folder is present in site doclib");
@@ -1193,7 +1057,8 @@ public class RepositoryFolderTests1 extends AbstractUtils
     @Test
     public void Enterprise40x_5412()
     {
-        String testUser = getUserNameFreeDomain(testName);
+        String testName = getTestName();
+
         String folderName = getFolderName(testName) + System.currentTimeMillis();
         String folderTitle = (testUser) + System.currentTimeMillis();
         String description = (testName) + System.currentTimeMillis();
@@ -1206,18 +1071,18 @@ public class RepositoryFolderTests1 extends AbstractUtils
 
         // Create new folder
         repositorypage = ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderTitle, description);
-       
+
         ShareUserRepositoryPage.copyToFolderInDestination(drone, folderName, "My Files");
 
         repositorypage = ShareUserRepositoryPage.openUserFromUserHomesFolderOfRepository(drone, testUser);
 
         Assert.assertTrue(repositorypage.isFileVisible(folderName));
-        
+
         ShareUserRepositoryPage.copyToFolderInDestination(drone, folderName, "My Files");
-        
+
         Assert.assertTrue(repositorypage.isFileVisible("Copy of " + folderName));
 
-        ShareUser.logout(drone);        
+        ShareUser.logout(drone);
     }
 
 }

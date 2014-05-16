@@ -6,8 +6,14 @@
 				<exclude name="DataPrep.*" />
 				<exclude name ="EnterpriseOnly" />
 				<exclude name ="Hybrid.*" />
+                <exclude name="NonGrid" />
 			</run>
 		</groups>
+        
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+    </listeners>
+            
 		<classes>
 			<class name="org.alfresco.share.api.CommentsAPITests" />
 			<class name="org.alfresco.share.api.DeploymentsAPITests" />

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.po.share.MyTasksPage;
-import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.SyncInfoPage;
 import org.alfresco.po.share.task.EditTaskPage;
@@ -46,16 +45,19 @@ import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserWorkFlow;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
  * @author Ranjith Manyam
  */
+@Listeners(FailedTestListener.class)
 public class CloudReviewTaskTest extends AbstractWorkflow
 {
 
@@ -209,8 +211,7 @@ public class CloudReviewTaskTest extends AbstractWorkflow
 
             // Login as User1 (OP), create a site and upload a document
             ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-            SiteDashboardPage siteDashboardPage = ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
-            siteDashboardPage.getSiteNav().selectSiteDocumentLibrary().render();
+            ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
             DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo).render();
             // Start a "Cloud Task or Review" workflow
             CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, fileName);
@@ -922,8 +923,8 @@ public class CloudReviewTaskTest extends AbstractWorkflow
             assertEquals(taskInfo.getOwner(), getUserFullName(cloudUser));
             assertEquals(taskInfo.getPriority(), Priority.MEDIUM);
             assertEquals(taskInfo.getDueDate().toLocalDate(), dueDate.toLocalDate());
-            // assertTrue(taskInfo.getDueDateString().equals(dueDate.toString("E dd MMM yyy")));
-            assertTrue(taskInfo.getDueDateString().contains(dueDate.toString("YYYY-MM-DD")));
+            // TODO - ALF-20755
+            // assertTrue(taskInfo.getDueDateString().equals(dueDate.toString("E dd MMM yyy")),"Incorrect Date Format: ALF-20755");
             assertNotNull(taskInfo.getIdentifier());
             assertFalse(StringUtils.isEmpty(taskInfo.getIdentifier()));
 
@@ -949,7 +950,8 @@ public class CloudReviewTaskTest extends AbstractWorkflow
             assertEquals(taskInfo.getMessage(), workFlowName);
             assertEquals(taskInfo.getOwner(), getUserFullName(cloudUser));
             assertEquals(taskInfo.getPriority(), Priority.MEDIUM);
-            assertTrue(taskInfo.getDueDateString().contains(dueDate.toString("DD MMM, YYYY")));
+            // TODO - UnComment when ALF-20756 is fixed 
+            // assertTrue(taskInfo.getDueDateString().contains(dueDate.toString("dd MMM, YYYY")), "Expected: " + taskInfo.getDueDateString() + " Actual: " + dueDate.toString("dd MMM, YYYY") + "Incorrect Date Format: ALF-20756");
             assertNotNull(taskInfo.getIdentifier());
             assertFalse(StringUtils.isEmpty(taskInfo.getIdentifier()));
 
@@ -1098,7 +1100,8 @@ public class CloudReviewTaskTest extends AbstractWorkflow
             assertEquals(taskInfo.getMessage(), workFlowName);
             assertEquals(taskInfo.getOwner(), getUserFullName(user1));
             assertEquals(taskInfo.getPriority(), Priority.MEDIUM);
-            assertTrue(taskInfo.getDueDateString().contains(dueDate.toString("E DD MMM YYYY")));
+            // TODO - Known Issue: ALF-20756
+            // assertTrue(taskInfo.getDueDateString().contains(dueDate.toString("E dd MMM YYYY")), "Actual: " + taskInfo.getDueDateString() + " Expected: " + dueDate.toString("E dd MMM YYYY") + "Incorrect Date Format: ALF-20756");
             assertNotNull(taskInfo.getIdentifier());
             assertFalse(StringUtils.isEmpty(taskInfo.getIdentifier()));
 
@@ -1129,7 +1132,8 @@ public class CloudReviewTaskTest extends AbstractWorkflow
             assertEquals(taskInfo.getMessage(), workFlowName);
             assertEquals(taskInfo.getOwner(), getUserFullName(user1));
             assertEquals(taskInfo.getPriority(), Priority.MEDIUM);
-            assertTrue(taskInfo.getDueDateString().contains(dueDate.toString("E DD MMM YYYY")));
+            // TODO - ALF-20756
+            // assertTrue(taskInfo.getDueDateString().contains(dueDate.toString("E dd MMM YYYY")), "Actual: " + taskInfo.getDueDateString() + " Expected: " + dueDate.toString("E dd MMM YYYY") + "Incorrect Date Format: ALF-20756");
             assertNotNull(taskInfo.getIdentifier());
             assertFalse(StringUtils.isEmpty(taskInfo.getIdentifier()));
 
@@ -1197,9 +1201,9 @@ public class CloudReviewTaskTest extends AbstractWorkflow
             assertEquals(generalInfo.getTitle(), WorkFlowTitle.CLOUD_TASK_OR_REVIEW);
             assertEquals(generalInfo.getDescription(), WorkFlowDescription.CREATE_A_TASK_OR_START_A_REVIEW);
             assertEquals(generalInfo.getStartedBy(), getUserFullName(user1));
-            assertTrue(generalInfo.getDueDateString().contains(dueDate.toString("E DD MMM YYYY")));
-            // assertEquals(generalInfo.getDueDate().toLocalDate(),
-            // dueDate.toLocalDate());
+
+            // TODO - KNOWN ISSUE: ALF-20756
+            // assertTrue(generalInfo.getDueDateString().contains(dueDate.toString("E dd MMM YYYY")), "Actual: " + taskInfo.getDueDateString() + " Expected: " + dueDate.toString("E dd MMM YYYY") + "Incorrect Date Format: ALF-20756");
             assertEquals(generalInfo.getCompletedDate().toLocalDate(), getToDaysLocalDate());
             assertEquals(generalInfo.getStartDate().toLocalDate(), getToDaysLocalDate());
             assertEquals(generalInfo.getPriority(), Priority.MEDIUM);

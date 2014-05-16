@@ -56,12 +56,18 @@ public class ShareTestProperty
     private final String headerKey;
     private final int httpSecurePort;
     private final String mimeTypes;
+    private String jmxrmiPort;
+    private String jmxrmiUser;
+    private String jmxrmiPassword;
+    private String nodePort;
+    private final String licenseShare;
+    private final String maxWaitTimeCloudSync;
 
     public ShareTestProperty(final String shareUrl, final String apiUrl, final String gridUrl, final String username, final String password, String alfrescoVersion,
             String cloudUrlForHybrid, final String downloadDirectory, final String googleUserName, final String googlePassword, final boolean hybridEnabled,
             final String uniqueTestRunName, final String domainFree, final String domainPremium, final String domainHybrid, final String defaultUser,
             final String uniqueTestDataString, final String adminUsername, final String adminPassword, final String superadminUsername,
-            final String superadminPassword, final int httpSecurePort, final String headerKey, final String mimeTypes)
+            final String superadminPassword, final int httpSecurePort, final String headerKey, final String mimeTypes, final String jmxrmiPort, final String jmxrmiUser, final String jmxrmiPassword, final String nodePort, final String licenseShare, final String maxWaitTimeCloudSync)
     {
         this.shareUrl = shareUrl;
         this.apiUrl = apiUrl;
@@ -87,6 +93,22 @@ public class ShareTestProperty
         this.headerKey = headerKey;
         this.httpSecurePort = httpSecurePort;
         this.mimeTypes = mimeTypes;
+        this.jmxrmiPort = jmxrmiPort;
+        this.jmxrmiUser = jmxrmiUser;
+        this.jmxrmiPassword = jmxrmiPassword;
+        this.nodePort = nodePort;
+        this.licenseShare = licenseShare;
+        this.maxWaitTimeCloudSync = maxWaitTimeCloudSync;
+    }
+
+    public String getMaxWaitTimeCloudSync()
+    {
+        return maxWaitTimeCloudSync;
+    }
+
+    public String getLicenseShare()
+    {
+        return licenseShare;
     }
 
     public String getShareUrl()
@@ -280,6 +302,79 @@ public class ShareTestProperty
     {
         return "ShareTestProperty [shareUrl=" + shareUrl + "apiUrl=" + apiUrl + ", cloudUrlForHybrid=" + cloudUrlForHybrid + ", gridUrl=" + gridUrl + ", username=" + username
                 + ", password=" + password + ", alfrescoVersion=" + alfrescoVersion + ", downloadDirectory=" + downloadDirectory + ", googleUserName="
-                + googleUserName + ", googlePassword=" + googlePassword + ", mimeTypes=" + mimeTypes + "]";
+                + googleUserName + ", googlePassword=" + googlePassword + ", mimeTypes=" + mimeTypes + ", jmxrmiPort=" + jmxrmiPort +", jmxrmiUser=" + jmxrmiUser
+                + ", jmxrmiPassword=" + jmxrmiPassword + ", nodePort=" + nodePort + "]";
     }
+    
+    /**
+    *
+    * @return JMX port
+    */
+   public String getJmxPort()
+   {
+       return jmxrmiPort;
+   }
+
+   /**
+    *
+    * @param port
+    */
+   public void setJmxPort(String port)
+   {
+       this.jmxrmiPort= port;
+   }
+
+   /**
+    *
+    * @return JMX user
+    */
+   public String getJmxUser()
+   {
+       return jmxrmiUser;
+   }
+
+   /**
+    *
+    * @param user
+    */
+   public void setJmxUser(String user)
+   {
+       this.jmxrmiUser= user;
+   }
+
+   /**
+    *
+    * @return JMX password
+    */
+   public String getJmxPassword()
+   {
+       return jmxrmiPassword;
+   }
+
+   /**
+    *
+    * @param password
+    */
+   public void setJmxPassword(String password)
+   {
+       this.jmxrmiPassword= password;
+   }
+
+   /**
+    *
+    * @return JMX port
+    */
+   public String getNodePort()
+   {
+       return nodePort;
+   }
+
+   /**
+    *
+    * @param port
+    */
+   public void setNodePort(String port)
+   {
+       this.nodePort= port;
+   }
 }

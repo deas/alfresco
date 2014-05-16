@@ -19,17 +19,29 @@
 
 package org.alfresco.share.site.document;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.enums.ViewType;
+import org.alfresco.po.share.enums.ZoomStyle;
 import org.alfresco.po.share.site.UpdateFilePage;
+import org.alfresco.po.share.site.contentrule.FolderRulesPage;
+import org.alfresco.po.share.site.contentrule.FolderRulesPageWithRules;
+import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
+import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.ActionSelectorEnterpImpl;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.DetailsPage;
+import org.alfresco.po.share.site.document.DocumentAction;
+import org.alfresco.po.share.site.document.DocumentAspect;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
+import org.alfresco.po.share.site.document.DocumentLibraryNavigation;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
 import org.alfresco.po.share.site.document.EditInGoogleDocsPage;
@@ -38,6 +50,10 @@ import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.GalleryViewFileDirectoryInfo;
 import org.alfresco.po.share.site.document.GoogleDocsAuthorisation;
 import org.alfresco.po.share.site.document.GoogleDocsUpdateFilePage;
+import org.alfresco.po.share.site.document.ManagePermissionsPage;
+import org.alfresco.po.share.site.document.SelectAspectsPage;
+import org.alfresco.po.share.site.document.ShareLinkPage;
+import org.alfresco.po.share.site.document.ViewPublicLinkPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.workflow.NewWorkflowPage;
 import org.alfresco.po.share.workflow.Priority;
@@ -115,8 +131,8 @@ public class GalleryViewTest extends AbstractUtils
      * <li>Verify that google docs is opened successfully.</li>
      * </ul>
      */
-    @Test(groups = "GoogleDocs", timeOut = 400000)
-    public void alf_8751() throws Exception
+    @Test(groups = {"AlfrescoOne", "NonGrid"}, timeOut = 400000)
+    public void ALF_8751() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -189,6 +205,8 @@ public class GalleryViewTest extends AbstractUtils
 
         // Open Site Library
         ShareUser.openDocumentLibrary(customDrone);
+
+        //TODO - Add step 3. Аt least 1 folders and 1 .txt/.xml/.html document are created according to TestLink
     }
 
     /**
@@ -207,7 +225,7 @@ public class GalleryViewTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = "AlfrescoOne")
-    public void alf_8748() throws Exception
+    public void ALF_8748() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -245,6 +263,7 @@ public class GalleryViewTest extends AbstractUtils
         String newDocVersion = detailsPage.getDocumentVersion();
         
         // Verify the both versions are not same.
+        //TODO Add explanation assert
         Assert.assertNotEquals(docVersion, newDocVersion);
     }
 
@@ -287,7 +306,7 @@ public class GalleryViewTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = "AlfrescoOne")
-    public void alf_8747() throws Exception
+    public void ALF_8747() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -350,6 +369,8 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        //TODO - Add step 3. Аt least 1 folders and 1 document  are created. according to TestLink
     }
 
     /**
@@ -365,7 +386,7 @@ public class GalleryViewTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = "AlfrescoOne")
-    public void alf_8712() throws Exception
+    public void ALF_8712() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -402,6 +423,8 @@ public class GalleryViewTest extends AbstractUtils
         thisRow = docLibPage.getFileDirectoryInfo(fileName1);
 
         Assert.assertNotEquals(thisRow.getVersionInfo(), version);
+
+        //TODO Add explanation assert
     }
 
     @Test(groups = "DataPrepAlfrescoOne")
@@ -421,6 +444,8 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        //TODO - Add step 3. At least 1 folder and 1 document are created in the Document Library according to TestLink
     }
 
     /**
@@ -435,8 +460,8 @@ public class GalleryViewTest extends AbstractUtils
      * <li>Verify the file is downloaded successfully in given folder.</li>
      * </ul>
      */
-    @Test(groups = "Download")
-    public void alf_8745() throws Exception
+    @Test(groups = {"AlfrescoOne", "NonGrid", "download"})
+    public void ALF_8745() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -466,6 +491,7 @@ public class GalleryViewTest extends AbstractUtils
         webDriverWait(customDrone, maxDownloadWaitTime);
 
         // Verify the file is downloaded or not.
+        //TODO Add explanation assert
         Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory).contains(fileName1));
     }
 
@@ -486,10 +512,11 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        //TODO - Add step 3. Аt least 1 folders and 1 document  are created according to TestLink
     }
 
     /**
-     * Test:
+     * Test: Test case steps needs to be amended in TestLink.
      * <ul>
      * <li>Login</li>
      * <li>Open Site Dashboard</li>
@@ -509,8 +536,8 @@ public class GalleryViewTest extends AbstractUtils
      * <task_name> is displayed</li>
      * </ul>
      */
-    @Test(groups = "AlfrescoOne", enabled=false)
-    public void alf_8749() throws Exception
+    @Test(groups = "AlfrescoOne")
+    public void ALF_8749() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -535,16 +562,21 @@ public class GalleryViewTest extends AbstractUtils
         FileDirectoryInfo thisRow = docLibPage.getFileDirectoryInfo(fileName1);
 
         // verify info button
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isInfoIconVisible());
 
         // click on info button
         thisRow.clickInfoIcon();
 
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isInfoPopUpDisplayed());
 
         // Select more , select start workflow/task
         StartWorkFlowPage startWorkFlow = thisRow.selectStartWorkFlow().render();
 
+        //TODO Add explanation assert
+        Assert.assertTrue(startWorkFlow instanceof StartWorkFlowPage);
+        
         // select Adhoc Workflow/task
         NewWorkflowPage newWorkflowPage = startWorkFlow.getWorkflowPage(WorkFlowType.NEW_WORKFLOW).render();
 
@@ -565,6 +597,7 @@ public class GalleryViewTest extends AbstractUtils
         DocumentDetailsPage detailsPage = thisRow.selectThumbnail().render();
 
         // Verify the document is part of work flow/task.
+        //TODO Add explanation assert
         Assert.assertTrue(detailsPage.isPartOfWorkflow());
     }
 
@@ -585,6 +618,8 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        ////TODO - Add step 3. At least 1 folder and 1 document are created in the Document Library according to TestLink
     }
 
     /**
@@ -595,12 +630,10 @@ public class GalleryViewTest extends AbstractUtils
      * <li>Open Document Library in Gallery View</li>
      * <li>Verify that Customize Dashboard page is opened</li>
      * <li>Add 1 file to doclib</li>
-     * <li>Select download</li>
-     * <li>Verify the file is downloaded successfully in given folder.</li>
      * </ul>
      */
     @Test(groups = "AlfrescoOne")
-    public void alf_8742() throws Exception
+    public void ALF_8742() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -626,17 +659,20 @@ public class GalleryViewTest extends AbstractUtils
 
         // For File:
         // verify info button
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isInfoIconVisible());
 
         // click on info button
         thisRow.clickInfoIcon();
 
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isInfoPopUpDisplayed());
 
         // Click on documetn name link
         DocumentDetailsPage detailsPage = thisRow.clickContentNameFromInfoMenu().render();
 
         // verify the document details page is opened
+        //TODO Add explanation assert
         Assert.assertTrue(detailsPage.isDocumentDetailsPage());
 
         docLibPage = ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
@@ -644,17 +680,20 @@ public class GalleryViewTest extends AbstractUtils
         thisRow = docLibPage.getFileDirectoryInfo(folderName);
 
         // verify info button
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isInfoIconVisible());
 
         // click on info button
         thisRow.clickInfoIcon();
 
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isInfoPopUpDisplayed());
 
         // Click on folder name link
         docLibPage = thisRow.clickContentNameFromInfoMenu().render();
 
         // verify the document details page is opened
+        //TODO Add explanation assert
         Assert.assertTrue(docLibPage.isDocumentLibrary());
     }
 
@@ -675,6 +714,8 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        //TODO - Add step 3. At least 1 folder and 1 document are created in the Document Library according to TestLink
     }
 
     /**
@@ -690,7 +731,7 @@ public class GalleryViewTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = "AlfrescoOne")
-    public void alf_8741() throws Exception
+    public void ALF_8741() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -699,12 +740,6 @@ public class GalleryViewTest extends AbstractUtils
         String fileName1 = getFileName(testName) + System.currentTimeMillis();
         String folderName = getFolderName(testName) + System.currentTimeMillis();
         String fileInfo1[] = { fileName1 };
-
-        // User login.
-        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
-
-        // Open Site Library
-        ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // User login.
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
@@ -722,17 +757,20 @@ public class GalleryViewTest extends AbstractUtils
 
         // For File:
         // verify info button
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isInfoIconVisible());
 
         // click on info button
         thisRow.clickInfoIcon();
 
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isInfoPopUpDisplayed());
 
         // Click on user link
         MyProfilePage profilePage = thisRow.selectModifier().render();
 
         // verify the user profile page is opened
+        //TODO Add explanation assert
         Assert.assertTrue(profilePage.getTitle().contains(customDrone.getValue("user.profile.page.text")));
 
         docLibPage = ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
@@ -741,17 +779,20 @@ public class GalleryViewTest extends AbstractUtils
         thisRow = docLibPage.getFileDirectoryInfo(folderName);
 
         // verify info button
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isInfoIconVisible());
 
         // click on info button
         thisRow.clickInfoIcon();
 
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isInfoPopUpDisplayed());
 
         // Click on user link
         profilePage = thisRow.selectModifier().render();
 
         // verify the user profile page is opened
+        //TODO Add explanation assert
         Assert.assertTrue(profilePage.getTitle().contains(customDrone.getValue("user.profile.page.text")));
     }
 
@@ -772,6 +813,8 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        //TODO - Add step 3. At least 1 document and 1 folder are created in the Document Library according to TestLink
     }
 
     /**
@@ -787,7 +830,7 @@ public class GalleryViewTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = "AlfrescoOne")
-    public void alf_8719() throws Exception
+    public void ALF_8719() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -817,11 +860,13 @@ public class GalleryViewTest extends AbstractUtils
 
         // For File:
         // verify info button
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isInfoIconVisible());
 
         // click on info button
         thisRow.clickInfoIcon();
 
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isInfoPopUpDisplayed());
 
         // mouse over on documetn link and clicks on edit link
@@ -831,6 +876,7 @@ public class GalleryViewTest extends AbstractUtils
         thisRow = docLibPage.getFileDirectoryInfo(updatedFileName1);
 
         // verify the rename is successful
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.getContentNameFromInfoMenu().equals(updatedFileName1));
 
         // mouse over on documetn link and clicks on edit link
@@ -843,6 +889,7 @@ public class GalleryViewTest extends AbstractUtils
         thisRow.contentNameClickCancel();
 
         // Verify the name is not changed.
+        //TODO Add explanation assert
         Assert.assertTrue(docLibPage.isFileVisible(updatedFileName1));
         Assert.assertFalse(docLibPage.isFileVisible(notUpdatedfileName1));
 
@@ -850,12 +897,11 @@ public class GalleryViewTest extends AbstractUtils
         thisRow = docLibPage.getFileDirectoryInfo(folderName);
 
         // verify info button
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isInfoIconVisible());
 
         // click on info button
         thisRow.clickInfoIcon();
-
-        Assert.assertTrue(thisRow.isInfoPopUpDisplayed());
 
         // mouse over on documetn link and clicks on edit link
         // Enter the modified name, Click save
@@ -864,6 +910,7 @@ public class GalleryViewTest extends AbstractUtils
         thisRow = docLibPage.getFileDirectoryInfo(updatedFolderName);
 
         // verify the rename is successful
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.getContentNameFromInfoMenu().equals(updatedFolderName));
 
         // mouse over on documetn link and clicks on edit link
@@ -876,6 +923,7 @@ public class GalleryViewTest extends AbstractUtils
         thisRow.contentNameClickCancel();
 
         // Verify the file is not found with cancelled name changes.
+        //TODO Add explanation assert
         Assert.assertTrue(docLibPage.isFileVisible(updatedFolderName));
         Assert.assertFalse(docLibPage.isFileVisible(notUpdatedFolderName));
     }
@@ -897,11 +945,13 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        //TODO - Add step 3. At least 1 document and 1 folder are created in the Document Library according to TestLink
     }
 
     // This test includes 8716/8723
     @Test(groups = "AlfrescoOne")
-    public void alf_8723() throws Exception
+    public void ALF_8723() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -937,6 +987,7 @@ public class GalleryViewTest extends AbstractUtils
 
         // For File:
         // Verify the comments link and tooltip
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isCommentLinkPresent());
         Assert.assertTrue(thisRow.getCommentsToolTip().equalsIgnoreCase(COMMENT_TOOLTIP));
 
@@ -948,6 +999,7 @@ public class GalleryViewTest extends AbstractUtils
 
         // Verify the comments count is 1 on doclib page.
         thisRow = docLibPage.getFileDirectoryInfo(fileName1);
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.getCommentsCount() == 1);
 
         // Edit the previous comment and verify the changes
@@ -955,6 +1007,7 @@ public class GalleryViewTest extends AbstractUtils
         detailsPage = detailsPage.editComment(comment, newComment).render();
         detailsPage = detailsPage.saveEditComments().render();
 
+        //TODO Add explanation assert
         Assert.assertTrue(detailsPage.getComments().contains(newComment));
         Assert.assertFalse(detailsPage.getComments().contains(comment));
 
@@ -962,6 +1015,7 @@ public class GalleryViewTest extends AbstractUtils
         detailsPage = detailsPage.editComment(newComment, noNewComment).render();
         detailsPage.cancelEditComments();
 
+        //TODO Add explanation assert
         Assert.assertTrue(detailsPage.getComments().contains(newComment));
         Assert.assertFalse(detailsPage.getComments().contains(noNewComment));
 
@@ -970,6 +1024,7 @@ public class GalleryViewTest extends AbstractUtils
 
         docLibPage = ShareUser.openDocumentLibrary(customDrone);
         thisRow = docLibPage.getFileDirectoryInfo(fileName1);
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.getCommentsCount() == 0);
 
         // For Folder:
@@ -977,6 +1032,7 @@ public class GalleryViewTest extends AbstractUtils
         thisRow = docLibPage.getFileDirectoryInfo(folderName);
 
         // Verify the comments link and tooltip
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isCommentLinkPresent());
         Assert.assertTrue(thisRow.getCommentsToolTip().equalsIgnoreCase(FOLDER_COMMENT_TOOLTIP));
 
@@ -988,6 +1044,7 @@ public class GalleryViewTest extends AbstractUtils
 
         // Verify the comments count is 1 on doclib page.
         thisRow = docLibPage.getFileDirectoryInfo(folderName);
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.getCommentsCount() == 1);
 
         // Edit the previous comment and verify the changes
@@ -995,6 +1052,7 @@ public class GalleryViewTest extends AbstractUtils
         folderDetailsPage = folderDetailsPage.editComment(comment, newComment).render();
         folderDetailsPage = folderDetailsPage.saveEditComments().render();
 
+        //TODO Add explanation assert
         Assert.assertTrue(folderDetailsPage.getComments().contains(newComment));
         Assert.assertFalse(folderDetailsPage.getComments().contains(comment));
 
@@ -1002,6 +1060,7 @@ public class GalleryViewTest extends AbstractUtils
         folderDetailsPage = folderDetailsPage.editComment(newComment, noNewComment).render();
         folderDetailsPage.cancelEditComments();
         folderDetailsPage = folderDetailsPage.render();
+        //TODO Add explanation assert
         Assert.assertTrue(folderDetailsPage.getComments().contains(newComment));
         Assert.assertFalse(folderDetailsPage.getComments().contains(noNewComment));
 
@@ -1010,6 +1069,7 @@ public class GalleryViewTest extends AbstractUtils
 
         docLibPage = ShareUser.openDocumentLibrary(customDrone);
         thisRow = docLibPage.getFileDirectoryInfo(fileName1);
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.getCommentsCount() == 0);
     }
 
@@ -1030,10 +1090,12 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        //TODO - Move step 3. At least 1 document is created in the Document Library from test to dataprep
     }
 
-    @Test(groups = "AlfrescoOne")
-    public void alf_8728() throws Exception
+    @Test(groups = {"AlfrescoOne", "Enterprise42Bug"})
+    public void ALF_8728() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1061,6 +1123,7 @@ public class GalleryViewTest extends AbstractUtils
         // Check the document is correctly displayed
         String content = "this is a sample test upload file";
         String htmlSource = ((WebDroneImpl) customDrone).getDriver().getPageSource();
+        //TODO Add explanation assert
         Assert.assertTrue(htmlSource.contains(content));
     }
 
@@ -1081,11 +1144,12 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        //TODO Move step 3. At least 1 document and 1 folder are created in the Document Library from test to dataprep
     }
 
     // This test includes 8666/8729
     @Test(groups = "AlfrescoOne")
-    public void alf_8729() throws Exception
+    public void ALF_8729() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1123,6 +1187,7 @@ public class GalleryViewTest extends AbstractUtils
         // Verify the changes are successful.
         EditDocumentPropertiesPage editDocPropertiesPage = thisRow.selectEditProperties().render();
 
+        //TODO Add explanation assert
         Assert.assertTrue(editDocPropertiesPage.getName().equals(updatedFileName));
         Assert.assertTrue(editDocPropertiesPage.getDocumentTitle().equals(newTitle));
         Assert.assertTrue(editDocPropertiesPage.getDescription().equals(description));
@@ -1130,12 +1195,14 @@ public class GalleryViewTest extends AbstractUtils
         // Edit the name,title,description and cancel the changes and verify the changes are not reflected.
         docLibPage = ShareUserSitePage.editProperties(customDrone, updatedFileName, cancelledname, cancelledTitle, cancelledDescription, false);
 
+        //TODO Add explanation assert
         Assert.assertFalse(docLibPage.isFileVisible(cancelledname));
         thisRow = docLibPage.getFileDirectoryInfo(updatedFileName);
 
         // Verify the changes are not successful.
         editDocPropertiesPage = thisRow.selectEditProperties().render();
 
+        //TODO Add explanation assert
         Assert.assertFalse(editDocPropertiesPage.getName().equals(cancelledname));
         Assert.assertFalse(editDocPropertiesPage.getDocumentTitle().equals(cancelledTitle));
         Assert.assertFalse(editDocPropertiesPage.getDescription().equals(cancelledDescription));
@@ -1149,6 +1216,7 @@ public class GalleryViewTest extends AbstractUtils
         // verify the changes are successful..
         editDocPropertiesPage = thisRow.selectEditProperties().render();
 
+        //TODO Add explanation assert
         Assert.assertTrue(editDocPropertiesPage.getName().equals(updatedFolderName));
         Assert.assertTrue(editDocPropertiesPage.getDocumentTitle().equals(newTitle));
         Assert.assertTrue(editDocPropertiesPage.getDescription().equals(description));
@@ -1156,12 +1224,14 @@ public class GalleryViewTest extends AbstractUtils
         // Edit the name,title,description and cancel the changes and verify the changes are not reflected.
         docLibPage = ShareUserSitePage.editProperties(customDrone, updatedFolderName, cancelledname, cancelledTitle, cancelledDescription, false);
 
+        //TODO Add explanation assert
         Assert.assertFalse(docLibPage.isFileVisible(cancelledname));
         thisRow = docLibPage.getFileDirectoryInfo(updatedFolderName);
 
         // verify the changes are not successful.
         editDocPropertiesPage = thisRow.selectEditProperties().render();
 
+        //TODO Add explanation assert
         Assert.assertFalse(editDocPropertiesPage.getName().equals(cancelledname));
         Assert.assertFalse(editDocPropertiesPage.getDocumentTitle().equals(cancelledTitle));
         Assert.assertFalse(editDocPropertiesPage.getDescription().equals(cancelledDescription));
@@ -1189,6 +1259,8 @@ public class GalleryViewTest extends AbstractUtils
         // Open Site Library
         ShareUser.openDocumentLibrary(customDrone);
         ShareUserSitePage.createFolder(customDrone, copyFolderName, "");
+
+        //TODO Move step 3. At least 3 folders (folder1 containing subfolder folder1_1and folder2) and 1 document are created in the Document Library; from test to dataprep
     }
 
     /**
@@ -1206,7 +1278,7 @@ public class GalleryViewTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = "AlfrescoOne")
-    public void alf_8722() throws Exception
+    public void ALF_8722() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1252,6 +1324,7 @@ public class GalleryViewTest extends AbstractUtils
         DocumentLibraryPage docLibPage = ShareUserSitePage.navigateToFolder(customDrone, folder);
 
         // Verifying that file is copied successfully.
+        //TODO Add explanation assert
         Assert.assertTrue(docLibPage.isFileVisible(fileName1));
 
         docLibPage = ShareUser.openDocumentLibrary(customDrone);
@@ -1263,11 +1336,13 @@ public class GalleryViewTest extends AbstractUtils
         docLibPage = ShareUserSitePage.navigateToFolder(customDrone, copyFolderName);
 
         // Verifying that folder is copied successfully.
+        //TODO Add explanation assert
         Assert.assertTrue(docLibPage.isFileVisible(folder));
 
         ShareUserSitePage.navigateToFolder(customDrone, folder);
 
         // Verifying that sub folder is copied successfully.
+        //TODO Add explanation assert
         Assert.assertTrue(docLibPage.isFileVisible(subFolder));
     }
 
@@ -1288,6 +1363,9 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        ////TODO Move step 3. At least 1 folder and 1 document are created in the Document Library; from test to dataprep
+
     }
 
     /**
@@ -1313,7 +1391,7 @@ public class GalleryViewTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = "DocLibToolBar")
-    public void alf_8743() throws Exception
+    public void ALF_8743() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1343,11 +1421,13 @@ public class GalleryViewTest extends AbstractUtils
         ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
 
         // Add a tag to the first file
-        ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).addTag(testFileTagName);
+        ShareUserSitePage.addTag(customDrone, fileName1,testFileTagName);
 
 
         // Verify the Tags size
-        Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).getTags().size(), 1);
+
+        //TODO Add explanation assert
+        Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).getTags().size(), 1, "Tag added above isn't displayed");
 
         // Clicking the tagName link present under file1 name
         FileDirectoryInfo thisRow = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
@@ -1355,6 +1435,8 @@ public class GalleryViewTest extends AbstractUtils
         thisRow.clickOnTagNameLink(testFileTagName).render();
 
         // Check that the file1 is listed
+
+        //TODO Add explanation assert
         Assert.assertTrue(ShareUserSitePage.searchDocumentLibraryWithRetry(customDrone, fileName1, true));
 
         // Clicking the tagName present under Tags menu tree on Document Library page.
@@ -1362,6 +1444,8 @@ public class GalleryViewTest extends AbstractUtils
         docLibPage.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(testFileTagName).render();
 
         // Check that the file1 is listed
+
+        //TODO Add explanation assert
         Assert.assertTrue(docLibPage.isFileVisible(fileName1));
 
         // Folder:
@@ -1384,12 +1468,16 @@ public class GalleryViewTest extends AbstractUtils
         docLibPage = thisRow.clickOnTagNameLink(testFolderTagName).render();
 
         // Check that the file1 is listed
+
+        //TODO Add explanation assert
         Assert.assertTrue(ShareUserSitePage.searchDocumentLibraryWithRetry(customDrone, folderName, true));
 
         // Clicking the tagName present under Tags menu tree on Document Library page.
         docLibPage = docLibPage.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(testFolderTagName).render();
 
         // Check that the file1 is listed
+
+        //TODO Add explanation assert
         Assert.assertTrue(docLibPage.isFileVisible(folderName));
     }
 
@@ -1410,6 +1498,8 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        //TODO Move step 3. At least 1 document and 1 folder containing a subfolder are created in the Document Library from test to dataprep
     }
 
     /**
@@ -1427,7 +1517,7 @@ public class GalleryViewTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = "DocLibToolBar")
-    public void alf_8721() throws Exception
+    public void ALF_8721() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1456,6 +1546,7 @@ public class GalleryViewTest extends AbstractUtils
         docLibPage = thisRow.delete().render();
 
         // Verify the first file is deleted successfully.
+        //TODO Add explanation assert
         Assert.assertFalse(docLibPage.isFileVisible(fileName1));
 
         // Folder:
@@ -1465,6 +1556,7 @@ public class GalleryViewTest extends AbstractUtils
         docLibPage = thisRow.delete().render();
 
         // Verify the folder is deleted successfully.
+        //TODO Add explanation assert
         Assert.assertFalse(docLibPage.isFileVisible(folderName));
     }
 
@@ -1485,6 +1577,8 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        //TODO Move step 3. At least 1 folder and 1 document are created in the Document Library from test to dataprep
     }
 
     /**
@@ -1499,8 +1593,8 @@ public class GalleryViewTest extends AbstractUtils
      * <li>Verify the folder is downloaded successfully in given folder.</li>
      * </ul>
      */
-    @Test(groups = "Download")
-    public void alf_8664() throws Exception
+    @Test(groups = {"EnterpriseOnly", "NonGrid", "Download"})
+    public void ALF_8664() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1530,6 +1624,7 @@ public class GalleryViewTest extends AbstractUtils
         webDriverWait(customDrone, maxDownloadWaitTime);
 
         // Verify the file is downloaded or not.
+        //TODO Add explanation assert
         Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory).contains(folderName + ZIP_EXTENSION));
     }
 
@@ -1550,6 +1645,8 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        //TODO Move step 3. At least 1 folder is created in the Document Library from test to dataprep
     }
 
     /**
@@ -1561,8 +1658,8 @@ public class GalleryViewTest extends AbstractUtils
      * <li>Add folder and file to doclib</li>
      * </ul>
      */
-    @Test(groups = "AlfrescoOne", enabled = false)
-    public void alf_8679() throws Exception
+    @Test(groups = "AlfrescoOne")
+    public void ALF_8679() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1589,18 +1686,39 @@ public class GalleryViewTest extends AbstractUtils
         // Turn off the "Inherit permissions" option, add any users/groups to "Locally Set Permissions", set any role to users/groups and click "Save" button;
         DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUserMembers.managePermissionsOnContent(customDrone, accessUser, folderName,
                 UserRole.COLLABORATOR, false);
-
+        docLibPage.render();
         DetailsPage detailsPage = ShareUserSitePage.getContentDetailsPage(customDrone, folderName);
+        
+        ManagePermissionsPage managerPermissions = detailsPage.selectManagePermissions().render();
 
-        Assert.assertTrue(detailsPage.getPermissionsOfDetailsPage().containsKey(accessUser));
+        //TODO Add explanation assert
+        Assert.assertNotNull(managerPermissions.getExistingPermission(accessUser));
 
-        // TODO: Uncomment steps
-        // Verify the for Enterprise:
-        // The dialog box closes . New permissions are set and are displayed for this folder in Details page
-        // for Cloud:
-        // The dialog box closes. New permissions are set;
+        //TODO Add explanation assert
+        Assert.assertTrue(managerPermissions.getExistingPermission(accessUser).equals(UserRole.COLLABORATOR));
     }
 
+    @Test(groups = "DataPrepAlfrescoOne")
+    public void dataprep_ALF_8667() throws Exception
+    {
+        String testName = getTestName();
+        testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+
+        // User
+        String[] testUserInfo = new String[] { testUser };
+
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
+
+        // Login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+
+        // Site
+        ShareUser.createSite(customDrone, siteName, SITE_VISIBILITY_PUBLIC);
+
+        //TODO Move step 3. At least 1 folder is created in the Document Library from test to dataprep
+    }
+    
     /**
      * Test: ALF-8667:"Manage Rules" action for folder
      * <ul>
@@ -1611,14 +1729,15 @@ public class GalleryViewTest extends AbstractUtils
      * <li>Add folder and file to doclib</li>
      * </ul>
      */
-    @Test(groups = "DocLibToolBar", enabled = false)
-    public void alf_8667() throws Exception
+    @Test(groups = "AlfrescoOne")
+    public void ALF_8667() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
         testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
-        String folderName = getFolderName(testName) + getRandomStringWithNumders(3);
+        String folderName1 = getFolderName(testName + 1) + System.currentTimeMillis();
+        String folderName2 = getFolderName(testName + 2) + System.currentTimeMillis();
 
         // User login.
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
@@ -1626,30 +1745,57 @@ public class GalleryViewTest extends AbstractUtils
         ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Creating folder.
-        ShareUserSitePage.createFolder(customDrone, folderName, "");
+        ShareUserSitePage.createFolder(customDrone, folderName1, "");
+        ShareUserSitePage.createFolder(customDrone, folderName2, "");
 
         // Open document library in Gallery view.
-        // TODO: Replace this statement if already in Selected DocLib. Use ShareUserSitePage.selectView instead - in all methods
-        DocumentLibraryPage docLibPage = ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
-        GalleryViewFileDirectoryInfo thisRow = (GalleryViewFileDirectoryInfo) docLibPage.getFileDirectoryInfo(folderName);
+        DocumentLibraryPage docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.GALLERY_VIEW);
+        GalleryViewFileDirectoryInfo thisRow = (GalleryViewFileDirectoryInfo) docLibPage.getFileDirectoryInfo(folderName1);
+        
+        FolderRulesPage rulesPage = thisRow.selectManageRules().render();
+        //TODO Add explanation assert
+        Assert.assertNotNull(rulesPage);
 
-        // click on info button on folder
-        // click on More and select manage rules link
-        // Click Create Rules
-        // Verify The form New rule is present.
-        // Fill "New rule" form :
-        // enter a name (required) and description (optional) for the rule;
-        // select "Copy" in the field "Perform Action";
-        // click "Select" to the right of"Copy" and select Site and Path, click "Ok";
-        // other fields fill by default.
-        // Click "Creat" button in the bottom of a form;
-        // Verify that page is return to the Rules page and new rule appears in the left side of the page
+        CreateRulePage createRulePage = rulesPage.openCreateRulePage().render();
+        //TODO Add explanation assert
+        Assert.assertNotNull(createRulePage);
+        
+        createRulePage.fillNameField(testName);
+        createRulePage.fillDescriptionField(testName);
 
+        //Select 'Copy' value in the 'Perform Action' section.
+        ActionSelectorEnterpImpl actionSelectorEnterpImpl = createRulePage.getActionOptionsObj();
+        actionSelectorEnterpImpl.selectCopy(siteName, folderName2);
+
+        // Click "Create" button
+        FolderRulesPageWithRules folderRulesPageWithRules = createRulePage.clickCreate().render();
+        Assert.assertTrue(folderRulesPageWithRules.isRuleNameDisplayed(testName), "Created Rule is not displayed.");
     }
 
+    @Test(groups = "DataPrepAlfrescoOne")
+    public void dataprep_ALF_8678() throws Exception
+    {
+        String testName = getTestName();
+        testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+
+        // User
+        String[] testUserInfo = new String[] { testUser };
+
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
+
+        // Login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+
+        // Site
+        ShareUser.createSite(customDrone, siteName, SITE_VISIBILITY_PUBLIC);
+
+        //TODO Move step 3. At least 1 folder and 1 document are created in the Document Library from test to dataprep
+    }
+    
     // ALF-8678:Action "Manage Aspects " for folder
-    @Test(groups = "DocLibToolBar", enabled = false)
-    public void alf_8678() throws Exception
+    @Test(groups = "EnterpriseOnly")
+    public void ALF_8678() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1667,14 +1813,53 @@ public class GalleryViewTest extends AbstractUtils
 
         // Open document library in Gallery view.
         DocumentLibraryPage docLibPage = ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
-        GalleryViewFileDirectoryInfo thisRow = (GalleryViewFileDirectoryInfo) docLibPage.getFileDirectoryInfo(folderName);
+        SelectAspectsPage selectAspectsPage = docLibPage.getFileDirectoryInfo(folderName).selectManageAspects().render();
 
-        // click on info button on folder
-        // click on More and select manage aspects link
-        // Select in the "Available to Add" list select the "Classifiable" aspect and click the " +" button .
-        // Verify that the "Available to Add" list select the "Classifiable" aspect and click the " +" button .
-        // Click "Apply changes"
-        // Verify that the "Classifiable" aspects have now been applied to your folder and this is displayed in the Document Details page.
+        // Get several aspects in left hand side
+        List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
+        aspects.add(DocumentAspect.RESTRICTABLE); 
+        aspects.add(DocumentAspect.CLASSIFIABLE);
+
+        // Add several aspects to right hand side
+        selectAspectsPage = selectAspectsPage.add(aspects).render();
+
+        // Verify assert added to currently selected right hand side
+        //TODO Add explanation assert
+        Assert.assertTrue(selectAspectsPage.getSelectedAspects().contains(DocumentAspect.RESTRICTABLE));
+        Assert.assertTrue(selectAspectsPage.getSelectedAspects().contains(DocumentAspect.CLASSIFIABLE));
+        
+        docLibPage = selectAspectsPage.clickApplyChanges().render();
+        DetailsPage detailsPage = ShareUserSitePage.getContentDetailsPage(customDrone, folderName);
+        
+        Map<String, Object> props = detailsPage.getProperties();
+
+        // Verify that the aspects have now been applied to your folder and this is displayed in the Document Details page.
+        //TODO Add explanation assert
+        Assert.assertNotNull(props.get("Categories"));
+        Assert.assertNotNull(props.get("OfflineExpiresAfter(hours)"));
+    }
+
+    
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_ALF_8734() throws Exception
+    {
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName);
+
+        // Create 2 users
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
+
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
+
+        // Login with the first user
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(customDrone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(customDrone);
+
+        // Create Folder
+        ShareUserSitePage.createFolder(customDrone, folderName, folderName);
     }
 
     /**
@@ -1687,73 +1872,54 @@ public class GalleryViewTest extends AbstractUtils
      * <li>Add folder and file to doclib</li>
      * </ul>
      */
-    @Test(groups = "DocLibToolBar", enabled = false)
-    public void alf_8734() throws Exception
+    @Test(groups = { "AlfrescoOne", "NonGrid" })
+    public void ALF_8734()
     {
-        /** Start Test */
         String testName = getTestName();
-        testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
-        String folderName = getFolderName(testName) + getRandomStringWithNumders(3);
-
-        // User login.
+        String folderName = getFolderName(testName);
+        String testUser = getUserNameFreeDomain(testName);
+        
+        // Login
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+        
+        // Open doclib in Gallery view
+        ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
 
-        ShareUser.openSitesDocumentLibrary(customDrone, siteName);
-
-        // Creating folder.
-        ShareUserSitePage.createFolder(customDrone, folderName, "");
-
-        // Open document library in Gallery view.
-        DocumentLibraryPage docLibPage = ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
-        GalleryViewFileDirectoryInfo thisRow = (GalleryViewFileDirectoryInfo) docLibPage.getFileDirectoryInfo(folderName);
-
-        // click on info button folder
-        // click on view Details icon
-        // verify the below things according to environment specific.
-        /*
-         * for Enterprise:
-         * •Location: path;
-         * •Comments part with Add Comment enabled button;
-         * •Folder actions: 1.Download as ZIP;
-         * 2.Edit properties;
-         * 3.Copy to;
-         * 4.Move to;
-         * 5.Manage Rules;
-         * 6.Delete folder;
-         * 7.Manage Permissions;
-         * 8.Manage Aspects;
-         * 9.Change type;
-         * 10.View in Alfresco Explorer;
-         * •Tags
-         * •Share (link to share the current page
-         * Properties part:
-         * Name:
-         * Title:
-         * Description:
-         * •Sync setting
-         * •Permissions setting
-         * for cloud:
-         * Location: path;
-         * Comments part with Add Comment enabled button;
-         * Folder actions:
-         * Edit properties;
-         * Copy to;
-         * Move to;
-         * Manage Rules;
-         * Delete folder;
-         * Manage Permissions;
-         * Tags
-         * Share (link to share the current page
-         * Properties part:
-         * Name:
-         * Title:
-         * Description:
-         * Sync setting
-         */
+        // Navigate to Folder Details Page
+        FolderDetailsPage detailsPage = ShareUser.openFolderDetailPage(customDrone, folderName);
+        
+        Assert.assertTrue(detailsPage.isCorrectPath(folderName), "Location Path is not present.");
+        Assert.assertTrue(detailsPage.isCommentsPanelPresent(), "Comment Panel is not displayed.");
+        Assert.assertTrue(detailsPage.isAddCommentsButtonEnbaled(), "AddComment button is not enabled.");
+        Assert.assertTrue(detailsPage.isDocumentActionPresent(DocumentAction.EDIT_PROPERTIES), "Edit Properties is not present");
+        Assert.assertTrue(detailsPage.isDocumentActionPresent(DocumentAction.COPY_TO), "Copy to is not present");
+        Assert.assertTrue(detailsPage.isDocumentActionPresent(DocumentAction.MOVE_TO), "Move to is not present");
+        Assert.assertTrue(detailsPage.isDocumentActionPresent(DocumentAction.DELETE_CONTENT), "Delete is not present");
+        Assert.assertTrue(detailsPage.isDocumentActionPresent(DocumentAction.MANAGE_RULES), "Manage Rules is not present");
+        Assert.assertTrue(detailsPage.isDocumentActionPresent(DocumentAction.MANAGE_PERMISSION_FOL), "Manage Permission not present");
+        Assert.assertTrue(detailsPage.isTagPanelPresent(), "Tags Panel is not present.");
+        Assert.assertTrue(detailsPage.isSharePanePresent(), "Share Panel is not present.");
+        Assert.assertTrue(detailsPage.isCopyShareLinkPresent(), "Copy Share LInk is not present.");
+        
+        Map<String, Object> properties = detailsPage.getProperties();
+        Assert.assertNotNull(properties);
+        Assert.assertEquals(properties.get("Name"), folderName, "Name Property is not equals with foldername.");
+        Assert.assertEquals(properties.get("Title"), "(None)", "Title Property is not present");
+        Assert.assertEquals(properties.get("Description"), folderName, "Description Property is not present");
+        Assert.assertTrue(detailsPage.isSynPanelPresent(), "Sync Panel is not present.");
+        
+        if(!isAlfrescoVersionCloud(customDrone))
+        {
+            Assert.assertTrue(detailsPage.isDownloadAsZipAtTopRight(), "Download as zip is not present.");
+            Assert.assertTrue(detailsPage.isDocumentActionPresent(DocumentAction.MANAGE_ASPECTS), "Manager Aspect not present");
+            Assert.assertTrue(detailsPage.isDocumentActionPresent(DocumentAction.CHNAGE_TYPE), "Change Type is not present");
+            Assert.assertTrue(detailsPage.isDocumentActionPresent(DocumentAction.VIEW_IN_EXPLORER), "View in exlporer is not present");
+            Assert.assertTrue(detailsPage.isPermissionsPanelPresent(), "Permission Settings are not present.");
+        }
     }
-
-    // @Test(groups="DataPrepDocLibToolBar")
+    
+    @Test(groups="DataPrepAlfrescoOne")
     public void dataprep_ALF_8755() throws Exception
     {
         String testName = getTestName();
@@ -1777,47 +1943,108 @@ public class GalleryViewTest extends AbstractUtils
         ShareUser.uploadFileInFolder(customDrone, testFile1Info);
     }
 
-    // @Test(groups="DocLibToolBar", enabled=false)
-    public void alf_8755() throws Exception
+    //Note: As discussed with Ravi,in TestLink alf-8755 : 3,4,6,7th expected step and 9th steps cannot be automated so will be done by manual testing 
+    @Test(groups="AlfrescoOne")
+    public void ALF_8755() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
         testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
-        // String fileName1 = getFileName(testName + "file1");
-        // String fileName2 = getFileName(testName + "file2");
+        String fileName1 = getFileName(testName + "file1");
 
         // User login.
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         // Open Site Library
-        ShareUser.openSitesDocumentLibrary(customDrone, siteName);
+        DocumentLibraryPage docLibPage = ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
+        FileDirectoryInfo thisRow = docLibPage.getFileDirectoryInfo(fileName1);
 
-        // TODO: Method to click on on info icon
-        // TODO: Method to click on on share link icon
-        // TODO: Method to verify the displayed information
-        // TODO: Method to Open the public link
-        // TODO: Method to verify the public link item is displayed
-        // TODO: Method to share by Email.
-        // TODO: Method to verify the message is opened
-        // TODO: Method to click on send message
-        // TODO: Method to verify the message is sent
-        // NOTE: To verify that "The Reciepient recieved the email" step is not possible to automate from alfresco.
-        // TODO: Method to verify the email link is provided and provides the correct details to the shared document.
-        // TODO: Method to click on share using facebook
-        // TODO: Method to verify facebook authorization form
-        // TODO: Method to click on share using twitter
-        // TODO: Method to verify twitter authorization form
-        // NOTE: Need to think about twitter automation step as "Share a link with your followers page is opened. You can click Tweet to post the link"
-        // TODO: Method to click on share using google+
-        // TODO: Method to verify google+ authorization form
-        // NOTE: Need to think about twitter automation step as "Google+ share form is opened. The link is proviced. You can share a link by clicking Share"
+        //TODO Add explanation assert
+        Assert.assertTrue(thisRow.isShareLinkVisible());
 
+        ShareLinkPage shareLinkPage = thisRow.clickShareLink().render();
+
+        // Verify the sharelink, view, unshare and public links
+        //TODO Add explanation assert
+        Assert.assertNotNull(shareLinkPage);
+        Assert.assertTrue(shareLinkPage.isViewLinkPresent());
+        Assert.assertTrue(shareLinkPage.isUnShareLinkPresent());
+
+        // vieryfing share by Email link.
+        //TODO Add explanation assert
+        Assert.assertTrue(shareLinkPage.isEmailLinkPresent());
+        Assert.assertTrue(shareLinkPage.isFaceBookLinkPresent());
+        Assert.assertTrue(shareLinkPage.isTwitterLinkPresent());
+        Assert.assertTrue(shareLinkPage.isGooglePlusLinkPresent());
+
+        // Verify the public link (view)
+        ViewPublicLinkPage viewPage = shareLinkPage.clickViewButton().render();
+        //TODO Add explanation assert
+        Assert.assertTrue(viewPage.isDocumentViewDisplayed());
+
+        DocumentDetailsPage detailsPage = viewPage.clickOnDocumentDetailsButton().render();
+        docLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+        thisRow = docLibPage.getFileDirectoryInfo(fileName1);
+        shareLinkPage = thisRow.clickShareLink().render();
+
+        // Verifying the facoobook link and page
+        //TODO Add explanation assert
+        Assert.assertTrue(shareLinkPage.isFaceBookLinkPresent());
+        shareLinkPage.clickFaceBookLink();
+        String mainWindow = customDrone.getWindowHandle();
+        //TODO Add explanation assert
+        Assert.assertTrue(isWindowOpened(customDrone, customDrone.getValue("page.facebook.title")));
+        customDrone.closeWindow();
+        customDrone.switchToWindow(mainWindow);
+
+        // Verifying the Twitter link and page
+        //TODO Add explanation assert
+        Assert.assertTrue(shareLinkPage.isTwitterLinkPresent());
+        shareLinkPage.clickTwitterLink();
+        mainWindow = customDrone.getWindowHandle();
+        //TODO Add explanation assert
+        Assert.assertTrue(isWindowOpened(customDrone, customDrone.getValue("page.twitter.title")));
+        customDrone.closeWindow();
+        customDrone.switchToWindow(mainWindow);
+
+        // Verifying the GooglePlus link and page
+        //TODO Add explanation assert
+        Assert.assertTrue(shareLinkPage.isGooglePlusLinkPresent());
+        shareLinkPage.clickGooglePlusLink();
+        mainWindow = customDrone.getWindowHandle();
+        //TODO Add explanation assert
+        Assert.assertTrue(isWindowOpened(customDrone, customDrone.getValue("page.googleplus.title")));
+        customDrone.closeWindow();
+        customDrone.switchToWindow(mainWindow);
     }
 
+    @Test(groups="DataPrepAlfrescoOne")
+    public void dataprep_ALF_8717() throws Exception
+    {
+        String testName = getTestName();
+        testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+
+        // User
+        String[] testUserInfo = new String[] { testUser };
+       
+
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
+
+        // Login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+
+        // Site
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        //TODO Move step 3. At least 1 folder and 1 document are created in the Document Library from test to dataprep
+    }
+    
+    //Note: As discussed with Ravi,in TestLink alf-8717 : 4, 5, 8, 12, 15 steps cannot be automated so will be done by manual testing
     // This test includes 8717 / 8715
-    @Test(groups = "AlfrescoOne", enabled = false)
-    public void alf_8717() throws Exception
+    @Test(groups = "AlfrescoOne")
+    public void ALF_8717() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1825,42 +2052,117 @@ public class GalleryViewTest extends AbstractUtils
         String siteName = getSiteName(testName);
         String fileName1 = getFileName(testName) + System.currentTimeMillis();
         String folderName = getFolderName(testName) + System.currentTimeMillis();
+        String[] testFile1Info = new String[] { fileName1 };
 
         // User login.
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-        // Open Site Library
         ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
-        // Select gallery view from options menu.
-        // verify gallery view preivew.
-        // verify info button on file
-        // click on info button
-        // verify favorite icon is appeared and message ""Add document to favorites" hint is displayed.
-        // select favourite.
-        // TODO : Method to select my favourites in doclib page tree menu.
-        // verify the favourite doc is displayed.
-        // click on info button
-        // verify favorite icon color is changed and ""Remove document from favorites " icon is displayed and unselect the favourite
-        // Verify that my favourites page should not display the doc.
+        // Creating file and folder.
+        ShareUser.uploadFileInFolder(customDrone, testFile1Info);
+        ShareUserSitePage.createFolder(customDrone, folderName, "");
 
-        // verify info button on folder
-        // click on info button
-        // verify favorite icon is appeared and message ""Add document to favorites" hint is displayed.
-        // select favourite.
-        // Method to select my favourites in doclib page tree menu.
-        // verify the favourite folder is displayed.
-        // click on info button
-        // verify favorite icon color is changed and ""Remove document from favorites " icon is displayed and unselect the favourite
-        // Verify that my favourites page should not display the folder.
+        // / Open Site Library
+        DocumentLibraryPage docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.GALLERY_VIEW);
+
+        // Content
+        FileDirectoryInfo thisRow = docLibPage.getFileDirectoryInfo(fileName1);
+
+        // Get the favourite tool tip and verify it.
+        //TODO Add explanation assert
+        Assert.assertTrue(thisRow.getFavouriteOrUnFavouriteTip().equals(customDrone.getValue(CONTENT_FAVOURITE_TOOLTIP)));
+
+        // Select favourite for the file
+        thisRow.selectFavourite();
+        docLibPage = docLibPage.render();
+        thisRow = docLibPage.getFileDirectoryInfo(fileName1);
+
+        // Verify the file has favourite.
+        //TODO Add explanation assert
+        Assert.assertTrue(thisRow.isFavourite());
+
+        // Verify the myfavourite for favourite content
+        docLibPage.clickOnMyFavourites().render();
+        //TODO Add explanation assert
+        Assert.assertTrue(ShareUserSitePage.searchDocumentLibraryWithRetry(customDrone, fileName1, true));
+        
+        ShareUser.openSiteDashboard(customDrone, siteName);
+        docLibPage = ShareUser.openDocumentLibrary(customDrone);
+        thisRow = docLibPage.getFileDirectoryInfo(fileName1);
+        
+        // Verify the unfavourite tool tip.
+        //TODO Add explanation assert
+        Assert.assertTrue(thisRow.getFavouriteOrUnFavouriteTip().equals(customDrone.getValue(CONTENT_UNFAVOURITE_TOOLTIP)));
+
+        thisRow.selectFavourite();
+        docLibPage = docLibPage.render();
+        thisRow = docLibPage.getFileDirectoryInfo(fileName1);
+
+        // Verify the file doesnt has favourite.
+        //TODO Add explanation assert
+        Assert.assertFalse(thisRow.isFavourite());
+
+        // Verify the myfavourite for favourite content
+        docLibPage.clickOnMyFavourites().render();
+        //TODO Add explanation assert
+        Assert.assertTrue(ShareUserSitePage.searchDocumentLibraryWithRetry(customDrone, fileName1, false));
+        
+        ShareUser.openSiteDashboard(customDrone, siteName);
+        docLibPage = ShareUser.openDocumentLibrary(customDrone);
+
+        // Folder
+        thisRow = docLibPage.getFileDirectoryInfo(folderName);
+
+        // Get the favourite tool tip and verify it.
+        //TODO Add explanation assert
+        Assert.assertTrue(thisRow.getFavouriteOrUnFavouriteTip().equals(customDrone.getValue(FOLDER_FAVOURITE_TOOLTIP)));
+
+        // Select favourite for the folder
+        thisRow.selectFavourite();
+        docLibPage = docLibPage.render();
+        thisRow = docLibPage.getFileDirectoryInfo(folderName);
+
+        // Verify the file has favourite.
+        //TODO Add explanation assert
+        Assert.assertTrue(thisRow.isFavourite());
+
+        // Verify the myfavourite for favourite folder
+        docLibPage.clickOnMyFavourites().render();
+        //TODO Add explanation assert
+        Assert.assertTrue(ShareUserSitePage.searchDocumentLibraryWithRetry(customDrone, folderName, true));
+        
+        ShareUser.openSiteDashboard(customDrone, siteName);
+        docLibPage = ShareUser.openDocumentLibrary(customDrone);
+        thisRow = docLibPage.getFileDirectoryInfo(folderName);
+
+        // Verify the unfavourite tool tip.
+        //TODO Add explanation assert
+        Assert.assertTrue(thisRow.getFavouriteOrUnFavouriteTip().equals(customDrone.getValue(FOLDER_UNFAVOURITE_TOOLTIP)));
+
+        thisRow.selectFavourite();
+        docLibPage = docLibPage.render();
+        thisRow = docLibPage.getFileDirectoryInfo(folderName);
+
+        // Verify the file doesnt has favourite.
+        //TODO Add explanation assert
+        Assert.assertFalse(thisRow.isFavourite());
+
+        // Verify the myfavourite for unfavourite folder
+        docLibPage.clickOnMyFavourites().render();
+        //TODO Add explanation assert
+        Assert.assertTrue(ShareUserSitePage.searchDocumentLibraryWithRetry(customDrone, folderName, false));
     }
 
-    @Test(groups = "DataPrepAlfrescoOne", enabled = false)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8663() throws Exception
     {
         String testName = getTestName();
         testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
+        String fileName = getFileName(testName);
+        String fileInfo1[] = { fileName };
+        String folderName = getFolderName(testName);
 
         // User
         String[] testUserInfo = new String[] { testUser };
@@ -1872,33 +2174,98 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        
+        // Creating file.
+        ShareUser.uploadFileInFolder(customDrone, fileInfo1);
+
+        // Creating folder.
+        ShareUserSitePage.createFolder(customDrone, folderName, "");
+
+        //TODO Move step 3. At least 1 folder and 1 document are created in the Document Library from test to dataprep
+
     }
 
-    @Test(groups = "AlfrescoOne", enabled = false)
-    public void alf_8663() throws Exception
+    @Test(groups = "AlfrescoOne")
+    public void ALF_8663() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
         testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
-        String fileName1 = getFileName(testName + "file1");
-        String fileInfo1[] = { fileName1 };
+        String fileName = getFileName(testName);
+        String folderName = getFolderName(testName);
 
         // User login.
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-        // Open Site Library
-        ShareUser.openSitesDocumentLibrary(customDrone, siteName);
+        DocumentLibraryPage documentLibPage = ShareUser.openDocumentLibraryInGalleryView(customDrone, siteName);
 
-        // Select gallery view from options menu.
-        // verify gallery view preivew.
-        // TODO: Method to verify the zoom control
-        // TODO: Method to access the zoom control
-        // TODO: Method to minimize/maximize the zoom control
-        // TODO: Method to verify the gallery items and maximized and minimized.
+        DocumentLibraryNavigation navigation = documentLibPage.getNavigation();
+        documentLibPage = ((DocumentLibraryPage) navigation.selectGalleryView()).render();
+
+        //TODO Add explanation assert
+        assertTrue(navigation.isZoomControlVisible());
+
+        documentLibPage = navigation.selectZoom(ZoomStyle.SMALLER).render();
+
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(fileName);
+        FileDirectoryInfo thisfolderRow = documentLibPage.getFileDirectoryInfo(folderName);
+
+        double fileHeightSize = thisRow.getFileOrFolderHeight();
+        double folderHeightSize = thisfolderRow.getFileOrFolderHeight();
+
+        navigation.selectZoom(ZoomStyle.BIGGER);
+        ZoomStyle actualZoomStyle = navigation.getZoomStyle();
+        assertEquals(actualZoomStyle, ZoomStyle.BIGGER);
+
+        double actualFileHeight = documentLibPage.getFileDirectoryInfo(fileName).getFileOrFolderHeight();
+        double actualFolderHeight = documentLibPage.getFileDirectoryInfo(folderName).getFileOrFolderHeight();
+
+        //TODO Add explanation assert
+        assertTrue(fileHeightSize < actualFileHeight);
+        assertTrue(folderHeightSize < actualFolderHeight);
+
+        navigation.selectZoom(ZoomStyle.BIGGEST);
+        actualZoomStyle = navigation.getZoomStyle();
+        //TODO Add explanation assert
+        assertEquals(actualZoomStyle, ZoomStyle.BIGGEST);
+
+        fileHeightSize = documentLibPage.getFileDirectoryInfo(fileName).getFileOrFolderHeight();
+        folderHeightSize = documentLibPage.getFileDirectoryInfo(folderName).getFileOrFolderHeight();
+
+        //TODO Add explanation assert
+        assertTrue(fileHeightSize > actualFileHeight);
+        assertTrue(folderHeightSize > actualFolderHeight);
+
+        navigation.selectZoom(ZoomStyle.SMALLER);
+        actualZoomStyle = navigation.getZoomStyle();
+        //TODO Add explanation assert
+        assertEquals(actualZoomStyle, ZoomStyle.SMALLER);
+
+        actualFileHeight = documentLibPage.getFileDirectoryInfo(fileName).getFileOrFolderHeight();
+        actualFolderHeight = documentLibPage.getFileDirectoryInfo(folderName).getFileOrFolderHeight();
+
+        //TODO Add explanation assert
+        assertTrue(fileHeightSize > actualFileHeight);
+        assertTrue(folderHeightSize > actualFolderHeight);
+
+        navigation.selectZoom(ZoomStyle.SMALLEST);
+        actualZoomStyle = navigation.getZoomStyle();
+        assertEquals(actualZoomStyle, ZoomStyle.SMALLEST);
+
+        fileHeightSize = documentLibPage.getFileDirectoryInfo(fileName).getFileOrFolderHeight();
+        folderHeightSize = documentLibPage.getFileDirectoryInfo(folderName).getFileOrFolderHeight();
+
+        //TODO Add explanation assert
+        assertTrue(actualFileHeight > fileHeightSize);
+        assertTrue(actualFolderHeight > folderHeightSize);
+        
+        // Resetting style to normal.
+        navigation.selectZoom(ZoomStyle.SMALLER);
+        actualZoomStyle = navigation.getZoomStyle();
     }
 
-    @Test(groups = "DataPrepAlfrescoOne", enabled = false)
+    @Test(groups = "DataPrepAlfrescoOne")
     public void dataprep_ALF_8718() throws Exception
     {
         String testName = getTestName();
@@ -1915,9 +2282,12 @@ public class GalleryViewTest extends AbstractUtils
 
         // Site
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        //TODO Move step 3. At least 1 document and 1 folder are created in the Document Library from test to dataprep
     }
 
     /**
+     *Note: As discussed with Ravi,in TestLink alf-8718 : 6, 8, 11, 12 steps cannot be automated so will be done by manual testing
      * Test: This test includes ALF_8718 / ALF_8714
      * <ul>
      * <li>Login</li>
@@ -1935,15 +2305,15 @@ public class GalleryViewTest extends AbstractUtils
      * <li>Verify the Unlike tool tip after liking the folder</li>
      * </ul>
      */
-    @Test(groups = "AlfrescoOne", enabled = false)
-    public void alf_8718() throws Exception
+    @Test(groups = "AlfrescoOne")
+    public void ALF_8718() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
         testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
-        String fileName1 = getFileName(testName + "1") + getRandomStringWithNumders(4);
-        String folderName = getFolderName(testName + "2") + getRandomStringWithNumders(3);
+        String fileName1 = getFileName(testName + "1") + System.currentTimeMillis();
+        String folderName = getFolderName(testName + "2") + System.currentTimeMillis();
         String fileInfo1[] = { fileName1 };
 
         // User login.
@@ -1962,7 +2332,8 @@ public class GalleryViewTest extends AbstractUtils
         FileDirectoryInfo thisRow = docLibPage.getFileDirectoryInfo(fileName1);
 
         // Get the like tool tip and verify it.
-        Assert.assertTrue(thisRow.getLikeOrUnlikeTip().equals("Like this document"));
+        //TODO Add explanation assert
+        Assert.assertTrue(thisRow.getLikeOrUnlikeTip().equals(customDrone.getValue("content.like.tooltip")));
 
         // Select like for the first file
         thisRow.selectLike();
@@ -1970,17 +2341,53 @@ public class GalleryViewTest extends AbstractUtils
         thisRow = docLibPage.getFileDirectoryInfo(fileName1);
 
         // Verify the file is liked and like count as well.
+        //TODO Add explanation assert
         Assert.assertTrue(thisRow.isLiked());
         Assert.assertTrue(thisRow.getLikeCount().equals("1"));
 
-        // TODO: verify like icon color is changed and unlike icon is displayed and select it.
+        // Verify the unlike tool tip.
+        //TODO Add explanation assert
+        Assert.assertTrue(thisRow.getLikeOrUnlikeTip().equals(customDrone.getValue("content.unlike.tooltip")));
+
+        // Select unlike
+        thisRow.selectLike();
+        docLibPage = docLibPage.render();
+        thisRow = docLibPage.getFileDirectoryInfo(fileName1);
+
+        
+        // Verify the file is unliked
+        //TODO Add explanation assert
+        Assert.assertFalse(thisRow.isLiked());
+
+        // Folder
+        thisRow = docLibPage.getFileDirectoryInfo(folderName);
+
+        // Get the like tool tip and verify it.
+        //TODO Add explanation assert
+        Assert.assertTrue(thisRow.getLikeOrUnlikeTip().equals(customDrone.getValue("folder.like.tooltip")));
+
+        // Select like for the first file
+        thisRow.selectLike();
+        docLibPage = docLibPage.render();
+        thisRow = docLibPage.getFileDirectoryInfo(folderName);
+
+        // Verify the file is liked and like count as well.
+        //TODO Add explanation assert
+        Assert.assertTrue(thisRow.isLiked());
+        Assert.assertTrue(thisRow.getLikeCount().equals("1"));
 
         // Verify the unlike tool tip.
-        Assert.assertTrue(thisRow.getLikeOrUnlikeTip().equals("Unlike"));
+        //TODO Add explanation assert
+        Assert.assertTrue(thisRow.getLikeOrUnlikeTip().equals(customDrone.getValue("content.unlike.tooltip")));
 
-        // Verify the like tool tip before liking the folder1
-        // Select like on folder1
-        // Verify the folder1 is liked and like count.
-        // Verify the Unlike tool tip after liking the folder1
-    }
+        // Select unlike
+        thisRow.selectLike();
+        docLibPage = docLibPage.render();
+        thisRow = docLibPage.getFileDirectoryInfo(folderName);
+
+        
+        // Verify the folder is unliked
+        //TODO Add explanation assert
+        Assert.assertFalse(thisRow.isLiked());
+    }    
 }

@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
  * @version 1.6.1
  */
 @Listeners(FailedTestListener.class)
-@Test(groups="Enterprise-only")
+@Test(groups={"Enterprise-only","TestBug"})
 public class DocumentLibraryPageTagTest extends AbstractTest
 {
     private static String siteName;

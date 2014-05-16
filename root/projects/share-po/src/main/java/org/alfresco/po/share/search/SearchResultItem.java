@@ -32,7 +32,7 @@ import org.openqa.selenium.WebElement;
 
 /**
  * Holds the information of a search result item.
- * When completing a search the resulting page yeilds results
+ * When completing a search the resulting page yields results
  * which each indivdual row is represented by SearchResultItem class.
  * 
  * @author Michael Suzuki

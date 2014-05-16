@@ -1,3 +1,17 @@
+/*
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * This file is part of Alfresco
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.po.share.site.document;
 
 import com.google.common.base.Predicate;
@@ -11,6 +25,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 
 /**
+ * FormObject mimic actions with Pagination on any page.
+ *
  * @author Aliaksei Boole
  */
 public class PaginationForm extends HtmlElement
@@ -22,6 +38,12 @@ public class PaginationForm extends HtmlElement
     private final static By PAGE_INFO_LABEL = By.xpath(".//span[@class='yui-pg-current']");
     private final static By CURRENT_PAGE_SPAN = By.xpath(".//span[@class='yui-pg-pages']/span");
 
+    /**
+     * Constructor for creating FormObject mimic actions with Pagination on any page.
+     *
+     * @param drone
+     * @param formXpath -basic xpath (all xpath's on form building based on him)
+     */
     public PaginationForm(WebDrone drone, By formXpath)
     {
         super(drone);
@@ -33,12 +55,22 @@ public class PaginationForm extends HtmlElement
         return drone.findAndWait(FORM_XPATH);
     }
 
+    /**
+     * Return number pages in pagination.
+     *
+     * @return number of pages.
+     */
     public int getCurrentPageNumber()
     {
         WebElement currentPageNumberElem = getFormElement().findElement(CURRENT_PAGE_SPAN);
         return Integer.valueOf(currentPageNumberElem.getText());
     }
 
+    /**
+     * Mimic click on button next '>>'.
+     *
+     * @return Next Page
+     */
     public HtmlPage clickNext()
     {
         int beforePageNumber = getCurrentPageNumber();
@@ -47,6 +79,11 @@ public class PaginationForm extends HtmlElement
         return drone.getCurrentPage().render();
     }
 
+    /**
+     * Mimic click on button Previous '<<'.
+     *
+     * @return Previous page
+     */
     public HtmlPage clickPrevious()
     {
         int beforePageNumber = getCurrentPageNumber();
@@ -55,6 +92,11 @@ public class PaginationForm extends HtmlElement
         return drone.getCurrentPage().render();
     }
 
+    /**
+     * Check that Previous button '<<' enable(if enable '\<a\>' if not '\<span\>' ).
+     *
+     * @return true if we can interact with '<<'
+     */
     public boolean isPreviousButtonEnable()
     {
         try
@@ -68,6 +110,11 @@ public class PaginationForm extends HtmlElement
         }
     }
 
+    /**
+     * Check that Next button '>>' enable(if enable '\<a\>' if not '\<span\>' ).
+     *
+     * @return true if we can interact with '>>'
+     */
     public boolean isNextButtonEnable()
     {
         try
@@ -82,11 +129,22 @@ public class PaginationForm extends HtmlElement
         }
     }
 
+    /**
+     * Return WebElements for interact with pages links.
+     *
+     * @return List webElements associated  with pagination pages links
+     */
     public List<WebElement> getPaginationLinks()
     {
         return getFormElement().findElements(PAGES_SELECT_LINKS);
     }
 
+    /**
+     * Click on link by number and go to selected page.
+     *
+     * @param linkNumber
+     * @return selected page.
+     */
     public HtmlPage clickOnPaginationPage(int linkNumber)
     {
         List<WebElement> paginationLinks = getPaginationLinks();
@@ -104,11 +162,21 @@ public class PaginationForm extends HtmlElement
         return drone.getCurrentPage().render();
     }
 
+    /**
+     * PaginationInfo like a ' 1 - 50 of 60 '
+     *
+     * @return message about page.
+     */
     public String getPaginationInfo()
     {
         return getFormElement().findElement(PAGE_INFO_LABEL).getText();
     }
 
+    /**
+     * Check that PaginationForm displayed on page.
+     *
+     * @return true - if displayed.
+     */
     public boolean isDisplay()
     {
         try
@@ -134,8 +202,15 @@ public class PaginationForm extends HtmlElement
             @Override
             public boolean apply(WebDriver driver)
             {
-                WebElement currentPageIndicator = driver.findElement(FORM_XPATH).findElement(CURRENT_PAGE_SPAN);
-                return Integer.valueOf(currentPageIndicator.getText()) != beforePageNumber;
+                try
+                {
+                    WebElement currentPageIndicator = driver.findElement(FORM_XPATH).findElement(CURRENT_PAGE_SPAN);
+                    return Integer.valueOf(currentPageIndicator.getText()) != beforePageNumber;
+                }
+                catch (StaleElementReferenceException e)
+                {
+                    return apply(driver);
+                }
             }
         };
     }

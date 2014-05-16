@@ -64,4 +64,9 @@
              <package name="org.alfresco.po.share.site.document" />
         </packages>
     </test>
+    <test name="admin-console">
+        <packages>
+            <package name="org.alfresco.po.share.adminconsole" />
+        </packages>
+    </test>
 </suite>

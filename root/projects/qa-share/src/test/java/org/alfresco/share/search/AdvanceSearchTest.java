@@ -25,12 +25,15 @@ import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.share.util.ShareUserSearchPage;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+@Listeners(FailedTestListener.class)
 @SuppressWarnings("unused")
 public class AdvanceSearchTest extends AbstractUtils
 {
@@ -1973,6 +1976,7 @@ public class AdvanceSearchTest extends AbstractUtils
             // Sorting results by Creator
             List<SearchResultItem> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATOR);
 
+            Assert.assertTrue(resultsList.size()>=2,"Expecting 2 results, retrieved: " + resultsList.size());
             Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "2");
             Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "1");
         }

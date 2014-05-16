@@ -14,6 +14,9 @@
  */
 package org.alfresco.po.share.site.document;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +42,7 @@ import org.openqa.selenium.WebElement;
 
 /**
  * Site document library page object, holds all element of the HTML page relating to share's site document library page.
- * 
+ *
  * @author Michael Suzuki
  * @author Shan Nagarajan
  * @since 1.0
@@ -63,11 +66,14 @@ public class DocumentLibraryPage extends SitePage
     private static final By RECENTLY_MODIFIED = By.cssSelector("span.recentlyModified > a");
     private static final By RECENTLY_ADDED = By.cssSelector("span.recentlyAdded > a");
     private static final By ALL_DOCUMENTS = By.cssSelector("span.all > a");
+    private static final By CATEGORIES_IN_TREE = By.cssSelector("div[class^='categoryview'] span[id^='ygtvlabelel']");
     private final String subfolderName;
     private boolean shouldHaveFiles;
     private final String hasTags;
     private String contentName;
-    private ViewType viewType;
+    private ViewType viewType = ViewType.DETAILED_VIEW;
+    private static final String TEMPLATE_LIST = "//div[contains(@class, 'menu visible')]//div[@class='bd']//ul//ul//li";
+    private final By submitButton = By.cssSelector("button[id$='default-createFolder-form-submit-button']");
 
     public enum Optype
     {
@@ -117,7 +123,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Check if javascript message is displayed. The message details are loading document library message.
-     * 
+     *
      * @return if message displayed
      */
     private boolean isDocumentLibLoading()
@@ -213,7 +219,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Checks to see if document list bottom paginator is displayed
-     * 
+     *
      * @return true if displayed
      */
     public boolean paginatorRendered()
@@ -244,7 +250,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Render logic to check if files or folders are present on the document library page or if empty file folder help message is displayed.
-     * 
+     *
      * @return true if page has rendered
      */
     private boolean dataRendered()
@@ -269,7 +275,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Checks if file upload message appears, this indicates there are no files or folders in the document library page
-     * 
+     *
      * @return true if message is displayed
      */
     private boolean hasNoData()
@@ -289,7 +295,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Check to see if document library contains files or folders with tags.
-     * 
+     *
      * @return true if files or folders are displayed
      */
     private boolean hasData()
@@ -346,7 +352,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Check to see if document library contains files or folders.
-     * 
+     *
      * @return true if files or folders are displayed
      */
     private boolean hasTag()
@@ -364,7 +370,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Checks to verify if we are in the correct sub folder document library page.
-     * 
+     *
      * @return true if bread crumb match location of the sub folder name.
      */
     private boolean isSubFolderDocLib(final String name)
@@ -425,7 +431,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Get document library sub navigation.
-     * 
+     *
      * @return {@link DocumentLibraryNavigation} object.
      */
     public DocumentLibraryNavigation getNavigation()
@@ -435,7 +441,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Get filmstrip view actions
-     * 
+     *
      * @return {@link FilmstripActions} object.
      */
     public FilmstripActions getFilmstripActions()
@@ -444,8 +450,18 @@ public class DocumentLibraryPage extends SitePage
     }
 
     /**
+     * Get document library left hand navigation menu trees.
+     *
+     * @return {@link TreeMenuNavigation} object.
+     */
+    public TreeMenuNavigation getLeftMenus()
+    {
+        return new TreeMenuNavigation(drone);
+    }
+
+    /**
      * Check is instruction message is displayed. If it is displayed then it is a good indication that there are no files or folder on the page.
-     * 
+     *
      * @return if displayed
      */
     public boolean isFileUploadInstructionDisplayed()
@@ -467,7 +483,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Checks document list is populated by injecting a javascript in to an alfresco component that renders the document list.
-     * 
+     *
      * @return true if collection of documents exists
      */
     public boolean hasFiles()
@@ -488,7 +504,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Extracts the results from result table that matches the file name.
-     * 
+     *
      * @return Collection of {@link FileDirectoryInfo} relating to result
      */
     public List<FileDirectoryInfo> getFiles()
@@ -545,9 +561,8 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Selects the title of the document link.
-     * 
-     * @param title
-     *            String file title
+     *
+     * @param title String file title
      * @return DocumentDetailsPage page response object
      */
     public DocumentDetailsPage selectFile(final String title)
@@ -558,21 +573,27 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Selects the title of the folder link.
-     * 
-     * @param title
-     *            String folder title
+     *
+     * @param title String folder title
      * @return HtmlPage page response object
      */
 
     public HtmlPage selectFolder(final String title)
     {
-        selectEntry(title).click();
+        try
+        {
+            selectEntry(title).click();
+        }
+        catch(TimeoutException e)
+        {
+            throw new PageOperationException("Timeout locating folder: " + title, e);
+        }
         return drone.getCurrentPage();
     }
 
     /**
      * Selects an entry regardless of type (file or folder)
-     * 
+     *
      * @return
      */
     protected WebElement selectEntry(final String title)
@@ -604,9 +625,8 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Selects file or folder from page.
-     * 
-     * @param name
-     *            identifier
+     *
+     * @param name identifier
      * @return true if selected
      */
     private synchronized FileDirectoryInfo findFileOrFolder(final String name)
@@ -641,9 +661,8 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Checks to see if file is visible on the page.
-     * 
-     * @param fileName
-     *            String title
+     *
+     * @param fileName String title
      * @return true if file exists on the page
      */
     public synchronized boolean isFileVisible(final String fileName)
@@ -670,7 +689,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Checks to see if files is on the page.
-     * 
+     *
      * @return true if file exists on the page
      */
     public boolean isFilesVisible()
@@ -688,7 +707,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * The number of comments value displayed on the span comment count.
-     * 
+     *
      * @return {@link Integer} total number of comments
      */
     public Integer getCommentCount()
@@ -706,7 +725,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Checks if pagination next button is active.
-     * 
+     *
      * @return true if next page exists
      */
     public boolean hasNextPage()
@@ -716,7 +735,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Checks if pagination previous button is active.
-     * 
+     *
      * @return true if next page exists
      */
     public boolean hasPreviousPage()
@@ -727,24 +746,23 @@ public class DocumentLibraryPage extends SitePage
     /**
      * Selects the button next on the pagination bar.
      */
-    public void selectNextPage()
+    public HtmlPage selectNextPage()
     {
-        Pagination.selectPaginationButton(drone, PAGINATION_BUTTON_NEXT);
+        return Pagination.selectPaginationButton(drone, PAGINATION_BUTTON_NEXT);
     }
 
     /**
      * Selects the button previous on the pagination bar.
      */
-    public void selectPreviousPage()
+    public HtmlPage selectPreviousPage()
     {
-        Pagination.selectPaginationButton(drone, PAGINATION_BUTTON_PREVIOUS);
+        return Pagination.selectPaginationButton(drone, PAGINATION_BUTTON_PREVIOUS);
     }
 
     /**
      * Locates the file or folder and deletes it.
-     * 
-     * @param name
-     *            String identifier
+     *
+     * @param name String identifier
      * @return page response
      */
     public HtmlPage deleteItem(final String name)
@@ -761,9 +779,8 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Locates the file or folder and deletes it.
-     * 
-     * @param number
-     *            int identifier
+     *
+     * @param number int identifier
      * @return page response
      */
     public HtmlPage deleteItem(final int number)
@@ -789,9 +806,8 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Returns the ShareContentRow for the selected contentName.
-     * 
-     * @param name
-     *            String content name identifier
+     *
+     * @param name String content name identifier
      * @return {@link FileDirectoryInfo}
      * @deprecated use getFileDirectoryInfo
      */
@@ -806,10 +822,13 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * This method does the clicking on given tag name, which presents under the Tags Tree menu on Document Library page.
-     * 
+     *
      * @param tagName
      * @return {@link DocumentLibraryPage}
+     * 
+     * @depricated Use {@link TreeMenuNavigation#selectTagNode(String)} instead.
      */
+    @Deprecated
     public HtmlPage clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(String tagName)
     {
         if (tagName == null)
@@ -837,7 +856,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * This method gets the all tag elements present on document library Tags tree menu.
-     * 
+     *
      * @return List<WebElement>
      */
     private List<WebElement> getAllTags()
@@ -858,7 +877,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * This method gets the list of tag names present on document library Tags tree menu.
-     * 
+     *
      * @return List<String>
      */
     public List<String> getAllTagNames()
@@ -895,7 +914,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Check the uploaded content has uploaded successfully
-     * 
+     *
      * @param - String
      * @return - Boolean
      * @deprecated as of 2.1, use isItemVisble to determine if file exists
@@ -924,9 +943,8 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Select a particular file directory info row based on the count, the accepted range is 1-50.
-     * 
-     * @param number
-     *            Integer item row
+     *
+     * @param number Integer item row
      * @return {@link FileDirectoryInfo} page response
      */
     public FileDirectoryInfo getFileDirectoryInfo(final Integer number)
@@ -949,9 +967,8 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Select a particular file directory info row based on the title.
-     * 
-     * @param title
-     *            String item title
+     *
+     * @param title String item title
      * @return {@link FileDirectoryInfo} page response
      */
     public FileDirectoryInfo getFileDirectoryInfo(final String title)
@@ -970,7 +987,7 @@ public class DocumentLibraryPage extends SitePage
             {
                 case GALLERY_VIEW:
                     row = drone.findAndWait(By.xpath(String.format("//h3/span/a[text()='%s']/../../../../../../..", title)), WAIT_TIME_3000);
-                    nodeRef = row.findElement(By.cssSelector("input[id$='gallery-item']")).getAttribute("value");
+                    nodeRef = row.findElement(By.cssSelector("div.alf-gallery-item-thumbnail img.alf-gallery-item-thumbnail-img")).getAttribute("id");
                     break;
                 case FILMSTRIP_VIEW:
                     nodeRef = drone.findAndWait(
@@ -1038,7 +1055,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Returns true if Cloud Sync sign up dialog is visible
-     * 
+     *
      * @return boolean
      */
     public boolean isSignUpDialogVisible()
@@ -1055,10 +1072,13 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * This method returns the count for the given tag string.
-     * 
+     *
      * @param tagName
      * @return int
+     * 
+     * @depricated Use {@link TreeMenuNavigation#getTagCount(String)} 
      */
+    @Deprecated
     public int getTagsCountUnderTagsTreeMenu(String tagName)
     {
         if (tagName == null)
@@ -1086,7 +1106,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Check the documents tree is expanded or not , on DocumentLibraryPage or Repository Page.
-     * 
+     *
      * @return - boolean
      */
     public boolean isDocumentsTreeExpanded()
@@ -1109,7 +1129,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * This method is used to click on the documents tree, on DocumentLibraryPage or Repository Page.
-     * 
+     *
      * @return - DocumentLibraryPage
      */
     public HtmlPage clickDocumentsTreeExpanded()
@@ -1143,7 +1163,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Returns the current view type if it set already or by calling render it sets the view type.
-     * 
+     *
      * @return {@link ViewType}
      */
     public ViewType getViewType()
@@ -1152,31 +1172,11 @@ public class DocumentLibraryPage extends SitePage
     }
 
     /**
-     * This method does the clicking on My Farourites link, which presents on Document Library page Tree menu.
-     * 
-     * @return {@link DocumentLibraryPage}
-     */
-    public HtmlPage selectMyFavouritesOnTreeMenu()
-    {
-        try
-        {
-            drone.findAndWait(By.cssSelector(".favourites>a")).click();
-            return FactorySharePage.resolvePage(drone);
-        }
-        catch (TimeoutException te)
-        {
-            logger.error("Exceeded time to find the the css", te);
-        }
-
-        throw new PageException("Error in selecting the My Favourties on DocLib Tree Menu.");
-    }
-
-    /**
      * Click on "My Favourites" it will take you to document library/Repository page.
-     * 
+     *
      * @return
      */
-    public DocumentLibraryPage clickOnMyFavourites()
+    public HtmlPage clickOnMyFavourites()
     {
         try
         {
@@ -1185,7 +1185,7 @@ public class DocumentLibraryPage extends SitePage
             {
                 element.click();
                 waitUntilAlert();
-                return new DocumentLibraryPage(drone);
+                return FactorySharePage.resolvePage(drone);
             }
 
         }
@@ -1193,15 +1193,15 @@ public class DocumentLibraryPage extends SitePage
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("My FAvourites is not loaded", nse);
+                logger.trace("My Favourites is not loaded", nse);
             }
         }
-        throw new PageOperationException("My FAvourites not loaded - My FAvourites tape may not be displayed.");
+        throw new PageOperationException("My Favourites not loaded - My Favourites tape may not be displayed.");
     }
 
     /**
      * Click on "Recently Modified" it will take you to document library/Repository page.
-     * 
+     *
      * @return
      */
     public DocumentLibraryPage clickOnRecentlyModified()
@@ -1229,7 +1229,7 @@ public class DocumentLibraryPage extends SitePage
 
     /**
      * Click on "Recently Added" it will take you to document library/Repository page.
-     * 
+     *
      * @return
      */
     public DocumentLibraryPage clickOnRecentlyAdded()
@@ -1279,25 +1279,8 @@ public class DocumentLibraryPage extends SitePage
     }
 
     /**
-     * Method for wait while message about list items changes hided.
-     */
-    private void waitUntilAlert()
-    {
-        try
-        {
-            By AlertMessage = By.xpath(".//*[@id='message']/div/span");
-            drone.waitUntilElementPresent(AlertMessage, 2);
-            drone.waitUntilElementDeletedFromDom(AlertMessage, 5);
-        }
-        catch (TimeoutException ex)
-        {
-            logger.error("Alert message hide quickly", ex);
-        }
-    }
-
-    /**
      * Returned Object mimic all action with Pagination.
-     * 
+     *
      * @return
      */
     public PaginationForm getBottomPaginationForm()
@@ -1310,4 +1293,121 @@ public class DocumentLibraryPage extends SitePage
         logger.trace("Can't find Bottom pagination on Page");
         throw new PageOperationException("Can't find Bottom pagination on Page");
     }
+
+
+    /**
+     * Click on Category link in left tree menu.
+     *
+     * @param categoryName
+     * @return
+     */
+    public DocumentLibraryPage clickOnCategory(Categories categoryName)
+    {
+        List<WebElement> categories = drone.findAndWaitForElements(CATEGORIES_IN_TREE);
+        for (WebElement category : categories)
+        {
+            if (category.getText().equals(categoryName.getValue()))
+            {
+                category.click();
+                waitUntilAlert();
+                return new DocumentLibraryPage(drone).render();
+            }
+        }
+        throw new PageOperationException(String.format("Category didn't found [%s]", categoryName));
+    }
+
+    /**
+     * Create content from template
+     *
+     * @param templateName
+     * @return {@link DocumentLibraryPage}
+     */
+    public DocumentLibraryPage createContentFromTemplate(String templateName)
+    {
+        try{
+            if(!templateName.isEmpty()){
+                getNavigation().selectCreateContentFromTemplate();
+                WebElement template = getTemplate(templateName);
+                template.click();
+
+                return  new DocumentLibraryPage(drone).render();
+        }
+        }
+        catch (StaleElementReferenceException ste)
+        {
+            // DOM has changed therefore page should render once change is completed
+        }
+
+        throw new PageOperationException(String.format("Template didn't found [%s]", templateName));
+
+    }
+
+    /**
+     * Create folder from template
+     *
+     * @param templateName
+     * @return {@link DocumentLibraryPage}
+     */
+    public DocumentLibraryPage createFolderFromTemplate(String templateName)
+    {
+        try{
+            if(!templateName.isEmpty()){
+                getNavigation().selectCreateFolderFromTemplate();
+                WebElement template = getTemplate(templateName);
+                template.click();
+                drone.getCurrentPage().render();
+                WebElement okButton = drone.findAndWait(submitButton);
+                okButton.click();
+                waitUntilMessageAppearAndDisappear("Folder", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                DocumentLibraryPage page = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
+                page.setShouldHaveFiles(true);
+                return page;
+            }
+        }
+        catch (StaleElementReferenceException ste)
+        {
+            // DOM has changed therefore page should render once change is completed
+        }
+
+        throw new PageOperationException(String.format("Template didn't found [%s]", templateName));
+
+    }
+
+
+    /**
+     * find all existing templates.
+     * 'Create content from template' or 'Create folder from template' menu must be chosen
+     *
+     * @return List<WebElement> of all existing templates
+     */
+    private List<WebElement> getTemplateList(){
+        drone.getCurrentPage().render();
+        drone.waitUntilNotVisibleWithParitalText(By.xpath(TEMPLATE_LIST), "Loading...", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        drone.findAndWaitForElements(By.xpath(TEMPLATE_LIST));
+        return drone.findDisplayedElements(By.xpath(TEMPLATE_LIST));
+    }
+
+    /**
+     * find needed template from lists of templates
+     *
+     * @param templateName
+     * @return WebElement of needed template
+     */
+    public WebElement getTemplate(String templateName){
+        List<WebElement> list = getTemplateList();
+        if(list.get(0).getText().contains("Loading")){
+            while (list.get(0).getText().contains("Loading")){
+                list = getTemplateList();
+                drone.getCurrentPage().render();
+            }
+
+        }
+        for(WebElement template : list){
+            if(template.getText().equals(templateName)){
+                return  template;
+            }
+        }
+        throw new PageOperationException(String.format("Template [%s] didn't found on page.", templateName));
+    }
+
 }

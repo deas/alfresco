@@ -1,21 +1,76 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Classes" verbose="1" preserve-order="true">
-   <test name="dataprep" verbose="1" parallel="classes" thread-count="1">
-      <groups>
-         <run>
+<suite name="Classes" verbose="1" preserve-order="true" parallel="tests" thread-count="7">
+
+    <groups>
+        <run>
             <include name="DataPrep.*" />
-         </run>
-      </groups>
-      <classes>
-         <class name="org.alfresco.share.repository.RepositoryDocumentCreateTests" />
-         <class name="org.alfresco.share.repository.RepositoryDocumentDownloadTests" />
-         <class name="org.alfresco.share.repository.RepositoryDocumentUsersHomeTests" />
-         <class name="org.alfresco.share.repository.RepositoryDocumentWorkflowsTests" />
-         <class name="org.alfresco.share.repository.RepositoryFolderTests3" />
-         <class name="org.alfresco.share.repository.RepositoryFolderTests" />
-         <class name="org.alfresco.share.repository.RepositoryFolderTests2" />
-         <class name="org.alfresco.share.repository.RepositoryManagePermissionTest" />
-         <class name="org.alfresco.share.repository.SecurityXssTest" />
-      </classes>
-   </test>
+            <exclude name="NonGrid.*" />
+        </run>
+    </groups>
+    
+        <test name="RepositoryDocumentCreateTests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryDocumentCreateTests" />
+        </classes>
+    </test>
+    
+    <test name="RepositoryDocumentUsersHomeTests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryDocumentUsersHomeTests" />
+        </classes>
+    </test> 
+    
+    <test name="RepositoryDocumentWorkflowsTests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryDocumentWorkflowsTests" />
+        </classes>
+    </test>
+    
+    <test name="RepositoryFolderTests3" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryFolderTests3" />
+        </classes>
+    </test>
+    
+    <test name="RepositoryFolderTests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryFolderTests" />
+        </classes>
+    </test> 
+    
+    <test name="RepositoryFolderTests2" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryFolderTests2" />
+        </classes>
+    </test>
+    
+    <test name="RepositoryManagePermissionTest" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryManagePermissionTest" />
+        </classes>
+    </test>
+    
+    <test name="SecurityXssTest" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.SecurityXssTest" />
+        </classes>
+    </test>
+    
+    <test name="RepositoryBrowserTests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryBrowserTests" />
+        </classes>
+    </test>
+
+    <test name="RepositoryDocumentShareTests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryDocumentShareTests" />
+        </classes>
+    </test>
+    
+    <test name="RepositoryFolder1" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryFolderTests1" />
+        </classes>
+    </test>
 </suite>

@@ -162,20 +162,17 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
         try
         {
-            scrollDownToDashlet();
             getFocus();
             return drone.findAndWait(NEW_TOPIC).isDisplayed();
         }
-        catch (TimeoutException te)
+        catch (NoSuchElementException te)
         {
             if (logger.isTraceEnabled())
             {
                 logger.trace("Unable to find the new topic icon.", te);
             }
+            return false;
         }
-
-        return false;
-
     }
 
     /**
@@ -274,12 +271,13 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
     /**
      * Retrieves the closeButton for Help balloon window based on the given cssSelector and clicks on it.
      */
-    public void closeHelpBallon()
+    public MyDiscussionsDashlet closeHelpBallon()
     {
         try
         {
             drone.find(By.cssSelector(DASHLET_HELP_BALLOON_CLOSE_BUTTON)).click();
             drone.waitUntilElementDisappears(By.cssSelector(DASHLET_HELP_BALLOON_CLOSE_BUTTON), 1);
+            return this;
         }
         catch (NoSuchElementException elementException)
         {
@@ -287,6 +285,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
             {
                 logger.trace("Not able to find the ballon", elementException);
             }
+            throw new UnsupportedOperationException("Exceeded time to find the help ballon close button.", elementException);
         }
     }
 

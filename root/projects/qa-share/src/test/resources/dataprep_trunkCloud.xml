@@ -6,6 +6,7 @@
 				<include name="DataPrep.*" />
                 <exclude name ="EnterpriseOnly" />
                 <exclude name ="Hybrid.*" />
+                <exclude name="NonGrid" />
 			</run>
 		</groups>
 		<classes>

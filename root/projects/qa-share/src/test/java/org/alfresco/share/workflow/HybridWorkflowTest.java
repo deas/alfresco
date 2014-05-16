@@ -21,8 +21,6 @@ package org.alfresco.share.workflow;
 import org.alfresco.share.util.AbstractWorkflow;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 
@@ -30,7 +28,6 @@ import org.testng.annotations.Listeners;
 public class HybridWorkflowTest extends AbstractWorkflow
 {
 
-    private static Log logger = LogFactory.getLog(HybridWorkflowTest.class);
     protected String testUser;
     protected String siteName = "";
     DocumentLibraryPage documentLibraryPage;

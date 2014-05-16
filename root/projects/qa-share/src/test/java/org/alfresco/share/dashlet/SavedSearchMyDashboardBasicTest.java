@@ -84,7 +84,7 @@ public class SavedSearchMyDashboardBasicTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_8650() throws Exception
+    public void ALF_8650() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -142,7 +142,7 @@ public class SavedSearchMyDashboardBasicTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_8651() throws Exception
+    public void ALF_8651() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -203,7 +203,7 @@ public class SavedSearchMyDashboardBasicTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_8652() throws Exception
+    public void ALF_8652() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -255,7 +255,7 @@ public class SavedSearchMyDashboardBasicTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_8653() throws Exception
+    public void ALF_8653() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -306,7 +306,7 @@ public class SavedSearchMyDashboardBasicTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_8668() throws Exception
+    public void ALF_8668() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -367,7 +367,7 @@ public class SavedSearchMyDashboardBasicTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_8673() throws Exception
+    public void ALF_8673() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -405,7 +405,7 @@ public class SavedSearchMyDashboardBasicTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_8675() throws Exception
+    public void ALF_8675() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -436,7 +436,7 @@ public class SavedSearchMyDashboardBasicTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_8676() throws Exception
+    public void ALF_8676() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -497,7 +497,7 @@ public class SavedSearchMyDashboardBasicTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_8677() throws Exception
+    public void ALF_8677() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);

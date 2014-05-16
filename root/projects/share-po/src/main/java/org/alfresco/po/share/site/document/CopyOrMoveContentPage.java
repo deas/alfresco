@@ -190,6 +190,14 @@ public class CopyOrMoveContentPage extends ShareDialogue
         List<String> folders = new LinkedList<String>();
         try
         {
+            try
+            {
+                drone.waitForElement(By.id("AlfrescoWebdronez1"), SECONDS.convert(WAIT_TIME_3000, MILLISECONDS));
+            }
+            catch (TimeoutException e)
+            {
+            }
+            
             for (WebElement folder : drone.findAndWaitForElements(folderItemsListCss))
             {
                 folders.add(folder.getText());

@@ -47,6 +47,8 @@ import org.alfresco.po.share.site.document.EditInGoogleDocsPage;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.InlineEditPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
+import org.alfresco.po.share.site.document.MyFilesPage;
+import org.alfresco.po.share.site.document.SharedFilesPage;
 import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.user.CloudSyncPage;
@@ -135,6 +137,8 @@ public class FactorySharePageTest
     private final String nodeBrowserPage  = baseUrl+"%s/page/console/admin-console/node-browser";
     private final String adminConsolePage= baseUrl+"%s/page/console/admin-console/application";
     private final String manageSitesPage= baseUrl+"%s/page/console/admin-console/manage-sites";
+    private final String myFilesPage= baseUrl+"%s/page/context/mine/myfiles";
+    private final String sharedFilesPage= baseUrl+"%s/page/context/shared/sharedfiles";
     
 
     @Test(groups={"unit"})
@@ -225,6 +229,12 @@ public class FactorySharePageTest
 
             page = resolvePage(googleDocs, "editGoogleDocs", drone);
             Assert.assertTrue(page instanceof EditInGoogleDocsPage);
+            
+            page = resolvePage(myFilesPage, "myFilesPage", drone);
+            Assert.assertTrue(page instanceof MyFilesPage);
+            
+            page = resolvePage(sharedFilesPage, "sharedFilesPage", drone);
+            Assert.assertTrue(page instanceof SharedFilesPage);
             
 
             //---------------search ----------------

@@ -80,7 +80,10 @@ public class FileDirectoryInfoMoreTest extends AbstractDocumentTest
         }
         else
         {
-            loginAs(cloudUserName, cloudUserPassword);
+            loginAs(username, password);
+            firstName = anotherUser.getfName();
+            lastName = anotherUser.getlName();
+            userName = firstName + " " + lastName;
         }
         if(isHybridEnabled())
         {

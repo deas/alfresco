@@ -15,10 +15,14 @@ package org.alfresco.po.share.user;
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.alfresco.po.share.SharePage;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.RenderWebElement;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
@@ -29,8 +33,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * User Cloud SignIn page object holds all elements of HTML page objects relating to Cloud Sync connect page.
@@ -38,13 +40,17 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * @author Siva Kaliyappan
  * @since 1.6.2
  */
-public class CloudSignInPage extends SharePage
+public class CloudSignInPage extends ShareDialogue
 {
-
+    @RenderWebElement
     private static final By PASSWORD_INPUT = By.cssSelector("input[id$='password']");
+    @RenderWebElement
     private static final By USERNAME_INPUT = By.cssSelector("input[id$='username']");
+    @RenderWebElement
     private static final By CONNECT_BUTTON = By.cssSelector("button[id$='-authForm-button-ok-button']");
+    @RenderWebElement
     private static final By CANCEL_BUTTON = By.cssSelector("button[id$='authForm-button-cancel-button']");
+    
     private static final By SIGN_IN_HEADER = By.cssSelector("div.hd");
     private static final By SIGN_UP_LINK = By.cssSelector("a.theme-color-1:first-of-type");
     private static final By FORGOT_PASSWORD_LINK = By.cssSelector("a[href$='forgot-password']");
@@ -97,12 +103,14 @@ public class CloudSignInPage extends SharePage
         usernameInput.clear();
         usernameInput.sendKeys(username);
 
+        // To introduce a little lag before typing in the password: Same as LoginPage
+        WebElement button = drone.findAndWait(CONNECT_BUTTON);
+        String id = button.getAttribute("id");
+        
         WebElement passwordInput = drone.findAndWait(PASSWORD_INPUT);
         passwordInput.clear();
         passwordInput.sendKeys(password);
-
-        WebElement button = drone.findAndWait(CONNECT_BUTTON);
-        String id = button.getAttribute("id");
+        
         button.submit();
         drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));

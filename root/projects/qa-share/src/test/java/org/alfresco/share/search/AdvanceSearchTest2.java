@@ -19,12 +19,15 @@ import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.share.util.ShareUserSearchPage;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+@Listeners(FailedTestListener.class)
 @SuppressWarnings("unused")
 public class AdvanceSearchTest2 extends AbstractUtils
 {
@@ -453,7 +456,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Verify the symbols entered successfully and entered data is cut to 1024 symbols</li>
      * </ul>
      */
-    @Test(groups="Enterprise4.2Bug")
+    @Test
     public void ALF_4982()
     {
         /** Start Test */
@@ -596,7 +599,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Go Back to Advance Search from</li>
      * </ul>
      */
-    @Test(groups = "Enterprise4.2Bug")
+    @Test
     public void ALF_4983()
     {
         /** Start Test */
@@ -1911,7 +1914,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as expected</li>
      * </ul>
      */
-    @Test
+    // TODO: Watch: https://issues.alfresco.com/jira/browse/ACE-1085
+    @Test(groups={"ACEBug"})
     public void ALF_4976()
     {
         /** Start Test */
@@ -2045,7 +2049,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as expected</li>
      * </ul>
      */
-    @Test(groups = "Enterprise4.2Bug")
+    @Test(groups = "Enterprise42Bug")
     public void ALF_4977()
     {
         /** Start Test */
@@ -2195,7 +2199,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups="Enterprise4.2Bug")
+    @Test(groups="Enterprise42Bug")
     public void ALF_10819() throws Exception
     {
         /** Start Test */

@@ -20,15 +20,15 @@ package org.alfresco.share.site.document;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.io.File;
 import java.util.List;
 
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.UpdateFilePage;
-import org.alfresco.po.share.site.UploadFilePage;
+import org.alfresco.po.share.site.contentrule.FolderRulesPage;
 import org.alfresco.po.share.site.document.ConfirmDeletePage;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
 import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
@@ -39,7 +39,6 @@ import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.document.SelectAspectsPage;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
@@ -240,16 +239,14 @@ public class FilmStripDocLibTest extends AbstractUtils
 
         // Site creation
         ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-
+        // ShareUser.openSiteDashboard(customDrone, siteName);
         // Upload FIles
         ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
         ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
         DocumentLibraryPage documentLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName).render();
         for (int i = 3; i < 5; i++)
         {
-            File file = SiteUtil.prepareFile(siteName + i);
-            UploadFilePage uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
-            documentLibPage = uploadForm.uploadFile(file.getCanonicalPath()).render();
+            ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 + i });
         }
 
         for (int i = 0; i < 2; i++)
@@ -257,7 +254,7 @@ public class FilmStripDocLibTest extends AbstractUtils
             documentLibPage = documentLibPage.getNavigation().selectAll().render();
 
             // Select Copy To
-            ShareUserSitePage.copyToActionFromNavigation(drone);
+            ShareUserSitePage.copyToActionFromNavigation(customDrone);
         }
         ShareUser.logout(customDrone);
 
@@ -306,12 +303,14 @@ public class FilmStripDocLibTest extends AbstractUtils
         docLibPage.getFilmstripActions().toggleNavHandleForFilmstrip();
 
         // Click the right arrow pointer on the tape;
+        assertFalse(docLibPage.getFilmstripActions().isPreviousFilmstripTapeArrowPresent());
         docLibPage = docLibPage.getFilmstripActions().selectNextFilmstripTape().render();
-        assertTrue(docLibPage.getFilmstripActions().isPreviousFilmstripArrowPresent());
+        assertTrue(docLibPage.getFilmstripActions().isPreviousFilmstripTapeArrowPresent());
 
         // Click the left arrow pointer on the tape;
+        assertFalse(docLibPage.getFilmstripActions().isNextFilmstripTapeArrowPresent());
         docLibPage = docLibPage.getFilmstripActions().selectPreviousFilmstripTape().render();
-        assertTrue(docLibPage.getFilmstripActions().isNextFilmstripArrowPresent());
+        assertTrue(docLibPage.getFilmstripActions().isNextFilmstripTapeArrowPresent());
 
         // Select the folder and click on it in the foreground;
         docLibPage = docLibPage.selectFolder(firstDiplayedItem).render();
@@ -357,7 +356,7 @@ public class FilmStripDocLibTest extends AbstractUtils
 
     }
 
-    @Test(groups = "AlfrescoOne")
+    @Test(groups = { "AlfrescoOne", "NonGrid" })
     public void ALF_14197() throws Exception
     {
         /** Start Test */
@@ -653,6 +652,8 @@ public class FilmStripDocLibTest extends AbstractUtils
         // Steps 2 and 3
         fileInfo.clickOnAddTag();
         fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
+        assertTrue(fileInfo.isSaveLinkVisible());
+        assertTrue(fileInfo.isCancelLinkVisible());
         assertTrue(fileInfo.removeTagButtonIsDisplayed(tagName0));
 
         // Step 4
@@ -745,36 +746,33 @@ public class FilmStripDocLibTest extends AbstractUtils
 
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
-        String tagName0 = "tag0";
-        String tagName1 = "tag1";
+        String tagName0 = "tag0"+ folderName.substring(folderName.length() -5, folderName.length() -1);
+        String tagName1 = "tag1"+ folderName.substring(folderName.length() -5, folderName.length() -1);
         folderInfo.addTag(tagName0);
 
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
         folderInfo.addTag(tagName1);
 
+        folderInfo = docLibPage.getFileDirectoryInfo(folderName);
         // Click the "Edit" icon;
         // Steps 2 and 3
         folderInfo.clickOnAddTag();
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
+        assertTrue(folderInfo.isSaveLinkVisible());
+        assertTrue(folderInfo.isCancelLinkVisible());
         assertTrue(folderInfo.removeTagButtonIsDisplayed(tagName0));
-
-        // Step 4
-        folderInfo = docLibPage.getFileDirectoryInfo(folderName);
-        folderInfo.clickOnTagRemoveButton(tagName0);
-
-        // Tags added step 5
-        String tagName2 = "tag2";
-        folderInfo = docLibPage.getFileDirectoryInfo(folderName);
-        folderInfo.enterTagString(tagName2);
-
-        // step 6
-        folderInfo = docLibPage.getFileDirectoryInfo(folderName);
         folderInfo.clickOnTagCancelButton();
+
+        // Step 4, 5 and 6
+        String tagName2 = "tag2"+ folderName.substring(folderName.length() -5, folderName.length() -1);
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
-        List<String> tags = folderInfo.getTags();
-        assertFalse(tags.contains(tagName2), tags + " should contain " + testName);
-        assertTrue(tags.contains(tagName0), tags + " should contain " + testName);
-        assertTrue(tags.contains(tagName1), tags + " should contain " + testName);
+        folderInfo.clickOnAddTag();
+        folderInfo.clickOnTagRemoveButton(tagName0);
+        folderInfo.enterTagString(tagName2);
+        folderInfo.clickOnTagCancelButton();
+        assertTrue(folderInfo.getTags().contains(tagName0), "Taglist - '" + folderInfo.getTags() + "' should contain - " + tagName0);
+        assertTrue(folderInfo.getTags().contains(tagName1), "Taglist - '" + folderInfo.getTags() + "' should contain - " + tagName1);
+        assertFalse(folderInfo.getTags().contains(tagName2), "Taglist - '" + folderInfo.getTags() + "' should not contain - " + tagName0);
 
         // step 7
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
@@ -782,12 +780,9 @@ public class FilmStripDocLibTest extends AbstractUtils
         folderInfo.clickOnTagRemoveButton(tagName0);
         folderInfo.enterTagString(tagName2);
         folderInfo.clickOnTagSaveButton();
-        docLibPage = customDrone.getCurrentPage().render();
-        folderInfo = docLibPage.getFileDirectoryInfo(folderName);
-        tags = folderInfo.getTags();
-        assertFalse(tags.contains(tagName0), tags + " should contain " + testName);
-        assertTrue(tags.contains(tagName2), tags + " should contain " + testName);
-        assertTrue(tags.contains(tagName1), tags + " should contain " + testName);
+        assertTrue(folderInfo.getTags().contains(tagName2), "Taglist - '" + folderInfo.getTags() + "' should contain - " + tagName2);
+        assertTrue(folderInfo.getTags().contains(tagName1), "Taglist - '" + folderInfo.getTags() + "' should contain - " + tagName1);
+        assertFalse(folderInfo.getTags().contains(tagName0), "Taglist - '" + folderInfo.getTags() + "' should not contain - " + tagName0);
     }
 
     /**
@@ -827,7 +822,7 @@ public class FilmStripDocLibTest extends AbstractUtils
 
     }
 
-    @Test(groups = "AlfrescoOne")
+    @Test(groups = { "AlfrescoOne", "NonGrid" })
     public void ALF_14200() throws Exception
     {
         /** Start Test */
@@ -1048,6 +1043,8 @@ public class FilmStripDocLibTest extends AbstractUtils
         // - Mouse-over on the document's name;
         // Click the "Edit" icon;
         fileInfo1.contentNameEnableEdit();
+        assertTrue(fileInfo1.isSaveLinkVisible());
+        assertTrue(fileInfo1.isCancelLinkVisible());
 
         // Type any new name of the document
         fileInfo1.contentNameEnter(fileName1 + " not updated");
@@ -1129,6 +1126,8 @@ public class FilmStripDocLibTest extends AbstractUtils
         // - Mouse-over on the document's name;
         // Click the "Edit" icon;
         folderInfo.contentNameEnableEdit();
+        assertTrue(folderInfo.isSaveLinkVisible());
+        assertTrue(folderInfo.isCancelLinkVisible());
 
         // Type any new name of the document
         folderInfo.contentNameEnter(folderName + " not updated");
@@ -1194,10 +1193,10 @@ public class FilmStripDocLibTest extends AbstractUtils
         // User login.
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
-        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
+        ShareUser.openSitesDocumentLibrary(customDrone, siteName);
 
         // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
+        ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
         FileDirectoryInfo fileInfo1 = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
 
@@ -1224,7 +1223,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         HtmlPage docDetailPage = fileInfo1.clickCommentsLink().render();
         docDetailPage = ((DocumentDetailsPage) docDetailPage).addComment("test").render();
 
-        docLibPage = ShareUser.openDocumentLibrary(customDrone);
+        ShareUser.openDocumentLibrary(customDrone);
 
         fileInfo1 = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         assertTrue(fileInfo1.getCommentsCount() > 0, "Got comments count: " + fileInfo1.getCommentsCount());
@@ -1352,7 +1351,7 @@ public class FilmStripDocLibTest extends AbstractUtils
 
     }
 
-    @Test(groups = "AlfrescoOne")
+    @Test(groups = { "AlfrescoOne", "NonGrid" })
     public void ALF_14210() throws Exception
     {
         /** Start Test */
@@ -1499,7 +1498,7 @@ public class FilmStripDocLibTest extends AbstractUtils
 
     }
 
-    @Test(groups = "AlfrescoOne")
+    @Test(groups = { "AlfrescoOne", "NonGrid" })
     public void ALF_14214() throws Exception
     {
         /** Start Test */
@@ -1507,7 +1506,6 @@ public class FilmStripDocLibTest extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
         String folderName = getFolderName(testName);
-        String fileName1 = getFileName(testName + "1");
 
         // User login.
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
@@ -1565,6 +1563,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         docLibPage = moveToForm.selectCancelButton().render();
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
+
         // Close "Move %itemname% to..." form, return to the document's Info panel and click the "Delete Document" action.
         ConfirmDeletePage deleteConf = folderInfo.selectDelete().render();
         // Confirmation about deleting document is displayed;
@@ -1580,6 +1579,13 @@ public class FilmStripDocLibTest extends AbstractUtils
         // Click the "Cancel", return to the document's Info panel and click 'Manage Permissions' action from the info panel for the document;
         SelectAspectsPage manageAspect = folderInfo.selectManageAspects().render();
         assertTrue(manageAspect.getTitle().contains(folderName), manageAspect.getTitle());
+        docLibPage = manageAspect.clickCancel().render();
+
+        folderInfo = docLibPage.getFileDirectoryInfo(folderName);
+        FolderRulesPage page = folderInfo.selectManageRules().render();
+        assertNotNull(page);
+        // Rules page is opened;
+        assertTrue(page.isPageCorrect(folderName));
     }
 
     /**
@@ -1742,6 +1748,14 @@ public class FilmStripDocLibTest extends AbstractUtils
         // The view is changed to detailed view;
         docLibPage = docLibPage.getNavigation().selectDetailedView().render();
         assertEquals(docLibPage.getViewType(), ViewType.DETAILED_VIEW);
+
+        // The view is changed to audio view;
+        docLibPage = docLibPage.getNavigation().selectAudioView().render();
+        assertEquals(docLibPage.getViewType(), ViewType.AUDIO_VIEW);
+
+        // The view is changed to media view;
+        docLibPage = docLibPage.getNavigation().selectMediaView().render();
+        assertEquals(docLibPage.getViewType(), ViewType.MEDIA_VIEW);
     }
 
     /**

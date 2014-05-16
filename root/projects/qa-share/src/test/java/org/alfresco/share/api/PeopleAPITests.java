@@ -61,8 +61,6 @@ public class PeopleAPITests extends PeopleAPI
     private String fileName;
     private String fileName2;
     private String fileName3;
-    private ListResponse<Preference> preferences;
-    private Integer totalCount;
     private static Log logger = LogFactory.getLog(PeopleAPITests.class);
 
     @Override

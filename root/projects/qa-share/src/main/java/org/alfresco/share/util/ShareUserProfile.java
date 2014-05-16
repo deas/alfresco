@@ -3,10 +3,8 @@ package org.alfresco.share.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.webdrone.HtmlPage;
-import org.alfresco.webdrone.WebDrone;
-import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.site.document.SyncInfoPage.ButtonType;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.user.TrashCanDeleteConfirmationPage;
@@ -14,6 +12,8 @@ import org.alfresco.po.share.user.TrashCanEmptyConfirmationPage;
 import org.alfresco.po.share.user.TrashCanItem;
 import org.alfresco.po.share.user.TrashCanPage;
 import org.alfresco.po.share.user.TrashCanValues;
+import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -127,23 +127,47 @@ public class ShareUserProfile extends AbstractUtils
         List<TrashCanItem> trashCanItems = new ArrayList<TrashCanItem>();
         TrashCanPage trashCan = (TrashCanPage)getSharePage(drone).render();
         trashCanItems.addAll(trashCan.getTrashCanItems());
+      
+        TrashCanItem item = getItemPresentInThePage(contentName, trashCanItems);
+        
+        if(item != null)
+        {
+        	return item; 
+        }
         
         while(trashCan.hasNextPage())
         {
             trashCan = trashCan.selectNextPage().render();
-            trashCanItems.addAll(trashCan.getTrashCanItems());
-        }
+            //trashCanItems.addAll(trashCan.getTrashCanItems());
+            item = getItemPresentInThePage(contentName, trashCan.getTrashCanItems());
+            
+            if(item != null)
+            {
+            	return item; 
+            }
+        }        
+
+        throw new ShareException("Incorrect content :"+ contentName);
         
-        for (TrashCanItem trashCanItem : trashCanItems)
+    }
+    
+    
+    /**
+     * @param contentName
+     * @param trashCanItems
+     * @return
+     */
+    private static TrashCanItem getItemPresentInThePage(String contentName, List<TrashCanItem> trashCanItems)
+    {
+    
+    	for (TrashCanItem trashCanItem : trashCanItems)
         {
             if(contentName.equalsIgnoreCase(trashCanItem.getFileName()))
             {
                 return trashCanItem;
             }
         }
-
-        throw new ShareException("Incorrect content :"+ contentName);
-        
+		return null;
     }
     
     /**

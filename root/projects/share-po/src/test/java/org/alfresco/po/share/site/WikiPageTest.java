@@ -28,8 +28,8 @@ import org.testng.annotations.Test;
  *
  */
 @Listeners(FailedTestListener.class)
-//@Test(groups={"Enterprise-only"})
-@Test(groups={"Enterprise4.2Bug"})
+@Test(groups = { "Enterprise-only" })
+// @Test(groups={"Enterprise4.2Bug"})
 public class WikiPageTest extends AbstractSiteDashletTest
 {
 
@@ -40,7 +40,7 @@ public class WikiPageTest extends AbstractSiteDashletTest
     WikiPage wikiPage;
     List<String> textLines = new ArrayList<String>();
     
-    @BeforeClass(groups={"Enterprise-only"})
+    @BeforeClass
     public void createSite() throws Exception
     {
         dashBoard = loginAs(username, password);
@@ -48,7 +48,8 @@ public class WikiPageTest extends AbstractSiteDashletTest
         SiteUtil.createSite(drone, siteName, "description", "Public");
         navigateToSiteDashboard();
     }
-    @AfterClass(groups={"Enterprise-only"})
+
+    @AfterClass
     public void tearDown()
     {
         SiteUtil.deleteSite(drone, siteName);
@@ -68,9 +69,11 @@ public class WikiPageTest extends AbstractSiteDashletTest
         customizeSitePage = siteDashBoard.getSiteNav().selectCustomizeSite();
         List<SitePageType> addPageTypes = new ArrayList<SitePageType>();
         addPageTypes.add(SitePageType.WIKI);
-        siteDashBoard = customizeSitePage.addPages(addPageTypes);
-        wikiPage = siteDashBoard.getSiteNav().selectSiteWikiPage().render();       
+        siteDashBoard = customizeSitePage.addPages(addPageTypes).render();
+        wikiPage = siteDashBoard.getSiteNav().selectSiteWikiPage().render();
+        Assert.assertTrue(wikiPage.getTitle().contains("Wiki"));
     }
+
     @Test(dependsOnMethods="selectCustomizeDashboard")
     public void testWikiPageDisplay() throws Exception
     {
@@ -87,10 +90,11 @@ public class WikiPageTest extends AbstractSiteDashletTest
     	TinyMceEditor tinyMceEditor = wikiPage.getTinyMCEEditor();    	
     	tinyMceEditor.clickTextFormatter(FormatType.BULLET);
     	Assert.assertEquals(textLines.get(0), tinyMceEditor.getText());       
-        Assert.assertTrue(tinyMceEditor.getContent().contains("<li>"+textLines.get(0)+"</li>"));            	
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<li>" + textLines.get(0) + "</li>"));
+        wikiPage.clickSaveButton().render();
     }
     
-    @Test(dependsOnMethods="testBulletListOfWikiPage")
+    @Test(dependsOnMethods = "testBulletListOfWikiPage", enabled = false)
     public void testFontStyle() throws Exception
     {
     	wikiPage.clickFontStyle();
@@ -99,7 +103,7 @@ public class WikiPageTest extends AbstractSiteDashletTest
     	Assert.assertEquals(textLines.get(0),wikiPage.retrieveWikiText(""));
     }
     
-    @Test(dependsOnMethods="testFontStyle")
+    @Test(dependsOnMethods = "testFontStyle", enabled = false)
     public void testFontSize() throws Exception{
     	wikiPage.clickFontSize();
     	Assert.assertEquals(textLines.get(0), wikiPage.retrieveWikiText("FONT"));

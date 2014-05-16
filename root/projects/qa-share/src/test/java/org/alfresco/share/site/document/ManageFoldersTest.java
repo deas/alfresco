@@ -43,6 +43,9 @@ import org.testng.annotations.Test;
 import java.util.HashSet;
 import java.util.List;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 /**
  * @author Roman.Chul
  */
@@ -2008,5 +2011,62 @@ public class ManageFoldersTest extends AbstractUtils
             testCleanup(drone, testName);
         }
     }
+
+    @Test(groups = { "DataPrepDocumentLibrary" })
+    public void dataPrep_Enterprise40x_13841() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+        String testFolder = getFolderName(testName);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser);
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render();
+
+        // Upload File
+        ShareUserSitePage.createFolder(drone, testFolder, testFolder);
+        ShareUser.logout(drone);
+    }
+
+    @Test(groups = "EnterpriseOnly")
+    public void Enterprise40x_13841()
+    {
+        /** Start Test */
+        testName = getTestName();
+
+        /** Test Data Setup */
+        String siteName = getSiteName(testName);
+        String testUser = getUserNameFreeDomain(testName);
+        String testFolder = getFolderName(testName);
+        String tagBaseName = "tag13841";
+        DocumentLibraryPage documentLibraryPage;
+
+        try
+        {
+            // Login
+            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+            FileDirectoryInfo fileDirectoryInfo = documentLibraryPage.getFileDirectoryInfo(testFolder);
+            for (int i = 0; i < 100; i++)
+            {
+                fileDirectoryInfo.addTag(tagBaseName + i);
+            }
+            List<String> tags = fileDirectoryInfo.getTags();
+            assertEquals(tags.size(), 100, "From page returned wrong tags count!");
+            for (int i = 0; i < 100; i++)
+            {
+                assertTrue(tags.contains(tagBaseName + i), String.format("Folder hasn't tag [%s]", tagBaseName + i));
+            }
+        }
+        finally
+        {
+            testCleanup(drone, testName);
+        }
+    }
+
 
 }

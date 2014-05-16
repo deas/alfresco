@@ -15,7 +15,6 @@
 	<test name="DocLib">
 		<classes>
 			<class name="org.alfresco.share.SiteDocumentLibraryTest" />
-			<class name="org.alfresco.share.site.document.GoogleDocsTest" />
 			<class name="org.alfresco.share.DownloadFilesAndFoldersTest" />
 			<class name="org.alfresco.share.site.document.ManageAspectTest" />
 		</classes>

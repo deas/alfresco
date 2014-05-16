@@ -20,6 +20,7 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.NewUserPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.UserSearchPage;
+import org.alfresco.po.share.enums.ZoomStyle;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
@@ -63,11 +64,10 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
     private String lastName = userName;
     private static DocumentLibraryPage documentLibPage;
     private File file;
-    private final String cloudUserName = "user1@premiernet.test";
-    private final String cloudUserPassword = "spr!nkles";
     private File testLockedFile;
     private File tempFile;
     private File tempFileForProfile;
+    private File file2;
 
     /**
      * Pre test setup of a dummy file to upload.
@@ -88,6 +88,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         }
         SiteUtil.createSite(drone, siteName, "description", "Public");
         file = SiteUtil.prepareFile("alfresco123");
+        file2 = SiteUtil.prepareFile("alfresco123456");
         testLockedFile = SiteUtil.prepareFile("Alfresco456");   
         tempFile = SiteUtil.prepareFile();
         tempFileForProfile = SiteUtil.prepareFile();
@@ -99,6 +100,9 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
     @AfterClass(groups={"alfresco-one"})
     public void teardown()
     {
+        documentLibPage = drone.getCurrentPage().render();
+        documentLibPage = documentLibPage.getNavigation().selectDetailedView().render();
+        
         SiteUtil.deleteSite(drone, siteName);
         
         if (isHybridEnabled())
@@ -118,7 +122,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
      * Create User 
      * @throws Exception 
      */
-    public void createUser() throws Exception
+    private void createUser() throws Exception
     {
         if (!alfrescoVersion.isCloud())
         {
@@ -138,8 +142,12 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
             loginAs(userName, userName);
         }
         else
-            loginAs(cloudUserName, cloudUserPassword);
-       
+        {
+            loginAs(username, password);
+            firstName = anotherUser.getfName();
+            lastName = anotherUser.getlName();
+            userName = firstName + " " + lastName;
+        }
     }
     /**
      * Test updating an existing file with a new uploaded file. The test covers major and minor version changes
@@ -147,7 +155,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
      * @throws Exception
      */
     //@Test(groups={"alfresco-one"})
-    public void createData() throws Exception
+    private void createData() throws Exception
     {
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
@@ -161,28 +169,10 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         documentLibPage = uploadForm.uploadFile(tempFile.getCanonicalPath()).render();
         uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
         documentLibPage = uploadForm.uploadFile(tempFileForProfile.getCanonicalPath()).render();
+        uploadForm = documentLibPage.getNavigation().selectFileUpload().render();
+        documentLibPage = uploadForm.uploadFile(file2.getCanonicalPath()).render();
         documentLibPage = ((DocumentLibraryPage) documentLibPage.getNavigation().selectGalleryView()).render();
-    }
-    
-
-    /**
-     * Method renders the documentlibrary page and returns the file as FileDirectoryInfo
-     * @return FileDirectoryInfo element for file / row at index 1
-     * @throws Exception
-     */
-    private FileDirectoryInfo getFile() throws Exception
-    {
-        documentLibPage = drone.getCurrentPage().render();
-        List<FileDirectoryInfo> results = documentLibPage.getFiles();
-        if(results.isEmpty())
-        {
-            throw new Exception("Error getting file");
-        }
-        else
-        {
-            // Get file
-            return results.get(1);
-        }
+        documentLibPage = documentLibPage.getNavigation().selectZoom(ZoomStyle.SMALLER).render();
     }
     
     @Test(groups={"alfresco-one"}, priority=1)
@@ -192,9 +182,10 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(folderName);
         FolderRulesPage page = thisRow.selectManageRules().render();
         Assert.assertNotNull(page);
-        drone.navigateTo(String.format(shareUrl + "/page/site/%s/documentlibrary",siteName));
-        documentLibPage = (DocumentLibraryPage) drone.getCurrentPage();
-        documentLibPage.render();
+        SiteFinderPage siteFinder = page.getNav().selectSearchForSites().render();
+        siteFinder = siteFinder.searchForSite(siteName).render();
+        SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
+        documentLibPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
     }
     
     
@@ -262,7 +253,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         Assert.assertTrue(thisRow.isFavourite());
     }
 
-    @Test(groups={"Enterprise4.2"}, priority=7)
+    @Test(groups={"Enterprise4.2","TestBug"}, priority=7)
     public void test107TagsForFolder() throws Exception
     {
         String tagName = "foldertag";
@@ -294,12 +285,13 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
     @Test(groups={"alfresco-one"}, priority=11)
     public void test111ContentEditInfoForFile() throws Exception
     {
+        documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
         // Get File
-        FileDirectoryInfo thisRow = getFile();
+        FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file2.getName());
 
         // Get ContentEditInfo
         Assert.assertNotNull(thisRow.getContentEditInfo());
-        Assert.assertTrue(thisRow.getContentEditInfo().contains("Created"));
+        Assert.assertTrue(thisRow.getContentEditInfo().contains("Created") || thisRow.getContentEditInfo().contains("Modified"));
     }
 
     @Test(groups={"alfresco-one"}, priority=12)
@@ -310,7 +302,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
 
         // Like
         thisRow.selectLike();
-        documentLibPage = documentLibPage.render();
+        documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
         thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
         Assert.assertTrue(thisRow.getLikeOrUnlikeTip().equalsIgnoreCase("Unlike"));
         Assert.assertTrue(thisRow.isLiked());
@@ -366,7 +358,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         }
         finally
         {
-           page.getSiteNav().selectSiteDocumentLibrary();
+            documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
         }
     }
 
@@ -410,7 +402,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
     }
 
-    @Test(groups={"Enterprise4.2"}, priority=27)
+    @Test(groups={"Enterprise4.2", "TestBug"}, priority=27)
     public void testClickOnRemoveAddTag() throws Exception
     {
         String tagName = "foldertag2";
@@ -507,7 +499,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
     @Test(groups="alfresco-one", priority=33)
     public void testEditProperites()
     {
-        FileDirectoryInfo fileInfo = documentLibPage.getFiles().get(1);
+        FileDirectoryInfo fileInfo = documentLibPage.getFileDirectoryInfo(file.getName());
         Assert.assertEquals(fileInfo.getName(), file.getName());
         Assert.assertTrue(fileInfo.isEditPropertiesLinkPresent());
         EditDocumentPropertiesPage editPage = fileInfo.selectEditProperties().render();
@@ -697,6 +689,7 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         // Get folder
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(temp2File.getName());
         // Like
+        @SuppressWarnings("deprecation")
         List<Categories> categories = thisRow.getCategories();
         Assert.assertNotNull(categories);
     }
@@ -716,7 +709,11 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
     {
         documentLibPage = drone.getCurrentPage().render();
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        assertFalse(thisRow.isSaveLinkVisible());
+        assertFalse(thisRow.isCancelLinkVisible());
         thisRow.contentNameEnableEdit();
+        assertTrue(thisRow.isSaveLinkVisible());
+        assertTrue(thisRow.isCancelLinkVisible());
         thisRow.contentNameEnter(folderName + " not updated");
         thisRow.contentNameClickCancel();
         drone.refresh();
@@ -851,5 +848,13 @@ public class FileDirectoryInfoGalleryViewTest extends AbstractDocumentTest
         assertTrue(drone.getCurrentUrl().toLowerCase().contains(file.getName().toLowerCase()));
         drone.closeWindow();
         drone.switchToWindow(mainWinHandle);
+    }
+
+    @Test(enabled = true, groups = "alfresco-one", priority = 54)
+    public void testIsFileShared()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        documentLibPage.getFileDirectoryInfo(file.getName()).clickShareLink();
+        assertTrue(documentLibPage.getFileDirectoryInfo(file.getName()).isFileShared());
     }
 }

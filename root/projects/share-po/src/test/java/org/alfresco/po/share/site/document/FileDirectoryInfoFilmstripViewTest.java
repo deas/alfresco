@@ -64,8 +64,6 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
     private String lastName = userName;
     private static DocumentLibraryPage documentLibPage;
     private File file;
-    private final String cloudUserName = "user1@premiernet.test";
-    private final String cloudUserPassword = "spr!nkles";
     private File testLockedFile;
     private File tempFile;
 
@@ -122,7 +120,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
      * Create User 
      * @throws Exception 
      */
-    public void createUser() throws Exception
+    private void createUser() throws Exception
     {
         if (!alfrescoVersion.isCloud())
         {
@@ -142,7 +140,12 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
             loginAs(userName, userName);
         }
         else
-            loginAs(cloudUserName, cloudUserPassword);
+        {
+            loginAs(username, password);
+            firstName = anotherUser.getfName();
+            lastName = anotherUser.getlName();
+            userName = firstName + " " + lastName;
+        }
        
     }
     /**
@@ -151,7 +154,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
      * @throws Exception
      */
     //@Test(groups={"alfresco-one"})
-    public void createData() throws Exception
+    private void createData() throws Exception
     {
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
@@ -195,9 +198,10 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(folderName);
         FolderRulesPage page = thisRow.selectManageRules().render();
         Assert.assertNotNull(page);
-        drone.navigateTo(String.format(shareUrl + "/page/site/%s/documentlibrary",siteName));
-        documentLibPage = (DocumentLibraryPage) drone.getCurrentPage();
-        documentLibPage.render();
+        SiteFinderPage siteFinder = page.getNav().selectSearchForSites().render();
+        siteFinder = siteFinder.searchForSite(siteName).render();
+        SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
+        documentLibPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
     }
     
     
@@ -314,7 +318,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
 
         // Like
         thisRow.selectLike();
-        documentLibPage = documentLibPage.render();
+        documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
         thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
         Assert.assertTrue(thisRow.isLiked());
     }
@@ -378,7 +382,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         }
         finally
         {
-           page.getSiteNav().selectSiteDocumentLibrary();
+            documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
         }
     }
 
@@ -389,7 +393,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         documentLibPage = documentLibPage.getNavigation().selectFilmstripView().render();
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
         Assert.assertTrue(thisRow.isManagePermissionLinkPresent());
-        ManagePermissionsPage mangPermPage = (thisRow.selectManagePermission()).render();       
+        ManagePermissionsPage mangPermPage = thisRow.selectManagePermission().render();       
         Assert.assertTrue(mangPermPage.isInheritPermissionEnabled());
         documentLibPage = ((DocumentLibraryPage)mangPermPage.selectSave()).render();
     }
@@ -438,7 +442,7 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         Assert.assertNotNull(categories);
     }
     
-    @Test(groups={"Enterprise4.2"}, priority=27)
+    @Test(groups={"Enterprise4.2","TestBug"}, priority=27)
     public void testClickOnRemoveAddTag() throws Exception
     {
         String tagName = "foldertag2";
@@ -733,7 +737,11 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
     {
         documentLibPage = drone.getCurrentPage().render();
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        assertFalse(thisRow.isSaveLinkVisible());
+        assertFalse(thisRow.isCancelLinkVisible());
         thisRow.contentNameEnableEdit();
+        assertTrue(thisRow.isSaveLinkVisible());
+        assertTrue(thisRow.isCancelLinkVisible());
         thisRow.contentNameEnter(folderName + " not updated");
         thisRow.contentNameClickCancel();
         drone.refresh();

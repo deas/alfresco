@@ -64,8 +64,6 @@ public abstract class PublicAPIAbstract extends AbstractUtils
     static WorkflowApiHttpClient httpClientForWorkflow;
     protected static PublicApiClient publicApiClient;
     protected static WorkflowApiClient workflowApiClient;
-    // protected static SubscriptionApiClient desktopSynApiClient;
-    // protected static Sync syncClient;
 
     private String location;
     private int port;

@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
 
 /**
  * The class represents the Public view Link page and displays the view details of document.
@@ -42,6 +43,8 @@ public class ViewPublicLinkPage extends SharePage
     private static final By documentNameLocator = By.cssSelector(".quickshare-node-header h1");
     @RenderWebElement
     private static final By documentPreviewLocator = By.cssSelector("div[id$='web-preview-previewer-div']");
+    
+    private static final String THIN_DARK_TITLE_ELEMENT = "h1.quickshare-node-header-info-title.thin.dark";
 
     /**
      * Constructor.
@@ -110,4 +113,16 @@ public class ViewPublicLinkPage extends SharePage
 
         throw new PageException("Unable to find documentDetailsLinkLocator css");
     }
+    
+    /**
+     * Gets the page detail title.
+     * 
+     * @return String page detail page title
+     */
+    public String getContentTitle()
+    {
+        WebElement element = drone.findAndWait(By.cssSelector(THIN_DARK_TITLE_ELEMENT));
+        return element.getText();
+    }
+
 }

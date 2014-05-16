@@ -61,8 +61,8 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
     private static final By MESSAGE_TEXT = By.cssSelector("textarea[id$='_workflowDescription']");
     private static final By SUBMIT_BUTTON = By.cssSelector("button[id$='form-submit-button']");
     private static final By CANCEL_BUTTON = By.cssSelector("button[id$='form-cancel-button']");
-    private static final By TYPE_DROP_DOWN_BUTTON = By.cssSelector("select[id$='default-startWorkflowForm-alf-id3_prop_hwf_cloudWorkflowType']");
-    private static final By DESTINATION_BUTTON = By.cssSelector("button[id$='default-startWorkflowForm-alf-id3_prop_hwf_cloudDestination-select-button-button']");
+    private static final By TYPE_DROP_DOWN_BUTTON = By.cssSelector("select[id$='hwf_cloudWorkflowType']");
+    private static final By DESTINATION_BUTTON = By.cssSelector("button[id$='hwf_cloudDestination-select-button-button']");
     private static final By ASSIGNMENT_BUTTON = By.cssSelector("button[id$='yui-gen24-button']");
     private static final By REQUIRED_APPROVAL_PERCENTAGE = By.cssSelector("input[id$='_requiredApprovalPercentage']");
     private static final By DESTINATION_NETWORK = By.cssSelector("span[id$='_hwf_cloudDestination-tenant']");
@@ -502,19 +502,6 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         }
         Select statusSelectDropDown = new Select(drone.findAndWait(AFTER_COMPLETION_DROPDOWN));
         statusSelectDropDown.selectByValue(strategy.getValue());
-    }
-
-    /**
-     * Selects the priority down list.
-     */
-    public void selectPriorityDropDown(Priority priority)
-    {
-        if (priority == null)
-        {
-            throw new IllegalArgumentException("Priority can't be empty.");
-        }
-        Select priorityDropDown = new Select(drone.findAndWait(PRIORITY_DROPDOWN));
-        priorityDropDown.selectByValue(priority.getValue());
     }
 
     /**

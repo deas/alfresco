@@ -24,7 +24,11 @@ import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.dashlet.MySitesDashlet.FavouriteType;
+import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SitePage;
+import org.alfresco.po.share.site.document.ConfirmDeletePage;
+import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.webdrone.exception.PageException;
@@ -138,5 +142,29 @@ public class MySiteDashletTest extends AbstractTest
         MySitesDashlet dashlet = dashBoard.getDashlet("my-sites").render();
         Assert.assertTrue(dashlet.isSiteFavourite(siteName));
         Assert.assertFalse(dashlet.isSiteFavourite(sampleSiteFullName));
+    }
+    
+    @Test(dependsOnMethods = "isSiteFavouriteTest")
+    public void selectMyFavouriteSite()
+    {
+        SharePage page = drone.getCurrentPage().render();
+        dashBoard = page.getNav().selectMyDashBoard();
+        MySitesDashlet dashlet = dashBoard.getDashlet("my-sites").render();
+        dashBoard = dashlet.selectMyFavourites(FavouriteType.ALL).render();
+        dashlet = dashBoard.getDashlet("my-sites").render();
+        Assert.assertTrue(dashlet.selectSite(siteName).click() instanceof SiteDashboardPage);
+    }
+    
+    @Test(dependsOnMethods = "selectMyFavouriteSite", enabled=false)
+    public void deleteSiteFromSiteDashlet()
+    {
+        SharePage page = drone.getCurrentPage().render();
+        dashBoard = page.getNav().selectMyDashBoard();
+        MySitesDashlet dashlet = dashBoard.getDashlet("my-sites").render();
+        ConfirmDeletePage confirmDeletePage = dashlet.deleteSite(siteName).render();
+        confirmDeletePage = confirmDeletePage.selectAction(Action.Delete).render();
+        dashBoard = confirmDeletePage.selectAction(Action.Delete).render();
+        dashlet = dashBoard.getDashlet("my-sites").render();
+        Assert.assertFalse(dashlet.isSiteFavourite(siteName));
     }
 }

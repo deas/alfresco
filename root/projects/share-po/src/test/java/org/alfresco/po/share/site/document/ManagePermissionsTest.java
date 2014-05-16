@@ -22,6 +22,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.AlfrescoVersion;
@@ -175,6 +176,18 @@ public class ManagePermissionsTest extends AbstractTest
         pageUnderTest = ((DocumentDetailsPage)drone.getCurrentPage()).selectManagePermissions().render();
         Assert.assertFalse(pageUnderTest.isUserExistForPermission(username));       
         assertTrue(pageUnderTest.isUserExistForPermission(FNAME));
+        
+        List<String> roles = pageUnderTest.getListOfUserRoles(FNAME);
+        //[Editor, Consumer, Collaborator, Coordinator, Contributor, Site Consumer, Site Contributor, Site Manager, Site Collaborator]
+        Assert.assertTrue(roles.contains(UserRole.EDITOR.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.CONSUMER.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.COORDINATOR.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.CONTRIBUTOR.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.SITECONSUMER.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.SITECONTRIBUTOR.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.SITEMANAGER.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.SITECOLLABORATOR.getRoleName()));
+        
         assertTrue(pageUnderTest.updateUserRole(FNAME, UserRole.CONSUMER));        
         ((DocumentDetailsPage) pageUnderTest.selectCancel()).render();        
     }
@@ -249,4 +262,21 @@ public class ManagePermissionsTest extends AbstractTest
         pageUnderTest.selectCancel();
     }
     
+    @Test(dependsOnMethods = "isEveryOnePresent")
+    public void getSearchErrorMessage()
+    {
+        pageUnderTest = ((DocumentDetailsPage)drone.getCurrentPage()).selectManagePermissions().render();    
+        ManagePermissionsPage.UserSearchPage userSearchPage = pageUnderTest.selectAddUser().render();
+        Assert.assertEquals(userSearchPage.getSearchErrorMessage(""), "Enter at least 3 character(s)");
+        pageUnderTest.selectCancel();
+    }
+    
+    @Test(dependsOnMethods = "getSearchErrorMessage")
+    public void usersExistInSearchResults()
+    {
+        pageUnderTest = ((DocumentDetailsPage)drone.getCurrentPage()).selectManagePermissions().render();    
+        ManagePermissionsPage.UserSearchPage userSearchPage = pageUnderTest.selectAddUser().render();
+        Assert.assertTrue(userSearchPage.usersExistInSearchResults(username, username));
+        pageUnderTest.selectCancel();
+    }
 }

@@ -32,8 +32,6 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
 
     private static Log logger = LogFactory.getLog(FilmStripViewFileDirectoryInfo.class);
 
-    private WebElement THUMBNAIL_ROOT;
-
     /**
      * @param nodeRef
      * @param webElement
@@ -48,7 +46,6 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
         FILE_DESC_IDENTIFIER = "div.detail:first-of-type span.item";
         THUMBNAIL = THUMBNAIL_TYPE + "/../..";
         resolveStaleness();
-        THUMBNAIL_ROOT = drone.findAndWait(By.xpath(THUMBNAIL));
         TAG_ICON = "//h3[@class='filename']/span/a[text()='%s']/../../../div/span[@class='insitu-edit']";
     }
 
@@ -61,7 +58,7 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
     {
         try
         {
-            if (THUMBNAIL_ROOT.isDisplayed())
+            if (drone.findAndWait(By.xpath(THUMBNAIL)).isDisplayed())
             {
                 selectThumbnail();
             }
@@ -82,7 +79,7 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
     @Override
     public String getName()
     {
-        return THUMBNAIL_ROOT.getText();
+        return drone.findAndWait(By.xpath(THUMBNAIL)).getText();
     }
 
     /**
@@ -115,7 +112,7 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
     @Override
     public HtmlPage selectThumbnail()
     {
-        THUMBNAIL_ROOT.click();
+        drone.findAndWait(By.xpath(THUMBNAIL)).click();
         domEventCompleted();
         return FactorySharePage.resolvePage(drone);
     }
@@ -137,5 +134,16 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
     {
         clickInfoIcon();
         super.selectCheckbox();
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickOnTitle()
+     */
+    @Override
+    public HtmlPage clickOnTitle()
+    {
+        clickInfoIcon();
+        return super.clickOnTitle();
     }
 }

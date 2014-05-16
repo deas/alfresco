@@ -7,25 +7,33 @@ import java.util.*;
  */
 public class RandomUtil
 {
-        public static String getRandomString(int length)
-        {
-                Random random = new Random();
-                char from[] = "abcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
-                StringBuilder result = new StringBuilder();
-                for (int i = 0; i < length; i++)
-                {
-                        result.append(from[random.nextInt((from.length - 1))]);
-                }
-                return result.toString();
-        }
+    private static final Random RANDOM = new Random();
 
-        public static List<String> getRandomListString(int arrayLength, int stringsLength)
+    public static String getRandomString(int length)
+    {
+        char from[] = "abcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < length; i++)
         {
-                List<String> randomStrings = new ArrayList<String>();
-                for (int i = 0; i < arrayLength; i++)
-                {
-                        randomStrings.add(getRandomString(stringsLength));
-                }
-                return  randomStrings;
+            result.append(from[RANDOM.nextInt((from.length - 1))]);
         }
+        return result.toString();
+    }
+
+    public static List<String> getRandomListString(int arrayLength, int stringsLength)
+    {
+        List<String> randomStrings = new ArrayList<String>();
+        for (int i = 0; i < arrayLength; i++)
+        {
+            randomStrings.add(getRandomString(stringsLength));
+        }
+        return randomStrings;
+    }
+
+    public static int getInt(int bound)
+    {
+        return RANDOM.nextInt(bound);
+    }
+
+
 }

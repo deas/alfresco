@@ -48,7 +48,7 @@ public class DocumentLibraryPageWithLotsOfFilesTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @BeforeClass
+    @BeforeClass(groups="alfresco-one")
     public void prepare() throws Exception
     {
         siteName = "site" + System.currentTimeMillis();
@@ -105,7 +105,7 @@ public class DocumentLibraryPageWithLotsOfFilesTest extends AbstractDocumentTest
         }
     }
         
-    @AfterClass
+    @AfterClass(groups="alfresco-one")
     public void teardown()
     {
         SiteUtil.deleteSite(drone, siteName);

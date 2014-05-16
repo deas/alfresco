@@ -2,64 +2,179 @@
 <suite name="Classes" verbose="1" preserve-order="true" thread-count="5" parallel="classes">
     <groups>
         <run>
-            <include name="DataPrep.*"/>
-            <exclude name="Enterprise42"/>
-            <exclude name="Hybrid.*"/>
+            <include name="DataPrep.*" />
+            <exclude name="Enterprise42" />
+            <exclude name="Hybrid.*" />
+            <exclude name="NonGrid" />
+            <exclude name=".*Bug.*" />
         </run>
     </groups>
-    <listeners>
-        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
-    </listeners>
-	<test name="Granular Manage Permission" verbose="1">
-		<classes>
-			<class name="org.alfresco.share.site.document.ManagePermissionTest">
-				<methods>
-					<include name="dataPrep_ALF_10427" />
-					<include name="dataPrep_ALF_10428" />
-					<include name="dataPrep_ALF_10429" />
-					<include name="dataPrep_ALF_10790" />
-					<include name="dataPrep_ALF_10793" />
-					<include name="dataPrep_ALF_10795" />
-					<include name="dataPrep_ALF_10287" />
-					<include name="dataPrep_ALF_10288" />
-					<include name="dataPrep_ALF_10425" />
-					<include name="dataPrep_ALF_10426" />
-					<include name="dataPrep_ALF_10785" />
-					<include name="dataPrep_ALF_10786" />
-				</methods>
-			</class>
-		</classes>
-	</test>
 
-   <test name="Table View Tests" verbose="1">
-      <classes>
-         <class name="org.alfresco.share.site.document.TableViewDocLibTest">
-            <methods>
-               <include name="dataPrep_Alf_14392" />
-               <include name="dataPrep_Alf_14544" />
-               <include name="dataPrep_Alf_14548" />
-               <include name="dataPrep_Alf_14549" />
-            </methods>
-         </class>
-      </classes>
-   </test>
-   <test name="Filmstrip_Dataprep" verbose="1">
-		<classes>
-			<class name="org.alfresco.share.site.document.FilmStripDocLibTest">
-				<methods>
-					<include name="dataprep_ALF_14200" />
-					<include name="dataprep_ALF_14201" />
-					<include name="dataprep_ALF_14203" />
-					<include name="dataprep_ALF_14204" />
-					<include name="dataprep_ALF_14207" />
-					<include name="dataprep_ALF_14208" />
-					<include name="dataprep_ALF_14210" />
-					<include name="dataprep_ALF_14214" />
-					<include name="dataprep_ALF_14228" />
-					<include name="dataprep_ALF_14233" />
-					<include name="dataprep_ALF_14234" />
-				</methods>
-			</class>
-		</classes>
-	</test>
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+    </listeners>
+
+    <test name="CMIS Atom Document Aspect" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CmisAtomDocumentAspectsTests"/>
+        </classes>
+    </test>
+
+    <test name="CMIS Browser Document Aspect" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CmisBrowserDocumentAspectsTests"/>
+        </classes>
+    </test>
+
+    <test name="CMIS Browser Folder Aspects Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CmisBrowserFolderAspectsTests" />
+        </classes>
+    </test>
+
+    <test name="CMIS Atom Folder Aspects Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CmisAtomFolderAspectsTests" />
+        </classes>
+    </test>
+
+    <test name="CMIS Atom Action Values Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CMISAtomActionValuesTests" />
+        </classes>
+    </test>
+
+    <test name="CMIS Browser Action Values Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CMISBrowserActionValuesTest" />
+        </classes>
+    </test>
+
+    <test name="CMIS Atom Append Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CMISAtomAppendTests" />
+        </classes>
+    </test>
+
+    <test name="CMIS Browser Append Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CMISBrowserAppendTest" />
+        </classes>
+    </test>
+    <!--<test name="Granular Manage Permission" verbose="1">-->
+        <!--<classes>-->
+            <!--<class name="org.alfresco.share.site.document.ManagePermissionTest">-->
+                <!--<methods>-->
+                    <!--<include name="dataPrep_ALF_10427" />-->
+                    <!--<include name="dataPrep_ALF_10428" />-->
+                    <!--<include name="dataPrep_ALF_10429" />-->
+                    <!--<include name="dataPrep_ALF_10790" />-->
+                    <!--<include name="dataPrep_ALF_10793" />-->
+                    <!--<include name="dataPrep_ALF_10795" />-->
+                    <!--<include name="dataPrep_ALF_10287" />-->
+                    <!--<include name="dataPrep_ALF_10288" />-->
+                    <!--<include name="dataPrep_ALF_10425" />-->
+                    <!--<include name="dataPrep_ALF_10426" />-->
+                    <!--<include name="dataPrep_ALF_10785" />-->
+                    <!--<include name="dataPrep_ALF_10786" />-->
+                <!--</methods>-->
+            <!--</class>-->
+        <!--</classes>-->
+    <!--</test>-->
+
+    <!--<test name="Table View Tests" verbose="1">-->
+        <!--<classes>-->
+            <!--<class name="org.alfresco.share.site.document.TableViewDocLibTest">-->
+                <!--<methods>-->
+                    <!--<include name="dataPrep_Alf_14549" />-->
+                <!--</methods>-->
+            <!--</class>-->
+        <!--</classes>-->
+    <!--</test>-->
+    <!--<test name="Filmstrip_Dataprep" verbose="1">-->
+        <!--<classes>-->
+            <!--<class name="org.alfresco.share.site.document.FilmStripDocLibTest" />-->
+        <!--</classes>-->
+    <!--</test>-->
+
+    <!--<test name="Trashcan Tests" verbose="1" preserve-order="true">-->
+        <!--<classes>-->
+            <!--<class name="org.alfresco.share.user.trashcan.TrashCanTest">-->
+                <!--<methods>-->
+                    <!--<include name="dataPrep_TrashCan_ALF_10465" />-->
+                <!--</methods>-->
+            <!--</class>-->
+        <!--</classes>-->
+    <!--</test>-->
+
+    <!--<test name="Default View" verbose="1" preserve-order="true">-->
+        <!--<classes>-->
+            <!--<class name="org.alfresco.share.site.document.DefaultViewDocLibTest" />-->
+        <!--</classes>-->
+    <!--</test>-->
+
+    <!--<test name="Gallery View Tests" verbose="1" preserve-order="true">-->
+        <!--<classes>-->
+            <!--<class name="org.alfresco.share.site.document.GalleryViewTest">-->
+                <!--<methods>-->
+                    <!--<include name="dataPrep_ALF_8717" />-->
+                    <!--<include name="dataPrep_ALF_8718" />-->
+                    <!--<include name="dataPrep_ALF_8749" />-->
+                    <!--<include name="dataPrep_ALF_8663" />-->
+                    <!--<include name="dataPrep_ALF_8667" />-->
+                    <!--<include name="dataPrep_ALF_8678" />-->
+                    <!--<include name="dataPrep_ALF_8679" />-->
+                    <!--<include name="dataPrep_ALF_8755" />-->
+                <!--</methods>-->
+            <!--</class>-->
+        <!--</classes>-->
+    <!--</test>-->
+
+    <!--<test name="Site Notice Tests" verbose="1" preserve-order="true">-->
+        <!--<classes>-->
+            <!--<class name="org.alfresco.share.dashlet.SiteNoticetDashletTest">-->
+                <!--<methods>-->
+                    <!--<include name="dataPrep_ALF_10823" />-->
+                    <!--<include name="dataPrep_ALF_10824" />-->
+                    <!--<include name="dataPrep_ALF_10825" />-->
+                    <!--<include name="dataPrep_ALF_10826" />-->
+                <!--</methods>-->
+            <!--</class>-->
+        <!--</classes>-->
+    <!--</test>-->
+
+    <!--<test name="GoogleDocs Test" verbose="1" preserve-order="true">-->
+        <!--<classes>-->
+            <!--<class name="org.alfresco.share.site.document.GoogleDocsTest">-->
+                <!--<methods>-->
+                    <!--<include name="dataPrep_GoogleDocs_ALF_1930" />-->
+                <!--</methods>-->
+            <!--</class>-->
+        <!--</classes>-->
+    <!--</test>-->
+
+    <!--<test name="Document Share Tests" verbose="1" preserve-order="true">-->
+        <!--<classes>-->
+            <!--<class name="org.alfresco.share.site.document.DocumentShareTests" />-->
+        <!--</classes>-->
+    <!--</test>-->
+
+    <!--<test name="Header bar test" verbose="1">-->
+        <!--<classes>-->
+            <!--<class name="org.alfresco.share.HeaderBarTest">-->
+                <!--<methods>-->
+                    <!--<include name="dataPrep_Alf_9296" />-->
+                    <!--<include name="dataPrep_Alf_9297" />-->
+                    <!--<include name="dataPrep_Alf_9298" />-->
+                    <!--<include name="dataPrep_Alf_9291" />-->
+                    <!--<include name="dataPrep_Alf_9292" />-->
+                    <!--<include name="dataPrep_Alf_9293" />-->
+                    <!--<include name="dataPrep_Alf_9294" />-->
+                    <!--<include name="dataPrep_Alf_9304" />-->
+                    <!--<include name="dataPrep_Alf_9305" />-->
+                    <!--<include name="dataPrep_Alf_9306" />-->
+                <!--</methods>-->
+            <!--</class>-->
+        <!--</classes>-->
+    <!--</test>-->
 </suite>

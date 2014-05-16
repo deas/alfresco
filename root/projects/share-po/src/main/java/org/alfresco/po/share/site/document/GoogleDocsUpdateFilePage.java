@@ -118,13 +118,13 @@ public class GoogleDocsUpdateFilePage extends UpdateFilePage
 
         String text = "Saving Google Doc";
         drone.waitUntilVisible(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-        RenderTime time = new RenderTime(maxPageLoadingTime);
+        RenderTime time = new RenderTime(maxPageLoadingTime+maxPageLoadingTime);
         time.start();
         while (true)
         {
             try
             {
-                drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div.bd>span.message"), text, maxPageLoadingTime);
+                drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             }
             catch (TimeoutException e)
             {

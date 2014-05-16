@@ -23,6 +23,7 @@ import java.util.List;
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.enums.UserRole;
+import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -54,6 +55,11 @@ public class SiteMembersPage extends SharePage
     private static final String ROLES_DROP_DOWN_VALUES_CSS_PART_2 = "']>div[class*='yui-menu-button-menu']>div>ul>li";
     private static final String ROLES_DROP_DOWN_BUTTON_CSS_PART_1 = "span[id$='";
     private static final String ROLES_DROP_DOWN_BUTTON_CSS_PART_2 = "']>span[class$='menu-button']>span>button";
+    private static final By PENDING_INVITES = By.cssSelector("a[id$='pending-invites-link']");
+    private static final By PEOPLE_LINK = By.cssSelector(".members-bar-links>a[href='site-members']");
+    private static final By GROUPS_LINK = By.cssSelector(".members-bar-links>a[href='site-groups']");
+    private static final By INVITE_BTN = By.cssSelector("a[href='invite']");
+
 
     /**
      * Constructor.
@@ -311,5 +317,102 @@ public class SiteMembersPage extends SharePage
             }
         }
         return false;
+    }
+
+    /**
+     * Method to navigate to Pending invites page
+     *
+     * @return Html page
+     */
+
+    public PendingInvitesPage navigateToPendingInvites()
+    {
+        try
+        {
+            drone.findAndWait(PENDING_INVITES).click();
+            return new PendingInvitesPage(drone);
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageException("Not found Element:" + PENDING_INVITES, nse);
+        }
+    }
+
+    private boolean isDisplayed(By locator)
+    {
+        try
+        {
+            return drone.findAndWait(locator, 2000).isDisplayed();
+        }
+        catch (TimeoutException exc)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Method to verify Invite Link
+     *
+     * @return true if displayed
+     */
+    public boolean isInviteLinkPresent()
+    {
+        return isDisplayed(INVITE_BTN);
+    }
+
+    /**
+     * Method to verify People link is displayed
+     *
+     * @return true if displayed
+     */
+    public boolean isPeopleLinkPresent()
+    {
+        return isDisplayed(PEOPLE_LINK);
+    }
+
+    /**
+     * Method to verify Groups link is displayed
+     *
+     * @return true if displayed
+     */
+    public boolean isGroupLinkPresent()
+    {
+        return isDisplayed(GROUPS_LINK);
+    }
+
+    /**
+     * Method to open Groups tab from Site Members page
+     *
+     * @return SiteGroupsPage
+     */
+    public SiteGroupsPage navigateToSiteGroups()
+    {
+        try
+        {
+            drone.findAndWait(GROUPS_LINK).click();
+            return new SiteGroupsPage(drone);
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to find " + GROUPS_LINK);
+        }
+    }
+
+    public boolean isAssignRolePresent (String userName)
+    {
+        String name = userName.trim();
+
+        if (alfrescoVersion.isCloud())
+        {
+            name = name.toLowerCase();
+        }
+        try
+        {
+            return drone.isElementDisplayed(By.cssSelector(ROLES_DROP_DOWN_BUTTON_CSS_PART_1 + name + ROLES_DROP_DOWN_BUTTON_CSS_PART_2));
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Timed out waiting for elements");
+        }
     }
 }

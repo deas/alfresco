@@ -9,15 +9,19 @@ import org.alfresco.share.util.ShareUserRepositoryPage;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.alfresco.po.share.enums.Encoder;
+import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.po.share.site.document.DetailsPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -210,7 +214,7 @@ public class UtilsTest extends AbstractUtils
         docDetails.addComment(comment, Encoder.ENCODER_HTML);
         docDetails.addComment(comment, Encoder.ENCODER_JAVASCRIPT);
         
-        Assert.assertTrue("Error adding comment" + comment,docDetails.getComments().contains(comment));
+        Assert.assertTrue(docDetails.getComments().contains(comment),"Error adding comment" + comment);
         
         // Add comment for xss related test        
         docDetails.addComment(xssComment);
@@ -219,7 +223,7 @@ public class UtilsTest extends AbstractUtils
         docDetails.addComment(xssComment, Encoder.ENCODER_HTML);
         docDetails.addComment(xssComment, Encoder.ENCODER_JAVASCRIPT);
         
-        Assert.assertTrue("Error adding comment" + xssComment,docDetails.getComments().contains(xssComment));
+        Assert.assertTrue(docDetails.getComments().contains(xssComment),"Error adding comment" + xssComment);
         
         doclibPage = ShareUser.openDocumentLibrary(drone);
         
@@ -232,7 +236,7 @@ public class UtilsTest extends AbstractUtils
         folderDetails.addComment(comment, Encoder.ENCODER_HTML);
         folderDetails.addComment(comment, Encoder.ENCODER_JAVASCRIPT);
         
-        Assert.assertTrue("Error adding comment" + comment,docDetails.getComments().contains(comment));
+        Assert.assertTrue(docDetails.getComments().contains(comment),"Error adding comment" + comment);
         
         // Add comment for xss related test        
         folderDetails.addComment(xssComment);
@@ -241,7 +245,114 @@ public class UtilsTest extends AbstractUtils
         folderDetails.addComment(xssComment, Encoder.ENCODER_HTML);
         folderDetails.addComment(xssComment, Encoder.ENCODER_JAVASCRIPT);
         
-        Assert.assertTrue("Error adding comment" + xssComment,docDetails.getComments().contains(xssComment));
+        Assert.assertTrue(docDetails.getComments().contains(xssComment),"Error adding comment" + xssComment);
+    }
+    
+    @Test
+    public void testPagination_003() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName) + System.currentTimeMillis();
+        String fileName = getFileName(testName) + System.currentTimeMillis();
+        String folderName = getFolderName(testName) + System.currentTimeMillis();
+
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser });
+
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        SiteUtil.createSite(drone, siteName, siteName, SITE_VISIBILITY_PUBLIC, true);
+
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        
+        ShareUser.uploadFileInFolder(drone, new String[] { fileName });
+
+        for (int i = 0; i < 2; i++)
+        {
+            ShareUser.uploadFileInFolder(drone, new String[] { i + "-" + fileName, DOCLIB }).render();
+            ShareUserSitePage.createFolder(drone, i + "-" + folderName, i + "-" + folderName);
+        }
+        for (int i = 0; i < 6; i++)
+        {
+            ShareUser.createCopyOfAllContent(drone);
+        }
+        
+        ShareUser.uploadFileInFolder(drone, new String[] { 20 + "-" + fileName, DOCLIB }).render();
+        ShareUserSitePage.createFolder(drone, folderName, folderName);
+        
+        // First file
+        FileDirectoryInfo fileDirectoryInfo = ShareUserSitePage.getFileDirectoryInfo(drone, fileName);
+        Assert.assertFalse(fileDirectoryInfo.isFolder());
+        
+        // Last file
+        fileDirectoryInfo = ShareUserSitePage.getFileDirectoryInfo(drone, folderName);
+        Assert.assertTrue(fileDirectoryInfo.isFolder());
+        
+        // No such file
+        try
+        {
+            fileDirectoryInfo = ShareUserSitePage.getFileDirectoryInfo(drone, 50 + "-" + fileName);
+            Assert.fail("No such file in the Site");
+        }
+        catch(PageException pe)
+        {
+            
+        } 
+    }
+    
+    @Test
+    public void testDetailsPage_004() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName) + System.currentTimeMillis();
+        String fileName = getFileName(testName) + System.currentTimeMillis();
+        String folderName = getFolderName(testName) + System.currentTimeMillis();
+
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser });
+
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        SiteUtil.createSite(drone, siteName, siteName, SITE_VISIBILITY_PUBLIC, true);
+
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        
+        ShareUser.uploadFileInFolder(drone, new String[] { fileName });       
+
+        ShareUserSitePage.createFolder(drone, folderName, folderName);
+        
+        DetailsPage detailsPage = ShareUserSitePage.openDetailsPage(drone, fileName);
+        Assert.assertTrue(detailsPage instanceof DocumentDetailsPage, "Error Opening DocumentDetailsPage");
+        
+        ShareUser.openDocumentLibrary(drone);
+        
+        detailsPage = ShareUserSitePage.openDetailsPage(drone, folderName);
+        Assert.assertTrue(detailsPage instanceof FolderDetailsPage, "Error Opening FolderDetailsPage");
+        
+        ShareUser.openDocumentLibrary(drone);
+
+        ShareUserSitePage.selectView(drone, ViewType.GALLERY_VIEW);
+        
+        ShareUserSitePage.selectContent(drone, folderName);
+        
+        ShareUser.openDocumentLibrary(drone);
+
+        ShareUserSitePage.selectView(drone, ViewType.SIMPLE_VIEW);
+        
+        ShareUserSitePage.selectContent(drone, folderName);
+        
+        ShareUser.openDocumentLibrary(drone);
+
+        ShareUserSitePage.selectView(drone, ViewType.FILMSTRIP_VIEW);
+        
+        detailsPage = ShareUserSitePage.selectContent(drone, fileName).render();
+        
+        ShareUser.openDocumentLibrary(drone);
+
+        ShareUserSitePage.selectView(drone, ViewType.DETAILED_VIEW);
+        
+        detailsPage = ShareUserSitePage.selectContent(drone, fileName).render();
+        
     }
         
 }

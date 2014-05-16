@@ -1344,7 +1344,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
             // present and Last Sync failed message on Info banner.
             documentLibraryPage = documentDetailsPage.getSiteNav().selectSiteDocumentLibrary().render();
             // May fail if there is a delay in sync (need the maximum wait time)
-            Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName).isSyncFailedIconPresent(maxWaitTime_CloudSync),
+            Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName).isSyncFailedIconPresent(maxWaitTimeCloudSync),
                     "Verifying Sync failed icon is displayed");
             Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName).getContentInfo().contains(LAST_SYNC_FAILED_MESSAGE),
                     "Verifying \"Last sync failed.\" message is displayed");

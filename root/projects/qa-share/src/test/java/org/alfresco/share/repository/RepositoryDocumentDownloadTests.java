@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.share.repository;
 
 import java.util.List;
@@ -23,6 +40,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+/**
+ * Test document download for repository. 
+ * @author jcule
+ *
+ */
 @Listeners(FailedTestListener.class)
 public class RepositoryDocumentDownloadTests extends AbstractUtils
 {
@@ -32,7 +54,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
     private static final String USER_HOMES_FOLDER = "User Homes";
 
     @Override
-    @BeforeClass(alwaysRun = true)
+    @BeforeClass(groups = { "NonGrid" })
     public void setup() throws Exception
     {
         super.setupCustomDrone(WebDroneType.DownLoadDrone);
@@ -50,7 +72,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * @throws Exception
      */
 
-    @BeforeMethod(groups = { "RepositoryDocumentDownload" })
+    @BeforeMethod(groups = { "NonGrid" })
     public void customPrepare() throws Exception
     {
         // login as created user
@@ -71,7 +93,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * 
      * @throws Exception
      */
-    @AfterMethod(groups = { "RepositoryDocumentDownload" })
+    @AfterMethod(groups = { "NonGrid"  })
     public void customQuit() throws Exception
     {
         // login as created user
@@ -96,7 +118,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentDownload" })
+    @Test(groups = { "NonGrid"  })
     public void enterprise40x_5443() throws Exception
     {
         // Create plain text file in users home test folder
@@ -144,7 +166,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentDownload" })
+    @Test(groups = {  "NonGrid"  })
     public void enterprise40x_5444() throws Exception
     {
         // Create plain text file in users home test folder
@@ -195,7 +217,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentDownload" })
+    @Test(groups = { "NonGrid"  })
     public void enterprise40x_5445() throws Exception
     {
         // Create plain text file in users home test folder
@@ -260,7 +282,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentDownload" })
+    @Test(groups = {  "NonGrid"  })
     public void enterprise40x_5446() throws Exception
     {
         // Create plain text file in users home test folder
@@ -325,7 +347,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentDownload" })
+    @Test(groups = { "NonGrid"  })
     public void enterprise40x_5447() throws Exception
     {
         // Create plain text file in users home test folder
@@ -386,7 +408,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentDownload" })
+    @Test(groups = { "NonGrid"  })
     public void enterprise40x_5448() throws Exception
     {
 

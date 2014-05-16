@@ -1,4 +1,20 @@
-
+/*
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.share.repository;
 
 import java.io.File;
@@ -9,6 +25,7 @@ import java.util.Map;
 
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.RepositoryPage;
+import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.search.SearchResultItem;
 import org.alfresco.po.share.site.document.ConfirmDeletePage;
@@ -40,9 +57,13 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 
+/**
+ * @author nshah
+ */
 @Listeners(FailedTestListener.class)
 public class RepositoryManagePermissionTest extends AbstractUtils
 {
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(RepositoryManagePermissionTest.class);
 
     private String testDomainFree = DOMAIN_FREE;
@@ -86,7 +107,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         RepositoryPage repoPage = ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
         repoPage.selectFolder(folderName);
-        ShareUserSitePage.createFolder(drone, childfolderName, childfolderName);
+        ShareUserRepositoryPage.createFolderInRepository(drone, childfolderName, childfolderName);
 
         ShareUser.logout(drone);
 
@@ -154,8 +175,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
         repoPage.selectFolder(folderName);
-        Assert.assertFalse(repoPage.getFileDirectoryInfo(childfolderName)
-                    .isManagePermissionLinkPresent());
+        Assert.assertFalse(repoPage.getFileDirectoryInfo(childfolderName).isManagePermissionLinkPresent());
 
         ShareUser.logout(drone);
 
@@ -193,10 +213,8 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
 
-        ShareUserMembers.managePermissionsOnContent(drone, user1, folderName, UserRole.COORDINATOR,
-                    true);
-        ShareUserMembers.managePermissionsOnContent(drone, user2, folderName, UserRole.COORDINATOR,
-                    true);
+        ShareUserMembers.managePermissionsOnContent(drone, user1, folderName, UserRole.COORDINATOR, true);
+        ShareUserMembers.managePermissionsOnContent(drone, user2, folderName, UserRole.COORDINATOR, true);
 
         ShareUser.logout(drone);
 
@@ -211,7 +229,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         RepositoryPage repoPage = ShareUserRepositoryPage.openRepository(drone);
 
         repoPage.selectFolder(folderName).render();
-        ShareUserSitePage.uploadFile(drone, file);
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
 
         ShareUser.logout(drone);
 
@@ -257,12 +275,10 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         RepositoryPage repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone).render();
 
-        ShareUserSitePage.createFolder(drone, folderName, folderName, folderName).render();
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName).render();
 
-        ShareUserMembers.managePermissionsOnContent(drone, user1, folderName, UserRole.COORDINATOR,
-                    true);
-        ShareUserMembers.managePermissionsOnContent(drone, user2, folderName, UserRole.COORDINATOR,
-                    true);
+        ShareUserMembers.managePermissionsOnContent(drone, user1, folderName, UserRole.COORDINATOR, true);
+        ShareUserMembers.managePermissionsOnContent(drone, user2, folderName, UserRole.COORDINATOR, true);
 
         ShareUser.logout(drone);
 
@@ -271,8 +287,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
         // Cancel manage permissions
-        FolderDetailsPage folderDetailsPage = repoPage.getFileDirectoryInfo(folderName).selectViewFolderDetails()
-                    .render();
+        FolderDetailsPage folderDetailsPage = repoPage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
         ManagePermissionsPage mangPermPage = folderDetailsPage.selectManagePermissions().render();
         mangPermPage.updateUserRole(user2, UserRole.CONSUMER);
         mangPermPage.toggleInheritPermission(false, ButtonType.Yes);
@@ -281,9 +296,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         ShareUserRepositoryPage.openRepository(drone);
 
         repoPage.selectFolder(folderName).render();
-        // TODO: Replace with
-        // ShareUserRepositoryPage.uploadFileInRepository(drone, file);
-        ShareUserSitePage.uploadFile(drone, file);
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
 
         ShareUser.logout(drone);
 
@@ -334,12 +347,10 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        RepositoryPage repoPage = ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName,
-                    folderName);
+        RepositoryPage repoPage = ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
 
         ShareUserRepositoryPage.openRepository(drone);
-        ShareUserRepositoryPage.createFolderInFolderInRepository(drone, subFolderName, subFolderName, REPO + SLASH
-                    + folderName);
+        ShareUserRepositoryPage.createFolderInFolderInRepository(drone, subFolderName, subFolderName, REPO + SLASH + folderName);
 
         repoPage = ShareUserRepositoryPage.openRepository(drone);
         repoPage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
@@ -357,8 +368,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         ManagePermissionsPage mangPermPage = ShareUser.returnManagePermissionPage(drone, subFolderName);
 
-        Assert.assertTrue(UserRole.EDITOR.getRoleName().equalsIgnoreCase(
-                    mangPermPage.getExistingPermissionForInheritPermission(user2).getRoleName()));
+        Assert.assertTrue(UserRole.EDITOR.getRoleName().equalsIgnoreCase(mangPermPage.getExistingPermissionForInheritPermission(user2).getRoleName()));
         mangPermPage.selectSave().render();
 
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
@@ -388,8 +398,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         // TODO: Can this be checked by asserting modifier property?
         repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName + SLASH
-                    + subFolderName);
+        repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName + SLASH + subFolderName);
 
         repoPage.getFileDirectoryInfo(fileName).selectViewInBrowser();
         String htmlSource = ((WebDroneImpl) drone).getDriver().getPageSource();
@@ -436,8 +445,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         repoPage = ShareUserRepositoryPage.openRepository(drone);
 
-        ShareUserMembers.managePermissionsOnContent(drone, user1, folderName, UserRole.COORDINATOR,
-                    true);
+        ShareUserMembers.managePermissionsOnContent(drone, user1, folderName, UserRole.COORDINATOR, true);
         ShareUserMembers.managePermissionsOnContent(drone, user2, folderName, UserRole.EDITOR, true);
 
         ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
@@ -453,14 +461,12 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         ManagePermissionsPage mangPermPage = ShareUser.returnManagePermissionPage(drone, subFolderName);
 
-        Assert.assertTrue(UserRole.EDITOR.getRoleName().equalsIgnoreCase(
-                    mangPermPage.getExistingPermissionForInheritPermission(user2).getRoleName()));
+        Assert.assertTrue(UserRole.EDITOR.getRoleName().equalsIgnoreCase(mangPermPage.getExistingPermissionForInheritPermission(user2).getRoleName()));
         mangPermPage.toggleInheritPermission(false, ButtonType.Yes);
         mangPermPage.selectSave().render();
 
         // Upload file
-        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName
-                    + SLASH + subFolderName);
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName + SLASH + subFolderName);
 
         ShareUserRepositoryPage.uploadFileInRepository(drone, file);
 
@@ -510,10 +516,8 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        RepositoryPage repoPage = (RepositoryPage) ShareUserSitePage.createFolder(drone, folderName, folderName,
-                    folderName);
+        RepositoryPage repoPage = ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
 
-        // TODO: Replace doclib references with repoPage in the whole class
         repoPage.selectFolder(folderName).render();
         ShareUserRepositoryPage.createFolderInRepository(drone, subFolderName, subFolderName);
 
@@ -529,8 +533,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        ManagePermissionsPage mangPermPage = ShareUser
-                    .returnManagePermissionPage(drone, folderName);
+        ManagePermissionsPage mangPermPage = ShareUser.returnManagePermissionPage(drone, folderName);
 
         // Assert.assertTrue(UserRole.EDITOR.getRoleName().equalsIgnoreCase(mangPermPage.getExistingPermissionForInheritPermission(user2).getRoleName()));
         mangPermPage.toggleInheritPermission(false, ButtonType.No);
@@ -539,9 +542,8 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         // Upload File
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName
-                    + SLASH + subFolderName);
-        ShareUserSitePage.uploadFile(drone, file);
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName + SLASH + subFolderName);
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
 
         ShareUser.logout(drone);
 
@@ -550,8 +552,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName
-                    + SLASH + subFolderName);
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName + SLASH + subFolderName);
 
         // repoPage = repoPage.selectFolder(folderName).render();
         // repoPage = repoPage.selectFolder(subFolderName).render();
@@ -576,8 +577,8 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     {
         String testName = getTestName();
 
-        String user1 = getUserNameFreeDomain(testName) + "_1";
-        String user2 = getUserNameFreeDomain(testName) + "_2";
+        String user1 = getUserNameFreeDomain(testName + "-1");
+        String user2 = getUserNameFreeDomain(testName + "-2");
 
         String group1 = getGroupName(testName) + "-1";
         String group2 = getGroupName(testName) + "-2";
@@ -585,10 +586,8 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         ShareUser.createEnterpriseGroup(drone, group1);
         ShareUser.createEnterpriseGroup(drone, group2);
 
-        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user1, user1, user1, getAuthDetails(user1)[1],
-                    group1);
-        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user2, user2, user2, getAuthDetails(user2)[1],
-                    group2);
+        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user1, user1, user1, getAuthDetails(user1)[1], group1);
+        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user2, user2, user2, getAuthDetails(user2)[1], group2);
     }
 
     @Test(groups = { "Repository" })
@@ -598,9 +597,9 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         String folderName = getFolderName(testName) + System.currentTimeMillis();
         String fileName = getFileName(testName) + System.currentTimeMillis();
 
-        String user = getUserNameFreeDomain(testName);
-        String user1 = user + "_1";
-        String user2 = user + "_2";
+        String user = getUserNameFreeDomain(testName).substring(0, 4);
+        String user1 = getUserNameFreeDomain(testName + "-1");
+        String user2 = getUserNameFreeDomain(testName + "-2");
 
         String group = getGroupName(testName);
         String group1 = group + "-1";
@@ -621,8 +620,12 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         UserSearchPage userSearchPage = manPerPage.selectAddUser().render();
 
-//        Assert.assertTrue(userSearchPage.usersExistInSearchResults(user, user1, user2));
-//        Assert.assertTrue(userSearchPage.usersExistInSearchResults(group, group1, group2));
+        // added to debug fail in bamboo
+        Assert.assertTrue(userSearchPage.isUserOrGroupPresentInSearchList(user1));
+        Assert.assertTrue(userSearchPage.isUserOrGroupPresentInSearchList(user2));
+
+        Assert.assertTrue(userSearchPage.usersExistInSearchResults(user, user1, user2));
+        Assert.assertTrue(userSearchPage.usersExistInSearchResults(group, group1, group2));
         manPerPage.selectCancel();
 
         ShareUserMembers.managePermissionsOnContent(drone, group1, folderName, UserRole.COORDINATOR, true);
@@ -649,8 +652,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         String group1 = getGroupName(testName) + "-1";
 
         ShareUser.createEnterpriseGroup(drone, group1);
-        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user1, user1, user1, getAuthDetails(user1)[1],
-                    group1);
+        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user1, user1, user1, getAuthDetails(user1)[1], group1);
 
     }
 
@@ -660,19 +662,8 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         String testName = getTestName();
         String folderName = getFolderName(testName) + System.currentTimeMillis();
         String wildCardStringUser = "<>?:\"|}{+_)(*&^%$#@!~;";
-        String longNameUser = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
+        String longNameUser = AbstractUtils.getRandomString(1024);
 
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
@@ -683,19 +674,20 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         ManagePermissionsPage managePermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
 
         ManagePermissionsPage.UserSearchPage userSearchPage = managePermissionPage.selectAddUser().render();
-//        Assert.assertEquals(userSearchPage.getSearchErrorMessage(""), "Enter at least 3 character(s)");
+
+        Assert.assertEquals(userSearchPage.getSearchErrorMessage(""), drone.getValue("message.enter.at.least.3.characters"), "Error message missing: " + drone.getValue("message.enter.at.least.3.characters"));
         managePermissionPage.selectCancel();
 
         managePermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
 
         userSearchPage = managePermissionPage.selectAddUser().render();
-        Assert.assertTrue(userSearchPage.isEveryOneDisplayed(wildCardStringUser));
+        Assert.assertTrue(userSearchPage.isEveryOneDisplayed(wildCardStringUser), "Everyone group is not displayed");
         managePermissionPage.selectCancel();
 
         managePermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
 
         userSearchPage = managePermissionPage.selectAddUser().render();
-        Assert.assertTrue(userSearchPage.isEveryOneDisplayed(longNameUser));
+        Assert.assertTrue(userSearchPage.isEveryOneDisplayed(longNameUser), "Everyone group is not displayed");
 
         ShareUser.logout(drone);
     }
@@ -708,8 +700,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         String group1 = getGroupName(testName) + "-1";
 
         ShareUser.createEnterpriseGroup(drone, group1);
-        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user1, user1, user1, getAuthDetails(user1)[1],
-                    group1);
+        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user1, user1, user1, getAuthDetails(user1)[1], group1);
 
     }
 
@@ -731,7 +722,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
 
         ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
-        ShareUserSitePage.uploadFile(drone, file);
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
 
         RepositoryPage repoPage = ShareUserRepositoryPage.openRepository(drone);
 
@@ -742,8 +733,12 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         // Add role to Group
         managePermissionsPage.updateUserRole(group1, UserRole.COORDINATOR);
-        managePermissionsPage = managePermissionsPage.toggleInheritPermission(true, ButtonType.No);
+
+        Assert.assertTrue(managePermissionsPage.isUserExistForPermission(group1), group1 + " has not been added for permission.");
         managePermissionsPage.selectCancel().render();
+
+        managePermissionsPage = ShareUser.returnManagePermissionPage(drone, folderName);
+        Assert.assertFalse(managePermissionsPage.isUserExistForPermission(group1), group1 + " should not have permission.");
 
         ShareUser.logout(drone);
 
@@ -754,17 +749,9 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         Assert.assertTrue(repoPage.isFileVisible(fileName));
 
         ShareUser.selectContentCheckBox(drone, fileName);
-        Assert.assertFalse(repoPage.getFileDirectoryInfo(fileName).isDeletePresent());
+        Assert.assertFalse(repoPage.getFileDirectoryInfo(fileName).isDeletePresent(), "Delete is present.");
 
         ShareUser.logout(drone);
-
-        // ************************************************************************************#
-        //
-        // TODO: check test case looks improper.
-        //
-        // Any role is not added as per testcase.
-        //
-        //
     }
 
     @Test(groups = { "DataPrepRepository" })
@@ -776,8 +763,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         String group1 = getGroupName(testName);
         ShareUser.createEnterpriseGroup(drone, group1);
 
-        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user1, user1, user1, getAuthDetails(user1)[1],
-                    group1);
+        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user1, user1, user1, getAuthDetails(user1)[1], group1);
 
     }
 
@@ -857,8 +843,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         RepositoryPage repoPage = ShareUserRepositoryPage.openRepository(drone);
 
-        ShareUserMembers.managePermissionsOnContent(drone, user1, folderName, UserRole.COORDINATOR,
-                    true);
+        ShareUserMembers.managePermissionsOnContent(drone, user1, folderName, UserRole.COORDINATOR, true);
 
         ShareUser.logout(drone);
 
@@ -882,7 +867,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     public void dataPrepEnterprise40x_5391() throws Exception
     {
         String testName = getTestName();
-        String user1 = getUserNameFreeDomain(testName + "-1");
+        String user1 = getUserNameFreeDomain(testName);
         // User
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user1 });
     }
@@ -891,11 +876,14 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     public void Enterprise40x_5391() throws Exception
     {
         String testName = getTestName();
-        String user1 = getUserNameFreeDomain(testName + "-1");
+        
+        String user1 = getUserNameFreeDomain(testName);
 
         String folderName = getFolderName(testName) + System.currentTimeMillis();
+        
         String fileName = getFileName(testName) + System.currentTimeMillis() + ".txt";
         File file = newFile(fileName, "New file");
+        
         String editFileText = "just edit!!";
 
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
@@ -925,17 +913,16 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         repoPage = repoPage.selectFolder(folderName).render();
 
         Assert.assertTrue(repoPage.isFileVisible(fileName));
-        Assert.assertEquals(ShareUserSitePage.getInLineEditContentDetails(drone, fileName).getName(), file.getName());
+        Assert.assertEquals(ShareUserRepositoryPage.getInLineEditContentDetails(drone, fileName).getName(), file.getName());
 
         ContentDetails contentDetails = new ContentDetails();
         contentDetails.setContent(editFileText);
-        contentDetails.setName(fileName);
 
         DocumentDetailsPage documentDetailsPage = repoPage.selectFile(fileName).render();
 
         // Select Inline Edit and change the content and save
         EditTextDocumentPage editTextDocumentPage = documentDetailsPage.selectInlineEdit().render();
-        documentDetailsPage = editTextDocumentPage.save(contentDetails).render();
+        documentDetailsPage = editTextDocumentPage.saveWithValidation(contentDetails).render();
 
         repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
 
@@ -977,7 +964,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         ManagePermissionsPage.UserSearchPage userSearchPage = manPermPage.selectAddUser().render();
 
-//        Assert.assertTrue(userSearchPage.usersExistInSearchResults("use", user1, user2));
+        Assert.assertTrue(userSearchPage.usersExistInSearchResults("use", user1, user2));
         manPermPage.selectCancel();
 
         ShareUser.returnManagePermissionPage(drone, folderName);
@@ -994,9 +981,8 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        RepositoryPage repoPage = ShareUserRepositoryPage
-                    .navigateToFolderInRepository(drone, REPO + SLASH + folderName);
-//        Assert.assertFalse(repoPage.getNavigation().isFileUploadEnabled());
+        RepositoryPage repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
+        Assert.assertFalse(repoPage.getNavigation().isFileUploadEnabled());
 
         ShareUser.logout(drone);
     }
@@ -1043,25 +1029,16 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderName);
 
-        // TODO: Replace with methods from ShareUserRepositoryPage and remove
-        // casting e.g.
-        // repoPage = (RepositoryPage) ShareUserSitePage.createFolder(drone,
-        // folderName2, folderName2, folderName2).render();
         ShareUserRepositoryPage.createFolderInRepository(drone, folderName2, folderName2);
-        ShareUserSitePage.editContentProperties(drone, folderName2, modifyProperties, true);
-
-        // TODO: Use utils from ShareUserRepositoryPage, returning repo
-        // ShareUserSitePage.uploadFile(drone, file);
+        ShareUserRepositoryPage.editContentProperties(drone, folderName2, modifyProperties, true);
 
         repoPage = ShareUserRepositoryPage.uploadFileInRepository(drone, file);
 
-        // TODO: Add util for ShareUserRepositoryPage like others e.g.
-        // createFolderInRepository
-        ShareUserSitePage.editContentProperties(drone, fileName, modifyProperties, true);
+        ShareUserRepositoryPage.editContentProperties(drone, fileName, modifyProperties, true);
 
         Assert.assertTrue(repoPage.getFileDirectoryInfo(fileName).isEditOfflineLinkPresent());
         Assert.assertTrue(repoPage.getFileDirectoryInfo(fileName).isInlineEditLinkPresent());
-        Assert.assertEquals(ShareUserSitePage.getInLineEditContentDetails(drone, fileName).getName(), file.getName());
+        Assert.assertEquals(ShareUserRepositoryPage.getInLineEditContentDetails(drone, fileName).getName(), file.getName());
 
         repoPage = repoPage.deleteItem(fileName).render();
         Assert.assertFalse(repoPage.isFileVisible(fileName));
@@ -1133,8 +1110,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         Assert.assertTrue(repoPage.getFileDirectoryInfo(fileCreatedByAdmin).isEditOfflineLinkPresent());
         Assert.assertTrue(repoPage.getFileDirectoryInfo(fileCreatedByAdmin).isInlineEditLinkPresent());
-        Assert.assertEquals(ShareUserSitePage.getInLineEditContentDetails(drone, fileCreatedByAdmin).getName(),
-                    fileByAdmin.getName());
+        Assert.assertEquals(ShareUserRepositoryPage.getInLineEditContentDetails(drone, fileCreatedByAdmin).getName(), fileByAdmin.getName());
 
         repoPage = repoPage.deleteItem(folderName2).render();
         Assert.assertFalse(repoPage.isFileVisible(folderName2));
@@ -1272,11 +1248,10 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         ShareUserRepositoryPage.openRepositoryDetailedView(drone);
         ShareUserRepositoryPage.sortLibraryOn(drone, SortField.CREATED, false);
 
-        RepositoryPage repoPage = ShareUserRepositoryPage
-                    .navigateToFolderInRepository(drone, REPO + SLASH + folderName);
+        RepositoryPage repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
 
-//        Assert.assertFalse(repoPage.getNavigation().isFileUploadEnabled());
-//        Assert.assertFalse(repoPage.getNavigation().isCreateContentEnabled());
+        Assert.assertFalse(repoPage.getNavigation().isFileUploadEnabled());
+        Assert.assertFalse(repoPage.getNavigation().isCreateContentEnabled());
 
         Assert.assertTrue(repoPage.getFileDirectoryInfo(fileCreatedByAdmin).isEditOfflineLinkPresent());
         Assert.assertTrue(repoPage.getFileDirectoryInfo(fileCreatedByAdmin).isInlineEditLinkPresent());
@@ -1341,11 +1316,10 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         ShareUserRepositoryPage.openRepositoryDetailedView(drone);
         ShareUserRepositoryPage.sortLibraryOn(drone, SortField.CREATED, false);
 
-        RepositoryPage repoPage = ShareUserRepositoryPage
-                    .navigateToFolderInRepository(drone, REPO + SLASH + folderName);
+        RepositoryPage repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
 
-//        Assert.assertFalse(repoPage.getNavigation().isFileUploadEnabled());
-//        Assert.assertFalse(repoPage.getNavigation().isCreateContentEnabled());
+        Assert.assertFalse(repoPage.getNavigation().isFileUploadEnabled());
+        Assert.assertFalse(repoPage.getNavigation().isCreateContentEnabled());
 
         Assert.assertFalse(repoPage.getFileDirectoryInfo(fileCreatedByAdmin).isEditPropertiesLinkPresent());
         Assert.assertFalse(repoPage.getFileDirectoryInfo(fileCreatedByAdmin).isEditOfflineLinkPresent());
@@ -1367,8 +1341,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         String group1 = getGroupName(testName) + "-2";
 
         ShareUser.createEnterpriseGroup(drone, group1);
-        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user1, user1, user1, getAuthDetails(user1)[1],
-                    group1);
+        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user1, user1, user1, getAuthDetails(user1)[1], group1);
     }
 
     @Test(groups = { "Repository" })
@@ -1495,8 +1468,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         String user1 = getUserNameFreeDomain(testName + "-1");
         String group1 = getGroupName(testName) + "-1";
         ShareUser.createEnterpriseGroup(drone, group1);
-        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user1, user1, user1, getAuthDetails(user1)[1],
-                    group1);
+        ShareUser.createEnterpriseUserWithGroup(drone, adminUserFree, user1, user1, user1, getAuthDetails(user1)[1], group1);
     }
 
     @Test(groups = { "Repository" })
@@ -1612,8 +1584,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         repoPage = repoPage.selectFolder(DOCLIB_CONTAINER).render();
 
-        ShareUserMembers.managePermissionsOnContent(drone, user1, folderName, UserRole.CONSUMER,
-                    false);
+        ShareUserMembers.managePermissionsOnContent(drone, user1, folderName, UserRole.CONSUMER, false);
         ManagePermissionsPage manPermPage = ShareUser.returnManagePermissionPage(drone, folderName);
 
         Assert.assertFalse(manPermPage.isInheritPermissionEnabled());
@@ -1623,8 +1594,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
 
-        // TODO: Testlink: To confirm: Steps can be implemented from doclib or
-        // Repo
+        // TODO: Testlink: To confirm: Steps can be implemented from doclib or Repo
         repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
         repoPage = repoPage.selectFolder("Sites").render();
@@ -1664,34 +1634,27 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        RepositoryPage repoPage = ShareUserRepositoryPage.createFolderInRepository(drone,
-                    folderName1, folderName1);
+        RepositoryPage repoPage = ShareUserRepositoryPage.createFolderInRepository(drone, folderName1, folderName1);
         repoPage.selectFolder(folderName1).render();
 
-        ShareUserSitePage.createFolder(drone, folderName2, folderName2, folderName2).render();
-        ShareUserSitePage.uploadFile(drone, file);
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName2, folderName2, folderName2).render();
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
 
-        repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH
-                    + folderName1);
+        repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName1);
 
-        // Possible UI issue as <Manage Permissions> options is not available on
-        // DocLibView
+        // Possible UI issue as <Manage Permissions> options is not available on DocLibView
         ShareUser.returnManagePermissionPage(drone, folderName2);
-        ShareUserMembers.managePermissionsOnContent(drone, user1, folderName2,
-                    UserRole.COORDINATOR, true);
+        ShareUserMembers.managePermissionsOnContent(drone, user1, folderName2, UserRole.COORDINATOR, true);
 
-        repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH
-                    + folderName1);
+        repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName1);
 
         repoPage.getFileDirectoryInfo(fileName).clickOnTitle();
         ShareUser.returnManagePermissionPage(drone, fileName);
-        ShareUserMembers.managePermissionsOnContent(drone, user1, fileName, UserRole.COORDINATOR,
-                    true);
+        ShareUserMembers.managePermissionsOnContent(drone, user1, fileName, UserRole.COORDINATOR, true);
 
         repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        ManagePermissionsPage managePermPage = ShareUser.returnManagePermissionPage(drone,
-                    folderName1);
+        ManagePermissionsPage managePermPage = ShareUser.returnManagePermissionPage(drone, folderName1);
 
         managePermPage = managePermPage.toggleInheritPermission(false, ButtonType.Yes).render();
         managePermPage.selectSave().render();
@@ -1704,9 +1667,9 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), folderName2);
         List<String> searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearch(drone, searchInfo,
-                    keyWordSearchText);
+        List<SearchResultItem> results = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
+        // TODO: Use ShareUserSearchPage.checkSearchResultsWithRetry to avoid inconsistent results
         boolean found = false;
         for (SearchResultItem item : results)
         {
@@ -1726,6 +1689,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         results = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
+        // TODO: Use ShareUserSearchPage.checkSearchResultsWithRetry to avoid inconsistent results in all places
         found = false;
         for (SearchResultItem item : results)
         {
@@ -1765,8 +1729,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         RepositoryPage repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
         repoPage.selectFolder(PAGE_TITLE_USERHOMES).render();
 
-        ManagePermissionsPage managePermissionsPage = repoPage.getFileDirectoryInfo(user)
-                    .selectManagePermission().render();
+        ManagePermissionsPage managePermissionsPage = repoPage.getFileDirectoryInfo(user).selectManagePermission().render();
 
         Assert.assertTrue(managePermissionsPage.isUserExistForPermission(user));
         Assert.assertEquals(UserRole.ALL, managePermissionsPage.getExistingPermission(user));
@@ -1797,18 +1760,63 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         // Add EveryOne group to locally set permissions
         ShareUser.returnManagePermissionPage(drone, folderName);
-        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, group, false,
-                    UserRole.COORDINATOR, false);
+        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, group, false, UserRole.COORDINATOR, false);
 
         // Delete EveryOne group from locally set permissions
-        ManagePermissionsPage managePermissionsPage = ShareUser.returnManagePermissionPage(drone,
-                    folderName);
+        ManagePermissionsPage managePermissionsPage = ShareUser.returnManagePermissionPage(drone, folderName);
         managePermissionsPage.deleteUserOrGroupFromPermission(group, UserRole.COORDINATOR);
 
         ShareUser.logout(drone);
     }
 
-    // TODO: Implement Test 8501
+    @Test(groups = { "DataPrepRepository" })
+    public void dataPrepEnterprise40x_8501() throws Exception
+    {
+        String testName = getTestName();
+        String user1 = getUserNameFreeDomain(testName + "-1");
+        String user2 = getUserNameFreeDomain(testName + "-2");
 
-    // TODO: Implement Test 8579
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user1 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user2 });
+
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + drone.getValue("system.folder.user.homes"));
+
+        ManagePermissionsPage managePermissionsPage = ShareUser.returnManagePermissionPage(drone, user1);
+
+        ManagePermissionsPage.UserSearchPage userSearchPage = managePermissionsPage.selectAddUser().render();
+        managePermissionsPage = userSearchPage.searchAndSelectGroup(user2).render();
+
+        // Add role to Group
+        managePermissionsPage.updateUserRole(user2, UserRole.COORDINATOR);
+
+        managePermissionsPage.selectSave();
+
+        ShareUser.logout(drone);
+    }
+
+    @Test(groups = { "Repository" })
+    public void Enterprise40x_8501() throws Exception
+    {
+        String testName = getTestName();
+
+        String user1 = getUserNameFreeDomain(testName + "-1");
+        String user2 = getUserNameFreeDomain(testName + "-2");
+
+        ShareUser.login(drone, user2, DEFAULT_PASSWORD);
+
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + drone.getValue("system.folder.user.homes"));
+
+        ManagePermissionsPage managePermissionsPage = ShareUser.returnManagePermissionPage(drone, user1);
+
+        managePermissionsPage = managePermissionsPage.deleteUserWithPermission(user2, UserRole.COORDINATOR);
+
+        SharePopup popup = managePermissionsPage.selectSave().render();
+
+        Assert.assertTrue(popup.getShareMessage().contains("Access Denied. You do not have the appropriate permissions to perform this operation."));
+    }
 }

@@ -22,11 +22,13 @@ import org.openqa.selenium.By;
  */
 public enum SitePageType
 {
-    BLOG("//li[contains(@id, '_default-page-blog-postlist')]", "Blog"), CALENDER("//li[contains(@id, '_default-page-calendar')]", "Calendar"), DATA_LISTS(
-            "//li[contains(@id, '_default-page-data-lists')]",
-            "Data Lists"), DISCUSSIONS("//li[contains(@id, '_default-page-discussions-topiclist')]", "Discussions"), DOCUMENT_LIBRARY(
-            "//li[contains(@id, '_default-page-documentlibrary')]",
-            "Document Library"), LINKS("//li[contains(@id, '_default-page-links')]", "Links"), WIKI("//li[contains(@id, '_default-page-wiki-page')]", "Wiki");
+    BLOG("//li[contains(@id, '_default-page-blog-postlist')]", "Blog"),
+    CALENDER("//li[contains(@id, '_default-page-calendar')]", "Calendar"),
+    DATA_LISTS("//li[contains(@id, '_default-page-data-lists')]", "Data Lists"),
+    DISCUSSIONS("//li[contains(@id, '_default-page-discussions-topiclist')]", "Discussions"),
+    DOCUMENT_LIBRARY("//li[contains(@id, '_default-page-documentlibrary')]", "Document Library"),
+    LINKS("//li[contains(@id, '_default-page-links')]", "Links"),
+    WIKI("//li[contains(@id, '_default-page-wiki-page')]", "Wiki");
 
     private String id;
     private String text;

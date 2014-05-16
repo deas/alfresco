@@ -24,7 +24,11 @@ import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -35,8 +39,11 @@ import org.openqa.selenium.WebElement;
  */
 public class SiteMembersDashlet extends AbstractDashlet implements Dashlet
 {
+    private static Log logger = LogFactory.getLog(SiteMembersDashlet.class);
     private static final String DATA_LIST_CSS_LOCATION = "div.detail-list-item > div.person > h3 > a";
-    private static final String DASHLET_CONTAINER_PLACEHOLDER = "div.dashlet.colleagues";
+    private static final By DASHLET_CONTAINER_PLACEHOLDER = By.cssSelector("div.dashlet.colleagues");
+    private static final By INVITE_LINK = By.cssSelector("div.dashlet.colleagues>div.toolbar>div>span>span>a[href='invite']");
+    private static final By ALL_MEMBERS_LINK = By.cssSelector("div.dashlet.colleagues>div.toolbar>div>span>span>[href$='site-members']");
     private WebElement dashlet;
 
     /**
@@ -44,7 +51,8 @@ public class SiteMembersDashlet extends AbstractDashlet implements Dashlet
      */
     protected SiteMembersDashlet(WebDrone drone)
     {
-        super(drone, By.cssSelector(DASHLET_CONTAINER_PLACEHOLDER));
+        super(drone, DASHLET_CONTAINER_PLACEHOLDER);
+        setResizeHandle(By.cssSelector("div.dashlet.colleagues .yui-resize-handle"));
     }
 
     @SuppressWarnings("unchecked")
@@ -80,7 +88,7 @@ public class SiteMembersDashlet extends AbstractDashlet implements Dashlet
                 try
                 {
                     timer.start();
-                    this.dashlet = drone.findAndWait(By.cssSelector(DASHLET_CONTAINER_PLACEHOLDER), 100L, 10L);
+                    this.dashlet = drone.findAndWait((DASHLET_CONTAINER_PLACEHOLDER), 100L, 10L);
                     break;
                 }
                 catch (Exception e)
@@ -100,6 +108,14 @@ public class SiteMembersDashlet extends AbstractDashlet implements Dashlet
     }
 
     /**
+     * This method gets the focus by placing mouse over on Site Members Dashlet.
+     */
+    protected void getFocus()
+    {
+        drone.mouseOver(drone.findAndWait(DASHLET_CONTAINER_PLACEHOLDER));
+    }
+
+    /**
      * Retrieves the SiteMember that match the site members name.
      * 
      * @param emailId
@@ -112,19 +128,67 @@ public class SiteMembersDashlet extends AbstractDashlet implements Dashlet
         {
             throw new IllegalArgumentException("Name value of link is required");
         }
-        List<WebElement> userRowList = dashlet.findElements(By.cssSelector("div.person"));
-        SiteMember siteMember = new SiteMember();
-        for (WebElement userRow : userRowList)
+        
+        try
         {
-            WebElement link = userRow.findElement(By.cssSelector("h3>a"));
-            if (link.getText().contains(emailId) || ("admin".equals(emailId) && link.getText().equals("Administrator")))
+            List<WebElement> userRowList = dashlet.findElements(By.cssSelector("div.person"));
+            SiteMember siteMember = new SiteMember();
+            for (WebElement userRow : userRowList)
             {
-                siteMember.setShareLink(new ShareLink(link, drone));
-                siteMember.setRole(UserRole.getUserRoleforName(userRow.findElement(By.cssSelector("div")).getText()));
-                return siteMember;
+                WebElement link = userRow.findElement(By.cssSelector("h3>a"));
+                if (link.getText().contains(emailId) || ("admin".equals(emailId) && link.getText().equals("Administrator")))
+                {
+                    siteMember.setShareLink(new ShareLink(link, drone));
+                    siteMember.setRole(UserRole.getUserRoleforName(userRow.findElement(By.cssSelector("div")).getText()));
+                    return siteMember;
+                }
             }
         }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("Unabled to find the member css.", nse);
+        }
+        
         throw new PageOperationException("Could not find site member for name - " + emailId);
     }
 
+    /**
+     * Method to verify if invite link is available
+     *
+     * @return boolean
+     */
+    public boolean isInviteLinkDisplayed()
+    {
+        try
+        {
+            getFocus();
+            return drone.find(INVITE_LINK).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+        catch (TimeoutException te)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Method to verify if all members link is available
+     *
+     * @return boolean
+     */
+    public boolean isAllMembersLinkDisplayed()
+    {
+        try
+        {
+            getFocus();
+            return drone.findAndWait(ALL_MEMBERS_LINK).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+    }
 }

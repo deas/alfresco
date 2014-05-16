@@ -10,7 +10,7 @@
  *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -53,8 +53,6 @@ public class DefaultViewDocLibTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(DefaultViewDocLibTest.class);
 
-    protected String siteName = "";
-
     @Override
     @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
@@ -75,16 +73,14 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_16715() throws Exception
+    public void dataPrep_ALF_16715() throws Exception
     {
         String testName = getTestName();
-
 
         createSiteData(testName, true);
     }
 
     /**
-     * 
      * @throws Exception
      */
     @Test(groups = "AlfrescoOne")
@@ -108,7 +104,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_16718() throws Exception
+    public void dataPrep_ALF_16718() throws Exception
     {
         String testName = getTestName();
 
@@ -116,7 +112,6 @@ public class DefaultViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * 
      * @throws Exception
      */
     @Test(groups = "AlfrescoOne")
@@ -140,7 +135,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_16719() throws Exception
+    public void dataPrep_ALF_16719() throws Exception
     {
         String testName = getTestName();
 
@@ -148,7 +143,6 @@ public class DefaultViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * 
      * @throws Exception
      */
     @Test(groups = "AlfrescoOne")
@@ -172,7 +166,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_16720() throws Exception
+    public void dataPrep_ALF_16720() throws Exception
     {
         String testName = getTestName();
 
@@ -180,7 +174,6 @@ public class DefaultViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * 
      * @throws Exception
      */
     @Test(groups = "AlfrescoOne")
@@ -204,7 +197,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_16726() throws Exception
+    public void dataPrep_ALF_16726() throws Exception
     {
         String testName = getTestName();
 
@@ -212,7 +205,6 @@ public class DefaultViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * 
      * @throws Exception
      */
     @Test(groups = "AlfrescoOne")
@@ -220,93 +212,81 @@ public class DefaultViewDocLibTest extends AbstractUtils
     {
         /** Start Test */
         String testName = getTestName();
+
         String siteName = getSiteName(testName);
+
         String testUserManager = getUserNameFreeDomain(testName + UserRole.MANAGER);
         String testUserCollab = getUserNameFreeDomain(testName + UserRole.COLLABORATOR);
         String testUserContri = getUserNameFreeDomain(testName + UserRole.CONTRIBUTOR);
+
         String folderName = getFolderName(testName);
         String subFolderNameCollab = getFolderName("collab" + testName);
         String subFolderNameContri = getFolderName("contri" + testName);
 
         // Login as User1 (Manager)
         ShareUser.login(drone, testUserManager);
-        // User1 is sucessfully login
-
-        SiteDashboardPage sitePage = ShareUser.openSiteDashboard(drone, siteName);
-        // Create to folder Folder1
-        DocumentLibraryPage docLibPage = ShareUserSitePage.createFolder(drone, folderName, folderName);
-        // Folder is created.
-
-        // Expand the "Options" menu, click the any view (e.g. "Gallery View")
-        docLibPage = ShareUserSitePage.selectView(drone, ViewType.GALLERY_VIEW);
-        // The view is change ("Gallery View")
-        assertEquals(docLibPage.getViewType(), ViewType.GALLERY_VIEW);
-
-        // Expand the "Options" menu, click the "Set "ANY View" as default for this folder " ("Gallery View")
-        docLibPage = docLibPage.getNavigation().selectSetCurrentViewToDefault().render();
-        // The default view is set OTHER ("Gallery View")
-        assertTrue(docLibPage.getNavigation().isRemoveDefaultViewVisible());
-
-        // Login as User2 (Colloborator)
-        ShareUser.login(drone, testUserCollab);
-        // User2 is sucessfully login
 
         ShareUser.openSiteDashboard(drone, siteName);
-        // Navigate to Folder1. Create Subfolder
-        // Folder Subfolder is created
-        ShareUser.createFolderInFolder(drone, subFolderNameCollab, subFolderNameCollab, folderName);
-        docLibPage = FactorySharePage.resolvePage(drone).render();
+
+        ShareUserSitePage.createFolder(drone, folderName, folderName);
+
+        // Expand the "Options" menu, click the any view (e.g. "Gallery View")
+        DocumentLibraryPage docLibPage = ShareUserSitePage.selectView(drone, ViewType.GALLERY_VIEW);
+        assertEquals(docLibPage.getViewType(), ViewType.GALLERY_VIEW);
+
+        // "Set "ANY View" as default for this folder " ("Gallery View")
+        docLibPage = docLibPage.getNavigation().selectSetCurrentViewToDefault().render();
+        assertTrue(docLibPage.getNavigation().isRemoveDefaultViewVisible());
+
+        // Login as User2 (Collaborator)
+        ShareUser.login(drone, testUserCollab);
+
+        ShareUser.openSiteDashboard(drone, siteName);
+
+        docLibPage = ShareUser.createFolderInFolder(drone, subFolderNameCollab, subFolderNameCollab, folderName);
+
+        // Select OTHER view (e.g. "Table View") for SubFolder
         docLibPage.selectFolder(subFolderNameCollab).render();
-        // Expand the "Options" menu, click the OTHER view (e.g. "Table View")
         docLibPage = ShareUserSitePage.selectView(drone, ViewType.TABLE_VIEW);
-        // Options "Set "OTHER View" as default for this folder " ("Table View") is displaeyd
         assertEquals(docLibPage.getViewType(), ViewType.TABLE_VIEW);
 
-        // Expand the "Options" menu, click the "Set "ANY View" as default for this folder " ("Table View")
+        // "Set "ANY View" as default for this folder " ("Table View")
         docLibPage = docLibPage.getNavigation().selectSetCurrentViewToDefault().render();
-        // The default view is set OTHER ("Table View")
         assertTrue(docLibPage.getNavigation().isRemoveDefaultViewVisible());
 
         // Login as User3 (Contributor)
-        // User2 is sucessfully login
         ShareUser.login(drone, testUserContri);
 
         ShareUser.openSiteDashboard(drone, siteName);
-        // Navigate to Subfolder1. Create subfolder Subfolder2
-        // Subfolder2 is created
-        ShareUser.createFolderInFolder(drone, subFolderNameContri, subFolderNameContri, folderName + File.separator + subFolderNameCollab);
-        docLibPage = FactorySharePage.resolvePage(drone).render();
+        docLibPage = ShareUser.createFolderInFolder(drone, subFolderNameContri, subFolderNameContri, folderName + File.separator + subFolderNameCollab);
+
+        // Select different view (e.g. "Table View") for subFolder
         docLibPage.selectFolder(subFolderNameContri).render();
-        // Expand the "Options" menu, click the OTHER view (e.g. "Table View")
         docLibPage = ShareUserSitePage.selectView(drone, ViewType.TABLE_VIEW);
-        // The view is change ("Table View")
         assertEquals(docLibPage.getViewType(), ViewType.TABLE_VIEW);
 
-        // Expand the "Options" menu, click the "Set "ANY View" as default for this folder " ("Table View")
+        // "Set "ANY View" as default for this folder " ("Table View")
         docLibPage = docLibPage.getNavigation().selectSetCurrentViewToDefault().render();
-        // The default view is set OTHER ("Table View")
         assertTrue(docLibPage.getNavigation().isRemoveDefaultViewVisible());
     }
 
     /**
      * @param testName
-     * @param testUser
-     * @param siteName
-     * @param fileName1
-     * @param fileName2
-     * @param fileName3
-     * @param fileName4
-     * @param folderName
+     * @param createData
+     * @throws Exception
      */
-    private void createSiteData(String testName, boolean createData)
+    private void createSiteData(String testName, boolean createData) throws Exception
     {
         List<String> accessList = new ArrayList<String>();
-        // String testUser = getUserNameFreeDomain(testName);
+
         String siteName = getSiteName(testName);
+
         String fileName1 = getFileName(testName + "1");
         String fileName3 = getFileName(testName + "3");
+
         String folderName = getFolderName(testName);
         String subFolderName = getFolderName("sub" + testName);
+
         accessList.add(UserRole.MANAGER.toString());
         accessList.add(UserRole.COLLABORATOR.toString());
         accessList.add(UserRole.CONTRIBUTOR.toString());
@@ -315,70 +295,53 @@ public class DefaultViewDocLibTest extends AbstractUtils
         for (String access : accessList)
         {
             String testUserWithAccess = getUserNameFreeDomain(testName + access);
-            try
-            {
-                CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUserWithAccess });
-            }
-            catch (Throwable e)
-            {
-                reportError(drone, testName, e);
-            }
+            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUserWithAccess });
         }
 
         for (String access : accessList)
         {
-            try
-            {
-                // User
-                String testUserWithAccess = getUserNameFreeDomain(testName + access);
+            // User
+            String testUserWithAccess = getUserNameFreeDomain(testName + access);
 
-                if (UserRole.CONSUMER.toString().equalsIgnoreCase(access))
-                {
-                    testUserWithAccess = getUserNameFreeDomain(testName + UserRole.MANAGER);
-                }
+            if (UserRole.CONSUMER.toString().equalsIgnoreCase(access))
+            {
+                testUserWithAccess = getUserNameFreeDomain(testName + UserRole.MANAGER);
+            }
 
-                ShareUser.login(drone, testUserWithAccess, DEFAULT_PASSWORD);
-                if (UserRole.MANAGER.toString().equals(access))
-                {
-                    // Site creation
-                    ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC, true);
-                    ShareUserMembers.inviteUserToSiteWithRole(drone, testUserWithAccess, getUserNameFreeDomain(testName + UserRole.COLLABORATOR), siteName,
-                            UserRole.COLLABORATOR);
-                    ShareUser.openSiteDashboard(drone, siteName);
-                    ShareUserMembers.inviteUserToSiteWithRole(drone, testUserWithAccess, getUserNameFreeDomain(testName + UserRole.CONTRIBUTOR), siteName,
-                            UserRole.CONTRIBUTOR);
-                    ShareUser.openSiteDashboard(drone, siteName);
-                    ShareUserMembers.inviteUserToSiteWithRole(drone, testUserWithAccess, getUserNameFreeDomain(testName + UserRole.CONSUMER), siteName,
-                            UserRole.CONSUMER);
-                }
-                if (createData)
-                {
-                    ShareUser.openSitesDocumentLibrary(drone, siteName);
-                    String folderNameWithAccess = folderName + access;
-                    String subFolderPath = folderNameWithAccess + SLASH + subFolderName;
-                    ShareUser.createFolderInFolder(drone, folderNameWithAccess, folderNameWithAccess, DOCLIB_CONTAINER);
-                    ShareUser.openSiteDashboard(drone, siteName);
-                    ShareUser.createFolderInFolder(drone, subFolderName, subFolderName, folderNameWithAccess);
-                    ShareUser.uploadFileInFolder(drone, new String[] { fileName1, folderNameWithAccess });
-                    ShareUser.uploadFileInFolder(drone, new String[] { fileName3, subFolderPath });
-                }
-                ShareUser.logout(drone);
-            }
-            catch (Throwable e)
+            ShareUser.login(drone, testUserWithAccess, DEFAULT_PASSWORD);
+
+            if (UserRole.MANAGER.toString().equals(access))
             {
-                reportError(drone, testName, e);
+                // Site creation
+                ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC, true);
+                ShareUserMembers.inviteUserToSiteWithRole(drone, testUserWithAccess, getUserNameFreeDomain(testName + UserRole.COLLABORATOR), siteName,
+                        UserRole.COLLABORATOR);
+                ShareUser.openSiteDashboard(drone, siteName);
+                ShareUserMembers.inviteUserToSiteWithRole(drone, testUserWithAccess, getUserNameFreeDomain(testName + UserRole.CONTRIBUTOR), siteName,
+                        UserRole.CONTRIBUTOR);
+                ShareUser.openSiteDashboard(drone, siteName);
+                ShareUserMembers.inviteUserToSiteWithRole(drone, testUserWithAccess, getUserNameFreeDomain(testName + UserRole.CONSUMER), siteName,
+                        UserRole.CONSUMER);
             }
-            finally
+            
+            if (createData)
             {
-                testCleanup(drone, testName);
+                ShareUser.openSitesDocumentLibrary(drone, siteName);
+                String folderNameWithAccess = folderName + access;
+                String subFolderPath = folderNameWithAccess + SLASH + subFolderName;
+                ShareUser.createFolderInFolder(drone, folderNameWithAccess, folderNameWithAccess, DOCLIB_CONTAINER);
+                ShareUser.openSiteDashboard(drone, siteName);
+                ShareUser.createFolderInFolder(drone, subFolderName, subFolderName, folderNameWithAccess);
+                ShareUser.uploadFileInFolder(drone, new String[] { fileName1, folderNameWithAccess });
+                ShareUser.uploadFileInFolder(drone, new String[] { fileName3, subFolderPath });
             }
+            ShareUser.logout(drone);
         }
     }
 
     /**
-     * @param siteName
-     * @param folderName
-     * @param subFolderName
+     * @param testName
+     * @param role
      */
     private void runTestForUser(String testName, UserRole role)
     {
@@ -390,27 +353,23 @@ public class DefaultViewDocLibTest extends AbstractUtils
         ShareUser.login(drone, testUser);
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
-
-        // Expand the "Options" menu, click the any view (e.g. "Simple View")
+        // Select different View: "Simple View"
         docLibPage = ShareUserSitePage.selectView(drone, ViewType.SIMPLE_VIEW);
-        ;
-        // The view is change ("Simple View")
         assertEquals(docLibPage.getViewType(), ViewType.SIMPLE_VIEW);
 
         if (role.equals(UserRole.MANAGER))
         {
-            // Expand the "Options" menu, click the "Set "ANY View" as default for this folder " ("Simple View")
+            // "Set "ANY View" as default for this folder " ("Simple View")
             docLibPage = docLibPage.getNavigation().selectSetCurrentViewToDefault().render();
-            // The default view is set ANY ("Simple View")
             assertTrue(docLibPage.getNavigation().isRemoveDefaultViewVisible());
         }
         else
         {
             assertFalse(docLibPage.getNavigation().isSetDefaultViewVisible());
         }
-        // Navigate to folder User1_folder
+        
+        // Check View for: User1_folder
         docLibPage = docLibPage.selectFolder(folderName + role).render();
-        // Folder is opened. View is set "Simple View"
         assertEquals(docLibPage.getViewType(), ViewType.SIMPLE_VIEW);
 
         // Step 6 - 9
@@ -424,42 +383,39 @@ public class DefaultViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * @param folderName TODO
+     * @param forRole
+     * @param folderName
      * @param subFolderName
      * @param docLibPage
      * @param loginRole
-     *            TODO
-     * @param folderName
      */
     private void visitFolders(UserRole forRole, String folderName, String subFolderName, DocumentLibraryPage docLibPage, UserRole loginRole)
     {
         folderName = folderName + forRole;
-        docLibPage = docLibPage.getSiteNav().selectSiteDocumentLibrary().render();
+        docLibPage = ShareUser.openDocumentLibrary(drone);
 
-        // Navigate to folder User1_folder
+        // Change view to Detailed View for: folder User1_folder
         docLibPage = docLibPage.selectFolder(folderName).render();
         docLibPage = ShareUserSitePage.selectView(drone, ViewType.DETAILED_VIEW);
-        // The view is change ("DETAILED View")
         assertEquals(docLibPage.getViewType(), ViewType.DETAILED_VIEW);
 
+        // Set default view is allowed for only manager or author of that folder. Consumer cannot create folder.
         if (loginRole.equals(UserRole.CONSUMER) || (!loginRole.equals(UserRole.MANAGER) && !loginRole.equals(forRole)))
         {
             assertFalse(docLibPage.getNavigation().isSetDefaultViewVisible());
         }
         else
         {
-            // Expand the "Options" menu, click the "Set "OTHER View" as default for this folder " ("Detailed View")
+            // "Set "OTHER View" as default for this folder " ("Detailed View")
             docLibPage = docLibPage.getNavigation().selectSetCurrentViewToDefault().render();
-            // The default view is set OTHER ("Detailed View")
             assertTrue(docLibPage.getNavigation().isRemoveDefaultViewVisible());
         }
 
-        // Navigate to folder User1_subfolder
+        // Navigate to folder User1_subfolder: View is set "Detail VIew"
         docLibPage = docLibPage.selectFolder(subFolderName).render();
-        // Folder is opened. View is set "Detail VIew"
         assertEquals(docLibPage.getViewType(), ViewType.DETAILED_VIEW);
 
-        // Expand the "Options" menu.
+        // Set default view is allowed for only manager or author of that folder. Consumer cannot create folder.
         if (loginRole.equals(UserRole.CONSUMER) || (!loginRole.equals(UserRole.MANAGER) && !loginRole.equals(forRole)))
         {
             assertFalse(docLibPage.getNavigation().isSetDefaultViewVisible());
@@ -470,7 +426,5 @@ public class DefaultViewDocLibTest extends AbstractUtils
             assertTrue(docLibPage.getNavigation().isSetDefaultViewVisible());
         }
     }
-
-    
 
 }

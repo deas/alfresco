@@ -90,7 +90,8 @@ public class SiteSearchDashletTest extends AbstractSiteDashletTest
     public void getAvailableResultSizes()
     {
         Assert.assertEquals(searchDashlet.getAvailableResultSizes().size(), 4);
-        Assert.assertEquals(searchDashlet.getAvailableResultSizes(), Arrays.asList(new String[]{"10", "25", "50", "100"}));
+        Assert.assertEquals(searchDashlet.getAvailableResultSizes(), Arrays.asList("10", "25", "50", "100"));
+        Assert.assertEquals(searchDashlet.getSelectedSearchLimit(), SearchLimit.TEN);
     }
     
     @Test(dependsOnMethods="getAvailableResultSizes")
@@ -112,6 +113,17 @@ public class SiteSearchDashletTest extends AbstractSiteDashletTest
         Assert.assertEquals(items.get(0).getItemName().getDescription(), fileName);
         Assert.assertEquals(items.get(0).getPath().getDescription(), "/");
         Assert.assertNotNull(items.get(0).getThumbnail());
+    }
+
+    @Test(dependsOnMethods="getSearchItems")
+    public void searchWithSearchLimit()
+    {
+        searchDashlet.search(fileName, SearchLimit.TWENTY_FIVE).render();
+        List<SiteSearchItem> items = searchDashlet.getSearchItems();
+        Assert.assertNotNull(items);
+        Assert.assertEquals(items.size(), 1);
+        Assert.assertEquals(items.get(0).getItemName().getDescription(), fileName);
+        Assert.assertEquals(searchDashlet.getSelectedSearchLimit(), SearchLimit.TWENTY_FIVE);
     }
 
 }

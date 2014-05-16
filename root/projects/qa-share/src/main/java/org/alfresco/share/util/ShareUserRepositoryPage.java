@@ -37,6 +37,8 @@ import org.testng.SkipException;
 public class ShareUserRepositoryPage extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ShareUserRepositoryPage.class);
+    private static final String DATA_DICTIONARY_FOLDER = "Data Dictionary";
+    private static final String NODE_TEMPLATES_FOLDER = "Node Templates";
 
     public ShareUserRepositoryPage()
     {
@@ -173,7 +175,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
      */
     public static RepositoryPage createFolderInRepository(WebDrone driver, String folderName, String folderTitle, String folderDesc)
     {
-        RepositoryPage repositoryPage = ((RepositoryPage) ShareUserSitePage.createFolder(driver, folderName, folderTitle, folderDesc)).render();
+        RepositoryPage repositoryPage = ShareUserSitePage.createFolder(driver, folderName, folderTitle, folderDesc).render();
         return repositoryPage;
     }
 
@@ -219,9 +221,10 @@ public class ShareUserRepositoryPage extends AbstractUtils
         {
             throw new IllegalArgumentException("sitename/sourceFolder/destinationFolders should not be empty or null");
         }
+        
         CopyOrMoveContentPage copyOrMoveContentPage;
-        RepositoryPage repoPage = (RepositoryPage) ShareUser.getSharePage(drone);
-        FileDirectoryInfo contentRow = repoPage.getFileDirectoryInfo(sourceFolder);
+
+        FileDirectoryInfo contentRow = ShareUserSitePage.getFileDirectoryInfo(drone,sourceFolder);
         if (isCopy)
         {
             copyOrMoveContentPage = contentRow.selectCopyTo().render();
@@ -289,9 +292,9 @@ public class ShareUserRepositoryPage extends AbstractUtils
      *            parentFolderName1 + file.seperator + parentFolderName2
      * @throws Excetion
      */
-    public static void createFolderInFolderInRepository(WebDrone driver, String folderName, String folderDesc, String parentFolderPath) throws Exception
+    public static RepositoryPage createFolderInFolderInRepository(WebDrone driver, String folderName, String folderDesc, String parentFolderPath) throws Exception
     {
-        ShareUser.createFolderInFolder(driver, folderName, folderDesc, parentFolderPath);
+        return ((RepositoryPage) ShareUser.createFolderInFolder(driver, folderName, folderDesc, parentFolderPath)).render();
     }
 
     /**
@@ -442,9 +445,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
             throw new IllegalArgumentException("Invalid Folder path!!");
         }
 
-        @SuppressWarnings("unused")
-        List<FileDirectoryInfo> folderNames;
-        RepositoryPage repoPage = (RepositoryPage) ShareUser.getSharePage(drone);
+        RepositoryPage repoPage = ShareUser.getSharePage(drone).render();
 
         try
         {
@@ -466,7 +467,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
             throw new ShareException("Cannot select the folder metioned in the path");
         }
 
-        return (RepositoryPage) ShareUser.getSharePage(drone);
+        return ShareUser.getSharePage(drone).render();
 
     }
 
@@ -582,37 +583,47 @@ public class ShareUserRepositoryPage extends AbstractUtils
      * @param drone
      * @param folderName
      * @param category
+     * @deprecated Use {@link #addCategories(WebDrone, String, String, boolean, String...)} instead.
      */
-    public static void addCategories(WebDrone drone, String folderName, Categories category, boolean isOk )
+    @Deprecated
+    public static EditDocumentPropertiesPage addCategories(WebDrone drone, String folderName, Categories category, boolean isOk )
+    {
+        return addCategories(drone, folderName, category.getValue(), isOk);
+    }
+    
+    
+    /**
+     * Add categories from EditDocumentPropertiesPopUp.
+     * 
+     * @param drone
+     * @param folderName
+     * @param category
+     * @return
+     */
+    public static EditDocumentPropertiesPage addCategories(WebDrone drone, String folderName, String category, boolean isOk, String... parentCategories )
     {
         CategoryPage categoryPage = ((EditDocumentPropertiesPage)getSharePage(drone)).getCategory();
-        categoryPage.add(Arrays.asList(category));
-        List<Categories> addedCategories = categoryPage.getAddedCatgories();
+        categoryPage.addCategories(Arrays.asList(category), parentCategories);
 
-        Assert.assertTrue(addedCategories.size() > 0);
-
-        Assert.assertTrue(addedCategories.contains(category));
         if(isOk)
         {
-            categoryPage.clickOk();
+            return categoryPage.clickOk().render();
         }
         else
         {
-            categoryPage.clickCancel();
+            return categoryPage.clickCancel().render();
         }
     }
     
     /**
-     * REturn EditDocumentPropertiesPopup from RepositoryPage or documentLibrary page.
+     * Return EditDocumentPropertiesPopup from RepositoryPage or documentLibrary page.
      * @param drone
      * @param folderName
      * @return
      */
     public static EditDocumentPropertiesPage returnEditDocumentProperties(WebDrone drone, String folderName)
-    {        
-        SharePage sharePage = getSharePage(drone);        
-        return ((DocumentLibraryPage)sharePage).getFileDirectoryInfo(folderName).selectEditProperties().render();
-       
+    {            
+        return ShareUserSitePage.getFileDirectoryInfo(drone,folderName).selectEditProperties().render();       
     }
     
     
@@ -653,8 +664,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
      */
     public static Map<String, Object> getProperties(WebDrone drone, String folderName)
     {
-        RepositoryPage repositorypage = (RepositoryPage)getSharePage(drone);
-        FolderDetailsPage folderDetailsPage = repositorypage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
+        FolderDetailsPage folderDetailsPage = ShareUserSitePage.getFileDirectoryInfo(drone, folderName).selectViewFolderDetails().render();
         return folderDetailsPage.getProperties();
     }
     
@@ -666,10 +676,8 @@ public class ShareUserRepositoryPage extends AbstractUtils
      */
     public static void copyToFolderInDestination(WebDrone drone, String folderName, String destinationFolderName)
     {
-      
-      RepositoryPage repoPage = (RepositoryPage) ShareUser.getSharePage(drone);
 
-      CopyOrMoveContentPage copyOrMoveContentPage = repoPage.getFileDirectoryInfo(folderName).selectCopyTo().render();
+      CopyOrMoveContentPage copyOrMoveContentPage = ShareUserSitePage.getFileDirectoryInfo(drone, folderName).selectCopyTo().render();
     
       copyOrMoveContentPage = copyOrMoveContentPage.selectDestination(destinationFolderName).render();
     
@@ -679,12 +687,13 @@ public class ShareUserRepositoryPage extends AbstractUtils
     /**
      * Add tag from repository page.
      * @param drone
-     * @param folderName
+     * @param contentName
      * @param tagName
      */
-    public static void addTag(WebDrone drone, String folderName, String tagName)
+    public static RepositoryPage addTag(WebDrone drone, String contentName, String tagName)
     {
-        ((RepositoryPage)getSharePage(drone)).getFileDirectoryInfo(folderName).addTag(tagName);  
+        RepositoryPage repoPage = ((RepositoryPage) ShareUserSitePage.addTag(drone, contentName, tagName)).render();
+        return repoPage;
     }
     
     /**
@@ -699,23 +708,83 @@ public class ShareUserRepositoryPage extends AbstractUtils
     {
         return (RepositoryPage)ShareUserSitePage.sortLibraryOn(drone, field, sortAscending);
     }
-//    /**
-//     * Clicks on the I'm Editing link
-//     * 
-//     * @return RepositoryPage filtered to show documents I'm editing
-//     */
-//    public static RepositoryPage selectImEditing(WebDrone drone)
-//    {
-//        return (RepositoryPage)ShareUserSitePage.selectImEditing(drone);
-//    }
-//
-//    /**
-//     * Clicks on the My Favourites link
-//     * 
-//     * @return RepositoryPage filtered to show favourite documents
-//     */
-//    public static RepositoryPage selectFavourites(WebDrone drone)
-//    {
-//        return (RepositoryPage)ShareUserSitePage.selectFavourites(drone);
-//    }
+
+    /**
+     * Open Repository Page: Top Level Assumes User is logged in
+     * Opens repository in simple View
+     * 
+     * @param driver WebDrone Instance
+     * @return RepositoryPage
+     */
+    public static RepositoryPage openRepositoryGalleryView(WebDrone driver)
+    {
+
+        // Assumes User is logged in
+        SharePage page = ShareUser.getSharePage(driver);
+
+        RepositoryPage repositorypage = page.getNav().selectRepository();
+        repositorypage = ((RepositoryPage) ShareUserSitePage.selectView(driver, ViewType.GALLERY_VIEW));
+        logger.info("Opened RepositoryPage");
+        return repositorypage;
+    }
+
+    /**
+     * Method to create Node Template
+     * @param drone
+     * @param templateDetails
+     * @param contentType
+     * @throws Exception
+     */
+    public static void createNodeTemplate(WebDrone drone, ContentDetails templateDetails, ContentType contentType) throws Exception
+    {
+        openRepository(drone);
+        String[] contentFolderPath = { DATA_DICTIONARY_FOLDER, NODE_TEMPLATES_FOLDER };
+        createContentInFolder(drone, templateDetails, contentType, contentFolderPath);
+    }
+
+    /**
+     * Method to create Node Template
+     * @param drone
+     * @param folderName
+     * @throws Exception
+     */
+    public static void createFolderNodeTemplate(WebDrone drone, String folderName) throws Exception
+    {
+        openRepository(drone);
+        String[] folderPath = { DATA_DICTIONARY_FOLDER, NODE_TEMPLATES_FOLDER };
+        navigateFoldersInRepositoryPage(drone, folderPath);
+        createFolderInRepository(drone, folderName, folderName);
+    }
+
+    /**
+     * Method to get given Node Template Node Ref.
+     * @param drone
+     * @param contentName
+     * @return
+     * @throws Exception
+     */
+    public static String getNodeTemplateNodeRef(WebDrone drone, String contentName) throws Exception
+    {
+        navigateToFolderInRepository(drone, REPO + SLASH + DATA_DICTIONARY_FOLDER + SLASH + NODE_TEMPLATES_FOLDER);
+
+        return ShareUserSitePage.getFileDirectoryInfo(drone, contentName).getNodeRef();
+    }
+    
+    /**
+     * Assumes User is logged in
+     * Selects the specified view for the open folder in repository
+     * 
+     * @param driver WebDrone Instance
+     * @param view ViewType
+     * @return RepositoryPage
+     */
+    public static RepositoryPage selectView(WebDrone driver, ViewType view)
+    {
+        // Assumes User is logged in
+
+        RepositoryPage repositorypage = ((RepositoryPage) ShareUserSitePage.selectView(driver, view));
+        logger.info("Opened RepositoryPage");
+        return repositorypage;
+    }
+
 }

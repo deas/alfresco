@@ -21,17 +21,13 @@ package org.alfresco.share.site.document;
 import static org.alfresco.po.share.site.document.DocumentAspect.*;
 import static org.alfresco.share.util.ShareUser.openSiteDashboard;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.alfresco.po.share.site.document.*;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.alfresco.share.util.ShareUser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -479,73 +475,13 @@ public class ManageAspectTest extends AbstractAspectTests
     @Test(groups="EnterpriseOnly")
     public void Enterprise40x_14344()
     {
+
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
         proptery.setAspect(INLINE_EDITABLE);
         proptery.setExpectedProprtyKey(getEmailedAspectKey());
 
-        removeAspectTest(proptery);
-    }
-
-    @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_8586() throws Exception
-    {
-        removeAspectDataPrep(getTestName());
-    }
-
-    // TODO: Test not found in ComAlfOne, Enterprise40x, check and correct the testid
-    @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_8586()
-    {        
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        String fileName = getFileName(testName) + ".txt";
-
-        // TODO: Remove try, catch as failures are being handled by testng listeners
-        try{
-            
-            // TODO: Test fails to add GoogleDocsEditable Aspect. 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-            // Open Site DashBoard
-            openSiteDashboard(drone, siteName);
-            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
-            DocumentDetailsPage documentDetailsPage = documentLibraryPage.selectFile(fileName);
-
-            // Add aspect
-            SelectAspectsPage aspectsPage = documentDetailsPage.selectManageAspects();
-
-            List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
-            aspects.add(GOOGLE_DOCS_EDITABLE);
-            aspectsPage = aspectsPage.add(aspects).render();
-            documentDetailsPage = aspectsPage.clickApplyChanges().render();
-
-            documentDetailsPage = getSharePage(drone).render();
-            assertTrue(documentDetailsPage.isEditInGoogleDocsLinkVisible());
-
-            // Select 'Edit Offline'
-            documentLibraryPage = ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
-            FileDirectoryInfo fileDirectoryInfo = documentLibraryPage.getFileDirectoryInfo(fileName);
-            fileDirectoryInfo.selectEditOffline().render();
-
-            // Check the file is downloaded successfully
-            String editedFileName = getFileName(testName) + " (Working Copy).txt";
-            documentLibraryPage.waitForFile(downloadDirectory + editedFileName);
-
-            assertEquals(fileDirectoryInfo.getContentInfo(), "This document is locked by you for offline editing.");
-
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
-
+        addRemoveAspectDoc(proptery, true, false);
 
     }
 

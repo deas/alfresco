@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.dashlet.SearchLimit;
 import org.alfresco.po.share.dashlet.SiteSearchDashlet;
 import org.alfresco.po.share.dashlet.SiteSearchItem;
 import org.alfresco.po.share.enums.Dashlet;
@@ -85,7 +86,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2"})
-    public void alf_10699() throws Exception
+    public void ALF_10699() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -129,7 +130,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2"})
-    public void alf_10700() throws Exception
+    public void ALF_10700() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -172,7 +173,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2"})
-    public void alf_10701() throws Exception
+    public void ALF_10701() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -212,7 +213,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2"})
-    public void alf_10706() throws Exception
+    public void ALF_10706() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -251,7 +252,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2"})
-    public void alf_10708() throws Exception
+    public void ALF_10708() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -282,7 +283,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
     // TODO - Used "modifier: testUser" in search criteria
     @Test(groups = { "Enterprise4.2"})
-    public void alf_10709() throws Exception
+    public void ALF_10709() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -340,7 +341,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2"})
-    public void alf_10710() throws Exception
+    public void ALF_10710() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -376,7 +377,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
     // QA-466
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10711() throws Exception
+    public void ALF_10711() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -434,8 +435,8 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2" })
-    public void alf_10712() throws Exception
+    @Test(groups = { "alfrescoBug" })
+    public void ALF_10712() throws Exception
     {
         String testName = getTestName();
         String firstName = testName;
@@ -453,8 +454,8 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         for (String searchTerm : searchTermsList)
         {
-            items = ShareUserDashboard.searchSiteSearchDashlet(drone, searchTerm);
-            Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName));
+            items = ShareUserDashboard.searchSiteSearchDashlet(drone, searchTerm, SearchLimit.HUNDRED);
+            Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName), "Search Term: " + searchTerm);
         }
         ShareUser.logout(drone);
     }
@@ -486,7 +487,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10713() throws Exception
+    public void ALF_10713() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -496,7 +497,6 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         List<SiteSearchItem> items = ShareUserDashboard.searchSiteSearchDashlet(drone, fileName1);
-        Assert.assertEquals(items.size(), 2);
         List<String> fileNames = Arrays.asList(fileName1, fileName2);
         for (SiteSearchItem siteSearchItem : items)
         {
@@ -541,7 +541,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10714() throws Exception
+    public void ALF_10714() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -600,7 +600,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10715() throws Exception
+    public void ALF_10715() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -656,7 +656,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10716() throws Exception
+    public void ALF_10716() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -694,8 +694,8 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2" })
-    public void alf_10717() throws Exception
+    @Test(groups = { "alfrescoBug" })
+    public void ALF_10717() throws Exception
     {
         String testName = getTestName();
         String firstName = testName;
@@ -711,7 +711,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         for (String searchTerm : searchTerms)
         {
             logger.debug("Search Term: " + searchTerm);
-            items = ShareUserDashboard.searchSiteSearchDashlet(drone, searchTerm);
+            items = ShareUserDashboard.searchSiteSearchDashlet(drone, searchTerm, SearchLimit.HUNDRED);
             Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName), "SearchTerm: " + searchTerm);
         }
 
@@ -756,7 +756,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10718() throws Exception
+    public void ALF_10718() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -795,7 +795,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
     // QA-466
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10719() throws Exception
+    public void ALF_10719() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -864,7 +864,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
     // QA-466
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10720() throws Exception
+    public void ALF_10720() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -900,7 +900,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10721() throws Exception
+    public void ALF_10721() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -955,7 +955,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
     // QA-466
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10722() throws Exception
+    public void ALF_10722() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1022,7 +1022,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
     // QA-466
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10723() throws Exception
+    public void ALF_10723() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1071,7 +1071,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10724() throws Exception
+    public void ALF_10724() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1085,11 +1085,9 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         Assert.assertEquals(searchDashlet.getContent(), NO_RESULTS_FOUND_MESSAGE);
 
         items = ShareUserDashboard.searchSiteSearchDashlet(drone, "creator: \"" + testUser + "\" and name: \"" + fileName + "\"");
-        Assert.assertEquals(items.size(), 1);
         Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName));
 
         items = ShareUserDashboard.searchSiteSearchDashlet(drone, "creator: \"admin\" or name: \"" + fileName + "\"");
-        Assert.assertEquals(items.size(), 1);
         Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName));
 
         items = ShareUserDashboard.searchSiteSearchDashlet(drone, "(creator: \"" + testUser + "\" and name: \"" + fileName + "\") and creator: \"admin\"");
@@ -1098,11 +1096,9 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         Assert.assertEquals(searchDashlet.getContent(), NO_RESULTS_FOUND_MESSAGE);
 
         items = ShareUserDashboard.searchSiteSearchDashlet(drone, "(creator: \"" + testUser + "\" and name: \"" + fileName + "\") or creator: \"admin\"");
-        Assert.assertEquals(items.size(), 1);
         Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName));
 
         items = ShareUserDashboard.searchSiteSearchDashlet(drone, "creator: \"" + testUser + "\" and (name: \"" + fileName + "\" or creator: \"admin\")");
-        Assert.assertEquals(items.size(), 1);
         Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName));
 
         ShareUser.logout(drone);
@@ -1128,8 +1124,8 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2" })
-    public void alf_10725() throws Exception
+    @Test(groups = { "alfrescoBug" })
+    public void ALF_10725() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1176,7 +1172,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10726() throws Exception
+    public void ALF_10726() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1220,7 +1216,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10727() throws Exception
+    public void ALF_10727() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1229,7 +1225,6 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         List<SiteSearchItem> items = ShareUserDashboard.searchSiteSearchDashlet(drone, " ASPECT:\"{http://www.alfresco.org/model/content/1.0}dublincore\"");
-        Assert.assertEquals(items.size(), 1);
         Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName));
 
         ShareUser.logout(drone);
@@ -1255,7 +1250,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
     // QA-466
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10728() throws Exception
+    public void ALF_10728() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1303,7 +1298,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10729() throws Exception
+    public void ALF_10729() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1346,8 +1341,8 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2" })
-    public void alf_10730() throws Exception
+    @Test(groups = { "alfrescoBug" })
+    public void ALF_10730() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1387,7 +1382,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10731() throws Exception
+    public void ALF_10731() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1425,8 +1420,8 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         ShareUser.logout(drone);
     }
     // TODO - Used "and name: " + testName
-    @Test(groups = { "Enterprise4.2" })
-    public void alf_10732() throws Exception
+    @Test(groups = { "alfrescoBug" })
+    public void ALF_10732() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1471,7 +1466,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10733() throws Exception
+    public void ALF_10733() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1480,7 +1475,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-        List<SiteSearchItem> items = ShareUserDashboard.searchSiteSearchDashlet(drone, "fm:commentCount: 1");
+        List<SiteSearchItem> items = ShareUserDashboard.searchSiteSearchDashlet(drone, "fm:commentCount: 1", SearchLimit.HUNDRED);
         Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName1));
         Assert.assertFalse(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName2));
 
@@ -1516,7 +1511,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
     // TODO - Added " and creator: " + testUser
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10734() throws Exception
+    public void ALF_10734() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1568,7 +1563,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10735() throws Exception
+    public void ALF_10735() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1615,7 +1610,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_17036() throws Exception
+    public void ALF_17036() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1659,7 +1654,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10737() throws Exception
+    public void ALF_10737() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1701,7 +1696,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10738() throws Exception
+    public void ALF_10738() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1740,7 +1735,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10739() throws Exception
+    public void ALF_10739() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1776,7 +1771,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
     }
 
     @Test(groups = { "Enterprise4.2" })
-    public void alf_10740() throws Exception
+    public void ALF_10740() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);

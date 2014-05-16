@@ -11,14 +11,14 @@ import org.apache.velocity.VelocityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
-import org.testng.ITestListener;
 import org.testng.ITestResult;
+import org.testng.internal.IResultListener2;
 import org.uncommons.reportng.HTMLReporter;
 
 /**
  * @author Ranjith Manyam
  */
-public class ScreenshotHTMLReporter extends HTMLReporter implements ITestListener
+public class ScreenshotHTMLReporter extends HTMLReporter implements IResultListener2
 {
 
     protected static final ScreenshotReportNGUtils SS_UTILS = new ScreenshotReportNGUtils();
@@ -26,18 +26,42 @@ public class ScreenshotHTMLReporter extends HTMLReporter implements ITestListene
 
     private static final Logger logger = LoggerFactory.getLogger(ScreenshotHTMLReporter.class);
 
-    protected VelocityContext createContext()
+
+    @Override
+    public void beforeConfiguration(ITestResult tr)
     {
-        VelocityContext context = super.createContext();
-        context.put("utils", SS_UTILS);
-        return context;
+
     }
 
+    @Override
+    public void onConfigurationSuccess(ITestResult tr)
+    {
+
+    }
+
+    @Override
+    public void onStart(ITestContext context)
+    {
+
+    }
+
+    @Override
+    public void onFinish(ITestContext context)
+    {
+
+    }
+
+    @Override
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result)
+    {
+
+    }
+    
     @Override
     public void onTestStart(ITestResult result)
     {
 
-    }
+    }    
 
     @Override
     public void onTestSuccess(ITestResult result)
@@ -47,6 +71,36 @@ public class ScreenshotHTMLReporter extends HTMLReporter implements ITestListene
 
     @Override
     public void onTestFailure(ITestResult tr)
+    {
+        reportErrorWithScreenShot(tr);
+    }
+
+    @Override
+    public void onTestSkipped(ITestResult tr)
+    {
+        reportErrorWithScreenShot(tr);
+    }
+
+    @Override
+    public void onConfigurationFailure(ITestResult tr)
+    {
+        reportErrorWithScreenShot(tr);
+    }
+
+    @Override
+    public void onConfigurationSkip(ITestResult tr)
+    {
+        reportErrorWithScreenShot(tr);
+    }
+    
+    protected VelocityContext createContext()
+    {
+        VelocityContext context = super.createContext();
+        context.put("utils", SS_UTILS);
+        return context;
+    }
+
+    private void reportErrorWithScreenShot(ITestResult tr)
     {
         Object instace = tr.getInstance();
         if (instace instanceof AbstractUtils)
@@ -68,12 +122,14 @@ public class ScreenshotHTMLReporter extends HTMLReporter implements ITestListene
                     File file = entry.getValue().getScreenShot();
 
                     logger.debug("File: {} ", file.hashCode());
+
                     // output dir includes suite, so go up one level
                     String outputDir = tr.getTestContext().getOutputDirectory();
                     logger.debug("Output Directory: {}", outputDir);
                     outputDir = outputDir.substring(0, outputDir.lastIndexOf(SLASH)) + SLASH + "html";
                     File saved = new File(outputDir, entry.getKey() + tr.getMethod().getMethodName() + ".png");
                     FileUtils.copyFile(file, saved);
+
                     // save screenshot path as result attribute so generateReport can access it
                     tr.setAttribute(entry.getKey() + tr.getMethod().getMethodName(), saved.getName());
                 }
@@ -83,29 +139,5 @@ public class ScreenshotHTMLReporter extends HTMLReporter implements ITestListene
                 }
             }
         }
-    }
-
-    @Override
-    public void onTestSkipped(ITestResult result)
-    {
-
-    }
-
-    @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result)
-    {
-
-    }
-
-    @Override
-    public void onStart(ITestContext context)
-    {
-
-    }
-
-    @Override
-    public void onFinish(ITestContext context)
-    {
-
     }
 }

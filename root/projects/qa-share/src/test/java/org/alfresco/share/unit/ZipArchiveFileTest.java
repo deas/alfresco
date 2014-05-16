@@ -22,7 +22,6 @@ import static org.testng.AssertJUnit.assertTrue;
 
 import org.alfresco.share.util.ArchiveFile;
 import org.alfresco.share.util.ZipArchiveFile;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.testng.annotations.AfterClass;

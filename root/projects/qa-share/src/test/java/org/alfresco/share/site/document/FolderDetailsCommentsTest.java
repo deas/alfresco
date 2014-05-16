@@ -1,6 +1,7 @@
 package org.alfresco.share.site.document;
 
 import org.alfresco.po.share.RepositoryPage;
+import org.alfresco.po.share.enums.TinyMceColourCode;
 import org.alfresco.po.share.site.document.*;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
@@ -11,7 +12,6 @@ import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.log4j.Logger;
 import org.testng.annotations.*;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 import static org.alfresco.share.util.RandomUtil.*;
@@ -588,7 +588,7 @@ public class FolderDetailsCommentsTest extends AbstractUtils
                 tinyMceEditor.clickTextFormatter(NUMBER);
                 assertEquals(tinyMceEditor.getContent(), String.format("<ol><li><i><b>%s</b></i></li></ol>", text), "Numbered list didn't display.");
 
-                tinyMceEditor.clickColorCode();
+                tinyMceEditor.clickColorCode(TinyMceColourCode.BLUE);
                 assertEquals(tinyMceEditor.getColourAttribute(), "BLUE", "The text didn't highlight with any color.");
 
                 commentForm.clickAddCommentButton();

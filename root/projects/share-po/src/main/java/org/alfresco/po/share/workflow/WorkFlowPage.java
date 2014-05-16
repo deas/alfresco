@@ -469,22 +469,23 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
             throw new IllegalArgumentException("Due date should be in \"dd/MM/yyyy\" format");
         }
 
-        DateTime today = new DateTime();
-
-        drone.waitForElement(DUE_DATED_PICKER, maxPageLoadingTime);
-        drone.find(DUE_DATED_PICKER).click();
-        WebElement calenderElement = drone.findAndWait(By.cssSelector("table[id$='_workflowDueDate-cntrl']"));
-
-        if (dueDate.isBeforeNow()
-                && !dueDate.toLocalDate().toString(DateTimeFormat.forPattern("dd-MM-yyyy"))
-                        .equals(today.toLocalDate().toString(DateTimeFormat.forPattern("dd-MM-yyyy"))))
+        try
         {
-            throw new UnsupportedOperationException("Due date cannot be in past");
-        }
-        else
-        {
-            try
+            DateTime today = new DateTime();
+
+            drone.waitForElement(DUE_DATED_PICKER, maxPageLoadingTime);
+            drone.find(DUE_DATED_PICKER).click();
+
+            if (dueDate.isBeforeNow()
+                    && !dueDate.toLocalDate().toString(DateTimeFormat.forPattern("dd-MM-yyyy"))
+                            .equals(today.toLocalDate().toString(DateTimeFormat.forPattern("dd-MM-yyyy"))))
             {
+                throw new UnsupportedOperationException("Due date cannot be in past");
+            }
+            else
+            {
+
+                WebElement calenderElement = drone.findAndWait(By.cssSelector("table[id$='_workflowDueDate-cntrl']"));
                 drone.waitForElement(By.cssSelector("a.calnav"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                 calenderElement.findElement(By.cssSelector("a.calnav")).click();
 
@@ -513,16 +514,15 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
                     }
                 }
             }
-            catch (NoSuchElementException nse)
-            {
-                throw new PageOperationException("Unable to find element: ", nse);
-            }
-            catch (TimeoutException te)
-            {
-                throw new PageOperationException("Timed out on waiting for: ", te);
-            }
         }
-
+        catch (NoSuchElementException nse)
+        {
+            throw new PageOperationException("Unable to find element: ", nse);
+        }
+        catch (TimeoutException te)
+        {
+            throw new PageOperationException("Timed out on waiting for: ", te);
+        }
     }
 
     /**
@@ -540,6 +540,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
             {
                 logger.trace("Unable to find Close button on Calendar date picker", nse);
             }
+            throw new PageOperationException("Unable to find Close button on Calendar date picker");
         }
     }
 
@@ -612,7 +613,20 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         }
         catch (NoSuchElementException nse)
         {
-            throw new PageOperationException("Unable to find After Completion Dropdown", nse);
+            throw new PageOperationException("Unable to find Priority Dropdown", nse);
         }
+    }
+
+    /**
+     * Selects the priority down list.
+     */
+    public void selectPriorityDropDown(Priority priority)
+    {
+        if (priority == null)
+        {
+            throw new IllegalArgumentException("Priority can't be empty.");
+        }
+        Select priorityDropDown = new Select(drone.findAndWait(PRIORITY_DROPDOWN));
+        priorityDropDown.selectByValue(priority.getValue());
     }
 }

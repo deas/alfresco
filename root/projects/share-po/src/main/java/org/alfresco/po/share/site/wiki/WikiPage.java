@@ -16,8 +16,10 @@ package org.alfresco.po.share.site.wiki;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.alfresco.po.share.AlfrescoVersion;
+import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.document.TinyMceEditor;
 import org.alfresco.webdrone.RenderElement;
@@ -58,6 +60,14 @@ public class WikiPage extends SitePage
     private static final By REMOVE_FORMAT = By.cssSelector(".mceIcon.mce_removeformat");
     private static final By DELETE_WIKI = By.cssSelector("button[id$='default-delete-button-button']");
     private static final By EDIT_WIKI = By.cssSelector("a[href*='action=edit']");
+    private static final By BACK_LINK = By.cssSelector(".forwardLink>a");
+    private static final By RENAME_BUTTON = By.cssSelector("button[id$='default-rename-button-button']");
+    private static final By VERSION_PLACEHOLDER = By.cssSelector(".meta-section-label");
+    private static final By REVERT_BTN = By.cssSelector(".revert>a");
+    private static final By RENAME_SAVE_BTN = By.cssSelector("button[id$='rename-save-button-button']");
+    private static final By DETAILS_LINK = By.cssSelector("a[href$='details']");
+    private static final By VERSION_HEADER = By.cssSelector("span[id$='default-version-header']");
+    private static final By CONFIRM_REVERT_BTN = By.cssSelector("button[id$='ok-button-button']");
 
     private TinyMceEditor tinyMCEEditor = new TinyMceEditor(drone);
 
@@ -422,7 +432,8 @@ public class WikiPage extends SitePage
         }
         else if ("FONT".equals(type))
         {
-            String selector = AlfrescoVersion.Enterprise41 == alfrescoVersion ? "#tinymce>ul>li>font" : "#tinymce>ul>li>span>font";
+            String selector  ="#tinymce>ul>li>font";
+           
             return By.cssSelector(selector);
         }
         else if ("IMG".equals(type))
@@ -545,5 +556,187 @@ public class WikiPage extends SitePage
             logger.error("Time out finding attribute of font element", toe);
         }
         throw new PageException("Font element not found!");
+    }
+
+    /**
+     * Method to create a wiki page
+     *
+     * @param wikiTitle
+     * @param txtLines
+     * @return WikiPage object
+     */
+
+    public WikiPage createWikiPage(String wikiTitle,List <String> txtLines)
+    {
+        try
+        {
+            WikiPage wikiPage = new WikiPage(drone);
+            wikiPage.clickOnNewPage();
+            wikiPage.createWikiPageTitle(wikiTitle);
+            wikiPage.insertText(txtLines);
+            return wikiPage.clickSaveButton();
+        }
+        catch (TimeoutException e)
+        {
+            logger.debug("Couldn't create the page due to timeout");
+        }
+        throw new PageException("Wiki can't be created");
+    }
+
+    private boolean isDisplayed(By locator)
+    {
+        try
+        {
+            return drone.findAndWait(locator, 2000).isEnabled();
+        }
+        catch (TimeoutException e)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Method to verify whether New Page button is displayed
+     *
+     * @return true if displayed
+     */
+    public boolean isNewPageDisplayed ()
+    {
+        return isDisplayed(BUTTON_CREATE);
+    }
+
+    /**
+     * Method to click Wiki Page List button
+     *
+     * @return WikiPageList
+     */
+    public WikiPageList clickWikiPageListBtn ()
+    {
+        try
+        {
+            drone.findAndWait(BACK_LINK).click();
+            return new WikiPageList(drone).render();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to find " + BACK_LINK);
+        }
+    }
+
+    /**
+     * Method to rename Wiki Page
+     *
+     * @param newTitle
+     * @return
+     */
+    public WikiPage renameWikiPage (String newTitle)
+    {
+        try
+        {
+            drone.findAndWait(RENAME_BUTTON).click();
+            WebElement inputField = drone.findAndWait(By.cssSelector("input[id$='default-renameTo']"));
+            inputField.sendKeys(newTitle);
+            drone.findAndWait(RENAME_SAVE_BTN).click();
+            waitUntilAlert();
+            return new WikiPage(drone).render();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("The operation has timed out");
+        }
+    }
+
+    /**
+     * Method to revert to version provided
+     * @param versionNum
+     * @return WikiPage
+     */
+    public WikiPage revertToVersion (Double versionNum)
+    {
+        drone.findAndWait(DETAILS_LINK, 3000).click();
+        List <WebElement> allVersions = drone.findAndWaitForElements(VERSION_PLACEHOLDER);
+        if (allVersions.size()==0)
+        {
+            throw new ShareException("The wiki page has no versions");
+        }
+        String versionNumber = Double.toString(versionNum);
+        for (WebElement allVersion: allVersions)
+        {
+            if (allVersion.getText().contains(versionNumber))
+            {
+                allVersion.click();
+            }
+        }
+        List<WebElement> allReverts = drone.findAll(REVERT_BTN);
+        for (WebElement allRevert: allReverts)
+        {
+            if (allRevert.isDisplayed())
+            {
+                allRevert.click();
+            }
+        }
+        confirmRevert();
+        return new WikiPage(drone);
+    }
+
+    private void confirmRevert ()
+    {
+        try
+        {
+            drone.findAndWait(By.cssSelector("button[id$='ok-button-button']")).click();
+            waitUntilAlert();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to find OK button");
+        }
+    }
+
+    /**
+     * Method to retrieve Wiki version
+     *
+     * @return double
+     */
+    public Double getCurrentWikiVersion ()
+    {
+        try
+        {
+            Pattern p1 = Pattern.compile("(\\d{1,3}\\.\\d{1,3})");
+
+            String wikiVersion = drone.findAndWait(VERSION_HEADER).getText();
+            Matcher m1 = p1.matcher(wikiVersion);
+            if (m1.find())
+                return Double.parseDouble(m1.group());
+            else
+                throw new IllegalArgumentException("Cannot find the version");
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to retrieve the version");
+        }
+    }
+
+    /**
+     * Method to edit a wiki text
+     *
+     * @param txtLines
+     */
+    public void editWikiText (List <String> txtLines)
+    {
+        try
+        {
+            drone.executeJavaScript(String.format("tinyMCE.activeEditor.setContent('%s');", txtLines.get(0)));
+            drone.switchToFrame(WIKI_EDIT_IFRAME);
+            WebElement element = drone.findAndWait(By.cssSelector("#tinymce"));
+            if (!element.getText().isEmpty())
+            {
+                element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+            }
+            drone.switchToDefaultContent();
+        }
+        catch (TimeoutException toe)
+        {
+            logger.error("Time out finding #tinymce", toe);
+        }
     }
 }

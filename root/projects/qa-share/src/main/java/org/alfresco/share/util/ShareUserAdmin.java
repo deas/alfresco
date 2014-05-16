@@ -25,12 +25,15 @@ import org.alfresco.po.share.GroupsPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.admin.ManagedSiteRow;
+import org.alfresco.po.share.adminconsole.NodeBrowserPage;
+import org.alfresco.po.share.adminconsole.NodeBrowserPage.QueryType;
+import org.alfresco.po.share.adminconsole.NodeBrowserSearchResult;
 import org.alfresco.po.share.enums.SiteVisibility;
 import org.alfresco.po.share.site.document.UserProfile;
+import org.alfresco.service.cmr.repository.MalformedNodeRefException;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 
 public class ShareUserAdmin extends AbstractUtils
 {
@@ -44,41 +47,41 @@ public class ShareUserAdmin extends AbstractUtils
         }
     }
 
-    /**     
-     * @param driver WebDriver Instance      
-     * Navigate to Groups page
+    /**
+     * @param driver WebDriver Instance
+     *            Navigate to Groups page
      * @return Groups page
      */
-    
+
     public static GroupsPage navigateToGroup(WebDrone driver)
-    {         
-        DashBoardPage dashBoard = ShareUser.openUserDashboard(driver);     
+    {
+        DashBoardPage dashBoard = ShareUser.openUserDashboard(driver);
         GroupsPage page = dashBoard.getNav().getGroupsPage();
         return page;
     }
-    
-    /**     
+
+    /**
      * @param driver WebDriver Instance
-     * This method is called when the user is on groups page      
-     * Click on browse button in Groups page
+     *            This method is called when the user is on groups page
+     *            Click on browse button in Groups page
      * @return Groups page
      */
     public static GroupsPage browseGroups(WebDrone driver)
-    {                 
+    {
         GroupsPage page = driver.getCurrentPage().render();
-        //GroupsPage page = navigateToGroup(driver);  
-        GroupsPage groupsPage = page.clickBrowse().render(); 
+        // GroupsPage page = navigateToGroup(driver);
+        GroupsPage groupsPage = page.clickBrowse().render();
         return groupsPage;
-    } 
-    
-    /**     
+    }
+
+    /**
      * @param driver WebDriver Instance
-     * @param userName- check whether this user is in group 
-     * @param groupName - Check whether user in this specific group Name  
-     * Verify user is a member of group
+     * @param userName- check whether this user is in group
+     * @param groupName - Check whether user in this specific group Name
+     *            Verify user is a member of group
      * @return Boolean
      */
-    
+
     public static Boolean isUserGroupMember(WebDrone driver, String fName, String uName, String groupName)
     {
         GroupsPage page = browseGroups(driver);
@@ -98,16 +101,15 @@ public class ShareUserAdmin extends AbstractUtils
         }
         return false;
     }
-    
-    /**     
+
+    /**
      * @param driver WebDriver Instance
-     * @param fName- check whether this fName matches with users first name in group 
-     * @param lName - check whether this lName matches with users first name in group 
-     * Verify user is in ALFRESCO_ADMINISTRATORS  group
+     * @param fName- check whether this fName matches with users first name in group
+     * @param lName - check whether this lName matches with users first name in group
+     *            Verify user is in ALFRESCO_ADMINISTRATORS group
      * @return Boolean
      */
-    
-    
+
     public static Boolean isUserAdmin(WebDrone driver, String fName, String uName)
     {
         String groupName = "ALFRESCO_ADMINISTRATORS";
@@ -132,18 +134,19 @@ public class ShareUserAdmin extends AbstractUtils
     /**
      * Navigate to ManageSitesPage
      * Assumes user is logged in
+     * 
      * @param drone
      * @return
      */
     public static ManageSitesPage navigateToManageSites(WebDrone drone)
     {
         ManageSitesPage manageSitesPage;
-        
+
         SharePage sharePage = getSharePage(drone).render();
-        
+
         if (sharePage instanceof ManageSitesPage)
         {
-            manageSitesPage = getSharePage(drone).render();  
+            manageSitesPage = getSharePage(drone).render();
         }
         else
         {
@@ -151,10 +154,11 @@ public class ShareUserAdmin extends AbstractUtils
         }
         return manageSitesPage;
     }
-    
+
     /**
      * Changes Site visibility to the specified value
      * Assumes Site Admin / Manager is logged in
+     * 
      * @param drone
      * @param siteName
      * @param siteVisibility
@@ -176,8 +180,72 @@ public class ShareUserAdmin extends AbstractUtils
         }
 
         return manageSitesPage;
+    }
+    
+    /**
+     * Util to navigate to NodeBrowserPage from AdminTools
+     * Assumes Admin user is logged in
+     * @param drone
+     * @return NodeBrowserPage
+     */
+    public static NodeBrowserPage getNodeBrowser(WebDrone drone)
+    {
+        SharePage sharePage = getSharePage(drone).render();
+        NodeBrowserPage nodeBrowserPage = sharePage.getNav().getNodeBrowserPage().render();
+        return nodeBrowserPage;
+    }
+
+    /**
+     * Util to perform the search on the Node Browser Page and return the Node Browser Page with results
+     * Assumes Admin user is logged in
+     * @param drone
+     * @param queryType
+     * @param queryString
+     * @return NodeBrowserPage
+     */
+    public static NodeBrowserPage nodeSearch(WebDrone drone, QueryType queryType, String queryString)
+    {
+
+        NodeBrowserPage nodeBrowserPage = getNodeBrowser(drone);
+        nodeBrowserPage.selectQueryType(queryType);
+        nodeBrowserPage.fillQueryField(queryString);
+        nodeBrowserPage = nodeBrowserPage.clickSearchButton().render();
+
+        return nodeBrowserPage;
+    }
+
+    public static String getTagNodeRef(WebDrone drone, String tagName)
+    {
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+    
+        NodeBrowserPage nodeBrowserPage = nodeSearch(drone, QueryType.LUCENE, "PATH:\"/cm:categoryRoot/cm:taggable/cm:" + tagName + "\"");
+    
+        NodeBrowserSearchResult searchResult = nodeBrowserPage.getSearchResults("cm:"+tagName);
+        String tagNodeRef = searchResult.getReference().getDescription();
+
+        ShareUser.logout(drone);
+        
+        return tagNodeRef;
+    }
+
+    public static String getCategoryNodeRef(WebDrone drone, String propertyDefinitionId, String propertyName)
+    {
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+        
+        NodeBrowserPage nodeBrowserPage = getNodeBrowser(drone);
+        
+        nodeBrowserPage = nodeSearch(drone, QueryType.LUCENE, "TYPE:\"" + propertyDefinitionId + "\"");       
+    
+        NodeBrowserSearchResult result = nodeBrowserPage.getSearchResults(propertyName);
+        String categoryNodeRef = result.getReference().getDescription();
+        logger.info(propertyName + " Node Ref: " + categoryNodeRef);
+        ShareUser.logout(drone);
+        
+        // logger.info("Category NodeRef: " + categoryNodeRef);
+        if(categoryNodeRef.isEmpty() || !categoryNodeRef.startsWith("workspace://SpacesStore/"))
+        {
+            throw new MalformedNodeRefException("Invalid node ref:" + categoryNodeRef);
+        }
+        return categoryNodeRef;
+    }
 }
-
-
-}
-

@@ -20,12 +20,14 @@ package org.alfresco.po.share.site;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.dashlet.AbstractSiteDashletTest;
 import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.po.share.util.FailedTestListener;
@@ -45,7 +47,6 @@ public class CustomizeSitePageTest extends AbstractSiteDashletTest
 {
     DashBoardPage dashBoard;
     CustomiseSiteDashboardPage customizeSiteDashboardPage;
-    SiteDashboardPage siteDashboardPage;
     CustomizeSitePage customizeSitePage;
     WikiPage wikiPage;
 
@@ -88,12 +89,16 @@ public class CustomizeSitePageTest extends AbstractSiteDashletTest
         assertEquals(currentPageTypes, expectedPageTypes);
     }
     
-    @Test(dependsOnMethods="getCurrentPages", groups="Enterprise4.1")
+    @Test(dependsOnMethods = "getCurrentPages", groups = "Enterprise-only")
     public void addPages()
     {
         List<SitePageType> addPageTypes = new ArrayList<SitePageType>();
         addPageTypes.add(SitePageType.WIKI);
-        customizeSitePage.addPages(addPageTypes);
+        customizeSitePage = FactorySharePage.resolvePage(drone).render();
+        siteDashBoard = customizeSitePage.addPages(addPageTypes).render();
+        customizeSitePage = siteDashBoard.getSiteNav().selectCustomizeSite().render();
+        List<SitePageType> currentPages = customizeSitePage.getCurrentPages();
+        assertTrue(currentPages.contains(SitePageType.WIKI), "Current pages are:" + currentPages);
     }
     
 }

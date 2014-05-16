@@ -30,9 +30,9 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.dashlet.MySitesDashlet;
 import org.alfresco.po.share.dashlet.SiteMembersDashlet;
 import org.alfresco.po.share.enums.UserRole;
-import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SitePageType;
+import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.rest.api.tests.client.HttpResponse;
 import org.alfresco.rest.api.tests.client.PublicApiClient.ListResponse;
 import org.alfresco.rest.api.tests.client.PublicApiException;
@@ -44,7 +44,9 @@ import org.alfresco.rest.api.tests.client.data.SiteContainer;
 import org.alfresco.rest.api.tests.client.data.SiteMember;
 import org.alfresco.rest.api.tests.client.data.SiteRole;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserDashboard;
 import org.alfresco.share.util.ShareUserMembers;
+import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.share.util.api.SitesAPI;
 import org.alfresco.webdrone.exception.PageOperationException;
@@ -114,17 +116,28 @@ public class SitesAPITests extends SitesAPI
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, user1);
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, user2);
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, user3);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserAnotherDomain);
 
         ShareUser.login(drone, testUser);
 
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC, true);
-        CustomizeSitePage customizeSizePage = ShareUser.customizeSite(drone, siteName);
+        
+        if (!isAlfrescoVersionCloud(drone))
+        {
+            ShareUserDashboard.addPageToSite(drone, siteName, SitePageType.WIKI, SitePageType.BLOG);
 
-        List<SitePageType> pageTypes = new ArrayList<SitePageType>();
-        pageTypes.add(SitePageType.WIKI);
-        pageTypes.add(SitePageType.BLOG);
-        customizeSizePage.addPages(pageTypes);
-
+            SiteDashboardPage siteDashPage = ShareUser.openSiteDashboard(drone, siteName);
+                    
+            // TODO: Create new lib to create Wiki utils, navigateToWiki, createNewWiki
+            WikiPage wikiPage = siteDashPage.getSiteNav().selectSiteWikiPage().render();
+            wikiPage.clickOnNewPage();
+            wikiPage.createWikiPageTitle("Wiki Page " + Math.random());
+            List<String> textLines = new ArrayList<String>();
+            textLines.add("This is a new Wiki text!");
+            wikiPage.insertText(textLines);
+            wikiPage.clickSaveButton();
+        }
+        ShareUser.openSiteDashboard(drone, siteName);
         ShareUser.createFolderInFolder(drone, folderName, folderName, DOCLIB);
 
         ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC, true);
@@ -139,6 +152,8 @@ public class SitesAPITests extends SitesAPI
             ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUserAnotherDomain, siteName, UserRole.COLLABORATOR);
         }
     }
+
+
 
     @Test
     public void ALF_147801() throws Exception
@@ -175,9 +190,9 @@ public class SitesAPITests extends SitesAPI
         {
             response = getSites(testUserAnotherDomain, DOMAIN, params);
             assertNotNull(response);
-            assertTrue(response.getList().size() == 6);
+            assertTrue(response.getList().size() == 1);
             Site site = response.getList().get(0);
-            assertTrue(site.getSiteId().contains(siteName), "Site - " + site + " should contain name - " + siteName);
+            assertTrue(site.getSiteId().contains(ShareUser.getSiteShortname(siteName)), "Site - " + site + " should contain name - " + siteName);
         }
     }
 
@@ -506,7 +521,7 @@ public class SitesAPITests extends SitesAPI
         SiteMember response = createSiteMember(testUser, DOMAIN, siteName, new SiteMember(user2, SiteRole.SiteConsumer.toString()));
         response = getSiteMemberForId(user2, DOMAIN, siteName, user2);
         assertNotNull(response);
-        assertEquals(response.getMemberId(), user2);
+        assertEquals(response.getMemberId().toLowerCase(), user2.toLowerCase());
         assertEquals(response.getSiteId(), siteName);
 
 
@@ -1252,15 +1267,17 @@ public class SitesAPITests extends SitesAPI
         assertEquals(response.getPaging().getMaxItems(), new Integer(2147483));
         assertEquals(response.getPaging().getSkipCount(), new Integer(2));
 
-        params.clear();
-        params.put(SKIP_COUNT, "0");
-        params.put("maxItems", "1");
-        response = getSiteContainers(testUser, DOMAIN, params, siteName);
-
-        assertNotNull(response);
-        assertTrue(response.getPaging().getHasMoreItems());
-        assertEquals(response.getPaging().getMaxItems(), new Integer(1));
-        assertEquals(response.getPaging().getSkipCount(), new Integer(0));
+        if (!isAlfrescoVersionCloud(drone))
+        {
+            params.clear();
+            params.put(SKIP_COUNT, "0");
+            params.put("maxItems", "1");
+            response = getSiteContainers(testUser, DOMAIN, params, siteName);
+            assertNotNull(response);
+            assertTrue(response.getPaging().getHasMoreItems());
+            assertEquals(response.getPaging().getMaxItems(), new Integer(1));
+            assertEquals(response.getPaging().getSkipCount(), new Integer(0));
+        }
     }
 
     @Test

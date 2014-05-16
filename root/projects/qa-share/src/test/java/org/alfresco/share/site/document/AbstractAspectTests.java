@@ -39,23 +39,7 @@ import org.apache.commons.logging.LogFactory;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 
-import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.share.util.AbstractUtils;
-import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.ShareUserSitePage;
-import org.alfresco.share.util.api.CreateUserAPI;
-import org.alfresco.webdrone.testng.listener.FailedTestListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
-
-import org.testng.Assert;
 
 
 /**
@@ -162,7 +146,7 @@ public class AbstractAspectTests extends AbstractUtils
             aspectsPage = aspectsPage.add(aspects).render();
             documentDetailsPage = aspectsPage.clickApplyChanges().render();
 
-            // TODO: Shan: Do we check notification as in Testlink: Successfully updated aspects'?
+            // TODO: Shan: Add notification check on: Successful update to aspects'?
             documentDetailsPage = documentDetailsPage.render();
 
             // Set property size before adding aspect
@@ -202,6 +186,93 @@ public class AbstractAspectTests extends AbstractUtils
 
     }
 
+    public void addRemoveAspectDoc(AspectTestProptery proptery, boolean removeAspect, boolean PropertyKey)
+    {
+
+        try
+        {
+            String testName = proptery.getTestName();
+            this.testName = testName;
+            String testUser = getUserNameFreeDomain(testName);
+            String siteName = getSiteName(testName);
+            String fileName = getFileName(testName) + ".txt";
+
+            // Login
+            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+            // Open Site DashBoard
+            openSiteDashboard(drone, siteName);
+
+            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
+            if (!removeAspect)
+            {
+                // Upload File
+                String[] fileInfo = { fileName, DOCLIB };
+                ShareUser.uploadFileInFolder(drone, fileInfo);
+            }
+
+            DocumentDetailsPage documentDetailsPage = documentLibraryPage.selectFile(fileName);
+
+            SelectAspectsPage aspectsPage = documentDetailsPage.selectManageAspects();
+
+            Map<String, Object> properties = documentDetailsPage.getProperties();
+
+            // Check and Set property size before adding aspect
+            proptery.setSizeBeforeAspectAdded(properties.size());
+
+            List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
+            aspects.add(proptery.getAspect());
+            aspectsPage = aspectsPage.add(aspects).render();
+            documentDetailsPage = aspectsPage.clickApplyChanges().render();
+
+            documentDetailsPage = documentDetailsPage.render();
+
+            if (PropertyKey){
+            // Set property size before adding aspect
+            int propsToBeAdded = proptery.getExpectedProprtyKey().size();
+
+            // Get property size after adding aspect
+            properties = documentDetailsPage.getProperties();
+
+            // Check appropriate properties have been added: Count
+            assertEquals(properties.size(), proptery.getSizeBeforeAspectAdded() + propsToBeAdded);
+
+            // Check appropriate properties have been added: List of properties
+            Set<String> actualPropertKey = properties.keySet();
+            assertTrue(actualPropertKey.containsAll(proptery.getExpectedProprtyKey()));
+            }
+            else{
+                // Get property size after adding aspect
+                properties = documentDetailsPage.getProperties();
+                assertEquals(properties.size(), proptery.getSizeBeforeAspectAdded(), "New properties on the Edit Properties page appeared/disappeared.");
+
+            }
+
+            if (removeAspect)
+            {
+                aspectsPage = documentDetailsPage.selectManageAspects();
+                aspectsPage = aspectsPage.remove(aspects).render();
+                documentDetailsPage = aspectsPage.clickApplyChanges().render();
+
+                properties = documentDetailsPage.getProperties();
+                assertEquals(properties.size(), proptery.getSizeBeforeAspectAdded());
+                Set<String> actualPropertKey = properties.keySet();
+
+                assertFalse(actualPropertKey.containsAll(proptery.getExpectedProprtyKey()));
+            }
+
+        }
+        catch (Throwable e)
+        {
+            reportError(drone, testName, e);
+        }
+        finally
+        {
+            testCleanup(drone, testName);
+        }
+
+    }
+
     public void removeAspectDataPrepFolder(String name) throws Exception
     {
         aspectDataPrepFolder(name, true);
@@ -227,23 +298,16 @@ public class AbstractAspectTests extends AbstractUtils
 
             if (addFold)
             {
-                // Upload File
-//                String fileName = getFileName(name) + ".txt";
-//                String[] fileInfo = { fileName, DOCLIB };
-//                ShareUser.uploadFileInFolder(drone, fileInfo);
-                DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+                ShareUser.openSitesDocumentLibrary(drone, siteName);
                 String folderName = getFolderName(name) + "folder";
-                docLibPage = ShareUserSitePage.createFolder(drone, folderName, folderName);
-
+                ShareUserSitePage.createFolder(drone, folderName, folderName);
             }
-
         }
         catch (Exception e)
         {
             saveScreenShot(drone, name);
             logger.error("Error in dataPrep: " + name, e);
         }
-
     }
 
     public void addAspectFolder(AspectTestProptery proptery)
@@ -308,7 +372,6 @@ public class AbstractAspectTests extends AbstractUtils
 
             folderDetailsPage = aspectsPage.clickApplyChanges().render();
 
-            // TODO: Shan: Do we check notification as in Testlink: Successfully updated aspects'?
             folderDetailsPage = folderDetailsPage.render();
             drone.refresh();
 
@@ -393,18 +456,14 @@ public class AbstractAspectTests extends AbstractUtils
 
             List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
             aspects.add(proptery.getAspect());
-//            aspects.add(proptery.getAspect());
             aspectsPage = aspectsPage.add(aspects).render();
 
             aspectsPage = aspectsPage.add(aspects).render();
             folderDetailsPage = aspectsPage.clickApplyChanges().render();
 
-            // TODO: Shan: Do we check notification as in Testlink: Successfully updated aspects'?
-
             // Check and Set property size before adding aspect
             proptery.setSizeBeforeAspectAdded(properties.size());
             folderDetailsPage = folderDetailsPage.render();
-//            drone.refresh();
 
             // Get property size after adding aspect
             properties = folderDetailsPage.getProperties();
@@ -418,7 +477,6 @@ public class AbstractAspectTests extends AbstractUtils
                 drone.refresh();
                 aspectsPage = folderDetailsPage.selectManageAspects();
                 aspectsPage = aspectsPage.remove(aspects).render();
-//                aspectsPage = aspectsPage.remove(aspects).render();
 
                 folderDetailsPage = aspectsPage.clickApplyChanges().render();
 
@@ -552,16 +610,4 @@ public class AbstractAspectTests extends AbstractUtils
         return emailedAspectKey;
     }
 
-    public Set<String> getInlineEditableKey()
-    {
-        Set<String> emailedAspectKey = new HashSet<String>();
-
-        emailedAspectKey.add("Addressees");
-        emailedAspectKey.add("Subject");
-        emailedAspectKey.add("Originator");
-        emailedAspectKey.add("Sent Date");
-        emailedAspectKey.add("Addressee");
-
-        return emailedAspectKey;
-    }
 }

@@ -2,7 +2,7 @@
 package org.alfresco.share.util;
 
 import org.alfresco.po.share.MyTasksPage;
-import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
@@ -89,6 +89,20 @@ public class ShareUserWorkFlow extends AbstractUtils
     {
         MyWorkFlowsPage myWorkFlowsPage = navigateToMyWorkFlowsPage(drone);
         return myWorkFlowsPage.selectStartWorkflowButton().render();
+    }
+
+    /**
+     * Method to select StartWorkflow from DocumentDetailsPage
+     *
+     * @param drone
+     * @return StartWorkFlowPage
+     */
+
+    public static StartWorkFlowPage selectStartWorkFlowFromDetailsPage(WebDrone drone)
+    {
+        DocumentDetailsPage documentDetailsPage = drone.getCurrentPage().render();
+        StartWorkFlowPage startWorkFlowPage = documentDetailsPage.selectStartWorkFlowPage();
+        return startWorkFlowPage.render();
     }
 
     /**

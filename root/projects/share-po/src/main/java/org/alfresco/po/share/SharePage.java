@@ -14,47 +14,42 @@
  */
 package org.alfresco.po.share;
 
+import org.alfresco.po.share.search.SearchBox;
+import org.alfresco.webdrone.*;
+import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.exception.PageOperationException;
+import org.alfresco.webdrone.exception.PageRenderTimeException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.Select;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.alfresco.po.share.search.SearchBox;
-import org.alfresco.webdrone.ElementState;
-import org.alfresco.webdrone.HtmlPage;
-import org.alfresco.webdrone.Page;
-import org.alfresco.webdrone.RenderElement;
-import org.alfresco.webdrone.RenderTime;
-import org.alfresco.webdrone.RenderWebElement;
-import org.alfresco.webdrone.WebDrone;
-import org.alfresco.webdrone.exception.PageException;
-import org.alfresco.webdrone.exception.PageOperationException;
-import org.alfresco.webdrone.exception.PageRenderTimeException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
-
 /**
  * Abstract of an Alfresco Share HTML page.
- * 
+ *
  * @author Michael Suzuki
  * @author Shan Nagarajan
  */
 public abstract class SharePage extends Page
 {
     private Log logger = LogFactory.getLog(this.getClass());
-    private static final String USER_LOGGED_IN_LABEL = "navigation.dropdown.user";
+    protected static final By USER_LOGGED_IN_LABEL = By.cssSelector("#HEADER_USER_MENU_POPUP_text");
     protected static final int WAIT_TIME_3000 = 3000;
     private boolean dojoSupport;
     protected static final By PROMPT_PANEL_ID = By.id("prompt");
     protected AlfrescoVersion alfrescoVersion;
     protected long popupRendertime;
     protected long elementWaitInSeconds;
+    protected static By LICENSE_TO = By.cssSelector(".licenseHolder");
+    private static String COPYRIGHT_SEARCH_STRING = " All rights reserved.";
+    protected static final By CONFIRM_DELETE = By.xpath("//span[@class='button-group']/span[1]/span/button");
+    protected static final By CANCEL_DELETE = By.xpath("//span[@class='button-group']/span[2]/span/button");
 
     protected SharePage(WebDrone drone)
     {
@@ -68,7 +63,7 @@ public abstract class SharePage extends Page
      * The message details the background action taking place.
      * Some possible messages are document being uploaded, site
      * being created.
-     * 
+     *
      * @return if message displayed
      */
     protected boolean isJSMessageDisplayed()
@@ -90,7 +85,7 @@ public abstract class SharePage extends Page
 
     /**
      * Basic render that checks if the page has rendered.
-     * 
+     *
      * @param timer {@link RenderTime}
      */
     public void basicRender(RenderTime timer)
@@ -108,7 +103,7 @@ public abstract class SharePage extends Page
 
     /**
      * Verify if the Alfresco logo is present on the page.
-     * 
+     *
      * @return true if logo element exists
      */
     public boolean isLogoPresent()
@@ -132,7 +127,7 @@ public abstract class SharePage extends Page
 
     /**
      * Alfresco share based layout and style page title label element.
-     * 
+     *
      * @return String page title label
      */
     public String getPageTitle()
@@ -155,7 +150,7 @@ public abstract class SharePage extends Page
 
     /**
      * Verify share page title is present and matches the page
-     * 
+     *
      * @return true if exists
      */
     public boolean isTitlePresent(final String title)
@@ -173,7 +168,7 @@ public abstract class SharePage extends Page
 
     /**
      * Verifies if the element is visible on the page.
-     * 
+     *
      * @param panelName the css location of the element
      * @return true if element is visible
      */
@@ -192,7 +187,7 @@ public abstract class SharePage extends Page
 
     /**
      * Gets the {@link LoginPage}
-     * 
+     *
      * @return LoginPage page object
      */
     public LoginPage getLogin()
@@ -202,7 +197,7 @@ public abstract class SharePage extends Page
 
     /**
      * Get the {@link Navigation}
-     * 
+     *
      * @return Navigation page object
      */
     public Navigation getNav()
@@ -213,7 +208,7 @@ public abstract class SharePage extends Page
     /**
      * Perform inputing a search term in to the search box on the main
      * navigation.
-     * 
+     *
      * @return Search page object
      * @throws Exception if error
      */
@@ -224,8 +219,8 @@ public abstract class SharePage extends Page
 
     /**
      * Helper to resolve the delete button from the collection of buttons.
-     * 
-     * @param button String button name value to find
+     *
+     * @param button   String button name value to find
      * @param elements List<WebElement> collection of buttons
      * @return {@link WebElement} delete button
      */
@@ -251,7 +246,7 @@ public abstract class SharePage extends Page
      * Helper method to disable flash on file upload component, as flash is not
      * supported by WebDriver.
      */
-    public void disbaleFileUploadFlash()
+    public void disableFileUploadFlash()
     {
         drone.executeJavaScript("Alfresco.util.ComponentManager.findFirst('Alfresco.FileUpload').options.adobeFlashEnabled=false;");
     }
@@ -269,7 +264,7 @@ public abstract class SharePage extends Page
 
     /**
      * Verifies if a user is currently logged in
-     * 
+     *
      * @return true if user is logged in
      */
     public boolean isLoggedIn()
@@ -277,17 +272,18 @@ public abstract class SharePage extends Page
         boolean loggedin = false;
         try
         {
-            loggedin = drone.findByKey(USER_LOGGED_IN_LABEL).isDisplayed();
+            loggedin = drone.findAndWait(USER_LOGGED_IN_LABEL).isDisplayed();
         }
-        catch (NoSuchElementException e)
+        catch (TimeoutException e)
         {
+            logger.trace("User loggedIn label didn't found.");
         }
         return loggedin;
     }
 
     /**
      * Get copy right text from alfresco footer.
-     * 
+     *
      * @return String copy right text.
      */
     public String getCopyRight()
@@ -299,7 +295,7 @@ public abstract class SharePage extends Page
     /**
      * Waits for site pop up message to disappear to allow the drone to resume
      * operations on the page.
-     * 
+     *
      * @param waitTime timer in milliseconds
      * @return true if message has gone
      */
@@ -340,7 +336,7 @@ public abstract class SharePage extends Page
      * is currently set to 3 seconds. Once the popup disappears
      * drone can resume operations on the page as the focus is
      * off the div.bd and back on the main page.
-     * 
+     *
      * @return true if message has gone
      */
     protected boolean canResume()
@@ -353,7 +349,7 @@ public abstract class SharePage extends Page
      * If the given element not reach element state, it will time out and throw {@link TimeoutException}. If operation to find all elements
      * times out a {@link PageRenderTimeException} is thrown
      * Renderable elements will be scanned from class using {@link RenderWebElement} annotation.
-     * 
+     *
      * @param renderTime render timer
      */
     public void webElementRender(RenderTime renderTime)
@@ -398,9 +394,9 @@ public abstract class SharePage extends Page
      * Waits for given {@link ElementState} of all render elements when rendering a page.
      * If the given element not reach element state, it will time out and throw {@link TimeoutException}. If operation to find all elements
      * times out a {@link PageRenderTimeException} is thrown
-     * 
+     *
      * @param renderTime render timer
-     * @param RenderElement collection of {@link RenderElement}
+     * @param elements   collection of {@link RenderElement}
      */
     public void elementRender(RenderTime renderTime, RenderElement... elements)
     {
@@ -434,7 +430,7 @@ public abstract class SharePage extends Page
 
     /**
      * Wait for file to be present given path for maximum page loading time.
-     * 
+     *
      * @param pathname Absolute Path Name with File Name.
      */
     public void waitForFile(final long time, String pathname)
@@ -444,7 +440,7 @@ public abstract class SharePage extends Page
 
     /**
      * Wait for file to be present given path for maximum page loading time.
-     * 
+     *
      * @param pathname Absolute Path Name with File Name.
      */
     public void waitForFile(String pathname)
@@ -454,9 +450,9 @@ public abstract class SharePage extends Page
 
     /**
      * Wait for file to be present given path.
-     * 
+     *
      * @param renderTime Render Time
-     * @param pathname Absolute Path Name with File Name.
+     * @param pathname   Absolute Path Name with File Name.
      */
     protected void waitForFile(RenderTime renderTime, String pathname)
     {
@@ -481,7 +477,7 @@ public abstract class SharePage extends Page
     /**
      * <li>Click the element which passed and wait for given ElementState on the same element.</li> <li>If the Element State not changed, then render the
      * {@link SharePopup} Page, if it is rendered the return {@link SharePopup} page.</li>
-     * 
+     *
      * @param locator
      * @param elementState
      * @return {@link HtmlPage}
@@ -542,7 +538,7 @@ public abstract class SharePage extends Page
     /**
      * Method to get element text for given locator.
      * If the element is not found, returns empty string
-     * 
+     *
      * @param locator
      * @return
      */
@@ -584,7 +580,7 @@ public abstract class SharePage extends Page
 
     /**
      * Helper to consistently get the Site Short Name.
-     * 
+     *
      * @param siteName String Name of the test for uniquely identifying / mapping test data with the test
      * @return String site short name
      */
@@ -603,8 +599,8 @@ public abstract class SharePage extends Page
 
     /**
      * Wait until the black message box appear with text then wait until same black message disappear with text.
-     * 
-     * @param text - Text to be checked in the black message.
+     *
+     * @param text          - Text to be checked in the black message.
      * @param timeInSeconds - Time to wait in seconds.
      */
     protected void waitUntilMessageAppearAndDisappear(String text, long timeInSeconds)
@@ -616,7 +612,7 @@ public abstract class SharePage extends Page
      * Return the {@link RenderElement} of the action message.
      * Checks that the black box with the message is not showing
      * on the page or showing pending state passed invisible vs visible.
-     * 
+     *
      * @param state {@link ElementState} the visiblity state of element
      * @return {@link RenderElement} of action message based on state
      */
@@ -633,7 +629,7 @@ public abstract class SharePage extends Page
     /**
      * Find the all the elements for given locator and returns the first visible {@link WebElement}.
      * It could be used to elemanate the hidden element with same locators.
-     * 
+     *
      * @param locator
      * @return {@link WebElement}
      */
@@ -658,7 +654,7 @@ public abstract class SharePage extends Page
     /**
      * Returns the validation message from the validation popup balloon for the web element
      * or an empty string if there is no message or the field is not validated.
-     * 
+     *
      * @param locator
      * @return The validation message
      */
@@ -683,8 +679,8 @@ public abstract class SharePage extends Page
     /**
      * Returns the validation message from the validation popup balloon for the web element
      * or an empty string if there is no message or the field is not validated.
-     * 
-     * @param element
+     *
+     * @param webElement
      * @return The validation message
      */
     public String getValidationMessage(WebElement webElement)
@@ -692,5 +688,131 @@ public abstract class SharePage extends Page
         String message = webElement.getAttribute("alf-validation-msg");
 
         return (message == null ? "" : message);
+    }
+
+    /**
+     * Method for wait while balloon message about some changes hide.
+     */
+    protected void waitUntilAlert()
+    {
+        final long WAIT_DELETE_FROM_DOM = drone.getDefaultWaitTime() / 1000;
+        waitUntilAlert(WAIT_DELETE_FROM_DOM);
+    }
+
+    /**
+     * Method for wait while balloon message about some changes hide.
+     * @param seconds
+     */
+    protected void waitUntilAlert(long seconds)
+    {
+        final long WAIT_ALERT_PRESENT = 1; //hardcoded - possible temporary excess in most cases.
+        try
+        {
+            By AlertMessage = By.xpath(".//*[@id='message']/div/span");
+            drone.waitUntilElementPresent(AlertMessage, WAIT_ALERT_PRESENT);
+            drone.waitUntilElementDeletedFromDom(AlertMessage, seconds);
+        }
+        catch (TimeoutException ex)
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.error("Alert message hide quickly", ex);
+            }
+        }
+    }
+
+
+    /**
+     * Select the given option with text matching the argument in select options list.
+     *
+     * @param by   the selector of the Select dropdown.
+     * @param text The visible text to match against
+     */
+    public void selectOption(By by, String text)
+    {
+        Select select = new Select(drone.findAndWait(by));
+        select.selectByVisibleText(text);
+    }
+
+    /**
+     * Accept inputs from keyborad on page level.
+     *
+     * @param inputs
+     * @return
+     */
+    public void inputFromKeyborad(Keys inputs)
+    {
+        drone.sendkeys(inputs);
+    }
+
+
+    /**
+     * Get Footer page which has license details.
+     *
+     * @return
+     */
+    public FootersPage getFooter()
+    {
+        try
+        {
+            drone.find(By.cssSelector("div[class^='footer'] span.copyright a")).click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("No footer page exist" + nse.getMessage());
+            }
+        }
+
+        return new FootersPage(drone).render();
+    }
+
+
+    /**
+     * @return
+     */
+    public String getLicenseHolder()
+    {
+        try
+        {
+            return drone.find(LICENSE_TO).getText();
+        }
+        catch (NoSuchElementException nse)
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("License details are not present" + nse.getMessage());
+            }
+        }
+        throw new PageOperationException("License details are not present");
+    }
+
+    // 
+
+    /**
+     * @return
+     */
+    public String getCopyRightDetails()
+    {
+        try
+        {
+            for (WebElement element : drone.findAll(By.cssSelector(".copyright>span")))
+            {
+                if (element.getText().contains(COPYRIGHT_SEARCH_STRING))
+                {
+                    return element.getText();
+                }
+
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("CopyRight details are not present" + nse.getMessage());
+            }
+        }
+        throw new PageOperationException("CopyRight details are not present");
     }
 }

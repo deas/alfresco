@@ -87,7 +87,10 @@ public class ShareLinkTest extends AbstractDocumentTest
         }
         else
         {
-            loginAs(cloudUserName, cloudUserPassword);
+            loginAs(username, password);
+            firstName = anotherUser.getfName();
+            lastName = anotherUser.getlName();
+            userName = firstName + " " + lastName;
         }
     }
     /**
@@ -119,8 +122,11 @@ public class ShareLinkTest extends AbstractDocumentTest
         ShareLinkPage shareLinkPage = thisRow.clickShareLink().render();
         Assert.assertNotNull(shareLinkPage);
         Assert.assertTrue(shareLinkPage.isViewLinkPresent());
+        String shareLink = shareLinkPage.getShareURL();
         ViewPublicLinkPage viewPage = shareLinkPage.clickViewButton().render();
+        Assert.assertEquals(viewPage.getDrone().getCurrentUrl(), shareLink);
         Assert.assertTrue(viewPage.isDocumentViewDisplayed());
+        Assert.assertEquals(viewPage.getContentTitle(), file.getName());
         DocumentDetailsPage detailsPage = viewPage.clickOnDocumentDetailsButton().render();
         documentLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
     }

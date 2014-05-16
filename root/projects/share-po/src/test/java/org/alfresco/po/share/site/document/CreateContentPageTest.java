@@ -57,8 +57,15 @@ public class CreateContentPageTest extends AbstractDocumentTest
     @BeforeClass(groups="alfresco-one")
     public void prepare() throws Exception
     {
-        createEnterpriseUser(uname);
-        dashBoard = loginAs(uname, UNAME_PASSWORD).render();
+        if(!alfrescoVersion.isCloud())
+        {
+            createEnterpriseUser(uname);
+            dashBoard = loginAs(uname, UNAME_PASSWORD).render();
+        }
+        else
+        {
+            dashBoard = loginAs(username,password).render();
+        }
         siteName = "CreateContentPageTest" + System.currentTimeMillis();
         SiteUtil.createSite(drone, siteName, "description", "Public");
     }
@@ -138,14 +145,18 @@ public class CreateContentPageTest extends AbstractDocumentTest
         contentDetails.setContent("Shan Test Doc");
         DocumentDetailsPage detailsPage = contentPage.create(contentDetails).render();
         assertNotNull(detailsPage);
+        assertFalse(detailsPage.isViewOnGoogleMapsLinkVisible());
         SelectAspectsPage aspectsPage = detailsPage.selectManageAspects().render();
         List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
         aspects.add(DocumentAspect.VERSIONABLE);
         aspects.add(DocumentAspect.CLASSIFIABLE);
+        aspects.add(DocumentAspect.GEOGRAPHIC);
         aspectsPage = aspectsPage.add(aspects).render();
         assertFalse(aspectsPage.getAvailableAspects().contains(DocumentAspect.VERSIONABLE));
         assertTrue(aspectsPage.getSelectedAspects().contains(DocumentAspect.VERSIONABLE));
+        assertTrue(aspectsPage.getSelectedAspects().contains(DocumentAspect.GEOGRAPHIC));
         detailsPage = aspectsPage.clickApplyChanges().render();
+        assertTrue(detailsPage.isViewOnGoogleMapsLinkVisible());
         EditTextDocumentPage editPage = detailsPage.selectInlineEdit();
         editPage.render();
         contentDetails = editPage.getDetails();

@@ -64,7 +64,7 @@ public class TableViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - Alf_14378
+     * DataPreparation method - ALF_14378
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -74,7 +74,7 @@ public class TableViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepTableView", "AlfrescoOne" })
-    public void dataPrep_Alf_14378() throws Exception
+    public void dataPrep_ALF_14378() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -94,7 +94,7 @@ public class TableViewDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void Alf_14378() throws Exception
+    public void ALF_14378() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -112,7 +112,7 @@ public class TableViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - Alf_14379
+     * DataPreparation method - ALF_14379
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -123,7 +123,7 @@ public class TableViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepTableView", "AlfrescoOne" })
-    public void dataPrep_Alf_14379() throws Exception
+    public void dataPrep_ALF_14379() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -151,7 +151,7 @@ public class TableViewDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void Alf_14379() throws Exception
+    public void ALF_14379() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -171,7 +171,7 @@ public class TableViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - Alf_14392
+     * DataPreparation method - ALF_14392
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -181,7 +181,7 @@ public class TableViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepTableView", "AlfrescoOne" })
-    public void dataPrep_Alf_14392() throws Exception
+    public void dataPrep_ALF_14392() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -200,7 +200,7 @@ public class TableViewDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void Alf_14392() throws Exception
+    public void ALF_14392() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -252,19 +252,20 @@ public class TableViewDocLibTest extends AbstractUtils
         assertTrue(docLibPage.getNavigation().isSortAscending());
 
         files = docLibPage.getFiles();
-        assertEquals(files.get(0).getDescription(), fileName1);
-        assertEquals(files.get(1).getDescription(), fileName2);
+        // WebDriver sendKeys issue. Complete Path is sent rather than just the filename. Hence the assert had to be amended
+        assertTrue(files.get(0).getDescription().endsWith(fileName1));
+        assertTrue(files.get(1).getDescription().endsWith(fileName2));
 
         docLibPage = ShareUserSitePage.sortLibraryOn(drone, SortField.DESCRIPTION, false);
         assertFalse(docLibPage.getNavigation().isSortAscending());
 
         files = docLibPage.getFiles();
-        assertEquals(files.get(0).getDescription(), fileName2);
-        assertEquals(files.get(1).getDescription(), fileName1);
+        assertTrue(files.get(0).getDescription().endsWith(fileName2));
+        assertTrue(files.get(1).getDescription().endsWith(fileName1));
     }
 
     /**
-     * DataPreparation method - Alf_14544
+     * DataPreparation method - ALF_14544
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -274,7 +275,7 @@ public class TableViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepTableView", "AlfrescoOne" })
-    public void dataPrep_Alf_14544() throws Exception
+    public void dataPrep_ALF_14544() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -292,7 +293,7 @@ public class TableViewDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void Alf_14544() throws Exception
+    public void ALF_14544() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -322,7 +323,7 @@ public class TableViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - Alf_14378
+     * DataPreparation method - ALF_14378
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -332,7 +333,7 @@ public class TableViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepTableView", "AlfrescoOne" })
-    public void dataPrep_Alf_14548() throws Exception
+    public void dataPrep_ALF_14548() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -350,7 +351,7 @@ public class TableViewDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void Alf_14548() throws Exception
+    public void ALF_14548() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -407,7 +408,7 @@ public class TableViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - Alf_14378
+     * DataPreparation method - ALF_14378
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -417,7 +418,7 @@ public class TableViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepTableView", "AlfrescoOne" })
-    public void dataPrep_Alf_14549() throws Exception
+    public void dataPrep_ALF_14549() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -435,20 +436,22 @@ public class TableViewDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void Alf_14549() throws Exception
+    public void ALF_14549() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
 
-        // Create max length file name.
-        StringBuffer longString = new StringBuffer("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        longString.append("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
         String fileName = getFileName(testName) + System.currentTimeMillis();
 
-        String maxLenghtFileName = longString.replace(0, fileName.length(), fileName).toString();
+        // Create max length description
+        String tooLongString = getNaturalString(1025);
+        String maxLengthString = getResizedString(tooLongString, 1024);
+
+        // Create max length file name.
+        String tooLongFileName = getResizedString(fileName, 256);
+        String maxLengthFileName = getResizedString(tooLongFileName, 255);
 
         // User login.
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
@@ -458,21 +461,23 @@ public class TableViewDocLibTest extends AbstractUtils
 
         // TODO: Consider getting column width / supported no of chars for the column for current display / aspect ratio
         ContentDetails contentDetails = new ContentDetails();
-        contentDetails.setName(maxLenghtFileName);
+        contentDetails.setName(fileName);
         contentDetails.setTitle(fileName);
-        contentDetails.setDescription(maxLenghtFileName);
+        contentDetails.setDescription(fileName);
         contentDetails.setContent("New File!");
 
         DocumentLibraryPage docLibPage = ShareUser.createContentWithSpecificProps(drone, contentDetails);
+        docLibPage = ShareUserSitePage.editProperties(drone, fileName, tooLongFileName, tooLongString, tooLongString, true);
 
-        FileDirectoryInfo fileInfo = docLibPage.getFileDirectoryInfo(maxLenghtFileName);
+        FileDirectoryInfo fileInfo = docLibPage.getFileDirectoryInfo(maxLengthFileName);
 
-        assertEquals(fileInfo.getName(), maxLenghtFileName);
-        assertEquals(fileInfo.getDescription(), maxLenghtFileName);
+        assertEquals(fileInfo.getName(), maxLengthFileName);
+        assertEquals(fileInfo.getDescription(), maxLengthString);
+        assertEquals(fileInfo.getTitle(), maxLengthString);
     }
 
     /**
-     * DataPreparation method - Alf_14552
+     * DataPreparation method - ALF_14552
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -482,7 +487,7 @@ public class TableViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepTableView", "AlfrescoOne" })
-    public void dataPrep_Alf_14552() throws Exception
+    public void dataPrep_ALF_14552() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -500,7 +505,7 @@ public class TableViewDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void Alf_14552() throws Exception
+    public void ALF_14552() throws Exception
     {
         /** Start Test */
         String testName = getTestName();

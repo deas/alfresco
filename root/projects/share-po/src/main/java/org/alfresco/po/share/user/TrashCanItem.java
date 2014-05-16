@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePopup;
+import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.ElementState;
 import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.HtmlPage;
@@ -272,6 +273,15 @@ public class TrashCanItem extends HtmlElement
                 if (buttonName.equalsIgnoreCase(trashCanActionType.getTrashCanValues()))
                 {
                     returnPage = submit(By.id(button.getAttribute("id")), ElementState.INVISIBLE);
+                    if (drone.isElementDisplayed(By.cssSelector("div.bd>span.message")))
+                    {
+                        String text = drone.find(By.cssSelector("div.bd>span.message")).getText();
+                        if (text.contains("Failed to recover"))
+                        {
+                            throw new ShareException("Failed to recover");
+                        }
+
+                    }
                     break;
                 }
             }

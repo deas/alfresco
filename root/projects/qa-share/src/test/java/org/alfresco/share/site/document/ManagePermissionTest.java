@@ -1,24 +1,18 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.share.site.document;
-
-import java.io.File;
 
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
@@ -26,13 +20,10 @@ import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.ButtonType;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.UserSearchPage;
 import org.alfresco.po.share.site.document.UserProfile;
-import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.ShareUserMembers;
-import org.alfresco.share.util.ShareUserSearchPage;
-import org.alfresco.share.util.ShareUserSitePage;
-import org.alfresco.share.util.SiteUtil;
+import org.alfresco.share.util.*;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
@@ -41,16 +32,17 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.collections.CollectionUtils;
 
+import java.io.File;
+import java.util.List;
+
 /**
  * @author nshah
- * 
  */
 @Listeners(FailedTestListener.class)
 public class ManagePermissionTest extends AbstractAspectTests
 {
     private static Log logger = LogFactory.getLog(ManagePermissionTest.class);
-    private String testDomain = "hybrid.test";
-
+   
     @Override
     @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
@@ -90,12 +82,11 @@ public class ManagePermissionTest extends AbstractAspectTests
 
     /**
      * Covers 10400 10266 10401
-     * */
+     */
     @Test(groups = "EnterpriseOnly")
-    public void alf_10265()
+    public void ALF_10265()
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
         String folderName = getFolderName(testName);
@@ -144,7 +135,6 @@ public class ManagePermissionTest extends AbstractAspectTests
     public void dataPrep_ALF_10267() throws Exception
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
         String user3 = getUserNameFreeDomain(testName) + "-3";
@@ -164,13 +154,104 @@ public class ManagePermissionTest extends AbstractAspectTests
      * Covers 10402 10403 10268
      * 
      * @throws Exception
-     * */
+     */
     @Test(groups = "EnterpriseOnly")
-    public void alf_10267() throws Exception
+    public void ALF_10267() throws Exception
     {
 
         String testName = getTestName();
-        ;
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+        String user2 = getUserNameFreeDomain(testName) + "-2";
+        String user3 = getUserNameFreeDomain(testName) + "-3";
+
+        String siteName = getSiteName(testName) + System.currentTimeMillis();
+        String folderName = getFolderName(testName);
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
+
+        // Any user is logged into the Share
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        // Any site is created
+        SiteUtil.createSite(drone, siteName, siteName, SITE_VISIBILITY_PUBLIC, true);
+
+        // Add user2 with site as collaborator.
+        ShareUserMembers.inviteUserToSiteWithRole(drone, user1, user2, siteName, UserRole.COLLABORATOR);
+
+        // Any Folder is created under the site.
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        ShareUserSitePage.createFolder(drone, folderName, folderName);
+
+        // Any document is uploaded under the site.
+        ShareUserSitePage.uploadFile(drone, file);
+
+        // Log out
+        ShareUser.logout(drone);
+
+        // login as user1
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        // Go to Site
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        // Go to the manage permission of Folder
+        ShareUser.returnManagePermissionPage(drone, folderName);
+
+        // Add user3 with consumer role.
+        // click on Save button
+        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user3, true, UserRole.COLLABORATOR, true);
+
+        ShareUser.returnManagePermissionPage(drone, fileName);
+
+        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user3, true, UserRole.COLLABORATOR, true);
+
+        // log out
+        ShareUser.logout(drone);
+
+        // login as user2
+        ShareUser.login(drone, user3, DEFAULT_PASSWORD);
+
+        // Go to site and than document
+        DocumentLibraryPage docLibPage = ShareUser.openSiteDocumentLibraryFromSearch(drone, siteName);
+
+        // verify the user permission for document.
+        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName).isEditOfflineLinkPresent());
+
+        // verify the user permission for Folder.
+        Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isEditPropertiesLinkPresent());
+
+        ShareUser.logout(drone);
+    }
+
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_ALF_10268() throws Exception
+    {
+        String testName = getTestName();
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+        String user2 = getUserNameFreeDomain(testName) + "-2";
+        String user3 = getUserNameFreeDomain(testName) + "-3";
+
+        // Create user1
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user1 });
+
+        // Create user2
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user2 });
+
+        // Create user3
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user3 });
+
+    }
+
+    /**
+     * Covers 10402 10403 10268
+     * 
+     * @throws Exception
+     */
+    @Test(groups = "EnterpriseOnly")
+    public void ALF_10268() throws Exception
+    {
+
+        String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
         String user3 = getUserNameFreeDomain(testName) + "-3";
@@ -221,31 +302,7 @@ public class ManagePermissionTest extends AbstractAspectTests
 
         // Verify the user3 is not added as Consumer role.
         Assert.assertFalse(managePermissionPage.isUserExistForPermission(user3));
-        managePermissionPage.selectCancel();
-
-        ShareUser.returnManagePermissionPage(drone, folderName);
-        // Add user3 with consumer role.
-        // click on Save button
-        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user3, true, UserRole.CONSUMER, true);
-
-        // log out
-        ShareUser.logout(drone);
-
-        // login as user2
-        ShareUser.login(drone, user2, DEFAULT_PASSWORD);
-
-        // Go to site and than folder
-        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-
-        // verify the user permission for Folder.
-        Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isEditPropertiesLinkPresent());
-
-        ShareUser.logout(drone);
-
-        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-
-        // Go to Site
-        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        managePermissionPage.selectCancel().render();
 
         // Go to the manage permission of document
         managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
@@ -261,161 +318,149 @@ public class ManagePermissionTest extends AbstractAspectTests
 
         // Verify the user3 is not added as Consumer role.
         Assert.assertFalse(managePermissionPage.isUserExistForPermission(user3));
-        managePermissionPage.selectCancel();
-
-        // Add user3 with consumer role.
-        // click on save button
-        managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
-        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user3, true, UserRole.CONSUMER, true);
+        managePermissionPage.selectCancel().render();
 
         // log out
         ShareUser.logout(drone);
 
         // login as user2
-        ShareUser.login(drone, user2, DEFAULT_PASSWORD);
+        ShareUser.login(drone, user3, DEFAULT_PASSWORD);
 
-        // Go to site and than document
-        docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        // Go to site and than folder
+        DocumentLibraryPage docLibPage = ShareUser.openSiteDocumentLibraryFromSearch(drone, siteName);
+
+        // verify the user permission for Folder.
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isEditPropertiesLinkPresent());
 
         // verify the user permission for document.
-        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName).isEditOfflineLinkPresent());
-        ShareUser.logout(drone);
-    }
-
-    @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_10404() throws Exception
-    {
-        String testName = getTestName();
-        ;
-        String user1 = getUserNameFreeDomain(testName) + "-1";
-        String siteName = getSiteName(testName);
-        String folderName = getFolderName(testName);
-        String fileName = getFileName(testName);
-        File file = newFile(fileName, "New file");
-
-        // Create user1
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user1 });
-
-        // Any user is logged into the Share
-        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-
-        // Any site is created
-        SiteUtil.createSite(drone, siteName, siteName, SITE_VISIBILITY_PUBLIC, true);
-
-        // Any folder is created under site.
-        ShareUserSitePage.createFolder(drone, folderName, folderName);
-
-        // Any document is uploaded under site.
-        ShareUserSitePage.uploadFile(drone, file);
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(fileName).isEditOfflineLinkPresent());
 
         ShareUser.logout(drone);
     }
 
-    /**
-     * Covers 10269
-     * */
-    @Test(groups = "EnterpriseOnly")
-    public void alf_10404()
-    {
-        String testName = getTestName();
-        ;
-        String user1 = getUserNameFreeDomain(testName) + "-1";
-        String siteName = getSiteName(testName);
-        String folderName = getFolderName(testName);
-        String fileName = getFileName(testName);
-
-        // login as user1
-        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-
-        // Go to site and open folder
-        ShareUser.openSitesDocumentLibrary(drone, siteName);
-
-        // Go to manage permission of the folder.
-        ManagePermissionsPage managPermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
-
-        // Check the view of inherit permission view as on
-        Assert.assertTrue(managPermissionPage.isInheritPermissionEnabled());
-
-        // Click on inherit permission view and turn it off
-        // verify the dialog and click on "No" on it.
-        managPermissionPage.toggleInheritPermission(false, ButtonType.No);
-
-        // click on save button of manage permission.
-        managPermissionPage.selectSave();
-
-        // Navigate to folder's manage permission.
-        managPermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
-
-        // Click on inherit permission view and turn it off
-        Assert.assertTrue(managPermissionPage.isInheritPermissionEnabled());
-
-        // verify the dialog and click on "Yes" on it.
-        managPermissionPage.toggleInheritPermission(false, ButtonType.Yes);
-
-        // Click on "Save" button.
-        managPermissionPage.selectSave();
-
-        // Navigate to folder's manage permission.
-        managPermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
-
-        // Verify the inherit manage permission is turned off.
-        Assert.assertFalse(managPermissionPage.isInheritPermissionEnabled());
-
-        // Go to site and open document
-        ShareUser.openSitesDocumentLibrary(drone, siteName);
-
-        // Go to manage permission of the document.
-        managPermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
-
-        // Check the view of inherit permission view as on
-        Assert.assertTrue(managPermissionPage.isInheritPermissionEnabled());
-
-        // Click on inherit permission view and turn it off
-        // verify the dialog and click on "No" on it.
-        managPermissionPage.toggleInheritPermission(false, ButtonType.No);
-
-        // click on save button of manage permission.
-        managPermissionPage.selectSave();
-        // Navigate to document's manage permission.
-        managPermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
-
-        // Click on inherit permission view and turn it off
-        // verify the dialog and click on "Yes" on it.
-        managPermissionPage.toggleInheritPermission(false, ButtonType.Yes);
-
-        // Click on "Save" button.
-        managPermissionPage.selectSave();
-
-        // Navigate to document's manage permission.
-        managPermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
-
-        // Verify the inherit manage permission is turned off.
-        Assert.assertFalse(managPermissionPage.isInheritPermissionEnabled());
-    }
+//    @Test(groups = { "DataPrepEnterpriseOnly" })
+//    public void dataPrep_ALF_10269() throws Exception
+//    {
+//        String testName = getTestName();
+//        ;
+//        String user1 = getUserNameFreeDomain(testName) + "-1";
+//        String siteName = getSiteName(testName);
+//        String folderName = getFolderName(testName);
+//        String fileName = getFileName(testName);
+//        File file = newFile(fileName, "New file");
+//
+//        // Create user1
+//        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user1 });
+//
+//        // Any user is logged into the Share
+//        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+//
+//        // Any site is created
+//        SiteUtil.createSite(drone, siteName, siteName, SITE_VISIBILITY_PUBLIC, true);
+//
+//        // Any folder is created under site.
+//        ShareUserSitePage.createFolder(drone, folderName, folderName);
+//
+//        // Any document is uploaded under site.
+//        ShareUserSitePage.uploadFile(drone, file);
+//
+//        ShareUser.logout(drone);
+//    }
+//
+//    /**
+//     * Covers 10404
+//     * */
+//    @Test(groups = "EnterpriseOnly")
+//    public void alf_10269()
+//    {
+//        String testName = getTestName();
+//        ;
+//        String user1 = getUserNameFreeDomain(testName) + "-1";
+//        String siteName = getSiteName(testName);
+//        String folderName = getFolderName(testName);
+//        String fileName = getFileName(testName);
+//
+//        // login as user1
+//        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+//
+//        // Go to site and open folder
+//        ShareUser.openSitesDocumentLibrary(drone, siteName);
+//
+//        // Go to manage permission of the folder.
+//        ManagePermissionsPage managPermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
+//
+//        // Check the view of inherit permission view as on
+//        Assert.assertTrue(managPermissionPage.isInheritPermissionEnabled());
+//
+//        // Click on inherit permission view and turn it off
+//        // verify the dialog and click on "No" on it.
+//        managPermissionPage.toggleInheritPermission(false, ButtonType.No);
+//
+//        // click on save button of manage permission.
+//        managPermissionPage.selectSave();
+//
+//        // Navigate to folder's manage permission.
+//        managPermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
+//
+//        // Click on inherit permission view and turn it off
+//        Assert.assertTrue(managPermissionPage.isInheritPermissionEnabled());
+//
+//        // verify the dialog and click on "Yes" on it.
+//        managPermissionPage.toggleInheritPermission(false, ButtonType.Yes);
+//
+//        // Click on "Save" button.
+//        managPermissionPage.selectSave();
+//
+//        // Navigate to folder's manage permission.
+//        managPermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
+//
+//        // Verify the inherit manage permission is turned off.
+//        Assert.assertFalse(managPermissionPage.isInheritPermissionEnabled());
+//
+//        // Go to site and open document
+//        ShareUser.openSitesDocumentLibrary(drone, siteName);
+//
+//        // Go to manage permission of the document.
+//        managPermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
+//
+//        // Check the view of inherit permission view as on
+//        Assert.assertTrue(managPermissionPage.isInheritPermissionEnabled());
+//
+//        // Click on inherit permission view and turn it off
+//        // verify the dialog and click on "No" on it.
+//        managPermissionPage.toggleInheritPermission(false, ButtonType.No);
+//
+//        // click on save button of manage permission.
+//        managPermissionPage.selectSave();
+//        // Navigate to document's manage permission.
+//        managPermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
+//
+//        // Click on inherit permission view and turn it off
+//        // verify the dialog and click on "Yes" on it.
+//        managPermissionPage.toggleInheritPermission(false, ButtonType.Yes);
+//
+//        // Click on "Save" button.
+//        managPermissionPage.selectSave();
+//
+//        // Navigate to document's manage permission.
+//        managPermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
+//
+//        // Verify the inherit manage permission is turned off.
+//        Assert.assertFalse(managPermissionPage.isInheritPermissionEnabled());
+//    }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
     public void dataPrep_ALF_10270() throws Exception
     {
         // Create user1, user, user2, user4, user5, user6 on OP and Cloud
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
         String user3 = getUserNameFreeDomain(testName) + "-3";
         String user4 = getUserNameFreeDomain(testName) + "-4";
         String user5 = getUserNameFreeDomain(testName) + "-5";
         String user6 = getUserNameFreeDomain(testName) + "-6";
-        // String cloudUser1 = getUserNameForDomain(testName, testDomain);
-        // String cloudUser2 = getUserNameForDomain(testName, testDomain);
-        // String cloudUser3 = getUserNameForDomain(testName, testDomain);
-        // String cloudUser4 = getUserNameForDomain(testName, testDomain);
-        // String cloudUser5 = getUserNameForDomain(testName, testDomain);
-        // String cloudUser6 = getUserNameForDomain(testName, testDomain);
-
-        // String siteName = getSiteName(testName);
-        // String folderName =getFolderName(testName);
-        // String fileName = getFileName(testName);
-        // File file = newFile(fileName, "New file");
+     
         // Create user1
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user1 });
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user2 });
@@ -424,31 +469,18 @@ public class ManagePermissionTest extends AbstractAspectTests
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user5 });
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user6 });
 
-        // CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME,
-        // cloudUser1);
-        // CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME,
-        // cloudUser2);
-        // CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME,
-        // cloudUser3);
-        // CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME,
-        // cloudUser4);
-        // CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME,
-        // cloudUser5);
-        // CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME,
-        // cloudUser6);
-
     }
 
     /**
-     * Covers 10269 10271 10405 10406
+     * Covers   10405 
      * 
      * @throws Exception
-     * */
+     */
     @Test(groups = "EnterpriseOnly")
-    public void alf_10270() throws Exception
+    public void ALF_10270() throws Exception
     {
         String testName = getTestName();
-        ;
+
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
         String user3 = getUserNameFreeDomain(testName) + "-3";
@@ -488,34 +520,10 @@ public class ManagePermissionTest extends AbstractAspectTests
         ShareUser.openSitesDocumentLibrary(drone, siteName);
         ManagePermissionsPage managePermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
 
-        // Turn off permission inheritance.
-        managePermissionPage = managePermissionPage.toggleInheritPermission(false, ButtonType.Yes);
-
-        // Click on save.
-        managePermissionPage.selectSave();
-
-        // Go to folder's manage permission
-        managePermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
-
-        // click on inherit permission and make it on.
-        managePermissionPage = managePermissionPage.toggleInheritPermission(true, ButtonType.Yes);
-
         // Click on save.
         managePermissionPage.selectSave();
 
         managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
-
-        // Turn off permission inheritance.
-        managePermissionPage = managePermissionPage.toggleInheritPermission(false, ButtonType.Yes);
-
-        // Click on save.
-        managePermissionPage.selectSave();
-
-        // Go to folder's manage permission
-        managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
-
-        // click on inherit permission and make it on.
-        managePermissionPage = managePermissionPage.toggleInheritPermission(true, ButtonType.Yes);
 
         // Click on save.
         managePermissionPage.selectSave();
@@ -575,13 +583,13 @@ public class ManagePermissionTest extends AbstractAspectTests
         Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isCommentLinkPresent());
 
         // verify that file has "Add comment" button present.
-        Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isCommentLinkPresent());
+        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName).isCommentLinkPresent());
 
         // verify that folder has no "Edit Offline" button present.
         Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isEditPropertiesLinkPresent());
 
         // verify that file has no "Edit Offline" button present.
-        Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isEditOfflineLinkPresent());
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(fileName).isEditOfflineLinkPresent());
 
         // logout of user4.
         ShareUser.logout(drone);
@@ -596,7 +604,175 @@ public class ManagePermissionTest extends AbstractAspectTests
         Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isCommentLinkPresent());
 
         // verify that file has no "comment" button present.
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(fileName).isCommentLinkPresent());
+
+        // logout of user5.
+        ShareUser.logout(drone);
+
+        // login as user6 - Non Member
+        ShareUser.login(drone, user6, DEFAULT_PASSWORD);
+
+        // TODO: Replace openSiteDocumentLibraryFromSearch with ShareUser.openSitesDocumentLibrary in all places if not a test step
+        // navigate to site where folder is created.
+        docLibPage = ShareUser.openSiteDocumentLibraryFromSearch(drone, siteName);
+
+        // verify that folder has no "Comment" button present.
         Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isCommentLinkPresent());
+
+        // verify that file has no "Commentk" button present.
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(fileName).isCommentLinkPresent());
+
+        // logout of user6.
+        ShareUser.logout(drone);
+    }
+    
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_ALF_10271() throws Exception
+    {
+        // Create user1, user, user2, user4, user5, user6 on OP and Cloud
+        String testName = getTestName();
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+        String user2 = getUserNameFreeDomain(testName) + "-2";
+        String user3 = getUserNameFreeDomain(testName) + "-3";
+        String user4 = getUserNameFreeDomain(testName) + "-4";
+        String user5 = getUserNameFreeDomain(testName) + "-5";
+        String user6 = getUserNameFreeDomain(testName) + "-6";
+     
+        // Create user1
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user1 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user2 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user3 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user4 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user5 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user6 });
+
+    }
+
+    /**
+     * Covers   10406
+     * 
+     * @throws Exception
+     */
+    @Test(groups = "EnterpriseOnly")
+    public void ALF_10271() throws Exception
+    {
+        String testName = getTestName();
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+        String user2 = getUserNameFreeDomain(testName) + "-2";
+        String user3 = getUserNameFreeDomain(testName) + "-3";
+        String user4 = getUserNameFreeDomain(testName) + "-4";
+        String user5 = getUserNameFreeDomain(testName) + "-5";
+        String user6 = getUserNameFreeDomain(testName) + "-6";
+        String siteName = getSiteName(testName) + System.currentTimeMillis();
+        String folderName = getFolderName(testName);
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
+
+        // Any user is logged into the Share
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+        // Any site is created
+        SiteUtil.createSite(drone, siteName, siteName, SITE_VISIBILITY_PUBLIC, true);
+
+        // Roles to site with users user2-manager, user3-collaborator,
+        // user4-Contributor, user5-Consumer
+        ShareUserMembers.inviteUserToSiteWithRole(drone, user1, user2, siteName, UserRole.MANAGER);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, user1, user3, siteName, UserRole.COLLABORATOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, user1, user4, siteName, UserRole.CONTRIBUTOR);
+        ShareUserMembers.inviteUserToSiteWithRole(drone, user1, user5, siteName, UserRole.CONSUMER);
+
+        // Any folder is created under site.
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        ShareUserSitePage.createFolder(drone, folderName, folderName);
+
+        // Any document is uploaded under site.
+        ShareUserSitePage.uploadFile(drone, file);
+
+        ShareUser.logout(drone);
+
+        // login as user1.
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        // Go to folder's manage permission
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        ManagePermissionsPage managePermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
+
+        // Turn off permission inheritance.
+        managePermissionPage = managePermissionPage.toggleInheritPermission(false, ButtonType.Yes);
+
+        // Click on save.
+        managePermissionPage.selectSave();
+
+        managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
+
+        // Turn off permission inheritance.
+        managePermissionPage = managePermissionPage.toggleInheritPermission(false, ButtonType.Yes);
+        
+        // Click on save.
+        managePermissionPage.selectSave();
+
+        // Logout as user1.
+        ShareUser.logout(drone);
+
+        // login as user2 - Manager Role
+        ShareUser.login(drone, user2, DEFAULT_PASSWORD);
+
+        // navigate to site where folder is created.
+        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        
+        //Assert.assertFalse(docLibPage.isFileVisible(folderName));
+
+        // verify that folder has "Delete" button present.
+        Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isDeletePresent());
+
+        // This is needed since in prior step when user checks for delete
+        // present More link is kept open till no click happens on page
+        // and below step is to check file's more which is covered by previous
+        // more.
+        drone.refresh();
+
+        //Assert.assertFalse(docLibPage.isFileVisible(fileName));
+        
+        // verify that file has "Delete" button present.
+        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName).isDeletePresent());
+
+        // logout of user2.
+        ShareUser.logout(drone);
+
+        // login as user3 - Collaborator Role
+        ShareUser.login(drone, user3, DEFAULT_PASSWORD);
+
+        // navigate to site where folder is created.
+        docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        
+        Assert.assertFalse(docLibPage.isFileVisible(folderName));
+
+        Assert.assertFalse(docLibPage.isFileVisible(fileName));
+
+        // logout of user3.
+        ShareUser.logout(drone);
+
+        // login as user4 - Contributor Role
+        ShareUser.login(drone, user4, DEFAULT_PASSWORD);
+
+        // navigate to site where folder is created.
+        docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        Assert.assertFalse(docLibPage.isFileVisible(folderName));
+
+        Assert.assertFalse(docLibPage.isFileVisible(fileName));
+
+        // logout of user4.
+        ShareUser.logout(drone);
+
+        // login as user5 - Consumer Role
+        ShareUser.login(drone, user5, DEFAULT_PASSWORD);
+
+        // navigate to site where folder is created.
+        docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        
+        Assert.assertFalse(docLibPage.isFileVisible(folderName));
+
+        Assert.assertFalse(docLibPage.isFileVisible(fileName));
 
         // logout of user5.
         ShareUser.logout(drone);
@@ -607,11 +783,15 @@ public class ManagePermissionTest extends AbstractAspectTests
         // navigate to site where folder is created.
         docLibPage = ShareUser.openSiteDocumentLibraryFromSearch(drone, siteName);
 
-        // verify that folder has no "Comment" button present.
-        Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isCommentLinkPresent());
+//        // verify that folder has no "Comment" button present.
+//        Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isCommentLinkPresent());
+//
+//        // verify that file has no "Commentk" button present.
+//        Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isCommentLinkPresent());
+        
+        Assert.assertFalse(docLibPage.isFileVisible(folderName));
 
-        // verify that file has no "Commentk" button present.
-        Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isCommentLinkPresent());
+        Assert.assertFalse(docLibPage.isFileVisible(fileName));
 
         // logout of user6.
         ShareUser.logout(drone);
@@ -621,7 +801,6 @@ public class ManagePermissionTest extends AbstractAspectTests
     public void dataPrep_ALF_10272() throws Exception
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String siteName = getSiteName(testName);
         String folderName = getFolderName(testName);
@@ -649,12 +828,11 @@ public class ManagePermissionTest extends AbstractAspectTests
 
     /**
      * Covers 10407
-     * */
+     */
     @Test(groups = "EnterpriseOnly")
-    public void alf_10272()
+    public void ALF_10272()
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String siteName = getSiteName(testName);
         String folderName = getFolderName(testName);
@@ -697,19 +875,15 @@ public class ManagePermissionTest extends AbstractAspectTests
     public void dataPrep_ALF_10273() throws Exception
     {
         String testName = getTestName();
-        ;
+
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
-        String user3 = getUserNameFreeDomain(testName) + "-3";
-        String user4 = getUserNameFreeDomain(testName) + "-4";
 
         String siteName = getSiteName(testName);
 
         // Create a user1, user2. user3.
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user1 });
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user2 });
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user3 });
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user4 });
 
         // log in as an user
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
@@ -725,24 +899,18 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     /**
-     * Covers 10273 10274 10275 10276 10408 10409 10410 10411
-     * 
      * @throws Exception
-     * */
+     */
     @Test(groups = "EnterpriseOnly")
-    public void alf_10273() throws Exception
+    public void ALF_10273() throws Exception
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
-        String user3 = getUserNameFreeDomain(testName) + "-3";
-        String user4 = getUserNameFreeDomain(testName) + "-4";
         String siteName = getSiteName(testName);
         String folderName = getFolderName(testName) + System.currentTimeMillis();
         String fileName = getFileName(testName) + System.currentTimeMillis();
-        String wildCardStringUser = "<>?:\"|}{+_)(*&^%$#@!~;";
-        String longNameUSer = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        
         File file = newFile(fileName, "New file");
 
         // log in as an user1
@@ -768,21 +936,91 @@ public class ManagePermissionTest extends AbstractAspectTests
         ManagePermissionsPage.UserSearchPage searchPage = managePermissionPage.selectAddUser().render();
         // e.g. userEnterprise42-5329@freetht1.test LName = user2+" "+"LName"
         Assert.assertTrue(searchPage.isUserOrGroupPresentInSearchList("(" + user2 + ")"));
+        Assert.assertTrue(searchPage.isEveryOneDisplayed("(" + user2 + ")"));
 
-        // come out or user search page
-        managePermissionPage = searchPage.searchAndSelectUser(userProfile);
+        managePermissionPage.selectCancel().render();
+
+        ShareUser.returnManagePermissionPage(drone, folderName);
+
+        searchPage = managePermissionPage.selectAddUser().render();
+
+        Assert.assertTrue(searchPage.isUserOrGroupPresentInSearchList("(" + user2 + ")"));
+        Assert.assertTrue(searchPage.isEveryOneDisplayed("(" + user2 + ")"));
+
+        // Come out of ManagePermissionpage
+        managePermissionPage.selectCancel().render();
+
+        ShareUser.logout(drone);
+
+    }
+
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_ALF_10274() throws Exception
+    {
+        String testName = getTestName();
+
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+        String user2 = getUserNameFreeDomain(testName) + "-2";
+
+        String siteName = getSiteName(testName);
+
+        // Create a user1, user2. user3.
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user1 });
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user2 });
+
+        // log in as an user
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        // create a site
+        SiteUtil.createSite(drone, siteName, siteName, SITE_VISIBILITY_PUBLIC, true);
+
+        // add user2 with site as consumer.
+        ShareUserMembers.inviteUserToSiteWithRole(drone, user1, user2, siteName, UserRole.CONSUMER);
+
+        // User logs out
+        ShareUser.logout(drone);
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Test(groups = "EnterpriseOnly")
+    public void ALF_10274() throws Exception
+    {
+        String testName = getTestName();
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName) + System.currentTimeMillis();
+        String fileName = getFileName(testName) + System.currentTimeMillis();
+        String warningMsgForUserSearch = "Enter at least 3 character(s)";
+
+        File file = newFile(fileName, "New file");
+
+        // log in as an user1
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        // go to to site#
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        ShareUserSitePage.uploadFile(drone, file);
+
+        // Create a folder on site.
+        ShareUserSitePage.createFolder(drone, folderName, folderName);
+
+        // navigate to document and open manage permission.
+        ManagePermissionsPage managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
 
         UserSearchPage userSearchPage = managePermissionPage.selectAddUser();
         // Enter another search string with "u"
         try
         {
-            userSearchPage.render().searchUserAndGroup("u");
+           userSearchPage.render().searchUserAndGroup("u");
 
         }
         catch (UnsupportedOperationException usoe)
         {
             // Verify dialoug is there "Enter at least 3 character(s)"
-            System.out.println(usoe.getMessage());
+            Assert.assertEquals(usoe.getMessage(), warningMsgForUserSearch);
         }
 
         // Enter another search string with "us"
@@ -794,76 +1032,19 @@ public class ManagePermissionTest extends AbstractAspectTests
         catch (UnsupportedOperationException usoe)
         {
             // Verify dialoug is there "Enter at least 3 character(s)"
-            System.out.println(usoe.getMessage());
-            // managePermissionPage =
-            // ((ManagePermissionsPage)ShareUser.getSharePage(drone)).selectCancel().render();
+            Assert.assertEquals(usoe.getMessage(), warningMsgForUserSearch);
+
         }
 
         // Enter another search string with "*"
-        // userSearchPage = managePermissionPage.selectAddUser().render();
 
         // Search result with "Everyone" appears
-        Assert.assertTrue(userSearchPage.isEveryOneDisplayed(wildCardStringUser));
-
-        managePermissionPage.selectCancel();
-
-        managePermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
-
-        // Enter another search string with
-        // "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        userSearchPage = managePermissionPage.selectAddUser().render();
-
-        // Search result with "Everyone" appears
-        Assert.assertTrue(userSearchPage.isEveryOneDisplayed(longNameUSer));
-
-        managePermissionPage.selectCancel();
-
-        ShareUser.returnManagePermissionPage(drone, folderName);
-
-        // Enter another search string with "user3" which exist but not added to
-        // site
-        // Search Result with USer3
-        userProfile.setUsername(user3);
-        searchPage = managePermissionPage.selectAddUser().render();
-        Assert.assertTrue(searchPage.isUserOrGroupPresentInSearchList("(" + user3 + ")"));
-
-        // Search result with "Everyone" appears
-        Assert.assertTrue(searchPage.isUserOrGroupPresentInSearchList("(" + "GROUP_EVERYONE" + ")"));
-
-        // Come out of User SearchPage
-        // searchPage = managePermissionPage.selectAddUser();
-        // managePermissionPage.selectAddUser();
-
-        // Enter another search string with "user4" which does not exist and not
-        // added to site
-        userProfile.setUsername(user4);
-        // searchPage = managePermissionPage.selectAddUser().render();
-        System.out.println(searchPage.isUserOrGroupPresentInSearchList("(" + user4 + ")"));
-
-        // Search result with "Everyone" appears
-        Assert.assertTrue(searchPage.isUserOrGroupPresentInSearchList("(" + "GROUP_EVERYONE" + ")"));
 
         // Come out of ManagePermissionpage
         managePermissionPage.selectCancel().render();
 
-        // ****************************************************** for
-        // Folder*********************************************************//
-
         // navigate to folder and open manage permission.
         managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
-
-        // Click on Add user/group button
-        // verify Search pop-up comes up.
-        // Enter search String user2 in the search pop-up.
-        // User2 is found in search.
-
-        userProfile.setUsername(user2);
-        searchPage = managePermissionPage.selectAddUser().render();
-        // e.g. userEnterprise42-5329@freetht1.test LName = user2+" "+"LName"
-        Assert.assertTrue(searchPage.isUserOrGroupPresentInSearchList("(" + user2 + ")"));
-
-        // come out or user search page
-        managePermissionPage = searchPage.searchAndSelectUser(userProfile);
 
         userSearchPage = managePermissionPage.selectAddUser();
         // Enter another search string with "u"
@@ -875,7 +1056,7 @@ public class ManagePermissionTest extends AbstractAspectTests
         catch (UnsupportedOperationException usoe)
         {
             // Verify dialoug is there "Enter at least 3 character(s)"
-            System.out.println(usoe.getMessage());
+            Assert.assertEquals(usoe.getMessage(), warningMsgForUserSearch);
         }
 
         // Enter another search string with "us"
@@ -887,58 +1068,331 @@ public class ManagePermissionTest extends AbstractAspectTests
         catch (UnsupportedOperationException usoe)
         {
             // Verify dialoug is there "Enter at least 3 character(s)"
-            System.out.println(usoe.getMessage());
+            Assert.assertEquals(usoe.getMessage(), warningMsgForUserSearch);
             // managePermissionPage =
             // ((ManagePermissionsPage)ShareUser.getSharePage(drone)).selectCancel().render();
         }
 
         // Enter another search string with "*"
-        // userSearchPage = managePermissionPage.selectAddUser().render();
+        managePermissionPage.selectCancel().render();
+
+    }
+
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_ALF_10275() throws Exception
+    {
+        String testName = getTestName();
+
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+
+        String siteName = getSiteName(testName);
+
+        // Create a user1, user2. user3.
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user1 });
+
+        // log in as an user
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        // create a site
+        SiteUtil.createSite(drone, siteName, siteName, SITE_VISIBILITY_PUBLIC, true);
+
+        // User logs out
+        ShareUser.logout(drone);
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Test(groups = "EnterpriseOnly")
+    public void ALF_10275() throws Exception
+    {
+        String testName = getTestName();
+
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName) + System.currentTimeMillis();
+        String fileName = getFileName(testName) + System.currentTimeMillis();
+        String wildCardStringUser = "<>?:\"|}{+_)(*&^%$#@!~;";
+
+        File file = newFile(fileName, "New file");
+
+        // log in as an user1
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        // go to to site#
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        ShareUserSitePage.uploadFile(drone, file);
+
+        // Create a folder on site.
+        ShareUserSitePage.createFolder(drone, folderName, folderName);
+
+        // navigate to document and open manage permission.
+        ManagePermissionsPage managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
+
+        // Click on Add user/group button
+        // verify Search pop-up comes up.
+        // Enter search String user2 in the search pop-up.
+        // User2 is found in search.
+
+        ManagePermissionsPage.UserSearchPage searchPage = managePermissionPage.selectAddUser().render();
+
+        // Enter another search string with "*"
 
         // Search result with "Everyone" appears
-        Assert.assertTrue(userSearchPage.isEveryOneDisplayed(wildCardStringUser));
+        Assert.assertTrue(searchPage.isEveryOneDisplayed(wildCardStringUser));
 
         managePermissionPage.selectCancel();
 
+        // ****************************************************** for
+        // Folder*********************************************************//
+
+        // navigate to folder and open manage permission.
         managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
 
-        // Enter another search string with
-        // "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        userSearchPage = managePermissionPage.selectAddUser().render();
+        searchPage = managePermissionPage.selectAddUser().render();
 
         // Search result with "Everyone" appears
-        Assert.assertTrue(userSearchPage.isEveryOneDisplayed(longNameUSer));
+        Assert.assertTrue(searchPage.isEveryOneDisplayed(wildCardStringUser));
 
         managePermissionPage.selectCancel();
 
-        ShareUser.returnManagePermissionPage(drone, fileName);
+        ShareUser.logout(drone);
 
-        // Enter another search string with "user3" which exist but not added to
-        // site
-        // Search Result with USer3
-        userProfile.setUsername(user3);
+    }
+
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_ALF_10276() throws Exception
+    {
+        String testName = getTestName();
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+
+        String siteName = getSiteName(testName);
+
+        // Create a user1, user2. user3.
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user1 });
+
+        // log in as an user
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        // create a site
+        SiteUtil.createSite(drone, siteName, siteName, SITE_VISIBILITY_PUBLIC, true);
+
+        // User logs out
+        ShareUser.logout(drone);
+    }
+
+    /**
+     * Covers 10273 10274 10275 10276 10408 10409 10410 10411
+     * 
+     * @throws Exception
+     */
+    @Test(groups = "EnterpriseOnly")
+    public void ALF_10276() throws Exception
+    {
+        String testName = getTestName();
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName) + System.currentTimeMillis();
+        String fileName = getFileName(testName) + System.currentTimeMillis();
+        String longNameUSer = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
+        File file = newFile(fileName, "New file");
+
+        // log in as an user1
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        // go to to site#
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        ShareUserSitePage.uploadFile(drone, file);
+
+        // Create a folder on site.
+        ShareUserSitePage.createFolder(drone, folderName, folderName);
+
+        // navigate to document and open manage permission.
+        ManagePermissionsPage managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
+
+        ManagePermissionsPage.UserSearchPage searchPage = managePermissionPage.selectAddUser().render();
+
+        // Search result with "Everyone" appears
+        Assert.assertTrue(searchPage.isEveryOneDisplayed(longNameUSer));
+
+        managePermissionPage.selectCancel().render();
+
+        // navigate to folder and open manage permission.
+        managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
+
+        searchPage = managePermissionPage.selectAddUser().render();
+
+        // Search result with "Everyone" appears
+        Assert.assertTrue(searchPage.isEveryOneDisplayed(longNameUSer));
+
+        managePermissionPage.selectCancel().render();
+
+        ShareUser.logout(drone);
+    }
+
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_ALF_10277() throws Exception
+    {
+        String testName = getTestName();
+
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+
+        String user3 = getUserNameFreeDomain(testName) + "-3";
+        String siteName = getSiteName(testName);
+
+        // Create a user1, user2. user3.
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user1 });
+
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user3 });
+
+        // log in as an user
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        // create a site
+        SiteUtil.createSite(drone, siteName, siteName, SITE_VISIBILITY_PUBLIC, true);
+
+        // User logs out
+        ShareUser.logout(drone);
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Test(groups = "EnterpriseOnly")
+    public void ALF_10277() throws Exception
+    {
+        String testName = getTestName();
+
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+
+        String user3 = getUserNameFreeDomain(testName) + "-3";
+
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName) + System.currentTimeMillis();
+        String fileName = getFileName(testName) + System.currentTimeMillis();
+
+        File file = newFile(fileName, "New file");
+
+        // log in as an user1
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        // go to to site#
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        ShareUserSitePage.uploadFile(drone, file);
+
+        // Create a folder on site.
+        ShareUserSitePage.createFolder(drone, folderName, folderName);
+
+        // navigate to document and open manage permission.
+        ManagePermissionsPage managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
+
+        // Click on Add user/group button
+        // verify Search pop-up comes up.
+
+        ManagePermissionsPage.UserSearchPage searchPage = managePermissionPage.selectAddUser().render();
+        // e.g. userEnterprise42-5329@freetht1.test LName = user3+" "+"LName"
+        Assert.assertTrue(searchPage.isUserOrGroupPresentInSearchList("(" + user3 + ")"));
+        Assert.assertTrue(searchPage.isEveryOneDisplayed("(" + user3 + ")"));
+
+        managePermissionPage.selectCancel().render();
+
+        // ****************************************************** for
+        // Folder*********************************************************//
+
+        // navigate to folder and open manage permission.
+        managePermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
+
+        // Click on Add user/group button
+        // verify Search pop-up comes up.
+
         searchPage = managePermissionPage.selectAddUser().render();
         Assert.assertTrue(searchPage.isUserOrGroupPresentInSearchList("(" + user3 + ")"));
+        Assert.assertTrue(searchPage.isEveryOneDisplayed("(" + user3 + ")"));
 
-        // Search result with "Everyone" appears
-        Assert.assertTrue(searchPage.isUserOrGroupPresentInSearchList("(" + "GROUP_EVERYONE" + ")"));
+        managePermissionPage.selectCancel().render();
 
-        // Come out of User SearchPage
-        // searchPage = managePermissionPage.selectAddUser();
-        // managePermissionPage.selectAddUser();
+        ShareUser.logout(drone);
 
-        // Enter another search string with "user4" which does not exist and not
-        // added to site
-        userProfile.setUsername(user4);
-        // searchPage = managePermissionPage.selectAddUser().render();
-        System.out.println(searchPage.isUserOrGroupPresentInSearchList("(" + user4 + ")"));
+    }
 
-        // Search result with "Everyone" appears
-        Assert.assertTrue(searchPage.isUserOrGroupPresentInSearchList("(" + "GROUP_EVERYONE" + ")"));
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_ALF_10278() throws Exception
+    {
+        String testName = getTestName();
+
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+
+        String siteName = getSiteName(testName);
+
+        // Create a user1, user2. user3.
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { user1 });
+
+        // log in as an user
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        // create a site
+        SiteUtil.createSite(drone, siteName, siteName, SITE_VISIBILITY_PUBLIC, true);
+
+        // User logs out
+        ShareUser.logout(drone);
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Test(groups = "EnterpriseOnly")
+    public void ALF_10278() throws Exception
+    {
+        String testName = getTestName();
+
+        String user1 = getUserNameFreeDomain(testName) + "-1";
+        String siteName = getSiteName(testName);
+        String folderName = getFolderName(testName) + System.currentTimeMillis();
+        String fileName = getFileName(testName) + System.currentTimeMillis();
+
+        File file = newFile(fileName, "New file");
+
+        // log in as an user1
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+
+        // go to to site#
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        ShareUserSitePage.uploadFile(drone, file);
+
+        // Create a folder on site.
+        ShareUserSitePage.createFolder(drone, folderName, folderName);
+
+        // navigate to document and open manage permission.
+        ManagePermissionsPage managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
+
+        ManagePermissionsPage.UserSearchPage searchPage = managePermissionPage.selectAddUser().render();
+
+        Assert.assertFalse(searchPage.isUserOrGroupPresentInSearchList("(" + "test123" + ")"));
+        Assert.assertTrue(searchPage.isEveryOneDisplayed("(" + "test123" + ")"));
 
         // Come out of ManagePermissionpage
         managePermissionPage.selectCancel().render();
 
+        // ****************************************************** for
+        // Folder*********************************************************//
+
+        // navigate to folder and open manage permission.
+        managePermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
+
+        searchPage = managePermissionPage.selectAddUser().render();
+
+        Assert.assertFalse(searchPage.isUserOrGroupPresentInSearchList("(" + "test123" + ")"));
+        Assert.assertTrue(searchPage.isEveryOneDisplayed("(" + "test123" + ")"));
+        // Come out of ManagePermissionpage
+        managePermissionPage.selectCancel().render();
+
+        ShareUser.logout(drone);
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
@@ -946,7 +1400,6 @@ public class ManagePermissionTest extends AbstractAspectTests
     {
 
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
 
@@ -977,10 +1430,9 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10279()
+    public void ALF_10279()
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
 
@@ -1036,7 +1488,6 @@ public class ManagePermissionTest extends AbstractAspectTests
     public void dataPrep_ALF_10382() throws Exception
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
 
@@ -1074,10 +1525,9 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10382()
+    public void ALF_10382()
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
 
@@ -1100,7 +1550,18 @@ public class ManagePermissionTest extends AbstractAspectTests
         userProfile.setUsername(user2);
         managePermisisonPage.selectAddUser().searchAndSelectUser(userProfile);
         Assert.assertEquals(UserRole.SITECOLLABORATOR, managePermisisonPage.getExistingPermission(user2));
-
+        
+        List<String> roles = managePermisisonPage.getListOfUserRoles(user2);
+        //[Editor, Consumer, Collaborator, Coordinator, Contributor, Site Consumer, Site Contributor, Site Manager, Site Collaborator]
+        Assert.assertTrue(roles.contains(UserRole.EDITOR.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.CONSUMER.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.COORDINATOR.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.CONTRIBUTOR.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.SITECONSUMER.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.SITECONTRIBUTOR.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.SITEMANAGER.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.SITECOLLABORATOR.getRoleName()));
+        
         // Cancel the page and come out .
         managePermisisonPage.selectCancel().render();
 
@@ -1111,6 +1572,17 @@ public class ManagePermissionTest extends AbstractAspectTests
         // Collaborator role by default selected.
         managePermisisonPage.selectAddUser().searchAndSelectUser(userProfile);
         Assert.assertEquals(UserRole.SITECOLLABORATOR, managePermisisonPage.getExistingPermission(user2));
+        
+        roles = managePermisisonPage.getListOfUserRoles(user2);
+        //[Editor, Consumer, Collaborator, Coordinator, Contributor, Site Consumer, Site Contributor, Site Manager, Site Collaborator]
+        Assert.assertTrue(roles.contains(UserRole.EDITOR.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.CONSUMER.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.COORDINATOR.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.CONTRIBUTOR.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.SITECONSUMER.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.SITECONTRIBUTOR.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.SITEMANAGER.getRoleName()));
+        Assert.assertTrue(roles.contains(UserRole.SITECOLLABORATOR.getRoleName()));
 
         // Cancel the page and come out.
         managePermisisonPage.selectCancel().render();
@@ -1123,7 +1595,6 @@ public class ManagePermissionTest extends AbstractAspectTests
     public void dataPrep_ALF_10280() throws Exception
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
 
@@ -1149,13 +1620,12 @@ public class ManagePermissionTest extends AbstractAspectTests
 
     /**
      * Covers 10416
-     * */
+     */
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10280() throws Exception
+    public void ALF_10280() throws Exception
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
 
@@ -1200,9 +1670,11 @@ public class ManagePermissionTest extends AbstractAspectTests
         DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // User2 has collaborator permission.
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(fileName).isDeletePresent());
         Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName).isEditPropertiesLinkPresent());
 
         // User2 has Collaborator role.
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isDeletePresent());
         Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isEditPropertiesLinkPresent());
 
         // Log out user2.
@@ -1308,13 +1780,12 @@ public class ManagePermissionTest extends AbstractAspectTests
      * Covers 10417, 10397, 10420
      * 
      * @throws Exception
-     * */
+     */
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10281() throws Exception
+    public void ALF_10281() throws Exception
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
         String user3 = getUserNameFreeDomain(testName) + "-3";
@@ -1458,7 +1929,7 @@ public class ManagePermissionTest extends AbstractAspectTests
         Assert.assertFalse(docLibPage.getFileDirectoryInfo(fileName).isCommentLinkPresent());
 
         // Verify folder has No Comment button available.
-        Assert.assertFalse(docLibPage.getFileDirectoryInfo(fileName).isCommentLinkPresent());
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isCommentLinkPresent());
 
         // Log out user5.
         ShareUser.logout(drone);
@@ -1605,13 +2076,12 @@ public class ManagePermissionTest extends AbstractAspectTests
      * Covers 10418 , 10398, 10421
      * 
      * @throws Exception
-     * */
+     */
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10282() throws Exception
+    public void ALF_10282() throws Exception
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
         String user3 = getUserNameFreeDomain(testName) + "-3";
@@ -1966,13 +2436,12 @@ public class ManagePermissionTest extends AbstractAspectTests
      * Covers 10419, 10399, 10422
      * 
      * @throws Exception
-     * */
+     */
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10283() throws Exception
+    public void ALF_10283() throws Exception
     {
         String testName = getTestName();
-        ;
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
         String user3 = getUserNameFreeDomain(testName) + "-3";
@@ -2281,9 +2750,9 @@ public class ManagePermissionTest extends AbstractAspectTests
      * Covers 10423.
      * 
      * @throws Exception
-     * */
+     */
     @Test(groups = "EnterpriseOnly")
-    public void alf_10284() throws Exception
+    public void ALF_10284() throws Exception
     {
         String testName = getTestName();
         String user = getUserNameFreeDomain(testName);
@@ -2446,9 +2915,9 @@ public class ManagePermissionTest extends AbstractAspectTests
      * Covers 10424.
      * 
      * @throws Exception
-     * */
+     */
     @Test(groups = "EnterpriseOnly")
-    public void alf_10286() throws Exception
+    public void ALF_10286() throws Exception
     {
         String testName = getTestName();
         String user = getUserNameFreeDomain(testName);
@@ -2608,9 +3077,9 @@ public class ManagePermissionTest extends AbstractAspectTests
      * Covers 10792.
      * 
      * @throws Exception
-     * */
+     */
     @Test(groups = "EnterpriseOnly")
-    public void alf_10791() throws Exception
+    public void ALF_10791() throws Exception
     {
         String testName = getTestName();
         String user = getUserNameFreeDomain(testName);
@@ -2638,14 +3107,22 @@ public class ManagePermissionTest extends AbstractAspectTests
 
         // Search and add user1 with role Contributor.
         // Save changes.
-        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user1, true, UserRole.CONTRIBUTOR, true);
-
+        //ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user1, true, UserRole.CONTRIBUTOR, true);
+        
+        ManagePermissionsPage managePermissionPage = ShareUserMembers.searchAndAddUserOrGroupWithoutSave(drone, user1, true);
+        Assert.assertTrue(UserRole.SITECONSUMER.equals(managePermissionPage.getExistingPermission(user1)));
+        managePermissionPage.updateUserRole(user1, UserRole.CONTRIBUTOR);
+        managePermissionPage.selectSave();
+        
         // Navigate to folder's manage permission.
         ShareUser.returnManagePermissionPage(drone, folderName);
 
         // Search and add user1 with role Contributor.
         // Save changes.
-        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user1, true, UserRole.CONTRIBUTOR, true);
+        managePermissionPage = ShareUserMembers.searchAndAddUserOrGroupWithoutSave(drone, user1, true);
+        Assert.assertTrue(UserRole.SITECONSUMER.equals(managePermissionPage.getExistingPermission(user1)));
+        managePermissionPage.updateUserRole(user1, UserRole.CONTRIBUTOR);
+        managePermissionPage.selectSave();
 
         // Navigate to document's manage permission.
         ShareUser.returnManagePermissionPage(drone, fileName);
@@ -2730,7 +3207,7 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10427() throws Exception
+    public void ALF_10427() throws Exception
     {
         String testName = getTestName();
         String user = getUserNameFreeDomain(testName);
@@ -2818,7 +3295,7 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10428() throws Exception
+    public void ALF_10428() throws Exception
     {
         String testName = getTestName();
         String user = getUserNameFreeDomain(testName);
@@ -2902,7 +3379,7 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10429() throws Exception
+    public void ALF_10429() throws Exception
     {
         String testName = getTestName();
         String user = getUserNameFreeDomain(testName);
@@ -2963,7 +3440,7 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     @Test(groups = "AlfrescoOne")
-    public void alf_10790() throws Exception
+    public void ALF_10790() throws Exception
     {
         String testName = getTestName();
         String user = getUserNameFreeDomain(testName);
@@ -2994,8 +3471,10 @@ public class ManagePermissionTest extends AbstractAspectTests
 
         docLibPage = ((DocumentLibraryPage) ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user1, true, UserRole.COLLABORATOR, true)).render();
 
-       /* // Navigate to the site document library
-        docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);*/
+        /*
+         * // Navigate to the site document library
+         * docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+         */
 
         //docLibPage.selectFolder(subFolderName).render();
 
@@ -3075,11 +3554,10 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     /**
-     * 
      * @throws Exception
-     * */
+     */
     @Test(groups = "AlfrescoOne")
-    public void alf_10793() throws Exception
+    public void ALF_10793() throws Exception
     {
         String testName = getTestName();
         String user = getUserNameFreeDomain(testName);
@@ -3087,12 +3565,17 @@ public class ManagePermissionTest extends AbstractAspectTests
 
         String siteName = getSiteName(testName);
         String folderName = getFolderName(testName) + System.currentTimeMillis();
+        
+        String fileName = getFileName(testName)+System.currentTimeMillis();
+        File file = newFile(fileName, "New file");
 
         // User logins.
         ShareUser.login(drone, user, DEFAULT_PASSWORD);
 
         // Open Site document Library
         ShareUser.openSitesDocumentLibrary(drone, siteName);
+        
+        ShareUserSitePage.uploadFile(drone, file);
 
         // Upload a folder.
         ShareUserSitePage.createFolder(drone, folderName, folderName);
@@ -3103,9 +3586,23 @@ public class ManagePermissionTest extends AbstractAspectTests
         // Search and add user1 with role Contributor.
         // Save changes.
         ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user1, true, UserRole.CONTRIBUTOR, true);
+        
+        // Navigate to folder's manage permission.
+        ShareUser.returnManagePermissionPage(drone, fileName);
+
+        // Search and add user1 with role Contributor.
+        // Save changes.
+        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user1, true, UserRole.CONTRIBUTOR, true);
 
         // Navigate to document's manage permission.
         ShareUser.returnManagePermissionPage(drone, folderName);
+
+        // Search and add user1 with role Collaborator.
+        // Save changes.
+        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user1, true, UserRole.CONSUMER, true);
+        
+        // Navigate to document's manage permission.
+        ShareUser.returnManagePermissionPage(drone, fileName);
 
         // Search and add user1 with role Collaborator.
         // Save changes.
@@ -3118,13 +3615,23 @@ public class ManagePermissionTest extends AbstractAspectTests
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
 
         // Open Site document Library
-        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        DocumentLibraryPage docLibPage = ShareUser.openSiteDocumentLibraryFromSearch(drone, siteName);
 
         // Verify document has Edit off line present.
         Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isCommentLinkPresent());
 
         // VErify folder has Edit off line present.
         Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isEditPropertiesLinkPresent());
+        
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isDeletePresent());
+        
+        // Verify document has Edit off line present.
+        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName).isCommentLinkPresent());
+
+        // VErify folder has Edit off line present.
+        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName).isEditOfflineLinkPresent());
+        
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(fileName).isDeletePresent());
 
         ShareUser.logout(drone);
 
@@ -3159,11 +3666,10 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     /**
-     * 
      * @throws Exception
-     * */
+     */
     @Test(groups = "EnterpriseOnly")
-    public void alf_10795() throws Exception
+    public void ALF_10795() throws Exception
     {
         String testName = getTestName();
         String user = getUserNameFreeDomain(testName);
@@ -3172,6 +3678,9 @@ public class ManagePermissionTest extends AbstractAspectTests
         String siteName = getSiteName(testName);
         String folderName = getFolderName(testName) + System.currentTimeMillis();
 
+        String fileName = getFileName(testName)+ System.currentTimeMillis();
+        File file = newFile(fileName, "New file");
+        
         // User logins.
         ShareUser.login(drone, user, DEFAULT_PASSWORD);
 
@@ -3180,6 +3689,7 @@ public class ManagePermissionTest extends AbstractAspectTests
 
         // Upload a folder.
         ShareUserSitePage.createFolder(drone, folderName, folderName);
+        ShareUserSitePage.uploadFile(drone, file);
 
         // Navigate to folder's manage permission.
         ShareUser.returnManagePermissionPage(drone, folderName);
@@ -3187,22 +3697,58 @@ public class ManagePermissionTest extends AbstractAspectTests
         // Search and add user1 with role Contributor.
         // Save changes.
         ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user1, true, UserRole.CONTRIBUTOR, true);
+        ShareUser.returnManagePermissionPage(drone, folderName);
+        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user1, true, UserRole.COLLABORATOR, true);
 
-        // Navigate to document's manage permission.
-        ManagePermissionsPage managPermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
+        
+        // Navigate to file's manage permission.
+        ShareUser.returnManagePermissionPage(drone, fileName);
 
-        // Search and add user1 with role Collaborator.
+        // Search and add user1 with role Contributor.
         // Save changes.
-        UserProfile userProfile = new UserProfile();
-        userProfile.setUsername(user1);
-        UserSearchPage userSearchPage = managPermissionPage.selectAddUser().render();
-        managPermissionPage = userSearchPage.searchAndSelectUser(userProfile);
-        managPermissionPage.selectSave().render();
+        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user1, true, UserRole.CONTRIBUTOR, true);
+        ShareUser.returnManagePermissionPage(drone, fileName);
+        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user1, true, UserRole.COLLABORATOR, true);
+         
+        ShareUser.logout(drone);
+        
+        // User logins.
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+        
+        // Open Site document Library
+        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        
+        Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isEditPropertiesLinkPresent());
+        
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isDeletePresent());
+        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName).isEditOfflineLinkPresent());
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(fileName).isDeletePresent());
+
+        
+        ShareUser.logout(drone);
+        
+        // User logins.
+        ShareUser.login(drone, user, DEFAULT_PASSWORD);
+        
+        
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        
+        // Navigate to document's manage permission.
+        ShareUser.returnManagePermissionPage(drone, folderName);
+
 
         // Navigate to document's manage permission.
         ManagePermissionsPage managePermissionPage = ShareUser.returnManagePermissionPage(drone, folderName);
 
-        managePermissionPage = managePermissionPage.deleteUserWithPermission(user1, UserRole.CONTRIBUTOR);
+        managePermissionPage = managePermissionPage.deleteUserWithPermission(user1, UserRole.COLLABORATOR);
+
+        Assert.assertTrue(managePermissionPage.isUserExistForPermission(user1));
+        
+        managePermissionPage.selectSave().render();
+        
+        managePermissionPage = ShareUser.returnManagePermissionPage(drone, fileName);
+
+        managePermissionPage = managePermissionPage.deleteUserWithPermission(user1, UserRole.COLLABORATOR);
 
         Assert.assertTrue(managePermissionPage.isUserExistForPermission(user1));
 
@@ -3213,13 +3759,20 @@ public class ManagePermissionTest extends AbstractAspectTests
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
 
         // Open Site document Library
-        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Verify document has Edit off line present.
         Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isEditPropertiesLinkPresent());
 
         // VErify folder has Edit off line present.
         Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isDeletePresent());
+        
+        
+        // Verify document has Edit off line present.
+        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName).isEditPropertiesLinkPresent());
+
+        // VErify folder has Edit off line present.
+        Assert.assertFalse(docLibPage.getFileDirectoryInfo(fileName).isDeletePresent());
 
         ShareUser.logout(drone);
 
@@ -3265,7 +3818,7 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10287() throws Exception
+    public void ALF_10287() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName) + "-1";
@@ -3331,13 +3884,12 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10288() throws Exception
+    public void ALF_10288() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
 
-        String siteNamePub = getSiteName(testName) + "public";
         String siteNameMod = getSiteName(testName) + "private";
 
         String fileName = getFileName(testName);
@@ -3397,13 +3949,12 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10425() throws Exception
+    public void ALF_10425() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName) + "-1";
         String user2 = getUserNameFreeDomain(testName) + "-2";
 
-        String siteNamePub = getSiteName(testName) + "public";
         String siteNamePri = getSiteName(testName) + "private";
 
         String folderName = getFolderName(testName);
@@ -3463,7 +4014,7 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10426() throws Exception
+    public void ALF_10426() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName) + "-1";
@@ -3519,7 +4070,7 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
   
     @Test(groups = "EnterpriseOnly")
-    public void alf_10785() throws Exception
+    public void ALF_10785() throws Exception
     {
         String testName = getTestName();
         String group1 = getGroupName(testName) + "-1";
@@ -3540,7 +4091,15 @@ public class ManagePermissionTest extends AbstractAspectTests
 
         ShareUser.returnManagePermissionPage(drone, fileName);
 
-        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, group1, false, UserRole.COLLABORATOR, true);
+        //ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, group1, false, UserRole.COLLABORATOR, true);
+        ManagePermissionsPage managePermissionPage = ShareUserMembers.searchAndAddUserOrGroupWithoutSave(drone, user1, true);
+  
+        Assert.assertTrue(StringUtils.replace(UserRole.SITECOLLABORATOR.getRoleName().toUpperCase(), " ", "").equals(
+                managePermissionPage.getExistingPermission(user1).toString()));
+
+       // Assert.assertTrue(.equals());
+        managePermissionPage.updateUserRole(user1, UserRole.COLLABORATOR);
+        managePermissionPage.selectSave();
 
         ShareUser.returnManagePermissionPage(drone, fileName).isUserExistForPermission(group1);
 
@@ -3549,14 +4108,13 @@ public class ManagePermissionTest extends AbstractAspectTests
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
 
-        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.openSitesDocumentLibrary(drone, siteNamePub);
+        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.openSiteDocumentLibraryFromSearch(drone, siteNamePub);
 
         Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName).isEditOfflineLinkPresent());
 
         ShareUser.logout(drone);
     }
 
-   
     @Test(groups = { "DataPrepEnterpriseOnly" })
     public void dataPrep_ALF_10786() throws Exception
     {
@@ -3587,9 +4145,8 @@ public class ManagePermissionTest extends AbstractAspectTests
         ShareUser.logout(drone);
     }
 
-
     @Test(groups = "EnterpriseOnly")
-    public void alf_10786() throws Exception
+    public void ALF_10786() throws Exception
     {
         String testName = getTestName();
         String group1 = getGroupName(testName) + "-1";
@@ -3609,7 +4166,14 @@ public class ManagePermissionTest extends AbstractAspectTests
 
         ShareUser.returnManagePermissionPage(drone, folderName);
 
-        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, group1, false, UserRole.COLLABORATOR, true);
+        ManagePermissionsPage managePermissionPage = ShareUserMembers.searchAndAddUserOrGroupWithoutSave(drone, user1, true);
+        
+        Assert.assertTrue(StringUtils.replace(UserRole.SITECOLLABORATOR.getRoleName().toUpperCase(), " ", "").equals(
+                managePermissionPage.getExistingPermission(user1).toString()));
+
+       // Assert.assertTrue(.equals());
+        managePermissionPage.updateUserRole(user1, UserRole.COLLABORATOR);
+        managePermissionPage.selectSave();
 
         ShareUser.returnManagePermissionPage(drone, folderName).isUserExistForPermission(group1);
 
@@ -3618,7 +4182,7 @@ public class ManagePermissionTest extends AbstractAspectTests
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
 
-        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.openSitesDocumentLibrary(drone, siteNamePub);
+        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.openSiteDocumentLibraryFromSearch(drone, siteNamePub);
 
         Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isEditPropertiesLinkPresent());
 
@@ -3656,7 +4220,7 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
   
     @Test(groups = "EnterpriseOnly")
-    public void alf_10787() throws Exception
+    public void ALF_10787() throws Exception
     {
         String testName = getTestName();
         String group1 = getGroupName(testName) + "-1";
@@ -3693,7 +4257,6 @@ public class ManagePermissionTest extends AbstractAspectTests
         ShareUser.logout(drone);
     }
 
-    
     @Test(groups = { "DataPrepEnterpriseOnly" })
     public void dataPrep_ALF_10788() throws Exception
     {
@@ -3724,9 +4287,8 @@ public class ManagePermissionTest extends AbstractAspectTests
         ShareUser.logout(drone);
     }
 
-  
     @Test(groups = "EnterpriseOnly")
-    public void alf_10788() throws Exception
+    public void ALF_10788() throws Exception
     {
         String testName = getTestName();
         String group1 = getGroupName(testName) + "-1";
@@ -3794,7 +4356,7 @@ public class ManagePermissionTest extends AbstractAspectTests
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void alf_10789() throws Exception
+    public void ALF_10789() throws Exception
     {
         String testName = getTestName();
         String group1 = getGroupName(testName) + "-1";

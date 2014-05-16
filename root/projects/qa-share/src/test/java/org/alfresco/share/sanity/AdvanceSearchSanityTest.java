@@ -66,8 +66,6 @@ public class AdvanceSearchSanityTest extends AbstractUtils
 
     Date todayDate = new Date();
 
-    private static String testPassword = DEFAULT_PASSWORD;
-
     protected String testUser;
 
     protected String siteName = "";
@@ -204,7 +202,7 @@ public class AdvanceSearchSanityTest extends AbstractUtils
             // Searching for valid Description string
             searchTerm = "-Desc-01";
             keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchTerm);
-            List<SearchResultItem> searchDescResults = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
             searchOk = ShareUserSearchPage.isSearchItemAvailable(drone, fileName + "-Name-01");
             Assert.assertTrue(searchOk, "Incorrect Search Results for Name search- " + searchTerm);

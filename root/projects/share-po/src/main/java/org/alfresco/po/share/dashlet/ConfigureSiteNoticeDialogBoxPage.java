@@ -14,12 +14,11 @@
  */
 package org.alfresco.po.share.dashlet;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
-import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.RenderWebElement;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
@@ -33,19 +32,25 @@ import org.openqa.selenium.WebElement;
  * 
  * @author Chiran
  */
-public class ConfigureSiteNoticeDialogBoxPage extends SharePage
+public class ConfigureSiteNoticeDialogBoxPage extends ShareDialogue
 {
     private final Log logger = LogFactory.getLog(ConfigureSiteNoticeDialogBoxPage.class);
+    
+    @RenderWebElement
     private static final By CONFIGURE_SITE_NOTICE_DIALOG_BOX = By.cssSelector("div[id$='default-configDialog-configDialog']");
+    @RenderWebElement
     private static final By TITLE_BOX = By.cssSelector("input[name='title']");
+    @RenderWebElement
     private static final By OK_BUTTON = By.cssSelector("button[id$='default-configDialog-ok-button']");
+    @RenderWebElement
     private static final By CANCEL_BUTTON = By.cssSelector("button[id$='default-configDialog-cancel-button']");
+    @RenderWebElement
     private static final By CLOSE_BUTTON = By.cssSelector("a.container-close");
 
     /**
      * Constructor.
      */
-    protected ConfigureSiteNoticeDialogBoxPage(WebDrone drone)
+    public ConfigureSiteNoticeDialogBoxPage(WebDrone drone)
     {
         super(drone);
     }
@@ -54,12 +59,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends SharePage
     @Override
     public synchronized ConfigureSiteNoticeDialogBoxPage render(RenderTime timer)
     {
-        elementRender(timer, 
-                getVisibleRenderElement(CONFIGURE_SITE_NOTICE_DIALOG_BOX),
-                getVisibleRenderElement(TITLE_BOX),
-                getVisibleRenderElement(OK_BUTTON),
-                getVisibleRenderElement(CANCEL_BUTTON),
-                getVisibleRenderElement(CLOSE_BUTTON));
+        webElementRender(timer);
         return this;
 
     }

@@ -7,6 +7,11 @@
             <exclude name="Hybrid.*" />
         </run>
     </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+    </listeners>
+
     <test name="LiveSearchTest Cloud Tests" verbose="1" parallel="classes" thread-count="1">
         <classes>
             <class name="org.alfresco.share.search.LiveSearchTest"></class>

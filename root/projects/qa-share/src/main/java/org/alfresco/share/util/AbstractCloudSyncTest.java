@@ -20,7 +20,6 @@
 package org.alfresco.share.util;
 
 import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.CreateNewFolderInCloudPage;
 import org.alfresco.po.share.site.DestinationAndAssigneeBean;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
@@ -71,6 +70,7 @@ public abstract class AbstractCloudSyncTest extends AbstractUtils
 
         hybridDomainFree = DOMAIN_FREE;
         hybridDomainPremium = DOMAIN_PREMIUM;
+        
         adminUserFree = getUserNameForDomain("admin", hybridDomainFree);
         adminUserPrem = getUserNameForDomain("admin", hybridDomainPremium);
 
@@ -376,7 +376,7 @@ public abstract class AbstractCloudSyncTest extends AbstractUtils
 
         try
         {
-            RenderTime t = new RenderTime(maxWaitTime_CloudSync);
+            RenderTime t = new RenderTime(maxWaitTimeCloudSync);
             while (true)
             {
                 t.start();
@@ -534,7 +534,7 @@ public abstract class AbstractCloudSyncTest extends AbstractUtils
         boolean results = false;
         try
         {
-            RenderTime t = new RenderTime(maxWaitTime_CloudSync);
+            RenderTime t = new RenderTime(maxWaitTimeCloudSync);
             while (true)
             {
                 t.start();
@@ -589,7 +589,7 @@ public abstract class AbstractCloudSyncTest extends AbstractUtils
         String actualDescription = "";
         try
         {
-            RenderTime t = new RenderTime(maxWaitTime_CloudSync);
+            RenderTime t = new RenderTime(maxWaitTimeCloudSync);
             while (true)
             {
                 t.start();

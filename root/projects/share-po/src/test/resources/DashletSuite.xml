@@ -6,6 +6,11 @@
             <class name="org.alfresco.po.share.dashlet.ConfigureSavedSearchDialogBoxPageTest" />
         </classes>
     </test>
+    <test name="ImagePreviewDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.ImagePreviewDashletTest" />
+        </classes>
+    </test>
     <test name="MyActivitiesDashletTest">
         <classes>
             <class name="org.alfresco.po.share.dashlet.MyActivitiesDashletTest" />
@@ -26,6 +31,11 @@
             <class name="org.alfresco.po.share.dashlet.MyTasksDashletTest" />
         </classes>
     </test>
+    <test name="RssFeedDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.RssFeedDashletTest" />
+        </classes>
+    </test>
     <test name="SavedSearchDashletTest">
         <classes>
             <class name="org.alfresco.po.share.dashlet.SavedSearchDashletTest" />
@@ -41,9 +51,24 @@
             <class name="org.alfresco.po.share.dashlet.SiteAcitivitiesDashletTest" />
         </classes>
     </test>
+    <test name="SiteCalendarDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.SiteCalendarDashletTest" />
+        </classes>
+    </test>
     <test name="SiteContentDashletTest">
         <classes>
             <class name="org.alfresco.po.share.dashlet.SiteContentDashletTest" />
+        </classes>
+    </test>
+    <test name="SiteDataListsDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.SiteDataListsDashletTest" />
+        </classes>
+    </test>
+    <test name="SiteLinksDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.SiteLinksDashletTest" />
         </classes>
     </test>
     <test name="SiteMembersDashletTest">
@@ -56,6 +81,11 @@
             <class name="org.alfresco.po.share.dashlet.SiteNoticeDashletTest" />
         </classes>
     </test>
+    <test name="SiteProfileDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.SiteProfileDashletTest" />
+        </classes>
+    </test>
     <test name="SiteSearchDashletTest">
         <classes>
             <class name="org.alfresco.po.share.dashlet.SiteSearchDashletTest" />
@@ -64,6 +94,16 @@
     <test name="SiteWelcomeDashletTest">
         <classes>
             <class name="org.alfresco.po.share.dashlet.SiteWelcomeDashletTest" />
+        </classes>
+    </test>
+    <test name="WebViewDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.WebViewDashletTest" />
+        </classes>
+    </test>
+    <test name="WikiDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.WikiDashletTest" />
         </classes>
     </test>
 </suite>

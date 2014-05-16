@@ -13,6 +13,7 @@ import org.alfresco.po.share.site.document.GoogleDocsDiscardChanges;
 import org.alfresco.po.share.site.document.GoogleDocsRenamePage;
 import org.alfresco.po.share.site.document.GoogleDocsUpdateFilePage;
 import org.alfresco.po.share.site.document.GoogleSignUpPage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -42,7 +43,7 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      */
     public EditInGoogleDocsPage signIntoEditGoogleDocFromDetailsPage(WebDrone drone)
     {
-        DocumentDetailsPage detailsPage = ((DocumentDetailsPage) ShareUser.getSharePage(drone)).render();
+        DocumentDetailsPage detailsPage = ShareUser.getSharePage(drone).render();
         GoogleDocsAuthorisation googleAuthorisationPage = detailsPage.editInGoogleDocs().render();
         return signInGoogleDocs(googleAuthorisationPage);
     }
@@ -55,7 +56,7 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      */
     protected EditInGoogleDocsPage openEditGoogleDocFromDetailsPage(WebDrone drone)
     {
-        DocumentDetailsPage detailsPage = (DocumentDetailsPage) ShareUser.getSharePage(drone);
+        DocumentDetailsPage detailsPage = ShareUser.getSharePage(drone).render();
         detailsPage.render();
         EditInGoogleDocsPage googleDocsPage = detailsPage.editInGoogleDocs().render();
         return googleDocsPage.render();
@@ -74,8 +75,7 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      */
     protected DocumentLibraryPage createAndSavegoogleDocBySignIn(WebDrone drone, String fileName, ContentType contentType) throws Exception
     {
-        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
-        docLibPage.render();
+        DocumentLibraryPage docLibPage = ShareUser.getSharePage(drone).render();
 
         GoogleDocsAuthorisation googleAuthorisationPage = docLibPage.getNavigation().selectCreateContent(contentType).render();
         googleAuthorisationPage.render();
@@ -114,7 +114,7 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      */
     protected SharePage saveGoogleDoc(WebDrone drone, boolean isCreateDoc)
     {
-        EditInGoogleDocsPage googleDocsPage = ((EditInGoogleDocsPage) ShareUser.getSharePage(drone)).render();
+        EditInGoogleDocsPage googleDocsPage = ShareUser.getSharePage(drone).render();
         googleDocsPage.setGoogleCreate(isCreateDoc);
         GoogleDocsUpdateFilePage googleUpdatefile = googleDocsPage.selectSaveToAlfresco().render();
         googleUpdatefile.render();
@@ -128,13 +128,11 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      * @param drone
      * @return SharePage
      */
-    protected SharePage discardGoogleDocsChanges(WebDrone drone)
+    protected HtmlPage discardGoogleDocsChanges(WebDrone drone)
     {
-        EditInGoogleDocsPage googleDocsPage = (EditInGoogleDocsPage) ShareUser.getSharePage(drone);
-        GoogleDocsDiscardChanges googleDocsDiscardChanges = googleDocsPage.selectDiscard();
-        googleDocsDiscardChanges.render();
-        googleDocsDiscardChanges.clickOkButton();
-        return drone.getCurrentPage().render();
+        EditInGoogleDocsPage googleDocsPage = ShareUser.getSharePage(drone).render();
+        GoogleDocsDiscardChanges googleDocsDiscardChanges = googleDocsPage.selectDiscard().render();
+        return googleDocsDiscardChanges.clickOkButton().render();
     }
 
     /**
@@ -159,14 +157,15 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      */
     public static GoogleDocsUpdateFilePage saveGoogleDocWithVersionAndComment(WebDrone drone, String comments, boolean isMinorVersion)
     {
-        EditInGoogleDocsPage googleDocsPage = (EditInGoogleDocsPage) ShareUser.getSharePage(drone);
+        EditInGoogleDocsPage googleDocsPage = ShareUser.getSharePage(drone).render();
         GoogleDocsUpdateFilePage googleUpdatefile = googleDocsPage.selectSaveToAlfresco().render();
         googleUpdatefile.render();
 
         if (isMinorVersion)
         {
             googleUpdatefile.selectMinorVersionChange();
-        } else
+        }
+        else
         {
             googleUpdatefile.selectMajorVersionChange();
         }
@@ -192,8 +191,8 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
         {
             throw new UnsupportedOperationException("Delete user is available in cloud");
         }
-        DashBoardPage dashBoard = (DashBoardPage) drone.getCurrentPage();
-        UserSearchPage page = (UserSearchPage) dashBoard.getNav().getUsersPage();
+        DashBoardPage dashBoard = drone.getCurrentPage().render();
+        UserSearchPage page = dashBoard.getNav().getUsersPage().render();
         page = page.searchFor(testUser).render();
         UserProfilePage userProfile = page.clickOnUser(testUser).render();
         return userProfile.deleteUser().render();

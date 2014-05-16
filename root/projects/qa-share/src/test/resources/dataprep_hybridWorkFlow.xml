@@ -1,19 +1,44 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Classes" verbose="1" preserve-order="true">
-	<test name="dataprep" verbose="1" parallel="classes" thread-count="1">
-		<groups>
-			<run>
-				<include name="DataPrep.*" />
-			</run>
-		</groups>
-		<classes>
-            <class name="org.alfresco.share.workflow.HybridWorkflowSanityTest" />   
-            <class name="org.alfresco.share.workflow.WorkFlowOptionsMessageTest" />
-            <class name="org.alfresco.share.workflow.CloudReviewTaskTest" />        
-            <class name="org.alfresco.share.workflow.HybridWorkflowTest1" />
+<suite name="Classes" verbose="1" preserve-order="true" parallel="classes" thread-count="7">
+    <groups>
+        <run>
+            <include name="DataPrep.*" />
+            <exclude name="NonGrid" />
+        </run>
+    </groups>
+    <test name="dataprep-HybridWorkflowSanityTest" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.workflow.HybridWorkflowSanityTest" />
+        </classes>
+    </test>
+    <test name="dataprep-WorkFlowOptionsMessageTest" verbose="1">
+        <classes>
+                <class name="org.alfresco.share.workflow.WorkFlowOptionsMessageTest" />
+        </classes>
+    </test>
+    <test name="dataprep-CloudReviewTaskTest" verbose="1">
+        <classes>
+                <class name="org.alfresco.share.workflow.CloudReviewTaskTest" />
+        </classes>
+    </test>
+    <test name="dataprep-HybridWorkflowTest1" verbose="1">
+        <classes>
+                <class name="org.alfresco.share.workflow.HybridWorkflowTest1" />
+        </classes>
+    </test>
+    <test name="dataprep-HybridWorkflowTest2" verbose="1">
+        <classes>
             <class name="org.alfresco.share.workflow.HybridWorkflowTest2" />
+        </classes>
+    </test>
+    <test name="dataprep-HybridWorkflowTest3" verbose="1">
+        <classes>
             <class name="org.alfresco.share.workflow.HybridWorkflowTest3" />
-            <class name="org.alfresco.share.workflow.WorkFlowActionsTest" />            
-		</classes>
-	</test>
+        </classes>
+    </test>
+    <test name="dataprep-WorkFlowActionsTest" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.workflow.WorkFlowActionsTest" />
+        </classes>
+    </test>
 </suite>

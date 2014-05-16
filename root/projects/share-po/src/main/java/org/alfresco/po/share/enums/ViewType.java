@@ -16,7 +16,7 @@ public enum ViewType
     FILMSTRIP_VIEW("Filmstrip"),
     TABLE_VIEW("Table"),
     AUDIO_VIEW("Audio"),
-    MEDIA_VIEW("Media");
+    MEDIA_VIEW("media_table");
 
     private String name;
 

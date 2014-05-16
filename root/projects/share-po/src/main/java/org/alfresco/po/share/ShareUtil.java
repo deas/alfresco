@@ -14,8 +14,11 @@
  */
 package org.alfresco.po.share;
 
+import org.alfresco.po.share.util.PageUtils;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Share page object util
@@ -24,6 +27,10 @@ import org.alfresco.webdrone.WebDrone;
  */
 public class ShareUtil
 {
+    private static Log logger = LogFactory.getLog(ShareUtil.class);
+
+    private static final String ADMIN_SYSTEMSUMMARY_PAGE = "alfresco/service/enterprise/admin";
+
     /**
      * A simple Enum to request the required Alfresco version.
      * 
@@ -102,5 +109,27 @@ public class ShareUtil
             default:
                 throw new IllegalArgumentException("Unrecognised Alfresco version: " + requiredVersion);
         }
+    }
+
+    /**
+     * @param drone
+     * @param url
+     * @param userInfo
+     * @return
+     */
+    public static HtmlPage navigateToSystemSummary(final WebDrone drone, final String url, final String... userInfo)
+    {
+        String protocolVar = PageUtils.getProtocol(url);
+        String consoleUrlVar = PageUtils.getUrl(url);
+        String systemUrl = String.format("%s%s:%s@%s/" + ADMIN_SYSTEMSUMMARY_PAGE, protocolVar, userInfo[0], userInfo[1], consoleUrlVar);
+        try {
+            drone.navigateTo(systemUrl);
+        } catch (Exception e) {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Following exception was occurred" + e + ". Param systemUrl was " + systemUrl);
+            }
+        }
+        return drone.getCurrentPage().render();
     }
 }

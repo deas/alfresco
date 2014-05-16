@@ -12,6 +12,7 @@
             <exclude name="Hybrid" />
             <exclude name="CloudSync" />
             <exclude name="DataPrep.*" />
+            <exclude name="NonGrid" />
         </run>
     </groups>
     <test name="Sanity">

@@ -37,7 +37,9 @@ import javax.imageio.ImageIO;
 import org.alfresco.po.share.dashlet.MySitesDashlet;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
+import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.site.document.SyncInfoPage;
 import org.alfresco.po.share.site.document.UserProfile;
 import org.alfresco.po.share.user.CloudSignInPage;
 import org.alfresco.po.share.user.CloudSyncPage;
@@ -96,6 +98,7 @@ public abstract class AbstractTest
     protected static final String UNAME_PASSWORD = "password";
     protected long popupRendertime;
     public static long maxWaitTime_CloudSync = 50000;
+    public static String licenseShare;
     
     public WebDrone getDrone()
     {
@@ -128,6 +131,7 @@ public abstract class AbstractTest
         cloudUserName = t.getCloudUserName();
         cloudUserPassword = t.getCloudUserPassword();
         popupRendertime = t.getPopupRendertime();
+        licenseShare = t.getLicenseShare();
 
         if(hybridEnabled)
         {
@@ -240,14 +244,15 @@ public abstract class AbstractTest
         File file = drone.getScreenShot();
         File tmp = new File("target/webdrone-" + methodName + ".png");
         FileUtils.copyFile(file, tmp);
-        try 
-        {
-            saveOsScreenShot(methodName);
-        } 
-        catch (AWTException e) 
-        {
-            logger.error("Not able to take the OS screen shot: " + e);
-        }
+        //Commented OS Screen Shot Since Tests are on Selenium Grid
+//        try 
+//        {
+//            saveOsScreenShot(methodName);
+//        } 
+//        catch (AWTException e) 
+//        {
+//            logger.error("Not able to take the OS screen shot: " + e);
+//        }
     }
     
     public void savePageSource(String methodName) throws IOException
@@ -434,7 +439,7 @@ public abstract class AbstractTest
      * This method is used to get if the task is present or not.
      * If the task is not displayed, retry for defined time(maxWaitTime_CloudSync)
      * @param driver
-     * @param fileName
+     * @param taskName
      * @return boolean
      */
     public static boolean checkIfTaskIsPresent(WebDrone driver, String taskName)
@@ -475,6 +480,78 @@ public abstract class AbstractTest
         }
         return false;
     }
+
+    /**
+     * This method is used to get sync status (with retry) for a content from
+     * document library page and returns true if the content synced otherwise
+     * false. Since cloud sync is not instantaneous, the method keeps retrying
+     * until maxWaitTime_CloudSync is reached This method could be invoked after
+     * syncToCloud is initiated from document library page.
+     *
+     * @param driver
+     * @param fileName
+     * @return boolean
+     */
+    public static boolean checkIfContentIsSynced(WebDrone driver, String fileName)
+    {
+        DocumentLibraryPage docLibPage = driver.getCurrentPage().render();
+        docLibPage = docLibPage.renderItem(maxWaitTime_CloudSync, fileName);
+
+        String status = "";
+        SyncInfoPage syncInfoPage;
+
+        try
+        {
+            RenderTime t = new RenderTime(maxWaitTime_CloudSync);
+            while (true)
+            {
+                t.start();
+                try
+                {
+                    syncInfoPage = docLibPage.getFileDirectoryInfo(fileName).clickOnViewCloudSyncInfo().render();
+                    status = syncInfoPage.getCloudSyncStatus();
+                    syncInfoPage.clickOnCloseButton();
+
+                    if (status.contains("Pending"))
+                    {
+                        driver.waitFor(1000);
+                        driver.refresh();
+                        docLibPage = driver.getCurrentPage().render();
+                        docLibPage = docLibPage.renderItem(maxWaitTime_CloudSync, fileName).render();
+                    }
+                    else
+                    {
+                        return status.contains("Synced");
+                    }
+                }
+                finally
+                {
+                    t.end();
+                }
+            }
+        }
+        catch (PageException e)
+        {
+        }
+        catch (PageRenderTimeException exception)
+        {
+        }
+
+        return false;
+    }
+
+    /**
+     * Method to upload a file from given path. Method assumes that user is already in Document Library Page
+     * @param drone
+     * @param filePath
+     * @return
+     */
+    public DocumentLibraryPage uploadContent(WebDrone drone, String filePath)
+    {
+        DocumentLibraryPage documentLibraryPage = drone.getCurrentPage().render();
+        UploadFilePage uploadForm = documentLibraryPage.getNavigation().selectFileUpload().render();
+        return uploadForm.uploadFile(filePath).render();
+    }
     
     /**
      * 
@@ -509,6 +586,5 @@ public abstract class AbstractTest
         }
         throw new PageException("site search failed");
     }
-
     
 }

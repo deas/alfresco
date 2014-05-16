@@ -12,6 +12,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.alfresco.po.share.site.document;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -29,12 +30,10 @@ import org.alfresco.po.share.enums.ZoomStyle;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.user.CloudSignInPage;
+import org.alfresco.po.share.util.PageUtils;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
-import org.alfresco.webdrone.HtmlElement;
-import org.alfresco.webdrone.HtmlPage;
-import org.alfresco.webdrone.RenderTime;
-import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.*;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
@@ -49,7 +48,7 @@ import org.openqa.selenium.WebElement;
 /**
  * Represent elements found on the HTML page relating to the document library
  * sub navigation bar that appears on the document library site page.
- * 
+ *
  * @author Michael Suzuki
  * @author Shan Nagarajan
  * @since 1.0
@@ -58,13 +57,14 @@ public class DocumentLibraryNavigation extends SharePage
 {
     public static final String FILE_UPLOAD_BUTTON = "button[id$='fileUpload-button-button']";
     public static final String CREATE_NEW_FOLDER_BUTTON = "button[id$='newFolder-button-button']";
-    private static final By CREATE_CONTENT_BUTTON = By.cssSelector("button[id*='createContent-button']");
+    private static final By CREATE_CONTENT_BUTTON = By.cssSelector("button[id$='createContent-button-button']");
     private static final By SELECTED_ITEMS = By.cssSelector("button[id$='selectedItems-button-button']");
     private static final By SELECTED_ITEMS_MENU = By.cssSelector("div[id$='selectedItems-menu']");
     private static final By DOWNLOAD_AS_ZIP = By.cssSelector(".onActionDownload");
     private static final By SELECT_DROPDOWN = By.cssSelector("button[id$='default-fileSelect-button-button']");
     private static final By SELECT_DROPDOWN_MENU = By.cssSelector("div[id$='default-fileSelect-menu']");
     private static final By SELECT_ALL = By.cssSelector(".selectAll");
+    private static final By SELECT_NONE = By.cssSelector(".selectNone");
     private static final By SYNC_TO_CLOUD = By.cssSelector(".onActionCloudSync");
     private static final By REQUEST_SYNC = By.cssSelector(".onActionCloudSyncRequest");
     private static final String FILE_UPLOAD_ERROR_MESSAGE = "Unable to create file upload page";
@@ -76,7 +76,15 @@ public class DocumentLibraryNavigation extends SharePage
     private static final By START_WORKFLOW = By.cssSelector(".onActionAssignWorkflow");
     private static final By SET_DEFAULT_VIEW = By.cssSelector(".setDefaultView");
     private static final By REMOVE_DEFAULT_VIEW = By.cssSelector(".removeDefaultView");
+    private static final By FOLDER_UP_BUTTON = By.cssSelector("button[id$='folderUp-button-button']");
+    private static final By CRUMB_TRAIL = By.cssSelector("div[id$='default-breadcrumb']");
+    private static final By CREATE_NEW_FOLDER = By.cssSelector(".folder-file");
     private final By ZOOM_CONTROL_BAR_THUMBNAIL_CSS = By.cssSelector(".alf-gallery-slider-thumb");
+    private static final By SORT_DROPDOWN = By.cssSelector("button[id$='default-sortField-button-button']");
+    private static final By SORT_DIRECTION_BUTTON = By.cssSelector("button[id$='default-sortAscending-button-button']");
+    private static final By SORT_DIRECTION = By.cssSelector("span[id$='default-sortAscending-button']");
+    private static final By CURRENT_SORT_FIELD = By.cssSelector("div[class$='sort-field'] button");
+    private static final By SORT_FIELD = By.cssSelector("div[class$='sort-field'] > div");
 
     private Log logger = LogFactory.getLog(this.getClass());
 
@@ -129,7 +137,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Mimics the action of selecting the file upload button.
-     * 
+     *
      * @return HtmlPage response page object
      */
     public HtmlPage selectFileUpload()
@@ -145,7 +153,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Get file upload page pop up object.
-     * 
+     *
      * @param drone WebDrone browser client
      * @param repositoryBrowsing <tt>true</tt> if we are doing repository browsing
      * @return SharePage page object response
@@ -208,15 +216,28 @@ public class DocumentLibraryNavigation extends SharePage
      * Introduced in Enterprise 4.2 dropdown with actions
      * to create different content such as folders and files.
      */
-    private void selectCreateContentDropdown()
+    public HtmlPage selectCreateContentDropdown()
     {
-        WebElement dropdown = drone.findAndWait(By.cssSelector("button[id$='createContent-button-button']"));
-        dropdown.click();
+        try
+        {
+            WebElement createContentElement = drone.findAndWait(CREATE_CONTENT_BUTTON);
+
+            if (createContentElement.isEnabled())
+            {
+                createContentElement.click();
+                return FactorySharePage.resolvePage(drone);
+            }
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Create Content not available : " + CREATE_CONTENT_BUTTON.toString(), e);
+        }
+        throw new PageException("Not able to click the Create Content Button.");
     }
 
     /**
      * Mimics the action of selecting the create new folder button.
-     * 
+     *
      * @return {@link NewFolderPage} page response
      */
     public NewFolderPage selectCreateNewFolder()
@@ -237,8 +258,56 @@ public class DocumentLibraryNavigation extends SharePage
     }
 
     /**
+     * Action of selecting Create document from template.
+     *
+     * @return {@link DocumentLibraryPage}
+     * @throws TimeoutException
+     */
+    public DocumentLibraryPage selectCreateContentFromTemplate(){
+
+        WebElement button;
+        try{
+            selectCreateContentDropdown();
+            button = drone.findAndWait(By.xpath("//span[text()='Create document from template']/parent::a"));
+            button.click();
+
+        }
+        catch (TimeoutException exception)
+        {
+            logger.error("Not able to find the web element");
+            throw new PageException("Unable to fine the Create document from template.", exception);
+        }
+        return new DocumentLibraryPage(drone);
+    }
+
+    /**
+     * Action of selecting Create folder from template.
+     *
+     * @return {@link NewFolderPage}
+     * @throws TimeoutException
+     */
+    public NewFolderPage selectCreateFolderFromTemplate(){
+
+        WebElement button;
+
+        try{
+            selectCreateContentDropdown();
+            button = drone.findAndWait(By.xpath("//span[text()='Create folder from template']/parent::a"));
+            button.click();
+        }
+        catch (TimeoutException exception)
+        {
+            logger.error("Not able to find the web element");
+            throw new PageException("Unable to fine the Create folder from template.", exception);
+        }
+
+        return new NewFolderPage(drone);
+    }
+
+
+    /**
      * Mimics the action of selecting Create Plain Text.
-     * 
+     *
      * @return {@link SharePage}
      * @throws Exception
      */
@@ -275,7 +344,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Mimics the action of Selected Items.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage clickSelectedItems()
@@ -296,7 +365,6 @@ public class DocumentLibraryNavigation extends SharePage
             logger.error("Selected Item not available : " + SELECTED_ITEMS.toString());
             throw new PageException("Not able to find the Selected Items Button.", e);
         }
-
     }
 
     /**
@@ -318,8 +386,75 @@ public class DocumentLibraryNavigation extends SharePage
     }
 
     /**
+     * @return true is Selected Item Menu Visible and all expected actions are available for selected Folder, else return false.
+     */
+    public boolean isSelectedItemMenuCorrectForFolder()
+    {
+        try
+        {
+            clickSelectedItems();
+            if (isSelectedItemMenuVisible())
+            {
+                if (AlfrescoVersion.Enterprise42.equals(alfrescoVersion) || AlfrescoVersion.Enterprise43.equals(alfrescoVersion))
+                {
+                    drone.findAndWait(DOWNLOAD_AS_ZIP).isDisplayed();
+                }
+                drone.findAndWait(COPY_TO).isDisplayed();
+                drone.findAndWait(MOVE_TO).isDisplayed();
+                drone.findAndWait(DELETE).isDisplayed();
+                drone.findAndWait(DESELECT_ALL).isDisplayed();
+                return true;
+            }
+            else
+            {
+                throw new PageOperationException("Selected Items menu not visible");
+            }
+        }
+        catch (TimeoutException e)
+        {
+            String exceptionMessage = "Not able to check the Selected Items menu";
+            logger.error(exceptionMessage + e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * @return true is Selected Item Menu Visible and all expected actions are available for selected Document, else return false.
+     */
+    public boolean isSelectedItemMenuCorrectForDocument()
+    {
+        try
+        {
+            clickSelectedItems();
+            if (isSelectedItemMenuVisible())
+            {
+                if (AlfrescoVersion.Enterprise42.equals(alfrescoVersion) || AlfrescoVersion.Enterprise43.equals(alfrescoVersion))
+                {
+                    drone.findAndWait(DOWNLOAD_AS_ZIP).isDisplayed();
+                }
+                drone.findAndWait(COPY_TO).isDisplayed();
+                drone.findAndWait(MOVE_TO).isDisplayed();
+                drone.findAndWait(DELETE).isDisplayed();
+                drone.findAndWait(DESELECT_ALL).isDisplayed();
+                drone.findAndWait(START_WORKFLOW).isDisplayed();
+                return true;
+            }
+            else
+            {
+                throw new PageOperationException("Selected Items menu not visible");
+            }
+        }
+        catch (TimeoutException e)
+        {
+            String exceptionMessage = "Not able to check the Selected Items menu";
+            logger.error(exceptionMessage + e.getMessage());
+        }
+        return false;
+    }
+    
+    /**
      * Mimics the action select download as Zip from selected Item.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public DocumentLibraryPage selectDownloadAsZip()
@@ -386,7 +521,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Mimics the action select All select dropdown.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectAll()
@@ -413,9 +548,32 @@ public class DocumentLibraryNavigation extends SharePage
     }
 
     /**
+     * Mimics the action select None select dropdown.
+     *
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectNone()
+    {
+        try
+        {
+            clickSelectDropDown();
+            if (isSelectMenuVisible())
+            {
+                drone.findAndWait(SELECT_NONE).click();
+                return FactorySharePage.resolvePage(drone);
+            }
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Select None not available : " + SELECT_NONE.toString(), e);
+        }
+        throw new PageException("Select dropdown menu not visible");
+    }
+
+    /**
      * Mimics the action select "Sync to Cloud" from selected Item.
      * Assumes Cloud sync is already set-up
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectSyncToCloud()
@@ -453,7 +611,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Returns true if Sign In To Alfresco Cloud popup opens (User haven't set up CloudSync)
-     * 
+     *
      * @return boolean
      */
     public boolean isSignUpDialogVisible()
@@ -491,7 +649,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * New folder page pop up object.
-     * 
+     *
      * @param drone WebDrone browser client
      * @param repositoryBrowsing <tt>true</tt> if we are creating a folder in the Repository browser
      * @return NewFolderPage page object response
@@ -521,7 +679,7 @@ public class DocumentLibraryNavigation extends SharePage
     /**
      * Mimics the action select "Request Sync" from selected Item.
      * Assumes Cloud sync is already set-up
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public DocumentLibraryPage selectRequestSync()
@@ -552,7 +710,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Click on delete item of selected items drop down.
-     * 
+     *
      * @return
      */
     public ConfirmDeletePage selectDelete()
@@ -583,7 +741,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Click on copy to item of selected items drop down.
-     * 
+     *
      * @return
      */
     public CopyOrMoveContentPage selectCopyTo()
@@ -614,7 +772,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Click on Move to item of selected items drop down.
-     * 
+     *
      * @return
      */
     public CopyOrMoveContentPage selectMoveTo()
@@ -645,7 +803,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Click on DeselectAll item of selected items drop down.
-     * 
+     *
      * @return
      */
     public HtmlPage selectDesellectAll()
@@ -676,7 +834,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Click on Start Work Flow item of selected items drop down.
-     * 
+     *
      * @return StartWorkFlowPage
      */
     public StartWorkFlowPage selectStartWorkFlow()
@@ -716,7 +874,7 @@ public class DocumentLibraryNavigation extends SharePage
      * Select the option drop down, introduced in
      * Alfresco enterprise 4.2 and clicks on the button in
      * the dropdown.
-     * 
+     *
      * @param By selector location of button in dropdown to select
      */
     private void selectItemInOptionsDropDown(By button)
@@ -747,7 +905,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Selects the Detailed View of the Document Library.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectDetailedView()
@@ -779,14 +937,47 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Selects the Filmstrip View of the Document Library.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectFilmstripView()
     {
+        String viewType = "span.view.filmstrip";
+        return selectViewType(viewType);
+    }
+
+    /**
+     * Selects the Filmstrip View of the Document Library.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectAudioView()
+    {
+        String viewType = "span.view.audio";
+        return selectViewType(viewType);
+    }
+
+    /**
+     * Selects the Filmstrip View of the Document Library.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectMediaView()
+    {
+        String viewType = "span.view.media_table";
+        return selectViewType(viewType);
+    }
+
+    /**
+     * @param viewType
+     * @return
+     * @throws PageOperationException
+     */
+    private HtmlPage selectViewType(String viewType) throws PageOperationException
+    {
         try
         {
-            selectItemInOptionsDropDown(By.cssSelector("span.view.filmstrip"));
+            selectItemInOptionsDropDown(By.cssSelector(viewType));
             return drone.getCurrentPage();
         }
         catch (NoSuchElementException nse)
@@ -802,7 +993,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Selects the Simple View of the Document Library.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectSimpleView()
@@ -832,7 +1023,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Selects the Table View of the Document Library.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectTableView()
@@ -862,7 +1053,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Mimics the action of selecting the Hide Folders in Option Menu.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectHideFolders()
@@ -886,7 +1077,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Mimics the action of selecting the Show Folders in Option Menu.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectShowFolders()
@@ -920,17 +1111,56 @@ public class DocumentLibraryNavigation extends SharePage
      */
     private void closeOptionMenu()
     {
-        if (drone.find(By.cssSelector("div[id$='_default-options-menu']")).isDisplayed())
+        if (isOptionMenuVisible())
         {
-            WebElement btn = drone.find(By.cssSelector("button[id$='default-options-button-button']"));
-            HtmlElement dropdownButton = new HtmlElement(btn, drone);
-            dropdownButton.click();
+            try
+            {
+                WebElement btn = drone.find(By.cssSelector("button[id$='default-options-button-button']"));
+                HtmlElement dropdownButton = new HtmlElement(btn, drone);
+                dropdownButton.click();
+            }
+            catch(NoSuchElementException e)
+            {
+                throw new PageOperationException("Not able to find the Option menu");
+            }
         }
     }
 
     /**
-     * Mimics the action of selecting the Hide Breadcrump in Option Menu.
-     * 
+     * Opens the Option Menu if it is opened.
+     */
+    private void openOptionMenu()
+    {
+        if (!isOptionMenuVisible())
+        {
+            try
+            {
+                WebElement btn = drone.find(By.cssSelector("button[id$='default-options-button-button']"));
+                HtmlElement dropdownButton = new HtmlElement(btn, drone);
+                dropdownButton.click();
+            }
+            catch(NoSuchElementException e)
+            {
+                throw new PageOperationException("Not able to find the Option menu");
+            }
+        }
+    }
+
+    private boolean isOptionMenuVisible()
+    {
+        try
+        {
+            return drone.find(By.cssSelector("div[id$='_default-options-menu']")).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * Mimics the action of selecting the Hide Breadcrumb in Option Menu.
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectHideBreadcrump()
@@ -954,7 +1184,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Mimics the action of selecting the Show Folders in Option Menu.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectShowBreadcrump()
@@ -973,12 +1203,12 @@ public class DocumentLibraryNavigation extends SharePage
             logger.error("Exceeded the time to find css.", te);
         }
         closeOptionMenu();
-        throw new PageOperationException("Not able to find the Show Breadcrump Option");
+        throw new PageOperationException("Not able to find the Show Breadcrumb Option");
     }
 
     /**
      * Method to check the visibility of navigation bar.
-     * 
+     *
      * @return true if navigation bar visible else false.
      */
     public boolean isNavigationBarVisible()
@@ -995,7 +1225,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Mimcis the action of click the folder up button in Navigation bar.
-     * 
+     *
      * @return {@link HtmlPage}
      */
     public HtmlPage clickFolderUp()
@@ -1024,13 +1254,13 @@ public class DocumentLibraryNavigation extends SharePage
         }
         else
         {
-            throw new PageOperationException("Navigation might be hidden, please click show breadcrump from option menu.");
+            throw new PageOperationException("Navigation might be hidden, please click show breadcrumb from option menu.");
         }
     }
 
     /**
      * Returns the {@link List} for Folders as {@link ShareLink}.
-     * 
+     *
      * @return {@link List} of {@link ShareLink} Folders.
      */
     public List<ShareLink> getFoldersInNavBar()
@@ -1054,13 +1284,13 @@ public class DocumentLibraryNavigation extends SharePage
         }
         else
         {
-            throw new PageOperationException("Navigation might be hidden, please click show breadcrump from option menu.");
+            throw new PageOperationException("Navigation might be hidden, please click show breadcrumb from option menu.");
         }
     }
 
     /**
      * Mimics the action selecting the folder in the navigation bar.
-     * 
+     *
      * @param folderName - Folder Name to be selected in navigation bar.
      * @return {@link HtmlPage}
      */
@@ -1086,7 +1316,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Selects the Gallery View of the Document Library.
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public HtmlPage selectGalleryView()
@@ -1109,7 +1339,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * This method is used to find the view type.
-     * 
+     *
      * @param By selector location of button in dropdown to select
      */
     public ViewType getViewType()
@@ -1145,7 +1375,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Returns true if the Set current view to default is visible
-     * 
+     *
      * @return
      */
     public boolean isSetDefaultViewVisible()
@@ -1155,7 +1385,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Returns true if the Remove current default view is present
-     * 
+     *
      * @return
      */
     public boolean isRemoveDefaultViewVisible()
@@ -1165,7 +1395,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Clicks on the 'Set "<current view>" as default for this folder' button in the options menu.
-     * 
+     *
      * @return
      */
     public HtmlPage selectSetCurrentViewToDefault()
@@ -1189,7 +1419,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Clicks on the 'Remove "<current view>" as default for this folder' button in the options menu.
-     * 
+     *
      * @return
      */
     public HtmlPage selectRemoveCurrentViewFromDefault()
@@ -1211,52 +1441,40 @@ public class DocumentLibraryNavigation extends SharePage
         throw new PageOperationException("Not able to find the Remove Default View Option");
     }
 
+    /**
+     * Click on the Sort Field drop down to expand or collapse the menu.
+     */
     private void clickSortDropDown()
     {
-        WebElement btn = drone.find(By.cssSelector("button[id$='default-sortField-button-button']"));
-        HtmlElement sortButton = new HtmlElement(btn, drone);
-        sortButton.click();
+        try
+        {
+            drone.find(SORT_DROPDOWN).click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageOperationException("Unable to find css.", nse);
+        }
     }
 
     /**
      * Select the sort drop down and clicks on the button in
      * the dropdown.
-     * 
+     *
      * @param sortField enum value of the button in dropdown to select
+     * @return DocumentLibraryPage
      */
     public HtmlPage selectSortFieldFromDropDown(SortField sortField)
     {
         try
         {
-            RenderTime timer = new RenderTime(WAIT_TIME_3000);
-            while (true)
+            clickSortDropDown();
+
+            WebElement dropdown = drone.findAndWait(SORT_FIELD);
+            if (dropdown.isDisplayed())
             {
-                timer.start();
-                try
-                {
-                    clickSortDropDown();
-
-                    WebElement dropdown = drone.findAndWait(By.cssSelector("div[class$='sort-field'] > div"));
-                    if (dropdown.isDisplayed())
-                    {
-                        new HtmlElement(drone.find(sortField.getSortLocator()), drone).click();
-                        break;
-                    }
-                }
-                catch (StaleElementReferenceException stale)
-                {
-                }
-                finally
-                {
-                    timer.end();
-                }
+                drone.find(sortField.getSortLocator()).click();
+                return FactorySharePage.resolvePage(drone);
             }
-
-            return FactorySharePage.resolvePage(drone);
-        }
-        catch (NoSuchElementException nse)
-        {
-            logger.error("Unable to find css.", nse);
         }
         catch (TimeoutException e)
         {
@@ -1267,37 +1485,15 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Get the current sort field.
-     * 
+     *
      * @return The SortField enum.
      */
     public SortField getCurrentSortField()
     {
         try
         {
-            RenderTime timer = new RenderTime(WAIT_TIME_3000);
-            while (true)
-            {
-                timer.start();
-                try
-                {
-
-                    WebElement button = drone.findAndWait(By.cssSelector("div[class$='sort-field'] button"));
-
-                    return SortField.getEnum(button.getText());
-
-                }
-                catch (StaleElementReferenceException stale)
-                {
-                }
-                finally
-                {
-                    timer.end();
-                }
-            }
-        }
-        catch (NoSuchElementException nse)
-        {
-            logger.error("Unable to find css.", nse);
+            WebElement button = drone.findAndWait(CURRENT_SORT_FIELD);
+            return SortField.getEnum(button.getText());
         }
         catch (TimeoutException e)
         {
@@ -1308,15 +1504,14 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Determines the sort direction.
-     * 
+     *
      * @return <code>true</code> if the page is sorted ascending, otherwise <code>false</code>
      */
     public boolean isSortAscending()
     {
         try
         {
-            WebElement sortEl = drone.findAndWait(By.cssSelector("span[id$='default-sortAscending-button']"));
-            String classValue = sortEl.getAttribute("class");
+            String classValue = drone.find(SORT_DIRECTION).getAttribute("class");
 
             if (classValue == null)
             {
@@ -1330,43 +1525,32 @@ public class DocumentLibraryNavigation extends SharePage
         {
             logger.error("Unable to find css.", nse);
         }
-        catch (TimeoutException e)
-        {
-            logger.error("Exceeded the time to find css.", e);
-        }
         throw new PageException("Unable to find the sort button.");
     }
 
+    /**
+     * Click the Sort Direction button.
+     */
     private void clickSortOrder()
     {
-        WebElement btn = drone.find(By.cssSelector("button[id$='default-sortAscending-button-button']"));
-        HtmlElement dropdownButton = new HtmlElement(btn, drone);
-        dropdownButton.click();
+        try
+        {
+            drone.find(SORT_DIRECTION_BUTTON).click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageException("Unable to find the sort button.", nse);
+        }
     }
 
     /**
      * Set the sort direction to ascending.
-     * 
+     *
      * @return The refreshed HtmlPage.
      */
-    public HtmlPage sortAscending()
+    public HtmlPage sortAscending(boolean isAscending)
     {
-        if (!isSortAscending())
-        {
-            clickSortOrder();
-        }
-
-        return FactorySharePage.resolvePage(drone);
-    }
-
-    /**
-     * Set the sort direction to descending.
-     * 
-     * @return The refreshed HtmlPage.
-     */
-    public HtmlPage sortDescending()
-    {
-        if (isSortAscending())
+        if(isSortAscending() != isAscending)
         {
             clickSortOrder();
         }
@@ -1376,7 +1560,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Finds the ZoomStyle of the doclib.
-     * 
+     *
      * @param zoomThumbnail
      * @return {@link ZoomStyle}
      */
@@ -1406,7 +1590,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * This methods does the zoom in and zoom out on Gallery view.
-     * 
+     *
      * @param zoomStyle
      * @return HtmlPage
      */
@@ -1459,7 +1643,7 @@ public class DocumentLibraryNavigation extends SharePage
 
     /**
      * Returns true if the Zoom Control is visible
-     * 
+     *
      * @return boolean
      */
     public boolean isZoomControlVisible()
@@ -1473,5 +1657,218 @@ public class DocumentLibraryNavigation extends SharePage
         }
 
         return false;
+    }
+
+    /**
+     * Checks if the file upload button is enabled
+     *
+     * @return
+     */
+    public boolean isFileUploadEnabled()
+    {
+        try
+        {
+            return drone.find(By.cssSelector(FILE_UPLOAD_BUTTON)).isEnabled();
+        }
+        catch (NoSuchElementException e)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the file upload button is visible
+     *
+     * @return
+     */
+    public boolean isFileUploadVisible()
+    {
+        try
+        {
+            return drone.find(By.cssSelector(FILE_UPLOAD_BUTTON)).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the create content dropdown is enabled
+     *
+     * @return
+     */
+    public boolean isCreateContentEnabled()
+    {
+        try
+        {
+            return drone.find(CREATE_CONTENT_BUTTON).isEnabled();
+        }
+        catch (NoSuchElementException e)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the folder up button is visible
+     *
+     * @return
+     */
+    public boolean isFolderUpVisible()
+    {
+        try
+        {
+            return drone.find(FOLDER_UP_BUTTON).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the create content dropdown is visible
+     *
+     * @return
+     */
+    public boolean isCreateContentVisible()
+    {
+        try
+        {
+            return drone.find(CREATE_CONTENT_BUTTON).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * @return true if Select button Visible, else false.
+     */
+    public boolean isSelectVisible()
+    {
+        try
+        {
+            return drone.find(SELECT_DROPDOWN).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * @return true if Selected Item button Visible, else false.
+     */
+    public boolean isSelectedItemVisible()
+    {
+        try
+        {
+            return drone.find(SELECTED_ITEMS).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * @return true if Selected Item button Enabled, else false.
+     */
+    public boolean isSelectedItemEnabled()
+    {
+        try
+        {
+            return drone.find(SELECTED_ITEMS).isEnabled();
+        }
+        catch (NoSuchElementException e)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * @return true if the crumb trail is Visible, else false.
+     */
+    public boolean isCrumbTrailVisible()
+    {
+        try
+        {
+            return drone.find(CRUMB_TRAIL).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * Checks if Options menu item is displayed.
+     *
+     * @return true if visible
+     */
+    public boolean isOptionPresent(LibraryOption option)
+    {
+        try
+        {
+            openOptionMenu();
+            return drone.find(By.cssSelector(option.getOption())).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Option is not present Css value is :", nse);
+            }
+        }
+        finally
+        {
+            closeOptionMenu();
+        }
+        return false;
+    }
+
+    /**
+     * @return true if the New Folder button is Visible, else false.
+     */
+    public boolean isNewFolderVisible()
+    {
+        try
+        {
+            return drone.find(CREATE_NEW_FOLDER).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * The method to select RSS Feed option from Options drop-down
+     *
+     * @return Html page
+     */
+    public void selectRssFeed(String username, String password, String siteName)
+    {
+           try
+        {
+            String currentDocLibUrl = drone.getCurrentUrl();
+            String protocolVar = PageUtils.getProtocol(currentDocLibUrl);
+            String shareUrlVar = PageUtils.getShareUrl(currentDocLibUrl);
+            String rssUrl = String.format("%s%s:%s@%s/feedservice/components/documentlibrary/feed/all/site/%s/documentLibrary/?filter=path&format=rss", protocolVar, username, password, shareUrlVar,siteName);
+            drone.navigateTo(rssUrl);
+            return;
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Exceeded the time to find css.", nse);
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded the time to find css.", e);
+        }
+        throw new PageOperationException("Not able to select RSS Feed option");
     }
 }

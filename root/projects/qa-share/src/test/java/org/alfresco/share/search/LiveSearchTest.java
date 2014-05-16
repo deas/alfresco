@@ -68,34 +68,22 @@ public class LiveSearchTest extends AbstractUtils
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
 
-        try
-        {
-            // Create user
-            CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
+        // Create user
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Login as created user
-            ShareUser.login(drone, testUser, testPassword);
+        // Login as created user
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Create site
-            SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        // Create site
+        SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-            // Uploading files with testName as document title.
+        // Uploading files with testName as document title.
 
-            String[] fileInfo = { testName };
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        String[] fileInfo = { testName };
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            // Created user logs out
-            ShareUser.logout(drone);
-
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        // Created user logs out
+        ShareUser.logout(drone);
 
     }
 
@@ -206,36 +194,24 @@ public class LiveSearchTest extends AbstractUtils
 
         Integer fileTypes = fileName.length - 1;
 
-        try
+        // Create user
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login as created user
+        ShareUser.login(drone, testUser, testPassword);
+
+        // Create site
+        SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        // UpLoad Files
+        for (int index = 0; index <= fileTypes; index++)
         {
-            // Create user
-            CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
-
-            // Login as created user
-            ShareUser.login(drone, testUser, testPassword);
-
-            // Create site
-            SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-
-            // UpLoad Files
-            for (int index = 0; index <= fileTypes; index++)
-            {
-                String[] fileInfo = { fileName[index] };
-                ShareUser.uploadFileInFolder(drone, fileInfo);
-            }
-
-            // Created user logs out
-            ShareUser.logout(drone);
-
+            String[] fileInfo = { fileName[index] };
+            ShareUser.uploadFileInFolder(drone, fileInfo);
         }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+
+        // Created user logs out
+        ShareUser.logout(drone);
 
     }
 
@@ -294,8 +270,7 @@ public class LiveSearchTest extends AbstractUtils
         Assert.assertTrue(liveSearchPeopleResults.size() == 0);
 
         // Clicks on document title
-        DocumentDetailsPage documentDetailsPage = ShareUserLiveSearch.clickOnDocumentSearchResultTitle(liveSearchDropdown, getFileName(testName + "." + "xml"))
-                .render();
+        DocumentDetailsPage documentDetailsPage = ShareUserLiveSearch.clickOnDocumentSearchResultTitle(liveSearchDropdown, getFileName(testName + "." + "xml")).render();
         Assert.assertEquals(getFileName(testName + "." + "xml"), documentDetailsPage.getDocumentTitle());
 
         // Clicks on document site name
@@ -336,6 +311,7 @@ public class LiveSearchTest extends AbstractUtils
         String siteName = getSiteName(testName);
         String fileName = "}{+_)(&^%$#@!";
 
+        // TODO: Remove all try, catch: Redundant as Listener is being used
         try
         {
             // User is created

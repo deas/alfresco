@@ -44,6 +44,15 @@ public class CreateUserAPI extends AlfrescoHttpClient
         logger.info("Starting Tests: " + testName);
     }
 
+    /**
+     * Util to mimic cloud Signup request. Not supported for Enterprise
+     * 
+     * @param drone
+     * @param invitingUserEmail
+     * @param newUserEmailID
+     * @return regKey and id pair to be used for activateAccount
+     * @throws Exception
+     */
     public static String[] signUp(WebDrone drone, String invitingUserEmail, String newUserEmailID) throws Exception
     {
         if (!isAlfrescoVersionCloud(drone))
@@ -72,8 +81,8 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
             String result = JSONUtil.readStream(response).toJSONString();
 
-            String regKey = getParameter("registration", "key", result);
-            String regId = getParameter("registration", "id", result);
+            String regKey = getParameterValue("registration", "key", result);
+            String regId = getParameterValue("registration", "id", result);
             return new String[] { regKey, regId };
         }
         finally
@@ -82,6 +91,20 @@ public class CreateUserAPI extends AlfrescoHttpClient
         }
     }
 
+    /**
+     * Util to mimic activating the signup request for the cloud user.
+     * Not supported for Enterprise.
+     * 
+     * @param drone
+     * @param invitingUserEmail
+     * @param fName
+     * @param lName
+     * @param password
+     * @param regKey
+     * @param regId
+     * @return
+     * @throws Exception
+     */
     public static Boolean activateUser(WebDrone drone, String invitingUserEmail, String fName, String lName, String password, String regKey, String regId)
             throws Exception
     {
@@ -112,9 +135,9 @@ public class CreateUserAPI extends AlfrescoHttpClient
     }
 
     /**
-     * Use this method for Enterprise and Cloud to create user with a network
-     * admin role Implementation for cloud requires the tenant to be upgraded
-     * from free network: This requires admin console / admin access
+     * Use this method for Enterprise and Cloud to create user with a network-admin role
+     * Implementation for cloud requires the tenant to be upgraded from free network
+     * This requires admin console / admin access
      * Implementation for Enterprise requires admin user who can create and add
      * users to 'Alfresco_Administrators' group
      * 
@@ -144,6 +167,15 @@ public class CreateUserAPI extends AlfrescoHttpClient
         return result;
     }
 
+    /**
+     * Util to Create a new user for Cloud or Enterprise
+     * 
+     * @param drone
+     * @param invitingUserEmail
+     * @param newUserDetails
+     * @return True if user creation is successful. False if user creation fails includes case when user is already present
+     * @throws Exception
+     */
     public synchronized static boolean CreateActivateUser(WebDrone drone, String invitingUserEmail, String... newUserDetails) throws Exception
     {
 
@@ -227,6 +259,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
     /**
      * Utility to upgrade the account type (for the given domain)
+     * Method is not supported for enterprise
      * 
      * @param drone
      *            WebDrone Instance
@@ -269,9 +302,9 @@ public class CreateUserAPI extends AlfrescoHttpClient
     }
 
     /**
-     * Utility to promote the user as network admin (for the given domain) On
-     * Enterprise, its done by admin user via admin console, on cloud, using
-     * internal API
+     * Utility to promote the user as network admin (for the given domain)
+     * On Enterprise: its done by admin user via admin console
+     * On cloud, its done using internal API
      * 
      * @param drone
      *            WebDrone Instance
@@ -315,7 +348,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
     }
 
     /**
-     * Utility to promote the user as network admin (for the given domain)
+     * Utility to promote the user as network admin (for the given domain) for Cloud
      * 
      * @param drone
      *            WebDrone Instance
@@ -470,8 +503,8 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
             String result = JSONUtil.readStream(response).toJSONString();
 
-            String regKey = getParameter("invitations", "key", result);
-            String regId = getParameter("invitations", "id", result);
+            String regKey = getParameterValue("invitations", "key", result);
+            String regId = getParameterValue("invitations", "id", result);
             return new String[] { regKey, regId };
         }
         finally

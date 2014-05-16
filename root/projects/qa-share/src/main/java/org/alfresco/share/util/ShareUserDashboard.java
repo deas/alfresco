@@ -1,5 +1,6 @@
 package org.alfresco.share.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.po.share.CustomiseUserDashboardPage;
@@ -15,15 +16,15 @@ import org.alfresco.po.share.dashlet.SiteSearchDashlet;
 import org.alfresco.po.share.dashlet.SiteSearchItem;
 import org.alfresco.po.share.enums.Dashlet;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
+import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.po.share.site.SitePageType;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.social.twitter.api.SavedSearch;
-
 
 public class ShareUserDashboard extends AbstractUtils
 {
@@ -342,6 +343,7 @@ public class ShareUserDashboard extends AbstractUtils
         if (items.isEmpty())
         {
             // No results
+            logger.info("No Results : SiteSearchItems found");
         }
         else
         {
@@ -369,6 +371,22 @@ public class ShareUserDashboard extends AbstractUtils
     {
         SiteSearchDashlet searchDashlet = ShareUserDashboard.getSiteSearchDashlet(drone);
         searchDashlet.search(searchTerm);
+        List<SiteSearchItem> items = searchDashlet.getSearchItems();
+        return items;
+    }
+
+    /**
+     * Method to perform search in Site-Search-Dashlet with Search limit
+     * Util assumes user is logged in and Site Dashboard is open
+     * @param drone
+     * @param searchTerm
+     * @param searchLimit
+     * @return
+     */
+    public static List<SiteSearchItem> searchSiteSearchDashlet(WebDrone drone, String searchTerm, SearchLimit searchLimit)
+    {
+        SiteSearchDashlet searchDashlet = ShareUserDashboard.getSiteSearchDashlet(drone);
+        searchDashlet.search(searchTerm, searchLimit);
         List<SiteSearchItem> items = searchDashlet.getSearchItems();
         return items;
     }
@@ -470,5 +488,24 @@ public class ShareUserDashboard extends AbstractUtils
         return resultAsExpected;
     }
     
+    /**
+     * Adds container to site in customize site page.
+     * Assumes user is logged in and Site dashboard is open
+     * @param drone
+     * @param siteName
+     * @param pageType
+     *            {@link SitePageType}
+     */
+    public static void addPageToSite(WebDrone drone, String siteName, SitePageType... pageTypesToAdd)
+    {
+        // TODO: Params check
+        CustomizeSitePage customizeSizePage = ShareUser.customizeSite(drone, siteName);
+        List<SitePageType> pageTypes = new ArrayList<SitePageType>();
+        for (SitePageType sitePageType : pageTypesToAdd)
+        {
+            pageTypes.add(sitePageType);
+        }
+        customizeSizePage.addPages(pageTypes);
+    }
 
 }

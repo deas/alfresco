@@ -1,0 +1,46 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="DataPrepSuite" verbose="1" preserve-order="true" parallel="tests" thread-count="1">
+    <groups>
+        <run>
+            <exclude name="DataPrep.*" />
+            <exclude name="NonGrid" />
+            <exclude name=".*Bug.*" />
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+    </listeners>
+
+    <test name="Document Share Tests" verbose="1" time-out="600000">
+        <classes>
+            <class name="org.alfresco.share.site.document.DocumentShareTests" />
+        </classes>
+    </test>
+
+    <test name="Default View Tests" verbose="1" time-out="600000">
+        <classes>
+            <class name="org.alfresco.share.site.document.DefaultViewDocLibTest" />
+        </classes>
+    </test>
+
+    <test name="GalleryView" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.GalleryViewTest" />
+        </classes>
+    </test>
+ 
+   <test name="TableViewDocLibTest" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.TableViewDocLibTest" />
+        </classes>
+    </test>
+
+
+    <test name="FilmStripViewTests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.FilmStripDocLibTest" />
+        </classes>
+    </test>
+
+</suite>

@@ -107,7 +107,7 @@ public class MyWorkFlowsPage extends SharePage
     /**
      * Clicks on Start workflow button.
      * 
-     * @return {@link org.alfresco.webdrone.share.workflow.StartWorkFlowPage}
+     * @return {@link HtmlPage}
      */
     public HtmlPage selectStartWorkflowButton()
     {
@@ -129,9 +129,9 @@ public class MyWorkFlowsPage extends SharePage
      */
     private List<WebElement> findWorkFlowRow(String workFlowName)
     {
-        if (StringUtils.isEmpty(workFlowName))
+        if (workFlowName==null)
         {
-            throw new IllegalArgumentException("Workflow Name can't be empty");
+            throw new IllegalArgumentException("Workflow Name can't be null");
         }
         List<WebElement> workflowRowsElements = new ArrayList<WebElement>();
 
@@ -247,9 +247,9 @@ public class MyWorkFlowsPage extends SharePage
      */
     public boolean isWorkFlowPresent(String workFlowName)
     {
-        if (StringUtils.isEmpty(workFlowName))
+        if (workFlowName == null)
         {
-            throw new IllegalArgumentException("Work flow name is required");
+            throw new IllegalArgumentException("Work flow name cannot be null");
         }
         try
         {

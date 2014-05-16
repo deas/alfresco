@@ -1,0 +1,40 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="6" preserve-order="true">
+    <groups>
+        <run>
+            <exclude name="DataPrep.*" />
+            <include name="NonGrid" />
+            <exclude name=".*Bug.*" />
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+    </listeners>
+
+    <test name="RepositoryDownloadTests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryDocumentDownloadTests" />
+        </classes>
+    </test>
+    <test name="DownloadTests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.DownloadFilesAndFoldersTest" />
+        </classes>
+    </test>
+    <test name="GoogleDocsTests" verbose="6" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.GoogleDocsTest" />
+        </classes>
+    </test>
+    <test name="GalleryViewTests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.GalleryViewTest" />
+        </classes>
+    </test>
+    <test name="FilmStripTests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.FilmStripDocLibTest" />
+        </classes>
+    </test>
+</suite>

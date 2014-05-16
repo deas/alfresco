@@ -247,7 +247,7 @@ public class ShareUserMembers extends AbstractUtils
 
         SharePage page = ShareUser.getSharePage(driver);
         SiteFinderPage siteFinder = page.getNav().selectSearchForSites().render();
-        siteFinder = siteFinder.searchForSite(siteName).render();
+        siteFinder = SiteUtil.searchSiteWithRetry(driver, siteName, true);
         return siteFinder.joinSite(siteName).render();
     }
 
@@ -598,11 +598,11 @@ public class ShareUserMembers extends AbstractUtils
         {
             UserProfile userProfile = new UserProfile();
             userProfile.setUsername(candidate);
-            managePermissionPage = userSearchPage.searchAndSelectUser(userProfile).render();
+            userSearchPage.searchAndSelectUser(userProfile).render();
         }
         else
         {
-            managePermissionPage = userSearchPage.searchAndSelectGroup(candidate).render();
+            userSearchPage.searchAndSelectGroup(candidate).render();
         }
 
         return toggleInheritPermission(driver, toggleInheritPermission);
@@ -639,4 +639,36 @@ public class ShareUserMembers extends AbstractUtils
     {
         return ShareUser.returnManagePermissionPage(drone, contentName).getExistingPermission(candidate);
     }
+    
+    
+    
+    /**
+     * Search and Add user and group in the Permission list, it will not save the operation.
+     * @param driver
+     * @param candidate
+     * @param isUser
+     * @param role
+     * @param toggleInheritPermission
+     * @return
+     */
+    public static ManagePermissionsPage searchAndAddUserOrGroupWithoutSave(WebDrone driver, String candidate, boolean isUser)
+    {
+
+        ManagePermissionsPage managePermissionPage = getSharePage(driver).render();
+        ManagePermissionsPage.UserSearchPage userSearchPage = managePermissionPage.selectAddUser().render();
+
+        if (isUser)
+        {
+            UserProfile userProfile = new UserProfile();
+            userProfile.setUsername(candidate);
+            managePermissionPage = userSearchPage.searchAndSelectUser(userProfile).render();
+        }
+        else
+        {
+            managePermissionPage = userSearchPage.searchAndSelectGroup(candidate).render();
+        }
+        
+        return managePermissionPage;
+    }
+    
 }

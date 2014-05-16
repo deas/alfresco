@@ -110,4 +110,17 @@ public class CalendarDatePickerTest extends AbstractTest
         Assert.assertTrue(options.contains(Priority.MEDIUM.getPriority()));
     }
 
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "getPriorityOptions")
+    public void getSelectedPriorityOption()
+    {
+        newWorkflowPage.selectPriorityDropDown(Priority.MEDIUM);
+        Assert.assertEquals(newWorkflowPage.getSelectedPriorityOption(), Priority.MEDIUM);
+
+        newWorkflowPage.selectPriorityDropDown(Priority.HIGH);
+        Assert.assertEquals(newWorkflowPage.getSelectedPriorityOption(), Priority.HIGH);
+
+        newWorkflowPage.selectPriorityDropDown(Priority.LOW);
+        Assert.assertEquals(newWorkflowPage.getSelectedPriorityOption(), Priority.LOW);
+    }
+
 }

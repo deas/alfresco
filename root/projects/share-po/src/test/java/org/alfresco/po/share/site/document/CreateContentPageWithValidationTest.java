@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage.Fields;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
@@ -75,7 +76,7 @@ public class CreateContentPageWithValidationTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @Test(groups="alfresco-one")
+    @Test(groups="Enterprise-only")
     public void createContentWithNullName() throws Exception
     {
         SiteDashboardPage page = drone.getCurrentPage().render();
@@ -97,10 +98,11 @@ public class CreateContentPageWithValidationTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @Test(dependsOnMethods = "createContentWithNullName", groups="alfresco-one")
+    @Test(dependsOnMethods = "createContentWithNullName", groups="Enterprise-only")
     public void createContentWithEmptyName() throws Exception
     {
-        documentLibPage = drone.getCurrentPage().render();
+        SitePage sitePage = drone.getCurrentPage().render();
+        documentLibPage = sitePage.getSiteNav().selectSiteDocumentLibrary().render();
         CreatePlainTextContentPage contentPage = documentLibPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
         ContentDetails contentDetails = new ContentDetails();
         contentDetails.setName("");
@@ -120,7 +122,7 @@ public class CreateContentPageWithValidationTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @Test(dependsOnMethods = "createContentWithEmptyName", expectedExceptions=UnsupportedOperationException.class, groups="alfresco-one")
+    @Test(dependsOnMethods = "createContentWithEmptyName", expectedExceptions=UnsupportedOperationException.class, groups="Enterprise-only")
     public void createContentWithNullDetails() throws Exception
     {
         documentLibPage = drone.getCurrentPage().render();
@@ -191,4 +193,17 @@ public class CreateContentPageWithValidationTest extends AbstractDocumentTest
         
         assertEquals(properties.get("Name"), contentDetails.getName());
    }
+    
+    /**
+     * Test case to create content with plain text and expecting the exception.
+     * 
+     * @throws Exception
+     */
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups="Cloud-only")
+    public void createTextFileWithException() throws Exception
+    {
+        SitePage sitePage = drone.getCurrentPage().render();
+        documentLibPage = sitePage.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT);
+    }
 }

@@ -23,6 +23,7 @@ import java.util.List;
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.ShareUtil;
+import org.alfresco.po.share.enums.TinyMceColourCode;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.document.TinyMceEditor.FormatType;
@@ -91,7 +92,7 @@ public class ContentFormatPageTest extends AbstractTest
         folderDetailsPage = thisRow.selectViewFolderDetails().render();
         folderDetailsPage.addComment(commentText);  
         textEditor = folderDetailsPage.getContentPage();
-        textEditor.setTinyMce(TinyMceEditor.FRAME_ID);
+        textEditor.setTinyMce(textEditor.FRAME_ID);
         textEditor.addContent(commentText);        
     }
 
@@ -168,7 +169,7 @@ public class ContentFormatPageTest extends AbstractTest
     {
         if (logger.isTraceEnabled())
             logger.trace("====testColourCodeInsertionInRichTextFormatter====");
-        textEditor.clickColorCode();
+        textEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(commentText, textEditor.getText());
         AlfrescoVersion version = drone.getProperties().getVersion();
         if (AlfrescoVersion.Cloud2.equals(version))
@@ -189,7 +190,7 @@ public class ContentFormatPageTest extends AbstractTest
     {
         if (logger.isTraceEnabled())
             logger.trace("====testUndoAndRedoButtonOfRichTextFormatter====");
-        textEditor.clickColorCode();
+        textEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(commentText, textEditor.getText());       
         AlfrescoVersion version = drone.getProperties().getVersion();
         if (AlfrescoVersion.Cloud2.equals(version))
@@ -211,7 +212,7 @@ public class ContentFormatPageTest extends AbstractTest
         if (logger.isTraceEnabled())
             logger.trace("====testRedoButtonOfRichTextFormatter====");
       
-        textEditor.clickColorCode();
+        textEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(commentText, textEditor.getText());  
         AlfrescoVersion version = drone.getProperties().getVersion();
         if (AlfrescoVersion.Cloud2.equals(version))

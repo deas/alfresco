@@ -144,7 +144,7 @@ public class PeopleFinderTest extends AbstractUtils
             {
                 ShareLink userLink = findUserLink(testUser, searchLinks);
                 userLink.click();
-                UserProfilePage userProfilePage = ((UserProfilePage) drone.getCurrentPage()).render();
+                UserProfilePage userProfilePage = drone.getCurrentPage().render();
 
                 // TODO - below code WEBDRONE-208 & WEBDRONE-210 required.
                 // EditProfilePage editProfilePage =

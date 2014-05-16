@@ -170,7 +170,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15201() throws Exception
+    public void ALF_15201() throws Exception
     {
         String user1 = getUserNameForDomain(prefixIncomplete + testName, testDomain);
 
@@ -235,7 +235,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15203() throws Exception
+    public void ALF_15203() throws Exception
     {
 
         String user1 = getUserNameForDomain(prefixIncomplete + testName, testDomain);
@@ -306,7 +306,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid-Bug", enabled = true)
-    public void alf_15207() throws Exception
+    public void ALF_15207() throws Exception
     {
         prefixIncomplete = getTestName() ;
         String user1 = getUserNameForDomain(prefixIncomplete + testName, testDomain);
@@ -348,7 +348,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15209() throws Exception
+    public void ALF_15209() throws Exception
     {
         String user1 = getUserNameForDomain(prefixIncomplete + testName, testDomain);
 
@@ -427,7 +427,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15205() throws Exception
+    public void ALF_15205() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -538,7 +538,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15206() throws Exception
+    public void ALF_15206() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -610,7 +610,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * properties.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15211() throws Exception
+    public void ALF_15211() throws Exception
     {
 
         // dataPrep_15211(drone, hybridDrone);
@@ -667,7 +667,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * steps.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15213() throws Exception
+    public void ALF_15213() throws Exception
     {
 
         String user1 = getUserNameForDomain(prefixComplete + testName, testDomain);
@@ -765,7 +765,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * cloud site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15215() throws Exception
+    public void ALF_15215() throws Exception
     {
         // dataPrep_15215(drone, hybridDrone);
         String testName = getTestName() ;
@@ -875,7 +875,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * On-Prem site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15216() throws Exception
+    public void ALF_15216() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -963,12 +963,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         // Login to User1, set up the cloud sync
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         signInToAlfrescoInTheCloud(drone, cloudUser, DEFAULT_PASSWORD);
-        ShareUser.logout(drone);
-
-        // Login as Enterprise user, create site and upload a file.
-        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
-
         ShareUser.logout(drone);
 
         ShareUser.login(hybridDrone, user1, DEFAULT_PASSWORD);
@@ -983,7 +978,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * On-Prem site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15217() throws Exception
+    public void ALF_15217() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -995,14 +990,14 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         String fileName = getFileName(testName) + System.currentTimeMillis() + ".txt";
 
         String workFlowName = testName + System.currentTimeMillis() + "-WF";
-        String dueDate = "12/05/2015";
+        String dueDate = getDueDateString();
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName).render();
         ShareUser.uploadFileInFolder(drone, new String[] { fileName, DOCLIB });
 
         // Start Simple Cloud Task workflow
-        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startSimpleCloudTaskWorkFlow(drone);
+        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, fileName);
 
         WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
 
@@ -1014,9 +1009,6 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         formDetails.setAssignee(cloudUser);
         formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENT);
 
-        // Select uploaded file
-        cloudTaskOrReviewPage.selectItem(fileName, opSiteName);
-
         // Fill the form details and start workflow
         cloudTaskOrReviewPage.startWorkflow(formDetails).render();
         ShareUser.logout(drone);
@@ -1027,22 +1019,20 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         ShareUserWorkFlow.completeWorkFlow(hybridDrone, user1, workFlowName);
         ShareUser.logout(hybridDrone);
 
-        ShareUser.login(drone, cloudUser, DEFAULT_PASSWORD);
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         ShareUserWorkFlow.navigateToMyTasksPage(drone);
         ShareUser.checkIfTaskIsPresent(drone, workFlowName);
         ShareUserWorkFlow.completeWorkFlow(drone, user1, workFlowName).render();
-        ShareUser.logout(drone);
 
-        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName).render();
         documentLibraryPage.getFileDirectoryInfo(fileName).selectCheckbox();
-        documentLibraryPage = ShareUser.deleteSelectedContent(drone).render();
-        Assert.assertFalse(documentLibraryPage.isFileVisible(fileName));
+        ShareUser.deleteSelectedContent(drone).render();
+        Assert.assertTrue(ShareUser.checkIfContentIsPresent(drone, fileName, false));
         ShareUser.logout(drone);
         // TODO : TestLink: Please update the 2nd step accordingly.
         ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
-        documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSiteName).render();
-        Assert.assertFalse(documentLibraryPage.isFileVisible(fileName));
+        ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSiteName).render();
+        Assert.assertTrue(ShareUser.checkIfContentIsPresent(hybridDrone, fileName, false));
         ShareUser.logout(hybridDrone);
 
     }
@@ -1071,12 +1061,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         // Login to User1, set up the cloud sync
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         signInToAlfrescoInTheCloud(drone, cloudUser, DEFAULT_PASSWORD);
-        ShareUser.logout(drone);
-
-        // Login as Enterprise user, create site and upload a file.
-        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
-
         ShareUser.logout(drone);
 
         ShareUser.login(hybridDrone, user1, DEFAULT_PASSWORD);
@@ -1092,7 +1077,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * On-Prem site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15218() throws Exception
+    public void ALF_15218() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1104,14 +1089,14 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         String fileName = getFileName(testName) + System.currentTimeMillis() + ".txt";
 
         String workFlowName = testName + System.currentTimeMillis() + "-WF";
-        String dueDate = "12/05/2015";
+        String dueDate = getDueDateString();
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName).render();
         ShareUser.uploadFileInFolder(drone, new String[] { fileName, DOCLIB });
 
         // Start Simple Cloud Task workflow
-        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startSimpleCloudTaskWorkFlow(drone);
+        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, fileName);
 
         WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
 
@@ -1123,9 +1108,6 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         formDetails.setAssignee(cloudUser);
         formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENT);
 
-        // Select uploaded file
-        cloudTaskOrReviewPage.selectItem(fileName, opSiteName);
-
         // Fill the form details and start workflow
         cloudTaskOrReviewPage.startWorkflow(formDetails);
         ShareUser.logout(drone);
@@ -1136,7 +1118,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         ShareUserWorkFlow.completeWorkFlow(hybridDrone, user1, workFlowName);
         ShareUser.logout(hybridDrone);
 
-        ShareUser.login(drone, cloudUser, DEFAULT_PASSWORD);
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         ShareUserWorkFlow.navigateToMyTasksPage(drone);
         ShareUser.checkIfTaskIsPresent(drone, workFlowName);
         ShareUserWorkFlow.completeWorkFlow(drone, user1, workFlowName).render();
@@ -1146,7 +1128,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSiteName).render();
         documentLibraryPage.getFileDirectoryInfo(fileName).selectCheckbox();
         documentLibraryPage = ShareUser.deleteSelectedContent(hybridDrone).render();
-        Assert.assertFalse(documentLibraryPage.isFileVisible(fileName));
+        Assert.assertTrue(ShareUser.checkIfContentIsPresent(hybridDrone, fileName, false));
         ShareUser.logout(hybridDrone);
         
         // TODO : TestLink: Please update the 2nd step accordingly.
@@ -1154,8 +1136,8 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName).render();
         Assert.assertTrue(documentLibraryPage.isFileVisible(fileName));
         
-        // TODO : Once document deleted it will not be in sync.
-        Assert.assertFalse(ShareUser.checkIfContentIsSynced(drone, fileName));
+        // TODO : Once document deleted it will not be in sync. - QA-588
+        Assert.assertTrue(ShareUser.checkIfContentIsSynced(drone, fileName));
         ShareUser.logout(drone);
 
     }
@@ -1203,7 +1185,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15219() throws Exception
+    public void ALF_15219() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1284,7 +1266,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, userInfo1);
 
         // Create User1 (Cloud)
-        CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, cloudUserInfo1);
+        CreateUserAPI.createActivateUserAsTenantAdmin(hybridDrone, ADMIN_USERNAME, cloudUserInfo1);
         CreateUserAPI.upgradeCloudAccount(hybridDrone, ADMIN_USERNAME, testDomain, "1000");
 
         // Login to User1, set up the cloud sync
@@ -1300,7 +1282,6 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
 
         ShareUser.login(hybridDrone, user1, DEFAULT_PASSWORD);
         ShareUser.createSite(hybridDrone, cloudSiteName, SITE_VISIBILITY_PUBLIC);
-        ShareUserSitePage.createFolder(hybridDrone, folderName, folderName);
         ShareUser.logout(hybridDrone);
         // TODO : Update the TestLink to move the 7 and 8 steps into step
         // Actions.
@@ -1311,7 +1292,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15220() throws Exception
+    public void ALF_15220() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1323,14 +1304,14 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         String fileName = getFileName(testName) + System.currentTimeMillis() + ".txt";
 
         String workFlowName = testName + System.currentTimeMillis() + "-WF";
-        String dueDate = "12/05/2015";
+        String dueDate = getDueDateString();
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName).render();
         ShareUser.uploadFileInFolder(drone, new String[] { fileName, DOCLIB });
 
         // Start Simple Cloud Task workflow
-        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startSimpleCloudTaskWorkFlow(drone);
+        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, fileName);
 
         WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
 
@@ -1342,9 +1323,6 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         formDetails.setAssignee(cloudUser);
         formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENT);
 
-        // Select uploaded file
-        cloudTaskOrReviewPage.selectItem(fileName, opSiteName);
-
         // Fill the form details and start workflow
         cloudTaskOrReviewPage.startWorkflow(formDetails);
         ShareUser.logout(drone);
@@ -1355,7 +1333,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         ShareUserWorkFlow.completeWorkFlow(hybridDrone, user1, workFlowName);
         ShareUser.logout(hybridDrone);
 
-        ShareUser.login(drone, cloudUser, DEFAULT_PASSWORD);
+        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         ShareUserWorkFlow.navigateToMyTasksPage(drone);
         ShareUser.checkIfTaskIsPresent(drone, workFlowName);
         ShareUserWorkFlow.completeWorkFlow(drone, user1, workFlowName).render();
@@ -1363,13 +1341,13 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
 
         ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
         documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSiteName);
-        documentLibraryPage.getFileDirectoryInfo(fileName).selectUnSyncAndRemoveContentFromCloud(false);
+        documentLibraryPage.getFileDirectoryInfo(fileName).selectForceUnSyncInCloud();
         Assert.assertFalse(documentLibraryPage.getFileDirectoryInfo(fileName).isCloudSynced());
         ShareUser.logout(hybridDrone);
         // TODO : TestLink: Please update the 2nd step accordingly.
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-        documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, cloudSiteName).render();
-        Assert.assertFalse(documentLibraryPage.getFileDirectoryInfo(fileName).isCloudSynced());
+        documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName).render();
+        Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName).isCloudSynced());
         ShareUser.logout(drone);
     }
 
@@ -1380,7 +1358,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15221() throws Exception
+    public void ALF_15221() throws Exception
     {
 
         String user1 = getUserNameForDomain(prefixCompleteWithRemoveSync + testName, testDomain);
@@ -1431,9 +1409,9 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15223() throws Exception
+    public void ALF_15223() throws Exception
     {
-
+        dataprep_Complete(drone, hybridDrone, prefixCompleteWithRemoveSync);
         String user1 = getUserNameForDomain(prefixCompleteWithRemoveSync + testName, testDomain);
 
         String cloudUser = getUserNameForDomain(prefixCompleteWithRemoveSync + testName, testDomain);
@@ -1442,8 +1420,8 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         String cloudSiteName = getSiteName(prefixCompleteWithRemoveSync + testName) + "-CL";
         String fileName = getFileName(testName) + ".txt";
 
-        String modifiedContentByOnPrem = testName + " modifiedBy " + user1;
-        String modifiedContentByCloud = testName + " modifiedBy " + cloudUser;
+        String modifiedContentByOnPrem = testName + " modifiedBy: OP User" + System.currentTimeMillis();
+        String modifiedContentByCloud = testName + " modifiedBy: Cloud User" + System.currentTimeMillis();
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
         DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName).render();
@@ -1533,7 +1511,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15225() throws Exception
+    public void ALF_15225() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1649,7 +1627,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15226() throws Exception
+    public void ALF_15226() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1756,7 +1734,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * On-Prem site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15227() throws Exception
+    public void ALF_15227() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1863,7 +1841,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * On-Prem site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15228() throws Exception
+    public void ALF_15228() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1970,7 +1948,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15229() throws Exception
+    public void ALF_15229() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -2078,7 +2056,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15230() throws Exception
+    public void ALF_15230() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -2147,7 +2125,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15231() throws Exception
+    public void ALF_15231() throws Exception
     {
 
         String user1 = getUserNameForDomain(prefixCompleteWithRemoveFile + testName, testDomain);
@@ -2177,7 +2155,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15232() throws Exception
+    public void ALF_15232() throws Exception
     {
 
         String user1 = getUserNameForDomain(prefixCompleteWithRemoveFile + testName, testDomain);
@@ -2211,7 +2189,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15235() throws Exception
+    public void ALF_15235() throws Exception
     {
         String user1 = getUserNameForDomain(prefixCompleteWithRemoveFile + testName, testDomain);
         String cloudUser = getUserNameForDomain(prefixCompleteWithRemoveFile + testName, testDomain);
@@ -2325,8 +2303,9 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15233() throws Exception
+    public void ALF_15233() throws Exception
     {
+        // dataprep_Incomplete(drone, hybridDrone, prefixIncomplete);
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
         String folderName = getFolderName(testName);
@@ -2440,7 +2419,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15234() throws Exception
+    public void ALF_15234() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -2576,7 +2555,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_9612() throws Exception
+    public void ALF_9612() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -2689,7 +2668,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15236() throws Exception
+    public void ALF_15236() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -2771,7 +2750,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void alf_15237() throws Exception
+    public void ALF_15237() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, testDomain);

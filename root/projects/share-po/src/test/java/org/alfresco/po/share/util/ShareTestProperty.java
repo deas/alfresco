@@ -40,6 +40,7 @@ public class ShareTestProperty
     private String cloudUserName;
     private String cloudUserPassword;
     protected long popupRendertime;
+    private String licenseShare;
     
     public ShareTestProperty (final String shareUrl,
                               final String gridUrl, 
@@ -49,7 +50,8 @@ public class ShareTestProperty
                               final String googlePassword,
                               final String alfrescoVersion,
                               final String downloadDirectory,
-                              final boolean hybridEnabled) 
+                              final boolean hybridEnabled, 
+                              final String licenseShare) 
     {
         this.shareUrl = shareUrl;
         this.gridUrl = gridUrl;
@@ -60,8 +62,19 @@ public class ShareTestProperty
         this.alfrescoVersion = AlfrescoVersion.fromString(alfrescoVersion);
         this.downloadDirectory = downloadDirectory;
         this.hybridEnabled = hybridEnabled;
+        this.licenseShare = licenseShare;
     }
     
+    public String getLicenseShare()
+    {
+        return licenseShare;
+    }
+
+    public void setLicenseShare(String licenseShare)
+    {
+        this.licenseShare = licenseShare;
+    }
+
     public String getShareUrl()
     {
         return shareUrl;

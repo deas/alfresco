@@ -14,6 +14,9 @@
  */
 package org.alfresco.po.share.site;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.webdrone.HtmlPage;
@@ -130,7 +133,7 @@ public class UpdateFilePage extends SharePage
         // Get the expected version number
         String previousVersion = (String) drone.executeJavaScript("Alfresco.getFileUploadInstance(this).showConfig.updateVersion;");
         drone.findAndWait(By.cssSelector(submitButton)).click();
-        drone.waitUntilElementDisappears(By.cssSelector(".container-close"), drone.getDefaultWaitTime());
+        drone.waitUntilNotVisible(By.cssSelector("div[style*='visible'] div.hd span"), "Update File", SECONDS.convert(drone.getDefaultWaitTime(), MILLISECONDS));
         HtmlPage page = drone.getCurrentPage();
         if (page instanceof DocumentDetailsPage)
         {

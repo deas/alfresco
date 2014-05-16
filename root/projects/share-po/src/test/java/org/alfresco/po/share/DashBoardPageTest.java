@@ -18,7 +18,11 @@
  */
 package org.alfresco.po.share;
 
+import org.alfresco.po.share.site.document.SharedFilesPage;
+import org.alfresco.po.share.util.FailedTestListener;
+import org.openqa.selenium.Keys;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
@@ -27,6 +31,7 @@ import org.testng.annotations.Test;
  * @author Michael Suzuki
  * @since 1.0
  */
+@Listeners(FailedTestListener.class)
 public class DashBoardPageTest extends AbstractTest
 {
     /**
@@ -50,14 +55,35 @@ public class DashBoardPageTest extends AbstractTest
         }
         String copyright = dashBoard.getCopyRight();
         Assert.assertTrue(copyright.contains("Alfresco Software"));
-    }
-
+    }	
+    
     @Test(dependsOnMethods="loadDashBoard", groups="alfresco-one")
-    public void refreshPage() throws Exception
+    public void refreshPage() throws Exception				
     {
         //Were already logged in from the previous test.
         drone.refresh();
         DashBoardPage dashBoard = drone.getCurrentPage().render();
         Assert.assertNotNull(dashBoard);
+    }
+
+    @Test(dependsOnMethods="refreshPage", enabled=false, groups="nonGrid")
+    public void testKeysForHeaderBar() throws Exception
+    {
+    	drone.refresh();
+    	dashBoard.inputFromKeyborad(Keys.TAB);
+        dashBoard.inputFromKeyborad(Keys.ARROW_RIGHT);
+        dashBoard.inputFromKeyborad(Keys.ARROW_RIGHT);
+        dashBoard.inputFromKeyborad(Keys.RETURN);
+        
+        Assert.assertTrue(drone.getCurrentPage().render() instanceof SharedFilesPage);
+    }
+    
+    @Test(dependsOnMethods="refreshPage", groups="nonGrid")
+    public void getFooterPageTest()
+    {
+        FootersPage footer = dashBoard.getFooter();
+        Assert.assertTrue(footer instanceof FootersPage);
+        Assert.assertEquals(alfrescoVersion.getVersion().toString() + ".0", footer.getAlfrescoVersion());
+
     }
 }

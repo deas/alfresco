@@ -132,8 +132,8 @@ public class SiteTest extends AbstractTest
     @Test(dependsOnMethods = "createDuplicateSite")
     public void checkSiteNavigation()
     {
-        drone.navigateTo(String.format("%s/page/site-finder",shareUrl));
-        SiteFinderPage siteFinder = drone.getCurrentPage().render();
+        SharePage sharePage = drone.getCurrentPage().render();
+        SiteFinderPage siteFinder = sharePage.getNav().selectSearchForSites().render();
         siteFinder = siteFinder.searchForSite(siteName).render();
         siteFinder = siteSearchRetry(siteFinder, siteName);
         SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();

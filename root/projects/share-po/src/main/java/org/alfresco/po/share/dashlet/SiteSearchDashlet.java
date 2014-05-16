@@ -355,4 +355,63 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         drone.mouseOver(drone.findAndWait(DASHLET_CONTAINER_PLACEHOLDER));
     }
 
+
+    /**
+     * Method to set result size
+     * @param searchLimit
+     */
+    public void setResultSize(SearchLimit searchLimit)
+    {
+        scrollDownToDashlet();
+        try
+        {
+            drone.findAndWait(RESULT_SIZE_BUTTON).click();
+            List<WebElement> resultSizeElements = drone.findAndWaitForElements(RESULT_SIZES);
+
+            for (WebElement webElement : resultSizeElements)
+            {
+                if(webElement.getText().equals(String.valueOf(searchLimit.getValue())))
+                {
+                    webElement.click();
+                    break;
+                }
+            }
+        }
+        catch (TimeoutException te)
+        {
+            throw new UnsupportedOperationException("Unable to select result size", te);
+        }
+    }
+
+    /**
+     * Method to perform search with required search limit
+     * @param searchString
+     * @param searchLimit
+     * @return
+     */
+    public SiteSearchDashlet search(String searchString, SearchLimit searchLimit)
+    {
+        setResultSize(searchLimit);
+        return search(searchString);
+    }
+
+    /**
+     * Method to get selected Search Limit
+     * @return
+     */
+    public SearchLimit getSelectedSearchLimit()
+    {
+        try
+        {
+            return SearchLimit.getSearchLimit(Integer.parseInt(drone.find(RESULT_SIZE_BUTTON).getText().substring(0, 3).trim()));
+        }
+        catch (NoSuchElementException nse)
+        {
+            if(logger.isErrorEnabled())
+            {
+                logger.error("Unable to locate Result Size", nse);
+            }
+            throw new PageOperationException("Unable to locate Result Size");
+        }
+    }
 }

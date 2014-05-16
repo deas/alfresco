@@ -47,13 +47,12 @@ import org.testng.annotations.Test;
  * @author Michael Suzuki
  * @since 1.3
  */
-@Test(groups="alfresco-one")
 @Listeners(FailedTestListener.class)
 public class MyActivitiesDashletTest extends AbstractDashletTest
 {
     private static Log logger = LogFactory.getLog(MyActivitiesDashletTest.class);
    
-    @BeforeClass
+    @BeforeClass(groups="alfresco-one")
     public void setup() throws Exception
     {
         siteName = "MyActDashletTests" + System.currentTimeMillis();
@@ -66,7 +65,7 @@ public class MyActivitiesDashletTest extends AbstractDashletTest
         }
     }
     
-    @AfterClass
+    @AfterClass(groups="alfresco-one")
     public void deleteSite()
     {
         try
@@ -80,14 +79,14 @@ public class MyActivitiesDashletTest extends AbstractDashletTest
         
     }
     
-    @Test
+    @Test(groups="alfresco-one")
     public void instantiateMyActivitiesDashlet()
     {
         MyActivitiesDashlet dashlet = new MyActivitiesDashlet(drone);
         Assert.assertNotNull(dashlet);
     }
     
-    @Test(dependsOnMethods="instantiateMyActivitiesDashlet",expectedExceptions = PageException.class)
+    @Test(dependsOnMethods="instantiateMyActivitiesDashlet", groups="alfresco-one", expectedExceptions = PageException.class)
     public void selectFake() throws Exception
     {
         MyActivitiesDashlet dashlet = dashBoard.getDashlet("activities").render();
@@ -99,7 +98,7 @@ public class MyActivitiesDashletTest extends AbstractDashletTest
      * dashlet from the dash board view.
      * @throws Exception 
      */
-    @Test(dependsOnMethods="selectFake")
+    @Test(dependsOnMethods="selectFake", groups="alfresco-one")
     public void selectMyActivityDashlet() throws Exception
     {
         MyActivitiesDashlet dashlet = dashBoard.getDashlet("activities").render();
@@ -107,7 +106,7 @@ public class MyActivitiesDashletTest extends AbstractDashletTest
         Assert.assertEquals("My Activities",title);
     }
 
-    @Test(dependsOnMethods="selectMyActivityDashlet")
+    @Test(dependsOnMethods="selectMyActivityDashlet", groups="alfresco-one")
     public void selectActivity() throws Exception
     {
         DocumentDetailsPage page = null;
@@ -141,7 +140,7 @@ public class MyActivitiesDashletTest extends AbstractDashletTest
         Assert.assertEquals(true, page.isDocumentDetailsPage());
     }   
 
-    @Test(dependsOnMethods="selectActivity")
+    @Test(groups="alfresco-one", dependsOnMethods="selectActivity")
     public void getActivities() throws IOException
     {
         List<ActivityShareLink> activities;
@@ -172,7 +171,7 @@ public class MyActivitiesDashletTest extends AbstractDashletTest
         Assert.assertFalse(activities.isEmpty());
     }
     
-    @Test(dependsOnMethods="getActivities")
+    @Test(groups="alfresco-one", dependsOnMethods="getActivities")
     public void selectAndDisplayActivity()
     {
         dashBoard = dashBoard.getNav().selectMyDashBoard();

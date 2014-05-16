@@ -341,4 +341,19 @@ public class SavedSearchDashlet extends AbstractDashlet implements Dashlet
         return false;
     }
 
+    /**
+     * Method to verify Configure icon is displayed
+     */
+    public boolean isConfigIconDisplayed()
+    {
+        try
+        {
+            return drone.isElementDisplayed(CONFIGURE_DASHLET_ICON);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find configure icon");
+        }
+        return false;
+    }
 }

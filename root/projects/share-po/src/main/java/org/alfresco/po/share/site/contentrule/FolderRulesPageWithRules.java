@@ -114,6 +114,8 @@ public class FolderRulesPageWithRules extends FolderRulesPage
     }
 
     // return folder name by inherited rule name
+    // Example. If rule was created for folder and rule was applied for subfolder
+    // this method return Folder's name by rulename at create rule page for subfolder
     public String getInheritedRulesFolderName(String ruleName)
     {
         if (ruleName == null)
@@ -123,15 +125,31 @@ public class FolderRulesPageWithRules extends FolderRulesPage
 
         try
         {
-            String inheritedFolderXpath = String.format("//a[contains(text(),'%s')]" + "/following-sibling::a[@class='inherited-folder']", ruleName);
-            String folderName = drone.findAndWait(By.xpath(inheritedFolderXpath)).getText();
+            String inheritedFolderXpath = String.format("//a[contains(text(),'%s')]/following-sibling::a[@class='inherited-folder']", ruleName);
 
-            return folderName;
+            return drone.findAndWait(By.xpath(inheritedFolderXpath)).getText();
         }
         catch (NoSuchElementException e)
         {
             logger.error("Not able to find the inherited rule.", e);
         }
         throw new PageException("Not able to find the inherited rule element on this page.");
+    }
+
+    /**
+     * @param ruleName
+     * @return true if ruleName is displayed or return false if rule isn't detected
+     */
+    public boolean isRuleNameDisplayed(String ruleName)
+    {
+        List<WebElement> ruleItems = drone.findAndWaitForElements(RULE_ITEMS);
+        for (WebElement ruleItem : ruleItems)
+        {
+            if (ruleItem.getText().contains(ruleName))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

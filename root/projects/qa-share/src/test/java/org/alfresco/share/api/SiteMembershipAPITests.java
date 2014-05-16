@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
  * @author Abhijeet Bharade
  */
 @Listeners(FailedTestListener.class)
-@Test(groups = { "AlfrescoOne", "Cloud2" })
+@Test(groups = { "AlfrescoOne" })
 public class SiteMembershipAPITests extends SiteMembershipAPI
 {
     private static final String MESSAGE = "This is a newly created site";

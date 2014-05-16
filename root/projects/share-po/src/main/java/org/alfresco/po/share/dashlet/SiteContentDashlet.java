@@ -324,10 +324,11 @@ public class SiteContentDashlet extends AbstractDashlet implements Dashlet
      * Retrieves the closeButton for Help balloon window based on the given
      * cssSelector and clicks on it.
      */
-    public void closeHelpBallon()
+    public SiteContentDashlet closeHelpBallon()
     {
         drone.find(By.cssSelector(DASHLET_HELP_BALLOON_CLOSE_BUTTON)).click();
         drone.waitUntilElementDisappears(By.cssSelector(DASHLET_HELP_BALLOON_CLOSE_BUTTON), 1);
+        return this;
     }
 
     /**

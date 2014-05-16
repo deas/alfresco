@@ -102,7 +102,7 @@ public class CategoryPage extends AbstractEditProperties
 
     /**
      * Verify if CategoryPage is displayed.
-     * 
+     *
      * @return true if displayed
      */
     public boolean isCategoryPageVisible()
@@ -118,41 +118,97 @@ public class CategoryPage extends AbstractEditProperties
     }
 
     /**
-     * Add the {@link Categories} if it is available to add.
-     * 
-     * @param aspects {@link List} of {@link Categories} to added.
+     * Remove the {@link Categories} if it is available to remove.
+     *
+     * @param aspects {@link List} of {@link Categories} to remove.
      * @return {@link DocumentDetailsPage}
+     * @depricated Use {@link #addCategories(List<String>, String...)} instead.
      */
+    @Deprecated
     public HtmlPage remove(List<Categories> categories)
     {
-        return addRemoveCategories(categories, CURRENTLY_ADDED_CATEGORIES_TABLE);
+        List<String> newList = new ArrayList<>();
+        for(Categories category : categories)
+        {
+            newList.add(category.getValue());
+        }
+        return addRemoveCategories(newList, CURRENTLY_ADDED_CATEGORIES_TABLE);
     }
 
     /**
-     * Add the {@link Categories} if it is available to add.
-     * 
-     * @param aspects {@link List} of {@link Categories} to added.
+     * Remove top-level categories or sub-categories.
+     *
+     * @param Categories {@link List} to be removed.
+     * @param Optional - VarArg of parent category tree.
      * @return {@link DocumentDetailsPage}
      */
-    public HtmlPage add(List<Categories> categories)
+    public HtmlPage removeCategories(List<String> categories, String... parentCategories)
     {
+        if(parentCategories == null)
+        {
+            throw new UnsupportedOperationException("parentCategories can't be null.");
+        }
+        
+        for(String parent : parentCategories)
+        {
+            openSubCategories(parent);
+        }
         return addRemoveCategories(categories, AVAILABLE_CATEGORIES_TABLE);
     }
 
     /**
      * Add the {@link Categories} if it is available to add.
-     * 
+     *
      * @param aspects {@link List} of {@link Categories} to added.
      * @return {@link DocumentDetailsPage}
+     * @depricated Use {@link #addCategories(List<String>, String...)} instead.
      */
-    private HtmlPage addRemoveCategories(List<Categories> categories, By by)
+    @Deprecated
+    public HtmlPage add(List<Categories> categories)
+    {
+        List<String> newList = new ArrayList<>();
+        for(Categories category : categories)
+        {
+            newList.add(category.getValue());
+        }
+        return addRemoveCategories(newList, AVAILABLE_CATEGORIES_TABLE);
+    }
+
+    /**
+     * Add top-level categories or sub-categories.
+     *
+     * @param Categories {@link List} to be added.
+     * @param Optional - VarArg of parent category tree.
+     * @return {@link DocumentDetailsPage}
+     */
+    public HtmlPage addCategories(List<String> categories, String... parentCategories)
+    {
+        if(parentCategories == null)
+        {
+            throw new UnsupportedOperationException("parentCategories can't be null.");
+        }
+        
+        for(String parent : parentCategories)
+        {
+            openSubCategories(parent);
+        }
+        return addRemoveCategories(categories, AVAILABLE_CATEGORIES_TABLE);
+    }
+
+    /**
+     * Add the {@link Categories} if it is available to add.
+     *
+     * @param categories {@link List} of {@link String} to added.
+     * @return {@link DocumentDetailsPage}
+     */
+    private HtmlPage addRemoveCategories(List<String> categories, By by)
     {
         if (categories == null || categories.isEmpty())
         {
             throw new UnsupportedOperationException("Categories can't be empty or null.");
         }
         List<WebElement> availableElements = null;
-        Map<Categories, ShareLink> availableCategoriesMap = null;
+        Map<String, ShareLink> availableCategoriesMap = null;
         try
         {
             availableElements = drone.findAndWaitForElements(by);
@@ -164,7 +220,7 @@ public class CategoryPage extends AbstractEditProperties
         if (availableElements != null && !availableElements.isEmpty())
         {
             // Convert List into Map
-            availableCategoriesMap = new HashMap<Categories, ShareLink>();
+            availableCategoriesMap = new HashMap<String, ShareLink>();
             for (WebElement webElement : availableElements)
             {
                 try
@@ -172,7 +228,7 @@ public class CategoryPage extends AbstractEditProperties
                     WebElement header = webElement.findElement(HEADER_CATEGORIES_TABLE);
                     WebElement addLink = webElement.findElement(ADD_REMOVE_LINK);
                     ShareLink addShareLink = new ShareLink(addLink, drone);
-                    availableCategoriesMap.put(Categories.getCategory(header.getText()), addShareLink);
+                    availableCategoriesMap.put(header.getText(), addShareLink);
                 }
                 catch (NoSuchElementException e)
                 {
@@ -187,7 +243,7 @@ public class CategoryPage extends AbstractEditProperties
 
         if (availableCategoriesMap != null && !availableCategoriesMap.isEmpty())
         {
-            for (Categories category : categories)
+            for (String category : categories)
             {
                 ShareLink link = availableCategoriesMap.get(category);
                 if (link != null)
@@ -208,7 +264,7 @@ public class CategoryPage extends AbstractEditProperties
                 }
                 else
                 {
-                    logger.error("Not able to find in the available categories bucket " + category.toString());
+                    logger.error("Not able to find in the available categories bucket " + category);
                 }
             }
         }
@@ -218,9 +274,11 @@ public class CategoryPage extends AbstractEditProperties
 
     /**
      * Get {@link List} of {@link Categories} which can be add able.
-     * 
+     *
      * @return {@link List} of {@link Categories}
+     * @depricated Use {@link #getAddAbleCatgoryList()} instead.
      */
+    @Deprecated
     public List<Categories> getAddAbleCatgories()
     {
         List<Categories> categories = new ArrayList<Categories>();
@@ -236,10 +294,31 @@ public class CategoryPage extends AbstractEditProperties
     }
 
     /**
-     * Get the {@link List} of {@link Categories} which is added.
-     * 
-     * @return {@link List} of {@link Categories}
+     * Get {@link List} of {@link Categories} which can be add able.
+     *
+     * @return {@link List} of categories
      */
+    public List<String> getAddAbleCatgoryList()
+    {
+        List<String> categories = new ArrayList<>();
+        List<WebElement> elements = drone.findAndWaitForElements(AVAILABLE_CATEGORIES_TABLE);
+        for (WebElement webElement : elements)
+        {
+            if (webElement.findElement(By.cssSelector(".addIcon")).isDisplayed())
+            {
+                categories.add(webElement.findElement(By.cssSelector(".item-name>a")).getText());
+            }
+        }
+        return categories;
+    }
+
+    /**
+     * Get the {@link List} of {@link Categories} which is added.
+     *
+     * @return {@link List} of {@link Categories}
+     * @depricated Use {@link #getAddedCatgoryList()} instead.
+     */
+    @Deprecated
     public List<Categories> getAddedCatgories()
     {
         List<Categories> categories = new ArrayList<Categories>();
@@ -256,8 +335,28 @@ public class CategoryPage extends AbstractEditProperties
     }
 
     /**
+     * Get the {@link List} of categories which have been added.
+     *
+     * @return {@link List} of categories
+     */
+    public List<String> getAddedCatgoryList()
+    {
+        List<String> categories = new ArrayList<>();
+        List<WebElement> elements = drone.findAll(CURRENTLY_ADDED_CATEGORIES_TABLE);
+        for (WebElement webElement : elements)
+        {
+            String categoryName = webElement.findElement(By.cssSelector("h3.name")).getText();
+            if (categoryName != null && categoryName.trim().length() > 0)
+            {
+                categories.add(categoryName);
+            }
+        }
+        return categories;
+    }
+
+    /**
      * Click on {@link cancel} in {@link CategoryPage}
-     * 
+     *
      * @return {@link EditDocumentPropertiesPage}
      */
     public HtmlPage clickCancel()
@@ -275,7 +374,7 @@ public class CategoryPage extends AbstractEditProperties
 
     /**
      * Click on {@link ApplyChanges} in {@link selectAspectsPage}
-     * 
+     *
      * @return {@link SelectAspectsPage}
      */
     public HtmlPage clickOk()
@@ -288,6 +387,40 @@ public class CategoryPage extends AbstractEditProperties
         catch (NoSuchElementException nse)
         {
             throw new PageException("Not able find the ok button: ", nse);
+        }
+    }
+
+    /**
+     * This method click on category to see subCategories.
+     *
+     * @param category
+     * @depricated Use {@link #openSubCategories(String)} instead.
+     */
+    @Deprecated
+    public void openSubCategories(Categories category)
+    {
+        openSubCategories(category.getValue());
+    }
+
+    /**
+     * This method clicks on the category to see subCategories.
+     *
+     * @param category
+     */
+    public void openSubCategories(String category)
+    {
+        List<WebElement> elements = drone.findAndWaitForElements(AVAILABLE_CATEGORIES_TABLE);
+        for (WebElement webElement : elements)
+        {
+            if (webElement.findElement(By.cssSelector(".item-name>a")).getText().equals(category))
+            {
+                By headerSelector = By.cssSelector("h3 > a");
+                WebElement headerElement = webElement.findElement(headerSelector);
+                String headerText = headerElement.getText();
+                headerElement.click();
+                drone.waitUntilNotVisibleWithParitalText(headerSelector, headerText, drone.getDefaultWaitTime()/1000);
+                return;
+            }
         }
     }
 }

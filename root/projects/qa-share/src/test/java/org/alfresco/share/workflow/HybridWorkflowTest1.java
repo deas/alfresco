@@ -42,15 +42,18 @@ import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.ShareUserWorkFlow;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.joda.time.DateTime;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
  * @author Ranjith Manyam
  * 
  */
+@Listeners(FailedTestListener.class)
 public class HybridWorkflowTest1 extends AbstractWorkflow
 {
     private String testDomain;

@@ -8,6 +8,7 @@
 package org.alfresco.po.share.site.document;
 
 import static org.alfresco.po.share.site.document.DocumentAspect.CLASSIFIABLE;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
@@ -55,8 +56,6 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
     private static String folderDescription;
     private static DocumentLibraryPage documentLibPage;
     private File file;
-    private final String cloudUserName = "user1@premiernet.test";
-    private final String cloudUserPassword = "password";
     private File testLockedFile;
     private String doclibUrl;
 
@@ -71,8 +70,16 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         siteName = "site" + System.currentTimeMillis();
         folderName = "The first folder";
         folderDescription = String.format("Description of %s", folderName);
-        createEnterpriseUser(uname);
-        loginAs(uname, UNAME_PASSWORD).render();
+        if(!alfrescoVersion.isCloud())
+        {
+            createEnterpriseUser(uname);
+            loginAs(uname, UNAME_PASSWORD).render();
+        }
+        else
+        {
+            loginAs(username, password);
+        }
+        
         if(isHybridEnabled())
         {
             signInToCloud(drone, cloudUserName, cloudUserPassword);
@@ -396,7 +403,7 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         }
         finally
         {
-           page.getSiteNav().selectSiteDocumentLibrary();
+           documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
         }
     }
 
@@ -528,7 +535,11 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
     {
         documentLibPage = drone.getCurrentPage().render();
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        assertFalse(thisRow.isSaveLinkVisible());
+        assertFalse(thisRow.isCancelLinkVisible());
         thisRow.contentNameEnableEdit();
+        assertTrue(thisRow.isSaveLinkVisible());
+        assertTrue(thisRow.isCancelLinkVisible());
         thisRow.contentNameEnter(folderName + " not updated");
         thisRow.contentNameClickCancel();
         drone.refresh();
@@ -597,5 +608,14 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         assertTrue(drone.getCurrentUrl().toLowerCase().contains(file.getName().toLowerCase()));
         drone.closeWindow();
         drone.switchToWindow(mainWinHandle);
+    }
+
+    @Test(enabled = true, groups = "alfresco-one", priority = 33)
+    public void testIsFileShared()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        ShareLinkPage shareLinkPage = documentLibPage.getFileDirectoryInfo(file.getName()).clickShareLink().render();
+        Assert.assertNotNull(shareLinkPage);
+        assertTrue(documentLibPage.getFileDirectoryInfo(file.getName()).isFileShared());
     }
 }

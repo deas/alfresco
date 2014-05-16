@@ -76,7 +76,7 @@
 
 	<test name="Node Browser Tests" verbose="1">
 		<classes>
-			<class name="org.alfresco.share.newfeatures.NodeBrowserTests" />
+			<class name="org.alfresco.share.adminconsole.NodeBrowserTests" />
 		</classes>
 	</test>
 

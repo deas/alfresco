@@ -18,9 +18,11 @@ import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.log4j.Logger;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertFalse;
@@ -31,6 +33,7 @@ import static org.testng.Assert.assertEquals;
  * @author Ranjith Manyam
  * 
  */
+@Listeners(FailedTestListener.class)
 public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
 {
     private static final Logger logger = Logger.getLogger(CloudSyncMultiUserTests.class);

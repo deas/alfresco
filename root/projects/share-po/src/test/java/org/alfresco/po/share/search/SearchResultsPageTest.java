@@ -48,13 +48,13 @@ public class SearchResultsPageTest extends AbstractTest
 {
     private DashBoardPage dashBoard;
     
-    @BeforeClass(groups={"Enterprise-only", "alfresco-one"})
+    @BeforeClass(groups={"alfresco-one"})
     public void prepare() throws Exception
     {
         dashBoard = loginAs(username, password);
     }
     
-    @BeforeMethod(groups={"Enterprise-only", "alfresco-one"})
+    @BeforeMethod(groups={"alfresco-one"})
     public void reset()
     {
         SharePage page = drone.getCurrentPage().render();

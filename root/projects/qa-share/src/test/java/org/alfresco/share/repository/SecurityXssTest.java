@@ -123,7 +123,7 @@ public class SecurityXssTest extends AbstractUtils
         Map<CreatePlainTextContentPage.Fields, String> messages = contentPage.getMessages();
 
         //TODO: TESTLINK: Update ALL tests to match actual function i.e. "Value contains illegal characters." error balloon.
-        assertEquals(messages.get(CreatePlainTextContentPage.Fields.NAME), "Value contains illegal characters.");
+        assertEquals(messages.get(CreatePlainTextContentPage.Fields.NAME), drone.getValue("message.value.contains.illegal.characters"));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.TITLE));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.DESCRIPTION));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.CONTENT));
@@ -176,7 +176,7 @@ public class SecurityXssTest extends AbstractUtils
 
         Map<CreatePlainTextContentPage.Fields, String> messages = contentPage.getMessages();
 
-        assertEquals(messages.get(CreatePlainTextContentPage.Fields.NAME), "Value contains illegal characters.");
+        assertEquals(messages.get(CreatePlainTextContentPage.Fields.NAME), drone.getValue("message.value.contains.illegal.characters"));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.TITLE));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.DESCRIPTION));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.CONTENT));
@@ -229,7 +229,7 @@ public class SecurityXssTest extends AbstractUtils
 
         Map<CreatePlainTextContentPage.Fields, String> messages = contentPage.getMessages();
 
-        assertEquals(messages.get(CreatePlainTextContentPage.Fields.NAME), "Value contains illegal characters.");
+        assertEquals(messages.get(CreatePlainTextContentPage.Fields.NAME), drone.getValue("message.value.contains.illegal.characters"));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.TITLE));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.DESCRIPTION));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.CONTENT));
@@ -275,7 +275,7 @@ public class SecurityXssTest extends AbstractUtils
         ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
 
         NewFolderPage newFolderPage = ShareUserRepositoryPage.createFolderInRepositoryWithValidation(drone, XSS_STRING_4, title, description).render();
-        assertEquals(newFolderPage.getMessage(NewFolderPage.Fields.NAME), "Value contains illegal characters.");
+        assertEquals(newFolderPage.getMessage(NewFolderPage.Fields.NAME), drone.getValue("message.value.contains.illegal.characters"));
 
         newFolderPage.selectCancel();
 
@@ -368,7 +368,7 @@ public class SecurityXssTest extends AbstractUtils
         editProps = editProps.selectSaveWithValidation().render();
         Map<Fields, String> messages = editProps.getMessages();
 
-        assertEquals(messages.get(EditDocumentPropertiesPage.Fields.NAME), "Value contains illegal characters.");
+        assertEquals(messages.get(EditDocumentPropertiesPage.Fields.NAME), drone.getValue("message.value.contains.illegal.characters"));
         assertNull(messages.get(EditDocumentPropertiesPage.Fields.TITLE));
         assertNull(messages.get(EditDocumentPropertiesPage.Fields.DESCRIPTION));
         assertNull(messages.get(EditDocumentPropertiesPage.Fields.AUTHOR));
@@ -412,18 +412,18 @@ public class SecurityXssTest extends AbstractUtils
 
         DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, subFolderName);
 
-        detailsPage.addComment(XSS_STRING_1, Encoder.ENCODER_HTML);
-        detailsPage.addComment(XSS_STRING_2, Encoder.ENCODER_HTML);
-        detailsPage.addComment(XSS_STRING_3, Encoder.ENCODER_HTML);
-        detailsPage.addComment(XSS_STRING_4, Encoder.ENCODER_HTML);
-        detailsPage.addComment(XSS_STRING_5, Encoder.ENCODER_HTML);
+        detailsPage = detailsPage.addComment(XSS_STRING_1, Encoder.ENCODER_HTML).render();
+        detailsPage = detailsPage.addComment(XSS_STRING_2, Encoder.ENCODER_HTML).render();
+        detailsPage = detailsPage.addComment(XSS_STRING_3, Encoder.ENCODER_HTML).render();
+        detailsPage = detailsPage.addComment(XSS_STRING_4, Encoder.ENCODER_HTML).render();
+        detailsPage = detailsPage.addComment(XSS_STRING_5, Encoder.ENCODER_HTML).render();
 
         List<String> comments = detailsPage.getComments();
-        assertTrue(comments.contains(XSS_STRING_1));
-        assertTrue(comments.contains(XSS_STRING_2));
-        assertTrue(comments.contains(XSS_STRING_3));
-        assertTrue(comments.contains(XSS_STRING_4));
-        assertTrue(comments.contains(XSS_STRING_5));
+        assertTrue(comments.contains(XSS_STRING_1), "Comment missing: " + XSS_STRING_1);
+        assertTrue(comments.contains(XSS_STRING_2), "Comment missing: " + XSS_STRING_2);
+        assertTrue(comments.contains(XSS_STRING_3), "Comment missing: " + XSS_STRING_3);
+        assertTrue(comments.contains(XSS_STRING_4), "Comment missing: " + XSS_STRING_4);
+        assertTrue(comments.contains(XSS_STRING_5), "Comment missing: " + XSS_STRING_5);
     }
 
     @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
@@ -459,18 +459,18 @@ public class SecurityXssTest extends AbstractUtils
 
         DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, fileName);
 
-        detailsPage.addComment(XSS_STRING_1, Encoder.ENCODER_HTML);
-        detailsPage.addComment(XSS_STRING_2, Encoder.ENCODER_HTML);
-        detailsPage.addComment(XSS_STRING_3, Encoder.ENCODER_HTML);
-        detailsPage.addComment(XSS_STRING_4, Encoder.ENCODER_HTML);
-        detailsPage.addComment(XSS_STRING_5, Encoder.ENCODER_HTML);
+        detailsPage = detailsPage.addComment(XSS_STRING_1, Encoder.ENCODER_HTML).render();
+        detailsPage = detailsPage.addComment(XSS_STRING_2, Encoder.ENCODER_HTML).render();
+        detailsPage = detailsPage.addComment(XSS_STRING_3, Encoder.ENCODER_HTML).render();
+        detailsPage = detailsPage.addComment(XSS_STRING_4, Encoder.ENCODER_HTML).render();
+        detailsPage = detailsPage.addComment(XSS_STRING_5, Encoder.ENCODER_HTML).render();
 
         List<String> comments = detailsPage.getComments();
-        assertTrue(comments.contains(XSS_STRING_1));
-        assertTrue(comments.contains(XSS_STRING_2));
-        assertTrue(comments.contains(XSS_STRING_3));
-        assertTrue(comments.contains(XSS_STRING_4));
-        assertTrue(comments.contains(XSS_STRING_5));
+        assertTrue(comments.contains(XSS_STRING_1), "Comment missing: " + XSS_STRING_1);
+        assertTrue(comments.contains(XSS_STRING_2), "Comment missing: " + XSS_STRING_2);
+        assertTrue(comments.contains(XSS_STRING_3), "Comment missing: " + XSS_STRING_3);
+        assertTrue(comments.contains(XSS_STRING_4), "Comment missing: " + XSS_STRING_4);
+        assertTrue(comments.contains(XSS_STRING_5), "Comment missing: " + XSS_STRING_5);
     }
 
     @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
@@ -514,11 +514,12 @@ public class SecurityXssTest extends AbstractUtils
 
         Map<CreatePlainTextContentPage.Fields, String> messages = editTextDocumentPage.getMessages();
 
-        assertEquals(messages.get(CreatePlainTextContentPage.Fields.NAME), "Value contains illegal characters.");
+        assertEquals(messages.get(CreatePlainTextContentPage.Fields.NAME), drone.getValue("message.value.contains.illegal.characters"));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.TITLE));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.DESCRIPTION));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.CONTENT));
 
+        editTextDocumentPage.cancel();
         contentDetails.setName(fileName);
 
         ShareUserRepositoryPage.editTextDocumentInLine(drone, fileName, contentDetails).render();
@@ -559,7 +560,7 @@ public class SecurityXssTest extends AbstractUtils
 
         //ensure the new file is visible on the screen
         repoPage.getNavigation().selectSortFieldFromDropDown(SortField.CREATED);
-        repoPage.getNavigation().sortDescending();
+        repoPage.getNavigation().sortAscending(false);
 
         FileDirectoryInfo fileDirInfo = repoPage.getFileDirectoryInfo(fileName);
         StartWorkFlowPage stWorkFlow = fileDirInfo.selectStartWorkFlow();
@@ -656,8 +657,7 @@ public class SecurityXssTest extends AbstractUtils
 
         SharePopup shareErrorPopup = tagPage.enterTagValue(XSS_STRING_4).render();
 
-        // TODO: Add to language specific files for Localisation.
-        assertEquals(shareErrorPopup.getShareMessage(), "Could not create new item.");
+        assertEquals(shareErrorPopup.getShareMessage(), drone.getValue("message.could.not.create.new.item"));
     }
 
     @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
@@ -695,7 +695,6 @@ public class SecurityXssTest extends AbstractUtils
 
         SharePopup shareErrorPopup = tagPage.enterTagValue(XSS_STRING_5).render();
 
-        // TODO: Add to language specific files for Localisation.
-        assertEquals(shareErrorPopup.getShareMessage(), "Could not create new item.");
+        assertEquals(shareErrorPopup.getShareMessage(), drone.getValue("message.could.not.create.new.item"));
     }
 }

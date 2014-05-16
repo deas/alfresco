@@ -3,7 +3,7 @@ package org.alfresco.po.share.admin;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.po.share.util.TestUtils;
+import org.alfresco.po.share.util.PageUtils;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -97,7 +97,7 @@ public class ActionsSet
         // Find the dialog
         WebElement dialog = this.drone.find(DIALOG);
 
-        if (TestUtils.usableElement(dialog))
+        if (PageUtils.usableElement(dialog))
         {
             // Within the dialog find the buttons
             List<WebElement> dialogButtons = dialog.findElements(DIALOG_BUTTONS);
@@ -131,7 +131,7 @@ public class ActionsSet
         WebElement menu = this.drone.find(By.cssSelector(menuSelector));
 
         // If the menu is not null and is displayed and is enabled
-        if (TestUtils.usableElement(menu))
+        if (PageUtils.usableElement(menu))
         {
 
             // Within the menu element find the MENU_ROWS

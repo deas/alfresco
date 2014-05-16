@@ -75,7 +75,10 @@ public class FolderDetailsPageTest extends AbstractTest
         }
         else
         {
-            loginAs(cloudUserName, cloudUserPassword);
+            loginAs(username, password);
+            firstName = anotherUser.getfName();
+            lastName = anotherUser.getlName();
+            userName = firstName + " " + lastName;
         }
         SiteUtil.createSite(drone, siteName, "description", "Public");
     }
@@ -191,7 +194,7 @@ public class FolderDetailsPageTest extends AbstractTest
 
     }
 
-    @Test(dependsOnMethods = "testFolderComments", groups = { "Enterprise4.2", "Enterprise4.1" })
+    @Test(dependsOnMethods = "testSelectEditProperties", groups = { "Enterprise4.2", "Enterprise4.1" })
     public void testFolderPermissions()
     {
         if (logger.isTraceEnabled())
@@ -205,7 +208,7 @@ public class FolderDetailsPageTest extends AbstractTest
         Assert.assertEquals(permissionProperties.get("AllOtherUsers"), "Consumer");
     }
 
-    @Test(dependsOnMethods = "testFolderPermissions", groups = { "alfresco-one" })
+    @Test(dependsOnMethods = "testFolderComments", groups = { "alfresco-one" })
     public void testSelectEditProperties()
     {
         if (logger.isTraceEnabled())
@@ -218,7 +221,7 @@ public class FolderDetailsPageTest extends AbstractTest
         folderDetailsPage = propertiesPage.selectSave().render();
     }
 
-    @Test(dependsOnMethods = "testSelectEditProperties", groups = { "Enterprise4.2" })
+    @Test(dependsOnMethods = "testFolderPermissions", groups = { "Enterprise4.2" })
     public void testDownloadAsZipFolder()
     {
         if (logger.isTraceEnabled())

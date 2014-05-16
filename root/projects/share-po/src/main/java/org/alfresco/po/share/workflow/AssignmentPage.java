@@ -53,7 +53,7 @@ public class AssignmentPage extends SharePage
     private static final By SEARCH_BUTTON = By.xpath("//button[contains(@id, 'searchButton-button')]");
     private static final By OK_BUTTON = By.cssSelector("button[id$='cntrl-ok-button']");
     private static final By CANCEL_BUTTON = By.cssSelector("button[id$='cntrl-cancel-button']");
-    private static final By SELECT_CLOUD_REVIEWER = By.xpath("//a[starts-with(@class, 'add-item')]");
+    private static final By SELECT_CLOUD_REVIEWER = By.cssSelector("a.add-item");
     private static final By LIST_CLOUD_REVIEWER = (By
             .cssSelector("div[id$='_assignee-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-data>tr, div[id$='_assignment-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-data>tr"));
     private static final By SELECTED_USERS = (By
@@ -140,7 +140,7 @@ public class AssignmentPage extends SharePage
 
             if (webElement.findElement(By.cssSelector(".item-name")).getText().toLowerCase().contains("(" + userName + ")"))
             {
-                drone.mouseOverOnElement(webElement.findElement(SELECT_CLOUD_REVIEWER));
+                drone.mouseOver(webElement.findElement(SELECT_CLOUD_REVIEWER));
                 webElement.findElement(SELECT_CLOUD_REVIEWER).click();
                 if (!isUserSelected(userName))
                 {

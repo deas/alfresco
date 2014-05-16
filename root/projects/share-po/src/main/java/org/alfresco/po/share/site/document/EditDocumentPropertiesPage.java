@@ -487,4 +487,14 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
             return false;
         }
     }
+
+    /**
+     * click on All Properties button on Edit Properties pop-up
+     *
+     * @return {@link EditDocumentPropertiesPage} page response
+     */
+    public HtmlPage selectAllProperties(){
+        clickAllProperties();
+        return FactorySharePage.resolvePage(drone);
+    }
 }

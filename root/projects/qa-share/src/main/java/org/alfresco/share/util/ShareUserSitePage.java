@@ -18,13 +18,17 @@ import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
 import org.alfresco.po.share.site.document.EditTextDocumentPage;
 import org.alfresco.po.share.site.document.FileDirectoryInfo;
+import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.InlineEditPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.document.MimeType;
 import org.alfresco.po.share.site.document.SortField;
 import org.alfresco.po.share.site.document.TagPage;
+import org.alfresco.po.share.site.document.TreeMenuNavigation;
+import org.alfresco.po.share.site.document.TreeMenuNavigation.DocumentsMenu;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,13 +64,13 @@ public class ShareUserSitePage extends AbstractUtils
             if (folderPath == null)
             {
                 throw new UnsupportedOperationException("Incorrect FolderPath: Null");
-            }                      
+            }
 
             // Navigation logic
             if (folderPath.startsWith(REPO))
             {
                 // Assume RepositoryPage is open
-                docPage = (DocumentLibraryPage) ShareUser.getSharePage(driver);
+                docPage = ShareUser.getSharePage(driver).render();
             }
             else
             {
@@ -85,19 +89,21 @@ public class ShareUserSitePage extends AbstractUtils
                 if (path[i].isEmpty())
                 {
                     // Ignore, Continue to the next;
+                    logger.debug("Empty Folder Path specified: " + path.toString());
                 }
                 else
                 {
                     if ((i == 0) && (path[i].equalsIgnoreCase(REPO) || path[i].equalsIgnoreCase(DOCLIB)))
                     {
                         // Repo or Doclib is already open
+                        logger.info("Base Folder: " + path[i]);
                     }
                     else
                     {
                         logger.info("Navigating to Folder: " + path[i]);
-                        docPage = docPage.selectFolder(path[i]).render();
+                        docPage = selectContent(driver, path[i]).render();
                     }
-                 }	
+                }
             }
             logger.info("Selected Folder:" + folderPath);
         }
@@ -108,8 +114,6 @@ public class ShareUserSitePage extends AbstractUtils
 
         return docPage;
     }
-
-
 
     /**
      * Assumes User is logged in and a specific Site's Doclib is open, Parent Folder is pre-selected.
@@ -150,7 +154,7 @@ public class ShareUserSitePage extends AbstractUtils
      */
     public static DocumentLibraryPage createFolder(WebDrone driver, String folderName, String folderDesc)
     {
-        return createFolder(driver, folderName, null, folderDesc);
+        return createFolder(driver, folderName, null, folderDesc).render();
     }
 
     /**
@@ -163,7 +167,7 @@ public class ShareUserSitePage extends AbstractUtils
      * @param folderDesc String Description of the folder to be created
      * @return DocumentLibraryPage
      */
-    public static DocumentLibraryPage createFolder(WebDrone driver, String folderName, String folderTitle, String folderDesc)
+    public static HtmlPage createFolder(WebDrone driver, String folderName, String folderTitle, String folderDesc)
     {
         DocumentLibraryPage docPage = null;
 
@@ -180,10 +184,10 @@ public class ShareUserSitePage extends AbstractUtils
         }
 
         NewFolderPage newFolderPage = docPage.getNavigation().selectCreateNewFolder().render();
-        docPage = (DocumentLibraryPage) newFolderPage.createNewFolder(folderName, folderTitle, folderDesc);
+        docPage = newFolderPage.createNewFolder(folderName, folderTitle, folderDesc).render();
 
         logger.info("Folder Created" + folderName);
-        return docPage.render();
+        return docPage;
     }
 
     /**
@@ -280,9 +284,61 @@ public class ShareUserSitePage extends AbstractUtils
     }
 
     /**
+     * This method does the copy or move selected folder or document into another folder.
+     * Previously all items in folder will be selected
+     * User should be on Document Library Page.
+     * 
+     * @param drone
+     * @param siteName
+     * @param destinationFolders
+     * @param isCopy
+     * @return
+     */
+    public static DocumentLibraryPage copyOrMoveToFolderAllSelectedItems(WebDrone drone, String siteName, String[] destinationFolders, boolean isCopy, boolean isOkButton)
+    {
+        if (StringUtils.isEmpty(siteName) || destinationFolders.length == 0)
+        {
+            throw new IllegalArgumentException("sitename/destinationFolders should not be empty or null");
+        }
+
+        String[] destinationFolderNames = new String[destinationFolders.length + 1];
+        destinationFolderNames[0] = DEFAULT_FOLDER;
+        CopyOrMoveContentPage copyOrMoveContentPage;
+
+        for (int i = 0; i < destinationFolders.length; i++)
+        {
+            destinationFolderNames[i + 1] = destinationFolders[i];
+        }
+
+        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
+
+        docLibPage = docLibPage.getNavigation().selectAll().render();
+
+        if (isCopy)
+        {
+            copyOrMoveContentPage = docLibPage.getNavigation().selectCopyTo().render();
+        }
+        else
+        {
+            copyOrMoveContentPage = docLibPage.getNavigation().selectMoveTo().render();
+        }
+        copyOrMoveContentPage = copyOrMoveContentPage.selectSite(siteName).render();
+
+        copyOrMoveContentPage = copyOrMoveContentPage.selectPath(destinationFolderNames).render();
+
+        if (isOkButton)
+        {
+            return copyOrMoveContentPage.selectOkButton().render();
+        }
+        else
+        {
+            return copyOrMoveContentPage.selectCancelButton().render();
+        }
+    }
+
+    /**
      * Get Edit Document PRoperties pop up.
      * 
-     *
      * @param drone
      * @param siteName
      * @param fileOrFolderName
@@ -365,7 +421,7 @@ public class ShareUserSitePage extends AbstractUtils
      * private method to do upload new version
      */
     public static HtmlPage UploadNewVersion(WebDrone drone, UpdateFilePage updatePage, boolean majorVersion, String fileName, String comments)
-    //throws Exception
+    // throws Exception
     {
         String fileContents = "New File being created on repository page:" + fileName;
         File newFileName = newFile(fileName, fileContents);
@@ -393,11 +449,11 @@ public class ShareUserSitePage extends AbstractUtils
         return page;
     }
 
-    public static DocumentDetailsPage uploadNewVersionFromDocDetail(WebDrone drone, boolean majorVersion, String fileName, String comments) //throws Exception
+    public static DocumentDetailsPage uploadNewVersionFromDocDetail(WebDrone drone, boolean majorVersion, String fileName, String comments) // throws Exception
     {
-        DocumentDetailsPage docdetailPage = (DocumentDetailsPage) ShareUser.getSharePage(drone);
+        DocumentDetailsPage docdetailPage = ShareUser.getSharePage(drone).render();
         UpdateFilePage updateFilePage = docdetailPage.selectUploadNewVersion().render();
-        docdetailPage = (DocumentDetailsPage) UploadNewVersion(drone, updateFilePage, majorVersion, fileName, comments);
+        docdetailPage = UploadNewVersion(drone, updateFilePage, majorVersion, fileName, comments).render();
         return docdetailPage.render();
     }
 
@@ -430,28 +486,57 @@ public class ShareUserSitePage extends AbstractUtils
     public static ContentDetails getInLineEditContentDetails(WebDrone drone, String contentName)
     {
         InlineEditPage inlineEditPage = getFileDirectoryInfo(drone, contentName).selectInlineEdit().render();
-        EditTextDocumentPage editTextDocumentPage = (EditTextDocumentPage) inlineEditPage.getInlineEditDocumentPage(MimeType.TEXT);
+        EditTextDocumentPage editTextDocumentPage = inlineEditPage.getInlineEditDocumentPage(MimeType.TEXT).render();
         ContentDetails contentDetails = editTextDocumentPage.getDetails();
         editTextDocumentPage.selectCancel().render();
         return contentDetails;
     }
 
     /**
+     * Util traverses through all the pages of the doclib to find the content within the folder
      * @param drone
      * @param contentName
      * @return
      */
     public static FileDirectoryInfo getFileDirectoryInfo(WebDrone drone, String contentName)
     {
-        SharePage sharePage = getSharePage(drone);
-        if (sharePage instanceof RepositoryPage)
+        Boolean moreResultPages = true;
+        FileDirectoryInfo contentRow = null;
+        DocumentLibraryPage docLibPage = getSharePage(drone).render();
+
+        // Start from first page
+        while (docLibPage.hasPreviousPage())
         {
-            return ((RepositoryPage) sharePage).getFileDirectoryInfo(contentName);
+            docLibPage = docLibPage.selectPreviousPage().render();
         }
-        else
+
+        while (moreResultPages)
         {
-            return ((DocumentLibraryPage) sharePage).getFileDirectoryInfo(contentName);
+            // Get Search Results
+            try
+            {
+                contentRow = docLibPage.getFileDirectoryInfo(contentName);
+                break;
+            }
+            catch (PageException pe)
+            {
+                // Check next Page if available
+                moreResultPages = docLibPage.hasNextPage();
+
+                if (moreResultPages)
+                {
+                    docLibPage = docLibPage.selectNextPage().render();
+                }
+            }
         }
+        
+        // Now return the content found else throw PageException
+        if (contentRow == null)
+        {
+            throw new PageException(String.format("File directory info with title %s was not found in the selected folder", contentName));
+        }
+        
+        return contentRow;
     }
 
     /**
@@ -464,33 +549,41 @@ public class ShareUserSitePage extends AbstractUtils
      */
     public static DocumentLibraryPage selectView(WebDrone driver, ViewType viewType)
     {
-        DocumentLibraryPage docPage = (DocumentLibraryPage) ShareUser.getSharePage(driver);
+        DocumentLibraryPage docPage = ShareUser.getSharePage(driver).render();
 
         switch (viewType)
         {
-            case SIMPLE_VIEW:
-                docPage = docPage.getNavigation().selectSimpleView().render();
-                logger.info("Opened Simple View");
-                return docPage;
-            case DETAILED_VIEW:
-                docPage = docPage.getNavigation().selectDetailedView().render();
-                logger.info("Opened Detailed View");
-                return docPage;
-            case GALLERY_VIEW:
-                docPage = docPage.getNavigation().selectGalleryView().render();
-                logger.info("Opened Gallery View");
-                return docPage;
-            case TABLE_VIEW:
-                docPage = docPage.getNavigation().selectTableView().render();
-                logger.info("Opened Table View");
-                return docPage;
+        case SIMPLE_VIEW:
+            docPage = docPage.getNavigation().selectSimpleView().render();
+            logger.info("Opened Simple View");
+            return docPage;
+        case DETAILED_VIEW:
+            docPage = docPage.getNavigation().selectDetailedView().render();
+            logger.info("Opened Detailed View");
+            return docPage;
+        case GALLERY_VIEW:
+            docPage = docPage.getNavigation().selectGalleryView().render();
+            logger.info("Opened Gallery View");
+            return docPage;
+        case TABLE_VIEW:
+            docPage = docPage.getNavigation().selectTableView().render();
+            logger.info("Opened Table View");
+            return docPage;
         case FILMSTRIP_VIEW:
             docPage = docPage.getNavigation().selectFilmstripView().render();
             logger.info("Opened Filmstrip View");
             return docPage;
-            default:
-                logger.info("Failed to find specified View: View not changed");
-                return docPage;
+        case MEDIA_VIEW:
+            docPage = docPage.getNavigation().selectMediaView().render();
+            logger.info("Opened Media View");
+            return docPage;
+        case AUDIO_VIEW:
+            docPage = docPage.getNavigation().selectAudioView().render();
+            logger.info("Opened Audio View");
+            return docPage;
+        default:
+            logger.info("Failed to find specified View: View not changed");
+            return docPage;
         }
     }
 
@@ -516,7 +609,7 @@ public class ShareUserSitePage extends AbstractUtils
                 driver.refresh();
             }
 
-            DocumentLibraryPage documentLibraryPage = (DocumentLibraryPage) getSharePage(driver);
+            DocumentLibraryPage documentLibraryPage = getSharePage(driver).render();
             found = documentLibraryPage.isFileVisible(entry);
 
             resultAsExpected = (entryPresent.equals(found));
@@ -545,27 +638,20 @@ public class ShareUserSitePage extends AbstractUtils
     }
 
     /**
-     * Add given tags to file or folder in {@link TagPage}.
+     * Add given tags to file or folder in {@link TagPage} via DetailsPage.
      * Assume that user currently in {@link DocumentLibraryPage}.
      * 
      * @param drone
      * @param contentName
      * @param tags - Tags to be added to file
-     * @return {@link DocumentLibraryPage}
+     * @return {@link DetailsPage}
      */
     public static HtmlPage addTags(WebDrone drone, String contentName, List<String> tags)
     {
-        DocumentLibraryPage doclibPage = getSharePage(drone).render();
-        DetailsPage detailsPage;
+        getFileDirectoryInfo(drone, contentName);
+        
+        DetailsPage detailsPage = openDetailsPage(drone, contentName);
 
-        if (doclibPage.getFileDirectoryInfo(contentName).isFolder())
-        {
-            detailsPage = doclibPage.getFileDirectoryInfo(contentName).selectViewFolderDetails();
-        }
-        else
-        {
-            detailsPage = doclibPage.selectFile(contentName).render();
-        }
         EditDocumentPropertiesPage propertiesPage = detailsPage.selectEditProperties().render();
         TagPage tagPage = propertiesPage.getTag().render();
         for (String tag : tags)
@@ -581,7 +667,7 @@ public class ShareUserSitePage extends AbstractUtils
     {
         DocumentLibraryPage doclibPage = getSharePage(drone).render();
 
-        if(doclibPage.getFileDirectoryInfo(fileName).isFolder())
+        if (doclibPage.getFileDirectoryInfo(fileName).isFolder())
         {
             throw new UnsupportedOperationException("This util isn't supported for Folders, files only");
         }
@@ -600,16 +686,16 @@ public class ShareUserSitePage extends AbstractUtils
      * @param drone
      * @param contentName
      * @param newName
-     * @param saveChanges   <code>true</code> saves the changes, <code>false</code> cancels without saving.
+     * @param saveChanges <code>true</code> saves the changes, <code>false</code> cancels without saving.
      * @return
      */
     public static DocumentLibraryPage editContentNameInline(WebDrone drone, String contentName, String newName, boolean saveChanges)
-    {        
+    {
         FileDirectoryInfo fileDirInfo = getFileDirectoryInfo(drone, contentName);
 
         fileDirInfo.contentNameEnableEdit();
         fileDirInfo.contentNameEnter(newName);
-        if(saveChanges)
+        if (saveChanges)
         {
             fileDirInfo.contentNameClickSave();
         }
@@ -675,7 +761,7 @@ public class ShareUserSitePage extends AbstractUtils
      * Sorts the document library by the given field.
      * 
      * @param drone
-     * @param field         The field to sort by.
+     * @param field The field to sort by.
      * @param sortAscending <code>true</code> if ascending. <code>false</code> if descending.
      * @return {@link DocumentLibraryPage}
      */
@@ -684,13 +770,13 @@ public class ShareUserSitePage extends AbstractUtils
         DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
 
         docLibPage.getNavigation().selectSortFieldFromDropDown(field).render();
-        if(sortAscending)
+        if (sortAscending)
         {
-            return docLibPage.getNavigation().sortAscending().render();
+            return docLibPage.getNavigation().sortAscending(true).render();
         }
         else
         {
-            return docLibPage.getNavigation().sortDescending().render();
+            return docLibPage.getNavigation().sortAscending(false).render();
         }
     }
 
@@ -715,44 +801,271 @@ public class ShareUserSitePage extends AbstractUtils
 
         return editTextDocumentPage.saveWithValidation(details).render();
     }
-    
-    /**
-     * Clicks on the I'm Editing link
-     * 
-     * @return DocumentLibraryPage filtered to show documents I'm editing
-     */
-    /*public static DocumentLibraryPage selectImEditing(WebDrone drone)
-    {
-        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
-        
-        TreeMenuNavigation treeMenu = docLibPage.getLeftMenus().render();
-
-        return treeMenu.selectDocumentNode(TreeMenuNavigation.DocumentsMenu.IM_EDITING).render();
-    }*/
-    
-    /**
-     * Clicks on the My Favourites link
-     * 
-     * @return DocumentLibraryPage filtered to show favourite documents
-     */
-    /*public static DocumentLibraryPage selectFavourites(WebDrone drone)
-    {
-        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
-
-        return docLibPage.clickOnMyFavourites().render();
-    }*/
 
     /**
      * Assumes you are on Doclib page. Does the action of clicking on copy to action from document lib navigation.
      * 
      * @param drone
      */
-    public static void copyToActionFromNavigation(WebDrone drone)
+    public static DocumentLibraryPage copyToActionFromNavigation(WebDrone drone)
     {
         DocumentLibraryPage docLibPage = ShareUser.getSharePage(drone).render();
         CopyOrMoveContentPage copyContent = docLibPage.getNavigation().selectCopyTo().render();
 
         // Keep the selected Destination: Current Site > DocumentLibrary Folder
         docLibPage = copyContent.selectOkButton().render();
+        return docLibPage;
+    }
+
+    /**
+     * Selects the option to download folder as zip from FolderDetailsPage
+     * Assumes user logged in and on FolderDetailsPage
+     * 
+     * @param drone
+     * @param downloadFilePath
+     * @return FolderDetailsPage
+     */
+    public static FolderDetailsPage downloadFolderAsZip(WebDrone drone, String downloadFilePath)
+    {
+        if (downloadFilePath == null || downloadFilePath.isEmpty())
+        {
+            throw new IllegalArgumentException("Download Path inappropriate");
+        }
+
+        FolderDetailsPage folderDetailsPage = getSharePage(drone).render();
+        folderDetailsPage = folderDetailsPage.selectDownloadFolderAsZip("folder").render();
+        folderDetailsPage.waitForFile(downloadFilePath);
+
+        // Wait until the file download stream has been closed properly, to avoid errors
+        webDriverWait(drone, 3000);
+
+        return folderDetailsPage.render();
+    }
+
+    /**
+     * 
+     * @param driver
+     * @param contentName
+     *            - File or folder name.
+     * @param methodName
+     *            - Which type of entity on one file needs to be checked - like tags, fav, likes.
+     * @param entry
+     *            - the value for the methodName above. If methodName - tags entry to check is "tag1"
+     * @param entryPresent
+     *            - check whether above entry is present(send true) or not(send false).
+     * @return
+     */
+    public static boolean getDocLibInfoWithRetry(WebDrone driver, String contentName, String methodName, String entry, boolean entryPresent)
+    {
+        Boolean found = false;
+        Boolean resultAsExpected = false;
+
+        if (contentName == null || contentName.isEmpty())
+        {
+            throw new IllegalArgumentException("Content Name can not be blank");
+        }
+
+        // Assumes User is logged in and specific Site's doclib is open
+
+        // Code to repeat search until the element is found or Timeout is hit
+        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
+        {
+            if (searchCount > 1)
+            {
+                webDriverWait(driver, refreshDuration);
+                driver.refresh();
+            }
+
+            if (methodName.equals("tags"))
+            {
+                List<String> info = getFileDirectoryInfo(driver, contentName).getTags();
+                
+                if (info != null)
+                {
+                    List<String> infoInsensitive = new CustomStringList<String>(info);
+                    found = infoInsensitive.contains(entry);
+                }
+            }
+            else if(methodName.equals("editing"))
+            {
+                // This if statement is required to avoid exception when content isn't found in 1st instance
+                if(isFileVisible(driver, contentName))
+                {
+                    found = getFileDirectoryInfo(driver, contentName).isEdited();
+                }
+            }
+            else if(methodName.equals("isContentVisible"))
+            {
+                found = isFileVisible(driver, contentName);
+            }
+            
+            // Loop again if result is not as expected: To cater for solr lag: eventual consistency
+            resultAsExpected = (entryPresent == found);
+            if (resultAsExpected)
+            {
+                break;
+            }
+        }
+        return resultAsExpected;
+    }
+
+
+    /**
+     * @param drone
+     * @param contentName
+     * @return
+     */
+    public static boolean isFileVisible(WebDrone drone, String contentName)
+    {
+        try
+        {
+            getFileDirectoryInfo(drone, contentName);
+            return true;
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Method to get NodeRef for a given content item in given Site
+     * 
+     * @param drone
+     * @param siteName
+     * @param contentName
+     * @return String nodeRef
+     */
+    // TODO: Consider util with contentPath, since this util will only work for content directly under DocLib
+    public static String getNodeRef(WebDrone drone, String siteName, String contentName)
+    {
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        return getFileDirectoryInfo(drone,contentName).getNodeRef();
+    }
+    
+    /**
+     * Add tag from DocumentLibraryPage.
+     * @param drone
+     * @param contentName
+     * @param tagName
+     */
+    public static DocumentLibraryPage addTag(WebDrone drone, String contentName, String tagName)
+    {
+        FileDirectoryInfo content = ShareUserSitePage.getFileDirectoryInfo(drone, contentName);
+        content.addTag(tagName);
+        return getSharePage(drone).render();
+    }
+
+    /**
+     * Open Details Page for the selected content
+     * Assumes user is logged in and on DocumentLibraryPage
+     * 
+     * @param drone
+     * @param contentName
+     */
+    public static DetailsPage openDetailsPage(WebDrone drone, String contentName)
+    {
+        FileDirectoryInfo fileInfo = getFileDirectoryInfo(drone, contentName);
+        DocumentLibraryPage doclibPage = getSharePage(drone).render();
+
+        if (fileInfo.isFolder())
+        {
+            return fileInfo.selectViewFolderDetails();
+        }
+        else
+        {
+            return doclibPage.selectFile(contentName).render();
+        }
+    }
+
+    /**
+     * Util traverses through all the pages of the doclib to find the content within the folder and clicks on the contentTile
+     * @param drone
+     * @param contentName
+     * @return
+     */
+    public static HtmlPage selectContent(WebDrone drone, String contentName)
+    {
+        return getFileDirectoryInfo(drone, contentName).clickOnTitle().render();
+    }
+
+    /**
+     * @param driver
+     * @param contentName - File or folder name.
+     * @param docMenuItem - The {@link DocumentsMenu} to click on.
+     * @param entryPresent - check whether above entry is present(send true) or
+     *            not(send false).
+     * @return
+     */
+    public static boolean getDocTreeMenuWithRetry(WebDrone driver, String contentName, DocumentsMenu docMenuItem, boolean entryPresent)
+    {
+        Boolean found = false;
+        Boolean resultAsExpected = false;
+
+        if (contentName == null || contentName.isEmpty())
+        {
+            throw new IllegalArgumentException("Content Name can not be blank");
+        }
+
+        DocumentLibraryPage docLibPage = ShareUser.getSharePage(driver).render();
+
+        // Assumes User is logged in and specific Site's doclib is open
+
+        // Code to repeat search until the element is found or Timeout is hit
+        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
+        {
+            if (searchCount > 1)
+            {
+                webDriverWait(driver, refreshDuration);
+                driver.refresh();
+            }
+
+            TreeMenuNavigation treeMenu = docLibPage.getLeftMenus();
+
+            docLibPage = treeMenu.selectDocumentNode(docMenuItem).render();
+            found = docLibPage.isFileVisible(contentName);
+
+            // Loop again if result is not as expected: To cater for solr lag:
+            // eventual consistency
+            resultAsExpected = (entryPresent == found);
+            if (resultAsExpected)
+            {
+                break;
+            }
+        }
+        return resultAsExpected;
+    }
+
+    /**
+     * This method clicks on the given tag name in the Tags Tree menu on
+     * Document Library page.
+     *
+     * @param tagName
+     * @return {@link DocumentLibraryPage}
+     */
+    public static HtmlPage clickOnTagNameInTreeMenu(WebDrone drone, String tagName)
+    {
+        if (tagName == null)
+        {
+            throw new UnsupportedOperationException("TagName is required.");
+        }
+
+        DocumentLibraryPage doclibPage = getSharePage(drone).render();
+
+        TreeMenuNavigation treeMenu = doclibPage.getLeftMenus();
+        return treeMenu.selectTagNode(tagName).render();
+    }
+
+    /**
+     * Return the content count in the current document library view.
+     * 
+     * @param drone
+     * @return
+     */
+    public static int getContentCount(WebDrone drone)
+    {
+        DocumentLibraryPage doclibPage = getSharePage(drone).render();
+
+        return doclibPage.getFiles().size();
     }
 }

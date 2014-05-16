@@ -36,6 +36,7 @@ import org.openqa.selenium.WebElement;
 public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
 {
     private static final String DASHLET_CONTAINER_PLACEHOLDER = "div.dashlet.activities";
+    private static final By RSS_FEED_BUTTON = By.cssSelector(".titleBarActionIcon.rss");
     private List<ShareLink> userLinks;
     private List<ShareLink> documetLinks;
     private List<String> activityDescriptions;
@@ -46,6 +47,7 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
     protected SiteActivitiesDashlet(WebDrone drone)
     {
         super(drone, By.cssSelector(DASHLET_CONTAINER_PLACEHOLDER));
+        setResizeHandle(By.cssSelector("div.dashlet.activities .yui-resize-handle"));
     }
 
     @SuppressWarnings("unchecked")
@@ -219,5 +221,22 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
         }
 
         return activityDescriptions;
+    }
+
+    /**
+     * Method to verify whether RSS Feed is available
+     *
+     * @return boolean
+     */
+    public boolean isRssBtnDisplayed()
+    {
+        try
+        {
+            return drone.isElementDisplayed(RSS_FEED_BUTTON);
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
     }
 }

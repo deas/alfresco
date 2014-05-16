@@ -20,12 +20,14 @@ package org.alfresco.po.share.site.document;
 
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
@@ -42,6 +44,10 @@ public class CategoryPageTest extends AbstractDocumentTest
     private DocumentLibraryPage documentLibPage;
     DashBoardPage dashBoard;
     DocumentDetailsPage detailsPage;
+    
+    private String categoryTags;
+    private String categoryRegions;
+
 
     /**
      * Pre test setup of a dummy file to upload.
@@ -69,6 +75,9 @@ public class CategoryPageTest extends AbstractDocumentTest
         aspects.add(DocumentAspect.CLASSIFIABLE);
         aspectsPage = aspectsPage.add(aspects).render();
         detailsPage = aspectsPage.clickApplyChanges().render();
+        categoryTags = drone.getValue("category.tags");
+        categoryRegions = drone.getValue("category.regions");
+
     }
 
     @AfterClass(groups="alfresco-one")
@@ -80,7 +89,7 @@ public class CategoryPageTest extends AbstractDocumentTest
         }
     }
     
-    @Test
+    @Test(groups = {"Enterprise4.2"})
     public void getAddAbleCatgories()
     {
         EditDocumentPropertiesPage propertiesPage = detailsPage.selectEditProperties().render();
@@ -96,56 +105,103 @@ public class CategoryPageTest extends AbstractDocumentTest
         detailsPage = propertiesPage.selectCancel().render();
     }
     
-    @Test(dependsOnMethods="getAddAbleCatgories")
+    @Test(dependsOnMethods="getAddAbleCatgories", groups = {"Enterprise4.2"})
+    public void getAddAbleCatgoryList()
+    {
+        EditDocumentPropertiesPage propertiesPage = detailsPage.selectEditProperties().render();
+        CategoryPage categoryPage = propertiesPage.getCategory().render();
+        List<String> addAbleCategoryList = categoryPage.getAddAbleCatgoryList();
+        assertFalse(addAbleCategoryList.isEmpty(), "addable category list is empty.");
+        assertTrue(addAbleCategoryList.contains(categoryTags), categoryTags + "is not in category list.");
+        categoryPage.addCategories(Arrays.asList(categoryTags)).render();
+        categoryPage.addCategories(Arrays.asList(drone.getValue("category.english")), drone.getValue("category.languages")).render();
+        List<String> addedCategories = categoryPage.getAddedCatgoryList();
+        assertTrue(addedCategories.size() > 0);
+        assertTrue(addedCategories.contains(categoryTags));
+        assertTrue(addedCategories.contains(drone.getValue("category.english")));
+        propertiesPage = categoryPage.clickCancel().render();
+        detailsPage = propertiesPage.selectCancel().render();
+    }
+    
+    @Test(dependsOnMethods="getAddAbleCatgories", groups = {"Enterprise4.2"})
     public void clickCancel()
     {
         EditDocumentPropertiesPage propertiesPage = detailsPage.selectEditProperties().render();
         CategoryPage categoryPage = propertiesPage.getCategory().render();
-        categoryPage.add(Arrays.asList(Categories.TAGS));
-        List<Categories> addedCategories = categoryPage.getAddedCatgories();
+        categoryPage.addCategories(Arrays.asList(categoryTags));
+        List<String> addedCategories = categoryPage.getAddedCatgoryList();
         assertTrue(addedCategories.size() > 0);
-        assertTrue(addedCategories.contains(Categories.TAGS));
+        assertTrue(addedCategories.contains(categoryTags));
         propertiesPage = categoryPage.clickCancel().render();
         detailsPage = propertiesPage.selectSave().render();
         propertiesPage = detailsPage.selectEditProperties().render();
         categoryPage = propertiesPage.getCategory().render();
-        addedCategories = categoryPage.getAddedCatgories();
+        addedCategories = categoryPage.getAddedCatgoryList();
         assertTrue(addedCategories.size() == 0);
         propertiesPage = categoryPage.clickCancel().render();
         detailsPage = propertiesPage.selectCancel().render();
     }
     
     @SuppressWarnings("unchecked")
-    @Test(dependsOnMethods="clickCancel")
+    @Test(dependsOnMethods="clickCancel", groups = {"Enterprise4.2"})
     public void clickOk()
     {
         EditDocumentPropertiesPage propertiesPage = detailsPage.selectEditProperties().render();
         CategoryPage categoryPage = propertiesPage.getCategory().render();
-        categoryPage.add(Arrays.asList(Categories.TAGS, Categories.REGIONS));
-        List<Categories> addedCategories = categoryPage.getAddedCatgories();
-        assertTrue(addedCategories.size() > 0);
-        assertTrue(addedCategories.contains(Categories.TAGS));
+        categoryPage.addCategories(Arrays.asList(categoryTags, categoryRegions));
+        List<String> addedCategoryList = categoryPage.getAddedCatgoryList();
+        assertTrue(addedCategoryList.size() > 0);
+        assertTrue(addedCategoryList.contains(categoryTags));
         propertiesPage = categoryPage.clickOk().render();
-        addedCategories = propertiesPage.getCategories();
-        assertTrue(addedCategories.size() > 0);
-        assertTrue(addedCategories.contains(Categories.TAGS));
+        addedCategoryList = propertiesPage.getCategoryList();
+        assertTrue(addedCategoryList.size() > 0);
+        assertTrue(addedCategoryList.contains(categoryTags));
         categoryPage = propertiesPage.getCategory().render();
-        addedCategories = categoryPage.getAddedCatgories();
-        assertTrue(addedCategories.size() > 0);
-        assertTrue(addedCategories.contains(Categories.TAGS));
+        addedCategoryList = categoryPage.getAddedCatgoryList();
+        assertTrue(addedCategoryList.size() > 0);
+        assertTrue(addedCategoryList.contains(categoryTags));
         propertiesPage = categoryPage.clickCancel().render();
         detailsPage = propertiesPage.selectSave().render();
-        addedCategories = (List<Categories>) detailsPage.getProperties().get("Categories");
+        List<Categories> addedCategories = (List<Categories>) detailsPage.getProperties().get("Categories");
         assertTrue(addedCategories.size() == 2);
-        for (Categories categories : addedCategories)
+        for (Categories category : addedCategories)
         {
-            Arrays.asList(Categories.TAGS, Categories.REGIONS).contains(categories);
+            Arrays.asList(categoryTags, categoryRegions).contains(category);
         }
         documentLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage.setViewType(ViewType.DETAILED_VIEW);
         FileDirectoryInfo  directoryInfo = documentLibPage.getFileDirectoryInfo("Test Doc");
-        addedCategories = directoryInfo.getCategories();
-        assertTrue(addedCategories.size() > 0);
-        assertTrue(addedCategories.contains(Categories.TAGS));
+        addedCategoryList = directoryInfo.getCategoryList();
+        assertTrue(addedCategoryList.size() > 0);
+        assertTrue(addedCategoryList.contains(categoryTags));
     }
+    
+   /* @Test(dependsOnMethods="clickOk", groups = {"Enterprise4.2"})
+    public void clickRemove()
+    {
+        FileDirectoryInfo  directoryInfo = documentLibPage.getFileDirectoryInfo("Test Doc");
+        EditDocumentPropertiesPage propertiesPage = directoryInfo.selectEditProperties().render();
+        
+        CategoryPage categoryPage = propertiesPage.getCategory().render();
+        categoryPage.removeCategories(Arrays.asList(categoryTags));
+        List<String> addedCategoryList = categoryPage.getAddedCatgoryList();
+        //assertTrue(addedCategoryList.size() > 0);
+        assertFalse(addedCategoryList.contains(categoryTags));
+        propertiesPage = categoryPage.clickOk().render();
+        addedCategoryList = propertiesPage.getCategoryList();
+        //assertTrue(addedCategoryList.size() > 0);
+        assertFalse(addedCategoryList.contains(categoryTags));
+        //categoryPage = propertiesPage.getCategory().render();
+        //addedCategoryList = categoryPage.getAddedCatgoryList();
+        //assertTrue(addedCategoryList.size() > 0);
+        //assertTrue(addedCategoryList.contains(categoryTags));
+        //propertiesPage = categoryPage.clickCancel().render();
+        directoryInfo = propertiesPage.selectSave().render();
 
+        documentLibPage.setViewType(ViewType.DETAILED_VIEW);
+        directoryInfo = documentLibPage.getFileDirectoryInfo("Test Doc");
+        addedCategoryList = directoryInfo.getCategoryList();
+        //assertTrue(addedCategoryList.size() > 0);
+        assertFalse(addedCategoryList.contains(categoryTags));
+    }*/
 }

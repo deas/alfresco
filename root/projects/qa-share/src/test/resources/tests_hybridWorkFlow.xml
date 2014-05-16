@@ -1,20 +1,48 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Classes" verbose="1" preserve-order="true">
-	<test name="dataprep" verbose="1" parallel="classes" thread-count="1">
-		<groups>
-			<run>
-				<exclude name="DataPrep.*" />
-				<include name="Hybrid" />
-			</run>
-		</groups>
-		<classes>
-            <class name="org.alfresco.share.workflow.HybridWorkflowSanityTest" />	
+<suite name="HybridWorkFlow" verbose="1" preserve-order="true" parallel="tests" thread-count="1">
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+    </listeners>
+    <groups>
+        <run>
+            <exclude name="DataPrep.*" />
+            <include name="Hybrid" />
+            <exclude name="NonGrid" />
+        </run>
+    </groups>
+    <test name="HybridWorkflowSanityTest" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.workflow.HybridWorkflowSanityTest" />
+        </classes>
+    </test>
+    <test name="WorkFlowOptionsMessageTest" verbose="1">
+        <classes>
             <class name="org.alfresco.share.workflow.WorkFlowOptionsMessageTest" />
-            <class name="org.alfresco.share.workflow.CloudReviewTaskTest" /> 		
-        	<class name="org.alfresco.share.workflow.HybridWorkflowTest1" />
-			<class name="org.alfresco.share.workflow.HybridWorkflowTest2" />
-			<class name="org.alfresco.share.workflow.HybridWorkflowTest3" />
-			<class name="org.alfresco.share.workflow.WorkFlowActionsTest" />			
-		</classes>
-	</test>
+        </classes>
+    </test>
+    <test name="CloudReviewTaskTest" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.workflow.CloudReviewTaskTest" />
+        </classes>
+    </test>
+    <test name="HybridWorkflowTest1" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.workflow.HybridWorkflowTest1" />
+        </classes>
+    </test>
+    <test name="HybridWorkflowTest2" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.workflow.HybridWorkflowTest2"/>
+        </classes>
+    </test>
+    <test name="HybridWorkflowTest3" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.workflow.HybridWorkflowTest3" />
+        </classes>
+    </test>
+    <test name="WorkFlowActionsTest" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.workflow.WorkFlowActionsTest" />
+        </classes>
+    </test>
 </suite>

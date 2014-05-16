@@ -98,7 +98,7 @@ public class EditTaskPageTest extends AbstractTaskTest
         siteFinder = dash.getNav().selectSearchForSites().render();
         siteFinder = siteFinder.searchForSite(modSiteName).render();
         siteFinder = siteSearchRetry(siteFinder, modSiteName);
-        siteFinder.joinSite(modSiteName).render();
+        siteFinder.requestToJoinSite(modSiteName).render();
         ShareUtil.logout(drone);
         // Rejecting the request to join
         dash = loginAs(testUserName, "password");
@@ -116,7 +116,7 @@ public class EditTaskPageTest extends AbstractTaskTest
         DashBoardPage dash = loginAs(otherUser, "password");
         siteFinder = dash.getNav().selectSearchForSites().render();
         siteFinder = siteFinder.searchForSite(modSiteName).render();
-        siteFinder.joinSite(modSiteName).render();
+        siteFinder.requestToJoinSite(modSiteName).render();
         ShareUtil.logout(drone);
 
         // Approving request to join.

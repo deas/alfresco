@@ -1,55 +1,18 @@
 package org.alfresco.share.util;
 
-import static org.alfresco.po.share.AlfrescoVersion.Enterprise41;
-import static org.alfresco.po.share.AlfrescoVersion.Enterprise42;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.GroupsPage;
-import org.alfresco.po.share.LoginPage;
-import org.alfresco.po.share.NewGroupPage;
+import org.alfresco.po.share.*;
 import org.alfresco.po.share.NewGroupPage.ActionButton;
-import org.alfresco.po.share.NewUserPage;
-import org.alfresco.po.share.RepositoryPage;
-import org.alfresco.po.share.ShareLink;
-import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.ShareUtil;
-import org.alfresco.po.share.UserSearchPage;
-import org.alfresco.po.share.dashlet.ActivityShareLink;
-import org.alfresco.po.share.dashlet.MyActivitiesDashlet;
+import org.alfresco.po.share.dashlet.*;
 import org.alfresco.po.share.dashlet.MyActivitiesDashlet.LinkType;
-import org.alfresco.po.share.dashlet.MyDocumentsDashlet;
-import org.alfresco.po.share.dashlet.MySitesDashlet;
-import org.alfresco.po.share.dashlet.MyTasksDashlet;
-import org.alfresco.po.share.dashlet.SiteActivitiesDashlet;
-import org.alfresco.po.share.dashlet.SiteContentDashlet;
+import org.alfresco.po.share.dashlet.MySitesDashlet.FavouriteType;
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UpdateFilePage;
-import org.alfresco.po.share.site.document.ConfirmDeletePage;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
-import org.alfresco.po.share.site.document.ContentDetails;
-import org.alfresco.po.share.site.document.ContentType;
-import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
-import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
-import org.alfresco.po.share.site.document.DetailsPage;
-import org.alfresco.po.share.site.document.DocumentAspect;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryNavigation;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
-import org.alfresco.po.share.site.document.EditTextDocumentPage;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.po.share.site.document.ManagePermissionsPage;
-import org.alfresco.po.share.site.document.SelectAspectsPage;
-import org.alfresco.po.share.site.document.SyncInfoPage;
 import org.alfresco.po.share.user.Language;
 import org.alfresco.po.share.user.LanguageSettingsPage;
 import org.alfresco.po.share.user.MyProfilePage;
@@ -58,15 +21,30 @@ import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.Keys;
 import org.testng.SkipException;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 public class ShareUser extends AbstractUtils
 {
 
     private static Log logger = LogFactory.getLog(ShareUser.class);
+
+    public enum SiteOperation
+    {
+        Delete, Open;
+    }
 
     public ShareUser()
     {
@@ -77,18 +55,15 @@ public class ShareUser extends AbstractUtils
     }
 
     /**
-     * User Log-in followed by deletion of session cookies Assumes User is *NOT*
-     * logged in.
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @param userInfo
-     *            String username, password
+     * User Log-in followed by deletion of session cookies Assumes User is *NOT* logged in.
+     *
+     * @param driver   WebDrone Instance
+     * @param userInfo String username, password
      * @return boolean true: if log in succeeds
      */
-    public static synchronized SharePage login(WebDrone driver, String... userInfo)
+    public static SharePage login(WebDrone driver, String... userInfo)
     {
-        LoginPage page = null;
+        LoginPage loginPage;
         SharePage sharePage = null;
 
         try
@@ -98,46 +73,46 @@ public class ShareUser extends AbstractUtils
 
             driver.navigateTo(dronePropertiesMap.get(driver).getShareUrl());
 
-            sharePage = getSharePage(driver).render();
-
-            // Logout if already logged in
-            if (sharePage.isLoggedIn())
-            {
-                sharePage = (SharePage) logout(driver);
-            }
-
+            sharePage = getSharePage(driver);
             if (userInfo.length < 2)
             {
                 userInfo = getAuthDetails(userInfo[0]);
             }
 
+            // Logout if already logged in
+            try
+            {
+                loginPage = sharePage.render();
+            }
+            catch (ClassCastException e)
+            {
+                loginPage = logout(driver).render();
+            }
+
             logger.info("Start: Login: " + userInfo[0] + " Password: " + userInfo[1]);
 
-            page = (LoginPage) sharePage;
-            page.render();
-            page.loginAs(userInfo[0], userInfo[1]);
+            loginPage.loginAs(userInfo[0], userInfo[1]);
             sharePage = driver.getCurrentPage().render();
 
             if (!sharePage.isLoggedIn())
             {
-                throw new ShareException("Failed: Login: " + userInfo[0] + " Password: " + userInfo[1]);
+                throw new ShareException("Method isLoggedIn return false");
             }
         }
         catch (Exception e)
         {
-            logger.info("Failed: Login: " + userInfo[0] + " Password: " + userInfo[1] + " Error: " + e);
-            throw new SkipException("Failed: Login: " + userInfo[0] + " Password: " + userInfo[1] + " Error: " + e);
+            String errorMessage = "Failed: Login: " + userInfo[0] + " Password: " + userInfo[1] + " Error: " + e;
+            logger.info(errorMessage);
+            throw new SkipException(errorMessage);
         }
 
         return sharePage;
-
     }
 
     /**
      * User Log out using logout URL Assumes User is logged in.
-     * 
-     * @param driver
-     *            WebDrone Instance
+     *
+     * @param driver WebDrone Instance
      */
     public static HtmlPage logout(WebDrone driver)
     {
@@ -163,9 +138,8 @@ public class ShareUser extends AbstractUtils
     /**
      * User Log out followed by deletion of session cookies Assumes User is
      * logged in.
-     * 
-     * @param driver
-     *            WebDrone Instance
+     *
+     * @param driver WebDrone Instance
      * @return LoginPage
      */
     public static LoginPage logoutCleanCookies(WebDrone driver)
@@ -179,9 +153,8 @@ public class ShareUser extends AbstractUtils
     /**
      * Navigate to User DashBoard and waits for the page render to complete.
      * Assumes User is logged in
-     * 
-     * @param driver
-     *            WebDrone Instance
+     *
+     * @param driver WebDrone Instance
      * @return DashBoardPage
      */
     public static DashBoardPage openUserDashboard(WebDrone driver)
@@ -200,9 +173,8 @@ public class ShareUser extends AbstractUtils
     /**
      * Navigate to User DashBoard page and waits for the page render to
      * complete. Assumes User is logged in
-     * 
-     * @param driver
-     *            WebDrone Instance
+     *
+     * @param driver WebDrone Instance
      * @return DashBoardPage
      */
     public static DashBoardPage refreshUserDashboard(WebDrone driver)
@@ -218,42 +190,53 @@ public class ShareUser extends AbstractUtils
     /**
      * From the User DashBoard, navigate to the Site DashBoard and waits for the
      * page render to complete. Assumes User is logged in.
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @param siteName
-     *            String Name of the site to be opened
+     *
+     * @param driver   WebDrone Instance
+     * @param siteName String Name of the site to be opened
      * @return SiteDashboardPage
      * @throws PageException
      */
     public static SiteDashboardPage openSiteDashboard(WebDrone driver, String siteName) throws PageException
     {
         // Assumes User is logged in
-
-        // Checking for site dashboard to be open.
-        HtmlPage page = driver.getCurrentPage();
+        HtmlPage page = getSharePage(driver).render();
+        
+        // Check if site dashboard is already open. Return
         if (page instanceof SiteDashboardPage)
         {
             if (((SiteDashboardPage) page).isSite(siteName))
             {
-                logger.info("Site dashboad page open for site - " + siteName);
-                return ((SiteDashboardPage) page);
+                logger.info("Site dashboad page already open for site - " + siteName);                
+                return page.render();
             }
-
         }
-        // Open User DashBoard
-        openUserDashboard(driver);
+        
+        // Check if site is already open. Open SiteDashBoard      
+        if (page instanceof SitePage)
+        {
+            if (((SitePage) page).isSite(siteName))
+            {
+                logger.info("Selecting Site DashBoard for Site - " + siteName);                
+                return refreshSiteDashboard(driver);
+            }
+        }
+        
+        
+        // Open User DashBoard: Using MySitesDashlet
+        DashBoardPage dashBoard = openUserDashboard(driver);
+        MySitesDashlet dashlet = dashBoard.getDashlet(DASHLET_SITES).render(refreshDuration);
 
-        SiteDashboardPage siteDashPage = SiteUtil.openSiteURL(driver, getSiteShortname(siteName));
+        SiteDashboardPage siteDashPage = dashlet.selectSite(siteName).click().render(maxWaitTime);
+        
+        logger.info("Opened Site Dashboard using User DashBoard - MySites Dashlet: " + siteName);
 
-        /*
-         * MySitesDashlet dashlet =
-         * dashBoard.getDashlet(DASHLET_SITES).render(refreshDuration);
-         * SiteDashboardPage siteDashPage =
-         * dashlet.selectSite(siteName).click().render(maxWaitTime);
-         */
+        // Open User DashBoard: Using SiteURL
+        // SiteDashboardPage siteDashPage = SiteUtil.openSiteURL(driver, getSiteShortname(siteName));
 
-        logger.info("Opened Site Dashboard: " + siteName);
+        // Open User DashBoard: Using SiteFinder
+        // SiteDashboardPage siteDashPage = SiteUtil.openSiteFromSearch(driver, siteName);
+
+        // logger.info("Opened Site Dashboard using SiteURL: " + siteName);
 
         return siteDashPage;
     }
@@ -261,8 +244,8 @@ public class ShareUser extends AbstractUtils
     /**
      * Open document Library: Top Level Assumes User is logged in and a Specific
      * Site is open.
-     * 
-     * @param driver	WebDrone Instance
+     *
+     * @param driver WebDrone Instance
      * @return DocumentLibraryPage
      */
     public static DocumentLibraryPage openDocumentLibrary(WebDrone driver)
@@ -285,12 +268,10 @@ public class ShareUser extends AbstractUtils
      * Refresh document Library: Refreshes the drone, if already on any Page of
      * the DocumentLibrary Instance Assumes User is logged in and a Specific
      * Site is open.
-     * 
-     * @param driver
-     *            WebDrone Instance
+     *
+     * @param driver WebDrone Instance
      * @return DocumentLibraryPage
-     * @throws PageException
-     *             if current page is not an instance of DocumentLibraryPage
+     * @throws PageException if current page is not an instance of DocumentLibraryPage
      */
     public static DocumentLibraryPage refreshDocumentLibrary(WebDrone driver)
     {
@@ -312,11 +293,9 @@ public class ShareUser extends AbstractUtils
     /**
      * Open Site and then Open Document Library Assumes User is logged in and a
      * Specific Site Dashboard is open.
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @param siteName
-     *            String Name of the Site
+     *
+     * @param driver   WebDrone Instance
+     * @param siteName String Name of the Site
      * @return DocumentLibraryPage
      */
     public static DocumentLibraryPage openSitesDocumentLibrary(WebDrone driver, String siteName)
@@ -324,7 +303,7 @@ public class ShareUser extends AbstractUtils
         // Assumes User is logged in
 
         // Checking for site doc lib to be open.
-        HtmlPage page = driver.getCurrentPage();
+        HtmlPage page = getSharePage(driver).render();
         if (page instanceof DocumentLibraryPage)
         {
             if (((DocumentLibraryPage) page).isSite(siteName) && ((DocumentLibraryPage) page).isDocumentLibrary())
@@ -346,12 +325,10 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Create Site using Share UI. Assumes User is logged in.
-     * 
-     * @param driver
-     *            WebDrone Instance
+     *
+     * @param driver         WebDrone Instance
      * @param siteName
-     * @param siteVisibility
-     *            String Public, Moderated, Private
+     * @param siteVisibility String Public, Moderated, Private
      */
     public static SiteDashboardPage createSite(WebDrone driver, String siteName, String siteVisibility) throws Exception
     {
@@ -378,12 +355,10 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Create Site using Share UI. Assumes User is logged in.
-     * 
-     * @param driver
-     *            WebDrone Instance
+     *
+     * @param driver         WebDrone Instance
      * @param siteName
-     * @param siteVisibility
-     *            String Public, Moderated, Private
+     * @param siteVisibility String Public, Moderated, Private
      */
     public static SiteDashboardPage createSite(WebDrone driver, String siteName, String siteVisibility, boolean returnIfAlreadyCreated) throws Exception
     {
@@ -404,7 +379,7 @@ public class ShareUser extends AbstractUtils
         }
         catch (Exception ex)
         {
-            logger.info("Throw exception",ex);
+            logger.info("Throw exception", ex);
             logger.info("Skip test. Error in Create Site: " + ex);
         }
         return site;
@@ -413,25 +388,19 @@ public class ShareUser extends AbstractUtils
     /**
      * Creates a new folder at the Path specified, Starting from the Document
      * Library Page. Assumes User is logged in and a specific Site is open.
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @param folderName
-     *            String Name of the folder to be created
-     * @param folderDesc
-     *            String Description of the folder to be created
-     * @param parentFolderPath
-     *            String Path for the folder to be created, under
-     *            DocumentLibrary : such as constDoclib + file.seperator +
-     *            parentFolderName1 + file.seperator + parentFolderName2
+     *
+     * @param driver           WebDrone Instance
+     * @param folderName       String Name of the folder to be created
+     * @param folderDesc       String Description of the folder to be created
+     * @param parentFolderPath String Path for the folder to be created, under
+     *                         DocumentLibrary : such as constDoclib + file.seperator +
+     *                         parentFolderName1 + file.seperator + parentFolderName2
      * @throws Exception
      */
-    public static void createFolderInFolder(WebDrone driver, String folderName, String folderDesc, String parentFolderPath) throws Exception
+    public static DocumentLibraryPage createFolderInFolder(WebDrone driver, String folderName, String folderDesc, String parentFolderPath) throws Exception
     {
-        checkIfDriverNull(driver);
         try
         {
-
             // Data setup Options: Use UI, Use API, Copy, Data preloaded?
 
             // Using Share UI
@@ -439,7 +408,7 @@ public class ShareUser extends AbstractUtils
             ShareUserSitePage.navigateToFolder(driver, parentFolderPath);
 
             // Create Folder
-            ShareUserSitePage.createFolder(driver, folderName, folderDesc);
+            return ShareUserSitePage.createFolder(driver, folderName, folderDesc);
         }
         catch (Exception ex)
         {
@@ -481,11 +450,9 @@ public class ShareUser extends AbstractUtils
     /**
      * Navigates to the Path specified, Starting from the Document Library Page.
      * Assumes User is logged in and a specific Site is open.
-     * 
-     * @param fileInfo
-     *            : such as constDoclib + file.seperator + parentFolderName1
-     * @throws SkipException
-     *             if error in this API
+     *
+     * @param fileInfo : such as constDoclib + file.seperator + parentFolderName1
+     * @throws SkipException if error in this API
      */
     public static DocumentLibraryPage uploadFileInFolder(WebDrone driver, String[] fileInfo) throws Exception
     {
@@ -557,17 +524,13 @@ public class ShareUser extends AbstractUtils
     /**
      * Helper to search for an Activity Entry on the User Dashboard Page, with
      * configurable retry search option.
-     * 
-     * @param driver
-     *            WebDrone instance
-     * @param dashlet
-     *            String Name of the Dashlet such as
-     *            activities,content,myDocuments etc
-     * @param entry
-     *            String Entry to look for within the Dashlet
-     * @param entryPresent
-     *            String Parameter to indicate should the entry be visible
-     *            within the dashlet
+     *
+     * @param driver       WebDrone instance
+     * @param dashlet      String Name of the Dashlet such as
+     *                     activities,content,myDocuments etc
+     * @param entry        String Entry to look for within the Dashlet
+     * @param entryPresent String Parameter to indicate should the entry be visible
+     *                     within the dashlet
      * @return true if result is as expected
      * @throws InterruptedException
      */
@@ -630,11 +593,9 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Helper to search for an Element in the list of <ShareLinks>.
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @param dashlet
-     *            String Name of the dashlet
+     *
+     * @param driver  WebDrone Instance
+     * @param dashlet String Name of the dashlet
      * @return List<ShareLink>: List of Share Links available in the dashlet
      */
     public static List<ActivityShareLink> getActivityDashletEntries(WebDrone driver, String dashlet)
@@ -662,11 +623,9 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Helper to search for an Element in the list of <ShareLinks>.
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @param dashlet
-     *            String Name of the dashlet
+     *
+     * @param driver  WebDrone Instance
+     * @param dashlet String Name of the dashlet
      * @return List<ShareLink>: List of Share Links available in the dashlet
      */
     protected static List<ShareLink> getDashletEntries(WebDrone driver, String dashlet)
@@ -700,11 +659,9 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Helper to search for an Element in the list of <List<ActivityShareLink>>.
-     * 
-     * @param entryList
-     *            <List<ActivityShareLink>>
-     * @param entry
-     *            String entry to be found in the ShareLinks' list
+     *
+     * @param entryList <List<ActivityShareLink>>
+     * @param entry     String entry to be found in the ShareLinks' list
      * @return Boolean true if entry is found, false if not
      */
     protected static Boolean findInActivitiesList(List<ActivityShareLink> entryList, String entry)
@@ -721,11 +678,9 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Helper to search for an Element in the list of <ShareLinks>.
-     * 
-     * @param entryList
-     *            <ShareLinks>
-     * @param entry
-     *            String entry to be found in the ShareLinks' list
+     *
+     * @param entryList <ShareLinks>
+     * @param entry     String entry to be found in the ShareLinks' list
      * @return Boolean true if entry is found, false if not
      */
     protected static Boolean findInList(List<ShareLink> entryList, String entry)
@@ -742,35 +697,47 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Function mime the action of opening the document detail Page.
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @param contentName
-     *            String Criteria for site search
+     *
+     * @param driver      WebDrone Instance
+     * @param contentName String Criteria for site search
      * @return {@link DocumentDetailsPage}
      */
     public static DocumentDetailsPage openDocumentDetailPage(WebDrone driver, String contentName)
     {
-        // Checking for doc lib to be open.
-        HtmlPage page = driver.getCurrentPage();
+        // Check if doc details is already open
+        HtmlPage page = getSharePage(driver);
         if (page instanceof DocumentDetailsPage)
         {
             if (((DocumentDetailsPage) page).getDocumentTitle().equalsIgnoreCase(contentName))
             {
-                logger.info("Site doc lib page open ");
+                logger.info("Document Details page is already open ");
                 return ((DocumentDetailsPage) page);
             }
         }
 
-        DocumentLibraryPage docLibraryPage = (DocumentLibraryPage) getSharePage(driver);
+        DocumentLibraryPage docLibraryPage = getSharePage(driver).render();
         DocumentDetailsPage docDetailsPage = docLibraryPage.selectFile(contentName);
         return docDetailsPage.render();
     }
 
     /**
+     * Method to open the Document details page of given content in given Site
+     * @param driver
+     * @param siteName
+     * @param contentName
+     * @return {@link DetailsPage}
+     */
+    // TODO: Remove: Redundant util. Also if necessary: this should be part of ShareUserSitePage, rather than ShareUser.
+    public static DetailsPage openDetailPage(WebDrone driver, String siteName, String contentName)
+    {
+        openSitesDocumentLibrary(driver, siteName);
+        return ShareUserSitePage.openDetailsPage(driver, contentName);
+    }
+
+    /**
      * This method will be used for cloud application only and it is to select
      * the invited user network.
-     * 
+     *
      * @param driver
      * @param invitedUser
      */
@@ -791,7 +758,7 @@ public class ShareUser extends AbstractUtils
     /**
      * This method will be used for multi-tenant application and it is to select
      * the specified network.
-     * 
+     *
      * @param driver
      * @param tenantID
      */
@@ -808,19 +775,13 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Function to create user on Enterprise using UI
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @param invitingUsername
-     *            String username of inviting user
-     * @param userName
-     *            String username
-     * @param fName
-     *            String firstname
-     * @param lName
-     *            String lastname
-     * @param password
-     *            String password
+     *
+     * @param driver           WebDrone Instance
+     * @param invitingUsername String username of inviting user
+     * @param userName         String username
+     * @param fName            String firstname
+     * @param lName            String lastname
+     * @param password         String password
      */
     public static Boolean createEnterpriseUser(WebDrone driver, String invitingUsername, String userName, String fName, String lName, String password)
     {
@@ -830,20 +791,15 @@ public class ShareUser extends AbstractUtils
     /**
      * Helper to search for an Activity Entry on the Site Dashboard Page, with
      * configurable retry search option.
-     * 
-     * @param driver
-     *            WebDrone instance
-     * @param dashlet
-     *            String Name of the Dashlet such as
-     *            activities,content,myDocuments etc
-     * @param entry
-     *            String Entry to look for within the Dashlet
-     * @param entryPresent
-     *            String Parameter to indicate should the entry be visible
-     *            within the dashlet
-     * @param siteName
-     *            String Parameter to indicate the site name to open the site
-     *            dashboard.
+     *
+     * @param driver       WebDrone instance
+     * @param dashlet      String Name of the Dashlet such as
+     *                     activities,content,myDocuments etc
+     * @param entry        String Entry to look for within the Dashlet
+     * @param entryPresent String Parameter to indicate should the entry be visible
+     *                     within the dashlet
+     * @param siteName     String Parameter to indicate the site name to open the site
+     *                     dashboard.
      * @return Boolean
      */
     public static Boolean searchSiteDashBoardWithRetry(WebDrone driver, String dashlet, String entry, Boolean entryPresent, String siteName)
@@ -854,22 +810,16 @@ public class ShareUser extends AbstractUtils
     /**
      * Helper to search for an Activity Entry on the Site Dashboard Page, with
      * configurable retry search option.
-     * 
-     * @param driver
-     *            WebDrone instance
-     * @param dashlet
-     *            String Name of the Dashlet such as
-     *            activities,content,myDocuments etc
-     * @param entry
-     *            String Entry to look for within the Dashlet
-     * @param entryPresent
-     *            String Parameter to indicate should the entry be visible
-     *            within the dashlet
-     * @param siteName
-     *            String Parameter to indicate the site name to open the site
-     *            dashboard.
-     * @param activityType
-     *            Enum paramerter to indicate the activity type.
+     *
+     * @param driver       WebDrone instance
+     * @param dashlet      String Name of the Dashlet such as
+     *                     activities,content,myDocuments etc
+     * @param entry        String Entry to look for within the Dashlet
+     * @param entryPresent String Parameter to indicate should the entry be visible
+     *                     within the dashlet
+     * @param siteName     String Parameter to indicate the site name to open the site
+     *                     dashboard.
+     * @param activityType Enum paramerter to indicate the activity type.
      * @return Boolean
      */
     public static Boolean searchSiteDashBoardWithRetry(WebDrone driver, String dashlet, String entry, Boolean entryPresent, String siteName, ActivityType activityType)
@@ -915,8 +865,7 @@ public class ShareUser extends AbstractUtils
                 }
             }
 
-            // Loop again if result is not as expected: To cater for solr lag:
-            // eventual consistency
+            // Loop again if result is not as expected: To cater for solr lag: eventual consistency
             resultAsExpected = (entryPresent.equals(found));
             if (resultAsExpected)
             {
@@ -928,30 +877,26 @@ public class ShareUser extends AbstractUtils
     }
 
     /**
-     * Navigate to Site DashBoard page and waits for the page render to
-     * complete. Assumes User is logged in
-     * 
-     * @param driver
-     *            WebDrone Instance
+     * Navigate to Site DashBoard page and waits for the page render to complete. 
+     * Assumes User is logged in and is on any SitePage
+     *
+     * @param driver WebDrone Instance
      * @return {@link SiteDashboardPage}
      */
     public static SiteDashboardPage refreshSiteDashboard(WebDrone driver)
     {
         // Open DocumentLibrary Page from Site Page
-        SitePage site = (SitePage) getSharePage(driver);
+        SitePage site = getSharePage(driver).render();
 
-        site.getSiteNav().selectSiteDashBoard().render();
-        logger.info("Opened Site Dashboard");
-        return new SiteDashboardPage(driver).render();
+        logger.info("Opening Site Dashboard");
+        return site.getSiteNav().selectSiteDashBoard().render();
     }
 
     /**
      * Helper to search for an Element in the list of <ShareLinks>.
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @param dashlet
-     *            String Name of the dashlet
+     *
+     * @param driver  WebDrone Instance
+     * @param dashlet String Name of the dashlet
      * @return List<ShareLink>: List of Share Links available in the dashlet
      */
     protected static List<ShareLink> getSiteDashletEntries(WebDrone driver, String dashlet, ActivityType activityType)
@@ -989,9 +934,8 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Helper to search for an Element in the list of <String>.
-     * 
-     * @param driver
-     *            WebDrone Instance
+     *
+     * @param driver WebDrone Instance
      * @return List<String>: List of String available in the dashlet
      */
     protected static List<String> getSiteActivityDashletDescriptions(WebDrone driver)
@@ -1004,7 +948,7 @@ public class ShareUser extends AbstractUtils
     /**
      * This method is used to select the task from the user dash board by given
      * sitename.
-     * 
+     *
      * @param driver
      * @param taskName
      * @return {@link MyTasksDashlet}
@@ -1019,7 +963,7 @@ public class ShareUser extends AbstractUtils
     /**
      * This method is used to create content with name, title and description.
      * User should be logged in and present on site page.
-     * 
+     *
      * @param drone
      * @param contentDetails
      * @param contentType
@@ -1084,13 +1028,12 @@ public class ShareUser extends AbstractUtils
      * This method used to traverse through the folders and files inside the
      * parent folder. And returns the list of file or folder names as child
      * elements of parent folder.
-     * 
+     *
      * @param driver
-     * @param fileOrFolderPath
-     *            : This is the parent folder path in document library (Don't
-     *            include doclib in path)
+     * @param fileOrFolderPath : This is the parent folder path in document library (Don't
+     *                         include doclib in path)
      * @return List<String> : List of files or folder names present inside the
-     *         given parent folder.
+     * given parent folder.
      */
     public static List<String> getContentsOfDownloadedArchieve(WebDrone driver, String fileOrFolderPath)
     {
@@ -1131,11 +1074,10 @@ public class ShareUser extends AbstractUtils
     /**
      * This method does the extracting of archieve file in download folder and
      * returns true if it is successful otherwise false.
-     * 
+     *
      * @param driver
-     * @param folderName
-     *            , This is string value contains the absolute path for archieve
-     *            folder/file.
+     * @param folderName , This is string value contains the absolute path for archieve
+     *                   folder/file.
      * @return boolean
      */
     public static boolean extractDownloadedArchieve(WebDrone driver, String folderName)
@@ -1147,7 +1089,7 @@ public class ShareUser extends AbstractUtils
     /**
      * Method to search for a site, select the site from search results and
      * opens Document Library Page
-     * 
+     *
      * @param drone
      * @param siteName
      * @return {@link DocumentLibraryPage}
@@ -1166,39 +1108,30 @@ public class ShareUser extends AbstractUtils
             }
         }
 
-        SiteUtil.openSiteFromSearch(drone, siteName).render();
+        SiteUtil.openSiteFromSearch(drone, siteName);
         return openDocumentLibrary(drone);
     }
 
     /**
-     * Customize site by adding different modules. assumption User should be
-     * logged in.
-     * 
-     * @author nshah
+     * Customize site by adding different modules.
+     * Assumes user is logged in and a Site dashboard is open
+     *
      * @param drone
      * @param siteName
      * @return CustomizeSitePage
+     * @author nshah
      */
     public static CustomizeSitePage customizeSite(WebDrone drone, String siteName)
     {
-        SiteDashboardPage siteDashBoard = (SiteDashboardPage) getSharePage(drone);
-
-        if (Enterprise42.equals(drone.getProperties().getVersion()))
-        {
-            siteDashBoard.getSiteNav().selectConfigure();
-        }
-        else if (Enterprise41.equals(drone.getProperties().getVersion()))
-        {
-            siteDashBoard.getSiteNav().selectMore();
-        }
+        SiteDashboardPage siteDashBoard = getSharePage(drone).render();
+        
         return siteDashBoard.getSiteNav().selectCustomizeSite().render();
-
     }
 
     /**
      * This method is to create the content and updates with the specific
      * content details.
-     * 
+     *
      * @param drone
      * @param contentDetails
      * @return {@link DocumentLibraryPage}
@@ -1253,7 +1186,7 @@ public class ShareUser extends AbstractUtils
      * false. Since cloud sync is not instantaneous, the method keeps retrying
      * until maxWaitTime_CloudSync is reached This method could be invoked after
      * syncToCloud is initiated from document library page.
-     * 
+     *
      * @param driver
      * @param fileName
      * @return boolean
@@ -1269,7 +1202,7 @@ public class ShareUser extends AbstractUtils
 
         try
         {
-            RenderTime t = new RenderTime(maxWaitTime_CloudSync);
+            RenderTime t = new RenderTime(maxWaitTimeCloudSync);
             while (true)
             {
                 t.start();
@@ -1317,7 +1250,7 @@ public class ShareUser extends AbstractUtils
     /**
      * This method is used to add the aspects on Document/Folder Details Page.
      * User should be on Folder/Document Details page.
-     * 
+     *
      * @param drone
      * @param aspects
      * @return DetailsPage
@@ -1340,6 +1273,7 @@ public class ShareUser extends AbstractUtils
     /**
      * This method is used to add the aspects on DocumentLibrary Page.
      * User should be on Folder/Document Details page.
+     *
      * @param drone
      * @param aspects
      * @param contentName
@@ -1360,7 +1294,7 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Create user with Group Name.
-     * 
+     *
      * @param driver
      * @param invitingUsername
      * @param userName
@@ -1373,14 +1307,17 @@ public class ShareUser extends AbstractUtils
     public static Boolean createEnterpriseUserWithGroup(WebDrone driver, String invitingUsername, String userName, String fname, String lname, String password, String groupName)
     {
         try
-        {            
+        {
             String[] authDetails = getAuthDetails(invitingUsername);
             ShareUser.login(driver, authDetails[0], authDetails[1]);
-            DashBoardPage dash = (DashBoardPage) driver.getCurrentPage().render();
-            UserSearchPage page = (UserSearchPage) dash.getNav().getUsersPage();
-            NewUserPage newPage = page.selectNewUser().render();
-            String email = userName.contains("@") ? userName.replaceAll(" ", "") : userName.replaceAll(" ", "") + "@" + DOMAIN_FREE;
+
+            DashBoardPage dash = driver.getCurrentPage().render();
             
+            UserSearchPage page = dash.getNav().getUsersPage().render();
+            NewUserPage newPage = page.selectNewUser().render();
+            
+            String email = userName.contains("@") ? userName.replaceAll(" ", "") : userName.replaceAll(" ", "") + "@" + DOMAIN_FREE;
+
             if (groupName == null)
             {
                 page = newPage.createEnterpriseUser(userName, fname, lname, email, password).render();
@@ -1389,10 +1326,11 @@ public class ShareUser extends AbstractUtils
             {
                 page = newPage.createEnterpriseUserWithGroup(userName, fname, lname, email, password, groupName).render();
             }
-            
+
             logger.info("Created User: " + userName);
             ShareUser.logout(driver);
-            return true;
+            
+            return (page != null);
         }
         catch (Exception e)
         {
@@ -1403,7 +1341,7 @@ public class ShareUser extends AbstractUtils
 
     /**
      * This method deletes the google account cookies.
-     * 
+     *
      * @param drone
      * @param url
      */
@@ -1423,7 +1361,7 @@ public class ShareUser extends AbstractUtils
     /**
      * This method uploads the new version for the document with the given file
      * from data folder. User should be on Document details page.
-     * 
+     *
      * @param fileName
      * @param drone
      * @return DocumentDetailsPage
@@ -1446,12 +1384,12 @@ public class ShareUser extends AbstractUtils
     /**
      * Checks the checkbox for a content if not selected on the document library
      * page.
-     * 
-     * @IMP Note: Expects the user is logged in and document library page within
-     *      the selected site is open.
+     *
      * @param drone
      * @param contentName
      * @return DocumentLibraryPage
+     * @IMP Note: Expects the user is logged in and document library page within
+     * the selected site is open.
      */
     public static DocumentLibraryPage selectContentCheckBox(WebDrone drone, String contentName)
     {
@@ -1466,12 +1404,12 @@ public class ShareUser extends AbstractUtils
     /**
      * UnChecks the checkbox for a content if already selected on the document
      * library page.
-     * 
-     * @IMP Note: Expects the user is logged in and document library page within
-     *      the selected site is open
+     *
      * @param drone
      * @param contentName
      * @return DocumentLibraryPage
+     * @IMP Note: Expects the user is logged in and document library page within
+     * the selected site is open
      */
     public static DocumentLibraryPage unSelectContentCheckBox(WebDrone drone, String contentName)
     {
@@ -1486,11 +1424,11 @@ public class ShareUser extends AbstractUtils
     /**
      * Mimics the process of deleting selected content on a document library
      * page.
-     * 
-     * @IMP Note: Expects the user is logged in and document library page within
-     *      the selected site is open
+     *
      * @param drone
      * @return
+     * @IMP Note: Expects the user is logged in and document library page within
+     * the selected site is open
      */
     public static DocumentLibraryPage deleteSelectedContent(WebDrone drone)
     {
@@ -1503,7 +1441,7 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Create copy of all contents present in Document Library.
-     * 
+     *
      * @param drone
      */
     public static DocumentLibraryPage createCopyOfAllContent(WebDrone drone)
@@ -1523,7 +1461,7 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Delete all content from document library.
-     * 
+     *
      * @param drone
      * @return DocumentLibraryPage
      */
@@ -1542,7 +1480,7 @@ public class ShareUser extends AbstractUtils
     /**
      * Get the value of the guid noderef for the specified content from document
      * library.
-     * 
+     *
      * @param drone
      */
     public static String getGuid(WebDrone drone, String contentName)
@@ -1555,7 +1493,7 @@ public class ShareUser extends AbstractUtils
     /**
      * This method is used to convert the given date into string format based on
      * given locale format.
-     * 
+     *
      * @param date
      * @param format
      * @return String
@@ -1584,7 +1522,7 @@ public class ShareUser extends AbstractUtils
     /**
      * This method is used to get if the task is present or not. If the task is
      * not displayed, retry for defined time(maxWaitTime_CloudSync)
-     * 
+     *
      * @param driver
      * @param taskName
      * @return boolean true if task is present
@@ -1597,7 +1535,7 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Delete doc lib contents.
-     * 
+     *
      * @param drone
      * @return
      */
@@ -1609,7 +1547,7 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Fucntion to creater new group.
-     * 
+     *
      * @param driver
      * @param groupName
      * @return
@@ -1644,11 +1582,11 @@ public class ShareUser extends AbstractUtils
     /**
      * Util method to change the language from My Profile page (Only applicable
      * to Cloud2 env)
-     * 
+     *
      * @param drone
      * @param language
      */
-    public static void changeLanguage(WebDrone drone, Language language)
+    public static LanguageSettingsPage changeLanguage(WebDrone drone, Language language)
     {
         if (!isAlfrescoVersionCloud(drone))
         {
@@ -1659,6 +1597,7 @@ public class ShareUser extends AbstractUtils
         MyProfilePage myProfilePage = sharePage.getNav().selectMyProfile().render();
         LanguageSettingsPage languageSettingsPage = myProfilePage.getProfileNav().selectLanguage().render();
         languageSettingsPage = languageSettingsPage.changeLanguage(language).render();
+        return languageSettingsPage;
     }
 
     /**
@@ -1716,19 +1655,23 @@ public class ShareUser extends AbstractUtils
         editProp.setDescription(description);
         return editProp.selectSave().render();
     }
-    
-    public static DocumentLibraryPage editProperties(WebDrone drone, String contentName, String newContentName, String title, String description) {
+
+    public static DocumentLibraryPage editProperties(WebDrone drone, String contentName, String newContentName, String title, String description)
+    {
         DocumentLibraryPage documentLibraryPage = drone.getCurrentPage().render();
 
         EditDocumentPropertiesPage editProp = documentLibraryPage.getFileDirectoryInfo(contentName).selectEditProperties().render();
 
-        if (newContentName != null) {
+        if (newContentName != null)
+        {
             editProp.setName(newContentName);
         }
-        if (title != null) {
+        if (title != null)
+        {
             editProp.setDocumentTitle(title);
         }
-        if (description != null) {
+        if (description != null)
+        {
             editProp.setDescription(description);
         }
 
@@ -1737,11 +1680,9 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Function mime the action of opening the folder detail Page.
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @param siteSearchCriteria
-     *            String Criteria for site search
+     *
+     * @param driver      WebDrone Instance
+     * @param contentName String Criteria for site search
      * @return {@link FolderDetailsPage}
      */
     public static FolderDetailsPage openFolderDetailPage(WebDrone driver, String contentName)
@@ -1754,7 +1695,7 @@ public class ShareUser extends AbstractUtils
     /**
      * This method used to open the document library page in gallery view.
      * User should be present on document library page.
-     * 
+     *
      * @param customDrone
      * @param siteName
      * @return DocumentLibraryPage
@@ -1776,15 +1717,15 @@ public class ShareUser extends AbstractUtils
         return docLibNavigation.selectGalleryView().render();
     }
 
-
     /**
      * Method to get Name of the ShareLink
+     *
      * @param shareLink
      * @return
      */
     public static String getShareLinkName(ShareLink shareLink)
     {
-        if(shareLink == null)
+        if (shareLink == null)
         {
             throw new UnsupportedOperationException("ShareLink cannot be null");
         }
@@ -1793,6 +1734,7 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Method to add given comment to given file (Assume User is in Document Library Page)
+     *
      * @param drone
      * @param fileName
      * @param comment
@@ -1808,6 +1750,7 @@ public class ShareUser extends AbstractUtils
 
     /**
      * Method to set author to given file (Assume User is in Document Library Page)
+     *
      * @param drone
      * @param fileName
      * @param author
@@ -1821,5 +1764,167 @@ public class ShareUser extends AbstractUtils
         propertiesPage.setAuthor(author);
         detailsPage = propertiesPage.selectSave().render();
         return detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
-    }    
+    }
+
+    /**
+     * Method to delete chosen user if you login as admin.
+     *
+     * @param drone
+     * @param testUser
+     * @return
+     */
+    public static UserSearchPage deleteUser(WebDrone drone, String testUser)
+    {
+        DashBoardPage dashBoard = drone.getCurrentPage().render();
+        UserSearchPage page = dashBoard.getNav().getUsersPage().render();
+        page = page.searchFor(testUser).render();
+        UserProfilePage userProfile = page.clickOnUser(testUser).render();
+        return userProfile.deleteUser().render();
+    }
+
+    /**
+     * @param drone
+     * @return
+     */
+    public static DashBoardPage selectMyDashBoard(WebDrone drone)
+    {
+        return ((SharePage) drone.getCurrentPage().render()).getNav().selectMyDashBoard();
+    }
+
+    /**
+     * @param drone
+     * @param siteName
+     * @param opertion
+     * @return
+     */
+    public static HtmlPage navigateToSiteThroughDashlet(WebDrone drone, String siteName, SiteOperation opertion)
+    {
+        MySitesDashlet dashlet = selectMyDashBoard(drone).getDashlet("my-sites").render();
+
+        if (SiteOperation.Delete.equals(opertion))
+        {
+            return dashlet.deleteSite(siteName);
+            // deletePage = deletePage.selectAction(Action.Delete).render();
+            // return deletePage.selectAction(Action.Delete);
+        }
+        else if (SiteOperation.Open.equals(opertion))
+        {
+            ShareLink link = dashlet.selectSite(siteName);
+            return link.click();
+        }
+        else
+        {
+            throw new UnsupportedOperationException("Operation not exist.");
+        }
+
+    }
+
+    /**
+     * Util to return the specified dashlet on the Dashboard page
+     * @param drone
+     * @param dashLet dashLet Name
+     * @return Dashlet
+     */
+    public static Dashlet getDashlet(WebDrone drone, String dashLet)
+    {
+        DashBoardPage dashboard = (DashBoardPage) getSharePage(drone);
+        MySitesDashlet dashlet = dashboard.getDashlet(dashLet).render();
+        dashboard = dashlet.selectMyFavourites(FavouriteType.Recent).render();
+        return dashboard.getDashlet(dashLet).render();
+    }
+
+    /**
+     * Navigate menu items using Keyboard.
+     *
+     * @param drone
+     * @param keys
+     * @return
+     */
+    public static HtmlPage navigateMenuUsingKeys(WebDrone drone, Keys... keys)
+    {
+
+        if (ArrayUtils.isEmpty(keys))
+        {
+            throw new UnsupportedOperationException("Please provide appropriate input keys");
+        }
+        SharePage dashBoardPage = getSharePage(drone);
+        for (int i = 0; i < keys.length; i++)
+        {
+            dashBoardPage.inputFromKeyborad(keys[i]);
+        }
+        drone.waitForPageLoad(maxWaitTime);
+
+        return drone.getCurrentPage();
+    }
+
+    /**
+     * This method is used to check if the Content item is present or not. If the content
+     * is not present, retry for defined time(maxWaitTime_CloudSync)
+     *
+     * @param drone
+     * @param contentName
+     * @param isContentExpected
+     * @return boolean
+     */
+    public static boolean checkIfContentIsPresent(WebDrone drone, String contentName, boolean isContentExpected)
+    {
+        DocumentLibraryPage documentLibraryPage = getSharePage(drone).render();
+
+        RenderTime t = new RenderTime(maxWaitTimeCloudSync);
+        try
+        {
+            while (true)
+            {
+                t.start();
+                try
+                {
+                    if (isContentExpected)
+                    {
+                        if (documentLibraryPage.isItemVisble(contentName))
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if (!documentLibraryPage.isItemVisble(contentName))
+                        {
+                            return true;
+                        }
+                    }
+
+                    webDriverWait(drone, 1000);
+                    drone.refresh();
+                    documentLibraryPage = getSharePage(drone).render();
+                }
+                finally
+                {
+                    t.end();
+                }
+            }
+        }
+        catch (PageRenderTimeException p)
+        {
+        }
+
+        return false;
+    }
+
+    /**
+     * Method to get selected Aspects for a given File in given Site
+     * @param drone
+     * @param siteName
+     * @param contentName
+     * @return {@link Set<org.alfresco.po.share.site.document.DocumentAspect>}
+     */
+    public static Set<DocumentAspect> getSelectedAspects(WebDrone drone, String siteName, String contentName)
+    {
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        DetailsPage detailsPage = ShareUserSitePage.openDetailsPage(drone, contentName);
+        SelectAspectsPage selectAspectsPage = detailsPage.selectManageAspects().render();
+        Set<DocumentAspect> selectedAspects = selectAspectsPage.getSelectedAspects();
+        selectAspectsPage.clickCancel().render();
+        return selectedAspects;
+    }
 }

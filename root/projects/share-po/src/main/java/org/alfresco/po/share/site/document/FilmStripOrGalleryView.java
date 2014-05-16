@@ -14,6 +14,7 @@ import org.alfresco.po.share.exception.AlfrescoVersionException;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.WebDroneImpl;
 import org.alfresco.webdrone.exception.PageException;
@@ -236,31 +237,43 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void clickOnAddTag()
     {
-        clickInfoIcon();
-
-        try
+        RenderTime timer = new RenderTime(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime() * 2);
+        while (true)
         {
-            WebElement tagInfo = drone.findFirstDisplayedElement(By.xpath(TAG_INFO));
-            getDrone().mouseOver(tagInfo);
-            drone.waitForElement(By.xpath(String.format(TAG_ICON, getName())),
-                    SECONDS.convert(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime(), MILLISECONDS));
-            WebElement addTagBtn = drone.findAndWait(By.xpath(String.format(TAG_ICON, getName())));
-            addTagBtn.click();
-            getDrone().waitForElement(By.cssSelector(INPUT_TAG_NAME), SECONDS.convert(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime(), MILLISECONDS));
-        }
-        catch (NoSuchElementException e)
-        {
-            logger.error("Unable to find the add tag icon", e);
-        }
-        catch (TimeoutException te)
-        {
-            logger.error("Exceeded time to find the tag info area ", te);
-        }
-        catch (ElementNotVisibleException e2)
-        {
-        }
-        catch (StaleElementReferenceException stale)
-        {
+            try
+            {
+                timer.start();
+                clickInfoIcon();
+                WebElement tagInfo = drone.findFirstDisplayedElement(By.xpath(TAG_INFO));
+                getDrone().mouseOver(tagInfo);
+                drone.waitForElement(By.xpath(String.format(TAG_ICON, getName())),
+                        SECONDS.convert(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime(), MILLISECONDS));
+                WebElement addTagBtn = drone.findAndWait(By.xpath(String.format(TAG_ICON, getName())));
+                addTagBtn.click();
+                // getDrone().waitForElement(By.cssSelector(INPUT_TAG_NAME), SECONDS.convert(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime(),
+                // MILLISECONDS));
+                if (findElement(By.cssSelector(INPUT_TAG_NAME)).isDisplayed())
+                {
+                    break;
+                }
+            }
+            catch (NoSuchElementException e)
+            {
+                logger.error("Unable to find the add tag icon", e);
+            }
+            catch (TimeoutException te)
+            {
+                logger.error("Exceeded time to find the tag info area ", te);
+            }
+            catch (ElementNotVisibleException e2)
+            {
+            }
+            catch (StaleElementReferenceException stale)
+            {
+            } finally
+            {
+                timer.end();
+            }
         }
     }
 
@@ -361,7 +374,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#clickOnTagNameLink(java.lang.String)
      */
     @Override
-    public DocumentLibraryPage clickOnTagNameLink(String tagName)
+    public HtmlPage clickOnTagNameLink(String tagName)
     {
         return super.clickOnTagNameLink(tagName);
     }
@@ -488,7 +501,9 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     public boolean isEditInGoogleDocsPresent()
     {
         clickInfoIcon(true);
-        return super.isEditInGoogleDocsPresent();
+        boolean googleDocsPresent = super.isEditInGoogleDocsPresent();
+        focusOnDocLibFooter();
+        return googleDocsPresent;
     }
 
     /*
@@ -618,18 +633,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
 
     /*
      * (non-Javadoc)
-     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#delete()
-     */
-    @Override
-    public HtmlPage delete()
-    {
-        selectDelete();
-        confirmDelete();
-        return drone.getCurrentPage();
-    }
-
-    /*
-     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectStartWorkFlow()
      */
     @Override
@@ -754,6 +757,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         {
             selectMoreLink();
         }
+        resolveStaleness();
     }
 
     /*
@@ -793,7 +797,6 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     }
 
     /**
-     * @param fileName
      * @return WebElement
      */
     protected WebElement getInfoIcon()
@@ -820,11 +823,40 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     @Override
     public void contentNameEnableEdit()
     {
-        clickInfoIcon(false);
-        String temp = FILENAME_IDENTIFIER;
-        FILENAME_IDENTIFIER = "h3.filename a";
-        super.contentNameEnableEdit();
-        FILENAME_IDENTIFIER = temp;
+        // hover over tag area
+        RenderTime timer = new RenderTime(((WebDroneImpl) getDrone()).getMaxPageRenderWaitTime() * 2);
+        while (true)
+        {
+            try
+            {
+                timer.start();
+                clickInfoIcon(false);
+                String temp = FILENAME_IDENTIFIER;
+                FILENAME_IDENTIFIER = "h3.filename a";
+                super.contentNameEnableEdit();
+                FILENAME_IDENTIFIER = temp;
+                if (findElement(By.cssSelector(INPUT_CONTENT_NAME)).isDisplayed())
+                {
+                    break;
+                }
+            }
+            catch (NoSuchElementException e)
+            {
+            }
+            catch (ElementNotVisibleException e2)
+            {
+            }
+            catch (StaleElementReferenceException stale)
+            {
+            }
+            catch (TimeoutException te)
+            {
+            }
+            finally
+            {
+                timer.end();
+            }
+        }
     }
 
     @Override
@@ -882,7 +914,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
      * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#clickOnCategoryNameLink(java.lang.String)
      */
     @Override
-    public DocumentLibraryPage clickOnCategoryNameLink(String categoryName)
+    public HtmlPage clickOnCategoryNameLink(String categoryName)
     {
         clickInfoIcon(true);
         return super.clickOnCategoryNameLink(categoryName);
@@ -994,5 +1026,25 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     {
         clickInfoIcon(false);
         return super.selectModifier();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#isFileShared()
+     */
+    @Override
+    public boolean isFileShared()
+    {
+        clickInfoIcon(false);
+        boolean result = super.isFileShared();
+        focusOnDocLibFooter();
+        return result;
+    }
+
+    @Override
+    public DocumentLibraryPage selectForceUnSyncInCloud()
+    {
+        clickInfoIcon(true);
+        return super.selectForceUnSyncInCloud();
     }
 }

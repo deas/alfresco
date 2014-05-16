@@ -104,7 +104,7 @@ public class WikiPageTest extends AbstractUtils
      * <li></li>
      * </ul>
      */
-    @Test(groups = "Enterprise41")
+    @Test(groups = "Enterprise42")
     public void enterprise40x_5329() throws Exception
     {  
         String testName = getTestName();
@@ -149,7 +149,9 @@ public class WikiPageTest extends AbstractUtils
         wikiPage.clickSaveButton();
         
         wikiPage = wikiPage.editWikiPage();
-        Assert.assertTrue("symbol".equals(wikiPage.getFontAttributeValue(FONT_ATTR.face)) ? true : false);
+        System.out.println(wikiPage.getFontAttributeValue(FONT_ATTR.face));
+        System.out.println(wikiPage.getFontAttributeValue(FONT_ATTR.size));
+        Assert.assertTrue("impact,chicago".equals(wikiPage.getFontAttributeValue(FONT_ATTR.face)) ? true : false);
         Assert.assertTrue("3".equals(wikiPage.getFontAttributeValue(FONT_ATTR.size)) ? true : false);
         wikiPage.clickSaveButton();
        

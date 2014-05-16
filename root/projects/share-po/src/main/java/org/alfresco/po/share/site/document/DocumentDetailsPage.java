@@ -14,12 +14,8 @@
  */
 package org.alfresco.po.share.site.document;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import java.io.File;
-
 import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.adminconsole.Channel;
 import org.alfresco.po.share.preview.PdfJsPlugin;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.user.CloudSignInPage;
@@ -34,16 +30,21 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Site document library page object, holds all element of the HTML page
  * relating to share's site document library page.
- * 
+ *
  * @author Michael Suzuki
  * @since 1.0
  */
@@ -82,6 +83,9 @@ public class DocumentDetailsPage extends DetailsPage
     private static final String GOOGLE_DOCS_URL = "googledocsEditor?";
     private static final By WORKFLOW_INFO = By.cssSelector("div.document-workflows>div>div.info");
     private static final String COPY_THIS_LINK_TO_SHARE_THE_CURRENT_PAGE = "div.link-info input";
+    private static final By QUICK_SHARE_LINK = By.cssSelector("a.quickshare-action");
+    private static final By QUICK_SHARE_LINK_ENABLED = By.cssSelector("a[class='quickshare-action enabled']");
+    private static final By VIEW_WORKING_COPY = By.cssSelector("div.document-view-working-copy>a");
 
     public synchronized void setPreviousVersion(final String previousVersion)
     {
@@ -94,6 +98,7 @@ public class DocumentDetailsPage extends DetailsPage
     public DocumentDetailsPage(WebDrone drone)
     {
         this(drone, null);
+        PERMISSION_SETTINGS_PANEL_CSS = ".document-permissions";
     }
 
     /**
@@ -108,7 +113,7 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * Verifies if the page has rendered completely by checking the page load is
      * complete and in addition it will observe key HTML elements have rendered.
-     * 
+     *
      * @param timer Max time to wait
      * @return {@link DocumentDetailsPage}
      */
@@ -183,7 +188,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Gets document version value from top of the details page
-     * 
+     *
      * @return String value of document version
      */
     public synchronized String getDocumentVersion()
@@ -194,7 +199,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Verify if button on version history view is displayed
-     * 
+     *
      * @return true if visible on the page
      */
     public boolean isUploadNewVersionDisplayed()
@@ -211,7 +216,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Verify if the action to edit offline is available
-     * 
+     *
      * @return true if visible on the page
      */
     public boolean isEditOfflineLinkDisplayed()
@@ -230,7 +235,7 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * Check for edit offline banner that appears on the top
      * of the page when document is locked by edit off line.
-     * 
+     *
      * @return returns <tt>false</tt> always
      */
     public boolean isEditOfflineDisplayed()
@@ -248,7 +253,7 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * Check for locked by you banner that appears on the top
      * of the page when document is locked by edit off line and locked by you when viewing original.
-     * 
+     *
      * @return returns <tt>false</tt> always
      */
     public boolean isLockedByYou()
@@ -298,7 +303,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Gets the document detail title.
-     * 
+     *
      * @return String document detail page title
      */
     public String getDocumentTitle()
@@ -310,7 +315,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Mimics the action of clicking on the upload new version button.
-     * 
+     *
      * @return HtmlPage page response object
      */
     public HtmlPage selectUploadNewVersion()
@@ -328,9 +333,9 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * File upload page pop up object.
-     * 
-     * @param drone {@link WebDrone} browser client
-     * @param version the number of the original document
+     *
+     * @param drone       {@link WebDrone} browser client
+     * @param version     the number of the original document
      * @param editOffLine mode status
      * @return {@link UpdateFilePage} page object response
      */
@@ -341,7 +346,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Locates the revision history DIV.
-     * 
+     *
      * @return {@link WebElement} represent revision history
      */
     public WebElement getRevisionPanel()
@@ -351,7 +356,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Get the comments of the last commit from the revision history panel
-     * 
+     *
      * @return String comments
      */
     public String getCommentsOfLastCommit()
@@ -373,7 +378,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Verifies if document is locked for off line editing.
-     * 
+     *
      * @return true if locked for off line editing
      */
     public synchronized boolean isCheckedOut()
@@ -390,7 +395,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Get status banner message (This document is locked by you., This document is locked by you for offline editing., Last sync failed.)
-     * 
+     *
      * @return String status banner text message
      */
     public synchronized String getContentInfo()
@@ -408,7 +413,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Select the edit off line link.
-     * 
+     *
      * @return {@link HtmlPage} edit off line page.
      */
     public HtmlPage selectEditOffLine(File file)
@@ -440,7 +445,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Mimics the action of selecting In Line Edit.
-     * 
+     *
      * @return {@link InlineEditPage}
      */
     public EditTextDocumentPage selectInlineEdit()
@@ -462,7 +467,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Finds and clicks on the file download link.
-     * 
+     *
      * @param selector css selector descriptor
      * @return filePath String file url
      */
@@ -492,10 +497,10 @@ public class DocumentDetailsPage extends DetailsPage
      * Downloads the document shown by the current page, optionally
      * doing it by clicking the link in the browser (no control) or
      * by doing a URL-based download.
-     * 
+     *
      * @param file optional file to download to. When given
-     *            the link <b>will not be clicked</b> but the
-     *            file will be downloaded directly from the server.
+     *             the link <b>will not be clicked</b> but the
+     *             file will be downloaded directly from the server.
      * @return {@link HtmlPage} page response
      */
     public HtmlPage selectDownload(File file)
@@ -522,7 +527,7 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * Get the file size from the properties
      * section of the document details page.
-     * 
+     *
      * @return String size
      */
     public String getDocumentSize()
@@ -534,10 +539,11 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * This test case needs flash player installed on linux box and till that it will be disabled.
      * Gets the Preview status on the document page.
-     * 
+     *
      * @return boolean
      */
-    public boolean isFlashPreviewDisplayed() {
+    public boolean isFlashPreviewDisplayed()
+    {
         try
         {
             return drone.findAndWait(By.cssSelector(DOCUMENT_PREVIEW_WITH_FLASH_PLAYER)).isDisplayed();
@@ -561,7 +567,8 @@ public class DocumentDetailsPage extends DetailsPage
      *
      * @return String   The name the plugin used
      */
-    public String getPreviewerClassName() {
+    public String getPreviewerClassName()
+    {
         try
         {
             return drone.find(By.cssSelector(DOCUMENT_PREVIEWER)).getAttribute("class");
@@ -572,7 +579,9 @@ public class DocumentDetailsPage extends DetailsPage
             {
                 return drone.find(By.cssSelector(DOCUMENT_PREVIEWER)).getAttribute("class");
             }
-            catch (TimeoutException e) { }
+            catch (TimeoutException e)
+            {
+            }
         }
 
         return null;
@@ -580,7 +589,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Gets the No Preview Message on the document page.
-     * 
+     *
      * @return boolean
      */
     public boolean isNoPreviewMessageDisplayed()
@@ -618,7 +627,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Return the PdfJs web preview plugin. If this plugin is not in use then a {@link PageRenderTimeException} exception will be thrown.
-     * 
+     *
      * @return {@link PdfJsPlugin}
      */
     public PdfJsPlugin getPdfJsPreview()
@@ -629,7 +638,7 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * Clicks on download link when no preview message is displayed for
      * unsupported details.
-     * 
+     *
      * @return {@link DocumentDetailsPage}
      */
     public DocumentDetailsPage clickOnDownloadLinkForUnsupportedDocument()
@@ -652,7 +661,7 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * Mimics the action of selecting the Sync to Cloud icon on the document
      * page.
-     * 
+     *
      * @return If Cloud Sync has not been set up yet, returns {@link DocumentDetailsPage} else it returns {@link DestinationAndAssigneePage}
      */
     public HtmlPage selectSyncToCloud()
@@ -670,7 +679,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Mimics the action of selecting the Sync to Cloud icon on the document page.
-     * 
+     *
      * @param isCloudSyncSetUp
      * @return If Cloud Sync has not been set up yet, returns {@link DocumentDetailsPage} else it returns {@link DestinationAndAssigneePage}
      */
@@ -689,7 +698,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Gets the No Preview Message on the document page.
-     * 
+     *
      * @return boolean
      */
     public boolean isSignUpDialogVisible()
@@ -707,7 +716,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Checks whether the cloud destination folder to sync page is displayed.
-     * 
+     *
      * @return boolean
      */
     public boolean isDestAndAssigneeVisible()
@@ -725,7 +734,7 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * Mimics the action of selecting the UnSync from Cloud icon on the document
      * page.
-     * 
+     *
      * @return {@link DocumentDetailsPage}
      */
     public DocumentDetailsPage selectUnSyncFromCloud()
@@ -746,7 +755,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Method to check if the file synced to the Cloud
-     * 
+     *
      * @return true if "UnSync From Cloud" icon is displayed
      */
     public boolean isFileSyncSetUp()
@@ -764,7 +773,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Mimics the action of clicking on the assign workflow link.
-     * 
+     *
      * @return StartWorkFlowPage page response object
      */
     public StartWorkFlowPage selectStartWorkFlowPage()
@@ -783,7 +792,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Mimics the action of clicking on the Start workflow icon in WorkFlow section.
-     * 
+     *
      * @return {@link StartWorkFlowPage} page response object
      */
     public HtmlPage selectStartWorkFlowIcon()
@@ -802,7 +811,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Checks weather the "Sync to Cloud" option is displayed
-     * 
+     *
      * @return boolean
      */
     public boolean isSyncToCloudOptionDisplayed()
@@ -821,9 +830,9 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * Public method to transfer control based to google docs based on how the
      * session gets initiated.
-     * 
-     * @author sprasanna
+     *
      * @return {@link HtmlPage} page response
+     * @author sprasanna
      */
     public HtmlPage editInGoogleDocs()
     {
@@ -867,9 +876,9 @@ public class DocumentDetailsPage extends DetailsPage
     /**
      * Public method to transfer control based to google docs based on how the
      * session gets initiated.
-     * 
-     * @author sprasanna
+     *
      * @return {@link HtmlPage} page response
+     * @author sprasanna
      */
     public HtmlPage resumeEditInGoogleDocs()
     {
@@ -888,9 +897,9 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Verify if Link Edit in Google docs is visible.
-     * 
-     * @author sprasanna
+     *
      * @return true if displayed
+     * @author sprasanna
      */
     public boolean isEditInGoogleDocsLinkVisible()
     {
@@ -906,9 +915,9 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Verify if Link Resume Editing in Google docs is visible.
-     * 
-     * @author sprasanna
+     *
      * @return true if displayed
+     * @author sprasanna
      */
     public boolean isResumeEditingInGoogleDocsLinkVisible()
     {
@@ -924,7 +933,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Verify if the action to edit offline is available
-     * 
+     *
      * @return true if visible on the page
      */
     public boolean isInlineEditLinkDisplayed()
@@ -941,7 +950,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Verify if the comment count is displayed or not
-     * 
+     *
      * @param waitTime
      * @return
      */
@@ -969,7 +978,7 @@ public class DocumentDetailsPage extends DetailsPage
      * <li>Record management module enabled</li>
      * <li>When the document has been declared as record</li>
      * </ul>
-     * 
+     *
      * @return true if link is displayed
      */
     public boolean isHideRecordLinkDisplayed()
@@ -986,7 +995,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Method to get Sync Status
-     * 
+     *
      * @return
      */
     public String getSyncStatus()
@@ -1008,7 +1017,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Method to get location in cloud
-     * 
+     *
      * @return
      */
     public String getLocationInCloud()
@@ -1030,7 +1039,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Method to check if "Request To Sync" icon is displayed in DocumentDetails page
-     * 
+     *
      * @return
      */
     public boolean isRequestSyncIconDisplayed()
@@ -1051,7 +1060,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Method to revert the document to the specified version.
-     * 
+     *
      * @param versionNumber revision number to revert
      * @return {@link HtmlPage} page response.
      */
@@ -1082,7 +1091,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Method to verify if a document is part of workflow or not
-     * 
+     *
      * @return True if it is part of a Workflow
      */
     public boolean isPartOfWorkflow()
@@ -1104,7 +1113,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     /**
      * Opens the "Copy this link to share the current page" in the new tab
-     * 
+     *
      * @return {@link DocumentDetailsPage}
      */
     public DocumentDetailsPage openCopyThisLinkInNewTab()
@@ -1136,8 +1145,8 @@ public class DocumentDetailsPage extends DetailsPage
     }
 
     /**
-     * Selects the Change Type link from Folder actions.
-     * 
+     * Selects the Change Type link from Document actions.
+     *
      * @return {@link ChangeTypePage} response
      */
     public ChangeTypePage selectChangeType()
@@ -1162,8 +1171,36 @@ public class DocumentDetailsPage extends DetailsPage
     }
 
     /**
+     * Selects the Publish link from Document actions.
+     *
+     * @return {@link PublishPage} response
+     */
+    public PublishPage selectPublish()
+    {
+        if (alfrescoVersion.isCloud())
+        {
+            throw new UnsupportedOperationException("Operation available only for Enterprise version");
+        }
+
+        By publishLink;
+        switch (alfrescoVersion)
+        {
+            case Enterprise41:
+                publishLink = By.cssSelector("div.document-publish a");
+                break;
+
+            default:
+                publishLink = By.cssSelector("div#onActionPublish a");
+                break;
+        }
+        drone.findAndWait(publishLink).click();
+
+        return new PublishPage(drone);
+    }
+
+    /**
      * Method to download the document to the specified version.
-     * 
+     *
      * @param versionNumber revision number
      */
     public void selectDownloadPreviousVersion(String versionNumber)
@@ -1173,4 +1210,247 @@ public class DocumentDetailsPage extends DetailsPage
         // Assumes driver capability settings to save file in a specific location when
     }
 
+    /**
+     * Gets publishing version value from the details page
+     * if document not have publishing history set version as 1.0
+     *
+     * @return String value of publishing version
+     */
+    public String getPublishingVersion()
+    {
+        try
+        {
+            WebElement publishingVersionSpan = drone.findFirstDisplayedElement(By
+                    .xpath("//div[contains(@class,'publishing-panel-left')]/span[@class='document-version']"));
+            return publishingVersionSpan.getText();
+        }
+        catch (NoSuchElementException ex)
+        {
+            return "1.0";
+        }
+    }
+
+    /**
+     * Gets publishing info such as document name, channel it was published to and the time it was published
+     * if document not have publishing history set version as 1.0
+     *
+     * @param versionNumber version number
+     * @return String value of publishing version
+     */
+    public HashMap<String, String> getPublishingInfo(String versionNumber)
+    {
+        HashMap<String, String> map = new HashMap<>();
+
+        try
+        {
+            WebElement placeHolder = drone
+                    .findAndWait(By.xpath(String
+                            .format("//div[contains(@class,'publishing-panel-left')]/span[@class='document-version' and text()='%s']/parent::div/following-sibling::div[contains(@class, 'publishing-panel-right')]",
+                                    versionNumber)));
+            WebElement documentNameControl = placeHolder.findElement(By.xpath("./h3"));
+            map.put("documentName", documentNameControl.getText());
+            WebElement channelNameControl = placeHolder.findElement(By.xpath("./div[@class='channel-details']/span[@class='channel-name']"));
+            map.put("channelName", channelNameControl.getText());
+            WebElement statusControl = placeHolder.findElement(By.xpath("./div[@class='status-details']/span[@class='status']"));
+            map.put("status", statusControl.getText());
+            WebElement actionAnchor = placeHolder.findElement(By.xpath("./span[@class='actions']/a[contains(@class, 'publish')]"));
+            map.put("action", actionAnchor.getAttribute("title"));
+
+        }
+        catch (NoSuchElementException ex)
+        {
+            return null;
+        }
+        catch (TimeoutException tEx)
+        {
+            return null;
+        }
+
+        return map;
+    }
+
+    /**
+     * Selects the Publish link from Document actions.
+     *
+     * @return {@link PublishPage} response
+     */
+    public ConfirmUnpublishPage selectUnpublish(String versionNumber)
+    {
+        if (alfrescoVersion.isCloud())
+        {
+            throw new UnsupportedOperationException("Operation available only for Enterprise version");
+        }
+
+        WebElement placeHolder = drone
+                .findAndWait(By.xpath(String
+                        .format("//div[contains(@class,'publishing-panel-left')]/span[@class='document-version' and text()='%s']/parent::div/following-sibling::div[contains(@class, 'publishing-panel-right')]",
+                                versionNumber)));
+        WebElement actionAnchor = placeHolder.findElement(By.xpath("./span[@class='actions']/a[contains(@class, 'publish')]"));
+        actionAnchor.click();
+
+        return new ConfirmUnpublishPage(drone);
+    }
+
+    /**
+     * Click on quick share link.
+     *
+     * @return HtmlPage
+     */
+    public HtmlPage clickShareLink()
+    {
+        /*if (isFolder())
+        {
+            throw new UnsupportedOperationException("Share Link is not Supported for the Folder");
+        }*/
+        try
+        {
+            drone.findAndWait(QUICK_SHARE_LINK).click();
+            return new ShareLinkPage(drone);
+        }
+        catch (TimeoutException ex)
+        {
+            logger.error("Exceeded time to find the share link element", ex);
+        }
+
+        throw new PageException("Unable to find the Share Link.");
+    }
+
+    /**
+     * Check if the file is shared.
+     *
+     * @return
+     */
+    public boolean isFileShared()
+    {
+        try
+        {
+            return drone.findAndWait(QUICK_SHARE_LINK_ENABLED).isDisplayed();
+        }
+        catch (TimeoutException ex)
+        {
+            // no log needed due to negative cases.
+        }
+        return false;
+    }
+
+    /**
+     * Method to return Edit icons on Details page
+     *
+     * @return List <WebElement>
+     */
+
+    public List<WebElement> getEditControls()
+    {
+        try
+        {
+            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector("a.edit"));
+            return elements;
+        }
+        catch (TimeoutException e)
+        {
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Method to check whether download button is present
+     *
+     * @return true if displayed
+     */
+    public boolean isDownloadButtonVisible()
+    {
+        try
+        {
+            return drone.find(By.cssSelector(DOWNLOAD_FILE_CSS_LOCATOR)).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Verify if the action to View Working Copy is available
+     *
+     * @return true if visible on the page
+     */
+    public boolean isViewWorkingCopyDisplayed()
+    {
+        try
+        {
+            return drone.find(VIEW_WORKING_COPY).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Get Document Action List
+     *
+     * @return List<String>
+     */
+    public List<String> getDocumentActionList()
+    {
+        List<String> actionNames = new ArrayList<String>();
+        String text = null;
+
+        List<WebElement> actions = drone.findAndWaitForElements(By.xpath("//div[contains(@id, 'default-actionSet')]/div/a/span"));
+
+        for (WebElement action : actions)
+        {
+            text = action.getText();
+
+            if (text != null)
+            {
+                actionNames.add(text);
+            }
+        }
+        return actionNames;
+    }
+
+    /**
+     * Checks if the message about publishing displayed
+     *
+     * @param fileName
+     * @param channel
+     * @return
+     */
+    public boolean isPublishPopupDisplayed(String fileName, Channel channel)
+    {
+        try
+        {
+            WebElement popup = drone.findAndWait(By.xpath("//div[@class='publishConfirm']/div"));
+            String newChannelName = String.format("New %s channel", channel.getChannelName());
+            String publishMessage = String.format("%s is queued for publishing to %s", fileName, newChannelName);
+            return popup.isDisplayed() && popup.getText().contains(publishMessage);
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Close PopUp message about content publishing
+     */
+    public void closePublishPopup()
+    {
+        try
+        {
+
+            WebElement closePopupButton = drone.findAndWait(By.xpath("//div[@class='balloon']/div[@class='closeButton']"));
+            closePopupButton.click();
+            waitUntilAlert();
+
+        }
+        catch (Exception e)
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Publish Pop-up didn't closed", e);
+            }
+        }
+    }
 }

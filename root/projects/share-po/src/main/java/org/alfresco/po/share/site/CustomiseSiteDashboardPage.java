@@ -15,8 +15,6 @@
 
 package org.alfresco.po.share.site;
 
-import java.util.List;
-
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.enums.Dashlet;
 import org.alfresco.webdrone.RenderTime;
@@ -25,15 +23,19 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * Customize site dashboard page object, holds all element of the html page
  * relating to customize site dashboard page.
- * 
+ *
  * @author Shan Nagarajan
  * @since 1.6.1
  */
@@ -48,8 +50,14 @@ public class CustomiseSiteDashboardPage extends SharePage
     private static final By AVAILABLE_DASHLETS_NAMES = By.cssSelector("ul.availableList>li.availableDashlet>span");
     private static final String DRAGABLE_COLUMN_FORMAT = "ul[id$='column-ul-%d']>li>div.dnd-draggable";
     private static final String COLUMN_FORMAT = "ul[id$='column-ul-%d']";
+    private static final String DASHLET_IN_COLUMN_NAME_FORMAT = "//ul[contains(@id,'column-ul-%d')]/li/span";
     private static final int NUMBER_OF_COLUMNS = 4;
     private static final int MAX_DASHLETS_IN_COLUMN = 5;
+    private static final By SELECT_ONE_COLUMN_LAYOUT_BTN = By.cssSelector("button[id*='dashboard-1-column-button']");
+    private static final By SELECT_TWO_COLUMN_LAYOUT_BTN = By.cssSelector("button[id*='dashboard-2-columns-wide-left-button']");
+    private static final By SELECT_THREE_COLUMN_LAYOUT_BTN = By.cssSelector("button[id*='dashboard-3-columns-button']");
+    private static final By SELECT_FOUR_COLUMN_LAYOUT_BTN = By.cssSelector("button[id*='dashboard-4-columns-button']");
+    private static final By TITLE_ON_PAGE = By.cssSelector(".sub-title");
 
     /**
      * Constructor.
@@ -61,27 +69,13 @@ public class CustomiseSiteDashboardPage extends SharePage
 
     @SuppressWarnings("unchecked")
     @Override
-    public synchronized CustomiseSiteDashboardPage render(RenderTime timer)
+    public CustomiseSiteDashboardPage render(RenderTime timer)
     {
-        while (true)
-        {
-            timer.start();
-            try
-            {
-                if (drone.find(CHANGE_LAYOUT_BUTTON).isEnabled())
-                {
-                    break;
-                }
-            }
-            catch (NoSuchElementException nse)
-            {
-            }
-            finally
-            {
-                timer.end();
-            }
-        }
-
+        elementRender(timer,
+                getVisibleRenderElement(TITLE_ON_PAGE),
+                getVisibleRenderElement(LICENSE_TO),
+                getVisibleRenderElement(USER_LOGGED_IN_LABEL)
+        );
         return this;
     }
 
@@ -101,10 +95,10 @@ public class CustomiseSiteDashboardPage extends SharePage
 
     /**
      * Mimics the action of selection change layout button.
-     * 
+     *
      * @return {@link CustomiseSiteDashboardPage}
      */
-    public CustomiseSiteDashboardPage selectChangeLayou()
+    public CustomiseSiteDashboardPage selectChangeLayout()
     {
         drone.find(CHANGE_LAYOUT_BUTTON).click();
         if (logger.isTraceEnabled())
@@ -129,46 +123,77 @@ public class CustomiseSiteDashboardPage extends SharePage
 
     /**
      * Mimics the action of removing the all dashlets from Columns.
-     * 
+     *
      * @return {@link SiteDashboardPage}
      */
     public SiteDashboardPage removeAllDashlets()
     {
-        for (int column = 1; column <= NUMBER_OF_COLUMNS; column++)
-        {
-            List<WebElement> elements = drone.findAll(By.cssSelector(String.format(DRAGABLE_COLUMN_FORMAT, column)));
-            if (elements != null)
-            {
-                for (WebElement source : elements)
-                {
-                    drone.dragAndDrop(source, drone.find(TRASHCAN));
-                }
-            }
-        }
-
+        removeAllDashletsWithOutConfirm();
         return selectOk();
     }
 
     /**
+     * Remove dashlet by name.
+     *
+     * @param dashlet
+     */
+    public SiteDashboardPage remove(Dashlet dashlet)
+    {
+        String dashletXpath = String.format("//div[@class='column']//span[text()='%s']/../div", dashlet.getDashletName());
+        WebElement element = drone.findAndWait(By.xpath(dashletXpath));
+        drone.dragAndDrop(element, drone.find(TRASHCAN));
+        waitUntilAlert();
+        return selectOk();
+    }
+
+    private void removeAllDashletsWithOutConfirm()
+    {
+        List<WebElement> elements = getDragDashletElem();
+        if (elements.size() != 0)
+        {
+            for (WebElement source : elements)
+            {
+                drone.dragAndDrop(source, drone.find(TRASHCAN));
+                waitUntilAlert();
+            }
+        }
+        else
+        {
+            logger.info("All Dashlets already removed");
+        }
+    }
+
+    private List<WebElement> getDragDashletElem()
+    {
+        List<WebElement> allDashlets = new ArrayList<WebElement>();
+        for (int column = 0; column <= NUMBER_OF_COLUMNS; column++)
+        {
+            allDashlets.addAll(drone.findAll(By.cssSelector(String.format(DRAGABLE_COLUMN_FORMAT, column))));
+        }
+        return allDashlets;
+    }
+
+    /**
      * Select Layout from given {@link SiteLayout}.
-     * 
+     *
      * @return {@link SiteDashboardPage}
      */
     public SiteDashboardPage selectDashboard(SiteLayout layout)
     {
-        drone.find(layout.getLocator()).click();
-
+        drone.findAndWait(layout.getLocator()).click();
         return selectOk();
     }
 
     /**
      * Add all the dashlets into different columns available.
-     * 
+     *
      * @return {@link SiteDashboardPage}
      */
     public SiteDashboardPage addAllDashlets()
     {
         this.selectAddDashlets();
+        removeAllDashletsWithOutConfirm();
+        waitUntilAlert();
         List<WebElement> dashlets = drone.findAll(AVAILABLE_DASHLETS);
         if (logger.isTraceEnabled())
         {
@@ -182,6 +207,8 @@ public class CustomiseSiteDashboardPage extends SharePage
         {
             target = drone.find(By.cssSelector(String.format(COLUMN_FORMAT, currentColumn)));
             drone.dragAndDrop(source, target);
+            waitUntilAlert();
+
             if (dashletCounter % MAX_DASHLETS_IN_COLUMN == 0)
             {
                 currentColumn++;
@@ -194,7 +221,7 @@ public class CustomiseSiteDashboardPage extends SharePage
 
     /**
      * Add given dashlet into given column.
-     * 
+     *
      * @param dashletName
      * @param columnNumber
      * @return {@link SiteDashboardPage}
@@ -294,7 +321,7 @@ public class CustomiseSiteDashboardPage extends SharePage
     /**
      * This method used to select the ok button present on Customize site
      * dashboard page.
-     * 
+     *
      * @return SiteDashboardPage
      */
     public SiteDashboardPage selectOk()
@@ -308,6 +335,112 @@ public class CustomiseSiteDashboardPage extends SharePage
             logger.info("Unable to find the Save button css " + te);
         }
 
-        return new SiteDashboardPage(drone);
+        return new SiteDashboardPage(drone).render();
+    }
+
+    /**
+     * Method to change layout on Customize Site Dashboard page
+     *
+     * @param numOfColumns
+     */
+
+    public void selectNewLayout(int numOfColumns)
+    {
+        if (numOfColumns > NUMBER_OF_COLUMNS || numOfColumns < 1)
+        {
+            throw new IllegalArgumentException("Select correct number of columns");
+        }
+        else
+        {
+            try
+            {
+                switch (numOfColumns)
+                {
+                    case 1:
+                        drone.findAndWait(SELECT_ONE_COLUMN_LAYOUT_BTN).click();
+                        break;
+                    case 2:
+                        drone.findAndWait(SELECT_TWO_COLUMN_LAYOUT_BTN).click();
+                        break;
+                    case 3:
+                        drone.findAndWait(SELECT_THREE_COLUMN_LAYOUT_BTN).click();
+                        break;
+                    case 4:
+                        drone.findAndWait(SELECT_FOUR_COLUMN_LAYOUT_BTN).click();
+                        break;
+                }
+            }
+            catch (NoSuchElementException nse)
+            {
+                logger.info("Unable to find the Select button css " + nse);
+            }
+        }
+    }
+
+    /**
+     * Method return list of dashlet names from column with selected number.
+     *
+     * @param columnNumber
+     * @return
+     */
+    public List<String> getDashletNamesFrom(int columnNumber)
+    {
+        List<String> dashletNames = new ArrayList<String>();
+        List<WebElement> dashletsElem = getDashletsElemFrom(columnNumber);
+        for (WebElement dashlet : dashletsElem)
+        {
+            dashletNames.add(dashlet.getText());
+        }
+        return dashletNames;
+    }
+
+    /**
+     * Return dashlets count from column with selected number.
+     *
+     * @param columnNumber
+     * @return
+     */
+    public int getDashletsCountIn(int columnNumber)
+    {
+        return getDashletsElemFrom(columnNumber).size();
+    }
+
+    /**
+     * Check  is Dashlet with selected name in columnt with number columnNumber.
+     *
+     * @param dashlet
+     * @param columnNumber
+     * @return
+     */
+    public boolean isDashletInColumn(Dashlet dashlet, int columnNumber)
+    {
+        List<WebElement> dashletsElem = getDashletsElemFrom(columnNumber);
+        for (WebElement dashletElem : dashletsElem)
+        {
+            if (dashletElem.getText().equals(dashlet.getDashletName()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private List<WebElement> getDashletsElemFrom(int columnNumber)
+    {
+        checkArgument(columnNumber > 0 && columnNumber <= NUMBER_OF_COLUMNS);
+        By DashletsInColumn = By.xpath(String.format(DASHLET_IN_COLUMN_NAME_FORMAT, columnNumber));
+        try
+        {
+            return drone.findAndWaitForElements(DashletsInColumn);
+        }
+        catch (TimeoutException e)
+        {
+            return Collections.emptyList();
+        }
+        catch (StaleElementReferenceException e)
+        {
+            return getDashletsElemFrom(columnNumber);
+        }
     }
 }

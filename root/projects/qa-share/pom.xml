@@ -11,12 +11,16 @@
         <version>4.3.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <webdrone.version>2.5-SNAPSHOT</webdrone.version>
-        <share-po.version>${project.version}</share-po.version>
-        <office.component>libreofficecomponent</office.component>
-        <enable.hybrid>false</enable.hybrid>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+<!-- 		<alfVersionStable>"tomcat@pbld01.alfresco.com:/data/releases/Enterprise?4.2/4.2.0/build-00028/ALL/alfresco-enterprise-*-installer-linux-x64.???"</alfVersionStable>
+		<alfVersionLatest>"tomcat@pbld01.alfresco.com:/data/nightlybuilds/Enterprise?${enterprise.installer.version}/*/ALL/alfresco-enterprise-*-installer-linux-x64.???"</alfVersionLatest>
+		<alfVersion>${alfVersionStable}</alfVersion> -->
+		<webdrone.version>2.5-SNAPSHOT</webdrone.version>
+		<share-po.version>${project.version}</share-po.version>
+		<office.component>libreofficecomponent</office.component>
+		<enable.hybrid>false</enable.hybrid>
+		<hybrid.url>https://autohybrida.alfresco.me/alfresco/a/{network}/</hybrid.url>
         <uniqueTestRunName>TestReports</uniqueTestRunName>
         <!-- Default suite allows a single test to be run via -Dtest=... in this case the suite will be ignored then anyway -->
         <testng.xml>src/test/resources/tests_debug.xml</testng.xml>
@@ -150,13 +154,13 @@
 		<dependency>
 			<groupId>org.alfresco</groupId>
 			<artifactId>alfresco-remote-api</artifactId>
-			<version>4.2.e</version>
+			<version>${project.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-        </dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
 
         <dependency>
             <groupId>org.uncommons</groupId>
@@ -187,6 +191,17 @@
             </testResource>
         </testResources>
 		<plugins>
+             <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>target</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
             <plugin>
                <artifactId>maven-compiler-plugin</artifactId>
                <configuration>
@@ -221,28 +236,28 @@
 				</configuration>
 			</plugin>
 
-            <plugin>
-                <!-- Configuration triggered by mvn antrun:run, used by Bamboo to stop
-                    server -->
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>default-cli</id>
-                        <configuration>
-                            <target>
-                                <echo>Stopping Alfresco...</echo>
-                                <exec executable="${basedir}/target/alf-installation/alfresco.sh"
-                                      dir="target/alf-installation" failonerror="true">
-                                    <arg value="stop"/>
-                                </exec>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+			<plugin>
+				<!-- Configuration triggered by mvn antrun:run, used by Bamboo to stop 
+					server -->
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>default-cli</id>
+						<configuration>
+							<target>
+								<echo>Stopping Alfresco...</echo>
+								<exec executable="${basedir}/target/alf-installation/alfresco.sh"
+									dir="target/alf-installation" failonerror="true">
+									<arg value="stop" />
+								</exec>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 	<profiles>
 		<profile>
@@ -271,7 +286,7 @@
                                         <chmod file="target/alf-installer.bin" perm="a+x" verbose="true" />
                                         <echo>Installing Alfresco...</echo>
                                         <exec executable="${basedir}/target/alf-installer.bin" dir="target" failonerror="true">
-                                            <arg line="--mode unattended --alfresco_admin_password admin --disable-components postgres,alfrescowcmqs --jdbc_username alfresco --jdbc_password alfresco --prefix ${basedir}/target/alf-installation" />
+                                            <arg line="--mode unattended --alfresco_admin_password admin --disable-components postgres,alfrescowcmqs --jdbc_username alfresco --jdbc_password alfresco --prefix ${basedir}/target/alf-installation --tomcat_server_domain ${HOSTNAME}" />
                                         </exec>
 										
 
@@ -388,12 +403,12 @@
                                         <echo append="true" output="${alf.prop}">
 # Enabling hybrid in the installation - automatically added by the build
 hybridworkflow.enabled=true
-sync.cloud.url=https://dphybrida.alfresco.me/alfresco/a/{network}/
+sync.cloud.url=${hybrid.url}
                                         </echo>
                                         <echo append="true" output="${alf.prop}" />
                                         <copy failonerror="false" verbose="true"
                                             todir="target/alf-installation/tomcat/shared/classes/alfresco/extension/license"
-                                            file="${user.home}/binaries/build-classpath/4.2/WEB-INF/alfresco/license/Enterprise42-All.lic" /> 
+                                            file="${user.home}/binaries/build-classpath/4.3/WEB-INF/alfresco/license/Enterprise43-All.lic" />
                                     </target>
                                 </configuration>
                             </execution>

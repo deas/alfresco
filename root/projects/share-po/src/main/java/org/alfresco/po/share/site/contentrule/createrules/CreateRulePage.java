@@ -56,6 +56,7 @@ public class CreateRulePage extends SitePage
     // Buttons
     private static final By CANCEL_BUTTON = By.cssSelector("span[id*='cancel-button'] button[id*='cancel-button']");
     private static final By CREATE_BUTTON = By.cssSelector("span[id*='create-button'] button[id*='create-button']");
+    private static final By SAVE_BUTTON = By.cssSelector("span[id*='save-button'] button[id*='save-button']");
     private static final By CREATE_AND_CREATE_ANOTHER_BUTTON = By.cssSelector("span[id*='createAnother-button'] button[id*='createAnother-button']");
 
     private static final By CREATED_ALERT = By.xpath(".//*[@id='message']/div/span");
@@ -226,6 +227,13 @@ public class CreateRulePage extends SitePage
         return drone.getCurrentPage().render();
     }
 
+    public FolderRulesPageWithRules clickSave()
+    {
+        click(SAVE_BUTTON);
+        waitUntilCreatedAlert();
+        return drone.getCurrentPage().render();
+    }
+
     private void click(By locator)
     {
         WebElement element = drone.findAndWait(locator);
@@ -247,7 +255,7 @@ public class CreateRulePage extends SitePage
         boolean isIfDefaultTextCorrect = "All Items".equals(ifSelect.getFirstSelectedOption().getText());
         Select actionSelect = new Select(drone.findAndWait(ACTION_OPTIONS_SELECT));
         boolean isActionDefaultTextCorrect;
-        if (alfrescoVersion.isDojoSupported())
+        if (alfrescoVersion.isCloud())
         {
             isActionDefaultTextCorrect = "Copy".equals(actionSelect.getFirstSelectedOption().getText());
         }

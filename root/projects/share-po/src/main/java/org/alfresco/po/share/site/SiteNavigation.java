@@ -20,7 +20,13 @@ import java.util.List;
 
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.ShareLink;
+import org.alfresco.po.share.site.blog.BlogPage;
+import org.alfresco.po.share.site.calendar.CalendarPage;
+import org.alfresco.po.share.site.datalist.DataListPage;
+import org.alfresco.po.share.site.discussions.DiscussionsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.site.links.LinksPage;
+import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -51,7 +57,7 @@ public class SiteNavigation extends AbstractSiteNavigation
         super(drone);
         siteMembersCSS = drone.getElement("site.members");
         documentLibLink = getAlfrescoVersion().isDojoSupported() ? LABEL_DOCUMENTLIBRARY_PLACEHOLDER : String.format(SITE_LINK_NAV_PLACEHOLER, 3);
-        customizeDashboardLink = getAlfrescoVersion().isDojoSupported() ? By.id("HEADER_CUSTOMIZE_SITE_DASHBOARD_text") : CUSTOMISE_DASHBOARD_BTN;
+        customizeDashboardLink = getAlfrescoVersion().isDojoSupported() ? By.id("HEADER_CUSTOMIZE_SITE_DASHBOARD") : CUSTOMISE_DASHBOARD_BTN;
         moreButton = getAlfrescoVersion().isDojoSupported() ? By.cssSelector("span.alf-menu-arrow") : By.cssSelector("button[id$='_default-more-button']");
     }
 
@@ -100,7 +106,7 @@ public class SiteNavigation extends AbstractSiteNavigation
         if (getAlfrescoVersion().isDojoSupported())
         {
             extractLink(WIKI).click();
-            return new DocumentLibraryPage(getDrone());
+            return new WikiPage(getDrone());
         }
         return select(WIKI);
     }
@@ -181,7 +187,7 @@ public class SiteNavigation extends AbstractSiteNavigation
         {
             selectConfigurationDropdown();
         }
-        drone.find(customizeDashboardLink).click();
+        drone.findAndWait(customizeDashboardLink).click();
         return new CustomiseSiteDashboardPage(getDrone());
 
     }
@@ -213,7 +219,7 @@ public class SiteNavigation extends AbstractSiteNavigation
      * 
      * @return {@link HtmlPage} page response
      */
-    public HtmlPage selectEditSite()
+    public EditSitePage selectEditSite()
     {
         if (getAlfrescoVersion().isDojoSupported())
         {
@@ -305,7 +311,155 @@ public class SiteNavigation extends AbstractSiteNavigation
         }
         return false;
     }
+
     // this code is commented due to
     // https://issues.alfresco.com/jira/browse/CLOUD-2092
     // return isLinkActive(By.cssSelector(documentLibLink));
+
+    /**
+     * Mimics the action of selecting the site
+     * calendar link.
+     * 
+     * @return HtmlPage site calendar page object
+     */
+    public CalendarPage selectCalendarPage()
+    {
+        if (drone.find(CALENDAR_LINK).isDisplayed())
+        {
+            drone.findAndWait(CALENDAR_LINK).click();
+            return new CalendarPage(drone);
+        }
+        else
+        {
+            drone.findAndWait(SITE_MORE_PAGES).click();
+            drone.findAndWait(CALENDAR_LINK).click();
+            return new CalendarPage(drone);
+        }
+    }
+
+    /**
+     * Mimics the action of selecting the site
+     * members link.
+     * 
+     * @return HtmlPage site members page object
+     */
+    public SiteMembersPage selectMembersPage()
+    {
+        if (drone.find(MEMBERS_LINK).isDisplayed())
+        {
+            drone.findAndWait(MEMBERS_LINK).click();
+            return new SiteMembersPage(drone);
+        }
+        else
+        {
+            drone.findAndWait(SITE_MORE_PAGES).click();
+            drone.findAndWait(MEMBERS_LINK).click();
+            return new SiteMembersPage(drone);
+        }
+    }
+
+    /**
+     * Mimics the action of selecting the site
+     * members link.
+     * 
+     * @return HtmlPage site members page object
+     */
+    public WikiPage selectWikiPage()
+    {
+        if (drone.find(WIKI_LINK).isDisplayed())
+        {
+            drone.findAndWait(WIKI_LINK).click();
+            return new WikiPage(drone);
+        }
+        else
+        {
+            drone.findAndWait(SITE_MORE_PAGES).click();
+            drone.findAndWait(WIKI_LINK).click();
+            return new WikiPage(drone);
+        }
+    }
+
+    /**
+     * Mimics the action of selecting the site
+     * discussions link.
+     * 
+     * @return HtmlPage site members page object
+     */
+    public DiscussionsPage selectDiscussionsPage()
+    {
+        if (drone.find(DISCUSSIONS_LINK).isDisplayed())
+        {
+            drone.findAndWait(DISCUSSIONS_LINK).click();
+            return new DiscussionsPage(drone);
+        }
+        else
+        {
+            drone.findAndWait(SITE_MORE_PAGES).click();
+            drone.findAndWait(DISCUSSIONS_LINK).click();
+            return new DiscussionsPage(drone);
+        }
+    }
+
+    /**
+     * Mimics the action of selecting the site
+     * Blog link.
+     * 
+     * @return HtmlPage site members page object
+     */
+    public BlogPage selectBlogPage()
+    {
+        if (drone.find(BLOG_LINK).isDisplayed())
+        {
+            drone.findAndWait(BLOG_LINK).click();
+            return new BlogPage(drone);
+        }
+        else
+        {
+            drone.findAndWait(SITE_MORE_PAGES).click();
+            drone.findAndWait(BLOG_LINK).click();
+            return new BlogPage(drone);
+        }
+    }
+
+    /**
+     * Mimics the action of selecting the site
+     * Links link.
+     * 
+     * @return HtmlPage site members page object
+     */
+    public LinksPage selectLinksPage()
+    {
+        if (drone.find(LINKS_LINK).isDisplayed())
+        {
+            drone.findAndWait(LINKS_LINK).click();
+            return new LinksPage(drone);
+        }
+        else
+        {
+            drone.findAndWait(SITE_MORE_PAGES).click();
+            drone.findAndWait(LINKS_LINK).click();
+            return new LinksPage(drone);
+        }
+    }
+
+    /**
+     * Mimics the action of selecting the site
+     * Data Lists link.
+     * 
+     * @return HtmlPage site members page object
+     */
+    public DataListPage selectDataListPage()
+    {
+        if (drone.find(DATA_LISTS_LINK).isDisplayed())
+        {
+            drone.findAndWait(DATA_LISTS_LINK).click();
+            return new DataListPage(drone).render();
+        }
+        else
+        {
+            drone.findAndWait(SITE_MORE_PAGES).click();
+            drone.findAndWait(DATA_LISTS_LINK).click();
+            return new DataListPage(drone).render();
+        }
+    }
 }

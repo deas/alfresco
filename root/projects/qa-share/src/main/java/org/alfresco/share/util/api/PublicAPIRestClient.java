@@ -14,15 +14,13 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 
 public class PublicAPIRestClient extends AlfrescoHttpClient
 {
     public PublicAPIRestClient() throws Exception
     {
-        super();
-        // TODO Auto-generated constructor stub
+      super();
     }
 
     private static Log logger = LogFactory.getLog(PublicAPIRestClient.class);
@@ -35,7 +33,7 @@ public class PublicAPIRestClient extends AlfrescoHttpClient
     {
         //super.setup();
         testName = this.getClass().getSimpleName();
-        logger.info("Starting Tests: " + testName);
+        logger.info("Instantiated Class: " + testName);
     }
 
     /**
@@ -72,63 +70,6 @@ public class PublicAPIRestClient extends AlfrescoHttpClient
             logger.error("SMR Failed for user: " + authUser + " Response Received: " + response.getStatusLine());
         }
         return response;
-    }
-    
-    public static HttpResponse createDPEnv(String envName, String product, String buildNo, String configType, String configVersion, Boolean premiumMode, String baseAMIID, Boolean layer7Enabled)
-            throws Exception
-    {
-        if (product != null && product.equalsIgnoreCase("RANDOM"))
-        {
-            product = "alf-" + ("dp" + System.currentTimeMillis()).substring(8, 16);
-        }
-
-        String reqURL = dpURL + "/service/environment?name=" + envName + "&productType=" + product + "&productVersion=" + buildNo + "&configType=" + configType + "&configVersion="
-                + configVersion + "&pmode=" + premiumMode + "&imageId=" + baseAMIID + "&layer7enable=" + layer7Enabled;
-        String[] authDetails = getAuthDetails(DP_USER);
-        String[] headers = {};
-        String[] body = {};
-
-        logger.info("Using Url - " + reqURL + " for Create DP Environment");
-
-        HttpPost request = generatePostRequest(reqURL, headers, body);
-        HttpClient client = getHttpClientWithBasicAuth(reqURL, authDetails[0], DP_PASS);
-        HttpResponse response = executeRequestHttpResp(client, request);
-
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
-        {
-            logger.info("New DP Environment Requested: " + envName);
-        }
-        else
-        {
-            logger.error("New DP Environment Request failed: " + envName + response.getStatusLine());
-        }
-        return response;
-
-    }
-
-    public static HttpResponse deleteDPEnv(String envName) throws Exception
-    {
-
-        String reqURL = dpURL + "/service/environment?name=" + envName;
-        String[] authDetails = getAuthDetails(DP_USER);
-        String[] headers = { "" };
-        String[] body = { "" };
-
-        logger.info("Using Url - " + reqURL + " for Delete DP Environment");
-
-        HttpDelete request = generateDeleteRequest(reqURL, headers, body);
-        HttpClient client = getHttpClientWithBasicAuth(reqURL, authDetails[0], DP_PASS);
-        HttpResponse response = executeRequestHttpResp(client, request);
-
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
-        {
-            logger.info("DP Environment Deleted: " + envName);
-        }
-        else
-        {
-            logger.error("DP Environment Delete failed: " + envName + response.getStatusLine());
-        }
-        return response;
-    }  
+    }    
 
 }

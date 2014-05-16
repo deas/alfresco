@@ -12,6 +12,7 @@
 			<exclude name="Staging" />
 			<exclude name="Download" />
 			<exclude name="DataPrep.*" />
+            <exclude name="NonGrid" />
 		</run>
 	</groups>
 	<test name="Sanity">

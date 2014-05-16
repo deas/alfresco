@@ -14,15 +14,15 @@
  */
 package org.alfresco.po.share.site.document;
 
-import java.util.NoSuchElementException;
-
 import org.alfresco.po.share.enums.Encoder;
+import org.alfresco.po.share.enums.TinyMceColourCode;
 import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.owasp.esapi.ESAPI;
 
@@ -35,12 +35,11 @@ public class TinyMceEditor extends HtmlElement
 
     private static final String TINY_MCE_SELECT_ALL_COMMAND = "tinyMCE.activeEditor.selection.select(tinyMCE.activeEditor.getBody(),true);";
     private static final String XPATH_COLOUR_FONT = "//font";
-    private static final String CSS_REMOVE_FORMAT = ".mceIcon.mce_removeformat";
+    private static final String CSS_REMOVE_FORMAT = "a>span.mceIcon.mce_removeformat";
     private static final String CSS_COLOR_ATT = "rich.txt.editor.color.code";
     private static final String CSS_STR_BOLD = ".mceIcon.mce_bold";
-    public static final String FRAME_ID = "template_x002e_comments_x002e_folder-details_x0023_default-add-content_ifr";
+    public String FRAME_ID = "";
     public static final String TINYMCE_CONTENT = "body[id$='tinymce']";
-
     private static final String CSS_STR_ITALIC = ".mceIcon.mce_italic";
     private static final String CSS_STR_UNDER_LINED = ".mceIcon.mce_underline";
     private static final String CSS_STR_BULLETS = ".mceIcon.mce_bullist";
@@ -51,37 +50,35 @@ public class TinyMceEditor extends HtmlElement
     private static final String CSS_STR_BULLET_FMT_TXT = "#tinymce>ul>li";
     private static final String CSS_STR_NUMBER_FMT_TXT = "#tinymce>ol>li";
     private static final String CSS_STR_TEXT_TAG = "#tinymce>p";
-    private static final String CSS_STR_FORE_COLOUR = "a[id$='default-add-content_forecolor_open']";
-    private static final String CSS_BLUE_COLOUR_CODE = "a[title=Blue]";
-    private static final String CSS_BLACK_COLOUR_CODE = "div.mce_forecolor td>a[title='Black']";
+    public String CSS_STR_FORE_COLOUR = "a[id$='default-add-content_forecolor_open']";
     private static final String CSS_COLOR_FONT = "#tinymce>p>font";
     private static final String CSS_UNDO = ".mceIcon.mce_undo";
     private static final String CSS_REDO = ".mceIcon.mce_redo";
     private static final String CSS_BULLET_TEXT = "#tinymce>ul>li";
-    private String frameId = FRAME_ID;
+    protected String CSS_STR_BACK_GROUND_COLOUR;
+    private String frameId = null;
     private FormatType formatType;
 
     public enum FormatType
     {
-        BOLD,
-        ITALIC,
-        UNDERLINED,
-        NUMBER,
-        BULLET,
-        BOLD_FMT_TXT,
-        ITALIC_FMT_TXT,
-        UNDER_LINED_FMT_TXT,
-        BULLET_FMT_TXT,
-        NUMBER_FMT_TXT,
-        COLOR,
-        COLOR_CODE,
-        BLACK_COLOR_CODE,
-        UNDO,
-        REDO,
-        DEFAULT,
-        COLOR_FONT,
-        BULLET_TEXT,
-        BOLD_EDIT;
+        BOLD, 
+        ITALIC, 
+        UNDERLINED, 
+        NUMBER, 
+        BULLET, 
+        BOLD_FMT_TXT, 
+        ITALIC_FMT_TXT, 
+        UNDER_LINED_FMT_TXT, 
+        BULLET_FMT_TXT, 
+        NUMBER_FMT_TXT, 
+        COLOR, 
+        UNDO, 
+        REDO, 
+        DEFAULT, 
+        COLOR_FONT, 
+        BULLET_TEXT, 
+        BOLD_EDIT, 
+        BACK_GROUND_COLOR;
     }
 
     public String getFrameId()
@@ -89,7 +86,7 @@ public class TinyMceEditor extends HtmlElement
         return frameId;
     }
 
-    public void setFrameId(String frameId)
+    private void setFrameId(String frameId)
     {
         this.frameId = frameId;
     }
@@ -103,31 +100,29 @@ public class TinyMceEditor extends HtmlElement
     {
         switch (formatType)
         {
-            case BOLD:
-                return CSS_STR_BOLD;
-            case ITALIC:
-                return CSS_STR_ITALIC;
-            case UNDERLINED:
-                return CSS_STR_UNDER_LINED;
-            case BULLET:
-                return CSS_STR_BULLETS;
-            case NUMBER:
-                return CSS_STR_NUMBERS;
-            case COLOR:
-                return CSS_STR_FORE_COLOUR;
-            case COLOR_CODE:
-                return CSS_BLUE_COLOUR_CODE;
-            case BLACK_COLOR_CODE:
-                return CSS_BLACK_COLOUR_CODE;
-            case UNDO:
-                return CSS_UNDO;
-            case REDO:
-                return CSS_REDO;
-                // temporary solution
-            case BOLD_EDIT:
-                return "DIV[class='comments-list']>DIV[class='comment-form'] " + CSS_STR_BOLD;
-            default:
-                throw new PageException();
+        case BOLD:
+            return CSS_STR_BOLD;
+        case ITALIC:
+            return CSS_STR_ITALIC;
+        case UNDERLINED:
+            return CSS_STR_UNDER_LINED;
+        case BULLET:
+            return CSS_STR_BULLETS;
+        case NUMBER:
+            return CSS_STR_NUMBERS;
+        case COLOR:
+            return CSS_STR_FORE_COLOUR;
+        case UNDO:
+            return CSS_UNDO;
+        case REDO:
+            return CSS_REDO;
+            // temporary solution
+        case BOLD_EDIT:
+            return "DIV[class='comments-list']>DIV[class='comment-form'] " + CSS_STR_BOLD;
+        case BACK_GROUND_COLOR:
+            return CSS_STR_BACK_GROUND_COLOUR;
+        default:
+            throw new PageException();
 
         }
     }
@@ -136,22 +131,22 @@ public class TinyMceEditor extends HtmlElement
     {
         switch (formatType)
         {
-            case BOLD_FMT_TXT:
-                return CSS_STR_BOLD_FMT_TXT;
-            case ITALIC_FMT_TXT:
-                return CSS_STR_ITALIC_FMT_TXT;
-            case UNDER_LINED_FMT_TXT:
-                return CSS_STR_UNDER_LINED_FMT_TXT;
-            case BULLET_FMT_TXT:
-                return CSS_STR_BULLET_FMT_TXT;
-            case NUMBER_FMT_TXT:
-                return CSS_STR_NUMBER_FMT_TXT;
-            case COLOR_FONT:
-                return CSS_COLOR_FONT;
-            case BULLET_TEXT:
-                return CSS_BULLET_TEXT;
-            default:
-                return CSS_STR_TEXT_TAG;
+        case BOLD_FMT_TXT:
+            return CSS_STR_BOLD_FMT_TXT;
+        case ITALIC_FMT_TXT:
+            return CSS_STR_ITALIC_FMT_TXT;
+        case UNDER_LINED_FMT_TXT:
+            return CSS_STR_UNDER_LINED_FMT_TXT;
+        case BULLET_FMT_TXT:
+            return CSS_STR_BULLET_FMT_TXT;
+        case NUMBER_FMT_TXT:
+            return CSS_STR_NUMBER_FMT_TXT;
+        case COLOR_FONT:
+            return CSS_COLOR_FONT;
+        case BULLET_TEXT:
+            return CSS_BULLET_TEXT;
+        default:
+            return CSS_STR_TEXT_TAG;
         }
     }
 
@@ -166,6 +161,14 @@ public class TinyMceEditor extends HtmlElement
     public TinyMceEditor(WebDrone drone)
     {
         super(drone);
+        try
+        {
+            this.FRAME_ID = drone.find(By.cssSelector("iframe[id$='_default-add-content_ifr']")).getAttribute("id");
+            setFrameId(FRAME_ID);
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
     }
 
     /**
@@ -227,16 +230,16 @@ public class TinyMceEditor extends HtmlElement
 
         switch (encoder)
         {
-            case ENCODER_HTML:
-                encodedComment = ESAPI.encoder().encodeForHTML(text);
-                logger.info("Text encoded as HTML");
-                break;
-            case ENCODER_JAVASCRIPT:
-                encodedComment = ESAPI.encoder().encodeForJavaScript(text);
-                logger.info("Text encoded as JavaScript");
-                break;
-            default:
-                logger.info("Text is not encoded");
+        case ENCODER_HTML:
+            encodedComment = ESAPI.encoder().encodeForHTML(text);
+            logger.info("Text encoded as HTML");
+            break;
+        case ENCODER_JAVASCRIPT:
+            encodedComment = ESAPI.encoder().encodeForJavaScript(text);
+            logger.info("Text encoded as JavaScript");
+            break;
+        default:
+            logger.info("Text is not encoded");
         }
         setText(encodedComment);
     }
@@ -254,13 +257,23 @@ public class TinyMceEditor extends HtmlElement
     /**
      * Click to select color code on text.
      */
-    public void clickColorCode()
+    public void clickColorCode(TinyMceColourCode colourCode)
     {
         selectTextFromEditor();
         setFormatType(FormatType.COLOR);
         clickElementOnRichTextFormatter(getCSSOfFormatType());
-        setFormatType(FormatType.COLOR_CODE);
+        clickElementOnRichTextFormatter(colourCode.getForeColourLocator());
+    }
+
+    /**
+     * Click to select color code on text.
+     */
+    public void clickBackgroundColorCode(TinyMceColourCode bgColourCode)
+    {
+        selectTextFromEditor();
+        setFormatType(FormatType.BACK_GROUND_COLOR);
         clickElementOnRichTextFormatter(getCSSOfFormatType());
+        clickElementOnRichTextFormatter(bgColourCode.getBgColourLocator());
     }
 
     /**
@@ -320,12 +333,8 @@ public class TinyMceEditor extends HtmlElement
     {
         // This select all in the edit pane
         /**
-         * @author Michael Suzuki
-         *         Changed to use tinymce directly as its
-         *         faster to edit with tinymce object instead
-         *         of using the ui.
-         *         The script below will select every thing
-         *         inside the editing pane.
+         * @author Michael Suzuki Changed to use tinymce directly as its faster to edit with tinymce object instead of using the ui. The script below will
+         *         select every thing inside the editing pane.
          */
         drone.executeJavaScript(TINY_MCE_SELECT_ALL_COMMAND);
     }
@@ -376,6 +385,43 @@ public class TinyMceEditor extends HtmlElement
         {
             logger.error("Element :body[id$='tinymce'] does not exist", noSuchElementExp);
             throw new PageException("Unable to find content in tinyMCE editor.", noSuchElementExp);
+        }
+    }
+
+    /**
+     * Click on TinyMCE editor's format option.
+     * 
+     * @param formatType
+     */
+    public void clickTextFormatterWithOutSelectingText(FormatType formatType)
+    {
+        setFormatType(formatType);
+        clickElementOnRichTextFormatter(getCSSOfFormatType());
+    }
+
+    protected void setBGColorLinkCss(String css)
+    {
+        this.CSS_STR_BACK_GROUND_COLOUR = css;
+    }
+
+    protected void setForeColorLinkCss(String css)
+    {
+        this.CSS_STR_FORE_COLOUR = css;
+    }
+
+    /**
+     * This method does the removing of text/image/links and format from the tinymce editor.
+     */
+    public void clearAll()
+    {
+        try
+        {
+            String setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", "");
+            drone.executeJavaScript(setCommentJs);
+        }
+        catch (NoSuchElementException noSuchElementExp)
+        {
+            throw new PageException("Unable to find text css in tinyMCE editor.", noSuchElementExp);
         }
     }
 }

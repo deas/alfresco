@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.po.share.AlfrescoVersion;
+import org.alfresco.po.share.enums.TinyMceColourCode;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
@@ -18,6 +19,7 @@ import org.alfresco.po.share.site.document.TinyMceEditor.FormatType;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
+import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
@@ -168,8 +170,7 @@ public class SiteDocumentLibraryTest extends AbstractUtils
     public void dataPrep_Enterprise40x_8958() throws Exception
     {
         String testName = getTestName();
-        // TODO: Chiran: Why is suffix _User necessary?
-        String testUser = getUserNameFreeDomain(testName + "_User");
+        String testUser = getUserNameFreeDomain(testName);
 
         // User
         String[] testUserInfo = new String[] { testUser };
@@ -188,19 +189,16 @@ public class SiteDocumentLibraryTest extends AbstractUtils
      * <li>Click on tag link under folder name or Clickon tag link under Tags tree menu list.
      * <li>verify the files or folders are displayed which are tagged with the tagName</li>
      * </ul>
+     * @throws Exception 
      */
     @Test()
-    public void enterprise40x_8958()
+    public void enterprise40x_8958() throws Exception
     {
-        DocumentLibraryPage documentLibPage = null;
-
-        try
-        {
             /** Start Test */
             testName = getTestName();
 
             /** Test Data Setup */
-            String testUser = getUserNameFreeDomain(testName + "_User");
+            String testUser = getUserNameFreeDomain(testName);
 
             siteName = getSiteName(testName) + System.currentTimeMillis();
 
@@ -224,10 +222,10 @@ public class SiteDocumentLibraryTest extends AbstractUtils
             ShareUser.openDocumentLibrary(drone);
 
             // Select detailed view icon on DocLib Page.
-            documentLibPage = ShareUserSitePage.selectView(drone, ViewType.DETAILED_VIEW);
+            ShareUserSitePage.selectView(drone, ViewType.DETAILED_VIEW);
 
             // Adding test tag to folders with same name on both folders.
-            ShareUserSitePage.addTagsFromDocLib(drone, folderName, Arrays.asList(testTagName));
+            DocumentLibraryPage documentLibPage = ShareUserSitePage.addTagsFromDocLib(drone, folderName, Arrays.asList(testTagName));
             //documentLibPage.getFileDirectoryInfo(folderName).addTag(testTagName);
 
             // Clicking the tagName link present under folder name
@@ -236,20 +234,10 @@ public class SiteDocumentLibraryTest extends AbstractUtils
             // Check that the folder is listed
             Assert.assertTrue(ShareUserSitePage.searchDocumentLibraryWithRetry(drone, folderName, true));
 
-            // Clicking the tagName present under Tags menu tree on Document
-            // Library page.
+            // Clicking the tagName present under Tags menu tree on Document Library page.
             documentLibPage = documentLibPage.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(testTagName).render();
 
-            Assert.assertTrue(documentLibPage.isFileVisible(folderName));
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+            Assert.assertTrue(documentLibPage.isFileVisible(folderName),"Folder is not visible");
     }
 
     @Test(groups = { "DataPrepSiteDocumentLibrary" })
@@ -287,41 +275,27 @@ public class SiteDocumentLibraryTest extends AbstractUtils
      * <li>verify document preview for several times</li>
      * </ul>
      */
-    @Test(groups = "windowsOnly")
+    @Test(groups = "WindowsOnly")
     public void enterprise40x_8506()
     {
-        DocumentDetailsPage docDetailsPage = null;
-        try
-        {
-            /** Start Test */
-            testName = getTestName();
+        /** Start Test */
+        testName = getTestName();
 
-            /** Test Data Setup */
-            String siteName = getSiteName(testName);
-            String testUser = getUserNameFreeDomain(testName);
+        /** Test Data Setup */
+        String siteName = getSiteName(testName);
+        String testUser = getUserNameFreeDomain(testName);
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            // Open Site Document Library
+        // Open Site Document Library
+        ShareUser.openSiteDashboard(drone, siteName);
 
-            ShareUser.openSiteDashboard(drone, siteName);
+        DocumentLibraryPage libraryPage = ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
 
-            DocumentLibraryPage libraryPage = ShareUser.openDocumentLibrary(drone).render(maxWaitTime);
+        DocumentDetailsPage docDetailsPage = libraryPage.selectFile(FILE_WITH_IMAP_FORMAT).render();
 
-            docDetailsPage = libraryPage.selectFile(FILE_WITH_IMAP_FORMAT).render();
-
-            Assert.assertTrue(docDetailsPage.getPreviewerClassName().endsWith("PdfJs"));
-
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        Assert.assertTrue(docDetailsPage.getPreviewerClassName().endsWith("PdfJs"));
     }
 
     @Test(groups = { "DataPrepSiteDocumentLibrary" })
@@ -525,20 +499,20 @@ public class SiteDocumentLibraryTest extends AbstractUtils
         Assert.assertTrue(tinyMceEditor.getContent().contains("<p>" + comment + "</p>"));
 
         // test text color as BLUE
-        tinyMceEditor.clickColorCode();
+        tinyMceEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(comment, tinyMceEditor.getText());
         Assert.assertTrue(tinyMceEditor.getContent().contains(fontStyle + comment + "</font>"));
         tinyMceEditor.removeFormatting();
 
         // test UNDO button on text
-        tinyMceEditor.clickColorCode();
+        tinyMceEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(comment, tinyMceEditor.getText());
         Assert.assertTrue(tinyMceEditor.getContent().contains(fontStyle + comment + "</font>"));
         tinyMceEditor.clickUndo();
         Assert.assertTrue(tinyMceEditor.getContent().contains("<p>" + comment + "</p>"));
 
         // text REDO button on text
-        tinyMceEditor.clickColorCode();
+        tinyMceEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(comment, tinyMceEditor.getText());
         Assert.assertTrue(tinyMceEditor.getContent().contains(fontStyle + comment + "</font>"));
         tinyMceEditor.clickUndo();

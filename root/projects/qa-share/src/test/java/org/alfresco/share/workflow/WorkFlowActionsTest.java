@@ -5,6 +5,7 @@ import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserWorkFlow;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.task.TaskDetails;
@@ -16,6 +17,7 @@ import org.alfresco.po.share.workflow.TaskDetailsType;
 import org.alfresco.po.share.workflow.TaskType;
 import org.alfresco.po.share.workflow.WorkFlowFormDetails;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import static org.testng.Assert.assertTrue;
  * @author Ranjith Manyam
  * 
  */
+@Listeners(FailedTestListener.class)
 public class WorkFlowActionsTest extends AbstractWorkflow
 {    
     /**

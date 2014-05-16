@@ -36,6 +36,7 @@ public abstract class AbstractEditProperties extends ShareDialogue
     protected static final By INPUT_ORIENTATION_SELECTOR = By.cssSelector("input[id$='prop_exif_orientation']");
     protected static final By BUTTON_SELECT_TAG = By.cssSelector("div[id$='cntrl-itemGroupActions']");
     protected static final By CATEGORY_BUTTON_SELECT_TAG = By.cssSelector("div[id$='categories-cntrl-itemGroupActions']");
+    protected static final By BUTTON_ALL_PROPERTIES = By.cssSelector("a[id$='editMetadata-button']");
 
     /**
      * Clear the input field and inserts the new value.
@@ -75,7 +76,7 @@ public abstract class AbstractEditProperties extends ShareDialogue
      */
     public void setName(final String name)
     {
-        setInput(drone.find(INPUT_NAME_SELECTOR), name);
+        setInput(drone.findAndWait(INPUT_NAME_SELECTOR), name);
     }
 
     /**
@@ -93,7 +94,7 @@ public abstract class AbstractEditProperties extends ShareDialogue
      */
     public void setDocumentTitle(final String title)
     {
-        setInput(drone.find(INPUT_TITLE_SELECTOR), title);
+        setInput(drone.findAndWait(INPUT_TITLE_SELECTOR), title);
     }
 
     /**
@@ -111,7 +112,7 @@ public abstract class AbstractEditProperties extends ShareDialogue
      */
     public void setDescription(final String description)
     {
-        setInput(drone.find(INPUT_DESCRIPTION_SELECTOR), description);
+        setInput(drone.findAndWait(INPUT_DESCRIPTION_SELECTOR), description);
     }
 
     /**
@@ -133,7 +134,7 @@ public abstract class AbstractEditProperties extends ShareDialogue
      */
     public CategoryPage getCategory()
     {
-        WebElement tagElement = drone.find(CATEGORY_BUTTON_SELECT_TAG);
+        WebElement tagElement = drone.findAndWait(CATEGORY_BUTTON_SELECT_TAG);
         tagElement.findElement(By.tagName("button")).click();
         return new CategoryPage(drone);
     }
@@ -142,7 +143,9 @@ public abstract class AbstractEditProperties extends ShareDialogue
      * Get the {@link List} of added {@link Categories}.
      * 
      * @return {@link List} of {@link Categories}
+     * @depricated Use {@link #getCategoryList()} instead.
      */
+    @Deprecated
     public List<Categories> getCategories()
     {
         List<Categories> categories = new ArrayList<Categories>();
@@ -162,11 +165,34 @@ public abstract class AbstractEditProperties extends ShareDialogue
     }
 
     /**
+     * Get the {@link List} of added categories.
+     * 
+     * @return {@link List} of categories
+     */
+    public List<String> getCategoryList()
+    {
+        List<String> categories = new ArrayList<>();
+        try
+        {
+            List<WebElement> categoryElements = drone.findAll(By.cssSelector("div[class='itemtype-cm:category']"));
+            for (WebElement webElement : categoryElements)
+            {
+                categories.add(webElement.getText());
+            }
+        }
+        catch (NoSuchElementException e)
+        {
+            throw new PageOperationException("Not able to find categories", e);
+        }
+        return categories;
+    }
+
+    /**
      * Select cancel button.
      */
     public void clickOnCancel()
     {
-        drone.find(By.cssSelector("button[id$='form-cancel-button']")).click();
+        drone.findAndWait(By.cssSelector("button[id$='form-cancel-button']")).click();
     }
 
     /**
@@ -174,7 +200,7 @@ public abstract class AbstractEditProperties extends ShareDialogue
      */
     public void clickSave()
     {
-        WebElement saveButton = drone.find(By.cssSelector("button[id$='form-submit-button']"));
+        WebElement saveButton = drone.findAndWait(By.cssSelector("button[id$='form-submit-button']"));
         if (saveButton.isDisplayed())
         {
             String id = saveButton.getAttribute("id");
@@ -183,4 +209,11 @@ public abstract class AbstractEditProperties extends ShareDialogue
         }
     }
 
+    /**
+     * Select all properties button.
+     */
+    public void clickAllProperties()
+    {
+        drone.findAndWait(BUTTON_ALL_PROPERTIES).click();
+    }
 }

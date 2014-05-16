@@ -17,23 +17,22 @@ import org.testng.annotations.Test;
  * HTML5 previewer tests
  * 
  * @author wabson
- *
  */
 @Listeners(FailedTestListener.class)
 public class PdfJsPreviewTest extends AbstractUtils
 {
-    private static final Logger logger = Logger.getLogger(PdfJsPreviewTest.class);    
-    
+    private static final Logger logger = Logger.getLogger(PdfJsPreviewTest.class);
+
     private static String testPassword = DEFAULT_PASSWORD;
     protected String testUser;
     protected String siteName = "";
 
     private static final String FILES_PREFIX = "preview" + SLASH;
-    private static final String TESTFILE_PDF =  "PreviewTest.pdf";
+    private static final String TESTFILE_PDF = "PreviewTest.pdf";
     private static final String TESTFILE_DOC = "PreviewTest.doc";
 
     @Override
-    @BeforeClass(alwaysRun=true)
+    @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
     {
         super.setup();
@@ -41,10 +40,9 @@ public class PdfJsPreviewTest extends AbstractUtils
         testUser = testName + "@" + DOMAIN_FREE;
         logger.info("Starting Tests: " + testName);
     }
-    
+
     /**
      * DataPreparation method - ACE_1292_01
-     * 
      * <ol>
      * <li>Login</li>
      * <li>Create User</li>
@@ -54,8 +52,8 @@ public class PdfJsPreviewTest extends AbstractUtils
      * 
      * @throws Exception
      */
-    
-    @Test(groups={"DataPrepPdfJsPreview"})
+
+    @Test(groups = { "DataPrepPdfJsPreview" })
     public void dataPrep_PdfJsPreview_ALF_3035() throws Exception
     {
         String testName = getTestName();
@@ -63,34 +61,22 @@ public class PdfJsPreviewTest extends AbstractUtils
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
 
-        try
-        {
-            //Create user
-            CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
- 
-            //Login as created user 
-            ShareUser.login(drone, testUser, testPassword);
+        // Create user
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
 
-            //Create site
-            SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        // Login as created user
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Upload test file
-            ShareUser.uploadFileInFolder(drone, new String[] { FILES_PREFIX + TESTFILE_PDF });
+        // Create site
+        SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-            //Created user logs  out
-            ShareUser.logout(drone);
+        // Upload test file
+        ShareUser.uploadFileInFolder(drone, new String[] { FILES_PREFIX + TESTFILE_PDF });
 
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        // Created user logs out
+        ShareUser.logout(drone);
     }
-    
+
     private void testDocument(String siteName, String docName)
     {
         ShareUser.openSiteDashboard(drone, siteName);
@@ -120,10 +106,9 @@ public class PdfJsPreviewTest extends AbstractUtils
         Assert.assertTrue(viewer.isSidebarVisible());
         Assert.assertEquals(viewer.getSidebarNumDisplayedPages(), 3);
     }
-    
+
     /**
      * Check that a 3-page PDF file is displayed correctly in the viewer
-     * 
      * <ol>
      * <li>User logs in and navigates to the previously-uploaded content in the test site</li>
      * <li>Check that the number of pages displayed in the main view is correct</li>
@@ -137,7 +122,7 @@ public class PdfJsPreviewTest extends AbstractUtils
      * <li>User logs out</li>
      * </ol>
      */
-    @Test(groups={"TestPdfJsPreview"})
+    @Test(groups = { "TestPdfJsPreview" })
     public void ALF_3035()
     {
         // Search name is the same as the test name
@@ -149,23 +134,20 @@ public class PdfJsPreviewTest extends AbstractUtils
 
         ShareUser.logout(drone);
     }
-    
-    
+
     /**
-     * 
      * DataPreparation method - ACE_1292_02
-     * 
      * <ol>
      * <li>Login</li>
      * <li>Create User</li>
      * <li>Create Site</li>
      * <li>Create and upload MS Word file with content</li>
      * </ol>
-     *  
+     * 
      * @throws Exception
      */
-    
-    @Test(groups={"DataPrepPdfJsPreview"})
+
+    @Test(groups = { "DataPrepPdfJsPreview" })
     public void dataPrep_PdfJsPreview_ALF_3036() throws Exception
     {
         String testName = getTestName();
@@ -173,37 +155,25 @@ public class PdfJsPreviewTest extends AbstractUtils
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
 
-        try
-        {
-            //Create user
-            CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
- 
-            //Login as created user 
-            ShareUser.login(drone, testUser, testPassword);
+        // Create user
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
 
-            //Create site
-            SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        // Login as created user
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Upload test file
-            ShareUser.uploadFileInFolder(drone, new String[] { FILES_PREFIX + TESTFILE_DOC });
+        // Create site
+        SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-            //Created user logs  out
-            ShareUser.logout(drone);
+        // Upload test file
+        ShareUser.uploadFileInFolder(drone, new String[] { FILES_PREFIX + TESTFILE_DOC });
 
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        // Created user logs out
+        ShareUser.logout(drone);
+
     }
 
     /**
      * Check that a 3-page Word document is displayed correctly in the viewer
-     * 
      * <ol>
      * <li>User logs in and navigates to the previously-uploaded content in the test site</li>
      * <li>Check that the number of pages displayed in the main view is correct</li>
@@ -217,7 +187,7 @@ public class PdfJsPreviewTest extends AbstractUtils
      * <li>User logs out</li>
      * </ol>
      */
-    @Test(groups={"TestPdfJsPreview"})
+    @Test(groups = { "TestPdfJsPreview" })
     public void ALF_3036()
     {
         // Search name is the same as the test name

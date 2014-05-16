@@ -4,6 +4,7 @@
 		<groups>
 			<run>
 				<include name="DataPrep.*" />
+                <exclude name="NonGrid" />
 			</run>
 		</groups>
 		<classes>

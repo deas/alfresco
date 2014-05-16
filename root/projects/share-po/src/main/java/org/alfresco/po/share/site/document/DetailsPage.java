@@ -72,13 +72,39 @@ public abstract class DetailsPage extends SitePage
     private static final String SPAN_LIKE_COMMENT = "span.likes-count";
     private static final String THIN_DARK_TITLE_ELEMENT = "div.node-header>div.node-info>h1.thin.dark";
     private static final String PAGE_SHARE_PANEL = "div.panel-body>div.link-info>a";
-    private static final String COMMENT_LINK = ".theme-color-1.comment.template_x002e_node-header_x002e_folder-details_x0023_default";
+    private static final String COMMENT_LINK = "a[class*='comment']";
     private static final String MANAGE_PERMISSIONS = "div[class$='-permissions'] a";
     private final static By PAGINATION = By.xpath(".//*[@id='template_x002e_comments_x002e_folder-details_x0023_default-paginator-top']");
     private Log logger = LogFactory.getLog(DetailsPage.class);
     private SyncInfoPage syncInfoPage;
     private static final By NODE_PATH = By.cssSelector("div.node-path span a");
+    private static final By TAGS_PANEL = By.cssSelector("div[class*='tags']");
+    private static final By PROPERTIES_PANEL = By.cssSelector("div[class*='metadata-header']");
+    private static final By COMMENT_COUNT = By.cssSelector("span.comment-count");
+    protected String PERMISSION_SETTINGS_PANEL_CSS = null;
+    private final By SYNC_SETTINGS_PANEL_CSS = By.cssSelector(".document-sync");
+    private final By COMMENTS_PANEL_CSS = By.cssSelector("div.comments-list");
+    private final By COPY_TO_SHARE_LINKS = By.cssSelector("h3.thin.dark");
+    private static final String LINK_VIEW_ON_GOOGLE_MAPS = "div[id$='default-actionSet'] div.document-view-googlemaps a";
 
+    public enum ShareLinks
+    {
+        COPY_LINK_TO_SHARE_THIS_PAGE("Copy this link to share the current page"),
+        COPY_LINK_FOR_WEBDEV_URL("copy link for webdav url");
+        
+        String linkText;
+        
+        private ShareLinks(String linkText)
+        {
+            this.linkText = linkText;
+        }
+        
+        public String getLinkText()
+        {
+            return linkText;
+        }
+    }
+    
     protected DetailsPage(WebDrone drone)
     {
         super(drone);
@@ -96,7 +122,10 @@ public abstract class DetailsPage extends SitePage
         }
         catch (TimeoutException e)
         {
-            logger.error("Page, contains Element :" + "div[id$='" + type + "-details']" + " does not exist", e);
+            if(logger.isTraceEnabled())
+            {
+                logger.trace("Page, contains Element :" + "div[id$='" + type + "-details']" + " does not exist", e);
+            }
         }
         return false;
     }
@@ -289,11 +318,11 @@ public abstract class DetailsPage extends SitePage
                 return tagNames;
             }
         }
-        catch (NoSuchElementException nse)
+        catch (TimeoutException te)
         {
             if (logger.isTraceEnabled())
             {
-                logger.error("Element :span.tag does not exist", nse);
+                logger.error("Element :span.tag does not exist", te);
             }
         }
         return Collections.<String> emptyList();
@@ -498,6 +527,7 @@ public abstract class DetailsPage extends SitePage
             {
                 logger.trace(String.format("Add Comment panel isDisplayed : %s ", addComment.isDisplayed()));
             }
+
         }
         catch (TimeoutException e)
         {
@@ -631,6 +661,49 @@ public abstract class DetailsPage extends SitePage
     }
 
     /**
+     * Delete the comment on detail page.
+     *
+     * @param comment to remove
+     * @return DetailsPage page object response
+     */
+    public HtmlPage deleteComment(final String comment)
+    {
+        if (StringUtils.isEmpty(comment))
+        {
+            throw new UnsupportedOperationException("Comment input required");
+        }
+        List<WebElement> comments = drone.findAndWaitForElements(By.xpath("//div[@class='comment-details']//div[@class='comment-content']"));
+        WebElement commentEl = null;
+        if (logger.isTraceEnabled())
+        {
+            logger.trace(String.format("Are there comments on the page : %s ", comments.isEmpty()));
+        }
+        for (WebElement commentElement : comments)
+        {
+            if (commentElement.getText().equals(comment))
+            {
+                if (logger.isTraceEnabled())
+                {
+                    logger.trace(String.format("We have found a match to comment ' %s ' : true", comment));
+                }
+                commentEl = commentElement;
+            }
+        }
+        if(commentEl != null){
+            drone.mouseOver(commentEl);
+            WebElement delete = drone.findAndWait(By.xpath("//p[text()='" + comment + "']/../..//a[@title='Delete Comment']"));
+            delete.click();
+            confirmDelete();
+            canResume();
+            drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+
+        }
+
+        return FactorySharePage.resolvePage(drone);
+
+    }
+
+    /**
      * Confirm delete dialog acceptance action.
      */
     protected void confirmDelete()
@@ -753,7 +826,7 @@ public abstract class DetailsPage extends SitePage
     {
         try
         {
-            WebElement span = drone.find(By.cssSelector("span.comment-count"));
+            WebElement span = drone.find(COMMENT_COUNT);
             return Integer.valueOf(span.getText());
         }
         catch (NoSuchElementException e)
@@ -937,7 +1010,6 @@ public abstract class DetailsPage extends SitePage
             WebElement editCommentLink = drone.findAndWait(By.xpath(String.format("//div[@class='comment-content']/p[text()='%s']/../..", comment)));
             drone.mouseOverOnElement(editCommentLink);
             editCommentLink.findElement(By.cssSelector("span.comment-actions a")).click();
-
             String setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", newComment);
             drone.executeJavaScript(setCommentJs);
             // check to ensure js completed
@@ -1023,6 +1095,102 @@ public abstract class DetailsPage extends SitePage
         WebElement edit = commentElement.findElement(By.name(".onEditCommentClick"));
         edit.click();
         return new EditCommentForm(drone);
+    }
+
+    /**
+     * Check is comment has edit button on details page
+     *
+     * @param comment
+     * @return
+     */
+    public boolean isEditCommentButtonPresent(String comment)
+    {
+        Boolean present = false;
+        try
+        {
+            checkNotNull(comment);
+            List<WebElement> comments = drone.findAndWaitForElements(By.xpath("//div[@class='comment-details']//div[@class='comment-content']"));
+            WebElement commentEl = null;
+            if (logger.isTraceEnabled())
+            {
+                logger.trace(String.format("Are there comments on the page : %s ", comments.isEmpty()));
+            }
+            for (WebElement commentElement : comments)
+            {
+                if (commentElement.getText().equals(comment))
+                {
+                    if (logger.isTraceEnabled())
+                    {
+                        logger.trace(String.format("We have found a match to comment ' %s ' : true", comment));
+                    }
+                    commentEl = commentElement;
+                }
+            }
+            if(commentEl != null){
+                drone.mouseOver(commentEl);
+                present = commentEl.findElement(By.name(".onEditCommentClick")).isDisplayed();
+
+            }
+            return present;
+        }
+        catch (NoSuchElementException nse)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Edit comment link is not displayed for selected comment", nse);
+            }
+        }
+        return false;
+
+
+    }
+
+    /**
+     * Check is comment has delete button on details page
+     *
+     * @param comment
+     * @return
+     */
+    public boolean isDeleteCommentButtonPresent(String comment)
+    {
+        Boolean present = false;
+        try
+        {
+            checkNotNull(comment);
+            List<WebElement> comments = drone.findAndWaitForElements(By.xpath("//div[@class='comment-details']//div[@class='comment-content']"));
+            WebElement commentEl = null;
+            if (logger.isTraceEnabled())
+            {
+                logger.trace(String.format("Are there comments on the page : %s ", comments.isEmpty()));
+            }
+            for (WebElement commentElement : comments)
+            {
+                if (commentElement.getText().equals(comment))
+                {
+                    if (logger.isTraceEnabled())
+                    {
+                        logger.trace(String.format("We have found a match to comment ' %s ' : true", comment));
+                    }
+                    commentEl = commentElement;
+                }
+            }
+            if(commentEl != null){
+                drone.mouseOver(commentEl);
+                present = commentEl.findElement(By.name(".onConfirmDeleteCommentClick")).isDisplayed();
+
+            }
+            return present;
+        }
+        catch (NoSuchElementException nse)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Delete comment link is not displayed for selected comment", nse);
+            }
+        }
+        return false;
+
+
     }
 
     /**
@@ -1176,5 +1344,216 @@ public abstract class DetailsPage extends SitePage
     public PaginationForm getCommentsPagination()
     {
         return new PaginationForm(drone, PAGINATION);
+    }
+
+    /**
+     * This method finds whether the tags panel is displayed or not.
+     * 
+     * @return boolean
+     */
+    public boolean isTagsPanelPresent()
+    {
+        try
+        {
+            return drone.find(TAGS_PANEL).isDisplayed();
+        }
+        catch (NoSuchElementException exce)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * This method finds whether the properties panel is displayed or not.
+     * 
+     * @return boolean
+     */
+    public boolean isPropertiesPanelPresent()
+    {
+        try
+        {
+            return drone.find(PROPERTIES_PANEL).isDisplayed();
+        }
+        catch (NoSuchElementException exce)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * This method finds whether the like link is displayed or not.
+     * 
+     * @return boolean
+     */
+    public boolean isLikeLinkPresent()
+    {
+        try
+        {
+            return drone.find(By.cssSelector(LIKE_ACTION)).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * This method finds whether the favourite link is displayed or not.
+     *
+     * @return boolean
+     */
+    public boolean isFavouriteLinkPresent()
+    {
+        try
+        {
+            return drone.find(By.cssSelector(FAVOURITE_ACTION)).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.debug("Unable to find favourite link");
+        }
+        return false;
+    }
+
+    /**
+     * This method finds whether the add comment button is displayed or not.
+     * 
+     * @return boolean
+     */
+    public boolean isAddCommentButtonPresent()
+    {
+        try
+        {
+            return drone.find(By.cssSelector(ADD_COMMENT_BUTTON)).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * This method finds whether the comments panel is displayed or not.
+     * 
+     * @return boolean 
+     */
+    public boolean isCommentsPanelPresent()
+    {
+        try
+        {
+            return drone.find(COMMENTS_PANEL_CSS).isDisplayed();
+            
+        }
+        catch(NoSuchElementException nse) { }
+        
+        return false;
+    }
+
+    /**
+     * This method finds whether the add comments button is enabled or not.
+     * 
+     * @return boolean 
+     */
+    public boolean isAddCommentsButtonEnbaled()
+    {
+        try
+        {
+            return drone.find(By.cssSelector(ADD_COMMENT_BUTTON)).isEnabled();
+            
+        }
+        catch(NoSuchElementException nse) { }
+        
+        return false;
+    }
+    
+    /**
+     * This method finds whether the CopyToShareLink is present or not.
+     * 
+     * @return boolean 
+     */
+    public boolean isCopyShareLinkPresent()
+    {
+        try
+        {
+            for(WebElement element : drone.findAll(COPY_TO_SHARE_LINKS))
+            {
+                if(element.getText().equalsIgnoreCase(ShareLinks.COPY_LINK_TO_SHARE_THIS_PAGE.getLinkText()))
+                {
+                   return element.findElement(By.xpath("//following-sibling::div/input")).isDisplayed();
+                }
+            }
+        }
+        catch(NoSuchElementException nse) { }
+        
+        return false;
+    }
+    
+    /**
+     * This method finds whether the Sync panel is present or not.
+     * 
+     * @return boolean 
+     */
+    public boolean isSynPanelPresent()
+    {
+        try
+        {
+            return drone.find(SYNC_SETTINGS_PANEL_CSS).isDisplayed();
+            
+        }
+        catch(NoSuchElementException nse) { }
+        
+        return false;
+    }
+    
+    /**
+     * This method finds whether the Permission panel is present or not.
+     * 
+     * @return boolean 
+     */
+    public boolean isPermissionsPanelPresent()
+    {
+        try
+        {
+            return drone.find(By.cssSelector(PERMISSION_SETTINGS_PANEL_CSS)).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Verify if Link View on Google Maps is visible.
+     *
+     * @author rmanyam
+     * @return true if displayed
+     */
+    public boolean isViewOnGoogleMapsLinkVisible()
+    {
+        try
+        {
+            return drone.find(By.cssSelector(LINK_VIEW_ON_GOOGLE_MAPS)).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Method to verify whether Add Comment button is present
+     *
+     * @return true if displayed
+     */
+    public boolean isAddCommentButtonDisplayed ()
+    {
+        try
+        {
+            return drone.findAndWait(By.cssSelector(ADD_COMMENT_BUTTON), 2000).isDisplayed();
+        }
+        catch (TimeoutException nse)
+        {
+            return false;
+        }
     }
 }

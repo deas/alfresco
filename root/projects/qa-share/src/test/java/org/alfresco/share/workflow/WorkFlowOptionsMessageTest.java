@@ -173,8 +173,12 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
              */
 
             TaskDetailsPage taskDetailsPage = ShareUserWorkFlow.navigateToTaskDetailsPage(hybridDrone, defaultTaskName);
+            // Temp-Fix
+            //TaskDetailsPage taskDetailsPage = ShareUserWorkFlow.navigateToTaskDetailsPage(hybridDrone, defaultWorkFlowName);
             TaskInfo taskDetailsInfo = taskDetailsPage.getTaskDetailsInfo();
             assertEquals(taskDetailsInfo.getMessage(), defaultTaskName);
+            // Temp-Fix
+            //assertEquals(taskDetailsInfo.getMessage(), NONE);
 
             ShareUser.logout(hybridDrone);
         }
@@ -341,7 +345,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
     @Test(groups = "DataPrepHybrid")
     public void dataPrep_15188() throws Exception
     {
-        dataPrep(getTestName() + "1");
+        dataPrep(getTestName());
         // TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps.
     }
 
@@ -352,7 +356,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
     @Test(groups = "Hybrid", enabled = true)
     public void ALF_15188() throws Exception
     {
-        String testName = getTestName() + "1";
+        String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
         String cloudUser = getUserNameForDomain(testName, DOMAIN_HYBRID);
         String opSiteName = getSiteName(testName) + System.currentTimeMillis() + "-OP";
@@ -406,7 +410,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
             MyWorkFlowsPage myWorkFlowsPage = ShareUserWorkFlow.navigateToMyWorkFlowsPage(drone);
 
             // Verify Workflows are created successfully
-            assertTrue(myWorkFlowsPage.isWorkFlowPresent(workFlowName), "Verifying workflow1 exists");
+            assertTrue(myWorkFlowsPage.isWorkFlowPresent(workFlowName), "Verifying workflow1 exists. Failing Due to \"ALF-20523\"");
 
             WorkFlowDetailsPage workFlowDetailsPage = ShareUserWorkFlow.navigateToWorkFlowDetailsPage(drone, workFlowName);
 
@@ -479,7 +483,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
     @Test(groups = "DataPrepHybrid")
     public void dataPrep_15189() throws Exception
     {
-        dataPrep(getTestName() + "0");
+        dataPrep(getTestName());
         // TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps.
     }
 
@@ -489,7 +493,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
     @Test(groups = "Hybrid", enabled = true)
     public void ALF_15189() throws Exception
     {
-        String testName = getTestName() + "0";
+        String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
         String cloudUser = getUserNameForDomain(testName, DOMAIN_HYBRID);
         String opSiteName = getSiteName(testName) + System.currentTimeMillis() + "-OP";
@@ -501,7 +505,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
         String fileName2 = getFileName(testName) + "-2.txt";
         String[] fileInfo2 = { fileName2, DOCLIB };
 
-        String workFlowName1 = "!@#$%^&*()_+|/?.,<>:;''=-{}[]" + System.currentTimeMillis() + "-1-WF";
+        String workFlowName1 = "!@#$%^&*()_+|/?.,<>:;=-{}[]" + System.currentTimeMillis() + "-1-WF";
         String workFlowName2 = " ";
         String dueDate = getDueDateString();
 
@@ -541,6 +545,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
             // Verify File1 is Cloud Synced, part of workflow and it is Locked
             assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName1).isPartOfWorkflow(), "Verifying the File1 is part of a workflow");
             assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName1).isCloudSynced(), "Verifying the File1 is synced");
+            assertTrue(ShareUser.checkIfContentIsSynced(drone, fileName1), "Verifying the Sync Status is \"Synced\"");
 
             MyWorkFlowsPage myWorkFlowsPage = ShareUserWorkFlow.navigateToMyWorkFlowsPage(drone);
 

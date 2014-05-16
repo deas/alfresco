@@ -235,7 +235,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
                 moreInfo.setAfterCompletion(getElementText(By.xpath("//span[@class='viewmode-label' and contains(text(), 'After completion:')]/../span[@class='viewmode-value']")));
                 moreInfo.setLockOnPremise(getElementText(By.xpath("//span[@class='viewmode-label' and contains(text(), 'Lock on-premise content:')]/../span[@class='viewmode-value']")));
 
-                List<WebElement> assignmentElementList = drone.findAll(By.cssSelector("span[id$='hwf_assignment-cntrl-currentValueDisplay']>div"));
+                List<WebElement> assignmentElementList = drone.findAndWaitForElements(By.cssSelector("span[id$='hwf_assignment-cntrl-currentValueDisplay']>div"), WAIT_TIME_3000);
                 List<String> assignmentList = new ArrayList<String>();
                 for (WebElement assignment : assignmentElementList)
                 {

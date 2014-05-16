@@ -89,6 +89,38 @@ public final class FactoryShareDashlet
             {
                 return new SavedSearchDashlet(drone);
             }
+            if ("image-preview".equalsIgnoreCase(name))
+            {
+                return new ImagePreviewDashlet(drone);
+            }
+            if ("wiki".equalsIgnoreCase(name))
+            {
+                return new WikiDashlet(drone);
+            }
+            if ("web-view".equalsIgnoreCase(name))
+            {
+                return new WebViewDashlet(drone);
+            }
+            if ("rss-feed".equalsIgnoreCase(name))
+            {
+                return new RssFeedDashlet(drone);
+            }
+            if ("site-links".equalsIgnoreCase(name))
+            {
+                return new SiteLinksDashlet(drone);
+            }
+            if ("data-lists".equalsIgnoreCase(name))
+            {
+                return new SiteDataListsDashlet(drone);
+            }
+            if ("site-calendar".equalsIgnoreCase(name))
+            {
+                return new SiteCalendarDashlet(drone);
+            }
+            if ("site-profile".equalsIgnoreCase(name))
+            {
+                return new SiteProfileDashlet(drone);
+            }
             throw new PageException(String.format("%s does not match any known dashlet name", name));
         }
         catch (NoSuchElementException ex)

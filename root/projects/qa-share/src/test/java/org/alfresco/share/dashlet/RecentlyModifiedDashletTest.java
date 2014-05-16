@@ -10,7 +10,7 @@
  *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -31,7 +31,6 @@ import org.alfresco.po.share.dashlet.sitecontent.SimpleViewInformation;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -44,7 +43,6 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
- *
  * @author Shan Nagarajan
  */
 @Listeners(FailedTestListener.class)
@@ -52,120 +50,99 @@ public class RecentlyModifiedDashletTest extends AbstractUtils
 {
 
     private static Log logger = LogFactory.getLog(RecentlyModifiedDashletTest.class);
-    
+
     @Override
-    @BeforeClass(alwaysRun=true)
+    @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
     {
         super.setup();
         testName = this.getClass().getSimpleName();
         logger.info("Start Tests in: " + testName);
     }
-    
-    @Test(groups={"DataPrepDashlets"})
+
+    @Test(groups = { "DataPrepDashlets" })
     public void dataPrep_Dashlets_7935() throws Exception
     {
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+        String fileName = getFileName(testName) + ".txt";
 
-        try
-        {
-            String testName = getTestName();
-            String testUser = getUserNameFreeDomain(testName);            
-            String siteName = getSiteName(testName);
-            String fileName = getFileName(testName) + ".txt";
-            
-            // User
-            String[] testUserInfo = new String[] {testUser};
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-            
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        // User
+        String[] testUserInfo = new String[] { testUser };
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Create Site
-            ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-            //Upload File
-            String[] fileInfo = {fileName, DOCLIB};
-            DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo).render();
-            DocumentDetailsPage detailsPage = documentLibraryPage.selectFile(fileName).render();
-            detailsPage.selectFavourite().render();
-        }
-        catch (Exception e)
-        {
-            saveScreenShot(drone, testName);
-            logger.error("Error in dataPrep", e);
-        }
+        // Create Site
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+
+        // Upload File
+        String[] fileInfo = { fileName, DOCLIB };
+        DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo);
+        DocumentDetailsPage detailsPage = documentLibraryPage.selectFile(fileName).render();
+        detailsPage.selectFavourite().render();
 
     }
-    
+
     @Test
     public void Enterprise40x_7935()
     {
-        try
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+        String fileName = getFileName(testName) + ".txt";
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        // Open Site DashBoard
+        SiteDashboardPage siteDashBoardPage = openSiteDashboard(drone, siteName);
+
+        SiteContentDashlet siteContentDashlet = siteDashBoardPage.getDashlet(SITE_CONTENT_DASHLET).render();
+
+        siteContentDashlet.selectFilter(SiteContentFilter.MY_FAVOURITES);
+
+        siteContentDashlet.clickSimpleView();
+
+        for (int i = 0; i < retrySearchCount; i++)
         {
-         
-            String testName = getTestName();
-            String testUser = getUserNameFreeDomain(testName);
-            String siteName = getSiteName(testName);
-            String fileName = getFileName(testName) + ".txt";
-
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-            // Open Site DashBoard
-            SiteDashboardPage siteDashBoardPage = openSiteDashboard(drone, siteName);
-           
-            SiteContentDashlet siteContentDashlet = siteDashBoardPage.getDashlet(SITE_CONTENT_DASHLET).render();            
-
-            siteContentDashlet.selectFilter(SiteContentFilter.MY_FAVOURITES);
-            
-            siteContentDashlet.clickSimpleView();
-            
-            for (int i = 0; i < retrySearchCount; i++)
+            try
             {
-                try
-                {
-                    siteContentDashlet.renderSimpleViewWithContent();
-                }
-                catch (PageRenderTimeException e)
-                {
-                    //There is Exception going retry again.
-                    continue;
-                }
-                break;
+                siteContentDashlet.renderSimpleViewWithContent();
             }
-            
-            siteContentDashlet.renderSimpleViewWithContent();
-           
-            List<SimpleViewInformation> informations = siteContentDashlet.getSimpleViewInformation();
-            SimpleViewInformation simpleViewInformation = informations.get(0);
-            
-            assertTrue(simpleViewInformation.getContentStatus().contains("Created"));
-            assertTrue(simpleViewInformation.isPreviewDisplayed());
-            assertEquals(simpleViewInformation.getContentDetail().getDescription().trim(), fileName.trim());
-            assertNotNull(simpleViewInformation.getThumbnail());
-            assertTrue(simpleViewInformation.getUser().toString().contains(testUser));
+            catch (PageRenderTimeException e)
+            {
+                // There is Exception going retry again.
+                continue;
+            }
+            break;
+        }
 
-            MyProfilePage profilePage = simpleViewInformation.clickUser();
-            assertTrue(profilePage.titlePresent());                
-            
-            siteDashBoardPage = openSiteDashboard(drone, siteName);
-            informations = siteContentDashlet.getSimpleViewInformation();
-            simpleViewInformation = informations.get(0);
-            
-            DocumentDetailsPage detailsPage = simpleViewInformation.clickContentDetail();
-            assertTrue(detailsPage.isDocumentDetailsPage());
-                
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
-        
+        siteContentDashlet.renderSimpleViewWithContent();
+
+        List<SimpleViewInformation> informations = siteContentDashlet.getSimpleViewInformation();
+        SimpleViewInformation simpleViewInformation = informations.get(0);
+
+        assertTrue(simpleViewInformation.getContentStatus().contains("Created"));
+        assertTrue(simpleViewInformation.isPreviewDisplayed());
+        assertEquals(simpleViewInformation.getContentDetail().getDescription().trim(), fileName.trim());
+        assertNotNull(simpleViewInformation.getThumbnail());
+
+        // Test amended for https://issues.alfresco.com/jira/browse/ALF-20348
+        // assertTrue(simpleViewInformation.getUser().toString().contains(testUser));
+        //
+        // MyProfilePage profilePage = simpleViewInformation.clickUser();
+        // assertTrue(profilePage.titlePresent());
+
+        siteDashBoardPage = openSiteDashboard(drone, siteName);
+        informations = siteContentDashlet.getSimpleViewInformation();
+        simpleViewInformation = informations.get(0);
+
+        DocumentDetailsPage detailsPage = simpleViewInformation.clickContentDetail();
+        assertTrue(detailsPage.isDocumentDetailsPage());
+
     }
-    
-    
+
 }

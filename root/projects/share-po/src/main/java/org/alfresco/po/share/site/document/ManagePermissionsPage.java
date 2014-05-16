@@ -19,6 +19,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,6 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
-import org.alfresco.webdrone.WebDroneUtil;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
@@ -231,7 +231,13 @@ public class ManagePermissionsPage extends SharePage
         WebElement saveButton = drone.findAndWait(saveButtonLocator);
         String saveButtonId = saveButton.getAttribute("id");
         saveButton.click();
-        drone.waitUntilElementDeletedFromDom(By.id(saveButtonId), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        try
+        {
+            drone.waitUntilElementDeletedFromDom(By.id(saveButtonId), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        }
+        catch(TimeoutException e)
+        {
+        }
         return FactorySharePage.resolvePage(drone);
     }
 
@@ -498,6 +504,67 @@ public class ManagePermissionsPage extends SharePage
         }
         throw new PageOperationException("Role doesnt exist!!");
     }
+    
+    /**
+     * @param userRole
+     */    
+    private List<String> getUserRoles()
+    {
+        List<String> userRoleStrings = new ArrayList<String>();
+        try
+        {
+            List<WebElement> elements = drone.findAll(listUserRole);
+            for (WebElement webElement : elements)
+            {
+                userRoleStrings.add(webElement.getText());
+            }
+            return userRoleStrings;
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Roles element is not found", nse);
+        }
+        throw new PageOperationException("Role doesnt exist!!");
+    }
+
+    
+    /**
+     * Get available roles for existing users.
+     * 
+     * @param userName
+     * @param userRole
+     * @return
+     */
+    public List<String> getListOfUserRoles(String userName)
+    {
+        List<String> allRoles = new ArrayList<String>();
+        try
+        {
+            List<WebElement> elements = drone.findAndWaitForElements(userListLocator, WAIT_TIME_3000);
+            for (WebElement webElement : elements)
+            {
+                if (webElement.findElement(userNameLocator).getText().contains(userName))
+                {
+                    WebElement roleElement = webElement.findElement(userRoleLocator);
+                    roleElement.findElement(accessTypeButton).click();
+
+                    allRoles = getUserRoles();
+                    
+                    roleElement.findElement(accessTypeButton).click();
+                    return allRoles;
+                }
+            }
+        }
+        catch (TimeoutException toe)
+        {
+            logger.error("User name is not found!!", toe);
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Role element is not found", nse);
+        }
+        throw new PageOperationException("User or Role doesnt exist!!");
+    }
 
     /**
      * From the drop down, get the access level selected.
@@ -682,7 +749,6 @@ public class ManagePermissionsPage extends SharePage
          */
         public List<UserSearchRow> searchUserAndGroup(String searchText) throws UnsupportedOperationException
         {
-            WebDroneUtil.checkMandotaryParam("Search Text", searchText);
             List<UserSearchRow> searchRows = new ArrayList<UserSearchRow>();
             drone.find(SEARCH_USER_INPUT).clear();
             drone.find(SEARCH_USER_INPUT).sendKeys(searchText);
@@ -776,6 +842,62 @@ public class ManagePermissionsPage extends SharePage
                 throw new PageException("User with username containing - '" + searchText + "' not found", nse);
             }
             return false;
+        }
+        
+        /**
+         * Returns the error message if there is one when searching for a user or group.
+         * 
+         * @param searchText
+         * @return The error message.  Empty if there is no message.
+         */
+        public String getSearchErrorMessage(String searchText) throws UnsupportedOperationException
+        {
+            String message = "";
+            drone.find(SEARCH_USER_INPUT).clear();
+            drone.find(SEARCH_USER_INPUT).sendKeys(searchText);
+            drone.find(SEARCH_USER_BUTTON).click();
+            
+            WebElement element = drone.find(By.cssSelector(".message"));
+            if(element != null)
+            {
+                message = element.getText();
+            }
+                
+            return message;
+        }
+        
+        /**
+         * Returns true if all the userNames are in the search results.
+         * 
+         * @param searchText
+         * @param userNames
+         * @return
+         */
+        public boolean usersExistInSearchResults(String searchText, String... userNames)
+        {
+            boolean matchNames = false;
+            List<UserSearchRow> results = searchUserAndGroup(searchText);
+            List<String> resultNames = new ArrayList<>();
+            
+            for(UserSearchRow userSearchRow : results)
+            {
+                String name = userSearchRow.getUserName();
+                
+                name = name.substring(name.indexOf('(') + 1, name.indexOf(')'));
+                
+                if(name.startsWith("GROUP_"))
+                {
+                    name = name.substring(6);
+                }
+                
+                resultNames.add(name);
+            }
+            
+            List<String> names = Arrays.asList(userNames);
+            
+            matchNames = resultNames.containsAll(names);
+            
+            return matchNames;
         }
     }
 

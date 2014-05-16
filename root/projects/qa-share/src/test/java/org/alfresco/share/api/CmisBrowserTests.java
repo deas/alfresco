@@ -15,10 +15,12 @@
 
 package org.alfresco.share.api;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.Assert;
 
 import org.alfresco.share.enums.CMISBinding;
 import org.alfresco.share.util.ShareUser;
@@ -36,8 +38,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
- * Class to include: Tests for favourite rest apis implemented in
- * alfresco-remote-api.
+ * Class to include: Tests for cmis tests with various bindings as poc
  * 
  * @author Meenal Bhave
  */
@@ -119,9 +120,9 @@ public class CmisBrowserTests extends CmisUtils
         ContentStream docatom10 = d1.getContentStream();
         ContentStream docatom10Copied = d1Copied.getContentStream();
 
-        Assert.assertTrue(docatom10Copied.getFileName().equals(docatom10.getFileName()));
-        Assert.assertTrue(docatom10Copied.getMimeType().equals(docatom10.getMimeType()));
-        Assert.assertFalse(docatom10Copied.equals(docatom10));
+        assertTrue(docatom10Copied.getFileName().equals(docatom10.getFileName()));
+        assertTrue(docatom10Copied.getMimeType().equals(docatom10.getMimeType()));
+        assertFalse(docatom10Copied.equals(docatom10));
 
         // Create new Document as Original in the same folder with different name
         properties.put(PropertyIds.NAME, "doc-" + System.currentTimeMillis());
@@ -131,30 +132,30 @@ public class CmisBrowserTests extends CmisUtils
         ContentStream docatom11 = d2.getContentStream();
 
         // Compare Original Document with the New Document in the same folder
-        Assert.assertFalse(docatom11.getFileName().equals(docatom10.getFileName()));
-        Assert.assertFalse(docatom11.getStream().equals(docatom10.getStream()));
-        Assert.assertTrue(docatom11.getMimeType().equals(docatom10.getMimeType()));
+        assertFalse(docatom11.getFileName().equals(docatom10.getFileName()));
+        assertFalse(docatom11.getStream().equals(docatom10.getStream()));
+        assertTrue(docatom11.getMimeType().equals(docatom10.getMimeType()));
 
         // Check In Minor Version of Document2
         properties.put(PropertyIds.NAME, "doc-" + System.currentTimeMillis());
-        Document docNewVersion = CheckInDocument(CMISBinding.ATOMPUB11, testUser2, testUser2, DOMAIN, d2, docContent, properties, false, "");
+        Document docNewVersion = checkInDocument(CMISBinding.ATOMPUB11, testUser2, testUser2, DOMAIN, d2, docContent, properties, false, "");
 
         String newVersion = d2.getVersionLabel();
         logger.info(newVersion);
         newVersion = docNewVersion.getVersionLabel();
         logger.info(newVersion);
 
-        Assert.assertEquals(2, d2.getAllVersions().size());
+        assertEquals(2, d2.getAllVersions().size());
 
         // Check In Major Version of Document2
         properties.put(PropertyIds.NAME, "doc-" + System.currentTimeMillis());
-        docNewVersion = CheckInDocument(CMISBinding.ATOMPUB11, testUser2, testUser2, DOMAIN, d1, docContent, properties, true, "Major Version");
+        docNewVersion = checkInDocument(CMISBinding.ATOMPUB11, testUser2, testUser2, DOMAIN, d1, docContent, properties, true, "Major Version");
 
         newVersion = d1.getVersionLabel();
         logger.info(newVersion);
         newVersion = docNewVersion.getVersionLabel();
         logger.info(newVersion);
 
-        Assert.assertEquals(2, d1.getAllVersions().size());
+        assertEquals(2, d1.getAllVersions().size());
     }
 }

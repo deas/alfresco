@@ -40,7 +40,7 @@ public class PeopleFinderPageTest extends AbstractTest
    
     private DashBoardPage dashBoard;
     
-    @BeforeClass()
+    @BeforeClass(groups ={"alfresco-one"})
     public void setup() throws Exception
     {
         dashBoard = loginAs(username, password);
@@ -65,7 +65,7 @@ public class PeopleFinderPageTest extends AbstractTest
         PeopleFinderPage page = dashBoard.getNav().selectPeople().render();
         PeopleFinderPage results = page.searchFor("mike").render();
         List<ShareLink> names = results.getResults();
-        Assert.assertTrue(names.size() == 1);
+        Assert.assertTrue(names.size() > 0);
     }
 
     @Test(groups="alfresco-one")

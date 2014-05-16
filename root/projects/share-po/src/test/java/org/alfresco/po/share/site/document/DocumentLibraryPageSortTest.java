@@ -41,7 +41,6 @@ import org.testng.Assert;
  * @since 2.1.1
  */
 @Listeners(FailedTestListener.class)
-@Test(groups="Enterprise-only")
 public class DocumentLibraryPageSortTest extends AbstractTest
 {
     private static String siteName;
@@ -57,7 +56,7 @@ public class DocumentLibraryPageSortTest extends AbstractTest
      * 
      * @throws Exception
      */
-    @BeforeClass
+    @BeforeClass(groups="alfresco-one")
     public void prepare() throws Exception
     {
         siteName = "site" + System.currentTimeMillis();
@@ -83,7 +82,7 @@ public class DocumentLibraryPageSortTest extends AbstractTest
         documentLibPage = uploadForm.uploadFile(file2.getCanonicalPath()).render();
    }
 
-    @AfterClass
+    @AfterClass(groups="alfresco-one")
     public void teardown()
     {
         SiteUtil.deleteSite(drone, siteName);
@@ -118,7 +117,7 @@ public class DocumentLibraryPageSortTest extends AbstractTest
     {
         documentLibPage = documentLibPage.getNavigation().selectSortFieldFromDropDown(SortField.NAME).render();
 
-        documentLibPage = documentLibPage.getNavigation().sortDescending().render();
+        documentLibPage = documentLibPage.getNavigation().sortAscending(false).render();
         Assert.assertFalse(documentLibPage.getNavigation().isSortAscending());
 
         List<FileDirectoryInfo> files = documentLibPage.getFiles();
@@ -131,7 +130,7 @@ public class DocumentLibraryPageSortTest extends AbstractTest
     {
         documentLibPage = documentLibPage.getNavigation().selectSortFieldFromDropDown(SortField.NAME).render();
 
-        documentLibPage = documentLibPage.getNavigation().sortAscending().render();
+        documentLibPage = documentLibPage.getNavigation().sortAscending(true).render();
         Assert.assertTrue(documentLibPage.getNavigation().isSortAscending());
 
         List<FileDirectoryInfo> files = documentLibPage.getFiles();

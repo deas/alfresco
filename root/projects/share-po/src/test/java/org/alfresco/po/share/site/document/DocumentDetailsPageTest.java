@@ -7,6 +7,9 @@
  */
 package org.alfresco.po.share.site.document;
 
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -35,10 +38,12 @@ import org.testng.annotations.Test;
  */
 @Listeners(FailedTestListener.class)
 @Test(groups={"alfresco-one", "Firefox17Ent"})
+@SuppressWarnings("unused")
 public class DocumentDetailsPageTest extends AbstractDocumentTest
 {
     private static Log logger = LogFactory.getLog(DocumentDetailsPageTest.class);
     private static final String COMMENT = "adding a comment to document is easy!!.";
+    private static final String EDITED_COMMENT = "editing a comment is even easier!";
 
     private String siteName;
     private File file;
@@ -121,7 +126,8 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
     /**
      * Test updating an existing file with a new uploaded file. The test covers major and minor version changes.
      */
-    @Test(dependsOnMethods = "uploadFile")
+    //Grouped as bug Due to https://issues.alfresco.com/jira/browse/ACE-1628 ACE Bug
+    @Test(dependsOnMethods = "uploadFile", groups="ACEBug")
     public void minorVersionUpdateOfAnExistingFile() throws Exception
     {
         DocumentDetailsPage docDetailsPage = selectDocument(file).render();
@@ -144,7 +150,8 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
         if (logger.isTraceEnabled()) logger.trace("---update with major version----");
     }
 
-    @Test(dependsOnMethods = "minorVersionUpdateOfAnExistingFile")
+    //Grouped as bug Due to https://issues.alfresco.com/jira/browse/ACE-1628 ACE Bug
+    @Test(dependsOnMethods = "minorVersionUpdateOfAnExistingFile", groups="ACEBug")
     public void majorVersionUpdateOfAnExistingFile() throws Exception
     {
         DocumentDetailsPage docDetailsPage = drone.getCurrentPage().render();
@@ -165,9 +172,10 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @Test(dependsOnMethods = "majorVersionUpdateOfAnExistingFile")
+    @Test(dependsOnMethods = "uploadFile")
     public void addLikeDislike() throws Exception
     {
+        DocumentDetailsPage docDetailsPage = selectDocument(file).render();
         if (logger.isTraceEnabled()) logger.trace("====addLikeDislike====");
         DocumentDetailsPage docsPage = drone.getCurrentPage().render();
         Assert.assertEquals("0", docsPage.getLikeCount());
@@ -231,7 +239,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
     }
 
     /**
-     * Test adding comments to document.
+     * Test removing comments to document.
      */
     @Test(dependsOnMethods = "addComments")
     public void removeComment() throws Exception
@@ -329,4 +337,39 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
         }
     }
 
+    /**
+     * Tests is the document is shared
+     * 
+     */
+    @Test(dependsOnMethods = "testClickOnDownloadLinkForUnsupportedPreview")
+    public void testIsFileShared()
+    {
+        DocumentDetailsPage page = drone.getCurrentPage().render();
+        assertFalse(page.isFileShared());
+        page.clickShareLink();
+        assertTrue(page.isFileShared());
+    }
+
+    /**
+     * Test for cover isCheckedOut() method
+     */
+    @Test(dependsOnMethods = "testIsFileShared")
+    public void editOffline() throws IOException {
+        DocumentDetailsPage docDetailsPage = drone.getCurrentPage().render();
+        if (logger.isTraceEnabled()) logger.trace("====editOffline====");
+        docDetailsPage.selectEditOffLine(null).render();
+        Assert.assertTrue(docDetailsPage.isCheckedOut());
+        docDetailsPage.selectUploadNewVersion();
+
+        UpdateFilePage updatePage = docDetailsPage.selectUploadNewVersion().render();
+        if (logger.isTraceEnabled()) logger.trace("---selected new version to upload----");
+        updatePage.selectMinorVersionChange();
+        updatePage.setComment("Reloading the file with correct image");
+        updatePage.uploadFile(file.getCanonicalPath());
+        docDetailsPage = updatePage.submit().render();
+        if (logger.isTraceEnabled()) logger.trace("---upload submited----");
+
+        Assert.assertFalse(docDetailsPage.isCheckedOut());
+        if (logger.isTraceEnabled()) logger.trace("---update with major version----");
+    }
 }

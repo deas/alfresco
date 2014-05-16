@@ -10,7 +10,7 @@
  *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -21,31 +21,36 @@ package org.alfresco.share.dashlet;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.dashlet.SiteWelcomeDashlet;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserProfile;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
- * Welcome Widget Remove test case (7950).
- * 
- * <li>1. Login & Create Site.</li> <li>2. Remove the welcome widget.</li> <li>
- * 3. Remove the site.</li> <li>4. Create the site with the same name.</li> <li>
- * 5. Open site dashboard & verify the welcome widget.</li> <li>6. Delete the
- * site again.</li>
+ * Welcome Widget Remove test case (7950). 
+ * <li>1. Login & Create Site.</li> 
+ * <li>2. Remove the welcome widget.</li> 
+ * <li>3. Remove the site.</li> 
+ * <li>4. Create the site with the same name.</li>
+ * <li>5. Open site dashboard & verify the welcome widget.</li>
+ * <li>6. Delete the site again.</li>
  * 
  * @author Shan Nagarajan
+ * @author mbhave
  */
+@Listeners(FailedTestListener.class)
 public class WelcomeDashletCreateDelete extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(WelcomeDashletCreateDelete.class);
@@ -59,9 +64,10 @@ public class WelcomeDashletCreateDelete extends AbstractUtils
     DashBoardPage dashBoard;
 
     /**
-     * <li>Create site name based on the current system time & login.</li> <li>
-     * Login to using user name & password from property file.</li> <li>Set
-     * Expected Option on welcome screen based on the Environment.</li>
+     * <li>Create site name based on the current system time & login.</li> 
+     * <li>Login to using user name & password from property file.</li> 
+     * <li>Set Expected
+     * Option on welcome screen based on the Environment.</li>
      * 
      * @throws Exception
      */
@@ -84,8 +90,7 @@ public class WelcomeDashletCreateDelete extends AbstractUtils
             optionsDesc.add("Upload content");
             optionsDesc.add("Customize your dashboard");
         }
-        else if (alfrescoVersion.equals(AlfrescoVersion.Enterprise41)
-                || alfrescoVersion.equals(AlfrescoVersion.Enterprise42))
+        else
         {
             optionsDesc.add("Customize the site dashboard");
             optionsDesc.add("Invite people");
@@ -96,24 +101,21 @@ public class WelcomeDashletCreateDelete extends AbstractUtils
 
     }
 
-    @Test(groups =
-    { "DataPrepDashlets" })
+    @Test(groups = { "DataPrepDashlets" })
     public void dataPrep_Dashlets_7950() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
         // User
-        String[] testUserInfo = new String[]
-        { testUser };
+        String[] testUserInfo = new String[] { testUser };
 
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
     }
 
     /**
-     * Create the Site & Remove the Welcome Dashlet validate the dashlet not
-     * present.
+     * Create the Site & Remove the Welcome Dashlet validate the dashlet not present.
      * 
      * @throws Exception
      */
@@ -143,20 +145,15 @@ public class WelcomeDashletCreateDelete extends AbstractUtils
             // Delete Site
             SiteUtil.deleteSite(drone, siteName);
 
-            // DeleteSite completes with success and createSite with same name
-            // completes with success implicitly proves the site was deleted
-            // successfully by deleteSite
+            // DeleteSite from TrashCan
+            ShareUserProfile.navigateToTrashCan(drone);
+            ShareUserProfile.deleteTrashCanItem(drone, siteName);
 
             // Create Site
             ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
             // Check Welcome Dashlet
             checkWelcomeDashlet(siteName);
-        }
-
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
         }
         finally
         {
@@ -169,7 +166,7 @@ public class WelcomeDashletCreateDelete extends AbstractUtils
     /**
      * Create site & validate the expected options present in welcome dashlet.
      * 
-     * @return @link {@link SiteWelcomeDashlet}
+     * @return @link {@link SiteWelcomeDashlet}WelcomeDashletCreateDeleteWelcomeDashletCreateDelete
      * @throws Exception
      */
     protected SiteWelcomeDashlet checkWelcomeDashlet(String siteName) throws Exception

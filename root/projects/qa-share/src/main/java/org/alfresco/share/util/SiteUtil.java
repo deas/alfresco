@@ -41,7 +41,6 @@ import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.NoSuchElementException;
-import org.testng.Assert;
 
 /**
  * Utility class to manage site related operations
@@ -194,10 +193,8 @@ public class SiteUtil extends AbstractUtils
         }
         try
         {
+            SiteFinderPage siteFinder = searchSiteWithRetry(drone, siteName, true);
 
-            SiteFinderPage siteFinder = searchSite(drone, siteName);
-            boolean hasResults = siteFinder.hasResults();
-            Assert.assertTrue(hasResults);
             siteFinder = siteFinder.deleteSite(siteName).render();
             return (!siteFinder.hasResults());
         }
@@ -324,7 +321,7 @@ public class SiteUtil extends AbstractUtils
      */
     public static SiteDashboardPage openSiteFromSearch(WebDrone drone, String siteName)
     {
-        SiteFinderPage siteFinderPage = SiteUtil.searchSite(drone, siteName);
+        SiteFinderPage siteFinderPage = SiteUtil.searchSiteWithRetry(drone, siteName, true);
         SiteDashboardPage siteDashboardPage = siteFinderPage.selectSite(siteName);
         return siteDashboardPage;
     }
@@ -342,7 +339,7 @@ public class SiteUtil extends AbstractUtils
         String url = drone.getCurrentUrl();
         String target = url.substring(0, url.indexOf("/page/")) + SITE_DASH_LOCATION_SUFFIX + getSiteShortname(siteShortURL) + "/dashboard";
         drone.navigateTo(target);
-        SiteDashboardPage siteDashboardPage = (SiteDashboardPage) ShareUser.getSharePage(drone);
+        SiteDashboardPage siteDashboardPage = ShareUser.getSharePage(drone).render();
 
         return siteDashboardPage.render();
     }
@@ -493,5 +490,71 @@ public class SiteUtil extends AbstractUtils
             }
         }
         return siteNames;
+    }
+
+    /**
+     * Util searches for the site using specified string and returns the listed sites
+     * @param drone
+     * @param siteName
+     * @return
+     */
+    public static List<String> getSiteList(WebDrone drone, String siteName)
+    {
+        SiteFinderPage siteFinderPage = searchSite(drone, siteName);
+        return siteFinderPage.getSiteList();    
+    }
+
+    /**
+     * Util returns true if site name is found in the SiteFinder Results
+     * @param drone
+     * @param siteName
+     * @return false if site name is not found in the SiteFinder Results
+     */
+    public static boolean isSiteFound(WebDrone drone, String siteName)
+    {
+        if (getSiteList(drone, siteName).contains(siteName))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    /***
+     * Search site using share: Retry for solr's eventual consistency until the site is listed / not .
+     * 
+     * @param drone WebDrone instance
+     * @param siteName String site name
+     * @param isSiteExpected Boolean <tt>true</tt> if siteName is expected to be found in the search results 
+     * @return SiteFinderPage
+     */
+    public static SiteFinderPage searchSiteWithRetry(WebDrone drone, String siteName, Boolean isSiteExpected)
+    {        
+        Boolean found = false;
+        
+        // Attempt 1
+        SiteFinderPage siteFinderPage = searchSite(drone, siteName);
+
+        // Code to repeat search until the element is found or Timeout is hit
+        for (int searchCount = 1; searchCount < retrySearchCount; searchCount++)
+        {
+            found = isSiteFound(drone, siteName);
+            if (found == isSiteExpected)
+            {
+                break;
+            }
+            else
+            {
+                // Wait for solr indexing
+                logger.info("Wait for solr indexing: " + siteName);
+                webDriverWait(drone, refreshDuration);
+                siteFinderPage = searchSite(drone, siteName);
+            }
+        }
+        
+        return siteFinderPage;
+            
     }
 }

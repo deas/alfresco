@@ -10,7 +10,7 @@
  *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -19,6 +19,7 @@
 package org.alfresco.share.site.document;
 
 import org.alfresco.po.share.MyTasksPage;
+import org.alfresco.po.share.adminconsole.ChannelManagerPage;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.workflow.*;
@@ -37,18 +38,21 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.alfresco.po.share.adminconsole.Channel.Flickr;
 import static org.testng.Assert.*;
 
 /**
  * @author Roman.Chul
  */
-
+@Test(enabled = true)
 @Listeners(FailedTestListener.class)
 public class ManageDocumentsTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ManageDocumentsTest.class);
     protected String testUser;
     protected String siteName = "";
+    private String flickrName = "gogigruzinidze@yahoo.com";
+    private String flickrPassword = "parkh0useG";
 
     @Override
     @BeforeClass(alwaysRun = true)
@@ -57,12 +61,12 @@ public class ManageDocumentsTest extends AbstractUtils
         super.setup();
         // super.setupCustomDrone(WebDroneType.DownLoadDrone);
         testName = this.getClass().getSimpleName();
-        testUser = testName + "@" + DOMAIN_FREE;
+        testUser = getUserNameFreeDomain(testName);
         logger.info("Start Tests in: " + testName);
 
     }
 
-    // TODO: Are these tests relevant to cloud? If so, can these be moved to ComAlfOne, if not, pl group them as EnterpriseOnly, move to Enterprise package
+    // TODO: If all tests are EnterpriseOnly, move test class to Enterprise package
     @Test(groups = { "DataPrepDocumentLibrary" })
     public void dataPrep_ALF_2898() throws Exception
     {
@@ -78,7 +82,7 @@ public class ManageDocumentsTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.openSiteDashboard(drone, siteName);
 
         // Upload File
@@ -99,50 +103,39 @@ public class ManageDocumentsTest extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
         String fileName = getFileName(testName) + ".txt";
 
-        DocumentLibraryPage documentLibraryPage;
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        // Edit Offline
+        ShareUserSitePage.getFileDirectoryInfo(drone, fileName).selectEditOffline().render();
+        assertEquals(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getContentInfo(), "This document is locked by you for offline editing.");
+
+        // Navigate to Details page of document and Edit Properties
+        ShareUserSitePage.selectContent(drone, fileName);
+
+        // TODO: Implement a share-po method to click on the edit-metadata icon in properties panel
+        // NavigateTo is used as DetailsPage.selectEditProperties is not available for edited offline files; but available from Properties panel;
+        String url = drone.getCurrentUrl();
+        drone.navigateTo(url.replace("document-details", "edit-metadata"));
+        EditDocumentPropertiesPage editDocumentPropertiesPage = drone.getCurrentPage().render();
+        
+        // Try to rename file: Field Name is disabled, user can not edit it
         try
         {
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-
-            // TODO: Remove if condition, if test always expects the editOfflinelink. Adjust the dataprep / test to cater for this. i.e. Upload new file within
-            // the test
-            // Click Edit Offline button;
-            if (documentLibraryPage.getFileDirectoryInfo(fileName).isEditOfflineLinkPresent())
-            {
-                documentLibraryPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectEditOffline().render();
-                assertEquals(documentLibraryPage.getFileDirectoryInfo(fileName).getContentInfo(), "This document is locked by you for offline editing.");
-            }
-
-            // Navigate to Details page of document and click Edit Properties;
-            // navigateTo is used as DetailsPage.selectEditProperties is not available for edited offline files; but available from Properties panel;
-            documentLibraryPage.selectFile(fileName);
-            String url = drone.getCurrentUrl();
-            drone.navigateTo(url.replace("document-details", "edit-metadata"));
-            EditDocumentPropertiesPage editDocumentPropertiesPage = drone.getCurrentPage().render();
-            // Try to rename file;
-            // Field Name is disable, user could not edit it.
-            try
-            {
-                editDocumentPropertiesPage.setName(fileName + "edited");
-            }
-            catch (Throwable ex)
-            {
-                logger.info("Editing not available as file input is disabled");
-            }
-
-            // File is not renamed
-            documentLibraryPage = SiteUtil.openSiteDocumentLibraryURL(drone, getSiteShortname(siteName));
-            Assert.assertEquals(documentLibraryPage.getFiles().get(0).getName(), fileName);
-
+            editDocumentPropertiesPage.setName(fileName + "edited");
+            Assert.fail("Error: Filename should not be editable for files opened for offline editing");
         }
-        catch (Throwable e)
+        catch (Exception ex)
         {
-            reportError(drone, testName, e);
+            logger.info("Editing not available as file input is disabled");
         }
+
+        // Check File is not renamed
+        ShareUser.openDocumentLibrary(drone);
+        
+        Assert.assertNotNull(ShareUserSitePage.getFileDirectoryInfo(drone, fileName));
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
@@ -161,7 +154,7 @@ public class ManageDocumentsTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Create Site
-        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.openSiteDashboard(drone, siteName);
 
         // Upload File
@@ -182,35 +175,29 @@ public class ManageDocumentsTest extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
         String fileName = getFileName(testName) + "\u65E5\u672C\u8A9E\u30D5\u30A1.txt";
 
-        DocumentLibraryPage documentLibraryPage;
-
         try
         {
+            // TODO: If customDrone can be used for all tests in this class, consider setting up customDrone in before class.
             customDrone = ((WebDroneImpl) ctx.getBean(WebDroneType.DownLoadDrone.getName()));
             dronePropertiesMap.put(customDrone, (ShareTestProperty) ctx.getBean("shareTestProperties"));
             maxWaitTime = ((WebDroneImpl) customDrone).getMaxPageRenderWaitTime();
 
             // Login
             ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName).render();
-            // Click "Download" button;
+            
+            ShareUser.openSitesDocumentLibrary(customDrone, siteName);
+
             // Download file
-            FileDirectoryInfo fileDirectoryInfo = documentLibraryPage.getFileDirectoryInfo(fileName);
-            fileDirectoryInfo.selectDownload();
+            ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName).selectDownload();
 
             // Check the file is downloaded successfully
-            documentLibraryPage.waitForFile(downloadDirectory + fileName);
+            getSharePage(customDrone).waitForFile(downloadDirectory + fileName);
+            
             List<String> extractedChildFilesOrFolders = ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory);
-            Assert.assertTrue(extractedChildFilesOrFolders.contains(fileName));
-
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
+            assertTrue(extractedChildFilesOrFolders.contains(fileName));
         }
         finally
         {
-            testCleanup(drone, testName);
             try
             {
                 customDrone.quit();
@@ -244,22 +231,21 @@ public class ManageDocumentsTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.openSitesDocumentLibrary(drone, siteName);
 
-        // invite userB
-        // Invite user to Site as Collaborator and log-out the current user.
+        // invite userB to Site as Collaborator
         ShareUserMembers.inviteUserToSiteWithRole(drone, testUser1, testUser2, siteName, UserRole.COLLABORATOR);
+        
         ShareUser.logout(drone);
-
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2896()
+    public void ALF_2896() throws Exception
     {
-        /** Start Test */
         testName = getTestName();
 
-        /** Test Data Setup */
         String siteName = getSiteName(testName);
+        
         String fileName = getFileName(testName) + ".txt";
+        
         String testUser1 = getUserNameFreeDomain(testName + "1");
         String testUser2 = getUserNameFreeDomain(testName + "2");
         DocumentLibraryPage documentLibraryPage;
@@ -276,11 +262,10 @@ public class ManageDocumentsTest extends AbstractUtils
 
             // Upload File
             String[] fileInfo = { fileName, DOCLIB };
-            documentLibraryPage = ShareUser.uploadFileInFolder(customDrone, fileInfo);
+            ShareUser.uploadFileInFolder(customDrone, fileInfo);
 
             // Edit Offline
-            FileDirectoryInfo fileDirectoryInfo = documentLibraryPage.getFileDirectoryInfo(fileName);
-            fileDirectoryInfo.selectEditOffline();
+            documentLibraryPage = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName).selectEditOffline();
 
             // Check the file is downloaded successfully
             String editedFileName = getFileName(testName) + " (Working Copy).txt";
@@ -288,37 +273,36 @@ public class ManageDocumentsTest extends AbstractUtils
 
             // Login user 2
             ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
-            DocumentLibraryPage documentLibraryPage2 = ShareUser.openSitesDocumentLibrary(drone, siteName);
-            documentLibraryPage2.getFileDirectoryInfo(fileName).isLocked();
-            Assert.assertTrue(documentLibraryPage2.getFileDirectoryInfo(fileName).getContentInfo()
-                    .contains(String.format("This document is locked by %s", testUser1)));
+            ShareUser.openSitesDocumentLibrary(drone, siteName);
+            ShareUserSitePage.getFileDirectoryInfo(drone,fileName).isLocked();
+            assertTrue(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getContentInfo().contains(String.format("This document is locked by %s", testUser1)));
 
             // Navigate to Details page of document and click Edit Properties;
-            documentLibraryPage2.render(maxWaitTime).selectFile(fileName);
+            ShareUserSitePage.selectContent(drone, fileName);
+            
+            // TODO: Replace with Share-PO method
             String url = drone.getCurrentUrl();
             drone.navigateTo(url.replace("document-details", "edit-metadata"));
             EditDocumentPropertiesPage editDocumentPropertiesPage = drone.getCurrentPage().render();
             try
             {
                 editDocumentPropertiesPage.setName(fileName + "edited");
+                // TODO: Implement assert.fail if there is not exception
             }
+            // TODO: Catch exception: not throwable
             catch (Throwable ex)
             {
                 logger.info("Editing not available as file input is disabled");
             }
 
-            documentLibraryPage2 = SiteUtil.openSiteDocumentLibraryURL(drone, getSiteShortname(siteName));
-            Assert.assertEquals(documentLibraryPage2.getFiles().get(0).getName(), fileName);
+            ShareUser.openDocumentLibrary(drone);
+            Assert.assertNotNull(ShareUserSitePage.getFileDirectoryInfo(drone, fileName));
 
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-            reportError(drone, testName, e);
         }
         finally
         {
             // Cancel Editing
+            // TODO: Remove this if not required, as new file is being used for each test run
             try
             {
                 ShareUser.login(customDrone, testUser1, DEFAULT_PASSWORD);
@@ -376,54 +360,41 @@ public class ManageDocumentsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2899()
+    public void ALF_2899() throws Exception
     {
-        /** Start Test */
         testName = getTestName();
 
-        /** Test Data Setup */
         String siteName = getSiteName(testName);
         String fileName = getFileName(testName) + ".txt";
         String testUser = getUserNameFreeDomain(testName);
 
         DocumentLibraryPage documentLibraryPage;
 
-        try
-        {
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        // start the new workflow
+        // TODO: Add / Use util from ShareUserWorkflow in all tests where applicable to start-cancel workflow
+        StartWorkFlowPage startWorkFlowPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectStartWorkFlow().render();
+        NewWorkflowPage newWorkflowPage = ((NewWorkflowPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.NEW_WORKFLOW)).render();
+        String workFlowName1 = testName + System.currentTimeMillis() + "-1-WF";
+        String dueDate = new DateTime().plusDays(2).toString("dd/MM/yyyy");
+        List<String> reviewers = new ArrayList<String>();
+        reviewers.add(username);
 
-            // start the new workflow
-            StartWorkFlowPage startWorkFlowPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectStartWorkFlow().render();
-            NewWorkflowPage newWorkflowPage = ((NewWorkflowPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.NEW_WORKFLOW)).render();
-            String workFlowName1 = testName + System.currentTimeMillis() + "-1-WF";
-            String dueDate = new DateTime().plusDays(2).toString("dd/MM/yyyy");
-            List<String> reviewers = new ArrayList<String>();
-            reviewers.add(username);
-            WorkFlowFormDetails formDetails = new WorkFlowFormDetails(siteName, siteName, reviewers);
-            formDetails.setMessage(workFlowName1);
-            formDetails.setDueDate(dueDate);
-            formDetails.setTaskPriority(Priority.MEDIUM);
-            documentLibraryPage = newWorkflowPage.startWorkflow(formDetails).render();
+        WorkFlowFormDetails formDetails = new WorkFlowFormDetails(siteName, siteName, reviewers);
+        formDetails.setMessage(workFlowName1);
+        formDetails.setDueDate(dueDate);
+        formDetails.setTaskPriority(Priority.MEDIUM);
+        documentLibraryPage = newWorkflowPage.startWorkflow(formDetails).render();
 
-            // check the document is marked with icon
-            assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName).isPartOfWorkflow(), "Verifying the file is part of a workflow");
+        // check the document is marked with icon
+        assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName).isPartOfWorkflow(), "Verifying the file is part of a workflow");
 
-            // check the workflow is not present in MyTasks - active tasks
-            MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
-            assertFalse(myTasksPage.isTaskPresent(workFlowName1));
-
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        // check the workflow is not present in MyTasks - active tasks
+        MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
+        assertFalse(myTasksPage.isTaskPresent(workFlowName1));
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
@@ -453,51 +424,240 @@ public class ManageDocumentsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2900()
+    public void ALF_2900() throws Exception
+    {
+        testName = getTestName();
+
+        String siteName = getSiteName(testName);
+        String fileName = getFileName(testName) + ".txt";
+        
+        String testUser = getUserNameFreeDomain(testName);
+        DocumentLibraryPage documentLibraryPage;
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        // start the new workflow
+        StartWorkFlowPage startWorkFlowPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectStartWorkFlow().render();
+        NewWorkflowPage newWorkflowPage = ((NewWorkflowPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.NEW_WORKFLOW)).render();
+        String workFlowName1 = testName + System.currentTimeMillis() + "-1-WF";
+        String dueDate = new DateTime().plusDays(2).toString("dd/MM/yyyy");
+        List<String> reviewers = new ArrayList<String>();
+        reviewers.add(username);
+        WorkFlowFormDetails formDetails = new WorkFlowFormDetails(siteName, siteName, reviewers);
+        formDetails.setMessage(workFlowName1);
+        formDetails.setDueDate(dueDate);
+        formDetails.setTaskPriority(Priority.MEDIUM);
+        newWorkflowPage.cancelCreateWorkflow(formDetails).render();
+
+        // check the document is not marked with icon
+        assertFalse(documentLibraryPage.getFileDirectoryInfo(fileName).isPartOfWorkflow(), "Verifying the file is part of a workflow");
+
+        // check the workflow is not present in MyTasks - active tasks
+        MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
+        assertFalse(myTasksPage.isTaskPresent(workFlowName1));
+    }
+
+    @Test(groups = { "DataPrepDocumentLibrary" })
+    public void dataPrep_Enterprise40x_5607() throws Exception
+    {
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String fileName = getFileName(testName);
+        String testUser = getUserNameFreeDomain(testName);
+
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser);
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(drone).render();
+
+        // Upload File
+        String[] fileInfo = { fileName, DOCLIB };
+        ShareUser.uploadFileInFolder(drone, fileInfo);
+
+        for (String tag : TEST_TAGS)
+        {
+            ShareUserSitePage.addTag(drone, fileName, tag);
+        }
+        
+        ShareUser.logout(drone);
+    }
+
+    private static String[] TEST_TAGS = { "+)(&^%$#@ ~", "Bedürfnis",
+            "373410584570611755554713645806507805287482426" +
+                    "817707865250365585821787087425238236324155636041" +
+                    "57722674806351147348453726037052504863468162" +
+                    "7501815347734737524048848388541525267811054775115" +
+                    "310312540808668588760550376431211218838055672752085" +   //I am ashamed, but not another way.
+                    "340575362251174378", "justTag" };
+
+    @Test(groups = "EnterpriseOnly")
+    public void Enterprise40x_5607()
+    {
+        testName = getTestName();
+
+        String siteName = getSiteName(testName);
+        String fileName = getFileName(testName);
+        String testUser = getUserNameFreeDomain(testName);
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        FileDirectoryInfo fileDirectoryInfo = ShareUserSitePage.getFileDirectoryInfo(drone, fileName);
+
+        fileDirectoryInfo.clickOnAddTag();
+        
+        for (String tag : TEST_TAGS)
+        {
+            assertTrue(fileDirectoryInfo.removeTagButtonIsDisplayed(tag), String.format("Remove button is absent for tag [%s]", tag));
+            fileDirectoryInfo.clickOnTagRemoveButton(tag);
+        }
+        
+        fileDirectoryInfo.clickOnTagSaveButton();
+        int tagsCount = fileDirectoryInfo.getTags().size();
+        assertEquals(tagsCount, 0, String.format("Not all tags are removed. Actual tags count is %s", tagsCount));
+
+    }
+
+    @Test(groups = { "DataPrepDocumentLibrary" })
+    public void dataPrep_Enterprise40x_13817() throws Exception
+    {
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+
+        // Login as Admin
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+        
+        // Create Site
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openSiteDashboard(drone, siteName);
+
+        // Upload File
+        String fileName = "channel-test-jpg.jpg";
+        String[] fileInfo = { fileName, DOCLIB };
+        DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo);
+
+        // Create channel Flickr.
+        ChannelManagerPage channelManagerPage = documentLibraryPage.getNav().getChannelManagerPage();
+        if (channelManagerPage.isChannelPresent(Flickr) && !channelManagerPage.isChannelAuthorised(Flickr))
+        {
+            channelManagerPage.deleteChannel(Flickr);
+        }
+        else if (!channelManagerPage.isChannelPresent(Flickr))
+        {
+            // Create flickr channel
+            channelManagerPage.createFlickrChannel(flickrName, flickrPassword);
+        }
+        ShareUser.logout(drone);
+    }
+
+    @Test(groups = "EnterpriseOnly", timeOut = 400000)
+    public void Enterprise40x_13817() throws Exception
     {
         /** Start Test */
         testName = getTestName();
 
         /** Test Data Setup */
         String siteName = getSiteName(testName);
-        String fileName = getFileName(testName) + ".txt";
-        String testUser = getUserNameFreeDomain(testName);
+        String oldFileName = "channel-test-jpg.jpg";
+        String fileName = getRandomString(5) + ".JPG";
+
         DocumentLibraryPage documentLibraryPage;
 
-        try
-        {
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        // Login as Admin
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
-            // start the new workflow
-            StartWorkFlowPage startWorkFlowPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectStartWorkFlow().render();
-            NewWorkflowPage newWorkflowPage = ((NewWorkflowPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.NEW_WORKFLOW)).render();
-            String workFlowName1 = testName + System.currentTimeMillis() + "-1-WF";
-            String dueDate = new DateTime().plusDays(2).toString("dd/MM/yyyy");
-            List<String> reviewers = new ArrayList<String>();
-            reviewers.add(username);
-            WorkFlowFormDetails formDetails = new WorkFlowFormDetails(siteName, siteName, reviewers);
-            formDetails.setMessage(workFlowName1);
-            formDetails.setDueDate(dueDate);
-            formDetails.setTaskPriority(Priority.MEDIUM);
-            newWorkflowPage.cancelCreateWorkflow(formDetails).render();
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        // To get a unique file name
+        documentLibraryPage = ShareUserSitePage.editContentNameInline(drone, oldFileName, fileName, true);
 
-            // check the document is not marked with icon
-            assertFalse(documentLibraryPage.getFileDirectoryInfo(fileName).isPartOfWorkflow(), "Verifying the file is part of a workflow");
+        FileDirectoryInfo fileDirectoryInfo = documentLibraryPage.getFileDirectoryInfo(fileName);
+        double currentVersion = Double.parseDouble(fileDirectoryInfo.getVersionInfo());
 
-            // check the workflow is not present in MyTasks - active tasks
-            MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
-            assertFalse(myTasksPage.isTaskPresent(workFlowName1));
+        // TODO: Implement as part of selectPublish. Also amend selectPublish to return factorySharePage.resolvePage(drone) rather than new
+        fileDirectoryInfo.selectMoreLink();
+        PublishPage publishPage = fileDirectoryInfo.selectPublish();
+        publishPage.selectChannel(Flickr);
+        publishPage.selectCancelPublish();
 
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        // The content is not uploaded to the channel.
+        Assert.assertFalse(PublishUtil.isContentUploadedToFlickrChannel(drone, fileName, flickrName, flickrPassword), "Document published on Flickr.");
+
+        // The version of the document hasn't changed
+        double actualVersion = Double.parseDouble(fileDirectoryInfo.getVersionInfo());
+        Assert.assertEquals(actualVersion, currentVersion, "Document version changed.");
     }
+
+    @Test(groups = { "DataPrepDocumentLibrary" })
+    public void dataPrep_Enterprise40x_13814() throws Exception
+    {
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+
+        // Login as Admin
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+        // Create Site
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+        ShareUser.openSiteDashboard(drone, siteName);
+
+        // Upload File
+        String fileName = "channel-test-jpg.jpg";
+        String[] fileInfo = { fileName, DOCLIB };
+        DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo);
+
+        // Create channel Flickr.
+        ChannelManagerPage channelManagerPage = documentLibraryPage.getNav().getChannelManagerPage();
+        if (channelManagerPage.isChannelPresent(Flickr))
+        {
+            channelManagerPage.deleteChannel(Flickr);
+        }
+        channelManagerPage.createFlickrChannel(flickrName, flickrPassword);
+        ShareUser.logout(drone);
+    }
+
+    @Test(groups = "EnterpriseOnly", timeOut = 400000)
+    public void Enterprise40x_13814() throws Exception
+    {
+        testName = getTestName();
+
+        String siteName = getSiteName(testName);
+        String oldFileName = "channel-test-jpg.jpg";
+        String fileName = getRandomString(5) + ".JPG";
+
+        // Login as Admin
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        // To get a unique file name
+
+        ShareUserSitePage.editContentNameInline(drone, oldFileName, fileName, true);
+
+        FileDirectoryInfo fileDirectoryInfo = ShareUserSitePage.getFileDirectoryInfo(drone, fileName);
+        double currentVersion = Double.parseDouble(fileDirectoryInfo.getVersionInfo());
+
+        // TODO: As above. Also create util in ShareUSerAdmin? to publish to specified channel
+        fileDirectoryInfo.selectMoreLink();
+        PublishPage publishPage = fileDirectoryInfo.selectPublish();
+        publishPage.selectChannel(Flickr);
+
+        publishPage.selectPublish().render();
+
+        // The popup window "<filename.filetype> is queued for publishing to <channel's name>" is displayed.
+        assertTrue(fileDirectoryInfo.isPublishPopupDisplayed(fileName, Flickr));
+
+        // The content is not uploaded to the channel.
+        assertTrue(PublishUtil.isContentUploadedToFlickrChannel(drone, fileName, flickrName, flickrPassword), "Document didn't published on Flickr.");
+
+        // The version of the document hasn't changed
+        double actualVersion = Double.parseDouble(fileDirectoryInfo.getVersionInfo());
+        Assert.assertNotEquals(actualVersion, currentVersion, "Document version changed.");
+
+    }
+
 }

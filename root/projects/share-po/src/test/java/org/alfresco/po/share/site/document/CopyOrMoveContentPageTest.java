@@ -40,7 +40,7 @@ import org.testng.annotations.Test;
  * @since 1.7.0
  */
 @Listeners(FailedTestListener.class)
-@Test(groups={"alfresco-one","AutomationBug"})
+@Test(groups={"alfresco-one"})
 public class CopyOrMoveContentPageTest extends AbstractTest
 {
     private String siteName1;
@@ -207,6 +207,7 @@ public class CopyOrMoveContentPageTest extends AbstractTest
         Assert.assertTrue(documentLibPage.getFiles().size() == 4);
         
         documentLibPage = documentLibPage.getNavigation().selectHideFolders().render();
+        documentLibPage = (DocumentLibraryPage) documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
         copyOrMoveContentPage = documentLibPage.getFileDirectoryInfo(file2.getName()).selectMoveTo().render();
         copyOrMoveContentPage = selectDestination(copyOrMoveContentPage, destinations);
         Assert.assertNotNull(copyOrMoveContentPage);

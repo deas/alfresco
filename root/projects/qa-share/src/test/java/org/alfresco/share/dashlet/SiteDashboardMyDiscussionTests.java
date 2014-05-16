@@ -1245,7 +1245,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups = "SiteDashboardMyDiscussionTests")
+    @Test(groups = "AlfrescoBug")
     public void ALF_8947() throws Exception
     {
         // login as created user

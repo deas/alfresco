@@ -23,7 +23,10 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 /**
- * Represents the file data in Table View in the Dcoument Library
+ * Represents the file data in Table View in the Dcoument Library.
+ * 
+ * Get a TableViewFileDirectoryInfo instance from:
+ * {@link DocumentLibraryPage#getLeftMenus()}
  * 
  * @author Jamie Allison
  * @since  4.3.0

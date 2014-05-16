@@ -3,7 +3,7 @@ package org.alfresco.po.share.admin;
 import java.util.List;
 
 import org.alfresco.po.share.enums.SiteVisibility;
-import org.alfresco.po.share.util.TestUtils;
+import org.alfresco.po.share.util.PageUtils;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -71,7 +71,7 @@ public class VisibilityDropDown
         WebElement menu = this.drone.find(By.cssSelector(menuSelector));
 
         // If the menu is not null and is displayed and is enabled
-        if (TestUtils.usableElement(menu))
+        if (PageUtils.usableElement(menu))
         {
 
             // Within the menu element find the MENU_ROWS

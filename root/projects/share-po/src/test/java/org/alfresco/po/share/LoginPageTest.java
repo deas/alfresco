@@ -108,6 +108,8 @@ public class LoginPageTest extends AbstractTest
         String csrfToken1 = getCookieValue();
         Assert.assertNotNull(csrfToken1);
         drone.refresh();
+        DashBoardPage dPage = (DashBoardPage)drone.getCurrentPage().render();
+        dPage.render();
         String csrfToken2 = getCookieValue();
         Assert.assertNotNull(csrfToken2);   
         if (alfrescoVersion.isCloud())

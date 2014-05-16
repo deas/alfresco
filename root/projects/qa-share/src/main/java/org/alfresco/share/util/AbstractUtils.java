@@ -35,11 +35,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -79,6 +81,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
+import org.testng.annotations.Test;
 
 /**
  * Class includes: Abstract test holds all common methods, These will be used
@@ -119,10 +122,10 @@ public abstract class AbstractUtils
     protected WebDrone customDrone;
     protected WebDrone hybridDrone;
     public static long maxWaitTime = 30000;
-    public static long maxWaitTime_CloudSync = 60000;
+    public static Long maxWaitTimeCloudSync;
     public static long refreshDuration = 25000;
     public static Integer retrySearchCount = 3;
-    public static long maxDownloadWaitTime = 3000;
+    public static long maxDownloadWaitTime = 10000;
     // Test Data Related options
     protected static final String DATAPREP_OPTION = "SKIP";
     // if data is expected to be pre-loaded
@@ -209,6 +212,10 @@ public abstract class AbstractUtils
     protected static String HEADER_KEY;
     protected static String DEFAULT_USER;
     protected static String UNIQUE_TESTDATA_STRING;
+    protected static String nodePort = "8080";
+    protected static String jmxrmiPort;
+    protected static String jmxrmiUser;
+    protected static String jmxrmiPassword;
     protected static AlfrescoVersion alfrescoVersion;
     protected static Map<WebDrone, ShareTestProperty> dronePropertiesMap = new HashMap<WebDrone, ShareTestProperty>();
     protected ShareTestProperty hybridShareTestProperties;
@@ -219,6 +226,11 @@ public abstract class AbstractUtils
     public static String apiContextEnt = "alfresco/api/";
     public static String apiPath = "";
     public final static String STAGURL = "https://stagmy.alfresco.com/share";
+    public final String CONTENT_FAVOURITE_TOOLTIP = "content.favourite.tooltip";
+    public final String CONTENT_UNFAVOURITE_TOOLTIP = "content.unfavourite.tooltip";
+    public final String FOLDER_FAVOURITE_TOOLTIP = "folder.favourite.tooltip";
+    public final String FOLDER_UNFAVOURITE_TOOLTIP = "folder.unfavourite.tooltip";
+    public static String licenseShare;
 
     Map<String, WebDrone> droneMap = new HashMap<String, WebDrone>();
 
@@ -251,7 +263,12 @@ public abstract class AbstractUtils
         ADMIN_PASSWORD = testProperties.getadminPassword();
         HEADER_KEY = testProperties.getHeaderKey();
         mimeTypes = testProperties.getMimeTypes();
-
+        licenseShare = testProperties.getLicenseShare();
+        nodePort = testProperties.getNodePort();
+        jmxrmiPort = testProperties.getJmxPort();
+        jmxrmiUser = testProperties.getJmxUser();
+        jmxrmiPassword = testProperties.getJmxPassword();
+        maxWaitTimeCloudSync =Long.parseLong(testProperties.getMaxWaitTimeCloudSync());
         RESULTS_FOLDER = SRC_ROOT + "test-output" + SLASH + UNIQUE_TESTRUN_NAME + SLASH;
 
         DEFAULT_FREENET_USER = DEFAULT_USER + "@" + DOMAIN_FREE;
@@ -329,7 +346,6 @@ public abstract class AbstractUtils
      * Helper to log a user into alfresco.
      * 
      * @param drone
-     *            TODO
      * @param userInfo
      * @return DashBoardPage
      * @throws Exception
@@ -398,18 +414,18 @@ public abstract class AbstractUtils
                 FileUtils.copyFile(file, tmp);
             }
         }
-        try
-        {
-            saveOsScreenShot(methodName);
-        }
-        catch (AWTException e)
-        {
-            logger.error("Not able to take the OS screen shot: " + e.getMessage());
-        }
+//        try
+//        {
+//            saveOsScreenShot(methodName);
+//        }
+//        catch (AWTException e)
+//        {
+//            logger.error("Not able to take the OS screen shot: " + e.getMessage());
+//        }
     }
 
     /**
-     * Take OS Scren Shot
+     * Take OS ScreenShot
      * 
      * @param methodName - Method Name
      */
@@ -433,12 +449,21 @@ public abstract class AbstractUtils
      * step of the test. Common Test code can later be introduced here.
      * 
      * @return String testcaseName
-     * @throws N
-     *             /A
      */
     public static String getTestName()
     {
         String testID = Thread.currentThread().getStackTrace()[2].getMethodName();
+        return getTestName(testID);
+    }
+
+    /**
+     * Helper returns the test / methodname. This needs to be called as the 1st
+     * step of the test. Common Test code can later be introduced here.
+     *
+     * @return String testcaseName
+     */
+    public static String getTestName(String testID)
+    {
         return (testID.substring(testID.lastIndexOf("_")).replace("_", alfrescoVersion + "-"));
     }
 
@@ -940,6 +965,7 @@ public abstract class AbstractUtils
     {
         WebDrone secondDrone = (WebDrone) ctx.getBean("webDrone");
         ShareTestProperty secondDroneProperties = (ShareTestProperty) ctx.getBean("shareTestProperties");
+        droneMap.put("second_drone", secondDrone);
         dronePropertiesMap.put(secondDrone, secondDroneProperties);
         return secondDrone;
     }
@@ -1159,7 +1185,7 @@ public abstract class AbstractUtils
      * This util method gets the random number for the given length of return
      * string.
      * 
-     * @param int length
+     * @param length int
      * @return String
      */
     public static String getRandomStringWithNumders(int length)
@@ -1186,4 +1212,205 @@ public abstract class AbstractUtils
         }
     }
 
+    /**
+     * This util method returns a random string of letters for the given length.
+     * 
+     * @param length int
+     * @return String
+     */
+    public static String getRandomString(int length)
+    {
+        StringBuilder rv = new StringBuilder();
+        Random rnd = new Random();
+        char from[] = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+
+        for (int i = 0; i < length; i++)
+        {
+            rv.append(from[rnd.nextInt((from.length - 1))]);
+        }
+        return rv.toString();
+    }
+
+    /**
+     * This util method returns a random string of letters and spaces matching the 
+     * lengths and proportion of English words for the given string length.
+     * 
+     * @param length int
+     * @return String
+     */
+    public static String getNaturalString(int length)
+    {
+        StringBuilder rv = new StringBuilder();
+        Random rnd = new Random();
+        int[] wordLengths = { 1, 1, 1,
+                    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+                    3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+                    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+                    5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+                    6, 6, 6, 6, 6, 6, 6, 6,
+                    7, 7, 7, 7, 7, 7, 7, 7,
+                    8, 8, 8, 8, 8, 8,
+                    9, 9, 9, 9,
+                    10, 10, 10,
+                    11, 11,
+                    12,
+                    13 };
+
+        char from[] = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+
+        int wordLength = wordLengths[rnd.nextInt((wordLengths.length - 1))];
+        for (int i = 0; i < length; i++)
+        {
+            if (wordLength <= 0 && i < length - 5)
+            {
+                rv.append(" ");
+                wordLength = wordLengths[rnd.nextInt((wordLengths.length - 1))];
+                continue;
+            }
+            rv.append(from[rnd.nextInt((from.length - 1))]);
+            wordLength--;
+        }
+        if (rv.charAt(rv.length() - 1) == ' ')
+        {
+            rv.setCharAt(rv.length() - 1, from[rnd.nextInt((from.length - 1))]);
+        }
+        return rv.toString();
+    }
+    
+    /**
+     * This util method resizes a given string to a given length.
+     * If the string is shorter the end of the string will be cropped.
+     * If the string is longer the extra length will be populated with random characters.
+     * 
+     * 
+     * @param string The string to be resized.
+     * @param length The length of the new string.
+     * @return String The new string.
+     */
+    public static String getResizedString(String string, int length)
+    {
+        if (string == null)
+        {
+            string = "";
+        }
+
+        StringBuilder rv;
+
+        if(string.length() == length)
+        {
+            return string;
+        }
+        else if(string.length() < length)
+        {
+            rv = new StringBuilder(getNaturalString(length));
+            rv.replace(0, string.length(), string);
+        }
+        else
+        {
+            rv = new StringBuilder(string);
+            rv.setLength(length);
+        }
+        return rv.toString();
+    }
+
+    /**
+     * Checks if a browser window is open with a title matching the given string.
+     * @param windowName
+     * @param driver driverObj
+     * 
+     * @return boolean
+     */
+    public boolean isWindowOpened(WebDrone driver, String windowName)
+    {
+        Set<String> windowHandles = driver.getWindowHandles();
+
+        for (String windowHandle : windowHandles)
+        {
+            driver.switchToWindow(windowHandle);
+            logger.info(driver.getTitle());
+            if (driver.getTitle().equals(windowName))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    @SuppressWarnings("hiding")
+    public static class CustomStringList<String> extends ArrayList<String>
+    {
+        private static final long serialVersionUID = 1L;
+
+        public CustomStringList(Collection<String> c)
+        {
+            super(c);
+        }
+
+        public CustomStringList()
+        {
+            super();
+        }
+
+        @Override
+        public boolean contains(Object o)
+        {
+            java.lang.String paramStr = (java.lang.String) o;
+            for (String s : this)
+            {
+                if (paramStr.equalsIgnoreCase((java.lang.String) s))
+                    return true;
+            }
+            return false;
+        }
+
+    }
+
+    /**
+     * Helper to consistently get the tagName.
+     * 
+     * @param partTagName
+     *            String Part Name of the tag for uniquely identifying /
+     *            mapping test data with the test
+     * @return String tagName
+     */
+    protected static String getTagName(String partTagName)
+    {
+        String tagName = "";
+
+        //Tag names are displayed in lower case to convert to lower case to help matching in tests.
+        tagName = String.format("tag%s-%s", UNIQUE_TESTDATA_STRING, partTagName).toLowerCase();
+
+        return tagName;
+    }
+
+    /**
+     * Method to get the DependsOnMethod name
+     * @param cls
+     * @return
+     * @throws Exception
+     */
+    protected String getDependsOnMethodName(Class cls) throws Exception
+    {
+        Test test = cls.getMethod(Thread.currentThread().getStackTrace()[2].getMethodName()).getAnnotation(Test.class);
+        return test.dependsOnMethods()[0];
+    }
+    
+    /**
+     * Util to switch drone to window with the specified name
+     * @param driver
+     * @param windowName
+     * @return boolean <tt>true</tt> if specified window is found 
+     */
+    public boolean switchToWindowName(WebDrone driver, String windowName)
+    {
+        for (String windowHandle : driver.getWindowHandles())
+        {
+            driver.switchToWindow(windowHandle);
+            logger.info("Found Open Window: " + driver.getTitle());
+            if (driver.getTitle().equalsIgnoreCase(windowName))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

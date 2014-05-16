@@ -27,6 +27,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,6 +65,7 @@ public class FolderDetailsPage extends DetailsPage
                 changeTypeLink = By.cssSelector("div#onActionChangeType a");
                 break;
         }
+        PERMISSION_SETTINGS_PANEL_CSS = ".folder-permissions";
     }
 
     @SuppressWarnings("unchecked")
@@ -263,4 +265,43 @@ public class FolderDetailsPage extends DetailsPage
         }
     }
 
+    /**
+     * Method to return Edit icons on Details page
+     *
+     * @return List <WebElement>
+     */
+
+    public List<WebElement> getEditControls()
+    {
+        try
+        {
+            List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector("a.edit"));
+            return elements;
+        }
+        catch (TimeoutException e)
+        {
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     *  Method checks if the author of the folder modifying is displayed at a Folder details page
+     * @param drone  Webcrone instance
+     * @param userName string name of the modifier
+     * @return
+     */
+    public static boolean IsModifierDisplayed(WebDrone drone, String userName)
+    {
+
+        try
+        {
+            WebElement modifiedBy = drone.findAndWait(By.xpath("//span[contains(@class,'item-modifier')]"));
+            return modifiedBy.isDisplayed() && modifiedBy.getText().contains(userName);
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+
+    }
 }

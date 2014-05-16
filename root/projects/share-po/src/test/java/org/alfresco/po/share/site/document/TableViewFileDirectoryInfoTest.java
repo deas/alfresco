@@ -18,6 +18,7 @@
  */
 package org.alfresco.po.share.site.document;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.io.File;
@@ -73,6 +74,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         if(version.isCloud())
         {
             ShareUtil.loginAs(drone, shareUrl, username, password).render();
+            userFullName = anotherUser.getfName() + " " + anotherUser.getlName();
         }
         else
         {
@@ -224,7 +226,11 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         documentLibPage = documentLibPage.getNavigation().selectTableView().render();
 
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file2.getName());
+        assertFalse(thisRow.isSaveLinkVisible());
+        assertFalse(thisRow.isCancelLinkVisible());
         thisRow.contentNameEnableEdit();
+        assertTrue(thisRow.isSaveLinkVisible());
+        assertTrue(thisRow.isCancelLinkVisible());
         thisRow.contentNameEnter(file2.getName() + " not updated");
         thisRow.contentNameClickCancel();
         documentLibPage = drone.getCurrentPage().render();

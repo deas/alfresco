@@ -55,6 +55,14 @@ public class GoogleSignUpPage extends SharePage
         this.documentVersion = documentVersion;
     }
 
+    /**
+     * Public constructor and switch to the sign up window
+     */
+    public GoogleSignUpPage(WebDrone drone)
+    {
+        super(drone);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public GoogleSignUpPage render(final long time)
@@ -169,6 +177,30 @@ public class GoogleSignUpPage extends SharePage
             return new EditInGoogleDocsPage(drone, documentVersion, isGoogleCreate);
         }
         throw new PageException(errorMessage);
+    }
+
+    /**
+     * Enter the Username , password and Click on Sign up button.
+     */
+    public void channelSignUp(String username, String password)
+    {
+        try
+        {
+            WebElement usernameInput = drone.findAndWait(GOOGLE_USERNAME);
+            usernameInput.clear();
+            usernameInput.sendKeys(username);
+
+            WebElement passwordInput = drone.findAndWait(GOOGLE_PASSWORD);
+            passwordInput.clear();
+            passwordInput.sendKeys(password);
+
+            WebElement submitButton = drone.find(SIGNUP_BUTTON);
+            submitButton.click();
+        }
+        catch (TimeoutException te)
+        {
+            throw new TimeoutException("Google Sign up page timeout", te);
+        }
     }
 
     /**

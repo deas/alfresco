@@ -50,7 +50,8 @@ public class SiteDashboardPage extends SitePage implements Dashboard
     private String clickableElements;
     private static final By CONFIGURE_SEARCH_DIALOG_BOX = By
             .cssSelector("div[id$='default-configDialog-configDialog_c'][style*='visibility: visible']>div[id$='_default-configDialog-configDialog']");
-
+    private static final By DASHLET_HELP_BALLOON = By.cssSelector("div[style*='visible']>div>div.balloon");
+    private static final By HELP_ICON = By.cssSelector("div[class$='titleBarActionIcon help']");
     /**
      * Constructor
      */
@@ -239,5 +240,107 @@ public class SiteDashboardPage extends SitePage implements Dashboard
             return true;
         }
         return false;
+    }
+
+    /**
+     * Method to find if the Customize Site Dashboard link is displayed
+     *
+     * @return True if displayed
+     */
+
+    public boolean isCustomizeSiteDashboardLinkPresent()
+    {
+        try
+        {
+            SiteNavigation siteNavigation = new SiteNavigation(drone);
+            siteNavigation.selectConfigure();
+            return drone.find(AbstractSiteNavigation.CUSTOMIZE_SITE_DASHBOARD).isDisplayed();
+        }
+        catch (NoSuchElementException exc)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Method to find if the Edit Site Details link is displayed
+     *
+     * @return True if displayed
+     */
+
+    public boolean isEditSiteDetailsLinkPresent()
+    {
+
+        try
+        {
+            SiteNavigation siteNavigation = new SiteNavigation(drone);
+            siteNavigation.selectConfigure();
+            return drone.find(AbstractSiteNavigation.EDIT_SITE_DETAILS).isDisplayed();
+        }
+        catch (NoSuchElementException exc)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Method to find if the Customize Site link is displayed
+     *
+     * @return True if displayed
+     */
+
+    public boolean isCustomizeSiteLinkPresent()
+    {
+
+        try
+        {
+            SiteNavigation siteNavigation = new SiteNavigation(drone);
+            siteNavigation.selectConfigure();
+            return drone.find(AbstractSiteNavigation.CUSTOMIZE_SITE).isDisplayed();
+        }
+        catch (NoSuchElementException exc)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Method to find if the Customize Site link is displayed
+     *
+     * @return True if displayed
+     */
+
+    public boolean isLeaveSiteLinkPresent()
+    {
+        try
+        {
+            SiteNavigation siteNavigation = new SiteNavigation(drone);
+            siteNavigation.selectConfigure();
+            return drone.find(AbstractSiteNavigation.LEAVE_SITE).isDisplayed();
+        }
+        catch (NoSuchElementException exc)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Method used to discursively display help balloon on all the dashlets
+     *
+     * @return true if help is available for all the dashlets
+     */
+    public boolean isHelpDisplayedForAllDashlets()
+    {
+        List<WebElement> allIcons = drone.findAll(HELP_ICON);
+
+        for (int i = 0; i < allIcons.size(); i++)
+        {
+            allIcons.get(i).click();
+            if (drone.isElementDisplayed(DASHLET_HELP_BALLOON))
+                continue;
+            else
+                return false;
+        }
+        return true;
     }
 }

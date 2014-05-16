@@ -14,7 +14,7 @@
  */
 package org.alfresco.po.share;
 
-import org.alfresco.po.share.util.TestUtils;
+import org.alfresco.po.share.util.PageUtils;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
@@ -94,13 +94,13 @@ public class DocListPaginator
                 WebElement menu = this.drone.find(By.cssSelector(menuSelector));
 
                 // If the menu is not null and is displayed and is enabled
-                if (TestUtils.usableElement(menu))
+                if (PageUtils.usableElement(menu))
                 {
                     // Within the menu select the first page
                     WebElement firstPage = menu.findElement(FIRST_MENU_ROW);
 
                     // First page found - click it
-                    if (TestUtils.usableElement(firstPage))
+                    if (PageUtils.usableElement(firstPage))
                     {
                         firstPage.click();
                     }
@@ -126,7 +126,7 @@ public class DocListPaginator
      */
     public boolean hasPrevPage()
     {
-        return TestUtils.usableElement(prevPageButton);
+        return PageUtils.usableElement(prevPageButton);
     }
 
     /**
@@ -146,7 +146,7 @@ public class DocListPaginator
      */
     public HtmlPage clickPrevButton()
     {
-        if (TestUtils.usableElement(prevPageButton))
+        if (PageUtils.usableElement(prevPageButton))
         {
             try
             {
@@ -180,7 +180,7 @@ public class DocListPaginator
      */
     public boolean hasNextPage()
     {
-        return TestUtils.usableElement(nextPageButton);
+        return PageUtils.usableElement(nextPageButton);
     }
 
     /**
@@ -200,7 +200,7 @@ public class DocListPaginator
      */
     public HtmlPage clickNextButton()
     {
-        if (TestUtils.usableElement(nextPageButton))
+        if (PageUtils.usableElement(nextPageButton))
         {
             try
             {

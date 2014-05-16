@@ -53,6 +53,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import static org.testng.Assert.assertTrue;
+
 /**
  * @author Chiran
  *
@@ -154,7 +156,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="Hybrid")
-    public void alf_9455() throws Exception
+    public void ALF_9455() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -295,7 +297,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="Hybrid")
-    public void alf_9457() throws Exception
+    public void ALF_9457() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -352,7 +354,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void alf_15129() throws Exception
+    public void ALF_15129() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -404,7 +406,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void alf_15265() throws Exception
+    public void ALF_15265() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -452,7 +454,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void alf_15266() throws Exception
+    public void ALF_15266() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -500,7 +502,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void alf_15267() throws Exception
+    public void ALF_15267() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -579,7 +581,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void alf_15192() throws Exception
+    public void ALF_15192() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -672,7 +674,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void alf_15193() throws Exception
+    public void ALF_15193() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -860,10 +862,10 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * Note: This test case includes the alf_15194/15195/15196
+     * Note: This test case includes the ALF_15194/15195/15196
      */
     @Test(groups="Hybrid")
-    public void alf_15194() throws Exception
+    public void ALF_15194() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1147,7 +1149,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_15197() throws Exception
+    public void ALF_15197() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1256,7 +1258,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_15198() throws Exception
+    public void ALF_15198() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1359,7 +1361,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups = "Hybrid")
-    public void alf_15199() throws Exception
+    public void ALF_15199() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1515,7 +1517,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups = "Hybrid")
-    public void alf_15200() throws Exception
+    public void ALF_15200() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1658,7 +1660,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void alf_15190() throws Exception
+    public void ALF_15190() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1733,7 +1735,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void alf_15191() throws Exception
+    public void ALF_15191() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1835,7 +1837,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_15178() throws Exception
+    public void ALF_15178() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1945,7 +1947,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_15179() throws Exception
+    public void ALF_15179() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1963,7 +1965,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         ShareUser.login(drone, opUser1, DEFAULT_PASSWORD);
 
         // Open Document library, Upload a file
-        SiteUtil.openSiteDocumentLibraryURL(drone, getSiteShortname(opSiteName));
+        ShareUser.openSitesDocumentLibrary(drone, opSiteName);
 
         ShareUser.uploadFileInFolder(drone, opFileInfo).render();
 
@@ -2077,7 +2079,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_15180() throws Exception
+    public void ALF_15180() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2211,7 +2213,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_15181() throws Exception
+    public void ALF_15181() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2316,7 +2318,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_15185() throws Exception
+    public void ALF_15185() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2416,7 +2418,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_15182() throws Exception
+    public void ALF_15182() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2446,7 +2448,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         ShareUser.uploadFileInFolder(drone, opFileInfo3).render();
 
         // Start Simple Cloud Task workflow with High Priority
-        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startSimpleCloudTaskWorkFlow(drone);
+        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, opFileName1);
 
         WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
 
@@ -2457,16 +2459,15 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         formDetails.setTaskPriority(Priority.HIGH);
         formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENT);
 
-        // Select uploaded file
-        cloudTaskOrReviewPage.selectItem(opFileName1, opSiteName);
-
         // Fill the form details and start workflow
-        MyWorkFlowsPage myWorkFlowsPage = cloudTaskOrReviewPage.startWorkflow(formDetails).render();
-        WorkFlowDetailsPage detailsPage = myWorkFlowsPage.selectWorkFlow(workFlowName1).render();
-        Assert.assertEquals(detailsPage.getWorkFlowDetailsGeneralInfo().getPriority(),Priority.HIGH);
+        DocumentLibraryPage documentLibraryPage = cloudTaskOrReviewPage.startWorkflow(formDetails).render();
+        // Verify the document is part of the workflow
+        assertTrue(documentLibraryPage.getFileDirectoryInfo(opFileName1).isPartOfWorkflow(), "Verifying the document is part of a workflow");
+        assertTrue(documentLibraryPage.getFileDirectoryInfo(opFileName1).isCloudSynced(), "Verifying the document is synced");
+        assertTrue(checkIfContentIsSynced(drone, opFileName1), "Verifying the Sync Status is \"Synced\"");
 
         // Start Simple Cloud Task workflow with Medium Priority
-        cloudTaskOrReviewPage = ShareUserWorkFlow.startSimpleCloudTaskWorkFlow(drone);
+        cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, opFileName2);
 
         formDetails = new WorkFlowFormDetails();
 
@@ -2477,17 +2478,11 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         formDetails.setTaskPriority(Priority.MEDIUM);
         formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENT);
 
-        // Select uploaded file
-        cloudTaskOrReviewPage.selectItem(opFileName2, opSiteName);
-
-        // Fill the form details and start workflow
-        myWorkFlowsPage = cloudTaskOrReviewPage.startWorkflow(formDetails).render();
-        detailsPage = myWorkFlowsPage.selectWorkFlow(workFlowName2).render();
-
-        Assert.assertEquals(detailsPage.getWorkFlowDetailsGeneralInfo().getPriority(),Priority.MEDIUM);
-
-        // Start Simple Cloud Task workflow with Low Priority
-        cloudTaskOrReviewPage = ShareUserWorkFlow.startSimpleCloudTaskWorkFlow(drone);
+        documentLibraryPage = cloudTaskOrReviewPage.startWorkflow(formDetails).render();
+        // Verify the document is part of the workflow
+        assertTrue(documentLibraryPage.getFileDirectoryInfo(opFileName2).isPartOfWorkflow(), "Verifying the document is part of a workflow");
+        assertTrue(documentLibraryPage.getFileDirectoryInfo(opFileName2).isCloudSynced(), "Verifying the document is synced");
+        assertTrue(checkIfContentIsSynced(drone, opFileName2), "Verifying the Sync Status is \"Synced\"");
 
         formDetails = new WorkFlowFormDetails();
 
@@ -2498,14 +2493,28 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         formDetails.setTaskPriority(Priority.LOW);
         formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENT);
 
-        // Select uploaded file
-        cloudTaskOrReviewPage.selectItem(opFileName3, opSiteName);
+        cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, opFileName3);
 
-        // Fill the form details and start workflow
-        myWorkFlowsPage = cloudTaskOrReviewPage.startWorkflow(formDetails).render();
+        documentLibraryPage = cloudTaskOrReviewPage.startWorkflow(formDetails).render();
+        // Verify the document is part of the workflow
+        assertTrue(documentLibraryPage.getFileDirectoryInfo(opFileName3).isPartOfWorkflow(), "Verifying the document is part of a workflow");
+        assertTrue(documentLibraryPage.getFileDirectoryInfo(opFileName3).isCloudSynced(), "Verifying the document is synced");
+        assertTrue(checkIfContentIsSynced(drone, opFileName3), "Verifying the Sync Status is \"Synced\"");
+
+        MyWorkFlowsPage myWorkFlowsPage = ShareUserWorkFlow.navigateToMyWorkFlowsPage(drone);
+
+        WorkFlowDetailsPage detailsPage = myWorkFlowsPage.selectWorkFlow(workFlowName1).render();
+        Assert.assertEquals(detailsPage.getWorkFlowDetailsGeneralInfo().getPriority(),Priority.HIGH);
+
+        myWorkFlowsPage = ShareUserWorkFlow.navigateToMyWorkFlowsPage(drone);
+        detailsPage = myWorkFlowsPage.selectWorkFlow(workFlowName2).render();
+        Assert.assertEquals(detailsPage.getWorkFlowDetailsGeneralInfo().getPriority(),Priority.MEDIUM);
+
+        myWorkFlowsPage = ShareUserWorkFlow.navigateToMyWorkFlowsPage(drone);
         detailsPage = myWorkFlowsPage.selectWorkFlow(workFlowName3).render();
-
         Assert.assertEquals(detailsPage.getWorkFlowDetailsGeneralInfo().getPriority(),Priority.LOW);
+
+        ShareUser.logout(drone);
 
         //Cloud user login
         ShareUser.login(hybridDrone, cloudUser1, DEFAULT_PASSWORD);
@@ -2521,6 +2530,8 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         myTasks = ShareUserWorkFlow.navigateToMyTasksPage(hybridDrone);
         Assert.assertTrue(ShareUser.checkIfTaskIsPresent(hybridDrone, workFlowName3));
         Assert.assertEquals(myTasks.selectViewTasks(workFlowName3).render().getTaskDetailsInfo().getPriority(), Priority.LOW);
+
+        ShareUser.logout(hybridDrone);
     }
 
     /**
@@ -2537,8 +2548,8 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "rev1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "rev2cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String cloudSite2Name = getSiteName(testName + "cl2");
         String[] userInfo1 = new String[] { opUser1 };
@@ -2607,12 +2618,12 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_9559() throws Exception
+    public void ALF_9559() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "rev1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "rev2cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String opSiteName = getSiteName(testName) + System.currentTimeMillis();
         String opFileName = getFileName(testName) + System.currentTimeMillis();
@@ -2633,7 +2644,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         ShareUser.uploadFileInFolder(drone, opFileInfo).render();
 
         // Start Cloud Task or Review workflow
-        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startCloudReviewTaskWorkFlow(drone);
+        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, opFileName);
 
         // Adding reviewers
         userNames.add(cloudUser2);
@@ -2648,9 +2659,6 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         formDetails.setSiteName(cloudSite1Name);
         formDetails.setReviewers(userNames);
         formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENT);
-
-        // Select uploaded file
-        cloudTaskOrReviewPage.selectItem(opFileName, opSiteName);
 
         // Fill the form details and start workflow
         cloudTaskOrReviewPage.startWorkflow(formDetails).render();
@@ -2706,8 +2714,8 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer2cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String[] userInfo1 = new String[] { opUser1 };
         String[] cloudUserInfo1 = new String[] { cloudUser1 };
@@ -2768,12 +2776,12 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_9594() throws Exception
+    public void ALF_9594() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer2cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String opSiteName = getSiteName(testName) + System.currentTimeMillis();
         String opFileName = getFileName(testName) + System.currentTimeMillis();
@@ -2795,7 +2803,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         ShareUser.uploadFileInFolder(drone, opFileInfo).render();
 
         // Start Cloud Task or Review workflow
-        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startCloudReviewTaskWorkFlow(drone);
+        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, opFileName);
 
         // Adding reviewers
         userNames.add(cloudUser2);
@@ -2810,9 +2818,6 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         formDetails.setSiteName(cloudSite1Name);
         formDetails.setReviewers(userNames);
         formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENT);
-
-        // Select uploaded file
-        cloudTaskOrReviewPage.selectItem(opFileName, opSiteName);
 
         // Fill the form details and start workflow
         cloudTaskOrReviewPage.startWorkflow(formDetails).render();
@@ -2866,8 +2871,8 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer2cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String[] userInfo1 = new String[] { opUser1 };
         String[] cloudUserInfo1 = new String[] { cloudUser1 };
@@ -2927,12 +2932,12 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_15170() throws Exception
+    public void ALF_15170() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer2cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String opSiteName = getSiteName(testName) + System.currentTimeMillis();
         String opFileName = getFileName(testName) + System.currentTimeMillis();
@@ -3026,8 +3031,8 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer2cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String[] userInfo1 = new String[] { opUser1 };
         String[] cloudUserInfo1 = new String[] { cloudUser1 };
@@ -3087,12 +3092,12 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_15171() throws Exception
+    public void ALF_15171() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer2cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String opSiteName = getSiteName(testName) + System.currentTimeMillis();
         String opFileName = getFileName(testName) + System.currentTimeMillis();
@@ -3186,8 +3191,8 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer2cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String[] userInfo1 = new String[] { opUser1 };
         String[] cloudUserInfo1 = new String[] { cloudUser1 };
@@ -3249,12 +3254,12 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_15172() throws Exception
+    public void ALF_15172() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer2cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String opSiteName = getSiteName(testName) + System.currentTimeMillis();
         String opFileName = getFileName(testName) + System.currentTimeMillis();
@@ -3356,8 +3361,8 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer2cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String[] userInfo1 = new String[] { opUser1 };
         String[] cloudUserInfo1 = new String[] { cloudUser1 };
@@ -3408,12 +3413,12 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_9576() throws Exception
+    public void ALF_9576() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer2cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String opSiteName = getSiteName(testName) + System.currentTimeMillis();
         String opFileName = getFileName(testName) + System.currentTimeMillis();
@@ -3433,7 +3438,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         ShareUser.uploadFileInFolder(drone, opFileInfo).render();
 
         // Start Cloud Task or Review workflow
-        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startCloudReviewTaskWorkFlow(drone);
+        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, opFileName);
 
         // Adding reviewers
         userNames.add(cloudUser2);
@@ -3448,9 +3453,6 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         formDetails.setApprovalPercentage(50);
         formDetails.setReviewers(userNames);
         formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENT);
-
-        // Select uploaded file
-        cloudTaskOrReviewPage.selectItem(opFileName, opSiteName);
 
         // Fill the form details and start workflow
         cloudTaskOrReviewPage.startWorkflow(formDetails).render();
@@ -3528,7 +3530,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_9627() throws Exception
+    public void ALF_9627() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3620,7 +3622,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_9628() throws Exception
+    public void ALF_9628() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3729,7 +3731,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_9630() throws Exception
+    public void ALF_9630() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3791,9 +3793,9 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer2cloud2");
-        String cloudUser3 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer3cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
+        String cloudUser3 = getUserNameForDomain("r3" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String[] userInfo1 = new String[] { opUser1 };
         String[] cloudUserInfo1 = new String[] { cloudUser1 };
@@ -3852,13 +3854,13 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_15243() throws Exception
+    public void ALF_15243() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer1cloud2");
-        String cloudUser2 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer2cloud2");
-        String cloudUser3 = getUserNameForDomain(testName, invitedDomain1).replace("userenterprise42", "reviewer3cloud2");
+        String cloudUser1 = getUserNameForDomain("r1" + testName, invitedDomain1);
+        String cloudUser2 = getUserNameForDomain("r2" + testName, invitedDomain1);
+        String cloudUser3 = getUserNameForDomain("r3" + testName, invitedDomain1);
         String cloudSite1Name = getSiteName(testName + "cl1");
         String opSiteName = getSiteName(testName) + System.currentTimeMillis();
         String opFileName = getFileName(testName) + System.currentTimeMillis();
@@ -3880,7 +3882,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         ShareUser.uploadFileInFolder(drone, opFileInfo).render();
 
         // Start Cloud Task or Review workflow
-        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startCloudReviewTaskWorkFlow(drone);
+        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, opFileName);
 
         // Adding reviewers
         userNames.add(cloudUser2);
@@ -3895,9 +3897,6 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         formDetails.setApprovalPercentage(100);
         formDetails.setReviewers(userNames);
         formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENT);
-
-        // Select uploaded file
-        cloudTaskOrReviewPage.selectItem(opFileName, opSiteName);
 
         // Fill the form details and start workflow
         cloudTaskOrReviewPage.startWorkflow(formDetails).render();
@@ -3993,7 +3992,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void alf_9631() throws Exception
+    public void ALF_9631() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -4122,7 +4121,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
 /*    @Test(groups="Hybrid")
-    public void alf_9629() throws Exception
+    public void ALF_9629() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);

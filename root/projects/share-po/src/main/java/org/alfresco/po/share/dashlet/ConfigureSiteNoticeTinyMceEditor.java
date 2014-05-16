@@ -14,13 +14,7 @@
  */
 package org.alfresco.po.share.dashlet;
 
-import java.util.NoSuchElementException;
-
-import org.alfresco.po.share.site.document.TinyMceEditor;
 import org.alfresco.webdrone.WebDrone;
-import org.alfresco.webdrone.exception.PageException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 
 /**
@@ -28,85 +22,13 @@ import org.openqa.selenium.By;
  * 
  * @author Chiran
  */
-public class ConfigureSiteNoticeTinyMceEditor extends TinyMceEditor
+public class ConfigureSiteNoticeTinyMceEditor extends AdvancedTinyMceEditor
 {
-    private Log logger = LogFactory.getLog(ConfigureSiteNoticeTinyMceEditor.class);
-    public static final String frame1 = "page_x002e_component-1-2_x002e_site_x007e_";
-    public static final String frame2 = "_x007e_dashboard_x0023_default-configDialog-text_ifr";
-
     public ConfigureSiteNoticeTinyMceEditor(WebDrone drone)
     {
         super(drone);
-    }
-
-    /**
-     * Get text from TinyMCE editor.
-     * 
-     * @param siteName
-     * @return String
-     */
-    public String getTextFromConfigureTextEditor(String siteName)
-    {
-        if (siteName == null)
-        {
-            throw new IllegalArgumentException("SiteName is required");
-        }
-
-        try
-        {
-            setTinyMce(frame1 + siteName.toLowerCase() + frame2);
-            drone.switchToFrame(getFrameId());
-            String text = drone.find(By.cssSelector(TINYMCE_CONTENT)).getText();
-            drone.switchToDefaultContent();
-            return text;
-        }
-        catch (NoSuchElementException noSuchElementExp)
-        {
-            logger.error("Element : does not exist", noSuchElementExp);
-            throw new PageException("Unable to find text in tinyMCE editor.");
-        }
-    }
-
-    /**
-     * Sets the tinymce editor frame id by updating with siteName in it.
-     * 
-     * @param siteName
-     */
-    public void setTinyMceOfConfigureDialogBox(String siteName)
-    {
-        setTinyMce(frame1 + siteName.toLowerCase() + frame2);
-    }
-
-    /**
-     * Click to select color code on text.
-     */
-    public void clickColorCode()
-    {
-        selectTextFromEditor();
-        clickElementOnRichTextFormatter("a[id$='default-configDialog-text_forecolor_open']");
-        setFormatType(FormatType.COLOR_CODE);
-        clickElementOnRichTextFormatter(getCSSOfFormatType());
-    }
-
-    /**
-     * Click to select color code on text.
-     */
-    public void clickBackgroundColorCode()
-    {
-        selectTextFromEditor();
-        clickElementOnRichTextFormatter("a[id$='default-configDialog-text_backcolor_open']");
-        setFormatType(FormatType.COLOR_CODE);
-        clickElementOnRichTextFormatter("#_mce_item_70");
-    }
-
-    /**
-     * Click on TinyMCE editor's format option.
-     * 
-     * @param formatType
-     */
-    public void clickTextFormatterFromConfigureDialog(FormatType formatType)
-    {
-        setFormatType(formatType);
-        clickElementOnRichTextFormatter(getCSSOfFormatType());
+        setTinyMce(drone.findAndWait(By.cssSelector("iframe[id$='configDialog-text_ifr']")).getAttribute("id"));
+        setForeColorLinkCss("a[id$='default-configDialog-text_forecolor_open']");
+        setBGColorLinkCss("a[id$='default-configDialog-text_backcolor_open']");
     }
 }

@@ -7,6 +7,9 @@
  */
 package org.alfresco.po.share.site.document;
 
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
+
 import java.io.File;
 import java.util.List;
 
@@ -54,8 +57,6 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
     private String lastName = userName;
     private static DocumentLibraryPage documentLibPage;
     private File file;
-    private final String cloudUserName = "user1@premiernet.test";
-    private final String cloudUserPassword = "spr!nkles";
     private File testLockedFile;
 
     /**
@@ -125,7 +126,12 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
             loginAs(userName, userName);
         }
         else
-            loginAs(cloudUserName, cloudUserPassword);
+        {
+            loginAs(username, password);
+            firstName = anotherUser.getfName();
+            lastName = anotherUser.getlName();
+            userName = firstName + " " + lastName;
+        }
        
     }
     /**
@@ -175,9 +181,10 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
         FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(folderName);
         FolderRulesPage page = thisRow.selectManageRules().render();
         Assert.assertNotNull(page);
-        drone.navigateTo(String.format(shareUrl + "/page/site/%s/documentlibrary",siteName));
-        documentLibPage = (DocumentLibraryPage) drone.getCurrentPage();
-        documentLibPage.render();
+        SiteFinderPage siteFinder = page.getNav().selectSearchForSites().render();
+        siteFinder = siteFinder.searchForSite(siteName).render();
+        SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
+        documentLibPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
     }
     
     
@@ -560,7 +567,11 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
     {
         documentLibPage = drone.getCurrentPage().render();
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(folderName);
+        assertFalse(thisRow.isSaveLinkVisible());
+        assertFalse(thisRow.isCancelLinkVisible());
         thisRow.contentNameEnableEdit();
+        assertTrue(thisRow.isSaveLinkVisible());
+        assertTrue(thisRow.isCancelLinkVisible());
         thisRow.contentNameEnter(folderName + " not updated");
         thisRow.contentNameClickCancel();
         drone.refresh();

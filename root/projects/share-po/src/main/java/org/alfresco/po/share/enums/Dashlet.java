@@ -8,7 +8,7 @@ package org.alfresco.po.share.enums;
  */
 public enum Dashlet
 {
-    SITE_CALENDER("Site Calendar"),
+    SITE_CALENDAR("Site Calendar"),
     SITE_MEMBERS("Site Members"),
     SITE_CONTENT("Site Content"),
     IMAGE_PREVIEW("Image Preview"),

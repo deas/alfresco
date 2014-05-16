@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="System Summary Suite" verbose="6" preserve-order="true" parallel="tests" thread-count="1">
+    <test name="Advanced Admin Console">
+        <classes>
+            <class name="org.alfresco.po.share.systemsummary.AdvancedAdminConsolePagesTest"/>
+        </classes>
+    </test>
+    <test name="Repository Server Clustering">
+        <classes>
+            <class name="org.alfresco.po.share.systemsummary.RepositoryServerClusteringPageTest"/>
+        </classes>
+    </test>
+</suite>

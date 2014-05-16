@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.alfresco.po.share.AbstractTest;
-import org.alfresco.po.share.preview.PdfJsPlugin;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.util.FailedTestListener;

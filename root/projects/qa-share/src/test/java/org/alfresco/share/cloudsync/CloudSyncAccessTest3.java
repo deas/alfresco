@@ -20,15 +20,18 @@ import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
  * @author Ranjith Manyam
  * 
  */
+@Listeners(FailedTestListener.class)
 public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
 {
     private static final Logger logger = Logger.getLogger(CloudSyncAccessTest3.class);

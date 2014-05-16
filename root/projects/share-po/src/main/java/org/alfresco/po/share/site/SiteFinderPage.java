@@ -14,8 +14,8 @@
  */
 package org.alfresco.po.share.site;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -348,7 +348,7 @@ public class SiteFinderPage extends SharePage
     }
 
     /**
-     * Simulates the action of user clicking on Join/Request to Join button.
+     * Simulates the action of user clicking on Join button.
      * 
      * @param siteName String site name
      * @return {@link SiteFinderPage} page response object
@@ -363,6 +363,21 @@ public class SiteFinderPage extends SharePage
         return new SiteFinderPage(drone);
     }
 
+    /**
+     * Simulates the action of user clicking on Request to Join button.
+     *
+     * @param siteName String site name
+     * @return {@link SiteFinderPage} page response object
+     */
+    public SiteFinderPage requestToJoinSite(final String siteName)
+    {
+        if (StringUtils.isEmpty(siteName))
+        {
+            throw new UnsupportedOperationException("Site Name can't be empty or null, It is required");
+        }
+        findButtonForSite(siteName, "Request to Join").click();
+        return new SiteFinderPage(drone);
+    }
     /**
      * Simulates the action of user clicking on Leaving to Join button.
      * 
@@ -412,7 +427,7 @@ public class SiteFinderPage extends SharePage
                     {
 
                         String text = webElement.getText();
-                        if (text.contains(buttonString))
+                        if (text.equals(buttonString))
                         {
                             return webElement;
                         }
@@ -457,7 +472,7 @@ public class SiteFinderPage extends SharePage
                         logger.info("Site Name: " + site.getText());
                     }
                     site.click();
-                    return new SiteDashboardPage(drone);
+                    return drone.getCurrentPage().render();
                 }
             }
             if (logger.isTraceEnabled())

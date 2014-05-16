@@ -14,15 +14,17 @@
  */
 package org.alfresco.po.share.dashlet;
 
+import java.util.List;
+
+import org.alfresco.po.share.ShareLink;
 import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.RenderWebElement;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
-import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 
 /**
@@ -33,14 +35,19 @@ import org.openqa.selenium.TimeoutException;
 public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
 {
     private static Log logger = LogFactory.getLog(SiteNoticeDashlet.class);
+    @RenderWebElement
     private static final By DASHLET_CONTAINER_PLACEHOLDER = By.cssSelector("div.dashlet.notice-dashlet");
+    @RenderWebElement
     private static final By HELP_ICON = By.cssSelector("div.dashlet.notice-dashlet div.titleBarActionIcon.help");
+    @RenderWebElement
     private static final By CONFIGURE_ICON = By.cssSelector("div.dashlet.notice-dashlet div.titleBarActionIcon.edit");
+    @RenderWebElement
+    private static final By DASHLET_CONTENT = By.cssSelector("div[id$='default-text']");
+    @RenderWebElement
+    private static final By DASHLET_TITLE = By.cssSelector("div[id$='default-title']");
     private static final By DASHLET_HELP_BALLOON = By.cssSelector("div[style*='visible']>div.bd>div.balloon");
     private static final By DASHLET_HELP_BALLOON_TEXT = By.cssSelector("div[style*='visible']>div.bd>div.balloon>div.text");
     private static final By DASHLET_HELP_BALLOON_CLOSE_BUTTON = By.cssSelector("div[style*='visible']>div.bd>div.balloon>div.closeButton");
-    private static final By DASHLET_CONTENT = By.cssSelector("div[id$='default-text']");
-    private static final By DASHLET_TITLE = By.cssSelector("div[id$='default-title']");
 
     /**
      * Constructor.
@@ -53,55 +60,14 @@ public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
 
     @SuppressWarnings("unchecked")
     @Override
-    public synchronized SiteNoticeDashlet render(RenderTime timer)
+    public SiteNoticeDashlet render(RenderTime timer)
     {
-        try
-        {
-            while (true)
-            {
-                timer.start();
-                synchronized (this)
-                {
-                    try
-                    {
-                        this.wait(50L);
-                    }
-                    catch (InterruptedException e)
-                    {
-                    }
-                }
-                try
-                {
-                    scrollDownToDashlet();
-                    getFocus();
-                    drone.find(DASHLET_CONTAINER_PLACEHOLDER);
-                    drone.find(HELP_ICON);
-                    drone.find(CONFIGURE_ICON);
-                    drone.find(DASHLET_CONTENT);
-                    drone.find(DASHLET_TITLE);
-                    break;
-                }
-                catch (NoSuchElementException e)
-                {
-
-                }
-                catch (StaleElementReferenceException ste)
-                {
-                    // DOM has changed therefore page should render once change is completed
-                }
-                finally
-                {
-                    timer.end();
-                }
-            }
-        }
-        catch (PageRenderTimeException te)
-        {
-            throw new NoSuchDashletExpection(this.getClass().getName() + " failed to find site notice dashlet", te);
-        }
+        scrollDownToDashlet();
+        getFocus();
+        webElementRender(timer);
         return this;
     }
-
+    
     @SuppressWarnings("unchecked")
     @Override
     public SiteNoticeDashlet render(long time)
@@ -157,7 +123,7 @@ public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Unable to find the configure icon.");
+                logger.trace("Unable to find the configure icon.", te);
             }
         }
 
@@ -179,7 +145,7 @@ public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
         {
             if (logger.isTraceEnabled())
             {
-                logger.info("Unable to find the help icon.");
+                logger.info("Unable to find the help icon.", te);
             }
             throw new PageOperationException("Unable to click the Help icon", te);
         }
@@ -256,11 +222,12 @@ public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
     /**
      * This method closes the Help balloon message.
      */
-    public void closeHelpBallon()
+    public SiteNoticeDashlet closeHelpBallon()
     {
         try
         {
             drone.findAndWait(DASHLET_HELP_BALLOON_CLOSE_BUTTON).click();
+            return this;
         }
         catch (TimeoutException elementException)
         {
@@ -313,5 +280,36 @@ public class SiteNoticeDashlet extends AbstractDashlet implements Dashlet
     {
         drone.mouseOver(drone.findAndWait(DASHLET_CONTAINER_PLACEHOLDER));
     }
-
+ 
+    /**
+     * Retrieves the link that match the content name.
+     * 
+     * @param name
+     *            identifier
+     * @return {@link ShareLink} that matches members name
+     */
+    public void selectLink(final String name)
+    {
+        if(name == null)
+        {
+            throw new UnsupportedOperationException("Name value of link is required");
+        }
+        List<ShareLink> shareLinks = getList("div.notice-dashlet div.text-content>p>a");
+        if(shareLinks != null)
+        {
+            for (ShareLink link : shareLinks)
+            {
+                if (name.equalsIgnoreCase(link.getDescription()))
+                {
+                    link.click();
+                    return;
+                }
+            }
+            throw new PageException(String.format("Link %s can not be found on the page, dashlet exists: %s link size: %d",
+                    name,
+                    dashlet,
+                    shareLinks.size()));
+        }
+        throw new PageException("Link can not be found on the dashlet");
+    }
 }

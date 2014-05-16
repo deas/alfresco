@@ -19,9 +19,11 @@ import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
@@ -33,8 +35,7 @@ import org.testng.annotations.Test;
  * @ Test Case Reference tc-497-01 to tc-497-28
  * @author David Webster
  */
-
-//TODO: Add FailedTest listener enabling error reporting + screenshots
+@Listeners(FailedTestListener.class)
 public class ManageSitesPageTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ManageSitesPageTest.class);

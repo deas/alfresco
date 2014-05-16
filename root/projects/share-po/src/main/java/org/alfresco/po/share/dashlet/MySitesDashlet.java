@@ -9,11 +9,16 @@ package org.alfresco.po.share.dashlet;
 
 import java.util.List;
 
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.ShareLink;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
@@ -27,10 +32,18 @@ import org.openqa.selenium.WebElement;
  */
 public class MySitesDashlet extends AbstractDashlet implements Dashlet
 {
+    private final Log logger = LogFactory.getLog(this.getClass());
     private static final String DATA_LIST_CSS_LOCATION = "h3.site-title > a";
     private static final String DASHLET_CONTAINER_PLACEHOLDER = "div.dashlet.my-sites";
     private static final String DASHLET_CONTENT_DIV_ID_PLACEHOLDER = "div[id$='default-sites']";
     private static final String DASHLET_EMPTY_PLACEHOLDER = "table>tbody>tr>td.yui-dt-empty>div";
+    private static final String ROW_OF_SITE = "div[id$='default-sites'] tr[class*='yui-dt-rec']";
+    private static final String SITE_NAME_IN_ROW ="div h3[class$='site-title']"; 
+    private static final String DELETE_SYMB_IN_ROW ="a[class*='delete-site']";
+    private static final String MY_SITES_BUTTON = "div[class*='my-sites'] div span span button";
+    private static final String SITES_TYPE = "div[class*='my-sites'] div.bd ul li a";
+    private static final String DELETE_CONFIRM = "div#prompt div.ft span span button";
+    private static final String DELETE_RE_CONFIRM= "div#prompt div.ft span span button";
 
     /**
      * Constructor.
@@ -200,4 +213,92 @@ public class MySitesDashlet extends AbstractDashlet implements Dashlet
         return this.dashlet.findElement(By.xpath("//h3[a='" + siteName + "']/.."));
     }
 
+    
+    public enum FavouriteType
+    {
+        ALL, MyFavourtites, Recent;
+    }
+        
+        
+        
+           
+    /**
+     * Delete site from the delete symbol of My site Dashlets.
+     * @param siteName
+     * @return
+     */
+    public HtmlPage deleteSite(String siteName)
+    {
+        try
+        {
+            List<WebElement> elements = drone.findAll(By.cssSelector(ROW_OF_SITE));
+            for (WebElement webElement : elements)
+            {
+                if(webElement.findElement(By.cssSelector(SITE_NAME_IN_ROW)).getText().equals(siteName))
+                {
+                    drone.mouseOverOnElement(webElement);
+                    webElement.findElement(By.cssSelector(DELETE_SYMB_IN_ROW)).click();
+                    confirmDelete();
+                    drone.refresh();// Temporary will be removed once ConfirmDeletePAge is been included.
+                    return FactorySharePage.resolvePage(drone);
+                }                
+            }
+            
+            throw new PageOperationException("Site  is not present in the dashlet :"+siteName);
+        }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("My Site  Dashlet is not present", nse);
+        }
+        throw new PageOperationException("My Site  Dashlet is not present in the page.");
+    }
+
+    
+    /**
+     * Action of selecting ok on confirm delete pop up dialog.
+     */
+    private void confirmDelete()
+    {
+        try
+        {
+            WebElement confirmDelete = drone.find(By.cssSelector(DELETE_CONFIRM));
+            confirmDelete.click();
+            confirmDelete = drone.find(By.cssSelector(DELETE_RE_CONFIRM));
+            confirmDelete.click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Delete dialouge not present");
+        }
+    }
+    
+    
+    /**
+     * Select My Favourties sites from My Sites Dashlets.
+     * @param type
+     * @return
+     */
+    public HtmlPage selectMyFavourites(FavouriteType type)
+    {
+        try
+        {
+            WebElement myFavourties = drone.find(By.cssSelector(MY_SITES_BUTTON));
+            myFavourties.click();
+            List<WebElement> types = drone.findAll(By.cssSelector(SITES_TYPE));
+            for (WebElement typeFav : types)
+            {               
+                if(type.toString().equalsIgnoreCase(typeFav.getText()))
+                {
+                    typeFav.click();
+                    return FactorySharePage.resolvePage(drone);
+                }
+            }           
+            throw new PageOperationException("My Site DashLets not present.");
+        }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("My Sites option not present");
+        }
+        throw new PageOperationException("My Site DashLets not present.");
+    }
 }

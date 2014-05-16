@@ -53,6 +53,7 @@
         <constructor-arg name="alfrescoVersion" value="${share.version}" />
         <constructor-arg name="downloadDirectory" value="${download.directory}" />
         <constructor-arg name="hybridEnabled" value="${hrbrid.enabled}" />
+        <constructor-arg name="licenseShare" value="${share.license}" />
         <property name="cloudUserName" value="${test.hybrid.username}" />
         <property name="cloudUserPassword" value="${test.hybrid.password}" />
     </bean>
@@ -75,6 +76,7 @@
         <constructor-arg name="googlePassword" value="${googlePassword}" />
         <constructor-arg name="alfrescoVersion" value="${share.hybrid.version}" />
         <constructor-arg name="downloadDirectory" value="${download.hybrid.directory}" />
+        <constructor-arg name="licenseShare" value="${share.license}" />
         <constructor-arg name="hybridEnabled" value="${hrbrid.enabled}" />
     </bean>
 

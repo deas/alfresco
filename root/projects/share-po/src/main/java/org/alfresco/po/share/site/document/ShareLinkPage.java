@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 
 /**
  * The class represents the Share Link page and holds the links to Public Link and share links with Facebook, Twitter, Gmail, g+.
@@ -81,7 +82,7 @@ public class ShareLinkPage extends SharePage
     }
 
     /**
-     * Verify that UnshareLink is displayed.
+     * Verify that ViewLink is displayed.
      * 
      * @return boolean
      */
@@ -277,5 +278,25 @@ public class ShareLinkPage extends SharePage
             logger.error("Exceeded time to find the Google+ link element", ex);
             throw new PageException("Unable to find Google+ link");
         }
+    }
+
+    /**
+     * Get the shared url for the document.
+     * 
+     * @return
+     */
+    public String getShareURL()
+    {
+        try
+        {
+            WebElement element = drone.findAndWait(viewLinkLocator);
+            return element.getAttribute("href");
+        }
+        catch (TimeoutException ex)
+        {
+            logger.error("Exceeded time to find the shared URL", ex);
+        }
+
+        throw new PageException("Unable to find the shared URL");
     }
 }

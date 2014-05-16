@@ -57,7 +57,7 @@ public class DetailsPageTest extends AbstractTest
      * 
      * @throws Exception
      */
-    @BeforeClass(groups = { "alfresco-one" })
+    @BeforeClass(alwaysRun = true)
     public void prepare() throws Exception
     {
         if (logger.isTraceEnabled())
@@ -94,68 +94,15 @@ public class DetailsPageTest extends AbstractTest
         fileName = file.getName();
     }
 
-    @AfterClass(groups = { "alfresco-one" })
+    @AfterClass(alwaysRun = true)
     public void teardown()
     {
         SiteUtil.deleteSite(drone, siteName);
     }
 
     @Test(groups = { "alfresco-one" })
-    public void addCommentsToFile() throws Exception
-    {
-
-        DocumentDetailsPage docDetails = documentLibPage.selectFile(fileName).render();
-
-        // Add text comment
-        docDetails.addComment(null);
-        docDetails.addComment(comment);
-        
-        docDetails.addComment(null, null);
-        docDetails.addComment(comment, null);
-        docDetails.addComment(comment, Encoder.ENCODER_NOENCODER);
-        docDetails.addComment(comment, Encoder.ENCODER_HTML);
-        docDetails.addComment(comment, Encoder.ENCODER_JAVASCRIPT);
-
-        // Add comment for xss related test
-        docDetails.addComment(xssComment);
-        docDetails.addComment(xssComment, null);
-        docDetails.addComment(xssComment, Encoder.ENCODER_NOENCODER);
-        docDetails.addComment(xssComment, Encoder.ENCODER_HTML);
-        docDetails.addComment(xssComment, Encoder.ENCODER_JAVASCRIPT);
-        
-        Assert.assertTrue(docDetails.getComments().contains(xssComment), "Problem adding XSS Comment");
-        
-    }
-    
-    @Test(dependsOnMethods="addCommentsToFile", groups = { "alfresco-one" })
-    public void isLinkPresentForDocumentTest() throws Exception
-    {
-
-        DocumentDetailsPage docDetails = drone.getCurrentPage().render();
-           
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.COPY_TO), "Copy to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MOVE_TO), "Move to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.DELETE_CONTENT), "Delete is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MANAGE_ASPECTS), "Manage Aspect is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MANAGE_PERMISSION_DOC), "Manage Permission is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.CHNAGE_TYPE), "Chnage Type is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.EDIT_PROPERTIES), "Edit Properties is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.DOWNLOAD_DOCUMENT), "Download Document is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.VIEW_IN_EXLPORER), "View In Exlporer to is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.UPLOAD_DOCUMENT), "Upload Document is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.EDIT_OFFLINE), "Edit offline is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.GOOGLE_DOCS_EDIT), "Edit Google docs is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.START_WORKFLOW), "Start workflow is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.PUBLISH_ACTION), "Publish Action  is not present");
-    }    
-    
-    
-    @Test(dependsOnMethods="isLinkPresentForDocumentTest", groups = { "alfresco-one" })
     public void addCommentsToFolder() throws Exception
     {
-        SitePage page = drone.getCurrentPage().render();
-        documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
-
         folderDetails = documentLibPage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
 
         // Add text comment
@@ -178,11 +125,118 @@ public class DetailsPageTest extends AbstractTest
         Assert.assertTrue(folderDetails.getComments().contains(xssComment), "Problem adding XSS Comment");
     }
     
-    @Test(dependsOnMethods="addCommentsToFolder", groups = { "alfresco-one" })
-    public void isDocumentActionPresent() throws Exception
+    @Test(dependsOnMethods="addCommentsToFolder", groups = { "alfresco-one" }, expectedExceptions={UnsupportedOperationException.class})
+    public void isLinkUnspportedTest() throws Exception
+    {
+        folderDetails.isDocumentActionPresent(DocumentAction.MANAGE_PERMISSION_DOC);
+    }    
+    
+    @Test(dependsOnMethods="isLinkUnspportedTest", groups = { "alfresco-one" })
+    public void isCommentsPanelPresent() throws Exception
+    {
+        Assert.assertTrue(folderDetails.isCommentsPanelPresent());
+    }    
+    
+    @Test(dependsOnMethods="isCommentsPanelPresent", groups = { "alfresco-one" })
+    public void isAddCommentsButtonEnbaled() throws Exception
+    {
+        Assert.assertTrue(folderDetails.isAddCommentsButtonEnbaled());
+    }    
+    
+    @Test(dependsOnMethods="isAddCommentsButtonEnbaled", groups = { "alfresco-one" })
+    public void isCopyShareLinkPresent() throws Exception
+    {
+        Assert.assertTrue(folderDetails.isCopyShareLinkPresent());
+    }    
+    
+    @Test(dependsOnMethods="isCopyShareLinkPresent", groups = { "alfresco-one" })
+    public void addCommentsToFile() throws Exception
     {
 
-        FolderDetailsPage folderDetails = drone.getCurrentPage().render();
+        SitePage page = drone.getCurrentPage().render();
+        documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        DocumentDetailsPage docDetails = documentLibPage.selectFile(fileName).render();
+
+        // Add text comment
+        docDetails.addComment(null);
+        docDetails.addComment(comment);
+        
+        docDetails.addComment(null, null);
+        docDetails.addComment(comment, null);
+        docDetails.addComment(comment, Encoder.ENCODER_NOENCODER);
+        docDetails.addComment(comment, Encoder.ENCODER_HTML);
+        docDetails.addComment(comment, Encoder.ENCODER_JAVASCRIPT);
+
+        // Add comment for xss related test
+        docDetails.addComment(xssComment);
+        docDetails.addComment(xssComment, null);
+        docDetails.addComment(xssComment, Encoder.ENCODER_NOENCODER);
+        docDetails.addComment(xssComment, Encoder.ENCODER_HTML);
+        docDetails.addComment(xssComment, Encoder.ENCODER_JAVASCRIPT);
+        
+        Assert.assertTrue(docDetails.getComments().contains(xssComment), "Problem adding XSS Comment");
+    }
+   
+    @Test(dependsOnMethods="addCommentsToFile", groups = { "alfresco-one" })
+    public void isPropertiesPanelPresent() throws Exception
+    {
+        DetailsPage detailsPage = drone.getCurrentPage().render();
+        
+        Assert.assertTrue(detailsPage.isPropertiesPanelPresent());
+    }
+    
+    @Test(dependsOnMethods="isPropertiesPanelPresent", groups = { "alfresco-one" })
+    public void isTagsPanelPresent() throws Exception
+    {
+        DetailsPage detailsPage = drone.getCurrentPage().render();
+        
+        Assert.assertTrue(detailsPage.isTagsPanelPresent());
+    }
+    
+    @Test(dependsOnMethods="isTagsPanelPresent", groups = { "alfresco-one" })
+    public void isLikeLinkPresent() throws Exception
+    {
+        DetailsPage detailsPage = drone.getCurrentPage().render();
+        
+        Assert.assertTrue(detailsPage.isLikeLinkPresent());
+    }
+    
+    @Test(dependsOnMethods="isLikeLinkPresent", groups = { "alfresco-one" })
+    public void isAddCommentButtonPresent() throws Exception
+    {
+        DetailsPage detailsPage = drone.getCurrentPage().render();
+        
+        Assert.assertTrue(detailsPage.isAddCommentButtonPresent());
+    }
+    
+    @Test(dependsOnMethods="isAddCommentButtonPresent", groups = { "Enterprise4.2" })
+    public void isLinkPresentForDocumentTest() throws Exception
+    {
+
+        DocumentDetailsPage docDetails = drone.getCurrentPage().render();
+           
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.COPY_TO), "Copy to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MOVE_TO), "Move to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.DELETE_CONTENT), "Delete is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MANAGE_ASPECTS), "Manage Aspect is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.MANAGE_PERMISSION_DOC), "Manage Permission is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.CHNAGE_TYPE), "Chnage Type is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.EDIT_PROPERTIES), "Edit Properties is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.DOWNLOAD_DOCUMENT), "Download Document is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.VIEW_IN_EXLPORER), "View In Exlporer to is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.UPLOAD_DOCUMENT), "Upload Document is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.EDIT_OFFLINE), "Edit offline is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.GOOGLE_DOCS_EDIT), "Edit Google docs is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.START_WORKFLOW), "Start workflow is not present");
+        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.PUBLISH_ACTION), "Publish Action  is not present");
+    }
+    
+    @Test(dependsOnMethods="isLinkPresentForDocumentTest", groups = { "Enterprise4.2" })
+    public void isDocumentActionPresent() throws Exception
+    {
+        SitePage page = drone.getCurrentPage().render();
+        documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        folderDetails = documentLibPage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
            
         Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.COPY_TO), "Copy to is not present");
         Assert.assertTrue(folderDetails.isDocumentActionPresent(DocumentAction.MOVE_TO), "Move to is not present");
@@ -197,13 +251,19 @@ public class DetailsPageTest extends AbstractTest
 
     }    
     
-    @Test(dependsOnMethods="isDocumentActionPresent", groups = { "alfresco-one" }, expectedExceptions={UnsupportedOperationException.class})
-    public void isLinkUnspportedTest() throws Exception
+    @Test(dependsOnMethods="isDocumentActionPresent", groups = { "Enterprise4.2" })
+    public void isPermissionsPanelPresent() throws Exception
     {
-        FolderDetailsPage folderDetailsNew = new FolderDetailsPage(drone);
+        Assert.assertTrue(folderDetails.isPermissionsPanelPresent());
+    }  
+    
+    @Test(dependsOnMethods="isPermissionsPanelPresent", groups = { "Hybrid" })
+    public void isSynPanelPresent() throws Exception
+    {
+        SitePage page = drone.getCurrentPage().render();
+        documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        folderDetails = documentLibPage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
 
-        folderDetailsNew.isDocumentActionPresent(DocumentAction.MANAGE_PERMISSION_DOC);
-
-    }    
-   
+        Assert.assertTrue(folderDetails.isSynPanelPresent());
+    }
 }
