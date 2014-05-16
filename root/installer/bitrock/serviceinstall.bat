@@ -1,33 +1,72 @@
 @echo off
 rem -- Check if argument is INSTALL or REMOVE
 
+set JAVA_HOME=@@BITROCK_JAVA_ROOTDIR@@
+set CATALINA_HOME=@@BITROCK_TOMCAT_ROOTDIR@@
+cd @@BITROCK_TOMCAT_ROOTDIR@@\bin\
+
 if not ""%1"" == ""INSTALL"" goto remove
 
-if exist @@BITROCK_INSTALLDIR@@\mysql\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\mysql\scripts\serviceinstall.bat INSTALL)
-if exist @@BITROCK_INSTALLDIR@@\postgresql\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\postgresql\scripts\serviceinstall.bat INSTALL)
-if exist @@BITROCK_INSTALLDIR@@\apache2\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\apache2\scripts\serviceinstall.bat INSTALL)
-if exist @@BITROCK_INSTALLDIR@@\tomcat\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\tomcat\scripts\serviceinstall.bat INSTALL)
-if exist @@BITROCK_INSTALLDIR@@\resin\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\resin\scripts\serviceinstall.bat INSTALL)
-if exist @@BITROCK_INSTALLDIR@@\jboss\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\jboss\scripts\serviceinstall.bat INSTALL)
-if exist @@BITROCK_INSTALLDIR@@\openoffice\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\openoffice\scripts\serviceinstall.bat INSTALL)
-if exist @@BITROCK_INSTALLDIR@@\subversion\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\subversion\scripts\serviceinstall.bat INSTALL)
-rem RUBY_APPLICATION_INSTALL
-if exist @@BITROCK_INSTALLDIR@@\lucene\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\lucene\scripts\serviceinstall.bat INSTALL)
-if exist @@BITROCK_INSTALLDIR@@\third_application\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\third_application\scripts\serviceinstall.bat INSTALL)
+call setenv.bat
+set PR_STDOUTPUT=auto
+set PR_STDERROR=auto
+call "@@BITROCK_TOMCAT_ROOTDIR@@\bin\service.bat" install @@BITROCK_TOMCAT_SERVICE_NAME@@
 
+rem -- Check if 2th argument is STOP
+if ""%2"" == ""STOP"" goto end
+
+rem -- Check if a 2th argument exists
+if not ""%2""=="" goto checkUserPass
+goto startService 
+
+
+:checkUserPass
+rem -- Check if there is a password argument
+
+if not ""%3""=="" goto changeAccount
+echo If you specify an user account, but not a password, it is understood the password is empty
+goto changeAccount2
+
+
+:changeAccount
+rem -- Set a different account owner for the service
+
+set TCUSER=%2
+rem -- If this is a local user, make sure it has the .\ prefix
+echo %TCUSER% | findstr /R "[\\|@]" >NUL
+if %errorlevel%==1 set TCUSER=.\%TCUSER%
+
+set TCPASSWORD=%3
+
+sc config @@BITROCK_TOMCAT_SERVICE_NAME@@ obj= %TCUSER% password= %TCPASSWORD%
+goto startService
+
+
+:changeAccount2
+rem -- Set a different account owner for the service (users without password)
+
+set TCUSER=%2
+rem -- If this is a local user, make sure it has the .\ prefix
+echo %TCUSER% | findstr /R "[\\|@]" >NUL
+if %errorlevel%==1 set TCUSER=.\%TCUSER%
+
+
+
+sc config @@BITROCK_TOMCAT_SERVICE_NAME@@ obj= %TCUSER% password= ""
+goto startService
+
+
+:startService
+rem -- Start the service
+
+ping 127.0.0.1 -n 3 >NUL
+net start @@BITROCK_TOMCAT_SERVICE_NAME@@ >NUL
 goto end
 
 :remove
+rem -- STOP SERVICES BEFORE REMOVING
+net stop @@BITROCK_TOMCAT_SERVICE_NAME@@ >NUL
+call "@@BITROCK_TOMCAT_ROOTDIR@@\bin\service.bat" remove @@BITROCK_TOMCAT_SERVICE_NAME@@
 
-if exist @@BITROCK_INSTALLDIR@@\third_application\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\third_application\scripts\serviceinstall.bat)
-if exist @@BITROCK_INSTALLDIR@@\lucene\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\lucene\scripts\serviceinstall.bat)
-rem RUBY_APPLICATION_REMOVE
-if exist @@BITROCK_INSTALLDIR@@\subversion\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\subversion\scripts\serviceinstall.bat)
-if exist @@BITROCK_INSTALLDIR@@\openoffice\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\openoffice\scripts\serviceinstall.bat)
-if exist @@BITROCK_INSTALLDIR@@\jboss\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\jboss\scripts\serviceinstall.bat)
-if exist @@BITROCK_INSTALLDIR@@\resin\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\resin\scripts\serviceinstall.bat)
-if exist @@BITROCK_INSTALLDIR@@\tomcat\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\tomcat\scripts\serviceinstall.bat)
-if exist @@BITROCK_INSTALLDIR@@\apache2\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\apache2\scripts\serviceinstall.bat)
-if exist @@BITROCK_INSTALLDIR@@\postgresql\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\postgresql\scripts\serviceinstall.bat)
-if exist @@BITROCK_INSTALLDIR@@\mysql\scripts\serviceinstall.bat (start /MIN /WAIT cmd /C @@BITROCK_INSTALLDIR@@\mysql\scripts\serviceinstall.bat)
 :end
+exit
