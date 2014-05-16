@@ -190,9 +190,9 @@
          <form id="doclib-inline-edit">
             <field-visibility>
                <show id="cm:name" />
+               <show id="cm:content" force="true" />
                <show id="cm:title" force="true" />
                <show id="cm:description" force="true" />
-               <show id="cm:content" force="true" />
             </field-visibility>
             <appearance>
                <field id="cm:name">
@@ -203,7 +203,7 @@
                <field id="cm:title">
                   <control template="/org/alfresco/components/form/controls/textfield.ftl" />
                </field>
-               <field id="cm:content">
+               <field id="cm:content" label-id="">
                   <control>
                      <control-param name="editorAppearance">explorer</control-param>
                      <control-param name="forceEditor">true</control-param>
@@ -311,9 +311,9 @@
          <form>
             <field-visibility>
                <show id="cm:name" />
+               <show id="cm:content" force="true" />
                <show id="cm:title" force="true" />
                <show id="cm:description" force="true" />
-               <show id="cm:content" force="true" />
                <show id="mimetype" />
                <show id="app:editInline" force="true" />
             </field-visibility>
@@ -326,7 +326,7 @@
                <field id="cm:title">
                   <control template="/org/alfresco/components/form/controls/textfield.ftl" />
                </field>
-               <field id="cm:content">
+               <field id="cm:content" label-id="">
                   <control>
                      <control-param name="editorAppearance">explorer</control-param>
                   </control>

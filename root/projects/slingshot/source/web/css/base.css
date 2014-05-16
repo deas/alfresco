@@ -371,13 +371,11 @@ span.navigation-separator-alt
 .share-form .form-container .caption
 {
    text-align: right;
-   width: 820px;
 }
 
 .share-form .form-container .form-fields
 {
    padding: 1em 1em 0 !important;
-   width: 800px;
 }
 
 .share-form .form-container .form-buttons
@@ -1875,4 +1873,9 @@ body.brand-bg-1 .sticky-wrapper
 table.mceLayout
 {
    width: 100% !important;
+}
+
+.mce-path
+{
+   display: none !important;
 }

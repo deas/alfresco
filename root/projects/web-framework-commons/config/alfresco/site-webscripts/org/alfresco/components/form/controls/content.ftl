@@ -36,7 +36,7 @@
    //]]></script>
    </#if>
    
-   <label for="${fieldHtmlId}">${field.label?html}:<#if field.mandatory><span class="mandatory-indicator">${msg("form.required.fields.marker")}</span></#if></label>
+   <#if field.label != ""><label for="${fieldHtmlId}">${field.label?html}:<#if field.mandatory><span class="mandatory-indicator">${msg("form.required.fields.marker")}</span></#if></label></#if>
    <textarea id="${fieldHtmlId}" name="${field.name}" rows="${rows}" columns="${columns}" tabindex="0"
       <#if field.description??>title="${field.description?html}"</#if>
       <#if field.control.params.styleClass??>class="${field.control.params.styleClass}"</#if>

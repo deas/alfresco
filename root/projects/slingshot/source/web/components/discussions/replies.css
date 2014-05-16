@@ -120,6 +120,12 @@ html>body .node, .reply, .comment {
   padding-left: 20px;
 }
 
+.replyTitle
+{
+   padding: 8px 0 0 8px;
+   font-size: 108%;
+}
+
 
 /*************
  * EDIT BLOC *
@@ -194,7 +200,6 @@ html>body .node, .reply, .comment {
 .editReplyForm {
   margin: 4px;
   padding: 4px;
-  background-color: #F7F7F7;
 }
 .editReplyForm label {
   width: 100px;
@@ -209,9 +214,8 @@ html>body .node, .reply, .comment {
 .editReplyForm .yui-editor-container {
   margin: 0px 0px 10px 114px;
 }
-
 .editReplyForm .nodeFormAction {
-  margin: 25px 0 10px 115px;
+  margin-top: 24px;
 }
 
 

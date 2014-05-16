@@ -1135,8 +1135,10 @@
       _getSavedItems: function DocumentPicker__getSavedItems()
       {
          var savedSelections = Alfresco.util.getVar('DocumentPickerSelection') || [];
-
-         YAHOO.Bubbling.fire("onDocumentsSelected", {items:savedSelections});
+         if (savedSelections.length !== 0)
+         {
+            YAHOO.Bubbling.fire("onDocumentsSelected", {items:savedSelections});
+         }
          return savedSelections;
       }
    });

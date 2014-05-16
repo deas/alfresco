@@ -201,16 +201,6 @@
    <bean id="editionInterceptor" class="org.alfresco.web.site.EditionInterceptor" parent="abstractWebFrameworkInterceptor" />
    <bean id="userDashboardInterceptor" class="org.alfresco.web.site.UserDashboardInterceptor" parent="abstractWebFrameworkInterceptor" />
    
-   <!-- Override HTML processing lists -->
-	<bean id="webframework.webscripts.stringutils" parent="webframework.webscripts.stringutils.abstract"
-	      class="org.springframework.extensions.webscripts.ui.common.StringUtils">
-	   <property name="tagWhiteList">
-	      <set merge="true">
-	         <value>STRIKE</value>
-	      </set>
-	   </property>
-	</bean>
-
    <!-- CSS image data handler - override max image size to be 10K - anything larger is left as a resource url -->
    <bean id="css.data.image.handler" parent="css.data.image.handler.abstract" class="org.springframework.extensions.surf.CssImageDataHandler">
       <property name="maximumImageSize" value="10240" />

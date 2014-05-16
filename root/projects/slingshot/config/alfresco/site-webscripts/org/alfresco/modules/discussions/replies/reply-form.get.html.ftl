@@ -1,8 +1,7 @@
 <#assign el=args.htmlid?html>
-<div id="${el}-form-title"></div>
+<div id="${el}-form-title" class="replyTitle"></div>
 <div class="editReplyForm">
-   <div id="${el}-replyto" class="replyTo hidden">
-   </div>
+   <div id="${el}-replyto" class="replyTo hidden"></div>
    
    <div class="editReply">
       <form id="${el}-form" name="replyForm" method="POST" action="">

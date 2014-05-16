@@ -131,18 +131,10 @@
                         {
                            height: 150,
                            width: 404,
-                           inline_styles: false,
-                           convert_fonts_to_spans: false,
-                           theme: 'advanced',
-                           theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,undo,redo,|,link,unlink,anchor,image,code,removeformat,|,forecolor,backcolor",
-                           theme_advanced_toolbar_location: "top",
-                           theme_advanced_toolbar_align: "left",
-                           theme_advanced_statusbar_location: "bottom",
-                           theme_advanced_resizing: true,
-                           theme_advanced_buttons2: null,
-                           theme_advanced_buttons3: null,
-                           theme_advanced_path: false,
+                           menu: {},
+                           toolbar: "bold italic underline | bullist numlist | forecolor backcolor | undo redo removeformat | link anchor image code",
                            language: 'en',
+                           statusbar: false,
                            extended_valid_elements: "a[href|target|name],font[face|size|color|style],span[class|align|style],div[class|align|style]"
                         });
                         this.configDialog.editor.render();
@@ -162,15 +154,12 @@
                }
             });
 
-            if (YAHOO.env.ua.ie > 0)
+            // ACE-1174: change z-index to hide inserted images
+            var hidePanel = function (p_event, p_args)
             {
-               // ACE-1174: change z-index to hide inserted images
-               var hidePanel = function (p_event, p_args)
-               {
-                   Dom.setStyle(p_args[1].panel.element, "z-index", -1);
-               }
-               YAHOO.Bubbling.subscribe("hidePanel", hidePanel, this.configDialog);
+                Dom.setStyle(p_args[1].panel.element, "z-index", -1);
             }
+            YAHOO.Bubbling.subscribe("hidePanel", hidePanel, this.configDialog);
          }
          else
          {

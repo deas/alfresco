@@ -119,24 +119,28 @@
          }
       },
       
+      _renderEditor: function RichTextControl__renderEditor()
+      {
+         this._renderTinyMCEEditor();
+      },
+      
       /**
        * Creates and renders the TinyMCE editor
        * 
        * @method _renderEditor
        * @private
        */
-      _renderEditor: function RichTextControl__renderEditor()
+      _renderTinyMCEEditor: function RichTextControl__renderTinyMCEEditor()
       {
          // create the editor instance
          this.editor = new Alfresco.util.RichEditor("tinyMCE", this.id, this.options.editorParameters);
-      
+         
          // render and register event handler
          this.editor.render();
-
+         
          // Make sure we persist the dom content from the editor in to the hidden textarea when appropriate 
          var _this = this;
-         this.editor.getEditor().onSetContent.add(function(ed, e)
-         {
+         this.editor.getEditor().on('BeforeSetContent', function(e) {
             _this._handleContentChange();
          });
          // MNT-8717
@@ -151,15 +155,13 @@
             YAHOO.util.Event.on(submitButton, "click", saveClicked);
          }
          // ALF-16991:
-         this.editor.getEditor().onExecCommand.add(function(ed, e)
-         {
+         this.editor.getEditor().on('BeforeExecCommand', function(e) {
             _this._handleContentChange();
          });
          // MNT-10232: Description is displayed with tags
          if (this.id.indexOf("_prop_cm_") > 0 && this.id.indexOf("_prop_cm_content") == -1)
          {
-            this.editor.getEditor().onSaveContent.add(function(ed, e)
-            {
+            this.editor.getEditor().on('SaveContent', function(e) {
                e.format = 'text';
                var content = tinyMCE.activeEditor.getBody().textContent;
                if (content == undefined)

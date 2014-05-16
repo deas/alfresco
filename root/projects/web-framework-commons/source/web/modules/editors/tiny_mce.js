@@ -1,7 +1,7 @@
 /**
  *  Adapter for tinyMCE html editor (http://tinymce.moxiecode.com).
  */
-Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
+Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id, config)
 {
    var editor;
    
@@ -9,27 +9,35 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
    {
       init: function RichEditorManager_tinyMCE_init(id, config)
       {
-         config.mode = 'exact';
+         config.theme = "modern";
+         if (!config.toolbar)
+         {
+            config.toolbar = "styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview fullscreen";
+         }
+         if (!config.menu)
+         {
+            config.menu = {
+               // TODO: I18N
+               file   : {title : 'File'  , items : 'newdocument | print'},
+               edit   : {title : 'Edit'  , items : 'undo redo | cut copy paste pastetext | selectall | searchreplace'},
+               insert : {title : 'Insert', items : 'link image | charmap hr anchor pagebreak inserttime nonbreaking'},
+               view   : {title : 'View'  , items : 'fullscreen preview visualblocks code'},
+               format : {title : 'Format', items : 'bold italic underline strikethrough superscript subscript | formats | removeformat'},
+               table  : {title : 'Table' , items : 'inserttable tableprops deletetable | cell row column'},
+            };
+         }
+         config.plugins = [
+            "advlist autolink link image lists charmap print preview hr anchor pagebreak",
+            "searchreplace code fullscreen insertdatetime nonbreaking",
+            "table contextmenu paste textcolor visualblocks"
+         ];
          config.relative_urls = true;
          config.convert_urls = false;
-         config.elements = id;
-
-         // Need to set new size values to ensure that they work with the <font> tag
-         config.font_size_style_values = "1,2,3,4,5,6,7";
-
-         // Allow back the 'embed' tag as TinyMCE now removes it - this is allowed by our editors
-         // if the HTML stripping is disabled via the 'allowUnfilteredHTML' config attribute
-         var extValidElements = config.extended_valid_elements;
-         extValidElements = (extValidElements && extValidElements != "") ? (extValidElements = extValidElements + ",") : "";
-         config.extended_valid_elements = extValidElements + "embed[src|type|width|height|flashvars|wmode]";
-         
-         config.plugins = (config.plugins && config.plugins != '') ? config.plugins + ', safari,legacyoutput,paste': 'safari,legacyoutput,paste';
          // MNT-10971 fix,  if forced_root_block was already provided through custom config - then use it
          if (typeof config.forced_root_block === "undefined")
          {
             config.forced_root_block = "p";
          }
-
          if (!config.init_instance_callback) 
          {
             config.init_instance_callback = function(o)
@@ -40,7 +48,15 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
                };
             }(this);
          }
-         editor = new tinymce.Editor(id, config);
+         
+         editor = new tinymce.Editor(id, config, tinymce.EditorManager);
+         
+         // Allow back the 'embed' tag as TinyMCE now removes it - this is allowed by our editors
+         // if the HTML stripping is disabled via the 'allowUnfilteredHTML' config attribute
+         var extValidElements = config.extended_valid_elements;
+         extValidElements = (extValidElements && extValidElements != "") ? (extValidElements = extValidElements + ",") : "";
+         config.extended_valid_elements = extValidElements + "embed[src|type|width|height|flashvars|wmode]";
+         
          return this;
       },
 
@@ -94,7 +110,7 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id,config)
 
       getContainer: function RichEditorManager_tinyMCE_getContainer()
       {
-         return editor["editorId"] + "_tbl";
+         return editor.getContainer();
       },
       
       activateButton: function RichEditorManager_tinyMCE_activateButton(buttonId)

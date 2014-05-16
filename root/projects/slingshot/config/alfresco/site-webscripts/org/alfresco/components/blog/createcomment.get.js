@@ -15,24 +15,15 @@ function main()
          editorConfig : {
             height: height,
             width: width,
-            inline_styles: false,
-            convert_fonts_to_spans: false,
-            theme: "advanced",
-            theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,forecolor,|,undo,redo,removeformat",
-            theme_advanced_toolbar_location: "top",
-            theme_advanced_toolbar_align: "left",
-            theme_advanced_statusbar_location: "bottom",
-            theme_advanced_resizing: true,
-            theme_advanced_buttons2: null,
-            theme_advanced_buttons3: null,
-            theme_advanced_path: false,
-            language: locale
+            menu: {},
+            toolbar: "bold italic underline | bullist numlist | forecolor backcolor | undo redo removeformat",
+            language: locale,
+            statusbar: false
          }
       }
    };
    model.widgets = [createComment];
-   odel.widgets.push();
+   model.widgets.push();
 }
 
 main();
-

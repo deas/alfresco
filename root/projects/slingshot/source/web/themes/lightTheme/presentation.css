@@ -958,6 +958,12 @@ body.yui-skin-lightTheme .nodeEdit .onDeleteBlogPost a:hover
    border-bottom: 1px solid #ccc !important;
 }
 
+/* Edit Form */
+.inline-edit-mgr .heading
+{
+   margin-bottom: -8px;
+}
+
 /* YUI Menu */
 
 body.yui-skin-lightTheme .yuimenu .bd
@@ -1931,3 +1937,10 @@ table td.thumbnail img
 {
    border-radius: 0 !important;
 }
+
+/* Image selector container */
+.yui-skin-lightTheme .yui-toolbar-container .yui-toolbar-titlebar
+{
+   background-image: none !important;
+}
+
