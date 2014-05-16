@@ -81,11 +81,11 @@
       <!-- Documents that have been converted to .pdf -->
 
       <condition mimeType="application/pdf">
-         <plugin progressiveLoading="true">PdfJs</plugin>
+         <plugin progressiveLoading="false">PdfJs</plugin>
       </condition>
       
       <condition thumbnail="pdf">
-         <plugin src="pdf" progressiveLoading="true">PdfJs</plugin>
+         <plugin src="pdf" progressiveLoading="false">PdfJs</plugin>
       </condition>
 
       <!-- Documents that have been converted to .swf -->
