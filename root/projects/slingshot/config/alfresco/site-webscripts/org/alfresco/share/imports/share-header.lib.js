@@ -27,6 +27,37 @@ function getLicenseUsage() {
    return usage;
 }
 
+/* *********************************************************************************
+ *                                                                                 *
+ * USER GROUP INFO                                                                 *
+ *                                                                                 *
+ ***********************************************************************************/
+
+/**
+ *
+ * @returns {object} The group information for the current user
+ */
+function getUserGroupData() {
+   var userData = null;
+   var json = remote.call("/api/people/" + encodeURIComponent(user.name) + "?groups=true");
+   if (json.status == 200)
+   {
+      // Create javascript objects from the repo response
+      userData = JSON.parse(json);
+      if (userData != null && userData.groups != null)
+      {
+         // Convert the array of groups into a object for easier access...
+         var processedGroups = {};
+         for (var i=0; i<userData.groups.length; i++)
+         {
+            processedGroups[userData.groups[i].itemName] = true;
+         }
+         userData.groups = processedGroups;
+      }
+   }
+   return userData;
+}
+
 
 /* *********************************************************************************
  *                                                                                 *
@@ -1182,7 +1213,8 @@ function generateAppItems() {
             targetUrl: "console/admin-console/application"
          }
       });
-   } else
+   } 
+   else
    {
       appItems.push({
          id: "HEADER_ADMIN_CONSOLE",
@@ -1837,12 +1869,20 @@ function getHeaderModel() {
       };
       headerMenus.appItems.push(loggingWidget);
    }
+    
+   // Get the user and group data and generate a "currentItem" for it so that render filtering
+   // can be applied based on group membership...
+   var userGroupData = getUserGroupData();
+   var currentItem = {
+      user: userGroupData
+   };
 
    var headerModel = [{
       id: "SHARE_HEADER",
       className: "alf-header",
       name: "alfresco/header/Header",
       config: {
+         currentItem: currentItem,
          widgets: [
             {
                id: "HEADER_APP_MENU_BAR",

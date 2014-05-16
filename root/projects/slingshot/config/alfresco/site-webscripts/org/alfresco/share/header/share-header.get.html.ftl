@@ -22,7 +22,7 @@
          Alfresco.constants.DASHLET_RESIZE = ${((page.url.templateArgs.userid!"-") = (user.name!""))?string} && YAHOO.env.ua.mobile === null;
       </#if>
    </@>
-   <@processJsonModel group="share" rootModule="alfresco/core/FilteredPage"/>
+   <@processJsonModel group="share"/>
 </@>
 
 <@markup id="html">
