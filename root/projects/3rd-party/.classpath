@@ -169,7 +169,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-net-3.3.jar" sourcepath="src/commons-net-3.3-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/json-simple-1.1.1.jar" sourcepath="src/json-simple-1.1.1-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-dbcp-1.4-patched.jar" sourcepath="src/commons-dbcp-1.4-sources-patched.jar"/>
-	<classpathentry kind="lib" path="lib/devenv/postgresql-9.0-802.jdbc4.jar"/>
+	<classpathentry kind="lib" path="lib/devenv/postgresql-9.3-1101-jdbc41.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-cmis-framework-1.2.1-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-core-1.0.3.RELEASE.jar" sourcepath="src/spring-social-core-1.0.3.RELEASE-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-social/spring-social-web-1.0.3.RELEASE.jar" sourcepath="src/spring-social-web-1.0.3.RELEASE-sources.jar"/>
