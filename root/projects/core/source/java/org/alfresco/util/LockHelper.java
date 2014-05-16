@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -50,9 +50,10 @@ public class LockHelper
      * 
      * @param lock                          the lock to try
      * @param timeoutMs                     the number of milliseconds to try
+     * @param useCase                       {@link String} value which specifies description of use case when lock is needed
      * @throws LockTryException    the exception if the time is exceeded or the thread is interrupted
      */
-    public static void tryLock(Lock lock, long timeoutMs) throws LockTryException
+    public static void tryLock(Lock lock, long timeoutMs, String useCase) throws LockTryException
     {
         boolean gotLock = false;
         try
@@ -65,7 +66,7 @@ public class LockHelper
         }
         if (!gotLock)
         {
-            throw new LockTryException("Failed to get lock " + lock + " in " + timeoutMs + "ms.");
+            throw new LockTryException("Failed to get lock " + lock.getClass().getSimpleName() + " for " + useCase + " in " + timeoutMs + "ms.");
         }
     }
 }

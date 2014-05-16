@@ -90,13 +90,21 @@ public class DictionaryDAOImpl implements DictionaryDAO
     
     private ClassLoader resourceClassLoader;
 
-	// inject dependencies
+    // Try lock timeout (MNT-11371)
+    private long tryLockTimeout;
+
+    // inject dependencies
     
     public void setTenantService(TenantService tenantService)
     {
         this.tenantService = tenantService;
     }
-    
+
+    public void setTryLockTimeout(long tryLockTimeout)
+    {
+        this.tryLockTimeout = tryLockTimeout;
+    }
+
     public void setDictionaryRegistryCache(SimpleCache<String, DictionaryRegistry> dictionaryRegistryCache)
     {
         this.dictionaryRegistryCache = dictionaryRegistryCache;
@@ -202,7 +210,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
         {
             logger.debug("Init Dictionary: ["+Thread.currentThread()+"] "+(tenantDomain.equals(TenantService.DEFAULT_DOMAIN) ? "" : " (Tenant: "+tenantDomain+")"));
         }
-        LockHelper.tryLock(writeLock, 100);
+        LockHelper.tryLock(writeLock, tryLockTimeout, "putting dictionary registry into cache in 'DictionaryDAOImpl.initDictionary()'");
         try
         {
             DictionaryRegistry result = AuthenticationUtil.runAs(new RunAsWork<DictionaryRegistry>()
@@ -1041,7 +1049,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
         {
             return dictionaryRegistry; // return local dictionaryRegistry
         }
-        LockHelper.tryLock(readLock, 1000);
+        LockHelper.tryLock(readLock, tryLockTimeout, "getting dictionary registry from cache in 'DictionaryDAOImpl.getDictionaryRegistry()'");
         try
         {
             // check cache second - return if set
@@ -1063,7 +1071,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
         }
         
         // Double check cache with write lock
-        LockHelper.tryLock(writeLock, 1000);
+        LockHelper.tryLock(writeLock, tryLockTimeout, "getting dictionary registry from cache in 'DictionaryDAOImpl.getDictionaryRegistry()'");
         try
         {
             dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
@@ -1161,7 +1169,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
     
     private void removeDictionaryRegistry(String tenantDomain)
     {
-        LockHelper.tryLock(writeLock, 100);
+        LockHelper.tryLock(writeLock, tryLockTimeout, "removing dictionary registry from cache in 'DictionaryDAOImpl.removeDictionaryRegistry()'");
         try
         {
             if (dictionaryRegistryCache.get(tenantDomain) != null)
