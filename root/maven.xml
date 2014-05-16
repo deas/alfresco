@@ -212,9 +212,9 @@
         <!-- Legacy Lucene -->
         <mvndeploypom file="${dir.project.legacylucene.dist}/${file.name.jar.legacylucene}"
             artifactId="legacy-lucene"
-            classifiers="sources,javadoc,config,tests"
-            types="jar,jar,jar,jar"
-            files="${dir.continuous.assemble.config}/alfresco-legacylucene-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-legacylucene-doc.zip,${dir.continuous.assemble.config}/alfresco-legacylucene-config.zip,${dir.continuous.assemble.config}/alfresco-legacylucene-test-resources.zip"
+            classifiers="sources,javadoc,tests"
+            types="jar,jar,jar"
+            files="${dir.continuous.assemble.config}/alfresco-legacylucene-sources.zip,${dir.continuous.assemble.sdk}/doc/alfresco-legacylucene-doc.zip,${dir.continuous.assemble.config}/alfresco-legacylucene-test-resources.zip"
             pomFile="${dir.project.legacylucene}/pom.xml" />
 
         <!-- Deployment -->
