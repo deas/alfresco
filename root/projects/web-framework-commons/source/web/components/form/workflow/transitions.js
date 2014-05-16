@@ -120,6 +120,9 @@
          
          // attempt to submit the form
          Alfresco.util.submitForm(p_obj.getForm());
+         
+         // MNT-11361 fix, enable transition button
+         p_obj.set("disabled", false);
       },
       
       /**
