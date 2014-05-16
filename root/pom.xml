@@ -407,7 +407,7 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <includeEmptyDirs>false</includeEmptyDirs>
+                    <includeEmptyDirs>true</includeEmptyDirs>
                 </configuration>        
             </plugin>
             <plugin>
