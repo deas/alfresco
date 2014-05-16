@@ -484,7 +484,7 @@ public class CoreTracker implements CloseHook
                     if (null != type)
                     {
                         typesForSkippingDescendantAuxDocs.add(typeQName);
-                        skippingDocsQuery.add(new TermQuery(new Term(AbstractLuceneQueryParser.FIELD_TYPE, typeQName.toString())), Occur.SHOULD);
+                        skippingDocsQuery.add(new TermQuery(new Term(QueryConstants.FIELD_TYPE, typeQName.toString())), Occur.SHOULD);
                     }
                 }
             }
