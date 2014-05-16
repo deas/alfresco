@@ -2225,7 +2225,7 @@ Alfresco.util.createTwister = function(p_controller, p_filterName, p_config)
    if (Alfresco.util.createTwister.collapsed === undefined)
    {
       var preferences = new Alfresco.service.Preferences();
-      Alfresco.util.createTwister.collapsed = Alfresco.util.findValueByDotNotation(preferences.get(), Alfresco.service.Preferences.COLLAPSED_TWISTERS);
+      Alfresco.util.createTwister.collapsed = Alfresco.util.findValueByDotNotation(preferences.get(), Alfresco.service.Preferences.COLLAPSED_TWISTERS) || "";
    }
 
    // See if panel should be collapsed via value stored in preferences
