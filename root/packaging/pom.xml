@@ -13,6 +13,7 @@
     <modules>
         <module>mmt</module>
         <module>distribution</module>
+        <module>installer</module>
     </modules>
 
     <properties>
