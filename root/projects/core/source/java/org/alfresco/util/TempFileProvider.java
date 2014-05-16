@@ -111,9 +111,22 @@ public class TempFileProvider
      */
     public static File getTempDir()
     {
+        return getTempDir(ALFRESCO_TEMP_FILE_DIR);
+    }
+    
+    /**
+     * Get the specified temp dir, %java.io.tempdir%/dirName.  
+     * Will create the temp dir on the fly if it does not already exist.
+     * 
+     * @param dirName the name of sub-directory in %java.io.tempdir%
+     * 
+     * @return Returns a temporary directory, i.e. <code>isDir == true</code>
+     */
+    public static File getTempDir(String dirName)
+    {
         File systemTempDir = getSystemTempDir();
         // append the Alfresco directory
-        File tempDir = new File(systemTempDir, ALFRESCO_TEMP_FILE_DIR);
+        File tempDir = new File(systemTempDir, dirName);
         // ensure that the temp directory exists
         if (tempDir.exists())
         {
@@ -322,6 +335,7 @@ public class TempFileProvider
     public static class TempFileCleanerJob implements Job
     {
         public static final String KEY_PROTECT_HOURS = "protectHours";
+        public static final String KEY_DIRECTORY_NAME = "directoryName";
 
         /**
          * Gets a list of all files in the {@link TempFileProvider#ALFRESCO_TEMP_FILE_DIR temp directory}
@@ -349,12 +363,19 @@ public class TempFileProvider
                 throw new JobExecutionException("Hours to protect temp files must be 0 <= x <= 8760");
             }
 
+            String directoryName = (String) context.getJobDetail().getJobDataMap().get(KEY_DIRECTORY_NAME);
+            
+            if (directoryName == null)
+            {
+                directoryName = ALFRESCO_TEMP_FILE_DIR;
+            }
+
             long now = System.currentTimeMillis();
             long aFewHoursBack = now - (3600L * 1000L * protectHours);
             
             long aLongTimeBack = now - (24 * 3600L * 1000L);
             
-            File tempDir = TempFileProvider.getTempDir();
+            File tempDir = TempFileProvider.getTempDir(directoryName);
             int count = removeFiles(tempDir, aFewHoursBack, aLongTimeBack, false);  // don't delete this directory
             // done
             if (logger.isDebugEnabled())
