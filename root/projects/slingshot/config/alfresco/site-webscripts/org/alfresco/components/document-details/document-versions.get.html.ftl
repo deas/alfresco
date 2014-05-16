@@ -27,7 +27,7 @@
    <@markup id="html">
       <@uniqueIdDiv>
          <#if allowNewVersionUpload??>
-            <#if isWorkingCopy>
+            <#if isWorkingCopy??>
                <!-- No version component is displayed since it is a working copy -->
             <#else>
                <#assign el=args.htmlid?html>
