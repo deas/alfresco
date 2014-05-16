@@ -14,7 +14,7 @@
    </@>
    
    <@markup id="widgets">
-      <#if allowNewVersionUpload??>
+      <#if allowNewVersionUpload>
          <@createWidgets group="document-details"/>
          <@inlineScript group="document-details">
             YAHOO.util.Event.onContentReady("${args.htmlid?js_string}-heading", function() {
@@ -26,8 +26,8 @@
    
    <@markup id="html">
       <@uniqueIdDiv>
-         <#if allowNewVersionUpload??>
-            <#if isWorkingCopy??>
+         <#if allowNewVersionUpload>
+            <#if isWorkingCopy>
                <!-- No version component is displayed since it is a working copy -->
             <#else>
                <#assign el=args.htmlid?html>

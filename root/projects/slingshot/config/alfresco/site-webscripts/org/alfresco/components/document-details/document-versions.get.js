@@ -5,6 +5,8 @@ function main()
    AlfrescoUtil.param('nodeRef');
    AlfrescoUtil.param('site', null);
    AlfrescoUtil.param('container', 'documentLibrary');
+   model.allowNewVersionUpload = false;
+   model.isWorkingCopy = false;
    var documentDetails = AlfrescoUtil.getNodeDetails(model.nodeRef, model.site);
    if (documentDetails)
    {
@@ -30,4 +32,3 @@ function main()
 }
 
 main();
-
