@@ -278,6 +278,8 @@
              fromDir="@{sourcedir}"
              toDir="@{destdir}">
 				<include name="**/*.js" />
+				<exclude name="**/pdf.js" />
+				<exclude name="**/pdf.worker.js" />
 				<exclude name="**/*-min.js" />
 				<exclude name="**/WEB-INF/**" />
 				<exclude name="**/tiny_mce/**" />
