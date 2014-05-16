@@ -25,6 +25,7 @@ Antti Jokipii<br/>
 Markus Konrad<br/>
 Michael Kriske<br/>
 Carina Lansing<br/>
+Peter Lofgren<br/>
 Sebastian Lorenz<br/>
 Marlin Manowski<br/>
 Jesper Steen M&oslash;ller<br/>
