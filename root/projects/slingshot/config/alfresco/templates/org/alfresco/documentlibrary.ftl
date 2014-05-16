@@ -6,7 +6,9 @@
    </@>
    <@markup id="resizer">
       <script type="text/javascript">//<![CDATA[
-         new Alfresco.widget.Resizer("DocumentLibrary");
+         new Alfresco.widget.Resizer("DocumentLibrary").setOptions({
+            initialWidth: 225
+         });
       //]]></script>
    </@>
    <@script type="text/javascript" src="${url.context}/res/modules/documentlibrary/doclib-actions.js" group="documentlibrary"></@script>

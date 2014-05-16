@@ -354,21 +354,17 @@ span.navigation-separator-alt
 .share-form .form-manager h1
 {
    padding-left: 0.5em;
-   margin-bottom: 0.75em;
    word-wrap: break-word;
 }
 
 .share-form .form-container
 {
-   padding: 0;
+   padding: 4px;
    margin-top: 0;
 }
 
 .share-form .form-container form
 {
-
-
-/*margin-left: 1.5em;*/
    margin-top: 0.5em;
 }
 

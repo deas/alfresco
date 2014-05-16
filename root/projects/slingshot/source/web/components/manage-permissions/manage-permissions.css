@@ -1,8 +1,11 @@
+.manage-permissions .node-header
+{
+   padding-left: 10px;
+}
+
 .permissions .header-bar
 {
    border-bottom: 1px solid #ccc;
-   margin-right: -10px;
-   margin-left: -10px;
    min-height: 3em;
    padding: 0.5em 1em;
 }
@@ -26,7 +29,6 @@
 
 .permissions .title
 {
-   color: #008000;
    font-size: 108%;
    padding: 1em 0 0.5em;
 }
@@ -41,7 +43,6 @@
    opacity: .2;
    filter: alpha(opacity=20);
 }
-
 
 .permissions .inherited span.first-child
 {

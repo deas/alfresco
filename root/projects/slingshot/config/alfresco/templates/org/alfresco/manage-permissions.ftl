@@ -11,7 +11,7 @@
    </div>
    </@>
    <@markup id="bd">
-   <div id="bd">
+   <div id="bd" class="manage-permissions">
       <@region id="path" scope="template" />
       <@region id="manage-permissions" scope="template" />
    </div>
