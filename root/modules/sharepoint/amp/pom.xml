@@ -75,6 +75,14 @@
                 <includes>
                     <include>module.properties</include>
                 </includes>
+                <targetPath>../${project.build.finalName}</targetPath>
+            </resource>
+            <resource>
+                <directory>config</directory>
+                <includes>
+                    <include>alfresco/module/org.alfresco.module.vti/module-context.xml</include>
+                </includes>
+                <targetPath>../${project.build.finalName}/config</targetPath>
             </resource>
         </resources>
 
