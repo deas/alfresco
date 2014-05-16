@@ -132,7 +132,7 @@
                 <executions>
                     <execution>
                         <id>wipe-database</id>
-                        <phase>process-test-resources</phase>
+                        <phase>pre-clean</phase>
                         <goals>
                             <goal>execute</goal>
                         </goals>
@@ -142,7 +142,7 @@
                     </execution>
                     <execution>
                         <id>create-database</id>
-                        <phase>process-test-resources</phase>
+                        <phase>pre-clean</phase>
                         <goals>
                             <goal>execute</goal>
                         </goals>
