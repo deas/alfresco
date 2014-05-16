@@ -831,6 +831,9 @@
 
          // Set the worker source
          PDFJS.workerSrc = this.workerSrc;
+         // Set the char map source dir
+         PDFJS.cMapUrl = './cmaps/';
+         PDFJS.cMapPacked = true;
 
          // PDFJS range request for progessive loading
          // We also test if it may already be set to true by compatibility.js tests, some browsers do not support it.
@@ -1008,7 +1011,7 @@
             this.documentView.addPages(promisedPages);
             // this.thumbnailView.addPages(promisedPages);
 
-            for ( var i = 0; i < promisedPages.length; i++)
+            for (var i = 0; i < promisedPages.length; i++)
             {
                var page = promisedPages[i], pageRef = page.ref;
                pagesRefMap[pageRef.num + ' ' + pageRef.gen + ' R'] = i;
@@ -1016,7 +1019,7 @@
 
             this.documentView.render();
             // Make sure we do not have a page number greater than actual pages
-            if(this.pageNum > this.pdfDocument.numPages)
+            if (this.pageNum > this.pdfDocument.numPages)
             {
                 this.pageNum = this.pdfDocument.numPages;
                 this._updatePageControls();
@@ -1957,7 +1960,11 @@
          // Hide the canvas until we've finished drawing the content, so the loading spinner shows through
          Dom.setStyle(canvas, "visibility", "hidden");
 
+         canvas.width = region.width;
+         canvas.height = region.height;
+
          // Add text layer
+         var viewport = this.content.getViewport(this.parent.currentScale);
          var textLayerDiv = null;
          if (!this.parent.config.disableTextLayer)
          {
@@ -1966,30 +1973,36 @@
             this.container.appendChild(textLayerDiv);
          }
          this.textLayerDiv = textLayerDiv;
-         this.textLayer = textLayerDiv ? new TextLayerBuilder(textLayerDiv, this.id - 1, this.pdfJsPlugin) : null;
+         this.textLayer = textLayerDiv ? new TextLayerBuilder(textLayerDiv, this.id - 1, this.pdfJsPlugin, viewport) : null;
 
          var content = this.content,
              view = content.view,
              ctx = canvas.getContext('2d');
 
-         canvas.width = region.width;
-         canvas.height = region.height;
-
          // Render the content itself
          var renderContext = {
             canvasContext : ctx,
-            viewport : this.content.getViewport(this.parent.currentScale),
+            viewport : viewport,
             textLayer : this.textLayer
          };
          
          var startTime = 0;
          if (Alfresco.logger.isDebugEnabled())
          {
-            startTime = new Date().getTime();
+            startTime = Date.now();
          }
          
+         var setTextFn = Alfresco.util.bind(function textContentResolved(textContent) {
+            this.textLayer.setTextContent(textContent);
+         }, this);
+         
          var renderFn = Alfresco.util.bind(function renderPageFn() {
-
+            
+            if (this.textLayer)
+            {
+               this.getTextContent().then(setTextFn);
+            }
+            
             // Hide the loading icon and make the canvas visible again
             if (this.loadingIconDiv)
             {
@@ -2000,21 +2013,12 @@
             // Log time taken to draw the page
             if (Alfresco.logger.isDebugEnabled())
             {
-               Alfresco.logger.debug("Rendered " + this.parent.name + " page " + this.id + " in " + (new Date().getTime() - startTime) + "ms");
+               Alfresco.logger.debug("Rendered " + this.parent.name + " page " + this.id + " in " + (Date.now() - startTime) + "ms");
             }
             
          }, this);
          
-         var setTextFn = Alfresco.util.bind(function textContentResolved(textContent) {
-            this.textLayer.setTextContent(textContent);
-         }, this);
-         
          content.render(renderContext).promise.then(renderFn);
-         
-         if (this.textLayer)
-         {
-            this.getTextContent().then(setTextFn);
-         }
       },
 
       /**
@@ -2595,52 +2599,40 @@ var FIND_SCROLL_OFFSET_LEFT = -400;
  * object also provides for a way to highlight
  * text that is being searched for.
  */
-var TextLayerBuilder = function textLayerBuilder(textLayerDiv, pageIdx, pdfJsPlugin) {
-      
-   // ALFRESCO CHANGES
-   var textLayerFrag = document.createDocumentFragment();
+var TextLayerBuilder = function textLayerBuilder(textLayerDiv, pageIdx, pdfJsPlugin, viewport) {
+  var textLayerFrag = document.createDocumentFragment();
+  this.textDivs = [];
 
+   // ALFRESCO CHANGES
+   this.viewport = viewport;
    this.textLayerDiv = textLayerDiv;
    this.layoutDone = false;
    this.divContentDone = false;
    this.pageIdx = pageIdx;
    this.matches = [];
    this.pdfJsPlugin = pdfJsPlugin
+   this.isViewerInPresentationMode = false;
    // END ALFRESCO CHANGES
-   
-  this.isViewerInPresentationMode = false;
 
-  if(typeof PDFFindController === 'undefined') {
-      window.PDFFindController = null;
+  if (typeof PDFFindController === 'undefined') {
+    window.PDFFindController = null;
   }
 
-  if(typeof this.lastScrollSource === 'undefined') {
-      this.lastScrollSource = null;
+  if (typeof this.lastScrollSource === 'undefined') {
+    this.lastScrollSource = null;
   }
-
-  this.beginLayout = function textLayerBuilderBeginLayout() {
-    this.textDivs = [];
-    this.renderingDone = false;
-  };
-
-  this.endLayout = function textLayerBuilderEndLayout() {
-    this.layoutDone = true;
-    this.insertDivContent();
-  };
 
   this.renderLayer = function textLayerBuilderRenderLayer() {
-    var self = this;
     var textDivs = this.textDivs;
-    var bidiTexts = this.textContent;
-    var textLayerDiv = this.textLayerDiv;
     var canvas = document.createElement('canvas');
     var ctx = canvas.getContext('2d');
 
     // No point in rendering so many divs as it'd make the browser unusable
     // even after the divs are rendered
     var MAX_TEXT_DIVS_TO_RENDER = 100000;
-    if (textDivs.length > MAX_TEXT_DIVS_TO_RENDER)
+    if (textDivs.length > MAX_TEXT_DIVS_TO_RENDER) {
       return;
+    }
 
     for (var i = 0, ii = textDivs.length; i < ii; i++) {
       var textDiv = textDivs[i];
@@ -2658,6 +2650,7 @@ var TextLayerBuilder = function textLayerBuilder(textLayerDiv, pageIdx, pdfJsPlu
         var transform = 'scale(' + textScale + ', 1)';
         transform = 'rotate(' + rotation + 'deg) ' + transform;
 
+         // ALFRESCO CHANGES
          // Share extras changed to use Yahoo dom.
          // TODO: Work out some more efficient way of determining
          // prefix as original method do, instead of setting all.
@@ -2667,13 +2660,11 @@ var TextLayerBuilder = function textLayerBuilder(textLayerDiv, pageIdx, pdfJsPlu
          Dom.setStyle(textDiv, '-ms-transformOrigin', '0% 0%');
          Dom.setStyle(textDiv, '-webkit-transformOrigin', '0% 0%');
          Dom.setStyle(textDiv, '-moz-transformOrigin', '0% 0%');
-         // CustomStyle.setProp('transform' , textDiv,
-         // 'scale(' + textScale + ', 1)');
-         // CustomStyle.setProp('transformOrigin' , textDiv, '0% 0%');
+         // END ALFRESCO CHANGES
       }
     }
 
-    textLayerDiv.appendChild(textLayerFrag);
+    this.textLayerDiv.appendChild(textLayerFrag);
     this.renderingDone = true;
     this.updateMatches();
   };
@@ -2683,91 +2674,76 @@ var TextLayerBuilder = function textLayerBuilder(textLayerDiv, pageIdx, pdfJsPlu
     // run it right away
     var RENDER_DELAY = 200; // in ms
     var self = this;
-    var lastScroll = this.lastScrollSource === null ?
-        0 : this.lastScrollSource.lastScroll;
+    var lastScroll = (this.lastScrollSource === null ?
+                      0 : this.lastScrollSource.lastScroll);
 
     if (Date.now() - lastScroll > RENDER_DELAY) {
       // Render right away
       this.renderLayer();
     } else {
       // Schedule
-      if (this.renderTimer)
+      if (this.renderTimer) {
         clearTimeout(this.renderTimer);
+      }
       this.renderTimer = setTimeout(function() {
         self.setupRenderLayoutTimer();
       }, RENDER_DELAY);
     }
   };
 
-  this.appendText = function textLayerBuilderAppendText(geom) {
+  this.appendText = function textLayerBuilderAppendText(geom, styles) {
+    var style = styles[geom.fontName];
     var textDiv = document.createElement('div');
-
-    // vScale and hScale already contain the scaling to pixel units
-    var fontHeight = geom.fontSize * Math.abs(geom.vScale);
-    textDiv.dataset.canvasWidth = geom.canvasWidth * Math.abs(geom.hScale);
-    textDiv.dataset.fontName = geom.fontName;
-    textDiv.dataset.angle = geom.angle * (180 / Math.PI);
-
-    textDiv.style.fontSize = fontHeight + 'px';
-    textDiv.style.fontFamily = geom.fontFamily;
-    var fontAscent = geom.ascent ? geom.ascent * fontHeight :
-      geom.descent ? (1 + geom.descent) * fontHeight : fontHeight;
-    textDiv.style.left = (geom.x + (fontAscent * Math.sin(geom.angle))) + 'px';
-    textDiv.style.top = (geom.y - (fontAscent * Math.cos(geom.angle))) + 'px';
-
-    // The content of the div is set in the `setTextContent` function.
-
     this.textDivs.push(textDiv);
-  };
-
-  this.insertDivContent = function textLayerUpdateTextContent() {
-    // Only set the content of the divs once layout has finished, the content
-    // for the divs is available and content is not yet set on the divs.
-    if (!this.layoutDone || this.divContentDone || !this.textContent)
+    if (!/\S/.test(geom.str)) {
+      textDiv.dataset.isWhitespace = true;
       return;
+    }
+    var tx = PDFJS.Util.transform(this.viewport.transform, geom.transform);
+    var angle = Math.atan2(tx[1], tx[0]);
+    if (style.vertical) {
+      angle += Math.PI / 2;
+    }
+    var fontHeight = Math.sqrt((tx[2] * tx[2]) + (tx[3] * tx[3]));
+    var fontAscent = (style.ascent ? style.ascent * fontHeight :
+      (style.descent ? (1 + style.descent) * fontHeight : fontHeight));
 
-    this.divContentDone = true;
+    textDiv.style.position = 'absolute';
+    textDiv.style.left = (tx[4] + (fontAscent * Math.sin(angle))) + 'px';
+    textDiv.style.top = (tx[5] - (fontAscent * Math.cos(angle))) + 'px';
+    textDiv.style.fontSize = fontHeight + 'px';
+    textDiv.style.fontFamily = style.fontFamily;
 
-    var textDivs = this.textDivs;
-    var bidiTexts = this.textContent;
-
-    for (var i = 0; i < bidiTexts.length; i++) {
-      var bidiText = bidiTexts[i];
-      var textDiv = textDivs[i];
-      if (!/\S/.test(bidiText.str)) {
-        textDiv.dataset.isWhitespace = true;
-        continue;
-      }
-
-      textDiv.textContent = bidiText.str;
-      // TODO refactor text layer to use text content position
-      /**
-       * var arr = this.viewport.convertToViewportPoint(bidiText.x, bidiText.y);
-       * textDiv.style.left = arr[0] + 'px';
-       * textDiv.style.top = arr[1] + 'px';
-       */
-      // bidiText.dir may be 'ttb' for vertical texts.
-      textDiv.dir = bidiText.dir;
+    textDiv.textContent = geom.str;
+    textDiv.dataset.fontName = geom.fontName;
+    textDiv.dataset.angle = angle * (180 / Math.PI);
+    if (style.vertical) {
+      textDiv.dataset.canvasWidth = geom.height * this.viewport.scale;
+    } else {
+      textDiv.dataset.canvasWidth = geom.width * this.viewport.scale;
     }
 
-    this.setupRenderLayoutTimer();
   };
 
   this.setTextContent = function textLayerBuilderSetTextContent(textContent) {
     this.textContent = textContent;
-    this.insertDivContent();
+
+    var textItems = textContent.items;
+    for (var i = 0; i < textItems.length; i++) {
+      this.appendText(textItems[i], textContent.styles);
+    }
+    this.divContentDone = true;
+
+    this.setupRenderLayoutTimer();
   };
 
   this.convertMatches = function textLayerBuilderConvertMatches(matches) {
     var i = 0;
     var iIndex = 0;
-    var bidiTexts = this.textContent;
+    var bidiTexts = this.textContent.items;
     var end = bidiTexts.length - 1;
-    var queryLen = PDFFindController === null ?
-        0 : PDFFindController.state.query.length;
-
-    var lastDivIdx = -1;
-    var pos;
+    var queryLen = (PDFFindController === null ?
+                    0 : PDFFindController.state.query.length);
 
     var ret = [];
 
@@ -2820,17 +2796,17 @@ var TextLayerBuilder = function textLayerBuilder(textLayerDiv, pageIdx, pdfJsPlu
       return;
     }
 
-    var bidiTexts = this.textContent;
+    var bidiTexts = this.textContent.items;
     var textDivs = this.textDivs;
     var prevEnd = null;
-    var isSelectedPage = PDFFindController === null ?
-        false : (this.pageIdx === PDFFindController.selected.pageIdx);
+    var isSelectedPage = (PDFFindController === null ?
+      false : (this.pageIdx === PDFFindController.selected.pageIdx));
 
-    var selectedMatchIdx = PDFFindController === null ?
-        -1 : PDFFindController.selected.matchIdx;
+    var selectedMatchIdx = (PDFFindController === null ?
+                            -1 : PDFFindController.selected.matchIdx);
 
-    var highlightAll = PDFFindController === null ?
-        false : PDFFindController.state.highlightAll;
+    var highlightAll = (PDFFindController === null ?
+                        false : PDFFindController.state.highlightAll);
 
     var infty = {
       divIdx: -1,
@@ -2841,26 +2817,17 @@ var TextLayerBuilder = function textLayerBuilder(textLayerDiv, pageIdx, pdfJsPlu
       var divIdx = begin.divIdx;
       var div = textDivs[divIdx];
       div.textContent = '';
-
-      var content = bidiTexts[divIdx].str.substring(0, begin.offset);
-      var node = document.createTextNode(content);
-      if (className) {
-        var isSelected = isSelectedPage &&
-                          divIdx === selectedMatchIdx;
-        var span = document.createElement('span');
-        span.className = className + (isSelected ? ' selected' : '');
-        span.appendChild(node);
-        div.appendChild(span);
-        return;
-      }
-      div.appendChild(node);
+      appendTextToDiv(divIdx, 0, begin.offset, className);
     }
 
     function appendText(from, to, className) {
-      var divIdx = from.divIdx;
+      appendTextToDiv(from.divIdx, from.offset, to.offset, className);
+    }
+
+    function appendTextToDiv(divIdx, fromOffset, toOffset, className) {
       var div = textDivs[divIdx];
 
-      var content = bidiTexts[divIdx].str.substring(from.offset, to.offset);
+      var content = bidiTexts[divIdx].str.substring(fromOffset, toOffset);
       var node = document.createTextNode(content);
       if (className) {
         var span = document.createElement('span');
@@ -2897,6 +2864,7 @@ var TextLayerBuilder = function textLayerBuilder(textLayerDiv, pageIdx, pdfJsPlu
         // ALFRESCO - change reference to select correct pageIdx
         this.pdfJsPlugin.documentView.pages[this.pageIdx].scrollIntoView(textDivs[begin.divIdx],
             { top: FIND_SCROLL_OFFSET_TOP, left: FIND_SCROLL_OFFSET_LEFT });
+        // END ALFRESCO
       }
 
       // Match inside new div.
@@ -2930,13 +2898,14 @@ var TextLayerBuilder = function textLayerBuilder(textLayerDiv, pageIdx, pdfJsPlu
 
   this.updateMatches = function textLayerUpdateMatches() {
     // Only show matches, once all rendering is done.
-    if (!this.renderingDone)
+    if (!this.renderingDone) {
       return;
+    }
 
     // Clear out all matches.
     var matches = this.matches;
     var textDivs = this.textDivs;
-    var bidiTexts = this.textContent;
+    var bidiTexts = this.textContent.items;
     var clearedUntilDivIdx = -1;
 
     // Clear out all current matches.
@@ -2951,32 +2920,32 @@ var TextLayerBuilder = function textLayerBuilder(textLayerDiv, pageIdx, pdfJsPlu
       clearedUntilDivIdx = match.end.divIdx + 1;
     }
 
-    if (PDFFindController === null || !PDFFindController.active)
+    if (PDFFindController === null || !PDFFindController.active) {
       return;
+    }
 
     // Convert the matches on the page controller into the match format used
     // for the textLayer.
-    this.matches = matches =
-      this.convertMatches(PDFFindController === null ?
-          [] : (PDFFindController.pageMatches[this.pageIdx] || []));
+    this.matches = matches = (this.convertMatches(PDFFindController === null ?
+      [] : (PDFFindController.pageMatches[this.pageIdx] || [])));
 
     this.renderMatches(this.matches);
   };
 };
 
 
-   /**
-    * PDFFindController - copied from pdf.js project, file viewer.js Changes
-    * includes PDFView -> self.documentView initialize() -> Added support for
-    * passing the documentView object
-    */
+/**
+ * PDFFindController - copied from pdf.js project, file viewer.js Changes
+ * includes PDFView -> self.documentView initialize() -> Added support for
+ * passing the documentView object
+ */
 
-   var FindStates = {
-      FIND_FOUND : 0,
-      FIND_NOTFOUND : 1,
-      FIND_WRAPPED : 2,
-      FIND_PENDING : 3
-   };
+var FindStates = {
+  FIND_FOUND: 0,
+  FIND_NOTFOUND: 1,
+  FIND_WRAPPED: 2,
+  FIND_PENDING: 3
+};
 
 /**
  * Provides a "search" or "find" functionality for the PDF.
@@ -3102,19 +3071,21 @@ var PDFFindController = {
     var self = this;
     function extractPageText(pageIndex) {
       self.pdfPageSource.pages[pageIndex].getTextContent().then(
-        function textContentResolved(bidiTexts) {
+        function textContentResolved(textContent) {
+          var textItems = textContent.items;
           var str = '';
 
-          for (var i = 0; i < bidiTexts.length; i++) {
-            str += bidiTexts[i].str;
+          for (var i = 0; i < textItems.length; i++) {
+            str += textItems[i].str;
           }
 
           // Store the pageContent as a string.
           self.pageContents.push(str);
 
           extractTextPromisesResolves[pageIndex](pageIndex);
-          if ((pageIndex + 1) < self.pdfPageSource.pages.length)
+          if ((pageIndex + 1) < self.pdfPageSource.pages.length) {
             extractPageText(pageIndex + 1);
+          }
         }
       );
     }
@@ -3308,7 +3279,7 @@ var PDFFindController = {
       
       // TODO: For now do not display for hits, gets very noisy when stepping.
       // Possibly change color or similar in search box to indicate hit instead
-      // Pending cand be ajax gif on search bar until state is found, then removed. 
+      // Pending ajax gif on search bar until state is found, then removed. 
       // See pdf.js default Implementation
 
       if(state===FindStates.FIND_FOUND||state===FindStates.FIND_PENDING)
@@ -3339,7 +3310,7 @@ var PDFFindController = {
       Alfresco.util.PopupManager.displayMessage({
          text : findMsg
       });
-  }
+   }
 };
 
 })();

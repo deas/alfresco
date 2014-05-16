@@ -332,6 +332,7 @@
 
 .previewer.PdfJs .sidebar .thumbnailView .page.activePage,
 .previewer.PdfJs .documentView .page.activePage {
+   border-color: #aaa;
 }
 
 .previewer.PdfJs .thumbnailView .page:last-child {
