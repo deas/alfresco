@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -172,7 +172,7 @@
                {
                   if (menuItems[index].value === activitiesPreference)
                   {
-                     this.widgets.activities.set("label", menuItems[index].cfg.getProperty("text"));
+                     this.widgets.activities.set("label", menuItems[index].cfg.getProperty("text") + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
                      break;
                   }
                }
@@ -191,7 +191,7 @@
                {
                   if (menuItems[index].value === rangePreference)
                   {
-                     this.widgets.range.set("label", menuItems[index].cfg.getProperty("text"));
+                     this.widgets.range.set("label", menuItems[index].cfg.getProperty("text") + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
                      break;
                   }
                }
@@ -210,7 +210,7 @@
                {
                   if (menuItems[index].value === filterPreference)
                   {
-                     this.widgets.user.set("label", menuItems[index].cfg.getProperty("text"));
+                     this.widgets.user.set("label", menuItems[index].cfg.getProperty("text") + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
                      break;
                   }
                }
@@ -373,7 +373,7 @@
          
          if (menuItem)
          {
-            this.widgets.range.set("label", menuItem.cfg.getProperty("text"));
+            this.widgets.range.set("label", menuItem.cfg.getProperty("text") + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
             this.widgets.range.value = menuItem.value;
             this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
             this.services.preferences.set(this.buildPreferences(PREF_RANGE), this.widgets.range.value);
@@ -393,7 +393,7 @@
          
          if (menuItem)
          {
-            this.widgets.user.set("label", menuItem.cfg.getProperty("text"));
+            this.widgets.user.set("label", menuItem.cfg.getProperty("text") + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
             this.widgets.user.value = menuItem.value;
             this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
             this.services.preferences.set(this.buildPreferences(PREF_FILTER), this.widgets.user.value);
@@ -413,7 +413,7 @@
          
          if (menuItem)
          {
-            this.widgets.activities.set("label", menuItem.cfg.getProperty("text"));
+            this.widgets.activities.set("label", menuItem.cfg.getProperty("text") + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
             this.widgets.activities.value = menuItem.value;
             this.populateActivityList(this.widgets.range.value, this.widgets.user.value, this.widgets.activities.value);
             this.services.preferences.set(this.buildPreferences(PREF_ACTIVITIES), this.widgets.activities.value);

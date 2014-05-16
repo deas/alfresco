@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -137,7 +137,7 @@ define(["dojo/_base/declare",
             // rather than overriding the default template for such a minor change. This means that we
             // have some protection against changes to the template in future Dojo releases.
             domConstruct.create("span", { className: "alf-menu-arrow",
-                                          innerHTML: "&nbsp;&nbsp;&nbsp;&nbsp;"}, this.focusNode);
+                                          innerHTML: "&#9662"}, this.focusNode);
          }
          this.inherited(arguments);
          

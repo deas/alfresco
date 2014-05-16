@@ -121,9 +121,9 @@ padding-right: 20px;
 background-position: right center;
 background-repeat: no-repeat;
 }
-.yui-skin-lightTheme .yui-menu-button button {
+/*.yui-skin-lightTheme .yui-menu-button button {
 background-image: url(menu-button-arrow.png);
-}
+}*/
 .yui-skin-lightTheme .yui-split-button button {
 background-image: url(split-button-arrow.png);
 }

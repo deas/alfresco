@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -282,7 +282,7 @@
          var menuItem = p_aArgs[1];
          if (menuItem)
          {
-            this.widgets.type.set("label", menuItem.cfg.getProperty("text"));
+            this.widgets.type.set("label", menuItem.cfg.getProperty("text") + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
             this.widgets.type.value = menuItem.value;
 
             // Save preferences
@@ -393,7 +393,7 @@
              siteManagers, i, j, k, l, ii = 0;
 
          // Select the preferred filter in the ui
-         this.widgets.type.set("label", this.msg("filter." + this.filter));
+         this.widgets.type.set("label", this.msg("filter." + this.filter) + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
          this.widgets.type.value = this.filter;
 
          // Display the toolbar now that we have selected the filter

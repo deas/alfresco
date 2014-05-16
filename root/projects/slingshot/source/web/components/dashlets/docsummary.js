@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -81,7 +81,7 @@
                break;
             }
          }
-         this.widgets.filter.set("label", this.msg("filter." + filter));
+         this.widgets.filter.set("label", this.msg("filter." + filter) + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
          this.widgets.filter.value = filter;
 
          // Detailed/Simple List button
@@ -133,7 +133,7 @@
          var menuItem = p_aArgs[1];
          if (menuItem)
          {
-            this.widgets.filter.set("label", menuItem.cfg.getProperty("text"));
+            this.widgets.filter.set("label", menuItem.cfg.getProperty("text") + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
             this.widgets.filter.value = menuItem.value;
 
             this.services.preferences.set(this.PREFERENCES_DOCSUMMARY_DASHLET_FILTER, this.widgets.filter.value);

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -134,7 +134,7 @@
                   var option = filter.options[j];
                   if(option.value == selectedOption)
                   {
-                     button.set("label", this.msg("filter." + filter.name + "." + option.label));
+                     button.set("label", this.msg("filter." + filter.name + "." + option.label) + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
                      button.value = selectedOption;
                      break;
                   }
@@ -147,7 +147,7 @@
                var preferences = this.services.preferences;
                preferences.set(filterPrefName, this.options.filterPreferences[filterPrefName]);
                
-               button.set("label", this.msg("filter." + filter.name + "." + filter.options[0].label));
+               button.set("label", this.msg("filter." + filter.name + "." + filter.options[0].label) + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
                button.value = filter.options[0].value;
             }
 
@@ -319,7 +319,7 @@
             var preferences = this.services.preferences;
             preferences.set(filterPrefName, menuItem.value);
             
-            button.set("label", menuItem.srcElement.text);
+            button.set("label", menuItem.srcElement.text + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
             button.value = menuItem.value;
             
             //Finally update the topics list

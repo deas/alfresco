@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -133,7 +133,7 @@
          }
 
          var resultSize = this.getResultSize();
-         this.widgets.resultSizeMenuButton.set("label", resultSize);
+         this.widgets.resultSizeMenuButton.set("label", resultSize + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
          this.widgets.resultSizeMenuButton.value = resultSize;
 
          // Display the toolbar now that we have selected the filter
@@ -379,7 +379,7 @@
 
          if (menuItem)
          {
-            this.widgets.resultSizeMenuButton.set("label", menuItem.cfg.getProperty("text"));
+            this.widgets.resultSizeMenuButton.set("label", menuItem.cfg.getProperty("text") + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
             this.widgets.resultSizeMenuButton.value = menuItem.value;
 
             this.setResultSize(menuItem.value);

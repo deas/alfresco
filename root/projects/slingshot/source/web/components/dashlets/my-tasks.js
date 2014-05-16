@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -132,7 +132,7 @@
          // Select the preferred filter in the ui
          var filter = Alfresco.util.findValueByDotNotation(prefs, this.PREFERENCES_TASKS_DASHLET_FILTER, "activeTasks");
          filter = this.options.filters.hasOwnProperty(filter) ? filter : "activeTasks";
-         this.widgets.filterMenuButton.set("label", this.msg("filter." + filter));
+         this.widgets.filterMenuButton.set("label", this.msg("filter." + filter) + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
          this.widgets.filterMenuButton.value = filter;
 
          // Display the toolbar now that we have selected the filter
@@ -242,7 +242,7 @@
             // Otherwise an error can occur if the previous taks page has more pages than the new page
             this.widgets.alfrescoDataTable.currentSkipCount = 0;
             
-            this.widgets.filterMenuButton.set("label", menuItem.cfg.getProperty("text"));
+            this.widgets.filterMenuButton.set("label", menuItem.cfg.getProperty("text") + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
             this.widgets.filterMenuButton.value = menuItem.value;
             
             var parameters = this.substituteParameters(this.options.filters[menuItem.value], {});
