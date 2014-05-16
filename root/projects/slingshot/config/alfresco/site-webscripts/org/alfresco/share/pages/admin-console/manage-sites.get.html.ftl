@@ -1,5 +1,5 @@
 <@markup id="widgets">
-   <@processJsonModel group="share" rootModule="alfresco/core/FilteredPage" />
+   <@processJsonModel group="share"/>
 </@>
 
 <@markup id="html">
