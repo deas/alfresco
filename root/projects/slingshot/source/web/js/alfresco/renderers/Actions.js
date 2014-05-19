@@ -18,6 +18,14 @@
  */
 
 /**
+ * <p>This renderer generates a [menu bar]{@link module:alfresco/menus/AlfMenuBar} containing a 
+ * [drop-down menu]{@link module:alfresco/menus/AlfMenuBarPopup} of [menu items]{@link module:alfresco/menus/AlfMenuItem}
+ * representing an action set.</p>
+ * 
+ * <p>This module was written to intially support Alfresco document and folder actions as generated for a 
+ * individual nodes but has since been expanded to support custom actions. The majority of the action handling
+ * code is done by the [_ActionsMixin]{@link module:alfresco/renderers/_ActionsMixin}</p>
+ * 
  * @module alfresco/renderers/Actions
  * @extends module:alfresco/menus/AlfMenuBar
  * @mixes module:alfresco/documentlibrary/_AlfDocumentListTopicMixin
@@ -25,68 +33,13 @@
  */
 define(["dojo/_base/declare",
         "alfresco/menus/AlfMenuBar",
-        "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
+        "alfresco/renderers/_ActionsMixin",
         "alfresco/menus/AlfMenuBarPopup",
         "alfresco/menus/AlfMenuGroup",
-        "alfresco/menus/AlfMenuItem",
-        "dojo/_base/array",
-        "dojo/_base/lang",
-        "service/constants/Default",
-        "alfresco/renderers/_PublishPayloadMixin",
-        "alfresco/core/ArrayUtils"],
-        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array,
-                 lang, AlfConstants, _PublishPayloadMixin, AlfArray) {
+        "alfresco/menus/AlfMenuItem"],
+        function(declare, AlfMenuBar, _ActionsMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem) {
 
-   return declare([AlfMenuBar, _AlfDocumentListTopicMixin, _PublishPayloadMixin], {
-
-      /**
-       * Indicates whether or not actions should be filtered according to the 
-       * [allowedActions array]{@link module:alfresco/renderers/Actions#allowedActions}.
-       *
-       * @instance
-       * @type {boolean}
-       * @default false
-       */
-      filterActions: true,
-
-      /**
-       *  Array containing a list of allowed actions
-       *  This is used to filter out actions that the actions API returns, but haven't yet been implemented.
-       *  TODO: Remove this once all actions have been implemented by the actions service.
-       *  Currently - all actions of type link and pagelink should work.
-       */
-      allowedActions: [
-         "document-download",
-         "document-view-content",
-         "document-view-details",
-         "folder-view-details",
-         "document-edit-metadata",
-         "document-inline-edit",
-         "document-manage-granular-permissions",
-         "document-manage-repo-permissions",
-         "document-view-original",
-         "document-view-working-copy",
-         "folder-manage-rules",
-         "view-in-explorer",
-         "document-view-googledoc",
-         "document-view-googlemaps",
-         "document-view-in-source-repository",
-         "document-view-in-cloud",
-         "document-delete", // TODO: Works, but highlights eventual consistency issues.
-         "document-edit-offline" // TODO: Works, but Working copy handling isn't quite correct.
-
-         // TODO: Fix Document Picker scoping issues.
-         //  "document-copy-to",
-         //  "document-move-to",
-
-         // TODO: Dialog Service not read for property edits.
-         // "document-edit-properties",
-
-         // TODO: Not implemented yet.
-         // "document-upload-new-version",
-         // "document-assign-workflow",
-         // "document-publish"
-      ],
+   return declare([AlfMenuBar, _ActionsMixin], {
 
       /**
        * Overrides the default to create a popup containing a group containing all the actions
@@ -111,51 +64,6 @@ define(["dojo/_base/declare",
 
          this._menuBar.addChild(this.actionsMenu);
          this._menuBar.placeAt(this.containerNode);
-      },
-
-      /**
-       * Add the actions provided by the current item.
-       *
-       * @instance
-       */
-      addActions: function alfresco_renderers_Actions__postCreate() {
-         // Iterate over the actions to create a menu item for each of them...
-         if (this.customActions != null && this.customActions.length > 0)
-         {
-            array.forEach(this.customActions, lang.hitch(this, "addAction"));
-         }
-         else if (this.currentItem.actions && this.currentItem.actions.length > 0)
-         {
-            array.forEach(this.currentItem.actions, lang.hitch(this, "addAction"));
-         }
-      },
-      
-      /**
-       * 
-       * @instance
-       * @param {object} action The configuration for the action to add
-       * @param (integer} index The index of the action
-       */
-      addAction: function alfresco_renderers_Actions__addAction(action, index) {
-         if (this.filterActions === false || AlfArray.arrayContains(this.allowedActions, action.id))
-         {
-            this.alfLog("log", "Adding action", action);
-
-            var payload = (action.publishPayload != null) ? action.publishPayload : {document: this.currentItem, action: action};
-            var menuItem = new AlfMenuItem({
-               label: action.label,
-               iconImage: AlfConstants.URL_RESCONTEXT + "components/documentlibrary/actions/" + action.icon + "-16.png",
-               type: action.type,
-               pubSubScope: this.pubSubScope,
-               publishTopic: (action.publishTopic != null) ? action.publishTopic : this.singleDocumentActionTopic,
-               publishPayload: this.generatePayload(payload, this.currentItem, null, action.publishPayloadType, action.publishPayloadItemMixin, action.publishPayloadModifiers)
-            });
-            this.actionsGroup.addChild(menuItem);
-         }
-         else
-         {
-            this.alfLog("log", "Skipping action as it's missing from whitelist: " + action);
-         }
       }
    });
 });

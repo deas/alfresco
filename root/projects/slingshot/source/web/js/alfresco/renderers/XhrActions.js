@@ -18,142 +18,23 @@
  */
 
 /**
- * @module alfresco/renderers/Actions
- * @extends module:alfresco/menus/AlfMenuBar
- * @mixes module:alfresco/documentlibrary/_AlfDocumentListTopicMixin
+ * <p>This module extends the standard [actions renderer]{@link module:alfresco/renderers/Actions} to 
+ * provide the capability to asynchronously retrieve the actions for a specific Alfresco document or 
+ * folder when only the NodeRef is known.</p>
+ *
+ * @module alfresco/renderers/XhrActions
+ * @extends module:alfresco/renderers/Actions
+ * @mixes module:alfresco/renderers/_XhrActionsMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
         "alfresco/renderers/Actions",
-        "alfresco/menus/AlfMenuBarPopup",
-        "alfresco/menus/AlfMenuGroup",
-        "alfresco/menus/AlfMenuItem",
-        "dojo/_base/array",
-        "dojo/_base/lang",
-        "service/constants/Default"], 
-        function(declare, Actions, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array, lang, AlfConstants) {
+        "alfresco/renderers/_XhrActionsMixin"], 
+        function(declare, Actions, _XhrActionsMixin) {
 
-   return declare([Actions], {
-      
-      /**
-       * The JSON model for controlling the widgets that are displayed whilst waiting for the
-       * XHR request to complete.
-       *
-       * @instance
-       * @type {array}
-       */
-      widgetsForLoading: [
-         {
-            name: "alfresco/header/AlfMenuItem",
-            config: {
-               iconClass: "alf-loading-icon",
-               label: "loading.label"
-            }
-         }
-      ],
-
-      /**
-       *
-       * @instance
-       */
-      addActions: function alfresco_renderers_XhrActions__postCreate() {
-
-         // Pass the loading JSON model to the actions menu group to be displayed...
-         this.actionsGroup.processWidgets(this.widgetsForLoading);
-
-         if (this.actionsMenu.popup)
-         {
-            // Load the actions only when the user opens the Actions menu...
-            this.actionsMenu.popup.onOpen = dojo.hitch(this, "loadActions");
-         }
-         else
-         {
-            this.alfLog("log", "No Sites Menu popup - something has gone wrong!");
-         }
-      },
-
-      /**
-       * A boolean flag indicating whether or not the actions have been loaded yet.
-       *
-       * @instance
-       * @type {boolean}
-       * @default false
-       */
-      _actionsLoaded: false,
-
-      /**
-       * @instance
-       */
-      loadActions: function alfresco_renderers_XhrActions__loadActions() {
-         if (this._actionsLoaded)
-         {
-            this.alfLog("log", "Actions already loaded");
-         }
-         else
-         {
-            this.alfLog("log", "Loading actions");
-            this.getXhrData();
-         }
-      },
-
-      /**
-       * 
-       * @instance
-       */
-      getXhrData: function alfresco_renderers_XhrActions__getXhrData() {
-         var nodeRef = lang.getObject("nodeRef", false, this.currentItem);
-         if (nodeRef != null)
-         {
-            // Generate a UUID for the response to the publication to ensure that only this widget
-            // handles to the XHR data...
-            var responseTopic = this.generateUuid();
-            this._xhrDataRequestHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onXhrData"), true);
-            this.alfPublish("ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST", {
-               alfResponseTopic: responseTopic,
-               nodeRef: nodeRef
-            }, true);
-         }
-         else
-         {
-            this.alfLog("warn", "No nodeRef attribute available to use to retrieve all data.", this);
-         }
-      },
-
-      /**
-       * Handles the processing of the asynchronously requested data. It will attempt to render the returned
-       * data item using the attribute "widgetsForXhrData".
-       * 
-       * @instance
-       * @param {object} payload 
-       */
-      onXhrData: function alfresco_renderers_XhrActions__onXhrData(payload) {
-         if (this._xhrDataRequestHandle != null)
-         {
-            this.alfUnsubscribe(this._xhrDataRequestHandle);
-         }
-         else
-         {
-            this.alfLog("warn", "A subscription handle was not found for processing XHR layout data - this could be a potential memory leak", this);
-         }
-         if (lang.exists("response.item", payload)) 
-         {
-            this._actionsLoaded = true;
-            this.currentItem = payload.response.item;
-
-            // Remove the loading menu item...
-            array.forEach(this.actionsMenu.popup.getChildren(), function(widget, index) {
-               this.actionsMenu.popup.removeChild(widget);
-            }, this);
-
-            this.actionsGroup = new AlfMenuGroup({});
-
-            this.actionsMenu.popup.addChild(this.actionsGroup);
-            array.forEach(this.currentItem.actions, lang.hitch(this, "addAction"));
-         }
-         else
-         {
-            this.alfLog("warn", "Document data was provided but the 'response.item' attribute was not found", payload, this);
-         }
-      }
+   return declare([Actions, _XhrActionsMixin], {
+      // Note: It might appear as though this widget does nothing, but actually it's
+      //       the simple act of extending Actions and mixing in the _XhrActionsMixin that
+      //       this module provides.
    });
 });
