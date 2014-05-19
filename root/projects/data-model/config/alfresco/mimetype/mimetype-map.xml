@@ -66,15 +66,13 @@
 
          <mimetype mimetype="text/plain" text="true" display="Plain Text">
             <extension display="Plain Text" default="true">txt</extension>
-            <extension display="Java Source">java</extension>
-            <extension display="Java Server Page">jsp</extension>
             <extension display="SQL">sql</extension>
             <extension display="Java Properties">properties</extension>
             <extension display="FreeMarker Template">ftl</extension>
             <extension display="Initialization Values">ini</extension>
             <extension display="Windows Batch Script">bat</extension>
             <extension display="Unix Shell Script">sh</extension>
-            <extension display="Log">log</extension>S
+            <extension display="Log">log</extension>
          </mimetype>
          <mimetype mimetype="text/csv" text="true" display="Comma Separated Values (CSV)">
             <extension default="true">csv</extension>
@@ -610,12 +608,6 @@
          </mimetype>
          <mimetype mimetype="application/x-rar-compressed" display="RAR Archive">
             <extension default="true">rar</extension>
-         </mimetype>
-         <mimetype mimetype="text/x-java-source" text="true" display="Java Source File">
-            <extension default="true">java</extension>
-         </mimetype>
-         <mimetype mimetype="text/x-java-source" text="true" display="Java Source File">
-            <extension default="true">java</extension>
          </mimetype>
 
       </mimetypes>
