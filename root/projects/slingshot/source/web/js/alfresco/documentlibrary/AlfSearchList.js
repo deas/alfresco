@@ -106,10 +106,10 @@ define(["dojo/_base/declare",
        */
       onSearchTermRequest: function alfresco_documentlibrary_AlfSearchList__onSearchTermRequest(payload) {
          this.alfLog("log", "Setting search term", payload, this);
-         var searchTerm = lang.getObject("term", false, payload);
+         var searchTerm = lang.getObject("searchTerm", false, payload);
          if (searchTerm == null)
          {
-            this.alfLog("warn", "No term provided on request", payload, this);
+            this.alfLog("warn", "No searchTerm provided on request", payload, this);
          }
          else
          {

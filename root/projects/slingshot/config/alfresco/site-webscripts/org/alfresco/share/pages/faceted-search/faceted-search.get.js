@@ -32,8 +32,8 @@ var searchForm = {
    config: {
       useHash: true,
       okButtonLabel: msg.get("faceted-search.search-form.ok-button-label"),
-      okButtonPublishTopic : "ALF_SET_HASH",
-      okButtonPublishGlobal: false,
+      okButtonPublishTopic : "ALF_SET_SEARCH_TERM",
+      okButtonPublishGlobal: true,
       okButtonIconClass: "alf-white-search-icon",
       okButtonClass: "call-to-action",
       textFieldName: "searchTerm",
