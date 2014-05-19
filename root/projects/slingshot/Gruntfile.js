@@ -53,6 +53,12 @@ module.exports = function(grunt) {
    ]);
 
    // TODO: Rationalise these once we've got a workflow sorted.
+   //   Grunt Work Flow:
+   //
+   //      g cup: performs a clean update from SVN, full build & starts both servers.
+   //      g s: exploded reploy and server restart
+   //      g si: incremental build, exploded delopy
+
 
    // Standard Dev task - sets up environment and then waits for your awesome code changes
    grunt.registerTask('start', [
@@ -76,6 +82,10 @@ module.exports = function(grunt) {
       'shell:killShare',
       'shell:startShare'
    ]);
+   grunt.registerTask('si', [
+      'shell:killShare',
+      'shell:startShareInc'
+   ]);
 
    // Svn up shorthand.
    grunt.registerTask('up', [
@@ -95,4 +105,4 @@ module.exports = function(grunt) {
    grunt.registerTask('sel', [
       'shell:seleniumUp'
    ]);
-}
+};
