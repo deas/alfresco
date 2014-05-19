@@ -85,7 +85,7 @@ define(["dojo/_base/declare",
          {
             this.showRenderingMessage();
             view.setData(this._currentData);
-            view.renderView();
+            view.renderView(false);
             this.showView(view);
             
             // Force a resize of the sidebar container to take the new height of the view into account...

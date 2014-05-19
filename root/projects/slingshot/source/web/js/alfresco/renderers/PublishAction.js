@@ -32,12 +32,13 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dijit/_OnDijitClickMixin",
         "alfresco/renderers/_JsNodeMixin",
+        "alfresco/renderers/_PublishPayloadMixin",
         "dojo/text!./templates/PublishAction.html",
         "alfresco/core/Core",
         "service/constants/Default"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, template, AlfCore, AlfConstants) {
+        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, _PublishPayloadMixin, template, AlfCore, AlfConstants) {
 
-   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, AlfCore], {
+   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, _PublishPayloadMixin, AlfCore], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -102,9 +103,8 @@ define(["dojo/_base/declare",
       onClick: function alfresco_renderers_PublishAction__onClick(evt) {
          var publishGlobal = (this.publishGlobal != null) ? this.publishGlobal : false;
          var publishToParent = (this.publishToParent != null) ? this.publishToParent : false;
-         this.alfPublish(this.publishTopic, {
-            item: this.currentItem
-         }, publishGlobal, publishToParent);
+         var payload = this.generatePayload(this.publishPayload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin);
+         this.alfPublish(this.publishTopic, payload, publishGlobal, publishToParent);
       }
    });
 });

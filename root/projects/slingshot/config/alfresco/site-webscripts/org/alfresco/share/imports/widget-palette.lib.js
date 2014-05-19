@@ -90,7 +90,187 @@ function getPublishTopicsConfig() {
    }];
 }
 
-
+function getPublishPayloadConfig() {
+   return [{
+      name: "alfresco/forms/controls/DojoRadioButtons",
+      config: {
+         fieldId: "PAYLOAD_CONFIG_TYPE",
+         name: "payloadConfigurationType",
+         label: "Publish Payload Type",
+         value: "CUSTOM",
+         noValueUpdateWhenHiddenOrDisabled: false,
+         postWhenHiddenOrDisabled: true,
+         optionsConfig: {
+            fixed: [
+               {
+                  value: "CUSTOM",
+                  label: "Custom"
+               },
+               {
+                  value: "SELECT",
+                  label: "Select from list"
+               }
+            ]
+         }
+      }
+   },
+   {
+      name: "alfresco/forms/controls/DojoSelect",
+      config: {
+         fieldId: "PRE_DEFINED_PAYLOAD_SELECT",
+         name: "predefinedPayloadConfig",
+         label: "Select the pre-defined payload type",
+         value: "DELETE_QUADDS_ITEM",
+         noValueUpdateWhenHiddenOrDisabled: false,
+         postWhenHiddenOrDisabled: true,
+         optionsConfig: {
+            fixed: [
+               {label: "Delete QuADDS Item", value:"DELETE_QUADDS_ITEM"}
+            ]
+         },
+         visibilityConfig: {
+            rules: [
+               {
+                  targetId: "PAYLOAD_CONFIG_TYPE",
+                  is: ["SELECT"]
+               }
+            ],
+            initialValue: true
+         }
+      }
+   },
+   {
+      name: "alfresco/forms/controls/DojoValidationTextBox",
+      config: {
+         name: "defaultConfig.publishPayload.quadds",
+         label: "Enter QuADDS to use",
+         value: "",
+         noValueUpdateWhenHiddenOrDisabled: true,
+         postWhenHiddenOrDisabled: false,
+         visibilityConfig: {
+            rules: [
+               {
+                  targetId: "PAYLOAD_CONFIG_TYPE",
+                  is: ["SELECT"]
+               },
+               {
+                  targetId: "PRE_DEFINED_PAYLOAD_SELECT",
+                  is: ["DELETE_QUADDS_ITEM"]
+               }
+            ],
+            initialValue: false
+         }
+      }
+   },
+   {
+      name: "alfresco/forms/controls/DojoSelect",
+      config: {
+         fieldId: "PUBLISH_PAYLOAD_TYPE",
+         name: "defaultConfig.publishPayloadType",
+         label: "Select the publish payload type",
+         value: "CONFIGURED",
+         optionsConfig: {
+            fixed: [
+               {label: "Custom Configuration", value:"CONFIGURED"},
+               {label: "Use Current Item", value: "CURRENT_ITEM"},
+               {label: "Process", value: "PROCESS"},
+               {label: "Build from config", value: "BUILD"}
+            ]
+         },
+         visibilityConfig: {
+            rules: [
+               {
+                  targetId: "PAYLOAD_CONFIG_TYPE",
+                  is: ["CUSTOM"]
+               }
+            ],
+            initialValue: true
+         }
+      }
+   },
+   {
+      name: "alfresco/forms/controls/DojoCheckBox",
+      config: {
+         name: "defaultConfig.publishPayloadItemMixin",
+         label: "Include the current item in the payload",
+         value: false
+         // ,
+         // visibilityConfig: {
+         //    rules: [
+         //       {
+         //          targetId: "PAYLOAD_CONFIG_TYPE",
+         //          is: ["CUSTOM"]
+         //       },
+         //       {
+         //          targetId: "PUBLISH_PAYLOAD_TYPE",
+         //          isNot: ["CURRENT_ITEM"]
+         //       }
+         //    ],
+         //    initialValue: false
+         // }
+      }
+   },
+   {
+      name: "alfresco/forms/controls/MultipleKeyValuePairFormControl",
+      config: {
+         noValueUpdateWhenHiddenOrDisabled: true,
+         postWhenHiddenOrDisabled: false,
+         name: "defaultConfig.publishPayload",
+         label: "Custom Payload",
+         visibilityConfig: {
+            rules: [
+               {
+                  targetId: "PAYLOAD_CONFIG_TYPE",
+                  is: ["CUSTOM"]
+               },
+               {
+                  targetId: "PUBLISH_PAYLOAD_TYPE",
+                  isNot: ["CURRENT_ITEM"]
+               }
+            ],
+            initialValue: false
+         }
+      }
+   },
+   {
+      name: "alfresco/forms/controls/MultipleEntryFormControl",
+      config: {
+         noValueUpdateWhenHiddenOrDisabled: true,
+         postWhenHiddenOrDisabled: false,
+         name: "defaultConfig.publishPayloadModifiers",
+         label: "Payload processing modifiers",
+         visibilityConfig: {
+            rules: [
+               {
+                  targetId: "PAYLOAD_CONFIG_TYPE",
+                  is: ["CUSTOM"]
+               },
+               {
+                  targetId: "PUBLISH_PAYLOAD_TYPE",
+                  is: ["PROCESS"]
+               }
+            ],
+            initialValue: false
+         },
+         widgets: [
+            {
+               name: "alfresco/forms/controls/DojoSelect",
+               config: {
+                  name: "value",
+                  label: "Select the modifiers to use",
+                  value: "",
+                  optionsConfig: {
+                     fixed: [
+                        {label: "Substitute tokens with values from current item", value:"processCurrentItemTokens"},
+                        {label: "Replace colons with underscores", value: "replaceColons"}
+                     ]
+                  }
+               }
+            }
+         ]
+      }
+   }];
+}
 
 /* *********************************************************************************
  *                                                                                 *
@@ -2071,6 +2251,7 @@ function getThumbnailWidget() {
 function getPublishActionWidget() {
 
    var widgetsForConfig = getPublishTopicsConfig();
+   widgetsForConfig = widgetsForConfig.concat(getPublishPayloadConfig());
    widgetsForConfig.push({
       name: "alfresco/forms/controls/DojoSelect",
       config: {
