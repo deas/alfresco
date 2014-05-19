@@ -1057,7 +1057,24 @@ define(["dojo/_base/declare",
          this.alfDisabled(this._disabled);
          
          // Set the label...
-         this._labelNode.innerHTML = this.encodeHTML(this.message(this.label));
+         if (this.label != null && this.label.trim() != "")
+         {
+            this._labelNode.innerHTML = this.encodeHTML(this.message(this.label));
+         }
+         else
+         {
+            domStyle.set(this._labelNode, {display: "none"});
+         }
+
+         // Set the description...
+         if (this.description != null && this.description.trim() != "")
+         {
+            this._descriptionNode.innerHTML = this.encodeHTML(this.message(this.description));
+         }
+         else
+         {
+            domStyle.set(this._descriptionNode, {display: "none"});
+         }
          
          // Set the units label...
          if (this.unitsLabel != null && this.unitsLabel != "")
@@ -1075,21 +1092,6 @@ define(["dojo/_base/declare",
          {
             // TODO: This message might not make much sense if it is just missing data for a required field...
             this._validationMessage.innerHTML = this.encodeHTML(this.message(this.validationConfig.errorMessage));
-         }
-         
-         if (this.description != null && 
-             this.wrappedWidget != null && 
-             this.description != "")
-         {
-            // Create a tooltip for the control...
-            Tooltip.defaultPosition=['above', 'below'];
-            var tooltip = new Tooltip({label: this.message(this.description),
-                                       showDelay: 250,
-                                       connectId: [this.wrappedWidget.domNode]});
-         }
-         else
-         {
-            this.alfLog("log", "Tooltip not created because form control not returned by call to createFormControl");
          }
       },
       

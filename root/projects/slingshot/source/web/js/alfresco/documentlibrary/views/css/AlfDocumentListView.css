@@ -23,6 +23,11 @@
    vertical-align: top;
 }
 
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView.no-borders > table, 
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView.no-borders > table > tbody > tr > td {
+   border: none;
+}
+
 .alfresco-documentlibrary-views-layouts-AlfDocumentListView td.smallpad {
    padding: 4px;
 }

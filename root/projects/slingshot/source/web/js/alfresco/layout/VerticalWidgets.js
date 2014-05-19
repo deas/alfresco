@@ -53,6 +53,15 @@ define(["alfresco/core/ProcessWidgets",
    return declare([ProcessWidgets], {
       
       /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/HorizontalWidgets.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/VerticalWidgets.css"}],
+
+      /**
        * The CSS class (or a space separated list of classes) to include in the DOM node.
        * 
        * @instance

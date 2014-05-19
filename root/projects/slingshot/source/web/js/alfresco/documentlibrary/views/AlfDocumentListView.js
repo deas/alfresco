@@ -114,6 +114,9 @@ define(["dojo/_base/declare",
       postCreate: function alfresco_documentlibrary_views_AlfDocumentListView__postCreate() {
          this.inherited(arguments);
 
+         // Add in any additional CSS classes...
+         domClass.add(this.domNode, (this.additionalCssClasses != null ? this.additionalCssClasses : ""));
+
          // Allow custom messages to be displayed when no items are available for display...
          if (this.noItemsMessage == null)
          {

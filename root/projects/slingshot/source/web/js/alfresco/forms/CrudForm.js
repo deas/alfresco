@@ -109,7 +109,7 @@ define(["dojo/_base/declare",
          this.createButton = new AlfButton({
             pubSubScope: this.pubSubScope,
             label: this.message(this.createButtonLabel),
-            additionalCssClasses: "createButton",
+            additionalCssClasses: "createButton call-to-action",
             publishTopic: this.createButtonPublishTopic,
             publishPayload: this.createButtonPublishPayload,
             publishGlobal: this.createButtonPublishGlobal
@@ -121,7 +121,7 @@ define(["dojo/_base/declare",
          this.updateButton = new AlfButton({
             pubSubScope: this.pubSubScope,
             label: this.message(this.updateButtonLabel),
-            additionalCssClasses: "updateButton",
+            additionalCssClasses: "updateButton call-to-action",
             publishTopic: this.updateButtonPublishTopic,
             publishPayload: this.updateButtonPublishPayload,
             publishGlobal: this.updateButtonPublishGlobal

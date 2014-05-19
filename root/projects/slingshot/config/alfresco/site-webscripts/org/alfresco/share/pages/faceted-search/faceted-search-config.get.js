@@ -16,48 +16,53 @@ var main = {
          {
             name: "alfresco/layout/VerticalWidgets",
             config: {
+               widgetMarginBottom: "10",
                widgets: [
                   {
-                     name: "alfresco/buttons/AlfButton",
+                     name: "alfresco/layout/VerticalWidgets",
+                     className: "add-borders",
                      config: {
-                        label: "Add New Filter",
-                        publishTopic: "ALF_CRUD_FORM_CREATE"
-                     }
-                  },
-                  {
-                     name: "alfresco/buttons/AlfButton",
-                     config: {
-                        label: "Refresh",
-                        publishTopic: "ALF_DOCLIST_RELOAD_DATA"
-                     }
-                  },
-                  {
-                     name: "alfresco/documentlibrary/QuaddsList",
-                     config: {
-                        quadds: "facets",
+                        widgetMarginBottom: "10",
                         widgets: [
                            {
-                              name: "alfresco/documentlibrary/views/AlfDocumentListView",
+                              name: "alfresco/buttons/AlfButton",
                               config: {
+                                 label: "Add New Filter",
+                                 publishTopic: "ALF_CRUD_FORM_CREATE",
+                                 additionalCssClasses: "call-to-action"
+                              }
+                           },
+                           {
+                              name: "alfresco/documentlibrary/QuaddsList",
+                              config: {
+                                 quadds: "facets",
                                  widgets: [
                                     {
-                                       name: "alfresco/documentlibrary/views/layouts/Row",
+                                       name: "alfresco/documentlibrary/views/AlfDocumentListView",
                                        config: {
+                                          additionalCssClasses: "no-borders",
                                           widgets: [
                                              {
-                                                name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                name: "alfresco/documentlibrary/views/layouts/Row",
                                                 config: {
-                                                   width: "",
                                                    widgets: [
                                                       {
-                                                         name: "alfresco/renderers/PropertyLink",
+                                                         name: "alfresco/documentlibrary/views/layouts/Cell",
                                                          config: {
-                                                            propertyToRender: "name",
-                                                            publishTopic: "ALF_CRUD_FORM_UPDATE",
-                                                            defaultConfig: {
-                                                               propertyToRender: "name",
-                                                               publishTopic: "ALF_CRUD_FORM_UPDATE"
-                                                            }
+                                                            width: "",
+                                                            widgets: [
+                                                               {
+                                                                  name: "alfresco/renderers/PropertyLink",
+                                                                  config: {
+                                                                     propertyToRender: "name",
+                                                                     publishTopic: "ALF_CRUD_FORM_UPDATE",
+                                                                     defaultConfig: {
+                                                                        propertyToRender: "name",
+                                                                        publishTopic: "ALF_CRUD_FORM_UPDATE"
+                                                                     }
+                                                                  }
+                                                               }
+                                                            ]
                                                          }
                                                       }
                                                    ]
@@ -71,6 +76,12 @@ var main = {
                            }
                         ]
                      }
+                  },
+                  {
+                     name: "alfresco/html/Label",
+                     config: {
+                        label: "A short intro about this new feature here. Yada yada yada."
+                     }
                   }
                ]
             },
@@ -83,10 +94,10 @@ var main = {
                   {
                      name: "alfresco/forms/CrudForm",
                      config: {
-                        createButtonLabel: "Create",
+                        createButtonLabel: "Save",
                         createButtonPublishTopic: "ALF_CREATE_QUADDS_ITEM",
                         createButtonPublishGlobal: true,
-                        updateButtonLabel: "Update",
+                        updateButtonLabel: "Save",
                         updateButtonPublishTopic: "ALF_UPDATE_QUADDS_ITEM",
                         updateButtonPublishGlobal: true,
                         deleteButtonLabel: "Delete",
@@ -125,7 +136,7 @@ var main = {
                                  fieldId: "FACET_NAME",
                                  name: "name",
                                  value: "",
-                                 label: "Facet Name",
+                                 label: "Filter Name",
                                  description: "",
                                  unitsLabel: "",
                                  visibilityConfig: {
@@ -178,7 +189,7 @@ var main = {
                                  name: "data.widget.config.facetQName",
                                  value: "",
                                  label: "Field Name",
-                                 description: "Enter the field to facet on",
+                                 description: "Internal property name for content model",
                                  unitsLabel: "",
                                  visibilityConfig: {
                                     initialValue: true,
@@ -252,7 +263,7 @@ var main = {
                                  name: "data.widget.config.sortBy",
                                  value: "ALPHABETICALLY",
                                  label: "Sort by",
-                                 description: "",
+                                 description: "Display order of filter items",
                                  unitsLabel: "",
                                  visibilityConfig: {
                                     initialValue: true,
@@ -269,7 +280,7 @@ var main = {
                                  optionsConfig: {
                                     fixed: [
                                        {
-                                          label: "Alphabetically",
+                                          label: "A-Z",
                                           value: "ALPHABETICALLY"
                                        },
                                        {
@@ -281,6 +292,32 @@ var main = {
                                           value: "DESCENDING"
                                        }
                                     ]
+                                 }
+                              }
+                           },
+                           {
+                              name: "alfresco/forms/controls/DojoValidationTextBox",
+                              config: {
+                                 fieldId: "LIMIT",
+                                 name: "data.widget.config.maxFilters",
+                                 value: "10",
+                                 label: "Limit",
+                                 description: "Maximum number of filter terms to display before \"More Choices\" link",
+                                 unitsLabel: "",
+                                 visibilityConfig: {
+                                    initialValue: true,
+                                    rules: []
+                                 },
+                                 requirementConfig: {
+                                    initialValue: true,
+                                    rules: []
+                                 },
+                                 disablementConfig: {
+                                    initialValue: false,
+                                    rules: []
+                                 },
+                                 validationConfig: {
+                                    regex: "^[0-9]+$"
                                  }
                               }
                            }

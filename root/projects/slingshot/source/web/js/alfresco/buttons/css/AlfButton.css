@@ -2,7 +2,8 @@
    background-image: none;
    background-color: @standard-button-background-color; 
    border: @standard-button-border;
-   margin: auto 0.25em;
+   margin: 0;
+   margin-right: @standard-column-width;
    border-radius: 0;
    font-size: @standard-button-font-size;
 }
@@ -25,7 +26,7 @@
 .alfresco-buttons-AlfButton.call-to-action {
    background-color: @call-to-action-button-background-color; 
    border: @call-to-action-button-border;
-   font-size: @call-to-action-button-font-size;
+   /*font-size: @call-to-action-button-font-size;*/
 }
 
 .alfresco-buttons-AlfButton.call-to-action.dijitButtonFocused,

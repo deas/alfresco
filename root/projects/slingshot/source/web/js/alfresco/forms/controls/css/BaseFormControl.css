@@ -1,9 +1,17 @@
 .alfresco-forms-controls-BaseFormControl {
-   margin-bottom: 0.5em;
+   margin-bottom: @standard-line-height;
 }
 
 .alfresco-forms-controls-BaseFormControl > .label {
-   
+   font-size: @normal-font-size;
+   line-height: ceil(@normal-font-size/@standard-line-height) * @standard-line-height;
+   margin-bottom: @standard-line-height;
+}
+
+.alfresco-forms-controls-BaseFormControl > .description {
+   font-size: @small-font-size;
+   line-height: ceil(@small-font-size/@standard-line-height) * @standard-line-height;
+   margin-bottom: @standard-line-height;
 }
 
 .alfresco-forms-controls-BaseFormControl > .control {
@@ -23,6 +31,7 @@
 
 .alfresco-forms-controls-BaseFormControl > .units {
    float: left;
+   margin-top: 5px;
 }
 
 .alfresco-forms-controls-BaseFormControl > .validation {

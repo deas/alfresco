@@ -1,0 +1,76 @@
+{
+   "services": [
+      {
+         "name": "alfresco/services/LoggingService",
+         "config": {
+            "loggingPreferences": {
+               "enabled": true,
+               "all": true,
+               "warn": true,
+               "error": true
+            }
+         }
+      }
+   ],
+   "widgets":[
+      {
+         "name": "alfresco/forms/controls/MultipleEntryFormControl",
+         "config": {
+            "label": "Properties",
+            "widgets": [
+               {
+                  "name": "alfresco/forms/controls/DojoValidationTextBox",
+                  "config": {
+                     "name": "fieldId",
+                     "label": "fieldId",
+                     "visibilityConfig": {
+                        "initialValue": false
+                     }
+                  }
+               },
+               {
+                  "name": "alfresco/forms/controls/DojoValidationTextBox",
+                  "config": {
+                     "name": "value",
+                     "label": "Property Name",
+                     "requirementConfig": {
+                        "initialValue": true
+                     }
+                  }
+               }
+               {
+                  "name": "alfresco/forms/controls/DojoSelect",
+                  "config": {
+                     "fieldId": "propertyType",
+                     "label": "Property Type",
+                     "value": "value",
+                     "optionsConfig": {
+                        "fixed": [
+                           { "label": "Checkbox", "value": "CHECKBOX" },
+                           { "label": "Text Field", "value": "STRING" },
+                           { "label": "Number", "value": "NUMBER" }
+                        ]
+                     }
+                  }
+               },
+               {
+                  "name": "alfresco/forms/controls/DojoValidationTextBox",
+                  "config": {
+                     "name": "description",
+                     "label": "Description"
+                  }
+               },
+               {
+                  "name": "alfresco/forms/"
+               }
+            ]
+         }
+      },
+      {
+         "name": "alfresco/testing/SubscriptionLog"
+      },
+      {
+         "name": "alfresco/testing/TestCoverageResults"
+      }
+   ]
+}

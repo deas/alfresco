@@ -11,3 +11,14 @@ body {
 body.aikau-reveal {
    opacity: 1;
 }
+
+.add-borders > .alfresco-core-ProcessWidgets {
+   border-top-left-radius: 5px;
+   border-top-right-radius: 5px;
+   border-bottom-left-radius: 5px;
+   border-bottom-right-radius: 5px;
+   border: @standard-border;
+   padding: 5px;
+   padding: 15px 5px;
+   display: block;
+}
