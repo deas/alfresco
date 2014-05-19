@@ -63,7 +63,8 @@ module.exports = function (grunt, alf) {
                stderr: true,
                failOnError: true,
                execOptions: {
-                  cwd: alf.testResourcesDir + "/selenium"
+                  cwd: alf.testResourcesDir + "/selenium",
+                  maxBuffer: "Infinite"
                }
             }
          },
