@@ -40,14 +40,24 @@ define(["alfresco/forms/controls/BaseFormControl",
       cssRequirements: [{cssFile:"./css/DojoValidationTextBox.css"}],
 
       /**
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      placeHolder: null,
+
+      /**
        * @instance
        */
       getWidgetConfig: function alfresco_forms_controls_DojoValidationTextBox__getWidgetConfig() {
          // Return the configuration for the widget
+         var placeHolder = (this.placeHolder != null) ? this.message(this.placeHolder) : "";
          return {
             id : this.generateUuid(),
             name: this.name,
             value: this.value,
+            placeHolder: placeHolder,
             iconClass: this.iconClass
          };
       },

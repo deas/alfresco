@@ -148,7 +148,8 @@ var main = {
                                           fieldId: "FACET_NAME",
                                           name: "name",
                                           value: "",
-                                          label: "Filter Name",
+                                          label: "Filter ID",
+                                          placeHolder: "Enter an ID for the filter",
                                           description: "",
                                           unitsLabel: "",
                                           visibilityConfig: {
@@ -175,6 +176,7 @@ var main = {
                                           name: "data.widget.config.label",
                                           value: "",
                                           label: "Display Name",
+                                          placeHolder: "Enter the name for the filter",
                                           description: "",
                                           unitsLabel: "",
                                           visibilityConfig: {
@@ -296,11 +298,11 @@ var main = {
                                                    value: "ALPHABETICALLY"
                                                 },
                                                 {
-                                                   label: "Hits (ascending)",
+                                                   label: "Results (low to high)",
                                                    value: "ASCENDING"
                                                 },
                                                 {
-                                                   label: "Hits (descending)",
+                                                   label: "Results (high to low)",
                                                    value: "DESCENDING"
                                                 }
                                              ]
@@ -308,7 +310,7 @@ var main = {
                                        }
                                     },
                                     {
-                                       name: "alfresco/forms/controls/DojoValidationTextBox",
+                                       name: "alfresco/forms/controls/NumberSpinner",
                                        config: {
                                           fieldId: "LIMIT",
                                           name: "data.widget.config.maxFilters",
@@ -316,6 +318,8 @@ var main = {
                                           label: "Limit",
                                           description: "Maximum number of filter terms to display before \"More Choices\" link",
                                           unitsLabel: "",
+                                          min: 1,
+                                          max: 20,
                                           visibilityConfig: {
                                              initialValue: true,
                                              rules: []
