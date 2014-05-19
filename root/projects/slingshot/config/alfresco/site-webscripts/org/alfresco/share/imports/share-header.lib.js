@@ -38,22 +38,17 @@ function getLicenseUsage() {
  * @returns {object} The group information for the current user
  */
 function getUserGroupData() {
-   var userData = null;
-   var json = remote.call("/api/people/" + encodeURIComponent(user.name) + "?groups=true");
-   if (json.status == 200)
+   var userData = {};
+   var groups = user.properties["alfUserGroups"];
+   if (groups != null)
    {
-      // Create javascript objects from the repo response
-      userData = JSON.parse(json);
-      if (userData != null && userData.groups != null)
+      groups = groups.split(",");
+      var processedGroups = {};
+      for (var i=0; i<groups.length; i++)
       {
-         // Convert the array of groups into a object for easier access...
-         var processedGroups = {};
-         for (var i=0; i<userData.groups.length; i++)
-         {
-            processedGroups[userData.groups[i].itemName] = true;
-         }
-         userData.groups = processedGroups;
+         processedGroups[groups[i]] = true;
       }
+      userData.groups = processedGroups;
    }
    return userData;
 }

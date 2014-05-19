@@ -24,11 +24,14 @@ import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.alfresco.web.site.servlet.SlingshotLoginController;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.extensions.surf.FrameworkUtil;
 import org.springframework.extensions.surf.RequestContext;
+import org.springframework.extensions.surf.ServletUtil;
 import org.springframework.extensions.surf.exception.ConnectorServiceException;
 import org.springframework.extensions.surf.exception.UserFactoryException;
 import org.springframework.extensions.surf.site.AlfrescoUser;
@@ -55,6 +58,7 @@ import org.springframework.extensions.webscripts.json.JSONWriter;
 public class SlingshotUserFactory extends AlfrescoUserFactory
 {
     public static final String ALF_USER_LOADED = "alfUserLoaded";
+    public static final String ALF_USER_GROUPS = "alfUserGroups";
     
     // Alfresco 3.4 user status properties
     public static final String CM_USERSTATUS = "{http://www.alfresco.org/model/content/1.0}userStatus";
@@ -99,6 +103,7 @@ public class SlingshotUserFactory extends AlfrescoUserFactory
         user.setProperty(PROP_USERSTATUS, properties.has(CM_USERSTATUS) ? properties.getString(CM_USERSTATUS) : null);
         user.setProperty(PROP_USERSTATUSTIME, properties.has(CM_USERSTATUSTIME) ? properties.getString(CM_USERSTATUSTIME) : null);
         user.setProperty(PROP_USERHOME, properties.has(CM_USERHOME) ? properties.getString(CM_USERHOME) : null);
+        
         return user;
     }
     
@@ -109,6 +114,20 @@ public class SlingshotUserFactory extends AlfrescoUserFactory
         
         // set a value indicating time the user was constructed
         user.setProperty(ALF_USER_LOADED, new Date().getTime());
+        
+        // When a user logs in the SlingshotLoginController will store the groups that they are a member of as a comma delimited string
+        // This string needs to be retrieved from the HttpSession and set as a property on the User object.
+        // The property can then be easily used in WebScripts using user.properties["alfUserGroups"].split(,) to get an array of the groups
+        // that the user is a member of...
+        HttpSession session = ServletUtil.getSession(false);
+        if (session != null)
+        {
+            String groups = (String) session.getAttribute(SlingshotLoginController.SESSION_ATTRIBUTE_KEY_USER_GROUPS);
+            if (groups != null)
+            {
+                user.setProperty(ALF_USER_GROUPS, groups);
+            }
+        }
         
         return user;
     }

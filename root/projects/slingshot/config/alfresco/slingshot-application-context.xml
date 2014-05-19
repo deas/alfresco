@@ -93,6 +93,14 @@
       </property>
    </bean>
    
+   <!-- Override Login Controller - get users group membership -->
+   <bean id="loginController" class="org.alfresco.web.site.servlet.SlingshotLoginController">
+        <property name="cacheSeconds" value="-1" />
+        <property name="useExpiresHeader"><value>true</value></property>
+        <property name="useCacheControlHeader"><value>true</value></property>
+        <property name="userFactory" ref="user.factory"></property>
+    </bean>
+    
    <!-- Override Logout Controller - to expire Alfresco tickets -->
    <bean id="logoutController" class="org.alfresco.web.site.servlet.SlingshotLogoutController">
       <property name="cacheSeconds" value="-1" />
