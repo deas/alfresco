@@ -26,17 +26,17 @@
 }
 
 .alfresco-documentlibrary-AlfDocumentFilters .label {
-   font-family: Open Sans Bold;
-   color: #000;
-   font-size: 123.1%;
+   font-family: @bold-font;
+   color: @general-font-color;
+   font-size: @title-font-size;
    font-weight: normal;
-   margin-bottom: 15px;
+   margin-bottom: @standard-line-height;
    margin-left: 15px;
 }
 
 .alfresco-documentlibrary-AlfDocumentFilters ul.filters li.showMore,
 .alfresco-documentlibrary-AlfDocumentFilters ul.filters li.showLess {
-   color: #B3B3B3;
+   color: @de-emphasized-font-color;
    display: block;
    cursor: pointer;
 }

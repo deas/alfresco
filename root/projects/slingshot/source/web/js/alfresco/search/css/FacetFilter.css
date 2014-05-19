@@ -1,9 +1,8 @@
 .alfresco-search-FacetFilter {
    overflow: hidden;
-   /*width: 300px;*/
-   /*margin-left: 25px;*/
-   line-height: 15px;
-   margin-bottom: 15px;
+   line-height: ceil(@normal-font-size/@standard-line-height) * @standard-line-height;
+   margin-bottom: @standard-line-height;
+   font-size: @normal-font-size;
    list-style-type: none;
 }
 
