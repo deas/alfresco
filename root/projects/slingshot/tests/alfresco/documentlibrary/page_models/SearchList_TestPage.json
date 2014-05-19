@@ -109,6 +109,13 @@
          "name": "alfresco/documentlibrary/AlfSearchList",
          "config": {
             "useHash": true,
+            "hashVarsForUpdate": [
+               "searchTerm",
+               "facetFilters",
+               "sortField",
+               "sortAscending"
+            ],
+            "blockConcurrentRequests": false,
             "widgets": [
                {
                   "name": "alfresco/documentlibrary/views/AlfSearchListView"

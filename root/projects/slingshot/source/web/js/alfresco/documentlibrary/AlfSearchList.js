@@ -81,8 +81,11 @@ define(["dojo/_base/declare",
          this.alfSubscribe(this.scrollNearBottom, lang.hitch(this, "onScrollNearBottom"));
 
          // Prevent multiple concurrent requests:
-         this.alfSubscribe(this.requestInProgressTopic, lang.hitch(this, "onRequestInProgress"));
-         this.alfSubscribe(this.requestFinishedTopic, lang.hitch(this, "onRequestFinished"));
+         if (this.blockConcurrentRequests)
+         {
+            this.alfSubscribe(this.requestInProgressTopic, lang.hitch(this, "onRequestInProgress"));
+            this.alfSubscribe(this.requestFinishedTopic, lang.hitch(this, "onRequestFinished"));
+         }
 
          // Get the messages for the template...
          this.noViewSelectedMessage = this.message("searchlist.no.view.message");
@@ -263,8 +266,11 @@ define(["dojo/_base/declare",
       loadData: function alfresco_documentlibrary_AlfSearchList__loadData() {
          if (!this.requestInProgress) {
 
-            this.alfPublish(this.requestInProgressTopic, {});
-
+            if (this.blockConcurrentRequests)
+            {
+               this.alfPublish(this.requestInProgressTopic, {});
+            }
+            
             this.showLoadingMessage();
 
             var filters = "";
