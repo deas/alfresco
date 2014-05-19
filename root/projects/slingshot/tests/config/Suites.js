@@ -63,6 +63,8 @@ define({
       'tests/alfresco/forms/controls/FormButtonDialogTest',
 
       'tests/alfresco/header/WarningTest',
+
+      'tests/alfresco/html/LabelTest',
       
       'tests/alfresco/layout/BasicLayoutTest',
 

@@ -30,8 +30,9 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/Label.html",
         "alfresco/core/Core",
-        "dojo/_base/lang"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang) {
+        "dojo/_base/lang",
+        "dojo/dom-class"], 
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domClass) {
    
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
 
@@ -68,6 +69,28 @@ define(["dojo/_base/declare",
        * @default "title.label"
        */
       label: "",
+
+      /**
+       * Any additional classes to add. Some classes have been included with this widget, these are:
+       * <ul><li>"top-border-beyond-gutters" - used to create a full width border commonly used under
+       * the title bar</li></ul>
+       * 
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      additionalCssClasses: null,
+
+      /**
+       * 
+       * @instance
+       */
+      postCreate: function alfresco_html_Label__postCreate() {
+         if (this.additionalCssClasses != null)
+         {
+            domClass.add(this.domNode, this.additionalCssClasses);
+         }
+      },
 
       /**
        * @instance

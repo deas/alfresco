@@ -60,22 +60,6 @@ define(["dojo/_base/declare",
       templateString: template,
       
       /**
-       * The link stem for sites.
-       * 
-       * @instance
-       * @type {String}
-       */
-      siteLink: "site/{sitePath}/dashboard",
-
-      /**
-       * The link stem for users.
-       * 
-       * @instance
-       * @type {String}
-       */
-      userLink: "user/{userPath}/profile",
-      
-      /**
        * Creates the renderers to display for a search result and adds them into the template. Renderers
        * will only be created if there is data for them. This is done to further improve the performance
        * of the search rendering.
@@ -111,9 +95,7 @@ define(["dojo/_base/declare",
             }, this.titleNode);
          }
 
-         var userUrl = this.userLink.replace("{userPath}", lang.getObject("modifiedByUser", false, this.currentItem));
-         
-         new DateLink({
+        new DateLink({
             renderedValueClass: "alfresco-renderers-Property pointer",
             pubSubScope: this.pubSubScope,
             currentItem: this.currentItem,
@@ -121,9 +103,10 @@ define(["dojo/_base/declare",
             modifiedByProperty: "modifiedBy",
             publishTopic: "ALF_NAVIGATE_TO_PAGE",
             useCurrentItemAsPayload: false,
-            publishPayloadType: "CONFIGURED",
+            publishPayloadType: "PROCESS",
+            publishPayloadModifiers: ["processCurrentItemTokens"],
             payload: {
-               url: userUrl,
+               url: "user/{modifiedByUser}/profile",
                type: "SHARE_PAGE_RELATIVE"
             }
          }, this.dateNode);
@@ -148,8 +131,6 @@ define(["dojo/_base/declare",
          }
          else
          {
-            var siteUrl = this.siteLink.replace("{sitePath}", lang.getObject("site.shortName", false, this.currentItem));
-
             new PropertyLink({
                renderedValueClass: "alfresco-renderers-Property pointer",
                pubSubScope: this.pubSubScope,
@@ -158,9 +139,10 @@ define(["dojo/_base/declare",
                label: this.message("faceted-search.doc-lib.value-prefix.site"),
                publishTopic: "ALF_NAVIGATE_TO_PAGE",
                useCurrentItemAsPayload: false,
-               publishPayloadType: "CONFIGURED",
+               publishPayloadType: "PROCESS",
+               publishPayloadModifiers: ["processCurrentItemTokens"],
                payload: {
-                  url: siteUrl,
+                  url: "site/{site.shortName}/dashboard",
                   type: "SHARE_PAGE_RELATIVE"
                }
             }, this.siteNode);

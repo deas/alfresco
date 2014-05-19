@@ -464,7 +464,7 @@ define(["dojo/_base/declare",
             // Publish the number of search results found...
             this.alfPublish("ALF_SEARCH_RESULTS_COUNT", {
                count: resultsCount,
-               label: this.message("search.results.count.label", {0: resultsCount})
+               label: resultsCount
             });
          }
       
