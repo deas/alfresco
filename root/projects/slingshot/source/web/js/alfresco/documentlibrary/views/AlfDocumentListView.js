@@ -133,7 +133,8 @@ define(["dojo/_base/declare",
          }
          if (this.currentData != null)
          {
-            this.renderView();
+            // Render the initial data - make sure any previous data is cleared (not that there should be any!)
+            this.renderView(false);
          }
 
          this.alfSubscribe(this.clearDocDataTopic, lang.hitch(this, "clearOldView"));
@@ -153,7 +154,7 @@ define(["dojo/_base/declare",
             }
 
             this.setData(payload.response);
-            this.renderView();
+            this.renderView(false);
          }
          else
          {
@@ -238,15 +239,17 @@ define(["dojo/_base/declare",
        * attribute has been set to an object with an "items" attribute that is an array of objects.
        * 
        * @instance
+       * @param {boolean} preserveCurrentData This should be set to true when you don't want to clear the old data, the
+       * most common example of this is when infinite scroll is being used.
        */
-      renderView: function alfresco_documentlibrary_views_AlfDocumentListView__renderView() {
+      renderView: function alfresco_documentlibrary_views_AlfDocumentListView__renderView(preserveCurrentData) {
          if (this.currentData && this.currentData.items && this.currentData.items.length > 0)
          {
             try
             {
                if (this.docListRenderer != null)
                {
-                  this.docListRenderer.destroy(true);
+                  this.docListRenderer.destroy(preserveCurrentData);
                }
 
                this.alfLog("log", "Rendering items", this);

@@ -303,7 +303,7 @@ define(["dojo/_base/declare",
                view.setData(newData);
             }
 
-            view.renderView();
+            view.renderView(this.useInfiniteScroll);
             this.showView(view);
 
          }

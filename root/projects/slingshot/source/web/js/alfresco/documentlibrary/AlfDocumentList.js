@@ -536,7 +536,7 @@ define(["dojo/_base/declare",
                var newView = this.viewMap[payload.value];
                this.showRenderingMessage();
                newView.setData(this._currentData);
-               newView.renderView();
+               newView.renderView(this.useInfiniteScroll);
                this.showView(newView);
             }
             else
@@ -782,7 +782,7 @@ define(["dojo/_base/declare",
          {
             this.showRenderingMessage();
             view.setData(this._currentData);
-            view.renderView();
+            view.renderView(this.useInfiniteScroll);
             this.showView(view);
             
             // Force a resize of the sidebar container to take the new height of the view into account...
