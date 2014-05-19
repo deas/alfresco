@@ -119,17 +119,19 @@ define(["dojo/_base/declare",
          // this.publishFacets();
       },
       
+      /**
+       * 
+       * @instance
+       */
       publishFacets: function alfresco_search_FacetFilters__publishFacets() {
          if (this.facetQName != null && this.facetQName != "")
          {
             // Publish the details of the facet for the SearchService to log for inclusion in search requests
-            // TODO: Update SearchService to subscribe to this topic...
             this.alfPublish("ALF_INCLUDE_FACET", {
                qname: this.facetQName
             }, true);
 
             // Subscribe to facet property results to add facet properties...
-            // TODO: Update SearchService to publish on this topic when search results come in...
             this.alfSubscribe("ALF_FACET_RESULTS_@" + this.facetQName, lang.hitch(this, "processFacetFilters"));
          }
          else
@@ -170,9 +172,11 @@ define(["dojo/_base/declare",
          var filters = [];
          for (var key in payload.facetResults)
          {
+            var currFilter = payload.facetResults[key];
             filters.push({
-               value: key,
-               hits: payload.facetResults[key]
+               label: currFilter.label,
+               value: currFilter.value,
+               hits: currFilter.hits
             });
             
          }
@@ -199,7 +203,7 @@ define(["dojo/_base/declare",
 
                // Keeping adding (visible) filters until we've hit the maximum number...
                var filterWidget = new FacetFilter({
-                  label: filter.value,
+                  label: filter.label,
                   hits: filter.hits,
                   filter: filter.value,
                   facet: this.facetQName,
@@ -275,8 +279,8 @@ define(["dojo/_base/declare",
        * @returns {number} -1, 0 or 1 according to standard array sorting conventions
        */
       _alphaSort: function alfresco_search_FacetFilters___alphaSort(a,b) {
-         var alc = a.value.toLowerCase();
-         var blc = b.value.toLowerCase();
+         var alc = a.label.toLowerCase();
+         var blc = b.label.toLowerCase();
          if(alc < blc) return -1;
          if(alc > blc) return 1;
          return 0;
