@@ -80,6 +80,7 @@ define({
 
       'tests/alfresco/renderers/BooleanTest',
       'tests/alfresco/renderers/DateTest',
+      'tests/alfresco/renderers/DateLinkTest',
       'tests/alfresco/renderers/PropertyTest',
       'tests/alfresco/renderers/PropertyLinkTest',
       'tests/alfresco/renderers/PublishingDropDownMenuTest',
