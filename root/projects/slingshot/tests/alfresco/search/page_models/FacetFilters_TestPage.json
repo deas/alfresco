@@ -31,7 +31,18 @@
                      "id": "DO_FACET_BUTTON_1",
                      "label": "Publish facet data 1",
                      "publishTopic": "ALF_FACET_RESULTS_@FACET1QNAME",
-                     "publishPayload": {"activeFilters":null,"facetResults":{"result 1":10,"result 2":9,"result 3":8,"result 4":7}}
+                     "publishPayload": {"activeFilters":null,"facetResults":[{"label": "result 1",
+                                                                              "value": "result 1",
+                                                                              "hits":10},
+                                                                             {"label": "result 2",
+                                                                              "value": "result 2",
+                                                                              "hits":9,}
+                                                                             {"label":"result 3",
+                                                                              "value":"result 3",
+                                                                              "hits":8},
+                                                                             {"label":"result 4",
+                                                                              "value":"result 4",
+                                                                              "hits":7}]}
                   }
                },
                {
@@ -40,7 +51,12 @@
                      "id": "DO_FACET_BUTTON_2",
                      "label": "Publish facet data 2",
                      "publishTopic": "ALF_FACET_RESULTS_@FACET1QNAME",
-                     "publishPayload": {"activeFilters":null,"facetResults":{"result 5":106,"result 6":56}}
+                     "publishPayload": {"activeFilters":null,"facetResults":[{"label":"result 5",
+                                                                              "value":"result 5",
+                                                                              "hits":106},
+                                                                             {"label":"result 6",
+                                                                              "value":"result 6",
+                                                                              "hits":56}]}
                   }
                },
                {
@@ -49,7 +65,24 @@
                      "id": "DO_FACET_BUTTON_3",
                      "label": "Publish facet data 3",
                      "publishTopic": "ALF_FACET_RESULTS_@FACET1QNAME",
-                     "publishPayload": {"activeFilters":null,"facetResults":{"result 7":106,"result 8":56,"result 9":45,"result 10":24,"result 11":18,"result 12":2}}
+                     "publishPayload": {"activeFilters":null,"facetResults":[{"label":"result 7",
+                                                                              "value":"result 7",
+                                                                              "hits":106},
+                                                                             {"label":"result 8",
+                                                                              "value":"result 8",
+                                                                              "hits":56},
+                                                                             {"label":"result 9",
+                                                                              "value":"result 9",
+                                                                              "hits":45},
+                                                                             {"label":"result 10",
+                                                                              "value":"result 10",
+                                                                              "hits":24},
+                                                                             {"label":"result 11",
+                                                                              "value":"result 11",
+                                                                              "hits":18},
+                                                                             {"label":"result 12",
+                                                                              "value":"result 12",
+                                                                              "hits":2}]}
                   }
                },
                {
@@ -68,7 +101,15 @@
                      "id": "DO_FACET_BUTTON_4",
                      "label": "Publish facet data 4",
                      "publishTopic": "ALF_FACET_RESULTS_@FACET2QNAME",
-                     "publishPayload": {"activeFilters":null,"facetResults":{"facFil1":789,"facFil2":456,"facFil3":2}}
+                     "publishPayload": {"activeFilters":null,"facetResults":[{"label":"facFil1",
+                                                                              "value":"facFil1",
+                                                                              "hits":789},
+                                                                             {"label":"facFil2",
+                                                                              "value":"facFil2",
+                                                                              "hits":456},
+                                                                             {"label":"facFil3",
+                                                                              "value":"facFil3",
+                                                                              "hits":2}]}
                   }
                },
                {
