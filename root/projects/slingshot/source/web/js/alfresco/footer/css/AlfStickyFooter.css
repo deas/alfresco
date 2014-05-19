@@ -6,6 +6,10 @@ html,body,
    margin: 0;
 }
 
+.alfresco-footer-AlfStickyFooter .main-content {
+   margin: 0 10px;
+}
+
 .alfresco-footer-AlfStickyFooter > div.wrapper {
    height: auto !important;
    margin: 0 auto -50px;
