@@ -1,8 +1,10 @@
 package org.alfresco.share.search;
 
 import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.search.FacetedSearchFacetGroup;
 import org.alfresco.po.share.search.FacetedSearchPage;
+import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.apache.commons.lang.StringUtils;
@@ -95,10 +97,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         trace("Starting searchTest");
 
         // Do a search for the letter 'a'
-        facetedSearchPage.getSearchForm().search("a");
-
-        // Reload the page objects
-        facetedSearchPage.render();
+        doSearch("a");
 
         // There should now be some results, facet groups and facets
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
@@ -167,10 +166,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         trace("Starting searchAndSortTest");
 
         // Do a search for the letter 'e'
-        facetedSearchPage.getSearchForm().search("e");
-
-        // Reload the page objects
-        facetedSearchPage.render();
+        doSearch("e");
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' there should be some search results");
@@ -237,10 +233,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         trace("Starting searchAndSortTest");
 
         // Do a search for the letter 'a'
-        facetedSearchPage.getSearchForm().search("a");
-
-        // Reload the page objects
-        facetedSearchPage.render();
+        doSearch("a");
 
         // Check the results
         int resultsCount = facetedSearchPage.getResults().size();
@@ -270,6 +263,54 @@ public class FacetedSearchPageTest extends AbstractUtils
         facetedSearchPage.getSearchForm().clearSearchTerm();
 
         trace("searchAndSortTest complete");
+    }
+
+    /**
+     * Search and link test.
+     *
+     * @throws Exception
+     */
+    @Test(dependsOnMethods={"searchAndPaginateTest"})
+    public void searchAndLinkTest() throws Exception
+    {
+        trace("Starting searchAndLinkTest");
+
+        // Do a search for the letter 'a'
+        doSearch("a");
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
+
+        // Get the current url
+        String url = drone.getCurrentUrl();
+
+        // Click the first result
+        facetedSearchPage.getResults().get(0).clickLink();
+
+        // Get the url again
+        String newUrl = drone.getCurrentUrl();
+
+        // We should no longer be on the faceted search page
+        Assert.assertNotEquals(url, newUrl, "After searching for the letter 'a' and clicking result 1, the url should have changed");
+        
+        // Resolve the new page - we should have linked to the document details page
+        Assert.assertTrue(FactorySharePage.resolvePage(drone) instanceof DocumentDetailsPage, "After searching for the letter 'a' and clicking result 1, we should now be on the document details page");
+        
+        trace("searchAndLinkTest complete");
+    }
+
+    /**
+     * Do search.
+     *
+     * @param searchTerm the search term
+     */
+    private void doSearch(String searchTerm)
+    {
+        // Do a search for the searchTerm
+        facetedSearchPage.getSearchForm().search(searchTerm);
+
+        // Reload the page objects
+        facetedSearchPage.render();
     }
 
     /**
