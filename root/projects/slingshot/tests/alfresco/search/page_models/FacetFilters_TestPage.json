@@ -1,0 +1,72 @@
+{
+   "services": [
+      {
+         "name": "alfresco/services/LoggingService",
+         "config": {
+            "loggingPreferences": {
+               "enabled": true,
+               "all": true
+            }
+         }
+      },
+      {
+         "name": "alfresco/services/ActionService"
+      },
+      {
+         "name": "alfresco/services/SearchService"
+      }
+   ],
+   "widgets": [
+      {
+         "id": "FACETS",
+         "name": "alfresco/layout/VerticalWidgets",
+         "config": {
+            "widgets": [
+               {
+                  "name": "alfresco/buttons/AlfButton",
+                  "config": {
+                     "id": "DO_FACET_BUTTON_1",
+                     "label": "Publish facet data 1",
+                     "publishTopic": "ALF_FACET_RESULTS_@FACET1QNAME",
+                     "publishPayload": {"activeFilters":null,"facetResults":{"result 1":10,"result 2":9,"result 3":8,"result 4":7}}
+                  }
+               },
+               {
+                  "name": "alfresco/buttons/AlfButton",
+                  "config": {
+                     "id": "DO_FACET_BUTTON_2",
+                     "label": "Publish facet data 2",
+                     "publishTopic": "ALF_FACET_RESULTS_@FACET1QNAME",
+                     "publishPayload": {"activeFilters":null,"facetResults":{"result 5":106,"result 6":56}}
+                  }
+               },
+               {
+                  "name": "alfresco/buttons/AlfButton",
+                  "config": {
+                     "id": "DO_FACET_BUTTON_3",
+                     "label": "Publish facet data 3",
+                     "publishTopic": "ALF_FACET_RESULTS_@FACET1QNAME",
+                     "publishPayload": {"activeFilters":null,"facetResults":{"result 7":106,"result 8":56,"result 9":45,"result 10":24,"result 11":18,"result 12":2}}
+                  }
+               },
+               {
+                  "id": "FACET1",
+                  "name": "alfresco/search/FacetFilters",
+                  "config": {
+                     "label": "Facet 1",
+                     "facetQName": "FACET1QNAME",
+                     "sortBy": "DESCENDING",
+                     "maxFilters": 5
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "name": "alfresco/testing/SubscriptionLog"
+      },
+      {
+         "name": "alfresco/testing/TestCoverageResults"
+      }
+   ]
+}

@@ -74,7 +74,9 @@ define({
                           'tests/alfresco/renderers/BooleanTest',
                           'tests/alfresco/renderers/PropertyLinkTest',
                           'tests/alfresco/renderers/PublishingDropDownMenuTest',
-                          'tests/alfresco/renderers/PublishPayloadMixinOnActionsTest'],
+                          'tests/alfresco/renderers/PublishPayloadMixinOnActionsTest',
+                          
+                          'tests/alfresco/search/FacetFiltersTest'],
 
    /**
     * This is the array of functional test suites that should only be applied to local tests
