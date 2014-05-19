@@ -167,7 +167,7 @@ define(["intern!object",
          .end()
 
          // Check the correct pub/sub form submission element has appeared
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("28", "alfTopic", "TEST_FORM_SUBMITTED"))
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "alfTopic", "TEST_FORM_SUBMITTED"))
          .then(function(result6) {
             TestCommon.log(testname,172,"Check the correct pub/sub form submission element has appeared");
             expect(result6).to.equal(true, "Form submission did not proceed as expected and the expected publish on 'TEST_FORM_SUBMITTED' was missing");
