@@ -26,7 +26,6 @@
 define(["dojo/_base/declare",
         "alfresco/menus/AlfMenuBar",
         "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
-        "alfresco/renderers/_PublishPayloadMixin",
         "alfresco/menus/AlfMenuBarPopup",
         "alfresco/menus/AlfMenuGroup",
         "alfresco/menus/AlfMenuItem",
@@ -35,7 +34,7 @@ define(["dojo/_base/declare",
         "service/constants/Default",
         "alfresco/renderers/_PublishPayloadMixin",
         "alfresco/core/ArrayUtils"],
-        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, _PublishPayloadMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array, 
+        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array,
                  lang, AlfConstants, _PublishPayloadMixin, AlfArray) {
 
    return declare([AlfMenuBar, _AlfDocumentListTopicMixin, _PublishPayloadMixin], {
@@ -72,7 +71,21 @@ define(["dojo/_base/declare",
          "document-view-googledoc",
          "document-view-googlemaps",
          "document-view-in-source-repository",
-         "document-view-in-cloud"
+         "document-view-in-cloud",
+         "document-delete", // TODO: Works, but highlights eventual consistency issues.
+         "document-edit-offline" // TODO: Works, but Working copy handling isn't quite correct.
+
+         // TODO: Fix Document Picker scoping issues.
+         //  "document-copy-to",
+         //  "document-move-to",
+
+         // TODO: Dialog Service not read for property edits.
+         // "document-edit-properties",
+
+         // TODO: Not implemented yet.
+         // "document-upload-new-version",
+         // "document-assign-workflow",
+         // "document-publish"
       ],
 
       /**
@@ -141,7 +154,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            this.alfLog("log", "Skipping action as it's missing from whitelist: " + action)
+            this.alfLog("log", "Skipping action as it's missing from whitelist: " + action);
          }
       }
    });

@@ -553,7 +553,8 @@ main.config.widgets.splice(2, 0, scopeSelection);
 services.push("alfresco/services/NavigationService",
               "alfresco/services/SearchService",
               "alfresco/services/ActionService",
-              "alfresco/services/DocumentService"
+              "alfresco/services/DocumentService",
+              "alfresco/dialogs/AlfDialogService"
               );
 
 // Add in the search form and search doc lib...

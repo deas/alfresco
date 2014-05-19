@@ -550,6 +550,7 @@ define(["dojo/_base/declare",
          var f = this[payload.params["function"]];
          if (typeof f === "function")
          {
+            // TODO: Should the document really be an Array?
             f.call(this, payload, [document]);
          }
          else
@@ -580,8 +581,12 @@ define(["dojo/_base/declare",
        */
       onActionDetails: function alfresco_services_ActionService__onActionDetails(payload, document) {
 
+         // Sometimes Document might be an array!
+         document = (lang.isArray(document))? document[0] : document;
+
          // 1. Get the data.
          // 2. Create a form dialog containing fields for all the properties
+
          if (document == null || document.nodeRef == null)
          {
             this.alfLog("warn", "A request was made to edit the properties of a document but no document or 'nodeRef' attribute was provided", document, this);
@@ -800,15 +805,19 @@ define(["dojo/_base/declare",
        * @param {object} document The document edit offline.
        */
       onActionEditOffline: function alfresco_services_ActionService__onActionEditOffline(payload, document) {
-         if (document != null && 
-             document.jsNode != null && 
-             document.jsNode.nodeRef != null)
+
+         // Document might be an array.
+         document = (lang.isArray(document))? document[0] : document;
+
+         if (document != null &&
+             document.node != null &&
+             document.node.nodeRef != null)
          {
             var data = {
-               nodeRef: document.jsNode.nodeRef.uri
+               nodeRef: document.node.nodeRef
             };
             var config = {
-               url: AlfConstants.PROXY_URI + "slingshot/doclib/action/checkout/node/" + document.jsNode.nodeRef.uri,
+               url: AlfConstants.PROXY_URI + "slingshot/doclib/action/checkout/node/" + data.nodeRef.replace("://", "/"),
                method: "POST",
                data: data,
                successCallback: this.onActionEditOfflineSuccess,
