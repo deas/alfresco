@@ -11,6 +11,10 @@
          @docListEvenRowColour: #f7f7f7;
          @docListDndHighlight: #0082ca;
 
+         // Layout settings...
+         // This is used to control the overall layout of the page. Line-heights will be a multiple of
+         // this value based on the font-size
+         @standard-line-height: 10px;
 
          // Font Colours
          @general-font-color: #333;
@@ -22,8 +26,8 @@
          @page-title-font-size: 26px;
          @title-font-size: 17px;
          @large-font-size: 14px;
-         @normal-font-size: 13px;
-         @small-font-size: 12px;
+         @normal-font-size: 12px;
+         @small-font-size: 10px;
          @footer-font-size: 8.11px;
 
          // Font families

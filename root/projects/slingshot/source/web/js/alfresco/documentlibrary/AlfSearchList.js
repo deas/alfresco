@@ -44,6 +44,15 @@ define(["dojo/_base/declare",
        * @default [{i18nFile: "./i18n/AlfDocumentList.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfSearchList.properties"}],
+
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/AlfSearchList.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/AlfSearchList.css"}],
       
       /**
        * Subscribe the document list topics.

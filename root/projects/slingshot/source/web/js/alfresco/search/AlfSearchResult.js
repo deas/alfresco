@@ -102,7 +102,7 @@ define(["dojo/_base/declare",
 
          if (this.currentItem.description == null || this.currentItem.description == "")
          {
-            domClass.add(this.descriptionNode, "hidden")
+            domClass.add(this.descriptionRow, "hidden")
          }
          else
          {
@@ -116,7 +116,7 @@ define(["dojo/_base/declare",
          var site = lang.getObject("site.title", false, this.currentItem);
          if (site == null || site == "")
          {
-            domClass.add(this.descriptionNode, "hidden")
+            domClass.add(this.siteRow, "hidden")
          }
          else
          {
