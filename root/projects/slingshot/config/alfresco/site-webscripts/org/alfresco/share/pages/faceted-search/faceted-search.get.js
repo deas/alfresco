@@ -16,12 +16,13 @@ var searchForm = {
    id: rootWidgetId + "SEARCH_FORM",
    name: "alfresco/forms/SingleEntryForm",
    config: {
+      useHash: true,
       okButtonLabel: msg.get("faceted-search.search-form.ok-button-label"),
-      okButtonPublishTopic : "ALF_SET_SEARCH_TERM",
-      okButtonPublishGlobal: true,
+      okButtonPublishTopic : "ALF_SET_HASH",
+      okButtonPublishGlobal: false,
       okButtonIconClass: "alf-white-search-icon",
       okButtonClass: "call-to-action",
-      entryFieldName: "term"
+      entryFieldName: "searchTerm"
    }
 };
 

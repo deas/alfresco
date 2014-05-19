@@ -13,7 +13,7 @@
 }*/
 
 /* Hide the requirement indicator in the text field */
-.alfresco-forms-SingleEntryForm .alfresco-forms-controls-BaseFormControl .requirementIndicator {
+.alfresco-forms-SingleEntryForm .alfresco-forms-controls-BaseFormControl .requirementIndicator.required {
     display: none;
 }
 
