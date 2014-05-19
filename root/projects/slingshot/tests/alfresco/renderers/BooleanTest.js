@@ -36,7 +36,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "BooleanTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/Boolean_TestPage.json")
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/Boolean_TestPage.json", testname)
 
          .end()
 

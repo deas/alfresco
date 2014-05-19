@@ -85,14 +85,19 @@ define(["intern/dojo/node!fs",
        * the JSON definition of the page to test.
        * @returns {promise} The promise for continuing the unit test.
        */
-      bootstrapTest: function(browser, testPageDefinitionFile) {
+      bootstrapTest: function(browser, testPageDefinitionFile, testname) {
 
          // Set browser timeouts - refer to Config files
          // This allows us to use "elementBy..." calls rather than a "waitForElementBy..." which is more efficient...
          browser.setImplicitWaitTimeout(Config.timeout.implicitWait);
          browser.setPageLoadTimeout(Config.timeout.pageLoad);
          browser.setAsyncScriptTimeout(Config.timeout.asyncScript);
-         
+
+         if(testname && browser.environmentType.browserName)
+         {
+            console.log(">> Starting " + testname + " on " + browser.environmentType.browserName);
+         }
+
          // Load the model definition file
          // It's necessary to remove any carriage returns and new line characters from the page model otherwise the eval statement will cause an error...
          var pageModel;

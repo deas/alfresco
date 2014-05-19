@@ -33,7 +33,7 @@ define(["intern!object",
       'RenderFilter': function () {
          var browser = this.remote;
          var testname = "RenderFilterTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/core/page_models/RenderFilter_TestPage.json")
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/core/page_models/RenderFilter_TestPage.json", testname)
 
          .end()
 

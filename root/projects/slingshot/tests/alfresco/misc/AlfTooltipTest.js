@@ -32,7 +32,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "AlfTooltipTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/misc/page_models/AlfTooltip_TestPage.json")
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/misc/page_models/AlfTooltip_TestPage.json", testname)
 
          .end()
 

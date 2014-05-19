@@ -33,7 +33,7 @@ define(["intern!object",
       'AlfSearchListTest': function () {
          var browser = this.remote;
          var testname = "AlfSearchListTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/SearchList_TestPage.json")
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/SearchList_TestPage.json", testname)
 
          .end()
          

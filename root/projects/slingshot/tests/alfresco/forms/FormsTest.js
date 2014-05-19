@@ -33,7 +33,7 @@ define(["intern!object",
       'Forms': function () {
          var browser = this.remote;
          var testname = "FormsTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/page_models/Forms_TestPage.json")
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/page_models/Forms_TestPage.json", testname)
 
          .end()
 

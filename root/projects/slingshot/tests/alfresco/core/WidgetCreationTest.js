@@ -33,7 +33,7 @@ define(["intern!object",
       'WidgetCreation': function () {
          var browser = this.remote;
          var testname = "WidgetCreationTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/core/page_models/WidgetCreation_TestPage.json")
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/core/page_models/WidgetCreation_TestPage.json", testname)
 
          .end()
 
