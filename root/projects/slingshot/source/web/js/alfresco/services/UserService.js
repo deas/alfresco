@@ -41,7 +41,7 @@ define(["dojo/_base/declare",
        * 
        * @instance
        * @type {object[]}
-       * @default [{i18nFile: "./i18n/ActionService.properties"}]
+       * @default [{i18nFile: "./i18n/UserService.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/UserService.properties"}],
       
