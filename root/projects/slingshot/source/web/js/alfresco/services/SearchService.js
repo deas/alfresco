@@ -84,9 +84,9 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {boolean}
-       * @default false
+       * @default true
        */
-      repo: false,
+      repo: true,
 
       /**
        * This is the default node to use as the root of the search. This value will be used if a specific value isn't
