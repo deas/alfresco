@@ -26,6 +26,7 @@
          @de-emphasized-font-color: #999999;
          @highlighted-font-color: #fff;
 
+
          // Font Sizes
          @page-title-font-size: 26px;
          @title-font-size: 20px;
@@ -91,44 +92,9 @@
          @call-to-action-button-font-color: #ffffff;
          @call-to-action-button-font-size: @large-font-size;
 
+         // Shadows
+         @standard-box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
 
       </less-variables>
-
-      <theme-font-family-1>Open Sans Condensed,Arial,sans-serif</theme-font-family-1>
-      <theme-font-family-2>Open Sans,Arial,sans-serif</theme-font-family-2>
-      <theme-font-family-3>Open Sans Bold,Arial,sans-serif</theme-font-family-3>
-      <theme-font-size-1>13px</theme-font-size-1>
-      <theme-color-1>#333</theme-color-1>
-      <theme-color-2>#333</theme-color-2>
-      <theme-color-3>#333</theme-color-3>
-      <theme-color-4>#333</theme-color-4>
-      <theme-color-5>#ccc</theme-color-5>
-      <theme-color-6>#999999</theme-color-6> <!-- Used for faded fonts -->
-      <theme-color-7>#333</theme-color-7> <!-- Used for light on dark fonts -->
-      <theme-color-8>#4F94C9</theme-color-8> <!-- Used for highlight colours -->
-      <theme-bg-color-1>#eee</theme-bg-color-1>
-      <theme-bg-color-2>#fff</theme-bg-color-2>
-      <theme-bg-color-3>#F5F5F5</theme-bg-color-3>
-      <theme-bg-color-4>#eee</theme-bg-color-4>
-      <theme-bg-color-5>#222</theme-bg-color-5>
-      <theme-bg-color-6>#f4f4f4</theme-bg-color-6>
-      <theme-bg-color-7>#eee</theme-bg-color-7>
-      <theme-bg-color-8>#fff</theme-bg-color-8>
-      <theme-bg-color-9>#DCEAF4</theme-bg-color-9> <!--  Used for highlight background (used with theme-color-8) -->
-      <theme-bg-1></theme-bg-1>
-      <theme-bg-2>background-color: #fff;</theme-bg-2>
-      <theme-bg-3></theme-bg-3>
-      <theme-bg-4></theme-bg-4>
-      <theme-bg-selected>background-color: #eee;</theme-bg-selected>
-      <theme-border-1>1px solid #ccc</theme-border-1>
-      <theme-border-2>1px solid #333</theme-border-2>
-      <theme-border-3>1px solid #c6c6c6</theme-border-3>
-      <theme-border-4>1px solid #ccc</theme-border-4>
-      <theme-border-5></theme-border-5>
-      <theme-box-shadow>0.33px 2px 8px rgba(0, 0, 0, 0.3)</theme-box-shadow>
-      
-      <!-- New theme tokens -->
-      <button>background-image: none;background-color: #ffffff; border-color: #ffffff;border-style: solid;border-width: 1px 0;margin: auto 0.25em;color:#333333;</button>
-      
    </css-tokens>
 </theme>

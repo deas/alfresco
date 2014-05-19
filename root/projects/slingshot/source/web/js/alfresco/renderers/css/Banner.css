@@ -1,5 +1,5 @@
 .alfresco-renderers-Banner {
-  font-family: $theme-font-family-3;
+  font-family: @bold-font;
   background-color: #FFFFE0;
   background-image: url(./images/warning-16.png);
   background-position: 6px 4px;

@@ -2,13 +2,13 @@
    font-size: 93%;
    margin-right: 0.5em;
    padding: 2px 8px;
-   background-color: $theme-bg-color-1;
-   color: $theme-color-1;
+   background-color: @primary-theme-color;
+   color: @general-font-color;
 }
 
 .alfresco-renderers-EditTag.highlight {
-   background-color: $theme-bg-color-9;
-   color: $theme-color-8;
+   background-color: #DCEAF4;
+   color: #4F94C9;
 }
 
 .alfresco-renderers-EditTag .tagDelete {

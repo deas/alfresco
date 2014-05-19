@@ -1,7 +1,7 @@
 .alfresco-dialog-AlfDialog.dijitDialog {
    border: @standard-border;
    border-radius: 6px 6px 6px 6px;
-   box-shadow: $theme-box-shadow;
+   box-shadow: @standard-box-shadow;
    font-family: @standard-font;
    font-size: @normal-font-size;
 }

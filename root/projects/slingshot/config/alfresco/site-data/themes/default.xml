@@ -4,53 +4,98 @@
    <title-id>theme.default</title-id>
    <css-tokens>
 
-      <less-variables>
-      @docListBorderColour: #e5e5e5;
-      @docListHeaderBgColour: #f5f5f5;
-      @docListOddRowColour: #fff;
-      @docListEvenRowColour: #f7f7f7;
-      @docListDndHighlight: #0082ca;
+            <less-variables>
+         @docListBorderColour: #e5e5e5;
+         @docListHeaderBgColour: #f5f5f5;
+         @docListOddRowColour: #fff;
+         @docListEvenRowColour: #f7f7f7;
+         @docListDndHighlight: #0082ca;
 
-      @selectControlStaticBgColour: #f4f4f4;
+         // General palette
+         @primary-theme-color: #eeeeee;
 
-      @toolTipBorderColour: #e5e5e5;
-      @toolTipTailBg: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEIAAAAOCAYAAACbzsr/AAAB10lEQVR42t2XT2rCUBDGs+kZuu++R+kx6gF6jh6ha3ddunJnVgERRJBiF4KgKKhIEo1a89L8wAePmGjeKEScrZmZ7/vmzR8d50Y2nU4nyQVTSiW9Xs917tVms9lkMBj8NpvNF2kM/IMg2J4TYj6fx57nfVTJFY5ghfPJj4CExGKxUJ1O50uaAH+qnme+70cpgGGVIsANjLpguULop7vZbOLRaOS7rvsmSYR/XksAoNFovFYhAFzgBDazUIVCaDscDmq1WiX9ft+r1+vPNklJiL8ZLwzDv263+y0hYZs/6wsHuGQxlRJC2263U8vlMm6325826pPYFHU8Hke1Wu1J0m5pfmWTXxs+YIdDEb/SQmD7/R4xlE1lqIIGkM4G1Wq13iUV/UntmD+2yc+3YMb3HLdSQlBJSADGdpscgcQAwV8iAuKRX79MxLV9TeQmRl5bXBSCYUJP85yllTSeppKsZNqI/CYB2k0ywOFALDhlN1qhEOlaiZjuDDZJT99q0JEf4NkXyiCWxIMLMY+rMyoUAqU4dtjzVa04beQvukdYf9I7R8eGI1yJf/IBZ2/VF59xoQ7NquXdI9dcwBhc7/rUByDVOjfp1+v1lhPZeWSjSkkJy/2fcKX9A7C42B2OZ69LAAAAAElFTkSuQmCC);
+         // Layout settings...
+         // This is used to control the overall layout of the page. Line-heights will be a multiple of
+         // this value based on the font-size
+         @standard-line-height: 10px;
+         @standard-column-width: 15px;
+
+         // Font Colours
+         @general-font-color: #333;
+         @emphasized-font-color: #000;
+         @de-emphasized-font-color: #999999;
+         @highlighted-font-color: #fff;
+
+
+         // Font Sizes
+         @page-title-font-size: 26px;
+         @title-font-size: 20px;
+         @large-font-size: 16px;
+         @normal-font-size: 14px;
+         @small-font-size: 12px;
+         @footer-font-size: 8.11px;
+
+         // Font families
+         @standard-font: Open Sans,Arial,Helvetica,sans-serif;
+         @bold-font: Open Sans Bold, Arial, sans-serif;
+
+         // Font Mixins
+
+         // This is the standard font style used throughout the application for regular text
+         .standard-font {
+            font-family: @standard-font;
+            font-weight: normal;
+            color: @general-font-color;
+         }
+
+         // This is the bold font style - bold, but not necessarily emphasized (see below)
+         .bold-font {
+            font-family: @bold-font;
+            font-weight: normal;
+            color: @general-font-color;
+         }
+
+         // Emphazied fonts are used to draw the user focus so should be bolder, darker and larger than normal
+         .emphasized-font {
+            font-family: @bold-font;
+            color: @emphasized-font-color;
+         }
+
+         // De-emphasized fonts are intended to be less intrusive so should be lighter in colour
+         .de-emphasized-font {
+            font-family: @standard-font;
+            color: @de-emphasized-font-color;
+         }
+
+         // Borders...
+         // These have been initially added for form controls...
+         @standard-border-width: 1px;
+         @standard-border-style: solid;
+         @standard-border-color: #d3d3d3;
+         @standard-border: @standard-border-width @standard-border-style @standard-border-color;
+
+         @hover-border-color: #888888;
+         @focused-border-color: #8DC63f;
+
+         // Buttons
+         // The standard button is what is normally seen...
+         @standard-button-background-color: #ffffff;
+         @standard-button-border: 1px solid #ccc;
+         @standard-button-focus-border: 1px solid #ccc;
+         @standard-button-font-color: @general-font-color;
+         @standard-button-font-size: @normal-font-size;
+
+         // "Call-to-action" buttons should be darker with larger text to capture the users attention
+         @call-to-action-button-background-color: #8DC63F;
+         @call-to-action-button-border: 1px solid #8DC63F;
+         @call-to-action-button-focus-border: 1px solid #5EAE41;
+         @call-to-action-button-font-color: #ffffff;
+         @call-to-action-button-font-size: @large-font-size;
+
+         // Shadows
+         @standard-box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
+
       </less-variables>
-
-      <theme-font-family-1>arial,helvetica,clean,sans-serif</theme-font-family-1>
-      <theme-font-family-2>arial,helvetica,clean,sans-serif</theme-font-family-2>
-      <theme-font-family-3>arial,helvetica,clean,sans-serif</theme-font-family-3>
-      <theme-font-size-1>13px</theme-font-size-1>
-      <theme-color-1>#6CA5CE</theme-color-1>
-      <theme-color-2>#038603</theme-color-2>
-      <theme-color-3>#C7DBEB</theme-color-3>
-      <theme-color-4>#009300</theme-color-4>
-      <theme-color-5>#fff</theme-color-5>
-      <theme-color-6>#999999</theme-color-6> <!-- Used for faded fonts -->
-      <theme-color-7>#ffffff</theme-color-7> <!-- Used for light on dark fonts -->
-      <theme-color-8>#4F94C9</theme-color-8> <!-- Used for highlight colours -->
-      <theme-bg-color-1>#6CA5CE</theme-bg-color-1>
-      <theme-bg-color-2>#fffbdd</theme-bg-color-2>
-      <theme-bg-color-3>#DEE8ED</theme-bg-color-3>
-      <theme-bg-color-4>#EBEFF1</theme-bg-color-4>
-      <theme-bg-color-5>#2B6EB5</theme-bg-color-5>
-      <theme-bg-color-6>#F4FAFF</theme-bg-color-6>
-      <theme-bg-color-7>#F5FFF2</theme-bg-color-7>
-      <theme-bg-color-8>#FFFFFF</theme-bg-color-8>
-      <theme-bg-color-9>#DCEAF4</theme-bg-color-9> <!--  Used for highlight background (used with theme-color-8) -->
-      <theme-bg-1></theme-bg-1>
-      <theme-bg-2>background-color: #E3EAEC;background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, rgb(246,246,246)),color-stop(1, rgb(233,232,234)));background-image: -moz-linear-gradient(center top,rgb(246,246,246) 0%,rgb(233,232,234) 100%);</theme-bg-2>
-      <theme-bg-3>background-color: #CCCCCC;background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, rgb(204,204,204)),color-stop(1, rgb(232,232,232)));background-image: -moz-linear-gradient(center top,rgb(204,204,204) 0%,rgb(232,232,232) 100%);</theme-bg-3>
-      <theme-bg-4>background-color: #33FF66;background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, rgb(51,255,102)),color-stop(1, rgb(51,153,102)));background-image: -moz-linear-gradient(top,rgb(51,255,102) 0%,rgb(51,153,102) 100%);</theme-bg-4>
-      <theme-bg-selected>background-color: #73B4DA;</theme-bg-selected>
-      <theme-border-1>1px solid #457f63</theme-border-1>
-      <theme-border-2>1px solid #2B6EB5</theme-border-2>
-      <theme-border-3>1px solid #c6c6c6</theme-border-3>
-      <theme-border-4>1px solid #DDD6A0</theme-border-4>
-      <theme-border-5>1px solid #c2c2c2</theme-border-5>
-
-      <!-- New theme tokens -->
-      <button>background-image: url(themes/default/images/sprite.png);border-color: #808080;border-style: solid;border-width: 0;margin: auto 0.25em;color:#333;</button>
 
    </css-tokens>
 </theme>
