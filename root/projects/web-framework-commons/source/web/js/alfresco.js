@@ -2239,6 +2239,16 @@ Alfresco.util.createTwister = function(p_controller, p_filterName, p_config)
 
    var twistFun = function(p_event, p_obj)
    {
+      var type = p_event.type;
+      if(type && type === "keypress")
+      {
+         var keyCode = p_event.keyCode;
+         if(keyCode && keyCode !== YUIKeyListener.KEY.ENTER && keyCode !== YUIKeyListener.KEY.SPACE)
+         {
+            return;
+         }
+      }
+
       // Only expand/collapse if actual twister element is clicked (not for inner elements, i.e. twister actions)
       if (YUIEvent.getTarget(p_event) == elController)
       {
