@@ -265,10 +265,6 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_documentlibrary_AlfDocumentList__postCreate() {
          
-         // Create a subscription to listen out for all widgets on the page being reported
-         // as ready (then we can start loading data)...
-         this.alfSubscribe("ALF_WIDGETS_READY", lang.hitch(this, "onPageWidgetsReady"), true);
-
          // Instantiate a new map to hold all of the views for the DocumentList...
          this.viewMap = {};
          this.viewControlsMap = {};
@@ -280,6 +276,18 @@ define(["dojo/_base/declare",
          }
       },
       
+      /**
+       * This indicates that the instance should wait for all widgets on the page to finish rendering before
+       * making any attempt to load data. If this is set to true then loading can begin as soon as this instance
+       * has finished being created. This needs to be overridden in the case where the instance is created 
+       * dynamically after the page has loaded.
+       *
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      waitForPageWidgets: true,
+
       /**
        * This is updated by the [onPageWidgetsReady]{@link module:alfresco/documentlibrary/AlfDocumentList#onPageWidgetsReady}
        * function to be true when all widgets on the page have been loaded. It is used to block loading of 
@@ -349,6 +357,20 @@ define(["dojo/_base/declare",
          this.alfPublish(this.viewSelectionTopic, {
             value: this._currentlySelectedView
          });
+
+         if (this.waitForPageWidgets == true)
+         {
+            // Create a subscription to listen out for all widgets on the page being reported
+            // as ready (then we can start loading data)...
+            this.alfSubscribe("ALF_WIDGETS_READY", lang.hitch(this, "onPageWidgetsReady"), true);
+         }
+         else
+         {
+            // Load data immediately...
+            this._readyToLoad = true;
+            this.onPageWidgetsReady();
+         }
+
       },
       
       /**

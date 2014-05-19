@@ -44,6 +44,16 @@ define(["dojo/_base/declare",
       useHash: false,
 
       /**
+       * Override the [inherited value]{@link module:alfresco/documentlibrary/AlfDocumentList#waitForPageWidgets} because
+       * this widget is typically created after the page has loaded.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      waitForPageWidgets: false,
+
+      /**
        * Override the default implementation to call [loadData]{@link module:alfresco/documentlibrary/AlfDocumentList#loadData}
        * with the currently selected folder node.
        *
