@@ -66,7 +66,7 @@ module.exports = function (grunt, alf) {
             }
          },
          startShare: {
-            command: 's -ie && s -t',
+            command: 's -e && s -t',
             options: {
                stdout: true,
                stderr: true,
@@ -74,7 +74,7 @@ module.exports = function (grunt, alf) {
             }
          },
          killRepo: {
-            command: 'kill -9 `lsof -t -i :8080`',
+            command: 'kill -9 `lsof -t -i :8080 -sTCP:LISTEN`',
             options: {
                stdout: true,
                stderr: true,
@@ -82,7 +82,7 @@ module.exports = function (grunt, alf) {
             }
          },
          killShare: {
-            command: 'kill -9 `lsof -t -i :8081`',
+            command: 'kill -9 `lsof -t -i :8081 -sTCP:LISTEN`',
             options: {
                stdout: true,
                stderr: true,
