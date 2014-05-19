@@ -213,7 +213,7 @@ define(["dojo/_base/declare",
             {
                // Check to see if this is an active filter...
                var applied = array.some(activeFilters, function(activeFilter, index) {
-                  return activeFilter == this.facetQName.replace(/\.__/g, "") + "|" + filter.value;
+                  return activeFilter == this.facetQName.replace(/\.__.u/g, "").replace(/\.__/g, "") + "|" + filter.value;
                }, this);
 
                // Keeping adding (visible) filters until we've hit the maximum number...
@@ -236,10 +236,6 @@ define(["dojo/_base/declare",
 
                // Decrement the filter count...
                if (filtersToAdd != null) filtersToAdd--;
-            }
-            else
-            {
-
             }
 
          }, this);

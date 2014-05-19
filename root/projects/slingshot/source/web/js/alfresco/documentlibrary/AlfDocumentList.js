@@ -847,7 +847,7 @@ define(["dojo/_base/declare",
        * @default 1
        */
       currentPage: 1,
-      
+
       /**
        * The size (or number of items) to be shown on each page.
        * 
@@ -1010,12 +1010,14 @@ define(["dojo/_base/declare",
          }
       },
 
-      onScrollNearBottom: function alfresco_documentlibrary_AlfDocumentList_onInsertMoreDocumentsRequest(payload) {
+      /**
+       * @instance
+       */
+      onScrollNearBottom: function alfresco_documentlibrary_AlfDocumentList__onScrollNearBottom() {
          // Process Infinite Scroll, if enabled & if we've not hit the end of the results
          if(this.useInfiniteScroll && this._currentData.totalRecords < this._currentData.totalRecordsUpper)
          {
             this.currentPage++;
-
             this.loadData();
          }
       }

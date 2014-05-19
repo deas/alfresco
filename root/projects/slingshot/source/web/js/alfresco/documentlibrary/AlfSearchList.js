@@ -234,7 +234,7 @@ define(["dojo/_base/declare",
             {
                this.facetFilters = {};
             }
-   
+
             lang.mixin(this, payload);
             this.resetResultsList();
             this.loadData();
@@ -253,7 +253,7 @@ define(["dojo/_base/declare",
          var filters = "";
          for (var key in this.facetFilters)
          {
-            filters = filters + key.replace(/\.__/g, "") + ",";
+            filters = filters + key.replace(/\.__.u/g, "").replace(/\.__/g, "") + ",";
          }
          filters = filters.substring(0, filters.length - 1);
 

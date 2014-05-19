@@ -122,7 +122,7 @@ var facets = [
       name: "alfresco/search/FacetFilters",
       config: {
          label: msg.get("faceted-search.facet-menu.facet.creator"),
-         facetQName: "{http://www.alfresco.org/model/content/1.0}creator.__",
+         facetQName: "{http://www.alfresco.org/model/content/1.0}creator.__.u",
          sortBy: "ALPHABETICALLY",
          maxFilters: 3,
          useHash: true
@@ -133,7 +133,7 @@ var facets = [
       name: "alfresco/search/FacetFilters",
       config: {
          label: msg.get("faceted-search.facet-menu.facet.modifier"),
-         facetQName: "{http://www.alfresco.org/model/content/1.0}modifier.__",
+         facetQName: "{http://www.alfresco.org/model/content/1.0}modifier.__.u",
          sortBy: "ALPHABETICALLY",
          maxFilters: 3,
          useHash: true
