@@ -336,10 +336,10 @@ define(["dojo/_base/declare",
                {
                   this.alfLog("log", "Search request for: ", terms);
 
-                  var url = "search?t=" + encodeURIComponent(terms) + (this.allsites ? "&a=true&r=false" : "&a=false&r=true");
+                  var url = "dp/ws/faceted-search#searchTerm=" + encodeURIComponent(terms) + (this.allsites ? "&allSites=true&repo=false" : "&allSites=false&repo=true");
                   if (this.site != null)
                   {
-                     url = "site/" + this.site + "/" + url;
+                     url = "site/" + this.site + "/" + url + "&siteId=" + this.site;
                   }
    
                   this.alfPublish("ALF_NAVIGATE_TO_PAGE", { 

@@ -223,11 +223,8 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onDataLoadSuccess"));
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_FAILURE", lang.hitch(this, "onDataLoadFailure"));
 
-         if (this.blockConcurrentRequests)
-         {
-            this.alfSubscribe(this.requestInProgressTopic, lang.hitch(this, "onRequestInProgress"));
-            this.alfSubscribe(this.requestFinishedTopic, lang.hitch(this, "onRequestFinished"));
-         }
+         this.alfSubscribe(this.requestInProgressTopic, lang.hitch(this, "onRequestInProgress"));
+         this.alfSubscribe(this.requestFinishedTopic, lang.hitch(this, "onRequestFinished"));
          
          // Get the messages for the template...
          // TODO: Extending modules should be updated to override this during the next refactor!

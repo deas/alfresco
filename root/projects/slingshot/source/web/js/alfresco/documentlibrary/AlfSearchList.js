@@ -76,6 +76,7 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_INCLUDE_FACET", lang.hitch(this, "onIncludeFacetRequest"));
          this.alfSubscribe("ALF_APPLY_FACET_FILTER", lang.hitch(this, "onApplyFacetFilter"));
          this.alfSubscribe("ALF_REMOVE_FACET_FILTER", lang.hitch(this, "onRemoveFacetFilter"));
+         this.alfSubscribe("ALF_SEARCHLIST_SCOPE_SELECTION", lang.hitch(this, "onScopeSelection"));
 
          // Infinite scroll handling
          this.alfSubscribe(this.scrollNearBottom, lang.hitch(this, "onScrollNearBottom"));
@@ -159,6 +160,66 @@ define(["dojo/_base/declare",
             var currHash = ioQuery.queryToObject(hash());
             currHash.searchTerm = this.searchTerm;
             delete currHash.facetFilters;
+            this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
+               url: ioQuery.objectToQuery(currHash),
+               type: "HASH"
+            }, true);
+         }
+      },
+
+      /**
+       * The initially selected scope. This should either be "REPO", "ALL_SITES" or the shortname of a
+       * specific site.
+       *
+       * @instance
+       * @type {string}
+       * @default "REPO"
+       */
+      selectedScope: "REPO",
+
+      /**
+       * 
+       *
+       * @instance
+       * @param {object} payload The details of the scope selected.
+       */
+      onScopeSelection: function alfresco_documentlibrary_AlfSearchList__onScopeSelection(payload) {
+         var scope = lang.getObject("value", false, payload);
+         if (scope == null)
+         {
+            this.alfLog("warn", "No 'value' attribute provided in scope selection payload", payload, this);
+         }
+         else
+         {
+            var currHash = ioQuery.queryToObject(hash());
+            this.selectedScope = scope;
+            if (scope === "REPO")
+            {
+               currHash.repo = true;
+               currHash.allSites = false;
+               delete currHash.siteId;
+               this.siteId = "";
+            }
+            else if (scope === "ALL_SITES")
+            {
+               currHash.repo = false;
+               currHash.allSites = true;
+               delete currHash.siteId;
+               this.siteId = "";
+            }
+            else
+            {
+               // Must be a site shortname...
+               currHash.repo = false;
+               currHash.allSites = true;
+               currHash.siteId = scope;
+               this.siteId = scope;
+            }
+
+            // Remove any facet filters...
+            delete currHash.facetFilters;
+
+            // Update the hash to trigger a search...
             this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
                url: ioQuery.objectToQuery(currHash),
                type: "HASH"
@@ -294,13 +355,14 @@ define(["dojo/_base/declare",
        * @instance
        */
       loadData: function alfresco_documentlibrary_AlfSearchList__loadData() {
-         if (!this.requestInProgress) {
-
-            if (this.blockConcurrentRequests)
-            {
-               this.alfPublish(this.requestInProgressTopic, {});
-            }
-            
+         if (this.requestInProgress && this.blockConcurrentRequests) 
+         {
+            // TODO: Inform user that request is in progress?
+            this.alfLog("log", "Search request ignored because progress is already in progress");
+         }
+         else
+         {
+            this.alfPublish(this.requestInProgressTopic, {});
             this.showLoadingMessage();
 
             var filters = "";
@@ -310,6 +372,18 @@ define(["dojo/_base/declare",
             }
             filters = filters.substring(0, filters.length - 1);
 
+            // Make sure the repo flag is set appropriately...
+            var repo = this.repo;
+            if (this.allSites == true || (this.siteId != null && this.siteId !== ""))
+            {
+               // Search all sites...
+               repo = false;
+            }
+            else
+            {
+               repo = true;
+            }
+
             var searchPayload = {
                term: this.searchTerm,
                facetFields: this.facetFields,
@@ -318,7 +392,7 @@ define(["dojo/_base/declare",
                sortField: this.sortField,
                site: this.siteId,
                rootNode: this.rootNode,
-               repo: this.repo
+               repo: repo
             };
 
             // InfiniteScroll uses pagination under the covers.
@@ -333,11 +407,6 @@ define(["dojo/_base/declare",
             searchPayload.alfResponseTopic = this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST";
 
             this.alfPublish("ALF_SEARCH_REQUEST", searchPayload, true);
-         }
-         else
-         {
-            // TODO: Inform user that request is in progress?
-            this.alfLog("log", "Search request ignored because progress is already in progress");
          }
       },
 

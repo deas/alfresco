@@ -329,15 +329,19 @@ var searchDocLib = {
    id: rootWidgetId + "SEARCH_RESULTS_LIST",
    name: "alfresco/documentlibrary/AlfSearchList",
    config: {
+      waitForPageWidgets: true,
       useHash: true,
       hashVarsForUpdate: [
          "searchTerm",
          "facetFilters",
          "sortField",
-         "sortAscending"
+         "sortAscending",
+         "allSites",
+         "repo",
+         "searchScope"
       ],
       useInfiniteScroll: true,
-      siteId: null,
+      siteId: "$$site$$", // Get the current site context from the URL template (if set)
       rootNode: null,
       repo: true,
       widgets: [
@@ -439,6 +443,97 @@ var main = {
       ]
    }
 };
+
+// Add a checkable menu for switching between Repository, All Sites and current site as necessary...
+// If we're in a site, make sure add in the site as an option in the menu (and make it the default)
+// Always add in "All Sites" and "Repository" options...
+// Cloud will need to remove the "Repository" option via an extension...
+// Need links rather than drop-down?
+var scopeOptions = [];
+if (page.url.templateArgs.site != null)
+{
+   var siteData = getSiteData();
+   scopeOptions.push({
+      name: "alfresco/menus/AlfCheckableMenuItem",
+      config: {
+         label: siteData.profile.title,
+         value: page.url.templateArgs.site,
+         group: "SEARCHLIST_SCOPE",
+         publishTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
+         checked: true,
+         publishPayload: {
+            label: siteData.profile.title,
+            value: page.url.templateArgs.site
+         }
+      }
+   });
+}
+
+scopeOptions.push({
+   name: "alfresco/menus/AlfCheckableMenuItem",
+   config: {
+      label: msg.get("faceted-search.scope.allSites"),
+      value: "ALL_SITES",
+      group: "SEARCHLIST_SCOPE",
+      publishTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
+      checked: (page.url.templateArgs.site == null),
+      publishPayload: {
+         label: msg.get("faceted-search.scope.allSites"),
+         value: "ALL_SITES"
+      }
+   }
+});
+scopeOptions.push({
+   name: "alfresco/menus/AlfCheckableMenuItem",
+   config: {
+      label: msg.get("faceted-search.scope.repository"),
+      value: "REPO",
+      group: "SEARCHLIST_SCOPE",
+      publishTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
+      checked: false,
+      publishPayload: {
+         label: msg.get("faceted-search.scope.repository"),
+         value: "REPO"
+      }
+   }
+});
+
+var scopeSelection = {
+   name: "alfresco/layout/LeftAndRight",
+   config: {
+      widgets: [
+         {
+            name: "alfresco/html/Label",
+            config: {
+               label: "Search scope:"
+            }
+         },
+         {
+            name: "alfresco/menus/AlfMenuBar",
+            config: {
+               widgets: [
+                  {
+                     name: "alfresco/menus/AlfMenuBarSelect",
+                     config: {
+                        selectionTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
+                        widgets: [
+                           {
+                              name: "alfresco/menus/AlfMenuGroup",
+                              config: {
+                                 widgets: scopeOptions
+                              }
+                           }
+                        ]
+                     }
+                  }
+               ]
+            }
+         }
+      ]
+   }
+};
+
+main.config.widgets.splice(2, 0, scopeSelection);
 
 // Append services with those required for search
 services.push("alfresco/services/NavigationService",
