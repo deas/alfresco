@@ -464,6 +464,12 @@ define(["dojo/_base/declare",
                widget.publishValue();
             }
          });
+
+         if (this.useHash)
+         {
+            this.initialiseFilter(); // Function provided by the _AlfHashMixin
+         }
+
          this.validate();
       },
       

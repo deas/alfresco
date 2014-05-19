@@ -86,6 +86,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       release: function alfresco_core_PubQueue__release() {
+         this._released = true;
          array.forEach(this._queue, function(publication) {
             if (AlfConstants.DEBUG == true)
             {
@@ -95,7 +96,6 @@ define(["dojo/_base/declare",
             }
             pubSub.publish(publication.topic, publication.payload);
          }, this);
-         this._released = true;
       }
    });
    

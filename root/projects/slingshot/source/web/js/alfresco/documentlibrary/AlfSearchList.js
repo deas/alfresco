@@ -51,12 +51,6 @@ define(["dojo/_base/declare",
        * @instance
        */
       postMixInProperties: function alfresco_documentlibrary_AlfSearchList__postMixInProperties() {
-         // Only subscribe to filter changes if 'useHash' is set to true. This is because multiple DocLists might
-         // be required on the same page and they can't all feed off the hash to drive the location.
-         if (this.useHash)
-         {
-            this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onChangeFilter"));
-         }
          
          this.alfSubscribe("ALF_DOCLIST_SORT", lang.hitch(this, "onSortRequest"));
          this.alfSubscribe("ALF_DOCLIST_SORT_FIELD_SELECTION", lang.hitch(this, "onSortFieldSelection"));
@@ -194,7 +188,8 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       onChangeFilter: function alfresco_documentlibrary_AlfSearchList__onChangeFilter(payload) {
-
+         this.alfLog("log", "Filter change detected");
+         
          // The facet filters need to be handled directly because they are NOT just passed as 
          // a simple string. Create a new object for the filters and then break up the filters
          // based on comma delimition and assign each element as a new key in the filters object

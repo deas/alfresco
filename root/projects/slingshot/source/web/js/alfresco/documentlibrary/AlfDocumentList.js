@@ -165,13 +165,6 @@ define(["dojo/_base/declare",
          // These are the values that are expected to be extracted from a hash fragment
          this.filterKeys = ["filterId","filterData","filterDisplay"];
 
-         // Only subscribe to filter changes if 'useHash' is set to true. This is because multiple DocLists might
-         // be required on the same page and they can't all feed off the hash to drive the location.
-         if (this.useHash)
-         {
-            this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onChangeFilter"));
-         }
-         
          this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, "onViewSelected"));
          this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, "onDocumentSelection"));
          this.alfSubscribe(this.sortRequestTopic, lang.hitch(this, "onSortRequest"));
@@ -281,23 +274,6 @@ define(["dojo/_base/declare",
          {
             this.processWidgets(this.widgets);
          }
-         
-         if (this.useHash)
-         {
-            // When using hashes (e.g. a URL fragment in the browser address bar) then we need to 
-            // actually get the initial filter and use it to generate the first data set...
-            this.initialiseFilter(); // Function provided by the _AlfHashMixin
-         }
-         else
-         {
-            // When not using a URL hash (e.g. because this DocList is being used as a secondary item - 
-            // maybe as part of a picker, etc) then we need to load the initial data set using the instance
-            // variables provided. We also need to subscribe to topics that indicate that the location has 
-            // changed. Each view renderer that registers a link will need to set a "linkClickTopic" and this
-            // should be matched by the "linkClickTopic" of this instance)
-            this.alfSubscribe(this.linkClickTopic, lang.hitch(this, "onItemLinkClick"));
-            this.loadData();
-         }
       },
       
       /**
@@ -324,6 +300,27 @@ define(["dojo/_base/declare",
          this.alfPublish(this.viewSelectionTopic, {
             value: this._currentlySelectedView
          });
+
+         if (this.useHash)
+         {
+            // Only subscribe to filter changes if 'useHash' is set to true. This is because multiple DocLists might
+            // be required on the same page and they can't all feed off the hash to drive the location.
+            this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onChangeFilter"));
+
+            // When using hashes (e.g. a URL fragment in the browser address bar) then we need to 
+            // actually get the initial filter and use it to generate the first data set...
+            this.initialiseFilter(); // Function provided by the _AlfHashMixin
+         }
+         else
+         {
+            // When not using a URL hash (e.g. because this DocList is being used as a secondary item - 
+            // maybe as part of a picker, etc) then we need to load the initial data set using the instance
+            // variables provided. We also need to subscribe to topics that indicate that the location has 
+            // changed. Each view renderer that registers a link will need to set a "linkClickTopic" and this
+            // should be matched by the "linkClickTopic" of this instance)
+            this.alfSubscribe(this.linkClickTopic, lang.hitch(this, "onItemLinkClick"));
+            this.loadData();
+         }
       },
       
       /**
