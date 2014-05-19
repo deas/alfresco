@@ -51,11 +51,11 @@
 }
 
 .alfresco-buttons-AlfButton span.dijitIcon.alf-white-search-icon {
-   background-image: url("./images/search-icon-white.png");
+   background-image: url("./images/20x20-search-icon-white.png");
    background-repeat: no-repeat;
-   height: 16px;
+   height: 20px;
    text-align: center;
-   width: 20px;
+   width: 24px;
 }
 
 .alfresco-buttons-AlfButton.dijitButtonDisabled span.dijitIcon.alf-white-search-icon {

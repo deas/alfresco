@@ -70,7 +70,7 @@
          // These have been initially added for form controls...
          @standard-border-width: 1px;
          @standard-border-style: solid;
-         @standard-border-color: #cccccc;
+         @standard-border-color: #d3d3d3;
          @standard-border: @standard-border-width @standard-border-style @standard-border-color;
 
          @hover-border-color: #888888;

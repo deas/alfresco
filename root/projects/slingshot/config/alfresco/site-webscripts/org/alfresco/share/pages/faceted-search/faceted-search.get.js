@@ -337,6 +337,13 @@ var main = {
    config: {
       baseClass: "side-margins",
       widgets: [
+         {
+            name: "alfresco/html/Spacer",
+            config: {
+               height: "20px",
+               additionalCssClasses: "top-border-beyond-gutters"
+            }
+         },
          searchForm,
          {
             name: "alfresco/layout/HorizontalWidgets",
