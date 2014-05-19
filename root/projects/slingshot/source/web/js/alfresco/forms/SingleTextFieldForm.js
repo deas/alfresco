@@ -31,8 +31,9 @@ define(["dojo/_base/declare",
         "alfresco/forms/Form",
         "dojo/_base/lang",
         "dojo/dom-class",
-        "dojo/on"], 
-        function(declare, Form, lang, domClass, on) {
+        "dojo/on",
+        "alfresco/forms/controls/DojoValidationTextBox"], 
+        function(declare, Form, lang, domClass, on, DojoValidationTextBox) {
    
    return declare([Form], {
       
