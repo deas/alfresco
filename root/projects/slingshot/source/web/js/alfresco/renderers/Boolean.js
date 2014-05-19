@@ -29,7 +29,7 @@ define(["dojo/_base/declare",
         "alfresco/renderers/Property",
         "alfresco/core/ObjectTypeUtils",
         "dojo/_base/lang",
-        "alfresco/lang/3rd-party/Enum"], 
+        "js/lib/3rd-party/Enum"], 
         function(declare, Property, ObjectTypeUtils, lang, Enum) {
 
    return declare(Property, {
