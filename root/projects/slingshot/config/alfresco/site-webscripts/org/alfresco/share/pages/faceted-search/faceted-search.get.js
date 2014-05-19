@@ -210,6 +210,7 @@ function getSortFieldsFromConfig()
          name: "alfresco/menus/AlfCheckableMenuItem",
          config: {
             label: msg.get(label),
+            title: msg.get("faceted-search.sort-by.title") + " " + msg.get(label),
             value: value,
             group: "DOCUMENT_LIBRARY_SORT_FIELD",
             publishTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
@@ -234,6 +235,7 @@ var sortMenu = {
    id: rootWidgetId + "SORT_MENU",
    name: "alfresco/menus/AlfMenuBarSelect",
    config: {
+      title: msg.get("faceted-search.sort-field.title"),
       visibilityConfig: hideOnZeroResultsConfig,
       selectionTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
       widgets: [
@@ -275,14 +277,18 @@ var searchResultsMenuBar = {
                         visibilityConfig: hideOnNotSortableConfig,
                         checked: true,
                         onConfig: {
+                           title: msg.get("faceted-search.sort-order-desc.title"),
                            iconClass: "alf-sort-ascending-icon",
+                           iconAltText: msg.get("faceted-search.sorted-as-asc.title"),
                            publishTopic: "ALF_DOCLIST_SORT",
                            publishPayload: {
                               direction: "ascending"
                            }
                         },
                         offConfig: {
+                           title: msg.get("faceted-search.sort-order-asc.title"),
                            iconClass: "alf-sort-descending-icon",
+                           iconAltText: msg.get("faceted-search.sorted-as-desc.title"),
                            publishTopic: "ALF_DOCLIST_SORT",
                            publishPayload: {
                               direction: "descending"
