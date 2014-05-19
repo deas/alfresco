@@ -262,7 +262,10 @@ define(["dojo/_base/declare",
             facetFields: this.facetFields,
             filters: filters,
             sortAscending: this.sortAscending,
-            sortField: this.sortField
+            sortField: this.sortField,
+            site: this.siteId,
+            rootNode: this.rootNode,
+            repo: this.repo
          };
 
          // InfiniteScroll uses pagination under the covers.
