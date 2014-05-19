@@ -90,7 +90,55 @@ define(["dojo/_base/declare",
       setData: function alfresco_documentlibrary_views_AlfDocumentListView__setData(data) {
          this.currentData = data;
       },
-      
+
+      /**
+       * An advanced setter for[currentData]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin#currentData}
+       * It intelligently merges the new data to the old data
+       *
+       * @param {object} newData data to add to the existing data
+       */
+      augmentData: function alfresco_documentlibrary_views_AlfDocumentListView__augmentData(newData) {
+         if (!this.currentData)
+         {
+            // We don't need to worry about combining data if there isn't any already.
+            this.alfLog('debug', 'AlfDocumentListView_augmentData called but this.currentData empty, so using setData instead.');
+            this.setData(newData);
+         }
+         else
+         {
+            // Update the totalRecords field.
+            if (this.currentData.totalRecords && newData.totalRecords)
+            {
+               this.currentData.totalRecords = parseInt(this.currentData.totalRecords, 10) + parseInt(newData.totalRecords, 10);
+            }
+
+            // Merge Items arrays.
+            if (lang.isArray(this.currentData.items) && lang.isArray(newData.items))
+            {
+               // Store the old length so we know where to start rendering from.
+               this.currentData.previousItemCount = this.currentData.items.length;
+               this.currentData.items = this.currentData.items.concat(newData.items);
+            }
+         }
+      },
+
+      /**
+       * Reset the current Data object.
+       */
+      clearData: function alfresco_documentlibrary_views_AlfDocumentListView_clearData() {
+         this.alfLog('info', 'AlfDocumentListView: Clearing currentData.');
+         this.currentData = null;
+      },
+
+      /**
+       * Return the current data object.
+       *
+       * @returns {Object[]}
+       */
+      getData: function alfresco_documentlibrary_views_AlfDocumentListView_getData() {
+         return this.currentData;
+      },
+
       /**
        * This function should be called to iterate over new data.
        * It sets the currentData object and resets the index back to zero. When [processWidgets]{@link module:alfresco/core/Core#processWidgets}
@@ -121,10 +169,12 @@ define(["dojo/_base/declare",
          if (this.currentData && this.currentData.items)
          {
             this.alfLog("log", "Rendering data", this.currentData.items);
-            this.currentIndex = 0;
+            // Set current Index to previousItemCount (so rendering starts at new items)
+            this.currentIndex = this.currentData.previousItemCount || 0;
             this.currentItem = this.currentData.items[this.currentIndex];
+            var itemsToRender = (this.currentIndex)? this.currentData.items.slice(this.currentIndex): this.currentData.items;
             
-            array.forEach(this.currentData.items, lang.hitch(this, "renderNextItem"));
+            array.forEach(itemsToRender, lang.hitch(this, "renderNextItem"));
             this.allItemsRendered();
          }
          else

@@ -94,6 +94,16 @@ define(["dojo/_base/declare",
       noItemsMessage: null,
 
       /**
+       * Should the widget subscribe to events triggered by the documents request?
+       * This should be set to true in the widget config for standalone/isolated usage.
+       *
+       * @instance
+       * @type Boolean
+       * @default true
+       */
+      subscribeToDocRequests: false,
+
+      /**
        * Implements the widget life-cycle method to add drag-and-drop upload capabilities to the root DOM node.
        * This allows files to be dragged and dropped from the operating system directly into the browser
        * and uploaded to the location represented by the document list. 
@@ -114,12 +124,18 @@ define(["dojo/_base/declare",
          }
 
          this.addUploadDragAndDrop(this.domNode);
-         this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onFilterChange"));
-         this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onDocumentsLoaded"));
+
+         if (this.subscribeToDocRequests)
+         {
+            this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onFilterChange"));
+            this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onDocumentsLoaded"));
+         }
          if (this.currentData != null)
          {
             this.renderView();
          }
+
+         this.alfSubscribe(this.clearDocDataTopic, lang.hitch(this, "clearOldView"));
       },
       
       /**
@@ -134,6 +150,7 @@ define(["dojo/_base/declare",
             {
                items[i].jsNode = new JsNode(items[i].node);
             }
+
             this.setData(payload.response);
             this.renderView();
          }
@@ -222,7 +239,6 @@ define(["dojo/_base/declare",
        * @instance
        */
       renderView: function alfresco_documentlibrary_views_AlfDocumentListView__renderView() {
-         this.clearOldView();
          if (this.currentData && this.currentData.items && this.currentData.items.length > 0)
          {
             try
@@ -231,6 +247,7 @@ define(["dojo/_base/declare",
                {
                   this.docListRenderer.destroy(true);
                }
+
                this.alfLog("log", "Rendering items", this);
                this.docListRenderer = new DocumentListRenderer({
                   id: this.id + "_ITEMS",
@@ -268,6 +285,9 @@ define(["dojo/_base/declare",
          {
             domConstruct.destroy(this.messageNode);
          }
+         // TODO: Is this the best way to empty the dom of rendered content?
+         domConstruct.empty(this.tableNode);
+         this.clearData();
       },
       
       /**

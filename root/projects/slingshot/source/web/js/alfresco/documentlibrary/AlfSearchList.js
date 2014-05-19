@@ -75,6 +75,9 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_APPLY_FACET_FILTER", lang.hitch(this, "onApplyFacetFilter"));
          this.alfSubscribe("ALF_REMOVE_FACET_FILTER", lang.hitch(this, "onRemoveFacetFilter"));
 
+         // Infinite scroll handling
+         this.alfSubscribe(this.scrollNearBottom, lang.hitch(this, "onScrollNearBottom"));
+
          // Get the messages for the template...
          this.noViewSelectedMessage = this.message("searchlist.no.view.message");
          this.noDataMessage = this.message("searchlist.no.data.message");
@@ -111,6 +114,7 @@ define(["dojo/_base/declare",
          else
          {
             this.searchTerm = searchTerm;
+            this.resetResultsList();
             this.loadData();
          }
       },
@@ -170,6 +174,8 @@ define(["dojo/_base/declare",
          else
          {
             this.facetFilters[filter] = true;
+
+            this.resetResultsList();
             this.loadData();
          }
       },
@@ -185,6 +191,7 @@ define(["dojo/_base/declare",
       onRemoveFacetFilter: function alfresco_documentlibrary_AlfSearchList__onRemoveFacetFilter(payload) {
          this.alfLog("log", "Removing facet filter", payload, this);
          delete this.facetFilters[payload.filter];
+         this.resetResultsList();
          this.loadData();
       },
 
@@ -225,6 +232,7 @@ define(["dojo/_base/declare",
          }
 
          lang.mixin(this, payload);
+         this.resetResultsList();
          this.loadData();
       },
 
@@ -235,7 +243,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       loadData: function alfresco_documentlibrary_AlfSearchList__loadData() {
-         this.showLoadingMessage(); // Commented out because of timing issues...
+         this.showLoadingMessage();
 
          var filters = "";
          for (var key in this.facetFilters)
@@ -251,6 +259,14 @@ define(["dojo/_base/declare",
             sortAscending: this.sortAscending,
             sortField: this.sortField
          };
+
+         // InfiniteScroll uses pagination under the covers.
+         if (this.useInfiniteScroll)
+         {
+            // Search API wants startIndex rather than page, so we need to convert here.
+            searchPayload.startIndex = (this.currentPage - 1) * this.currentPageSize;
+            searchPayload.pageSize = this.currentPageSize;
+         }
 
          // Set a response topic that is scoped to this widget...
          searchPayload.alfResponseTopic = this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST";
@@ -268,8 +284,30 @@ define(["dojo/_base/declare",
       onSearchLoadSuccess: function alfresco_documentlibrary_AlfSearchList__onSearchLoadSuccess(payload) {
          this.alfLog("log", "Search Results Loaded", payload, this);
          
-         this._currentData = payload.response;
-         
+         var newData = payload.response;
+         this._currentData = newData; // Some code below expects this even if the view is null.
+
+         // Re-render the current view with the new data...
+         var view = this.viewMap[this._currentlySelectedView];
+         if (view != null)
+         {
+            this.showRenderingMessage();
+
+            if (this.useInfiniteScroll)
+            {
+               view.augmentData(newData);
+               this._currentData = view.getData();
+            }
+            else
+            {
+               view.setData(newData);
+            }
+
+            view.renderView();
+            this.showView(view);
+
+         }
+
          // TODO: This should probably be in the SearchService... but will leave here for now...
          var facets = lang.getObject("response.facets", false, payload);
          var filters = lang.getObject("requestConfig.query.filters", false, payload);
@@ -293,19 +331,22 @@ define(["dojo/_base/declare",
                label: this.message("search.results.count.label", {0: resultsCount})
             });
          }
-         
-         // Re-render the current view with the new data...
-         var view = this.viewMap[this._currentlySelectedView];
-         if (view != null)
-         {
-            this.showRenderingMessage();
-            view.setData(this._currentData);
-            view.renderView();
-            this.showView(view);
-            
-            // Force a resize of the sidebar container to take the new height of the view into account...
-            this.alfPublish("ALF_RESIZE_SIDEBAR", {});
-         }
+
+         // Force a resize of the sidebar container to take the new height of the view into account...
+         this.alfPublish("ALF_RESIZE_SIDEBAR", {});
+      },
+
+      /**
+       * Clear Old results from list & reset counts.
+       *
+       * @instance
+       */
+      resetResultsList: function alfresco_documentlibrary_AlfSearchList_resetResultsList() {
+         this.startIndex = 0;
+         this.currentPage = 1;
+         this.hideChildren(this.domNode);
+         this.alfPublish(this.clearDocDataTopic);
       }
+
    });
 });

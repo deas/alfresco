@@ -246,7 +246,21 @@ define(["dojo/_base/declare"],
        * @type {string}
        * @default "ALF_UNSYNC_CURRENT_LOCATION"
        */
-      unsyncLocationTopic: "ALF_UNSYNC_CURRENT_LOCATION"
-      
+      unsyncLocationTopic: "ALF_UNSYNC_CURRENT_LOCATION",
+
+      /**
+       * Used by infinite scroll to let other widgets know that the bottom of the page has been reached.
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_DOCLIST_INSERT_MORE"
+       */
+      scrollNearBottom: "ALF_SCROLL_NEAR_BOTTOM",
+
+      /**
+       * Used to clear the currentData object in the view.
+       *
+       */
+      clearDocDataTopic: "ALF_DOCLIST_CLEAR_DATA"
    });
 });

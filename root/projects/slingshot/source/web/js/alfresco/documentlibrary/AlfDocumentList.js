@@ -135,6 +135,15 @@ define(["dojo/_base/declare",
       usePagination: true,
 
       /**
+       * Indicates whether Infinite Scroll should be used when requesting documents
+       *
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      useInfiniteScroll: false,
+
+      /**
        * Indicates whether or not folders should be shown in the document library.
        *
        * @instance
@@ -176,6 +185,7 @@ define(["dojo/_base/declare",
          this.alfSubscribe(this.pageSelectionTopic, lang.hitch(this, "onPageChange"));
          this.alfSubscribe(this.docsPerpageSelectionTopic, lang.hitch(this, "onDocsPerPageChange"));
          this.alfSubscribe(this.reloadDataTopic, lang.hitch(this, "loadData"));
+         this.alfSubscribe(this.scrollNearBottom, lang.hitch(this, "onScrollNearBottom"));
          
          // Subscribe to the topics that will be published on by the DocumentService when retrieving documents
          // that this widget requests...
@@ -585,12 +595,17 @@ define(["dojo/_base/declare",
        * is being asynchronously loaded.
        * 
        * @instance
+       * @param force Boolean - Clear out the previous content before showing the message or not?
        */
       showLoadingMessage: function alfresco_documentlibrary_AlfDocumentList__showLoadingMessage() {
-         this.hideChildren(this.domNode);
-         domClass.remove(this.dataLoadingNode, "share-hidden");
+         if (!this.useInfiniteScroll)
+         {
+            this.hideChildren(this.domNode);
+            domClass.remove(this.dataLoadingNode, "share-hidden");
+         }
+         // TODO: Make this work with infinite scroll.
       },
-      
+
       /**
        * This is called once data has been loaded but before the view rendering begins. This can be useful
        * when there is a lot of data and the view is complex to render so may not be instantaneous.
@@ -598,8 +613,11 @@ define(["dojo/_base/declare",
        * @instance
        */
       showRenderingMessage: function alfresco_documentlibrary_AlfDocumentList__showRenderingMessage() {
-         this.hideChildren(this.domNode);
-         domClass.remove(this.renderingViewNode, "share-hidden");
+         if (!this.useInfiniteScroll)
+         {
+            this.hideChildren(this.domNode);
+            domClass.remove(this.renderingViewNode, "share-hidden");
+         }
       },
       
       /**
@@ -662,7 +680,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       loadData: function alfresco_documentlibrary_AlfDocumentList__loadData() {
-         this.showLoadingMessage(); // Commented out because of timing issues...
+         this.showLoadingMessage();
 
          var documentPayload = {
             path: this.currentPath,
@@ -680,6 +698,14 @@ define(["dojo/_base/declare",
             documentPayload.page = this.currentPage;
             documentPayload.pageSize = this.currentPageSize;
          }
+
+         // InfiniteScroll uses pagination under the covers.
+         if (this.useInfiniteScroll)
+         {
+            documentPayload.page = this.currentPage;
+            documentPayload.pageSize = this.currentPageSize;
+         }
+
          if ((this.siteId == null || this.siteId == "") && this.nodeRef != null)
          {
             // Repository mode (don't resolve Site-based folders)
@@ -941,6 +967,16 @@ define(["dojo/_base/declare",
             
             this.currentPageSize = payload.value;
             if (this._readyToLoad) this.loadData();
+         }
+      },
+
+      onScrollNearBottom: function alfresco_documentlibrary_AlfDocumentList_onInsertMoreDocumentsRequest(payload) {
+         // Process Infinite Scroll, if enabled & if we've not hit the end of the results
+         if(this.useInfiniteScroll && this._currentData.totalRecords < this._currentData.totalRecordsUpper)
+         {
+            this.currentPage++;
+
+            this.loadData();
          }
       }
    });
