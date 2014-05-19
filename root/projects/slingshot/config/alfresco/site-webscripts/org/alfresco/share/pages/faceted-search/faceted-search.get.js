@@ -229,6 +229,7 @@ var searchDocLib = {
    name: "alfresco/documentlibrary/AlfSearchList",
    config: {
       useHash: true,
+      useInfiniteScroll: true,
       widgets: [
          {
             name: "alfresco/documentlibrary/views/AlfSearchListView",
@@ -239,6 +240,11 @@ var searchDocLib = {
                   "faceted-search.suggestion3",
                   "faceted-search.suggestion4"
                ]
+            }
+         },
+         {
+            name: "alfresco/documentlibrary/AlfDocumentListInfiniteScroll",
+            config: {
             }
          }
       ]
