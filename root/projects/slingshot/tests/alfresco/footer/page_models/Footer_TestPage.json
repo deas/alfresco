@@ -1,0 +1,52 @@
+{
+   "services": [
+      {
+         "name": "alfresco/services/LoggingService",
+         "config": {
+            "loggingPreferences": {
+               "enabled": true,
+               "all": true,
+               "warn": true,
+               "error": true
+            }
+         }
+      }
+   ],
+   "widgets": [
+      {
+         "name": "alfresco/footer/AlfStickyFooter",
+         "config": {
+            "widgets": [
+               {
+                  "id": "SHARE_VERTICAL_LAYOUT",
+                  "name": "alfresco/layout/VerticalWidgets",
+                  "config": 
+                  {
+                     "widgets": [
+                        {
+                           "name": "alfresco/testing/SubscriptionLog"
+                        },
+                        {
+                           "name": "alfresco/testing/TestCoverageResults"
+                        }
+                     ]
+                  }
+               }
+            ],
+            "widgetsForFooter": [
+               {
+                  "name": "alfresco/footer/AlfShareFooter",
+                  "config": {
+                     "licenseLabel": "SOME LICENSE LABEL",
+                     "copyrightLabel": "SOME COPYRIGHT LABEL",
+                     "altText": "SOME ALT TEXT",
+                     "logoImageSrc": "alfresco-share-logo-enterprise.png"
+                  }
+               }
+            ]
+         }
+      }
+   ]
+}
+
+

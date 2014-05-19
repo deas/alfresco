@@ -33,7 +33,7 @@
             "id": "SPECIFIC_DOM_ID",
             "logoClasses" : "surf-logo-large"
          }
-      }
+      },
       {
          "name": "alfresco/testing/SubscriptionLog"
       },

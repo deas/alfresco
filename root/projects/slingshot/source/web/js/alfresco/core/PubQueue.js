@@ -89,7 +89,7 @@ define(["dojo/_base/declare",
          array.forEach(this._queue, function(publication) {
             if (AlfConstants.DEBUG == true)
             {
-               PubSubLog.getSingleton().pub(publication.scopedTopic, 
+               PubSubLog.getSingleton().pub(publication.topic, 
                                             publication.payload, 
                                             publication.caller);
             }
