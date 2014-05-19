@@ -136,32 +136,6 @@ define(["dojo/_base/declare",
       renderedValueSuffix: "",
       
       /**
-       * By default this is the empty string but will be converted to the HTML for opening an anchor
-       * when the property is to be used as a link to access the item
-       * @instance
-       * @type {string}
-       * @default ""
-       */
-      anchorOpen: "",
-      
-      /**
-       * By default this is the empty string but will be converted to the HTML for closing an anchor
-       * when the property is to be used as a link to access the item
-       * @instance
-       * @type {string}
-       * @default ""
-       */
-      anchorClose: "",
-      
-      /**
-       * Indicates whether or not to render this property as a link
-       * @instance
-       * @type {boolean}
-       * @default false 
-       */
-      renderAsLink: false,
-      
-      /**
        * Indicates whether or not to hide the property if is not available or not set
        * @instance
        * @type {boolean}
@@ -229,15 +203,6 @@ define(["dojo/_base/declare",
             this.label = "";
          }
          
-         // if (this.renderAsLink)
-         // {
-         //    // var linkDetails = this.generateFileFolderLink();
-         //    // var itemLinkHref = linkDetails.itemLinkHref + linkDetails.itemLinkRelative;
-         //    // this.anchorOpen = "<a href='" + itemLinkHref + "'>"
-         //    // this.anchorClose = "</a>"
-         //    this.createItemLinnk(this.domNode);
-         // }
-         
          if (ObjectTypeUtils.isString(this.propertyToRender) && 
              ObjectTypeUtils.isObject(this.currentItem) && 
              lang.exists(this.propertyToRender, this.currentItem))
@@ -303,11 +268,6 @@ define(["dojo/_base/declare",
          else
          {
             // No action
-         }
-
-         if (this.renderAsLink)
-         {
-            this.createItemLink(this.renderedValueNode);
          }
       },
       

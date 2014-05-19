@@ -1675,7 +1675,6 @@ function getPropertyWidget() {
          propertyToRender: "node.properties.cm:name",
          postParam: "prop_cm_name",
          renderSize: "medium",
-         renderAsLink: false,
          renderedValuePrefix: "",
          renderedValueSuffix: ""
       },
@@ -1724,70 +1723,6 @@ function getPropertyWidget() {
                      {label:"Small",value:"small"},
                      {label:"Medium",value:"medium"},
                      {label:"Large",value:"large"}
-                  ]
-               }
-            }
-         },
-         {
-            name: "alfresco/forms/controls/DojoCheckBox",
-            config: {
-               fieldId: "renderAsLink",
-               name: "defaultConfig.renderAsLink",
-               label: "Render as a link",
-               value: false
-            }
-         },
-         {
-            name: "alfresco/forms/controls/DojoSelect",
-            config: {
-               fieldId: "linkType",
-               name: "defaultConfig.linkType",
-               label: "Link type",
-               value: "default",
-               postWhenHiddenOrDisabled: false,
-               noValueUpdateWhenHiddenOrDisabled: true,
-               optionsConfig: {
-                  fixed: [
-                     {label:"Default",value:"default"},
-                     {label:"Custom",value:"custom"}
-                  ]
-               },
-               visibilityConfig: {
-                  initialValue: false,
-                  rules: [
-                     {
-                        targetId: "renderAsLink",
-                        is: [true]
-                     }
-                  ]
-               }
-            }
-         },
-         {
-            name: "alfresco/forms/controls/DojoValidationTextBox",
-            config: {
-               name: "defaultConfig.customDetailsURL",
-               description: "Enter a custom URL to link to. This will be relative to 'share/page' and will automatically be appended with the NodeRef",
-               label: "Custom Link URL",
-               value: "",
-               postWhenHiddenOrDisabled: false,
-               noValueUpdateWhenHiddenOrDisabled: true,
-               visibilityConfig: {
-                  initialValue: false,
-                  rules: [
-                     {
-                        targetId: "linkType",
-                        is: ["custom"]
-                     }
-                  ]
-               },
-               requirementConfig: {
-                  initialValue: false,
-                  rules: [
-                     {
-                        targetId: "linkType",
-                        is: ["custom"]
-                     }
                   ]
                }
             }
