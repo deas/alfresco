@@ -51,16 +51,6 @@ define(["dojo/_base/declare",
        * @instance
        */
       postMixInProperties: function alfresco_documentlibrary_AlfSearchList__postMixInProperties() {
-         // this.alfPublish(this.getPreferenceTopic, {
-         //    preference: "org.alfresco.share.documentList.documentsPerPage",
-         //    callback: this.setPageSize,
-         //    callbackScope: this
-         // });
-
-         // Override the default filter delimiter ("|") to be an "&" because "|" can be used in the facet 
-         // filter data which may be included in the hash fragment.
-         this.filterDelimiter = "&";
-
          // Only subscribe to filter changes if 'useHash' is set to true. This is because multiple DocLists might
          // be required on the same page and they can't all feed off the hash to drive the location.
          if (this.useHash)
@@ -68,23 +58,16 @@ define(["dojo/_base/declare",
             this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onChangeFilter"));
          }
          
-         // this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, "onViewSelected"));
-         // this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, "onDocumentSelection"));
          this.alfSubscribe("ALF_DOCLIST_SORT", lang.hitch(this, "onSortRequest"));
          this.alfSubscribe("ALF_DOCLIST_SORT_FIELD_SELECTION", lang.hitch(this, "onSortFieldSelection"));
-         // this.alfSubscribe(this.showFoldersTopic, lang.hitch(this, "onShowFolders"));
-         // this.alfSubscribe(this.pageSelectionTopic, lang.hitch(this, "onPageChange"));
-         // this.alfSubscribe(this.docsPerpageSelectionTopic, lang.hitch(this, "onDocsPerPageChange"));
-         // this.alfSubscribe(this.reloadDataTopic, lang.hitch(this, "loadData"));
          
          // Subscribe to the topics that will be published on by the DocumentService when retrieving documents
          // that this widget requests...
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onSearchLoadSuccess"));
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_FAILURE", lang.hitch(this, "onDataLoadFailure"));
-         // this.alfSubscribe("ALF_SEARCH_REQUEST_SUCCESS", lang.hitch(this, "onSearchLoadSuccess"));
-         // this.alfSubscribe("ALF_SEARCH_REQUEST_FAILURE", lang.hitch(this, "onDataLoadFailure"));
          this.alfSubscribe("ALF_SEARCH_RESULT_CLICKED", lang.hitch(this, "onSearchResultClicked"));
 
+         // Subscribe to the topics that address specific search updates...
          this.alfSubscribe("ALF_SET_SEARCH_TERM", lang.hitch(this, "onSearchTermRequest"));
          this.alfSubscribe("ALF_INCLUDE_FACET", lang.hitch(this, "onIncludeFacetRequest"));
          this.alfSubscribe("ALF_APPLY_FACET_FILTER", lang.hitch(this, "onApplyFacetFilter"));
@@ -109,7 +92,9 @@ define(["dojo/_base/declare",
       searchTerm: "",
 
       /**
-       * Updates the current search term
+       * Updates the current search term. Note that this is not currently sufficient for setting complete
+       * search data (such as facets, filters, sort order, etc) so this will need to be iterated on as 
+       * needed.
        *
        * @instance
        * @param {object} payload The details of the search term to set

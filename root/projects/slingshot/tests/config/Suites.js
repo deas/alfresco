@@ -46,6 +46,7 @@ define({
                           'tests/alfresco/core/RenderFilterTest',
                           'tests/alfresco/core/WidgetCreationTest',
 
+                          'tests/alfresco/documentlibrary/SearchListTest',
                           'tests/alfresco/documentlibrary/views/AlfDocumentListWithHeaderTest',
 
                           'tests/alfresco/footer/FooterTest',

@@ -35,8 +35,73 @@
             "label": "Set Multiple Search Attributes",
             "publishTopic": "ALF_NAVIGATE_TO_PAGE",
             "publishPayload": {
-               "url": "searchTerm=testTerm2&facetFields=facetFieldData&facetFilters=filter1,filter2,filter3&sortAscending=false&sortField=cm:title",
+               "url": "searchTerm=testTerm2&facetFields=qname1&facetFilters=filter1,filter2,filter3&sortAscending=false&sortField=cm:title",
                "type": "HASH"
+            }
+         }
+      },
+      {
+         "id": "REMOVE_FACET_FILTER",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Remove Facet Filter",
+            "publishTopic": "ALF_REMOVE_FACET_FILTER",
+            "publishPayload": {
+               "filter": "filter2"
+            }
+         }
+      },
+      {
+         "id": "APPLY_FACET_FILTER",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Apply Facet Filter",
+            "publishTopic": "ALF_APPLY_FACET_FILTER",
+            "publishPayload": {
+               "filter": "filter4"
+            }
+         }
+      },
+      {
+         "id": "INCLUDE_FACET",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Include Facet",
+            "publishTopic": "ALF_INCLUDE_FACET",
+            "publishPayload": {
+               "qname": "qname2"
+            }
+         }
+      },
+      {
+         "id": "PUBLISH_SEARCH_RESULTS",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Fake Search Response",
+            "publishTopic": "ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS",
+            "publishPayload": {
+               "response" : {
+                  "totalRecords": 3,
+                  "totalRecordsUpper": 3,
+                  "startIndex": 0,
+                  "numberFound": 3,
+                  "facets": {
+                     "@qname1": {
+                        "test": 3
+                     }
+                  },
+                  "items": [
+                     {
+                        "name": "Res1"
+                     },
+                     {
+                        "name": "Res2"
+                     }
+                     {
+                        "name": "Res3"
+                     }
+                  ]
+               }
             }
          }
       },
@@ -50,19 +115,21 @@
                   "config": {
                      "widgets": [
                         {
-                           "name": "alfresco/documentlist/views/layouts/Row",
+                           "name": "alfresco/documentlibrary/views/layouts/Row",
                            "config": {
                               "widgets": [
                                  {
-                                    "name": "alfresco/documentlist/views/layouts/Cell",
-                                    "widgets" :[
-                                       {
-                                          "name": "alfresco/renderers/Property",
-                                          "config": {
-                                             "propertyToRender": "name"
+                                    "name": "alfresco/documentlibrary/views/layouts/Cell",
+                                    "config": {
+                                       "widgets" :[
+                                          {
+                                             "name": "alfresco/renderers/Property",
+                                             "config": {
+                                                "propertyToRender": "name"
+                                             }
                                           }
-                                       }
-                                    ]
+                                       ]
+                                    }
                                  }
                               ]
                            }
