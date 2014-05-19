@@ -65,7 +65,7 @@ define(["dojo/_base/declare",
        * 
        * @instance
        * @type {number}
-       * @default 50
+       * @default 25
        */
       pageSize: 25,
 
@@ -196,7 +196,7 @@ define(["dojo/_base/declare",
             }
             else
             {
-               query = payload.query
+               query = payload.query;
             }
 
             var sort = "";
