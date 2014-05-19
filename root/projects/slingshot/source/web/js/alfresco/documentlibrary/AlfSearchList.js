@@ -190,6 +190,14 @@ define(["dojo/_base/declare",
       onChangeFilter: function alfresco_documentlibrary_AlfSearchList__onChangeFilter(payload) {
          this.alfLog("log", "Filter change detected", payload, this);
 
+         // If the search term has changed then we want to delete the facet filters as
+         // they might not be applicable to the new search results...
+         var newSearchTerm = lang.getObject("searchTerm", false, payload);
+         if (newSearchTerm != this.searchTerm)
+         {
+            this.facetFilters = {};
+         }
+
          // The facet filters need to be handled directly because they are NOT just passed as 
          // a simple string. Create a new object for the filters and then break up the filters
          // based on comma delimition and assign each element as a new key in the filters object
