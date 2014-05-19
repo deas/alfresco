@@ -79,6 +79,13 @@ define(["dojo/_base/declare",
          };
          this.renderView();
       },
+
+      /**
+       * Reset the current Data object.
+       */
+      clearData: function alfresco_pickers_PickedItems__clearData() {
+         // Intentionally overridden to do nothing.
+      },
       
       /**
        * This is the dot-notation path to the attribute in the item that is the unique key. It is used

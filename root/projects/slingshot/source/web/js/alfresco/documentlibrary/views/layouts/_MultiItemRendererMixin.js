@@ -124,18 +124,21 @@ define(["dojo/_base/declare",
 
       /**
        * Reset the current Data object.
+       * 
+       * @instance
        */
-      clearData: function alfresco_documentlibrary_views_AlfDocumentListView_clearData() {
-         this.alfLog('info', 'AlfDocumentListView: Clearing currentData.');
+      clearData: function alfresco_documentlibrary_views_AlfDocumentListView__clearData() {
+         this.alfLog('info', 'Clearing currentData.');
          this.currentData = null;
       },
 
       /**
        * Return the current data object.
        *
+       * @instance
        * @returns {Object[]}
        */
-      getData: function alfresco_documentlibrary_views_AlfDocumentListView_getData() {
+      getData: function alfresco_documentlibrary_views_AlfDocumentListView__getData() {
          return this.currentData;
       },
 

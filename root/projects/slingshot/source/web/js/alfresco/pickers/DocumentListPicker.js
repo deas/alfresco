@@ -96,6 +96,7 @@ define(["dojo/_base/declare",
          {
             name: "alfresco/documentlibrary/views/AlfDocumentListView",
             config: {
+               subscribeToDocRequests: true,
                widgets: [
                   {
                      name: "alfresco/documentlibrary/views/layouts/Row",
