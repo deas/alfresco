@@ -74,8 +74,7 @@ define(["dojo/_base/declare",
             currentItem: this.currentItem,
             pubSubScope: this.pubSubScope,
             propertyToRender: "displayName",
-            renderSize: "large",
-            publishTopic: "ALF_SEARCH_RESULT_LINK"
+            renderSize: "large"
          }, this.nameNode);
 
          if (this.currentItem.title == null || this.currentItem.title == "")

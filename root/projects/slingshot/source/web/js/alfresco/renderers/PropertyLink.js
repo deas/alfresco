@@ -27,8 +27,9 @@
 define(["dojo/_base/declare",
         "alfresco/renderers/Property",
         "dijit/_OnDijitClickMixin",
-        "dojo/text!./templates/PropertyLink.html"], 
-        function(declare, Property, _OnDijitClickMixin, template) {
+        "dojo/text!./templates/PropertyLink.html",
+        "dojo/_base/event"], 
+        function(declare, Property, _OnDijitClickMixin, template, event) {
 
    return declare([Property, _OnDijitClickMixin], {
 
@@ -40,13 +41,15 @@ define(["dojo/_base/declare",
       templateString: template,
 
       onLinkClick: function alfresco_renderers_PropertyLink__onLinkClick(evt) {
-         if (this.publishTopic == null || this.publishTopic.trim() == "")
+         event.stop(evt);
+         var publishTopic = this.getPublishTopic();
+         if (publishTopic == null || publishTopic.trim() == "")
          {
             this.alfLog("warn", "No publishTopic provided for PropertyLink", this);
          }
          else
          {
-            this.alfPublish(this.getPublishTopic(), this.getPublishPayload());
+            this.alfPublish(publishTopic, this.getPublishPayload());
          }
       },
 

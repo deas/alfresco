@@ -33,7 +33,7 @@ define({
    baseNonFunctionalSuites: null,
 
    // Uncomment and add specific tests as necessary during development!
-   // baseFunctionalSuites: ['tests/alfresco/forms/SingleTextFieldFormTest'],
+   // baseFunctionalSuites: ['tests/alfresco/renderers/SearchResultPropertyLinkTest'],
 
    /**
     * This is the base array of functional test suites
@@ -77,6 +77,7 @@ define({
                           'tests/alfresco/renderers/PropertyLinkTest',
                           'tests/alfresco/renderers/PublishingDropDownMenuTest',
                           'tests/alfresco/renderers/PublishPayloadMixinOnActionsTest',
+                          'tests/alfresco/renderers/SearchResultPropertyLinkTest',
                           
                           'tests/alfresco/search/FacetFiltersTest'],
 
