@@ -18,7 +18,6 @@ body.aikau-reveal {
    border-bottom-left-radius: 5px;
    border-bottom-right-radius: 5px;
    border: @standard-border;
-   padding: 5px;
-   padding: 15px 5px;
+   padding: @standard-line-height @standard-column-width;
    display: block;
 }
