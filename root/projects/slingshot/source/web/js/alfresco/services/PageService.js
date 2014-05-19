@@ -220,27 +220,14 @@ define(["dojo/_base/declare",
          var pageDefinition = {};
          if (payload.pageDefinition == null)
          {
-
             pageDefinition = {
-               publishOnReady: payload.publishOnReady,
-               services: payload.services,
-               widgets: payload.widgets
+               publishOnReady: payload.publishOnReady.widgetsConfig,
+               // publishOnReadyEditorConfig: payload.publishOnReady.editorConfig,
+               services: payload.services.widgetsConfig,
+               // servicesEditorConfig: payload.services.editorConfig,
+               widgets: payload.widgets.widgetsConfig,
+               // widgetsEditorConfig: payload.widgets.editorConfig
             };
-
-            // Get the widgets for display from each configured widget...
-            // TODO: This isn't yet sufficient for restoring for edit as it only captures the first 
-            //       level of widget data. Need to address this.
-            // var widgetsForDisplay = [];
-            // array.forEach(payload.widgets, function(widget, index) {
-            //    var wfd = this.alfGetData(widget.config.fieldId + "__widgetsForDisplay");
-            //    if (wfd != null)
-            //    {
-            //       widgetsForDisplay.push(wfd);
-            //    }
-            // }, this);
-            // pageDefinition.widgetsForDisplay = widgetsForDisplay;
-
-            // pageDefinition = dojoJson.stringify(pageDefinition);
          }
          else
          {

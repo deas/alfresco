@@ -1202,6 +1202,30 @@ function getSearchService() {
    };
 }
 
+function getNotificationService() {
+   return {
+      type: ["service"],
+      name: "Notification Service",
+      module: "alfresco/services/NotificationService",
+      // This is the initial configuration that will be provided when the widget
+      // is dropped into the drop-zone...
+      defaultConfig: {},
+      // These are the widgets used to configure the dropped widget.
+      widgetsForConfig: [],
+      // If set to true, then the actual widget will be previewed...
+      previewWidget: false,
+      // This is the widget structure to use to display the widget.
+      widgetsForDisplay: [
+         {
+            name: "alfresco/html/Label",
+            config: {
+               label: "Notification Service"
+            }
+         }
+      ]
+   };
+}
+
 function getAllServices() {
    return [
       getNavigationService(),
@@ -1215,7 +1239,8 @@ function getAllServices() {
       getSiteService(),
       getUserService(),
       getQuaddsService(),
-      getSearchService()
+      getSearchService(),
+      getNotificationService()
    ];
 }
 

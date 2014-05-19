@@ -77,27 +77,22 @@ define(["dojo/_base/declare",
          {
             this.processWidgets(this.widgets, this.controlNode);
          }
-         
-         // Whenever a widget update event is emitted we want to attach the information about this 
-         // wrapper instance and the item data that it contains...
-         on(this.controlNode, "onWidgetUpdate", lang.hitch(this, "updateWidgetUpdateEvent"));
       },
-      
-      /**
-       * Whenever a widget update event occurs (emitted from a descendant widget) then we want to attach
-       * this wrappers node information to the event along with all the item data contained within it. This
-       * allows widgets (in particular DropZones) in the hierarchy to keep in-sync with the latest changes.
-       * 
-       * @instance
-       * @param {object} evt The custom event
-       */
-      updateWidgetUpdateEvent: function alfresco_creation_DropZoneWrapper__updateWidgetUpdateEvent(evt) {
-         this.alfLog("log", "Updating event with wrapper ndoe", evt);
-         evt.widgetWrapperNode = this.domNode;
-         evt.widgetWrapperItems = this.getCurrentItems();
 
-         // Update the widgets for display...
-         this.alfSetData(this.fieldId + "__widgetsForDisplay", evt.widgetsForDisplay);
+      /**
+       * Sets the a reference to the wrapper on each child widget.
+       *
+       * @instance
+       * @param {element} rootNode The DOM node where the widget should be created.
+       * @param {object} widgetConfig The configuration for the widget to be created
+       * @param {number} index The index of the widget configuration in the array that it was taken from
+       */
+      processWidget: function alfresco_creation_DropZoneWrapper__processWidget(rootNode, widgetConfig, index) {
+         if (widgetConfig != null && widgetConfig.config != null)
+         {
+            widgetConfig.config._dropZoneWrapper = this;
+         }
+         this.inherited(arguments);
       },
       
       /**
@@ -112,61 +107,6 @@ define(["dojo/_base/declare",
             cancelable: true,
             widgetToDelete: this
          });
-      },
-      
-      /**
-       * Although this iterates over all the widgets, really it is assuming that there is only one root 
-       * widget that is wrapped. Should this be wrapping multiple items then the returned data might not
-       * be as expected.
-       * 
-       * @instance
-       */
-      getCurrentItems: function alfresco_creation_DropZoneWrapper__getCurrentItems() {
-         var widgets = registry.findWidgets(this.controlNode);
-         var items = [];
-         array.forEach(widgets, function(widget, i) {
-            if (typeof widget.getCurrentItems === "function")
-            {
-               array.forEach(widget.getCurrentItems(), function(item, j) {
-                  // TODO: Store fieldId here instead of all the data?
-                  items.push(item.data.defaultConfig.fieldId); // TODO: Prone to data access error
-                  // items.push(item.data);
-               }, this);
-            }
-         }, this);
-         return items;
-      },
-      
-      /**
-       * @instance
-       * @returns {object[]} An array of widget definitions from the nested widget (and its sub-widgets).
-       */
-      getWidgetDefinitions: function alfresco_creation_DropZoneWrapper__getWidgetDefinitions() {
-         // Get all the widgets defined with the DropZone to get any widget
-         // definitions that they define...
-         var widgets = registry.findWidgets(this.controlNode);
-         var widgetDefs = [];
-         array.forEach(widgets, lang.hitch(this, "getSubWidgetDefinitions", widgetDefs));
-         return widgetDefs;
-      },
-      
-      /**
-       * @instance
-       * @param {object[]} widgetDefs The array of widget definitions to add to
-       * @param {object} widget The current widget to inspect for widget defintions
-       * @param {number} index The index of the current widget to inspect.
-       */
-      getSubWidgetDefinitions: function alfresco_creation_DropZoneWrapper__getSubWidgetDefinitions(widgetDefs, widget, index) {
-         if (typeof widget.getWidgetDefinitions === "function")
-         {
-            var defs = widget.getWidgetDefinitions();
-            if (defs != null && defs.length > 0)
-            {
-               array.forEach(defs, function(def, i) {
-                  widgetDefs.push(def);
-               });
-            }
-         }
       }
    });
 });

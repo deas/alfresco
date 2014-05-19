@@ -27,7 +27,7 @@
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
-        "dojo/text!./templates/DropAndPreview.html",
+        "dojo/text!./templates/DropZone.html",
         "alfresco/core/Core",
         "dojo/_base/lang",
         "dojo/_base/array",
@@ -49,15 +49,7 @@ define(["dojo/_base/declare",
        * @instance
        * @type {Array}
        */
-      cssRequirements: [{cssFile:"./css/DropAndPreview.css"}],
-      
-      /**
-       * An array of the i18n files to use with this widget.
-       * 
-       * @instance
-       * @type {Array}
-       */
-      i18nRequirements: [{i18nFile: "./i18n/DropAndPreview.properties"}],
+      cssRequirements: [{cssFile:"./css/DropZone.css"}],
       
       /**
        * The HTML template to use for the widget.
@@ -125,7 +117,7 @@ define(["dojo/_base/declare",
          aspect.after(this.previewTarget, "onMouseDown", lang.hitch(this, "onWidgetSelected"), true);
          
          // Capture widgets being dropped...
-         aspect.after(this.previewTarget, "onDrop", lang.hitch(this, "emitOnWidgetUpdate"), true);
+         aspect.after(this.previewTarget, "onDrop", lang.hitch(this, "refreshChildren"), true);
          
          // When additional nodes are created as a result of dropping them into the preview target it
          // will be necessary to publish the details of the available fields. This is done for the benefit
@@ -141,20 +133,17 @@ define(["dojo/_base/declare",
          // Listen for widgets requesting to be deleted...
          on(this.previewNode, "onWidgetDelete", lang.hitch(this, "deleteItem"));
          
-         // Listen for wrapped DropZones being updated...
-         on(this.previewNode, "onWidgetUpdate", lang.hitch(this, "updateWidgetsForDisplay"));
-         
          // Add in any items that are included as instantiation arguments...
          // These would be included when a DropZone is created as the display
          // widget of a widget with children. The children will be the items to add.
          if (this.initialItems != null)
          {
-            var items = [];
-            array.forEach(this.initialItems, function (item, index) {
-               items.push(this.alfGetData(item));
-            }, this);
-            // this.previewTarget.insertNodes(false, this.initialItems, false, null);
-            this.previewTarget.insertNodes(false, items, false, null);
+            // var items = [];
+            // array.forEach(this.initialItems, function (item, index) {
+            //    items.push(this.alfGetData(item));
+            // }, this);
+            this.previewTarget.insertNodes(false, this.initialItems, false, null);
+            // this.previewTarget.insertNodes(false, items, false, null);
          }
 
          if (this.value != null && this.value != "")
@@ -170,29 +159,6 @@ define(["dojo/_base/declare",
                var dndData = this.creator(data);
                this.previewTarget.insertNodes(true, [dndData.data]);
             }, this);
-         }
-      },
-      
-      /**
-       * @instance
-       * @param {object} evt The "onWidgetUpdate" custom event
-       */
-      updateWidgetsForDisplay: function alfresco_creation_DropZone__updateWidgetsForDisplay(evt) {
-         this.alfLog("log", "A nested widget has been added", evt);
-         
-         if (evt.widgetWrapperNode != null && evt.widgetWrapperItems != null)
-         {
-            var itemToUpdate = this.previewTarget.getItem(evt.widgetWrapperNode.id);
-            if (itemToUpdate != null)
-            {
-               evt.widgetsForDisplay[0].config.initialItems = evt.widgetWrapperItems;
-               // itemToUpdate.data.widgetsForDisplay = evt.widgetsForDisplay;
-               evt.stopPropagation();
-               evt.preventDefault();
-               
-               // ...and now generate a new event for this DropZone...
-               this.emitOnWidgetUpdate()
-            }
          }
       },
       
@@ -227,131 +193,6 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * Get all the widgets defined with the DropZone to get any sub-widget definitions that they define.
-       *
-       * @instance
-       * @returns {object[]}
-       */
-      getWidgetDefinitions: function alfresco_creation_DropZone__getWidgetDefinitions() {
-            
-         // Get all the widgets defined with the DropZone to get any widget definitions that they define...
-         var widgetDefs = [];
-         array.forEach(this.previewTarget.getAllNodes(), lang.hitch(this, "getWidgetDefinition", widgetDefs));
-         return widgetDefs;
-      },
-
-      /**
-       * This function retrieves the configuration for an individual widget that has been dropped into 
-       * the drop zone.
-       *
-       * @instance
-       * @param {object[]} widgetDefs The object array to add the new widget definition object into
-       * @param {element} node The DOM node from which to retrieve the widget data
-       * @param {number} i The index of the node.
-       */
-      getWidgetDefinition: function alfresco_creation_DropZone__getWidgetDefinition(widgetDefs, node, i) {
-         var currentField = this.previewTarget.getItem(node.id);
-
-         // Allow alternatives to "name" and "config" to be specified in the item data...
-         var itemNameKey = (currentField.data.itemNameKey != null) ? currentField.data.itemNameKey : "name",
-             itemConfigKey = (currentField.data.itemConfigKey != null) ? currentField.data.itemConfigKey : "config";
-
-         // Create the new definition...
-         var newDef = {
-            // widgetsForDisplay: currentField.data.widgetsForDisplay,
-            // widgetDisplayName: currentField.data.name,
-            // widgetsForConfig: currentField.data.widgetsForConfig,
-            // previewWidget: currentField.data.previewWidget
-         };
-
-         // Set the name and config...
-         newDef[itemNameKey] = currentField.data.module;
-
-         // If "updatedConfiguration" is available then use that, otherwise use the default configuration...
-         // There should be "updatedConfig" if the user has modified the default form and saved it...
-         // ...Also mixin any additional configuration...
-         // This is for the benefit of the widget being added to, not the widget being instantiated...
-         if (currentField.data.updatedConfig != null)
-         {
-            newDef[itemConfigKey] = currentField.data.defaultConfig;
-            lang.mixin(newDef[itemConfigKey], currentField.data.updatedConfig);
-            lang.mixin(newDef, currentField.data.additionalConfig);
-         }
-         else
-         {
-            newDef[itemConfigKey] = currentField.data.defaultConfig;
-            lang.mixin(newDef, currentField.data.additionalConfig);
-         }
-         
-         // Get any sub-widget definitinos and add them to the new definition...
-         this.getSubWidgetDefinitions(node, newDef, currentField);
-         
-         widgetDefs.push(newDef);
-      },
-
-      /**
-       * Gets any widgets that are defined within the widget bound to the supplied node. If a widget dropped
-       * into the drop-zone has any widgets that have been dropped into it then there definitions need to be
-       * retrieved and saved.
-       *
-       * @instance
-       * @param {element} node The DOM node from which to retrieve the widget data
-       * @param {object} The definition object that should be updated
-       */
-      getSubWidgetDefinitions: function alfresco_creation_DropZone__getSubWidgetDefinitions(node, newDef, currentField) {
-         var widget = registry.byNode(node);
-         if (widget != null && 
-             typeof widget.getWidgetDefinitions === "function")
-         {
-            var defs = widget.getWidgetDefinitions();
-            if (defs == null || defs.length == 0)
-            {
-               // No action
-            }
-            else
-            {
-               // It's possible to configure an alternative to "config.widgets" as the value to set the drag and dropped
-               // items of. "config.widgets" is the default because it is expected that a set of nested widgets will be constructed
-               // however it is also possible to drop an object that represents a Publication. In this case the value to be set
-               // will most likely be "publishPayload.widgets"...
-               var itemDroppedItemsKey = (currentField.data.itemDroppedItemsKey != null) ? currentField.data.itemDroppedItemsKey : "config.widgets"
-               lang.setObject(itemDroppedItemsKey, defs, newDef);
-
-               // It's also possible to "mixin" data from the definition directly into the config for the new definition. This
-               // has been added to support widgets dropped into a publication that is dropped into a widget (e.g. the form controls in
-               // a request dialog publication dropped into a menu item)...
-               if (currentField.data.itemDroppedMixinKey != null)
-               {
-                  try
-                  {
-                     var mixinValue = lang.getObject(currentField.data.itemDroppedMixinKey, false, defs);
-                     if (mixinValue != null)
-                     {
-                        lang.mixin(newDef.config, mixinValue);
-                     }
-                  }
-                  catch (e)
-                  {
-                     this.alfLog("warn", "An error occurred mixing in dropped attributes");
-                  }
-               }
-            }
-         }
-      },
-      
-      /**
-       * @instance
-       * @returns {object[]} The items contained by any widgets nested within the current DropZone.
-       */
-      getCurrentItems: function alfresco_creation_DropZone__getCurrentItems() {
-         var currentItems = [];
-         array.forEach(this.previewTarget.getAllNodes(), function(node, i) {
-            currentItems.push(this.previewTarget.getItem(node.id));
-         }, this);
-         return currentItems;
-      },
-      
-      /**
        * Publishes an array of the names of all of the currently configured fields.
        * 
        * @instance
@@ -375,6 +216,18 @@ define(["dojo/_base/declare",
              this.previewTarget.getItem(evt.target.id) != null &&
              evt.widgetToDelete != null) 
          {
+            var target = this.previewTarget.getItem(evt.target.id);
+            var fieldId = lang.getObject("data.defaultConfig.fieldId", false, target),
+                parentId = lang.getObject("data.parentId", false, target);
+            if (fieldId != null && parentId != null)
+            {
+               // Remove all references in parent...
+               this.removeReferencesFromParent(parentId, fieldId);
+
+               // Delete from data model - setting to null is good enough...
+               this.alfSetData(fieldId, null);
+            }
+
             evt.widgetToDelete.destroyRecursive(false);
             this.previewTarget.delItem(evt.target.id);
             
@@ -390,7 +243,7 @@ define(["dojo/_base/declare",
             this.alfPublish("ALF_CLEAR_CONFIGURE_WIDGET", {});
             
             // Emit the event to alert wrapping widgets to changes...
-            this.emitOnWidgetUpdate();
+            this.refreshChildren();
             
             this.publishAvailableFields();
          }
@@ -413,47 +266,52 @@ define(["dojo/_base/declare",
             {
                this.alfLog("log", "Updating item", payload);
 
-               var clonedConfig = lang.clone(payload.originalConfig);
-
                // TODO: Potentially fragile...
                var fieldId = payload.originalConfig.defaultConfig.fieldId;
-               var widgetsForDisplay = this.alfGetData(fieldId + "__widgetsForDisplay");
-               
-               // Get the widgetsForConfig data from the data model...
-               var widgetsForConfig = this.alfGetData(payload.originalConfig.defaultConfig.fieldId + "__widgetsForConfig");
 
-               // Create a new attribute to store the updated configuration, this is going to be 
-               // set using the dot-notation properties so that attributes such as "clonedConfig.updatedConfig.defaultConfig.x"
-               // might exist...
-               clonedConfig.updatedConfig = {};
-
-               // Update the original configuration with the new data...
-               for (var key in payload.updatedConfig)
+               // Get the configuration for the widget that has been updated...
+               var config = this.alfGetData(fieldId);
+               if (config != null)
                {
-                  // Use "setObject" to allow keys to be dot-notation properties.
-                  lang.setObject(key, payload.updatedConfig[key], clonedConfig);
-                  lang.setObject(key, payload.updatedConfig[key], clonedConfig.updatedConfig);
-               }
+                  // Get the keys to use to define the object (typically these are just "name" and "config")...
+                  // However, they can be different, e.g. when defining publication data (i.e. "publishTopic" and "publishPayload")...
+                  var itemNameKey = (config.itemNameKey != null) ? config.itemNameKey : "name",
+                      itemConfigKey = (config.itemConfigKey != null) ? config.itemConfigKey : "config";
 
-               // Update the configuration values...
-               // for (var i=0; i<clonedConfig.widgetsForConfig.length; i++)
-               // {
-               //    // clonedConfig.widgetsForConfig[i].config.value = payload.updatedConfig[clonedConfig.widgetsForConfig[i].config.name];
-               //    clonedConfig.widgetsForConfig[i].config.value = lang.getObject(clonedConfig.widgetsForConfig[i].config.name, false, payload.updatedConfig);
-               // }
-               
-               // Update the config...
-               for (var i=0; i<widgetsForConfig.length; i++)
-               {
-                  // clonedConfig.widgetsForConfig[i].config.value = payload.updatedConfig[clonedConfig.widgetsForConfig[i].config.name];
-                  widgetsForConfig[i].config.value = lang.getObject(widgetsForConfig[i].config.name, false, payload.updatedConfig);
-               }
-               // ...and save it
-               this.alfSetData(fieldId + "__widgetsForConfig", widgetsForConfig);
+                  // Create a new widget definition object (overwriting the previous data if necessary)...
+                  // Use the custom keys as necessary...
+                  config.widgetConfig = {};
+                  config.widgetConfig[itemNameKey] = config.module;
+                  config.widgetConfig[itemConfigKey] = {};
 
-               // Update the previously stored name the field name
-               // Commented out due to missing .config.aname on payload.updatedConfig
-//               this.alfSetData(clonedConfig.defaultConfig.fieldId + ".name", payload.updatedConfig.config.name + "");
+                  // We need to keep a separate record of the updated config...
+                  config.updatedConfig = {
+                     defaultConfig: {},
+                     additionalConfig: {}
+                  };
+
+                  // Set the main config...
+                  for (var key in payload.updatedConfig.defaultConfig)
+                  {
+                     var v = payload.updatedConfig.defaultConfig[key];
+                     config.widgetConfig[itemConfigKey][key] = v;
+                     lang.setObject(key, v, config.updatedConfig.defaultConfig);
+                  }
+
+                  // Set additional config...
+                  for (var key in payload.updatedConfig.additionalConfig)
+                  {
+                     var v = payload.updatedConfig.additionalConfig[key];
+                     config.widgetConfig[key] = v;
+                     lang.setObject(key, v, config.updatedConfig.additionalConfig);
+                  }
+
+                  for (var i=0; i<config.widgetsForConfig.length; i++)
+                  {
+                     // clonedConfig.widgetsForConfig[i].config.value = payload.updatedConfig[clonedConfig.widgetsForConfig[i].config.name];
+                     config.widgetsForConfig[i].config.value = lang.getObject(config.widgetsForConfig[i].config.name, false, payload.updatedConfig);
+                  }
+               }
                
                // Remove any existing widgets associated with the currently selected node,
                // however preserve the DOM so that it can be used as a reference for adding
@@ -466,20 +324,10 @@ define(["dojo/_base/declare",
                   }
                }, this);
                
-               // Set the widgets for display...
-               if (widgetsForDisplay != null)
-               {
-                  clonedConfig.widgetsForDisplay = widgetsForDisplay;
-               }
-               if (widgetsForConfig != null)
-               {
-                  clonedConfig.widgetsForConfig = widgetsForConfig;
-               }
-
                try
                {
                   // Create the updated object...
-                  this.previewTarget.insertNodes(false, [clonedConfig], true, payload.node);
+                  this.previewTarget.insertNodes(false, [config], true, payload.node);
                }
                catch(e)
                {
@@ -494,7 +342,7 @@ define(["dojo/_base/declare",
                this.previewTarget.deleteSelectedNodes();
 
                // Emit the event to alert wrapping widgets to changes...
-               this.emitOnWidgetUpdate();
+               this.refreshChildren();
                
                // Publish the details of the latest fields...
                this.publishAvailableFields();
@@ -502,6 +350,33 @@ define(["dojo/_base/declare",
          }
       },
       
+      /**
+       * 
+       * @instance
+       * @param {string} parentId The ID of the parent to remove the child from
+       * @param {string} childIdToRemove The ID of the child to remove
+       */
+      removeReferencesFromParent: function alfresco_creation_DropZone__removeReferencesFromParent(parentId, childIdToRemove) {
+         if (parentId != null)
+         {
+            // The current item already has a parent - this means that we're doing a move...
+            // Therefore we need to remove this as a child of the old parent...
+            var oldParentConfig = this.alfGetData(parentId);
+            if (oldParentConfig != null)
+            {
+               // Filter out the current child...
+               // TODO: This should ONLY be done on drop - not drag !!
+               oldParentConfig.children = array.filter(oldParentConfig.children, function(childId, index) {
+                  return childId != childIdToRemove;
+               }, this);
+            }
+            else
+            {
+               this.alfLog("warn", "Expected to find parentId in the data model", parentId, this);
+            }
+         }
+      },
+
       /**
        * This handles the creation of the widget in the preview panel.
        * 
@@ -527,76 +402,131 @@ define(["dojo/_base/declare",
             
             // Preview the widget within the wrapper if requested or if no widgetsForDisplay
             // configuration has been provided...
-
-            var widgets = this.alfGetData(config.fieldId + "__widgetsForDisplay");
-            if (widgets == null)
+            var widgets = null;
+            var savedConfig = this.alfGetData(config.fieldId);
+            if (savedConfig != null)
             {
-               if (item.previewWidget == true || 
-                item.widgetsForDisplay == null ||
-                item.widgetsForDisplay.length == 0)
+               widgets = savedConfig.widgetsForDisplay;
+            }
+            else
+            {
+               // Initialise the widget config...
+               // Create the initial widget config (this will be used if the widget is not changed from the defaults)...
+               var itemNameKey = (clonedItem.itemNameKey != null) ? clonedItem.itemNameKey : "name",
+                   itemConfigKey = (clonedItem.itemConfigKey != null) ? clonedItem.itemConfigKey : "config";
+               clonedItem.widgetConfig = {};
+               clonedItem.widgetConfig[itemNameKey] = clonedItem.module;
+               clonedItem.widgetConfig[itemConfigKey] = {};
+               for (var key in clonedItem.defaultConfig)
+               {
+                  var v = clonedItem.defaultConfig[key];
+                  clonedItem.widgetConfig[itemConfigKey][key] = v;
+               }
+
+               // Initialise widgets for display...
+               if (clonedItem.previewWidget == true || 
+                   clonedItem.widgetsForDisplay == null ||
+                   clonedItem.widgetsForDisplay.length == 0)
                {
                   widgets = [
                      {
-                        name: item.module,
+                        name: clonedItem.module,
                         config: config
                      }
                   ];
-
-                  // this.alfSetData(config.fieldId + ".widgetsForDisplay", widgets);
                }
                else
                {
-                  // TODO: This won't work for first creation (the original data needs to be provided)
-                  // widgets = this.alfGetData(config.fieldId + ".widgetsForDisplay");
-                  widgets = item.widgetsForDisplay;
+                  widgets = clonedItem.widgetsForDisplay;
                }
-               
-               this.alfSetData(config.fieldId + "__widgetsForDisplay", widgets);
             }
 
             // Add in any additional configuration...
-            // TODO: Need to make sure that cloning isn't required?
             if (this.widgetsForNestedConfig != null)
             {
                // Check to see if the item passed in has the "originalConfigWidgets" attribute set...
                // If it doesn't then this is a create triggered by dragging from the palette. If it has
                // the attribute set then this call has been triggered by an update...
-               if (item.originalConfigWidgets === undefined)
+               if (clonedItem.originalConfigWidgets === undefined)
                {
-                  clonedItem.originalConfigWidgets = lang.clone(item.widgetsForConfig);
+                  clonedItem.originalConfigWidgets = lang.clone(clonedItem.widgetsForConfig);
                }
                
-               // Create the additional configuration widgets...
-               clonedItem.widgetsForConfig = clonedItem.originalConfigWidgets.concat(lang.clone(this.widgetsForNestedConfig));
-               
-               // Make sure that each of the additional widgets is set with an up-to-date value...
-               array.forEach(clonedItem.widgetsForConfig, function(widget, i) {
-                  var updatedValue = lang.getObject(widget.config.name, false, clonedItem);
-                  if (updatedValue != null)
-                  {
-                     widget.config.value = updatedValue;
-                  }
-               }, this);
+               var clonedWidgetsForNestedConfig = lang.clone(this.widgetsForNestedConfig);
+               if (savedConfig != null && savedConfig.updatedConfig != null)
+               {
+                  // Update the normal config values with the latest saved data...
+                  array.forEach(clonedItem.originalConfigWidgets, function(widget, i) {
+                     var updatedValue = lang.getObject(widget.config.name, false, savedConfig.updatedConfig);
+                     if (updatedValue != null)
+                     {
+                        widget.config.value = updatedValue;
+                     }
+                  }, this);
+
+                  // Update the additional config controls with the latest saved data...
+                  array.forEach(clonedWidgetsForNestedConfig, function(widget, i) {
+                     var updatedValue = lang.getObject(widget.config.name, false, savedConfig.updatedConfig.additionalConfig);
+                     if (updatedValue != null)
+                     {
+                        widget.config.value = updatedValue;
+                     }
+                  }, this);
+               }
+               else
+               {
+                  // Make sure that each of the additional widgets is set with an up-to-date value...
+                  clonedItem.widgetsForConfig = clonedItem.originalConfigWidgets.concat(clonedWidgetsForNestedConfig);
+                  array.forEach(clonedItem.widgetsForConfig, function(widget, i) {
+                     var updatedValue = lang.getObject(widget.config.name, false, clonedItem);
+                     if (updatedValue != null)
+                     {
+                        widget.config.value = updatedValue;
+                     }
+                  }, this);
+               }
+            }
+
+            // Update the configuration to set the ID of the parent...
+            // The ID is either that of the parent DropZoneWrapper or the actual ID if there is no DropZoneWrapper
+            // There won't be a DropZoneWrapper if this is the root DropZone (e.g. one created by a DropZoneFormControl)...
+            var myUuid = this.getMyUuid();
+
+            // Remove any references to the current widget from it's previous parent...
+            this.removeReferencesFromParent(clonedItem.parentId, config.fieldId);
+
+            // // Set a reference to the parent (if this is a move event then we're just updating the parent)...
+            clonedItem.parentId = myUuid;
+            // TODO: Re-subscribe to events such as available fields?
+            
+            // Get MY configuration from the data model...
+            var myConfig = this.alfGetData(myUuid);
+            if (myConfig == null)
+            {
+               // It's possible that configuration won't exist for root DropZones...
+               this.alfLog("warn", "No entry in the data model for DropZone!", this);
+            }
+            else
+            {
+               // Make sure that there is configuration set for dropped child nodes...
+               if (myConfig.children == null)
+               {
+                  myConfig.children = [];
+               }
+               myConfig.children.push(config.fieldId);
             }
 
             // Store the field id against the updated config...
             // This needs to be saved so it can be retrieved when inserting nodes again...
             this.alfSetData(config.fieldId, clonedItem);
-
-            // Store the widgets for config data...
-            // This will get updated when the widget is saved...
-            this.alfSetData(config.fieldId + "__widgetsForConfig", clonedItem.widgetsForConfig);
             
             var widgetWrapper = new DropZoneWrapper({
                fieldId: config.fieldId,
                parentPubSubScope: this.childPubSubScope,
                pubSubScope: this.pubSubScope,
                widgets: widgets,
-               moduleName: item.name
+               moduleName: clonedItem.name
             }, node);
-            
-            // Store the field name
-            // this.alfSetData(config.fieldId + ".name", clonedItem.defaultConfig.name + "");
          }
          else
          {
@@ -608,6 +538,24 @@ define(["dojo/_base/declare",
          return {node: widgetWrapper.domNode, data: clonedItem, type: ["widget"]};
       },
       
+      /**
+       * 
+       *
+       * @instance
+       * @return {string} The UUID of the widget associated with this DropZone.
+       */
+      getMyUuid: function alfresco_creation_DropZone__getMyUuid() {
+         // Update the configuration to set the ID of the parent...
+         // The ID is either that of the parent DropZoneWrapper or the actual ID if there is no DropZoneWrapper
+         // There won't be a DropZoneWrapper if this is the root DropZone (e.g. one created by a DropZoneFormControl)...
+         var myUuid = lang.getObject("_dropZoneWrapper.fieldId", false, this);
+         if (myUuid == null)
+         {
+            myUuid = this.id;
+         }
+         return myUuid;
+      },
+
       /**
        * Although this function's name suggests it handles an nodes selection, there is no guarantee
        * that a node has actually been selected. This is simply attached to the mouseDown event.
@@ -632,34 +580,30 @@ define(["dojo/_base/declare",
       
       /**
        * This function is called as an after aspect of the onDrop function of the DND target. It is used
-       * to capture widgets being added into the DropZone and emits an event intended for it's own 
-       * DropZoneWrapper and DropZones in it's hierarchy (if any exist) so that they can update their 
-       * own configuration with the details of their internal DropZones. This is done so that when an outer
-       * DropZone is updates (e.g. it's configuration is changed) that the internals can be faithfully
-       * be recreated.
+       * to capture widgets being added to or removed from the DropZone.
        * 
        * @instance
        */
-      emitOnWidgetUpdate: function alfresco_creation_DropZone__emitOnWidgetUpdate() {
+      refreshChildren: function alfresco_creation_DropZone__refreshChildren() {
          this.alfLog("log", "Widgets updated");
          
-         // At this point we're about to return the information that will be used to add a new item
-         // to the DND target. This information contains the data for displaying the widget configuration.
-         // However, if this DropZone is nested (e.g. a MenuBarItem within a MenuBar) then the MenuBar 
-         // object needs to be notified of the new content...
-         on.emit(this.domNode, "onWidgetUpdate", {
-            bubbles: true,
-            cancelable: true,
-            widgetsForDisplay: [
-               {
-                  name: "alfresco/creation/DropZone",
-                  config: {
-                     horizontal: this.horizontal,
-                     widgetsForNestedConfig: this.widgetsForNestedConfig
-                  }
+         var myUuid = this.getMyUuid();
+         var myConfig = this.alfGetData(myUuid);
+
+         var items = [];
+         array.forEach(myConfig.children, function (item, index) {
+            items.push(this.alfGetData(item));
+         }, this);
+         myConfig.widgetsForDisplay = [
+            {
+               name: "alfresco/creation/DropZone",
+               config: {
+                  horizontal: this.horizontal,
+                  widgetsForNestedConfig: this.widgetsForNestedConfig,
+                  initialItems: items
                }
-            ]
-         });
+            }
+         ];
       }
    });
 });
