@@ -462,6 +462,7 @@ if (page.url.templateArgs.site != null)
 {
    var siteData = getSiteData();
    scopeOptions.push({
+      id: rootWidgetId + "SET_SPECIFIC_SITE_SCOPE",
       name: "alfresco/menus/AlfCheckableMenuItem",
       config: {
          label: siteData.profile.title,
@@ -478,6 +479,7 @@ if (page.url.templateArgs.site != null)
 }
 
 scopeOptions.push({
+   id: rootWidgetId + "SET_ALL_SITES_SCOPE",
    name: "alfresco/menus/AlfCheckableMenuItem",
    config: {
       label: msg.get("faceted-search.scope.allSites"),
@@ -492,6 +494,7 @@ scopeOptions.push({
    }
 });
 scopeOptions.push({
+   id: rootWidgetId + "SET_REPO_SCOPE",
    name: "alfresco/menus/AlfCheckableMenuItem",
    config: {
       label: msg.get("faceted-search.scope.repository"),
@@ -507,6 +510,7 @@ scopeOptions.push({
 });
 
 var scopeSelection = {
+   id: rootWidgetId + "TOP_MENU_BAR",
    name: "alfresco/layout/LeftAndRight",
    config: {
       widgets: [
@@ -521,6 +525,7 @@ var scopeSelection = {
             config: {
                widgets: [
                   {
+                     id: rootWidgetId + "SCOPE_SELECTION_MENU",
                      name: "alfresco/menus/AlfMenuBarSelect",
                      config: {
                         selectionTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
