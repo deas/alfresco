@@ -132,7 +132,7 @@ define(["alfresco/core/ProcessWidgets",
       
       /**
        * Calculates the widths of each widget based on the requested sizes defined in either pixels or
-       * percentage. The pixel widths take precedence and the percentages are calcuated as the percentage
+       * percentage. The pixel widths take precedence and the percentages are calculated as the percentage
        * of whatever remains. If a widget has not requested a width then it will get an even share
        * of whatever horizontal space remains.
        *
@@ -147,7 +147,7 @@ define(["alfresco/core/ProcessWidgets",
             var output = domGeom.getMarginBox(this.domNode, computedStyle);
             var overallwidth = output.w;
 
-            // Substract the margins from the overall width
+            // Subtract the margins from the overall width
             var leftMarginsSize = 0,
                 rightMarginsSize = 0;
             if (this.widgetMarginLeft != null && !isNaN(this.widgetMarginLeft))
@@ -160,7 +160,7 @@ define(["alfresco/core/ProcessWidgets",
             }
             var remainingWidth = overallwidth - leftMarginsSize - rightMarginsSize;
 
-            // Work out how many pixels widgets have requested and substract that from the remainder...
+            // Work out how many pixels widgets have requested and subtract that from the remainder...
             var widgetRequestedWidth = 0;
             var widgetsWithNoWidthReq = 0;
             array.forEach(widgets, function(widget, index) {
@@ -176,7 +176,7 @@ define(["alfresco/core/ProcessWidgets",
                }
                else
                {
-                  // The current widget either hasn't requested a width or has reuested it with a value
+                  // The current widget either hasn't requested a width or has requested it with a value
                   // that is not a number. It will therefore get an equal share of whatever remainder is left.
                   widgetsWithNoWidthReq++;
                }
