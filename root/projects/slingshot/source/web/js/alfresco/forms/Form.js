@@ -42,9 +42,10 @@ define(["dojo/_base/declare",
         "alfresco/buttons/AlfButton",
         "dojo/_base/array",
         "dojo/json",
-        "dijit/registry"], 
+        "dijit/registry",
+        "dojo/hash"], 
         function(declare, _Widget, _Templated, Form, xhr, AlfCore, CoreWidgetProcessing, _AlfHashMixin, template, 
-                 ioQuery, lang, AlfButton, array, json, registry) {
+                 ioQuery, lang, AlfButton, array, json, registry, hash) {
    
    return declare([_Widget, _Templated, AlfCore, CoreWidgetProcessing, _AlfHashMixin], {
       
@@ -167,18 +168,18 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_INVALID_CONTROL", lang.hitch(this, "onInvalidField"));
          this.alfSubscribe("ALF_VALID_CONTROL", lang.hitch(this, "onValidField"));
 
+         if (this.displayButtons == true)
+         {
+            // Create the buttons for the form...
+            this.createButtons();
+         }
+
          // Add the widgets to the form...
          // The widgets should automatically inherit the pubSubScope from the form to scope communication
          // to this widget. However, this widget will need to be assigned with a pubSubScope... 
          if (this.widgets)
          {
             this.processWidgets(this.widgets, this._form.domNode);
-         }
-
-         if (this.displayButtons == true)
-         {
-            // Create the buttons for the form...
-            this.createButtons();
          }
       },
       
@@ -445,6 +446,7 @@ define(["dojo/_base/declare",
          if (this.widgetsAdditionalButtons != null)
          {
             this.additionalButtons = [];
+            this.__creatingButtons = true;
             this.processWidgets(this.widgetsAdditionalButtons, this.buttonsNode);
          }
          else
@@ -461,23 +463,29 @@ define(["dojo/_base/declare",
        */
       allWidgetsProcessed: function alfresco_forms_Form__allWidgetsProcessed(widgets) {
          // If additional button configuration has been processed, then get a reference to ALL the buttons...
-         if (this.widgetsAdditionalButtons != null && 
-            this.additionalButtons != null &&
-            this.additionalButtons.length == 0)
+         if (this.__creatingButtons === true)
          {
             this.additionalButtons = registry.findWidgets(this.buttonsNode);
+            this.__creatingButtons = false;
          }
-         array.forEach(widgets, function(widget, i) {
-            if (widget.publishValue && typeof widget.publishValue == "function")
-            {
-               widget.publishValue();
-            }
-         });
-
-         if (this.useHash)
+         else
          {
-            this.initialiseFilter(); // Function provided by the _AlfHashMixin
+            // Called only when processing the form controls, not when there are additional buttons...
+            if (this.useHash)
+            {
+               var currHash = ioQuery.queryToObject(hash());
+               this.setValue(currHash);
+            }
+            
+            array.forEach(widgets, function(widget, i) {
+               if (widget.publishValue && typeof widget.publishValue == "function")
+               {
+                  widget.publishValue();
+               }
+            });
          }
+
+         
 
          this.validate();
       },
@@ -488,6 +496,10 @@ define(["dojo/_base/declare",
        */
       updateButtonPayloads: function alfresco_forms_Form__updateButtonPayloads(values) {
          array.forEach(this.additionalButtons, function(button, i) {
+            if (button.payload == null)
+            {
+               button.payload = {};
+            }
             lang.mixin(button.payload, values);
          });
       },

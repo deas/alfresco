@@ -184,10 +184,15 @@ define(["dojo/_base/declare",
        * @param {object} payload The details of the scope selected.
        */
       onScopeSelection: function alfresco_documentlibrary_AlfSearchList__onScopeSelection(payload) {
+         this.alfLog("log", "Scope selection received", payload, this);
          var scope = lang.getObject("value", false, payload);
          if (scope == null)
          {
             this.alfLog("warn", "No 'value' attribute provided in scope selection payload", payload, this);
+         }
+         else if (scope === this.selectedScope)
+         {
+            this.alfLog("log", "Scope requested is currently set", scope, this);
          }
          else
          {

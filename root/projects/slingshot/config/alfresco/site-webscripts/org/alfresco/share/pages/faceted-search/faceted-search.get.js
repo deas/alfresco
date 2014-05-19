@@ -348,6 +348,7 @@ var searchDocLib = {
          "repo",
          "searchScope"
       ],
+      selectedScope: (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "REPO",
       useInfiniteScroll: true,
       siteId: "$$site$$", // Get the current site context from the URL template (if set)
       rootNode: null,
@@ -486,7 +487,7 @@ scopeOptions.push({
       value: "ALL_SITES",
       group: "SEARCHLIST_SCOPE",
       publishTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
-      checked: (page.url.templateArgs.site == null),
+      checked: false,
       publishPayload: {
          label: msg.get("faceted-search.scope.allSites"),
          value: "ALL_SITES"
@@ -501,7 +502,7 @@ scopeOptions.push({
       value: "REPO",
       group: "SEARCHLIST_SCOPE",
       publishTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
-      checked: false,
+      checked: (page.url.templateArgs.site == null),
       publishPayload: {
          label: msg.get("faceted-search.scope.repository"),
          value: "REPO"
