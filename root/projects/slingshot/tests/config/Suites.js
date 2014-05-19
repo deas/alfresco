@@ -33,7 +33,7 @@ define({
    baseNonFunctionalSuites: null,
 
    // Uncomment and add specific tests as necessary during development!
-   // baseFunctionalSuites: ['tests/alfresco/documentlibrary/SearchListTest'],
+   // baseFunctionalSuites: ['tests/alfresco/forms/FormsTest'],
 
    /**
     * This is the base array of functional test suites
@@ -51,6 +51,7 @@ define({
 
                           'tests/alfresco/footer/FooterTest',
 
+                          'tests/alfresco/forms/FormsTest',
                           'tests/alfresco/forms/controls/DocumentPickerTest',
                           'tests/alfresco/forms/controls/DojoSelectTest',
                           'tests/alfresco/forms/controls/DojoValidationTextBoxTest',

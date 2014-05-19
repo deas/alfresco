@@ -65,7 +65,6 @@ define(["dojo/_base/declare",
          // that this widget requests...
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onSearchLoadSuccess"));
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_FAILURE", lang.hitch(this, "onDataLoadFailure"));
-         this.alfSubscribe("ALF_SEARCH_RESULT_CLICKED", lang.hitch(this, "onSearchResultClicked"));
 
          // Subscribe to the topics that address specific search updates...
          this.alfSubscribe("ALF_SET_SEARCH_TERM", lang.hitch(this, "onSearchTermRequest"));
@@ -290,29 +289,6 @@ define(["dojo/_base/declare",
             
             // Force a resize of the sidebar container to take the new height of the view into account...
             this.alfPublish("ALF_RESIZE_SIDEBAR", {});
-         }
-      },
-
-      /**
-       * TODO: Not sure on the purpose of this function!!
-       * 
-       * @instance
-       * @param {object} payload The details of the item clicked
-       */
-      onSearchResultClicked: function alfresco_documentlibrary_AlfSearchList__onSearchResultClicked(payload) {
-         this.alfLog("log", "Search Result Clicked");
-
-         var isContainer = lang.getObject("item.node.isContainer", false, payload);
-         if (isContainer == true)
-         {
-            this.currentPath = "/";
-            this.nodeRef = lang.getObject("item.nodeRef", false, payload);
-            this.rootNode = lang.getObject("item.nodeRef", false, payload);
-            this.loadData();
-         }
-         else
-         {
-            this.alfPublish("ALF_NAVIGATE_TO_PAGE", payload);
          }
       }
    });
