@@ -142,20 +142,36 @@ define(["dojo/_base/declare",
             this._actionsLoaded = true;
             this.currentItem = payload.response.item;
 
-            // Remove the loading menu item...
-            array.forEach(this.actionsMenu.popup.getChildren(), function(widget, index) {
-               this.actionsMenu.popup.removeChild(widget);
-            }, this);
-
-            this.actionsGroup = new AlfMenuGroup({});
-
-            this.actionsMenu.popup.addChild(this.actionsGroup);
-            array.forEach(this.currentItem.actions, lang.hitch(this, "addAction"));
+            this.clearLoadingItem();
+            this.addXhrItems();
+            
          }
          else
          {
             this.alfLog("warn", "Document data was provided but the 'response.item' attribute was not found", payload, this);
          }
+      },
+
+      /**
+       * Removes the "Loading..." place holder menu item.
+       * 
+       * @instance
+       */
+      clearLoadingItem: function alfresco_renderers_XhrActions__clearLoadingItem() {
+         array.forEach(this.actionsMenu.popup.getChildren(), function(widget, index) {
+            this.actionsMenu.popup.removeChild(widget);
+         }, this);
+      },
+
+      /**
+       * Adds the menu items for the asynchronously retrieved data.
+       *
+       * @instance
+       */
+      addXhrItems: function alfresco_renderers_XhrActions__addXhrItems() {
+         this.actionsGroup = new AlfMenuGroup({});
+         this.actionsMenu.popup.addChild(this.actionsGroup);
+         array.forEach(this.currentItem.actions, lang.hitch(this, "addAction"));
       }
    });
 });

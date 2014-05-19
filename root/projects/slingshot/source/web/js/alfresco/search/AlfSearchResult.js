@@ -37,8 +37,9 @@ define(["dojo/_base/declare",
         "alfresco/renderers/DateLink",
         "alfresco/renderers/XhrActions",
         "dojo/_base/lang",
-        "dojo/dom-class"], 
-        function(declare, Row, template, Thumbnail, SearchResultPropertyLink, PropertyLink, Property, DateLink, XhrActions, lang, domClass) {
+        "dojo/dom-class",
+        "alfresco/renderers/XhrContextActions"], 
+        function(declare, Row, template, Thumbnail, SearchResultPropertyLink, PropertyLink, Property, DateLink, XhrActions, lang, domClass, XhrContextActions) {
 
    return declare([Row], {
       
@@ -153,6 +154,17 @@ define(["dojo/_base/declare",
             pubSubScope: this.pubSubScope
          }, this.actionsNode);
 
+         try
+         {
+            new XhrContextActions({
+               targetNodeIds: [this.domNode],
+               currentItem: this.currentItem
+            });
+         }
+         catch (e)
+         {
+            this.alfLog("error", "An error occurred creating context menu", e);
+         }
       }
    });
 });

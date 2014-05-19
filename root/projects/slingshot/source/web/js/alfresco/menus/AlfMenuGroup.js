@@ -205,6 +205,16 @@ define(["dojo/_base/declare",
          }
          var menuBar = (currentMenu._isMenuBar) ? currentMenu : null;
          return menuBar;
+      },
+
+      /**
+       * Added to support use in context menus
+       *
+       * @instance
+       * @param {boolean} bool 
+       */
+      _setSelected: function alfresco_menus_AlfMenuGroup___setSelected(bool) {
+         this._selected = true;
       }
    });
 });
