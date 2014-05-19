@@ -80,12 +80,9 @@ define(["dojo/_base/declare",
          // Infinite scroll handling
          this.alfSubscribe(this.scrollNearBottom, lang.hitch(this, "onScrollNearBottom"));
 
-         // Prevent multiple concurrent requests:
-         if (this.blockConcurrentRequests)
-         {
-            this.alfSubscribe(this.requestInProgressTopic, lang.hitch(this, "onRequestInProgress"));
-            this.alfSubscribe(this.requestFinishedTopic, lang.hitch(this, "onRequestFinished"));
-         }
+         // Listen for updates on request processing...
+         this.alfSubscribe(this.requestInProgressTopic, lang.hitch(this, "onRequestInProgress"));
+         this.alfSubscribe(this.requestFinishedTopic, lang.hitch(this, "onRequestFinished"));
 
          // Get the messages for the template...
          this.noViewSelectedMessage = this.message("searchlist.no.view.message");
@@ -121,14 +118,47 @@ define(["dojo/_base/declare",
          {
             this.alfLog("warn", "No searchTerm provided on request", payload, this);
          }
-         else
+         else if (searchTerm === this.searchTerm)
          {
+            // The requested search term is the same as the previous one...
+            // We want to allow duplicate searches to be made (to address eventual consistency issues)
+            // but we want to prevent concurrent requests using the same data...
+            if (this.requestInProgress === true)
+            {
+               // If a request is currently in progress, then we can just ignore this request.
+            }
+            else
+            {
+               // If a request is NOT in progress then we need to manually request a new search, 
+               // because re-setting the hash will not trigger the changeFilter function....
+               var currHash = ioQuery.queryToObject(hash());
+               if (currHash.facetFilters != null && currHash.facetFilters !== "")
+               {
+                  // The current hash includes facet filters, we need to clear filters when 
+                  // setting a search term (even if it is the same), in this case updating the
+                  // hash will trigger the search...
+                  currHash.searchTerm = this.searchTerm;
+                  delete currHash.facetFilters;
+                  this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
+                     url: ioQuery.objectToQuery(currHash),
+                     type: "HASH"
+                  }, true);
+               }
+               else
+               {
+                  // The current hash has no facet filters so we need to trigger a manual search...
+                  this.resetResultsList();
+                  this.loadData();
+               }
+            }
+         }
+         else 
+         {
+            // The requested search term is new, so updating the hash will result in a new search...
             this.searchTerm = searchTerm;
             var currHash = ioQuery.queryToObject(hash());
-            if (this.searchTerm != null)
-            {
-               currHash.searchTerm = this.searchTerm;
-            }
+            currHash.searchTerm = this.searchTerm;
+            delete currHash.facetFilters;
             this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
                url: ioQuery.objectToQuery(currHash),
                type: "HASH"

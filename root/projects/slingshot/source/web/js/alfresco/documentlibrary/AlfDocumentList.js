@@ -183,10 +183,10 @@ define(["dojo/_base/declare",
        * Should we prevent multiple simultaneous requests
        *
        * @instance
-       * @default true
+       * @default false
        * @type {Boolean}
        */
-      blockConcurrentRequests: true,
+      blockConcurrentRequests: false,
 
       /**
        * Subscribe the document list topics.
