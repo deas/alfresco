@@ -261,7 +261,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       loadData: function alfresco_documentlibrary_AlfSearchList__loadData() {
-         if (this.requestInProgress) {
+         if (!this.requestInProgress) {
 
             this.alfPublish(this.requestInProgressTopic, {});
 
@@ -362,6 +362,9 @@ define(["dojo/_base/declare",
                label: this.message("search.results.count.label", {0: resultsCount})
             });
          }
+      
+         // This request has finished, allow another one to be triggered.
+         this.alfPublish(this.requestFinishedTopic, {});
 
          // Force a resize of the sidebar container to take the new height of the view into account...
          this.alfPublish("ALF_RESIZE_SIDEBAR", {});
