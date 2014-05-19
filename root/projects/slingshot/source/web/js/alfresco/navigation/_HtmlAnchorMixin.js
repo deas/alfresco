@@ -101,7 +101,7 @@ define(["dojo/_base/declare",
        */
       _addAnchors: function alfresco_navigation__HtmlAnchorMixin__addAnchors(url) {
          array.forEach(this.getAnchorTargetSelectors(), function(selector, index) {
-            dojo.query(selector, this.domNode).wrapInner("<a class='alfresco-navigation-_HtmlAnchorMixin' href='" + url + "'></a>");
+            dojo.query(selector, this.domNode).wrapInner("<a tabIndex='-1' class='alfresco-navigation-_HtmlAnchorMixin' href='" + url + "'></a>");
          }, this);
          // dojo.query("td.dijitMenuItemLabel", this.domNode).wrapInner("<a class='alfresco-menus-_AlfMenuItemMixin' href='" + url + "'></a>");
          // dojo.query("span.alf-menu-bar-label-node", this.domNode).wrapInner("<a class='alfresco-menus-_AlfMenuItemMixin' href='" + url + "'></a>");
