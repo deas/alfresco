@@ -28,6 +28,7 @@ import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.search.AdvanceSearchFolderPage;
 import org.alfresco.po.share.search.AdvanceSearchPage;
 import org.alfresco.po.share.search.AllSitesResultsPage;
+import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.po.share.search.RepositoryResultsPage;
 import org.alfresco.po.share.search.SiteResultsPage;
 import org.alfresco.po.share.site.AddGroupsPage;
@@ -47,8 +48,6 @@ import org.alfresco.po.share.site.document.EditInGoogleDocsPage;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.InlineEditPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
-import org.alfresco.po.share.site.document.MyFilesPage;
-import org.alfresco.po.share.site.document.SharedFilesPage;
 import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.user.CloudSyncPage;
@@ -126,20 +125,18 @@ public class FactorySharePageTest
     private final String taskDetailsPage = baseUrl + "%s/share/page/my-workflows#filter=workflows|active";
     private final String editTaskPage = baseUrl + "%s/share/page/my-workflows#filter=workflows|active";
     private final String languageSettingsPage = baseUrl + "%s/page/user/userenterprise42-151739%40hybrid.test/change-locale";
-    private final String groupsPage= baseUrl+"%s/page/console/admin-console/groups";
-    private final String siteGroupsPage= baseUrl+"%s/page/site/sitemsitesapitests1383578859371/site-groups";
-    private final String addGroupsPage= baseUrl+"%s/page/site/sitemsitesapitests1383578859371/add-groups";
-    private final String repositoryWithFolder= baseUrl+"%s/page/repository#filter=path|/Folderhtc-RepositoryFolderTests3|&page=1";
+    private final String groupsPage = baseUrl+"%s/page/console/admin-console/groups";
+    private final String siteGroupsPage = baseUrl+"%s/page/site/sitemsitesapitests1383578859371/site-groups";
+    private final String addGroupsPage = baseUrl+"%s/page/site/sitemsitesapitests1383578859371/add-groups";
+    private final String repositoryWithFolder = baseUrl+"%s/page/repository#filter=path|/Folderhtc-RepositoryFolderTests3|&page=1";
     private final String createNewTopicPage = baseUrl+"%s/page/site/new-site/discussions-createtopic";
     private final String topicDetailsPage = baseUrl+"%s/page/site/new-site/discussions-topicview?topicId=post-1394637958079_1640&listViewLinkBack=true";
     private final String topicsListPage = baseUrl+"%s/page/site/new-site/discussions-topiclist";
     private final String customiseUserDashboardPage = baseUrl+"%s/page/customise-user-dashboard";
-    private final String nodeBrowserPage  = baseUrl+"%s/page/console/admin-console/node-browser";
-    private final String adminConsolePage= baseUrl+"%s/page/console/admin-console/application";
-    private final String manageSitesPage= baseUrl+"%s/page/console/admin-console/manage-sites";
-    private final String myFilesPage= baseUrl+"%s/page/context/mine/myfiles";
-    private final String sharedFilesPage= baseUrl+"%s/page/context/shared/sharedfiles";
-    
+    private final String nodeBrowserPage = baseUrl+"%s/page/console/admin-console/node-browser";
+    private final String adminConsolePage = baseUrl+"%s/page/console/admin-console/application";
+    private final String manageSitesPage = baseUrl+"%s/page/console/admin-console/manage-sites";
+    private final String facetedSearchPage = baseUrl+"%s/page/dp/ws/faceted-search";
 
     @Test(groups={"unit"})
     public void resolveUrls()
@@ -229,13 +226,6 @@ public class FactorySharePageTest
 
             page = resolvePage(googleDocs, "editGoogleDocs", drone);
             Assert.assertTrue(page instanceof EditInGoogleDocsPage);
-            
-            page = resolvePage(myFilesPage, "myFilesPage", drone);
-            Assert.assertTrue(page instanceof MyFilesPage);
-            
-            page = resolvePage(sharedFilesPage, "sharedFilesPage", drone);
-            Assert.assertTrue(page instanceof SharedFilesPage);
-            
 
             //---------------search ----------------
             page = resolvePage(advanceSearch, "advanceSearch", drone);
@@ -276,6 +266,7 @@ public class FactorySharePageTest
             
             page = resolvePage(editTasks, "edit-task", drone);
             Assert.assertTrue(page instanceof EditTaskPage);
+
             page = resolvePage(taskDetailsPage, "task-edit", drone);
             Assert.assertTrue(page instanceof MyWorkFlowsPage);
 
@@ -318,6 +309,10 @@ public class FactorySharePageTest
             
             page = resolvePage(manageSitesPage, "manage-sites", drone);
             Assert.assertTrue(page instanceof ManageSitesPage);
+
+            //---------------faceted search ----------------
+            page = resolvePage(facetedSearchPage, "faceted-search", drone);
+            Assert.assertTrue(page instanceof FacetedSearchPage);
 
             long duration = System.currentTimeMillis() - start;
             logger.info("Total duration of test in milliseconds: " + duration);
