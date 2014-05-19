@@ -62,6 +62,7 @@
                                  {
                                     "name": "alfresco/renderers/Actions",
                                     "config": {
+                                       "filterActions": false,
                                        "customActions": [
                                           {
                                              "label": "Delete action",

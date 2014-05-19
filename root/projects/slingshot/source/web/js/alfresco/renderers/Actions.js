@@ -41,6 +41,16 @@ define(["dojo/_base/declare",
    return declare([AlfMenuBar, _AlfDocumentListTopicMixin, _PublishPayloadMixin], {
 
       /**
+       * Indicates whether or not actions should be filtered according to the 
+       * [allowedActions array]{@link module:alfresco/renderers/Actions#allowedActions}.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      filterActions: true,
+
+      /**
        *  Array containing a list of allowed actions
        *  This is used to filter out actions that the actions API returns, but haven't yet been implemented.
        *  TODO: Remove this once all actions have been implemented by the actions service.
@@ -114,7 +124,7 @@ define(["dojo/_base/declare",
        * @param (integer} index The index of the action
        */
       addAction: function alfresco_renderers_Actions__addAction(action, index) {
-         if (AlfArray.arrayContains(this.allowedActions, action.id))
+         if (this.filterActions === false || AlfArray.arrayContains(this.allowedActions, action.id))
          {
             this.alfLog("log", "Adding action", action);
 
