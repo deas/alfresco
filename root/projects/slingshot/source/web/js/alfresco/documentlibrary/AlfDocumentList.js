@@ -243,7 +243,7 @@ define(["dojo/_base/declare",
          if (payload.url != null)
          {
             this.currentFilter = this.processFilter(payload.url);
-            this.loadData();
+            if (this._readyToLoad) this.loadData();
          }
          else
          {
@@ -265,6 +265,10 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_documentlibrary_AlfDocumentList__postCreate() {
          
+         // Create a subscription to listen out for all widgets on the page being reported
+         // as ready (then we can start loading data)...
+         this.alfSubscribe("ALF_WIDGETS_READY", lang.hitch(this, "onPageWidgetsReady"), true);
+
          // Instantiate a new map to hold all of the views for the DocumentList...
          this.viewMap = {};
          this.viewControlsMap = {};
@@ -277,30 +281,29 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * Iterates over the widgets processed and calls the [registerView]{@link module:alfresco/documentlibrary/AlfDocumentList#registerView}
-       * function with each one.
+       * This is updated by the [onPageWidgetsReady]{@link module:alfresco/documentlibrary/AlfDocumentList#onPageWidgetsReady}
+       * function to be true when all widgets on the page have been loaded. It is used to block loading of 
+       * data until the page is completely setup. This is done to avoid multiple data loads as other widgets
+       * on the page publish the details of their initial state (which would otherwise trigger a call to
+       * [loadData]{@link module:alfresco/documentlibrary/AlfDocumentList#onPageWidgetsReady})
        * 
        * @instance
-       * @param {object[]} The created widgets
+       * @type {boolean}
+       * @default false
        */
-      allWidgetsProcessed: function alfresco_documentlibrary_AlfDocumentList__allWidgetsProcessed(widgets) {
-         var _this = this;
-         array.forEach(widgets, lang.hitch(this, "registerView"));
+      _readyToLoad: false,
 
-         // If no default view has been provided, then just use the first...
-         if (this._currentlySelectedView == null)
-         {
-            for (view in this.viewMap)
-            {
-               this._currentlySelectedView = view;
-               break;
-            }
-         }
-
-         this.alfPublish(this.viewSelectionTopic, {
-            value: this._currentlySelectedView
-         });
-
+      /**
+       * The AlfDocumentList is intended to work co-operatively with other widgets on a page to assist with
+       * setting the data that should be retrieved. As related widgets are created and publish their initial
+       * state they may trigger requests to load data. As such, data loading should not be started until
+       * all the widgets on the page are ready.
+       *
+       * @instance
+       * @param {object} payload
+       */
+      onPageWidgetsReady: function alfresco_documentlibrary_AlfDocumentList__onPageWidgetsReady(payload) {
+         this._readyToLoad = true;
          if (this.useHash)
          {
             // Only subscribe to filter changes if 'useHash' is set to true. This is because multiple DocLists might
@@ -319,8 +322,33 @@ define(["dojo/_base/declare",
             // changed. Each view renderer that registers a link will need to set a "linkClickTopic" and this
             // should be matched by the "linkClickTopic" of this instance)
             this.alfSubscribe(this.linkClickTopic, lang.hitch(this, "onItemLinkClick"));
-            this.loadData();
+            if (this._readyToLoad) this.loadData();
          }
+      },
+
+      /**
+       * Iterates over the widgets processed and calls the [registerView]{@link module:alfresco/documentlibrary/AlfDocumentList#registerView}
+       * function with each one.
+       * 
+       * @instance
+       * @param {object[]} The created widgets
+       */
+      allWidgetsProcessed: function alfresco_documentlibrary_AlfDocumentList__allWidgetsProcessed(widgets) {
+         array.forEach(widgets, lang.hitch(this, "registerView"));
+
+         // If no default view has been provided, then just use the first...
+         if (this._currentlySelectedView == null)
+         {
+            for (view in this.viewMap)
+            {
+               this._currentlySelectedView = view;
+               break;
+            }
+         }
+
+         this.alfPublish(this.viewSelectionTopic, {
+            value: this._currentlySelectedView
+         });
       },
       
       /**
@@ -596,7 +624,7 @@ define(["dojo/_base/declare",
        */
       onChangeFilter: function alfresco_documentlibrary_AlfDocumentList__onChangeFilter(payload) {
          this.currentFilter = payload;
-         this.loadData();
+         if (this._readyToLoad) this.loadData();
       },
       
       /**
@@ -787,7 +815,7 @@ define(["dojo/_base/declare",
             {
                this.sortField = payload.value;
             }
-            this.loadData();
+            if (this._readyToLoad) this.loadData();
          }
       },
       
@@ -800,7 +828,7 @@ define(["dojo/_base/declare",
          if (payload && payload.value != null)
          {
             this.sortField = payload.value;
-            this.loadData();
+            if (this._readyToLoad) this.loadData();
          }
       },
       
@@ -813,7 +841,7 @@ define(["dojo/_base/declare",
          if (payload && payload.selected != null)
          {
             this.showFolders = payload.selected;
-            this.loadData();
+            if (this._readyToLoad) this.loadData();
          }
       },
       
@@ -825,7 +853,7 @@ define(["dojo/_base/declare",
          if (payload && payload.value != null && payload.value != this.currentPage)
          {
             this.currentPage = payload.value;
-            this.loadData();
+            if (this._readyToLoad) this.loadData();
          }
       },
       
@@ -853,7 +881,7 @@ define(["dojo/_base/declare",
             }
             
             this.currentPageSize = payload.value;
-            this.loadData();
+            if (this._readyToLoad) this.loadData();
          }
       }
    });

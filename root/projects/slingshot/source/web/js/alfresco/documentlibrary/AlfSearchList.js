@@ -120,7 +120,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} payload The details of the facet to include
        */
-      onIncludeFacetRequest: function alfresco_services_SearchService__onIncludeFacetRequest(payload) {
+      onIncludeFacetRequest: function alfresco_documentlibrary_AlfSearchList__onIncludeFacetRequest(payload) {
          this.alfLog("log", "Adding facet filter", payload, this);
          var qname = lang.getObject("qname", false, payload);
          if (qname == null)
@@ -188,8 +188,8 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       onChangeFilter: function alfresco_documentlibrary_AlfSearchList__onChangeFilter(payload) {
-         this.alfLog("log", "Filter change detected");
-         
+         this.alfLog("log", "Filter change detected", payload, this);
+
          // The facet filters need to be handled directly because they are NOT just passed as 
          // a simple string. Create a new object for the filters and then break up the filters
          // based on comma delimition and assign each element as a new key in the filters object
