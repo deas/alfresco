@@ -119,6 +119,26 @@ define(["dojo/_base/declare"],
              range.moveStart('character', position); 
              range.select(); 
          }
+      },
+
+      /**
+       * Returns the height of the document.
+       * based on jQuery function (http://code.jquery.com/jquery-2.1.0.js), MIT licensed.
+       *
+       * @instance
+       * @returns {number}
+       */
+      getDocumentHeight: function() {
+         var doc = document.documentElement,
+            body = document.body;
+
+         return Math.max(
+            body.scrollHeight,
+            body.offsetHeight,
+            doc.scrollHeight,
+            doc.offsetHeight,
+            doc.clientHeight
+         );
       }
    });
 });
