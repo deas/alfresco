@@ -21,7 +21,7 @@
  * A utility class for working with arrays. The functions in this module are based on those
  * originally found in the YUI based alfresco.js file.
  * 
- * @module alfresco/core/ArrayUtils
+ * @module alfresco/core/ArrayUtilsalfresco/core/ArrayUtils
  * @author Dave Draper
  */
 define(["dojo/_base/lang"], 
@@ -30,12 +30,12 @@ define(["dojo/_base/lang"],
    return {
       
       /**
-       * Check if an array contains an object
+       * Returns the index of an object in an array
        *
        * @instance
-       * @param {array} arr Array to convert to object
+       * @param {array} arr Array to search through
        * @param {object} el The element to be searched for in the array
-       * @returns {boolean} True if arr contains el
+       * @returns {int|null} element index within array (or null if not found).
        */
       findInArray: function alfresco_core_ArrayUtils__findInArray(arr, value, attr) {
          var index = this.arrayIndex(arr, value, attr);
