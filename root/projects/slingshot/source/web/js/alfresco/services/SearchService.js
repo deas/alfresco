@@ -84,9 +84,9 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {boolean}
-       * @default true
+       * @default false
        */
-      repo: true,
+      repo: false,
 
       /**
        * This is the default node to use as the root of the search. This value will be used if a specific value isn't
@@ -209,7 +209,6 @@ define(["dojo/_base/declare",
                sort = ((payload.sortField != null) ? payload.sortField : this.sort) + "|" + 
                       ((payload.sortAscending != null) ? payload.sortAscending : this.sortAscending);
             }
-            
 
             var data = {
                facetFields: (payload.facetFields != null) ? payload.facetFields : "{http://www.alfresco.org/model/content/1.0}content.mimetype,{http://www.alfresco.org/model/content/1.0}modifier.__,{http://www.alfresco.org/model/content/1.0}creator.__,{http://www.alfresco.org/model/content/1.0}description.__",
@@ -218,12 +217,9 @@ define(["dojo/_base/declare",
                tag: (payload.tag != null) ? payload.tag : this.tag,
                startIndex: (payload.startIndex != null) ? payload.startIndex : this.startIndex,
                sort: sort,
-               // site: (payload.site != null) ? payload.site : this.site,
-               site: "",
-               // rootNode: (payload.rootNode != null) ? payload.rootNode : this.rootNode,
-               rootNode: "alfresco://company/home",
-               // repo: (payload.repo != null) ? payload.repo : this.repo,
-               repo: false,
+               site: (payload.site != null) ? payload.site : this.site,
+               rootNode: (payload.rootNode != null) ? payload.rootNode : this.rootNode,
+               repo: (payload.repo != null) ? payload.repo : this.repo,
                query: query,
                pageSize: (payload.pageSize != null) ? payload.pageSize : this.pageSize,
                maxResults: (payload.maxResults != null) ? payload.maxResults : this.maxResults
