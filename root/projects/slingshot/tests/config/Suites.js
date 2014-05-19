@@ -41,48 +41,51 @@ define({
     * @instance
     * @type [string]
     */
-   baseFunctionalSuites: ['tests/alfresco/accessibility/AccessibilityMenuTest',
+   baseFunctionalSuites: [
+      'tests/alfresco/accessibility/AccessibilityMenuTest',
 
-                          'tests/alfresco/core/RenderFilterTest',
-                          'tests/alfresco/core/VisibilityConfigTest',
-                          'tests/alfresco/core/WidgetCreationTest',
+      'tests/alfresco/core/RenderFilterTest',
+      'tests/alfresco/core/VisibilityConfigTest',
+      'tests/alfresco/core/WidgetCreationTest',
 
-                          'tests/alfresco/documentlibrary/DocumentListTest',
-                          'tests/alfresco/documentlibrary/SearchListTest',
-                          'tests/alfresco/documentlibrary/views/AlfDocumentListWithHeaderTest',
+      'tests/alfresco/documentlibrary/DocumentListTest',
+      'tests/alfresco/documentlibrary/SearchListTest',
+      'tests/alfresco/documentlibrary/SearchListScrollTest',
+      'tests/alfresco/documentlibrary/views/AlfDocumentListWithHeaderTest',
 
-                          'tests/alfresco/footer/FooterTest',
+      'tests/alfresco/footer/FooterTest',
 
-                          'tests/alfresco/forms/FormsTest',
-                          'tests/alfresco/forms/SingleTextFieldFormTest',
-                          'tests/alfresco/forms/controls/DocumentPickerTest',
-                          'tests/alfresco/forms/controls/DojoSelectTest',
-                          'tests/alfresco/forms/controls/DojoValidationTextBoxTest',
-                          'tests/alfresco/forms/controls/FormButtonDialogTest',
+      'tests/alfresco/forms/FormsTest',
+      'tests/alfresco/forms/SingleTextFieldFormTest',
+      'tests/alfresco/forms/controls/DocumentPickerTest',
+      'tests/alfresco/forms/controls/DojoSelectTest',
+      'tests/alfresco/forms/controls/DojoValidationTextBoxTest',
+      'tests/alfresco/forms/controls/FormButtonDialogTest',
 
-                          'tests/alfresco/layout/BasicLayoutTest',
+      'tests/alfresco/layout/BasicLayoutTest',
 
-                          'tests/alfresco/menus/AlfCheckableMenuItemTest',
-                          'tests/alfresco/menus/AlfFormDialogMenuItemTest',
-                          'tests/alfresco/menus/AlfMenuBarSelectItemsTest',
-                          'tests/alfresco/menus/AlfMenuBarSelectTest',
-                          'tests/alfresco/menus/AlfMenuBarToggleTest',
-                          'tests/alfresco/menus/AlfMenuItemWrapperTest',
-                          'tests/alfresco/menus/AlfMenuTextForClipboardTest',
-                          'tests/alfresco/menus/AlfVerticalMenuBarTest',
-                          'tests/alfresco/menus/MenuTests',
+      'tests/alfresco/menus/AlfCheckableMenuItemTest',
+      'tests/alfresco/menus/AlfFormDialogMenuItemTest',
+      'tests/alfresco/menus/AlfMenuBarSelectItemsTest',
+      'tests/alfresco/menus/AlfMenuBarSelectTest',
+      'tests/alfresco/menus/AlfMenuBarToggleTest',
+      'tests/alfresco/menus/AlfMenuItemWrapperTest',
+      'tests/alfresco/menus/AlfMenuTextForClipboardTest',
+      'tests/alfresco/menus/AlfVerticalMenuBarTest',
+      'tests/alfresco/menus/MenuTests',
 
-                          'tests/alfresco/misc/AlfTooltipTest',
+      'tests/alfresco/misc/AlfTooltipTest',
 
-                          'tests/alfresco/renderers/BooleanTest',
-                          'tests/alfresco/renderers/DateTest',
-                          'tests/alfresco/renderers/PropertyTest',
-                          'tests/alfresco/renderers/PropertyLinkTest',
-                          'tests/alfresco/renderers/PublishingDropDownMenuTest',
-                          'tests/alfresco/renderers/PublishPayloadMixinOnActionsTest',
-                          'tests/alfresco/renderers/SearchResultPropertyLinkTest',
-                          
-                          'tests/alfresco/search/FacetFiltersTest'],
+      'tests/alfresco/renderers/BooleanTest',
+      'tests/alfresco/renderers/DateTest',
+      'tests/alfresco/renderers/PropertyTest',
+      'tests/alfresco/renderers/PropertyLinkTest',
+      'tests/alfresco/renderers/PublishingDropDownMenuTest',
+      'tests/alfresco/renderers/PublishPayloadMixinOnActionsTest',
+      'tests/alfresco/renderers/SearchResultPropertyLinkTest',
+
+      'tests/alfresco/search/FacetFiltersTest'
+   ],
 
    /**
     * This is the array of functional test suites that should only be applied to local tests

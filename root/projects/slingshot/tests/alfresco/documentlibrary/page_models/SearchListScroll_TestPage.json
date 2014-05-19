@@ -11,9 +11,7 @@
             }
          }
       },
-      {
-         "name": "alfresco/services/NavigationService"
-      }
+      "alfresco/services/NavigationService"
    ],
    "widgets": [
       {
@@ -21,11 +19,7 @@
          "name": "alfresco/buttons/AlfButton",
          "config": {
             "label": "Set Search Term",
-            "publishTopic": "ALF_NAVIGATE_TO_PAGE",
-            "publishPayload": {
-               "url": "searchTerm=testTerm1",
-               "type": "HASH"
-            }
+            "publishTopic": "ALF_NAVIGATE_TO_PAGE"
          }
       },
       {
@@ -45,10 +39,7 @@
          "name": "alfresco/buttons/AlfButton",
          "config": {
             "label": "Remove Facet Filter",
-            "publishTopic": "ALF_REMOVE_FACET_FILTER",
-            "publishPayload": {
-               "filter": "filter2"
-            }
+            "publishTopic": "ALF_REMOVE_FACET_FILTER"
          }
       },
       {
@@ -56,10 +47,7 @@
          "name": "alfresco/buttons/AlfButton",
          "config": {
             "label": "Apply Facet Filter",
-            "publishTopic": "ALF_APPLY_FACET_FILTER",
-            "publishPayload": {
-               "filter": "filter4"
-            }
+            "publishTopic": "ALF_APPLY_FACET_FILTER"
          }
       },
       {
@@ -67,10 +55,7 @@
          "name": "alfresco/buttons/AlfButton",
          "config": {
             "label": "Include Facet",
-            "publishTopic": "ALF_INCLUDE_FACET",
-            "publishPayload": {
-               "qname": "qname2"
-            }
+            "publishTopic": "ALF_INCLUDE_FACET"
          }
       },
       {
@@ -78,43 +63,23 @@
          "name": "alfresco/buttons/AlfButton",
          "config": {
             "label": "Fake Search Response",
-            "publishTopic": "ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS",
-            "publishPayload": {
-               "response" : {
-                  "totalRecords": 3,
-                  "totalRecordsUpper": 3,
-                  "startIndex": 0,
-                  "numberFound": 3,
-                  "facets": {
-                     "@qname1": {
-                        "test": 3
-                     }
-                  },
-                  "items": [
-                     {
-                        "name": "Res1"
-                     },
-                     {
-                        "name": "Res2"
-                     },
-                     {
-                        "name": "Res3"
-                     }
-                  ]
-               }
-            }
+            "publishTopic": "ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS"
          }
       },
       {
          "name": "alfresco/documentlibrary/AlfSearchList",
          "config": {
             "useHash": true,
+            "useInfiniteScroll": true,
             "widgets": [
                {
                   "name": "alfresco/documentlibrary/views/AlfSearchListView"
                }
             ]
          }
+      },
+      {
+         "name": "alfresco/documentlibrary/AlfDocumentListInfiniteScroll"
       },
       {
          "name": "alfresco/testing/SubscriptionLog"
