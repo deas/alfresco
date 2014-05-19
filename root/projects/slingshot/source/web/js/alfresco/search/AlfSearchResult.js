@@ -34,9 +34,10 @@ define(["dojo/_base/declare",
         "alfresco/renderers/SearchResultPropertyLink",
         "alfresco/renderers/Property",
         "alfresco/renderers/Date",
+        "alfresco/renderers/XhrActions",
         "dojo/_base/lang",
         "dojo/dom-class"], 
-        function(declare, Row, template, Thumbnail, PropertyLink, Property, Date, lang, domClass) {
+        function(declare, Row, template, Thumbnail, PropertyLink, Property, Date, XhrActions, lang, domClass) {
 
    return declare([Row], {
       
@@ -127,6 +128,12 @@ define(["dojo/_base/declare",
                renderedValuePrefix: this.message("faceted-search.doc-lib.value-prefix.site") + " "
             }, this.siteNode);
          }
+
+         new XhrActions({
+            currentItem: this.currentItem,
+            pubSubScope: this.pubSubScope
+         }, this.actionsNode);
+
       }
    });
 });

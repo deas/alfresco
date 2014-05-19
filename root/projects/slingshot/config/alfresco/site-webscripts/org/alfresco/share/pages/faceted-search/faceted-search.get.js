@@ -428,7 +428,10 @@ var main = {
 
 // Append services with those required for search
 services.push("alfresco/services/NavigationService",
-              "alfresco/services/SearchService");
+              "alfresco/services/SearchService",
+              "alfresco/services/ActionService",
+              "alfresco/services/DocumentService"
+              );
 
 // Add in the search form and search doc lib...
 widgets.push(main);

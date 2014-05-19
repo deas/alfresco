@@ -250,19 +250,28 @@ define(["dojo/_base/declare",
          {
             try
             {
-               if (this.docListRenderer != null)
+               if (this.docListRenderer != null && preserveCurrentData !== true)
                {
-                  this.docListRenderer.destroy(preserveCurrentData);
+                  this.docListRenderer.destroy();
                }
 
                this.alfLog("log", "Rendering items", this);
-               this.docListRenderer = new DocumentListRenderer({
-                  id: this.id + "_ITEMS",
-                  widgets: this.widgets,
-                  currentData: this.currentData,
-                  pubSubScope: this.pubSubScope,
-                  parentPubSubScope: this.parentPubSubScope
-               });
+
+               if (this.docListRenderer == null) {
+                  // Create doc list renderer
+                  this.docListRenderer = new DocumentListRenderer({
+                     id: this.id + "_ITEMS",
+                     widgets: this.widgets,
+                     currentData: this.currentData,
+                     pubSubScope: this.pubSubScope,
+                     parentPubSubScope: this.parentPubSubScope
+                  });
+               }
+               else
+               {
+                  this.alfLog("info", "Using existing renderer and appending to it.");
+               }
+
                this.docListRenderer.placeAt(this.tableNode, "last");
                this.docListRenderer.renderData();
             }

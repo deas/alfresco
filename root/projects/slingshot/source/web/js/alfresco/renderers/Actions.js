@@ -32,11 +32,38 @@ define(["dojo/_base/declare",
         "alfresco/menus/AlfMenuItem",
         "dojo/_base/array",
         "dojo/_base/lang",
-        "service/constants/Default"], 
+        "service/constants/Default",
+        "alfresco/renderers/_PublishPayloadMixin",
+        "alfresco/core/ArrayUtils"],
         function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, _PublishPayloadMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array, 
-                 lang, AlfConstants) {
+                 lang, AlfConstants, _PublishPayloadMixin, AlfArray) {
 
    return declare([AlfMenuBar, _AlfDocumentListTopicMixin, _PublishPayloadMixin], {
+
+      /**
+       *  Array containing a list of allowed actions
+       *  This is used to filter out actions that the actions API returns, but haven't yet been implemented.
+       *  TODO: Remove this once all actions have been implemented by the actions service.
+       *  Currently - all actions of type link and pagelink should work.
+       */
+      allowedActions: [
+         "document-download",
+         "document-view-content",
+         "document-view-details",
+         "folder-view-details",
+         "document-edit-metadata",
+         "document-inline-edit",
+         "document-manage-granular-permissions",
+         "document-manage-repo-permissions",
+         "document-view-original",
+         "document-view-working-copy",
+         "folder-manage-rules",
+         "view-in-explorer",
+         "document-view-googledoc",
+         "document-view-googlemaps",
+         "document-view-in-source-repository",
+         "document-view-in-cloud"
+      ],
 
       /**
        * Overrides the default to create a popup containing a group containing all the actions
@@ -46,7 +73,7 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_renderers_Actions__postCreate() {
          this.inherited(arguments);
-         
+
          // Create a group to hold all the actions...
          this.actionsGroup = new AlfMenuGroup({});
          
@@ -87,18 +114,25 @@ define(["dojo/_base/declare",
        * @param (integer} index The index of the action
        */
       addAction: function alfresco_renderers_Actions__addAction(action, index) {
-         this.alfLog("log", "Adding action", action);
+         if (AlfArray.arrayContains(this.allowedActions, action.id))
+         {
+            this.alfLog("log", "Adding action", action);
 
-         var payload = (action.publishPayload != null) ? action.publishPayload : {document: this.currentItem, action: action};
-         var menuItem = new AlfMenuItem({
-            label: action.label,
-            iconImage: AlfConstants.URL_RESCONTEXT + "components/documentlibrary/actions/" + action.icon + "-16.png",
-            type: action.type,
-            pubSubScope: this.pubSubScope,
-            publishTopic: (action.publishTopic != null) ? action.publishTopic : this.singleDocumentActionTopic,
-            publishPayload: this.generatePayload(payload, this.currentItem, null, action.publishPayloadType, action.publishPayloadItemMixin, action.publishPayloadModifiers)
-         });
-         this.actionsGroup.addChild(menuItem);
+            var payload = (action.publishPayload != null) ? action.publishPayload : {document: this.currentItem, action: action};
+            var menuItem = new AlfMenuItem({
+               label: action.label,
+               iconImage: AlfConstants.URL_RESCONTEXT + "components/documentlibrary/actions/" + action.icon + "-16.png",
+               type: action.type,
+               pubSubScope: this.pubSubScope,
+               publishTopic: (action.publishTopic != null) ? action.publishTopic : this.singleDocumentActionTopic,
+               publishPayload: this.generatePayload(payload, this.currentItem, null, action.publishPayloadType, action.publishPayloadItemMixin, action.publishPayloadModifiers)
+            });
+            this.actionsGroup.addChild(menuItem);
+         }
+         else
+         {
+            this.alfLog("log", "Skipping action as it's missing from whitelist: " + action)
+         }
       }
    });
 });
