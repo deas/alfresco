@@ -14,7 +14,7 @@ var rootWidgetId = "FCTSRCH_";
 // Compose the search form model
 var searchForm = {
    id: rootWidgetId + "SEARCH_FORM",
-   name: "alfresco/forms/SingleEntryForm",
+   name: "alfresco/forms/SingleTextFieldForm",
    config: {
       useHash: true,
       okButtonLabel: msg.get("faceted-search.search-form.ok-button-label"),

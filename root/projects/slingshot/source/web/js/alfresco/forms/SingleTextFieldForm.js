@@ -18,11 +18,8 @@
  */
 
 /**
- * This module extends the standard [Form widget]{@link module:alfresco/forms/Form} to provide the ability
- * to dynamically re-draw a form based on payload published to a subscribed topic. The idea is that the 
- * displayed form can change (e.g. as the users picks a specific form type from a drop-down or radio buttons)
  * 
- * @module alfresco/forms/DynamicForm
+ * @module alfresco/forms/SingleTextFieldForm
  * @extends module:alfresco/forms/Form
  * @author Dave Draper
  */
@@ -40,9 +37,9 @@ define(["dojo/_base/declare",
        * 
        * @instance
        * @type {object[]}
-       * @default [{cssFile:"./css/SingleEntryForm.css"}]
+       * @default [{cssFile:"./css/SingleTextFieldForm.css"}]
        */
-      cssRequirements: [{cssFile:"./css/SingleEntryForm.css"}],
+      cssRequirements: [{cssFile:"./css/SingleTextFieldForm.css"}],
 
       /**
        * Override the default attribute to hide the cancel button
@@ -58,7 +55,7 @@ define(["dojo/_base/declare",
        *
        * @instance
        */
-      postMixInProperties: function alfresco_forms_SingleEntryForm__postMixInProperties() {
+      postMixInProperties: function alfresco_forms_SingleTextFieldForm__postMixInProperties() {
          this.widgets = [
             {
                name: "alfresco/forms/controls/DojoValidationTextBox",
@@ -81,7 +78,7 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      postCreate: function alfresco_forms_SingleEntryForm__postCreate() {
+      postCreate: function alfresco_forms_SingleTextFieldForm__postCreate() {
          domClass.add(this.domNode, "alfresco-forms-SingleEntryForm");
          this.inherited(arguments);
       },
@@ -93,7 +90,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {array} widgets The widgets instantiated
        */
-      allWidgetsProcessed: function alfresco_forms_SingleEntryForm__allWidgetsProcessed(widgets) {
+      allWidgetsProcessed: function alfresco_forms_SingleTextFieldForm__allWidgetsProcessed(widgets) {
          this.inherited(arguments)
 
          on(this.entryField, "keyup", lang.hitch(this, function(evt) {
