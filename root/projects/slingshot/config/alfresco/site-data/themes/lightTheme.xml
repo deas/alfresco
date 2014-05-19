@@ -63,12 +63,14 @@
          // The standard button is what is normally seen...
          @standard-button-background-color: #ffffff;
          @standard-button-border: 1px solid #ccc;
+         @standard-button-focus-border: 1px solid #ccc;
          @standard-button-font-color: @general-font-color;
          @standard-button-font-size: @normal-font-size;
 
          // "Call-to-action" buttons should be darker with larger text to capture the users attention
-         @call-to-action-button-background-color: #6B7881;
-         @call-to-action-button-border: 1px solid #6B7881;
+         @call-to-action-button-background-color: #8DC63F;
+         @call-to-action-button-border: 1px solid #8DC63F;
+         @call-to-action-button-focus-border: 1px solid #5EAE41;
          @call-to-action-button-font-color: #ffffff;
          @call-to-action-button-font-size: @large-font-size;
 
