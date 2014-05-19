@@ -1,0 +1,83 @@
+{
+   "services": [
+      {
+         "name": "alfresco/services/LoggingService",
+         "config": {
+            "loggingPreferences": {
+               "enabled": true,
+               "all": true,
+               "warn": true,
+               "error": true
+            }
+         }
+      },
+      {
+         "name": "alfresco/services/NavigationService"
+      }
+   ],
+   "widgets": [
+      {
+         "id": "SET_SEARCH_TERM",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Set Search Term",
+            "publishTopic": "ALF_NAVIGATE_TO_PAGE",
+            "publishPayload": {
+               "url": "searchTerm=testTerm1",
+               "type": "HASH"
+            }
+         }
+      },
+      {
+         "id": "SET_MULTIPLE_SEARCH_DATA",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Set Multiple Search Attributes",
+            "publishTopic": "ALF_NAVIGATE_TO_PAGE",
+            "publishPayload": {
+               "url": "searchTerm=testTerm2&facetFields=facetFieldData&facetFilters=filter1,filter2,filter3&sortAscending=false&sortField=cm:title",
+               "type": "HASH"
+            }
+         }
+      },
+      {
+         "name": "alfresco/documentlibrary/AlfSearchList",
+         "config": {
+            "useHash": true,
+            "widgets": [
+               {
+                  "name": "alfresco/documentlibrary/views/AlfDocumentListView",
+                  "config": {
+                     "widgets": [
+                        {
+                           "name": "alfresco/documentlist/views/layouts/Row",
+                           "config": {
+                              "widgets": [
+                                 {
+                                    "name": "alfresco/documentlist/views/layouts/Cell",
+                                    "widgets" :[
+                                       {
+                                          "name": "alfresco/renderers/Property",
+                                          "config": {
+                                             "propertyToRender": "name"
+                                          }
+                                       }
+                                    ]
+                                 }
+                              ]
+                           }
+                        }
+                     ]
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "name": "alfresco/testing/SubscriptionLog"
+      },
+      {
+         "name": "alfresco/testing/TestCoverageResults"
+      }
+   ]
+}

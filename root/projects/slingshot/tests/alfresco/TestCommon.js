@@ -213,7 +213,11 @@ define(["intern/dojo/node!fs",
          }
 
          var row = "";
-         if (expectedRow == "last")
+         if (expectedRow == "any")
+         {
+            // Don't specify a row
+         }
+         else if (expectedRow == "last")
          {
             row = ":last-child"
          }

@@ -98,33 +98,6 @@ define(["dojo/_base/declare",
 
          this.facetFilters = {};
       },
-      
-      /**
-       * Overrides the [default implementation]{@link module:alfresco/documentlibrary/_AlfFilterMixin#processFilterElement}
-       * to extract key value pairs from the hash fragment element. It is expected that each filter element will be a
-       * key value pair delimited by the "=" character (e.g. "term=test"). This key value pair will then be set in the
-       * supplied processedFilter object.
-       * 
-       * @instance
-       * @param {object} processedFilter The final filter object that needs to be updated
-       * @param {array} processedFilterKeys An array of keys to use for the filter object
-       * @param {string} elementData The element to be processed
-       */
-      processFilterElement: function alfresco_documentlibrary__AlfFilterMixin__processFilterElement(processedFilter, processedFilterKeys, elementData, index) {
-         if (elementData !== null)
-         {
-            var a = elementData.split("=");
-            if (a.length != 2)
-            {
-               // Use the first element as the filter object key and the second element as its value
-               processedFilter[a[0]] = a[1];
-            }
-            else
-            {
-               this.alfLog("warn", "Expected 2 key value pair in filter data element", elementData);
-            }
-         }
-      },
 
       /**
        * The current term to search on
@@ -182,8 +155,24 @@ define(["dojo/_base/declare",
          }
       },
 
+      /**
+       * The filters of facets that should be applied to search queries. This can either be configured
+       * when the widget is created or can be set via the browser hash fragment.
+       *
+       * @instance
+       * @type {object}
+       * @default null
+       */
       facetFilters: null,
 
+      /**
+       * This function is called as a result of publishing on the "ALF_APPLY_FACET_FILTER" topic. It will
+       * update the current [filters]{@link module:alfresco/documentlibrary/AlfSearchList#facetFilters}
+       * object with a new entry for the request filter.
+       *
+       * @instance
+       * @param {object} payload The details of the facet filter to apply
+       */
       onApplyFacetFilter: function alfresco_documentlibrary_AlfSearchList__onApplyFacetFilter(payload) {
          this.alfLog("log", "Filtering on facet", payload, this);
          var filter = lang.getObject("filter", false, payload);
@@ -198,6 +187,14 @@ define(["dojo/_base/declare",
          }
       },
 
+      /**
+       * This function is called as a result of publishing on the "ALF_REMOVE_FACET_FILTER" topic. It will
+       * update the current [filters]{@link module:alfresco/documentlibrary/AlfSearchList#facetFilters}
+       * object to delete the supplied filter
+       *
+       * @instance
+       * @param {object} payload The details of the facet filter to apply
+       */
       onRemoveFacetFilter: function alfresco_documentlibrary_AlfSearchList__onRemoveFacetFilter(payload) {
          this.alfLog("log", "Removing facet filter", payload, this);
          delete this.facetFilters[payload.filter];
@@ -205,12 +202,27 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * 
+       * If [useHash]{@link module:alfresco/documentlibrary/AlfDocumentList#useHash} has been set to true
+       * then this function will be called whenever the browser hash fragment is modified. It will update
+       * the attributes of this instance with the values provided in the fragment.
        * 
        * @instance
        * @param {object} payload
        */
       onChangeFilter: function alfresco_documentlibrary_AlfSearchList__onChangeFilter(payload) {
+
+         // The facet filters need to be handled directly because they are NOT just passed as 
+         // a simple string. Create a new object for the filters and then break up the filters
+         // based on comma delimition and assign each element as a new key in the filters object
+         var filters = lang.getObject("facetFilters", false, payload);
+         if (filters != null)
+         {
+            var ff = payload["facetFilters"] = {};
+            var fArr = filters.split(",");
+            array.forEach(fArr, function(filter) {
+               ff[filter] = true;
+            }, this);
+         }
 
          lang.mixin(this, payload);
          this.loadData();
@@ -245,7 +257,6 @@ define(["dojo/_base/declare",
 
          this.alfPublish("ALF_SEARCH_REQUEST", searchPayload, true);
       },
-
 
       /**
        * Handles successful calls to get data from the repository.
@@ -297,10 +308,11 @@ define(["dojo/_base/declare",
          }
       },
 
-      
-
       /**
+       * TODO: Not sure on the purpose of this function!!
+       * 
        * @instance
+       * @param {object} payload The details of the item clicked
        */
       onSearchResultClicked: function alfresco_documentlibrary_AlfSearchList__onSearchResultClicked(payload) {
          this.alfLog("log", "Search Result Clicked");
