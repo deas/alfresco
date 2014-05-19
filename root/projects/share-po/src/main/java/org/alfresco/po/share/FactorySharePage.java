@@ -21,7 +21,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.po.share.admin.AdminConsolePage;
 import org.alfresco.po.share.admin.ManageSitesPage;
+import org.alfresco.po.share.adminconsole.CategoryManagerPage;
+import org.alfresco.po.share.adminconsole.ChannelManagerPage;
 import org.alfresco.po.share.adminconsole.NodeBrowserPage;
+import org.alfresco.po.share.dashlet.ConfigureSiteNoticeDialogBoxPage;
+import org.alfresco.po.share.dashlet.InsertOrEditLinkPage;
 import org.alfresco.po.share.dashlet.mydiscussions.CreateNewTopicPage;
 import org.alfresco.po.share.dashlet.mydiscussions.TopicDetailsPage;
 import org.alfresco.po.share.dashlet.mydiscussions.TopicsListPage;
@@ -39,11 +43,14 @@ import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.InviteMembersPage;
 import org.alfresco.po.share.site.NewFolderPage;
+import org.alfresco.po.share.site.PendingInvitesPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SiteGroupsPage;
 import org.alfresco.po.share.site.SiteMembersPage;
 import org.alfresco.po.share.site.UploadFilePage;
+import org.alfresco.po.share.site.blog.BlogPage;
+import org.alfresco.po.share.site.calendar.CalendarPage;
 import org.alfresco.po.share.site.contentrule.FolderRulesPreRender;
 import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
 import org.alfresco.po.share.site.datalist.DataListPage;
@@ -57,11 +64,19 @@ import org.alfresco.po.share.site.document.EditInGoogleDocsPage;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.InlineEditPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
+import org.alfresco.po.share.site.document.MyFilesPage;
+import org.alfresco.po.share.site.document.SharedFilesPage;
 import org.alfresco.po.share.site.document.TagPage;
+import org.alfresco.po.share.site.links.LinksPage;
 import org.alfresco.po.share.site.wiki.WikiPage;
+import org.alfresco.po.share.site.wiki.WikiPageList;
+import org.alfresco.po.share.systemsummary.RepositoryServerClusteringPage;
+import org.alfresco.po.share.systemsummary.SystemSummaryPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
+import org.alfresco.po.share.user.CloudSignInPage;
 import org.alfresco.po.share.user.CloudSyncPage;
+import org.alfresco.po.share.user.EditProfilePage;
 import org.alfresco.po.share.user.LanguageSettingsPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.user.TrashCanPage;
@@ -76,12 +91,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
 /**
  * Alfresco Share factory, creates the appropriate page object that corresponds
  * to the browser view.
- * 
+ *
  * @author Michael Suzuki
  * @version 1.7.1
  */
@@ -96,6 +112,7 @@ public class FactorySharePage implements PageFactory
     protected static final String SHARE_DIALOGUE = "div.hd";
     protected static ConcurrentHashMap<String, Class<? extends SharePage>> pages;
     private static final By SHARE_DIALOGUE_HEADER = By.cssSelector("div.hd");
+    private static final String cloudSignInDialogueHeader =  "Sign in to Alfresco in the cloud";
 
     static
     {
@@ -113,6 +130,7 @@ public class FactorySharePage implements PageFactory
         pages.put("user-trashcan", TrashCanPage.class);
         pages.put("site-finder", SiteFinderPage.class);
         pages.put("wiki-page", WikiPage.class);
+        pages.put("wiki", WikiPageList.class);
         pages.put("change-password", ChangePasswordPage.class);
         pages.put("repository", RepositoryPage.class);
         pages.put("manage-permissions", ManagePermissionsPage.class);
@@ -154,10 +172,22 @@ public class FactorySharePage implements PageFactory
         pages.put("start-workflow", StartWorkFlowPage.class);
         pages.put("user-cloud-auth", CloudSyncPage.class);
         pages.put("node-browser", NodeBrowserPage.class);
-        pages.put("page", LoginPage.class);
+        pages.put("channel-admin", ChannelManagerPage.class);
+        pages.put("category-manager", CategoryManagerPage.class);
         pages.put("admin-console", AdminConsolePage.class);
         pages.put("manage-sites", ManageSitesPage.class);
-        pages.put("faceted-search", FacetedSearchPage.class);
+        pages.put("link.htm", InsertOrEditLinkPage.class);
+        pages.put("page", LoginPage.class); //temporary solution
+        pages.put("sharedfiles", SharedFilesPage.class);
+        pages.put("myfiles", MyFilesPage.class);
+        pages.put("admin-systemsummary", SystemSummaryPage.class);
+        pages.put("admin-clustering", RepositoryServerClusteringPage.class);
+        pages.put("calendar", CalendarPage.class);
+        pages.put("blog-postlist", BlogPage.class);
+        pages.put("data-lists", DataListPage.class);
+        pages.put("links", LinksPage.class);
+        pages.put("pending-invites", PendingInvitesPage.class);
+        pages.put("edit-profile", EditProfilePage.class);
         pages.put("faceted-search", FacetedSearchPage.class);
     }
 
@@ -168,7 +198,7 @@ public class FactorySharePage implements PageFactory
 
     /**
      * Creates the appropriate page object based on the current page the {@link WebDrone} is on.
-     * 
+     *
      * @param drone WebDrone Alfresco unmanned web browser client
      * @return SharePage the page object response
      * @throws PageException
@@ -209,7 +239,10 @@ public class FactorySharePage implements PageFactory
             {
 
             }
+            catch (StaleElementReferenceException ste)
+            {
 
+            }
             // Determine what page we're on based on url
             return getPage(drone.getCurrentUrl(), drone);
         }
@@ -217,7 +250,7 @@ public class FactorySharePage implements PageFactory
 
     /**
      * Factory method to produce a page that defers all work until render time.
-     * 
+     *
      * @param drone browser driver
      * @return a page that is meaningless until {@link SharePage#render()} is called
      */
@@ -228,8 +261,8 @@ public class FactorySharePage implements PageFactory
 
     /**
      * Instantiates the page object matching the argument.
-     * 
-     * @param drone {@link WebDrone}
+     *
+     * @param drone            {@link WebDrone}
      * @param pageClassToProxy expected Page object
      * @return {@link SharePage} page response
      */
@@ -241,7 +274,7 @@ public class FactorySharePage implements PageFactory
         }
         if (pageClassToProxy == null)
         {
-            throw new IllegalArgumentException("Page object is required");
+            throw new IllegalArgumentException("Page object is required for url: "+drone.getCurrentUrl());
         }
         try
         {
@@ -274,7 +307,7 @@ public class FactorySharePage implements PageFactory
      * that identify's the page the drone is currently on. Once a the name
      * is extracted it is used to get the class from the map which is
      * then instantiated.
-     * 
+     *
      * @param driver WebDriver browser client
      * @return SharePage page object
      */
@@ -290,7 +323,7 @@ public class FactorySharePage implements PageFactory
 
     /**
      * Extracts the name from any url noise.
-     * 
+     *
      * @param pageName String page name
      * @return the page name
      */
@@ -303,7 +336,7 @@ public class FactorySharePage implements PageFactory
 
     /**
      * Extracts the String value from the last occurrence of slash in the url.
-     * 
+     *
      * @param url String url.
      * @return String page title
      */
@@ -412,7 +445,7 @@ public class FactorySharePage implements PageFactory
 
     /**
      * Helper method to return right Page for Share Dialogue displayed
-     * 
+     *
      * @return HtmlPage
      */
     private static HtmlPage resolveShareDialoguePage(WebDrone drone)
@@ -449,6 +482,21 @@ public class FactorySharePage implements PageFactory
                 else if (dialogueID.contains("copyMoveTo"))
                 {
                     sharePage = new CopyOrMoveContentPage(drone);
+                }
+
+                // The below dialogeId will be changed once this ACE-1047 issue is fixed.
+                else if (dialogueID.contains("configDialog-configDialog_h"))
+                {
+                    sharePage = new ConfigureSiteNoticeDialogBoxPage(drone);
+                }
+                //                else if(dialogueID.contains("simple-dialog"))
+                //                {
+                //                    sharePage = new ConfirmDeletePage(drone);
+                //                }
+                
+                else if (cloudSignInDialogueHeader.equals(dialogue.getText()))                        
+                {
+                        sharePage = new CloudSignInPage(drone);
                 }
             }
         }

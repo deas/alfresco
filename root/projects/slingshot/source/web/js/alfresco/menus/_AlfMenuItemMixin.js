@@ -37,9 +37,10 @@ define(["dojo/_base/declare",
         "dojo/dom-construct",
         "dojo/on",
         "dojo/_base/lang",
-        "dojo/_base/event"],
+        "dojo/_base/event",
+        "dojo/has"],
         function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, _PublishPayloadMixin, 
-                 _HtmlAnchorMixin, AlfConstants, domClass, domStyle, domConstruct, on, lang, event) {
+                 _HtmlAnchorMixin, AlfConstants, domClass, domStyle, domConstruct, on, lang, event, has) {
    
    return declare([AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, _PublishPayloadMixin, _HtmlAnchorMixin], {
 
@@ -180,6 +181,14 @@ define(["dojo/_base/declare",
              * block. Because the style is being explicitly set it will take precedence over the
              * Dojo CSS class.
              */
+            if(has("ie") == 8)
+            {     
+               if(location.protocol.indexOf("https") != -1)
+               {
+                  //It is ssl in IE8, so we use full URL. see MNT-10867
+                  this.iconImage = location.protocol + "//" + location.host + this.iconImage;
+               }
+            } 
             domStyle.set(this.iconNode, { backgroundImage: "url(" + this.iconImage + ")",
                                           width: this.iconImageWidth,
                                           height: this.iconImageHeight,

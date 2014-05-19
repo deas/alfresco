@@ -101,8 +101,8 @@ public class BecomeSiteManagerTest extends AbstractUtils
     /**
      * Test to click a 'Become Site Manager' button
      */
-    @Test
-    public void hasButtonTest() throws Exception
+    @Test(groups = "AlfrescoOne")
+    public void ALF_2947() throws Exception
     {
         if (logger.isTraceEnabled())
         {
@@ -137,8 +137,8 @@ public class BecomeSiteManagerTest extends AbstractUtils
     /**
      * Test to check a 'Become Site Manager' button is hidden
      */
-    @Test
-    public void hasNoButtonTest() throws Exception
+    @Test(groups = "AlfrescoOne")
+    public void ALF_2948() throws Exception
     {
         if (logger.isTraceEnabled())
         {

@@ -175,10 +175,17 @@ public class Navigation extends SharePage
      */
     protected void selectSitesDropdown()
     {
-        // Wait is applied as the link is within a java script.
-        String selector = isDojoSupport() ? "div#HEADER_SITES_MENU" : "button[id$='app_sites-button']";
-        WebElement siteButton = drone.find(By.cssSelector(selector));
-        siteButton.click();
+        try
+        {
+            // Wait is applied as the link is within a java script.
+            String selector = isDojoSupport() ? "div#HEADER_SITES_MENU" : "button[id$='app_sites-button']";
+            WebElement siteButton = drone.findAndWait(By.cssSelector(selector));
+            siteButton.click();
+        }
+        catch(TimeoutException te)
+        {
+            throw new PageOperationException("Exceeded time to find the Sites dropdown css.", te);
+        }
     }
 
     /**

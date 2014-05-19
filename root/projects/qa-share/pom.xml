@@ -11,15 +11,12 @@
         <version>4.3.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<!-- 		<alfVersionStable>"tomcat@pbld01.alfresco.com:/data/releases/Enterprise?4.2/4.2.0/build-00028/ALL/alfresco-enterprise-*-installer-linux-x64.???"</alfVersionStable>
-		<alfVersionLatest>"tomcat@pbld01.alfresco.com:/data/nightlybuilds/Enterprise?${enterprise.installer.version}/*/ALL/alfresco-enterprise-*-installer-linux-x64.???"</alfVersionLatest>
-		<alfVersion>${alfVersionStable}</alfVersion> -->
-		<webdrone.version>2.5-SNAPSHOT</webdrone.version>
-		<share-po.version>${project.version}</share-po.version>
-		<office.component>libreofficecomponent</office.component>
-		<enable.hybrid>false</enable.hybrid>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <webdrone.version>2.5-SNAPSHOT</webdrone.version>
+        <share-po.version>${project.version}</share-po.version>
+        <office.component>libreofficecomponent</office.component>
+        <enable.hybrid>false</enable.hybrid>
 		<hybrid.url>https://autohybrida.alfresco.me/alfresco/a/{network}/</hybrid.url>
         <uniqueTestRunName>TestReports</uniqueTestRunName>
         <!-- Default suite allows a single test to be run via -Dtest=... in this case the suite will be ignored then anyway -->
@@ -156,11 +153,11 @@
 			<artifactId>alfresco-remote-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
-		</dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.uncommons</groupId>
@@ -236,28 +233,28 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<!-- Configuration triggered by mvn antrun:run, used by Bamboo to stop 
-					server -->
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<id>default-cli</id>
-						<configuration>
-							<target>
-								<echo>Stopping Alfresco...</echo>
-								<exec executable="${basedir}/target/alf-installation/alfresco.sh"
-									dir="target/alf-installation" failonerror="true">
-									<arg value="stop" />
-								</exec>
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+            <plugin>
+                <!-- Configuration triggered by mvn antrun:run, used by Bamboo to stop
+                    server -->
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <configuration>
+                            <target>
+                                <echo>Stopping Alfresco...</echo>
+                                <exec executable="${basedir}/target/alf-installation/alfresco.sh"
+                                      dir="target/alf-installation" failonerror="true">
+                                    <arg value="stop"/>
+                                </exec>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 	<profiles>
 		<profile>
