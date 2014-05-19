@@ -1,6 +1,7 @@
 package org.alfresco.po.share.search;
 
 import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.admin.ActionsSet;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
@@ -14,6 +15,7 @@ public class FacetedSearchResult
     private static final By DATE = By.cssSelector("tr td.dateCell span.value");
     private static final By DESCRIPTION = By.cssSelector("tr td.descriptionCell span.value");
     private static final By SITE = By.cssSelector("tr td.siteCell span.value");
+    private static final By ACTIONS = By.cssSelector("tr td.actionsCell");
 
     private WebDrone drone;
     private WebElement link;
@@ -22,6 +24,7 @@ public class FacetedSearchResult
     private String date;
     private String description;
     private String site;
+    private ActionsSet actions;
 
     /**
      * Instantiates a new faceted search result - some items may be null.
@@ -50,6 +53,7 @@ public class FacetedSearchResult
         {
             this.site = result.findElement(SITE).getText();
         }
+        this.actions = new ActionsSet(drone, result.findElement(ACTIONS));
     }
 
     /**
@@ -110,6 +114,16 @@ public class FacetedSearchResult
     public String getSite()
     {
         return site;
+    }
+
+    /**
+     * Gets the actions.
+     *
+     * @return the actions
+     */
+    public ActionsSet getActions()
+    {
+        return actions;
     }
 
     /**

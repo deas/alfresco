@@ -20,6 +20,7 @@ public class FacetedSearchSort
     private static final By RESULTS_STRING = By.cssSelector("span.alfresco-html-Label");
     private static final By SORT_ORDER_BUTTON = By.cssSelector("div#FCTSRCH_SORT_ORDER_TOGGLE > img");
     private static final By MENU_BUTTON = By.cssSelector("div#FCTSRCH_SORT_MENU");
+    private static final By MENU_BUTTON_TEXT = By.cssSelector("span#FCTSRCH_SORT_MENU_text");
     private static final By MENU_ITEMS = By.cssSelector("div#FCTSRCH_SORT_MENU_dropdown tr.dijitMenuItem");
 
     private WebDrone drone;
@@ -48,6 +49,7 @@ public class FacetedSearchSort
         }
 
         this.menuButton = facetedSearchResultsMenuBar.findElement(MENU_BUTTON);
+        this.currentSelection = facetedSearchResultsMenuBar.findElement(MENU_BUTTON_TEXT).getText();
     }
 
     /**
@@ -116,6 +118,7 @@ public class FacetedSearchSort
         boolean found = false;
         if(i >= 0 && i < this.menuElements.size())
         {
+            this.currentSelection = this.menuElements.get(i).getText();
             this.menuElements.get(i).click();
             found = true;
         }
@@ -140,6 +143,7 @@ public class FacetedSearchSort
         {
             if(StringUtils.trim(option.getText()).equalsIgnoreCase(label))
             {
+                this.currentSelection = StringUtils.trim(option.getText());
                 option.click();
                 found = true;
                 break;

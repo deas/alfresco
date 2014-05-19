@@ -23,6 +23,8 @@ public class FacetedSearchPage extends SharePage
     private static final By FACET_GROUP = By.cssSelector("div.alfresco-documentlibrary-AlfDocumentFilters:not(.hidden)");
     private static final By RESULT = By.cssSelector("tr.alfresco-search-AlfSearchResult");
 
+    private FacetedSearchHeaderSearchForm headerSearchForm;
+    private FacetedSearchScopeMenu scopeMenu;
     private FacetedSearchForm searchForm;
     private List<FacetedSearchFacetGroup> facetGroups;
     private FacetedSearchSort sort;
@@ -68,6 +70,26 @@ public class FacetedSearchPage extends SharePage
         basicRender(maxPageLoadingTime);
         loadElements();
         return this;
+    }
+
+    /**
+     * Gets the header search form.
+     * 
+     * @return {@link FacetedSearchHeaderSearchForm}
+     */
+    public FacetedSearchHeaderSearchForm getHeaderSearchForm()
+    {
+        return headerSearchForm;
+    }
+
+    /**
+     * Gets the scope menu.
+     * 
+     * @return {@link FacetedSearchScopeMenu}
+     */
+    public FacetedSearchScopeMenu getScopeMenu()
+    {
+        return scopeMenu;
     }
 
     /**
@@ -149,6 +171,12 @@ public class FacetedSearchPage extends SharePage
      */
     public void loadElements()
     {
+        // Initialise the faceted search form
+        this.headerSearchForm = new FacetedSearchHeaderSearchForm(drone);
+
+        // Initialise the faceted search scope menu
+        this.scopeMenu = new FacetedSearchScopeMenu(drone);
+
         // Initialise the faceted search form
         this.searchForm = new FacetedSearchForm(drone);
 
