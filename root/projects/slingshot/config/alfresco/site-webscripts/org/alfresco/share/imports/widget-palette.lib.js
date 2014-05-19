@@ -3585,6 +3585,28 @@ function getAceEditor() {
    };
 }
 
+function getMultipleEntryFormControl() {
+   return {
+      type: [ "widget" ],
+      name: "Multi-Entry",
+      module: "alfresco/forms/controls/MultipleEntryFormControl",
+      defaultConfig: {
+         name: "default",
+         label: "Multi-Entry"
+      },
+      widgetsForConfig: getCommonFormControlConfigWidgets(),
+      previewWidget: false,
+      widgetsForDisplay: [
+         {
+            name: "alfresco/creation/DropZone",
+            config: {
+               horizontal: false
+            }
+         }
+      ]
+   };
+}
+
 function getAllFormWidgets() {
    return [
       getForm(),
@@ -3595,6 +3617,7 @@ function getAllFormWidgets() {
       getSelectField(),
       getRadioButtonsField(),
       getCheckBox(),
-      getAceEditor()
+      getAceEditor(),
+      getMultipleEntryFormControl()
    ];
 }

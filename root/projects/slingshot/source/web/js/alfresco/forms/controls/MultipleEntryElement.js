@@ -178,32 +178,39 @@ define(["dojo/_base/declare",
        * @returns {object[]}
        */
       getFormWidgets: function alfresco_forms_controls_MultipleEntryElement__getFormWidgets() {
-         return [
-            {
-               // This is the hidden id and needs to be included to ensure that the id is persisted.
-               name: "alfresco/forms/controls/DojoValidationTextBox",
-               config: {
-                  name: "fieldId",
-                  label: "fieldId",
-                  value: this.elementValue.fieldId,
-                  visibilityConfig: {
-                     initialValue: false
+         if (this.widgets != null)
+         {
+            return this.widgets;
+         }
+         else
+         {
+            return [
+               {
+                  // This is the hidden id and needs to be included to ensure that the id is persisted.
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     name: "fieldId",
+                     label: "fieldId",
+                     value: this.elementValue.fieldId,
+                     visibilityConfig: {
+                        initialValue: false
+                     }
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     name: "value",
+                     label: "multi.element.value.label",
+                     description: "multi.element.value.description",
+                     value: this.elementValue.value,
+                     requirementConfig: {
+                        initialValue: true
+                     }
                   }
                }
-            },
-            {
-               name: "alfresco/forms/controls/DojoValidationTextBox",
-               config: {
-                  name: "value",
-                  label: "multi.element.value.label",
-                  description: "multi.element.value.description",
-                  value: this.elementValue.value,
-                  requirementConfig: {
-                     initialValue: true
-                  }
-               }
-            }
-         ];
+            ];
+         }
       },
       
       /**

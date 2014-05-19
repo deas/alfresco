@@ -307,7 +307,8 @@ define(["dojo/_base/declare",
          // It's important that we pass on the pubSubScope correctly when instantiating the elements...
          var elementWidget = this.createElementWidget({pubSubScope: this.pubSubScope,
                                                        dataScope: this.dataScope,
-                                                       elementConfig: elementConfig});
+                                                       elementConfig: elementConfig,
+                                                       widgets: this.widgets});
          var wrapper = new MultipleEntryElementWrapper({creator: this, widget: elementWidget});
          aspect.after(wrapper, "blurWrapper", function(deferred) {
             _this.alfLog("log", "Wrapper 'blurWrapper' function processed");
