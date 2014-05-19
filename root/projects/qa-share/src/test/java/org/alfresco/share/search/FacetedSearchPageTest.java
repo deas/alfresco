@@ -191,15 +191,6 @@ public class FacetedSearchPageTest extends AbstractUtils
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' there should be some search results");
 
-        // Toggle the sorting of the results
-        facetedSearchPage.getSort().toggleSortOrder();
-
-        // Reload the page objects
-        facetedSearchPage.render();
-
-        // Check the results again
-        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' and toggling the sort order there should be some search results");
-
         // Sort by the 3rd item in the sort menu (probably Title)
         facetedSearchPage.getSort().sortByIndex(2);
 
@@ -208,6 +199,15 @@ public class FacetedSearchPageTest extends AbstractUtils
 
         // Check the results again
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' and sorting by Title there should be some search results");
+
+        // Toggle the sorting of the results
+        facetedSearchPage.getSort().toggleSortOrder();
+
+        // Reload the page objects
+        facetedSearchPage.render();
+
+        // Check the results again
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' and toggling the sort order there should be some search results");
 
         // Sort by the 20th item in the sort menu (does not exist)
         facetedSearchPage.getSort().sortByIndex(20);

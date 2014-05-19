@@ -39,7 +39,14 @@ public class FacetedSearchSort
         WebElement facetedSearchResultsMenuBar = drone.find(FACETED_SEARCH_RESULTS_MENU_BAR);
         this.resultsElement = facetedSearchResultsMenuBar.findElement(RESULTS_STRING);
         this.results = resultsElement.getText();
-        this.sortOrderButton = facetedSearchResultsMenuBar.findElement(SORT_ORDER_BUTTON);
+
+        // The sort order button may be missing due to configuration so search for many and grab the first if found
+        List<WebElement> sortButtons = facetedSearchResultsMenuBar.findElements(SORT_ORDER_BUTTON);
+        if(sortButtons.size() > 0)
+        {
+            this.sortOrderButton = sortButtons.get(0);
+        }
+
         this.menuButton = facetedSearchResultsMenuBar.findElement(MENU_BUTTON);
     }
 
@@ -90,7 +97,10 @@ public class FacetedSearchSort
      */
     public HtmlPage toggleSortOrder()
     {
-        this.sortOrderButton.click();
+        if(this.sortOrderButton != null)
+        {
+            this.sortOrderButton.click();
+        }
         return FactorySharePage.resolvePage(this.drone);
     }
 
