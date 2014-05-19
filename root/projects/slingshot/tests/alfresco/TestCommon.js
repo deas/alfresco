@@ -95,7 +95,7 @@ define(["intern/dojo/node!fs",
 
          if(testname && browser.environmentType.browserName)
          {
-            console.log(">> Starting " + testname + " on " + browser.environmentType.browserName);
+            console.log(">> Starting '" + testname + "' on " + browser.environmentType.browserName);
          }
 
          // Load the model definition file

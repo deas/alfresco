@@ -42,6 +42,15 @@ define(["dojo/_base/declare",
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
       
       /**
+       * An array of the i18n files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{i18nFile: "./i18n/FacetFilter.properties"}]
+       */
+      i18nRequirements: [{i18nFile: "./i18n/FacetFilter.properties"}],
+
+      /**
        * An array of the CSS files to use with this widget.
        * 
        * @instance cssRequirements {Array}
