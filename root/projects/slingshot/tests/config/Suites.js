@@ -62,6 +62,8 @@ define({
       'tests/alfresco/forms/controls/DojoValidationTextBoxTest',
       'tests/alfresco/forms/controls/FormButtonDialogTest',
 
+      'tests/alfresco/header/WarningTest',
+      
       'tests/alfresco/layout/BasicLayoutTest',
 
       'tests/alfresco/menus/AlfCheckableMenuItemTest',

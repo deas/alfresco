@@ -45,9 +45,14 @@ var main = {
                ],
                widgets: [
                   {
-                     name: "alfresco/html/Label",
+                     name: "alfresco/header/Warning",
                      config: {
-                        label: "You don't have the necessary permissions to view this page"
+                        warnings: [
+                           {
+                              message: msg.get("faceted-search-config.page.no-permissions"),
+                              level: 3
+                           }
+                        ]
                      }
                   }
                ]

@@ -18,24 +18,22 @@
  */
 
 /**
+ * Extends the [standard warning]{@link module:alfresco/header/Warning} to provide some
+ * License specific data handling.
+ *
  * @module alfresco/header/LicenseWarning
- * @extends dijit/_WidgetBase
- * @mixes dijit/_TemplatedMixin
- * @mixes module:alfresco/core/Core
+ * @extends module:alfresco/header/Warning
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "dijit/_WidgetBase", 
-        "dijit/_TemplatedMixin",
-        "dojo/text!./templates/LicenseWarning.html",
-        "alfresco/core/Core",
+        "alfresco/header/Warning", 
         "dojo/dom-style",
         "dojo/_base/array",
         "dojo/_base/lang",
         "dojo/dom-construct"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, domStyle, array, lang, domConstruct) {
+        function(declare, Warning, domStyle, array, lang, domConstruct) {
    
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
+   return declare([Warning], {
       /**
        * An array of the i18n files to use with this widget.
        * 
@@ -44,22 +42,6 @@ define(["dojo/_base/declare",
        * @default [{i18nFile: "./i18n/LicenseWarning.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/LicenseWarning.properties"}],
-      
-      /**
-       * An array of the CSS files to use with this widget.
-       * 
-       * @instance
-       * @type {object[]}
-       * @default [{cssFile:"./css/LicenseWarning.css"}]
-       */
-      cssRequirements: [{cssFile:"./css/LicenseWarning.css"}],
-      
-      /**
-       * The HTML template to use for the widget.
-       * @instance
-       * @type {String}
-       */
-      templateString: template,
       
       /**
        * @instance
@@ -74,6 +56,9 @@ define(["dojo/_base/declare",
       userIsAdmin: false,
       
       /**
+       * Overrides the [inherited function]{@link module:alfresco/header/Warning#postCreate} 
+       * to handle license specific data.
+       *
        * @instance
        */
       postCreate: function alfresco_header_LicenseWarning__postCreate() {
@@ -91,7 +76,8 @@ define(["dojo/_base/declare",
                domStyle.set(this.domNode, "display", "block");
             }
 
-            if ((this.usage.warnings.length != 0 || this.usage.errors.length != 0) && 
+            if (((this.usage.warnings && this.usage.warnings.length != 0) || 
+                 (this.usage.errors && this.usage.errors.length != 0)) && 
                 (this.userIsAdmin == true || this.usage.level >= 2))
             {
                // If warnings or errors are present, display them to the Admin or user
@@ -108,35 +94,6 @@ define(["dojo/_base/declare",
                domStyle.set(this.domNode, "display", "block");
             }
          }
-      },
-      
-      /**
-       * @instance
-       */
-      addMessage: function alfresco_header_LicenseWarning__addMessage(message, index, level) {
-         var outer = domConstruct.create("div", {
-            "class": "info"
-         }, this.warningsNode);
-         domConstruct.create("span", {
-            "class": "level" + level
-         }, outer);
-         domConstruct.create("span", {
-            innerHTML: message
-         }, outer);
-      },
-      
-      /**
-       * @instance
-       */
-      addWarning: function alfresco_header_LicenseWarning__addWarning(warning, index) {
-         this.addMessage(warning, index, 1);
-      },
-      
-      /**
-       * @instance
-       */
-      addError: function alfresco_header_LicenseWarning__addError(error, index) {
-         this.addMessage(error, index, 3);
       }
    });
 });

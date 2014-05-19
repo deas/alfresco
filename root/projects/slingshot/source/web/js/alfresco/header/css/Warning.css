@@ -1,4 +1,4 @@
-.license .warnings
+.alfresco-header-Warning .warnings
 {
    margin: 0 -10px;
    padding: 0.5em 0;
@@ -21,33 +21,33 @@
    border-top: 1px solid lightgrey;
 }
 
-.license .info
+.alfresco-header-Warning .info
 {
    padding-top: 2px;
 }
 
-.license .level0
+.alfresco-header-Warning .level0
 {
    background: url("./images/warning-16.png") no-repeat scroll 0 0 transparent;
    display: inline;
    padding-left: 20px;
 }
 
-.license .level1
+.alfresco-header-Warning .level1
 {
    background: url("./images/warning-16.png") no-repeat scroll 0 0 transparent;
    display: inline;
    padding-left: 20px;
 }
 
-.license .level2
+.alfresco-header-Warning .level2
 {
    background: url("./images/warning-16.png") no-repeat scroll 0 0 transparent;
    display: inline;
    padding-left: 20px;
 }
 
-.license .level3
+.alfresco-header-Warning .level3
 {
    background: url("./images/error-16.png") no-repeat scroll 0 0 transparent;
    display: inline;
