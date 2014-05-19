@@ -160,6 +160,16 @@ define(["intern!object",
             })
             .end()
 
+         // Test that Number of search results is as expected.
+            .elementsByCss(".alfresco-search-AlfSearchResult")
+            .then(function(elements) {
+               TestCommon.log(testname,166,"Check that 3 results are displayed");
+               assert(elements.length === 3, "Test #9 - Number of results expected is 3, actual results displayed is: " + elements.length);
+            })
+            .end()
+
+
+
          // Post the coverage results...
          .then(function() {
             TestCommon.postCoverageResults(browser);
