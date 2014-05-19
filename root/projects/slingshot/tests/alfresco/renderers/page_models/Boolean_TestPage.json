@@ -34,7 +34,21 @@
                   "name": "alfresco/documentlibrary/views/layouts/HeaderCell",
                   "config": {
                      "id": "COLUMN1_HEADER",
-                     "label": "Column 1"
+                     "label": "YESNO (default)"
+                  }
+               },
+               {
+                  "name": "alfresco/documentlibrary/views/layouts/HeaderCell",
+                  "config": {
+                     "id": "COLUMN2_HEADER",
+                     "label": "TRUEFALSE"
+                  }
+               },
+               {
+                  "name": "alfresco/documentlibrary/views/layouts/HeaderCell",
+                  "config": {
+                     "id": "COLUMN3_HEADER",
+                     "label": "IMAGE"
                   }
                }
             ],
@@ -50,8 +64,35 @@
                                  {
                                     "name": "alfresco/renderers/Boolean",
                                     "config": {
+                                       "propertyToRender": "col1"
+                                    }
+                                 }
+                              ]
+                           }
+                        },
+                        {
+                           "name": "alfresco/documentlibrary/views/layouts/Cell",
+                           "config": {
+                              "widgets": [
+                                 {
+                                    "name": "alfresco/renderers/Boolean",
+                                    "config": {
                                        "propertyToRender": "col1",
-                                       "renderAsLink": false
+                                       "displayType": "TRUEFALSE"
+                                    }
+                                 }
+                              ]
+                           }
+                        },
+                        {
+                           "name": "alfresco/documentlibrary/views/layouts/Cell",
+                           "config": {
+                              "widgets": [
+                                 {
+                                    "name": "alfresco/renderers/Boolean",
+                                    "config": {
+                                       "propertyToRender": "col1",
+                                       "displayType": "IMAGE"
                                     }
                                  }
                               ]

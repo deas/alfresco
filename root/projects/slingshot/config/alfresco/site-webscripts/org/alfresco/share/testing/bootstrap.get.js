@@ -17,7 +17,7 @@ model.jsonModel = {
                      label: "Test Model",
                      name: "unitTestModel",
                      requirementConfig: {
-                        initialValue: true
+                        initialValue: false
                      }
                   }
                }

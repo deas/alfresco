@@ -1,36 +1,19 @@
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/share/imports/share-header.lib.js">
+<import resource="classpath:/alfresco/site-webscripts/org/alfresco/share/imports/share-footer.lib.js">
 
 // Get the initial header services and widgets...
-var services = getHeaderServices();
-var widgets = getHeaderModel("Search"); // Needs translating!
+var services = getHeaderServices(),
+    widgets = getHeaderModel(msg.get("faceted-search.page.title"));
 
-// var searchForm = {
-//    name: "alfresco/forms/Form",
-//    config: {
-//       okButtonLabel: "Search...",
-//       okButtonPublishTopic : "ALF_SET_SEARCH_TERM",
-//       okButtonPublishGlobal: true,
-//       showCancelButton: false,
-//       widgets: [
-//          {
-//             name: "alfresco/forms/controls/DojoValidationTextBox",
-//             config: {
-//                label: "Search",
-//                name: "term",
-//                value: "",
-//                visibilityConfig: {
-//                   initialValue: true
-//                }
-//             }
-//          }
-//       ]
-//    }
-// };
+// Scope the model IDs
+var rootWidgetId = "FCTSRCH_";
 
+// Compose the search form model
 var searchForm = {
+   id: rootWidgetId + "SEARCH_FORM",
    name: "alfresco/forms/SingleEntryForm",
    config: {
-      okButtonLabel: "Search",
+      okButtonLabel: msg.get("faceted-search.search-form.ok-button-label"),
       okButtonPublishTopic : "ALF_SET_SEARCH_TERM",
       okButtonPublishGlobal: true,
       okButtonIconClass: "alf-white-search-icon",
@@ -39,7 +22,187 @@ var searchForm = {
    }
 };
 
+// Compose the facet menu column
+var sideBarMenu = {
+   id: rootWidgetId + "FACET_MENU",
+   name: "alfresco/layout/LeftAndRight",
+   config: {
+      widgets: [
+         {
+            name: "alfresco/html/Label",
+            align: "left",
+            config: {
+               label: msg.get("faceted-search.facet-menu.instruction")
+            }
+         }
+      ]
+   }
+};
+
+// Compose the individual facets
+var facets = {
+   id: rootWidgetId + "FACETS",
+   name: "alfresco/layout/VerticalWidgets",
+   config: {
+      widgets: [
+         {
+            id: rootWidgetId + "FACET_FORMATS",
+            name: "alfresco/search/FacetFilters",
+            config: {
+               label: msg.get("faceted-search.facet-menu.facet.formats"),
+               facetQName: "{http://www.alfresco.org/model/content/1.0}content.mimetype",
+               sortBy: "DESCENDING",
+               maxFilters: 6
+            }
+         },
+         {
+            id: rootWidgetId + "FACET_DESCRIPTION",
+            name: "alfresco/search/FacetFilters",
+            config: {
+               label: msg.get("faceted-search.facet-menu.facet.description"),
+               facetQName: "{http://www.alfresco.org/model/content/1.0}description.__",
+               sortBy: "DESCENDING",
+               hitThreshold: 1,
+               minFilterValueLength: 5,
+               maxFilters: 6
+            }
+         },
+         {
+            id: rootWidgetId + "FACET_CREATOR",
+            name: "alfresco/search/FacetFilters",
+            config: {
+               label: msg.get("faceted-search.facet-menu.facet.creator"),
+               facetQName: "{http://www.alfresco.org/model/content/1.0}creator.__",
+               sortBy: "ALPHABETICALLY",
+               maxFilters: 3
+            }
+         },
+         {
+            id: rootWidgetId + "FACET_MODIFIER",
+            name: "alfresco/search/FacetFilters",
+            config: {
+               label: msg.get("faceted-search.facet-menu.facet.modifier"),
+               facetQName: "{http://www.alfresco.org/model/content/1.0}modifier.__",
+               sortBy: "ALPHABETICALLY",
+               maxFilters: 3
+            }
+         }
+      ]
+   }
+};
+
+// Compose the sort menu
+var sortMenu = {
+   id: rootWidgetId + "SORT_MENU",
+   name: "alfresco/menus/AlfMenuBarSelect",
+   config: {
+      selectionTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
+      widgets: [
+         {
+            id: "DOCLIB_SORT_FIELD_SELECT_GROUP",
+            name: "alfresco/menus/AlfMenuGroup",
+            config: {
+               // TODO: Add the remaining sort fields
+               widgets: [
+                  {
+                     name: "alfresco/menus/AlfCheckableMenuItem",
+                     config: {
+                        label: msg.get("faceted-search.sort-menu.type.relevance"),
+                        value: "",
+                        group: "DOCUMENT_LIBRARY_SORT_FIELD",
+                        publishTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
+                        checked: true,
+                        publishPayload: {
+                           label: "Relevance",
+                           direction: "descending"
+                        }
+                     }
+                  },
+                  {
+                     name: "alfresco/menus/AlfCheckableMenuItem",
+                     config: {
+                        label: msg.get("faceted-search.sort-menu.type.name"),
+                        value: "cm:name",
+                        group: "DOCUMENT_LIBRARY_SORT_FIELD",
+                        publishTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
+                        checked: false,
+                        publishPayload: {
+                           label: "Name",
+                           direction: "descending"
+                        }
+                     }
+                  },
+                  {
+                     name: "alfresco/menus/AlfCheckableMenuItem",
+                     config: {
+                        label: msg.get("faceted-search.sort-menu.type.size"),
+                        value: ".size",
+                        group: "DOCUMENT_LIBRARY_SORT_FIELD",
+                        publishTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
+                        checked: false,
+                        publishPayload: {
+                           label: "Size",
+                           direction: "descending"
+                        }
+                     }
+                  }
+               ]
+            }
+         }
+      ]
+   }
+};
+
+// Compose result menu bar
+var searchResultsMenuBar = {
+   id: rootWidgetId + "RESULTS_MENU_BAR",
+   name: "alfresco/layout/LeftAndRight",
+   config: {
+      widgets: [
+         {
+            name: "alfresco/html/Label",
+            align: "left",
+            config: {
+               label: msg.get("faceted-search.results-menu.no-results"),
+               subscriptionTopic: "ALF_SEARCH_RESULTS_COUNT"
+            }
+         },
+         {
+            name: "alfresco/menus/AlfMenuBar",
+            align: "right",
+            config: {
+               widgets: [
+                  {
+                     name: "alfresco/menus/AlfMenuBarToggle",
+                     config: {
+                        checked: true,
+                        onConfig: {
+                           iconClass: "alf-sort-ascending-icon",
+                           publishTopic: "ALF_DOCLIST_SORT",
+                           publishPayload: {
+                              direction: "ascending"
+                           }
+                        },
+                        offConfig: {
+                           iconClass: "alf-sort-descending-icon",
+                           publishTopic: "ALF_DOCLIST_SORT",
+                           publishPayload: {
+                              direction: "descending"
+                           }
+                        }
+                     }
+                  },
+                  sortMenu
+               ]
+            }
+         }
+      ]
+   }
+};
+
+// Build the searchDocLib model
 var searchDocLib = {
+   id: rootWidgetId + "SEARCH_RESULTS_LIST",
    name: "alfresco/documentlibrary/AlfSearchList",
    config: {
       useHash: true,
@@ -121,9 +284,9 @@ var searchDocLib = {
                                                 name: "alfresco/renderers/Property",
                                                 config: {
                                                    propertyToRender: "description",
-                                                   renderedValuePrefix: "Description: ",
+                                                   renderedValuePrefix: msg.get("faceted-search.doc-lib.value-prefix.description") + " ",
                                                    warnIfNotAvailable: true,
-                                                   warnIfNoteAvailableMessage: "No Description"
+                                                   warnIfNoteAvailableMessage: msg.get("faceted-search.doc-lib.unavailable.description")
                                                 }
                                              }
                                           ]
@@ -137,7 +300,7 @@ var searchDocLib = {
                                                 name: "alfresco/renderers/Property",
                                                 config: {
                                                    propertyToRender: "site.title",
-                                                   renderedValuePrefix: "Site: "
+                                                   renderedValuePrefix: msg.get("faceted-search.doc-lib.value-prefix.site") + " "
                                                 }
                                              }
                                           ]
@@ -156,7 +319,6 @@ var searchDocLib = {
                                  ]
                               }
                            }
-                           
                         ]
                      }
                   }
@@ -166,203 +328,6 @@ var searchDocLib = {
       ]
    }
 };
-
-var sideBarMenu = {
-   name: "alfresco/layout/LeftAndRight",
-   config: {
-      widgets: [
-         {
-            name: "alfresco/html/Label",
-            align: "left",
-            config: {
-               label: "Filter by:"
-            }
-         }
-         // ,
-         // {
-         //    name: "alfresco/menus/AlfMenuBar",
-         //    align: "right",
-         //    config: {
-         //       widgets: [
-         //          {
-         //             name: "alfresco/menus/AlfMenuBarToggle",
-         //             config: {
-         //                checked: true,
-         //                onConfig: {
-         //                   label: "Collapse All",
-         //                   publishTopic: "",
-         //                   publishPayload: {
-         //                      direction: ""
-         //                   }
-         //                },
-         //                offConfig: {
-         //                   label: "Expand All",
-         //                   publishTopic: "",
-         //                   publishPayload: {
-         //                      direction: ""
-         //                   }
-         //                }
-         //             }
-         //          }
-         //       ]
-         //    }
-         // }
-      ]
-   }
-};
-
-var sortMenu = {
-   name: "alfresco/menus/AlfMenuBarSelect",
-   config: {
-      selectionTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
-      widgets: [
-         {
-            id: "DOCLIB_SORT_FIELD_SELECT_GROUP",
-            name: "alfresco/menus/AlfMenuGroup",
-            config: {
-               // TODO: Add the remaining sort fields
-               widgets: [
-                  {
-                     name: "alfresco/menus/AlfCheckableMenuItem",
-                     config: {
-                        label: "Relevance",
-                        value: "",
-                        group: "DOCUMENT_LIBRARY_SORT_FIELD",
-                        publishTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
-                        checked: true,
-                        publishPayload: {
-                           label: "Relevance",
-                           direction: "descending"
-                        }
-                     }
-                  },
-                  {
-                     name: "alfresco/menus/AlfCheckableMenuItem",
-                     config: {
-                        label: "Name",
-                        value: "cm:name",
-                        group: "DOCUMENT_LIBRARY_SORT_FIELD",
-                        publishTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
-                        checked: false,
-                        publishPayload: {
-                           label: "Name",
-                           direction: "descending"
-                        }
-                     }
-                  },
-                  {
-                     name: "alfresco/menus/AlfCheckableMenuItem",
-                     config: {
-                        label: "Size",
-                        value: ".size",
-                        group: "DOCUMENT_LIBRARY_SORT_FIELD",
-                        publishTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
-                        checked: false,
-                        publishPayload: {
-                           label: "Size",
-                           direction: "descending"
-                        }
-                     }
-                  }
-               ]
-            }
-         }
-      ]
-   }
-};
-
-var searchResultsMenuBar = {
-   name: "alfresco/layout/LeftAndRight",
-   config: {
-      widgets: [
-         {
-            name: "alfresco/html/Label",
-            align: "left",
-            config: {
-               label: "No results",
-               subscriptionTopic: "ALF_SEARCH_RESULTS_COUNT"
-            }
-         },
-         {
-            name: "alfresco/menus/AlfMenuBar",
-            align: "right",
-            config: {
-               widgets: [
-                  {
-                     name: "alfresco/menus/AlfMenuBarToggle",
-                     config: {
-                        checked: true,
-                        onConfig: {
-                           iconClass: "alf-sort-ascending-icon",
-                           publishTopic: "ALF_DOCLIST_SORT",
-                           publishPayload: {
-                              direction: "ascending"
-                           }
-                        },
-                        offConfig: {
-                           iconClass: "alf-sort-descending-icon",
-                           publishTopic: "ALF_DOCLIST_SORT",
-                           publishPayload: {
-                              direction: "descending"
-                           }
-                        }
-                     }
-                  },
-                  sortMenu
-               ]
-            }
-         }
-      ]
-   }
-};
-
-var facets = {
-   name: "alfresco/layout/VerticalWidgets",
-   config: {
-      widgets: [
-         {
-            name: "alfresco/search/FacetFilters",
-            config: {
-               label: "Formats",
-               facetQName: "{http://www.alfresco.org/model/content/1.0}content.mimetype",
-               sortBy: "DESCENDING",
-               maxFilters: 6
-            }
-         },
-         {
-            name: "alfresco/search/FacetFilters",
-            config: {
-               label: "Description",
-               facetQName: "{http://www.alfresco.org/model/content/1.0}description.__",
-               sortBy: "DESCENDING",
-               hitThreshold: 1,
-               minFilterValueLength: 5,
-               maxFilters: 6
-            }
-         },
-         {
-            name: "alfresco/search/FacetFilters",
-            config: {
-               label: "Creator",
-               facetQName: "{http://www.alfresco.org/model/content/1.0}creator.__",
-               sortBy: "ALPHABETICALLY",
-               maxFilters: 3
-            }
-         },
-         {
-            name: "alfresco/search/FacetFilters",
-            config: {
-               label: "Modifier",
-               facetQName: "{http://www.alfresco.org/model/content/1.0}modifier.__",
-               sortBy: "ALPHABETICALLY",
-               maxFilters: 3
-            }
-         }
-      ]
-   }
-};
-
-
 
 var main = {
    name: "alfresco/layout/VerticalWidgets",
@@ -424,7 +389,7 @@ var main = {
    }
 };
 
-// Add in the services needed for search...
+// Append services with those required for search
 services.push("alfresco/services/ContentService",
               "alfresco/services/DocumentService",
               "alfresco/dialogs/AlfDialogService",
@@ -435,42 +400,5 @@ services.push("alfresco/services/ContentService",
 // Add in the search form and search doc lib...
 widgets.push(main);
 
-
-var licenseHolder = context.properties["editionInfo"].holder;
-var footerConfig = config.scoped["Edition"]["footer"];
-var footerCopyRight = footerConfig.getChildValue("label");
-var footerCssClass = footerConfig.getChildValue("css-class");
-var footerLogo = footerConfig.getChildValue("logo");
-var footerLogoAltText = footerConfig.getChildValue("alt-text");
-
-model.jsonModel = {
-   services: services,
-   widgets: [
-      {
-         name: "alfresco/footer/AlfStickyFooter",
-         config: {
-            widgets: [
-               {
-                  id: "SHARE_VERTICAL_LAYOUT",
-                  name: "alfresco/layout/VerticalWidgets",
-                  config: 
-                  {
-                     widgets: widgets
-                  }
-               }
-            ],
-            widgetsForFooter: [
-               {
-                  name: "alfresco/footer/AlfShareFooter",
-                  config: {
-                     licenseLabel: licenseHolder,
-                     copyrightLabel: footerCopyRight,
-                     altText: footerLogoAltText,
-                     logoImageSrc: footerLogo
-                  }
-               }
-            ]
-         }
-      }
-   ]
-};
+// Push services and widgets into the getFooterModel to return with a sticky footer wrapper
+model.jsonModel = getFooterModel(services, widgets);

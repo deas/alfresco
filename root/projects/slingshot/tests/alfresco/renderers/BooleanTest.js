@@ -40,101 +40,181 @@ define(["intern!object",
 
          .end()
 
-         // Check there are 10 rows
+         // Check there are 10 rows x 3 columns = 30 cells
          .elementsByCssSelector("span.alfresco-renderers-Property")
          .then(function (booleans) {
-            TestCommon.log(testname,46,"Check there are 10 rows as described in the model");
-            expect(booleans).to.have.length(10, "There should be 10 rows rendered");
+            TestCommon.log(testname,46,"Check there are 30 cells as described in the model");
+            expect(booleans).to.have.length(30, "There should be 30 rows rendered");
          })
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(1)")
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(1) td:first-of-type")
          .text()
          .then(function (result1) {
             TestCommon.log(testname,55,"Check the value of a boolean");
-            expect(result1).to.equal("Yes", "Row one should say 'Yes'");
+            expect(result1).to.equal("Yes", "Row one, column one should say 'Yes'");
          })
          .end()
 
-         // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(2)")
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(1) td:nth-of-type(2)")
          .text()
          .then(function (result2) {
-            TestCommon.log(testname,64,"Check the value of a boolean");
-            expect(result2).to.equal("Yes", "Row two should say 'Yes'");
+            TestCommon.log(testname,63,"Check the value of a boolean");
+            expect(result2).to.equal("True", "Row one, column two should say 'True'");
          })
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(3)")
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(2) td:first-of-type")
          .text()
          .then(function (result3) {
-            TestCommon.log(testname,73,"Check the value of a boolean");
-            expect(result3).to.equal("Yes", "Row three should say 'Yes'");
+            TestCommon.log(testname,72,"Check the value of a boolean");
+            expect(result3).to.equal("Yes", "Row two, column one should say 'Yes'");
          })
          .end()
-
-         // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(4)")
+         
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(2) td:nth-of-type(2)")
          .text()
          .then(function (result4) {
-            TestCommon.log(testname,82,"Check the value of a boolean");
-            expect(result4).to.equal("Yes", "Row four should say 'Yes'");
+            TestCommon.log(testname,80,"Check the value of a boolean");
+            expect(result4).to.equal("True", "Row two, column two should say 'True'");
          })
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(5)")
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(3) td:first-of-type")
          .text()
          .then(function (result5) {
-            TestCommon.log(testname,91,"Check the value of a boolean");
-            expect(result5).to.equal("No", "Row five should say 'No'");
+            TestCommon.log(testname,89,"Check the value of a boolean");
+            expect(result5).to.equal("Yes", "Row three, column one should say 'Yes'");
          })
          .end()
-
-         // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(6)")
+         
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(3) td:nth-of-type(2)")
          .text()
          .then(function (result6) {
-            TestCommon.log(testname,100,"Check the value of a boolean");
-            expect(result6).to.equal("No", "Row six should say 'No'");
+            TestCommon.log(testname,97,"Check the value of a boolean");
+            expect(result6).to.equal("True", "Row three, column two should say 'True'");
          })
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(7)")
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(4) td:first-of-type")
          .text()
          .then(function (result7) {
-            TestCommon.log(testname,109,"Check the value of a boolean");
-            expect(result7).to.equal("No", "Row seven should say 'No'");
+            TestCommon.log(testname,106,"Check the value of a boolean");
+            expect(result7).to.equal("Yes", "Row four, column one should say 'Yes'");
          })
          .end()
-
-         // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(8)")
+         
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(4) td:nth-of-type(2)")
          .text()
          .then(function (result8) {
-            TestCommon.log(testname,118,"Check the value of a boolean");
-            expect(result8).to.equal("No", "Row eight should say 'No'");
+            TestCommon.log(testname,114,"Check the value of a boolean");
+            expect(result8).to.equal("True", "Row four, column two should say 'True'");
          })
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(9)")
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(5) td:first-of-type")
          .text()
          .then(function (result9) {
-            TestCommon.log(testname,127,"Check the value of a boolean");
-            expect(result9).to.equal("Unknown", "Row nine should say 'Unknown'");
+            TestCommon.log(testname,123,"Check the value of a boolean");
+            expect(result9).to.equal("No", "Row five, column one should say 'No'");
+         })
+         .end()
+         
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(5) td:nth-of-type(2)")
+         .text()
+         .then(function (result10) {
+            TestCommon.log(testname,131,"Check the value of a boolean");
+            expect(result10).to.equal("False", "Row five, column two should say 'False'");
          })
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(10)")
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(6) td:first-of-type")
          .text()
-         .then(function (result10) {
-            TestCommon.log(testname,136,"Check the value of a boolean");
-            expect(result10).to.equal("Unknown", "Row ten should say 'Unknown'");
+         .then(function (result11) {
+            TestCommon.log(testname,140,"Check the value of a boolean");
+            expect(result11).to.equal("No", "Row six, column one should say 'No'");
+         })
+         .end()
+         
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(6) td:nth-of-type(2)")
+         .text()
+         .then(function (result12) {
+            TestCommon.log(testname,148,"Check the value of a boolean");
+            expect(result12).to.equal("False", "Row six, column two should say 'False'");
+         })
+         .end()
+
+         // Check each row
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(7) td:first-of-type")
+         .text()
+         .then(function (result13) {
+            TestCommon.log(testname,157,"Check the value of a boolean");
+            expect(result13).to.equal("No", "Row seven, column one should say 'No'");
+         })
+         .end()
+         
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(7) td:nth-of-type(2)")
+         .text()
+         .then(function (result14) {
+            TestCommon.log(testname,165,"Check the value of a boolean");
+            expect(result14).to.equal("False", "Row seven, column two should say 'False'");
+         })
+         .end()
+
+         // Check each row
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(8) td:first-of-type")
+         .text()
+         .then(function (result15) {
+            TestCommon.log(testname,174,"Check the value of a boolean");
+            expect(result15).to.equal("No", "Row eight, column one should say 'No'");
+         })
+         .end()
+         
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(8) td:nth-of-type(2)")
+         .text()
+         .then(function (result16) {
+            TestCommon.log(testname,182,"Check the value of a boolean");
+            expect(result16).to.equal("False", "Row eight, column two should say 'False'");
+         })
+         .end()
+
+         // Check each row
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(9) td:first-of-type")
+         .text()
+         .then(function (result17) {
+            TestCommon.log(testname,191,"Check the value of a boolean");
+            expect(result17).to.equal("Unknown", "Row nine, column one should say 'Unknown'");
+         })
+         .end()
+         
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(9) td:nth-of-type(2)")
+         .text()
+         .then(function (result18) {
+            TestCommon.log(testname,199,"Check the value of a boolean");
+            expect(result18).to.equal("Unknown", "Row nine, column two should say 'Unknown'");
+         })
+         .end()
+
+         // Check each row
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(10) td:first-of-type")
+         .text()
+         .then(function (result19) {
+            TestCommon.log(testname,208,"Check the value of a boolean");
+            expect(result19).to.equal("Unknown", "Row ten, column one should say 'Unknown'");
+         })
+         .end()
+         
+         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(10) td:nth-of-type(2)")
+         .text()
+         .then(function (result20) {
+            TestCommon.log(testname,216,"Check the value of a boolean");
+            expect(result20).to.equal("Unknown", "Row ten, column two should say 'Unknown'");
          })
          .end()
 

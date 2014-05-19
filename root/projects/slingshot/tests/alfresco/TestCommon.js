@@ -46,7 +46,7 @@ define(["intern/dojo/node!fs",
        * @default Config.bootstrapBaseUrl + this.bootstrapPath
        */
       bootstrapUrl: function bootstrapUrl(){
-    	  return Config.bootstrapBaseUrl + this.bootstrapPath;
+    	   return Config.bootstrapBaseUrl + this.bootstrapPath;
       },
 
       /**
@@ -87,12 +87,12 @@ define(["intern/dojo/node!fs",
        */
       bootstrapTest: function(browser, testPageDefinitionFile) {
 
-         // Set an implicit timeout of 10 seconds
+         // Set browser timeouts - refer to Config files
          // This allows us to use "elementBy..." calls rather than a "waitForElementBy..." which is more efficient...
-         browser.setImplicitWaitTimeout(1000);
-         browser.setPageLoadTimeout(10000);
-         browser.setAsyncScriptTimeout(10000);
-
+         browser.setImplicitWaitTimeout(Config.timeout.implicitWait);
+         browser.setPageLoadTimeout(Config.timeout.pageLoad);
+         browser.setAsyncScriptTimeout(Config.timeout.asyncScript);
+         
          // Load the model definition file
          // It's necessary to remove any carriage returns and new line characters from the page model otherwise the eval statement will cause an error...
          var pageModel;
@@ -112,10 +112,10 @@ define(["intern/dojo/node!fs",
 
          return browser.get(this.bootstrapUrl())
 
-         .elementByCss('.alfresco-core-Page.allWidgetsProcessed')
+         .waitForElementByCss('.alfresco-core-Page.allWidgetsProcessed')
          .safeEval("dijit.registry.byId('UNIT_TEST_MODEL_FIELD').setValue('" + pageModel + "');'set';")
          .end()
-            
+
          // It's necessary to type an additional space into the text area to ensure that the 
          // text area field validates and populates the form model with the data to be published...
          .elementByCss('#UNIT_TEST_MODEL_FIELD > DIV.control > TEXTAREA')
@@ -129,7 +129,7 @@ define(["intern/dojo/node!fs",
          .click()
          .sleep(500) // This sleep appears to be needed to prevent errors, but ideally it woudn't be here :(
          .end()
-         .elementByCss('.alfresco-core-Page.allWidgetsProcessed', 5000)
+         .waitForElementByCss('.alfresco-core-Page.allWidgetsProcessed')
       },
 
       /**

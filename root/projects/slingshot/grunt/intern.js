@@ -30,22 +30,25 @@ module.exports = function (grunt, alf) {
    grunt.loadNpmTasks('intern');
 
    // Register a test task that uses Intern
-   grunt.registerTask('test', [ 
+   grunt.registerTask('test', [
       'csslint',
       'jshint', // TODO: Make this friendly.
       'intern:dev' // Run all the intern tests
    ]);
 
    // Register a test task that uses Intern_local
-   grunt.registerTask('test_local', [ 
-      // 'csslint',
-      // 'jshint', // TODO: Make this friendly.
-      'intern:local' // Run all the intern tests on sauce labs
+   grunt.registerTask('test_local', [
+      'intern:local' // Run all the intern tests a local instance of selenium
    ]);
 
    // Register a test task that uses Intern_sl
-   grunt.registerTask('test_sl', [ 
+   grunt.registerTask('test_sl', [
       'intern:sl' // Run all the intern tests on sauce labs
+   ]);
+
+   // Register a test task that uses Intern_grid
+   grunt.registerTask('test_grid', [
+      'intern:grid' // Run all the intern tests on grid
    ]);
 
    // Return the config. This gets pushed into the grunt.init.config method in Gruntfile.
@@ -66,11 +69,17 @@ module.exports = function (grunt, alf) {
             }
          },
          sl: {
-             options: {
-                runType: 'runner',
-                config: 'tests/intern_sl'
-             }
-          }
+            options: {
+               runType: 'runner',
+               config: 'tests/intern_sl'
+            }
+         },
+         grid: {
+            options: {
+               runType: 'runner',
+               config: 'tests/intern_grid'
+            }
+         }
       }
    }
 }

@@ -41,6 +41,18 @@ define({
     * @type {boolean}
     * @default false
     */
-   doCoverageReport: false
+   doCoverageReport: false,
+
+   /**
+    * A selection of timeouts
+    *
+    * @instance
+    * @type {object}
+    */
+   timeout: {
+      implicitWait: 60000,
+      pageLoad: 120000,
+      asyncScript: 60000
+   }
 
 });

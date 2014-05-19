@@ -38,9 +38,7 @@ define({
     * @instance
     * @type [string]
     */
-   baseFunctionalSuites: ['tests/alfresco/CodeCoverageBalancer',
-
-                          'tests/alfresco/accessibility/AccessibilityMenuTest',
+   baseFunctionalSuites: ['tests/alfresco/accessibility/AccessibilityMenuTest',
 
                           'tests/alfresco/core/RenderFilterTest',
 
@@ -122,6 +120,24 @@ define({
     */
    slFunctionalSuites: function slFunctionalSuites(){
       return this.baseFunctionalSuites.concat(this.slOnlyFunctionalSuites);
+   },
+
+   /**
+    * This is the array of functional test suites that should only be applied to selenium grid tests
+    *
+    * @instance
+    * @type [string]
+    */
+   gridOnlyFunctionalSuites: [],
+
+   /**
+    * This is the full array of functional test suites for selenium grid tests
+    *
+    * @instance
+    * @type [string]
+    */
+   gridFunctionalSuites: function gridFunctionalSuites(){
+      return this.baseFunctionalSuites.concat(this.gridOnlyFunctionalSuites);
    }
 
 });
