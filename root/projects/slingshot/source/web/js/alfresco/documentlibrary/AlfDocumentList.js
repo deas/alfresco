@@ -210,6 +210,7 @@ define(["dojo/_base/declare",
          this.noDataMessage = this.message("doclist.no.data.message");
          this.fetchingDataMessage = this.message("doclist.loading.data.message");
          this.renderingViewMessage = this.message("doclist.rendering.data.message");
+         this.fetchingMoreDataMessage = this.message("doclist.loading.data.message");
       },
       
       /**
@@ -619,7 +620,10 @@ define(["dojo/_base/declare",
             this.hideChildren(this.domNode);
             domClass.remove(this.dataLoadingNode, "share-hidden");
          }
-         // TODO: Make this work with infinite scroll.
+         else
+         {
+            domClass.remove(this.dataLoadingMoreNode, "share-hidden");
+         }
       },
 
       /**
