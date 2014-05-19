@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -157,6 +157,8 @@ public class SearchParameters
     private String defaultFieldName = "TEXT";
     
     private ArrayList<FieldFacet> fieldFacets = new ArrayList<FieldFacet>();
+    
+    private List<String> facetQueries = new ArrayList<String>();
 
     private Boolean useInMemorySort;
     
@@ -212,6 +214,7 @@ public class SearchParameters
         sp.excludeTenantFilter = this.excludeTenantFilter;
         sp.queryConsistency = this.queryConsistency;
         sp.sinceTxId = this.sinceTxId;
+        sp.facetQueries.addAll(this.facetQueries);
         return sp;
     }
     
@@ -857,7 +860,17 @@ public class SearchParameters
     public void addFieldFacet(FieldFacet fieldFacet)
     {
         fieldFacets.add(fieldFacet);
-    }    
+    }
+    
+    public List<String> getFacetQueries()
+    {
+        return facetQueries;
+    }
+    
+    public void addFacetQuery(String facetQuery)
+    {
+        facetQueries.add(facetQuery);
+    } 
     
     public Locale getSortLocale()
     {
@@ -958,6 +971,7 @@ public class SearchParameters
         result = prime * result + ((textAttributes == null) ? 0 : textAttributes.hashCode());
         result = prime * result + ((useInMemorySort == null) ? 0 : useInMemorySort.hashCode());
         result = prime * result + ((sinceTxId == null) ? 0 : sinceTxId.hashCode());
+        result = prime * result + ((facetQueries.isEmpty()) ? 0 : facetQueries.hashCode());
         return result;
     }
 
@@ -1105,6 +1119,8 @@ public class SearchParameters
         }
         else if (!sinceTxId.equals(other.sinceTxId))
             return false;
+        if (!facetQueries.equals(other.facetQueries))
+            return false;
         return true;
     }
 
@@ -1116,15 +1132,31 @@ public class SearchParameters
     @Override
     public String toString()
     {
-        return "SearchParameters [language="
-                + language + ", query=" + query + ", stores=" + stores + ", queryParameterDefinitions=" + queryParameterDefinitions + ", excludeDataInTheCurrentTransaction="
-                + excludeDataInTheCurrentTransaction + ", sortDefinitions=" + sortDefinitions + ", locales=" + locales + ", mlAnalaysisMode=" + mlAnalaysisMode + ", limitBy="
-                + limitBy + ", permissionEvaluation=" + permissionEvaluation + ", limit=" + limit + ", allAttributes=" + allAttributes + ", textAttributes=" + textAttributes
-                + ", maxItems=" + maxItems + ", skipCount=" + skipCount + ", defaultFTSOperator=" + defaultFTSOperator + ", defaultFTSFieldOperator=" + defaultFTSFieldOperator
-                + ", queryTemplates=" + queryTemplates + ", namespace=" + namespace + ", maxPermissionChecks=" + maxPermissionChecks + ", maxPermissionCheckTimeMillis="
-                + maxPermissionCheckTimeMillis + ", defaultFieldName=" + defaultFieldName + ", fieldFacets=" + fieldFacets + ", useInMemorySort=" + useInMemorySort
-                + ", maxRawResultSetSizeForInMemorySort=" + maxRawResultSetSizeForInMemorySort + ", excludeTenantFilter=" + excludeTenantFilter + ", queryConsistency="
-                + queryConsistency + ", sinceTxId=" + sinceTxId + "]";
+        StringBuilder builder = new StringBuilder(1000);
+        builder.append("SearchParameters [language=").append(this.language).append(", query=").append(this.query)
+                    .append(", stores=").append(this.stores).append(", queryParameterDefinitions=")
+                    .append(this.queryParameterDefinitions).append(", excludeDataInTheCurrentTransaction=")
+                    .append(this.excludeDataInTheCurrentTransaction).append(", sortDefinitions=")
+                    .append(this.sortDefinitions).append(", locales=").append(this.locales)
+                    .append(", mlAnalaysisMode=").append(this.mlAnalaysisMode).append(", limitBy=")
+                    .append(this.limitBy).append(", permissionEvaluation=").append(this.permissionEvaluation)
+                    .append(", limit=").append(this.limit).append(", allAttributes=").append(this.allAttributes)
+                    .append(", textAttributes=").append(this.textAttributes).append(", maxItems=")
+                    .append(this.maxItems).append(", skipCount=").append(this.skipCount)
+                    .append(", defaultFTSOperator=").append(this.defaultFTSOperator)
+                    .append(", defaultFTSFieldOperator=").append(this.defaultFTSFieldOperator)
+                    .append(", queryTemplates=").append(this.queryTemplates).append(", namespace=")
+                    .append(this.namespace).append(", maxPermissionChecks=").append(this.maxPermissionChecks)
+                    .append(", maxPermissionCheckTimeMillis=").append(this.maxPermissionCheckTimeMillis)
+                    .append(", defaultFieldName=").append(this.defaultFieldName).append(", fieldFacets=")
+                    .append(this.fieldFacets).append(", facetQueries=").append(this.facetQueries)
+                    .append(", useInMemorySort=").append(this.useInMemorySort)
+                    .append(", maxRawResultSetSizeForInMemorySort=").append(this.maxRawResultSetSizeForInMemorySort)
+                    .append(", extraParameters=").append(this.extraParameters).append(", excludeTenantFilter=")
+                    .append(this.excludeTenantFilter).append(", isBulkFetchEnabled=").append(this.isBulkFetchEnabled)
+                    .append(", queryConsistency=").append(this.queryConsistency).append(", sinceTxId=")
+                    .append(this.sinceTxId).append("]");
+        return builder.toString();
     }
 
 

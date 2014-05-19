@@ -19,6 +19,7 @@
 package org.alfresco.service.cmr.search;
 
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
@@ -173,4 +174,11 @@ public interface ResultSetSPI<ROW extends ResultSetRow, MD extends ResultSetMeta
      * @return
      */
     public List<Pair<String, Integer>> getFieldFacet(String field);
+
+    /**
+     * Gets the facet query results
+     * 
+     * @return Map of {@literal <requested facet query, count>}
+     */
+    public Map<String, Integer> getFacetQueries();
 }
