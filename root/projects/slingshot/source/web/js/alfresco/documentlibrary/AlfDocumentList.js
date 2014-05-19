@@ -328,6 +328,9 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       onPageWidgetsReady: function alfresco_documentlibrary_AlfDocumentList__onPageWidgetsReady(payload) {
+         // Remove the subscription to ensure it's only processed once...
+         this.alfUnsubscribe(this.pageWidgetsReadySubcription);
+
          this._readyToLoad = true;
          if (this.useHash)
          {
@@ -379,7 +382,7 @@ define(["dojo/_base/declare",
          {
             // Create a subscription to listen out for all widgets on the page being reported
             // as ready (then we can start loading data)...
-            this.alfSubscribe("ALF_WIDGETS_READY", lang.hitch(this, "onPageWidgetsReady"), true);
+            this.pageWidgetsReadySubcription = this.alfSubscribe("ALF_WIDGETS_READY", lang.hitch(this, "onPageWidgetsReady"), true);
          }
          else
          {
