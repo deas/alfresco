@@ -19,7 +19,7 @@ var rootWidgetId = "FCTSRCH_";
 // {
 //    var titleMenu = widgetUtils.findObject(widgets, "id", "HEADER_TITLE_MENU");
 //    var searchConfigMenuItem = {
-//       id: rootWidgetId + "CONFIG_PAGE_LINK",
+//       id: "FCTSRCH_CONFIG_PAGE_LINK",
 //       name: "alfresco/menus/AlfMenuBarItem",
 //       config: {
 //          label: "",
@@ -34,22 +34,22 @@ var rootWidgetId = "FCTSRCH_";
 
 // Accessibility menu
 var accessMenu = {
-   id: rootWidgetId + "ACCESSIBILITY_MENU",
+   id: "FCTSRCH_ACCESSIBILITY_MENU",
    name: "alfresco/accessibility/AccessibilityMenu",
    config: {
       titleMsg: msg.get("faceted-search.access-key.title"),
       menu: [
-         {url: "#" + rootWidgetId + "SEARCH_FORM", key: "f", msg: msg.get("faceted-search.access-key.search-form")},
-         {url: "#" + rootWidgetId + "SEARCH_RESULTS_LIST", key: "r", msg: msg.get("faceted-search.access-key.search-results-list")},
-         {url: "#" + rootWidgetId + "FACET_MENU", key: "q", msg: msg.get("faceted-search.access-key.facet-menu")},
-         {url: "#" + rootWidgetId + "SORT_MENU", key: "m", msg: msg.get("faceted-search.access-key.sort-menu")}
+         {url: "#" + "FCTSRCH_SEARCH_FORM", key: "f", msg: msg.get("faceted-search.access-key.search-form")},
+         {url: "#" + "FCTSRCH_SEARCH_RESULTS_LIST", key: "r", msg: msg.get("faceted-search.access-key.search-results-list")},
+         {url: "#" + "FCTSRCH_FACET_MENU", key: "q", msg: msg.get("faceted-search.access-key.facet-menu")},
+         {url: "#" + "FCTSRCH_SORT_MENU", key: "m", msg: msg.get("faceted-search.access-key.sort-menu")}
       ]
    }
 };
 
 // Compose the search form model
 var searchForm = {
-   id: rootWidgetId + "SEARCH_FORM",
+   id: "FCTSRCH_SEARCH_FORM",
    name: "alfresco/forms/SingleTextFieldForm",
    config: {
       useHash: true,
@@ -96,7 +96,7 @@ var hideOnNotSortableConfig = {
 
 // Compose the facet menu column
 var sideBarMenu = {
-   id: rootWidgetId + "FACET_MENU",
+   id: "FCTSRCH_FACET_MENU",
    name: "alfresco/layout/LeftAndRight",
    config: {
       visibilityConfig: hideOnZeroResultsConfig,
@@ -115,7 +115,7 @@ var sideBarMenu = {
 // Compose the individual facets
 var facets = [
    {
-      id: rootWidgetId + "FACET_FORMATS",
+      id: "FCTSRCH_FACET_FORMATS",
       name: "alfresco/search/FacetFilters",
       config: {
          label: msg.get("faceted-search.facet-menu.facet.formats"),
@@ -126,7 +126,7 @@ var facets = [
       }
    },
    {
-      id: rootWidgetId + "FACET_DESCRIPTION",
+      id: "FCTSRCH_FACET_DESCRIPTION",
       name: "alfresco/search/FacetFilters",
       config: {
          label: msg.get("faceted-search.facet-menu.facet.description"),
@@ -139,7 +139,7 @@ var facets = [
       }
    },
    {
-      id: rootWidgetId + "FACET_CREATOR",
+      id: "FCTSRCH_FACET_CREATOR",
       name: "alfresco/search/FacetFilters",
       config: {
          label: msg.get("faceted-search.facet-menu.facet.creator"),
@@ -150,7 +150,7 @@ var facets = [
       }
    },
    {
-      id: rootWidgetId + "FACET_MODIFIER",
+      id: "FCTSRCH_FACET_MODIFIER",
       name: "alfresco/search/FacetFilters",
       config: {
          label: msg.get("faceted-search.facet-menu.facet.modifier"),
@@ -161,7 +161,7 @@ var facets = [
       }
    },
    {
-      id: rootWidgetId + "FACET_CREATED",
+      id: "FCTSRCH_FACET_CREATED",
       name: "alfresco/search/FacetFilters",
       config: {
          label: msg.get("faceted-search.facet-menu.facet.created"),
@@ -173,7 +173,7 @@ var facets = [
       }
    },
    {
-      id: rootWidgetId + "FACET_MODIFIED",
+      id: "FCTSRCH_FACET_MODIFIED",
       name: "alfresco/search/FacetFilters",
       config: {
          label: msg.get("faceted-search.facet-menu.facet.modified"),
@@ -185,7 +185,7 @@ var facets = [
       }
    },
    {
-      id: rootWidgetId + "FACET_SIZE",
+      id: "FCTSRCH_FACET_SIZE",
       name: "alfresco/search/FacetFilters",
       config: {
          label: msg.get("faceted-search.facet-menu.facet.size"),
@@ -252,7 +252,7 @@ function getSortFieldsFromConfig()
 
 // Compose the sort menu
 var sortMenu = {
-   id: rootWidgetId + "SORT_MENU",
+   id: "FCTSRCH_SORT_MENU",
    name: "alfresco/menus/AlfMenuBarSelect",
    config: {
       title: msg.get("faceted-search.sort-field.title"),
@@ -272,7 +272,7 @@ var sortMenu = {
 
 // Compose result menu bar
 var searchResultsMenuBar = {
-   id: rootWidgetId + "RESULTS_MENU_BAR",
+   id: "FCTSRCH_RESULTS_MENU_BAR",
    name: "alfresco/layout/LeftAndRight",
    config: {
       widgets: [
@@ -299,7 +299,7 @@ var searchResultsMenuBar = {
                visibilityConfig: hideOnZeroResultsConfig,
                widgets: [
                   {
-                     id: rootWidgetId + "SORT_ORDER_TOGGLE",
+                     id: "FCTSRCH_SORT_ORDER_TOGGLE",
                      name: "alfresco/menus/AlfMenuBarToggle",
                      config: {
                         visibilityConfig: hideOnNotSortableConfig,
@@ -334,7 +334,7 @@ var searchResultsMenuBar = {
 
 // Build the searchDocLib model
 var searchDocLib = {
-   id: rootWidgetId + "SEARCH_RESULTS_LIST",
+   id: "FCTSRCH_SEARCH_RESULTS_LIST",
    name: "alfresco/documentlibrary/AlfSearchList",
    config: {
       waitForPageWidgets: true,
@@ -355,7 +355,7 @@ var searchDocLib = {
       repo: true,
       widgets: [
 //         {
-//            id: rootWidgetId + "SEARCH_ADVICE_LANDING",
+//            id: "FCTSRCH_SEARCH_ADVICE_LANDING",
 //            name: "alfresco/documentlibrary/views/AlfSearchListView",
 //            config: {
 //               searchAdviceTitle: "faceted-search.landing.title",
@@ -367,7 +367,7 @@ var searchDocLib = {
 //            }
 //         },
          {
-            id: rootWidgetId + "SEARCH_ADVICE_NO_RESULTS",
+            id: "FCTSRCH_SEARCH_ADVICE_NO_RESULTS",
             name: "alfresco/documentlibrary/views/AlfSearchListView",
             config: {
                searchAdviceTitle: "faceted-search.advice.title",
@@ -465,7 +465,7 @@ if (page.url.templateArgs.site != null)
 {
    var siteData = getSiteData();
    scopeOptions.push({
-      id: rootWidgetId + "SET_SPECIFIC_SITE_SCOPE",
+      id: "FCTSRCH_SET_SPECIFIC_SITE_SCOPE",
       name: "alfresco/menus/AlfCheckableMenuItem",
       config: {
          label: siteData.profile.title,
@@ -482,7 +482,7 @@ if (page.url.templateArgs.site != null)
 }
 
 scopeOptions.push({
-   id: rootWidgetId + "SET_ALL_SITES_SCOPE",
+   id: "FCTSRCH_SET_ALL_SITES_SCOPE",
    name: "alfresco/menus/AlfCheckableMenuItem",
    config: {
       label: msg.get("faceted-search.scope.allSites"),
@@ -497,7 +497,7 @@ scopeOptions.push({
    }
 });
 scopeOptions.push({
-   id: rootWidgetId + "SET_REPO_SCOPE",
+   id: "FCTSRCH_SET_REPO_SCOPE",
    name: "alfresco/menus/AlfCheckableMenuItem",
    config: {
       label: msg.get("faceted-search.scope.repository"),
@@ -513,7 +513,7 @@ scopeOptions.push({
 });
 
 var scopeSelection = {
-   id: rootWidgetId + "TOP_MENU_BAR",
+   id: "FCTSRCH_TOP_MENU_BAR",
    name: "alfresco/layout/LeftAndRight",
    config: {
       widgets: [
@@ -528,12 +528,13 @@ var scopeSelection = {
             config: {
                widgets: [
                   {
-                     id: rootWidgetId + "SCOPE_SELECTION_MENU",
+                     id: "FCTSRCH_SCOPE_SELECTION_MENU",
                      name: "alfresco/menus/AlfMenuBarSelect",
                      config: {
                         selectionTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
                         widgets: [
                            {
+                              id: "FCTSRCH_SCOPE_SELECTION_MENU_GROUP",
                               name: "alfresco/menus/AlfMenuGroup",
                               config: {
                                  widgets: scopeOptions
