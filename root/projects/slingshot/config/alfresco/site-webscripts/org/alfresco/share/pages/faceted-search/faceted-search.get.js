@@ -311,16 +311,6 @@ var searchDocLib = {
                                     }
                                  ]
                               }
-                           },
-                           {
-                              name: "alfresco/documentlibrary/views/layouts/Cell",
-                              config: {
-                                 widgets: [
-                                    {
-                                       name: "alfresco/renderers/XhrActions"
-                                    }
-                                 ]
-                              }
                            }
                         ]
                      }
