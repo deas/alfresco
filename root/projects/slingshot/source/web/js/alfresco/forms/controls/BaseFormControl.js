@@ -208,7 +208,7 @@ define(["dojo/_base/declare",
        * @param {boolean} status The boolean value to change the visibility state to.
        */
       alfVisible: function alfresco_forms_controls_BaseFormControl__alfVisible(status) {
-         this.alfLog("log", "Change visibility status for '" + this.name + "' to: " + status);
+         this.alfLog("log", "Change visibility status for '" + this.fieldId + "' to: " + status);
          this._visible = status;
          if (this.containerNode)
          {
@@ -235,11 +235,11 @@ define(["dojo/_base/declare",
        * @param {boolean} status The boolean value to change the requirement state to
        */
       alfRequired: function alfresco_forms_controls_BaseFormControl__alfRequired(status) {
-         this.alfLog("log", "Change requirement status for '" + this.name + "' to: " + status, {});
+         this.alfLog("log", "Change requirement status for '" + this.fieldId + "' to: " + status, {});
          this._required = status;
          if (this._requirementIndicator)
          {
-            if (this.status == true)
+            if (this._required == true)
             {
                domClass.add(this._requirementIndicator, "required");
             }
@@ -268,7 +268,7 @@ define(["dojo/_base/declare",
        * @param {boolean} status The boolean status to set the disablity state of the field to.
        */
       alfDisabled: function alfresco_forms_controls_BaseFormControl__alfDisabled(status) {
-         this.alfLog("log", "Change disablement status for '" + this.name + "' to: " + status);
+         this.alfLog("log", "Change disablement status for '" + this.fieldId + "' to: " + status);
          this._disabled = status;
          if (this.wrappedWidget && typeof this.wrappedWidget.set === "function")
          {
@@ -385,7 +385,7 @@ define(["dojo/_base/declare",
                }
                else
                {
-                  this.alfLog("warn", "The supplied 'changesTo' attribute for '" + this.name + "' was not an Array");
+                  this.alfLog("warn", "The supplied 'changesTo' attribute for '" + this.fieldId + "' was not an Array");
                }
             }
             // Create update subcriptions based on topics published that are external to the form. This allows
@@ -399,7 +399,7 @@ define(["dojo/_base/declare",
                }
                else
                {
-                  this.alfLog("warn", "The supplied 'updateTopics' attribute for '" + this.name + "' was not an Array");
+                  this.alfLog("warn", "The supplied 'updateTopics' attribute for '" + this.fieldId + "' was not an Array");
                }
             }
             
@@ -433,7 +433,7 @@ define(["dojo/_base/declare",
                }
                else
                {
-                  this.alfLog("warn", "The supplied 'callback' attribute for '" + this.name + "' was not a Function");
+                  this.alfLog("warn", "The supplied 'callback' attribute for '" + this.fieldId + "' was not a Function");
                }
             }
             else if (fixed != null)
@@ -446,7 +446,7 @@ define(["dojo/_base/declare",
                }
                else
                {
-                  this.alfLog("log", "The supplied fixed options attribute for '" + this.name + "' was not an Array");
+                  this.alfLog("log", "The supplied fixed options attribute for '" + this.fieldId + "' was not an Array");
                }
             }
          }
@@ -529,7 +529,7 @@ define(["dojo/_base/declare",
        * @param {object} payload The publication payload
        */
       updateOptions: function alfresco_forms_controls_BaseFormControl__onUpdateOptions(optionsConfig, payload) {
-         this.alfLog("log", "OPTIONS CONFIG: Field '" + this.name + "' is handling value change of field'" + payload.name);
+         this.alfLog("log", "OPTIONS CONFIG: Field '" + this.fieldId + "' is handling value change of field'" + payload.name);
          if (optionsConfig.requestTopic != null)
          {
             this.getPubSubOptions(optionsConfig.requestTopic);
@@ -549,7 +549,7 @@ define(["dojo/_base/declare",
             }
             else
             {
-               this.alfLog("log", "The supplied 'callback' attribute for '" + this.name + "' was neither a String nor a function");
+               this.alfLog("log", "The supplied 'callback' attribute for '" + this.fieldId + "' was neither a String nor a function");
             }
          }
       },
@@ -614,7 +614,7 @@ define(["dojo/_base/declare",
        */
       setOptions: function alfresco_forms_controls_BaseFormControl__setOptions(options) {
          
-         this.alfLog("log", "Setting options for field '" + this.name + "'", options);
+         this.alfLog("log", "Setting options for field '" + this.fieldId + "'", options);
          
          // Get the current value so that we can attempt to reset it when the options are refreshed...
          var currentValue = this.getValue();
@@ -706,7 +706,7 @@ define(["dojo/_base/declare",
             {
                // Debug output when instantiation data is incorrect. Only log when some data is defined but isn't an object.
                // There's no point in logging messages for unsupplied data - just incorrectly supplied data.
-               this.alfLog("log", "The rules configuration for attribute '" + attribute + "' for property '" + this.name + "' was not an Object");
+               this.alfLog("log", "The rules configuration for attribute '" + attribute + "' for property '" + this.fieldId + "' was not an Object");
             }
             
             // Process the callback subscriptions...
@@ -718,7 +718,7 @@ define(["dojo/_base/declare",
             {
                // Debug output when instantiation data is incorrect. Only log when some data is defined but isn't an object.
                // There's no point in logging messages for unsupplied data - just incorrectly supplied data.
-               this.alfLog("log", "The callback configuration for attribute '" + attribute + "' for property '" + this.name + "' was not an Object");
+               this.alfLog("log", "The callback configuration for attribute '" + attribute + "' for property '" + this.fieldId + "' was not an Object");
             }
          }
       },
@@ -801,7 +801,7 @@ define(["dojo/_base/declare",
        */
       evaluateRules: function alfresco_forms_controls_BaseFormControl__evaluateRules(attribute, payload) {
          
-         this.alfLog("log", "RULES EVALUATION('" + attribute + "'): Field '" + this.name + "'");
+         this.alfLog("log", "RULES EVALUATION('" + attribute + "'): Field '" + this.fieldId + "'");
 
          // Set the current value that triggered the evaluation of rules...
          this._rulesEngineData[attribute][payload.fieldId].currentValue = payload.value;
@@ -1119,10 +1119,11 @@ define(["dojo/_base/declare",
             }
             catch(e)
             {
-               this.alfLog("log", "An exception was thrown retrieving the value for field: '" + this.name + "'");
+               this.alfLog("log", "An exception was thrown retrieving the value for field: '" + this.fieldId + "'");
             }
          }
-         this.alfLog("log", "Returning value for field: '" + this.name + "': ", value);
+         // Commented out because it does make the logging quite verbose
+         // this.alfLog("log", "Returning value for field: '" + this.fieldId + "': ", value);
          return value;
       },
       
@@ -1132,7 +1133,7 @@ define(["dojo/_base/declare",
        * @param {object} value The value to set.
        */
       setValue: function alfresco_forms_controls_BaseFormControl__setValue(value) {
-         this.alfLog("log", "Setting field: '" + this.name + "' with value: ", value);
+         this.alfLog("log", "Setting field: '" + this.fieldId + "' with value: ", value);
          if (this.wrappedWidget)
          {
             this.wrappedWidget.setValue(value);
@@ -1146,7 +1147,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       publishValue: function alfresco_forms_controls_BaseFormControl__publishValue() {
-         this.alfLog("log", "Publishing value for field: '" + this.name + "'");
+         this.alfLog("log", "Publishing value for field: '" + this.fieldId + "'");
          if (this.wrappedWidget)
          {
             this.alfPublish("_valueChangeOf_" + this.fieldId, {
@@ -1265,7 +1266,7 @@ define(["dojo/_base/declare",
             // 1) Does the widget have a value if it is required
             var value = this.getValue();
             
-            this.alfLog("log", "Validating: '" + this.name + "' with value:", value);
+            this.alfLog("log", "Validating: '" + this.fieldId + "' with value:", value);
             
             var passedRequiredTest = true,
                 passedRegExpTest = true; // Assume valid starting point.
