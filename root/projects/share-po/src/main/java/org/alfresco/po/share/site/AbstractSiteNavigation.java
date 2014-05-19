@@ -34,12 +34,9 @@ import org.openqa.selenium.WebElement;
 public abstract class AbstractSiteNavigation extends HtmlElement
 {
     protected static final By CUSTOMISE_DASHBOARD_BTN = By.cssSelector("div[class^='page-title']>div>span>span>a[href$='customise-site-dashboard']");
-    protected static final By CUSTOMIZE_SITE_DASHBOARD = By.cssSelector("#HEADER_CUSTOMIZE_SITE_DASHBOARD_text");
-    protected static final By EDIT_SITE_DETAILS = By.cssSelector("#HEADER_EDIT_SITE_DETAILS_text");
     protected static final By CONFIGURATION_DROPDOWN = By.id("HEADER_SITE_CONFIGURATION_DROPDOWN");
     protected static final By CONFIGURE_ICON = By.id("HEADER_SITE_CONFIGURATION_DROPDOWN");
     protected static final By CUSTOMIZE_SITE = By.cssSelector("#HEADER_CUSTOMIZE_SITE_text");
-    protected static final By LEAVE_SITE = By.cssSelector("#HEADER_LEAVE_SITE_text");
     protected static final By MORE_BUTTON_LINK = By.cssSelector(".links>div>div>ul>li>a");
     protected static final String SITE_DASHBOARD = "Site Dashboard";
     protected static final String DASHBOARD = "Dashboard";
@@ -48,14 +45,6 @@ public abstract class AbstractSiteNavigation extends HtmlElement
     protected static final String INVITE_BUTTON = "a[href$='invite']";
     protected static final String CUSTOMIZE_LINK_TEXT = "Customize Site";
     protected static final String WIKI = "Wiki";
-    protected static final By WIKI_LINK = By.cssSelector("#HEADER_SITE_WIKI-PAGE_text");
-    protected static final By CALENDAR_LINK = By.cssSelector("#HEADER_SITE_CALENDAR");
-    protected static final By DISCUSSIONS_LINK = By.cssSelector("#HEADER_SITE_DISCUSSIONS-TOPICLIST_text");
-    protected static final By BLOG_LINK = By.cssSelector("#HEADER_SITE_BLOG-POSTLIST_text");
-    protected static final By LINKS_LINK = By.cssSelector("#HEADER_SITE_LINKS_text");
-    protected static final By DATA_LISTS_LINK = By.cssSelector("#HEADER_SITE_DATA-LISTS_text");
-    protected static final By MEMBERS_LINK = By.cssSelector("#HEADER_SITE_MEMBERS_text");
-    protected static final By SITE_MORE_PAGES = By.cssSelector("#HEADER_SITE_MORE_PAGES_text");
     protected static final String SITE_LINK_NAV_PLACEHOLER = "div.site-navigation > span:nth-of-type(%d) > a";
     public static final String LABEL_DOCUMENTLIBRARY_TEXT = "span#HEADER_SITE_DOCUMENTLIBRARY_text";
     public static final String LABEL_DOCUMENTLIBRARY_PLACEHOLDER = "div#HEADER_SITE_DOCUMENTLIBRARY";
@@ -67,14 +56,15 @@ public abstract class AbstractSiteNavigation extends HtmlElement
     {
         super(drone);
         alfrescoVersion = drone.getProperties().getVersion();
-        siteNavPlaceHolder = alfrescoVersion.isDojoSupported() ? "div[id*='LeftAndRight']" : "div#alf-hd";
+        siteNavPlaceHolder = "div#alf-hd";
         setWebElement(drone.findAndWait(By.cssSelector(siteNavPlaceHolder)));
         dashboardLink = alfrescoVersion.isDojoSupported() ? "div#HEADER_SITE_DASHBOARD" : String.format(SITE_LINK_NAV_PLACEHOLER, 1);
     }
 
     /**
      * Check if the site navigation link is highlighted.
-     * @param by selector of site nav link
+     * 
+     * @param By by selector of site nav link
      * @return if link is highlighted
      */
     public boolean isLinkActive(By by)
