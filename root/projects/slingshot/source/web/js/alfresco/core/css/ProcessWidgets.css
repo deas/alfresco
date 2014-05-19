@@ -1,3 +1,13 @@
 .alfresco-core-ProcessWidgets.side-margins {
    margin: 0 10px;
 }
+
+/* These selectors are added to ensure that rendering of the header does not 
+   appear "jumpy" on hybrid pages. */
+body {
+   opacity: 0;
+}
+
+body.aikau-reveal {
+   opacity: 1;
+}

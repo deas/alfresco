@@ -31,8 +31,9 @@ define(["alfresco/core/ProcessWidgets",
         "dojo/_base/array",
         "dojo/_base/lang",
         "dojo/dom-class",
+        "dojo/_base/window",
         "alfresco/core/PubQueue"], 
-        function(ProcessWidgets, declare, domConstruct, array, lang, domClass, PubQueue) {
+        function(ProcessWidgets, declare, domConstruct, array, lang, domClass, win, PubQueue) {
    
    return declare([ProcessWidgets], {
       
@@ -44,6 +45,10 @@ define(["alfresco/core/ProcessWidgets",
        * @default "alfresco-core-Page"
        */
       baseClass: "alfresco-core-Page",
+
+      postMixInProperties: function alfresco_core_Page__postMixInProperties() {
+
+      },
 
       /**
        * Overrides the superclass implementation to call [processServices]{@link module:alfresco/core/Core#processServices}
@@ -255,6 +260,8 @@ define(["alfresco/core/ProcessWidgets",
 
          // Add a class to indicate that the page is ready. This is primarily for testing purposes.
          domClass.add(this.domNode, "allWidgetsProcessed");
+
+         domClass.add(win.body(), "aikau-reveal");
       },
 
    });
