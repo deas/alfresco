@@ -31,7 +31,7 @@ define(["dojo/_base/declare",
         "dojo/_base/lang"], 
         function(declare, Property, TemporalUtils, UrlUtils, lang) {
 
-   return declare([Property, TemporalUtils, UrlUtils], {
+   return declare([Property, UrlUtils], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -95,7 +95,7 @@ define(["dojo/_base/declare",
          //    dateI18N = "details.created-by";
          // }
          this.renderedValue = this.message(dateI18N, {
-            0: this.getRelativeTime(modifiedDate), 
+            0: TemporalUtils.getRelativeTime(modifiedDate), 
             1: modifiedBy
          });
       }
