@@ -46,19 +46,20 @@ define(["intern!object",
                assert(text == "ALF_CREATE_FORM_DIALOG_REQUEST", "Test #1a - A subscription from the alfresco/dialogs/AlfDialogService should have been setup");
             })
             .end()
-            .elementByCss(TestCommon.nthTopicSelector(2))
-            .text()
-            .then(function(text) {
-               console.log("Test #1b");
-               assert(text.lastIndexOf("ALF_CREATE_FORM_DIALOG_MIXIN_REQUEST_TOPIC") != -1, "Test #1b - form dialog mixin request topic missing");
-            })
-            .end()
-            .elementByCss(TestCommon.nthTopicSelector(3))
-            .text()
-            .then(function(text) {
-               console.log("Test #1c");
-               assert(text.lastIndexOf("ALF_CREATE_FORM_DIALOG_MIXIN_CONFIRMATION_TOPIC") != -1, "Test #1b - form dialog mixin confirmation topic missing");
-            })
+            // NOTE: This test is no longer necessary as the topic is generated...
+            // .elementByCss(TestCommon.nthTopicSelector(2))
+            // .text()
+            // .then(function(text) {
+            //    console.log("Test #1b");
+            //    assert(text.lastIndexOf("ALF_CREATE_FORM_DIALOG_MIXIN_REQUEST_TOPIC") != -1, "Test #1b - form dialog mixin request topic missing");
+            // })
+            // .end()
+            // .elementByCss(TestCommon.nthTopicSelector(3))
+            // .text()
+            // .then(function(text) {
+            //    console.log("Test #1c");
+            //    assert(text.lastIndexOf("ALF_CREATE_FORM_DIALOG_MIXIN_CONFIRMATION_TOPIC") != -1, "Test #1b - form dialog mixin confirmation topic missing");
+            // })
 
             // Test #2
             // Create the dialog...

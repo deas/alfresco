@@ -75,6 +75,7 @@
                                              "icon": "folder-manage-permissions",
                                              "index": "10",
                                              "publishTopic": "MANAGE_ACTION_TOPIC",
+                                             "publishPayloadType": "BUILD",
                                              "publishPayload": {
                                                 "payloadVariable1": {
                                                    "alfType": "item",

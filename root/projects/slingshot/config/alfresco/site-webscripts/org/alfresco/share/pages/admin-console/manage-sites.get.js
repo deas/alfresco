@@ -165,6 +165,7 @@ model.jsonModel = {
                                                       config: {
                                                          class: "unmargined",
                                                          publishTopic: "ALF_UPDATE_SITE_DETAILS",
+                                                         publishPayloadType: "BUILD",
                                                          publishPayload: {
                                                             shortName: {
                                                                alfType: "item",
@@ -237,6 +238,7 @@ model.jsonModel = {
                                                                                     label: msg.get("button.site-manage.label"),
                                                                                     iconClass: "alf-password-icon",
                                                                                     publishTopic: "ALF_BECOME_SITE_MANAGER",
+                                                                                    publishPayloadType: "BUILD",
                                                                                     publishPayload: {
                                                                                        site: {
                                                                                           alfType: "item",

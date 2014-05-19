@@ -27,13 +27,13 @@
 define(["dojo/_base/declare",
         "alfresco/renderers/Property",
         "dijit/_OnDijitClickMixin",
-        "alfresco/core/ObjectProcessingMixin",
+        "alfresco/renderers/_PublishPayloadMixin",
         "dojo/text!./templates/PropertyLink.html",
         "dojo/_base/event",
         "dojo/_base/lang"], 
-        function(declare, Property, _OnDijitClickMixin, ObjectProcessingMixin, template, event, lang) {
+        function(declare, Property, _OnDijitClickMixin, _PublishPayloadMixin, template, event, lang) {
 
-   return declare([Property, _OnDijitClickMixin, ObjectProcessingMixin], {
+   return declare([Property, _OnDijitClickMixin, _PublishPayloadMixin], {
 
       /**
        * Overriddes the default HTML template to use for the widget.
@@ -102,26 +102,40 @@ define(["dojo/_base/declare",
          }
          else
          {
-            return this.generatePayload();
+            return this.generatePayload(this.payload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin, this.publishPayloadModifiers);
          }
       },
 
       /**
-       * Generates a payload based on the supplied payload configuration.
-
+       * Sets the default behaviour to prevent the currentItem from being mixed into the publishPayload.
+       *
        * @instance
-       * @returns {object} The generated payload
+       * @type {boolean}
+       * @default false
        */
-      generatePayload: function alfresco_renderers_PropertyLink__generatePayload() {
-         if (this.publishPayload != null)
-         {
-            var clonedPayload = lang.clone(this.publishPayload);
-            return this.processObject([this.processCurrentItemTokens, this.replaceColons], clonedPayload);
-         }
-         else
-         {
-            return {};
-         }
-      }
+      publishPayloadItemMixin: false,
+
+      /**
+       * Sets the default publishPayload generation to be "PROCESS" which will apply the modifier functions
+       * defined in the [publishPayloadModifiers]{@link module:alfresco/renderers/PropertyLink#publishPayloadModifiers}
+       * array.
+       *
+       * @instance
+       * @type {string}
+       * @default "PROCESS"
+       */
+      publishPayloadType: "PROCESS",
+
+      /**
+       * Sets the default modifiers to use. These will automatically perform token substitution with values
+       * from the current item and replace any colons with underscores. These modifiers will only be applied 
+       * if the [publishPayloadType]{@link module:alfresco/renderers/PropertyLink#publishPayloadType} is not 
+       * changed from "PROCESS".
+       *
+       * @instance
+       * @type {array}
+       * @default []
+       */
+      publishPayloadModifiers: ["processCurrentItemTokens", "replaceColons"]
    });
 });

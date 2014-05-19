@@ -73,7 +73,18 @@ define(["dojo/_base/declare",
             if (ObjectTypeUtils.isString(v))
             {
                array.forEach(functions, function(f) {
-                  v = f.apply(this, [v])
+                  if (typeof f == "function")
+                  {
+                     v = f.apply(this, [v]);
+                  }
+                  else if (typeof this[f] == "function")
+                  {
+                    v = this[f].apply(this, [v]);
+                  }
+                  else
+                  {
+                     this.alfLog("warn", "The supplied function was not valid", f, this);
+                  }
                }, this);
                o[key] = v;
             }

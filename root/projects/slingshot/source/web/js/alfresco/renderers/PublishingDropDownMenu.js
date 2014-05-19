@@ -29,14 +29,14 @@
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
+        "alfresco/renderers/_PublishPayloadMixin",
         "dojo/text!./templates/PublishingDropDownMenu.html",
         "alfresco/core/Core",
         "alfresco/core/ObjectTypeUtils",
         "alfresco/forms/controls/DojoSelect",
         "dojo/_base/lang",
-        "dojo/dom-class",
-        "alfresco/renderers/_PublishPayloadMixin"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, ObjectTypeUtils, DojoSelect, lang, domClass, _PublishPayloadMixin) {
+        "dojo/dom-class"], 
+        function(declare, _WidgetBase, _TemplatedMixin, _PublishPayloadMixin, template, AlfCore, ObjectTypeUtils, DojoSelect, lang, domClass) {
 
    return declare([_WidgetBase, _TemplatedMixin, AlfCore, _PublishPayloadMixin], {
       
@@ -132,7 +132,7 @@ define(["dojo/_base/declare",
 
          if (this.publishTopic != null)
          {
-            var updatePayload = this.generatePayload(this, this.currentItem, payload, null);
+            var updatePayload = this.generatePayload(this.publishPayload, this.currentItem, payload, this.publishPayloadType, this.publishPayloadItemMixin);
 
             // Hide any previously displayed warning image and show the processing image...
             domClass.remove(this.processingNode, "hidden");

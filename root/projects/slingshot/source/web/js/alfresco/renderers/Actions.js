@@ -26,15 +26,15 @@
 define(["dojo/_base/declare",
         "alfresco/menus/AlfMenuBar",
         "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
+        "alfresco/renderers/_PublishPayloadMixin",
         "alfresco/menus/AlfMenuBarPopup",
         "alfresco/menus/AlfMenuGroup",
         "alfresco/menus/AlfMenuItem",
         "dojo/_base/array",
         "dojo/_base/lang",
-        "service/constants/Default",
-        "alfresco/renderers/_PublishPayloadMixin"], 
-        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array, 
-                 lang, AlfConstants, _PublishPayloadMixin) {
+        "service/constants/Default"], 
+        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, _PublishPayloadMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array, 
+                 lang, AlfConstants) {
 
    return declare([AlfMenuBar, _AlfDocumentListTopicMixin, _PublishPayloadMixin], {
 
@@ -88,13 +88,15 @@ define(["dojo/_base/declare",
        */
       addAction: function alfresco_renderers_Actions__addAction(action, index) {
          this.alfLog("log", "Adding action", action);
+
+         var payload = (action.publishPayload != null) ? action.publishPayload : {document: this.currentItem, action: action};
          var menuItem = new AlfMenuItem({
             label: action.label,
             iconImage: AlfConstants.URL_RESCONTEXT + "components/documentlibrary/actions/" + action.icon + "-16.png",
             type: action.type,
             pubSubScope: this.pubSubScope,
             publishTopic: (action.publishTopic != null) ? action.publishTopic : this.singleDocumentActionTopic,
-            publishPayload: this.generatePayload(action, this.currentItem, null, {document: this.currentItem, action: action})
+            publishPayload: this.generatePayload(payload, this.currentItem, null, action.publishPayloadType, action.publishPayloadItemMixin, action.publishPayloadModifiers)
          });
          this.actionsGroup.addChild(menuItem);
       }

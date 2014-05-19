@@ -128,7 +128,7 @@ define(["intern!object",
             expect(facets).to.contain("result 9", "Facets should contain 'result 9'");
             expect(facets).to.contain("result 10", "Facets should contain 'result 10'");
             expect(facets).to.contain("result 11", "Facets should contain 'result 11'");
-            expect(facets).to.contain("More choices", "Facets should contain 'More choices'");
+            expect(facets).to.contain("Show More", "Facets should contain 'More choices'");
             expect(facets).to.not.contain("result 12", "Facets should not contain 'result 12'");
          })
          .end()
@@ -149,7 +149,7 @@ define(["intern!object",
             expect(facets).to.contain("result 9", "Facets should contain 'result 9'");
             expect(facets).to.contain("result 10", "Facets should contain 'result 10'");
             expect(facets).to.contain("result 11", "Facets should contain 'result 11'");
-            expect(facets).to.contain("Less choices", "Facets should contain 'Less choices'");
+            expect(facets).to.contain("Show Fewer", "Facets should contain 'Less choices'");
             expect(facets).to.contain("result 12", "Facets should contain 'result 12'");
          })
          .end()
@@ -170,7 +170,7 @@ define(["intern!object",
             expect(facets).to.contain("result 9", "Facets should contain 'result 9'");
             expect(facets).to.contain("result 10", "Facets should contain 'result 10'");
             expect(facets).to.contain("result 11", "Facets should contain 'result 11'");
-            expect(facets).to.contain("More choices", "Facets should contain 'More choices'");
+            expect(facets).to.contain("Show More", "Facets should contain 'More choices'");
             expect(facets).to.not.contain("result 12", "Facets should not contain 'result 12'");
          })
          .end()

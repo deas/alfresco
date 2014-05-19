@@ -18,18 +18,22 @@
  */
 
 /**
- * The _PublishPayloadMixin provides functionality that makes it possible to define the payload that will be 
- * constructed on a topic publish from the currentItem properties or payload. The model configuration defines 
- * the name of variables in the new payload and the name and location of where those variables can be found 
- * in the inbound request.
+ * <p>The _PublishPayloadMixin should be mixed into all modules that perform publications. It provides a consistent
+ * way of generating the payload body. There are several different ways of generating a payload which include the 
+ * following:</p>
+ * <ul><li>configured payload</li>
+ * <li>the current item</li>
+ * <li>the configured payload processed through one or more modifier functions</li>
+ * <li>a new payload built from properties in the current item or a triggering publication payload</li>
+ * <li>any of the above with the current item "mixed in"</li></ul>
  * 
- * In the following example one variable called shortName is defined as being sourced from the shortName 
+ * <p>In the following example one variable called shortName is defined as being sourced from the shortName 
  * property of the currentItem. A second variable called visibility is defined as being the value property 
- * found within the payload.
+ * found within the payload.</p>
  * 
- * Example model configuration:
+ * <p>Example model configuration:</p>
  * 
- * publishTopic: "ALF_DO_SOMETHING",
+ * <p><pre>publishTopic: "ALF_DO_SOMETHING",
  * publishPayload: {
  *    shortName: {
  *       alfType: "item",
@@ -39,20 +43,78 @@
  *       alfType: "payload",
  *       alfProperty: "value"
  *    }
- * }
+ * }</pre></p>
  * 
- * Widgets mixing in the _PublishPayloadMixin will support the model configuration shown.
+ * <p>Widgets mixing in the _PublishPayloadMixin will support the model configuration shown.</p>
  * 
  * @module alfresco/renderers/_PublishPayloadMixin
+ * @auther Dave Draper
  * @author Richard Smith
  */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
+        "alfresco/core/ObjectProcessingMixin",
         "dojo/_base/lang",
         "alfresco/core/ObjectTypeUtils"], 
-        function(declare, AlfCore, lang, ObjectTypeUtils) {
+        function(declare, AlfCore, ObjectProcessingMixin, lang, ObjectTypeUtils) {
    
    return declare(null, {
+
+      /** 
+       * Generates the payload based on the supplied attributes.
+       *
+       * @instance
+       * @param {object} configuredPayload The configured payload
+       * @param {object} currentItem The current item
+       * @param {object} receivedPayload A payload that may have been received to trigger the request to generate a new payload (set as null if not applicable)
+       * @param {string} payloadType The type of payload to generate
+       * @param {boolean} mixinCurrentItem Whether to mixin the current item into the generated payload
+       * @param {array} publishPayloadModifiers An array of modifier functions to apply when the type is "PROCESS"
+       * @returns {object} The generated payload
+       */
+      generatePayload: function alfresco_renderers__PublishPayloadMixin__generatePayload(configuredPayload, currentItem, receivedPayload, payloadType, mixinCurrentItem, publishPayloadModifiers) {
+         var generatedPayload = null;
+         if (payloadType == null || payloadType == "CONFIGURED")
+         {
+            // No payload type has been configured, or has been set to the default of "CONFIGURED" - just use the payload as is
+            generatedPayload = configuredPayload;
+         }
+         else if (payloadType == "CURRENT_ITEM")
+         {
+            // Use the current item as the payload...
+            generatedPayload = currentItem;
+         }
+         else if(payloadType == "PROCESS")
+         {
+            // Clone the configured payload so as not to "pollute" the statically defined value...
+            generatedPayload = lang.clone(configuredPayload);
+
+            // The configured payload should be process the payload using the modifier functions
+            this.processObject(publishPayloadModifiers, generatedPayload)
+         }
+         else if (payloadType == "BUILD")
+         {
+            // Clone the configured payload so as not to "pollute" the statically defined value...
+            generatedPayload = lang.clone(configuredPayload);
+
+            // Build the payload using the "alfType" and "alfProperty" keywords...
+            generatedPayload = this.buildPayload(generatedPayload, currentItem, receivedPayload);
+         }
+
+         // Mixin the current item into the payload if required...
+         if (mixinCurrentItem == true)
+         {
+            if (this.currentItem != null)
+            {
+               lang.mixin(generatedPayload, currentItem);
+            }
+            else
+            {
+               this.alfLog("warn", "A request was made to mix the 'currentItem' into the publish payload, but no 'currentItem' has been defined", this);
+            }
+         }
+         return generatedPayload;
+      },
 
       /** 
        * <p>This function is used to process configurable payloads. If a publishPayload property is available on the configuration 
@@ -66,44 +128,45 @@ define(["dojo/_base/declare",
        * publishPayload provided on the configuration object.</p>
        * 
        * @instance
-       * @param {object} configuration
-       * @param {object} item
-       * @param {object} payload
-       * @param {object} defReturn
+       * @param {object} configuredPayload The configured payload - this is used to generate a new payload
+       * @param {object} currentItem The current item
+       * @param {object} receivedPayload The payload that triggered the request to generate a new payload
        * @returns {object} The payload to be published
        */
-      generatePayload: function alfresco_renderers__PublishPayloadMixin__generatePayload(configuration, item, payload, defReturn) {
-
-         var publishPayload = (defReturn) ? defReturn : null;
-
-         if(configuration.publishPayload)
+      buildPayload: function alfresco_renderers__PublishPayloadMixin__buildPayload(configuredPayload, currentItem, receivedPayload) {
+         // TODO: Needs to process deep-levels of nesting...
+         if(configuredPayload != null)
          {
-            publishPayload = lang.clone(configuration.publishPayload);
-            for (var key in publishPayload)
+            // Copy the original to grab data from...
+            for (var key in configuredPayload)
             {
-               var value = publishPayload[key];
+               var value = configuredPayload[key];
                if (ObjectTypeUtils.isObject(value) && value.alfType !== undefined && value.alfProperty !== undefined)
                {
                   var type = value.alfType;
                   var property = value.alfProperty;
                   
-                  if (type == "item" && item)
+                  if (type == "item" && currentItem)
                   {
-                     value = lang.getObject(property, null, item);
+                     value = lang.getObject(property, null, currentItem);
                   }
-                  else if (type == "payload" && payload)
+                  else if (type == "payload" && receivedPayload)
                   {
-                     value = lang.getObject(property, null, payload);
+                     value = lang.getObject(property, null, receivedPayload);
                   }
                   else
                   {
                      this.alfLog("warn", "A payload was defined with 'alfType' and 'alfProperty' attributes but the 'alfType' attribute was neither 'item' nor 'payload' (which are the only supported types), or the target object was null", this);
                   }
-                  publishPayload[key] = value;
+                  configuredPayload[key] = value;
+
+                  // Clean up the payload...
+                  delete value.alfType;
+                  delete value.alfProperty;
                }
             }
          }
-         return publishPayload;
+         return configuredPayload;
       }
    });
 });
