@@ -217,113 +217,13 @@ var searchDocLib = {
       useHash: true,
       widgets: [
          {
-            name: "alfresco/documentlibrary/views/AlfDocumentListView",
+            name: "alfresco/documentlibrary/views/AlfSearchListView",
             config: {
-               widgets: [
-                  {
-                     name: "alfresco/search/AlfSearchResult"
-                  }
-                  // {
-                  //    name:  "alfresco/documentlibrary/views/layouts/Row",
-                  //    config: {
-                  //       widgets: [
-                  //          {
-                  //             name: "alfresco/documentlibrary/views/layouts/Cell",
-                  //             config: {
-                  //                width: "100px",
-                  //                widgets: [
-                  //                   {
-                  //                      name: "alfresco/renderers/Thumbnail",
-                  //                      linkClickTopic: "ALF_NO_OP"
-                  //                   }
-                  //                ]
-                  //             }
-                  //          },
-                  //          {
-                  //             name: "alfresco/documentlibrary/views/layouts/Column",
-                  //             config: {
-                  //                widgets: [
-                  //                   {
-                  //                      name: "alfresco/documentlibrary/views/layouts/Cell",
-                  //                      config: {
-                  //                         widgets: [
-                  //                            {
-                  //                               name: "alfresco/renderers/PropertyLink",
-                  //                               config: {
-                  //                                  propertyToRender: "displayName",
-                  //                                  renderSize: "large",
-                  //                                  publishTopic: "ALF_SEARCH_RESULT_LINK"
-                  //                               }
-                  //                            },
-                  //                            {
-                  //                               name: "alfresco/renderers/Property",
-                  //                               config: {
-                  //                                  propertyToRender: "title",
-                  //                                  renderSize: "small",
-                  //                                  renderedValuePrefix: "(",
-                  //                                  renderedValueSuffix: ")",
-                  //                                  renderFilter: [
-                  //                                     {
-                  //                                        property: "title",
-                  //                                        values: [""],
-                  //                                        negate: true
-                  //                                     }
-                  //                                  ]
-                  //                               }
-                  //                            }
-                  //                         ]
-                  //                      }
-                  //                   },
-                  //                   {
-                  //                      name: "alfresco/documentlibrary/views/layouts/Cell",
-                  //                      config: {
-                  //                         widgets: [
-                  //                            {
-                  //                               name: "alfresco/renderers/Date",
-                  //                               config: {
-                  //                                  modifiedDateProperty: "modifiedOn",
-                  //                                  modifiedByProperty: "modifiedBy"
-                  //                               }
-                  //                            }
-                  //                         ]
-                  //                      }
-                  //                   },
-                  //                   {
-                  //                      name: "alfresco/documentlibrary/views/layouts/Cell",
-                  //                      config: {
-                  //                         widgets: [
-                  //                            {
-                  //                               name: "alfresco/renderers/Property",
-                  //                               config: {
-                  //                                  propertyToRender: "description",
-                  //                                  renderedValuePrefix: msg.get("faceted-search.doc-lib.value-prefix.description") + " ",
-                  //                                  warnIfNotAvailable: true,
-                  //                                  warnIfNoteAvailableMessage: msg.get("faceted-search.doc-lib.unavailable.description")
-                  //                               }
-                  //                            }
-                  //                         ]
-                  //                      }
-                  //                   },
-                  //                   {
-                  //                      name: "alfresco/documentlibrary/views/layouts/Cell",
-                  //                      config: {
-                  //                         widgets: [
-                  //                            {
-                  //                               name: "alfresco/renderers/Property",
-                  //                               config: {
-                  //                                  propertyToRender: "site.title",
-                  //                                  renderedValuePrefix: msg.get("faceted-search.doc-lib.value-prefix.site") + " "
-                  //                               }
-                  //                            }
-                  //                         ]
-                  //                      }
-                  //                   }
-                  //                ]
-                  //             }
-                  //          }
-                  //       ]
-                  //    }
-                  // }
+               searchAdvice: [
+                  "faceted-search.suggestion1",
+                  "faceted-search.suggestion2",
+                  "faceted-search.suggestion3",
+                  "faceted-search.suggestion4"
                ]
             }
          }
