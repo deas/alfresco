@@ -51,14 +51,29 @@ define(["dojo/_base/declare",
        */
       cssRequirements: [{cssFile:"./css/Date.css"}],
       
-
+      /**
+       * This can be set to override the default property to use to get the ISO 8601 
+       * modification date which (in dot-notation) will be "jsNode.properties.modified.iso8601".
+       * This is the property that is typically available when dealing with standard
+       * Node data.
+       *
+       * @instance
+       * @type {string}
+       * @default "jsNode.properties.modified.iso8601"
+       */
       modifiedDateProperty: null,
 
+      /**
+       * This can be set to override the default property to use to get the name of the 
+       * modifier which (in dot-notation) will be "jsNode.properties.modifier".
+       * This is the property that is typically available when dealing with standard
+       * Node data.
+       *
+       * @instance
+       * @type {string}
+       * @default "jsNode.properties.modifier"
+       */
       modifiedByProperty: null,
-
-      createdDateProperty: null,
-
-      createdByProperty: null,
 
       /**
        * Set up the attributes to be used when rendering the template.
@@ -79,13 +94,12 @@ define(["dojo/_base/declare",
          }
          var modifiedBy = lang.getObject(this.modifiedByProperty, false, this.currentItem);
 
+         var dateI18N = "details.modified-by";
 
-
-         // var jsNode = this.currentItem.jsNode,
-         //     properties = jsNode.properties,
-         //     html = "";
-
-         var dateI18N = "details.modified-by";//, dateProperty = properties.modified.iso8601;
+         // TODO: This section is currently commented out as it deals explicitly with 
+         //       working copies. This isn't needed in any production page yet and should
+         //       only be commented out when needed. The unit test should also be updated at
+         //       that time.
          // if (this.currentItem.workingCopy && this.currentItem.workingCopy.isWorkingCopy)
          // {
          //    dateI18N = "details.editing-started-by";
