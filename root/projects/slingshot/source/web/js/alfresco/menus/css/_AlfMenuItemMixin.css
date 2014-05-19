@@ -8,11 +8,6 @@
    background-repeat: no-repeat;
 }
 
-.alfresco-share a.alfresco-menus-_AlfMenuItemMixin {
-   color: inherit;
-   text-decoration: inherit;
-}
-
 .alfresco-share .dijitMenu .dijitMenuItem td, .alfresco-share .dijitComboBoxMenu .dijitMenuItem {
   border-style: none;
   border-width: 0;

@@ -46,8 +46,16 @@ define(["dojo/_base/declare",
          }
          else
          {
-            this.alfPublish(this.publishTopic, this.currentItem);
+            this.alfPublish(this.getPublishTopic(), this.getPublishPayload());
          }
+      },
+
+      getPublishTopic: function alfresco_renderers_PropertyLink__getPublishTopic() {
+         return this.publishTopic;
+      },
+
+      getPublishPayload: function alfresco_renderers_PropertyLink__getPublishTopic() {
+         return this.currentItem;
       }
    });
 });

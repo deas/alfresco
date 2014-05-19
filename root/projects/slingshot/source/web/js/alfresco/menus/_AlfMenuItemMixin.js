@@ -30,21 +30,18 @@ define(["dojo/_base/declare",
         "alfresco/menus/_AlfPopupCloseMixin",
         "alfresco/services/_NavigationServiceTopicMixin",
         "alfresco/renderers/_PublishPayloadMixin",
+        "alfresco/navigation/_HtmlAnchorMixin",
         "service/constants/Default",
         "dojo/dom-class", 
         "dojo/dom-style",
         "dojo/dom-construct",
         "dojo/on",
         "dojo/_base/lang",
-        "dojo/_base/event",
-        "dojo/query",
-        "dojo/NodeList",
-        "dojo/has", 
-        "dojo/sniff",
-        "dojo/NodeList-manipulate"],
-        function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, _PublishPayloadMixin, AlfConstants, domClass, domStyle, domConstruct, on, lang, event, query, NodeList, has) {
+        "dojo/_base/event"],
+        function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, _PublishPayloadMixin, 
+                 _HtmlAnchorMixin, AlfConstants, domClass, domStyle, domConstruct, on, lang, event) {
    
-   return declare([AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, _PublishPayloadMixin], {
+   return declare([AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, _PublishPayloadMixin, _HtmlAnchorMixin], {
 
       /**
        * An array of the CSS files to use with this widget.
@@ -136,47 +133,18 @@ define(["dojo/_base/declare",
          
          // Set up a handler for onContextMenu actions (e.g. right-clicks), although by default this will perform no action...
          on(this.domNode, "contextmenu", lang.hitch(this, "onContextMenu"));
-         
-         // When a targetUrl is specified we want to wrap menu item labels in <a> elements to allow the browsers context menu
-         // to access the URL (most commonly used for opening a page in a new tab). However, we aren't going to allow the browser
-         // to process the link as we still want it to go via the NavigationService...
-         if (this.targetUrl != null)
-         {
-            // The following code is based on the NavigationService, it should possibly be abstracted to a mixin
-            // to prevent future maintenance issues, but given this is "non-functional" code it's not important at the moment.
-            // We want to build a URL to set as the "href" attribute of the <a> element.
-            var url;
-            if (typeof this.targetUrlType == "undefined" ||
-                this.targetUrlType == null ||
-                this.targetUrlType == "" ||
-                this.targetUrlType == this.sharePageRelativePath)
-            {
-               url = AlfConstants.URL_PAGECONTEXT + this.targetUrl;
-            }
-            else if (this.targetUrlType == this.contextRelativePath)
-            {
-               url = AlfConstants.URL_CONTEXT + this.targetUrl;
-            }
-            else if (this.targetUrlType == this.fullPath)
-            {
-               url = this.targetUrl;
-            }
-            // Add the anchor elements...
-            this._addAnchors(url);
-         }
+         this.makeAnchor(this.targetUrl, this.targetUrlType);
       },
 
       /**
-       * This function is called for any menu item with a targetUrl. By default it addresses the known menu items DOM structures
-       * of the AlfMenuItem and AlfMenuBarItem. However, it can be extended or updated to handle the DOM structure of additional
-       * menu widgets.
-       * 
+       * Returns an array containing the selector that identifies the span to wrap in an anchor.
+       * This overrides the [mixed in function]{@link module:alfresco/navigation/_HtmlAnchorMixin}
+       * that just returns an empty array.
+       *
        * @instance
-       * @param {string} url The URL to use for the anchor
        */
-      _addAnchors: function alfresco_menus__AlfMenuItemMixin___addAnchors(url) {
-         dojo.query("td.dijitMenuItemLabel", this.domNode).wrapInner("<a class='alfresco-menus-_AlfMenuItemMixin' href='" + url + "'></a>");
-         dojo.query("span.alf-menu-bar-label-node", this.domNode).wrapInner("<a class='alfresco-menus-_AlfMenuItemMixin' href='" + url + "'></a>");
+      getAnchorTargetSelectors: function alfresco_renderers_SearchResultPropertyLink__getAnchorTargetSelectors() {
+         return ["td.dijitMenuItemLabel","span.alf-menu-bar-label-node"];
       },
       
       /**
@@ -212,14 +180,6 @@ define(["dojo/_base/declare",
              * block. Because the style is being explicitly set it will take precedence over the
              * Dojo CSS class.
              */
-            if(has("ie") == 8)
-            {     
-               if(location.protocol.indexOf("https") != -1)
-               {
-                  //It is ssl in IE8, so we use full URL. see MNT-10867
-                  this.iconImage = location.protocol + "//" + location.host + this.iconImage;
-               }
-            } 
             domStyle.set(this.iconNode, { backgroundImage: "url(" + this.iconImage + ")",
                                           width: this.iconImageWidth,
                                           height: this.iconImageHeight,

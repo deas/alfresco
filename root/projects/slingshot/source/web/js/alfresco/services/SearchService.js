@@ -238,55 +238,6 @@ define(["dojo/_base/declare",
             };
             this.serviceXhr(config);
          }
-      },
-
-      /**
-       * Handles requests to navigate to the appropriate page to view a specific search result.
-       * This then passes that request onto the [Navigation Service]{@link module:alfresco/services/NavigationService}
-       *
-       * @instance
-       * @param {object} result The item to navigate to
-       */
-      onLinkToSearchResult: function alfresco_services_SearchService__onLinkToSearchResult(result) {
-
-         var payload = {
-            type: "SHARE_PAGE_RELATIVE",
-            target: "CURRENT",
-            url: null
-         };
-         var type = lang.getObject("type", false, result),
-             site = lang.getObject("site.shortName", false, result);
-
-         if (type == "folder")
-         {
-            var path = lang.getObject("path", false, result),
-                name = lang.getObject("name", false, result);
-
-            if (site != null)
-            {
-               payload.url = "site/" + site + "/documentlibrary?path=" + path + "/" + name;
-               this.alfPublish("ALF_NAVIGATE_TO_PAGE", payload);
-            }
-            else
-            {
-               payload.url = "repository?path=" + path + "/" + name;
-               this.alfPublish("ALF_NAVIGATE_TO_PAGE", payload);
-            }
-         }
-         else
-         {
-            var nodeRef = lang.getObject("nodeRef", false, result);
-            if (site != null)
-            {
-               payload.url = "site/" + site + "/document-details?nodeRef=" + nodeRef;
-               this.alfPublish("ALF_NAVIGATE_TO_PAGE", payload);
-            }
-            else
-            {
-               payload.url = "document-details?nodeRef=" + nodeRef;
-               this.alfPublish("ALF_NAVIGATE_TO_PAGE", payload);
-            }
-         }
       }
    });
 });
