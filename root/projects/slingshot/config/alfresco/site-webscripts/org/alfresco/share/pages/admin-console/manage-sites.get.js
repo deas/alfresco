@@ -126,10 +126,19 @@ model.jsonModel = {
                                                 class: "siteName mediumpad",
                                                 widgets: [
                                                    {
-                                                      name: "alfresco/renderers/Property",
+                                                      name: "alfresco/renderers/PropertyLink",
                                                       config: {
+                                                         renderedValueClass: "alfresco-renderers-Property pointer",
+                                                         publishGlobal: true,
                                                          propertyToRender: "title",
-                                                         renderAsLink: false
+                                                         publishTopic: "ALF_NAVIGATE_TO_PAGE",
+                                                         useCurrentItemAsPayload: false,
+                                                         publishPayloadType: "PROCESS",
+                                                         publishPayloadModifiers: ["processCurrentItemTokens"],
+                                                         payload: {
+                                                            url: "site/{shortName}/site-members",
+                                                            type: "SHARE_PAGE_RELATIVE"
+                                                         }
                                                       }
                                                    }
                                                 ]

@@ -58,7 +58,7 @@ define(["dojo/_base/declare",
         "alfresco/core/ObjectTypeUtils"], 
         function(declare, AlfCore, ObjectProcessingMixin, lang, ObjectTypeUtils) {
    
-   return declare(null, {
+   return declare([ObjectProcessingMixin], {
 
       /** 
        * Generates the payload based on the supplied attributes.
@@ -90,7 +90,7 @@ define(["dojo/_base/declare",
             generatedPayload = lang.clone(configuredPayload);
 
             // The configured payload should be process the payload using the modifier functions
-            this.processObject(publishPayloadModifiers, generatedPayload)
+            this.processObject(publishPayloadModifiers, generatedPayload);
          }
          else if (payloadType == "BUILD")
          {
