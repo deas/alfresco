@@ -45,10 +45,6 @@
             <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-    <scm>
-        <connection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/BRANCHES/DEV/AUTO1/root/projects/qa-share</connection>
-        <developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/BRANCHES/DEV/AUTO1/root/projects/qa-share</developerConnection>
-    </scm>
 
 	<dependencies>
 		<dependency>
