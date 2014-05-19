@@ -81,6 +81,7 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_header_Title__postCreate() {
          this.textNode.innerHTML = this.label;
+         document.title = "Alfresco \u00bb " + this.label; // Set the browser title
          if (this.targetUrl)
          {
             this.textNode.href = AlfConstants.URL_PAGECONTEXT + this.targetUrl;

@@ -1,9 +1,9 @@
 .alfresco-dialog-AlfDialog.dijitDialog {
-   border: $theme-border-1;
+   border: @standard-border;
    border-radius: 6px 6px 6px 6px;
    box-shadow: $theme-box-shadow;
-   font-family: $theme-font-family-2;
-   font-size: $theme-font-size-1;
+   font-family: @standard-font;
+   font-size: @normal-font-size;
 }
 
 /*
@@ -11,7 +11,7 @@
  * of the main body element.
  */
 .alfresco-dialog-AlfDialog.dijitDialog a {
-    color: $theme-color-1;
+    color: @general-font-color;
     text-decoration: none;
 }
 
@@ -19,7 +19,7 @@
  * This resets input elements in a dialog
  */
 .alfresco-dialog-AlfDialog.dijitDialog input {
-    border: $theme-border-1;
+    border: @standard-border;
     font-weight: normal;
 }
 
@@ -28,29 +28,30 @@
 }
 
 .alfresco-dialog-AlfDialog .dijitDialogPaneContent {
-   border-top: $theme-border-1;
+   border-top: @standard-border;
    padding: 0;
 }
 
 .alfresco-dialog-AlfDialog .dijitDialogTitleBar {
-   background-color: $theme-bg-color-1;
+   background-color: @primary-theme-color;
    background-image: none;
    border: none;
    text-align: center;
 }
 
 .alfresco-dialog-AlfDialog .dijitDialogTitleBar .dijitDialogTitle {
-   font-family: $theme-font-family-1;
-   font-size: 230%;
+   font-family: @standard-font;
+   font-size: @title-font-size;
    line-height: 1em;
    padding: 0.25em;
-   color: $theme-color-7;
+   color: @general-font-color;
 }
 
 .alfresco-dialog-AlfDialog .footer {
-   background-color: $theme-bg-color-1;
+   background-color: @primary-theme-color;
    background-image: none;
    border: none;
-   border-top: $theme-border-1;
+   border-top: @standard-border;
    text-align: center;
+   padding: 5px 0;
 }

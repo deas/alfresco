@@ -15,7 +15,17 @@
 }
 
 .alfresco-forms-controls-DojoValidationTextBox div.control div.dijitValidationTextBox {
-   border-color: #6B7881;
+   border-color: @standard-border-color;
+}
+
+.alfresco-forms-controls-DojoValidationTextBox div.control div.dijitValidationTextBox.dijitTextBoxHover {
+   border-color: @hover-border-color;
+   background-image: none;
+   background-color: inherit;
+}
+
+.alfresco-forms-controls-DojoValidationTextBox div.control div.dijitValidationTextBox.dijitTextBoxFocused {
+   border-color: @focused-border-color;
 }
 
 .alfresco-forms-controls-DojoValidationTextBox.long div.control div.dijitValidationTextBox {

@@ -35,15 +35,11 @@
 
 .alfresco-buttons-AlfButton .dijitReset.dijitInline.dijitButtonNode {
    background: none repeat scroll 0 0;
-   border: @standard-button-focus-border;
-   border-radius: none;
+   border: none;
+   border-radius: 0;
    box-shadow: none;
    padding: 2px 10px;
    color: @standard-button-font-color;
-}
-
-.alfresco-buttons-AlfButton.call-to-action .dijitReset.dijitInline.dijitButtonNode {
-   border: @call-to-action-button-border;
 }
 
 .alfresco-buttons-AlfButton.call-to-action .dijitReset.dijitInline.dijitButtonNode {

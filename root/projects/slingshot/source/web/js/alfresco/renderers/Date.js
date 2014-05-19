@@ -43,15 +43,6 @@ define(["dojo/_base/declare",
       i18nRequirements: [{i18nFile: "./i18n/Date.properties"}],
       
       /**
-       * An array of the CSS files to use with this widget.
-       * 
-       * @instance
-       * @type {object[]}
-       * @default [{cssFile:"./css/Date.css"}]
-       */
-      cssRequirements: [{cssFile:"./css/Date.css"}],
-      
-      /**
        * This can be set to override the default property to use to get the ISO 8601 
        * modification date which (in dot-notation) will be "jsNode.properties.modified.iso8601".
        * This is the property that is typically available when dealing with standard

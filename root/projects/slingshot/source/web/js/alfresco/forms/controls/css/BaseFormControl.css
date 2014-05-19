@@ -9,6 +9,7 @@
 .alfresco-forms-controls-BaseFormControl > .control {
    float: left;
    margin-right: 5px;
+   font-size: @large-font-size;
 }
 
 .alfresco-forms-controls-BaseFormControl > .requirementIndicator {

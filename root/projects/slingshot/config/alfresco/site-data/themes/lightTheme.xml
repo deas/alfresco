@@ -11,6 +11,9 @@
          @docListEvenRowColour: #f7f7f7;
          @docListDndHighlight: #0082ca;
 
+         // General palette
+         @primary-theme-color: #eeeeee;
+
          // Layout settings...
          // This is used to control the overall layout of the page. Line-heights will be a multiple of
          // this value based on the font-size
@@ -62,6 +65,16 @@
             font-family: @standard-font;
             color: @de-emphasized-font-color;
          }
+
+         // Borders...
+         // These have been initially added for form controls...
+         @standard-border-width: 1px;
+         @standard-border-style: solid;
+         @standard-border-color: #cccccc;
+         @standard-border: @standard-border-width @standard-border-style @standard-border-color;
+
+         @hover-border-color: #888888;
+         @focused-border-color: #8DC63f;
 
          // Buttons
          // The standard button is what is normally seen...
