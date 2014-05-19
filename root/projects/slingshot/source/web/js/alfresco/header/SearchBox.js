@@ -318,6 +318,51 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * This indicated whether or not the search box should link to the faceted search page or not. It is used by the
+       * [generateSearchPageLink fuction]{@link module:alfresco/header/SearchBox#generateSearchPageLink} to determine
+       * the URL to generate for displaying search results. By default it will be the faceted search page.
+       *
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      linkToFacetedSearch: true,
+
+      /**
+       * This function is called from the [onSearchBoxKeyUp fuction]{@link module:alfresco/header/SearchBox#onSearchBoxKeyUp}
+       * when the enter key is pressed and will generate a link to either the faceted search page or the old search page
+       * based on the value of [linkToFacetedSearch]{@link module:alfresco/header/SearchBox#linkToFacetedSearch}. This function
+       * can also be overridden by extending modules to link to an entirely new search page.
+       *
+       * @instance
+       * @param {string} terms The search terms to use
+       * @returns {string} The URL for the search page.
+       */
+      generateSearchPageLink: function alfresco_header_SearchBox__generateSearchPageLink(terms) {
+         var url;
+         if (this.linkToFacetedSearch === true)
+         {
+            // Generate faceted search page link...
+            url = "dp/ws/faceted-search#searchTerm=" + encodeURIComponent(terms) + (this.allsites ? "&allSites=true&repo=false" : "&allSites=false&repo=true");
+            if (this.site != null)
+            {
+               url = "site/" + this.site + "/" + url;
+            }
+         }
+         else
+         {
+            // Generate old search page link...
+            url = "search?t=" + encodeURIComponent(terms) + (this.allsites ? "&a=true&r=false" : "&a=false&r=true");
+            if (this.site != null)
+            {
+               url = "site/" + this.site + "/" + url;
+            }
+         }
+         this.alfLog("log", "Generated search page link", url, this);
+         return url;
+      },
+
+      /**
        * Handles keyup events that occur on the <input> element used for capturing search terms.
        * @instance
        * @param {object} evt The keyup event
@@ -335,13 +380,7 @@ define(["dojo/_base/declare",
                else
                {
                   this.alfLog("log", "Search request for: ", terms);
-
-                  var url = "dp/ws/faceted-search#searchTerm=" + encodeURIComponent(terms) + (this.allsites ? "&allSites=true&repo=false" : "&allSites=false&repo=true");
-                  if (this.site != null)
-                  {
-                     url = "site/" + this.site + "/" + url;
-                  }
-   
+                  var url = this.generateSearchPageLink(terms);
                   this.alfPublish("ALF_NAVIGATE_TO_PAGE", { 
                      url: url,
                      type: "SHARE_PAGE_RELATIVE",
