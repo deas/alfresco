@@ -29,12 +29,12 @@ define(["intern/dojo/node!fs",
 
       /**
        * This is the path to use to bootstrap tests. It should ONLY be defined here so that
-	   * pervasive changes can be made in this one file.
-	   *
-	   * @instance
-	   * @type {string}
-	   * @default "/share/page/tp/ws/unit-test-bootstrap"
-	   */
+       * pervasive changes can be made in this one file.
+       *
+       * @instance
+       * @type {string}
+       * @default "/share/page/tp/ws/unit-test-bootstrap"
+       */
       bootstrapPath: "/share/page/tp/ws/unit-test-bootstrap",
 
       /**
@@ -46,7 +46,7 @@ define(["intern/dojo/node!fs",
        * @default Config.bootstrapBaseUrl + this.bootstrapPath
        */
       bootstrapUrl: function bootstrapUrl(){
-    	   return Config.bootstrapBaseUrl + this.bootstrapPath;
+         return Config.bootstrapBaseUrl + this.bootstrapPath;
       },
 
       /**
@@ -228,10 +228,11 @@ define(["intern/dojo/node!fs",
        * @instance
        * @param {string} topic The topic to search
        * @param {string} type (optional) The topic action (e.g. "publish" or "subscribe") defaults to "subscribe"
-       * @param {string} expectedRow (optional) A specific row to check for ("last" is an accepted option)
+       * @param {string} expectedRow (optional) A specific row to check for ("last" is an accepted option). Negative numbers trigger a backwards count.
+       * @param {string} [matchType="exact"] Choose between a partial, prefix, suffix or exact match on topic.
        * @returns {string} The CSS selector
        */
-      topicSelector: function(topic, type, expectedRow) {
+      topicSelector: function(topic, type, expectedRow, matchType) {
 
          if (type == null)
          {
@@ -249,10 +250,35 @@ define(["intern/dojo/node!fs",
          }
          else if (expectedRow != null)
          {
-            row = ":nth-child(" + expectedRow + ")"
+            var rowSelector = "nth-child";
+            if (expectedRow.indexOf("-") !== -1)
+            {
+               // If the expected row contains a negative number, count backwards. -1 is last, -2 is penultimate, etc.
+               rowSelector = "nth-last-child";
+               expectedRow = expectedRow.slice(1, expectedRow.length);
+            }
+            row = ":" + rowSelector + "(" + expectedRow + ")";
          }
 
-         var selector = ".alfresco-testing-SubscriptionLog tr.sl-row" + row + " td[data-" + type + "-topic=" + topic + "]";
+         // Allow partial matching, match prefix or suffix.
+         matchType = matchType || "exact";
+         var comparison = "=";
+
+         switch (matchType) {
+            case "partial":
+               comparison = "*=";
+               break;
+            case "prefix":
+               comparison = "$=";
+               break;
+            case "suffix":
+               comparison = "^=";
+               break;
+            default:
+               comparison = "=";
+         }
+
+         var selector = ".alfresco-testing-SubscriptionLog tr.sl-row" + row + " td[data-" + type + "-topic" + comparison + topic + "]";
          // console.log("Topic selector: " + selector);
          return selector;
       },
@@ -294,6 +320,11 @@ define(["intern/dojo/node!fs",
       log: function(test, line, desc) {
          console.log(">> " + test + " [" + line + "]: " + desc);
       }
+
+      /**
+       * Counts the number of results from the CSS selector that is passed in.
+       *
+       */
    };
 
 });
