@@ -150,9 +150,9 @@ define(["dojo/_base/declare",
          {
             array.forEach(this.value, function(widget, i) {
                var data = {
-                  name: widget.widgetDisplayName,
-                  module: widget.name,
-                  defaultConfig: widget.config,
+                  name: widget.name,
+                  module: widget.module,
+                  defaultConfig: widget.defaultConfig,
                   widgetsForDisplay: widget.widgetsForDisplay,
                   widgetsForConfig: widget.widgetsForConfig
                };
@@ -174,12 +174,12 @@ define(["dojo/_base/declare",
             
             // Get the field name to use as the label (this can change) and the id (which should remain
             // static once created) to populate an individual option.
-            var fieldName = lang.getObject("updatedConfig.name", false, currentField.data);
+            var fieldName = lang.getObject("updatedConfig.defaultConfig.name", false, currentField.data);
             if (fieldName == null)
             {
                fieldName = lang.getObject("defaultConfig.name", false, currentField.data);
             }
-            var fieldId = lang.getObject("updatedConfig.fieldId", false, currentField.data);
+            var fieldId = lang.getObject("updatedConfig.defaultConfig.fieldId", false, currentField.data);
             if (fieldId == null)
             {
                fieldId = lang.getObject("defaultConfig.fieldId", false, currentField.data);
@@ -487,6 +487,11 @@ define(["dojo/_base/declare",
                }
             }
 
+            // Update the pubSubScope so that they can request available fields on the correct pubSubScope...
+            array.forEach(clonedItem.widgetsForConfig, function(widget, index) {
+               lang.setObject("config.pubSubScope", this.childPubSubScope, widget);
+            }, this);
+
             // Update the configuration to set the ID of the parent...
             // The ID is either that of the parent DropZoneWrapper or the actual ID if there is no DropZoneWrapper
             // There won't be a DropZoneWrapper if this is the root DropZone (e.g. one created by a DropZoneFormControl)...
@@ -548,7 +553,7 @@ define(["dojo/_base/declare",
          // Update the configuration to set the ID of the parent...
          // The ID is either that of the parent DropZoneWrapper or the actual ID if there is no DropZoneWrapper
          // There won't be a DropZoneWrapper if this is the root DropZone (e.g. one created by a DropZoneFormControl)...
-         var myUuid = lang.getObject("_dropZoneWrapper.fieldId", false, this);
+         var myUuid = lang.getObject("_dropZoneWrapperId", false, this);
          if (myUuid == null)
          {
             myUuid = this.id;
@@ -592,7 +597,8 @@ define(["dojo/_base/declare",
 
          var items = [];
          array.forEach(myConfig.children, function (item, index) {
-            items.push(this.alfGetData(item));
+            var item = this.alfGetData(item);
+            items.push(item);
          }, this);
          myConfig.widgetsForDisplay = [
             {
@@ -604,6 +610,12 @@ define(["dojo/_base/declare",
                }
             }
          ];
+
+         // Emit an event that is intended to bubble up to an outer DropZoneControl...
+         on.emit(this.domNode, "onWidgetUpdate", {
+            bubbles: true,
+            cancelable: true
+         });
       }
    });
 });

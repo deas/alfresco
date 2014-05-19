@@ -71,17 +71,18 @@ define(["alfresco/forms/controls/BaseFormControl",
        * @instance
        */
       setupChangeEvents: function alfresco_forms_controls_DropZoneControl__setupChangeEvents() {
-         on(this.domNode, "onWidgetUpdate", lang.hitch(this, "validate"));
+         // Initialise the current value...
+         this.onUpdateValue();
+         on(this.domNode, "onWidgetUpdate", lang.hitch(this, "onUpdateValue"));
       },
       
       /**
-       * Overrides the [inherited function]{@link module:alfresco/forms/controls/BaseFormControl#getValue} to
-       * call the getValue function of the wrapped DropZone control
        * 
        * @instance
        * @returns {string} The widgets defined in the preview pane
        */
-      getValue: function alfresco_forms_controls_DropZoneControl__getValue() {
+      onUpdateValue: function alfresco_forms_controls_DropZoneControl__onUpdateValue() {
+         this.alfLog("log", "Updating DropZoneControl value...");
          var value = {
             editorConfig: "",
             widgetsConfig: ""
@@ -92,7 +93,13 @@ define(["alfresco/forms/controls/BaseFormControl",
          {
             if (config.widgetsForDisplay != null)
             {
-               value.editorConfig = config.widgetsForDisplay;
+               var items = lang.getObject("widgetsForDisplay.0.config.initialItems", false, config);
+               if (items != null)
+               {
+                  value.editorConfig = items;
+               }
+               // get config.initialItems
+               // value.editorConfig = config.widgetsForDisplay;
             }
             if (config.children != null)
             {
@@ -100,7 +107,19 @@ define(["alfresco/forms/controls/BaseFormControl",
                value.widgetsConfig = childData;
             }
          }
-         return value;
+         this.value = value;
+         this.validate();
+      },
+
+      /**
+       * Overrides the [inherited function]{@link module:alfresco/forms/controls/BaseFormControl#getValue} to
+       * call the getValue function of the wrapped [DropZone]{@link module:alfresc/creation/DropZone} control
+       *
+       * @instance
+       * @returns {object} Returns the current value
+       */
+      getValue: function alfresco_forms_controls_DropZoneControl__getValue() {
+         return this.value;
       },
 
       /**

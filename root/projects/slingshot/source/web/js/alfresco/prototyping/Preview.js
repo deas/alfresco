@@ -87,9 +87,12 @@ define(["dojo/_base/declare",
          if (payload.pageDefinition == null)
          {
             pageDefinition = {
-               publishOnReady: payload.publishOnReady,
-               services: payload.services,
-               widgets: payload.widgets
+               publishOnReady: payload.publishOnReady.widgetsConfig,
+               publishOnReadyEditorConfig: payload.publishOnReady.editorConfig,
+               services: payload.services.widgetsConfig,
+               servicesEditorConfig: payload.services.editorConfig,
+               widgets: payload.widgets.widgetsConfig,
+               widgetsEditorConfig: payload.widgets.editorConfig
             };
             pageDefinition = dojoJson.stringify(pageDefinition);
          }

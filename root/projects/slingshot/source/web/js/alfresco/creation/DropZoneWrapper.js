@@ -90,7 +90,7 @@ define(["dojo/_base/declare",
       processWidget: function alfresco_creation_DropZoneWrapper__processWidget(rootNode, widgetConfig, index) {
          if (widgetConfig != null && widgetConfig.config != null)
          {
-            widgetConfig.config._dropZoneWrapper = this;
+            widgetConfig.config._dropZoneWrapperId = this.fieldId;
          }
          this.inherited(arguments);
       },

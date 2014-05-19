@@ -16,9 +16,9 @@ try
          var json = JSON.parse(response);
          var page = json.items[0].content;
          var pageData = JSON.parse(page);
-         publishOnReady = pageData.publishOnReady;
-         services = pageData.services;
-         widgets = pageData.widgets;
+         publishOnReady = pageData.publishOnReadyEditorConfig;
+         services = pageData.servicesEditorConfig;
+         widgets = pageData.widgetsEditorConfig;
          pageName = url.args["page"];
       }
    }

@@ -222,11 +222,11 @@ define(["dojo/_base/declare",
          {
             pageDefinition = {
                publishOnReady: payload.publishOnReady.widgetsConfig,
-               // publishOnReadyEditorConfig: payload.publishOnReady.editorConfig,
+               publishOnReadyEditorConfig: payload.publishOnReady.editorConfig,
                services: payload.services.widgetsConfig,
-               // servicesEditorConfig: payload.services.editorConfig,
+               servicesEditorConfig: payload.services.editorConfig,
                widgets: payload.widgets.widgetsConfig,
-               // widgetsEditorConfig: payload.widgets.editorConfig
+               widgetsEditorConfig: payload.widgets.editorConfig
             };
          }
          else
