@@ -8,12 +8,14 @@ import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.search.FacetedSearchFacetGroup;
 import org.alfresco.po.share.search.FacetedSearchPage;
+import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.share.util.SiteUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,6 +51,7 @@ public class FacetedSearchPageTest extends AbstractUtils
     private OpCloudTestContext testContext;
     private DashBoardPage dashBoardPage;
     private FacetedSearchPage facetedSearchPage;
+    private SiteDashboardPage siteDashboardPage;
     private String siteName;
 
     /* (non-Javadoc)
@@ -321,13 +324,72 @@ public class FacetedSearchPageTest extends AbstractUtils
 
         trace("searchAndLinkTest complete");
     }
-    
+
+    /**
+     * Scope test.
+     *
+     * @throws Exception
+     */
+    @Test(dependsOnMethods={"searchAndLinkTest"})
+    public void searchAndScopeTest() throws Exception
+    {
+        trace("Starting searchAndScopeTest");
+
+        // Do a search for the letter 'a'
+        doSearch("a");
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
+
+        // Check scope menu options
+        Assert.assertTrue(facetedSearchPage.getScopeMenu().hasScopeLabel("Repository"), "The scope menu should have a 'Repository' option");
+        Assert.assertTrue(facetedSearchPage.getScopeMenu().hasScopeLabel("All Sites"), "The scope menu should have an 'All Sites' option");
+        
+        // Current scope selection
+        Assert.assertTrue("Repository".equalsIgnoreCase(facetedSearchPage.getScopeMenu().getCurrentSelection()), "The initial value of the scope menu should be 'Repository'");
+
+        // Select 'All Sites'
+        facetedSearchPage.getScopeMenu().scopeByLabel("All Sites");
+
+        // Reload the page objects
+        facetedSearchPage.render();
+
+        // Re-check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' in 'All Sites' there should be some search results");
+
+        // Navigate to the test site
+        dashBoardPage = ShareUser.openUserDashboard(drone).render();
+        siteDashboardPage = SiteUtil.openSiteURL(drone, getSiteShortname(this.siteName));
+
+        // Do a header search for the letter 'a'
+        facetedSearchPage = (FacetedSearchPage)siteDashboardPage.getSearch().search("a").render();
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
+
+        // Check scope menu options - now with a siteName
+        Assert.assertTrue(facetedSearchPage.getScopeMenu().hasScopeLabel("Repository"), "The scope menu should have a 'Repository' option");
+        Assert.assertTrue(facetedSearchPage.getScopeMenu().hasScopeLabel("All Sites"), "The scope menu should have an 'All Sites' option");
+        Assert.assertTrue(facetedSearchPage.getScopeMenu().hasScopeLabel(this.siteName), "The scope menu should have a '" + this.siteName + "' option");
+        
+        // Select siteName
+        facetedSearchPage.getScopeMenu().scopeByLabel(this.siteName);
+
+        // Reload the page objects
+        facetedSearchPage.render();
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After choosing the test site and searching for the letter 'a' there should be some search results");
+
+        trace("searchAndScopeTest complete");
+    }
+
     /**
      * Precision search and sort test.
      *
      * @throws Exception
      */
-    @Test(dependsOnMethods={"searchAndLinkTest"})
+    @Test(dependsOnMethods={"searchAndScopeTest"})
     public void precisionSearchAndSortTest() throws Exception
     {
         trace("Starting precisionSearchAndSortTest");
@@ -362,20 +424,20 @@ public class FacetedSearchPageTest extends AbstractUtils
     /* (non-Javadoc)
      * @see org.alfresco.share.util.AbstractUtils#tearDown()
      */
-    @AfterClass(alwaysRun = true)
-    public void tearDown()
-    {
-        trace("Starting tearDown");
-
-        // Navigate to the document library page and delete all content
-        ShareUser.openSiteDashboard(drone, siteName);
-        ShareUser.openDocumentLibrary(drone);
-        ShareUser.deleteAllContentFromDocumentLibrary(drone);
-
-        super.tearDown();
-
-        trace("TearDown complete");
-    }
+//    @AfterClass(alwaysRun = true)
+//    public void tearDown()
+//    {
+//        trace("Starting tearDown");
+//
+//        // Navigate to the document library page and delete all content
+//        ShareUser.openSiteDashboard(drone, siteName);
+//        ShareUser.openDocumentLibrary(drone);
+//        ShareUser.deleteAllContentFromDocumentLibrary(drone);
+//
+//        super.tearDown();
+//
+//        trace("TearDown complete");
+//    }
 
     /**
      * Upload test docs.
@@ -387,7 +449,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
         String[] testUserInfo = new String[] {testUser};
         
-        siteName = getSiteName(testName);
+        this.siteName = getSiteName(testName);
 
         // User
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
@@ -396,7 +458,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Site
-        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, this.siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload Files - there are 26 starting with the letters of the alphabet
         for (int i=0; i < 26; i++)
@@ -418,6 +480,20 @@ public class FacetedSearchPageTest extends AbstractUtils
     {
         // Do a search for the searchTerm
         facetedSearchPage.getSearchForm().search(searchTerm);
+
+        // Reload the page objects
+        facetedSearchPage.render();
+    }
+
+    /**
+     * Do header search.
+     *
+     * @param searchTerm the search term
+     */
+    private void doHeaderSearch(String searchTerm)
+    {
+        // Do a search for the searchTerm
+        facetedSearchPage.getHeaderSearchForm().search(searchTerm);
 
         // Reload the page objects
         facetedSearchPage.render();
