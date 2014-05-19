@@ -178,7 +178,9 @@
          if (document.referrer)
          {
             /* Did we come from the document library? If so, then direct the user back there */
-            if (document.referrer.match(/documentlibrary([?]|$)/) || document.referrer.match(/repository([?]|$)/))
+            if (document.referrer.match(/documentlibrary([?]|$)/) || 
+                document.referrer.match(/repository([?]|$)/) ||
+                document.referrer.match(/faceted-search([?]|$)/))
             {
                // go back to the referrer page
                history.go(-1);
