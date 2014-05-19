@@ -1,16 +1,24 @@
 package org.alfresco.share.search;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.search.FacetedSearchFacetGroup;
 import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
+import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.share.util.AbstractUtils;
+import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.api.CreateUserAPI;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -21,6 +29,7 @@ import org.testng.annotations.Test;
  *
  * @author Richard Smith
  */
+@SuppressWarnings({"rawtypes","serial"})
 public class FacetedSearchPageTest extends AbstractUtils
 {
 
@@ -29,14 +38,21 @@ public class FacetedSearchPageTest extends AbstractUtils
 
     /** Constants */
     private static final int expectedResultLength = 25;
+    private static final List<Class> linkToClassType = new ArrayList<Class>() {{
+        add(DocumentDetailsPage.class);
+        add(DocumentLibraryPage.class);
+    }};
+    private static final String fileDir = "faceted-search-files\\";
+    private static final String fileStem = "-fs-test.docx";
+    private static final String obscureSearchWord = "antidisestablishmentarianism";
 
+    private OpCloudTestContext testContext;
     private DashBoardPage dashBoardPage;
     private FacetedSearchPage facetedSearchPage;
+    private String siteName;
 
-    /**
-     * Setup.
-     * 
-     * @throws Exception
+    /* (non-Javadoc)
+     * @see org.alfresco.share.util.AbstractUtils#setup()
      */
     @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
@@ -44,6 +60,10 @@ public class FacetedSearchPageTest extends AbstractUtils
         trace("Starting setup");
 
         super.setup();
+        this.testContext = new OpCloudTestContext(this);
+
+        // Upload test documents
+        uploadTestDocs();
 
         // Login as admin
         dashBoardPage = ShareUser.loginAs(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
@@ -292,11 +312,101 @@ public class FacetedSearchPageTest extends AbstractUtils
 
         // We should no longer be on the faceted search page
         Assert.assertNotEquals(url, newUrl, "After searching for the letter 'a' and clicking result 1, the url should have changed");
-        
-        // Resolve the new page - we should have linked to the document details page
-        Assert.assertTrue(FactorySharePage.resolvePage(drone) instanceof DocumentDetailsPage, "After searching for the letter 'a' and clicking result 1, we should now be on the document details page");
-        
+
+        // Resolve the new page - we should have linked to one of the types defined in linkToClassType list
+        Assert.assertTrue(linkToClassType.contains(FactorySharePage.resolvePage(drone).getClass()), "After searching for the letter 'a' and clicking result 1 we should be on an expected page type");
+
+        // Navigate back to the faceted search page
+        facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
+
         trace("searchAndLinkTest complete");
+    }
+    
+    /**
+     * Precision search and sort test.
+     *
+     * @throws Exception
+     */
+    @Test(dependsOnMethods={"searchAndLinkTest"})
+    public void precisionSearchAndSortTest() throws Exception
+    {
+        trace("Starting precisionSearchAndSortTest");
+
+        // Do a search for the obscureSearchWord
+        doSearch(obscureSearchWord);
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for '" + obscureSearchWord + "' there should be some search results");
+
+        // Sort by Name
+        facetedSearchPage.getSort().sortByLabel("Name");
+
+        // Reload the page objects
+        facetedSearchPage.render();
+        
+        // First result should begin with 'a'
+        Assert.assertTrue(facetedSearchPage.getResults().get(0).getName().charAt(0) == 'a', "After searching for '" + obscureSearchWord + "' and sorting by 'Name' the first letter of the Name of result one should be 'a'");
+        
+        // Invert sort
+        facetedSearchPage.getSort().getSortOrderButton().click();
+        
+        // Reload the page objects
+        facetedSearchPage.render();
+        
+        // First result should begin with 'z'
+        Assert.assertTrue(facetedSearchPage.getResults().get(0).getName().charAt(0) == 'z', "After searching for '" + obscureSearchWord + "' and sorting by 'Name' and inverting the sort, the first letter of the Name of result one should be 'z'");
+        
+        trace("precisionSearchAndSortTest complete");
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.share.util.AbstractUtils#tearDown()
+     */
+    @AfterClass(alwaysRun = true)
+    public void tearDown()
+    {
+        trace("Starting tearDown");
+
+        // Navigate to the document library page and delete all content
+        ShareUser.openSiteDashboard(drone, siteName);
+        ShareUser.openDocumentLibrary(drone);
+        ShareUser.deleteAllContentFromDocumentLibrary(drone);
+
+        super.tearDown();
+
+        trace("TearDown complete");
+    }
+
+    /**
+     * Upload test docs.
+     * @throws Exception 
+     */
+    private void uploadTestDocs() throws Exception
+    {
+        String testName = "FacetedSearch" + testContext.getRunId();
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] {testUser};
+        
+        siteName = getSiteName(testName);
+
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        // Site
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        // Upload Files - there are 26 starting with the letters of the alphabet
+        for (int i=0; i < 26; i++)
+        {
+            String[] fileInfo = { fileDir + (char)(i+97) + fileStem };
+            ShareUser.uploadFileInFolder(drone, fileInfo);
+        }
+
+        // Logout
+        ShareUtil.logout(drone);
     }
 
     /**
