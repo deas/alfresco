@@ -93,7 +93,16 @@ define(["dojo/_base/declare",
        * @default "ALPHABETICALLY"
        */
       sortBy: "ALPHABETICALLY",
-      
+
+      /**
+       * Pass through setting for useHash on initialised FacetFilter widgets
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      useHash: false,
+
       /**
        * Processes any widgets defined in the configuration for this instance.
        * 
@@ -194,7 +203,9 @@ define(["dojo/_base/declare",
                   hits: filter.hits,
                   filter: filter.value,
                   facet: this.facetQName,
-                  applied: applied
+                  applied: applied,
+                  useHash: this.useHash,
+                  pubSubScope: this.pubSubScope
                });
 
                if (filtersToAdd != null && filtersToAdd <= 0 && !applied)

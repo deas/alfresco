@@ -210,6 +210,10 @@ define(["dojo/_base/declare",
                ff[filter] = true;
             }, this);
          }
+         else
+         {
+            this.facetFilters = {};
+         }
 
          lang.mixin(this, payload);
          this.loadData();

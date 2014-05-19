@@ -36,8 +36,11 @@ define(["dojo/_base/declare",
         "dojo/_base/array",
         "dojo/dom-construct",
         "dojo/dom-class",
-        "dojo/on"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, template,  AlfCore, lang, array, domConstruct, domClass, on) {
+        "dojo/on",
+        "dojo/hash",
+        "dojo/io-query",
+        "alfresco/core/ArrayUtils"], 
+        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, template,  AlfCore, lang, array, domConstruct, domClass, on, hash, ioQuery, arrayUtils) {
 
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
       
@@ -130,6 +133,16 @@ define(["dojo/_base/declare",
       appliedFilterAltText: "facet.filter.applied.alt-text",
 
       /**
+       * When this is set to true the current URL hash fragment will be used to initialise the facet selection
+       * and when the facet is selected the hash fragment will be updated with the facet selection.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      useHash: false,
+
+      /**
        * Sets up the attributes required for the HTML template.
        * @instance
        */
@@ -192,9 +205,20 @@ define(["dojo/_base/declare",
        * @instance
        */
       onApplyFilter: function alfresco_search_FacetFilter__onApplyFilter() {
-         this.alfPublish("ALF_APPLY_FACET_FILTER", {
-            filter: this.facet + "|" + this.filter
-         });
+
+         var fullFilter = this.facet + "|" + this.filter;
+
+         if(this.useHash)
+         {
+            this._updateHash(fullFilter, "add");
+         }
+         else
+         {
+            this.alfPublish("ALF_APPLY_FACET_FILTER", {
+               filter: fullFilter
+            });
+         }
+
          domClass.remove(this.removeNode, "hidden");
          domClass.add(this.labelNode, "applied");
          this.applied = true;
@@ -207,12 +231,63 @@ define(["dojo/_base/declare",
        * @instance
        */
       onClearFilter: function alfresco_search_FacetFilter__onClearFilter() {
-         this.alfPublish("ALF_REMOVE_FACET_FILTER", {
-            filter: this.facet + "|" + this.filter
-         });
+         
+         var fullFilter = this.facet + "|" + this.filter;
+
+         if(this.useHash)
+         {
+            this._updateHash(fullFilter, "remove");
+         }
+         else
+         {
+            this.alfPublish("ALF_REMOVE_FACET_FILTER", {
+               filter: fullFilter
+            });
+         }
+
          domClass.add(this.removeNode, "hidden");
          domClass.remove(this.labelNode, "applied");
          this.applied = false;
+      },
+
+      /**
+       * Performs updates to the url hash as facets are selected and de-selected
+       * 
+       * @instance
+       */
+      _updateHash: function alfresco_search_FacetFilter___updateHash(fullFilter, mode) {
+
+         // Get the existing hash and extract the individual facetFilters into an array
+         var aHash = ioQuery.queryToObject(hash()),
+             facetFilters = ((aHash.facetFilters) ? aHash.facetFilters : ""),
+             facetFiltersArr = (facetFilters === "") ? [] : facetFilters.split(",");
+
+         // Add or remove the filter from the hash object
+         if(mode === "add" && !arrayUtils.arrayContains(facetFiltersArr, fullFilter))
+         {
+            facetFiltersArr.push(fullFilter);
+         }
+         else if (mode === "remove" && arrayUtils.arrayContains(facetFiltersArr, fullFilter))
+         {
+            facetFiltersArr.splice(facetFiltersArr.indexOf(fullFilter), 1);
+         }
+
+         // Put the manipulated filters back into the hash object or remove the property if empty
+         if(facetFiltersArr.length < 1)
+         {
+            delete aHash.facetFilters;
+         }
+         else
+         {
+            aHash.facetFilters = facetFiltersArr.join();
+         }
+
+         // Send the hash value back to navigation
+         this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
+            url: ioQuery.objectToQuery(aHash),
+            type: "HASH"
+         }, true);
       }
+
    });
 });

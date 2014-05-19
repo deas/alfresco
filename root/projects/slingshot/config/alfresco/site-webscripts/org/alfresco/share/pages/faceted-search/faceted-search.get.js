@@ -54,7 +54,8 @@ var facets = [
          label: msg.get("faceted-search.facet-menu.facet.formats"),
          facetQName: "{http://www.alfresco.org/model/content/1.0}content.mimetype",
          sortBy: "DESCENDING",
-         maxFilters: 6
+         maxFilters: 6,
+         useHash: true
       }
    },
    {
@@ -66,7 +67,8 @@ var facets = [
          sortBy: "DESCENDING",
          hitThreshold: 1,
          minFilterValueLength: 5,
-         maxFilters: 6
+         maxFilters: 6,
+         useHash: true
       }
    },
    {
@@ -76,7 +78,8 @@ var facets = [
          label: msg.get("faceted-search.facet-menu.facet.creator"),
          facetQName: "{http://www.alfresco.org/model/content/1.0}creator.__",
          sortBy: "ALPHABETICALLY",
-         maxFilters: 3
+         maxFilters: 3,
+         useHash: true
       }
    },
    {
@@ -86,7 +89,8 @@ var facets = [
          label: msg.get("faceted-search.facet-menu.facet.modifier"),
          facetQName: "{http://www.alfresco.org/model/content/1.0}modifier.__",
          sortBy: "ALPHABETICALLY",
-         maxFilters: 3
+         maxFilters: 3,
+         useHash: true
       }
    }
 ];
@@ -387,8 +391,7 @@ var main = {
 };
 
 // Append services with those required for search
-services.push("alfresco/services/ActionService",
-              "alfresco/services/NavigationService",
+services.push("alfresco/services/NavigationService",
               "alfresco/services/SearchService");
 
 // Add in the search form and search doc lib...
