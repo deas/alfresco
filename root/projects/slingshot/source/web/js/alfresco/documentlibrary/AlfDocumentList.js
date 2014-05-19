@@ -162,6 +162,15 @@ define(["dojo/_base/declare",
       useHash: false,
 
       /**
+       * An array of hash variables that when changed will trigger a reload
+       *
+       * @instance
+       * @type {array}
+       * @default []
+       */
+      hashVarsForUpdate: [],
+
+      /**
        * Subscribe the document list topics.
        * 
        * @instance

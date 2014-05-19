@@ -12,18 +12,19 @@ var services = getHeaderServices(),
 var rootWidgetId = "FCTSRCH_";
 
 // Accessibility menu
-//var accessMenu = {
-//   id: rootWidgetId + "ACCESSIBILITY_MENU",
-//   name: "alfresco/accessibility/AccessibilityMenu",
-//   config: {
-//      menu: [
-//         {"url": "#" + rootWidgetId + "SEARCH_FORM", "key": "f", "msg": "skip.to.content.message"},
-//         {"url": "#" + rootWidgetId + "FACET_MENU", "key": "q", "msg": "skip.to.content.message"},
-//         {"url": "#" + rootWidgetId + "SORT_MENU", "key": "m", "msg": "access.keys.message"},
-//         {"url": "#" + rootWidgetId + "SEARCH_RESULTS_LIST", "key": "r", "msg": "access.keys.message"}
-//      ]
-//   }
-//};
+var accessMenu = {
+   id: rootWidgetId + "ACCESSIBILITY_MENU",
+   name: "alfresco/accessibility/AccessibilityMenu",
+   config: {
+      titleMsg: msg.get("faceted-search.access-key.title"),
+      menu: [
+         {url: "#" + rootWidgetId + "SEARCH_FORM", key: "f", msg: msg.get("faceted-search.access-key.search-form")},
+         {url: "#" + rootWidgetId + "SEARCH_RESULTS_LIST", key: "r", msg: msg.get("faceted-search.access-key.search-results-list")},
+         {url: "#" + rootWidgetId + "FACET_MENU", key: "q", msg: msg.get("faceted-search.access-key.facet-menu")},
+         {url: "#" + rootWidgetId + "SORT_MENU", key: "m", msg: msg.get("faceted-search.access-key.sort-menu")}
+      ]
+   }
+};
 
 // Compose the search form model
 var searchForm = {
@@ -266,6 +267,12 @@ var searchDocLib = {
    name: "alfresco/documentlibrary/AlfSearchList",
    config: {
       useHash: true,
+      hashVarsForUpdate: [
+         "searchTerm",
+         "facetFilters",
+         "sortField",
+         "sortAscending"
+      ],
       useInfiniteScroll: true,
       widgets: [
          {
@@ -294,7 +301,7 @@ var main = {
    config: {
       baseClass: "side-margins",
       widgets: [
-//         accessMenu,
+         accessMenu,
          {
             name: "alfresco/html/Spacer",
             config: {

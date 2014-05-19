@@ -206,34 +206,38 @@ define(["dojo/_base/declare",
       onChangeFilter: function alfresco_documentlibrary_AlfSearchList__onChangeFilter(payload) {
          this.alfLog("log", "Filter change detected", payload, this);
 
-         // If the search term has changed then we want to delete the facet filters as
-         // they might not be applicable to the new search results...
-         var newSearchTerm = lang.getObject("searchTerm", false, payload);
-         if (newSearchTerm != this.searchTerm)
+         // Only update if the payload contains one of the variables we care about
+         if(this._payloadContainsUpdateableVar(payload))
          {
-            this.facetFilters = {};
+            // If the search term has changed then we want to delete the facet filters as
+            // they might not be applicable to the new search results...
+            var newSearchTerm = lang.getObject("searchTerm", false, payload);
+            if (newSearchTerm != this.searchTerm)
+            {
+               this.facetFilters = {};
+            }
+   
+            // The facet filters need to be handled directly because they are NOT just passed as 
+            // a simple string. Create a new object for the filters and then break up the filters
+            // based on comma delimition and assign each element as a new key in the filters object
+            var filters = lang.getObject("facetFilters", false, payload);
+            if (filters != null)
+            {
+               var ff = payload["facetFilters"] = {};
+               var fArr = filters.split(",");
+               array.forEach(fArr, function(filter) {
+                  ff[filter] = true;
+               }, this);
+            }
+            else
+            {
+               this.facetFilters = {};
+            }
+   
+            lang.mixin(this, payload);
+            this.resetResultsList();
+            this.loadData();
          }
-
-         // The facet filters need to be handled directly because they are NOT just passed as 
-         // a simple string. Create a new object for the filters and then break up the filters
-         // based on comma delimition and assign each element as a new key in the filters object
-         var filters = lang.getObject("facetFilters", false, payload);
-         if (filters != null)
-         {
-            var ff = payload["facetFilters"] = {};
-            var fArr = filters.split(",");
-            array.forEach(fArr, function(filter) {
-               ff[filter] = true;
-            }, this);
-         }
-         else
-         {
-            this.facetFilters = {};
-         }
-
-         lang.mixin(this, payload);
-         this.resetResultsList();
-         this.loadData();
       },
 
       /**
@@ -341,11 +345,41 @@ define(["dojo/_base/declare",
        *
        * @instance
        */
-      resetResultsList: function alfresco_documentlibrary_AlfSearchList_resetResultsList() {
+      resetResultsList: function alfresco_documentlibrary_AlfSearchList__resetResultsList() {
          this.startIndex = 0;
          this.currentPage = 1;
          this.hideChildren(this.domNode);
          this.alfPublish(this.clearDocDataTopic);
+      },
+
+      /**
+       * Compares the payload object with the hashVarsForUpdate array of key names
+       * Returns true if hashVarsForUpdate is empty
+       * Returns true if the payload contains a key that is specified in hashVarsForUpdate
+       * Returns false otherwise
+       *
+       * @instance
+       * @param {object} payload The payload object
+       * @return {boolean}
+       */
+      _payloadContainsUpdateableVar: function alfresco_documentlibrary_AlfSearchList___payloadContainsUpdateableVar(payload) {
+         
+         // No hashVarsForUpdate - return true
+         if(this.hashVarsForUpdate == null || this.hashVarsForUpdate.length == 0)
+         {
+            return true;
+         }
+         
+         // Iterate over the keys defined in hashVarsForUpdate - return true if the payload contains one of them
+         for(var i=0; i < this.hashVarsForUpdate.length; i++)
+         {
+            if(this.hashVarsForUpdate[i] in payload)
+            {
+               return true;
+            }
+         }
+         
+         return false;
       }
 
    });

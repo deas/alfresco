@@ -58,7 +58,7 @@ define(["intern!object",
          .elementsByCssSelector("#AccessibilityMenu > ul > li")
          .then(function (menuitems) {
             TestCommon.log(testname,60,"Find the menu items");
-            expect(menuitems).to.have.length(7, "The Accessibility Menu does not contain 7 <li> items");
+            expect(menuitems).to.have.length(8, "The Accessibility Menu does not contain 8 <li> items");
          })
          .end()
 
