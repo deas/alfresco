@@ -327,6 +327,18 @@ define(["dojo/_base/declare",
             }
          }
 
+         var facetQueries = lang.getObject("response.facetQueries", false, payload);
+         if (facetQueries != null)
+         {
+            for (var key in facetQueries)
+            {
+               this.alfPublish("ALF_FACET_RESULTS_" + key, {
+                  facetResults: facetQueries[key],
+                  activeFilters: filters
+               });
+            }
+         }
+
          var resultsCount = this._currentData.totalRecordsUpper;
          if (resultsCount != null)
          {

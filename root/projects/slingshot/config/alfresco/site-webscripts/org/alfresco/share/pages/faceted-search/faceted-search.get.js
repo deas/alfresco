@@ -138,7 +138,44 @@ var facets = [
          maxFilters: 3,
          useHash: true
       }
+   },
+   {
+      id: rootWidgetId + "FACET_CREATED",
+      name: "alfresco/search/FacetFilters",
+      config: {
+         label: msg.get("faceted-search.facet-menu.facet.created"),
+         facetQName: "{http://www.alfresco.org/model/content/1.0}created",
+         blockIncludeFacetRequest: true,
+         sortBy: "ALPHABETICALLY",
+         maxFilters: 3,
+         useHash: true
+      }
+   },
+   {
+      id: rootWidgetId + "FACET_MODIFIED",
+      name: "alfresco/search/FacetFilters",
+      config: {
+         label: msg.get("faceted-search.facet-menu.facet.modified"),
+         facetQName: "{http://www.alfresco.org/model/content/1.0}modified",
+         blockIncludeFacetRequest: true,
+         sortBy: "ALPHABETICALLY",
+         maxFilters: 3,
+         useHash: true
+      }
+   },
+   {
+      id: rootWidgetId + "FACET_SIZE",
+      name: "alfresco/search/FacetFilters",
+      config: {
+         label: msg.get("faceted-search.facet-menu.facet.size"),
+         facetQName: "{http://www.alfresco.org/model/content/1.0}content.size",
+         blockIncludeFacetRequest: true,
+         sortBy: "ALPHABETICALLY",
+         maxFilters: 3,
+         useHash: true
+      }
    }
+
 ];
 
 // Function to compose the sort fields from share-config

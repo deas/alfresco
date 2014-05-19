@@ -120,6 +120,18 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * This has been added to support the initial implementation of date and size faceting against
+       * Solr 1.4. The search service will always include modification/creation date and file size
+       * filter data in all search responses as these are hard-coded into the Search API as facet queries
+       * and so requesting those as filters will generate unnecessary and confusing response data
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      blockIncludeFacetRequest: false,
+
+      /**
        * 
        * @instance
        */
@@ -127,9 +139,12 @@ define(["dojo/_base/declare",
          if (this.facetQName != null && this.facetQName != "")
          {
             // Publish the details of the facet for the SearchService to log for inclusion in search requests
-            this.alfPublish("ALF_INCLUDE_FACET", {
-               qname: this.facetQName
-            }, true);
+            if (this.blockIncludeFacetRequest == false)
+            {
+               this.alfPublish("ALF_INCLUDE_FACET", {
+                  qname: this.facetQName
+               }, true);
+            }
 
             // Subscribe to facet property results to add facet properties...
             this.alfSubscribe("ALF_FACET_RESULTS_@" + this.facetQName, lang.hitch(this, "processFacetFilters"));
