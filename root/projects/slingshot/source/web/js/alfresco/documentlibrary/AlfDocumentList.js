@@ -171,6 +171,24 @@ define(["dojo/_base/declare",
       hashVarsForUpdate: [],
 
       /**
+       * Is there currently a request in progress?
+       *
+       * @instance
+       * @default false
+       * @type {Boolean}
+       */
+      requestInProgress: false,
+
+      /**
+       * Should we prevent multiple simultaneous requests
+       *
+       * @instance
+       * @default true
+       * @type {Boolean}
+       */
+      blockConcurrentRequests: true,
+
+      /**
        * Subscribe the document list topics.
        * 
        * @instance
@@ -205,6 +223,12 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onDataLoadSuccess"));
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_FAILURE", lang.hitch(this, "onDataLoadFailure"));
 
+         if (this.blockConcurrentRequests)
+         {
+            this.alfSubscribe(this.requestInProgressTopic, lang.hitch(this, "onRequestInProgress"));
+            this.alfSubscribe(this.requestFinishedTopic, lang.hitch(this, "onRequestFinished"));
+         }
+         
          // Get the messages for the template...
          // TODO: Extending modules should be updated to override this during the next refactor!
          this.setDisplayMessages();
@@ -716,46 +740,52 @@ define(["dojo/_base/declare",
        * @instance
        */
       loadData: function alfresco_documentlibrary_AlfDocumentList__loadData() {
-         this.showLoadingMessage();
-
-         var documentPayload = {
-            path: this.currentPath,
-            type: this.showFolders ? "all" : "documents",
-            site: this.siteId,
-            container: this.containerId,
-            sortAscending: this.sortAscending,
-            sortField: this.sortField,
-            filter: this.currentFilter,
-            libraryRoot: this.rootNode
-         };
-
-         if (this.usePagination)
+         if (!this.requestInProgress)
          {
-            documentPayload.page = this.currentPage;
-            documentPayload.pageSize = this.currentPageSize;
-         }
+            this.showLoadingMessage();
+            var documentPayload = {
+               path: this.currentPath,
+               type: this.showFolders ? "all" : "documents",
+               site: this.siteId,
+               container: this.containerId,
+               sortAscending: this.sortAscending,
+               sortField: this.sortField,
+               filter: this.currentFilter,
+               libraryRoot: this.rootNode
+            };
 
-         // InfiniteScroll uses pagination under the covers.
-         if (this.useInfiniteScroll)
-         {
-            documentPayload.page = this.currentPage;
-            documentPayload.pageSize = this.currentPageSize;
+            if (this.usePagination)
+            {
+               documentPayload.page = this.currentPage;
+               documentPayload.pageSize = this.currentPageSize;
+            }
+
+            // InfiniteScroll uses pagination under the covers.
+            if (this.useInfiniteScroll)
+            {
+               documentPayload.page = this.currentPage;
+               documentPayload.pageSize = this.currentPageSize;
+            }
+            else
+            {
+               this.alfPublish(this.clearDocDataTopic);
+            }
+
+            if ((this.siteId == null || this.siteId == "") && this.nodeRef != null)
+            {
+               // Repository mode (don't resolve Site-based folders)
+               documentPayload.nodeRef = this.nodeRef.toString();
+            }
+
+            // Set a response topic that is scoped to this widget...
+            documentPayload.alfResponseTopic = this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST";
+
+            this.alfPublish("ALF_RETRIEVE_DOCUMENTS_REQUEST", documentPayload, true);
          }
          else
          {
-            this.alfPublish(this.clearDocDataTopic);
+            // TODO: Let the user know that we're still waiting on the last data load?
          }
-
-         if ((this.siteId == null || this.siteId == "") && this.nodeRef != null)
-         {
-            // Repository mode (don't resolve Site-based folders)
-            documentPayload.nodeRef = this.nodeRef.toString();
-         }
-
-         // Set a response topic that is scoped to this widget...
-         documentPayload.alfResponseTopic = this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST";
-
-         this.alfPublish("ALF_RETRIEVE_DOCUMENTS_REQUEST", documentPayload, true);
       },
       
       /**
@@ -817,6 +847,9 @@ define(["dojo/_base/declare",
             // Force a resize of the sidebar container to take the new height of the view into account...
             this.alfPublish("ALF_RESIZE_SIDEBAR", {});
          }
+
+         // This request has finished, allow another one to be triggered.
+         this.alfPublish(this.requestFinishedTopic, {});
       },
       
       /**
@@ -830,6 +863,9 @@ define(["dojo/_base/declare",
          this.alfLog("error", "Data Load Failed", response, originalRequestConfig);
          this._currentData = null;
          this.showNoDataMessage(); // TODO: This should probably be a different error message
+
+         // Allow the user to try again.
+         this.alfPublish(this.requestFinishedTopic, {});
       },
       
       /**
@@ -1011,15 +1047,31 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * Triggers when the infinite scroll widget near the bottom of the page.
+       *
        * @instance
+       * @param payload
        */
-      onScrollNearBottom: function alfresco_documentlibrary_AlfDocumentList__onScrollNearBottom() {
+      onScrollNearBottom: function alfresco_documentlibrary_AlfDocumentList__onInsertMoreDocumentsRequest(payload) {
          // Process Infinite Scroll, if enabled & if we've not hit the end of the results
          if(this.useInfiniteScroll && this._currentData.totalRecords < this._currentData.totalRecordsUpper)
          {
             this.currentPage++;
+
             this.loadData();
          }
+      },
+
+      /**
+       * Triggered when a request is in progress to prevent multiple submissions.
+       *
+       */
+      onRequestInProgress: function alfresco_documentlibrary_AlfDocumentList__onRequestInProgress() {
+         this.requestInProgress = true;
+      },
+
+      onRequestFinished: function alfresco_documentlibrary_AlfDocumentList__onRequestFinished() {
+         this.requestInProgress = false;
       }
    });
 });

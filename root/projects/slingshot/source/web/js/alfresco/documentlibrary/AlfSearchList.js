@@ -80,6 +80,10 @@ define(["dojo/_base/declare",
          // Infinite scroll handling
          this.alfSubscribe(this.scrollNearBottom, lang.hitch(this, "onScrollNearBottom"));
 
+         // Prevent multiple concurrent requests:
+         this.alfSubscribe(this.requestInProgressTopic, lang.hitch(this, "onRequestInProgress"));
+         this.alfSubscribe(this.requestFinishedTopic, lang.hitch(this, "onRequestFinished"));
+
          // Get the messages for the template...
          this.noViewSelectedMessage = this.message("searchlist.no.view.message");
          this.noDataMessage = this.message("searchlist.no.data.message");
@@ -257,38 +261,48 @@ define(["dojo/_base/declare",
        * @instance
        */
       loadData: function alfresco_documentlibrary_AlfSearchList__loadData() {
-         this.showLoadingMessage();
+         if (this.requestInProgress) {
 
-         var filters = "";
-         for (var key in this.facetFilters)
-         {
-            filters = filters + key.replace(/\.__.u/g, "").replace(/\.__/g, "") + ",";
+            this.alfPublish(this.requestInProgressTopic, {});
+
+            this.showLoadingMessage();
+
+            var filters = "";
+            for (var key in this.facetFilters)
+            {
+               filters = filters + key.replace(/\.__.u/g, "").replace(/\.__/g, "") + ",";
+            }
+            filters = filters.substring(0, filters.length - 1);
+
+            var searchPayload = {
+               term: this.searchTerm,
+               facetFields: this.facetFields,
+               filters: filters,
+               sortAscending: this.sortAscending,
+               sortField: this.sortField,
+               site: this.siteId,
+               rootNode: this.rootNode,
+               repo: this.repo
+            };
+
+            // InfiniteScroll uses pagination under the covers.
+            if (this.useInfiniteScroll)
+            {
+               // Search API wants startIndex rather than page, so we need to convert here.
+               searchPayload.startIndex = (this.currentPage - 1) * this.currentPageSize;
+               searchPayload.pageSize = this.currentPageSize;
+            }
+
+            // Set a response topic that is scoped to this widget...
+            searchPayload.alfResponseTopic = this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST";
+
+            this.alfPublish("ALF_SEARCH_REQUEST", searchPayload, true);
          }
-         filters = filters.substring(0, filters.length - 1);
-
-         var searchPayload = {
-            term: this.searchTerm,
-            facetFields: this.facetFields,
-            filters: filters,
-            sortAscending: this.sortAscending,
-            sortField: this.sortField,
-            site: this.siteId,
-            rootNode: this.rootNode,
-            repo: this.repo
-         };
-
-         // InfiniteScroll uses pagination under the covers.
-         if (this.useInfiniteScroll)
+         else
          {
-            // Search API wants startIndex rather than page, so we need to convert here.
-            searchPayload.startIndex = (this.currentPage - 1) * this.currentPageSize;
-            searchPayload.pageSize = this.currentPageSize;
+            // TODO: Inform user that request is in progress?
+            this.alfLog("log", "Search request ignored because progress is already in progress");
          }
-
-         // Set a response topic that is scoped to this widget...
-         searchPayload.alfResponseTopic = this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST";
-
-         this.alfPublish("ALF_SEARCH_REQUEST", searchPayload, true);
       },
 
       /**
