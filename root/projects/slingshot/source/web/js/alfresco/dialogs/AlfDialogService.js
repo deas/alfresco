@@ -116,6 +116,7 @@ define(["dojo/_base/declare",
                var config = lang.clone(this.defaultFormDialogConfig);
                lang.mixin(config, payload);
                config.pubSubScope = pubSubScope;
+               config.parentPubSubScope = this.parentPubSubScope;
                config.subcriptionTopic = subcriptionTopic; // Include the subcriptionTopic in the configuration the subscription can be cleaned up
 
                // Construct the form widgets and then construct the dialog using that configuration...
@@ -141,7 +142,8 @@ define(["dojo/_base/declare",
       createDialogConfig: function alfresco_dialogs_AlfDialogService__createDialogConfig(config, formConfig) {
          var dialogConfig = {
             title: this.message(config.dialogTitle),
-            pubSubScope: config.pubSubScope, // Scope the dialog content so that it doesn't pollute any other widgets
+            pubSubScope: config.pubSubScope, // Scope the dialog content so that it doesn't pollute any other widgets,
+            parentPubSubScope: config.parentPubSubScope,
             widgetsContent: [formConfig],
             widgetsButtons: [
                   {

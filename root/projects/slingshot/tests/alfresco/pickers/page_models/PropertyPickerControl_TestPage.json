@@ -1,0 +1,27 @@
+{
+   "widgets": [
+      {
+         "name": "alfresco/forms/Form",
+         "config": {
+            "okButtonPublishTopic": "TEST",
+            "widgets": [
+               {
+                  "name": "alfresco/forms/controls/PropertyPicker",
+                  "config": {
+                     "id": "PICKER1",
+                     "label": "Pick some props",
+                     "name": "props",
+                     "value": [{"name":"cm:name"}]
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "name": "alfresco/testing/SubscriptionLog"
+      },
+      {
+         "name": "alfresco/testing/TestCoverageResults"
+      }
+   ]
+}

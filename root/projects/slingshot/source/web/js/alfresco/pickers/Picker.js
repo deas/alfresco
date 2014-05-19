@@ -113,12 +113,12 @@ define(["dojo/_base/declare",
          if (this.showPickedItems == true)
          {
             this._processsingPickedItems = true;
-            this.processWidgets(this.widgetsForPickedItems, this.pickedItemsNode);
+            this.processWidgets(lang.clone(this.widgetsForPickedItems), this.pickedItemsNode);
          }
 
          if (this.widgetsForRootPicker != null)
          {
-            this.processWidgets(this.widgetsForRootPicker, this.subPickersNode);
+            this.processWidgets(lang.clone(this.widgetsForRootPicker), this.subPickersNode);
          }
       },
 

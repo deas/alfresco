@@ -260,7 +260,8 @@ define(["dojo/_base/declare",
                   id: this.id + "_ITEMS",
                   widgets: this.widgets,
                   currentData: this.currentData,
-                  pubSubScope: this.pubSubScope
+                  pubSubScope: this.pubSubScope,
+                  parentPubSubScope: this.parentPubSubScope
                });
                this.docListRenderer.placeAt(this.tableNode, "last");
                this.docListRenderer.renderData();

@@ -337,13 +337,24 @@ define(["dojo/_base/declare",
          }
 
          // Pass on the pub/sub scope from the parent...
-         if (this.parentPubSubScope != null)
+         if (initArgs.pubSubScope == this.pubSubScope)
          {
-            initArgs.parentPubSubScope = this.parentPubSubScope;
+            // If the scope is inherited then also inherit the parent scope...
+            if (this.parentPubSubScope == null)
+            {
+               // ...set as global if not set already
+               initArgs.parentPubSubScope = "";
+            }
+            else
+            {
+               // ...but try to inherit...
+               initArgs.parentPubSubScope = this.parentPubSubScope;
+            }
          }
          else
          {
-            initArgs.parentPubSubScope = "";
+            // If the scope has changed then inherit the my scope...
+            initArgs.parentPubSubScope = this.pubSubScope;
          }
 
          if (initArgs.dataScope === undefined)

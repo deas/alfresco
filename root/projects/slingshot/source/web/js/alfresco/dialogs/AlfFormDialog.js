@@ -116,6 +116,7 @@ define(["dojo/_base/declare",
          var dialogConfig = {
             title: this.message(this.dialogTitle),
             pubSubScope: this.pubSubScope, // Scope the dialog content so that it doesn't pollute any other widgets
+            parentPubSubScope: this.parentPubSubScope,
             widgetsContent: [formConfig],
             widgetsButtons: [
                   {

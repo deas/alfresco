@@ -43,12 +43,15 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_dialogs__CreateFormDialogMixin__postCreate() {
-         // Generate a new pub/sub scope for the widget (this will intentionally override any other settings
-         // to contrain communication...
          this.inherited(arguments);
-         this.pubSubScope = this.generateUuid();
-         this.publishTopic = "ALF_CREATE_FORM_DIALOG_MIXIN_REQUEST_TOPIC";
-         this.alfSubscribe(this.publishTopic, lang.hitch(this, "onCreateFormDialogRequest"));
+
+         // Generate a new UUID for the publishTopic and then override the configuration so that
+         // the publishications are global. Then immediately subscribe globally to that generated
+         // UUID. This should ensure that only this instance will handle the publications. This
+         // should avoid the form being created/displayed accidentally...
+         this.publishTopic = this.generateUuid(); // This gets passed to the button, etc
+         this.publishGlobal = true;
+         this.alfSubscribe(this.publishTopic, lang.hitch(this, "onCreateFormDialogRequest"), true);
          this.alfSubscribe(this._formConfirmationTopic, lang.hitch(this, "onDialogConfirmation"));
       },
 
@@ -152,6 +155,7 @@ define(["dojo/_base/declare",
          var dialogConfig = {
             title: this.message(this.dialogTitle),
             pubSubScope: this.pubSubScope, // Scope the dialog content so that it doesn't pollute any other widgets
+            parentPubSubScope: this.parentPubSubScope,
             widgetsContent: [formConfig],
             widgetsButtons: [
                   {
@@ -203,6 +207,10 @@ define(["dojo/_base/declare",
        */
       formSubmissionTopic: null,
 
+      formSubmissionGlobal: true,
+
+      formSubmissionToParent: false,
+
       /**
        * This handles the user clicking the confirmation button on the dialog (typically, and by default the "OK" button). This has a special
        * handler to process the  payload and construct a simple object reqpresenting the
@@ -218,7 +226,7 @@ define(["dojo/_base/declare",
              typeof payload.dialogContent[0].getValue === "function")
          {
             var data = payload.dialogContent[0].getValue();
-            this.alfPublish(this.formSubmissionTopic, data, true);
+            this.alfPublish(this.formSubmissionTopic, data, this.formSubmissionGlobal, this.formSubmissionToParent);
          }
          else
          {

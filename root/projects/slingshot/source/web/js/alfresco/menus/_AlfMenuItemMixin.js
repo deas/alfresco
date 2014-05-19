@@ -226,6 +226,8 @@ define(["dojo/_base/declare",
          {
             // Handle publish requests...
             //var payload = (this.publishPayload) ? this.publishPayload : {};
+            var publishGlobal = (this.publishGlobal != null) ? this.publishGlobal : false;
+            var publishToParent = (this.publishToParent != null) ? this.publishToParent : false;
             var payload = this.generatePayload(this, this.currentItem, null, (this.publishPayload) ? this.publishPayload : {document: this.currentItem});
             this.alfPublish(this.publishTopic, payload);
          }

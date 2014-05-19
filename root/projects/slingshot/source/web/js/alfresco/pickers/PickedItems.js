@@ -73,9 +73,9 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_ITEM_SELECTED", lang.hitch(this, "addPickedItem"));
          this.alfSubscribe("ALF_ITEM_REMOVED", lang.hitch(this, "removePickedItem"));
 
-         // Initialise an empty data set...
+         // Initialise the data...
          this.currentData = {
-            items: []
+            items: (this.value != null) ? this.value : []
          };
          this.renderView();
       },

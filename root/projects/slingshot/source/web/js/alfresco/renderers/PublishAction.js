@@ -100,9 +100,11 @@ define(["dojo/_base/declare",
        * @param {object} evt The click event object
        */
       onClick: function alfresco_renderers_PublishAction__onClick(evt) {
+         var publishGlobal = (this.publishGlobal != null) ? this.publishGlobal : false;
+         var publishToParent = (this.publishToParent != null) ? this.publishToParent : false;
          this.alfPublish(this.publishTopic, {
             item: this.currentItem
-         }, (this.publishGlobal != null) ? this.publishGlobal : false);
+         }, publishGlobal, publishToParent);
       }
    });
 });

@@ -102,7 +102,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       loadData: function alfresco_pickers_PropertyPicker__loadData() {
-
+         this.showLoadingMessage();
          if (this.url != null)
          {
             var alfTopic = "ALF_RETRIEVE_DOCUMENTS_REQUEST";
@@ -195,7 +195,8 @@ define(["dojo/_base/declare",
                                     {
                                        name: "alfresco/renderers/PublishAction",
                                        config: {
-                                          publishGlobal: true
+                                          publishGlobal: false,
+                                          publishToParent: true
                                        }
                                     }
                                  ]

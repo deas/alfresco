@@ -289,7 +289,7 @@ define(["dojo/_base/declare",
          // Process the array of widgets. Only views should be included as widgets of the DocumentList.
          if (this.widgets)
          {
-            this.processWidgets(this.widgets);
+            this.processWidgets(lang.clone(this.widgets));
          }
       },
       
