@@ -67,10 +67,10 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_REMOVE_FACET_FILTER", lang.hitch(this, "onRemoveFacetFilter"));
 
          // Get the messages for the template...
-         this.noViewSelectedMessage = this.message("doclist.no.view.message");
-         this.noDataMessage = this.message("doclist.no.data.message");
-         this.fetchingDataMessage = this.message("doclist.loading.data.message");
-         this.renderingViewMessage = this.message("doclist.rendering.data.message");
+         this.noViewSelectedMessage = this.message("searchlist.no.view.message");
+         this.noDataMessage = this.message("searchlist.no.data.message");
+         this.fetchingDataMessage = this.message("searchlist.loading.data.message");
+         this.renderingViewMessage = this.message("searchlist.rendering.data.message");
 
          this.facetFilters = {};
       },
