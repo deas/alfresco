@@ -470,10 +470,6 @@ define(["dojo/_base/declare",
        * @param {boolean} preserveDom
        */
       destroy: function alfresco_core_Core__destroy(preserveDom) {
-         if (typeof this.inherited === "function")
-         {
-            this.inherited(arguments);
-         }
          if (this.alfSubscriptions != null)
          {
             array.forEach(this.alfSubscriptions, function(handle, i) {
@@ -508,6 +504,10 @@ define(["dojo/_base/declare",
                   widget.destroy();
                }
             }, this);
+         }
+         if (typeof this.inherited === "function")
+         {
+            this.inherited(arguments);
          }
       },
 

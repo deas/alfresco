@@ -87,7 +87,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {Object} data The data to set
        */
-      setData: function alfresco_documentlibrary_views_AlfDocumentListView__setData(data) {
+      setData: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__setData(data) {
          this.currentData = data;
       },
 
@@ -97,7 +97,7 @@ define(["dojo/_base/declare",
        *
        * @param {object} newData data to add to the existing data
        */
-      augmentData: function alfresco_documentlibrary_views_AlfDocumentListView__augmentData(newData) {
+      augmentData: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__augmentData(newData) {
          if (!this.currentData)
          {
             // We don't need to worry about combining data if there isn't any already.
@@ -127,7 +127,7 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      clearData: function alfresco_documentlibrary_views_AlfDocumentListView__clearData() {
+      clearData: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__clearData() {
          this.alfLog('info', 'Clearing currentData.');
          this.currentData = null;
       },
@@ -138,7 +138,7 @@ define(["dojo/_base/declare",
        * @instance
        * @returns {Object[]}
        */
-      getData: function alfresco_documentlibrary_views_AlfDocumentListView__getData() {
+      getData: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__getData() {
          return this.currentData;
       },
 
