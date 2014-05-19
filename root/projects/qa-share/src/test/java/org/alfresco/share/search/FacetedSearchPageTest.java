@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -20,10 +19,14 @@ import org.testng.annotations.Test;
  *
  * @author Richard Smith
  */
-
 public class FacetedSearchPageTest extends AbstractUtils
 {
+
+    /** The logger. */
     private static Log logger = LogFactory.getLog(FacetedSearchPageTest.class);
+
+    /** Constants */
+    private static final int expectedResultLength = 25;
 
     private DashBoardPage dashBoardPage;
     private FacetedSearchPage facetedSearchPage;
@@ -31,17 +34,17 @@ public class FacetedSearchPageTest extends AbstractUtils
     /**
      * Setup.
      * 
-     * @throws Exception the exception
+     * @throws Exception
      */
     @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
     {
         trace("Starting setup");
-        
+
         super.setup();
-        
+
         // Login as admin
-        dashBoardPage = ShareUser.loginAs(drone, username, "admin");
+        dashBoardPage = ShareUser.loginAs(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
         // Navigate to the faceted search page
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
@@ -49,6 +52,11 @@ public class FacetedSearchPageTest extends AbstractUtils
         trace("Setup complete");
     }
 
+    /**
+     * First render test.
+     *
+     * @throws Exception
+     */
     @Test
     public void firstRenderTest() throws Exception
     {
@@ -66,7 +74,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         // To begin with the page should have no results
         Assert.assertTrue(facetedSearchPage.getResults().isEmpty(), "There should be no results shown on the faceted search page when first loaded");
 
-        // Set the search term (but no search) and re-test
+        // Set the search term (but no search submission) and re-test
         facetedSearchPage.getSearchForm().setSearchTerm("test");
         Assert.assertTrue(StringUtils.isNotEmpty(facetedSearchPage.getSearchForm().getSearchTerm()), "After setting the search box should not be empty");
 
@@ -76,6 +84,11 @@ public class FacetedSearchPageTest extends AbstractUtils
         trace("firstRenderTest complete");
     }
 
+    /**
+     * Search test.
+     *
+     * @throws Exception
+     */
     @Test(dependsOnMethods={"firstRenderTest"})
     public void searchTest() throws Exception
     {
@@ -98,6 +111,11 @@ public class FacetedSearchPageTest extends AbstractUtils
         trace("searchTest complete");
     }
 
+    /**
+     * Search and facet test.
+     *
+     * @throws Exception
+     */
     @Test(dependsOnMethods={"searchTest"})
     public void searchAndFacetTest() throws Exception
     {
@@ -138,6 +156,11 @@ public class FacetedSearchPageTest extends AbstractUtils
         trace("searchAndFacetTest complete");
     }
 
+    /**
+     * Search and sort test.
+     *
+     * @throws Exception
+     */
     @Test(dependsOnMethods={"searchAndFacetTest"})
     public void searchAndSortTest() throws Exception
     {
@@ -203,6 +226,11 @@ public class FacetedSearchPageTest extends AbstractUtils
         trace("searchAndSortTest complete");
     }
 
+    /**
+     * Search and paginate test.
+     *
+     * @throws Exception
+     */
     @Test(dependsOnMethods={"searchAndSortTest"})
     public void searchAndPaginateTest() throws Exception
     {
@@ -218,37 +246,30 @@ public class FacetedSearchPageTest extends AbstractUtils
         int resultsCount = facetedSearchPage.getResults().size();
         Assert.assertTrue(resultsCount > 0, "After searching for the letter 'a' there should be some search results");
 
-        // Force a pagination
-        // We do a short scroll first to get past the exclusion of the first scroll event (required for some browsers)
-        facetedSearchPage.scrollSome(50);
-        facetedSearchPage.scrollToPageBottom();
+        // If the number of results equals the expectedResultCount - pagination is probably available
+        if(resultsCount == expectedResultLength)
+        {
+            // Force a pagination
+            // We do a short scroll first to get past the exclusion of the first scroll event (required for some browsers)
+            facetedSearchPage.scrollSome(50);
+            facetedSearchPage.scrollToPageBottom();
+    
+            // Wait 2 seconds to allow the extra results to render
+            webDriverWait(drone, 2000);
+    
+            // Reload the page objects
+            facetedSearchPage.render();
+    
+            // Check the results
+            int paginatedResultsCount = facetedSearchPage.getResults().size();
+            Assert.assertTrue(paginatedResultsCount > 0, "After searching for the letter 'a' and paginating there should be some search results");
+            Assert.assertTrue(paginatedResultsCount >= resultsCount, "After searching for the letter 'a' and paginating there should be the same or more search results");
+        }
 
-        // Wait 2 seconds to allow the extra results to render
-        webDriverWait(drone,2000);
-
-        // Reload the page objects
-        facetedSearchPage.render();
-
-        // Check the results
-        int paginatedResultsCount = facetedSearchPage.getResults().size();
-        Assert.assertTrue(paginatedResultsCount > 0, "After searching for the letter 'a' and paginating there should be some search results");
-        Assert.assertTrue(paginatedResultsCount > resultsCount, "After searching for the letter 'a' and paginating there should be more search results");
-        
         // Clear the search
         facetedSearchPage.getSearchForm().clearSearchTerm();
 
         trace("searchAndSortTest complete");
-    }
-
-    /**
-     * Teardown.
-     * 
-     * @throws Exception the exception
-     */
-    @AfterClass(alwaysRun = true)
-    public void teardown() throws Exception
-    {
-        ShareUser.logout(drone);
     }
 
     /**

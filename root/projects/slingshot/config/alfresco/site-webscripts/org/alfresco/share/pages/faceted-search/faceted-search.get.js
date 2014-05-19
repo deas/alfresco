@@ -11,6 +11,20 @@ var services = getHeaderServices(),
 // Scope the model IDs
 var rootWidgetId = "FCTSRCH_";
 
+// Accessibility menu
+//var accessMenu = {
+//   id: rootWidgetId + "ACCESSIBILITY_MENU",
+//   name: "alfresco/accessibility/AccessibilityMenu",
+//   config: {
+//      menu: [
+//         {"url": "#" + rootWidgetId + "SEARCH_FORM", "key": "f", "msg": "skip.to.content.message"},
+//         {"url": "#" + rootWidgetId + "FACET_MENU", "key": "q", "msg": "skip.to.content.message"},
+//         {"url": "#" + rootWidgetId + "SORT_MENU", "key": "m", "msg": "access.keys.message"},
+//         {"url": "#" + rootWidgetId + "SEARCH_RESULTS_LIST", "key": "r", "msg": "access.keys.message"}
+//      ]
+//   }
+//};
+
 // Compose the search form model
 var searchForm = {
    id: rootWidgetId + "SEARCH_FORM",
@@ -28,6 +42,7 @@ var searchForm = {
    }
 };
 
+// Compose the zero results configuration
 var hideOnZeroResultsConfig = {
    initialValue: true,
    rules: [
@@ -258,6 +273,7 @@ var main = {
    config: {
       baseClass: "side-margins",
       widgets: [
+//         accessMenu,
          {
             name: "alfresco/html/Spacer",
             config: {
