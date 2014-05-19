@@ -1,0 +1,31 @@
+.alfresco-testing-ConsoleLog table {
+   border: 1px solid #808080;
+   border-collapse: collapse;
+   width: 100%;
+}
+
+.alfresco-testing-ConsoleLog tr {
+   border: none;
+   border-collapse: collapse;
+}
+
+.alfresco-testing-ConsoleLog tr.cl-row:nth-child(odd),
+.alfresco-testing-ConsoleLog tr.cl-object-row:nth-child(odd) {
+   background-color: #eee;
+}
+
+.alfresco-testing-ConsoleLog tr.cl-row:nth-child(even),
+.alfresco-testing-ConsoleLog tr.cl-object-row:nth-child(even)  {
+   background-color: #fff;
+}
+
+.alfresco-testing-ConsoleLog th,
+.alfresco-testing-ConsoleLog td {
+   border: 1px solid #808080;
+   border-collapse: collapse;
+   padding: 4px;
+}
+
+.alfresco-testing-ConsoleLog td>table {
+   border: none;
+}
