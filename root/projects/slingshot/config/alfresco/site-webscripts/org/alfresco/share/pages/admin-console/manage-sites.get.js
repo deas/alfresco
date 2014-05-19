@@ -4,27 +4,22 @@
 // occurring. It is not possible to simply omit this SiteService and rely on the one provided by the
 // share-header.get WebScript as race conditions come into play...
 
-/**
- *
- * @returns {object} The group information for the current user
- */
-var userData = null;
-var json = remote.call("/api/people/" + encodeURIComponent(user.name) + "?groups=true");
-if (json.status == 200)
+// Get the user data (this replicates a function in share-header.lib.js which ideally we wouldn't do,
+// however, this is required due to the limitation of this being part of the Admin Console and the lib
+// not being imported)...
+var userData = {};
+var groups = user.properties["alfUserGroups"];
+if (groups != null)
 {
-   // Create javascript objects from the repo response
-   userData = JSON.parse(json);
-   if (userData != null && userData.groups != null)
+   groups = groups.split(",");
+   var processedGroups = {};
+   for (var i=0; i<groups.length; i++)
    {
-      // Convert the array of groups into a object for easier access...
-      var processedGroups = {};
-      for (var i=0; i<userData.groups.length; i++)
-      {
-         processedGroups[userData.groups[i].itemName] = true;
-      }
-      userData.groups = processedGroups;
+      processedGroups[groups[i]] = true;
    }
+   userData.groups = processedGroups;
 }
+userData.isNetworkAdmin = user.properties["isNetworkAdmin"];
 
 var siteServiceScope = "MANAGE_SITES_SITE_SERVICE_";
 

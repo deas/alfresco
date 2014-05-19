@@ -11,6 +11,27 @@ var services = getHeaderServices(),
 // Scope the model IDs
 var rootWidgetId = "FCTSRCH_";
 
+// TODO: Currently commented out until we roll-out faceted search configuration...
+// Insert a configuration page link if the user has the appropriate permissions...
+// if (_processedUserData.groups["GROUP_ALFRESCO_ADMINISTRATORS"] == true ||
+//     _processedUserData.groups["GROUP_SEARCH_ADMINISTRATORS"] == true ||
+//     _processedUserData.isNetworkAdmin == true)
+// {
+//    var titleMenu = widgetUtils.findObject(widgets, "id", "HEADER_TITLE_MENU");
+//    var searchConfigMenuItem = {
+//       id: rootWidgetId + "CONFIG_PAGE_LINK",
+//       name: "alfresco/menus/AlfMenuBarItem",
+//       config: {
+//          label: "",
+//          title: msg.get("faceted-search.config.link"),
+//          iconAltText: msg.get("faceted-search.config.link"),
+//          iconClass: "alf-configure-icon",
+//          targetUrl: "dp/ws/faceted-search-config"
+//       }
+//    };
+//    titleMenu.config.widgets.push(searchConfigMenuItem);
+// }
+
 // Accessibility menu
 var accessMenu = {
    id: rootWidgetId + "ACCESSIBILITY_MENU",

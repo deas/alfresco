@@ -50,8 +50,18 @@ function getUserGroupData() {
       }
       userData.groups = processedGroups;
    }
+   userData.isNetworkAdmin = user.properties["isNetworkAdmin"];
+   if (userData.isNetworkAdmin == null)
+   {
+      userData.isNetworkAdmin = false;
+   }
+
    return userData;
 }
+
+// Process the user group data and assign to a variable so that it easily
+// accessible to any controller importing this lib file...
+var _processedUserData = getUserGroupData();
 
 
 /* *********************************************************************************

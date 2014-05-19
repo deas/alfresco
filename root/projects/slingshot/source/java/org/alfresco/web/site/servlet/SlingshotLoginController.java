@@ -18,11 +18,6 @@
  */
 package org.alfresco.web.site.servlet;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -82,21 +77,7 @@ public class SlingshotLoginController extends LoginController
                 // retrieve the group data from it...
                 // 
                 // Step 1: Get a String of the response...
-                InputStream in = res.getResponseStream();
-                BufferedReader br = new BufferedReader(new InputStreamReader(in)); 
-                StringBuilder resStr = new StringBuilder();
-                try
-                {
-                    String tmp;
-                    while ((tmp = br.readLine()) != null)
-                    {
-                        resStr.append(tmp);
-                    }
-                }
-                catch (IOException e)
-                {
-                    throw new Exception("Error reading user group data response");
-                }
+                String resStr = res.getResponse();
                 
                 // Step 2: Parse the JSON...
                 JSONParser jp = new JSONParser();

@@ -11,6 +11,9 @@ services.push("alfresco/services/QuaddsService", "alfresco/services/Notification
 var main = {
    name: "alfresco/layout/VerticalWidgets",
    config: {
+      currentItem: {
+         user: _processedUserData
+      },
       baseClass: "side-margins",
       widgets: [
          {
@@ -23,6 +26,51 @@ var main = {
          {
             name: "alfresco/layout/HorizontalWidgets",
             config: {
+               renderFilterMethod: "ALL",
+               renderFilter: [
+                  {
+                     property: "user.groups.GROUP_ALFRESCO_ADMINISTRATORS",
+                     renderOnAbsentProperty: true,
+                     values: [false]
+                  },
+                  {
+                     property: "user.groups.GROUP_SEARCH_ADMINISTRATORS",
+                     renderOnAbsentProperty: true,
+                     values: [false]
+                  },
+                  {
+                     property: "user.isNetworkAdmin",
+                     values: [false]
+                  }
+               ],
+               widgets: [
+                  {
+                     name: "alfresco/html/Label",
+                     config: {
+                        label: "You don't have the necessary permissions to view this page"
+                     }
+                  }
+               ]
+            }
+         },
+         {
+            name: "alfresco/layout/HorizontalWidgets",
+            config: {
+               renderFilterMethod: "ANY",
+               renderFilter: [
+                  {
+                     property: "user.groups.GROUP_ALFRESCO_ADMINISTRATORS",
+                     values: [true]
+                  },
+                  {
+                     property: "user.groups.GROUP_SEARCH_ADMINISTRATORS",
+                     values: [true]
+                  },
+                  {
+                     property: "user.isNetworkAdmin",
+                     values: [true]
+                  }
+               ],
                widgetMarginRight: "10",
                widgets: [
                   {
