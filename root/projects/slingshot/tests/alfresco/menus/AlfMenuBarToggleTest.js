@@ -18,177 +18,322 @@
  */
 
 /**
- * This is the unit test for the alfresco/menus/AlfMenuBarSelect widget.
+ * The purpose of this test is to ensure that keyboard accessibility is possible between the header and the 
+ * main table. It should be possible to use the tab/shift-tab keys to navigate along the headers (and the enter/space key
+ * to make requests for sorting) and then the cursor keys to navigate around the table itself.
  * 
  * @author Dave Draper
  */
 define(["intern!object",
-        "intern/chai!assert",
+        "intern/chai!expect",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!wd/lib/special-keys"], 
-        function (registerSuite, assert, require, TestCommon, specialKeys) {
+        function (registerSuite, expect, require, TestCommon, specialKeys) {
 
    registerSuite({
       name: 'AlfMenuBarToggle Test',
-      'alfresco/menus/AlfMenuBarToggle': function () {
+      'Basic tests': function () {
 
          var browser = this.remote;
+         var testname = "AlfMenuBarToggle Test - Basic tests";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfMenuBarToggle_TestPage.json")
 
-            // Test #1
-            // Check the initial labels are correctly displayed...
-            .end()
-            .elementByCss("#BASIC_MENU_BAR_TOGGLE_text")
-            .text()
-            .then(function(resultText) {
-               assert(resultText == "Off", "Test #1a - The inital label of the basic toggle was not correct: " + resultText);
-            })
-            .end()
-            .elementByCss("#MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
-            .text()
-            .then(function(resultText) {
-               assert(resultText == "On (Custom Label)", "Test #1b - The inital label of the custom toggle was not correct: " + resultText);
-            })
-            .end()
-            .hasElementByCss("#MENU_BAR_SELECT_WITH_ICON_text")
-            .then(function(result) {
-               assert(result == false, "Test #1c - Label for icon toggle was displayed and it shouldn't be");
-            })
-            .end()
-            .hasElementByCss("#MENU_BAR_TOGGLE_WITH_ICON>img.alf-sort-descending-icon")
-            .then(function(result) {
-               assert(result == true, "Test #1d - Image for icon toggle had wrong or missing CSS class");
-            })
+         .end()
 
-            // Test #2 - Check the result of clicking and keyboard driving the basic toggle...
-            // Check the labels change but no publications occur...
-            .end()
-            .keys(specialKeys["Tab"])
-            .sleep(1000)
-            .keys(specialKeys["Space"])
-            .hasElementByCss(TestCommon.topicSelector("ALF_WIDGETS_READY", "publish", "last"))
-            .then(function(result) {
-               assert(result == true, "Test #2a - Keyboard selection of basic toggle published unexpectedly (although it has no publishTopic)");
-            })
-            .elementByCss("#BASIC_MENU_BAR_TOGGLE_text")
-            .text()
-            .then(function(resultText) {
-               assert(resultText == "On", "Test #2b - The label was not updated after toggle by keyboard: " + resultText);
-            })
-            .end()
-            .elementByCss("#BASIC_MENU_BAR_TOGGLE_text")
-               .moveTo()
-               .click()
-               .end()
-            .hasElementByCss(TestCommon.topicSelector("ALF_WIDGETS_READY", "publish", "last"))
-            .then(function(result) {
-               assert(result == true, "Test #2c - Mouse selection of basic toggle published unexpectedly (although it has no publishTopic)");
-            })
-            .elementByCss("#BASIC_MENU_BAR_TOGGLE_text")
-            .text()
-            .then(function(resultText) {
-               assert(resultText == "Off", "Test #2d - The label was not updated after toggle by mouse: " + resultText);
-            })
-            .end()
+         // Check the initial labels are correctly displayed...
+         .elementById("BASIC_MENU_BAR_TOGGLE_text")
+         .text()
+         .then(function (initialValue) {
+            TestCommon.log(testname,48,"Check basic toggle label");
+            expect(initialValue).to.equal("Off", "The inital label of the basic toggle was not correct: " + initialValue);
+         })
+         .end()
 
-            // Test #3 - Check the result of clicking and keyboard driving the custom toggle...
-            // Check the labels change but and publications occur...
-            .end()
-            .keys(specialKeys["Right arrow"])
-            .sleep(1000)
-            .keys(specialKeys["Return"])
-            .hasElementByCss(TestCommon.topicSelector("CLICK", "publish", "last"))
-            .then(function(result) {
-               assert(result == true, "Test #3a - Keyboard selection of custom toggle didn't publish topic as expected");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "OFF"))
-            .then(function(result) {
-               assert(result == true, "Test #3b - Keyboard selection of custom toggle didn't publish value correctly");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "clicked", "TOGGLE_WITH_LABEL"))
-            .then(function(result) {
-               assert(result == true, "Test #3c - Keyboard selection of custom toggle didn't publish id correctly");
-            })
-            .end()
-            .elementByCss("#MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
-            .text()
-            .then(function(resultText) {
-               assert(resultText == "Off (Custom Label)", "Test #3d - The label was not updated after toggle by keyboard: " + resultText);
-            })
-            .end()
-            .elementByCss("#MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
-               .moveTo()
-               .click()
-               .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "ON"))
-            .then(function(result) {
-               assert(result == true, "Test #3e - Mouse selection of custom toggle didn't publish value correctly");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "clicked", "TOGGLE_WITH_LABEL"))
-            .then(function(result) {
-               assert(result == true, "Test #3f - Mouse selection of custom toggle didn't publish id correctly");
-            })
-            .end()
-            .elementByCss("#MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
-            .text()
-            .then(function(resultText) {
-               assert(resultText == "On (Custom Label)", "Test #3g - The label was not updated after toggle by mouse: " + resultText);
-            })
-            .end()
+         .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
+         .text()
+         .then(function (initialValue) {
+            TestCommon.log(testname,56,"Check custom toggle label");
+            expect(initialValue).to.equal("On (Custom Label)", "The inital label of the custom toggle was not correct: " + initialValue);
+         })
+         .end()
 
-            // Test #4 - Check the result of clicking and keyboard driving the icon toggle...
-            .end()
-            .keys(specialKeys["Right arrow"])
-            .sleep(1000)
-            .keys(specialKeys["Return"])
-            .hasElementByCss(TestCommon.topicSelector("CLICK", "publish", "last"))
-            .then(function(result) {
-               assert(result == true, "Test #4a - Keyboard selection of icon toggle didn't publish topic as expected");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "ON"))
-            .then(function(result) {
-               assert(result == true, "Test #4b - Keyboard selection of icon toggle didn't publish value correctly");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "clicked", "TOGGLE_WITH_ICON"))
-            .then(function(result) {
-               assert(result == true, "Test #4c - Keyboard selection of icon toggle didn't publish id correctly");
-            })
-            .end()
-            .hasElementByCss("#MENU_BAR_TOGGLE_WITH_ICON>img.alf-sort-ascending-icon")
-            .then(function(result) {
-               assert(result == true, "Test #4d - Image for icon toggle had wrong or missing CSS class after keyboard toggle");
-            })
-            .end()
-            .elementByCss("#MENU_BAR_TOGGLE_WITH_ICON>img.alf-sort-ascending-icon")
-               .moveTo()
-               .click()
-               .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "OFF"))
-            .then(function(result) {
-               assert(result == true, "Test #4e - Mouse selection of icon toggle didn't publish value correctly");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "clicked", "TOGGLE_WITH_ICON"))
-            .then(function(result) {
-               assert(result == true, "Test #4f - Mouse selection of icon toggle didn't publish id correctly");
-            })
-            .end()
-            .hasElementByCss("#MENU_BAR_TOGGLE_WITH_ICON>img.alf-sort-descending-icon")
-            .then(function(result) {
-               assert(result == true, "Test #4g - Image for icon toggle had wrong or missing CSS class after update by mouse");
-            })
+         .elementsById("MENU_BAR_SELECT_WITH_ICON_text")
+         .then(function(result) {
+            TestCommon.log(testname,63,"Check label for icon toggle");
+            expect(result).to.have.length(0, "Label for icon toggle was displayed and it shouldn't be");
+         })
+         .end()
 
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+         .hasElementByCss("#MENU_BAR_TOGGLE_WITH_ICON > img.alf-sort-descending-icon")
+         .then(function(result) {
+            TestCommon.log(testname,70,"Check css classes of icon toggle image");
+            expect(result).to.equal(true, "Image for icon toggle had wrong or missing CSS class");
+         })
+         .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
+
+      },
+
+      'Mouse tests': function () {
+
+         var browser = this.remote;
+         var testname = "AlfMenuBarToggle Test - Mouse tests";
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfMenuBarToggle_TestPage.json")
+
+         .end()
+         
+         .elementById("BASIC_MENU_BAR_TOGGLE_text")
+         .moveTo()
+         .click()
+         .end()
+
+         .hasElementByCss(TestCommon.topicSelector("ALF_WIDGETS_READY", "publish", "last"))
+         .then(function(result) {
+            TestCommon.log(testname,97,"Check basic toggle does not publish when clicked");
+            expect(result).to.equal(true, "Mouse selection of basic toggle published unexpectedly (although it has no publishTopic)");
+         })
+         .end()
+
+         .elementById("BASIC_MENU_BAR_TOGGLE_text")
+         .text()
+         .then(function(resultText) {
+            TestCommon.log(testname,105,"Check basic toggle text is changed after mouse click");
+            expect(resultText).to.equal("On", "The label was not updated after toggle by mouse: " + resultText);
+         })
+         .end()
+
+         .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
+         .moveTo()
+         .click()
+         .end()
+
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "OFF"))
+         .then(function(result) {
+            TestCommon.log(testname,117,"Check custom toggle publishes value correctly");
+            expect(result).to.equal(true, "Mouse selection of custom toggle didn't publish value correctly");
+         })
+         .end()
+
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "clicked", "TOGGLE_WITH_LABEL"))
+         .then(function(result) {
+            TestCommon.log(testname,124,"Check custom toggle publishes id correctly");
+            expect(result).to.equal(true, "Mouse selection of custom toggle didn't publish id correctly");
+         })
+         .end()
+
+         .elementByCss("#MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
+         .text()
+         .then(function(resultText) {
+            TestCommon.log(testname,132,"Check custom toggle label changes after mouse click");
+            expect(resultText).to.equal("Off (Custom Label)", "The label was not updated after toggle by mouse: " + resultText);
+         })
+         .end()
+
+         .elementByCss("#MENU_BAR_TOGGLE_WITH_ICON > img")
+         .moveTo()
+         .click()
+         .end()
+
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "ON"))
+         .then(function(result) {
+            TestCommon.log(testname,144,"Check icon toggle publishes value correctly");
+            expect(result).to.equal(true, "Mouse selection of icon toggle didn't publish value correctly");
+         })
+         .end()
+
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "clicked", "TOGGLE_WITH_ICON"))
+         .then(function(result) {
+            TestCommon.log(testname,151,"Check icon toggle publishes id correctly");
+            expect(result).to.equal(true, "Mouse selection of icon toggle didn't publish id correctly");
+         })
+         .end()
+
+         .hasElementByCss("#MENU_BAR_TOGGLE_WITH_ICON > img.alf-sort-ascending-icon")
+         .then(function(result) {
+            TestCommon.log(testname,158,"Check image for icon toggle has correct css");
+            expect(result).to.equal(true, "Image for icon toggle had wrong or missing CSS class after update by mouse");
+         })
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
+
+      },
+
+      'Keyboard tests': function () {
+
+         var browser = this.remote;
+         var testname = "AlfMenuBarToggle Test - Keyboard tests";
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfMenuBarToggle_TestPage.json")
+
+         .end()
+
+         .keys(specialKeys.Tab)
+         .keys(specialKeys["Space"])
+         .end()
+
+         .hasElementByCss(TestCommon.topicSelector("ALF_WIDGETS_READY", "publish", "last"))
+         .then(function(result) {
+            TestCommon.log(testname,183,"Check basic toggle does not publish when selected by keyboard");
+            expect(result).to.equal(true, "Keyboard selection of basic toggle published unexpectedly (although it has no publishTopic)");
+         })
+         .end()
+
+         .elementById("BASIC_MENU_BAR_TOGGLE_text")
+         .text()
+         .then(function(resultText) {
+            TestCommon.log(testname,191,"Check basic toggle text is changed after keyboard selection");
+            expect(resultText).to.equal("On", "The label was not updated after toggle by keyboard: " + resultText);
+         })
+         .end()
+
+         .keys(specialKeys["Right arrow"])
+         .keys(specialKeys["Return"])
+         .end()
+
+         .hasElementByCss(TestCommon.topicSelector("CLICK", "publish", "last"))
+         .then(function(result) {
+            TestCommon.log(testname,202,"Check keyboard selection of custom toggle publishes as expected");
+            expect(result).to.equal(true, "Keyboard selection of custom toggle didn't publish topic as expected");
+         })
+         .end()
+
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "OFF"))
+         .then(function(result) {
+            TestCommon.log(testname,209,"Check keyboard selection of custom toggle publishes value correctly");
+            expect(result).to.equal(true, "Keyboard selection of custom toggle didn't publish value correctly");
+         })
+         .end()
+
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "clicked", "TOGGLE_WITH_LABEL"))
+         .then(function(result) {
+            TestCommon.log(testname,216,"Check keyboard selection of custom toggle publishes id correctly");
+            expect(result).to.equal(true, "Keyboard selection of custom toggle didn't publish id correctly");
+         })
+         .end()
+
+         .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
+         .text()
+         .then(function(resultText) {
+            TestCommon.log(testname,224,"Check custom toggle text is changed after keyboard selection");
+            expect(resultText).to.equal("Off (Custom Label)", "The custom toggle label was not updated after toggle by keyboard: " + resultText);
+         })
+         .end()
+
+         .keys(specialKeys["Right arrow"])
+         .keys(specialKeys["Return"])
+
+         .hasElementByCss(TestCommon.topicSelector("CLICK", "publish", "last"))
+         .then(function(result) {
+            TestCommon.log(testname,234,"Check keyboard selection of icon toggle publishes as expected");
+            expect(result).to.equal(true, "Keyboard selection of icon toggle didn't publish topic as expected");
+         })
+         .end()
+
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "ON"))
+         .then(function(result) {
+            TestCommon.log(testname,241,"Check keyboard selection of icon toggle publishes value correctly");
+            expect(result).to.equal(true, "Keyboard selection of icon toggle didn't publish value correctly");
+         })
+         .end()
+
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "clicked", "TOGGLE_WITH_ICON"))
+         .then(function(result) {
+            TestCommon.log(testname,248,"Check keyboard selection of icon toggle publishes id correctly");
+            expect(result).to.equal(true, "Keyboard selection of icon toggle didn't publish id correctly");
+         })
+         .end()
+
+         .hasElementByCss("#MENU_BAR_TOGGLE_WITH_ICON > img.alf-sort-ascending-icon")
+         .then(function(result) {
+            TestCommon.log(testname,255,"Check icon toggle css is changed after keyboard toggle");
+            expect(result).to.equal(true, "Image for icon toggle had wrong or missing CSS class after keyboard toggle");
+         })
+         .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
+
+      },
+
+      'Set state tests': function () {
+
+         var browser = this.remote;
+         var testname = "AlfMenuBarToggle Test - Set state tests";
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfMenuBarToggle_TestPage.json")
+
+         .end()
+
+         .elementById("TEST_BUTTON_ASC")
+         .moveTo()
+         .click()
+         .end()
+
+         .elementById("BASIC_MENU_BAR_TOGGLE_text")
+         .text()
+         .then(function (initialValue) {
+            TestCommon.log(testname,283,"Check basic toggle label asc");
+            expect(initialValue).to.equal("On", "The asc label of the basic toggle was not correct: " + initialValue);
+         })
+         .end()
+
+         .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
+         .text()
+         .then(function (initialValue) {
+            TestCommon.log(testname,291,"Check custom toggle label asc");
+            expect(initialValue).to.equal("On (Custom Label)", "The asc label of the custom toggle was not correct: " + initialValue);
+         })
+         .end()
+
+         .hasElementByCss("#MENU_BAR_TOGGLE_WITH_ICON > img.alf-sort-ascending-icon")
+         .then(function(result) {
+            TestCommon.log(testname,298,"Check css classes of icon toggle image asc");
+            expect(result).to.equal(true, "Image for asc icon toggle had wrong or missing CSS class");
+         })
+         .end()
+
+         .elementById("TEST_BUTTON_DESC")
+         .moveTo()
+         .click()
+         .end()
+
+         .elementById("BASIC_MENU_BAR_TOGGLE_text")
+         .text()
+         .then(function (initialValue) {
+            TestCommon.log(testname,311,"Check basic toggle label desc");
+            expect(initialValue).to.equal("Off", "The desc label of the basic toggle was not correct: " + initialValue);
+         })
+         .end()
+
+         .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
+         .text()
+         .then(function (initialValue) {
+            TestCommon.log(testname,319,"Check custom toggle label desc");
+            expect(initialValue).to.equal("Off (Custom Label)", "The desc label of the custom toggle was not correct: " + initialValue);
+         })
+         .end()
+
+         .hasElementByCss("#MENU_BAR_TOGGLE_WITH_ICON > img.alf-sort-descending-icon")
+         .then(function(result) {
+            TestCommon.log(testname,326,"Check css classes of icon toggle image desc");
+            expect(result).to.equal(true, "Image for desc icon toggle had wrong or missing CSS class");
+         })
+         .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
+
       }
+
    });
 });
