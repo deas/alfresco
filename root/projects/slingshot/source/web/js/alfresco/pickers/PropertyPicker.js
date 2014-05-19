@@ -37,6 +37,15 @@ define(["dojo/_base/declare",
    return declare([AlfDocumentList, CoreXhr], {
 
       /**
+       * An array of the i18n files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{i18nFile: "./i18n/AlfDocumentList.properties"}]
+       */
+      i18nRequirements: [{i18nFile: "./i18n/PropertyPicker.properties"}],
+
+      /**
        * Indicates whether the location should be driven by changes to the browser URL hash
        *
        * @instance
@@ -85,6 +94,19 @@ define(["dojo/_base/declare",
        */
       onDocumentClick: function alfresco_pickers_PropertyPicker__onFolderClick(payload) {
          // No action.
+      },
+
+      /**
+       * Sets some relevant messages to display
+       *
+       * @instance
+       */
+      setDisplayMessages: function alfresco_documentlibrary_AlfDocumentList__setDisplayMessages() {
+         this.noViewSelectedMessage = this.message("propPicker.no.view.message");
+         this.noDataMessage = this.message("propPicker.no.data.message");
+         this.fetchingDataMessage = this.message("propPicker.loading.data.message");
+         this.renderingViewMessage = this.message("propPicker.rendering.data.message");
+         this.fetchingMoreDataMessage = this.message("propPicker.loading.data.message");
       },
 
       /**
@@ -160,6 +182,7 @@ define(["dojo/_base/declare",
          {
             name: "alfresco/documentlibrary/views/AlfDocumentListView",
             config: {
+               noItemsMessage: "propPicker.no.data.message",
                widgets: [
                   {
                      name: "alfresco/documentlibrary/views/layouts/Row",

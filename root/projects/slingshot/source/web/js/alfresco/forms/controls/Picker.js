@@ -26,11 +26,21 @@
 define(["alfresco/forms/controls/BaseFormControl",
         "alfresco/core/CoreWidgetProcessing",
         "dojo/_base/declare",
-        "dojo/_base/lang"], 
-        function(BaseFormControl, CoreWidgetProcessing, declare, lang) {
+        "dojo/_base/lang",
+        "dojo/_base/array"], 
+        function(BaseFormControl, CoreWidgetProcessing, declare, lang, array) {
    
    return declare([BaseFormControl, CoreWidgetProcessing], {
       
+      /**
+       * The value to use as a key for each item. Each picked item should have an attribute with the name defined.
+       *
+       * @instance
+       * @type {string}
+       * @default "name"
+       */
+      itemKey: "name",
+
       /**
        * @instance
        */
@@ -89,13 +99,19 @@ define(["alfresco/forms/controls/BaseFormControl",
       },
 
       /**
-       * The value returned is the value of the [PickedItems]{@link module:alfresco/pickers/PickedItems} widget. 
+       * The value returned is an array where each element is the value of the [itemKey]{@link module:alfresco/forms/controls/Picker#itemKey}
+       * of each item returned by calling the [getPickedItemsWidget function]{@link module:alfresco/forms/controls/Picker#getPickedItemsWidget}. 
+       *
        * @instance
        * @returns {object}
        */
       getValue: function alfresco_forms_controls_Picker__getValue() {
+         var processedItems = [];
          var items = this.getPickedItemsWidget().currentData.items;
-         return items;
+         array.forEach(items, function(item, index) {
+            processedItems.push(item[this.itemKey]);
+         }, this);
+         return processedItems;
       },
       
       /**

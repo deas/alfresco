@@ -182,7 +182,7 @@ define(["alfresco/forms/controls/Picker",
                               picker: {
                                  name: "alfresco/pickers/PropertyPicker",
                                  config: {
-                                    currentPickerDepth: 1,
+                                    generatePubSubScope: true,
                                     url: "api/classes?cf=aspect",
                                     widgets: [
                                        {

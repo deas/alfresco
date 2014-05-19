@@ -206,6 +206,22 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_FAILURE", lang.hitch(this, "onDataLoadFailure"));
 
          // Get the messages for the template...
+         // TODO: Extending modules should be updated to override this during the next refactor!
+         this.setDisplayMessages();
+      },
+
+      /**
+       * This function should be overridden as necessary to change the messages displayed for various states
+       * of the list, e.g.
+       * <ul><li>When no view is configured</li>
+       * <li>When there is no data to render</li>
+       * <li>When data is being retrieved</li>
+       * <li>When the view is being rendered</li>
+       * <li>When the additional data is being retrieved (e.g. on infinite scroll)</li></ul>
+       *
+       * @instance
+       */
+      setDisplayMessages: function alfresco_documentlibrary_AlfDocumentList__setDisplayMessages() {
          this.noViewSelectedMessage = this.message("doclist.no.view.message");
          this.noDataMessage = this.message("doclist.no.data.message");
          this.fetchingDataMessage = this.message("doclist.loading.data.message");
