@@ -73,6 +73,21 @@ define(["dojo/_base/declare",
          resizeTimeout: null,
 
          /**
+          * The scroll event triggers once when the page had loaded. Generally we don't need this.
+          * Should we ignore it?
+          *
+          * @instance
+          * @type Boolean
+          * @default true
+          */
+         ignoreInitialScroll: true,
+
+         /**
+          *  Has the initial scroll event as specified in ignoreInitialScroll happened yet?
+          */
+         hasInitialScrollHappened: false,
+
+         /**
           * Constructor - called when module is mixed in. Registers the listeners.
           *
           * @instance
@@ -163,7 +178,15 @@ define(["dojo/_base/declare",
           * @instance
           */
          onScroll: function alfresco_core_Events_onScroll() {
-            this._throttle("scrollTimeout", this.eventsScrollTopic);
+            // TODO: For performance, the throttle call probably shouldn't happen in an if statement.
+            if (this.ignoreInitialScroll && !this.hasInitialScrollHappened)
+            {
+               this.hasInitialScrollHappened = true;
+            }
+            else
+            {
+               this._throttle("scrollTimeout", this.eventsScrollTopic);
+            }
          },
 
          /**
