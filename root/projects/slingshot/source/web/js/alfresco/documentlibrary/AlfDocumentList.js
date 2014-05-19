@@ -49,12 +49,15 @@ define(["dojo/_base/declare",
         "dojo/_base/array",
         "dojo/_base/lang",
         "alfresco/menus/AlfCheckableMenuItem",
+        "dojo/hash",
+        "dojo/io-query",
         "dojo/dom-construct",
         "dojo/dom-class"], 
         function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, CoreWidgetProcessing, AlfCoreXhr, PathUtils, JsNode, _AlfDocumentListTopicMixin, _AlfHashMixin, DynamicWidgetProcessingTopics,
-                 _PreferenceServiceTopicMixin, AlfDocumentListView, array, lang, AlfCheckableMenuItem, domConstruct, domClass) {
+                 _PreferenceServiceTopicMixin, AlfDocumentListView, array, lang, AlfCheckableMenuItem, hash, ioQuery, domConstruct, domClass) {
    
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, AlfCoreXhr, PathUtils, _AlfDocumentListTopicMixin, _AlfHashMixin, DynamicWidgetProcessingTopics, _PreferenceServiceTopicMixin], {
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, AlfCoreXhr, PathUtils, _AlfDocumentListTopicMixin, _AlfHashMixin, 
+                   DynamicWidgetProcessingTopics, _PreferenceServiceTopicMixin], {
       
       /**
        * Declare the dependencies on "legacy" JS files.
@@ -831,7 +834,29 @@ define(["dojo/_base/declare",
             {
                this.sortField = payload.value;
             }
-            if (this._readyToLoad) this.loadData();
+            if (this._readyToLoad == true)
+            {
+               if (this.useHash == true)
+               {
+                  var currHash = ioQuery.queryToObject(hash());
+                  if (this.sortField != null)
+                  {
+                     currHash.sortField = this.sortField;
+                  }
+                  if (this.sortAscending != null)
+                  {
+                     currHash.sortAscending = this.sortAscending;
+                  }
+                  this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
+                     url: ioQuery.objectToQuery(currHash),
+                     type: "HASH"
+                  }, true);
+               }
+               else
+               {
+                  this.loadData();
+               }
+            }
          }
       },
       
@@ -844,7 +869,25 @@ define(["dojo/_base/declare",
          if (payload && payload.value != null)
          {
             this.sortField = payload.value;
-            if (this._readyToLoad) this.loadData();
+            if (this._readyToLoad == true)
+            {
+               if (this.useHash == true)
+               {
+                  var currHash = ioQuery.queryToObject(hash());
+                  if (this.sortField != null)
+                  {
+                     currHash.sortField = this.sortField;
+                  }
+                  this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
+                     url: ioQuery.objectToQuery(currHash),
+                     type: "HASH"
+                  }, true);
+               }
+               else
+               {
+                  this.loadData();
+               }
+            }
          }
       },
       
