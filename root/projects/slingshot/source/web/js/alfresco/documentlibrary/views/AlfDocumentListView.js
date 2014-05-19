@@ -171,7 +171,8 @@ define(["dojo/_base/declare",
        * @default {}
        */
       viewSelectionConfig: {
-         label: "Abstract"
+         label: "Abstract",
+         value: "Abstract"
       },
       
       /**
@@ -183,7 +184,7 @@ define(["dojo/_base/declare",
        * @returns {string} "Abstract"
        */
       getViewName: function alfresco_documentlibrary_views_AlfDocumentListView__getViewName() {
-         return "Abstract";
+         return this.viewSelectionConfig.value;
       },
       
       /**

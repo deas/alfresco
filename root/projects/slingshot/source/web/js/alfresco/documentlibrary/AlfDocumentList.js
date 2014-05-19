@@ -661,12 +661,6 @@ define(["dojo/_base/declare",
             documentPayload.nodeRef = this.nodeRef.toString();
          }
 
-         // Override any of the default settings with the values provided in the function argument...
-         if (typeof overrides === "object")
-         {
-            documentPayload = lang.mixin(documentPayload, overrides);
-         }
-
          // Set a response topic that is scoped to this widget...
          documentPayload.alfResponseTopic = this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST";
 

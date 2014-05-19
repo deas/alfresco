@@ -142,6 +142,10 @@ define(["dojo/_base/declare",
             {
                this.addStringToLog("null", cellNode);
             }
+            else if (typeof value === "number")
+            {
+               this.addStringToLog(value, cellNode);
+            }
             else if (typeof value === "boolean")
             {
                this.addStringToLog(value.toString(), cellNode);
