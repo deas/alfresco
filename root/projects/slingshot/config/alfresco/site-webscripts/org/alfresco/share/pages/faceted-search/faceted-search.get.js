@@ -348,7 +348,7 @@ var searchDocLib = {
          "repo",
          "searchScope"
       ],
-      selectedScope: (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "REPO",
+      selectedScope: "REPO",
       useInfiniteScroll: true,
       siteId: "$$site$$", // Get the current site context from the URL template (if set)
       rootNode: null,
@@ -454,10 +454,12 @@ var main = {
 };
 
 // Add a checkable menu for switching between Repository, All Sites and current site as necessary...
-// If we're in a site, make sure add in the site as an option in the menu (and make it the default)
+// If we're in a site, make sure add in the site as an option in the menu 
 // Always add in "All Sites" and "Repository" options...
 // Cloud will need to remove the "Repository" option via an extension...
 // Need links rather than drop-down?
+
+// TODO: We need to set the site as being the selected if it is included as a hash argument (Surf doesn't yet provide this information)
 var scopeOptions = [];
 if (page.url.templateArgs.site != null)
 {
@@ -470,7 +472,7 @@ if (page.url.templateArgs.site != null)
          value: page.url.templateArgs.site,
          group: "SEARCHLIST_SCOPE",
          publishTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
-         checked: true,
+         checked: false,
          publishPayload: {
             label: siteData.profile.title,
             value: page.url.templateArgs.site
@@ -502,7 +504,7 @@ scopeOptions.push({
       value: "REPO",
       group: "SEARCHLIST_SCOPE",
       publishTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
-      checked: (page.url.templateArgs.site == null),
+      checked: true,
       publishPayload: {
          label: msg.get("faceted-search.scope.repository"),
          value: "REPO"

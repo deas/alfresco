@@ -339,7 +339,7 @@ define(["dojo/_base/declare",
                   var url = "dp/ws/faceted-search#searchTerm=" + encodeURIComponent(terms) + (this.allsites ? "&allSites=true&repo=false" : "&allSites=false&repo=true");
                   if (this.site != null)
                   {
-                     url = "site/" + this.site + "/" + url + "&siteId=" + this.site;
+                     url = "site/" + this.site + "/" + url;
                   }
    
                   this.alfPublish("ALF_NAVIGATE_TO_PAGE", { 

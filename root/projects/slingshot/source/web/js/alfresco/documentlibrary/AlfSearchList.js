@@ -200,23 +200,23 @@ define(["dojo/_base/declare",
             this.selectedScope = scope;
             if (scope === "REPO")
             {
-               currHash.repo = true;
-               currHash.allSites = false;
+               currHash.repo = "true";
+               currHash.allSites = "false";
                delete currHash.siteId;
                this.siteId = "";
             }
             else if (scope === "ALL_SITES")
             {
-               currHash.repo = false;
-               currHash.allSites = true;
+               currHash.repo = "false";
+               currHash.allSites = "true";
                delete currHash.siteId;
                this.siteId = "";
             }
             else
             {
                // Must be a site shortname...
-               currHash.repo = false;
-               currHash.allSites = true;
+               currHash.repo = "false";
+               currHash.allSites = "true";
                currHash.siteId = scope;
                this.siteId = scope;
             }
@@ -377,17 +377,9 @@ define(["dojo/_base/declare",
             }
             filters = filters.substring(0, filters.length - 1);
 
-            // Make sure the repo flag is set appropriately...
-            var repo = this.repo;
-            if (this.allSites == true || (this.siteId != null && this.siteId !== ""))
-            {
-               // Search all sites...
-               repo = false;
-            }
-            else
-            {
-               repo = true;
-            }
+            // Make sure the repo param is set appropriately...
+            // The repo instance variable trumps everything else...
+            var repo = this.repo === "true" || !(this.allSites === "true" || (this.siteId != null && this.siteId !== ""));
 
             var searchPayload = {
                term: this.searchTerm,
