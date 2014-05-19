@@ -65,7 +65,7 @@ define({
       'tests/alfresco/header/WarningTest',
 
       'tests/alfresco/html/LabelTest',
-      
+
       'tests/alfresco/layout/BasicLayoutTest',
 
       'tests/alfresco/menus/AlfCheckableMenuItemTest',
@@ -88,6 +88,7 @@ define({
       'tests/alfresco/renderers/PublishingDropDownMenuTest',
       'tests/alfresco/renderers/PublishPayloadMixinOnActionsTest',
       'tests/alfresco/renderers/SearchResultPropertyLinkTest',
+      'tests/alfresco/renderers/XhrActionsTest',
 
       'tests/alfresco/search/FacetFiltersTest'
    ],
