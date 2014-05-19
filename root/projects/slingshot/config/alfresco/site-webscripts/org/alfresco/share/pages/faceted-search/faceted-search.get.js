@@ -195,6 +195,7 @@ var searchResultsMenuBar = {
             config: {
                widgets: [
                   {
+                     id: rootWidgetId + "SORT_ORDER_TOGGLE",
                      name: "alfresco/menus/AlfMenuBarToggle",
                      config: {
                         visibilityConfig: hideOnZeroResultsConfig,

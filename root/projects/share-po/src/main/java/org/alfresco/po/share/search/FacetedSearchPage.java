@@ -83,7 +83,7 @@ public class FacetedSearchPage extends SharePage
     /**
      * Gets the facet groups.
      * 
-     * @return List<{@link FacetedSearchFacet}>
+     * @return List<{@link FacetedSearchFacetGroup}>
      */
     public List<FacetedSearchFacetGroup> getFacetGroups()
     {
@@ -108,6 +108,22 @@ public class FacetedSearchPage extends SharePage
     public List<FacetedSearchResult> getResults()
     {
         return this.results;
+    }
+
+    /**
+     * Scroll to page bottom.
+     */
+    public void scrollSome(int distance)
+    {
+        this.drone.executeJavaScript("window.scrollTo(0," + distance + ");", "");
+    }
+
+    /**
+     * Scroll to page bottom.
+     */
+    public void scrollToPageBottom()
+    {
+        this.drone.executeJavaScript("window.scrollTo(0,Math.max(document.documentElement.scrollHeight,document.body.scrollHeight,document.documentElement.clientHeight));", "");
     }
 
     /**
@@ -154,6 +170,5 @@ public class FacetedSearchPage extends SharePage
         {
             this.results.add(new FacetedSearchResult(drone, result));
         }
-
     }
 }

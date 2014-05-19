@@ -60,9 +60,9 @@ public class FacetedSearchForm
     }
 
     /**
-     * Search.
+     * Performs a search for the provided searchTerm.
      *
-     * @param searchTerm the search term
+     * @param searchTerm the term upon which to search
      * @return the html page
      */
     public HtmlPage search(String searchTerm)

@@ -24,7 +24,7 @@ public class FacetedSearchResult
     private String site;
 
     /**
-     * Instantiates a new faceted search result.
+     * Instantiates a new faceted search result - some items may be null.
      */
     public FacetedSearchResult(WebDrone drone, WebElement result)
     {
@@ -53,7 +53,7 @@ public class FacetedSearchResult
     }
 
     /**
-     * Gets the link.
+     * Gets the result link.
      *
      * @return the link
      */
@@ -63,7 +63,7 @@ public class FacetedSearchResult
     }
 
     /**
-     * Gets the name.
+     * Gets the result name.
      *
      * @return the name
      */
@@ -73,7 +73,7 @@ public class FacetedSearchResult
     }
 
     /**
-     * Gets the title.
+     * Gets the result title.
      *
      * @return the title
      */
@@ -83,7 +83,7 @@ public class FacetedSearchResult
     }
 
     /**
-     * Gets the date.
+     * Gets the result date.
      *
      * @return the date
      */
@@ -93,7 +93,7 @@ public class FacetedSearchResult
     }
 
     /**
-     * Gets the description.
+     * Gets the result description.
      *
      * @return the description
      */
@@ -103,7 +103,7 @@ public class FacetedSearchResult
     }
 
     /**
-     * Gets the site.
+     * Gets the result site.
      *
      * @return the site
      */
@@ -113,7 +113,7 @@ public class FacetedSearchResult
     }
 
     /**
-     * Click link.
+     * Click a result link.
      *
      * @return the html page
      */

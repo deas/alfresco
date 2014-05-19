@@ -1,14 +1,162 @@
 package org.alfresco.po.share.search;
 
-import org.alfresco.webdrone.WebDrone;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.webdrone.WebDrone;
+import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+/**
+ * The Class FacetedSearchSort.
+ */
 public class FacetedSearchSort
 {
+    /** Constants. */
+    private static final By FACETED_SEARCH_RESULTS_MENU_BAR = By.cssSelector("div#FCTSRCH_RESULTS_MENU_BAR");
+    private static final By RESULTS_STRING = By.cssSelector("span.alfresco-html-Label");
+    private static final By SORT_ORDER_BUTTON = By.cssSelector("div#FCTSRCH_SORT_ORDER_TOGGLE > img");
+    private static final By MENU_BUTTON = By.cssSelector("div#FCTSRCH_SORT_MENU");
+    private static final By MENU_ITEMS = By.cssSelector("div#FCTSRCH_SORT_MENU_dropdown tr.dijitMenuItem");
+
+    private WebDrone drone;
+    private WebElement resultsElement;
+    private String results;
+    private WebElement sortOrderButton;
+    private WebElement menuButton;
+    private String currentSelection;
+    private List<WebElement> menuElements = new ArrayList<WebElement>();
+
     /**
      * Instantiates a new faceted search sort.
      */
     public FacetedSearchSort(WebDrone drone)
     {
-        // TODO Auto-generated constructor stub
+        this.drone = drone;
+        WebElement facetedSearchResultsMenuBar = drone.find(FACETED_SEARCH_RESULTS_MENU_BAR);
+        this.resultsElement = facetedSearchResultsMenuBar.findElement(RESULTS_STRING);
+        this.results = resultsElement.getText();
+        this.sortOrderButton = facetedSearchResultsMenuBar.findElement(SORT_ORDER_BUTTON);
+        this.menuButton = facetedSearchResultsMenuBar.findElement(MENU_BUTTON);
+    }
+
+    /**
+     * Gets the results.
+     *
+     * @return the results
+     */
+    public String getResults()
+    {
+        return results;
+    }
+
+    /**
+     * Gets the sort order button.
+     *
+     * @return the sort order button
+     */
+    public WebElement getSortOrderButton()
+    {
+        return sortOrderButton;
+    }
+
+    /**
+     * Gets the menu button.
+     *
+     * @return the menu button
+     */
+    public WebElement getMenuButton()
+    {
+        return menuButton;
+    }
+
+    /**
+     * Gets the current selection.
+     *
+     * @return the current selection
+     */
+    public String getCurrentSelection()
+    {
+        return currentSelection;
+    }
+
+    /**
+     * Toggle the sort order.
+     *
+     * @return the html page
+     */
+    public HtmlPage toggleSortOrder()
+    {
+        this.sortOrderButton.click();
+        return FactorySharePage.resolvePage(this.drone);
+    }
+
+    /**
+     * Sort by the indexed item in the sort menu.
+     *
+     * @param i the index number of the item upon which to sort
+     * @return the html page
+     */
+    public HtmlPage sortByIndex(int i)
+    {
+        openMenu();
+        boolean found = false;
+        if(i >= 0 && i < this.menuElements.size())
+        {
+            this.menuElements.get(i).click();
+            found = true;
+        }
+        if(!found)
+        {
+            cancelMenu();
+        }
+        return FactorySharePage.resolvePage(this.drone);
+    }
+
+    /**
+     * Sort by label.
+     *
+     * @param label the label to be sorted on
+     * @return the html page
+     */
+    public HtmlPage sortByLabel(String label)
+    {
+        openMenu();
+        boolean found = false;
+        for(WebElement option : this.menuElements)
+        {
+            if(StringUtils.trim(option.getText()).equalsIgnoreCase(label))
+            {
+                option.click();
+                found = true;
+                break;
+            }
+        }
+        if(!found)
+        {
+            cancelMenu();
+        }
+        return FactorySharePage.resolvePage(this.drone);
+    }
+
+    /**
+     * Open the sort menu.
+     */
+    private void openMenu()
+    {
+        this.menuButton.click();
+        this.menuElements = this.drone.findAll(MENU_ITEMS);
+    }
+
+    /**
+     * Cancel an open menu.
+     */
+    private void cancelMenu()
+    {
+        this.resultsElement.click();
+        this.menuElements.clear();
     }
 }

@@ -22,7 +22,6 @@ public class FacetedSearchFacetGroup
     private static final By FACET_FILTER_LABEL = By.cssSelector("span.filterLabel");
     private static final By FACET_FILTER_HITS = By.cssSelector("span.hits");
 
-    private WebDrone drone;
     private String groupLabel;
     private List<FacetedSearchFacet> facets;
 
@@ -33,7 +32,6 @@ public class FacetedSearchFacetGroup
      */
     public FacetedSearchFacetGroup(WebDrone drone, WebElement facetGroup)
     {
-        this.drone = drone;
         this.groupLabel = facetGroup.findElement(GROUP_LABEL).getText();
         List<WebElement> facetFilters = facetGroup.findElements(FACET_FILTER);
         this.facets = new ArrayList<FacetedSearchFacet>();
@@ -83,6 +81,8 @@ public class FacetedSearchFacetGroup
         /**
          * Instantiates a new faceted search facet.
          *
+         * @param drone the drone
+         * @param link the link
          * @param label the label
          * @param hits the hits
          */
@@ -125,7 +125,7 @@ public class FacetedSearchFacetGroup
         }
 
         /**
-         * Click link.
+         * Click the link.
          *
          * @return the html page
          */

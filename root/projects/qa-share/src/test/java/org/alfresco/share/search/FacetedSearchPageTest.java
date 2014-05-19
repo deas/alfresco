@@ -84,7 +84,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         // Do a search for the letter 'a'
         facetedSearchPage.getSearchForm().search("a");
 
-        // Reload the page
+        // Reload the page objects
         facetedSearchPage.render();
 
         // There should now be some results, facet groups and facets
@@ -109,7 +109,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         // After searching the search term should be on the url
         Assert.assertTrue(StringUtils.contains(facetedSearchPage.getUrlHash(), "searchTerm=e"), "After searching for the letter 'e' the phrase 'searchTerm=e' should appear on the url");
 
-        // Reload the page
+        // Reload the page objects
         facetedSearchPage.render();
 
         // There should now be some results, facet groups and facets
@@ -119,7 +119,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         // Click the first facet in the first facet group
         facetedSearchPage.getFacetGroups().get(0).getFacets().get(0).clickLink();
 
-        // Reload the page
+        // Reload the page objects
         facetedSearchPage.render();
 
         // There should still be some results, facet groups and facets
@@ -136,6 +136,108 @@ public class FacetedSearchPageTest extends AbstractUtils
         facetedSearchPage.getSearchForm().clearSearchTerm();
 
         trace("searchAndFacetTest complete");
+    }
+
+    @Test(dependsOnMethods={"searchAndFacetTest"})
+    public void searchAndSortTest() throws Exception
+    {
+        trace("Starting searchAndSortTest");
+
+        // Do a search for the letter 'e'
+        facetedSearchPage.getSearchForm().search("e");
+
+        // Reload the page objects
+        facetedSearchPage.render();
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' there should be some search results");
+
+        // Toggle the sorting of the results
+        facetedSearchPage.getSort().toggleSortOrder();
+
+        // Reload the page objects
+        facetedSearchPage.render();
+
+        // Check the results again
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' and toggling the sort order there should be some search results");
+
+        // Sort by the 3rd item in the sort menu (probably Title)
+        facetedSearchPage.getSort().sortByIndex(2);
+
+        // Reload the page objects
+        facetedSearchPage.render();
+
+        // Check the results again
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' and sorting by Title there should be some search results");
+
+        // Sort by the 20th item in the sort menu (does not exist)
+        facetedSearchPage.getSort().sortByIndex(20);
+
+        // Reload the page objects
+        facetedSearchPage.render();
+
+        // Check the results again
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' and sorting by an item (outside of the dropdown list size) there should still be some search results");
+
+        // Sort by 'Creator'
+        facetedSearchPage.getSort().sortByLabel("Creator");
+
+        // Reload the page objects
+        facetedSearchPage.render();
+
+        // Check the results again
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' and sorting by 'Creator' there should still be some search results");
+
+        // Sort by 'Time of day' (does not exist)
+        facetedSearchPage.getSort().sortByLabel("Time of day");
+
+        // Reload the page objects
+        facetedSearchPage.render();
+
+        // Check the results again
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' and sorting by a non-existant option there should still be some search results");
+
+        // Clear the search
+        facetedSearchPage.getSearchForm().clearSearchTerm();
+
+        trace("searchAndSortTest complete");
+    }
+
+    @Test(dependsOnMethods={"searchAndSortTest"})
+    public void searchAndPaginateTest() throws Exception
+    {
+        trace("Starting searchAndSortTest");
+
+        // Do a search for the letter 'a'
+        facetedSearchPage.getSearchForm().search("a");
+
+        // Reload the page objects
+        facetedSearchPage.render();
+
+        // Check the results
+        int resultsCount = facetedSearchPage.getResults().size();
+        Assert.assertTrue(resultsCount > 0, "After searching for the letter 'a' there should be some search results");
+
+        // Force a pagination
+        // We do a short scroll first to get past the exclusion of the first scroll event (required for some browsers)
+        facetedSearchPage.scrollSome(50);
+        facetedSearchPage.scrollToPageBottom();
+
+        // Wait 2 seconds to allow the extra results to render
+        webDriverWait(drone,2000);
+
+        // Reload the page objects
+        facetedSearchPage.render();
+
+        // Check the results
+        int paginatedResultsCount = facetedSearchPage.getResults().size();
+        Assert.assertTrue(paginatedResultsCount > 0, "After searching for the letter 'a' and paginating there should be some search results");
+        Assert.assertTrue(paginatedResultsCount > resultsCount, "After searching for the letter 'a' and paginating there should be more search results");
+        
+        // Clear the search
+        facetedSearchPage.getSearchForm().clearSearchTerm();
+
+        trace("searchAndSortTest complete");
     }
 
     /**
