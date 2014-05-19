@@ -26,9 +26,6 @@
          @de-emphasized-font-color: #999999;
          @highlighted-font-color: #fff;
 
-         // Border Colours
-         @standard-border-color: #ccc;
-
          // Backgrounds
          @list-background-color: #fff;
          @list-hover-color: #f1f1f1;
@@ -85,9 +82,10 @@
 
          // Buttons
          // The standard button is what is normally seen...
-         @standard-button-background-color: #ffffff;
-         @standard-button-border: 1px solid @standard-border-color;
-         @standard-button-focus-border: 1px solid @standard-border-color;
+         @standard-button-border-color: #ccc;
+         @standard-button-background-color: #fff;
+         @standard-button-border: 1px solid @standard-button-border-color;
+         @standard-button-focus-border: 1px solid @standard-button-border-color;
          @standard-button-font-color: @general-font-color;
          @standard-button-font-size: @normal-font-size;
 
@@ -100,7 +98,7 @@
 
          // Shadows
          @standard-box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
-         @inset-box-shadow: 1px 1px 3px @standard-border-color inset;
+         @inset-box-shadow: 1px 1px 3px @standard-button-border-color inset;
 
       </less-variables>
    </css-tokens>
