@@ -357,6 +357,90 @@ define(["intern!object",
          .then(function() {
             TestCommon.postCoverageResults(browser);
          });
+      },
+
+      'Url hash tests': function () {
+
+         var browser = this.remote;
+         var testname = "FacetFiltersTest - Url hash tests";
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/search/page_models/FacetFilters_TestPage.json", testname)
+
+         .end()
+
+         // Click button 4 - 3 rows of facet data should appear
+         .elementById("DO_FACET_BUTTON_4")
+         .moveTo()
+         .click()
+         .end()
+
+         .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
+         .then(function (rows) {
+            TestCommon.log(testname,378,"Check facets are shown after clicking button 4");
+            expect(rows).to.have.length(3, "There should be 3 rows in the facet display");
+         })
+         .end()
+
+         // Click facet1 - check the url hash appears as expected
+         .elementByCssSelector("#FACET2 > ul.filters > li:first-of-type span.filterLabel")
+         .moveTo()
+         .click()
+         .end()
+
+         .url()
+         .then(function (url) {
+            TestCommon.log(testname,391,"Click the first item in the facet menu");
+            expect(url).to.contain("FACET2QNAME", "The url hash should contain 'FACET2QNAME'")
+               .and.to.contain("facFil1", "The facet click did not write the value 'facFil1' to the url hash as expected");
+         })
+         .end()
+
+         // Click facet2 - check the url hash appears as expected
+         .elementByCssSelector("#FACET2 > ul.filters > li:nth-of-type(2) span.filterLabel")
+         .moveTo()
+         .click()
+         .end()
+
+         .url()
+         .then(function (url) {
+            TestCommon.log(testname,405,"Click the second item in the facet menu");
+            expect(url).to.contain("FACET2QNAME", "The url hash should contain 'FACET2QNAME'")
+               .and.to.contain("facFil1", "The url hash should contain 'facFil2'")
+               .and.to.contain("facFil2", "The facet click did not add the value 'facFil2' to the url hash as expected");
+         })
+         .end()
+
+         // Click facet1 - check the url hash appears as expected
+         .elementByCssSelector("#FACET2 > ul.filters > li:first-of-type span.filterLabel")
+         .moveTo()
+         .click()
+         .end()
+
+         .url()
+         .then(function (url) {
+            TestCommon.log(testname,420,"Click the first item in the facet menu again");
+            expect(url).to.contain("FACET2QNAME", "The url hash should contain 'FACET2QNAME'")
+               .and.to.not.contain("facFil1", "The facet click did not remove the value 'facFil1' from the url hash as expected");
+         })
+         .end()
+
+         // Click facet2 - check the url hash appears as expected
+         .elementByCssSelector("#FACET2 > ul.filters > li:nth-of-type(2) span.filterLabel")
+         .moveTo()
+         .click()
+         .end()
+
+         .url()
+         .then(function (url) {
+            TestCommon.log(testname,434,"Click the second item in the facet menu again");
+            expect(url).to.not.contain("FACET2QNAME", "The url hash should not now contain 'FACET2QNAME'")
+               .and.to.not.contain("facFil2", "The facet click did not remove the value 'facFil2' from the url hash as expected");
+         })
+         .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
       }
    });
 });

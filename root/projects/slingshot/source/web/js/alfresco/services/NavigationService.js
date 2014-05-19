@@ -96,7 +96,7 @@ define(["dojo/_base/declare",
        * @param {object} data An object containing the information about the page to navigate to.
        */
       navigateToPage: function alfresco_services_NavigationService__navigateToPage(data) {
-         if (typeof data.url == "undefined" || data.url == null || data.url == "")
+         if (!data.type == this.hashPath && (typeof data.url == "undefined" || data.url == null || data.url == ""))
          {
             this.alfLog("error", "A page navigation request was made without a target URL defined as a 'url' attribute", data);
          }

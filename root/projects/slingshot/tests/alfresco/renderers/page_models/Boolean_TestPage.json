@@ -50,6 +50,20 @@
                      "id": "COLUMN3_HEADER",
                      "label": "IMAGE"
                   }
+               },
+               {
+                  "name": "alfresco/documentlibrary/views/layouts/HeaderCell",
+                  "config": {
+                     "id": "COLUMN4_HEADER",
+                     "label": "BAD TYPE"
+                  }
+               },
+               {
+                  "name": "alfresco/documentlibrary/views/layouts/HeaderCell",
+                  "config": {
+                     "id": "COLUMN5_HEADER",
+                     "label": "MISSING DATA"
+                  }
                }
             ],
             "widgets":[
@@ -93,6 +107,34 @@
                                     "config": {
                                        "propertyToRender": "col1",
                                        "displayType": "IMAGE"
+                                    }
+                                 }
+                              ]
+                           }
+                        },
+                        {
+                           "name": "alfresco/documentlibrary/views/layouts/Cell",
+                           "config": {
+                              "widgets": [
+                                 {
+                                    "name": "alfresco/renderers/Boolean",
+                                    "config": {
+                                       "propertyToRender": "col1",
+                                       "displayType": "NOTVALID"
+                                    }
+                                 }
+                              ]
+                           }
+                        },
+                        {
+                           "name": "alfresco/documentlibrary/views/layouts/Cell",
+                           "config": {
+                              "widgets": [
+                                 {
+                                    "name": "alfresco/renderers/Boolean",
+                                    "config": {
+                                       "propertyToRender": "notAValidColumn",
+                                       "displayType": "YESNO"
                                     }
                                  }
                               ]

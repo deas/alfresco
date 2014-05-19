@@ -13,6 +13,9 @@
          "name": "alfresco/services/ActionService"
       },
       {
+         "name": "alfresco/services/NavigationService"
+      },
+      {
          "name": "alfresco/services/SearchService"
       }
    ],
@@ -57,6 +60,26 @@
                      "facetQName": "FACET1QNAME",
                      "sortBy": "DESCENDING",
                      "maxFilters": 5
+                  }
+               },
+               {
+                  "name": "alfresco/buttons/AlfButton",
+                  "config": {
+                     "id": "DO_FACET_BUTTON_4",
+                     "label": "Publish facet data 4",
+                     "publishTopic": "ALF_FACET_RESULTS_@FACET2QNAME",
+                     "publishPayload": {"activeFilters":null,"facetResults":{"facFil1":789,"facFil2":456,"facFil3":2}}
+                  }
+               },
+               {
+                  "id": "FACET2",
+                  "name": "alfresco/search/FacetFilters",
+                  "config": {
+                     "label": "Facet 2 (useHash=true)",
+                     "facetQName": "FACET2QNAME",
+                     "sortBy": "DESCENDING",
+                     "maxFilters": 5,
+                     "useHash" : true
                   }
                }
             ]
