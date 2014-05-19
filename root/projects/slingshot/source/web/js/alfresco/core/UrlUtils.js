@@ -218,14 +218,14 @@ define(["dojo/_base/declare",
        * 
        * @instance
        * @param {Object} record The current node to generate actions URLs for. 
-       * @param {String} siteId The id of the current site
-       * @param {String} repositoryUrl The URL of a linked repository
+       * @param {String} [siteId] The id of the current site, will be generated if missing from record.
+       * @param {String} [repositoryUrl] The URL of a linked repository
        */
       getActionUrls: function dlA_getActionUrls(record,
                                                 siteId, 
                                                 repositoryUrl,
                                                 replicationUrlMapping) {
-         var jsNode = record.jsNode,
+         var jsNode = record.node,
              nodeRef = jsNode.isLink ? jsNode.linkedNode.nodeRef : jsNode.nodeRef,
              strNodeRef = nodeRef.toString(),
              nodeRefUri = nodeRef.uri,
