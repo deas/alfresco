@@ -1385,13 +1385,95 @@ function getQuaddsWidgets() {
    };
 }
 
+function getFacetFilters() {
+   return {
+      type: [ "widget" ],
+      name: "Facet Filters",
+      module: "alfresco/search/FacetFilters",
+      defaultConfig: {
+         label: "",
+         facetQName: "{http://www.alfresco.org/model/content/1.0}content.mimetype",
+         maxFilters: 10,
+         hitThreshold: 5,
+         sortBy: "ALPHABETICALLY"
+      },
+      widgetsForConfig: [
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.label",
+               label: "Facet Label",
+               value: ""
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoSelect",
+            config: {
+               name: "defaultConfig.facetQName",
+               label: "Facet QName",
+               value: "{http://www.alfresco.org/model/content/1.0}content.mimetype",
+               optionsConfig: {
+                  fixed: [
+                    {label: "Description", value: "{http://www.alfresco.org/model/content/1.0}description.__"},
+                    {label: "MIME Type", value: "{http://www.alfresco.org/model/content/1.0}content.mimetype"},
+                    {label: "Modifier", value: "{http://www.alfresco.org/model/content/1.0}modifier.__"},
+                    {label: "Creator", value: "{http://www.alfresco.org/model/content/1.0}creator.__"}
+                  ]
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoSelect",
+            config: {
+               name: "defaultConfig.sortBy",
+               label: "Sorted",
+               value: "ALPHABETICALLY",
+               optionsConfig: {
+                  fixed: [
+                    {label: "Alphabetically", value: "ALPHABETICALLY"},
+                    {label: "Filter hits (low to high)", value: "ASCENDING"},
+                    {label: "Filter hits (high to low)", value: "DESCENDING"}
+                  ]
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.maxFilters",
+               label: "Max. Displayer Filters",
+               value: 10
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.hitThreshold",
+               label: "Hit Threshold",
+               value: 5
+            }
+         }
+      ],
+      previewWidget: false,
+      widgetsForDisplay: [
+         {
+            name: "alfresco/html/Label",
+            config: {
+               label: "Facet Filters"
+            }
+         }
+      ]
+   };
+}
+
 
 function getGeneralWidgets() {
    return [
       getSetTitleWidget(),
       getLogoWidget(),
       getButtonWidget(),
-      getQuaddsWidgets()
+      getQuaddsWidgets(),
+      getFacetFilters()
    ];
 }
 
@@ -3058,6 +3140,63 @@ function getForm() {
    };
 }
 
+function getSingleEntryForm() {
+   return {
+      type: [ "widget" ],
+      name: "Single Field Form",
+      module: "alfresco/forms/SingleEntryForm",
+      iconClass: "textbox",
+      defaultConfig: {
+      },
+      widgetsForConfig: [
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.entryFieldName",
+               label: "Entry field name",
+               value: ""
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.okButtonLabel",
+               label: "Submit Button Label",
+               value: "OK"
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoSelect",
+            config: {
+               name: "defaultConfig.okButtonPublishTopic",
+               label: "Confirmation Button Topic",
+               value: "",
+               optionsConfig: {
+                  fixed: getCommonTopics()
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoCheckBox",
+            config: {
+               name: "defaultConfig.okButtonPublishGlobal",
+               label: "Global Publish",
+               value: true
+            }
+         }
+      ],
+      previewWidget: false,
+      widgetsForDisplay: [
+         {
+            name: "alfresco/html/Label",
+            config: {
+               label: "Single Field Form"
+            }
+         }
+      ]
+   };
+}
+
 function getCrudForm() {
    return {
       type: [ "widget" ],
@@ -3515,6 +3654,7 @@ function getAllFormWidgets() {
    return [
       getForm(),
       getCrudForm(),
+      getSingleEntryForm(),
       getTextField(),
       getTextArea(),
       getSelectField(),

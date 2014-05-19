@@ -47,6 +47,7 @@ define(["dojo/_base/declare",
       constructor: function alfresco_services_SearchService__constructor(args) {
          lang.mixin(this, args);
          this.alfSubscribe("ALF_SEARCH_REQUEST", lang.hitch(this, "onSearchRequest"));
+         this.alfSubscribe("ALF_SEARCH_RESULT_LINK", lang.hitch(this, "onLinkToSearchResult"));
       },
       
       /**
@@ -67,7 +68,7 @@ define(["dojo/_base/declare",
        * @type {number}
        * @default 50
        */
-      pageSize: 50,
+      pageSize: 25,
 
       /**
        * This is the default query to use if one isn't supplied in a search request. 
@@ -115,6 +116,15 @@ define(["dojo/_base/declare",
        * @default ""
        */
       sort: "",
+
+      /**
+       * This is the default sort direction to use. This value will be used if a specific value isn't supplied in the search request.
+       * 
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      sortAscending: true,
 
       /**
        * This is the default page index to use for multiple pages of search results. This value will be used if
@@ -172,6 +182,8 @@ define(["dojo/_base/declare",
                      case "maxResults":
                      case "facetFields":
                      case "filters":
+                     case "sortAscending":
+                     case "sortField":
                         break;
                      default:
                         queryAttributes[key] = payload[key];
@@ -188,13 +200,25 @@ define(["dojo/_base/declare",
                query = payload.query
             }
 
+            var sort = "";
+            if (payload.sortField != null && payload.sortField == "")
+            {
+               // No action required - leave as the empty string which is relevance - no direction can be applied
+            }
+            else
+            {
+               sort = ((payload.sortField != null) ? payload.sortField : this.sort) + "|" + 
+                      ((payload.sortAscending != null) ? payload.sortAscending : this.sortAscending);
+            }
+            
+
             var data = {
                facetFields: (payload.facetFields != null) ? payload.facetFields : "{http://www.alfresco.org/model/content/1.0}content.mimetype,{http://www.alfresco.org/model/content/1.0}modifier.__,{http://www.alfresco.org/model/content/1.0}creator.__,{http://www.alfresco.org/model/content/1.0}description.__",
                filters: (payload.filters != null) ? payload.filters : "",
                term: payload.term,
                tag: (payload.tag != null) ? payload.tag : this.tag,
                startIndex: (payload.startIndex != null) ? payload.startIndex : this.startIndex,
-               sort: (payload.sort != null) ? payload.sort : this.sort,
+               sort: sort,
                // site: (payload.site != null) ? payload.site : this.site,
                site: "",
                // rootNode: (payload.rootNode != null) ? payload.rootNode : this.rootNode,
@@ -213,6 +237,55 @@ define(["dojo/_base/declare",
                callbackScope: this
             };
             this.serviceXhr(config);
+         }
+      },
+
+      /**
+       * Handles requests to navigate to the appropriate page to view a specific search result.
+       * This then passes that request onto the [Navigation Service]{@link module:alfresco/services/NavigationService}
+       *
+       * @instance
+       * @param {object} result The item to navigate to
+       */
+      onLinkToSearchResult: function alfresco_services_SearchService__onLinkToSearchResult(result) {
+
+         var payload = {
+            type: "SHARE_PAGE_RELATIVE",
+            target: "CURRENT",
+            url: null
+         };
+         var type = lang.getObject("type", false, result),
+             site = lang.getObject("site.shortName", false, result);
+
+         if (type == "folder")
+         {
+            var path = lang.getObject("path", false, result),
+                name = lang.getObject("name", false, result);
+
+            if (site != null)
+            {
+               payload.url = "site/" + site + "/documentlibrary?path=" + path + "/" + name;
+               this.alfPublish("ALF_NAVIGATE_TO_PAGE", payload);
+            }
+            else
+            {
+               payload.url = "repository?path=" + path + "/" + name;
+               this.alfPublish("ALF_NAVIGATE_TO_PAGE", payload);
+            }
+         }
+         else
+         {
+            var nodeRef = lang.getObject("nodeRef", false, result);
+            if (site != null)
+            {
+               payload.url = "site/" + site + "/document-details?nodeRef=" + nodeRef;
+               this.alfPublish("ALF_NAVIGATE_TO_PAGE", payload);
+            }
+            else
+            {
+               payload.url = "document-details?nodeRef=" + nodeRef;
+               this.alfPublish("ALF_NAVIGATE_TO_PAGE", payload);
+            }
          }
       }
    });

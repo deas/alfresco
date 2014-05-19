@@ -13,6 +13,11 @@
 
 .alfresco-forms-controls-BaseFormControl > .requirementIndicator {
    float: left;
+   display: none;
+}
+
+.alfresco-forms-controls-BaseFormControl > .requirementIndicator.required {
+   display: block;
 }
 
 .alfresco-forms-controls-BaseFormControl > .units {

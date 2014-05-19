@@ -1,0 +1,31 @@
+.alfresco-footer-AlfShareFooter {
+   font-size: @footer-font-size;
+   background-color: #F2F2F2;
+   border-bottom: 1px solid #DFDFDF;
+   border-top: 1px solid #DFDFDF;
+   text-align: center;
+}
+
+.alfresco-footer-AlfShareFooter .copyright {
+   background-color: #FFFFFF;
+   border-left: 1px solid #DFDFDF;
+   border-right: 1px solid #DFDFDF;
+   padding: 14px 1.5em;
+   display: block;
+   margin: 0 auto;
+   width: 450px;
+}
+
+.alfresco-footer-AlfShareFooter .copyright a {
+   float: left;
+   margin-top: -2px;
+}
+
+.alfresco-footer-AlfShareFooter .copyright span {
+   color: @general-font-color;
+   position: relative;
+}
+
+.alfresco-footer-AlfShareFooter .licenseHolder.hidden {
+   display: none;
+}

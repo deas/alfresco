@@ -1,0 +1,23 @@
+.alfresco-forms-SingleEntryForm > form {
+   display: inline-block;
+}
+
+.alfresco-forms-SingleEntryForm > div.buttons {
+   display: inline-block;
+   vertical-align: top;
+}
+
+/* Make the top of the submit button line up with the text field
+.alfresco-forms-SingleEntryForm div.buttons span.alfresco-buttons-AlfButton {
+   border-width: 0;
+}*/
+
+/* Hide the requirement indicator in the text field */
+.alfresco-forms-SingleEntryForm .alfresco-forms-controls-BaseFormControl .requirementIndicator {
+    display: none;
+}
+
+/* Hide the validation error indicator */
+.alfresco-forms-SingleEntryForm .alfresco-forms-controls-BaseFormControl .validation {
+    display: none;
+}

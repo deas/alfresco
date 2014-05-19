@@ -41,6 +41,15 @@ define(["dojo/_base/declare",
    return declare([_Widget, _Templated, AlfCore, CoreWidgetProcessing], {
       
       /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/ProcessWidgets.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/ProcessWidgets.css"}],
+
+      /**
        * The HTML template to use for the widget.
        * @instance
        * @type {String}

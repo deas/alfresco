@@ -153,6 +153,6 @@ define(["dojo/_base/declare",
          {
             this.alfLog("warn", "Document data was provided but the 'response.item' attribute was not found", payload, this);
          }
-      },
+      }
    });
 });

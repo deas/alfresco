@@ -59,7 +59,7 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {number}
-       * @default
+       * @default null
        */
       maxFilters: null,
 
@@ -71,6 +71,16 @@ define(["dojo/_base/declare",
        * @default
        */
       hitThreshold: null,
+
+      /**
+       * The length (in number of characters) that a filter should have in order for it to be shown. This is particularly
+       * relevant for facets similar to description where lots of short meaningless filters might be returned.
+       *
+       * @instance
+       * @type {number}
+       * @default null
+       */
+      minFilterValueLength: null,
 
       /**
        * How the filters are ordered. The options are:
@@ -97,7 +107,7 @@ define(["dojo/_base/declare",
 
          // TODO: Commented out and published because it's being developed against QuaddsWidgets...
          this.alfSubscribe("ALF_WIDGETS_READY", lang.hitch(this, "publishFacets"), true);
-         this.publishFacets();
+         // this.publishFacets();
       },
       
       publishFacets: function alfresco_search_FacetFilters__publishFacets() {
@@ -128,6 +138,11 @@ define(["dojo/_base/declare",
        */
       processFacetFilters: function alfresco_search_FacetFilters__processFacetFilters(payload) {
          this.alfLog("log", "Facet Results received!", payload, this);
+
+         // Reset the more/less options...
+         this.moreFiltersList = null;
+         domClass.add(this.showMoreNode, "hidden");
+         domClass.add(this.showLessNode, "hidden");
 
          // Remove all previous filters...
          var widgets = registry.findWidgets(this.filtersNode);
@@ -162,32 +177,35 @@ define(["dojo/_base/declare",
          // Create widgets for each filter...
          array.forEach(filters, function(filter, index) {
 
-            if (this.hitThreshold == null || this.hitThreshold <= filter.hits)
+            if (this.minFilterValueLength != null && filter.value.length < this.minFilterValueLength)
             {
-               if (filtersToAdd == null || filtersToAdd > 0)
-               {
-                  // Check to see if this is an active filter...
-                  var applied = array.some(activeFilters, function(activeFilter, index) {
-                     return activeFilter == this.facetQName.replace(/\.__/g, "") + "|" + filter.value;
-                  }, this);
+               // Don't add filters that have a value shorter than the minimum specified length
+            }
+            else if (this.hitThreshold == null || this.hitThreshold <= filter.hits)
+            {
+               // Check to see if this is an active filter...
+               var applied = array.some(activeFilters, function(activeFilter, index) {
+                  return activeFilter == this.facetQName.replace(/\.__/g, "") + "|" + filter.value;
+               }, this);
 
-                  // Keeping adding (visible) filters until we've hit the maximum number...
-                  var filterWidget = new FacetFilter({
-                     label: filter.value,
-                     hits: filter.hits,
-                     filter: filter.value,
-                     facet: this.facetQName,
-                     applied: applied
-                  });
-                  filterWidget.placeAt(this.filtersNode);
+               // Keeping adding (visible) filters until we've hit the maximum number...
+               var filterWidget = new FacetFilter({
+                  label: filter.value,
+                  hits: filter.hits,
+                  filter: filter.value,
+                  facet: this.facetQName,
+                  applied: applied
+               });
 
-                  // Decrement the filter count...
-                  if (filtersToAdd != null) filtersToAdd--;
-               }
-               else
+               if (filtersToAdd != null && filtersToAdd <= 0 && !applied)
                {
-                  // TODO: Support the ability to show more...
+                  this.addMoreFilter(filterWidget);
                }
+
+               filterWidget.placeAt(this.showMoreNode, "before");
+
+               // Decrement the filter count...
+               if (filtersToAdd != null) filtersToAdd--;
             }
             else
             {
@@ -195,6 +213,20 @@ define(["dojo/_base/declare",
             }
 
          }, this);
+
+         if (this.moreFiltersList != null)
+         {
+            domClass.remove(this.showMoreNode, "hidden");
+         }
+
+         if (filters.length == 0)
+         {
+            domClass.add(this.domNode, "hidden");
+         }
+         else
+         {
+            domClass.remove(this.domNode, "hidden");
+         }
       },
 
       /**

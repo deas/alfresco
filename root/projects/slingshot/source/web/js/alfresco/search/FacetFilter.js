@@ -103,6 +103,24 @@ define(["dojo/_base/declare",
       applied: false,
       
       /**
+       * The path to use as the source for the image that indicates that a filter has been applied
+       *
+       * @instance
+       * @type {string}
+       * default null
+       */
+      appliedFilterImageSrc: "applied-filter.png",
+
+      /**
+       * The alt-text to use for the image that indicates that a filter has been applied
+       *
+       * @instance
+       * @type {string}
+       * @default
+       */
+      appliedFilterAltText: "facet.filter.applied.alt-text",
+
+      /**
        * Sets up the attributes required for the HTML template.
        * @instance
        */
@@ -110,6 +128,12 @@ define(["dojo/_base/declare",
          if (this.label != null && this.facet != null && this.filter != null && this.hits != null)
          {
             this.label = this.encodeHTML(this.message(this.label));
+
+            // Localize the alt-text for the applied filter message...
+            this.appliedFilterAltText = this.message(this.appliedFilterAltText, {0: this.label});
+
+            // Set the source for the image to use to indicate that a filter is applied...
+            this.appliedFilterImageSrc = require.toUrl("alfresco/search") + "/css/images/" + this.appliedFilterImageSrc;
          }
          else
          {
@@ -136,27 +160,50 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * 
+       * If the filter has previously been applied then it is removed, if the filter is not applied
+       * then it is applied.
+       *
        * @instance
-       * @param {object} evt 
        */
-      onApplyFilter: function alfresco_search_FacetFilter__onApplyFilter(evt) {
+      onToggleFilter: function alfresco_search_FacetFilter__onToggleFilter(evt) {
+         if (this.applied)
+         {
+            this.onClearFilter();
+         }
+         else
+         {
+            this.onApplyFilter();
+         }
+      },
+
+      /**
+       * Applies the current filter by publishing the details of the filter along with the facet to 
+       * which it belongs and then displays the "applied" image.
+       *
+       * @instance
+       */
+      onApplyFilter: function alfresco_search_FacetFilter__onApplyFilter() {
          this.alfPublish("ALF_APPLY_FACET_FILTER", {
             filter: this.facet + "|" + this.filter
          });
          domClass.remove(this.removeNode, "hidden");
          domClass.add(this.labelNode, "applied");
+         this.applied = true;
       },
 
       /**
+       * Removes the current filter by publishing the details of the filter along with the facet
+       * to which it belongs and then hides the "applied" image
+       * 
        * @instance
        */
-      onClearFilter: function alfresco_search_FacetFilter__onClearFilter(evt) {
+      onClearFilter: function alfresco_search_FacetFilter__onClearFilter() {
          this.alfPublish("ALF_REMOVE_FACET_FILTER", {
             filter: this.facet + "|" + this.filter
          });
          domClass.add(this.removeNode, "hidden");
          domClass.remove(this.labelNode, "applied");
+         this.applied = false;
       }
    });
 });

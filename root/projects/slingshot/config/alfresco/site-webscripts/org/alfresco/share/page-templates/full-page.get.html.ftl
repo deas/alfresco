@@ -1,4 +1,4 @@
-<#include "./hybrid-template.ftl" />
+<#include "./full-page-template.ftl" />
 <@templateHeader />
 
 <@templateBody>

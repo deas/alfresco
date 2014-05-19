@@ -340,10 +340,11 @@ define(["dojo/_base/declare",
             this.okButton = new AlfButton({
                pubSubScope: this.pubSubScope,
                label: this.message(this.okButtonLabel),
-               additionalCssClasses: "confirmationButton",
+               additionalCssClasses: "confirmationButton " + (this.okButtonClass != null) ? this.okButtonClass : "",
                publishTopic: this.okButtonPublishTopic,
                publishPayload: this.okButtonPublishPayload,
-               publishGlobal: this.okButtonPublishGlobal
+               publishGlobal: this.okButtonPublishGlobal,
+               iconClass: this.okButtonIconClass
             }, this.okButtonNode);
          }
          if (this.showCancelButton == true)
@@ -354,7 +355,8 @@ define(["dojo/_base/declare",
                additionalCssClasses: "cancelButton",
                publishTopic: this.cancelButtonPublishTopic,
                publishPayload: this.cancelButtonPublishPayload,
-               publishGlobal: this.cancelButtonPublishGlobal
+               publishGlobal: this.cancelButtonPublishGlobal,
+               iconClass: this.cancelButtonIconClass
             }, this.cancelButtonNode);
          }
          

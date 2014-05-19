@@ -1,6 +1,6 @@
 .alfresco-documentlibrary-AlfDocumentList {
-   border: none;
-   margin: 0;
+  border: 1px solid #F0F0F0;
+  /* margin: 5px; Commented out because the container should control the margins */
 }
 
 .alfresco-documentlibrary-AlfDocumentList .info {

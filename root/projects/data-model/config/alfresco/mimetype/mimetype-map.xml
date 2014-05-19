@@ -284,7 +284,7 @@
          <mimetype mimetype="image/x-raw-red" display="RED RAW Image">
             <extension>r3d</extension>
          </mimetype>
-         <mimetype mimetype="application/x-javascript" text="true" display="Java Script">
+         <mimetype mimetype="application/x-javascript" text="true" display="JavaScript">
             <extension>js</extension>
          </mimetype>
          <mimetype mimetype="application/x-latex" text="true" display="LaTeX">
@@ -524,7 +524,7 @@
             <extension>dotm</extension>
          </mimetype>
 
-         <mimetype mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation" display="Microsoft PowerPoint 2007 presentation">
+         <mimetype mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation" display="Microsoft PowerPoint 2007">
             <extension>pptx</extension>
          </mimetype>
          <mimetype mimetype="application/vnd.ms-powerpoint.presentation.macroenabled.12" display="Microsoft PowerPoint 2007 macro-enabled presentation">
@@ -571,8 +571,6 @@
             <extension>xlsb</extension>
          </mimetype>
 
-
-
          <mimetype mimetype="application/x-zip" display="Adobe Flex Project File">
             <extension default="true">fxp</extension>
          </mimetype>
@@ -599,6 +597,25 @@
          <!-- RSS  -->
          <mimetype mimetype="application/rss+xml" text="true" display="RSS">
             <extension>rss</extension>
+         </mimetype>
+         
+         <mimetype mimetype="text/x-java-source" text="true" display="Java Source File">
+            <extension default="true">java</extension>
+         </mimetype>
+         <mimetype mimetype="text/x-jsp" text="true" display="Java Server Page">
+            <extension default="true">jsp</extension>
+         </mimetype>
+         <mimetype mimetype="application/java-archive" display="Java Archive">
+            <extension default="true">jar</extension>
+         </mimetype>
+         <mimetype mimetype="application/x-rar-compressed" display="RAR Archive">
+            <extension default="true">rar</extension>
+         </mimetype>
+         <mimetype mimetype="text/x-java-source" text="true" display="Java Source File">
+            <extension default="true">java</extension>
+         </mimetype>
+         <mimetype mimetype="text/x-java-source" text="true" display="Java Source File">
+            <extension default="true">java</extension>
          </mimetype>
 
       </mimetypes>

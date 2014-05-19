@@ -1,40 +1,19 @@
-html, body {
+.alfresco-core-Page,
+.alfresco-footer-AlfStickyFooter {
    height: 100%;
-}
-
-body {
-   margin: 0px;
-   padding: 0px;
- }
-
-/* First node in the body !!! Need to set this */
-div#wrapper {
-   width: 100%;
    min-height: 100%;
+}
+
+.alfresco-footer-AlfStickyFooter > div.wrapper {
    height: auto !important;
-   height: 100%;
-   margin: 0px 0px -41px 0px;
+   margin: 0 auto -50px;
+   min-height: 100%;
 }
 
-/* div#footer_wrapper */
-div.alfresco-footer-AlfStickFooter {
-   width: 100%;
-   height: 41px;
+.alfresco-footer-AlfStickyFooter > div.wrapper > div.push {
+   height: 50px;
 }
 
-div#content_wrapper {
-   width: 100%;
-   padding: 0px 0px 41px 0px;
- }
-
-/* div#footer_wrapper, div#content_wrapper */
-div.alfresco-footer-AlfStickFooter, div#content_wrapper {
-   min-width: 942px;
-}
-
-/* div#footer_inner_wrapper, div#content_inner_wrapper */
-div.alfresco-footer-AlfStickFooter > div.inner, 
-div#content_inner_wrapper {
-   width: 942px;
-   margin: 0px auto;
+.alfresco-footer-AlfStickyFooter > div.footer {
+   height: 50px;
 }

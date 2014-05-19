@@ -32,6 +32,7 @@
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
+        "dijit/_OnDijitClickMixin",
         "dojo/text!./templates/AlfDocumentFilters.html",
         "alfresco/core/Core",
         "alfresco/core/CoreWidgetProcessing",
@@ -42,9 +43,9 @@ define(["dojo/_base/declare",
         "dojo/dom-construct",
         "dojo/dom-class",
         "dojo/on"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template,  AlfCore, CoreWidgetProcessing, _AlfDocumentListTopicMixin, AlfDocumentFilter, lang, array, domConstruct, domClass, on) {
-
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, _AlfDocumentListTopicMixin], {
+        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, template,  AlfCore, CoreWidgetProcessing, _AlfDocumentListTopicMixin, 
+                 AlfDocumentFilter, lang, array, domConstruct, domClass, on) {
+   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, AlfCore, CoreWidgetProcessing, _AlfDocumentListTopicMixin], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -86,6 +87,17 @@ define(["dojo/_base/declare",
          {
             this.label = this.encodeHTML(this.message(this.label));
          }
+
+         if (this.showMoreLabel == null)
+         {
+            this.showMoreLabel = "showMore.label";
+         }
+         this.showMoreLabel = this.message(this.showMoreLabel);
+         if (this.showLessLabel == null)
+         {
+            this.showLessLabel = "showLess.label";
+         }
+         this.showLessLabel = this.message(this.showLessLabel);
       },
       
       /**
@@ -114,6 +126,11 @@ define(["dojo/_base/declare",
       allWidgetsProcessed: function alfresco_documentlibrary_AlfDocumentFilters__allWidgetsProcessed(widgets) {
          var _this = this;
          array.forEach(widgets, lang.hitch(this, "addFilter"));
+
+         if (this.moreFiltersList != null)
+         {
+            domClass.remove(this.showMoreNode, "hidden");
+         }
       },
       
       /**
@@ -132,6 +149,55 @@ define(["dojo/_base/declare",
          {
             this.alfLog("warn", "Tried to add a widget that does not inherit from 'alfresco/documentlibrary/AlfDocumentFilter'", widget);
          }
-      }
+      },
+
+      /**
+       * 
+       * @instance
+       * @type {array}
+       * @default null
+       */
+      moreFiltersList: null,
+
+      /**
+       * Add a filter than will be initially hidden but will be revealed when clicking on the "More Choices"
+       * link
+       * 
+       * @instance
+       */
+      addMoreFilter: function alfresco_documentlibrary_AlfDocumentFilters__addMoreFilter(widget) {
+         if (this.moreFiltersList == null)
+         {
+            this.moreFiltersList = [];
+         }
+
+         domClass.add(widget.domNode, "moreOption hidden");
+         this.moreFiltersList.push(widget);
+      },
+
+      /**
+       * @instance
+       */
+      onShowMoreClick: function alfresco_documentlibrary_AlfDocumentFilters__onShowMoreClick(evt) {
+         domClass.add(this.showMoreNode, "hidden");
+         domClass.remove(this.showLessNode, "hidden");
+
+         array.forEach(this.moreFiltersList, function(widget, index) {
+            domClass.remove(widget.domNode, "hidden");
+         }, this);
+      },
+
+      /**
+       *
+       * @instance
+       */
+       onShowLessClick: function alfresco_documentlibrary_AlfDocumentFilters__onShowMoreClick(evt) {
+         domClass.remove(this.showMoreNode, "hidden");
+         domClass.add(this.showLessNode, "hidden");
+
+         array.forEach(this.moreFiltersList, function(widget, index) {
+            domClass.add(widget.domNode, "hidden");
+         }, this);
+      },
    });
 });

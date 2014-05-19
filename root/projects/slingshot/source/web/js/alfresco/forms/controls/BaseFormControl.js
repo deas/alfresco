@@ -239,10 +239,14 @@ define(["dojo/_base/declare",
          this._required = status;
          if (this._requirementIndicator)
          {
-            var display = status ? "block" : "none";
-            domStyle.set(this._requirementIndicator, {
-               display: display
-            });
+            if (this.status == true)
+            {
+               domClass.add(this._requirementIndicator, "required");
+            }
+            else
+            {
+               domClass.remove(this._requirementIndicator, "required");
+            }
             
             // When requirement state is changed we need to re-validate the widget
             this.validate();

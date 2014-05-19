@@ -33,10 +33,21 @@
 define(["dojo/_base/declare",
         "alfresco/core/Core",
         "dojo/_base/lang",
+        "dojo/_base/array",
         "dojo/io-query"], 
-        function(declare, AlfCore, lang, ioQuery) {
+        function(declare, AlfCore, lang, array, ioQuery) {
    
    return declare([AlfCore], {
+
+      /**
+       * This is the string that is used to split the filter on. By default this is "|", but this can
+       * be overridden by any modules that mix this module into them.
+       * 
+       * @instance
+       * @type {string}
+       * @default "|"
+       */
+      filterDelimiter: "|",
 
       /**
        * Converts a filter string (of the form filter=<id>|<data>|<display>)) into an
@@ -48,28 +59,29 @@ define(["dojo/_base/declare",
        */
       processFilter: function alfresco_documentlibrary__AlfFilterMixin__processFilter(data) {
          var filterObj = ioQuery.queryToObject(data);
-         if (filterObj != null && filterObj.filter != null)
+         if (filterObj != null)
          {
-            // The filter attribute will be divided up into up to 3 parts by the "bar" character (|)
-            // Part 1 = filterId (e.g. "path")
-            // Part 2 = filterData (e.g. "/some/folder/location")
-            // Part 3 = filterDisplay (?? don't actually know where this is used - but it can be provided!)
-            var splitFilter = filterObj.filter.split("|");
-            if (typeof splitFilter[0] !== "undefined")
+            if (filterObj.filter != null)
             {
-               filterObj.filterId = splitFilter[0];
+               // The filter attribute will be divided up into up to 3 parts by the "bar" character (|)
+               var splitFilter = filterObj.split(this.filterDelimiter);
+
+               // If no filter keys are defined, then just provide an empty array to avoid reference errors...
+               if (this.filterKeys == null)
+               {
+                  this.filterKeys = [];
+               }
+               array.forEach(splitFilter, lang.hitch(this, "processFilterElement", processedFilter, this.filterKeys));
             }
-            if (typeof splitFilter[1] !== "undefined")
+            else
             {
-               filterObj.filterData = splitFilter[1];
+               // Just return the filter object as is...
             }
-            if (typeof splitFilter[2] !== "undefined")
-            {
-               filterObj.filterDisplay = splitFilter[2];
-            }
+            
          }
          else
-         {
+         { 
+            // The default filter is root location in a document lib...
             filterObj = {
                filterId: "path",
                filterData: "/",
@@ -77,6 +89,28 @@ define(["dojo/_base/declare",
             };
          }
          return filterObj;
+      },
+
+      /**
+       * Processes an individual data element extracted from the hash fragment. By default the data is simply
+       * added into the supplied processedFilter object using a key mapped from the supplied processedFilterKeys
+       * argument. If no key is provided for the supplied index then the index itself is used as the key.
+       * 
+       * @instance
+       * @param {object} processedFilter The final filter object that needs to be updated
+       * @param {array} processedFilterKeys An array of keys to use for the filter object
+       * @param {string} elementData The element to be processed
+       */
+      processFilterElement: function alfresco_documentlibrary__AlfFilterMixin__processFilterElement(processedFilter, processedFilterKeys, elementData, index) {
+         if (elementData !== null)
+         {
+            var key = processedFilterKeys[index];
+            if (key == undefined)
+            {
+               key = index;
+            }
+            processedFilter[key] = elementData;
+         }
       }
    });
 });

@@ -161,6 +161,10 @@ define(["dojo/_base/declare",
             callbackScope: this
          });
 
+         // Set filter keys that are applicable for DocumentLists...
+         // These are the values that are expected to be extracted from a hash fragment
+         this.filterKeys = ["filterId","filterData","filterDisplay"];
+
          // Only subscribe to filter changes if 'useHash' is set to true. This is because multiple DocLists might
          // be required on the same page and they can't all feed off the hash to drive the location.
          if (this.useHash)
@@ -796,7 +800,7 @@ define(["dojo/_base/declare",
        */
       onSortFieldSelection: function alfresco_documentlibrary_AlfDocumentList__onSortFieldSelection(payload) {
          this.alfLog("log", "Sort field selected: ", payload);
-         if (payload && payload.value)
+         if (payload && payload.value != null)
          {
             this.sortField = payload.value;
             this.loadData();

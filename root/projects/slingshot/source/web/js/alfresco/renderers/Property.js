@@ -258,7 +258,7 @@ define(["dojo/_base/declare",
          }
 
          // If the renderedValue is not set then display a warning message if requested...
-         if (this.renderedValue == null && this.warnIfNotAvailable)
+         if ((this.renderedValue == null || this.renderedValue == "") && this.warnIfNotAvailable)
          {
             // Get appropriate message
             // Check message based on propertyToRender otherwise default to sensible alternative

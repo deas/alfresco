@@ -1,11 +1,35 @@
 .alfresco-buttons-AlfButton {
-   $button;
+   background-image: none;
+   background-color: @standard-button-background-color; 
+   border: @standard-button-border;
+   margin: auto 0.25em;
+   border-radius: 5px;
+   font-size: @standard-button-font-size;
+}
+
+.alfresco-buttons-AlfButton.call-to-action {
+   background-color: @call-to-action-button-background-color; 
+   border: none;
+   font-size: @call-to-action-button-font-size;
 }
 
 .alfresco-buttons-AlfButton .dijitReset.dijitInline.dijitButtonNode {
-  background: none repeat scroll 0 0;
-  border: $theme-border-1;
-  border-radius: 0 0 0 0;
-  box-shadow: none;
-  padding: 2px 10px;
+   background: none repeat scroll 0 0;
+   border: none;
+   border-radius: none;
+   box-shadow: none;
+   padding: 2px 10px;
+   color: @standard-button-font-color;
+}
+
+.alfresco-buttons-AlfButton.call-to-action .dijitReset.dijitInline.dijitButtonNode {
+   color: @call-to-action-button-font-color;
+}
+
+.alfresco-buttons-AlfButton span.dijitIcon.alf-white-search-icon {
+   background-image: url("./images/search-icon-white.png");
+   background-repeat: no-repeat;
+   height: 22px;
+   text-align: center;
+   width: 28px;
 }

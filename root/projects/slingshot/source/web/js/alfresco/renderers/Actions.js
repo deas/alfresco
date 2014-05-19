@@ -31,13 +31,11 @@ define(["dojo/_base/declare",
         "alfresco/menus/AlfMenuItem",
         "dojo/_base/array",
         "dojo/_base/lang",
-        "service/constants/Default",
-        "alfresco/core/ObjectTypeUtils",
-        "alfresco/renderers/_PublishPayloadMixin"], 
-        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array, lang, AlfConstants, ObjectTypeUtils, _PublishPayloadMixin) {
+        "service/constants/Default"], 
+        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, array, lang, AlfConstants) {
 
-   return declare([AlfMenuBar, _AlfDocumentListTopicMixin, _PublishPayloadMixin], {
-      
+   return declare([AlfMenuBar, _AlfDocumentListTopicMixin], {
+
       /**
        * Overrides the default to create a popup containing a group containing all the actions
        * for the current item.
@@ -48,27 +46,32 @@ define(["dojo/_base/declare",
          this.inherited(arguments);
          
          // Create a group to hold all the actions...
-         this.actionsGroup = new AlfMenuGroup({
-            
-         });
-
-         if (this.customActions != null && this.customActions.length > 0)
-         {
-            array.forEach(this.customActions, lang.hitch(this, "addAction"));
-         }
-         else if (this.currentItem.actions && this.currentItem.actions.length > 0)
-         {
-            // Iterate over the actions to create a menu item for each of them...
-            array.forEach(this.currentItem.actions, lang.hitch(this, "addAction"));
-         }
-
+         this.actionsGroup = new AlfMenuGroup({});
+         
          // Create a menu popup to hold the group...
          this.actionsMenu = new AlfMenuBarPopup({
             label: "Actions"
          });
          this.actionsMenu.popup.addChild(this.actionsGroup);
+         
+         // Add all the actions...
+         this.addActions();
+
          this._menuBar.addChild(this.actionsMenu);
          this._menuBar.placeAt(this.containerNode);
+      },
+
+      /**
+       * Add the actions provided by the current item.
+       *
+       * @instance
+       */
+      addActions: function alfresco_renderers_Actions__postCreate() {
+         // Iterate over the actions to create a menu item for each of them...
+         if (this.currentItem.actions && this.currentItem.actions.length > 0)
+         {
+            array.forEach(this.currentItem.actions, lang.hitch(this, "addAction"));
+         }
       },
       
       /**
@@ -83,9 +86,11 @@ define(["dojo/_base/declare",
             label: action.label,
             iconImage: AlfConstants.URL_RESCONTEXT + "components/documentlibrary/actions/" + action.icon + "-16.png",
             type: action.type,
-            pubSubScope: this.pubSubScope,
-            publishTopic: (action.publishTopic != null) ? action.publishTopic : this.singleDocumentActionTopic,
-            publishPayload: this.generatePayload(action, this.currentItem, null, {document: this.currentItem, action: action})
+            publishTopic: this.singleDocumentActionTopic,
+            publishPayload: {
+               document: this.currentItem,
+               action: action
+            }
          });
          this.actionsGroup.addChild(menuItem);
       }

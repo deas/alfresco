@@ -29,8 +29,9 @@ define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/Label.html",
-        "alfresco/core/Core"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore) {
+        "alfresco/core/Core",
+        "dojo/_base/lang"], 
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang) {
    
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
 
@@ -71,8 +72,26 @@ define(["dojo/_base/declare",
       /**
        * @instance
        */
-      postMixinProperties: function alfresco_html_Label() {
+      postMixInProperties: function alfresco_html_Label__postMixInProperties() {
          this.label = this.message(this.label);
+
+         if (this.subscriptionTopic != null && this.subscriptionTopic.trim() != "")
+         {
+            this.alfSubscribe(this.subscriptionTopic, lang.hitch(this, "onLabelUpdate"));
+         }
+      },
+
+      /**
+       * 
+       * @instance
+       * @param {object} payload The details of the label update
+       */
+      onLabelUpdate: function alfresco_html_Label__onLabelUpdate(payload) {
+         var update = lang.getObject("label", false, payload);
+         if (update != null)
+         {
+            this.labelNode.innerHTML = update;
+         }
       }
    });
 });

@@ -27,10 +27,11 @@
 define(["dojo/_base/declare",
         "alfresco/renderers/Property", 
         "alfresco/core/TemporalUtils",
-        "alfresco/core/UrlUtils"], 
-        function(declare, Property, TemporalUtils, UrlUtils) {
+        "alfresco/core/UrlUtils",
+        "dojo/_base/lang"], 
+        function(declare, Property, TemporalUtils, UrlUtils, lang) {
 
-   return declare([Property, UrlUtils], {
+   return declare([Property, TemporalUtils, UrlUtils], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -50,28 +51,52 @@ define(["dojo/_base/declare",
        */
       cssRequirements: [{cssFile:"./css/Date.css"}],
       
+
+      modifiedDateProperty: null,
+
+      modifiedByProperty: null,
+
+      createdDateProperty: null,
+
+      createdByProperty: null,
+
       /**
        * Set up the attributes to be used when rendering the template.
        * 
        * @instance
        */
       postMixInProperties: function alfresco_renderers_Date__postMixInProperties() {
-         var jsNode = this.currentItem.jsNode,
-             properties = jsNode.properties,
-             html = "";
 
-         var dateI18N = "details.modified-by", dateProperty = properties.modified.iso8601;
-         if (this.currentItem.workingCopy && this.currentItem.workingCopy.isWorkingCopy)
+         if (this.modifiedDateProperty == null)
          {
-            dateI18N = "details.editing-started-by";
+            this.modifiedDateProperty = "jsNode.properties.modified.iso8601";
          }
-         else if (dateProperty === properties.created.iso8601)
+         var modifiedDate = lang.getObject(this.modifiedDateProperty, false, this.currentItem);
+         
+         if (this.modifiedByProperty == null)
          {
-            dateI18N = "details.created-by";
+            this.modifiedByProperty = "jsNode.properties.modifier";
          }
+         var modifiedBy = lang.getObject(this.modifiedByProperty, false, this.currentItem);
+
+
+
+         // var jsNode = this.currentItem.jsNode,
+         //     properties = jsNode.properties,
+         //     html = "";
+
+         var dateI18N = "details.modified-by";//, dateProperty = properties.modified.iso8601;
+         // if (this.currentItem.workingCopy && this.currentItem.workingCopy.isWorkingCopy)
+         // {
+         //    dateI18N = "details.editing-started-by";
+         // }
+         // else if (dateProperty === properties.created.iso8601)
+         // {
+         //    dateI18N = "details.created-by";
+         // }
          this.renderedValue = this.message(dateI18N, {
-            0: TemporalUtils.getRelativeTime(dateProperty), 
-            1: this.generateUserLink(properties.modifier)
+            0: this.getRelativeTime(modifiedDate), 
+            1: modifiedBy
          });
       }
    });

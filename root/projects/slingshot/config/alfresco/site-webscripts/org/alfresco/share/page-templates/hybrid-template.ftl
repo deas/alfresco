@@ -81,10 +81,8 @@
 <body id="Share" class="yui-skin-${theme} claro alfresco-share">
 </#if>
    <div class="sticky-wrapper">
-      <div id="doc3">
-<#-- Template-specific body markup -->
-<#nested>
-      </div>
+      <#-- Template-specific body markup -->
+      <#nested>
       <div class="sticky-push"></div>
    </div>
 </#macro>

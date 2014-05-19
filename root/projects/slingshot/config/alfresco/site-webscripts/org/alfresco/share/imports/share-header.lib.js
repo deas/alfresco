@@ -1763,7 +1763,7 @@ function getHeaderServices() {
    return services;
 }
 
-function getHeaderModel() {
+function getHeaderModel(pageTitle) {
 
    var headerMenus = getHeaderMenus();
 
@@ -1945,7 +1945,7 @@ function getHeaderModel() {
                align: "left",
                config: {
                   targetUrl: page.url.templateArgs.site != null ? "site/" + page.url.templateArgs.site + "/dashboard" : null,
-                  label: getPageTitle()
+                  label: (pageTitle != null) ? pageTitle : getPageTitle()
                }
             },
             {

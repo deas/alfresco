@@ -27,14 +27,13 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "dijit/_WidgetBase", 
-        "dijit/_TemplatedMixin",
+        "alfresco/core/ProcessWidgets",
         "dojo/text!./templates/AlfStickyFooter.html",
         "alfresco/core/Core",
         "dojo/dom-style"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, domStyle) {
+        function(declare, ProcessWidgets, template, AlfCore, domStyle) {
    
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
+   return declare([ProcessWidgets, AlfCore], {
 
       /**
        * An array of the i18n files to use with this widget.
@@ -75,16 +74,15 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_footer_AlfStickyFooter() {
-         // Do we assume a template? Or should we create the required structure?
-         // Need to dynamically set the footer height.
-         if (this.footerHeight == null)
+         if (this.widgets)
          {
-            this.footerHeight = "100px";
+            this.processWidgets(this.widgets, this.contentNode);
          }
 
-         domStyle.set(this.domNode, {
-            margin: "0 0 " + this.footerHeight + " 0"
-         });
+         if (this.widgetsForFooter)
+         {
+            this.processWidgets(this.widgetsForFooter, this.footerContentNode);
+         }
       }
    });
 });

@@ -24,11 +24,21 @@
  */
 define(["alfresco/forms/controls/BaseFormControl",
         "dojo/_base/declare",
-        "dijit/form/ValidationTextBox"], 
-        function(BaseFormControl, declare, ValidationTextBox) {
+        "dijit/form/ValidationTextBox",
+        "dojo/dom-construct",
+        "dojo/dom-class"], 
+        function(BaseFormControl, declare, ValidationTextBox, domConstruct, domClass) {
    
    return declare([BaseFormControl], {
       
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {Array}
+       */
+      cssRequirements: [{cssFile:"./css/DojoValidationTextBox.css"}],
+
       /**
        * @instance
        */
@@ -37,7 +47,8 @@ define(["alfresco/forms/controls/BaseFormControl",
          return {
             id : this.generateUuid(),
             name: this.name,
-            value: this.value
+            value: this.value,
+            iconClass: this.iconClass
          };
       },
       
@@ -45,7 +56,24 @@ define(["alfresco/forms/controls/BaseFormControl",
        * @instance
        */
       createFormControl: function alfresco_forms_controls_DojoValidationTextBox__createFormControl(config, domNode) {
-         return new ValidationTextBox(config);
+         var textBox = new ValidationTextBox(config);
+
+         // Handle  adding classes to control width...
+         var additionalCssClasses = "";
+         if (this.additionalCssClasses != null)
+         {
+            additionalCssClasses = this.additionalCssClasses;
+         }
+         domClass.add(this.domNode, "alfresco-forms-controls-DojoValidationTextBox " + additionalCssClasses);
+
+         if (config.iconClass != null && config.iconClass.trim() != "")
+         {
+            domConstruct.create("span", {
+               "class": "alf-icon " + config.iconClass
+            }, textBox.focusNode, "before");
+         }
+
+         return textBox;
       },
       
       /**

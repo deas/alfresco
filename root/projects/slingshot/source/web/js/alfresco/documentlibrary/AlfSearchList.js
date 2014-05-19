@@ -36,30 +36,42 @@ define(["dojo/_base/declare",
    
    return declare([AlfDocumentList], {
       
-
+      /**
+       * An array of the i18n files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{i18nFile: "./i18n/AlfDocumentList.properties"}]
+       */
+      i18nRequirements: [{i18nFile: "./i18n/AlfSearchList.properties"}],
+      
       /**
        * Subscribe the document list topics.
        * 
        * @instance
        */
-      postMixInProperties: function alfresco_documentlibrary_AlfDocumentList__postMixInProperties() {
+      postMixInProperties: function alfresco_documentlibrary_AlfSearchList__postMixInProperties() {
          // this.alfPublish(this.getPreferenceTopic, {
          //    preference: "org.alfresco.share.documentList.documentsPerPage",
          //    callback: this.setPageSize,
          //    callbackScope: this
          // });
 
+         // Override the default filter delimiter ("|") to be an "&" because "|" can be used in the facet 
+         // filter data which may be included in the hash fragment.
+         this.filterDelimiter = "&";
+
          // Only subscribe to filter changes if 'useHash' is set to true. This is because multiple DocLists might
          // be required on the same page and they can't all feed off the hash to drive the location.
-         // if (this.useHash)
-         // {
-         //    this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onChangeFilter"));
-         // }
+         if (this.useHash)
+         {
+            this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onChangeFilter"));
+         }
          
          // this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, "onViewSelected"));
          // this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, "onDocumentSelection"));
-         // this.alfSubscribe(this.sortRequestTopic, lang.hitch(this, "onSortRequest"));
-         // this.alfSubscribe(this.sortFieldSelectionTopic, lang.hitch(this, "onSortFieldSelection"));
+         this.alfSubscribe("ALF_DOCLIST_SORT", lang.hitch(this, "onSortRequest"));
+         this.alfSubscribe("ALF_DOCLIST_SORT_FIELD_SELECTION", lang.hitch(this, "onSortFieldSelection"));
          // this.alfSubscribe(this.showFoldersTopic, lang.hitch(this, "onShowFolders"));
          // this.alfSubscribe(this.pageSelectionTopic, lang.hitch(this, "onPageChange"));
          // this.alfSubscribe(this.docsPerpageSelectionTopic, lang.hitch(this, "onDocsPerPageChange"));
@@ -87,6 +99,40 @@ define(["dojo/_base/declare",
          this.facetFilters = {};
       },
       
+      /**
+       * Overrides the [default implementation]{@link module:alfresco/documentlibrary/_AlfFilterMixin#processFilterElement}
+       * to extract key value pairs from the hash fragment element. It is expected that each filter element will be a
+       * key value pair delimited by the "=" character (e.g. "term=test"). This key value pair will then be set in the
+       * supplied processedFilter object.
+       * 
+       * @instance
+       * @param {object} processedFilter The final filter object that needs to be updated
+       * @param {array} processedFilterKeys An array of keys to use for the filter object
+       * @param {string} elementData The element to be processed
+       */
+      processFilterElement: function alfresco_documentlibrary__AlfFilterMixin__processFilterElement(processedFilter, processedFilterKeys, elementData, index) {
+         if (elementData !== null)
+         {
+            var a = elementData.split("=");
+            if (a.length != 2)
+            {
+               // Use the first element as the filter object key and the second element as its value
+               processedFilter[a[0]] = a[1];
+            }
+            else
+            {
+               this.alfLog("warn", "Expected 2 key value pair in filter data element", elementData);
+            }
+         }
+      },
+
+      /**
+       * The current term to search on
+       *
+       * @instance
+       * @type {string}
+       * @default ""
+       */ 
       searchTerm: "",
 
       /**
@@ -158,7 +204,25 @@ define(["dojo/_base/declare",
          this.loadData();
       },
 
-      loadData: function alfresco_documentlibrary_AlfDocumentList__loadData() {
+      /**
+       * 
+       * 
+       * @instance
+       * @param {object} payload
+       */
+      onChangeFilter: function alfresco_documentlibrary_AlfSearchList__onChangeFilter(payload) {
+
+         lang.mixin(this, payload);
+         this.loadData();
+      },
+
+      /**
+       * Processes all the current search arguments into a payload that is published to the [Search Service]{@link module:alfresco/services/SearchService}
+       * to perform the actual search request
+       *
+       * @instance
+       */
+      loadData: function alfresco_documentlibrary_AlfSearchList__loadData() {
          this.showLoadingMessage(); // Commented out because of timing issues...
 
          var filters = "";
@@ -171,7 +235,9 @@ define(["dojo/_base/declare",
          var searchPayload = {
             term: this.searchTerm,
             facetFields: this.facetFields,
-            filters: filters
+            filters: filters,
+            sortAscending: this.sortAscending,
+            sortField: this.sortField
          };
 
          // Set a response topic that is scoped to this widget...
@@ -188,7 +254,7 @@ define(["dojo/_base/declare",
        * @param {object} response The response object
        * @param {object} originalRequestConfig The configuration that was passed to the the [serviceXhr]{@link module:alfresco/core/CoreXhr#serviceXhr} function
        */
-      onSearchLoadSuccess: function alfresco_documentlibrary_AlfDocumentList__onSearchLoadSuccess(payload) {
+      onSearchLoadSuccess: function alfresco_documentlibrary_AlfSearchList__onSearchLoadSuccess(payload) {
          this.alfLog("log", "Search Results Loaded", payload, this);
          
          this._currentData = payload.response;
@@ -207,6 +273,16 @@ define(["dojo/_base/declare",
             }
          }
 
+         var resultsCount = this._currentData.totalRecordsUpper;
+         if (resultsCount != null)
+         {
+            // Publish the number of search results found...
+            this.alfPublish("ALF_SEARCH_RESULTS_COUNT", {
+               count: resultsCount,
+               label: this.message("search.results.count.label", {0: resultsCount})
+            });
+         }
+         
          // Re-render the current view with the new data...
          var view = this.viewMap[this._currentlySelectedView];
          if (view != null)
@@ -226,7 +302,7 @@ define(["dojo/_base/declare",
       /**
        * @instance
        */
-      onSearchResultClicked: function alfresco_documentlibrary_AlfDocumentList__onSearchResultClicked(payload) {
+      onSearchResultClicked: function alfresco_documentlibrary_AlfSearchList__onSearchResultClicked(payload) {
          this.alfLog("log", "Search Result Clicked");
 
          var isContainer = lang.getObject("item.node.isContainer", false, payload);

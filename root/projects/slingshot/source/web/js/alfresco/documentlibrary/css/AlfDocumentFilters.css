@@ -14,6 +14,11 @@
    padding: 5px;
    border-bottom: none;
    padding: 15px 5px;
+   display: block;
+}
+
+.alfresco-documentlibrary-AlfDocumentFilters.hidden {
+   display: none;
 }
 
 .alfresco-documentlibrary-AlfDocumentFilters > div.alfresco-twister {
@@ -21,8 +26,31 @@
 }
 
 .alfresco-documentlibrary-AlfDocumentFilters .label {
-   /*font-size: 123.1%;
-   font-weight: normal;*/
+   font-family: Open Sans Bold;
+   color: #000;
+   font-size: 123.1%;
+   font-weight: normal;
    margin-bottom: 15px;
    margin-left: 15px;
 }
+
+.alfresco-documentlibrary-AlfDocumentFilters ul.filters li.showMore,
+.alfresco-documentlibrary-AlfDocumentFilters ul.filters li.showLess {
+   color: #B3B3B3;
+   display: block;
+   cursor: pointer;
+}
+
+.alfresco-documentlibrary-AlfDocumentFilters ul.filters li.showMore.hidden,
+.alfresco-documentlibrary-AlfDocumentFilters ul.filters li.showLess.hidden {
+   display: none;
+}
+
+.alfresco-documentlibrary-AlfDocumentFilters ul.filters li.moreOption {
+   display: block;
+}
+
+.alfresco-documentlibrary-AlfDocumentFilters ul.filters li.moreOption.hidden {
+   display: none;
+}
+
