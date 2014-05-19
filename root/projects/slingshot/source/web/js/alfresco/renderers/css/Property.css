@@ -44,3 +44,7 @@
 .alfresco-documentlibrary-views-layout-_MultiItemRendererMixin--item .alfresco-renderers-Property.hover-only > span.inner {
    display: none;
 }
+
+.alfresco-renderers-Property.pointer {
+   cursor: pointer;
+}

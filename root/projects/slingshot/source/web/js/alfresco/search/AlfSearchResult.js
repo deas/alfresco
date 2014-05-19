@@ -32,12 +32,13 @@ define(["dojo/_base/declare",
         "dojo/text!./templates/AlfSearchResult.html",
         "alfresco/renderers/Thumbnail",
         "alfresco/renderers/SearchResultPropertyLink",
+        "alfresco/renderers/PropertyLink",
         "alfresco/renderers/Property",
-        "alfresco/renderers/Date",
+        "alfresco/renderers/DateLink",
         "alfresco/renderers/XhrActions",
         "dojo/_base/lang",
         "dojo/dom-class"], 
-        function(declare, Row, template, Thumbnail, PropertyLink, Property, Date, XhrActions, lang, domClass) {
+        function(declare, Row, template, Thumbnail, SearchResultPropertyLink, PropertyLink, Property, DateLink, XhrActions, lang, domClass) {
 
    return declare([Row], {
       
@@ -59,6 +60,22 @@ define(["dojo/_base/declare",
       templateString: template,
       
       /**
+       * The link stem for sites.
+       * 
+       * @instance
+       * @type {String}
+       */
+      siteLink: "site/{sitePath}/dashboard",
+
+      /**
+       * The link stem for users.
+       * 
+       * @instance
+       * @type {String}
+       */
+      userLink: "user/{userPath}/profile",
+      
+      /**
        * Creates the renderers to display for a search result and adds them into the template. Renderers
        * will only be created if there is data for them. This is done to further improve the performance
        * of the search rendering.
@@ -71,7 +88,7 @@ define(["dojo/_base/declare",
             pubSubScope: this.pubSubScope
          }, this.thumbnailNode);
 
-         new PropertyLink({
+         new SearchResultPropertyLink({
             currentItem: this.currentItem,
             pubSubScope: this.pubSubScope,
             propertyToRender: "displayName",
@@ -93,12 +110,22 @@ define(["dojo/_base/declare",
                renderedValueSuffix: ")"
             }, this.titleNode);
          }
+
+         var userUrl = this.userLink.replace("{userPath}", lang.getObject("modifiedByUser", false, this.currentItem));
          
-         new Date({
-            currentItem: this.currentItem,
+         new DateLink({
+            renderedValueClass: "alfresco-renderers-Property pointer",
             pubSubScope: this.pubSubScope,
+            currentItem: this.currentItem,
             modifiedDateProperty: "modifiedOn",
-            modifiedByProperty: "modifiedBy"
+            modifiedByProperty: "modifiedBy",
+            publishTopic: "ALF_NAVIGATE_TO_PAGE",
+            useCurrentItemAsPayload: false,
+            publishPayloadType: "CONFIGURED",
+            payload: {
+               url: userUrl,
+               type: "SHARE_PAGE_RELATIVE"
+            }
          }, this.dateNode);
 
          if (this.currentItem.description == null || this.currentItem.description == "")
@@ -121,11 +148,21 @@ define(["dojo/_base/declare",
          }
          else
          {
-            new Property({
-               currentItem: this.currentItem,
+            var siteUrl = this.siteLink.replace("{sitePath}", lang.getObject("site.shortName", false, this.currentItem));
+
+            new PropertyLink({
+               renderedValueClass: "alfresco-renderers-Property pointer",
                pubSubScope: this.pubSubScope,
+               currentItem: this.currentItem,
                propertyToRender: "site.title",
-               renderedValuePrefix: this.message("faceted-search.doc-lib.value-prefix.site") + " "
+               label: this.message("faceted-search.doc-lib.value-prefix.site"),
+               publishTopic: "ALF_NAVIGATE_TO_PAGE",
+               useCurrentItemAsPayload: false,
+               publishPayloadType: "CONFIGURED",
+               payload: {
+                  url: siteUrl,
+                  type: "SHARE_PAGE_RELATIVE"
+               }
             }, this.siteNode);
          }
 
