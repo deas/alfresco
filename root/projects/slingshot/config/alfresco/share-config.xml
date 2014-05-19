@@ -207,20 +207,21 @@
          The element supports the following optional attributes:
             label = label text to display
             labelId = I18N message id of label text to display
+            isSortable = true or false for if the field contains sortable data
       -->
       <sorting>
-         <sort labelId="search.sort.relevance"></sort>
-         <sort labelId="label.name">cm:name</sort>
-         <sort labelId="label.title">cm:title</sort>
-         <sort labelId="label.description">cm:description</sort>
-         <sort labelId="label.author">cm:author</sort>
-         <sort labelId="label.modifier">cm:modifier</sort>
-         <sort labelId="label.modified">cm:modified|false</sort>
-         <sort labelId="label.creator">cm:creator</sort>
-         <sort labelId="label.created">cm:created|false</sort>
-         <sort labelId="search.sort.size">.size|true</sort>
-         <sort labelId="search.sort.mimetype">.mimetype</sort>
-         <sort labelId="search.sort.type">TYPE</sort>
+         <sort labelId="search.sort.relevance" isSortable="false"></sort>
+         <sort labelId="label.name" isSortable="true">cm:name</sort>
+         <sort labelId="label.title" isSortable="true">cm:title</sort>
+         <sort labelId="label.description" isSortable="false">cm:description</sort>
+         <sort labelId="label.author" isSortable="false">cm:author</sort>
+         <sort labelId="label.modifier" isSortable="true">cm:modifier</sort>
+         <sort labelId="label.modified" isSortable="true">cm:modified|false</sort>
+         <sort labelId="label.creator" isSortable="true">cm:creator</sort>
+         <sort labelId="label.created" isSortable="true">cm:created|false</sort>
+         <sort labelId="search.sort.size" isSortable="true">.size|true</sort>
+         <sort labelId="search.sort.mimetype" isSortable="true">.mimetype</sort>
+         <sort labelId="search.sort.type" isSortable="true">TYPE</sort>
       </sorting>
    </config>
    

@@ -42,6 +42,12 @@ var searchForm = {
    }
 };
 
+// TODO: The following code describes two different visibilityConfig behaviours. Initially they were bundled together 
+// but it was found that this did not work as each rule fires independently. One rule would apply a condition and then
+// the other would overrule it. A workaround was found within this example, but a more solid solution might be to
+// create a multiple topic listener service that would gather payloads from configured topic publishes, concatenate
+// them and then re-publish the compound payload on a new topic.
+
 // Compose the zero results configuration
 var hideOnZeroResultsConfig = {
    initialValue: true,
@@ -50,6 +56,18 @@ var hideOnZeroResultsConfig = {
          topic: "ALF_SEARCH_RESULTS_COUNT",
          attribute: "count",
          isNot: [0]
+      }
+   ]
+};
+
+//Compose the not sortable configuration
+var hideOnNotSortableConfig = {
+   initialValue: true,
+   rules: [
+      {
+         topic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
+         attribute: "sortable",
+         is: [true]
       }
    ]
 };
@@ -137,6 +155,7 @@ function getSortFieldsFromConfig()
       // Extract sort properties from configuration
       var configSortField = configSortFields.get(i),
           label = String(configSortField.attributes["labelId"]),
+          sortable = String(configSortField.attributes["isSortable"]) == "true" ? true : false,
           valueTokens = String(configSortField.value).split("|"),
           value = valueTokens[0],
           direction = "descending",
@@ -159,7 +178,8 @@ function getSortFieldsFromConfig()
             checked: checked,
             publishPayload: {
                label: msg.get(label),
-               direction: direction
+               direction: direction,
+               sortable: sortable
             }
          }
       };
@@ -167,7 +187,7 @@ function getSortFieldsFromConfig()
       // Add to the sortFields array
       sortFields[i] = sort;
    }
-   
+
    return sortFields;
 }
 
@@ -208,12 +228,13 @@ var searchResultsMenuBar = {
             name: "alfresco/menus/AlfMenuBar",
             align: "right",
             config: {
+               visibilityConfig: hideOnZeroResultsConfig,
                widgets: [
                   {
                      id: rootWidgetId + "SORT_ORDER_TOGGLE",
                      name: "alfresco/menus/AlfMenuBarToggle",
                      config: {
-                        visibilityConfig: hideOnZeroResultsConfig,
+                        visibilityConfig: hideOnNotSortableConfig,
                         checked: true,
                         onConfig: {
                            iconClass: "alf-sort-ascending-icon",
