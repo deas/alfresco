@@ -1074,8 +1074,8 @@
          </action>
 
          <!-- Manage permissions (granular permissions) -->
-         <action id="document-manage-granular-permissions" type="pagelink" icon="document-manage-permissions" label="actions.document.manage-permissions">
-            <param name="page">manage-permissions?nodeRef={node.nodeRef}</param>
+         <action id="document-manage-granular-permissions" type="link" icon="document-manage-permissions" label="actions.document.manage-permissions">
+             <param name="href">{managePermissionsUrl}</param>
             <permissions>
                <permission allow="true">ChangePermissions</permission>
             </permissions>
@@ -1084,8 +1084,8 @@
          </action>
 
          <!-- Manage permissions (repository roles) -->
-         <action id="document-manage-repo-permissions" type="pagelink" icon="document-manage-permissions" label="actions.document.manage-permissions">
-            <param name="page">manage-permissions?nodeRef={node.nodeRef}</param>
+         <action id="document-manage-repo-permissions" type="link" icon="document-manage-permissions" label="actions.document.manage-permissions">
+            <param name="href">{managePermissionsUrl}</param>
             <permissions>
                <permission allow="true">ChangePermissions</permission>
             </permissions>
