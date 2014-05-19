@@ -8,7 +8,9 @@ var alf = {
       jsFiles: [this.jsdocFiles + '/**/*.js'],
       testResourcesDir: 'source/test-resources',
       nodeBinDir: 'node_modules/.bin/',
-      coverageDirectory: "code-coverage-reports"
+      coverageDirectory: "code-coverage-reports",
+      rootDir: '../../',
+      codeDir: '../../../'
    };
 
 module.exports = function(grunt) {
@@ -75,4 +77,22 @@ module.exports = function(grunt) {
       'shell:startShare'
    ]);
 
+   // Svn up shorthand.
+   grunt.registerTask('up', [
+      'shell:svnUp'
+   ]);
+
+   // Build & start after a Clean & UPdate
+   grunt.registerTask('cup', [
+      'shell:killRepo',
+      'shell:killShare',
+      'shell:antClean',
+      'shell:svnUp',
+      'shell:startRepo',
+      'shell:startShareInc'
+   ]);
+
+   grunt.registerTask('sel', [
+      'shell:seleniumUp'
+   ]);
 }

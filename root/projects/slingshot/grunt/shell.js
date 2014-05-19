@@ -30,6 +30,18 @@ module.exports = function (grunt, alf) {
       // @see: https://github.com/sindresorhus/grunt-shell
       shell: {
 
+         antClean: {
+            command: 'ant clean',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true,
+               execOptions: {
+                  cwd: alf.rootDir
+               }
+            }
+         },
+
          // Generate JSDocs
          jsdoc: {
             command: 'jsdoc ../../' + alf.jsdocFiles + ' -c ../../conf.json', // TODO: Make this work with defined paths.
@@ -73,6 +85,14 @@ module.exports = function (grunt, alf) {
                failOnError: true
             }
          },
+         startShareInc: {
+            command: 's -ie && s -t',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
          killRepo: {
             command: 'kill -9 `lsof -t -i :8080 -sTCP:LISTEN`',
             options: {
@@ -89,6 +109,19 @@ module.exports = function (grunt, alf) {
                failOnError: false
             }
          },
+
+         svnUp: {
+            command: 'pwd;svn up',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true,
+               execOptions: {
+                  cwd: alf.codeDir
+               }
+            }
+         },
+
          // See also vagrant.js
          // Start the vagrant VM
          vagrantUp: {
