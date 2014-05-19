@@ -26,9 +26,10 @@
  */
 define(["intern!object",
         "intern/chai!expect",
+        "intern/chai!assert",
         "require",
         "alfresco/TestCommon"], 
-        function (registerSuite, expect, require, TestCommon) {
+        function (registerSuite, expect, assert, require, TestCommon) {
 
    registerSuite({
       name: 'PropertyLink Test',
@@ -40,7 +41,28 @@ define(["intern!object",
 
          .end()
 
+         .elementByCss("#LIST_WITH_HEADER_ITEMS tr:first-child td span.inner")
+            .moveTo()
+            .click()
+            .end()
+         .elementsByCss(TestCommon.pubSubDataCssSelector("last", "name", "Site1"))
+            .then(function(elements) {
+               TestCommon.log(testname,49,"Check that currentItem is published");
+               assert(elements.length == 1, "Test #1a - 'name' not included in currentItem data");
+            })
+            .end()
+         .elementsByCss(TestCommon.pubSubDataCssSelector("last", "urlname", "site1"))
+            .then(function(elements) {
+               TestCommon.log(testname,55,"Check that currentItem is published");
+               assert(elements.length == 1, "Test #1b - 'urlname' not included in currentItem data");
+            })
+            .end()
 
+         .elementsByCss(TestCommon.topicSelector("publishTopic", "publish", "last"))
+            .then(function(elements) {
+               assert(elements.length == 1, "Test #1c - topic not published correctly");
+            })
+            .end()
 
          // Post the coverage results...
          .then(function() {

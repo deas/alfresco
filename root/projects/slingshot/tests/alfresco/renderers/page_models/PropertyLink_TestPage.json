@@ -45,9 +45,7 @@
                                     "name": "alfresco/renderers/PropertyLink",
                                     "config": {
                                        "propertyToRender": "name",
-                                       "target": "CURRENT",
-                                       "type": "SHARE_PAGE_RELATIVE",
-                                       "url": "site/${urlname}/dashboard"
+                                       "publishTopic": "publishTopic"
                                     }
                                  }
                               ]

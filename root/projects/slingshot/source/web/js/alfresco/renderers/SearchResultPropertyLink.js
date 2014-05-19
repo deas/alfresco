@@ -34,6 +34,10 @@ define(["dojo/_base/declare",
    return declare([PropertyLink, _HtmlAnchorMixin], {
 
       /**
+       * Generates the publication payload by calling the 
+       * [generatePayload]{@link module:alfresco/renderers/SearchResultPropertyLink#generatePayload}
+       * function and then wraps the property in an anchor element by calling the 
+       * mixed in [makeAnchor]{@link module:alfresco/navigation/_HtmlAnchorMixin#makeAnchor} function
        *
        * @instance
        */

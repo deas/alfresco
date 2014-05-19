@@ -40,6 +40,14 @@ define(["dojo/_base/declare",
        */
       templateString: template,
 
+      /**
+       * Handles the property being clicked. This stops the click event from propogating
+       * further through the DOM (to prevent any wrapping anchor elements from triggering
+       * browser navigation) and then publishes the configured topic and payload.
+       *
+       * @instance
+       * @param {object} evt The details of the click event
+       */
       onLinkClick: function alfresco_renderers_PropertyLink__onLinkClick(evt) {
          event.stop(evt);
          var publishTopic = this.getPublishTopic();
@@ -53,10 +61,26 @@ define(["dojo/_base/declare",
          }
       },
 
+      /**
+       * Gets the topic to be published on. This has been abstracted to a separate function
+       * so that it can be easily overridden, an example of this is the 
+       * [SearchResultPropertyLink]{@link module:alfresco/renderers/SearchResultPropertyLink}
+       *
+       * @instance
+       * @returns {string} The configured publishTopic
+       */ 
       getPublishTopic: function alfresco_renderers_PropertyLink__getPublishTopic() {
          return this.publishTopic;
       },
 
+      /**
+       * Gets the topic to be published on. This has been abstracted to a separate function
+       * so that it can be easily overridden, an example of this is the 
+       * [SearchResultPropertyLink]{@link module:alfresco/renderers/SearchResultPropertyLink}
+       *
+       * @instance
+       * @returns {string} The currentItem being renderered.
+       */ 
       getPublishPayload: function alfresco_renderers_PropertyLink__getPublishTopic() {
          return this.currentItem;
       }
