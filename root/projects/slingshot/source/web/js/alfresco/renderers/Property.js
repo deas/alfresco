@@ -233,7 +233,7 @@ define(["dojo/_base/declare",
             {
                warningKey = "no." + this.propertyToRender + ".message";
                warningMessage = this.message(warningKey);
-               if (warning == warningKey)
+               if (warningMessage == warningKey)
                {
                   warningMessage = this.message("no.property.message", {0:this.propertyToRender});
                }
@@ -311,6 +311,7 @@ define(["dojo/_base/declare",
          }
          else if (ObjectTypeUtils.isObject(property))
          {
+            // TODO: This should probably be moved out into a Node specific sub-class
             if (property.hasOwnProperty("iso8601"))
             {
                value =  this.renderDate(property.iso8601);
