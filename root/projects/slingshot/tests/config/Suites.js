@@ -31,7 +31,10 @@ define({
     * @type [string]
     */
    baseNonFunctionalSuites: null,
-	
+
+   // Uncomment and add specific tests as necessary during development!
+   // baseFunctionalSuites: ['tests/alfresco/core/WidgetCreationTest'],
+
    /**
     * This is the base array of functional test suites
     *
@@ -41,6 +44,7 @@ define({
    baseFunctionalSuites: ['tests/alfresco/accessibility/AccessibilityMenuTest',
 
                           'tests/alfresco/core/RenderFilterTest',
+                          'tests/alfresco/core/WidgetCreationTest',
 
                           'tests/alfresco/documentlibrary/views/AlfDocumentListWithHeaderTest',
 

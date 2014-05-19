@@ -31,7 +31,6 @@ define(["intern!object",
    registerSuite({
       name: 'RenderFilter Test',
       'RenderFilter': function () {
-         console.log("HELLO");
          var browser = this.remote;
          var testname = "RenderFilterTest";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/core/page_models/RenderFilter_TestPage.json")

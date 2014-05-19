@@ -213,7 +213,16 @@ define(["dojo/_base/declare",
          // run into trouble trying to re-use an existing id...
          if (typeof initArgs.id == "undefined")
          {
-            initArgs.id = config.name.replace(/\//g, "_") + "___" + this.generateUuid();
+            // Attempt to use the model ID as the DOM ID if available, but if not just generate an ID
+            // based on the module name...
+            if (config.id == null || config.id.trim() == "")
+            {
+               initArgs.id = config.name.replace(/\//g, "_") + "___" + this.generateUuid();
+            }
+            else
+            {
+               initArgs.id = config.id;
+            }
          }
 
          if (initArgs.generatePubSubScope === true)
