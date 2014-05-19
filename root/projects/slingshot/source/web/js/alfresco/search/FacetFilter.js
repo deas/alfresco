@@ -119,9 +119,9 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {string}
-       * @default null
+       * @default "12x12-selected-icon.png"
        */
-      appliedFilterImageSrc: "applied-filter.png",
+      appliedFilterImageSrc: "12x12-selected-icon.png",
 
       /**
        * The alt-text to use for the image that indicates that a filter has been applied
