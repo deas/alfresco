@@ -5,7 +5,7 @@
 var services = getHeaderServices(),
     widgets = getHeaderModel(msg.get("faceted-search-config.page.title"));
 
-services.push("alfresco/services/QuaddsService");
+services.push("alfresco/services/QuaddsService", "alfresco/services/NotificationService");
 
 var main = {
    name: "alfresco/layout/HorizontalWidgets",

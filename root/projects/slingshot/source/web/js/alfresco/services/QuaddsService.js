@@ -96,6 +96,10 @@ define(["dojo/_base/declare",
          {
             this.alfLog("warn", "It was not possible to publish requested QuADDS data because the 'responseTopic' attribute was not set on the original request", response, originalRequestConfig);
          }
+         // TODO: Need a context sensitive, localized message...
+         this.alfPublish("ALF_DISPLAY_NOTIFICATION", {
+            message: "Operation Completed Successfully"
+         });
          this.alfPublish("ALF_DOCLIST_RELOAD_DATA");
       },
 
