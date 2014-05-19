@@ -30,8 +30,9 @@ define(["alfresco/core/ProcessWidgets",
         "dojo/dom-construct",
         "dojo/_base/array",
         "dojo/_base/lang",
-        "dojo/dom-class"], 
-        function(ProcessWidgets, declare, domConstruct, array, lang, domClass) {
+        "dojo/dom-class",
+        "alfresco/core/PubQueue"], 
+        function(ProcessWidgets, declare, domConstruct, array, lang, domClass, PubQueue) {
    
    return declare([ProcessWidgets], {
       
@@ -247,6 +248,9 @@ define(["alfresco/core/ProcessWidgets",
             array.forEach(this.publishOnReady, lang.hitch(this, "onReadyPublish"));
          }
 
+         // Release all publications that have been queued awaiting all the widgets to have finished being
+         // created...
+         PubQueue.getSingleton().release();
          this.alfPublish("ALF_WIDGETS_READY", {});
 
          // Add a class to indicate that the page is ready. This is primarily for testing purposes.

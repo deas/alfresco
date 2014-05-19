@@ -29,11 +29,12 @@ define(["dojo/_base/declare",
         "alfresco/core/PubSubLog",
         "service/constants/Default",
         "dojo/topic",
+        "alfresco/core/PubQueue",
         "dojo/_base/array",
         "dojo/_base/lang",
         "dojox/uuid/generateRandomUuid",
         "dojox/html/entities"], 
-        function(declare, CoreData, PubSubLog, AlfConstants, pubSub, array, lang, uuid, htmlEntities) {
+        function(declare, CoreData, PubSubLog, AlfConstants, pubSub, PubQueue, array, lang, uuid, htmlEntities) {
    
    return declare(null, {
       
@@ -381,13 +382,8 @@ define(["dojo/_base/declare",
          }
          payload.alfTopic = scopedTopic;
 
-         if (AlfConstants.DEBUG == true)
-         {
-            PubSubLog.getSingleton().pub(scopedTopic, payload, this);
-         }
-
          // Publish...
-         pubSub.publish(scopedTopic, payload);
+         PubQueue.getSingleton().publish(scopedTopic, payload, this);
       },
       
       /**
