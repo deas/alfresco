@@ -128,6 +128,33 @@ define(["dojo/_base/declare",
             {
                this._processedWidgets[index] = widget;
             }
+
+            // If the widget has dynamic visibility behaviour configured then we need to set up the necessary
+            // subscriptions to handle the rules that have been defined. We will set the initial visibility
+            // as requested and then set up the subcriptions...
+            if (widget.visibilityConfig != undefined)
+            {
+               var initialValue = lang.getObject("visibilityConfig.initialValue", false, widget);
+               if (initialValue != null && initialValue == false)
+               {
+                  // Hide the widget if requested to initially...
+                  domStyle.set(widget.domNode, "display", "none");
+               }
+               var rules = lang.getObject("visibilityConfig.rules", false, widget);
+               if (rules != null)
+               {
+                  array.forEach(rules, function(rule, index) {
+                     var topic = rule.topic,
+                         attribute = rule.attribute,
+                         is = rule.is,
+                         isNot = rule.isNot;
+                     if (topic != null && attribute != null && (is != null || isNot != null))
+                     {
+                        widget.alfSubscribe(topic, lang.hitch(this, "processVisibility", widget, is, isNot, attribute));
+                     }
+                  }, this);
+               }
+            }
          }
          
          if (this._processedWidgetCountdown == 0)
@@ -141,7 +168,80 @@ define(["dojo/_base/declare",
             this.widgetProcessingComplete = true;
          }
       },
+
+      /**
+       * This function is called whenever a widget configured with a dynamic visibility rule is triggered
+       * by a publication. The configured rules are processed and the widget is displayed or hidden
+       * accordingly 
+       * 
+       * @instance
+       * @param {object} widget The widget to control the visibility of
+       * @param {array} is The values that the payload value can be for the widget to be visible
+       * @param {array} isNot The values that the payload value must not be for the widget to be visible
+       * @param {string} attribute The dot-notation attribute to retrieve from the payload
+       * @param {object} payload The publication payload triggering the visibility processing
+       */
+      processVisibility: function alfresco_core_CoreWidgetProcessing__processVisibility(widget, is, isNot, attribute, payload) {
+         var target = lang.getObject(attribute, false, payload);
+
+         // Assume that its NOT valid value (we'll only do the actual test if its not set to an INVALID value)...
+         // UNLESS there are no valid values specified (in which case any value is valid apart form those in the invalid list)
+         var isValidValue = (typeof is == "undefined" || is.length == 0);
+
+         // Initialise the invalid value to be false if no invalid values have been declared (and only check values if defined)...
+         var isInvalidValue = (typeof isNot != "undefined" && isNot.length > 0);
+         if (isInvalidValue)
+         {
+            // Check to see if the current value is set to an invalid value (i.e. a value that negates the rule)
+            isInvalidValue = array.some(isNot, lang.hitch(this, "visibilityRuleComparator", target));
+         }
+         
+         // Check to see if the current value is set to a valid value...
+         if (!isInvalidValue && typeof is != "undefined" && is.length > 0)
+         {
+            isValidValue = array.some(is, lang.hitch(this, "visibilityRuleComparator", target));
+         }
+
+         var visible = isValidValue && !isInvalidValue;
+         if (visible == false)
+         {
+            domStyle.set(widget.domNode, "display", "none");
+         }
+         else
+         {
+            domStyle.set(widget.domNode, "display", "");
+         }
+      },
       
+      /**
+       * This function compares the supplied values for equality. It is called from the 
+       * [processVisibility function]{@link module:alfresco/core/CoreWidgetProcessing#processVisibility} to compare
+       * the current value with the configured rules for dynamically hiding and displaying a widget
+       * triggered by publications
+       *
+       * @instance
+       * @param {string} targetValue The target value supplied
+       * @param {string} currValue The value from the current rule being processed
+       * @returns {boolean} true if the values match and false otherwise
+       */
+      visibilityRuleComparator: function alfresco_core_CoreWidgetProcessing__visibilityRuleComparator(targetValue, currValue) {
+         if (targetValue == null && currValue == null)
+         {
+            return true;
+         }
+         else if (targetValue != null && 
+                  typeof targetValue.toString == "function" && 
+                  currValue != null &&
+                  typeof currValue.toString == "function")
+         {
+            return currValue.toString() == targetValue.toString();
+         }
+         else
+         {
+            return false;
+         }
+      },
+
       /**
        * This is set from false to true after the [allWidgetsProcessed]{@link module:alfresco/core/Core#allWidgetsProcessed}
        * extension point function is called. It can be used to check whether or not widget processing is complete. 

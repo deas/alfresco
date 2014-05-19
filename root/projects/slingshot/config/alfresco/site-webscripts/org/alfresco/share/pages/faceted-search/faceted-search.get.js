@@ -28,11 +28,23 @@ var searchForm = {
    }
 };
 
+var hideOnZeroResultsConfig = {
+   initialValue: true,
+   rules: [
+      {
+         topic: "ALF_SEARCH_RESULTS_COUNT",
+         attribute: "count",
+         isNot: [0]
+      }
+   ]
+};
+
 // Compose the facet menu column
 var sideBarMenu = {
    id: rootWidgetId + "FACET_MENU",
    name: "alfresco/layout/LeftAndRight",
    config: {
+      visibilityConfig: hideOnZeroResultsConfig,
       widgets: [
          {
             name: "alfresco/html/Label",
@@ -149,6 +161,7 @@ var sortMenu = {
    id: rootWidgetId + "SORT_MENU",
    name: "alfresco/menus/AlfMenuBarSelect",
    config: {
+      visibilityConfig: hideOnZeroResultsConfig,
       selectionTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
       widgets: [
          {
@@ -184,6 +197,7 @@ var searchResultsMenuBar = {
                   {
                      name: "alfresco/menus/AlfMenuBarToggle",
                      config: {
+                        visibilityConfig: hideOnZeroResultsConfig,
                         checked: true,
                         onConfig: {
                            iconClass: "alf-sort-ascending-icon",
