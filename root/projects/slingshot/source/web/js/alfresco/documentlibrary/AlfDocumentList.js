@@ -185,7 +185,11 @@ define(["dojo/_base/declare",
          this.alfSubscribe(this.pageSelectionTopic, lang.hitch(this, "onPageChange"));
          this.alfSubscribe(this.docsPerpageSelectionTopic, lang.hitch(this, "onDocsPerPageChange"));
          this.alfSubscribe(this.reloadDataTopic, lang.hitch(this, "loadData"));
-         this.alfSubscribe(this.scrollNearBottom, lang.hitch(this, "onScrollNearBottom"));
+
+         if (this.useInfiniteScroll)
+         {
+            this.alfSubscribe(this.scrollNearBottom, lang.hitch(this, "onScrollNearBottom"));
+         }
          
          // Subscribe to the topics that will be published on by the DocumentService when retrieving documents
          // that this widget requests...
@@ -704,6 +708,10 @@ define(["dojo/_base/declare",
          {
             documentPayload.page = this.currentPage;
             documentPayload.pageSize = this.currentPageSize;
+         }
+         else
+         {
+            this.alfPublish(this.clearDocDataTopic);
          }
 
          if ((this.siteId == null || this.siteId == "") && this.nodeRef != null)

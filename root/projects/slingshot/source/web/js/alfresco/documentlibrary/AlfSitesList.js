@@ -94,6 +94,11 @@ define(["dojo/_base/declare",
             documentPayload.pageSize = this.currentPageSize;
          }
 
+         if (!this.useInfiniteScroll)
+         {
+            this.alfPublish(this.clearDocDataTopic);
+         }
+
          this.alfPublish(this.dataRequestTopic, documentPayload);
       },
 

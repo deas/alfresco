@@ -43,9 +43,10 @@ define(["dojo/_base/declare",
         "dojo/_base/array",
         "dojo/dom-construct",
         "dojo/dom-class",
+        "dojo/query",
         "dijit/registry"], 
         function(declare, _WidgetBase, _TemplatedMixin, template, _MultiItemRendererMixin, _AlfDndDocumentUploadMixin, DocumentListRenderer, 
-                 AlfCore, JsNode, lang, array, domConstruct, domClass, registry) {
+                 AlfCore, JsNode, lang, array, domConstruct, domClass, query, registry) {
    
    return declare([_WidgetBase, _TemplatedMixin, _MultiItemRendererMixin, AlfCore, _AlfDndDocumentUploadMixin], {
       
@@ -285,8 +286,8 @@ define(["dojo/_base/declare",
          {
             domConstruct.destroy(this.messageNode);
          }
-         // TODO: Is this the best way to empty the dom of rendered content?
-         domConstruct.empty(this.tableNode);
+         // Remove all table body elements. (preserves headers)
+         query("tbody", this.tableNode).forEach(domConstruct.destroy);
          this.clearData();
       },
       
