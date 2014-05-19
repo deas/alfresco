@@ -106,12 +106,12 @@ model.jsonModel = {
                                        label: msg.get("message.visibility-header-label")
                                     }
                                  },
-//                                 {
-//                                    name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-//                                    config: {
-//                                       label: msg.get("message.manager-header-label")
-//                                    }
-//                                 },
+                                 {
+                                    name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                    config: {
+                                       label: msg.get("message.manager-header-label")
+                                    }
+                                 },
                                  {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                     config: {
@@ -188,21 +188,21 @@ model.jsonModel = {
                                                 ]
                                              }
                                           },
-//                                          {
-//                                             name: "alfresco/documentlibrary/views/layouts/Cell",
-//                                             config: {
-//                                                class: "siteManager",
-//                                                widgets: [
-//                                                   {
-//                                                      name: "alfresco/renderers/Boolean",
-//                                                      config: {
-//                                                         propertyToRender: "userIsSiteManager",
-//                                                         renderAsLink: false
-//                                                      }
-//                                                   }
-//                                                ]
-//                                             }
-//                                          },
+                                          {
+                                             name: "alfresco/documentlibrary/views/layouts/Cell",
+                                             config: {
+                                                class: "siteManager",
+                                                widgets: [
+                                                   {
+                                                      name: "alfresco/renderers/Boolean",
+                                                      config: {
+                                                         propertyToRender: "userIsSiteManager",
+                                                         renderAsLink: false
+                                                      }
+                                                   }
+                                                ]
+                                             }
+                                          },
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {

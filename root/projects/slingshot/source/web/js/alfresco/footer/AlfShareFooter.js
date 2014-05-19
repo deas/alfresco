@@ -86,20 +86,21 @@ define(["dojo/_base/declare",
        * @instance
        */
       postMixInProperties: function alfresco_footer_AlfShareFooter__postMixInProperties() {
+
+         // Set the 'licensed to' label
          this.licensedToLabel = this.message("label.licensedTo");
 
-         // Get the correct license if available, otherwise hide...
-         if (this.licenseLabel != null && this.licenseLabel != "UNKNOWN")
+         // Get the correct license if available
+         if (this.licenseLabel != null && this.licenseLabel.trim() != "" && this.licenseLabel != "UNKNOWN")
          {
             this.licenseLabel = this.message(this.licenseLabel);
          }
          else
          {
             this.licenseLabel = "";
-            domClass.add(this.licenseHolderNode, "hidden");
          }
 
-         // Set the appropriate copyright label...
+         // Set the appropriate copyright label
          if (this.copyrightLabel != null && this.copyrightLabel.trim() != "")
          {
             this.copyrightLabel = this.message(this.copyrightLabel);
@@ -109,7 +110,7 @@ define(["dojo/_base/declare",
              this.copyrightLabel = this.message("label.copyright");
          }
 
-         // Set the appropriate alt-text for the logo image...
+         // Set the appropriate alt-text for the logo image
          if (this.altText != null && this.altText.trim() != null)
          {
             this.altText = this.message(this.altText);
@@ -120,8 +121,7 @@ define(["dojo/_base/declare",
             this.altText = "Alfresco Community";
          }
 
-         // Select the correct logo image...
-         // Use the default if none is provided...
+         // Select the correct logo image - use the default if none is provided
          if (this.logoImageSrc == null)
          {
             this.logoImageSrc = "alfresco-share-logo.png";
@@ -135,6 +135,31 @@ define(["dojo/_base/declare",
          else
          {
             this.logoImageSrc = this.logoImageSrc;
+         }
+      },
+      
+      /**
+       * @instance
+       */
+      postCreate: function alfresco_footer_AlfShareFooter__postCreate() {
+
+         // Set a basic footer class
+         domClass.add(this.footerParentNode, "footer");
+
+         // Set the appropriate css class
+         if (this.cssClass != null && this.cssClass.trim() != "")
+         {
+            domClass.add(this.footerParentNode, this.cssClass);
+         }
+         else
+         {
+            domClass.add(this.footerParentNode, "footer-com");
+         }
+
+         // Hide the license label if not available
+         if (this.licenseLabel == null || this.licenseLabel.trim() == "" || this.licenseLabel == "UNKNOWN")
+         {
+            domClass.add(this.licenseHolderNode, "hidden");
          }
       }
    });

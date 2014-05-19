@@ -32,7 +32,8 @@ function getFooterModel(services, widgets)
                         licenseLabel: licenseHolder,
                         copyrightLabel: footerCopyRight,
                         altText: footerLogoAltText,
-                        logoImageSrc: footerLogo
+                        logoImageSrc: footerLogo,
+                        cssClass: footerCssClass
                      }
                   }
                ]

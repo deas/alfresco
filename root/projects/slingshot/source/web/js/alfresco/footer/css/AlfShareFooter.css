@@ -1,31 +1,98 @@
-.alfresco-footer-AlfShareFooter {
-   font-size: @footer-font-size;
-   background-color: #F2F2F2;
-   border-bottom: 1px solid #DFDFDF;
-   border-top: 1px solid #DFDFDF;
+/* Footer Component */
+.footer
+{
+   background-color: #f2f2f2;
+   border-bottom: 1px solid #dfdfdf;
+   border-top: 1px solid #dfdfdf;
+   padding-top: 8px;
+   padding-bottom: 8px;
    text-align: center;
 }
 
-.alfresco-footer-AlfShareFooter .copyright {
-   background-color: #FFFFFF;
-   border-left: 1px solid #DFDFDF;
-   border-right: 1px solid #DFDFDF;
-   padding: 14px 1.5em;
-   display: block;
-   margin: 0 auto;
-   width: 450px;
+.footer .links
+{
+   padding: 0 2em;
 }
 
-.alfresco-footer-AlfShareFooter .copyright a {
+.footer .copyright
+{
+   font-size: 77%;
+}
+
+.footer-ent .copyright
+{
+   margin: 0 auto;
+   width: 450px;
+   display: block;
+}
+
+.footer-com,
+.footer-ent,
+.footer-team
+{
+   padding: 0;
+}
+
+.footer-com .copyright
+{
+   background-color: #fff;
+   border-left: 1px solid #dfdfdf;
+   border-right: 1px solid #dfdfdf;
+   display: inline-block;
+   line-height: 22px;
+   padding: 2px;
+}
+
+.footer-ent .copyright
+{
+   background-color: #fff;
+   border-left: 1px solid #dfdfdf;
+   border-right: 1px solid #dfdfdf;
+   padding: 14px 1.5em;
+}
+
+.footer-team .copyright
+{
+   background-color: #fff;
+   border-left: 1px solid #dfdfdf;
+   border-right: 1px solid #dfdfdf;
+   line-height: 47px;
+   padding: 17px 25px 17px 0.5em;
+}
+
+.footer-ent .licenseHolder
+{
+}
+
+.footer-ent .copyright a
+{
    float: left;
    margin-top: -2px;
 }
 
-.alfresco-footer-AlfShareFooter .copyright span {
-   color: @general-font-color;
-   position: relative;
+.footer-com .copyright img
+{
+   padding-right: 1em;
+   vertical-align: baseline;
 }
 
-.alfresco-footer-AlfShareFooter .licenseHolder.hidden {
-   display: none;
+.footer-ent .copyright img
+{
+   padding-right: 1em;
+}
+
+.footer-team .copyright img
+{
+   vertical-align: middle;
+}
+
+.footer-com .copyright span
+{
+   display: inline-block;
+}
+
+.footer-ent .copyright span,
+.footer-team .copyright span
+{
+   position: relative;
 }
