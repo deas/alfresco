@@ -158,6 +158,7 @@ public class FactorySharePage implements PageFactory
         pages.put("admin-console", AdminConsolePage.class);
         pages.put("manage-sites", ManageSitesPage.class);
         pages.put("faceted-search", FacetedSearchPage.class);
+        pages.put("faceted-search", FacetedSearchPage.class);
     }
 
     public HtmlPage getPage(WebDrone drone)
