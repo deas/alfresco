@@ -17,14 +17,78 @@
    ],
    "widgets": [
       {
-         "id": "SET_SEARCH_TERM",
+         "id": "SET_SEARCH_TERM_1",
          "name": "alfresco/buttons/AlfButton",
          "config": {
-            "label": "Set Search Term",
-            "publishTopic": "ALF_NAVIGATE_TO_PAGE",
+            "label": "Set Search Term (no data)",
+            "publishTopic": "ALF_SET_SEARCH_TERM",
             "publishPayload": {
-               "url": "searchTerm=testTerm1",
-               "type": "HASH"
+               "junk": "data"
+            }
+         }
+      },
+      {
+         "id": "SET_SEARCH_TERM_2",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Set Search Term (testTerm1)",
+            "publishTopic": "ALF_SET_SEARCH_TERM",
+            "publishPayload": {
+               "searchTerm": "testTerm1"
+            }
+         }
+      },
+      {
+         "id": "SET_SEARCH_TERM_3",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Set Search Term (testTerm2)",
+            "publishTopic": "ALF_SET_SEARCH_TERM",
+            "publishPayload": {
+               "searchTerm": "testTerm2"
+            }
+         }
+      },
+      {
+         "id": "SET_SCOPE_0",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Set Scope (none)",
+            "publishTopic": "ALF_SEARCHLIST_SCOPE_SELECTION",
+            "publishPayload": {
+            }
+         }
+      },
+      {
+         "id": "SET_SCOPE_1",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Set Scope (REPO)",
+            "publishTopic": "ALF_SEARCHLIST_SCOPE_SELECTION",
+            "publishPayload": {
+               "value": "REPO"
+            }
+         }
+      },
+      {
+         "id": "SET_SCOPE_2",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Set Scope (ALL_SITES)",
+            "publishTopic": "ALF_SEARCHLIST_SCOPE_SELECTION",
+            "publishPayload": {
+               "value": "ALL_SITES"
+            }
+         }
+      },
+      {
+         "id": "SET_SCOPE_3",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Set Scope (site1)",
+            "publishTopic": "ALF_SEARCHLIST_SCOPE_SELECTION",
+            "publishPayload": {
+               "value": "site1"
             }
          }
       },
@@ -41,6 +105,18 @@
          }
       },
       {
+         "id": "SET_MULTIPLE_SEARCH_DATA_2",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Set Multiple Search Attributes",
+            "publishTopic": "ALF_NAVIGATE_TO_PAGE",
+            "publishPayload": {
+               "url": "searchTerm=testTerm3&facetFields=qname1&facetFilters=filter1,filter2,filter3&sortAscending=false&sortField=cm:title",
+               "type": "HASH"
+            }
+         }
+      },
+      {
          "id": "REMOVE_FACET_FILTER",
          "name": "alfresco/buttons/AlfButton",
          "config": {
@@ -49,6 +125,15 @@
             "publishPayload": {
                "filter": "filter2"
             }
+         }
+      },
+      {
+         "id": "APPLY_FACET_FILTER_0",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Apply Facet Filter (none)",
+            "publishTopic": "ALF_APPLY_FACET_FILTER",
+            "publishPayload": {}
          }
       },
       {
@@ -63,10 +148,30 @@
          }
       },
       {
-         "id": "INCLUDE_FACET",
+         "id": "INCLUDE_FACET_0",
          "name": "alfresco/buttons/AlfButton",
          "config": {
-            "label": "Include Facet",
+            "label": "Include Facet (none)",
+            "publishTopic": "ALF_INCLUDE_FACET",
+            "publishPayload": {}
+         }
+      },
+      {
+         "id": "INCLUDE_FACET_1",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Include Facet (qname1)",
+            "publishTopic": "ALF_INCLUDE_FACET",
+            "publishPayload": {
+               "qname": "qname1"
+            }
+         }
+      },
+      {
+         "id": "INCLUDE_FACET_2",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Include Facet (qname2)",
             "publishTopic": "ALF_INCLUDE_FACET",
             "publishPayload": {
                "qname": "qname2"
