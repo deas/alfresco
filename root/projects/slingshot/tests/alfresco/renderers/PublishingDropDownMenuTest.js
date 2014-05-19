@@ -22,10 +22,11 @@
  */
 define(["intern!object",
         "intern/chai!expect",
+        "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!wd/lib/special-keys"], 
-        function (registerSuite, expect, require, TestCommon, specialKeys) {
+        function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
       name: 'PublishingDropDownMenu Test',
@@ -100,10 +101,10 @@ define(["intern!object",
          .end()
 
          // Check the menu selection published as expected after mouse clicks
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("33", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
-         .then(function(result6) {
+         .elementsByCss(TestCommon.pubDataCssSelector("ALF_PUBLISHING_DROPDOWN_MENU", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
+         .then(function(elements) {
             TestCommon.log(testname,105,"Check the menu selection published as expected after mouse clicks");
-            expect(result6).to.equal(true, "The menu did not publish on 'ALF_PUBLISHING_DROPDOWN_MENU' after mouse clicks");
+            assert(elements.length == 1, "The menu did not publish on 'ALF_PUBLISHING_DROPDOWN_MENU' after mouse clicks");
          })
          .end()
 
@@ -112,14 +113,14 @@ define(["intern!object",
          .end()
 
          // Check the menu publish is not shown after the refresh
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("33", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
-         .then(function(result7) {
+         .elementsByCss(TestCommon.pubDataCssSelector("ALF_PUBLISHING_DROPDOWN_MENU", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
+         .then(function(elements) {
             TestCommon.log(testname,117,"Check the menu publish is not shown after the refresh");
-            expect(result7).to.equal(false, "The menu publish should have gone after a refresh");
+            assert(elements.length == 0, "The menu publish should have gone after a refresh", elements);
          })
          .end()
 
-         // Open another menu with key functions - check it is visible
+         // // Open another menu with key functions - check it is visible
          .keys(specialKeys["Tab"])
          .keys(specialKeys["Tab"])
          .keys(specialKeys["Tab"])
@@ -141,17 +142,17 @@ define(["intern!object",
          .sleep(500)
          .elementByCss(".dijitMenuPopup")
          .isDisplayed()
-         .then(function(result9) {
+         .then(function(elements) {
             TestCommon.log(testname,145,"Select another item in the menu - check the menu disappears");
-            expect(result9).to.equal(false, "The drop down menu should be hidden after key presses");
+            expect(elements).to.equal(false, "The drop down menu should be hidden after key presses");
          })
          .end()
 
          // Check the menu selection published as expected after key presses
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("33", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
-         .then(function(result10) {
+         .elementsByCss(TestCommon.pubDataCssSelector("ALF_PUBLISHING_DROPDOWN_MENU", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
+         .then(function(elements) {
             TestCommon.log(testname,153,"Check the menu selection published as expected after key presses");
-            expect(result10).to.equal(true, "The menu did not publish on 'ALF_PUBLISHING_DROPDOWN_MENU' after key presses");
+            assert(elements.length == 1, "The menu did not publish on 'ALF_PUBLISHING_DROPDOWN_MENU' after key presses");
          })
          .end()
 

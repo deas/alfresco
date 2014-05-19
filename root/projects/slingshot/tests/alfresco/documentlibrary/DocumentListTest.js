@@ -202,16 +202,6 @@ define(["intern!object",
             })
             .end()
 
-         // 10. Check the right number of results are present.
-         .elementsByCss(".alfresco-documentlibrary-views-layouts-Row")
-            .then(function(elements) {
-               TestCommon.log(testname,208,"#10: Check that 3 results are displayed");
-               assert(elements.length === 3, "Test #10 - row count is not correct. Expected 3, displayed: " + elements.length);
-            })
-            .end()
-            .sleep(30000)
-
-
          // Post the coverage results...
          .then(function() {
             TestCommon.postCoverageResults(browser);

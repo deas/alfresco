@@ -73,17 +73,17 @@ define(["intern!object",
          .sleep(500)
          .click()
          .sleep(500)
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("24", "alfTopic", "DELETE_ACTION_TOPIC"))
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "alfTopic", "DELETE_ACTION_TOPIC"))
          .then(function(result3) {
             TestCommon.log(testname,78,"Check the action selection published as expected after mouse clicks");
             expect(result3).to.equal(true, "The action menu did not publish on 'DELETE_ACTION_TOPIC' after mouse clicks");
          })
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("24", "variable1", "red"))
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "variable1", "red"))
          .then(function(result4) {
             TestCommon.log(testname,83,"Check the action selection published the payload as expected after mouse clicks");
             expect(result4).to.equal(true, "The action menu did not publish the payload with 'variable1' as 'red' after mouse clicks");
          })
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("24", "variable2", "orange"))
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "variable2", "orange"))
          .then(function(result5) {
             TestCommon.log(testname,88,"Check the action selection published the payload as expected after mouse clicks");
             expect(result5).to.equal(true, "The action menu did not publish the payload with 'variable2' as 'orange' after mouse clicks");
@@ -103,17 +103,17 @@ define(["intern!object",
          .sleep(500)
          .click()
          .sleep(500)
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("25", "alfTopic", "MANAGE_ACTION_TOPIC"))
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "alfTopic", "MANAGE_ACTION_TOPIC"))
          .then(function(result6) {
             TestCommon.log(testname,108,"Check the action selection published as expected after mouse clicks");
             expect(result6).to.equal(true, "The action menu did not publish on 'MANAGE_ACTION_TOPIC' after mouse clicks");
          })
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("25", "payloadVariable1", "orange"))
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "payloadVariable1", "orange"))
          .then(function(result7) {
             TestCommon.log(testname,113,"Check the action selection published the payload as expected after mouse clicks");
             expect(result7).to.equal(true, "The action menu did not publish the payload with 'payloadVariable1' as 'red' after mouse clicks");
          })
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("25", "payloadVariable2", "red"))
+         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "payloadVariable2", "red"))
          .then(function(result8) {
             TestCommon.log(testname,118,"Check the action selection published the payload as expected after mouse clicks");
             expect(result8).to.equal(true, "The action menu did not publish the payload with 'payloadVariable2' as 'orange' after mouse clicks");

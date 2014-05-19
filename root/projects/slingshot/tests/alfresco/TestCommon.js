@@ -155,6 +155,27 @@ define(["intern/dojo/node!fs",
 
       /**
        * This generates a CSS selector that attempts to select a publication payload entry from the SubscriptionLog
+       * widget. It's looking for a specific publish topic so could return multiple results.
+       *
+       * @instance
+       * @param {string} publishTopic The topic published on
+       * @param {string} key The key for the data
+       * @param {string} value The value for the data
+       * @returns {string} The CSS selector
+       */
+      pubDataCssSelector: function(publishTopic, key, value) {
+
+         var selector = "td[data-publish-topic='" + publishTopic + "'] + " +
+                        "td.sl-data tr.sl-object-row " +
+                        "td[data-pubsub-object-key=" + 
+                        key + 
+                        "]+td[data-pubsub-object-value='" + 
+                        value + "']";
+         return selector;
+      },
+
+      /**
+       * This generates a CSS selector that attempts to select a publication payload entry from the SubscriptionLog
        * widget. It looks on a specific row of the table for an entry with a specific key/value pair. It's important to
        * remember that the first generated row will be 3 (!! THREE !!) because the index starts at 1 NOT 0 and the first
        * row is the header and the second row will be the publication indicating that the page has loaded.

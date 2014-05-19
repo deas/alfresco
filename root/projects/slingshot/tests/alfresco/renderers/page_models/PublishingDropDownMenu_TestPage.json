@@ -14,6 +14,7 @@
       {
          "name": "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
          "config": {
+            "subscribeToDocRequests": true,
             "currentData": {
                "items": [
                   {"col1":"Test1", "col2":"PUBLIC"},
