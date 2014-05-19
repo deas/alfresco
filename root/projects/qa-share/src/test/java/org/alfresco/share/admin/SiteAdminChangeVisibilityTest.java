@@ -175,8 +175,8 @@ public class SiteAdminChangeVisibilityTest extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups = "AlfrescoOne")
-    public void ALF_2940() throws Exception
+    @Test
+    public void ACE_508_AsSiteAdminOrNetworkAdmin() throws Exception
     {
         // login as user2
         ShareUser.login(drone, user2, DEFAULT_PASSWORD);
@@ -217,7 +217,7 @@ public class SiteAdminChangeVisibilityTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2941() throws Exception
+    public void ACE_508_AsSuperAdmin() throws Exception
     {
         // We don't really need this check. however, it's added in case you run
         // the tests within your IDE and not excluding the relevant groups.

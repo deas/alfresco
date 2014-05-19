@@ -56,7 +56,7 @@ public class DeleteSiteTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepAdmin" })
-    public void dataPrep_ALF_2949() throws Exception
+    public void dataPrep_DeleteSiteTests_08() throws Exception
     {
         String testName = getTestName();
         String user2 = getUserNameFreeDomain(testName + "1");
@@ -77,7 +77,7 @@ public class DeleteSiteTests extends AbstractUtils
      */
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2949() throws Exception
+    public void DeleteSiteTests_ACE_515_08() throws Exception
     {
         String testName = getTestName();
         
@@ -87,7 +87,7 @@ public class DeleteSiteTests extends AbstractUtils
         String siteName = getSiteName(testName) + System.currentTimeMillis();
         String actionName = "Delete Site";
 
-        // Login as user2(Not a member of siteAdmin group)
+        // Login as RepoAdmin(Not a member of siteAdmin group)
         ShareUser.login(drone, testUser2);
 
         // Create public site
@@ -104,14 +104,16 @@ public class DeleteSiteTests extends AbstractUtils
 
         // Find the created site
         ManagedSiteRow manageSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(siteName);
-        
-        ActionsSet actionsSet = manageSiteRow.getActions();
+        if (manageSiteRow.getSiteName().equals(siteName))
+        {
+            ActionsSet actionsSet = manageSiteRow.getActions();
 
-        // Verify delete action is present
-        Assert.assertTrue(actionsSet.hasActionByName(actionName), "Delete action is present");
+            // Verify delete action is present
+            Assert.assertTrue(actionsSet.hasActionByName(actionName), "Delete action is present");
 
-        // Confirm to delete created site
-        actionsSet.clickActionByNameAndDialogByButtonName(actionName, "OK");        
+            // Confirm to delete created site
+            actionsSet.clickActionByNameAndDialogByButtonName(actionName, "OK");
+        }
 
         ManagedSiteRow result = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(siteName);
 
@@ -120,46 +122,50 @@ public class DeleteSiteTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepAdmin" })
-    public void dataPrep_ALF_2950() throws Exception
+    public void dataPrep_DeleteSiteTests_10() throws Exception
     {
-        String testName1 = getTestName();
+        // TODO: Why getTestName()+"3"?
+        String testName1 = getTestName() + "3";
+        String testUser1 = getUserNameFreeDomain(testName1);
         
-        String testUser1 = getUserNameForDomain(testName1, DOMAIN_PREMIUM);
+        String testName2 = getTestName() + "2";
+        String testUser2 = getUserNameFreeDomain(testName2);
         
-        String testName2 = getTestName();
-        String testUser2 = getUserNameForDomain(testName2 + "1",DOMAIN_PREMIUM);      
+        String[] testUser2Info = new String[] { testUser2 };
 
-        // Create User1 and add to SiteAdmin group               
-        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, siteAdmin, testUser1);        
-        
-        // Create User2 and add to SiteAdmin group
-        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, siteAdmin, testUser2);
+        // Create User1 and add to SiteAdmin group
+        // TODO: This won't work on Cloud, Use CreateUserAPI.createActivateUserWithGroup instead, else add group
+        ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, testUser1, testUser1, testUser1, DEFAULT_PASSWORD, siteAdmin);
+
+        // Create User2
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser2Info);
 
     }
 
     /**
      * Test:
      * <ul>
-     * <li>Delete a site on Manage sites page by SiteAdmin/Network Admin</li>
+     * <li>Delete a site on Manage sites page by SiteAdmin</li>
      * <li>Verify deleted site is not present in the list of sites</li>
      * <li></li>
      * </ul>
      */
 
-    @Test(groups = "AlfrescoOne")
-    public void ALF_2950() throws Exception
+    @Test(groups = "EnterpriseOnly")
+    public void DeleteSiteTests_ACE_515_10() throws Exception
     {
-        String testName1 = getTestName();
-        String testUser1 = getUserNameForDomain(testName1, DOMAIN_PREMIUM);
+        String testName1 = getTestName() + "3";
+        String testUser1 = getUserNameFreeDomain(testName1);
         
-        String testName2 = getTestName();
-        String testUser2 = getUserNameForDomain(testName2 + "1", DOMAIN_PREMIUM);        
+        String testName2 = getTestName() + "2";
+        String testUser2 = getUserNameFreeDomain(testName2);
+        String[] testUser2Info = new String[] { testUser2 };
         
         String site1 = getSiteName(testName1) + System.currentTimeMillis();
         String actionName = "Delete Site";
 
-        // Login as User2
-        ShareUser.login(drone, testUser2);
+        // Login as User2(Not a member of siteAdmin group)
+        ShareUser.login(drone, testUser2Info);
 
         // Create public site
         ShareUser.createSite(drone, site1, AbstractUtils.SITE_VISIBILITY_PUBLIC);
@@ -168,7 +174,7 @@ public class DeleteSiteTests extends AbstractUtils
         ShareUser.logout(drone);
 
         // Login as SiteAdmin
-        ShareUser.login(drone, testUser1);
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
 
         // Navigate to manageSites page
         ShareUser.openUserDashboard(drone);
@@ -176,14 +182,18 @@ public class DeleteSiteTests extends AbstractUtils
 
         // Find the created site
         ManagedSiteRow manageSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(site1);
-        
-        ActionsSet actionsSet = manageSiteRow.getActions();
 
-        // Verify delete action is present
-        Assert.assertTrue(actionsSet.hasActionByName(actionName), "Delete action is present");
+        // TODO: remove if condition. The test execution should not follow different paths
+        if (manageSiteRow.getSiteName().equals(site1))
+        {
+            ActionsSet actionsSet = manageSiteRow.getActions();
 
-        // Confirm to delete created site
-        actionsSet.clickActionByNameAndDialogByButtonName(actionName, "OK");        
+            // Verify delete action is present
+            Assert.assertTrue(actionsSet.hasActionByName(actionName), "Delete action is present");
+
+            // Confirm to delete created site
+            actionsSet.clickActionByNameAndDialogByButtonName(actionName, "OK");
+        }
 
         ManagedSiteRow result = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(site1);
 
@@ -191,9 +201,70 @@ public class DeleteSiteTests extends AbstractUtils
         Assert.assertNull(result);
     }
 
-    
     @Test(groups = { "DataPrepAdmin" })
-    public void dataPrep_ALF_2952() throws Exception
+    public void dataPrep_DeleteSiteTests_12() throws Exception
+    {
+        String testName = getTestName();
+        String cloudUser = getUserNamePremiumDomain(testName);
+        String[] cloudUserInfo = new String[] { cloudUser };
+
+        // Login cloud User
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, cloudUserInfo);
+
+    }
+
+    /**
+     * Test:
+     * <ul>
+     * <li>Delete a site on Manage sites page by NetworkAdmin</li>
+     * <li>Verify deleted site is not present in the list of sites</li>
+     * <li></li>
+     * </ul>
+     */
+
+    @Test(groups = "CloudOnly")
+    public void DeleteSiteTests_ACE_515_12() throws Exception
+    {
+        String testName = getTestName();
+        String site1 = getSiteName(testName) + System.currentTimeMillis();
+        String actionName = "Delete Site";
+        String cloudUser = getUserNamePremiumDomain(testName);
+
+        // Login cloud User
+        ShareUser.login(drone, cloudUser);
+
+        // Create public site
+        ShareUser.createSite(drone, site1, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        // Navigate to manageSites page
+        ShareUser.openUserDashboard(drone);
+        ManageSitesPage manageSitesPage = ShareUserAdmin.navigateToManageSites(drone);
+
+        // TODO: Do not use drone.refresh within the test code. Create util if this is necessary
+        // TODO: Refresh ref to PO after refresh
+        drone.refresh();
+
+        // Find the created site
+        ManagedSiteRow manageSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(site1);
+        if (manageSiteRow.getSiteName().equals(site1))
+        {
+            ActionsSet actionsSet = manageSiteRow.getActions();
+
+            // Verify delete action is present
+            Assert.assertTrue(actionsSet.hasActionByName(actionName), "Delete action is present");
+
+            // Confirm to delete created site
+            actionsSet.clickActionByNameAndDialogByButtonName(actionName, "OK");
+        }
+
+        ManagedSiteRow result = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(site1);
+
+        // Verify the site is deleted and removed from the list of sites
+        Assert.assertNull(result);
+    }
+
+    @Test(groups = { "DataPrepAdmin" })
+    public void dataPrep_DeleteSiteTests_14() throws Exception
     {
         String testName2 = getTestName() + "1";
         String testUser2 = getUserNameFreeDomain(testName2);
@@ -213,7 +284,7 @@ public class DeleteSiteTests extends AbstractUtils
      */
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2952() throws Exception
+    public void DeleteSiteTests_ACE_515_14() throws Exception
     {
         String testName1 = getTestName();
         
@@ -222,7 +293,11 @@ public class DeleteSiteTests extends AbstractUtils
         String[] testUser2Info = new String[] { testUser2 };
         
         String site1 = getSiteName(testName1) + System.currentTimeMillis();
-        String actionName = "Delete Site";        
+        String actionName = "Delete Site";
+
+        // TODO: Redundant. ShareUser.login takes care of it
+        // Logout RepoAdmin
+        ShareUser.logout(drone);
 
         // Login as User2(Not a member of siteAdmin group)
         ShareUser.login(drone, testUser2Info);
@@ -243,46 +318,37 @@ public class DeleteSiteTests extends AbstractUtils
         ManageSitesPage manageSitesPage = ShareUserAdmin.navigateToManageSites(drone);
 
         // Find the created site
-        ManagedSiteRow manageSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(site1);        
+        ManagedSiteRow manageSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(site1);
         
-        ActionsSet actionsSet = manageSiteRow.getActions();
+        // TODO: Remove if block from test
+        if (manageSiteRow.getSiteName().equals(site1))
+        {
+            ActionsSet actionsSet = manageSiteRow.getActions();
 
-        // Verify delete action is present
-        Assert.assertTrue(actionsSet.hasActionByName(actionName), "Delete action is present");
+            // Verify delete action is present
+            Assert.assertTrue(actionsSet.hasActionByName(actionName), "Delete action is present");
 
-        // Confirm cancel delete of created site
-        actionsSet.clickActionByNameAndDialogByButtonName(actionName, "Cancel");
-        
+            // Confirm cancel delete of created site
+            actionsSet.clickActionByNameAndDialogByButtonName(actionName, "Cancel");
+        }
         ManagedSiteRow result = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(site1);
 
         // Verify the site is not deleted and present in the list of sites
         Assert.assertNotNull(result);
-    }    
-    
-    @Test(groups = { "DataPrepAdmin" })
-    public void dataPrep_ALF_2953() throws Exception
-    {
-        String testName1 = getTestName();        
-        String testUser1 = getUserNameForDomain(testName1, DOMAIN_PREMIUM);        
-
-        // Create User1
-        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, siteAdmin, testUser1);
-
     }
 
     /**
      * Test:
      * <ul>
-     * <li>Confirm site cannot be deleted by Site/Network Admin when content in site is in off line edit</li>
+     * <li>Confirm site cannot be deleted by RepoAdmin when content in site is in off line edit</li>
      * <li></li>
      * </ul>
      */
 
-    @Test(groups = "AlfrescoOne")
-    public void ALF_2953() throws Exception
+    @Test(groups = "EnterpriseOnly")
+    public void DeleteSiteTests_ACE_515_26() throws Exception
     {
         String testName1 = getTestName();
-        String testUser1 = getUserNameForDomain(testName1, DOMAIN_PREMIUM);        
         
         String site1 = getSiteName(testName1) + System.currentTimeMillis();
         
@@ -290,8 +356,8 @@ public class DeleteSiteTests extends AbstractUtils
         
         String fileName = getTestName();
 
-        //Login as RepoAdmin
-        ShareUser.login(drone, testUser1);
+        // //Login as RepoAdmin
+        ShareUser.login(drone, ADMIN_USERNAME);
 
         // Create public site
         ShareUser.createSite(drone, site1, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
@@ -309,13 +375,17 @@ public class DeleteSiteTests extends AbstractUtils
         ManageSitesPage manageSitesPage = ShareUserAdmin.navigateToManageSites(drone);
 
         // Find site1 in the list of sites
-        ManagedSiteRow manageSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(site1);        
+        ManagedSiteRow manageSiteRow = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(site1);
         
-        ActionsSet actionsSet = manageSiteRow.getActions();
-        Assert.assertTrue(actionsSet.hasActionByName(actionName), "Delete action is present");
+        // TODO: Remove if from test
+        if (manageSiteRow.getSiteName().equals(site1))
+        {
+            ActionsSet actionsSet = manageSiteRow.getActions();
+            Assert.assertTrue(actionsSet.hasActionByName(actionName), "Delete action is present");
 
-        // Confirm to delete created site
-        actionsSet.clickActionByNameAndDialogByButtonName(actionName, "ok");        
+            // Confirm to delete created site
+            actionsSet.clickActionByNameAndDialogByButtonName(actionName, "ok");
+        }
 
         ManagedSiteRow result = manageSitesPage.findManagedSiteRowByNameFromPaginatedResults(site1);
 
