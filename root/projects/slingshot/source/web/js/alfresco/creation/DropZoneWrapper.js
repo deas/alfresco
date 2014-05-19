@@ -95,6 +95,9 @@ define(["dojo/_base/declare",
          this.alfLog("log", "Updating event with wrapper ndoe", evt);
          evt.widgetWrapperNode = this.domNode;
          evt.widgetWrapperItems = this.getCurrentItems();
+
+         // Update the widgets for display...
+         this.alfSetData(this.fieldId + "__widgetsForDisplay", evt.widgetsForDisplay);
       },
       
       /**
@@ -125,7 +128,9 @@ define(["dojo/_base/declare",
             if (typeof widget.getCurrentItems === "function")
             {
                array.forEach(widget.getCurrentItems(), function(item, j) {
-                  items.push(item.data);
+                  // TODO: Store fieldId here instead of all the data?
+                  items.push(item.data.defaultConfig.fieldId); // TODO: Prone to data access error
+                  // items.push(item.data);
                }, this);
             }
          }, this);

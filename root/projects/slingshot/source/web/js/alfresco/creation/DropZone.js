@@ -149,7 +149,12 @@ define(["dojo/_base/declare",
          // widget of a widget with children. The children will be the items to add.
          if (this.initialItems != null)
          {
-            this.previewTarget.insertNodes(false, this.initialItems, false, null);
+            var items = [];
+            array.forEach(this.initialItems, function (item, index) {
+               items.push(this.alfGetData(item));
+            }, this);
+            // this.previewTarget.insertNodes(false, this.initialItems, false, null);
+            this.previewTarget.insertNodes(false, items, false, null);
          }
 
          if (this.value != null && this.value != "")
@@ -181,7 +186,7 @@ define(["dojo/_base/declare",
             if (itemToUpdate != null)
             {
                evt.widgetsForDisplay[0].config.initialItems = evt.widgetWrapperItems;
-               itemToUpdate.data.widgetsForDisplay = evt.widgetsForDisplay;
+               // itemToUpdate.data.widgetsForDisplay = evt.widgetsForDisplay;
                evt.stopPropagation();
                evt.preventDefault();
                
@@ -253,10 +258,10 @@ define(["dojo/_base/declare",
 
          // Create the new definition...
          var newDef = {
-            widgetsForDisplay: currentField.data.widgetsForDisplay,
-            widgetDisplayName: currentField.data.name,
-            widgetsForConfig: currentField.data.widgetsForConfig,
-            previewWidget: currentField.data.previewWidget
+            // widgetsForDisplay: currentField.data.widgetsForDisplay,
+            // widgetDisplayName: currentField.data.name,
+            // widgetsForConfig: currentField.data.widgetsForConfig,
+            // previewWidget: currentField.data.previewWidget
          };
 
          // Set the name and config...
@@ -410,6 +415,13 @@ define(["dojo/_base/declare",
 
                var clonedConfig = lang.clone(payload.originalConfig);
 
+               // TODO: Potentially fragile...
+               var fieldId = payload.originalConfig.defaultConfig.fieldId;
+               var widgetsForDisplay = this.alfGetData(fieldId + "__widgetsForDisplay");
+               
+               // Get the widgetsForConfig data from the data model...
+               var widgetsForConfig = this.alfGetData(payload.originalConfig.defaultConfig.fieldId + "__widgetsForConfig");
+
                // Create a new attribute to store the updated configuration, this is going to be 
                // set using the dot-notation properties so that attributes such as "clonedConfig.updatedConfig.defaultConfig.x"
                // might exist...
@@ -422,13 +434,23 @@ define(["dojo/_base/declare",
                   lang.setObject(key, payload.updatedConfig[key], clonedConfig);
                   lang.setObject(key, payload.updatedConfig[key], clonedConfig.updatedConfig);
                }
+
                // Update the configuration values...
-               for (var i=0; i<clonedConfig.widgetsForConfig.length; i++)
+               // for (var i=0; i<clonedConfig.widgetsForConfig.length; i++)
+               // {
+               //    // clonedConfig.widgetsForConfig[i].config.value = payload.updatedConfig[clonedConfig.widgetsForConfig[i].config.name];
+               //    clonedConfig.widgetsForConfig[i].config.value = lang.getObject(clonedConfig.widgetsForConfig[i].config.name, false, payload.updatedConfig);
+               // }
+               
+               // Update the config...
+               for (var i=0; i<widgetsForConfig.length; i++)
                {
                   // clonedConfig.widgetsForConfig[i].config.value = payload.updatedConfig[clonedConfig.widgetsForConfig[i].config.name];
-                  clonedConfig.widgetsForConfig[i].config.value = lang.getObject(clonedConfig.widgetsForConfig[i].config.name, false, payload.updatedConfig)
+                  widgetsForConfig[i].config.value = lang.getObject(widgetsForConfig[i].config.name, false, payload.updatedConfig);
                }
-               
+               // ...and save it
+               this.alfSetData(fieldId + "__widgetsForConfig", widgetsForConfig);
+
                // Update the previously stored name the field name
                // Commented out due to missing .config.aname on payload.updatedConfig
 //               this.alfSetData(clonedConfig.defaultConfig.fieldId + ".name", payload.updatedConfig.config.name + "");
@@ -444,9 +466,19 @@ define(["dojo/_base/declare",
                   }
                }, this);
                
-               // Create the updated object...
+               // Set the widgets for display...
+               if (widgetsForDisplay != null)
+               {
+                  clonedConfig.widgetsForDisplay = widgetsForDisplay;
+               }
+               if (widgetsForConfig != null)
+               {
+                  clonedConfig.widgetsForConfig = widgetsForConfig;
+               }
+
                try
                {
+                  // Create the updated object...
                   this.previewTarget.insertNodes(false, [clonedConfig], true, payload.node);
                }
                catch(e)
@@ -495,23 +527,33 @@ define(["dojo/_base/declare",
             
             // Preview the widget within the wrapper if requested or if no widgetsForDisplay
             // configuration has been provided...
-            var widgets;
-            if (item.previewWidget == true || 
+
+            var widgets = this.alfGetData(config.fieldId + "__widgetsForDisplay");
+            if (widgets == null)
+            {
+               if (item.previewWidget == true || 
                 item.widgetsForDisplay == null ||
                 item.widgetsForDisplay.length == 0)
-            {
-               widgets = [
-                  {
-                     name: item.module,
-                     config: config
-                  }
-               ];
+               {
+                  widgets = [
+                     {
+                        name: item.module,
+                        config: config
+                     }
+                  ];
+
+                  // this.alfSetData(config.fieldId + ".widgetsForDisplay", widgets);
+               }
+               else
+               {
+                  // TODO: This won't work for first creation (the original data needs to be provided)
+                  // widgets = this.alfGetData(config.fieldId + ".widgetsForDisplay");
+                  widgets = item.widgetsForDisplay;
+               }
+               
+               this.alfSetData(config.fieldId + "__widgetsForDisplay", widgets);
             }
-            else
-            {
-               widgets = item.widgetsForDisplay;
-            }
-            
+
             // Add in any additional configuration...
             // TODO: Need to make sure that cloning isn't required?
             if (this.widgetsForNestedConfig != null)
@@ -536,8 +578,17 @@ define(["dojo/_base/declare",
                   }
                }, this);
             }
+
+            // Store the field id against the updated config...
+            // This needs to be saved so it can be retrieved when inserting nodes again...
+            this.alfSetData(config.fieldId, clonedItem);
+
+            // Store the widgets for config data...
+            // This will get updated when the widget is saved...
+            this.alfSetData(config.fieldId + "__widgetsForConfig", clonedItem.widgetsForConfig);
             
             var widgetWrapper = new DropZoneWrapper({
+               fieldId: config.fieldId,
                parentPubSubScope: this.childPubSubScope,
                pubSubScope: this.pubSubScope,
                widgets: widgets,
@@ -545,7 +596,7 @@ define(["dojo/_base/declare",
             }, node);
             
             // Store the field name
-            this.alfSetData(config.fieldId + ".name", clonedItem.defaultConfig.name + "");
+            // this.alfSetData(config.fieldId + ".name", clonedItem.defaultConfig.name + "");
          }
          else
          {

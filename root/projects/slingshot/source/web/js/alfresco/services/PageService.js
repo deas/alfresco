@@ -226,6 +226,20 @@ define(["dojo/_base/declare",
                services: payload.services,
                widgets: payload.widgets
             };
+
+            // Get the widgets for display from each configured widget...
+            // TODO: This isn't yet sufficient for restoring for edit as it only captures the first 
+            //       level of widget data. Need to address this.
+            // var widgetsForDisplay = [];
+            // array.forEach(payload.widgets, function(widget, index) {
+            //    var wfd = this.alfGetData(widget.config.fieldId + "__widgetsForDisplay");
+            //    if (wfd != null)
+            //    {
+            //       widgetsForDisplay.push(wfd);
+            //    }
+            // }, this);
+            // pageDefinition.widgetsForDisplay = widgetsForDisplay;
+
             // pageDefinition = dojoJson.stringify(pageDefinition);
          }
          else
