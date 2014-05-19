@@ -336,6 +336,16 @@ define(["dojo/_base/declare",
             initArgs.pubSubScope = this.pubSubScope;
          }
 
+         // Pass on the pub/sub scope from the parent...
+         if (this.parentPubSubScope != null)
+         {
+            initArgs.parentPubSubScope = this.parentPubSubScope;
+         }
+         else
+         {
+            initArgs.parentPubSubScope = "";
+         }
+
          if (initArgs.dataScope === undefined)
          {
             initArgs.dataScope = this.dataScope;

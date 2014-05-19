@@ -27,11 +27,13 @@
 define(["dojo/_base/declare",
         "alfresco/renderers/Property",
         "dijit/_OnDijitClickMixin",
+        "alfresco/core/ObjectProcessingMixin",
         "dojo/text!./templates/PropertyLink.html",
-        "dojo/_base/event"], 
-        function(declare, Property, _OnDijitClickMixin, template, event) {
+        "dojo/_base/event",
+        "dojo/_base/lang"], 
+        function(declare, Property, _OnDijitClickMixin, ObjectProcessingMixin, template, event, lang) {
 
-   return declare([Property, _OnDijitClickMixin], {
+   return declare([Property, _OnDijitClickMixin, ObjectProcessingMixin], {
 
       /**
        * Overriddes the default HTML template to use for the widget.
@@ -39,6 +41,16 @@ define(["dojo/_base/declare",
        * @type {string}
        */
       templateString: template,
+
+      /**
+       * If this is set to true then the current item will be published when the link is clicked. If set to
+       * false then the payload will be generated from the configured value.
+       *
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      useCurrentItemAsPayload: true,
 
       /**
        * Handles the property being clicked. This stops the click event from propogating
@@ -57,7 +69,9 @@ define(["dojo/_base/declare",
          }
          else
          {
-            this.alfPublish(publishTopic, this.getPublishPayload());
+            var publishGlobal = (this.publishGlobal != null) ? this.publishGlobal : false;
+            var publishToParent = (this.publishToParent != null) ? this.publishToParent : false;
+            this.alfPublish(publishTopic, this.getPublishPayload(), publishGlobal, publishToParent);
          }
       },
 
@@ -82,7 +96,32 @@ define(["dojo/_base/declare",
        * @returns {string} The currentItem being renderered.
        */ 
       getPublishPayload: function alfresco_renderers_PropertyLink__getPublishTopic() {
-         return this.currentItem;
+         if (this.useCurrentItemAsPayload == true)
+         {
+            return this.currentItem;
+         }
+         else
+         {
+            return this.generatePayload();
+         }
+      },
+
+      /**
+       * Generates a payload based on the supplied payload configuration.
+
+       * @instance
+       * @returns {object} The generated payload
+       */
+      generatePayload: function alfresco_renderers_PropertyLink__generatePayload() {
+         if (this.publishPayload != null)
+         {
+            var clonedPayload = lang.clone(this.publishPayload);
+            return this.processObject([this.processCurrentItemTokens, this.replaceColons], clonedPayload);
+         }
+         else
+         {
+            return {};
+         }
       }
    });
 });

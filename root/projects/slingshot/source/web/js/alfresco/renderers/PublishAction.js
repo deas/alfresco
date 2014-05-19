@@ -102,7 +102,7 @@ define(["dojo/_base/declare",
       onClick: function alfresco_renderers_PublishAction__onClick(evt) {
          this.alfPublish(this.publishTopic, {
             item: this.currentItem
-         });
+         }, (this.publishGlobal != null) ? this.publishGlobal : false);
       }
    });
 });

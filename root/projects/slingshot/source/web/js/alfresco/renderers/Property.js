@@ -245,7 +245,7 @@ define(["dojo/_base/declare",
             this.renderedValue = warningMessage;
             this.renderedValueClass += " faded";
          }
-         else if (this.renderedValue == "" && !this.warnIfNotAvailable)
+         else if ((this.renderedValue == null || this.renderedValue == "") && !this.warnIfNotAvailable)
          {
             // Reset the prefix and suffix if there's no data to display
             this.requestedValuePrefix = this.renderedValuePrefix;

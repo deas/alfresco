@@ -19,20 +19,22 @@
 
 /**
  * <p>This extends the standard [document list]{@link module:alfresco/documentlibrary/AlfDocumentList} to 
- * define a document list specifically for selecting documents (e.g. for starting workflows, etc). It was
+ * define a document list specifically for selecting properties. It was
  * written to be used as part of a [picker]{@link module:alfresco/pickers/Picker} and specifically one that
  * is used as a form control.</p>
  * 
- * @module alfresco/pickers/DocumentListPicker
+ * @module alfresco/pickers/PropertyPicker
  * @extends module:alfresco/documentlibrary/AlfDocumentList
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/documentlibrary/AlfDocumentList", 
+        "alfresco/documentlibrary/AlfDocumentList",
+        "alfresco/core/CoreXhr", 
+        "service/constants/Default",
         "dojo/_base/lang"], 
-        function(declare, AlfDocumentList, lang) {
+        function(declare, AlfDocumentList, CoreXhr, AlfConstants, lang) {
    
-   return declare([AlfDocumentList], {
+   return declare([AlfDocumentList, CoreXhr], {
 
       /**
        * Indicates whether the location should be driven by changes to the browser URL hash
@@ -60,7 +62,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} payload
        */
-      onFolderClick: function alfresco_pickers_DocumentListPicker__onFolderClick(payload) {
+      onFolderClick: function alfresco_pickers_PropertyPicker__onFolderClick(payload) {
 
          var targetNode = lang.getObject("item.nodeRef", false, payload);
          if (targetNode != null)
@@ -81,8 +83,70 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} payload
        */
-      onDocumentClick: function alfresco_pickers_DocumentListPicker__onFolderClick(payload) {
+      onDocumentClick: function alfresco_pickers_PropertyPicker__onFolderClick(payload) {
          // No action.
+      },
+
+      /**
+       * The URL to use to request data from
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      url: null,
+
+      /**
+       * Overrides the inherited implementation to request data.
+       *
+       * @instance
+       */
+      loadData: function alfresco_pickers_PropertyPicker__loadData() {
+
+         if (this.url != null)
+         {
+            var alfTopic = "ALF_RETRIEVE_DOCUMENTS_REQUEST";
+            var url = AlfConstants.PROXY_URI + this.url;
+            var config = {
+               alfTopic: alfTopic,
+               url: url,
+               method: "GET",
+               callbackScope: this
+            };
+            this.serviceXhr(config);
+         }
+         else
+         {
+            this.alfLog("warn", "No 'url' attribute provided to request data", this);
+         }
+      },
+
+      /**
+       * TODO: This should really be the abstract...
+       * 
+       * @instance
+       * @param {object} response The response object
+       * @param {object} originalRequestConfig The configuration that was passed to the the [serviceXhr]{@link module:alfresco/core/CoreXhr#serviceXhr} function
+       */
+      onDataLoadSuccess: function alfresco_pickers_PropertyPicker__onDataLoadSuccess(payload) {
+         this.alfLog("log", "Data Loaded", payload, this);
+         
+         this._currentData = {
+            items: payload.response
+         };
+         
+         // Re-render the current view with the new data...
+         var view = this.viewMap[this._currentlySelectedView];
+         if (view != null)
+         {
+            this.showRenderingMessage();
+            view.setData(this._currentData);
+            view.renderView(this.useInfiniteScroll);
+            this.showView(view);
+            
+            // Force a resize of the sidebar container to take the new height of the view into account...
+            this.alfPublish("ALF_RESIZE_SIDEBAR", {});
+         }
       },
 
       /**
@@ -104,29 +168,20 @@ define(["dojo/_base/declare",
                            {
                               name: "alfresco/documentlibrary/views/layouts/Cell",
                               config: {
-                                 width: "20px",
-                                 widgets: [
-                                    {
-                                       name: "alfresco/renderers/FileType",
-                                       config: {
-                                          size: "small",
-                                          renderAsLink: true,
-                                          linkClickTopic: "ALF_DOCLIST_NAV"
-                                       }
-                                    }
-                                 ]
-                              }
-                           },
-                           {
-                              name: "alfresco/documentlibrary/views/layouts/Cell",
-                              config: {
                                  widgets: [
                                     {
                                        name: "alfresco/renderers/Property",
                                        config: {
-                                          propertyToRender: "node.properties.cm:name",
-                                          renderAsLink: true,
-                                          linkClickTopic: "ALF_DOCLIST_NAV"
+                                          propertyToRender: "name"
+                                       }
+                                    },
+                                    {
+                                       name: "alfresco/renderers/Property",
+                                       config: {
+                                          propertyToRender: "title",
+                                          renderedValuePrefix: "(",
+                                          renderedValueSuffix: ")",
+                                          renderSize: "small"
                                        }
                                     }
                                  ]
@@ -140,12 +195,7 @@ define(["dojo/_base/declare",
                                     {
                                        name: "alfresco/renderers/PublishAction",
                                        config: {
-                                          renderFilter: [
-                                             {
-                                                property: "node.isContainer",
-                                                values: [false]
-                                             }
-                                          ]
+                                          publishGlobal: true
                                        }
                                     }
                                  ]
