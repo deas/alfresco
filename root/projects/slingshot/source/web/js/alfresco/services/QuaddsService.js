@@ -91,12 +91,12 @@ define(["dojo/_base/declare",
          if (responseTopic != null)
          {
             this.alfPublish(responseTopic + "_SUCCESS", response);
-            this.alfPublish("ALF_DOCLIST_RELOAD_DATA");
          }
          else
          {
-            this.alfLog("error", "It was not possible to publish requested QuADDS data because the 'responseTopic' attribute was not set on the original request", response, originalRequestConfig);
+            this.alfLog("warn", "It was not possible to publish requested QuADDS data because the 'responseTopic' attribute was not set on the original request", response, originalRequestConfig);
          }
+         this.alfPublish("ALF_DOCLIST_RELOAD_DATA");
       },
 
       /**
@@ -191,11 +191,10 @@ define(["dojo/_base/declare",
             };
             this.serviceXhr({url : url,
                              data: config,
-                             method: "POST"});
-                             // ,
-                             // alfTopic: payload.responseTopic,
-                             // successCallback: this.refreshRequest,
-                             // callbackScope: this});
+                             method: "POST",
+                             alfTopic: payload.responseTopic,
+                             successCallback: this.refreshRequest,
+                             callbackScope: this});
          }
       },
 
@@ -229,11 +228,10 @@ define(["dojo/_base/declare",
             };
             this.serviceXhr({url : url,
                              data: config,
-                             method: "PUT"});
-                             // ,
-                             // alfTopic: payload.responseTopic,
-                             // successCallback: this.refreshRequest,
-                             // callbackScope: this});
+                             method: "PUT",
+                             alfTopic: payload.responseTopic,
+                             successCallback: this.refreshRequest,
+                             callbackScope: this});
          }
       },
 
@@ -257,7 +255,10 @@ define(["dojo/_base/declare",
          {
             var url = AlfConstants.PROXY_URI + "aikau/quadds/" + quadds.trim() + "/item/" + name.trim();
             this.serviceXhr({url : url,
-                             method: "DELETE"});
+                             method: "DELETE",
+                             alfTopic: payload.responseTopic,
+                             successCallback: this.refreshRequest,
+                             callbackScope: this});
          }
       }
    });
