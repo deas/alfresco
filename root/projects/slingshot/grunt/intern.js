@@ -31,8 +31,8 @@ module.exports = function (grunt, alf) {
 
    // Register a test task that uses Intern
    grunt.registerTask('test', [
-      'csslint',
-      'jshint', // TODO: Make this friendly.
+      // 'csslint', // TODO: Make this friendly.
+      // 'jshint', // TODO: tweak .jshintrc to match our code style.
       'intern:dev' // Run all the intern tests
    ]);
 
