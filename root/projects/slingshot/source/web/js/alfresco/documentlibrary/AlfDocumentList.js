@@ -971,6 +971,10 @@ define(["dojo/_base/declare",
          if (payload && payload.value != null)
          {
             this.sortField = payload.value;
+            if (payload.direction)
+            {
+               this.sortAscending = (payload.direction == "ascending");
+            }
             if (this._readyToLoad == true)
             {
                if (this.useHash == true)
@@ -979,6 +983,10 @@ define(["dojo/_base/declare",
                   if (this.sortField != null)
                   {
                      currHash.sortField = this.sortField;
+                  }
+                  if (this.sortAscending != null)
+                  {
+                     currHash.sortAscending = this.sortAscending;
                   }
                   this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
                      url: ioQuery.objectToQuery(currHash),

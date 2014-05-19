@@ -217,13 +217,13 @@ function getSortFieldsFromConfig()
           sortable = String(configSortField.attributes["isSortable"]) == "true" ? true : false,
           valueTokens = String(configSortField.value).split("|"),
           value = valueTokens[0],
-          direction = "descending",
+          direction = "ascending",
           checked = (i==0 ? true : false);
 
       // The value may contain 2 pieces of data - the optional 2nd is for sort direction
-      if(valueTokens instanceof Array && valueTokens.length > 1 && valueTokens[1] === "true")
+      if(valueTokens instanceof Array && valueTokens.length > 1 && valueTokens[1] === "false")
       {
-         direction = "ascending";
+         direction = "descending";
       }
 
       // Create a new sort widget
@@ -338,6 +338,9 @@ var searchDocLib = {
          "sortAscending"
       ],
       useInfiniteScroll: true,
+      siteId: null,
+      rootNode: null,
+      repo: true,
       widgets: [
          {
             name: "alfresco/documentlibrary/views/AlfSearchListView",
@@ -351,9 +354,7 @@ var searchDocLib = {
             }
          },
          {
-            name: "alfresco/documentlibrary/AlfDocumentListInfiniteScroll",
-            config: {
-            }
+            name: "alfresco/documentlibrary/AlfDocumentListInfiniteScroll"
          }
       ]
    }

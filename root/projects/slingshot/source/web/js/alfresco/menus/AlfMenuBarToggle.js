@@ -63,8 +63,9 @@ define(["dojo/_base/declare",
         "alfresco/menus/AlfMenuBarItem",
         "dojo/dom-construct",
         "dojo/dom-class",
-        "dojo/dom-attr"], 
-        function(declare, AlfMenuBarItem, domConstruct, domClass, domAttr) {
+        "dojo/dom-attr",
+        "dojo/_base/lang"], 
+        function(declare, AlfMenuBarItem, domConstruct, domClass, domAttr, lang) {
    
    
    return declare([AlfMenuBarItem], {
@@ -141,7 +142,16 @@ define(["dojo/_base/declare",
             }
          }
       },
-      
+
+      /**
+       * Subscribe the document list topics.
+       * 
+       * @instance
+       */
+      postMixInProperties: function alfresco_menus_AlfMenuBarToggle__postMixInProperties() {
+         this.alfSubscribe("ALF_DOCLIST_SORT_FIELD_SELECTION", lang.hitch(this, "setState"));
+      },
+
       /**
        * Sets up the initial state of the widget based on the [onConfig]{@link module:alfresco/menus/AlfMenuBarToggle#onConfig}
        * and [offConfig]{@link module:alfresco/menus/AlfMenuBarToggle#offConfig} attributes. The
@@ -226,7 +236,7 @@ define(["dojo/_base/declare",
          // indicates selection...
          domClass.remove(this.domNode, "dijitMenuItemSelected");
       },
-      
+
       /**
        * This handles the user clicking on the toggle. The state is changed (e.g. from OFF on ON)
        * and any data associated with the new state is published on the configured topic. 
@@ -250,6 +260,28 @@ define(["dojo/_base/declare",
             if (this.offConfig.publishTopic)
             {
                this.alfPublish(this.offConfig.publishTopic, this.offConfig.publishPayload);
+            }
+         }
+      },
+
+      /**
+       * This handles the toggle being set by a 3rd party widget. It does not publish but just 
+       * changes the display.
+       *
+       * @instance
+       */
+      setState: function alfresco_menus_AlfMenuBarToggle__setState(payload) {
+         if (payload && payload.direction != null)
+         {
+            this.alfLog("log", "Setting state");
+            this.checked = payload.direction == "ascending";
+            if (this.checked)
+            {
+               this.renderToggle(this.onConfig, this.offConfig);
+            }
+            else
+            {
+               this.renderToggle(this.offConfig, this.onConfig);
             }
          }
       }
