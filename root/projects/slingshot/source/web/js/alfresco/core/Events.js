@@ -49,7 +49,7 @@ define(["dojo/_base/declare",
           * How frequently do we want rate limited events to trigger?
           *
           * @instance
-          * @type {int} (milliseconds)
+          * @type {int}
           * @default 300
           */
          triggerInterval: 300,
@@ -76,7 +76,7 @@ define(["dojo/_base/declare",
           * Constructor - called when module is mixed in. Registers the listeners.
           *
           * @instance
-          * @param args modules to mixin
+          * @param {object} args modules to mixin
           */
          constructor: function alfresco_core_Events_constructor(args) {
             lang.mixin(this, args);
@@ -98,10 +98,10 @@ define(["dojo/_base/declare",
           * Triggers only once there is a gap of triggerInterval in the event being fired.
           *
           * @instance
-          * @param timeout {string} variable name containing timeout.
-          * @param topic {string} event to trigger
-          * @param triggerInterval {int} Optional override for this.triggerInterval
-          * @param throttle {bool} switches to throttle mode.
+          * @param {string} timeout variable name containing timeout.
+          * @param {string} topic event to trigger
+          * @param {int} triggerInterval Optional override for this.triggerInterval
+          * @param {bool} throttle switches to throttle mode.
           */
          _limit: function alfresco_core_Events__debounce(timeout, topic, triggerInterval, throttle) {
             // If we've already got a timeout, we need to rate limit
@@ -121,22 +121,22 @@ define(["dojo/_base/declare",
          },
 
          /**
-          * calls @link:_limit in debounce mode.
+          * Calls [_limit]{@link module:alfresco/core/Events#_limit} in debounce mode.
           * @instance
-          * @param timeout
-          * @param topic
-          * @param triggerInterval
+          * @param {int} timeout
+          * @param {string} topic
+          * @param {int} triggerInterval
           */
          _debounce: function alfresco_core_Events__debounce(timeout, topic, triggerInterval) {
             this._limit(timeout, topic, triggerInterval, false);
          },
 
          /**
-          * calls @link:_limit in throttle mode.
+          * Calls [_limit]{@link module:alfresco/core/Events#_limit} in throttle mode.
           * @instance
-          * @param timeout
-          * @param topic
-          * @param triggerInterval
+          * @param {int} timeout
+          * @param {string} topic
+          * @param {int} triggerInterval
           */
          _throttle: function alfresco_core_Events__throttle(timeout, topic, triggerInterval) {
             this._limit(timeout, topic, triggerInterval, true);
@@ -147,8 +147,8 @@ define(["dojo/_base/declare",
           * Publishes the requested topic & clears any timeout.
           *
           * @instance
-          * @param topic
-          * @param timeout {string} variable name for var containing the timeout ref.
+          * @param {string} topic
+          * @param {string} timeout variable name for var containing the timeout ref.
           */
          onTimeout: function alfresco_core_Events_onTimeout(topic, timeout) {
             this.alfPublish(topic);
@@ -158,7 +158,7 @@ define(["dojo/_base/declare",
 
          /**
           * Throttles browser scroll events.
-          * The event only triggers every {triggerInterval} ms.
+          * The event only triggers every [triggerInterval]{@link module:alfresco/core/Events#triggerInterval} ms.
           *
           * @instance
           */
@@ -168,7 +168,7 @@ define(["dojo/_base/declare",
 
          /**
           * Debounces browser resize events.
-          * Event triggers once the user stops resizing for {triggerInterval} ms.
+          * Event triggers once the user stops resizing for [triggerInterval]{@link module:alfresco/core/Events#triggerInterval} ms.
           *
           * @instance
           */

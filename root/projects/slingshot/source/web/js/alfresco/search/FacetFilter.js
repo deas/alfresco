@@ -65,7 +65,7 @@ define(["dojo/_base/declare",
       /**
        * The HTML template to use for the widget.
        * @instance
-       * @type {String}
+       * @type {string}
        */
       templateString: template,
       
@@ -82,7 +82,7 @@ define(["dojo/_base/declare",
        * The facet qname
        *
        * @instance
-       * @type {string}
+       * @type {string} 
        * @default null
        */
       facet: null,
@@ -91,7 +91,7 @@ define(["dojo/_base/declare",
        * The filter (or more accurately the filterId) for this filter
        * 
        * @instance
-       * @type {string}
+       * @type {string} 
        * @default null
        */
       filter: null,
@@ -119,7 +119,7 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {string}
-       * default null
+       * @default null
        */
       appliedFilterImageSrc: "applied-filter.png",
 
@@ -127,7 +127,7 @@ define(["dojo/_base/declare",
        * The alt-text to use for the image that indicates that a filter has been applied
        *
        * @instance
-       * @type {string}
+       * @type {string} 
        * @default
        */
       appliedFilterAltText: "facet.filter.applied.alt-text",
