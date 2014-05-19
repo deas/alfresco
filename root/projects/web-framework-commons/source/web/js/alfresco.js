@@ -2237,37 +2237,42 @@ Alfresco.util.createTwister = function(p_controller, p_filterName, p_config)
    YUIDom.addClass(elController, isCollapsed ? config.CLASS_CLOSED : config.CLASS_OPEN);
    YUIDom.setStyle(elPanel, "display", isCollapsed ? "none" : "block");
 
-   YUIEvent.addListener(elController, "click", function(p_event, p_obj)
+   var twistFun = function(p_event, p_obj)
+   {
+      // Only expand/collapse if actual twister element is clicked (not for inner elements, i.e. twister actions)
+      if (YUIEvent.getTarget(p_event) == elController)
+      {
+         // Update UI to new state
+         var collapse = YUIDom.hasClass(p_obj.controller, config.CLASS_OPEN);
+         if (collapse)
          {
-            // Only expand/collapse if actual twister element is clicked (not for inner elements, i.e. twister actions)
-            if (YUIEvent.getTarget(p_event) == elController)
-            {
-               // Update UI to new state
-               var collapse = YUIDom.hasClass(p_obj.controller, config.CLASS_OPEN);
-               if (collapse)
-               {
-                  YUIDom.replaceClass(p_obj.controller, config.CLASS_OPEN, config.CLASS_CLOSED);
-               }
-               else
-               {
-                  YUIDom.replaceClass(p_obj.controller, config.CLASS_CLOSED, config.CLASS_OPEN);
-               }
-               YUIDom.setStyle(p_obj.panel, "display", collapse ? "none" : "block");
+            YUIDom.replaceClass(p_obj.controller, config.CLASS_OPEN, config.CLASS_CLOSED);
+         }
+         else
+         {
+            YUIDom.replaceClass(p_obj.controller, config.CLASS_CLOSED, config.CLASS_OPEN);
+         }
+         YUIDom.setStyle(p_obj.panel, "display", collapse ? "none" : "block");
 
-               if (p_obj.filterName)
-               {
-                  // Save to preferences
-                  var fnPref = collapse ? "add" : "remove",
-                        preferences = new Alfresco.service.Preferences();
-                  preferences[fnPref].call(preferences, Alfresco.service.Preferences.COLLAPSED_TWISTERS, p_obj.filterName);
-               }
-            }
-         },
+         if (p_obj.filterName)
          {
-            controller: elController,
-            panel: elPanel,
-            filterName: p_filterName
-         });
+            // Save to preferences
+            var fnPref = collapse ? "add" : "remove",
+                  preferences = new Alfresco.service.Preferences();
+            preferences[fnPref].call(preferences, Alfresco.service.Preferences.COLLAPSED_TWISTERS, p_obj.filterName);
+         }
+      }
+   };
+
+   var twistObj = {
+      controller: elController,
+      panel: elPanel,
+      filterName: p_filterName
+   };
+
+   YUIEvent.addListener(elController, "click", twistFun, twistObj);
+   YUIEvent.addListener(elController, "keypress", twistFun, twistObj);
+
 };
 
 /**
