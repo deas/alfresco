@@ -63,7 +63,7 @@ define(["intern!object",
          .end()
 
          // Find the first target
-         .elementById("accesskey-skip")
+         .elementByCss("a#accesskey-skip")
          .then(function (el) {
             TestCommon.log(testname,68,"Find the first target");
             expect(el).to.be.an("object", "The accesskey-skip target is missing");
@@ -91,12 +91,19 @@ define(["intern!object",
          .keys([specialKeys["Shift"]])
          .keys([specialKeys["Alt"], specialKeys["Shift"], "s"])
          .keys([specialKeys["Alt"], specialKeys["Shift"]])
+//       Can't do this because of a conflict in FF on Windows that calls up a dialogue
 //         .keys([specialKeys["Control"], specialKeys["Command"], "s"])
 //         .keys([specialKeys["Control"], specialKeys["Command"]])
          .url()
          .then(function (page) {
-            TestCommon.log(testname,98,"Hit the browser with a sequence of different accesskey combinations and the letter 's' for a nav skip");
-            expect(page).to.contain("#accesskey-skip", "Accesskey target not linked to");
+            // Only check the test if this isn't a Mac because of key combo conflicts.
+            if(browser.environmentType.platform !== "MAC") {
+               TestCommon.log(testname,101,"Hit the browser with a sequence of different accesskey combinations and the letter 's' for a nav skip");
+               expect(page).to.contain("#accesskey-skip", "Accesskey target not linked to");
+            }
+            else {
+               TestCommon.log(testname,105,"Skipping key combo test due to Mac compatibility issues.");
+            }
          })
          .end()
 
