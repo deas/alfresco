@@ -22,6 +22,11 @@
    margin-left: 40px;
 }
 
+.alfresco-renderers-Thumbnail img {
+   display: block;
+   float: right;
+}
+
 /* Drag and Drop */
 
 .alfresco-renderers-Thumbnail.dndHighlight span.droppable

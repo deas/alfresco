@@ -28,7 +28,7 @@
 .alfresco-documentlibrary-AlfDocumentFilters .label {
    font-family: @bold-font;
    color: @general-font-color;
-   font-size: @title-font-size;
+   font-size: @normal-font-size;
    font-weight: normal;
    margin-bottom: @standard-line-height;
    margin-left: 15px;

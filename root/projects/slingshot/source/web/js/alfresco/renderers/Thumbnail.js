@@ -75,10 +75,6 @@ define(["dojo/_base/declare",
        */
       postMixInProperties: function alfresco_renderers_Thumbnail__postMixInProperties() {
          
-         // TODO: These defaults should probably be instance variables?
-         this.itemLinkHref = "";
-         this.itemLinkClass = "";
-         this.itemLinkRelative = "";
          this.imgId = "";
          this.thumbnailUrl = "";
          this.imgAltText = "";
@@ -109,7 +105,6 @@ define(["dojo/_base/declare",
             {
                this.thumbnailUrl = AlfConstants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/doclib/?c=queue&ph=true&lastModified=" + this.currentItem.modifiedOn;
             }
-            
          }
       },
       
@@ -186,7 +181,7 @@ define(["dojo/_base/declare",
             this.addUploadDragAndDrop(this.imgNode);
             this.addNodeDropTarget(this.imgNode);
          }
-         this.createItemLink(this.domNode);
+         // this.createItemLink(this.domNode);
       }
    });
 });

@@ -18,19 +18,20 @@
          // This is used to control the overall layout of the page. Line-heights will be a multiple of
          // this value based on the font-size
          @standard-line-height: 10px;
+         @standard-column-width: 15px;
 
          // Font Colours
          @general-font-color: #333;
          @emphasized-font-color: #000;
-         @de-emphasized-font-color: #B3B3B3;
+         @de-emphasized-font-color: #999999;
          @highlighted-font-color: #fff;
 
          // Font Sizes
          @page-title-font-size: 26px;
-         @title-font-size: 17px;
-         @large-font-size: 14px;
-         @normal-font-size: 12px;
-         @small-font-size: 10px;
+         @title-font-size: 20px;
+         @large-font-size: 16px;
+         @normal-font-size: 14px;
+         @small-font-size: 12px;
          @footer-font-size: 8.11px;
 
          // Font families
@@ -57,7 +58,6 @@
          .emphasized-font {
             font-family: @bold-font;
             color: @emphasized-font-color;
-            font-size: 110%;
          }
 
          // De-emphasized fonts are intended to be less intrusive so should be lighter in colour
