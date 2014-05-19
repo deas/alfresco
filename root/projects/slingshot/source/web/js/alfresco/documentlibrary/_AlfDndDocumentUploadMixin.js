@@ -45,6 +45,15 @@ define(["dojo/_base/declare",
    return declare([AlfCore, _AlfDocumentListTopicMixin, PathUtils], {
 
       /**
+       * Declare the dependencies on "legacy" JS files.
+       *
+       * @instance
+       * @type {string[]}
+       * @default ["/js/alfresco.js"]
+       */
+      nonAmdDependencies: ["/js/yui-common.js"],
+
+      /**
        * Indicates whether drag and drop is enabled. 
        * 
        * @instance
