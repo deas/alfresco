@@ -18,6 +18,10 @@
  */
 
 /**
+ * <p>This extends the basic [form]{@link module:alfresco/forms/Form} to provide a simple single text entry
+ * form. It was originally written to support the basic search requests. One of the key features is that
+ * it listens for the user hitting the enter key when focus is on the text field so that it is not necessary
+ * for them to explicitly tab to or click on the "OK" button.</p>
  * 
  * @module alfresco/forms/SingleTextFieldForm
  * @extends module:alfresco/forms/Form
@@ -51,6 +55,43 @@ define(["dojo/_base/declare",
       showCancelButton: false,
 
       /**
+       * This is the icon class to pass onto the text field.
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      textBoxIconClass: null,
+
+      /**
+       * This can be set to a string of additional CSS classes to apply to the text field
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      textBoxCssClasses: null,
+
+      /**
+       * Can be set to provide a label for the text box
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      textBoxLabel: null,
+
+      /**
+       * This is the 'name' of the text field that will be used as an attribute in the form value
+       * published on clicking on the "OK" button or hitting the enter key
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      textFieldName: null,
+      
+      /**
        * Overridden to set the "widgets" attribute to be a single text box.
        *
        * @instance
@@ -61,25 +102,25 @@ define(["dojo/_base/declare",
                name: "alfresco/forms/controls/DojoValidationTextBox",
                assignTo: "entryField",
                config: {
-                  label: "",
-                  name: this.entryFieldName,
+                  label: (this.textBoxLabel != null) ? this.message(this.textBoxLabel) : "",
+                  name: this.textFieldName,
                   requirementConfig: {
                      initialValue: true
                   },
-                  iconClass: "alf-search-icon",
-                  additionalCssClasses: "long"
+                  iconClass: (this.textBoxIconClass != null) ? this.textBoxIconClass : "",
+                  additionalCssClasses: (this.textBoxCssClasses != null) ? this.textBoxCssClasses : ""
                }
             }
          ]
       },
 
       /**
-       * Extended to add an additional CSS class to the widget DOM
+       * Extended to add an additional CSS class to the widget DOM to ensure that the modules CSS is applied
        * 
        * @instance
        */
       postCreate: function alfresco_forms_SingleTextFieldForm__postCreate() {
-         domClass.add(this.domNode, "alfresco-forms-SingleEntryForm");
+         domClass.add(this.domNode, "alfresco-forms-SingleTextFieldForm");
          this.inherited(arguments);
       },
 
@@ -96,7 +137,10 @@ define(["dojo/_base/declare",
          on(this.entryField, "keyup", lang.hitch(this, function(evt) {
             if (evt.keyCode == 13)
             {
-               this.okButton.onClick();
+               if (this.okButton && this.okButton.get("disabled") == false)
+               {
+                  this.okButton.onClick();
+               }
             }
          }));
       }

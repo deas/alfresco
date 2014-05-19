@@ -22,7 +22,9 @@ var searchForm = {
       okButtonPublishGlobal: false,
       okButtonIconClass: "alf-white-search-icon",
       okButtonClass: "call-to-action",
-      entryFieldName: "searchTerm"
+      textFieldName: "searchTerm",
+      textBoxIconClass: "alf-search-icon",
+      textBoxCssClasses: "long"
    }
 };
 
