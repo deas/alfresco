@@ -94,8 +94,6 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_creation_WidgetConfig__postCreate() {
          this.alfSubscribe(this.configTopic, lang.hitch(this, "displayWidgetConfig"));
-         this.alfSubscribe(this.clearTopic, lang.hitch(this, "clearCurrentDisplay"));
-         this.alfSubscribe(this.saveTopic, lang.hitch(this, "saveWidgetConfig"));
       },
       
       /**
@@ -131,6 +129,10 @@ define(["dojo/_base/declare",
                updatedConfig: updatedConfig,
                originalConfig: this.currentWidgetConfig.selectedItem
             });
+
+            // Publish to indicate the editing is complete...
+            // In the current page creator this is subcribed to by the SlideOverlay
+            // this.alfPublish("ALF_WIDGET_CONFIG_EDIT_COMPLETE",{});
             
             // Clear the display...
             this.clearCurrentDisplay();
@@ -157,21 +159,32 @@ define(["dojo/_base/declare",
          // Clear the previous widgets...
          this.clearCurrentDisplay();
          
+         // Clear handles to previous subscriptions, because we're going to creating new
+         // subscriptions for the pubSubScope provided...
+         this.alfUnsubscribe(this._saveSubscriptionHandle);
+         this.alfUnsubscribe(this._clearSubscriptionHandle);
+
          if (lang.exists("selectedItem.widgetsForConfig", payload))
          {
             // Save the current widget configuration...
             this.currentWidgetConfig = payload;
             
+            // Create new subscriptions using a specific pubSubScope (if provided)...
+            var pubSubScope = lang.getObject("currentWidgetConfig.pubSubScope", false, this);
+            if (pubSubScope == null)
+            {
+               pubSubScope = "";
+            }
+            this._saveSubscriptionHandle = this.alfSubscribe(pubSubScope + this.clearTopic, lang.hitch(this, "clearCurrentDisplay"), true);
+            this._clearSubscriptionHandle = this.alfSubscribe(pubSubScope + this.saveTopic, lang.hitch(this, "saveWidgetConfig"), true);
+
             // Create the controls for configuring the widget...
-            // NOTE: Although it would make more sense for the form to have it's own scope, this would prevent
-            //       it from receiving information about other form fields that have been dropped
+            // The form is given the pubSubScope provided by the caller...
             this.form = new Form({
-               pubSubScope: this.pubSubScope,
+               pubSubScope: pubSubScope,
                okButtonPublishTopic: this.saveTopic,
                okButtonLabel: this.message("saveConfig.button.label"),
-               // okButtonPublishGlobal: true,
                cancelButtonPublishTopic: this.clearTopic,
-               // cancelButtonPublishGlobal: true,
                widgets: payload.selectedItem.widgetsForConfig
             });
             this.form.placeAt(this.configNode);
@@ -198,6 +211,5 @@ define(["dojo/_base/declare",
       destroyOldConfigWidget: function alfresco_creation_WidgetConfig__destroyOldConfigWidget(widget, index) {
          widget.destroyRecursive(false);
       }
-      
    });
 });

@@ -521,6 +521,28 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * This is a built-in options callback that attempts to retrieve options from a publication event 
+       * where it is assumed that the publication payload. An example of using this function can be found in
+       * the [getFormWidgets]{@link module:alfresco/forms/creation/FormRulesConfigCreatorElement#getFormWidgets}
+       * function of the [FormRulesConfigCreatorElement module]{@link module:alfresco/forms/creation/FormRulesConfigCreatorElement}
+       * 
+       * @instance
+       * @param {object} optionsConfig The configuration for options handling defined for the current control
+       * @param {object} payload The publication payload
+       */
+      getOptionsFromPublication: function alfresco_forms_controls_BaseFormControl__getOptionsFromPublication(optionsConfig, payload) {
+         var options = lang.getObject("options", false, payload);
+         if (options != null && ObjectTypeUtils.isArray(options))
+         {
+            return options;
+         }
+         else
+         {
+            return []
+         }
+      },
+
+      /**
        * This function is called when an rule triggering options reload occurs (e.g. the value of another relevant field in the 
        * form has been changed).
        * 
@@ -938,9 +960,9 @@ define(["dojo/_base/declare",
          
          /*
           * These are the types of attributes we expect a form to have...
-          * Field label (e.g. “Name”)
+          * Field label (e.g. ï¿½Nameï¿½)
           * Description (e.g. hover help)
-            Units (e.g. “milliseconds”, etc)
+            Units (e.g. ï¿½millisecondsï¿½, etc)
             User control (e.g. text box, drop-down menu, radio buttons, etc)
             Validation - regex expression
             Validation - callback function reference

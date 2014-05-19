@@ -116,6 +116,10 @@ define(["dojo/_base/declare",
             withHandles: true,
             horizontal: this.horizontal
          });
+
+         // Create a new UUID to pass on to the widgets that are dropped into this instance
+         // this is done so that this instance can subscribe to requests from it's direct dropped items
+         this.childPubSubScope = this.generateUuid()
          
          // Capture wrappers being selected...
          aspect.after(this.previewTarget, "onMouseDown", lang.hitch(this, "onWidgetSelected"), true);
@@ -132,7 +136,7 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_UPDATE_RENDERED_WIDGET", lang.hitch(this, "updateItem"));
          
          // Subscribe to requests to publish the details of the fields that are available...
-         this.alfSubscribe("ALF_REQUEST_AVAILABLE_FORM_FIELDS", lang.hitch(this, "publishAvailableFields"));
+         this.alfSubscribe(this.childPubSubScope + "ALF_REQUEST_AVAILABLE_FORM_FIELDS", lang.hitch(this, "publishAvailableFields"), true);
          
          // Listen for widgets requesting to be deleted...
          on(this.previewNode, "onWidgetDelete", lang.hitch(this, "deleteItem"));
@@ -351,7 +355,7 @@ define(["dojo/_base/declare",
          var payload = {};
          payload.options = this.getAvailableFields();
          this.alfLog("log", "Publishing available fields:", payload, this);
-         this.alfPublish("ALF_FORM_FIELDS_UPDATE", payload);
+         this.alfPublish(this.childPubSubScope + "ALF_FORM_FIELDS_UPDATE", payload, true);
       },
       
       /**
@@ -534,6 +538,7 @@ define(["dojo/_base/declare",
             }
             
             var widgetWrapper = new DropZoneWrapper({
+               parentPubSubScope: this.childPubSubScope,
                pubSubScope: this.pubSubScope,
                widgets: widgets,
                moduleName: item.name
@@ -566,6 +571,7 @@ define(["dojo/_base/declare",
             var selectedItem = this.previewTarget.getItem(selectedNodes[0].id);
             this.alfLog("log", "Widget selected", selectedItem);
             var payload = {
+               pubSubScope: this.childPubSubScope,
                selectedNode: selectedNodes[0],
                selectedItem: selectedItem.data
             };
