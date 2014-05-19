@@ -44,56 +44,50 @@ var sideBarMenu = {
 };
 
 // Compose the individual facets
-var facets = {
-   id: rootWidgetId + "FACETS",
-   name: "alfresco/layout/VerticalWidgets",
-   config: {
-      widgets: [
-         {
-            id: rootWidgetId + "FACET_FORMATS",
-            name: "alfresco/search/FacetFilters",
-            config: {
-               label: msg.get("faceted-search.facet-menu.facet.formats"),
-               facetQName: "{http://www.alfresco.org/model/content/1.0}content.mimetype",
-               sortBy: "DESCENDING",
-               maxFilters: 6
-            }
-         },
-         {
-            id: rootWidgetId + "FACET_DESCRIPTION",
-            name: "alfresco/search/FacetFilters",
-            config: {
-               label: msg.get("faceted-search.facet-menu.facet.description"),
-               facetQName: "{http://www.alfresco.org/model/content/1.0}description.__",
-               sortBy: "DESCENDING",
-               hitThreshold: 1,
-               minFilterValueLength: 5,
-               maxFilters: 6
-            }
-         },
-         {
-            id: rootWidgetId + "FACET_CREATOR",
-            name: "alfresco/search/FacetFilters",
-            config: {
-               label: msg.get("faceted-search.facet-menu.facet.creator"),
-               facetQName: "{http://www.alfresco.org/model/content/1.0}creator.__",
-               sortBy: "ALPHABETICALLY",
-               maxFilters: 3
-            }
-         },
-         {
-            id: rootWidgetId + "FACET_MODIFIER",
-            name: "alfresco/search/FacetFilters",
-            config: {
-               label: msg.get("faceted-search.facet-menu.facet.modifier"),
-               facetQName: "{http://www.alfresco.org/model/content/1.0}modifier.__",
-               sortBy: "ALPHABETICALLY",
-               maxFilters: 3
-            }
-         }
-      ]
+var facets = [
+   {
+      id: rootWidgetId + "FACET_FORMATS",
+      name: "alfresco/search/FacetFilters",
+      config: {
+         label: msg.get("faceted-search.facet-menu.facet.formats"),
+         facetQName: "{http://www.alfresco.org/model/content/1.0}content.mimetype",
+         sortBy: "DESCENDING",
+         maxFilters: 6
+      }
+   },
+   {
+      id: rootWidgetId + "FACET_DESCRIPTION",
+      name: "alfresco/search/FacetFilters",
+      config: {
+         label: msg.get("faceted-search.facet-menu.facet.description"),
+         facetQName: "{http://www.alfresco.org/model/content/1.0}description.__",
+         sortBy: "DESCENDING",
+         hitThreshold: 1,
+         minFilterValueLength: 5,
+         maxFilters: 6
+      }
+   },
+   {
+      id: rootWidgetId + "FACET_CREATOR",
+      name: "alfresco/search/FacetFilters",
+      config: {
+         label: msg.get("faceted-search.facet-menu.facet.creator"),
+         facetQName: "{http://www.alfresco.org/model/content/1.0}creator.__",
+         sortBy: "ALPHABETICALLY",
+         maxFilters: 3
+      }
+   },
+   {
+      id: rootWidgetId + "FACET_MODIFIER",
+      name: "alfresco/search/FacetFilters",
+      config: {
+         label: msg.get("faceted-search.facet-menu.facet.modifier"),
+         facetQName: "{http://www.alfresco.org/model/content/1.0}modifier.__",
+         sortBy: "ALPHABETICALLY",
+         maxFilters: 3
+      }
    }
-};
+];
 
 // Function to compose the sort fields from share-config
 function getSortFieldsFromConfig()
@@ -379,9 +373,7 @@ var main = {
                      align: "sidebar",
                      widthPx: 350,
                      config: {
-                        widgets: [
-                           facets
-                        ]
+                        widgets: facets
                      }
                   },
                   {
@@ -400,12 +392,9 @@ var main = {
 };
 
 // Append services with those required for search
-services.push("alfresco/services/ContentService",
-              "alfresco/services/DocumentService",
-              "alfresco/dialogs/AlfDialogService",
-              "alfresco/services/ActionService",
-              "alfresco/services/SearchService",
-              "alfresco/services/QuaddsService");
+services.push("alfresco/services/ActionService",
+              "alfresco/services/NavigationService",
+              "alfresco/services/SearchService");
 
 // Add in the search form and search doc lib...
 widgets.push(main);
