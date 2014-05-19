@@ -350,6 +350,15 @@ define(["dojo/_base/declare",
       useHash: false,
 
       /**
+       * When this is set to true the URL hash fragment will be updated when the form is published.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      setHash: false,
+      
+      /**
        * This function is called when [useHash]{@link module:alfresco/forms/Form#useHash} is set to true
        * and the OK button is clicked to publish the form data. It will take the value of the form and
        * use it to set a hash fragment.
@@ -406,7 +415,7 @@ define(["dojo/_base/declare",
 
             // If useHash is set to true then set up a subcription on the publish topic for the OK button which will
             // set the hash fragment with the form contents...
-            if (this.useHash == true)
+            if (this.setHash == true)
             {
                if (this.okButtonPublishTopic != null &&
                    this.okButtonPublishTopic.trim() != null)

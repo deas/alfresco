@@ -31,8 +31,10 @@ define(["dojo/_base/declare",
         "dojo/_base/array",
         "dojo/_base/lang",
         "dojo/dom-construct",
-        "dojo/dom-class"], 
-        function(declare, AlfDocumentList, PathUtils, array, lang, domConstruct, domClass) {
+        "dojo/dom-class",
+        "dojo/hash",
+        "dojo/io-query"], 
+        function(declare, AlfDocumentList, PathUtils, array, lang, domConstruct, domClass, hash, ioQuery) {
    
    return declare([AlfDocumentList], {
       
@@ -115,8 +117,15 @@ define(["dojo/_base/declare",
          else
          {
             this.searchTerm = searchTerm;
-            this.resetResultsList();
-            this.loadData();
+            var currHash = ioQuery.queryToObject(hash());
+            if (this.searchTerm != null)
+            {
+               currHash.searchTerm = this.searchTerm;
+            }
+            this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
+               url: ioQuery.objectToQuery(currHash),
+               type: "HASH"
+            }, true);
          }
       },
 
