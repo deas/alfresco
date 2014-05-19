@@ -72,7 +72,7 @@ var searchForm = {
 
 // Compose the zero results configuration
 var hideOnZeroResultsConfig = {
-   initialValue: true,
+   initialValue: false,
    rules: [
       {
          topic: "ALF_SEARCH_RESULTS_COUNT",
@@ -196,7 +196,6 @@ var facets = [
          useHash: true
       }
    }
-
 ];
 
 // Function to compose the sort fields from share-config
@@ -342,14 +341,27 @@ var searchDocLib = {
       rootNode: null,
       repo: true,
       widgets: [
+//         {
+//            id: rootWidgetId + "SEARCH_ADVICE_LANDING",
+//            name: "alfresco/documentlibrary/views/AlfSearchListView",
+//            config: {
+//               searchAdviceTitle: "faceted-search.landing.title",
+//               searchAdvice: [
+//                  "faceted-search.landing.suggestion1",
+//                  "faceted-search.landing.suggestion2",
+//                  "faceted-search.landing.suggestion3"
+//               ]
+//            }
+//         },
          {
+            id: rootWidgetId + "SEARCH_ADVICE_NO_RESULTS",
             name: "alfresco/documentlibrary/views/AlfSearchListView",
             config: {
+               searchAdviceTitle: "faceted-search.advice.title",
                searchAdvice: [
-                  "faceted-search.suggestion1",
-                  "faceted-search.suggestion2",
-                  "faceted-search.suggestion3",
-                  "faceted-search.suggestion4"
+                  "faceted-search.advice.suggestion1",
+                  "faceted-search.advice.suggestion2",
+                  "faceted-search.advice.suggestion3"
                ]
             }
          },
@@ -409,6 +421,7 @@ var main = {
                      align: "sidebar",
                      widthPx: 350,
                      config: {
+                        visibilityConfig: hideOnZeroResultsConfig,
                         widgets: facets
                      }
                   },
