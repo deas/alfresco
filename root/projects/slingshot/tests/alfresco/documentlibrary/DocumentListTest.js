@@ -165,7 +165,7 @@ define(["intern!object",
             .click()
             .end()
 
-         // 9. Check the first view is displayed...
+         // 8. Check the first view is displayed...
         .elementsByCss(".alfresco-documentlibrary-views-layouts-AlfDocumentListView .alfresco-documentlibrary-views-layouts-Cell span.alfresco-renderers-Property:nth-child(1)")
             .then(function(elements) {
                assert(elements.length == 3, "Test #8a - 'VIEW1' was not displayed");
@@ -186,7 +186,7 @@ define(["intern!object",
             })
             .end()
 
-         // 8. Change the page size
+         // 9. Change the page size
          .elementByCss("#SET_DOCS_PER_PAGE")
             .moveTo()
             .click()
@@ -201,6 +201,16 @@ define(["intern!object",
                assert(elements.length == 1, "Test #9b - 'pageSize' not updated correctly");
             })
             .end()
+
+         // 10. Check the right number of results are present.
+         .elementsByCss(".alfresco-documentlibrary-views-layouts-Row")
+            .then(function(elements) {
+               TestCommon.log(testname,208,"#10: Check that 3 results are displayed");
+               assert(elements.length === 3, "Test #10 - row count is not correct. Expected 3, displayed: " + elements.length);
+            })
+            .end()
+            .sleep(30000)
+
 
          // Post the coverage results...
          .then(function() {
