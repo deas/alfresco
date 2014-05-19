@@ -27,6 +27,14 @@
    padding: 4px;
 }
 
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView td.mediumpad {
+   padding: 10px;
+}
+
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView td.largepad {
+   padding: 16px;
+}
+
 .alfresco-documentlibrary-views-layouts-AlfDocumentListView td.last {
    border-right: none;
 }

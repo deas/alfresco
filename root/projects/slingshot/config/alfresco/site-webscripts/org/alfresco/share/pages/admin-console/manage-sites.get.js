@@ -128,7 +128,7 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
-                                                class: "siteName",
+                                                class: "siteName mediumpad",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/renderers/Property",
@@ -143,7 +143,7 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
-                                                class: "siteDescription",
+                                                class: "siteDescription mediumpad",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/renderers/Property",
@@ -191,7 +191,7 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
-                                                class: "siteManager",
+                                                class: "siteManager mediumpad",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/renderers/Boolean",
