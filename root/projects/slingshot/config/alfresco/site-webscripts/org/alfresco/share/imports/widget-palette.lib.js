@@ -3318,6 +3318,7 @@ function getCommonFormControlConfigWidgets() {
          config: {
             name: "defaultConfig.name",
             label: "Post parameter",
+            description: "This is will be used as the name of the request parameter when the form is posted.",
             value: "default"
          }
       },
@@ -3326,6 +3327,7 @@ function getCommonFormControlConfigWidgets() {
          config: {
             name: "defaultConfig.value",
             label: "Initial Value",
+            description: "The will be the value that is initially displayed when the control is first shown (if no other value is already set)",
             value: ""
          }
       },
@@ -3334,14 +3336,16 @@ function getCommonFormControlConfigWidgets() {
          config: {
             name: "defaultConfig.label",
             label: "Label",
+            description: "This is a short description of what the form control is being used to capture (e.g.'Name')",
             value: "Default Label"
          }
       },
       {
-         name: "alfresco/forms/controls/DojoValidationTextBox",
+         name: "alfresco/forms/controls/DojoTextarea",
          config: {
             name: "defaultConfig.description",
             label: "Description",
+            description: "This is a longer description of what the form control is being used to capture (this text is an example of a description)",
             value: "Default description"
          }
       },
@@ -3350,6 +3354,7 @@ function getCommonFormControlConfigWidgets() {
          config: {
             name: "defaultConfig.unitsLabel",
             label: "Units Label",
+            description: "This is a label that will be placed after the form control to indicate the type of data being captured (e.g. 'milliseconds', '%', 'miles', etc)",
             value: "units"
          }
       },
@@ -3358,6 +3363,7 @@ function getCommonFormControlConfigWidgets() {
          config: {
             name: "defaultConfig.visibilityConfig.initialValue",
             label: "Initially visible",
+            description: "Check this box if the control should be initially visible when the form is first rendered",
             value: true
          }
       },
@@ -3365,7 +3371,8 @@ function getCommonFormControlConfigWidgets() {
          name: "alfresco/forms/creation/FormRulesConfigControl",
          config: {
             name: "defaultConfig.visibilityConfig.rules",
-            label: "Dynamic visibility behaviour configuration"
+            label: "Dynamic visibility behaviour configuration",
+            description: "Set the visibility of this control to change based on the values of other controls within the same form. This makes it possible to make a control progressively closed as the user enters data. For example, selecting a specific field in a drop-down menu might reveal more fields.",
          }
       },
       {
@@ -3373,6 +3380,7 @@ function getCommonFormControlConfigWidgets() {
          config: {
             name: "defaultConfig.requirementConfig.initialValue",
             label: "Initially required",
+            description: "Check this box if the field should be intially required when the form is first rendered. A required field must have a value in order for the form's submit button to be enabled",
             value: false
          }
       },
@@ -3380,23 +3388,25 @@ function getCommonFormControlConfigWidgets() {
          name: "alfresco/forms/creation/FormRulesConfigControl",
          config: {
             name: "defaultConfig.requirementConfig.rules",
-            label: "Dynamic requirement behaviour configuration"
+            label: "Dynamic requirement behaviour configuration",
+            description: "Create rules that change when the field must have a value entered. For example, a field may only be required when a specific value is selected from a drop-down menu."
          }
-      }
-      ,
+      },
       {
          name: "alfresco/forms/controls/DojoCheckBox",
          config: {
             name: "defaultConfig.disablementConfig.initialValue",
             label: "Initially disabled",
-            value: false
+            value: false,
+            description: "Check this box if the field should be initially disabled when the form is first rendered. A disabled field cannot have it's value changed."
          }
       },
       {
          name: "alfresco/forms/creation/FormRulesConfigControl",
          config: {
             name: "defaultConfig.disablementConfig.rules",
-            label: "Dynamic disablement behaviour configuration"
+            label: "Dynamic disablement behaviour configuration",
+            description: "Create rules that change when the field is disabled. A field might want to be disabled until other fields have been populated"
          }
       }
    ];
@@ -3420,14 +3430,23 @@ function getTextField() {
             name: "alfresco/forms/controls/DojoSelect",
             config: {
                name: "defaultConfig.validationConfig.regex",
-               label: "Validation rules",
+               label: "Expected Value Type",
+               description: "Select the type of text that the user must provide",
                optionsConfig: {
                   fixed: [
-                     { label: "None", value: ".*"},
+                     { label: "Any", value: ".*"},
                      { label: "E-mail", value: "^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$"},
                      { label: "Number", value: "^([0-9]+)$"}
                   ]
                }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.placeHolder",
+               label: "Placeholder text",
+               description: "Placeholder text is a short label that is placed inside the form control to indicate what data the user should be providing (e.g. 'Enter you name')"
             }
          }
       ]),
@@ -3490,7 +3509,8 @@ function getSelectField() {
             name: "alfresco/forms/controls/MultipleKeyValuePairFormControl",
             config: {
                name: "defaultConfig.optionsConfig.fixed",
-               label: "Options"
+               label: "Options",
+               description: "Create the list of options to be shown in the menu"
             }
          }
       ]),
@@ -3528,7 +3548,8 @@ function getRadioButtonsField() {
             name: "alfresco/forms/controls/MultipleKeyValuePairFormControl",
             config: {
                name: "defaultConfig.optionsConfig.fixed",
-               label: "Options"
+               label: "Options",
+               description: "Create the list of radio buttons to display"
             }
          }
       ]),

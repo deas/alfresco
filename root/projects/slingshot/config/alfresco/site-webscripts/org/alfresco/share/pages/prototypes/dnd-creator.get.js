@@ -111,6 +111,7 @@ model.jsonModel = {
                                                       config: {
                                                          label: "Page Load Publications",
                                                          name: "publishOnReady",
+                                                         description: "Drag and drop items from the 'Publications' palette here. These are 'data payloads' that are published when the page first loads. They can be used to trigger initial events such as requesting data.",
                                                          acceptTypes: ["publication"],
                                                          value: publishOnReady
                                                       }
@@ -121,6 +122,7 @@ model.jsonModel = {
                                                       config: {
                                                          label: "Services",
                                                          name: "services",
+                                                         description: "Drag and drop items from the 'Services' palette here. These can either act as an interface between the client-side widgets and the server-side services (e.g. for retrieving or saving data) or to provide client-side services such as logging or notifications",
                                                          acceptTypes: ["service"],
                                                          value: services
                                                       }
@@ -131,6 +133,7 @@ model.jsonModel = {
                                                       config: {
                                                          label: "Widgets",
                                                          name: "widgets",
+                                                         description: "Drag and drop widget items here to build the user-interface for the page.",
                                                          value: widgets,
                                                          acceptTypes: ["widget"]
                                                       }

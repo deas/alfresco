@@ -2,10 +2,12 @@
    border: 3px dashed #EEE;
    border-radius: 5px;
    min-height: 50px;
+   min-width: 100px;
    margin: 5px;
    padding: 5px;
 }
 
 .alfresco-creation-DropZone .previewPanel.containsItems {
    border: none;
+   padding-right: 50px;
 }
