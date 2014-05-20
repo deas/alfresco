@@ -191,7 +191,8 @@ define(["dojo/_base/declare",
             filters.push({
                label: currFilter.label,
                value: currFilter.value,
-               hits: currFilter.hits
+               hits: currFilter.hits,
+               index: currFilter.index
             });
             
          }
@@ -263,17 +264,21 @@ define(["dojo/_base/declare",
        * @returns {array} The sorted filters
        */
       sortFacetFilters: function alfresco_search_FacetFilters__sortFacetFilters(filters) {
-         if (this.sortBy == null || this.sortBy.trim() == "ALPHABETICALLY")
+         if (this.sortBy == null || this.sortBy.trim() === "ALPHABETICALLY")
          {
             return filters.sort(this._alphaSort);
          }
-         else if (this.sortBy.trim() == "ASCENDING")
+         else if (this.sortBy.trim() === "ASCENDING")
          {
             return filters.sort(this._ascSort);
          }
-         else if (this.sortBy.trim() == "DESCENDING")
+         else if (this.sortBy.trim() === "DESCENDING")
          {
             return filters.sort(this._descSort);
+         }
+         else if (this.sortBy.trim() === "INDEX")
+         {
+            return filters.sort(this._indexSort);
          }
          else
          {
@@ -319,6 +324,20 @@ define(["dojo/_base/declare",
        */
       _descSort: function alfresco_search_FacetFilter___descSort(a, b) {
          return b.hits - a.hits;
+      },
+
+      /**
+       * A function for sorting the facet filter value index. The index is a special
+       * attribute that is only included on custom facet query fields. These are
+       * the created, modified and size properties.
+       *
+       * @instance
+       * @param {object} a The first filter value object
+       * @param {object} b The second filter value object
+       * @returns {number} -1, 0 or 1 according to standard array sorting conventions
+       */
+      _indexSort: function alfresco_search_FacetFilter___indexSort(a, b) {
+         return a.index - b.index;
       }
    });
 });

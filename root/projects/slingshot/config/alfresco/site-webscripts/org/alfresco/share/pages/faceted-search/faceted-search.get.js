@@ -145,7 +145,7 @@ var facets = [
          label: msg.get("faceted-search.facet-menu.facet.creator"),
          facetQName: "{http://www.alfresco.org/model/content/1.0}creator.__.u",
          sortBy: "ALPHABETICALLY",
-         maxFilters: 3,
+         maxFilters: 6,
          useHash: true
       }
    },
@@ -156,7 +156,7 @@ var facets = [
          label: msg.get("faceted-search.facet-menu.facet.modifier"),
          facetQName: "{http://www.alfresco.org/model/content/1.0}modifier.__.u",
          sortBy: "ALPHABETICALLY",
-         maxFilters: 3,
+         maxFilters: 6,
          useHash: true
       }
    },
@@ -167,8 +167,8 @@ var facets = [
          label: msg.get("faceted-search.facet-menu.facet.created"),
          facetQName: "{http://www.alfresco.org/model/content/1.0}created",
          blockIncludeFacetRequest: true,
-         sortBy: "ALPHABETICALLY",
-         maxFilters: 3,
+         sortBy: "INDEX",
+         maxFilters: 6,
          useHash: true
       }
    },
@@ -179,8 +179,8 @@ var facets = [
          label: msg.get("faceted-search.facet-menu.facet.modified"),
          facetQName: "{http://www.alfresco.org/model/content/1.0}modified",
          blockIncludeFacetRequest: true,
-         sortBy: "ALPHABETICALLY",
-         maxFilters: 3,
+         sortBy: "INDEX",
+         maxFilters: 6,
          useHash: true
       }
    },
@@ -191,8 +191,8 @@ var facets = [
          label: msg.get("faceted-search.facet-menu.facet.size"),
          facetQName: "{http://www.alfresco.org/model/content/1.0}content.size",
          blockIncludeFacetRequest: true,
-         sortBy: "ALPHABETICALLY",
-         maxFilters: 3,
+         sortBy: "INDEX",
+         maxFilters: 6,
          useHash: true
       }
    }
