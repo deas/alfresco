@@ -5,15 +5,14 @@
 
 .alfresco-documentlibrary-AlfDocumentFilters:last-child {
   border-radius: 0 0 5px 5px;
-  border-bottom: 1px solid #DCD8D8;
+  border-bottom: @standard-border;
 }
 
 .alfresco-documentlibrary-AlfDocumentFilters {
-   border: 1px solid #DCD8D8;
+   border: @standard-border;
    width: 320px;
    padding: 5px;
    border-bottom: none;
-   padding: 15px 5px;
    display: block;
 }
 
@@ -31,7 +30,7 @@
    font-size: @normal-font-size;
    font-weight: normal;
    margin-bottom: @standard-line-height;
-   margin-left: 15px;
+   margin-left: @standard-column-width;
 }
 
 .alfresco-documentlibrary-AlfDocumentFilters ul.filters li.showMore,
