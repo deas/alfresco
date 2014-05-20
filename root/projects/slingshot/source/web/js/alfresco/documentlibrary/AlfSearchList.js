@@ -77,6 +77,7 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_APPLY_FACET_FILTER", lang.hitch(this, "onApplyFacetFilter"));
          this.alfSubscribe("ALF_REMOVE_FACET_FILTER", lang.hitch(this, "onRemoveFacetFilter"));
          this.alfSubscribe("ALF_SEARCHLIST_SCOPE_SELECTION", lang.hitch(this, "onScopeSelection"));
+         this.alfSubscribe(this.reloadDataTopic, lang.hitch(this, this.reloadData));
 
          // Infinite scroll handling
          this.alfSubscribe(this.scrollNearBottom, lang.hitch(this, "onScrollNearBottom"));
@@ -93,6 +94,18 @@ define(["dojo/_base/declare",
          this.fetchingMoreDataMessage = this.message("searchlist.loading.data.message");
 
          this.facetFilters = {};
+      },
+
+      /**
+       * Reloads the data by making a search using the currently set search attributes. Typically
+       * called following actions
+       *
+       * @instance
+       * @param {object} payload The payload of the publication requesting the reload
+       */
+      reloadData: function alfresco_documentlibrary_AlfSearchList__reloadData() {
+         this.resetResultsList();
+         this.loadData();
       },
 
       /**

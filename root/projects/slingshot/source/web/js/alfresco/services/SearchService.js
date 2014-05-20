@@ -222,7 +222,8 @@ define(["dojo/_base/declare",
                repo: (payload.repo != null) ? payload.repo : this.repo,
                query: query,
                pageSize: (payload.pageSize != null) ? payload.pageSize : this.pageSize,
-               maxResults: (payload.maxResults != null) ? payload.maxResults : this.maxResults
+               maxResults: (payload.maxResults != null) ? payload.maxResults : this.maxResults,
+               noCache: new Date().getTime()
             };
             var config = {
                alfTopic: alfTopic,
