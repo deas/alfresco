@@ -25,6 +25,9 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
+        "dijit/_WidgetBase", 
+        "dijit/_TemplatedMixin",
+        "dojo/text!./templates/AlfContextMenu.html",
         "dijit/Menu",
         "alfresco/core/Core",
         "alfresco/core/CoreWidgetProcessing",
@@ -33,9 +36,9 @@ define(["dojo/_base/declare",
         "dojo/dom-class",
         "dojo/_base/event",
         "dojo/on"], 
-        function(declare, Menu, AlfCore, CoreWidgetProcessing, AlfMenuItemWrapper, array, domClass, event, on) {
+        function(declare, _WidgetBase, _TemplatedMixin, template, Menu, AlfCore, CoreWidgetProcessing, AlfMenuItemWrapper, array, domClass, event, on) {
    
-   return declare([Menu, AlfCore, CoreWidgetProcessing], {
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -47,6 +50,22 @@ define(["dojo/_base/declare",
       cssRequirements: [{cssFile:"./css/AlfContextMenu.css"}],
       
       /**
+       * The HTML template to use for the widget.
+       * @instance
+       * @type {String}
+       */
+      templateString: template,
+      
+      /**
+       * A reference to the dijit/Menu that will be created.
+       *
+       * @instance
+       * @type {object}
+       * @default null
+       */
+      _contextMenu: null,
+
+      /**
        * Updates the default template with some additional CSS class information and then processes
        * the widgets supplied.
        * 
@@ -54,11 +73,24 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_menus_AlfContextMenu__postCreate() {
          
-         this.inherited(arguments);
+         if (this.targetNodeIds == null)
+         {
+            this._contextMenu = new Menu({
+               targetNodeIds: [this.domNode.parentNode]
+            });
+         }
+         else
+         {
+            this._contextMenu = new Menu({
+               targetNodeIds: this.targetNodeIds
+            });
+         }
+
+         // this.inherited(arguments);
          
          // Add a custom class to the container node (this has been done to prevent us overriding the default
          // template unnecessarily and risk losing updates)...
-         domClass.add(this.domNode, "alfresco-menus-AlfContextMenu");
+         domClass.add(this._contextMenu.domNode, "alfresco-menus-AlfContextMenu");
          
          // Process all the widgets which in this case will become menu items...
          if (this.widgets)
@@ -77,7 +109,7 @@ define(["dojo/_base/declare",
       allWidgetsProcessed: function alfresco_menus_AlfContextMenu__allWidgetsProcessed(widgets) {
          array.forEach(widgets, function(widget, i) {
              // Add the widget to the drop down menu...
-             this.addChild(widget);
+             this._contextMenu.addChild(widget);
          }, this);
       }
    });

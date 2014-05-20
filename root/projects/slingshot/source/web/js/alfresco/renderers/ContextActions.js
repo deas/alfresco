@@ -54,7 +54,7 @@ define(["dojo/_base/declare",
          this.addActions();
 
          // Add the group to the child...
-         this.addChild(this.actionsGroup);
+         this._contextMenu.addChild(this.actionsGroup);
       }
    });
 });

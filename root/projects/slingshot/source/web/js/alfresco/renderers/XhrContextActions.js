@@ -43,7 +43,7 @@ define(["dojo/_base/declare",
        */
       addActions: function alfresco_renderers_XhrContextActions__postCreate() {
          this.actionsGroup.processWidgets(this.widgetsForLoading);
-         aspect.after(this, "onFocus", lang.hitch(this, this.loadActions));
+         aspect.after(this._contextMenu, "onFocus", lang.hitch(this, this.loadActions));
       },
 
       /**
