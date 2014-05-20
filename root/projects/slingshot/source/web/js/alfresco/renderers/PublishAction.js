@@ -103,7 +103,7 @@ define(["dojo/_base/declare",
       onClick: function alfresco_renderers_PublishAction__onClick(evt) {
          var publishGlobal = (this.publishGlobal != null) ? this.publishGlobal : false;
          var publishToParent = (this.publishToParent != null) ? this.publishToParent : false;
-         var payload = this.generatePayload(this.publishPayload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin);
+         var payload = this.generatePayload(this.publishPayload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin, this.publishPayloadModifiers);
          this.alfPublish(this.publishTopic, payload, publishGlobal, publishToParent);
       }
    });
