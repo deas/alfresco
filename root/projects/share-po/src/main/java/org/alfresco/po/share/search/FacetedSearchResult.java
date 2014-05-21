@@ -12,17 +12,19 @@ public class FacetedSearchResult
     /** Constants. */
     private static final By NAME = By.cssSelector("tr td.nameAndTitleCell span.alfresco-renderers-Property:first-of-type span.inner a");
     private static final By TITLE = By.cssSelector("tr td.nameAndTitleCell span.alfresco-renderers-Property:last-of-type span.value");
-    private static final By DATE = By.cssSelector("tr td.dateCell span.value");
+    private static final By DATE = By.cssSelector("tr td.dateCell span.inner");
     private static final By DESCRIPTION = By.cssSelector("tr td.descriptionCell span.value");
-    private static final By SITE = By.cssSelector("tr td.siteCell span.value");
+    private static final By SITE = By.cssSelector("tr td.siteCell span.inner");
     private static final By ACTIONS = By.cssSelector("tr td.actionsCell");
 
     private WebDrone drone;
     private WebElement link;
     private String name;
     private String title;
+    private WebElement dateLink;
     private String date;
     private String description;
+    private WebElement siteLink;
     private String site;
     private ActionsSet actions;
 
@@ -34,26 +36,28 @@ public class FacetedSearchResult
         this.drone = drone;
         if(result.findElements(NAME).size() > 0)
         {
-            this.link = result.findElement(NAME);
-            this.name = link.getText();
+            link = result.findElement(NAME);
+            name = link.getText();
         }
         if(result.findElements(TITLE).size() > 0)
         {
-            this.title = result.findElement(TITLE).getText();
+            title = result.findElement(TITLE).getText();
         }
         if(result.findElements(DATE).size() > 0)
         {
-            this.date = result.findElement(DATE).getText();
+            dateLink = result.findElement(DATE);
+            date = dateLink.getText();
         }
         if(result.findElements(DESCRIPTION).size() > 0)
         {
-            this.description = result.findElement(DESCRIPTION).getText();
+            description = result.findElement(DESCRIPTION).getText();
         }
         if(result.findElements(SITE).size() > 0)
         {
-            this.site = result.findElement(SITE).getText();
+            siteLink = result.findElement(SITE);
+            site = siteLink.getText();
         }
-        this.actions = new ActionsSet(drone, result.findElement(ACTIONS));
+        actions = new ActionsSet(drone, result.findElement(ACTIONS));
     }
 
     /**
@@ -64,6 +68,17 @@ public class FacetedSearchResult
     public WebElement getLink()
     {
         return link;
+    }
+
+    /**
+     * Click a result link.
+     *
+     * @return the html page
+     */
+    public HtmlPage clickLink()
+    {
+        link.click();
+        return FactorySharePage.resolvePage(this.drone);
     }
 
     /**
@@ -87,6 +102,27 @@ public class FacetedSearchResult
     }
 
     /**
+     * Gets the result dateLink.
+     *
+     * @return the dateLink
+     */
+    public WebElement getDateLink()
+    {
+        return dateLink;
+    }
+
+    /**
+     * Click a result dateLink.
+     *
+     * @return the html page
+     */
+    public HtmlPage clickDateLink()
+    {
+        dateLink.click();
+        return FactorySharePage.resolvePage(this.drone);
+    }
+
+    /**
      * Gets the result date.
      *
      * @return the date
@@ -107,6 +143,27 @@ public class FacetedSearchResult
     }
 
     /**
+     * Gets the result siteLink.
+     *
+     * @return the siteLink
+     */
+    public WebElement getSiteLink()
+    {
+        return siteLink;
+    }
+
+    /**
+     * Click a result siteLink.
+     *
+     * @return the html page
+     */
+    public HtmlPage clickSiteLink()
+    {
+        siteLink.click();
+        return FactorySharePage.resolvePage(this.drone);
+    }
+
+    /**
      * Gets the result site.
      *
      * @return the site
@@ -124,16 +181,5 @@ public class FacetedSearchResult
     public ActionsSet getActions()
     {
         return actions;
-    }
-
-    /**
-     * Click a result link.
-     *
-     * @return the html page
-     */
-    public HtmlPage clickLink()
-    {
-        this.link.click();
-        return FactorySharePage.resolvePage(this.drone);
     }
 }
