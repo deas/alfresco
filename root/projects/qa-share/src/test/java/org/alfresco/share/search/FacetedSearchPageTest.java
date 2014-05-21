@@ -5,17 +5,17 @@ import java.util.List;
 
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.FactorySharePage;
-import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.search.FacetedSearchFacetGroup;
 import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.share.util.SiteUtil;
+import org.alfresco.share.util.api.CreateUserAPI;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,10 +40,12 @@ public class FacetedSearchPageTest extends AbstractUtils
 
     /** Constants */
     private static final int expectedResultLength = 25;
-    private static final List<Class> linkToClassType = new ArrayList<Class>() {{
+    private static final List<Class> resultLinkToClassType = new ArrayList<Class>() {{
         add(DocumentDetailsPage.class);
         add(DocumentLibraryPage.class);
     }};
+    private static final Class dateLinkToClassType = MyProfilePage.class;
+    private static final Class siteLinkToClassType = SiteDashboardPage.class;
     private static final String fileDir = "faceted-search-files\\";
     private static final String fileStem = "-fs-test.docx";
     private static final String obscureSearchWord = "antidisestablishmentarianism";
@@ -53,6 +55,7 @@ public class FacetedSearchPageTest extends AbstractUtils
     private FacetedSearchPage facetedSearchPage;
     private SiteDashboardPage siteDashboardPage;
     private String siteName;
+    private String testUser;
 
     /* (non-Javadoc)
      * @see org.alfresco.share.util.AbstractUtils#setup()
@@ -65,14 +68,31 @@ public class FacetedSearchPageTest extends AbstractUtils
         super.setup();
         this.testContext = new OpCloudTestContext(this);
 
-        // Upload test documents
-        uploadTestDocs();
+        // Compose user and site names
+        String testName = "FacetedSearch" + testContext.getRunId();
+        this.testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] {this.testUser};
+        
+        this.siteName = getSiteName(testName);
 
-        // Login as admin
-        dashBoardPage = ShareUser.loginAs(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+        // Create user
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-        // Navigate to the faceted search page
-        facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
+        // Login as user
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        // Create site
+        ShareUser.createSite(drone, this.siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        // Upload Files - there are 26 starting with the letters of the alphabet
+        for (int i=0; i < 26; i++)
+        {
+            String[] fileInfo = { fileDir + (char)(i+97) + fileStem };
+            ShareUser.uploadFileInFolder(drone, fileInfo);
+        }
+
+        // Logout
+        ShareUser.logout(drone);
 
         trace("Setup complete");
     }
@@ -87,6 +107,9 @@ public class FacetedSearchPageTest extends AbstractUtils
     {
         trace("Starting firstRenderTest");
 
+        // Login as admin
+        adminLogin();
+        
         // Page should have a title
         Assert.assertTrue(StringUtils.isNotEmpty(facetedSearchPage.getPageTitle()), "The faceted search page should have a title");
 
@@ -106,6 +129,9 @@ public class FacetedSearchPageTest extends AbstractUtils
         // Clear the search
         facetedSearchPage.getSearchForm().clearSearchTerm();
 
+        // Logout
+        ShareUser.logout(drone);
+        
         trace("firstRenderTest complete");
     }
 
@@ -114,10 +140,13 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(dependsOnMethods={"firstRenderTest"})
+    @Test
     public void searchTest() throws Exception
     {
         trace("Starting searchTest");
+
+        // Login as admin
+        adminLogin();
 
         // Do a search for the letter 'a'
         doSearch("a");
@@ -130,6 +159,9 @@ public class FacetedSearchPageTest extends AbstractUtils
         // Clear the search
         facetedSearchPage.getSearchForm().clearSearchTerm();
 
+        // Logout
+        ShareUser.logout(drone);
+
         trace("searchTest complete");
     }
 
@@ -138,10 +170,13 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(dependsOnMethods={"searchTest"})
+    @Test
     public void searchAndFacetTest() throws Exception
     {
         trace("Starting searchAndFacetTest");
+
+        // Login as admin
+        adminLogin();
 
         // Do a search for the letter 'e'
         facetedSearchPage.getSearchForm().search("e");
@@ -175,6 +210,9 @@ public class FacetedSearchPageTest extends AbstractUtils
         // Clear the search
         facetedSearchPage.getSearchForm().clearSearchTerm();
 
+        // Logout
+        ShareUser.logout(drone);
+
         trace("searchAndFacetTest complete");
     }
 
@@ -183,11 +221,14 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(dependsOnMethods={"searchAndFacetTest"})
+    @Test
     public void searchAndSortTest() throws Exception
     {
         trace("Starting searchAndSortTest");
 
+        // Login as admin
+        adminLogin();
+        
         // Do a search for the letter 'e'
         doSearch("e");
 
@@ -242,6 +283,9 @@ public class FacetedSearchPageTest extends AbstractUtils
         // Clear the search
         facetedSearchPage.getSearchForm().clearSearchTerm();
 
+        // Logout
+        ShareUser.logout(drone);
+
         trace("searchAndSortTest complete");
     }
 
@@ -250,10 +294,13 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(dependsOnMethods={"searchAndSortTest"})
+    @Test
     public void searchAndPaginateTest() throws Exception
     {
         trace("Starting searchAndSortTest");
+
+        // Login as admin
+        adminLogin();
 
         // Do a search for the letter 'a'
         doSearch("a");
@@ -285,6 +332,9 @@ public class FacetedSearchPageTest extends AbstractUtils
         // Clear the search
         facetedSearchPage.getSearchForm().clearSearchTerm();
 
+        // Logout
+        ShareUser.logout(drone);
+
         trace("searchAndSortTest complete");
     }
 
@@ -293,10 +343,13 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(dependsOnMethods={"searchAndPaginateTest"})
+    @Test
     public void searchAndLinkTest() throws Exception
     {
         trace("Starting searchAndLinkTest");
+
+        // Login as admin
+        adminLogin();
 
         // Do a search for the letter 'a'
         doSearch("a");
@@ -317,23 +370,71 @@ public class FacetedSearchPageTest extends AbstractUtils
         Assert.assertNotEquals(url, newUrl, "After searching for the letter 'a' and clicking result 1, the url should have changed");
 
         // Resolve the new page - we should have linked to one of the types defined in linkToClassType list
-        Assert.assertTrue(linkToClassType.contains(FactorySharePage.resolvePage(drone).getClass()), "After searching for the letter 'a' and clicking result 1 we should be on an expected page type");
+        Assert.assertTrue(resultLinkToClassType.contains(FactorySharePage.resolvePage(drone).getClass()), "After searching for the letter 'a' and clicking result 1 we should be on an expected page type");
 
         // Navigate back to the faceted search page
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
+
+        // Do a search for the letter 'a'
+        doSearch("a");
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
+
+        // Click the first result dateLink
+        facetedSearchPage.getResults().get(0).clickDateLink();
+
+        // Get the url again
+        newUrl = drone.getCurrentUrl();
+
+        // We should no longer be on the faceted search page
+        Assert.assertNotEquals(url, newUrl, "After searching for the letter 'a' and clicking the date link of result 1, the url should have changed");
+
+        // Resolve the new page - we should have linked to one of the types defined in linkToClassType list
+        Assert.assertTrue(dateLinkToClassType.equals(FactorySharePage.resolvePage(drone).getClass()), "After searching for the letter 'a' and clicking result 1 we should be on a user profile page");
+
+        // Navigate back to the faceted search page
+        facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
+
+        // Do a search for the letter 'a'
+        doSearch("a");
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
+
+        // Click the first result siteLink
+        facetedSearchPage.getResults().get(0).clickSiteLink();
+
+        // Get the url again
+        newUrl = drone.getCurrentUrl();
+
+        // We should no longer be on the faceted search page
+        Assert.assertNotEquals(url, newUrl, "After searching for the letter 'a' and clicking the site link of result 1, the url should have changed");
+
+        // Resolve the new page - we should have linked to one of the types defined in linkToClassType list
+        Assert.assertTrue(siteLinkToClassType.equals(FactorySharePage.resolvePage(drone).getClass()), "After searching for the letter 'a' and clicking result 1 we should be on a site dashboard page");
+
+        // Navigate back to the faceted search page
+        facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
+
+        // Logout
+        ShareUser.logout(drone);
 
         trace("searchAndLinkTest complete");
     }
 
     /**
-     * Scope test.
+     * Search and scope test (enterprise).
      *
      * @throws Exception
      */
-    @Test(dependsOnMethods={"searchAndLinkTest"})
-    public void searchAndScopeTest() throws Exception
+    @Test(groups= "Enterprise-only" )
+    public void searchAndScopeTestEnterprise() throws Exception
     {
         trace("Starting searchAndScopeTest");
+
+        // Login as admin
+        adminLogin();
 
         // Do a search for the letter 'a'
         doSearch("a");
@@ -381,6 +482,65 @@ public class FacetedSearchPageTest extends AbstractUtils
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After choosing the test site and searching for the letter 'a' there should be some search results");
 
+        // Logout
+        ShareUser.logout(drone);
+
+        trace("searchAndScopeTest complete");
+    }
+
+    /**
+     * Search and scope test (cloud).
+     *
+     * @throws Exception
+     */
+    @Test(groups= "Cloud-only" )
+    public void searchAndScopeTestCloud() throws Exception
+    {
+        trace("Starting searchAndScopeTest");
+
+        // Login as admin
+        adminLogin();
+
+        // Do a search for the letter 'a'
+        doSearch("a");
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
+
+        // Check scope menu options
+        Assert.assertFalse(facetedSearchPage.getScopeMenu().hasScopeLabel("Repository"), "The scope menu should not have a 'Repository' option");
+        Assert.assertTrue(facetedSearchPage.getScopeMenu().hasScopeLabel("All Sites"), "The scope menu should have an 'All Sites' option");
+        
+        // Current scope selection
+        Assert.assertTrue("All Sites".equalsIgnoreCase(facetedSearchPage.getScopeMenu().getCurrentSelection()), "The initial value of the scope menu should be 'All Sites'");
+
+        // Navigate to the test site
+        dashBoardPage = ShareUser.openUserDashboard(drone).render();
+        siteDashboardPage = SiteUtil.openSiteURL(drone, getSiteShortname(this.siteName));
+
+        // Do a header search for the letter 'a'
+        facetedSearchPage = (FacetedSearchPage)siteDashboardPage.getSearch().search("a").render();
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
+
+        // Check scope menu options - now with a siteName
+        Assert.assertFalse(facetedSearchPage.getScopeMenu().hasScopeLabel("Repository"), "The scope menu should have a 'Repository' option");
+        Assert.assertTrue(facetedSearchPage.getScopeMenu().hasScopeLabel("All Sites"), "The scope menu should have an 'All Sites' option");
+        Assert.assertTrue(facetedSearchPage.getScopeMenu().hasScopeLabel(this.siteName), "The scope menu should have a '" + this.siteName + "' option");
+        
+        // Select siteName
+        facetedSearchPage.getScopeMenu().scopeByLabel(this.siteName);
+
+        // Reload the page objects
+        facetedSearchPage.render();
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After choosing the test site and searching for the letter 'a' there should be some search results");
+
+        // Logout
+        ShareUser.logout(drone);
+
         trace("searchAndScopeTest complete");
     }
 
@@ -389,11 +549,14 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(dependsOnMethods={"searchAndScopeTest"})
+    @Test
     public void precisionSearchAndSortTest() throws Exception
     {
         trace("Starting precisionSearchAndSortTest");
 
+        // Login as admin
+        adminLogin();
+        
         // Do a search for the obscureSearchWord
         doSearch(obscureSearchWord);
 
@@ -417,58 +580,35 @@ public class FacetedSearchPageTest extends AbstractUtils
         
         // First result should begin with 'z'
         Assert.assertTrue(facetedSearchPage.getResults().get(0).getName().charAt(0) == 'z', "After searching for '" + obscureSearchWord + "' and sorting by 'Name' and inverting the sort, the first letter of the Name of result one should be 'z'");
-        
+
+        // Logout
+        ShareUser.logout(drone);
+
         trace("precisionSearchAndSortTest complete");
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.share.util.AbstractUtils#tearDown()
      */
-//    @AfterClass(alwaysRun = true)
-//    public void tearDown()
-//    {
-//        trace("Starting tearDown");
-//
-//        // Navigate to the document library page and delete all content
-//        ShareUser.openSiteDashboard(drone, siteName);
-//        ShareUser.openDocumentLibrary(drone);
-//        ShareUser.deleteAllContentFromDocumentLibrary(drone);
-//
-//        super.tearDown();
-//
-//        trace("TearDown complete");
-//    }
-
-    /**
-     * Upload test docs.
-     * @throws Exception 
-     */
-    private void uploadTestDocs() throws Exception
+    @AfterClass(alwaysRun = true)
+    public void tearDown()
     {
-        String testName = "FacetedSearch" + testContext.getRunId();
-        String testUser = getUserNameFreeDomain(testName);
-        String[] testUserInfo = new String[] {testUser};
-        
-        this.siteName = getSiteName(testName);
+        trace("Starting tearDown");
 
-        // User
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // Login as admin
+        adminLogin();
 
-        // Login
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-        // Site
-        ShareUser.createSite(drone, this.siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-
-        // Upload Files - there are 26 starting with the letters of the alphabet
-        for (int i=0; i < 26; i++)
-        {
-            String[] fileInfo = { fileDir + (char)(i+97) + fileStem };
-            ShareUser.uploadFileInFolder(drone, fileInfo);
-        }
+        // Navigate to the document library page and delete all content
+        SiteUtil.openSiteURL(drone, getSiteShortname(this.siteName));
+        ShareUser.openDocumentLibrary(drone);
+        ShareUser.deleteAllContentFromDocumentLibrary(drone);
 
         // Logout
-        ShareUtil.logout(drone);
+        ShareUser.logout(drone);
+
+        super.tearDown();
+
+        trace("TearDown complete");
     }
 
     /**
@@ -485,19 +625,19 @@ public class FacetedSearchPageTest extends AbstractUtils
         facetedSearchPage.render();
     }
 
-    /**
-     * Do header search.
-     *
-     * @param searchTerm the search term
-     */
-    private void doHeaderSearch(String searchTerm)
-    {
-        // Do a search for the searchTerm
-        facetedSearchPage.getHeaderSearchForm().search(searchTerm);
-
-        // Reload the page objects
-        facetedSearchPage.render();
-    }
+//    /**
+//     * Do header search.
+//     *
+//     * @param searchTerm the search term
+//     */
+//    private void doHeaderSearch(String searchTerm)
+//    {
+//        // Do a search for the searchTerm
+//        facetedSearchPage.getHeaderSearchForm().search(searchTerm);
+//
+//        // Reload the page objects
+//        facetedSearchPage.render();
+//    }
 
     /**
      * Trace.
@@ -510,5 +650,17 @@ public class FacetedSearchPageTest extends AbstractUtils
         {
             logger.trace(msg);
         }
+    }
+
+    /**
+     * Login as admin.
+     */
+    private void adminLogin()
+    {
+        // Login as admin
+        dashBoardPage = ShareUser.loginAs(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        // Navigate to the faceted search page
+        facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
     }
 }
