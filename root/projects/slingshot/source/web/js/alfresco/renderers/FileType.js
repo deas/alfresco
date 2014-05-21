@@ -38,15 +38,6 @@ define(["dojo/_base/declare",
    return declare([_WidgetBase, _TemplatedMixin, _JsNodeMixin, AlfCore], {
       
       /**
-       * An array of the CSS files to use with this widget.
-       * 
-       * @instance
-       * @type {object[]}
-       * @default [{cssFile:"./css/FileType.css"}]
-       */
-      cssRequirements: [{cssFile:"./css/FileType.css"}],
-      
-      /**
        * The HTML template to use for the widget.
        * @instance
        * @type {string}
