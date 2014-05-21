@@ -21,7 +21,7 @@
 <@script src="${page.url.context}/res/components/form/period.js" group="forms"/>
 <@script src="${page.url.context}/res/components/object-finder/object-finder.js" group="forms"/>
 <@script src="${page.url.context}/res/yui/calendar/calendar.js" group="forms"/>
-<@script src="${page.url.context}/res/modules/editors/tiny_mce/tiny_mce.js" group="forms"/>
+<@script src="${page.url.context}/res/modules/editors/tinymce/tinymce.js" group="forms"/>
 <@script src="${page.url.context}/res/modules/editors/tiny_mce.js" group="forms"/>
 <@script src="${page.url.context}/res/components/form/rich-text.js" group="forms"/>
 <@script src="${page.url.context}/res/components/form/content.js" group="forms"/>
