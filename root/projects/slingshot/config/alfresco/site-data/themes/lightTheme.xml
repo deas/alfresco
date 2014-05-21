@@ -79,7 +79,7 @@
          @standard-border-color: #d3d3d3;
          @standard-border: @standard-border-width @standard-border-style @standard-border-color;
 
-         @hover-border-color: #888888;
+         @hover-border-color: #d3d3d3;
          @focused-border-color: #8DC63f;
 
          // Buttons

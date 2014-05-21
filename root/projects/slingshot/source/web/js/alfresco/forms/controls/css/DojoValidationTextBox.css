@@ -8,7 +8,7 @@
 
 .alfresco-forms-controls-DojoValidationTextBox div.dijitInputField span.alf-icon.alf-search-icon {
    background-image: url("./images/20x20-search-icon.png");
-   background-position: 3px 2px;
+   background-position: 3px 1px;
    height: 20px;
 }
 
@@ -31,5 +31,5 @@
 }
 
 .alfresco-forms-controls-DojoValidationTextBox.long div.control div.dijitValidationTextBox {
-   width: 400px;
+   width: 440px;
 }

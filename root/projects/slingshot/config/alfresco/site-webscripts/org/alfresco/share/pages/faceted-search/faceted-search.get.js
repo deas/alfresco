@@ -126,19 +126,6 @@ var facets = [
       }
    },
    {
-      id: "FCTSRCH_FACET_DESCRIPTION",
-      name: "alfresco/search/FacetFilters",
-      config: {
-         label: msg.get("faceted-search.facet-menu.facet.description"),
-         facetQName: "{http://www.alfresco.org/model/content/1.0}description.__",
-         sortBy: "DESCENDING",
-         hitThreshold: 1,
-         minFilterValueLength: 5,
-         maxFilters: 6,
-         useHash: true
-      }
-   },
-   {
       id: "FCTSRCH_FACET_CREATOR",
       name: "alfresco/search/FacetFilters",
       config: {
@@ -180,6 +167,19 @@ var facets = [
          facetQName: "{http://www.alfresco.org/model/content/1.0}modified",
          blockIncludeFacetRequest: true,
          sortBy: "INDEX",
+         maxFilters: 6,
+         useHash: true
+      }
+   },
+   {
+      id: "FCTSRCH_FACET_DESCRIPTION",
+      name: "alfresco/search/FacetFilters",
+      config: {
+         label: msg.get("faceted-search.facet-menu.facet.description"),
+         facetQName: "{http://www.alfresco.org/model/content/1.0}description.__",
+         sortBy: "DESCENDING",
+         hitThreshold: 1,
+         minFilterValueLength: 5,
          maxFilters: 6,
          useHash: true
       }
@@ -395,7 +395,7 @@ var main = {
          {
             name: "alfresco/html/Spacer",
             config: {
-               height: "20px",
+               height: "12px",
                additionalCssClasses: "top-border-beyond-gutters"
             }
          },
@@ -407,7 +407,7 @@ var main = {
                   {
                      name: "alfresco/layout/VerticalWidgets",
                      align: "sidebar",
-                     widthPx: 350,
+                     widthPx: 340,
                      config: {
                         widgets: [
                            sideBarMenu
@@ -432,7 +432,7 @@ var main = {
                   {
                      name: "alfresco/layout/VerticalWidgets",
                      align: "sidebar",
-                     widthPx: 350,
+                     widthPx: 340,
                      config: {
                         visibilityConfig: hideOnZeroResultsConfig,
                         widgets: facets

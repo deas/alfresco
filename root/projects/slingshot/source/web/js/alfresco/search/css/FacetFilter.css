@@ -3,7 +3,8 @@
    line-height: ceil(@small-font-size/@standard-line-height) * @standard-line-height;
    font-size: @small-font-size;
    list-style-type: none;
-   padding-bottom: @standard-line-height;
+   padding-bottom: @standard-line-height - 4;
+   margin-left: -2px;
 }
 
 .alfresco-search-FacetFilter:last-child {
@@ -12,13 +13,13 @@
 
 .alfresco-search-FacetFilter .status {
    display: inline-block;
-   width: @standard-column-width + @standard-column-spacing;
+   width: @standard-column-width + @standard-column-spacing - 4;
    float: left;
 }
 
 .alfresco-search-FacetFilter .details {
    display: block;
-   margin-left: @standard-column-width + @standard-column-spacing;
+   margin-left: @standard-column-width + @standard-column-spacing - 4;
    word-break: break-all;
 }
 

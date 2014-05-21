@@ -28,6 +28,11 @@ input[type="file"] > input[type="button"]::-moz-focus-inner
     border: none;
 }
 
+*:focus
+{
+    outline: 1px dotted #333;
+}
+
 .yui-overlay,
 .alfresco-share .sticky-wrapper,
 .login-panel
