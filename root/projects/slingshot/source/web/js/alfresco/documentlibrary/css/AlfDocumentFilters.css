@@ -6,14 +6,15 @@
 .alfresco-documentlibrary-AlfDocumentFilters:last-child {
   border-radius: 0 0 5px 5px;
   border-bottom: @standard-border;
+  margin-bottom: @standard-line-height;
 }
 
 .alfresco-documentlibrary-AlfDocumentFilters {
    border: @standard-border;
    width: 320px;
-   padding: 5px;
    border-bottom: none;
    display: block;
+   padding-top: @standard-line-height;
 }
 
 .alfresco-documentlibrary-AlfDocumentFilters.hidden {

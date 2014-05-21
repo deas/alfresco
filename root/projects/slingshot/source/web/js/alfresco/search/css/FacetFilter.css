@@ -3,6 +3,7 @@
    line-height: ceil(@small-font-size/@standard-line-height) * @standard-line-height;
    font-size: @small-font-size;
    list-style-type: none;
+   padding-bottom: @standard-line-height;
 }
 
 .alfresco-search-FacetFilter:last-child {
