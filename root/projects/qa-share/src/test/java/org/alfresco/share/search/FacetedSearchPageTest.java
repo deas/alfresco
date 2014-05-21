@@ -59,8 +59,11 @@ public class FacetedSearchPageTest extends AbstractUtils
 
     /* (non-Javadoc)
      * @see org.alfresco.share.util.AbstractUtils#setup()
+     * 
+     * Should not be cloud only.
+     * 
      */
-    @BeforeClass(alwaysRun = true)
+    @BeforeClass(alwaysRun = true, groups = "Cloud-only")
     public void setup() throws Exception
     {
         trace("Starting setup");
@@ -100,9 +103,11 @@ public class FacetedSearchPageTest extends AbstractUtils
     /**
      * First render test.
      *
+     * Should not be cloud only.
+     *
      * @throws Exception
      */
-    @Test
+    @Test(groups= "Cloud-only")
     public void firstRenderTest() throws Exception
     {
         trace("Starting firstRenderTest");
@@ -138,9 +143,11 @@ public class FacetedSearchPageTest extends AbstractUtils
     /**
      * Search test.
      *
+     * Should not be cloud only.
+     *
      * @throws Exception
      */
-    @Test
+    @Test(groups= "Cloud-only")
     public void searchTest() throws Exception
     {
         trace("Starting searchTest");
@@ -167,10 +174,12 @@ public class FacetedSearchPageTest extends AbstractUtils
 
     /**
      * Search and facet test.
+     * 
+     * Should not be cloud only.
      *
      * @throws Exception
      */
-    @Test
+    @Test(groups= "Cloud-only")
     public void searchAndFacetTest() throws Exception
     {
         trace("Starting searchAndFacetTest");
@@ -218,10 +227,12 @@ public class FacetedSearchPageTest extends AbstractUtils
 
     /**
      * Search and sort test.
+     * 
+     * Should not be cloud only.
      *
      * @throws Exception
      */
-    @Test
+    @Test(groups= "Cloud-only")
     public void searchAndSortTest() throws Exception
     {
         trace("Starting searchAndSortTest");
@@ -291,10 +302,12 @@ public class FacetedSearchPageTest extends AbstractUtils
 
     /**
      * Search and paginate test.
+     * 
+     * Should not be cloud only.
      *
      * @throws Exception
      */
-    @Test
+    @Test(groups = "Cloud-only")
     public void searchAndPaginateTest() throws Exception
     {
         trace("Starting searchAndSortTest");
@@ -341,9 +354,11 @@ public class FacetedSearchPageTest extends AbstractUtils
     /**
      * Search and link test.
      *
+     * Should not be cloud only.
+     *
      * @throws Exception
      */
-    @Test
+    @Test(groups = "Cloud-only")
     public void searchAndLinkTest() throws Exception
     {
         trace("Starting searchAndLinkTest");
@@ -426,9 +441,11 @@ public class FacetedSearchPageTest extends AbstractUtils
     /**
      * Search and scope test (enterprise).
      *
+     * Really is enterprise only.
+     *
      * @throws Exception
      */
-    @Test(groups= "Enterprise-only" )
+    @Test(groups = "Enterprise-only")
     public void searchAndScopeTestEnterprise() throws Exception
     {
         trace("Starting searchAndScopeTest");
@@ -491,9 +508,11 @@ public class FacetedSearchPageTest extends AbstractUtils
     /**
      * Search and scope test (cloud).
      *
+     * Really is cloud only.
+     *
      * @throws Exception
      */
-    @Test(groups= "Cloud-only" )
+    @Test(groups = "Cloud-only")
     public void searchAndScopeTestCloud() throws Exception
     {
         trace("Starting searchAndScopeTest");
@@ -547,9 +566,11 @@ public class FacetedSearchPageTest extends AbstractUtils
     /**
      * Precision search and sort test.
      *
+     * Should not be cloud only.
+     *
      * @throws Exception
      */
-    @Test
+    @Test(groups = "Cloud-only")
     public void precisionSearchAndSortTest() throws Exception
     {
         trace("Starting precisionSearchAndSortTest");
@@ -589,8 +610,11 @@ public class FacetedSearchPageTest extends AbstractUtils
 
     /* (non-Javadoc)
      * @see org.alfresco.share.util.AbstractUtils#tearDown()
+     * 
+     * Should not be cloud only.
+     * 
      */
-    @AfterClass(alwaysRun = true)
+    @AfterClass(alwaysRun = true, groups = "Cloud-only")
     public void tearDown()
     {
         trace("Starting tearDown");
