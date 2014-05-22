@@ -23,8 +23,9 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/renderers/Property"], 
-        function(declare, Property) {
+        "alfresco/renderers/Property",
+        "dojo/_base/lang"], 
+        function(declare, Property, lang) {
 
    return declare([Property], {
       
@@ -36,6 +37,16 @@ define(["dojo/_base/declare",
        * @default ["/js/alfresco.js"]
        */
       nonAmdDependencies: ["/js/alfresco.js"],
+
+      /**
+       * This can be set to override the default size property of 'jsNode.size' that 
+       * is typically available when dealing with standard Node data.
+       *
+       * @instance
+       * @type {string}
+       * @default "jsNode.size"
+       */
+      sizeProperty: null,
       
       /**
        * Set up the attributes to be used when rendering the template.
@@ -43,9 +54,15 @@ define(["dojo/_base/declare",
        * @instance
        */
       postMixInProperties: function alfresco_renderers_Date__postMixInProperties() {
+         
          if (this.currentItem != null)
          {
-            this.renderedValue = Alfresco.util.formatFileSize(this.currentItem.jsNode.size)
+            if (this.sizeProperty == null)
+            {
+               this.sizeProperty = "jsNode.size";
+            }
+            var size = lang.getObject(this.sizeProperty, false, this.currentItem);
+            this.renderedValue = Alfresco.util.formatFileSize(size);
          }
       }
    });
