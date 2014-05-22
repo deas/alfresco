@@ -226,11 +226,12 @@ function getSortFieldsFromConfig()
       }
 
       // Create a new sort widget
+      var labelMsg = msg.get(label);
       var sort = {
          name: "alfresco/menus/AlfCheckableMenuItem",
          config: {
-            label: msg.get(label),
-            title: msg.get("faceted-search.sort-by.title") + " " + msg.get(label),
+            label: labelMsg,
+            title: msg.get("faceted-search.sort-by.title", [labelMsg]),
             value: value,
             group: "DOCUMENT_LIBRARY_SORT_FIELD",
             publishTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
