@@ -248,6 +248,7 @@ define(["dojo/_base/declare",
          this.fetchingDataMessage = this.message("doclist.loading.data.message");
          this.renderingViewMessage = this.message("doclist.rendering.data.message");
          this.fetchingMoreDataMessage = this.message("doclist.loading.data.message");
+         this.dataFailureMessage = this.message("doclist.data.failure.message");
       },
       
       /**
@@ -643,7 +644,18 @@ define(["dojo/_base/declare",
          this.hideChildren(this.domNode);
          domClass.remove(this.noDataNode, "share-hidden");
       },
-      
+
+      /**
+       * If there is no data to render a view with then this function will be called to update the DocumentList
+       * view node with a message explaining the situation.
+       *
+       * @instance
+       */
+      showDataLoadFailure: function alfresco_documentlibrary_AlfDocumentList__showDataLoadFailure() {
+         this.hideChildren(this.domNode);
+         domClass.remove(this.dataFailureNode, "share-hidden");
+      },
+
       /**
        * This is called before a request to load more data is made so that the user is aware that data
        * is being asynchronously loaded.
@@ -859,7 +871,7 @@ define(["dojo/_base/declare",
       onDataLoadFailure: function alfresco_documentlibrary_AlfDocumentList__onDataLoadSuccess(response, originalRequestConfig) {
          this.alfLog("error", "Data Load Failed", response, originalRequestConfig);
          this._currentData = null;
-         this.showNoDataMessage(); // TODO: This should probably be a different error message
+         this.showDataLoadFailure();
 
          // Allow the user to try again.
          this.alfPublish(this.requestFinishedTopic, {});

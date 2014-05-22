@@ -92,6 +92,7 @@ define(["dojo/_base/declare",
          this.fetchingDataMessage = this.message("searchlist.loading.data.message");
          this.renderingViewMessage = this.message("searchlist.rendering.data.message");
          this.fetchingMoreDataMessage = this.message("searchlist.loading.data.message");
+         this.dataFailureMessage = this.message("searchlist.data.failure.message");
 
          this.facetFilters = {};
       },
