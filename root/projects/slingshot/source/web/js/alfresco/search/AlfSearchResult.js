@@ -18,23 +18,32 @@
  */
 
 /**
- * This is used as the standard search result template used to control the
- * layout of search results. It is more efficient to use a single widget to
+ * This is used as the standard search result template used to control the layout of search results.
+ * It is more efficient to use a single widget to control the layout than to build a complex model
  * control the layout than to build a complex model out of smaller widgets,
- * however this widget can still be easily replaced by other widgets to provide
- * a completely custom rendering.
+ * out of smaller widgets, however this widget can still be easily replaced by other widgets to 
+ * provide a completely custom rendering.
  * 
  * @module alfresco/search/AlfSearchResult
  * @extends alfresco/documentlibrary/views/layouts/Row
  * @author Dave Draper
  */
-define([ "dojo/_base/declare", "alfresco/documentlibrary/views/layouts/Row", "dojo/text!./templates/AlfSearchResult.html", "alfresco/renderers/Thumbnail",
-      "alfresco/renderers/SearchResultPropertyLink", "alfresco/renderers/PropertyLink", "alfresco/renderers/Property", "alfresco/renderers/DateLink",
-      "alfresco/renderers/XhrActions", "dojo/_base/lang", "dojo/dom-class", "alfresco/renderers/XhrContextActions", "alfresco/renderers/Size" ], function(declare, Row, template,
-      Thumbnail, SearchResultPropertyLink, PropertyLink, Property, DateLink, XhrActions, lang, domClass, XhrContextActions, Size)
-{
+define(["dojo/_base/declare", 
+        "alfresco/documentlibrary/views/layouts/Row", 
+        "dojo/text!./templates/AlfSearchResult.html", 
+        "alfresco/renderers/SearchThumbnail",
+        "alfresco/renderers/SearchResultPropertyLink", 
+        "alfresco/renderers/PropertyLink", 
+        "alfresco/renderers/Property", 
+        "alfresco/renderers/DateLink",
+        "alfresco/renderers/XhrActions", 
+        "dojo/_base/lang", 
+        "dojo/dom-class", 
+        "alfresco/renderers/XhrContextActions", 
+        "alfresco/renderers/Size" ],
+        function(declare, Row, template, SearchThumbnail, SearchResultPropertyLink, PropertyLink, Property, DateLink, XhrActions, lang, domClass, XhrContextActions, Size) {
 
-   return declare([ Row ], {
+   return declare([Row], {
 
       /**
        * An array of the CSS files to use with this widget.
@@ -43,9 +52,7 @@ define([ "dojo/_base/declare", "alfresco/documentlibrary/views/layouts/Row", "do
        * @type {object[]}
        * @default [{cssFile:"./css/AlfSearchResult.css"}]
        */
-      cssRequirements : [ {
-         cssFile : "./css/AlfSearchResult.css"
-      } ],
+      cssRequirements: [{cssFile:"./css/AlfSearchResult.css"}],
 
       /**
        * The HTML template to use for the widget.
@@ -53,28 +60,26 @@ define([ "dojo/_base/declare", "alfresco/documentlibrary/views/layouts/Row", "do
        * @instance
        * @type {String}
        */
-      templateString : template,
+      templateString: template,
 
       /**
-       * Creates the renderers to display for a search result and adds them into
-       * the template. Renderers will only be created if there is data for them.
-       * This is done to further improve the performance of the search
-       * rendering.
+       * Creates the renderers to display for a search result and adds them into the template. Renderers
+       * will only be created if there is data for them. This is done to further improve the performance
+       * of the search rendering.
        * 
        * @instance postCreate
        */
-      postCreate : function alfresco_search_AlfSearchResult__postCreate()
-      {
-         new Thumbnail({
-            currentItem : this.currentItem,
-            pubSubScope : this.pubSubScope
+      postCreate: function alfresco_search_AlfSearchResult__postCreate() {
+         new SearchThumbnail({
+            currentItem: this.currentItem,
+            pubSubScope: this.pubSubScope
          }, this.thumbnailNode);
 
          new SearchResultPropertyLink({
-            currentItem : this.currentItem,
-            pubSubScope : this.pubSubScope,
-            propertyToRender : "displayName",
-            renderSize : "large"
+            currentItem: this.currentItem,
+            pubSubScope: this.pubSubScope,
+            propertyToRender: "displayName",
+            renderSize: "large"
          }, this.nameNode);
 
          if (this.currentItem.title == null || this.currentItem.title == "")
@@ -84,28 +89,28 @@ define([ "dojo/_base/declare", "alfresco/documentlibrary/views/layouts/Row", "do
          else
          {
             new Property({
-               currentItem : this.currentItem,
-               pubSubScope : this.pubSubScope,
-               propertyToRender : "title",
-               renderSize : "small",
-               renderedValuePrefix : "(",
-               renderedValueSuffix : ")"
+               currentItem: this.currentItem,
+               pubSubScope: this.pubSubScope,
+               propertyToRender: "title",
+               renderSize: "small",
+               renderedValuePrefix: "(",
+               renderedValueSuffix: ")"
             }, this.titleNode);
          }
 
          new DateLink({
-            renderedValueClass : "alfresco-renderers-Property pointer",
-            pubSubScope : this.pubSubScope,
-            currentItem : this.currentItem,
-            modifiedDateProperty : "modifiedOn",
-            modifiedByProperty : "modifiedBy",
-            publishTopic : "ALF_NAVIGATE_TO_PAGE",
-            useCurrentItemAsPayload : false,
-            publishPayloadType : "PROCESS",
-            publishPayloadModifiers : [ "processCurrentItemTokens" ],
-            payload : {
-               url : "user/{modifiedByUser}/profile",
-               type : "SHARE_PAGE_RELATIVE"
+            renderedValueClass: "alfresco-renderers-Property pointer",
+            pubSubScope: this.pubSubScope,
+            currentItem: this.currentItem,
+            modifiedDateProperty: "modifiedOn",
+            modifiedByProperty: "modifiedBy",
+            publishTopic: "ALF_NAVIGATE_TO_PAGE",
+            useCurrentItemAsPayload: false,
+            publishPayloadType: "PROCESS",
+            publishPayloadModifiers: ["processCurrentItemTokens"],
+            payload: {
+               url: "user/{modifiedByUser}/profile",
+               type: "SHARE_PAGE_RELATIVE"
             }
          }, this.dateNode);
 
@@ -116,9 +121,9 @@ define([ "dojo/_base/declare", "alfresco/documentlibrary/views/layouts/Row", "do
          else
          {
             new Property({
-               currentItem : this.currentItem,
-               pubSubScope : this.pubSubScope,
-               propertyToRender : "description",
+               currentItem: this.currentItem,
+               pubSubScope: this.pubSubScope,
+               propertyToRender: "description",
             }, this.descriptionNode);
          }
 
@@ -130,18 +135,18 @@ define([ "dojo/_base/declare", "alfresco/documentlibrary/views/layouts/Row", "do
          else
          {
             new PropertyLink({
-               renderedValueClass : "alfresco-renderers-Property pointer",
-               pubSubScope : this.pubSubScope,
-               currentItem : this.currentItem,
-               propertyToRender : "site.title",
-               label : this.message("faceted-search.doc-lib.value-prefix.site"),
-               publishTopic : "ALF_NAVIGATE_TO_PAGE",
-               useCurrentItemAsPayload : false,
-               publishPayloadType : "PROCESS",
-               publishPayloadModifiers : [ "processCurrentItemTokens" ],
-               payload : {
-                  url : "site/{site.shortName}/dashboard",
-                  type : "SHARE_PAGE_RELATIVE"
+               renderedValueClass: "alfresco-renderers-Property pointer",
+               pubSubScope: this.pubSubScope,
+               currentItem: this.currentItem,
+               propertyToRender: "site.title",
+               label: this.message("faceted-search.doc-lib.value-prefix.site"),
+               publishTopic: "ALF_NAVIGATE_TO_PAGE",
+               useCurrentItemAsPayload: false,
+               publishPayloadType: "PROCESS",
+               publishPayloadModifiers: ["processCurrentItemTokens"],
+               payload: {
+                  url: "site/{site.shortName}/dashboard",
+                  type: "SHARE_PAGE_RELATIVE"
                }
             }, this.siteNode);
          }
@@ -176,15 +181,15 @@ define([ "dojo/_base/declare", "alfresco/documentlibrary/views/layouts/Row", "do
          }
 
          new XhrActions({
-            currentItem : this.currentItem,
-            pubSubScope : this.pubSubScope
+            currentItem: this.currentItem,
+            pubSubScope: this.pubSubScope
          }, this.actionsNode);
 
          try
          {
             new XhrContextActions({
-               targetNodeIds : [ this.domNode ],
-               currentItem : this.currentItem
+               targetNodeIds: [this.domNode],
+               currentItem: this.currentItem
             });
          }
          catch (e)

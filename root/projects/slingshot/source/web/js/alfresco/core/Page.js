@@ -166,7 +166,7 @@ define(["alfresco/core/ProcessWidgets",
          });
       },
 
-            /**
+      /**
        * Used to keep track of all the services created as a result of a call to the [processWidgets]{@link module:alfresco/core/Core#processWidgets} function
        * 
        * @instance
