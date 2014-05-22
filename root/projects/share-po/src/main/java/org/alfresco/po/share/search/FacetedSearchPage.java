@@ -133,6 +133,24 @@ public class FacetedSearchPage extends SharePage
     }
 
     /**
+     * Gets the result by its title.
+     *
+     * @param title
+     * @return the result
+     */
+    public FacetedSearchResult getResultByTitle(String title)
+    {
+        for(FacetedSearchResult facetedSearchResult : this.getResults())
+        {
+            if(facetedSearchResult.getTitle().equals(title))
+            {
+                return facetedSearchResult;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Scroll to page bottom.
      */
     public void scrollSome(int distance)
