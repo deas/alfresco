@@ -17,19 +17,26 @@ var rootWidgetId = "FCTSRCH_";
 //     _processedUserData.groups["GROUP_SEARCH_ADMINISTRATORS"] == true ||
 //     _processedUserData.isNetworkAdmin == true)
 // {
-//    var titleMenu = widgetUtils.findObject(widgets, "id", "HEADER_TITLE_MENU");
-//    var searchConfigMenuItem = {
-//       id: "FCTSRCH_CONFIG_PAGE_LINK",
-//       name: "alfresco/menus/AlfMenuBarItem",
-//       config: {
-//          label: "",
-//          title: msg.get("faceted-search.config.link"),
-//          iconAltText: msg.get("faceted-search.config.link"),
-//          iconClass: "alf-configure-icon",
-//          targetUrl: "dp/ws/faceted-search-config"
-//       }
-//    };
-//    titleMenu.config.widgets.push(searchConfigMenuItem);
+   var titleMenu = widgetUtils.findObject(widgets, "id", "HEADER_TITLE_MENU");
+   var searchConfigMenuItem = {
+      id: "FCTSRCH_CONFIG_PAGE_LINK",
+      name: "alfresco/menus/AlfMenuBarItem",
+      config: {
+         label: "",
+         title: msg.get("faceted-search.config.link"),
+         iconAltText: msg.get("faceted-search.config.link"),
+         iconClass: "alf-configure-icon",
+         targetUrl: "dp/ws/faceted-search-config",
+         renderFilter: [
+            {
+               target: "groupMemberships",
+               property: "GROUP_ALFRESCO_ADMINISTRATORS",
+               values: [true]
+            }
+         ]
+      }
+   };
+   titleMenu.config.widgets.push(searchConfigMenuItem);
 // }
 
 // Accessibility menu
@@ -566,3 +573,4 @@ widgets.push(main);
 
 // Push services and widgets into the getFooterModel to return with a sticky footer wrapper
 model.jsonModel = getFooterModel(services, widgets);
+model.jsonModel.groupMemberships = user.properties["alfUserGroups"];

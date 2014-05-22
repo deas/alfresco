@@ -55,6 +55,39 @@ model.jsonModel = {
       {
          name: "alfresco/layout/VerticalWidgets",
          config: {
+            renderFilter: [
+               {
+                  target: "groupMemberships",
+                  property: "GROUP_ALFRESCO_ADMINISTRATORS",
+                  renderOnAbsentProperty: true,
+                  values: [false]
+               }
+            ],
+            widgets: [
+               {
+                  name: "alfresco/header/Warning",
+                  config: {
+                     warnings: [
+                        {
+                           message: "Admin permissions required",
+                           level: 3
+                        }
+                     ]
+                  }
+               }
+            ]
+         }
+      },
+      {
+         name: "alfresco/layout/VerticalWidgets",
+         config: {
+            renderFilter: [
+               {
+                  target: "groupMemberships",
+                  property: "GROUP_ALFRESCO_ADMINISTRATORS",
+                  values: [true]
+               }
+            ],
             generatePubSubScope: true,
             widgets: [
                {
@@ -244,3 +277,4 @@ model.jsonModel = {
       }
    ]
 };
+model.jsonModel.groupMemberships = user.properties["alfUserGroups"];

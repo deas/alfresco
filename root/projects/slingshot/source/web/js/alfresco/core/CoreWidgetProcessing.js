@@ -366,6 +366,10 @@ define(["dojo/_base/declare",
          {
             initArgs.currentItem = this.currentItem;
          }
+         if (initArgs.groupMemberships === undefined)
+         {
+            initArgs.groupMemberships = this.groupMemberships;
+         }
 
          // Create a reference for the widget to be added to. Technically the require statement
          // will need to asynchronously request the widget module - however, assuming the widget
@@ -533,7 +537,12 @@ define(["dojo/_base/declare",
        * @returns {boolean} true if the property exists and false if it doesn't.
        */
       filterPropertyExists: function alfresco_core_WidgetsProcessingFilterMixin__filterPropertyExists(renderFilterConfig) {
-         return (ObjectTypeUtils.isString(renderFilterConfig.property) && ObjectTypeUtils.isObject(this.currentItem) && lang.exists(renderFilterConfig.property, this.currentItem));
+         var targetObject = this.currentItem;
+         if (renderFilterConfig.target != null && this[renderFilterConfig.target] != null)
+         {
+            targetObject = this[renderFilterConfig.target];
+         }
+         return (ObjectTypeUtils.isString(renderFilterConfig.property) && ObjectTypeUtils.isObject(targetObject) && lang.exists(renderFilterConfig.property, targetObject));
       },
       
       /**
@@ -548,7 +557,12 @@ define(["dojo/_base/declare",
        * by the "property" attribute of the filter configuration.
        */
       getRenderFilterPropertyValue: function alfresco_core_WidgetsProcessingFilterMixin__getRenderFilterPropertyValue(renderFilterConfig) {
-         return lang.getObject(renderFilterConfig.property, false, this.currentItem);
+         var targetObject = this.currentItem;
+         if (renderFilterConfig.target != null && this[renderFilterConfig.target] != null)
+         {
+            targetObject = this[renderFilterConfig.target];
+         }
+         return lang.getObject(renderFilterConfig.property, false, targetObject);
       },
       
       /**
