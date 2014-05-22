@@ -1400,7 +1400,7 @@
       onFullScreenChange: function PdfJs_onFullScreenChange(e_obj)
       {
          if ((document.fullScreenElement && document.fullScreenElement !== null) ||    // alternative standard method
-              (!document.mozFullScreenElement && !document.webkitFullScreenElement && !document.webkitFullscreenElement)) // current working methods
+             (!document.mozFullScreenElement && !document.webkitFullScreenElement && !document.webkitFullscreenElement)) // current working methods
          {
             Alfresco.logger.debug("Leaving full screen mode");
             
@@ -1685,7 +1685,7 @@
          {
             Dom.removeClass(this.wp.getPreviewerElement(), "fullPage");
             this.widgets.maximize.set("label", this.wp.msg("button.maximize"));
-            this.widgets.maximize.set("title", this.wp.msg("button.maximize.tip"));
+            this.widgets.maximize.set("title", this.wp.msg("button.maximize.tip", YAHOO.env.ua.os == "macintosh" ? this.wp.msg("key.meta") : this.wp.msg("key.ctrl")));
          }
 
          this._setPreviewerElementHeight();
