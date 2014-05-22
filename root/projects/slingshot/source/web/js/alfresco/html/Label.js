@@ -71,9 +71,7 @@ define(["dojo/_base/declare",
       label: "",
 
       /**
-       * Any additional classes to add. Some classes have been included with this widget, these are:
-       * <ul><li>"top-border-beyond-gutters" - used to create a full width border commonly used under
-       * the title bar</li></ul>
+       * Any additional classes to add.
        * 
        * @instance
        * @type {string}

@@ -57,7 +57,7 @@ define(["alfresco/core/ProcessWidgets",
        * 
        * @instance
        * @type {object[]}
-       * @default [{cssFile:"./css/HorizontalWidgets.css"}]
+       * @default [{cssFile:"./css/VerticalWidgets.css"}]
        */
       cssRequirements: [{cssFile:"./css/VerticalWidgets.css"}],
 

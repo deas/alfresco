@@ -395,8 +395,7 @@ var main = {
          {
             name: "alfresco/html/Spacer",
             config: {
-               height: "12px",
-               additionalCssClasses: "top-border-beyond-gutters"
+               height: "4px"
             }
          },
          searchForm,
@@ -417,6 +416,7 @@ var main = {
                   {
                      name: "alfresco/layout/VerticalWidgets",
                      config: {
+                        additionalCssClasses: "bottom-border",
                         widgets: [
                            searchResultsMenuBar
                         ]
