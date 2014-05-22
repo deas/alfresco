@@ -155,9 +155,11 @@
             });
 
             // ACE-1174: change z-index to hide inserted images
-            var hidePanel = function (p_event, p_args)
+            var hidePanel = function(p_event, p_args)
             {
-                Dom.setStyle(p_args[1].panel.element, "z-index", -1);
+               Dom.setStyle(p_args[1].panel.element, "z-index", -1);
+               // Remove listener for TinyMCE dialog focus handling
+               Event.removeListener(document, "focusin");
             }
             YAHOO.Bubbling.subscribe("hidePanel", hidePanel, this.configDialog);
          }
@@ -168,6 +170,10 @@
                actionUrl: actionUrl
             });
          }
+         // Ensure TinyMCE dialogs can receive focus and not captured by parent YUI dialog
+         Event.on(document, "focusin", function(e) {
+            Event.stopEvent(e);
+         });
          this.configDialog.show();
       },
       
