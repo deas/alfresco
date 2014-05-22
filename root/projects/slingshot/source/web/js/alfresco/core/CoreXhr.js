@@ -46,6 +46,7 @@ define(["dojo/_base/declare",
       constructor: function(args){
          lang.mixin(this, args);
          this.csrfProperties = AlfConstants.CSRF_POLICY.properties || {};
+         this.serviceRequests = {};
       },
 
       /**
@@ -99,7 +100,7 @@ define(["dojo/_base/declare",
                   headers[this.getCsrfHeader()] = this.getCsrfToken();
                }
                
-               return xhr(config.url, {
+               var request = xhr(config.url, {
                   handleAs: (config.handleAs) ? config.handleAs : "text",
                   method: (config.method) ? config.method : "POST",
                   data: (config.data) ? JSON.stringify(config.data) : null,
@@ -107,6 +108,12 @@ define(["dojo/_base/declare",
                   headers: headers
                }).then(function(response){
                   
+                  var id = lang.getObject("requestId", false, config)
+                  if (id != null)
+                  {
+                     delete _this.serviceRequests[id];
+                  }
+
                   // HANDLE SUCCESS...
                   if (typeof response == "string")
                   {
@@ -133,7 +140,11 @@ define(["dojo/_base/declare",
                }, function(response){
                   
                   // HANDLE FAILURE...
-                  
+                  var id = lang.getObject("requestId", false, config)
+                  if (id != null)
+                  {
+                     delete _this.serviceRequests[id];
+                  }
                   if (typeof response == "string")
                   {
                      try
@@ -173,13 +184,22 @@ define(["dojo/_base/declare",
                   if (typeof config.progressCallback == "function")
                   {
                      var callbackScope = (config.progressCallbackScope ? config.progressCallbackScope : (config.callbackScope ? config.callbackScope : _this)); 
-                     config.progressCallback.call(callbackScope, response, config)
+                     config.progressCallback.call(callbackScope, response, config);
                   }
                   else
                   {
                      _this.defaultProgressCallback(response, config);
                   }
                });
+
+               // If a request ID has been provided then store it in a map so that we can kill the
+               // request when asked. This entry should be cleaned up on success or failure request
+               // responses to prevent memory leakage...
+               if (config.requestId)
+               {
+                  this.serviceRequests[config.requestId] = request;
+               }
+               return request;
             }
          }
          else
@@ -267,6 +287,22 @@ define(["dojo/_base/declare",
             });
          }
       },
+
+      /**
+       * Handles requests to stop a previous XHR request.
+       *
+       * @instance
+       * @param {object} payload An object that should contain a 'requestId' attribute
+       */
+      onStopSearchRequest: function alfresco_core_CoreXhr__onStopSearchRequest(payload) {
+         var id = lang.getObject("requestId", false, payload)
+         if (id != null && this.serviceRequests[id])
+         {
+            this.alfLog("info", "Stopping XHR request: " + id);
+            this.serviceRequests[id].cancel();
+            delete this.serviceRequests[id];
+         }
+      }
 
       /**
        * Use this method and check if the CSRF filter is enabled before trying to set the CSRF header or parameter.

@@ -46,7 +46,8 @@ define(["dojo/_base/declare",
        */
       constructor: function alfresco_services_SearchService__constructor(args) {
          lang.mixin(this, args);
-         this.alfSubscribe("ALF_SEARCH_REQUEST", lang.hitch(this, "onSearchRequest"));
+         this.alfSubscribe("ALF_SEARCH_REQUEST", lang.hitch(this, this.onSearchRequest));
+         this.alfSubscribe("ALF_STOP_SEARCH_REQUEST", lang.hitch(this, this.onStopSearchRequest));
       },
       
       /**
@@ -183,6 +184,7 @@ define(["dojo/_base/declare",
                      case "filters":
                      case "sortAscending":
                      case "sortField":
+                     case "requestId":
                         break;
                      default:
                         queryAttributes[key] = payload[key];
@@ -226,6 +228,7 @@ define(["dojo/_base/declare",
                noCache: new Date().getTime()
             };
             var config = {
+               requestId: payload.requestId,
                alfTopic: alfTopic,
                url: url,
                query: data,

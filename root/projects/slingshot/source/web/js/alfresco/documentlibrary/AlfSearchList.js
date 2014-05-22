@@ -381,6 +381,14 @@ define(["dojo/_base/declare",
          }
          else
          {
+            // Stop any current request in progress...
+            if (this.currentRequestId)
+            {
+               this.alfPublish("ALF_STOP_SEARCH_REQUEST", {
+                  requestId: this.currentRequestId
+               }, true);
+            }
+
             this.alfPublish(this.requestInProgressTopic, {});
             this.showLoadingMessage();
 
@@ -395,6 +403,7 @@ define(["dojo/_base/declare",
             // The repo instance variable trumps everything else...
             var repo = this.repo === "true" || !(this.allSites === "true" || (this.siteId != null && this.siteId !== ""));
 
+            this.currentRequestId = this.generateUuid();
             var searchPayload = {
                term: this.searchTerm,
                facetFields: this.facetFields,
@@ -403,7 +412,8 @@ define(["dojo/_base/declare",
                sortField: this.sortField,
                site: this.siteId,
                rootNode: this.rootNode,
-               repo: repo
+               repo: repo,
+               requestId: this.currentRequestId
             };
 
             // InfiniteScroll uses pagination under the covers.
