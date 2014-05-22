@@ -521,7 +521,7 @@ var scopeSelection = {
          {
             name: "alfresco/html/Label",
             config: {
-               label: "Search scope:"
+               label: msg.get("faceted-search.scope.label")
             }
          },
          {
