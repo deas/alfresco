@@ -52,7 +52,7 @@ public class WebViewDashletTest extends AbstractSiteDashletTest
         assertNotNull(webViewDashlet);
     }
 
-    @Test(groups = "Enterprise-only", dependsOnMethods="instantiateDashlet")
+    @Test(groups = "Enterprise-only", dependsOnMethods="instantiateDashlet", priority=2)
     public void verifyHelpIcon ()
     {
         webViewDashlet.clickOnHelpIcon();
@@ -63,7 +63,7 @@ public class WebViewDashletTest extends AbstractSiteDashletTest
         assertFalse(webViewDashlet.isBalloonDisplayed());
     }
 
-    @Test(groups = "Enterprise-only", dependsOnMethods="instantiateDashlet")
+    @Test(groups = "Enterprise-only", dependsOnMethods="instantiateDashlet", priority=3)
     public void checkConfigureIcon ()
     {
         configureWebViewDashletBoxPage = webViewDashlet.clickConfigure();
