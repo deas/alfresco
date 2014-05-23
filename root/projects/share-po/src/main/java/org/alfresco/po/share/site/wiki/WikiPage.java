@@ -54,7 +54,7 @@ public class WikiPage extends SitePage
     private static final By CREATE_WIKI_TITLE = By.cssSelector("input[id$='createform_x002e_wiki-create_x0023_default-title']");
     private static final By FONT_STYLE_SELECT = By.cssSelector("a[id$='default-content_fontselect_open']");
     private static final By FONT_SIZE_SELECT = By.cssSelector("a[id$='default-content_fontsizeselect_open']");
-    private static final By IMAGE_LIB = By.cssSelector(".mceIcon.mce_alfresco-imagelibrary");
+    private static final By IMAGE_LIB = By.cssSelector("div[aria-label='Insert Library Image'] i.mce-ico.mce-i-image");
     private static final By IMAGE_RSLT = By.cssSelector("#image_results");
     private static final By BUTTON_SAVE = By.cssSelector("button[id$='default-save-button-button']");
     private static final By REMOVE_FORMAT = By.cssSelector(".mceIcon.mce_removeformat");
@@ -67,6 +67,7 @@ public class WikiPage extends SitePage
     private static final By RENAME_SAVE_BTN = By.cssSelector("button[id$='rename-save-button-button']");
     private static final By DETAILS_LINK = By.cssSelector("a[href$='details']");
     private static final By VERSION_HEADER = By.cssSelector("span[id$='default-version-header']");
+    @SuppressWarnings("unused")
     private static final By CONFIRM_REVERT_BTN = By.cssSelector("button[id$='ok-button-button']");
 
     private TinyMceEditor tinyMCEEditor = new TinyMceEditor(drone);

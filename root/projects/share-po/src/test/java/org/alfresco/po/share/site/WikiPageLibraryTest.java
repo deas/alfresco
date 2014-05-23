@@ -53,7 +53,7 @@ public class WikiPageLibraryTest extends AbstractTest
     @AfterClass
     public void  deleteWikiPageAndLogOut()
     {
-        wikiPage.deleteWiki();      
+        wikiPage.deleteWiki();
         logout(drone);
     }
 }
