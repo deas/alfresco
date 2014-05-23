@@ -53,6 +53,7 @@ import org.testng.annotations.Test;
  * @author Chiran
  */
 @Listeners(FailedTestListener.class)
+@Test(groups="AceBug")
 public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
 {
     private final Log logger = LogFactory.getLog(this.getClass());
