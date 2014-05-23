@@ -169,13 +169,16 @@ define(["dojo/_base/declare",
             }, this.descriptionNode);
          }
 
-         var site = lang.getObject("site.title", false, this.currentItem);
+         var site = lang.getObject("site.title", false, this.currentItem),
+             repo = true;
+
          if (site == null || site == "")
          {
             domClass.add(this.siteRow, "hidden")
          }
          else
          {
+            repo = false;
             new PropertyLink({
                renderedValueClass: "alfresco-renderers-Property pointer",
                pubSubScope: this.pubSubScope,
@@ -199,12 +202,26 @@ define(["dojo/_base/declare",
          }
          else
          {
-            new Property({
-               currentItem : this.currentItem,
+            // Create processed path as pathLink on this.currentItem
+            this.currentItem.pathLink = repo ? 
+               encodeURIComponent('/' + this.currentItem.path.split('/').slice(2).join('/')) :
+               encodeURIComponent('/' + this.currentItem.path);
+
+            new PropertyLink({
+               renderedValueClass: "alfresco-renderers-Property pointer",
                pubSubScope : this.pubSubScope,
+               currentItem : this.currentItem,
                propertyToRender : "path",
                renderSize: "small",
                label : this.message("faceted-search.doc-lib.value-prefix.path"),
+               publishTopic: "ALF_NAVIGATE_TO_PAGE",
+               useCurrentItemAsPayload: false,
+               publishPayloadType: "PROCESS",
+               publishPayloadModifiers: ["processCurrentItemTokens"],
+               payload: {
+                  url: repo ? "repository?path={pathLink}" : "site/{site.shortName}/documentlibrary?path={pathLink}",
+                  type: "SHARE_PAGE_RELATIVE"
+               }
             }, this.pathNode);
          }
 
