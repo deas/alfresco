@@ -103,6 +103,8 @@ define(["dojo/_base/declare",
             0: TemporalUtils.getRelativeTime(modifiedDate), 
             1: modifiedBy
          });
+         
+         this.renderedValueClass = this.renderedValueClass + " " + this.renderSize;
       }
    });
 });

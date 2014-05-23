@@ -142,6 +142,7 @@ define(["dojo/_base/declare",
 
          new DateLink({
             renderedValueClass: "alfresco-renderers-Property pointer",
+            renderSize: "small",
             pubSubScope: this.pubSubScope,
             currentItem: this.currentItem,
             modifiedDateProperty: "modifiedOn",
@@ -166,6 +167,7 @@ define(["dojo/_base/declare",
                currentItem: this.currentItem,
                pubSubScope: this.pubSubScope,
                propertyToRender: "description",
+               renderSize: "small"
             }, this.descriptionNode);
          }
 
@@ -181,6 +183,7 @@ define(["dojo/_base/declare",
             repo = false;
             new PropertyLink({
                renderedValueClass: "alfresco-renderers-Property pointer",
+               renderSize: "small",
                pubSubScope: this.pubSubScope,
                currentItem: this.currentItem,
                propertyToRender: "site.title",
