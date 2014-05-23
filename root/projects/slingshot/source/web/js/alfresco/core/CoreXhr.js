@@ -45,7 +45,7 @@ define(["dojo/_base/declare",
        */
       constructor: function(args){
          lang.mixin(this, args);
-         this.csrfProperties = AlfConstants.CSRF_POLICY.properties || {};
+         this.csrfProperties = AlfConstants.CSRF_POLICY.properties || {};
          this.serviceRequests = {};
       },
 
@@ -294,7 +294,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} payload An object that should contain a 'requestId' attribute
        */
-      onStopSearchRequest: function alfresco_core_CoreXhr__onStopSearchRequest(payload) {
+      onStopRequest: function alfresco_core_CoreXhr__onStopRequest(payload) {
          var id = lang.getObject("requestId", false, payload)
          if (id != null && this.serviceRequests[id])
          {
@@ -302,7 +302,7 @@ define(["dojo/_base/declare",
             this.serviceRequests[id].cancel();
             delete this.serviceRequests[id];
          }
-      }
+      },
 
       /**
        * Use this method and check if the CSRF filter is enabled before trying to set the CSRF header or parameter.
