@@ -1,4 +1,6 @@
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/share/imports/share-header.lib.js">
+<import resource="classpath:/alfresco/site-webscripts/org/alfresco/share/imports/share-footer.lib.js">
+
 
 /* *********************************************************************************
  *                                                                                 *

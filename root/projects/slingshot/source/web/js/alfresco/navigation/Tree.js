@@ -178,26 +178,11 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * @instance
-       */
-      postMixInProperties: function alfresco_navigation_Tree__postMixInProperties() {
-         if (this.label != null)
-         {
-            this.label = this.encodeHTML(this.message(this.label));
-         }
-      },
-      
-      /**
        * Creates the a dijit/Tree widget.
        * 
        * @instance
        */
       postCreate: function alfresco_navigation_Tree__postCreate() {
-         if (this.label != null && this.label != "")
-         {
-            Alfresco.util.createTwister(this.labelNode, this.filterPrefsName);
-         }
-         
          // Create a new tree store using the the siteId as part of the URL
          this.treeStore = new TreeStore({
             target: this.getTargetUrl(),
@@ -226,7 +211,7 @@ define(["dojo/_base/declare",
             onOpen: lang.hitch(this, "onNodeExpand"),
             onClose: lang.hitch(this, "onNodeCollapse")
          });
-         this.tree.placeAt(this.treeNode);
+         this.tree.placeAt(this.domNode);
          this.tree.startup();
       },
       

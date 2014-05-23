@@ -1,0 +1,39 @@
+.alfresco-layout-Twister:first-child {
+  border-radius: 5px 5px 0 0;
+}
+
+.alfresco-layout-Twister:last-child {
+  border-radius: 0 0 5px 5px;
+  border-bottom: @standard-border;
+  margin-bottom: @standard-line-height;
+}
+
+.alfresco-layout-Twister {
+   border: @standard-border;
+   width: 320px;
+   border-bottom: none;
+   display: block;
+   padding-top: @standard-line-height;
+}
+
+.alfresco-layout-Twister.hidden {
+   display: none;
+}
+
+.alfresco-layout-Twister > div.alfresco-twister {
+   padding-left: 20px !important; /* Important is only required to override base.css use of important */
+   background-position-y: 25% !important;
+}
+
+.alfresco-layout-Twister .label {
+   font-family: @bold-font;
+   color: @general-font-color;
+   font-size: @normal-font-size;
+   font-weight: normal;
+   margin-bottom: @standard-line-height - 2;
+   margin-left: @standard-column-width;
+}
+
+.alfresco-layout-Twister .content {
+  margin-left: 40px;
+}

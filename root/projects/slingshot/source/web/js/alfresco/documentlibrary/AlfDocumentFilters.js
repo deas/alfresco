@@ -22,30 +22,24 @@
  * in order to achieve the "twisty" and correct look and feel as expected in a document library.
  * 
  * @module alfresco/documentlibrary/AlfDocumentFilters
- * @extends dijit/_WidgetBase
- * @mixes dijit/_TemplatedMixin
- * @mixes module:alfresco/core/Core
- * @mixes module:alfresco/core/CoreWidgetProcessing
+ * @extends module:alfresco/layout/Twister
  * @mixes module:alfresco/documentlibrary/_AlfDocumentListTopicMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "dijit/_WidgetBase", 
-        "dijit/_TemplatedMixin",
+        "alfresco/layout/Twister",
         "dijit/_OnDijitClickMixin",
-        "dojo/text!./templates/AlfDocumentFilters.html",
-        "alfresco/core/Core",
-        "alfresco/core/CoreWidgetProcessing",
         "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
+        "dojo/text!./templates/AlfDocumentFilters.html",
         "alfresco/documentlibrary/AlfDocumentFilter",
         "dojo/_base/lang",
         "dojo/_base/array",
         "dojo/dom-construct",
         "dojo/dom-class",
         "dojo/on"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, template,  AlfCore, CoreWidgetProcessing, _AlfDocumentListTopicMixin, 
+        function(declare, Twister, _OnDijitClickMixin, _AlfDocumentListTopicMixin, template, 
                  AlfDocumentFilter, lang, array, domConstruct, domClass, on) {
-   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, AlfCore, CoreWidgetProcessing, _AlfDocumentListTopicMixin], {
+   return declare([Twister, _OnDijitClickMixin, _AlfDocumentListTopicMixin], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -80,14 +74,13 @@ define(["dojo/_base/declare",
       filterPrefsName: "docListFilterPref",
       
       /**
+       * Extends the inherited function to set up the localized labels for the show more
+       * and show less links.
+       *
        * @instance
        */
-      postMixInProperties: function() {
-         if (this.label != null)
-         {
-            this.label = this.encodeHTML(this.message(this.label));
-         }
-
+      postMixInProperties: function alfresco_documentlibrary_AlfDocumentFilters__postMixInProperties() {
+         this.inherited(arguments);
          if (this.showMoreLabel == null)
          {
             this.showMoreLabel = "showMore.label";
@@ -101,24 +94,8 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * Processes any widgets defined in the configuration for this instance.
-       * 
-       * @instance
-       */
-      postCreate: function alfresco_documentlibrary_AlfDocumentFilters__postCreate() {
-         if (this.label != null && this.label != "")
-         {
-            Alfresco.util.createTwister(this.labelNode, this.filterPrefsName);
-         }
-         
-         if (this.widgets)
-         {
-            this.processWidgets(this.widgets);
-         }
-      },
-      
-      /**
-       * Iterates over the processed widgets and calls the 'addFilter' function passing each one as an argument.
+       * Overrides the inherited function to iterate over the processed widgets and call 
+       * the 'addFilter' function passing each one as an argument.
        * 
        * @instance
        * @param {object[]} widgets The widgets that were created.
@@ -126,7 +103,6 @@ define(["dojo/_base/declare",
       allWidgetsProcessed: function alfresco_documentlibrary_AlfDocumentFilters__allWidgetsProcessed(widgets) {
          var _this = this;
          array.forEach(widgets, lang.hitch(this, "addFilter"));
-
          if (this.moreFiltersList != null)
          {
             domClass.remove(this.showMoreNode, "hidden");
