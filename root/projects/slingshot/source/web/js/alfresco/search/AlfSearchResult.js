@@ -161,6 +161,7 @@ define(["dojo/_base/declare",
                currentItem : this.currentItem,
                pubSubScope : this.pubSubScope,
                propertyToRender : "path",
+               renderSize: "small",
                label : this.message("faceted-search.doc-lib.value-prefix.path"),
             }, this.pathNode);
          }
@@ -176,6 +177,7 @@ define(["dojo/_base/declare",
                currentItem : this.currentItem,
                pubSubScope : this.pubSubScope,
                label : this.message("faceted-search.doc-lib.value-prefix.size"),
+               renderSize: "small",
                sizeProperty : "size",
             }, this.sizeNode);
          }
