@@ -133,7 +133,7 @@ public class FacetedSearchPage extends SharePage
     }
 
     /**
-     * Gets the result by its title.
+     * Gets a result by its title if it exists.
      *
      * @param title
      * @return the result
@@ -143,6 +143,24 @@ public class FacetedSearchPage extends SharePage
         for(FacetedSearchResult facetedSearchResult : this.getResults())
         {
             if(facetedSearchResult.getTitle().equals(title))
+            {
+                return facetedSearchResult;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets a result by its name if it exists.
+     *
+     * @param name
+     * @return the result
+     */
+    public FacetedSearchResult getResultByName(String name)
+    {
+        for(FacetedSearchResult facetedSearchResult : this.getResults())
+        {
+            if(facetedSearchResult.getName().equals(name))
             {
                 return facetedSearchResult;
             }
