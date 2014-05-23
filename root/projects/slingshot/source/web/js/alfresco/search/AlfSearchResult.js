@@ -70,6 +70,48 @@ define(["dojo/_base/declare",
        * @instance postCreate
        */
       postCreate: function alfresco_search_AlfSearchResult__postCreate() {
+
+         // Define the filter for document and folder actions, this filter is initially
+         // based on what actions are currently supported by the Aikau action service
+         // rather than the actions that the user has permission to carry out on the node.
+         var documentAndFolderActions = [
+            "document-download",
+            "document-view-content",
+            "document-view-details",
+            "folder-view-details",
+            "document-edit-metadata",
+            "document-inline-edit",
+            "document-manage-granular-permissions",
+            "document-manage-repo-permissions",
+            "document-view-original",
+            "document-view-working-copy",
+            "folder-manage-rules",
+            "view-in-explorer",
+            "document-view-googledoc",
+            "document-view-googlemaps",
+            "document-view-in-source-repository",
+            "document-view-in-cloud",
+            "document-delete",
+            "document-edit-offline" // TODO: Works, but Working copy handling isn't quite correct.
+            // TODO: Fix Document Picker scoping issues.
+            //  "document-copy-to",
+            //  "document-move-to",
+
+            // TODO: Dialog Service not read for property edits.
+            // "document-edit-properties",
+
+            // TODO: Not implemented yet.
+            // "document-upload-new-version",
+            // "document-assign-workflow",
+            // "document-publish"
+         ];
+
+         // For actions other than folders and documents we want to further restrict what are displayed
+         // at the moment this is restricted purely to deletion.
+         var otherNodeActions = [
+            "document-delete"
+         ];
+
          new SearchThumbnail({
             currentItem: this.currentItem,
             pubSubScope: this.pubSubScope
@@ -185,7 +227,9 @@ define(["dojo/_base/declare",
          new XhrActions({
             onlyShowOnHover: true,
             currentItem: this.currentItem,
-            pubSubScope: this.pubSubScope
+            pubSubScope: this.pubSubScope,
+            filterActions: true,
+            allowedActions: (this.currentItem.type === "document" || this.currentItem.type === "folder") ? documentAndFolderActions : otherNodeActions
          }, this.actionsNode);
 
          // TEMPORARILY DISABLING CONTEXT-MENU ACTIONS

@@ -50,46 +50,19 @@ define(["dojo/_base/declare",
        * @type {boolean}
        * @default false
        */
-      filterActions: true,
+      filterActions: false,
 
       /**
        *  Array containing a list of allowed actions
        *  This is used to filter out actions that the actions API returns, but haven't yet been implemented.
        *  TODO: Remove this once all actions have been implemented by the actions service.
        *  Currently - all actions of type link and pagelink should work.
+       * 
+       * @instance
+       * @type {array}
+       * @default null
        */
-      allowedActions: [
-         "document-download",
-         "document-view-content",
-         "document-view-details",
-         "folder-view-details",
-         "document-edit-metadata",
-         "document-inline-edit",
-         "document-manage-granular-permissions",
-         "document-manage-repo-permissions",
-         "document-view-original",
-         "document-view-working-copy",
-         "folder-manage-rules",
-         "view-in-explorer",
-         "document-view-googledoc",
-         "document-view-googlemaps",
-         "document-view-in-source-repository",
-         "document-view-in-cloud",
-         "document-delete", // TODO: Works, but highlights eventual consistency issues.
-         "document-edit-offline" // TODO: Works, but Working copy handling isn't quite correct.
-
-         // TODO: Fix Document Picker scoping issues.
-         //  "document-copy-to",
-         //  "document-move-to",
-
-         // TODO: Dialog Service not read for property edits.
-         // "document-edit-properties",
-
-         // TODO: Not implemented yet.
-         // "document-upload-new-version",
-         // "document-assign-workflow",
-         // "document-publish"
-      ],
+      allowedActions: null,
 
       /**
        * Add the actions provided by the current item.
