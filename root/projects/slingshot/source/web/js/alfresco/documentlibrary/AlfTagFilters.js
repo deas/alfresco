@@ -57,6 +57,15 @@ define(["dojo/_base/declare",
       filterPrefsName: "docListTagFilterPref",
       
       /**
+       * Overrides the inherited hash parameter name to use for the filter to make it "tag"
+       *
+       * @instance
+       * @type {string}
+       * @default "tag"
+       */
+      paramName: "tag",
+
+      /**
        * @instance
        */
       postMixInProperties: function alfresco_documentlibrary_AlfTagFilters__postMixInProperties() {
@@ -123,8 +132,7 @@ define(["dojo/_base/declare",
          {
             var tagFilter = new AlfDocumentFilter({
                label: this.message("filter.tag.label", {"0": tagData.name, "1": tagData.count}),
-               filter: "tag",
-               filterData: tagData.name
+               filter: tagData.name
             });
             this.addFilter(tagFilter);
          }

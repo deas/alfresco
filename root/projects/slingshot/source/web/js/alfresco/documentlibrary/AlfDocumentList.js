@@ -200,10 +200,10 @@ define(["dojo/_base/declare",
             callbackScope: this
          });
 
-         // Set filter keys that are applicable for DocumentLists...
-         // These are the values that are expected to be extracted from a hash fragment
-         this.filterKeys = ["filterId","filterData","filterDisplay"];
-
+         this.currentFilter = {
+            path: "/"
+         };
+         
          this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, "onViewSelected"));
          this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, "onDocumentSelection"));
          this.alfSubscribe(this.sortRequestTopic, lang.hitch(this, "onSortRequest"));
@@ -386,9 +386,20 @@ define(["dojo/_base/declare",
             // be required on the same page and they can't all feed off the hash to drive the location.
             this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onChangeFilter"));
 
-            // When using hashes (e.g. a URL fragment in the browser address bar) then we need to 
-            // actually get the initial filter and use it to generate the first data set...
-            this.initialiseFilter(); // Function provided by the _AlfHashMixin
+            var currHash = ioQuery.queryToObject(hash());
+            if(!this._payloadContainsUpdateableVar(currHash))
+            {
+               this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
+                  url: ioQuery.objectToQuery(this.currentFilter),
+                  type: "HASH"
+               }, true);
+            }
+            else
+            {
+               // When using hashes (e.g. a URL fragment in the browser address bar) then we need to 
+               // actually get the initial filter and use it to generate the first data set...
+               this.initialiseFilter(); // Function provided by the _AlfHashMixin
+            }
          }
          else
          {
@@ -735,8 +746,11 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       onChangeFilter: function alfresco_documentlibrary_AlfDocumentList__onChangeFilter(payload) {
-         this.currentFilter = payload;
-         if (this._readyToLoad) this.loadData();
+         if(this._payloadContainsUpdateableVar(payload))
+         {
+            this.currentFilter = payload;
+            if (this._readyToLoad) this.loadData();
+         }
       },
       
       /**
@@ -1089,6 +1103,36 @@ define(["dojo/_base/declare",
 
       onRequestFinished: function alfresco_documentlibrary_AlfDocumentList__onRequestFinished() {
          this.requestInProgress = false;
+      },
+
+      /**
+       * Compares the payload object with the hashVarsForUpdate array of key names
+       * Returns true if hashVarsForUpdate is empty
+       * Returns true if the payload contains a key that is specified in hashVarsForUpdate
+       * Returns false otherwise
+       *
+       * @instance
+       * @param {object} payload The payload object
+       * @return {boolean}
+       */
+      _payloadContainsUpdateableVar: function alfresco_documentlibrary_AlfDocumentList___payloadContainsUpdateableVar(payload) {
+         
+         // No hashVarsForUpdate - return true
+         if(this.hashVarsForUpdate == null || this.hashVarsForUpdate.length == 0)
+         {
+            return true;
+         }
+         
+         // Iterate over the keys defined in hashVarsForUpdate - return true if the payload contains one of them
+         for(var i=0; i < this.hashVarsForUpdate.length; i++)
+         {
+            if(this.hashVarsForUpdate[i] in payload)
+            {
+               return true;
+            }
+         }
+         
+         return false;
       }
    });
 });

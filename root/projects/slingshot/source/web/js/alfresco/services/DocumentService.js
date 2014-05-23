@@ -124,15 +124,15 @@ define(["dojo/_base/declare",
 
          // Construct the URI for the request...
          var uriPart = (payload.site != null && payload.site != "") ? "{type}/site/{site}/{container}" : "{type}/node/" + targetNodeUri;
-         if (payload.filter != null && payload.filter.filterId === "path")
+         if (payload.filter != null && payload.filter.path != null)
          {
             // If a path has been provided in the filter then it is necessary to perform some special 
             // encoding. We need to ensure that the data is URI encoded, but we want to preserve the 
             // forward slashes. We also need to "double encode" all % characters because FireFox has
             // a nasty habit of decoding them *before* they've actually been posted back... this 
             // guarantees that the user will be able to bookmark valid URLs...
-            var encodedPath = encodeURIComponent(payload.filter.filterData).replace(/%2F/g, "/").replace(/%25/g,"%2525");
-            uriPart += this.combinePaths("/", encodedPath) + "/";
+            var encodedPath = encodeURIComponent(payload.filter.path).replace(/%2F/g, "/").replace(/%25/g,"%2525");
+            uriPart += this.combinePaths("/", encodedPath);// + "/";
          }
 
          // Build the URI stem
@@ -142,19 +142,40 @@ define(["dojo/_base/declare",
             container: encodeURIComponent(payload.container)
          });
 
-         if (payload.filter != null)
+         if (payload.filter)
          {
-            // Filter parameters
-            params += "?filter=" + encodeURIComponent(payload.filter.filterId);
-            if (payload.filter.filterData && payload.filter.filterId !== "path")
+            if (payload.filter.filter != null)
             {
-               params += "&filterData=" + encodeURIComponent(payload.filter.filterData);
+               params += "?filter=" + payload.filter.filter;
+            }
+            else if (payload.filter.tag != null)
+            {
+               params += "?filter=tag&filterData=" + payload.filter.tag;
+            }
+            else if (payload.filter.category != null)
+            {
+               params += "?filter=category&filterData=" + payload.filter.category;
+            }
+            else
+            {
+               params += "?filter=path"
             }
          }
-         else
-         {
-            params += "?filter=path"
-         }
+         
+
+         // if (payload.filter != null)
+         // {
+         //    // Filter parameters
+         //    params += "?filter=" + encodeURIComponent(payload.filter.filterId);
+         //    if (payload.filter.filterData && payload.filter.filterId !== "path")
+         //    {
+         //       params += "&filterData=" + encodeURIComponent(payload.filter.filterData);
+         //    }
+         // }
+         // else
+         // {
+         //    params += "?filter=path"
+         // }
 
          if (payload.pageSize != null && payload.page != null)
          {

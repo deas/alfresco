@@ -133,7 +133,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            this.alfPublish("ALF_NAVIGATE_TO_PAGE", { url: "filter=path|" + this.path + "|",
+            this.alfPublish("ALF_NAVIGATE_TO_PAGE", { url: "path=" + this.path,
                                                       type: "HASH",
                                                       target: this.targetUrlLocation});
          }

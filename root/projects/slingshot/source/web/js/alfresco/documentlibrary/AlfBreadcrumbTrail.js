@@ -179,9 +179,9 @@ define(["dojo/_base/declare",
        */
       onPathChanged: function alfresco_documentlibrary_AlfBreadcrumbTrail__onPathChanged(payload) {
          this.alfLog("log", "Detected path change", payload);
-         if (payload && payload.filterId == "path" && payload.filterData != null)
+         if (payload && payload.path != null)
          {
-            this.currentPath = payload.filterData;
+            this.currentPath = payload.path;
             this.renderBreadcrumbTrail();
          }
       },

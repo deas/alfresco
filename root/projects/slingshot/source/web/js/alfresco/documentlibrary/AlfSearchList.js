@@ -506,36 +506,6 @@ define(["dojo/_base/declare",
          this.currentPage = 1;
          this.hideChildren(this.domNode);
          this.alfPublish(this.clearDocDataTopic);
-      },
-
-      /**
-       * Compares the payload object with the hashVarsForUpdate array of key names
-       * Returns true if hashVarsForUpdate is empty
-       * Returns true if the payload contains a key that is specified in hashVarsForUpdate
-       * Returns false otherwise
-       *
-       * @instance
-       * @param {object} payload The payload object
-       * @return {boolean}
-       */
-      _payloadContainsUpdateableVar: function alfresco_documentlibrary_AlfSearchList___payloadContainsUpdateableVar(payload) {
-         
-         // No hashVarsForUpdate - return true
-         if(this.hashVarsForUpdate == null || this.hashVarsForUpdate.length == 0)
-         {
-            return true;
-         }
-         
-         // Iterate over the keys defined in hashVarsForUpdate - return true if the payload contains one of them
-         for(var i=0; i < this.hashVarsForUpdate.length; i++)
-         {
-            if(this.hashVarsForUpdate[i] in payload)
-            {
-               return true;
-            }
-         }
-         
-         return false;
       }
 
    });

@@ -87,6 +87,15 @@ define(["dojo/_base/declare",
       filter: null,
       
       /**
+       * The hash parameter name to use for the filter, defaults to "filter".
+       *
+       * @instance
+       * @type {string}
+       * @default "filter"
+       */
+      paramName: "filter",
+
+      /**
        * Additional data for the filter (appended after the filter with a bar, e.g. tag|sometag)
        * 
        * @instance
@@ -94,7 +103,6 @@ define(["dojo/_base/declare",
        * @default ""
        */
       filterData: "",
-      
       
       /**
        * Sets up the attributes required for the HTML template.
@@ -104,7 +112,7 @@ define(["dojo/_base/declare",
          if (this.label != null && this.filter != null)
          {
             this.label = this.encodeHTML(this.message(this.label));
-            this.filterHref = "#filter=" + this.filter + "|" + this.filterData;
+            this.filterHref = "#" + this.paramName + "=" + this.filter;
             if (this.description != null)
             {
                this.description = this.encodeHTML(this.message(this.description));
@@ -146,7 +154,7 @@ define(["dojo/_base/declare",
           * clicked on the filter. However, this is not sufficient for browsers loading URLs where
           * the filter is already selected as the breadcrumb trail would not initiall show the filter
           */
-         if (payload != null && payload.filterId == this.filter)
+         if (payload != null && payload.filter == this.filter)
          {
             this.alfPublish(this.filterSelectionTopic, {
                value: this.filter,

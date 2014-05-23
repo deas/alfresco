@@ -7,13 +7,11 @@
  * GET ALL USER PREFERENCES                                                        *
  *                                                                                 *
  ***********************************************************************************/
-
 function getUserPreferences() {
    var userPreferences = {};
    var prefs = jsonUtils.toObject(preferences.value);
    return prefs
 }
-
 
 /* *********************************************************************************
  *                                                                                 *
@@ -38,7 +36,6 @@ var showSidebar = ((docLibPreferences.showSidebar != null) ? docLibPreferences.s
  * QUICK SHARE LINK                                                                *
  *                                                                                 *
  ***********************************************************************************/
-
 var quickShareLink = "",
     quickShareConfig = config.scoped["Social"]["quickshare"];
 if (quickShareConfig)
@@ -55,8 +52,6 @@ if (quickShareConfig)
  * SOCIAL LINKS                                                                    *
  *                                                                                 *
  ***********************************************************************************/
-
-
 var socialLinks = [],
     socialLinksConfig = config.scoped["Social"]["linkshare"];
 if (socialLinksConfig !== null)
@@ -98,108 +93,10 @@ if (socialLinksConfig !== null)
 
 /* *********************************************************************************
  *                                                                                 *
- * CUSTOM ACTION HANDLER DEPENDENCIES                                              *
- *                                                                                 *
- ***********************************************************************************/
-
-// It is currently necessary to get all of the configured custom action handling JavaScript
-// and CSS dependencies. These are then passed into the "alfresco/wrapped/DocumentList" widget 
-// to request so that all custom actions can be handled appropriately. This isn't the ideal
-// way in which we could handle custom actions, but it must be done to support existing
-// customizations.
-var getDependencies = function(configFamily)
-{
-   var fnGetConfig = function fnGetConfig(scopedRoot, dependencyType)
-   {
-      var dependencies = [], src, configs, dependencyConfig;
-      try
-      {
-         configs = scopedRoot.getChildren(dependencyType);
-         if (configs)
-         {
-            for (var i = 0; i < configs.size(); i++)
-            {
-               dependencyConfig = configs.get(i);
-               if (dependencyConfig)
-               {
-                  src = dependencyConfig.attributes["src"];
-                  if (src)
-                  {
-                     dependencies.push(src.toString());
-                  }
-               }
-            }
-         }
-      }
-      catch (e)
-      {
-      }
-      return dependencies;
-   }
-   var scopedRoot = config.scoped[configFamily]["dependencies"];
-   return (
-   {
-      css: fnGetConfig(scopedRoot, "css"),
-      js: fnGetConfig(scopedRoot, "js")
-   });
-}
-
-/* The resourceUtils helper allows us to build aggregated resources for the additional JS and CSS
- * content that needs to be loaded onto the page. The additional resources are requested and 
- * an MD5 checksum is returned that can then be used to reference the generated resource. The checksums
- * for the resources will be passed to the DocumentList widget to ensure that they are loaded onto
- * the page in the correct location (i.e. AFTER the non-AMD action handlers have been loaded).
- */
-var customActionHandlers = getDependencies("DocLibCustom"),
-    customAggregatedJsResource = resourceUtils.getAggregratedJsResources(customActionHandlers.js),
-    customAggregatedCssResource = resourceUtils.getAggregratedCssResources(customActionHandlers.css);
-
-/* *********************************************************************************
- *                                                                                 *
  * SORT FILE OPTIONS                                                               *
  *                                                                                 *
  ***********************************************************************************/
-var sortOptions = [],
-    sortingConfig = config.scoped["DocumentLibrary"]["sorting"];
 
-if (sortingConfig !== null)
-{
-   var configs = sortingConfig.getChildren(),
-      configItem,
-      sortLabel,
-      sortValue,
-      valueTokens;
-
-   if (configs)
-   {
-      for (var i = 0; i < configs.size(); i++)
-      {
-         configItem = configs.get(i);
-         // Get label and value from each config item
-         sortLabel = String(configItem.attributes["label"]);
-         sortValue = String(configItem.value);
-         if (sortLabel && sortValue)
-         {
-            valueTokens = sortValue.split("|");
-            sortOptions.push(
-            {
-               name: "alfresco/menus/AlfCheckableMenuItem",
-               config: {
-                  label: msg.get(sortLabel),
-                  value: valueTokens[0],
-                  group: "DOCUMENT_LIBRARY_SORT_FIELD",
-                  publishTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
-                  checked: (sortField == valueTokens[0]),
-                  publishPayload: {
-                     label: msg.get(sortLabel),
-                     direction: valueTokens[1] || null
-                  }
-               }
-            });
-         }
-      }
-   }
-}
 
 /* *********************************************************************************
  *                                                                                 *
@@ -633,42 +530,11 @@ function addCreateContentMenuItem(menuLabel, menuIcon, dialogTitle, editMode, mi
    };
 }
 
-createContent.push(addCreateContentMenuItem("Plain Text", "alf-textdoc-icon", "Create Text Content", "text", "text/plain"));
-createContent.push(addCreateContentMenuItem("HTML", "alf-htmldoc-icon", "Create HTML Content", "html", "text/plain"));
-createContent.push(addCreateContentMenuItem("XML", "alf-xmldoc-icon", "Create XML Content", "xml", "text/xml"));
-createContent.push(addCreateContentMenuItem("JavaScript", "alf-textdoc-icon", "Create JavaScript Content", "javascript", "text/javascript"));
-
-
-
-/* *********************************************************************************
- *                                                                                 *
- * TREE OPTIONS                                                                    *
- *                                                                                 *
- ***********************************************************************************/
-
-/**
- * 
- * @return {object} An object containing the configured options for trees.
- */
-function getTreeOptions() {
-   var treeOptions = {
-      evaluateChildFolders: "true",
-      maximumFolderCount: "-1"
-   };
-   var docLibConfig = config.scoped["RepositoryLibrary"];
-   if (docLibConfig != null)
-   {
-     var tree = docLibConfig["tree"];
-     if (tree != null)
-     {
-        var tmp = tree.getChildValue("evaluate-child-folders");
-        treeOptions.evaluateChildFolders = tmp != null ? tmp : "true";
-        tmp = tree.getChildValue("maximum-folder-count");
-        treeOptions.maximumFolderCount = tmp != null ? tmp : "-1";
-     }
-   }
-   return treeOptions;
-}
+// TODO: These are inline create content menu options...
+// createContent.push(addCreateContentMenuItem("Plain Text", "alf-textdoc-icon", "Create Text Content", "text", "text/plain"));
+// createContent.push(addCreateContentMenuItem("HTML", "alf-htmldoc-icon", "Create HTML Content", "html", "text/plain"));
+// createContent.push(addCreateContentMenuItem("XML", "alf-xmldoc-icon", "Create XML Content", "xml", "text/xml"));
+// createContent.push(addCreateContentMenuItem("JavaScript", "alf-textdoc-icon", "Create JavaScript Content", "javascript", "text/javascript"));
 
 /**
  * Helper function to retrieve configuration values.
@@ -758,39 +624,231 @@ getRepositoryUrl: function getRepositoryUrl()
 /**
  * Returns a JSON array of the configuration for all the services required by the document library
  */
-function getDocumentLibraryServices(siteId, containerId, rootNode) {
+function getDocumentLibraryServices() {
    return [
-   "alfresco/services/ContentService",
-   "alfresco/services/DocumentService",
-   "alfresco/dialogs/AlfDialogService",
-   {
-      name: "alfresco/services/ActionService",
+      "alfresco/services/ContentService",
+      "alfresco/services/DocumentService",
+      "alfresco/dialogs/AlfDialogService",
+      "alfresco/services/ActionService",
+      "alfresco/services/TagService",
+      "alfresco/services/RatingsService",
+      "alfresco/services/QuickShareService"
+   ];
+}
+
+function getFilters() {
+   var filters = {
+      id: "DOCLIB_FILTERS",
+      name: "alfresco/documentlibrary/AlfDocumentFilters",
       config: {
-         customAggregatedJsResource: customAggregatedJsResource,
-         customAggregatedCssResource: customAggregatedCssResource,
-         siteId: siteId,
-         containerId: containerId, 
-         rootNode: rootNode,
-         repositoryUrl: getRepositoryUrl(),
-         replicationUrlMapping: getReplicationUrlMappingJSON()
+         label: "filter.label.documents",
+         widgets: [
+            {
+               name: "alfresco/documentlibrary/AlfDocumentFilter",
+               config: {
+                  label: "link.all",
+                  filter: "all",
+                  description: "link.all.description"
+               }
+            },
+            {
+               name: "alfresco/documentlibrary/AlfDocumentFilter",
+               config: {
+                  label: "link.editingMe",
+                  filter: "editingMe",
+                  description: "link.editingMe.description"
+               }
+            },
+            {
+               name: "alfresco/documentlibrary/AlfDocumentFilter",
+               config: {
+                  label: "link.editingOthers",
+                  filter: "editingOthers",
+                  description: "link.editingOthers.description"
+               }
+            },
+            {
+               name: "alfresco/documentlibrary/AlfDocumentFilter",
+               config: {
+                  label: "link.recentlyModified",
+                  filter: "recentlyModified",
+                  description: "link.recentlyModified.description"
+               }
+            },
+            {
+               name: "alfresco/documentlibrary/AlfDocumentFilter",
+               config: {
+                  label: "link.recentlyAdded",
+                  filter: "recentlyAdded",
+                  description: "link.recentlyAdded.description"
+               }
+            },
+            {
+               name: "alfresco/documentlibrary/AlfDocumentFilter",
+               config: {
+                  label: "link.favourites",
+                  filter: "favourites",
+                  description: "link.favourites.description"
+               }
+            }
+         ]
       }
-   },
+   };
+
+   // Add the additional cloud synchronization related filters...
+   if (syncMode != "OFF")
    {
-      name: "alfresco/services/TagService",
-      config: {
-         siteId: siteId,
-         containerId: containerId, 
-         rootNode: rootNode
-      }
-   },
-   "alfresco/services/RatingsService",
+      filters.config.widgets.push({
+         name: "alfresco/documentlibrary/AlfDocumentFilter",
+         config: {
+            label: "link.synced",
+            filter: "synced",
+            description: "link.synced.description"
+         }
+      });
+   }
+   if (syncMode == "ON_PREMISE")
    {
-      name: "alfresco/services/QuickShareService",
+      filters.config.widgets.push({
+         name: "alfresco/documentlibrary/AlfDocumentFilter",
+         config: {
+            label: "link.syncedErrors",
+            filter: "syncedErrors",
+            description: "link.syncedErrors.description"
+         }
+      });
+   }
+   return filters;
+}
+
+function getPathTree(siteId, containerId, rootNode) {
+   var tree = {
+      name: "alfresco/layout/Twister",
       config: {
-         quickShareLink: quickShareLink,
-         socialLinks: socialLinks
+         label: "twister.library.label",
+         widgets: [
+            {
+               name: "alfresco/navigation/PathTree",
+               config: {
+                  siteId: siteId,
+                  containerId: containerId,
+                  rootNode: rootNode
+               }
+            }
+         ]
       }
-   }]
+   };
+   return tree;
+}
+
+function getTags() {
+   var tags = {
+      id: "DOCLIB_TAGS",
+      name: "alfresco/documentlibrary/AlfTagFilters",
+      config: {
+         label: "filter.label.tags"
+      }
+   };
+   return tags;
+}
+
+function getCategories() {
+   var categories = {
+      name: "alfresco/layout/Twister",
+      config: {
+         label: "twister.categories.label",
+         widgets: [
+            {
+               name: "alfresco/navigation/CategoryTree"
+            }
+         ]
+      }
+   };
+   return categories;
+}
+
+function getCreateContentMenu() {
+   var menu = {
+      id: "DOCLIB_CREATE_CONTENT_MENU",
+      name: "alfresco/documentlibrary/AlfCreateContentMenuBarPopup",
+      config: {
+         widgets: [
+            {
+               id: "DOCLIB_CREATE_CONTENT_MENU_GROUP1",
+               name: "alfresco/menus/AlfMenuGroup",
+               config: {
+                  widgets: createContent
+               }
+            }
+         ]
+      }
+   };
+   return menu;
+}
+
+function getSelectedItemActions() {
+   var actionsMenu = {
+      id: "DOCLIB_SELECTED_ITEMS_MENU",
+      name: "alfresco/documentlibrary/AlfSelectedItemsMenuBarPopup",
+      config: {
+         label: msg.get("selected-items.label"),
+         widgets: [
+            {
+               id: "DOCLIB_SELECTED_ITEMS_MENU_GROUP1",
+               name: "alfresco/menus/AlfMenuGroup",
+               config: {
+                  widgets: actionSet
+               }
+            }
+         ]
+      }
+   };
+   return actionsMenu;
+}
+
+function getSortOptions() {
+   var sortOptions = [],
+       sortingConfig = config.scoped["DocumentLibrary"]["sorting"];
+
+   if (sortingConfig !== null)
+   {
+      var configs = sortingConfig.getChildren(),
+         configItem,
+         sortLabel,
+         sortValue,
+         valueTokens;
+
+      if (configs)
+      {
+         for (var i = 0; i < configs.size(); i++)
+         {
+            configItem = configs.get(i);
+            // Get label and value from each config item
+            sortLabel = String(configItem.attributes["label"]);
+            sortValue = String(configItem.value);
+            if (sortLabel && sortValue)
+            {
+               valueTokens = sortValue.split("|");
+               sortOptions.push(
+               {
+                  name: "alfresco/menus/AlfCheckableMenuItem",
+                  config: {
+                     label: msg.get(sortLabel),
+                     value: valueTokens[0],
+                     group: "DOCUMENT_LIBRARY_SORT_FIELD",
+                     publishTopic: "ALF_DOCLIST_SORT_FIELD_SELECTION",
+                     checked: (sortField == valueTokens[0]),
+                     publishPayload: {
+                        label: msg.get(sortLabel),
+                        direction: valueTokens[1] || null
+                     }
+                  }
+               });
+            }
+         }
+      }
+   };
+   return sortOptions;
 }
 
 /**
@@ -803,11 +861,7 @@ function getDocumentLibraryServices(siteId, containerId, rootNode) {
  */
 function getDocumentLibraryModel(siteId, containerId, rootNode) {
    
-   var treeOptions = getTreeOptions();
-   
-   
-   var docLibModel = 
-   {
+   var docLibModel = {
       id: "DOCLIB_SIDEBAR",
       name: "alfresco/layout/AlfSideBarContainer",
       className: "undo-share-margin",
@@ -822,87 +876,10 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                name: "alfresco/layout/VerticalWidgets",
                config: {
                   widgets: [
-                     {
-                        id: "DOCLIB_FILTERS",
-                        name: "alfresco/documentlibrary/AlfDocumentFilters",
-                        config: {
-                           label: "filter.label.documents",
-                           widgets: [
-                              {
-                                 name: "alfresco/documentlibrary/AlfDocumentFilter",
-                                 config: {
-                                    label: "link.all",
-                                    filter: "all",
-                                    description: "link.all.description"
-                                 }
-                              },
-                              {
-                                 name: "alfresco/documentlibrary/AlfDocumentFilter",
-                                 config: {
-                                    label: "link.editingMe",
-                                    filter: "editingMe",
-                                    description: "link.editingMe.description"
-                                 }
-                              },
-                              {
-                                 name: "alfresco/documentlibrary/AlfDocumentFilter",
-                                 config: {
-                                    label: "link.editingOthers",
-                                    filter: "editingOthers",
-                                    description: "link.editingOthers.description"
-                                 }
-                              },
-                              {
-                                 name: "alfresco/documentlibrary/AlfDocumentFilter",
-                                 config: {
-                                    label: "link.recentlyModified",
-                                    filter: "recentlyModified",
-                                    description: "link.recentlyModified.description"
-                                 }
-                              },
-                              {
-                                 name: "alfresco/documentlibrary/AlfDocumentFilter",
-                                 config: {
-                                    label: "link.recentlyAdded",
-                                    filter: "recentlyAdded",
-                                    description: "link.recentlyAdded.description"
-                                 }
-                              },
-                              {
-                                 name: "alfresco/documentlibrary/AlfDocumentFilter",
-                                 config: {
-                                    label: "link.favourites",
-                                    filter: "favourites",
-                                    description: "link.favourites.description"
-                                 }
-                              }
-                           ]
-                        }
-                     },
-                     {
-                        id: "DOCLIB_TREE",
-                        name: "alfresco/navigation/PathTree",
-                        config: {
-                           label: "twister.library.label",
-                           siteId: siteId,
-                           containerId: containerId,
-                           rootNode: rootNode
-                        }
-                     },
-                     {
-                        id: "DOCLIB_TAGS",
-                        name: "alfresco/documentlibrary/AlfTagFilters",
-                        config: {
-                           label: "filter.label.tags"
-                        }
-                     },
-                     {
-                        id: "DOCLIB_CATEGORIES",
-                        name: "alfresco/navigation/CategoryTree",
-                        config: {
-                           label: "twister.categories.label"
-                        }
-                     }
+                     getFilters(),
+                     getPathTree(siteId, containerId, rootNode),
+                     getTags(),
+                     getCategories()
                   ]
                }
             },
@@ -929,21 +906,7 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                                           id: "DOCLIB_SELECT_ITEMS_MENU",
                                           name: "alfresco/documentlibrary/AlfSelectDocumentListItems"
                                        },
-                                       {
-                                          id: "DOCLIB_CREATE_CONTENT_MENU",
-                                          name: "alfresco/documentlibrary/AlfCreateContentMenuBarPopup",
-                                          config: {
-                                             widgets: [
-                                                {
-                                                   id: "DOCLIB_CREATE_CONTENT_MENU_GROUP1",
-                                                   name: "alfresco/menus/AlfMenuGroup",
-                                                   config: {
-                                                      widgets: createContent
-                                                   }
-                                                }
-                                             ]
-                                          }
-                                       },
+                                       getCreateContentMenu(),
                                        {
                                           id: "DOCLIB_UPLOAD_BUTTON",
                                           name: "alfresco/documentlibrary/AlfCreateContentMenuBarItem",
@@ -970,22 +933,7 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                                              publishTopic: "ALF_UNSYNC_CURRENT_LOCATION"
                                           }
                                        },
-                                       {
-                                          id: "DOCLIB_SELECTED_ITEMS_MENU",
-                                          name: "alfresco/documentlibrary/AlfSelectedItemsMenuBarPopup",
-                                          config: {
-                                             label: msg.get("selected-items.label"),
-                                             widgets: [
-                                                {
-                                                   id: "DOCLIB_SELECTED_ITEMS_MENU_GROUP1",
-                                                   name: "alfresco/menus/AlfMenuGroup",
-                                                   config: {
-                                                      widgets: actionSet
-                                                   }
-                                                }
-                                             ]
-                                          }
-                                       }
+                                       getSelectedItemActions()
                                     ]
                                  }
                               },
@@ -1031,7 +979,7 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                                                    id: "DOCLIB_SORT_FIELD_SELECT_GROUP",
                                                    name: "alfresco/menus/AlfMenuGroup",
                                                    config: {
-                                                      widgets: sortOptions
+                                                      widgets: getSortOptions()
                                                    }
                                                 }
                                              ]
@@ -1085,15 +1033,6 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                                                          }
                                                       ]
                                                    }
-                                                },
-                                                {
-                                                   id: "DOCLIB_RWD_PAGINATION_OPTIONS",
-                                                   name: "alfresco/documentlibrary/AlfResultsPerPageGroup",
-                                                   config: {
-                                                      label: msg.get("pagination.options.label"),
-                                                      groupName: "DOCUMENTS_PER_PAGE_GROUP_RWD",
-                                                      maxRwdWidth: 1024
-                                                   }
                                                 }
                                              ]
                                           }
@@ -1116,22 +1055,19 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                         name: "alfresco/documentlibrary/AlfDocumentList",
                         config: {
                            useHash: true,
-                           containerId: containerId,
-                           customAggregatedJsResource: customAggregatedJsResource,
-                           customAggregatedCssResource: customAggregatedCssResource,
-                           googleDocsEnabled: googleDocsEnabled,
-                           highlightFile: page.url.args["file"] != null ? page.url.args["file"] : "",
-                           rootNode: rootNode,
-                           replicationUrlMapping: getReplicationUrlMappingJSON(),
-                           showFolders: showFolders,
+                           hashVarsForUpdate: [
+                              "path",
+                              "filter",
+                              "tag",
+                              "category"
+                           ],
                            siteId: siteId,
+                           containerId: containerId,
+                           rootNode: rootNode,
+                           usePagination: true,
+                           showFolders: showFolders,
                            sortAscending: sortAscending,
                            sortField: sortField,
-                           syncMode : syncMode != null ? model.syncMode : "",
-                           userCanUpload: true,
-                           usePagination: true,
-                           userIsSiteManager: userIsSiteManager,
-                           useTitle: (useTitle != null ? useTitle == "true" : true),
                            view: viewRendererName,
                            widgets: [
                               {
@@ -1139,9 +1075,6 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                               },
                               {
                                  name: "alfresco/documentlibrary/views/AlfDetailedView"
-                              },
-                              {
-                                 name: "alfresco/documentlibrary/views/AlfGalleryView"
                               }
                            ]
                         }
@@ -1155,37 +1088,5 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
          ]
       }
    };
-   
-   // Add the additional cloud synchronization related filters...
-   if (syncMode != "OFF")
-   {
-      var filters = widgetUtils.findObject(docLibModel, "id", "DOCLIB_FILTERS");
-      if (filters != null)
-      {
-         filters.config.widgets.push({
-            name: "alfresco/documentlibrary/AlfDocumentFilter",
-            config: {
-               label: "link.synced",
-               filter: "synced",
-               description: "link.synced.description"
-            }
-         });
-      }
-   }
-   if (syncMode == "ON_PREMISE")
-   {
-      var filters = widgetUtils.findObject(docLibModel, "id", "DOCLIB_FILTERS");
-      if (filters != null)
-      {
-         filters.config.widgets.push({
-            name: "alfresco/documentlibrary/AlfDocumentFilter",
-            config: {
-               label: "link.syncedErrors",
-               filter: "syncedErrors",
-               description: "link.syncedErrors.description"
-            }
-         });
-      }
-   }
    return docLibModel;
 }
