@@ -36,10 +36,31 @@ define(["dojo/_base/declare",
         "alfresco/renderers/_ActionsMixin",
         "alfresco/menus/AlfMenuBarPopup",
         "alfresco/menus/AlfMenuGroup",
-        "alfresco/menus/AlfMenuItem"],
-        function(declare, AlfMenuBar, _ActionsMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem) {
+        "alfresco/menus/AlfMenuItem",
+        "dojo/dom-class"],
+        function(declare, AlfMenuBar, _ActionsMixin, AlfMenuBarPopup, AlfMenuGroup, AlfMenuItem, domClass) {
 
    return declare([AlfMenuBar, _ActionsMixin], {
+
+      
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/Actions.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/Actions.css"}],
+
+      /**
+       * Indicates that this should only be displayed when the item (note: NOT the renderer) is
+       * hovered over.
+       * 
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      onlyShowOnHover: false,
 
       /**
        * Overrides the default to create a popup containing a group containing all the actions
@@ -49,6 +70,19 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_renderers_Actions__postCreate() {
          this.inherited(arguments);
+
+         // Add a class to tie this to the CSS selectors for this widget...
+         domClass.add(this.domNode, "alfresco-renderers-Actions");
+
+         // Handle display on hover configuration...
+         if (this.onlyShowOnHover == true)
+         {
+            domClass.add(this.domNode, "hover-only");
+         }
+         else
+         {
+            // No action
+         }
 
          // Create a group to hold all the actions...
          this.actionsGroup = new AlfMenuGroup({});

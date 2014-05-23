@@ -181,21 +181,23 @@ define(["dojo/_base/declare",
          }
 
          new XhrActions({
+            onlyShowOnHover: true,
             currentItem: this.currentItem,
             pubSubScope: this.pubSubScope
          }, this.actionsNode);
 
-         try
-         {
-            new XhrContextActions({
-               targetNodeIds: [this.domNode],
-               currentItem: this.currentItem
-            });
-         }
-         catch (e)
-         {
-            this.alfLog("error", "An error occurred creating context menu", e);
-         }
+         // TEMPORARILY DISABLING CONTEXT-MENU ACTIONS
+         // try
+         // {
+         //    new XhrContextActions({
+         //       targetNodeIds: [this.domNode],
+         //       currentItem: this.currentItem
+         //    });
+         // }
+         // catch (e)
+         // {
+         //    this.alfLog("error", "An error occurred creating context menu", e);
+         // }
       }
    });
 });
