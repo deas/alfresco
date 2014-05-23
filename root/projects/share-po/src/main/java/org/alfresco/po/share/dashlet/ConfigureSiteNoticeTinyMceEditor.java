@@ -28,7 +28,7 @@ public class ConfigureSiteNoticeTinyMceEditor extends AdvancedTinyMceEditor
     {
         super(drone);
         setTinyMce(drone.findAndWait(By.cssSelector("iframe[id$='configDialog-text_ifr']")).getAttribute("id"));
-        setForeColorLinkCss("a[id$='default-configDialog-text_forecolor_open']");
-        setBGColorLinkCss("a[id$='default-configDialog-text_backcolor_open']");
+        setForeColorLinkCss("div[aria-label='Text color']>button.mce-open");
+        setBGColorLinkCss("div[aria-label='Background color']>button.mce-open");
     }
 }

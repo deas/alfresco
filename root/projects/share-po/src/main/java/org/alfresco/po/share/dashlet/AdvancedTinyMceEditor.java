@@ -37,11 +37,11 @@ public class AdvancedTinyMceEditor extends TinyMceEditor
 {
     private Log logger = LogFactory.getLog(AdvancedTinyMceEditor.class);
 
-    private static final By LINK_CSS = By.cssSelector("span.mceIcon.mce_link");
+    private static final By LINK_CSS = By.cssSelector("i.mce-i-link");
     private static final By UNLINK_CSS = By.cssSelector("span.mceIcon.mce_unlink");
-    private static final By ANCHOR_CSS = By.cssSelector("span.mceIcon.mce_anchor");
-    private static final By IMAGE_LINK_CSS = By.cssSelector("span.mceIcon.mce_image");
-    private static final By HTML_CODE_CSS = By.cssSelector("span.mceIcon.mce_code");
+    private static final By ANCHOR_CSS = By.cssSelector("i.mce-i-anchor");
+    private static final By IMAGE_LINK_CSS = By.cssSelector("i.mce-i-image");
+    private static final By HTML_CODE_CSS = By.cssSelector("i.mce-i-code");
     private String mainWindow = null;
     
     public AdvancedTinyMceEditor(WebDrone drone)

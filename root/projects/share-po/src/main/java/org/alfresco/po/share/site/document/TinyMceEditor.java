@@ -35,7 +35,7 @@ public class TinyMceEditor extends HtmlElement
 
     private static final String TINY_MCE_SELECT_ALL_COMMAND = "tinyMCE.activeEditor.selection.select(tinyMCE.activeEditor.getBody(),true);";
     private static final String XPATH_COLOUR_FONT = "//font";
-    private static final String CSS_REMOVE_FORMAT = "a>span.mceIcon.mce_removeformat";
+    private static final String CSS_REMOVE_FORMAT = "i.mce-i-removeformat";
     private static final String CSS_COLOR_ATT = "rich.txt.editor.color.code";
     private static final String CSS_STR_BOLD = ".mceIcon.mce_bold";
     public String FRAME_ID = "";
@@ -347,7 +347,7 @@ public class TinyMceEditor extends HtmlElement
         try
         {
             drone.switchToDefaultContent();
-            drone.findAndWait(By.cssSelector(cssString)).click();
+            drone.findFirstDisplayedElement(By.cssSelector(cssString)).click();
         }
         catch (NoSuchElementException noSuchElementExp)
         {

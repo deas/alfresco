@@ -28,8 +28,8 @@ package org.alfresco.po.share.enums;
  */
 public enum TinyMceColourCode
 {
-    BLUE("div.mce_forecolor td>a[title=Blue]", "div.mce_backcolor td>a[title=Blue]"), 
-    BLACK("div.mce_forecolor td>a[title='Black']", "div.mce_backcolor td>a[title='Black']");
+    BLUE("div[title=Blue]", "div[title=Blue]"), 
+    BLACK("div[title='Black']", "div[title='Black']");
 
     private String foreColourLocator;
     private String bgColourLocator;

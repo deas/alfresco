@@ -52,8 +52,8 @@ public class SiteNoticeDashletTest extends AbstractSiteDashletTest
     private String anchorName = "testAnchor";
     private static final String expectedHelpBallonMsg = "This dashlet displays a custom message on the dashboard, specified by the site manager";
     private String fontAttForCloud = "<font style=\"color: rgb(0, 0, 255);\">";
-    private String fontAtt = "<font color=\"#0000FF\">";
-    private String fontBackColorAttr = "<font style=\"background-color: rgb(0, 0, 0);\">";
+    private String fontAtt = "<span style=\"color: rgb(0, 0, 255);\">";
+    private String fontBackColorAttr = "<span style=\"background-color: rgb(0, 0, 0);\">";
     private InsertOrEditLinkPage editLinkPage  = null;
     private InsertOrEditImagePage insertOrEditImage = null;
     private final String linkContent = "<a target=\"_blank\" title=\"Test\" href=\"https://google.co.uk\" data-mce-href=\"https://google.co.uk\">%s</a>";
@@ -175,7 +175,7 @@ public class SiteNoticeDashletTest extends AbstractSiteDashletTest
         {
             fontAtt = fontAttForCloud ;
         }
-        Assert.assertTrue(siteNoticeEditor.getContent().contains(fontAtt +titleAndText+"</font>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains(fontAtt +titleAndText+"</span>"));
     }
     
     @Test(dependsOnMethods="getTextFromEditor")
