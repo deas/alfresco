@@ -71,7 +71,7 @@ public class WikiPageTest extends AbstractSiteDashletTest
         addPageTypes.add(SitePageType.WIKI);
         siteDashBoard = customizeSitePage.addPages(addPageTypes).render();
         wikiPage = siteDashBoard.getSiteNav().selectSiteWikiPage().render();
-        Assert.assertTrue(wikiPage.getTitle().contains("Wiki"));
+        Assert.assertTrue(wikiPage.getTitle().contains("wiki"));
     }
 
     @Test(dependsOnMethods="selectCustomizeDashboard")
