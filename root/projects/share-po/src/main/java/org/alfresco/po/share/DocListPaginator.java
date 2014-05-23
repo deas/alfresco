@@ -32,12 +32,12 @@ public class DocListPaginator
 {
 
     /** Constants */
-    private static final By PAGINATION_GROUP = By.cssSelector("div[id^=\"alfresco_documentlibrary_AlfDocumentListPaginator___\"].alfresco-menus-AlfMenuBar");
-    private static final By PAGINATION_PAGE_SELECTOR = By.cssSelector("div[id$=\"_PAGE_SELECTOR\"]");
-    private static final By PAGINATION_PREVIOUS_BUTTON = By.cssSelector("div[id$=\"_PAGE_BACK\"]");
-    private static final By PAGINATION_PAGE_MARKER = By.cssSelector("div[id$=\"_PAGE_MARKER\"]");
-    private static final By PAGINATION_NEXT_BUTTON = By.cssSelector("div[id$=\"_PAGE_FORWARD\"]");
-    private static final By PAGINATION_RESULTS_PER_PAGE_SELECTOR = By.cssSelector("div[id$=\"_RESULTS_PER_PAGE_SELECTOR\"]");
+    private static final By PAGINATION_GROUP = By.cssSelector("div[id=DOCLIB_PAGINATION_MENU]");  
+    private static final By PAGINATION_PAGE_SELECTOR = By.cssSelector("div[id=DOCLIB_PAGINATION_MENU_PAGE_SELECTOR]");
+    private static final By PAGINATION_PREVIOUS_BUTTON = By.cssSelector("div[id=DOCLIB_PAGINATION_MENU_PAGE_BACK]");
+    private static final By PAGINATION_PAGE_MARKER = By.cssSelector("div[id=DOCLIB_PAGINATION_MENU_PAGE_MARKER]");
+    private static final By PAGINATION_NEXT_BUTTON = By.cssSelector("div[id=DOCLIB_PAGINATION_MENU_PAGE_FORWARD]");
+    private static final By PAGINATION_RESULTS_PER_PAGE_SELECTOR = By.cssSelector("div[id=DOCLIB_PAGINATION_MENU_RESULTS_PER_PAGE_SELECTOR]");
 
     private static final String MENU_ELEMENT_SUFFIX = "_dropdown";
     private static final String MENU_ELEMENT_SELECTOR_TEMPLATE = "div#?";
