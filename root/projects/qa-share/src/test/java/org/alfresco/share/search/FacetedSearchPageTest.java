@@ -108,7 +108,7 @@ public class FacetedSearchPageTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups= "Cloud-only")
-    public void firstRenderTest() throws Exception
+    public void ALF_3112() throws Exception
     {
         trace("Starting firstRenderTest");
 
@@ -148,7 +148,7 @@ public class FacetedSearchPageTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups= "Cloud-only")
-    public void searchTest() throws Exception
+    public void ALF_3113() throws Exception
     {
         trace("Starting searchTest");
 
@@ -180,7 +180,7 @@ public class FacetedSearchPageTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups= "Cloud-only")
-    public void searchAndFacetTest() throws Exception
+    public void ALF_3114() throws Exception
     {
         trace("Starting searchAndFacetTest");
 
@@ -233,7 +233,7 @@ public class FacetedSearchPageTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups= "Cloud-only")
-    public void searchAndSortTest() throws Exception
+    public void ALF_3115() throws Exception
     {
         trace("Starting searchAndSortTest");
 
@@ -308,7 +308,7 @@ public class FacetedSearchPageTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "Cloud-only")
-    public void searchAndPaginateTest() throws Exception
+    public void ALF_3121() throws Exception
     {
         trace("Starting searchAndSortTest");
 
@@ -359,7 +359,7 @@ public class FacetedSearchPageTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "Cloud-only")
-    public void searchAndLinkTest() throws Exception
+    public void ALF_3122() throws Exception
     {
         trace("Starting searchAndLinkTest");
 
@@ -446,7 +446,7 @@ public class FacetedSearchPageTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "Enterprise-only")
-    public void searchAndScopeTestEnterprise() throws Exception
+    public void ALF_3125() throws Exception
     {
         trace("Starting searchAndScopeTest");
 
@@ -513,7 +513,7 @@ public class FacetedSearchPageTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "Cloud-only")
-    public void searchAndScopeTestCloud() throws Exception
+    public void ALF_3124() throws Exception
     {
         trace("Starting searchAndScopeTest");
 
@@ -571,7 +571,7 @@ public class FacetedSearchPageTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "Cloud-only")
-    public void precisionSearchAndSortTest() throws Exception
+    public void ALF_3123() throws Exception
     {
         trace("Starting precisionSearchAndSortTest");
 
