@@ -46,7 +46,7 @@ import org.testng.annotations.Test;
 
 /**
  * Unit tests for live search dropdown
- * 
+ *
  * @author jcule
  */
 @Test(groups={"alfresco-one"})
@@ -120,7 +120,7 @@ public class LiveSearchDropdownTest extends AbstractTest
     /**
      * Checks that the document search result contains document name,
      * site name and user name
-     * 
+     *
      * @throws InterruptedException
      */
     @Test
@@ -237,7 +237,7 @@ public class LiveSearchDropdownTest extends AbstractTest
     public void closeLiveSearchDropdown()
     {
         SearchBox search = dashBoard.getSearch();
-        LiveSearchDropdown liveSearchResultPage = search.liveSearch("x@z").render();
+        LiveSearchDropdown liveSearchResultPage = search.liveSearch("!@#$%^&*()_+:\"|<>?;").render();
         Assert.assertNotNull(liveSearchResultPage);
 
         List<LiveSearchDocumentResult> liveSearchDocumentResultsPage = liveSearchResultPage.getSearchDocumentResults();
