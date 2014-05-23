@@ -104,17 +104,11 @@ public class LiveSearchDropdownTest extends AbstractTest
         }
     }
 
-    // @BeforeMethod
-    public void reset()
-    {
-        SharePage page = drone.getCurrentPage().render();
-        page.getNav().selectMyDashBoard();
-    }
 
     @AfterClass
     public void deleteSite()
     {
-        SiteUtil.deleteSite(drone, siteName);
+      SiteUtil.deleteSite(drone, siteName);
     }
 
     /**
@@ -123,46 +117,11 @@ public class LiveSearchDropdownTest extends AbstractTest
      *
      * @throws InterruptedException
      */
-    @Test
-    public void liveSearchDocumentResult() throws InterruptedException
+    @Test(dependsOnMethods = "closeLiveSearchDropdown")
+    public void liveSearchDocumentResult() throws Exception
     {
-        SearchBox search = dashBoard.getSearch();
-        LiveSearchDropdown liveSearchResultPage = null;
-        List<LiveSearchDocumentResult> liveSearchDocumentResults = new ArrayList<LiveSearchDocumentResult>();
-
-        int counter = 0;
-        int waitInMilliSeconds = 2000;
-        while (counter < 3)
-        {
-            liveSearchResultPage = search.liveSearch(fileName).render();
-
-            if (liveSearchResultPage.getSearchDocumentResults().size() > 0)
-            {
-                liveSearchDocumentResults = liveSearchResultPage.getSearchDocumentResults();
-                break;
-            }
-            else
-            {
-                counter++;
-                dashBoard = dashBoard.getNav().selectMyDashBoard().render();
-
-            }
-            // double wait time to not overdo solr search
-            waitInMilliSeconds = (waitInMilliSeconds * 2);
-            synchronized (this)
-            {
-                try
-                {
-                    this.wait(waitInMilliSeconds);
-                }
-                catch (InterruptedException e)
-                {
-                }
-            }
-        }
-        Assert.assertNotNull(liveSearchResultPage);
+        List<LiveSearchDocumentResult> liveSearchDocumentResults = liveSearchDocumentsRetry();
         Assert.assertTrue(liveSearchDocumentResults.size() > 0);
-        Assert.assertFalse(liveSearchResultPage.isMoreResultsVisible());
         for (LiveSearchDocumentResult liveSearchDocumentResult : liveSearchDocumentResults)
         {
             Assert.assertEquals(liveSearchDocumentResult.getTitle().getDescription(), fileName);
@@ -194,13 +153,10 @@ public class LiveSearchDropdownTest extends AbstractTest
     /**
      * Searches for site and checks that site name is displayed in site results
      */
-    @Test(dependsOnMethods = "expandLiveSearchDocumentResult")
-    public void liveSearchSitesResult()
+    @Test(dependsOnMethods = "clickOnDocumentUserName")
+    public void liveSearchSitesResult() throws Exception
     {
-        SearchBox search = dashBoard.getSearch();
-        LiveSearchDropdown liveSearchResultPage = search.liveSearch(siteName).render();
-        Assert.assertNotNull(liveSearchResultPage);
-        List<LiveSearchSiteResult> liveSearchSitesResults = liveSearchResultPage.getSearchSitesResults();
+        List<LiveSearchSiteResult> liveSearchSitesResults = liveSearchSitesRetry();
         Assert.assertTrue(liveSearchSitesResults.size() > 0);
         for (LiveSearchSiteResult liveSearchSiteResult : liveSearchSitesResults)
         {
@@ -233,13 +189,13 @@ public class LiveSearchDropdownTest extends AbstractTest
      * Clicks on close live search dropdown icon and checks that
      * the dropdown is not displayed
      */
-    @Test(dependsOnMethods = "liveSearchPeopleResult")
+    @Test
     public void closeLiveSearchDropdown()
     {
         SearchBox search = dashBoard.getSearch();
         LiveSearchDropdown liveSearchResultPage = search.liveSearch("!@#$%^&*()_+:\"|<>?;").render();
         Assert.assertNotNull(liveSearchResultPage);
-
+        
         List<LiveSearchDocumentResult> liveSearchDocumentResultsPage = liveSearchResultPage.getSearchDocumentResults();
         Assert.assertTrue(liveSearchDocumentResultsPage.size() == 0);
 
@@ -261,14 +217,13 @@ public class LiveSearchDropdownTest extends AbstractTest
      * Clicks on the document name in the document search result and checks that
      * the documents details page is displayed
      */
-    @Test(dependsOnMethods = "closeLiveSearchDropdown")
-    public void clickOnDocumentTitle()
+    @Test(dependsOnMethods = "expandLiveSearchDocumentResult")
+    public void clickOnDocumentTitle() throws Exception
     {
         SearchBox search = dashBoard.getSearch();
         LiveSearchDropdown liveSearchResultPage = search.liveSearch(fileName).render();
         Assert.assertNotNull(liveSearchResultPage);
-
-        List<LiveSearchDocumentResult> liveSearchDocumentResults = liveSearchResultPage.getSearchDocumentResults();
+        List<LiveSearchDocumentResult> liveSearchDocumentResults = liveSearchDocumentsRetry();
         Assert.assertTrue(liveSearchDocumentResults.size() > 0);
         for (LiveSearchDocumentResult liveSearchDocumentResult : liveSearchDocumentResults)
         {
@@ -324,7 +279,7 @@ public class LiveSearchDropdownTest extends AbstractTest
      * Clicks on the site name in sites search results and checks
      * that the site dashboard page is displayed
      */
-    @Test(dependsOnMethods = "clickOnDocumentUserName")
+    @Test(dependsOnMethods = "liveSearchPeopleResult")
     public void clickOnSiteResult()
     {
         SearchBox search = dashBoard.getSearch();
@@ -358,6 +313,91 @@ public class LiveSearchDropdownTest extends AbstractTest
             MyProfilePage myProfilePage = liveSearchPeopleResult.clickOnUserName().render();
             Assert.assertEquals(myProfilePage.getPageTitle(), "User Profile Page");
         }
+    }
+    
+    /**
+     * Retries search for a document result
+     * @return
+     * @throws Exception
+     */
+    public List<LiveSearchDocumentResult> liveSearchDocumentsRetry() throws Exception
+    {
+        SearchBox search = dashBoard.getSearch();
+        LiveSearchDropdown liveSearchResultPage = null;
+        List<LiveSearchDocumentResult> liveSearchDocumentResults = new ArrayList<LiveSearchDocumentResult>();
+        int counter = 0;
+        int waitInMilliSeconds = 8000;
+        while (counter < 3)
+        {
+            liveSearchResultPage = search.liveSearch(fileName).render();
+            liveSearchDocumentResults = liveSearchResultPage.getSearchDocumentResults();
+            String result = liveSearchDocumentResults.get(0).getTitle().getDescription();
+            if (result.equalsIgnoreCase(fileName))
+            {
+                return liveSearchDocumentResults;
+            }
+            else
+            {
+                counter++;
+                dashBoard = dashBoard.getNav().selectMyDashBoard().render();
+
+            }
+            // double wait time to not overdo solr search
+            waitInMilliSeconds = (waitInMilliSeconds * 2);
+            synchronized (this)
+            {
+                try
+                {
+                    this.wait(waitInMilliSeconds);
+                }
+                catch (InterruptedException e)
+                {
+                }
+            }
+        }
+        throw new Exception("livesearch failed");
+    }
+    
+    /**
+     * Retries search for a site result
+     * @return
+     * @throws Exception
+     */
+    public List<LiveSearchSiteResult> liveSearchSitesRetry() throws Exception
+    {
+        SearchBox search = dashBoard.getSearch();
+        LiveSearchDropdown liveSearchResultPage = null;
+        List<LiveSearchSiteResult> liveSearchSiteResults = new ArrayList<LiveSearchSiteResult>();
+        int counter = 0;
+        int waitInMilliSeconds = 8000;
+        while (counter < 3)
+        {
+            liveSearchResultPage = search.liveSearch(siteName).render();
+            liveSearchSiteResults = liveSearchResultPage.getSearchSitesResults();
+            String result = liveSearchSiteResults.get(0).getSiteName().getDescription();
+            if (result.equalsIgnoreCase(siteName))
+            {
+                return liveSearchSiteResults;
+            }
+            else
+            {
+                counter++;
+                dashBoard = dashBoard.getNav().selectMyDashBoard().render();
+            }
+            // double wait time to not overdo solr search
+            waitInMilliSeconds = (waitInMilliSeconds * 2);
+            synchronized (this)
+            {
+                try
+                {
+                    this.wait(waitInMilliSeconds);
+                }
+                catch (InterruptedException e)
+                {
+                }
+            }
+        }
+        throw new Exception("livesearch failed");
     }
 
 }
