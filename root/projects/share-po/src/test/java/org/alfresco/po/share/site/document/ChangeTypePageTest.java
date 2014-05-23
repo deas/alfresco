@@ -77,7 +77,7 @@ public class ChangeTypePageTest extends AbstractTest
         assertTrue(changeTypePage.isChangeTypeDisplayed(), "The dialog should be displyed");
     }
 
-    @Test(dependsOnMethods = "getTypesTest")
+    @Test(dependsOnMethods = "isChangeTypeDisplayedTest")
     public void selectCancelTest() throws Throwable
     {
         folderDetailsPage = changeTypePage.selectCancel().render();
