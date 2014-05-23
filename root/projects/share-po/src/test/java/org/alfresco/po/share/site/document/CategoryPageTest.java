@@ -62,6 +62,7 @@ public class CategoryPageTest extends AbstractDocumentTest
         SiteUtil.createSite(drone, siteName, "description", "Public");
         SiteDashboardPage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.getNavigation().selectDetailedView().render();
         CreatePlainTextContentPage contentPage = documentLibPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
         ContentDetails contentDetails = new ContentDetails();
         contentDetails.setName("Test Doc");
