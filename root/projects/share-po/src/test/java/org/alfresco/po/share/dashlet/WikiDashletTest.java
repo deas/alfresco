@@ -54,7 +54,7 @@ public class WikiDashletTest extends AbstractSiteDashletTest
         assertNotNull(wikiDashlet);
     }
 
-    @Test(groups = "Enterprise-only", dependsOnMethods="instantiateDashlet")
+    @Test(groups = "Enterprise-only", dependsOnMethods="instantiateDashlet", priority=2)
     public void verifyHelpIcon ()
     {
         wikiDashlet.clickOnHelpIcon();
@@ -65,7 +65,7 @@ public class WikiDashletTest extends AbstractSiteDashletTest
         assertFalse(wikiDashlet.isBalloonDisplayed());
     }
 
-    @Test(groups = "Enterprise-only", dependsOnMethods="instantiateDashlet")
+    @Test(groups = "Enterprise-only", dependsOnMethods="instantiateDashlet", priority=3)
     public void verifyConfigureIcon ()
     {
         selectWikiDialogueBoxPage = wikiDashlet.clickConfigure();
