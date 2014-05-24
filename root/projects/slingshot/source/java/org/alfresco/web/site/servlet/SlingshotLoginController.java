@@ -116,7 +116,8 @@ public class SlingshotLoginController extends LoginController
             }
             else
             {
-                throw new Exception("Remote error requesting user group data: " + res.getStatus().getMessage());
+                HttpSession session = request.getSession(false);
+                session.setAttribute(SESSION_ATTRIBUTE_KEY_USER_GROUPS, "");
             }
         }
         catch (ConnectorServiceException e1)
