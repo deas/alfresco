@@ -468,6 +468,7 @@ span.navigation-separator-alt
 {
    border: 1px solid #c2c2c2 !important;
    background-color: #fffff2;
+   width: 800px;
 }
 
 .yui-skin-yellowTheme .yui-navset .yui-content

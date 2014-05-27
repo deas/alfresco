@@ -611,6 +611,7 @@ span.navigation-separator-alt
    border: 1px solid #ccc !important;
    background-color: #fff;
    margin-left: 10px;
+   width: 800px;
 }
 
 .form-container textarea,
