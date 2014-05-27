@@ -48,7 +48,7 @@
             <div class="yui-gd">
                <div class="yui-u first"><label for="${el}-isPublic">${msg("label.access")}:</label></div>
                <div class="yui-u">
-                  <input id="${el}-isPublic" type="radio" <#if defaultVisibilitychecked == "PUBLIC">checked</#if> tabindex="0" name="-" /> <label for="${el}-isPublic">${msg("label.isPublic")}</label><br />
+                  <input id="${el}-isPublic" type="radio" <#if defaultVisibility == "PUBLIC">checked="checked" </#if>tabindex="0" name="-" /> <label for="${el}-isPublic">${msg("label.isPublic")}</label><br />
                   <div class="moderated">
                      <input id="${el}-isModerated" type="checkbox" tabindex="0" name="-"/> <label for="${el}-isModerated">${msg("label.isModerated")}</label><br />
                      <span class="help">${msg("label.moderatedHelp")}</span>
@@ -58,7 +58,7 @@
             <div class="yui-gd">
                <div class="yui-u first">&nbsp;</div>
                <div class="yui-u">
-                  <input id="${el}-isPrivate" type="radio" <#if defaultVisibilitychecked == "PRIVATE">checked</#if> tabindex="0" name="-" /> <label for="${el}-isPrivate">${msg("label.isPrivate")}</label>
+                  <input id="${el}-isPrivate" type="radio" <#if defaultVisibility == "PRIVATE">checked="checked" </#if>tabindex="0" name="-" /> <label for="${el}-isPrivate">${msg("label.isPrivate")}</label>
                </div>
             </div>
          </@markup>
