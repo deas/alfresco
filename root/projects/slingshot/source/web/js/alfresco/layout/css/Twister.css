@@ -22,7 +22,11 @@
 
 .alfresco-layout-Twister > div.alfresco-twister {
    padding-left: 20px !important; /* Important is only required to override base.css use of important */
-   background-position-y: 25% !important;
+   background-position: 0 3px !important;
+}
+
+.alfresco-layout-Twister > div.alfresco-twister-closed {
+   background-position: 0 3px !important;
 }
 
 .alfresco-layout-Twister .label {
@@ -30,7 +34,7 @@
    color: @general-font-color;
    font-size: @normal-font-size;
    font-weight: normal;
-   margin-bottom: @standard-line-height - 2;
+   padding-bottom: @standard-line-height - 2;
    margin-left: @standard-column-width;
 }
 
