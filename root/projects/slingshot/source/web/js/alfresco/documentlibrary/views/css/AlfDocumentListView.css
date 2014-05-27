@@ -18,7 +18,7 @@
    border-top: 1px dashed @docListBorderColour;
    border-bottom: 1px dashed @docListBorderColour;
    border-right: 1px solid @docListBorderColour;
-   padding: @standard-line-height @standard-column-width @standard-line-height 0;
+   padding: @standard-line-height 0 @standard-line-height @standard-column-width;
    margin: 0;
    vertical-align: top;
 }

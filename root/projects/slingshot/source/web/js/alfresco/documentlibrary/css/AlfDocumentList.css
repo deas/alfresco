@@ -3,6 +3,6 @@
   /* margin: 5px; Commented out because the container should control the margins */
 }
 
-.alfresco-documentlibrary-AlfDocumentList .info {
-   padding: 10px;
+.alfresco-documentlibrary-AlfDocumentList > div.info {
+   margin: @standard-line-height @standard-column-width;
 }

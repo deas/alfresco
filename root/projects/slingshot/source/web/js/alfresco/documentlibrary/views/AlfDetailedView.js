@@ -29,6 +29,15 @@ define(["dojo/_base/declare",
    return declare([AlfDocumentListView], {
       
       /**
+       * By default the detailed view should have no borders
+       *
+       * @instance
+       * @type {string}
+       * @default "no-borders"
+       */
+      additionalCssClasses: "no-borders",
+
+      /**
        * The configuration for selecting the view (configured the menu item)
        * @instance
        * @type {object}
@@ -101,9 +110,6 @@ define(["dojo/_base/declare",
                            {
                               name: "alfresco/documentlibrary/views/layouts/Column",
                               config: {
-                                 style: {
-                                    marginLeft: "20px" // This adds the "gutter" for any inline edit pencils to appear into.
-                                 },
                                  widgets: [
                                     {
                                        name: "alfresco/documentlibrary/views/layouts/Cell",
@@ -120,12 +126,11 @@ define(["dojo/_base/declare",
                                        config: {
                                           widgets: [
                                              {
-                                                name: "alfresco/renderers/InlineEditProperty",
+                                                name: "alfresco/renderers/PropertyLink",
                                                 config: {
                                                    propertyToRender: "node.properties.cm:name",
                                                    postParam: "prop_cm_name",
-                                                   renderSize: "large",
-                                                   renderAsLink: true
+                                                   renderSize: "large"
                                                 }
                                              },
                                              {

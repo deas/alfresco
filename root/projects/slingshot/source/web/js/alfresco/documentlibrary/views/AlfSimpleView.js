@@ -32,6 +32,15 @@ define(["dojo/_base/declare",
    return declare([AlfDocumentListView], {
       
       /**
+       * By default the detailed view should have no borders
+       *
+       * @instance
+       * @type {string}
+       * @default "no-borders"
+       */
+      additionalCssClasses: "no-borders",
+
+      /**
        * Returns the name of the view that is used when saving user view preferences.
        * 
        * @instance

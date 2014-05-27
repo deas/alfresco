@@ -864,7 +864,6 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
    var docLibModel = {
       id: "DOCLIB_SIDEBAR",
       name: "alfresco/layout/AlfSideBarContainer",
-      className: "undo-share-margin",
       config: {
          showSidebar: showSidebar,
          customResizeTopics: ["ALF_DOCLIST_READY","ALF_RESIZE_SIDEBAR"],

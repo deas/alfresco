@@ -1,7 +1,10 @@
 .alfresco-documentlibrary-AlfBreadcrumbTrail {
-  /* border-bottom: 1px solid #D9D9D9;  - COMMENTED OUT BECAUSE IT AFFECTED THE DETAILS PAGE */
-  margin: 0;
-  /* padding: 6px 16px; COMMENTED OUT BECAUSE IT AFFECTED THE DETAILS PAGE*/
+   margin-bottom: @standard-line-height;
+   margin-top: @standard-line-height;
+   margin-left: @standard-column-width;
+   font-family: @bold-font;
+   color: @general-font-color;
+   font-size: @normal-font-size;
 }
 
 .alfresco-share .alfresco-documentlibrary-AlfBreadcrumbTrail .alf-folder-separator {
