@@ -4001,7 +4001,7 @@
             };
 
             // Initial navigation won't fire the History event. Fix for ALF-19161: reload doclist when user click on currently selected filter.
-            if (obj.doclistFirstTimeNav || this.currentFilter.filterData == filter.filterData)
+            if (obj.doclistFirstTimeNav || (typeof this.currentFilter.filterId !== "undefined" && this.currentFilter.filterId == filter.filterId))
             {
                this._updateDocList.call(this,
                {
