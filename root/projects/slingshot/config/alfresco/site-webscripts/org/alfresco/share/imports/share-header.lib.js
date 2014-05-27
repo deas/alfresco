@@ -1951,7 +1951,8 @@ function getHeaderModel(pageTitle) {
                align: "left",
                config: {
                   targetUrl: page.url.templateArgs.site != null ? "site/" + page.url.templateArgs.site + "/dashboard" : null,
-                  label: (pageTitle != null) ? pageTitle : getPageTitle()
+                  label: (pageTitle != null) ? pageTitle : getPageTitle(),
+                  setBrowserTitle: (pageTitle != null)
                }
             },
             {

@@ -64,6 +64,15 @@ define(["dojo/_base/declare",
       targetUrl: null,
       
       /**
+       * Indicates whether or not the browser window title should be updated
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      setBrowserTitle: false,
+
+      /**
        * It's important to perform label encoding before buildRendering occurs (e.g. before postCreate)
        * to ensure that an unencoded label isn't set and then replaced. 
        * 
@@ -81,7 +90,12 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_header_Title__postCreate() {
          this.textNode.innerHTML = this.label;
-         document.title = "Alfresco \u00bb " + this.label; // Set the browser title
+
+         if (this.setBrowserTitle === true)
+         {
+            document.title = "Alfresco \u00bb " + this.label; // Set the browser title
+         }
+         
          if (this.targetUrl)
          {
             this.textNode.href = AlfConstants.URL_PAGECONTEXT + this.targetUrl;
