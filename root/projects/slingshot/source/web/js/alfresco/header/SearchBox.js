@@ -373,20 +373,15 @@ define(["dojo/_base/declare",
          {
             case 13:
             {
-               if (terms.length === 0)
-               {
-                  this.clearResults();
-               }
-               else
-               {
-                  this.alfLog("log", "Search request for: ", terms);
-                  var url = this.generateSearchPageLink(terms);
-                  this.alfPublish("ALF_NAVIGATE_TO_PAGE", { 
-                     url: url,
-                     type: "SHARE_PAGE_RELATIVE",
-                     target: "CURRENT"
-                  });
-               }
+               // ACE-1798 - always close the live search drop-down on enter keypress..
+               this.clearResults();
+               this.alfLog("log", "Search request for: ", terms);
+               var url = this.generateSearchPageLink(terms);
+               this.alfPublish("ALF_NAVIGATE_TO_PAGE", { 
+                  url: url,
+                  type: "SHARE_PAGE_RELATIVE",
+                  target: "CURRENT"
+               });
                break;
             }
             default:
