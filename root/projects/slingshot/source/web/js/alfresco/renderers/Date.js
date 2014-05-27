@@ -81,7 +81,7 @@ define(["dojo/_base/declare",
          
          if (this.modifiedByProperty == null)
          {
-            this.modifiedByProperty = "jsNode.properties.modifier";
+            this.modifiedByProperty = "jsNode.properties.modifier.displayName";
          }
          var modifiedBy = lang.getObject(this.modifiedByProperty, false, this.currentItem);
 

@@ -130,7 +130,8 @@ define(["dojo/_base/declare",
                                                 config: {
                                                    propertyToRender: "node.properties.cm:name",
                                                    postParam: "prop_cm_name",
-                                                   renderSize: "large"
+                                                   renderSize: "large",
+                                                   publishTopic: ""
                                                 }
                                              },
                                              {

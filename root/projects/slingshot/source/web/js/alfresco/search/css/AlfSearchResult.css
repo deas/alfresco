@@ -7,6 +7,10 @@
    width: 100px;
 }
 
+.alfresco-search-AlfSearchResult .actionsCell {
+   width: 100px;
+}
+
 .alfresco-search-AlfSearchResult td.dateCell .alfresco-renderers-Property {
    color: @de-emphasized-font-color;
 }

@@ -38,11 +38,11 @@
 }
 
 .alfresco-documentlibrary-views-layout-_MultiItemRendererMixin--item:hover .alfresco-renderers-Property.hover-only > span.inner {
-   display: inline;
+   visibility: visible;
 }
 
 .alfresco-documentlibrary-views-layout-_MultiItemRendererMixin--item .alfresco-renderers-Property.hover-only > span.inner {
-   display: none;
+   visibility: hidden;
 }
 
 .alfresco-renderers-Property.pointer {
