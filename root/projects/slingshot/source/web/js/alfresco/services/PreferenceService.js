@@ -208,13 +208,14 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * Updates the current users preferred view for Document Lists.
+       * Updates the current users preferred view for Document Lists. However, this will NOT set
+       * a view preference if the view provided is "Abstract".
        * 
        * @instance
        * @param {object} payload
        */
       onViewSelection: function alfresco_services_PreferenceService__onViewSelection(payload) {
-         if (payload && payload.value != null)
+         if (payload && payload.value != null && payload.value !== "Abstract")
          {
             this.setPreference({
                preference: "org.alfresco.share.documentList.viewRendererName",
