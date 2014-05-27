@@ -49,16 +49,6 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_SEARCH_REQUEST", lang.hitch(this, this.onSearchRequest));
          this.alfSubscribe("ALF_STOP_SEARCH_REQUEST", lang.hitch(this, this.onStopRequest));
       },
-      
-      /**
-       * The default maximum number of results to return in a search. This value will be used if a specific
-       * value isn't supplied in a search request.
-       * 
-       * @instance
-       * @type {number}
-       * @default 251
-       */
-      maxResults: 251,
 
       /**
        * This is the default number of items to return as a single page of result data. This value will be used if
@@ -179,7 +169,6 @@ define(["dojo/_base/declare",
                      case "rootNode":
                      case "repo":
                      case "pageSize":
-                     case "maxResults":
                      case "facetFields":
                      case "filters":
                      case "sortAscending":
@@ -224,7 +213,6 @@ define(["dojo/_base/declare",
                repo: (payload.repo != null) ? payload.repo : this.repo,
                query: query,
                pageSize: (payload.pageSize != null) ? payload.pageSize : this.pageSize,
-               maxResults: (payload.maxResults != null) ? payload.maxResults : this.maxResults,
                noCache: new Date().getTime()
             };
             var config = {
