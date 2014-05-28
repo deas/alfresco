@@ -47,32 +47,71 @@ define(["dojo/_base/declare",
          var type = lang.getObject("type", false, this.currentItem),
              site = lang.getObject("site.shortName", false, this.currentItem);
 
-         if (type == "folder")
+         switch(type)
          {
-            var path = lang.getObject("path", false, this.currentItem),
-                name = lang.getObject("name", false, this.currentItem);
+            case "folder":
+               
+               var path = lang.getObject("path", false, this.currentItem),
+               name = lang.getObject("name", false, this.currentItem);
+               if (site != null)
+               {
+                  payload.url = "site/" + site + "/documentlibrary?path=" + path + "/" + name;
+               }
+               else
+               {
+                  payload.url = "repository?path=" + path + "/" + name;
+               }
+               break;
 
-            if (site != null)
-            {
-               payload.url = "site/" + site + "/documentlibrary?path=" + path + "/" + name;
-            }
-            else
-            {
-               payload.url = "repository?path=" + path + "/" + name;
-            }
+            case "wikipage":
+
+               var title = lang.getObject("name", false, this.currentItem);
+               if (site != null)
+               {
+                  payload.url = "site/" + site + "/wiki-page?title=" + title;
+               }
+               break;
+
+            case "blogpost":
+
+               var postid = lang.getObject("name", false, this.currentItem);
+               if (site != null)
+               {
+                  payload.url = "site/" + site + "/blog-postview?postId=" + postid;
+               }
+               break;
+
+            case "forumpost":
+
+               var topicid = lang.getObject("name", false, this.currentItem);
+               if (site != null)
+               {
+                  payload.url = "site/" + site + "/discussions-topicview?topicId=" + topicid;
+               }
+               break;
+
+            case "link":
+
+               var linkid = lang.getObject("name", false, this.currentItem);
+               if (site != null)
+               {
+                  payload.url = "site/" + site + "/links-view?linkId=" + linkid;
+               }
+               break;
+            
+            default:
+
+               var nodeRef = lang.getObject("nodeRef", false, this.currentItem);
+               if (site != null)
+               {
+                  payload.url = "site/" + site + "/document-details?nodeRef=" + nodeRef;
+               }
+               else
+               {
+                  payload.url = "document-details?nodeRef=" + nodeRef;
+               }
          }
-         else
-         {
-            var nodeRef = lang.getObject("nodeRef", false, this.currentItem);
-            if (site != null)
-            {
-               payload.url = "site/" + site + "/document-details?nodeRef=" + nodeRef;
-            }
-            else
-            {
-               payload.url = "document-details?nodeRef=" + nodeRef;
-            }
-         }
+
          return payload;
       }
 
