@@ -358,7 +358,7 @@ var searchDocLib = {
       ],
       selectedScope: "REPO",
       useInfiniteScroll: true,
-      siteId: "$$site$$", // Get the current site context from the URL template (if set)
+      siteId: null, // Don't set the siteId initially (we don't want to do a site search on first load)
       rootNode: null,
       repo: true,
       widgets: [
