@@ -107,10 +107,16 @@ define(["dojo/_base/declare",
          else
          {
             // Update the totalRecords field.
-            if (this.currentData.totalRecords && newData.totalRecords)
+            if (this.currentData.totalRecords && newData.totalRecords && newData.startIndex)
             {
-               this.currentData.totalRecords = parseInt(this.currentData.totalRecords, 10) + parseInt(newData.totalRecords, 10);
+               // TODO: This is going to need to be updated to get infinite scroll to work with regular document lists...
+               this.currentData.totalRecords = newData.startIndex + newData.totalRecords;
             }
+
+            // It is also necessary to keep the overall number found count up-to-date (with eventual consistency)
+            // on searching, this could actually change after the initial data is set.
+            // TODO: This will also need updating for regular document lists...
+            this.currentData.numberFound = newData.numberFound;
 
             // Merge Items arrays.
             if (lang.isArray(this.currentData.items) && lang.isArray(newData.items))
