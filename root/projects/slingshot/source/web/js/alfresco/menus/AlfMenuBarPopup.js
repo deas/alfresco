@@ -137,7 +137,7 @@ define(["dojo/_base/declare",
             // rather than overriding the default template for such a minor change. This means that we
             // have some protection against changes to the template in future Dojo releases.
             domConstruct.create("span", { className: "alf-menu-arrow",
-                                          innerHTML: "&#9662"}, this.focusNode);
+                                          innerHTML: "&#9662;"}, this.focusNode);
          }
          this.inherited(arguments);
          

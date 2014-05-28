@@ -109,7 +109,7 @@
          this.widgets.workflowDefinitionMenuButton = Alfresco.util.createYUIButton(this, "workflow-definition-button",
                this.onWorkflowSelectChange,
          {
-            label: this.msg("label.selectWorkflowDefinition"),
+            label: this.msg("label.selectWorkflowDefinition") + " " + Alfresco.constants.MENU_ARROW_SYMBOL,
             title: this.msg("title.selectWorkflowDefinition"),
             type: "menu",
             menu: "workflow-definition-menu"
@@ -145,7 +145,7 @@
          {
             // Update label of workflow menu button
             var workflowDefinition = this.options.workflowDefinitions[i];
-            this.widgets.workflowDefinitionMenuButton.set("label", workflowDefinition.title);
+            this.widgets.workflowDefinitionMenuButton.set("label", workflowDefinition.title + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
             this.widgets.workflowDefinitionMenuButton.set("title", workflowDefinition.description);
 
             // Load the form for the specific workflow
