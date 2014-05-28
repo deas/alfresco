@@ -26,21 +26,36 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/renderers/Thumbnail", 
+        "alfresco/renderers/Thumbnail",
+        "alfresco/navigation/_HtmlAnchorMixin",
+        "alfresco/renderers/_SearchResultLinkMixin",
         "service/constants/Default",
-        "dojo/_base/lang",
-        "alfresco/core/NodeUtils"], 
-        function(declare, Thumbnail, AlfConstants, lang, NodeUtils) {
+        "dojo/_base/lang"], 
+        function(declare, Thumbnail, _HtmlAnchorMixin, _SearchResultLinkMixin, AlfConstants, lang) {
 
-   return declare([Thumbnail], {
-      
+   return declare([Thumbnail, _HtmlAnchorMixin, _SearchResultLinkMixin], {
+
+      /**
+       * Generates the publication payload by calling the mixed in 
+       * [generatePayload]{@link module:alfresco/renderers/_SearchResultLinkMixin#generatePayload}
+       * function and then wraps the property in an anchor element by calling the mixed in 
+       * [makeAnchor]{@link module:alfresco/navigation/_HtmlAnchorMixin#makeAnchor} function
+       *
+       * @instance
+       */
+      postCreate: function alfresco_renderers_SearchThumbnail__postCreate() {
+         this.inherited(arguments);
+         this.publishPayload = this.generatePayload(this.payload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin, this.publishPayloadModifiers);
+         this.makeAnchor(this.publishPayload.url, this.publishPayload.type);
+      },
+
       /**
        * Overrides the standard fallback to address specific site item types.
        *
        * @instance
        * @returns {string} The URL for the thumbnail.
        */
-      generateFallbackThumbnailUrl: function alfresco_renderers_Thumbnail__generateFallbackThumbnailUrl() {
+      generateFallbackThumbnailUrl: function alfresco_renderers_SearchThumbnail__generateFallbackThumbnailUrl() {
          var url;
          switch (this.currentItem.type)
          {
@@ -77,6 +92,17 @@ define(["dojo/_base/declare",
                break;
          }
          return url;
+      },
+
+      /**
+       * Returns an array containing the selector that identifies the span to wrap in an anchor.
+       * This overrides the [mixed in function]{@link module:alfresco/navigation/_HtmlAnchorMixin}
+       * that just returns an empty array.
+       *
+       * @instance
+       */
+      getAnchorTargetSelectors: function alfresco_renderers_SearchThumbnail__getAnchorTargetSelectors() {
+         return ["span.inner"];
       }
    });
 });

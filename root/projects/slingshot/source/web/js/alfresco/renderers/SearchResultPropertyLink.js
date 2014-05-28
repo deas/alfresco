@@ -23,21 +23,23 @@
  * @module alfresco/renderers/SearchResultPropertyLink
  * @extends alfresco/renderers/PropertyLink
  * @mixes alfresco/navigation/_HtmlAnchorMixin
+ * @mixes alfresco/renderers/_SearchResultLinkMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
         "alfresco/renderers/PropertyLink",
         "alfresco/navigation/_HtmlAnchorMixin",
+        "alfresco/renderers/_SearchResultLinkMixin",
         "dojo/_base/lang"], 
-        function(declare, PropertyLink, _HtmlAnchorMixin, lang) {
+        function(declare, PropertyLink, _HtmlAnchorMixin, _SearchResultLinkMixin, lang) {
 
-   return declare([PropertyLink, _HtmlAnchorMixin], {
+   return declare([PropertyLink, _HtmlAnchorMixin, _SearchResultLinkMixin], {
 
       /**
-       * Generates the publication payload by calling the 
-       * [generatePayload]{@link module:alfresco/renderers/SearchResultPropertyLink#generatePayload}
-       * function and then wraps the property in an anchor element by calling the 
-       * mixed in [makeAnchor]{@link module:alfresco/navigation/_HtmlAnchorMixin#makeAnchor} function
+       * Generates the publication payload by calling the mixed in 
+       * [generatePayload]{@link module:alfresco/renderers/_SearchResultLinkMixin#generatePayload}
+       * function and then wraps the property in an anchor element by calling the mixed in 
+       * [makeAnchor]{@link module:alfresco/navigation/_HtmlAnchorMixin#makeAnchor} function
        *
        * @instance
        */
@@ -77,55 +79,8 @@ define(["dojo/_base/declare",
        * @instance
        * @return {object} The generated payload
        */
-      getPublishPayload: function alfresco_renderers_PropertyLink__getPublishTopic() {
+      getPublishPayload: function alfresco_renderers_SearchResultPropertyLink__getPublishPayload() {
          return this.publishPayload;
-      },
-
-      /**
-       * This function generates a payload for the [NavigationService]{@link module:alfresco/services/NavigationService}
-       * that varies depending upon the type of search result (e.g. a document or folder, in a site or in
-       * the repository, etc) which can also be used to extrapolate an HTML anchor via the mixed in
-       * [_HtmlAnchorMixin]{@link module:alfresco/navigation/_HtmlAnchorMixin}.
-       *
-       * @instance
-       * @return {object} The generated payload
-       */
-      generatePayload: function alfresco_renderers_SearchResultPropertyLink__generatePayload() {
-         var payload = {
-            type: "SHARE_PAGE_RELATIVE",
-            target: "CURRENT",
-            url: null
-         };
-         var type = lang.getObject("type", false, this.currentItem),
-             site = lang.getObject("site.shortName", false, this.currentItem);
-
-         if (type == "folder")
-         {
-            var path = lang.getObject("path", false, this.currentItem),
-                name = lang.getObject("name", false, this.currentItem);
-
-            if (site != null)
-            {
-               payload.url = "site/" + site + "/documentlibrary?path=" + path + "/" + name;
-            }
-            else
-            {
-               payload.url = "repository?path=" + path + "/" + name;
-            }
-         }
-         else
-         {
-            var nodeRef = lang.getObject("nodeRef", false, this.currentItem);
-            if (site != null)
-            {
-               payload.url = "site/" + site + "/document-details?nodeRef=" + nodeRef;
-            }
-            else
-            {
-               payload.url = "document-details?nodeRef=" + nodeRef;
-            }
-         }
-         return payload;
       }
    });
 });
