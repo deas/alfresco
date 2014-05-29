@@ -22,6 +22,10 @@
    margin-left: 40px;
 }
 
+.alfresco-renderers-Thumbnail > span.inner {
+   cursor: pointer;
+}
+
 .alfresco-renderers-Thumbnail img {
    display: block;
    float: right;

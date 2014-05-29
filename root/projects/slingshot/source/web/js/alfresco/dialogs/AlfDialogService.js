@@ -91,7 +91,9 @@ define(["dojo/_base/declare",
          var dialogConfig = {
             title: this.message(payload.dialogTitle),
             widgetsContent: payload.widgetsContent,
-            widgetsButtons: payload.widgetsButtons
+            widgetsButtons: payload.widgetsButtons,
+            contentWidth: payload.contentWidth ? payload.contentWidth : null,
+            contentHeight: payload.contentHeight ? payload.contentHeight : null
          };
          this.dialog = new AlfDialog(dialogConfig);
          

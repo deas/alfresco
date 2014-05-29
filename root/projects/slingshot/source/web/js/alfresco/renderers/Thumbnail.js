@@ -32,17 +32,19 @@ define(["dojo/_base/declare",
         "alfresco/renderers/_JsNodeMixin",
         "alfresco/node/DraggableNodeMixin",
         "alfresco/node/NodeDropTargetMixin",
+        "dijit/_OnDijitClickMixin",
         "dojo/text!./templates/Thumbnail.html",
         "alfresco/core/Core",
         "alfresco/renderers/_ItemLinkMixin",
         "alfresco/documentlibrary/_AlfDndDocumentUploadMixin",
         "service/constants/Default",
         "dojo/_base/lang",
+        "dojo/_base/event",
         "alfresco/core/NodeUtils"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, template, AlfCore, 
-                 _ItemLinkMixin, _AlfDndDocumentUploadMixin, AlfConstants, lang, NodeUtils) {
+        function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, _OnDijitClickMixin, template, AlfCore, 
+                 _ItemLinkMixin, _AlfDndDocumentUploadMixin, AlfConstants, lang, event, NodeUtils) {
 
-   return declare([_WidgetBase, _TemplatedMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, AlfCore, _ItemLinkMixin, _AlfDndDocumentUploadMixin], {
+   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, AlfCore, _ItemLinkMixin, _AlfDndDocumentUploadMixin], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -196,6 +198,42 @@ define(["dojo/_base/declare",
             this.addNodeDropTarget(this.imgNode);
          }
          // this.createItemLink(this.domNode);
+      },
+
+      /**
+       * Handles the property being clicked. This stops the click event from propogating
+       * further through the DOM (to prevent any wrapping anchor elements from triggering
+       * browser navigation) and then publishes the configured topic and payload.
+       *
+       * @instance
+       * @param {object} evt The details of the click event
+       */
+      onLinkClick: function alfresco_renderers_Thumbnail__onLinkClick(evt) {
+         event.stop(evt);
+         // var publishTopic = this.getPublishTopic();
+         if (this.publishTopic == null || this.publishTopic.trim() == "")
+         {
+            this.alfLog("warn", "No publishTopic provided for PropertyLink", this);
+         }
+         else
+         {
+            var publishGlobal = (this.publishGlobal != null) ? this.publishGlobal : false;
+            var publishToParent = (this.publishToParent != null) ? this.publishToParent : false;
+            this.alfPublish(this.publishTopic, this.getPublishPayload(), publishGlobal, publishToParent);
+         }
+      },
+
+      /**
+       * This function currently returns the configured payload. It needs to be updated to 
+       * actually return something contextually relevant to the current item. It has been added
+       * to support extending modules.
+       *
+       * @instance
+       * @returns {object} The payload to publish when the thumbnail is clicked.
+       */
+      getPublishPayload: function alfresco_renderers_Thumbnail__getPublishPayload() {
+         // TODO: This needs to be implemented to handle links for the Document Library.
+         return this.publishPayload;
       }
    });
 });

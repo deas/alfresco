@@ -114,7 +114,9 @@ define(["dojo/_base/declare",
 
          new SearchThumbnail({
             currentItem: this.currentItem,
-            pubSubScope: this.pubSubScope
+            pubSubScope: this.pubSubScope,
+            showDocumentPreview: false,
+            publishTopic: "ALF_NAVIGATE_TO_PAGE"
          }, this.thumbnailNode);
 
          new SearchResultPropertyLink({
@@ -243,49 +245,6 @@ define(["dojo/_base/declare",
                sizeProperty : "size",
             }, this.sizeNode);
          }
-
-         // TEMPORARILY DISABLING INLINE PREVIEW
-         // PENDING REVIEW FROM PM - COULD BE MOVED TO SEARCHTHUMBNAIL FOR DOCUMENTS
-         // new PropertyLink({
-         //    currentItem : this.currentItem,
-         //    pubSubScope : this.pubSubScope,
-         //    publishTopic: "ALF_CREATE_DIALOG_REQUEST",
-         //    propertyToRender: "name",
-         //    useCurrentItemAsPayload: false,
-         //    publishPayloadType: "CONFIGURED",
-         //    publishPayload: {
-         //       dialogTitle: this.currentItem.name,
-         //       widgetsContent: [
-         //          {
-         //             name: "alfresco/documentlibrary/AlfDocument",
-         //             config: {
-         //                widgets: [
-         //                   {
-         //                      name: "alfresco/preview/AlfDocumentPreview"
-         //                   }
-         //                ]
-         //             }
-         //          }
-         //       ],
-         //       widgetsButtons: [
-         //          {
-         //             name: "alfresco/buttons/AlfButton",
-         //             config: {
-         //                label: "Close",
-         //                publishTopic: "NO_OP"
-         //             }
-         //          }
-         //       ],
-         //       publishOnShow: [
-         //          {
-         //             publishTopic: "ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST",
-         //             publishPayload: {
-         //                nodeRef: this.currentItem.nodeRef
-         //             }
-         //          }
-         //       ]
-         //    }
-         // }, this.previewNode);
 
          new XhrActions({
             onlyShowOnHover: true,

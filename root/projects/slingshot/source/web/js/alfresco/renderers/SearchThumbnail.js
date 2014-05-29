@@ -30,10 +30,30 @@ define(["dojo/_base/declare",
         "alfresco/navigation/_HtmlAnchorMixin",
         "alfresco/renderers/_SearchResultLinkMixin",
         "service/constants/Default",
-        "dojo/_base/lang"], 
-        function(declare, Thumbnail, _HtmlAnchorMixin, _SearchResultLinkMixin, AlfConstants, lang) {
+        "dojo/_base/lang",
+        "dojo/window"], 
+        function(declare, Thumbnail, _HtmlAnchorMixin, _SearchResultLinkMixin, AlfConstants, lang, win) {
 
    return declare([Thumbnail, _HtmlAnchorMixin, _SearchResultLinkMixin], {
+
+      /**
+       * An array of the i18n files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{i18nFile: "./i18n/SearchThumbnail.properties"}]
+       */
+      i18nRequirements: [{i18nFile: "./i18n/SearchThumbnail.properties"}],
+
+      /**
+       * Indicates whether documents thumbnail clicks should launch a previewer in a dialog
+       * rather than linking directly to the document itself. Default to false.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      showDocumentPreview: false,
 
       /**
        * Generates the publication payload by calling the mixed in 
@@ -47,6 +67,62 @@ define(["dojo/_base/declare",
          this.inherited(arguments);
          this.publishPayload = this.generatePayload(this.payload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin, this.publishPayloadModifiers);
          this.makeAnchor(this.publishPayload.url, this.publishPayload.type);
+      },
+
+      /**
+       * Extends the function inherited from the [_SearchResultLinkMixin module]{@link module:alfresco/renderers/_SearchResultLinkMixin#generatePayload}
+       * to the topic and payload for documents to show a dialog containing the previewer for that document
+       *
+       * @instance
+       * @returns {object} The payload to publish when clicked.
+       */
+      generatePayload: function alfresco_renderers_SearchThumbnail__generatePayload() {
+         var type = lang.getObject("type", false, this.currentItem);
+         if (this.showDocumentPreview && type === "document")
+         {
+            // Because the content of the previewer will load asynchronously it's important that 
+            // we set some dimensions for the dialog body, otherwise it will appear off-center
+            var vs = win.getBox();
+            this.publishTopic = "ALF_CREATE_DIALOG_REQUEST";
+            return {
+               contentWidth: (vs.w*0.8) + "px",
+               contentHeight: (vs.h*0.7) + "px",
+               dialogTitle: this.currentItem.name,
+               widgetsContent: [
+                  {
+                     name: "alfresco/documentlibrary/AlfDocument",
+                     config: {
+                        widgets: [
+                           {
+                              name: "alfresco/preview/AlfDocumentPreview"
+                           }
+                        ]
+                     }
+                  }
+               ],
+               widgetsButtons: [
+                  {
+                     name: "alfresco/buttons/AlfButton",
+                     config: {
+                        label: this.message("searchThumbnail.preview.dialog.close"),
+                        publishTopic: "NO_OP"
+                     }
+                  }
+               ],
+               publishOnShow: [
+                  {
+                     publishTopic: "ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST",
+                     publishPayload: {
+                        nodeRef: this.currentItem.nodeRef
+                     }
+                  }
+               ]
+            };
+         }
+         else
+         {
+            return this.inherited(arguments);
+         }
       },
 
       /**

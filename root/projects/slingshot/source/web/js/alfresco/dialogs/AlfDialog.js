@@ -39,10 +39,11 @@ define(["dojo/_base/declare",
         "dojo/_base/array",
         "dojo/dom-construct",
         "dojo/dom-class",
+        "dojo/dom-style",
         "dojo/html",
         "dojo/aspect",
         "dijit/registry"], 
-        function(declare, Dialog, AlfCore, CoreWidgetProcessing, lang, array, domConstruct, domClass, html, aspect, registry) {
+        function(declare, Dialog, AlfCore, CoreWidgetProcessing, lang, array, domConstruct, domClass, domStyle, html, aspect, registry) {
    
    return declare([Dialog, AlfCore, CoreWidgetProcessing], {
       
@@ -120,6 +121,12 @@ define(["dojo/_base/declare",
          this.bodyNode = domConstruct.create("div", {
             "class" : "dialog-body"
          }, this.containerNode, "last");
+
+         // Set the dimensions of the body if required...
+         domStyle.set(this.bodyNode, {
+            width: this.contentWidth ? this.contentWidth: null,
+            height: this.contentHeight ? this.contentHeight: null
+         });
 
          // It is important to create the buttons BEFORE creating the main body. This is especially important
          // for when the buttons will respond to initial setup events from a form placed inside the body (e.g.
