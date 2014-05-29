@@ -66,8 +66,6 @@
                 <excludes>
                     <!-- CLOUD-1790/ALF-18573 Excluding context file from jar - only used in AMP -->
                     <exclude>alfresco/module/org.alfresco.module.vti/module-context.xml</exclude>
-                    <!-- Exclude module.properties file where it is committed, and brings it to the top -->
-                    <exclude>alfresco/module/org.alfresco.module.vti/module.properties</exclude>
                 </excludes>
             </resource>
             <resource>
