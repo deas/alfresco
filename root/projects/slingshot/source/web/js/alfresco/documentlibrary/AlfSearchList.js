@@ -33,8 +33,9 @@ define(["dojo/_base/declare",
         "dojo/dom-construct",
         "dojo/dom-class",
         "dojo/hash",
-        "dojo/io-query"], 
-        function(declare, AlfDocumentList, PathUtils, array, lang, domConstruct, domClass, hash, ioQuery) {
+        "dojo/io-query",
+        "alfresco/core/ArrayUtils"], 
+        function(declare, AlfDocumentList, PathUtils, array, lang, domConstruct, domClass, hash, ioQuery, arrayUtils) {
    
    return declare([AlfDocumentList], {
       
@@ -301,9 +302,7 @@ define(["dojo/_base/declare",
          else
          {
             this.facetFilters[filter] = true;
-
-            this.resetResultsList();
-            this.loadData();
+            this.updateFilterHash(filter, "add");
          }
       },
 
@@ -318,8 +317,46 @@ define(["dojo/_base/declare",
       onRemoveFacetFilter: function alfresco_documentlibrary_AlfSearchList__onRemoveFacetFilter(payload) {
          this.alfLog("log", "Removing facet filter", payload, this);
          delete this.facetFilters[payload.filter];
-         this.resetResultsList();
-         this.loadData();
+         this.updateFilterHash(payload.filter, "remove");
+      },
+
+      /**
+       * Performs updates to the url hash as facets are selected and de-selected
+       * 
+       * @instance
+       */
+      updateFilterHash: function alfresco_documentlibrary_AlfSearchList__updateFilterHash(fullFilter, mode) {
+
+         // Get the existing hash and extract the individual facetFilters into an array
+         var aHash = ioQuery.queryToObject(hash()),
+             facetFilters = ((aHash.facetFilters) ? aHash.facetFilters : ""),
+             facetFiltersArr = (facetFilters === "") ? [] : facetFilters.split(",");
+
+         // Add or remove the filter from the hash object
+         if(mode === "add" && !arrayUtils.arrayContains(facetFiltersArr, fullFilter))
+         {
+            facetFiltersArr.push(fullFilter);
+         }
+         else if (mode === "remove" && arrayUtils.arrayContains(facetFiltersArr, fullFilter))
+         {
+            facetFiltersArr.splice(facetFiltersArr.indexOf(fullFilter), 1);
+         }
+
+         // Put the manipulated filters back into the hash object or remove the property if empty
+         if(facetFiltersArr.length < 1)
+         {
+            delete aHash.facetFilters;
+         }
+         else
+         {
+            aHash.facetFilters = facetFiltersArr.join();
+         }
+
+         // Send the hash value back to navigation
+         this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
+            url: ioQuery.objectToQuery(aHash),
+            type: "HASH"
+         }, true);
       },
 
       /**
