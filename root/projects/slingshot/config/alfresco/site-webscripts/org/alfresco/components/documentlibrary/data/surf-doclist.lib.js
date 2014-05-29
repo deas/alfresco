@@ -900,11 +900,16 @@ var DocList =
    }
 };
 
-var surfDoclist_main = function surfDoclist_main()
+var surfDoclist_main = function surfDoclist_main(includeThumbnails)
 {
    var json = "{}",
-      dataUrl = DocList_Custom.calculateRemoteDataURL(),
-      result = remote.call(dataUrl);
+      dataUrl = DocList_Custom.calculateRemoteDataURL();
+   if (includeThumbnails === true)
+   {
+      dataUrl += "&includeThumbnails=true";
+   }
+
+   var result = remote.call(dataUrl);
 
    if (result.status == 200)
    {

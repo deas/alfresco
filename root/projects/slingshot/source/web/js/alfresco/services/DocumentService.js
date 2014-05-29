@@ -80,7 +80,7 @@ define(["dojo/_base/declare",
             }
 
             // View mode and No-cache
-            var params = "?view=browse&noCache=" + new Date().getTime();
+            var params = "?view=browse&noCache=" + new Date().getTime() + "&includeThumbnails=true";
 
             var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST";
             var url = AlfConstants.URL_SERVICECONTEXT + "components/documentlibrary/data/node/" + targetNodeUri + params;

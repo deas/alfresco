@@ -242,6 +242,10 @@ define(["dojo/_base/declare",
        */
       widgetsForPlugins: [
          {
+            id: "PdfJs",
+            name: "alfresco/preview/PdfJs"
+         },
+         {
             id: "WebPreviewer",
             name: "alfresco/preview/WebPreviewer"
          },
@@ -278,8 +282,15 @@ define(["dojo/_base/declare",
             if (plugin.id != null && plugin.name != null)
             {
                this.alfLog("log", "Creating plugin: ", plugin.id);
-               var pluginModule = [plugin.name];
-               require(pluginModule, lang.hitch(this, "createPlugin", plugin.id));
+               try
+               {
+                  var pluginModule = [plugin.name];
+                  require(pluginModule, lang.hitch(this, "createPlugin", plugin.id));
+               }
+               catch (e)
+               {
+                  this.alfLog("error", "An error occurred creating a preview plugin", e);
+               }
             }
             else
             {
@@ -469,15 +480,15 @@ define(["dojo/_base/declare",
        * @return {boolean} true if conditions are fulfilled for plugins to be used.
        */
       conditionsMatch: function alfresco_preview_AlfDocumentPreview__conditionsMatch(condition) {
-         if (condition.attributes.mimeType && condition.attributes.mimeType != this.mimeType)
+         if (condition.attributes.mimeType && condition.attributes.mimeType === this.mimeType)
          {
-            return false;
+            return true;
          }
-         if (condition.attributes.thumbnail && !Alfresco.util.arrayContains(this.thumbnails, condition.attributes.thumbnail))
+         if (condition.attributes.thumbnail && Alfresco.util.arrayContains(this.thumbnails, condition.attributes.thumbnail))
          {
-            return false;
+            return true;
          }
-         return true;
+         return false;
       },
 
       /**
@@ -500,7 +511,7 @@ define(["dojo/_base/declare",
        * Helper method for plugins to create a url to the thumbnail's content.
        *
        * @instance
-    * @param thumbnail {String} The thumbnail definition name
+       * @param thumbnail {String} The thumbnail definition name
        * @param fileSuffix {String} (Optional) I.e. ".png" if shall be inserted in the url to make certain flash
        *        plugins understand the mimetype of the thumbnail.
        * @return {String} The url to the thumbnail content.
@@ -571,6 +582,33 @@ define(["dojo/_base/declare",
        * @default null
        */
       pluginConditions: [
+         {
+            attributes:
+            {
+               mimeType: "application/pdf"
+            },
+            plugins: [
+               {
+                  name: "PdfJs",
+                  attributes: {}
+               }
+            ]
+         },
+         {
+            attributes:
+            {
+               thumbnail: "pdf",
+            },
+            plugins: [
+               {
+                  name: "PdfJs",
+                  attributes: {
+                     src: "pdf",
+                     progressiveLoading: false
+                  }
+               }
+            ]
+         },
          {
             attributes: {
                thumbnail: "imgpreview",

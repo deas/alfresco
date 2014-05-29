@@ -31,8 +31,9 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "dojo/_base/lang",
         "alfresco/dialogs/AlfDialog",
-        "alfresco/forms/Form"],
-        function(declare, AlfCore, lang, AlfDialog, AlfForm) {
+        "alfresco/forms/Form",
+        "dojo/_base/array"],
+        function(declare, AlfCore, lang, AlfDialog, AlfForm, array) {
    
    return declare([AlfCore], {
 
@@ -47,6 +48,7 @@ define(["dojo/_base/declare",
          // to contrain communication...
          this.publishTopic = "ALF_CREATE_FORM_DIALOG_REQUEST";
          this.alfSubscribe(this.publishTopic, lang.hitch(this, "onCreateFormDialogRequest"));
+         this.alfSubscribe("ALF_CREATE_DIALOG_REQUEST", lang.hitch(this, this.onCreateDialogRequest));
       },
 
       /**
@@ -77,6 +79,47 @@ define(["dojo/_base/declare",
          dialogTitle: "",
          dialogConfirmationButtonTitle: "OK",
          dialogCancellationButtonTitle: "Cancel",
+      },
+
+      /**
+       * Handles requests to create basic dialogs.
+       *
+       * @instance
+       * @param {object} payload The details of the widgets and buttons for the dialog
+       */
+      onCreateDialogRequest: function alfresco_dialogs_AlfDialogService__onCreateDialogRequest(payload) {
+         var dialogConfig = {
+            title: this.message(payload.dialogTitle),
+            widgetsContent: payload.widgetsContent,
+            widgetsButtons: payload.widgetsButtons
+         };
+         this.dialog = new AlfDialog(dialogConfig);
+         
+
+         if (payload.publishOnShow)
+         {
+            array.forEach(payload.publishOnShow, lang.hitch(this, this.publishOnShow))
+         }
+         this.dialog.show();
+      },
+
+      /**
+       * This function is called when the request to create a dialog includes publication data
+       * to be performed when the dialog is displayed.
+       *
+       * @instance
+       * @param {object} publication The publication configuration
+       */
+      publishOnShow: function alfresco_dialogs_AlfDialogService__publishOnShow(publication) {
+         // TODO: Defensive coding, global/parent scope arg handling...
+         if (publication.publishTopic && publication.publishPayload)
+         {
+            this.alfPublish(publication.publishTopic, publication.publishPayload);
+         }
+         else
+         {
+            this.alfLog("warn", "A request was made to publish data when a dialog is loaded, but either the topic or payload was missing", publication, this);
+         }
       },
 
       /**

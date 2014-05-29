@@ -1,0 +1,44 @@
+{
+   "publishOnReady": [
+      {
+         "publishTopic": "ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST",
+         "publishPayload": {
+            "dataSource": "customNodeRef",
+            "nodeRef": "workspace://SpacesStore/dcf25e07-c4d4-4041-a49c-48df9f6a2187"
+         }
+      }
+   ],
+   "services": [
+      {
+         "name": "alfresco/services/LoggingService",
+         "config": {
+            "loggingPreferences": {
+               "enabled": true,
+               "all": true
+            }
+         }
+      },
+      "alfresco/services/DocumentService"
+   ],
+   "widgets":[
+      {
+         "name": "alfresco/documentlibrary/AlfDocument",
+         "config": {
+            "widgets": [
+               {
+                  "name": "alfresco/preview/AlfDocumentPreview",
+                  "config": {
+
+                  }
+               }
+            ]
+         }
+      }
+      {
+         "name": "alfresco/testing/SubscriptionLog"
+      },
+      {
+         "name": "alfresco/testing/TestCoverageResults"
+      }
+   ]
+}

@@ -70,7 +70,7 @@
       this.widgets = {};
       this.documentConfig = {};
       this.wp = wp;
-      this.id = wp.id; // needed by Alfresco.util.createYUIButton
+      this.wp.id = wp.id; // needed by Alfresco.util.createYUIButton
       this.attributes = YAHOO.lang.merge(Alfresco.util.deepCopy(this.attributes), attributes);
       
       /*
@@ -494,23 +494,23 @@
          this.widgets.sidebarButton = Alfresco.util.createYUIButton(this, "sidebarBtn", this.onSidebarToggle, {
             type: "checkbox",
             disabled: true
-         });
+         }, this.wp.id + "-sidebarBtn");
          this.widgets.nextButton = Alfresco.util.createYUIButton(this, "next", this.onPageNext, {
             disabled: true
-         });
+         }, this.wp.id + "-next");
          this.widgets.previousButton = Alfresco.util.createYUIButton(this, "previous", this.onPagePrevious, {
             disabled: true
-         });
+         }, this.wp.id + "-previous");
          Event.addListener(this.wp.id + "-pageNumber", "change", this.onPageChange, this, true);
          this.widgets.zoomOutButton = Alfresco.util.createYUIButton(this, "zoomOut", this.onZoomOut, {
             disabled: true
-         });
+         }, this.wp.id + "-zoomOut");
          this.widgets.zoomInButton = Alfresco.util.createYUIButton(this, "zoomIn", this.onZoomIn, {
             disabled: true
-         });
-         this.widgets.scaleMenu = new YAHOO.widget.Button(this.id + "-scaleSelectBtn", {
+         }, this.wp.id + "-zoomIn");
+         this.widgets.scaleMenu = new YAHOO.widget.Button(this.wp.id + "-scaleSelectBtn", {
             type : "menu",
-            menu : this.id + "-scaleSelect",
+            menu : this.wp.id + "-scaleSelect",
             disabled: true
          });
          this.widgets.scaleMenu.getMenu().subscribe("click", this.onZoomChange, null, this);
@@ -521,7 +521,7 @@
          {
             downloadMenu.push({ text: this.wp.msg("link.downloadPdf"), value: "", onclick: { fn: this.onDownloadPDFClick, scope: this } });
          }
-         this.widgets.downloadButton = new YAHOO.widget.Button(this.id + "-download", {
+         this.widgets.downloadButton = new YAHOO.widget.Button(this.wp.id + "-download", {
             type : "menu",
             menu : downloadMenu
          });
@@ -548,7 +548,7 @@
             {*/
                this.widgets.maximize = Alfresco.util.createYUIButton(this, "fullpage", this.onMaximizeClick, {
                   title: this.wp.msg("button.maximize.tip", YAHOO.env.ua.os == "macintosh" ? this.wp.msg("key.meta") : this.wp.msg("key.ctrl"))
-               });
+               }, this.wp.id + "-fullpage");
                Dom.getElementsByClassName("maximizebutton", "span", this.controls, function setDisplay(el) {
                   Dom.setStyle(el, "display", "inline");
                });
@@ -565,7 +565,7 @@
             });
             this.widgets.linkBn = Alfresco.util.createYUIButton(this, "link", this.onLinkClick, {
                type: "checkbox"
-            });
+            }, this.wp.id + "-link");
          }
 
          // Set up search toolbar
@@ -579,23 +579,21 @@
                _this.onFindChange("find");
             }
          });
-         this.widgets.previousSearchButton = Alfresco.util.createYUIButton(this, "findPrevious", this.onFindChange);
-         this.widgets.nextSearchButton = Alfresco.util.createYUIButton(this, "findNext", this.onFindChange);
-         this.widgets.searchHighlight = Alfresco.util.createYUIButton(this, "findHighlightAll",
-               this.onFindChangeHighlight, {
-                  type : "checkbox"
-               });
-         this.widgets.searchMatchCase = Alfresco.util.createYUIButton(this, "findMatchCase",
-               this.onFindChangeMatchCase, {
-                  type : "checkbox"
-               });
+         this.widgets.previousSearchButton = Alfresco.util.createYUIButton(this, "findPrevious", this.onFindChange, {}, this.wp.id + "-findPrevious");
+         this.widgets.nextSearchButton = Alfresco.util.createYUIButton(this, "findNext", this.onFindChange, {}, this.wp.id + "-findNext");
+         this.widgets.searchHighlight = Alfresco.util.createYUIButton(this, "findHighlightAll", this.onFindChangeHighlight, {
+            type : "checkbox"
+         }, this.wp.id + "-findHighlightAll");
+         this.widgets.searchMatchCase = Alfresco.util.createYUIButton(this, "findMatchCase",this.onFindChangeMatchCase, {
+            type : "checkbox"
+         }, this.wp.id + "-findMatchCase");
          this.widgets.searchBarToggle = Alfresco.util.createYUIButton(this, "searchBarToggle", this.onToggleSearchBar,
          {
             type : "checkbox",
             disabled: true,
             title: this.wp.msg("button.search.tip", 
                   YAHOO.env.ua.os == "macintosh" ? this.wp.msg("key.meta") : this.wp.msg("key.ctrl"))
-         });
+         }, this.wp.id + "-searchBarToggle");
          
          // Enable sidebar, scale drop-down and search button when PDF is loaded
          // Other buttons are enabled by custom functions
@@ -983,7 +981,7 @@
          var renderPageContainer = Alfresco.util.bind(function(promisedPages)
          {
             var self = this;
-            this.documentView = new DocumentView(this.id + "-viewer", {
+            this.documentView = new DocumentView(this.wp.id + "-viewer", {
                name: "documentView",
                pageLayout : this.attributes.pageLayout,
                currentScale : K_UNKNOWN_SCALE,
@@ -1142,7 +1140,7 @@
        */
       _addOutline : function PdfJs__addOutline(outline)
       {
-         var pEl = Dom.get(this.id + "-outlineView");
+         var pEl = Dom.get(this.wp.id + "-outlineView");
 
          if (outline && outline.length > 0)
          {
@@ -1278,7 +1276,7 @@
             Dom.addClass(this.viewer, "sideBarVisible");
             if (!this.thumbnailView)
             {
-               this.thumbnailView = new DocumentView(this.id + "-thumbnailView", {
+               this.thumbnailView = new DocumentView(this.wp.id + "-thumbnailView", {
                   name: "thumbnailView",
                   pageLayout : "single",
                   defaultScale : "page-width",
@@ -1300,7 +1298,7 @@
          };
 
          // Lazily instantiate the TabView
-         this.widgets.tabview = this.widgets.tabview || new YAHOO.widget.TabView(this.id + "-sidebarTabView");
+         this.widgets.tabview = this.widgets.tabview || new YAHOO.widget.TabView(this.wp.id + "-sidebarTabView");
 
          // Set up the thumbnail view immediately
          if (this.thumbnailView && this.thumbnailView.pages.length > 0 && !this.thumbnailView.pages[0].container)
@@ -1466,7 +1464,7 @@
       {
          if (!this.widgets.searchDialog)
          {
-            this.widgets.searchDialog = new YAHOO.widget.SimpleDialog(this.id + '-searchDialog',
+            this.widgets.searchDialog = new YAHOO.widget.SimpleDialog(this.wp.id + '-searchDialog',
             {
                close : false,
                draggable : false,
@@ -1479,7 +1477,7 @@
             });
             this.widgets.searchDialog.render();
             
-            new YAHOO.util.KeyListener(Dom.get(this.id + "-searchDialog"), { keys: 27 }, { // escape
+            new YAHOO.util.KeyListener(Dom.get(this.wp.id + "-searchDialog"), { keys: 27 }, { // escape
                fn: function (type, args) {
                   if (this.widgets.searchBarToggle.get("checked"))
                   {
@@ -1543,7 +1541,7 @@
        */
       onFindChange : function PdfJs_onFindChange(e_obj)
       {
-         var query = Dom.get(this.id + '-findInput').value
+         var query = Dom.get(this.wp.id + '-findInput').value
          if (!query) return;
 
          var event = document.createEvent('CustomEvent'),
@@ -1564,10 +1562,10 @@
 
          switch (triggerevent)
          {
-            case this.id + '-findNext':
+            case this.wp.id + '-findNext':
                eventid += 'again';
                break;
-            case this.id + '-findPrevious':
+            case this.wp.id + '-findPrevious':
                eventid += 'again';
                findPrevious = true;
                break;
@@ -1720,7 +1718,7 @@
        */
       onLinkClick : function PdfJs_onLinkClick(p_obj)
       {
-         var dialogid = this.id + "-linkDialog",
+         var dialogid = this.wp.id + "-linkDialog",
              inputid = dialogid + "-input";
 
          var fnSelectLink = function PdfJs_onLinkClick_fnSelectLink() {
