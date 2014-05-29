@@ -1,5 +1,24 @@
 /**
- * CommenstList component.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * CommentsList component.
  * 
  * Displays a list of comments and a editor for creating new ones.
  * 
@@ -298,13 +317,12 @@
 
          // instantiate the simple editor we use for the form
          var editor = new Alfresco.util.RichEditor(Alfresco.constants.HTML_EDITOR, rowId + '-content', this.options.editorConfig);
-         this.widgets.editor = editor;
          editor.addPageUnloadBehaviour(this.msg("message.unsavedChanges.comment"));
          editor.render();
 
          // Add validation to the rich text editor
          var keyUpIdentifier = (Alfresco.constants.HTML_EDITOR === 'YAHOO.widget.SimpleEditor') ? 'editorKeyUp' : 'onKeyUp';
-         this.widgets.editor.subscribe(keyUpIdentifier, function (e)
+         editor.subscribe(keyUpIdentifier, function (e)
          {
             /**
              * Doing a form validation on every key stroke is process consuming, below we try to make sure we only do
@@ -313,10 +331,10 @@
              * being present. Only a "Select all" followed by delete will clean all tags, otherwise leftovers will
              * be there even if the form looks empty.
              */
-            if (this.widgets.editor.getContent().length < 20 || !this.widgets.commentForm.isValid())
+            if (editor.getContent().length < 20 || !this.widgets.commentForm.isValid())
             {
                // Submit was disabled and something has been typed, validate and submit will be enabled
-               this.widgets.editor.save();
+               editor.save();
                this.widgets.commentForm.validate()
             }
          }, this, true);
@@ -363,7 +381,6 @@
             {
                this._setBusy(this.msg("message.wait"));
                cancelButton.set("disabled", true);
-               // this.widgets.editor.disable();
                // Make sure the editors content is saved down to the form
                editor.save();
                editor.getEditor().undoManager.clear();
@@ -558,6 +575,15 @@
          this.widgets.addCommentEditor.save();
          Dom.removeClass(this.id + "-add-form-container", "hidden");
          this.widgets.addCommentEditor.focus();
+         // FireFox specific hack - applying focus() to the editor on page load sometimes simply doesn't work
+         // if the activeElement is still not the editor then try again after giving the page further time to init
+         if (document.activeElement.nodeName != "IFRAME")
+         {
+            var editor = this.widgets.addCommentEditor;
+            window.setTimeout(function() {
+               editor.focus();
+            }, 500);
+         }
       },
 
       /**
@@ -588,7 +614,7 @@
          this.widgets.editFormWrapper.innerHTML = this.formMarkup(rowId, comment.author.username, comment.content);
 
          // Initialize form with editor
-         this.setupCommentForm(rowId, comment.nodeRef, true);
+         this.widgets.editCommentEditor = this.setupCommentForm(rowId, comment.nodeRef, true).editor;
 
          // make sure the new form is placed above the empty form placeholder in the datatable
          this.synchronizeElements(this.widgets.editFormWrapper, formContainer);
@@ -598,11 +624,12 @@
          
          // ALF-19935 - Disable pagination controls on edit comment
          var paginatorContainers = this.widgets.alfrescoDataTable.widgets.paginator._containers, index = 0;
-         
          for (index = 0; index < paginatorContainers.length; ++index)
          {
             Dom.addClass(paginatorContainers[index], "hidden");
          }
+         
+         this.widgets.editCommentEditor.focus();
       },
 
       /**
