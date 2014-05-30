@@ -41,19 +41,20 @@ define(["intern!object",
          // that we get a relative date in the form "Modified over X years ago" so we're going to use a regular
          // expression that should continue to work in the future as the date gets further into the past
          .elementByCss("#CUSTOM_PROPS .value")
-            .text()
-            .then(function(resultText) {
-               assert(/(Modified over \d+ years ago by Brian Griffin)/g.test(resultText), "Test #1 - Custom propertie not rendered correctly: " + resultText);
-            })
-            .end()
+         .text()
+         .then(function(resultText) {
+            TestCommon.log(testname,46,"Check custom property is rendered correctly");
+            assert(/(Modified over \d+ years ago by Brian Griffin)/g.test(resultText), "Custom property not rendered correctly: " + resultText);
+         })
+         .end()
 
          .elementByCss("#STANDARD_PROPS .value")
-            .text()
-            .then(function(resultText) {
-               assert(/(Modified over \d+ years ago by Chris Griffin)/g.test(resultText), "Test #2 - Standard propertie not rendered correctly: " + resultText);
-            })
-            .end()
-
+         .text()
+         .then(function(resultText) {
+            TestCommon.log(testname,54,"Check standard property is rendered correctly");
+            assert(/(Modified over \d+ years ago by Chris Griffin)/g.test(resultText), "Standard property not rendered correctly: " + resultText);
+         })
+         .end()
 
          // Post the coverage results...
          .then(function() {

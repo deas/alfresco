@@ -31,176 +31,220 @@ define(["intern!object",
    registerSuite({
       name: 'AlfDocumentList Test',
       'AlfSearchListTest': function () {
+
          var browser = this.remote;
          var testname = "AlfDocumentListTest";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/DocumentList_TestPage.json", testname)
 
          .end()
-         
+
          // 1. Check that the initial request for data is correct...
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "path", "/"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #1a - 'path' not initialised correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,44,"Check 'path' initialised correctly");
+            assert(elements.length == 2, "'path' not initialised correctly"); // 2 because there is one in the filter.path too
+         })
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "type", "all"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #1b - not initialised to show folders");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,51,"Check initialised to show folders");
+            assert(elements.length == 1, "not initialised to show folders");
+         })
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "site", "fake-site"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #1c - 'site' not initialised correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,58,"Check 'site' initialised correctly");
+            assert(elements.length == 1, "'site' not initialised correctly");
+         })
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "container", "documentlibrary"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #1d - 'container' not initialised correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,65,"Check 'container' initialised correctly");
+            assert(elements.length == 1, "'container' not initialised correctly");
+         })
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "sortAscending", "false"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #1e - 'sortAscending' not initialised correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,72,"Check 'sortAscending' initialised correctly");
+            assert(elements.length == 1, "'sortAscending' not initialised correctly");
+         })
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "sortField", "cm:title"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #1f - 'sortField' not initialised correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,79,"Check 'sortField' initialised correctly");
+            assert(elements.length == 1, "'sortField' not initialised correctly");
+         })
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "page", "1"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #1g - 'page' not initialised correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,86,"Check 'page' initialised correctly");
+            assert(elements.length == 1, "'page' not initialised correctly");
+         })
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "pageSize", "3"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #1h - 'pageSize' not initialised correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,93,"Check 'pageSize' initialised correctly");
+            assert(elements.length == 1, "'pageSize' not initialised correctly");
+         })
+         .end()
 
          // 2. Change the sort order...
          .elementByCss("#SORT_ASC_REQUEST")
-            .moveTo()
-            .click()
-            .end()
+         .moveTo()
+         .click()
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "sortAscending", "true"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #2a - 'sortAscending' not updated correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,106,"Check 'sortAscending' updated correctly");
+            assert(elements.length == 1, "'sortAscending' not updated correctly");
+         })
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "sortField", "cm:name"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #2b - 'sortField' not updated correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,113,"Check 'sortField' updated correctly");
+            assert(elements.length == 1, "'sortField' not updated correctly");
+         })
+         .end()
 
          // 3. Change sort field
          .elementByCss("#SORT_FIELD_SELECTION")
-            .moveTo()
-            .click()
-            .end()
+         .moveTo()
+         .click()
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "sortAscending", "true"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #3a - 'sortAscending' changed unexpectedly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,126,"Check 'sortAscending' has not changed");
+            assert(elements.length == 1, "'sortAscending' changed unexpectedly");
+         })
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "sortField", "cm:title"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #3b - 'sortField' not updated correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,133,"Check 'sortField' updated correctly");
+            assert(elements.length == 1, "'sortField' not updated correctly");
+         })
+         .end()
 
          // 4. Change the sort order again (to descending this time)...
          .elementByCss("#SORT_DESC_REQUEST")
-            .moveTo()
-            .click()
-            .end()
+         .moveTo()
+         .click()
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "sortAscending", "false"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #4a - 'sortAscending' not updated correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,146,"Check 'sortAscending' updated correctly");
+            assert(elements.length == 1, "'sortAscending' not updated correctly");
+         })
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "sortField", "cm:title"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #4b - 'sortField' changed unexpectedly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,153,"Check 'sortField' has not changed");
+            assert(elements.length == 1, "'sortField' changed unexpectedly");
+         })
+         .end()
 
          // 5. Hide folders...
          .elementByCss("#HIDE_FOLDERS")
-            .moveTo()
-            .click()
-            .end()
+         .moveTo()
+         .click()
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "type", "documents"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #5 - 'type' not updated correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,166,"Check 'type' updated correctly");
+            assert(elements.length == 1, "'type' not updated correctly");
+         })
+         .end()
 
          // 6. Show folders...
          .elementByCss("#SHOW_FOLDERS")
-            .moveTo()
-            .click()
-            .end()
+         .moveTo()
+         .click()
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "type", "all"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #6 - 'type' not updated correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,179,"Check 'type' updated correctly");
+            assert(elements.length == 1, "'type' not updated correctly");
+         })
+         .end()
 
          // 7. Set page...
          .elementByCss("#SET_PAGE")
-            .moveTo()
-            .click()
-            .end()
+         .moveTo()
+         .click()
+         .end()
+
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "page", "2"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #7 - 'page' not updated correctly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,192,"Check 'page' updated correctly");
+            assert(elements.length == 1, "'page' not updated correctly");
+         })
+         .end()
 
          .elementByCss("#PUBLISH_DATA")
-            .moveTo()
-            .click()
-            .end()
+         .moveTo()
+         .click()
+         .end()
 
          // 8. Check the first view is displayed...
         .elementsByCss(".alfresco-documentlibrary-views-layouts-AlfDocumentListView .alfresco-documentlibrary-views-layouts-Cell span.alfresco-renderers-Property:nth-child(1)")
-            .then(function(elements) {
-               assert(elements.length == 3, "Test #8a - 'VIEW1' was not displayed");
-            })
-            .end()
-        .elementsByCss(".alfresco-documentlibrary-views-layouts-AlfDocumentListView .alfresco-documentlibrary-views-layouts-Cell span.alfresco-renderers-Property:nth-child(2)")
-            .then(function(elements) {
-               assert(elements.length == 0, "Test #8b - 'VIEW2' was displayed unexpectedly");
-            })
-            .end()
+         .then(function(elements) {
+            TestCommon.log(testname,205,"Check 'VIEW1' was displayed");
+            assert(elements.length == 3, "'VIEW1' was not displayed");
+         })
+         .end()
+
+         .elementsByCss(".alfresco-documentlibrary-views-layouts-AlfDocumentListView .alfresco-documentlibrary-views-layouts-Cell span.alfresco-renderers-Property:nth-child(2)")
+         .then(function(elements) {
+            TestCommon.log(testname,212,"Check 'VIEW1' was not displayed");
+            assert(elements.length == 0, "'VIEW2' was displayed unexpectedly");
+         })
+         .end()
+
          .elementByCss("#CHANGE_VIEW")
-            .moveTo()
-            .click()
-            .end()
-        .elementsByCss(".alfresco-documentlibrary-views-layouts-AlfDocumentListView .alfresco-documentlibrary-views-layouts-Cell span.alfresco-renderers-Property:nth-child(2)")
-            .then(function(elements) {
-               assert(elements.length == 3, "Test #8c - 'VIEW2' was not displayed");
-            })
-            .end()
+         .moveTo()
+         .click()
+         .end()
+
+         .elementsByCss(".alfresco-documentlibrary-views-layouts-AlfDocumentListView .alfresco-documentlibrary-views-layouts-Cell span.alfresco-renderers-Property:nth-child(2)")
+         .then(function(elements) {
+            TestCommon.log(testname,224,"Check 'VIEW2' has displayed");
+            assert(elements.length == 3, "'VIEW2' was not displayed");
+         })
+         .end()
 
          // 9. Change the page size
          .elementByCss("#SET_DOCS_PER_PAGE")
-            .moveTo()
-            .click()
-            .end()
-        .elementsByCss(TestCommon.pubSubDataCssSelector("last", "page", "1"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #9a - 'page' not didn't get reset to 1 to account for new page size");
-            })
-            .end()
-        .elementsByCss(TestCommon.pubSubDataCssSelector("last", "pageSize", "6"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #9b - 'pageSize' not updated correctly");
-            })
-            .end()
+         .moveTo()
+         .click()
+         .end()
+
+         .elementsByCss(TestCommon.pubSubDataCssSelector("last", "page", "1"))
+         .then(function(elements) {
+            TestCommon.log(testname,237,"Check 'page' was reset to 1 to account for new page size");
+            assert(elements.length == 1, "'page' not didn't get reset to 1 to account for new page size");
+         })
+         .end()
+
+         .elementsByCss(TestCommon.pubSubDataCssSelector("last", "pageSize", "6"))
+         .then(function(elements) {
+            TestCommon.log(testname,244,"Check 'pageSize' updated correctly");
+            assert(elements.length == 1, "'pageSize' not updated correctly");
+         })
+         .end()
 
          // Post the coverage results...
          .then(function() {
