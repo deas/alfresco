@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,7 +18,12 @@
  */
 
 /**
- * This module is currently a BETA
+ * <p>This module wraps the legacy Share web-previewer PdfJs plugin. It is a plug-in for the
+ * Aikau [AlfDocumentPreview]{@link module:alfresco/preview/AlfDocumentPreview} and provides
+ * the ability to preview documents that have been transformed into PDF files.</p>
+ * <p>This implementation relies on mixing in the PdfJs object prototype into the declared
+ * class which is far from ideal but will work until such a time that the Aikau version supercedes
+ * the original web-previewer plugin</p>
  *
  * @module alfresco/preview/PdfJs
  * @extends module:alfresco/preview/AlfDocumentPreviewPlugin
@@ -66,14 +71,11 @@ define(["dojo/_base/declare",
       constructor: function alfresco_preview_PdfJs__constructor(args) {
          lang.mixin(args);
 
-         
          this.pages = [];
          this.pageText = [];
          this.widgets = {};
          this.documentConfig = {};
          this.wp = args.previewManager;
-         // this.id = this.wp.id; // needed by Alfresco.util.createYUIButton
-         // this.attributes = YAHOO.lang.merge(Alfresco.util.deepCopy(this.attributes), attributes);
          this.attributes = Alfresco.util.deepCopy(this.attributes);
       
          this.wp.options = {};
@@ -83,9 +85,6 @@ define(["dojo/_base/declare",
          this.wp.options.mimeType = this.wp.mimeType;
          this.wp.msg = this.wp.message;
 
-         /*
-          * Custom events
-          */
          this.onPdfLoaded = new YAHOO.util.CustomEvent("pdfLoaded", this);
          this.onResize = new YAHOO.util.CustomEvent("resize", this);
 
@@ -93,18 +92,11 @@ define(["dojo/_base/declare",
          aspect.before(this, "display", function() {
             _this.onComponentsLoaded();
          });
-         
-
-
-         // this.attributes = {
-         //    src: null,
-         //    srcMaxSize: "2000000"
-         // };
       }
-
    });
 
-   
+   // This is where the prototype is mixined into the declared prototype. It relies on the 
+   // nonAmd dependencies being available and pre-loaded into the page.
    var pt = lang.getObject("Alfresco.WebPreview.prototype.Plugins.PdfJs.prototype");
    if (pt != null)
    {
