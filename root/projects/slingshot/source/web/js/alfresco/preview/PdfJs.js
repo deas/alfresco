@@ -46,7 +46,8 @@ define(["dojo/_base/declare",
                            "/components/preview/pdfjs/compatibility.js",
                            "/components/preview/pdfjs/pdf.js",
                            "/components/preview/pdfjs/pdf.worker.js",
-                           "/components/preview/spin.js"],
+                           "/components/preview/spin.js",
+                           "/yui/tabview/tabview.js"],
 
       /**
        * The PdfJs CSS file to include.

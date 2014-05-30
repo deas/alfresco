@@ -1491,7 +1491,7 @@
             }).enable();
          }
          
-         if (this.widgets.linkBn.get("checked") === true)
+         if (this.widgets.linkBn && this.widgets.linkBn.get("checked") === true)
          {
             this.widgets.linkBn.set("checked", false);
          }
