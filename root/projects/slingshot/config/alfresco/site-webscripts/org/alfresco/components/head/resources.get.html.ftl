@@ -115,7 +115,7 @@
          </#list>
       ];
       
-      Alfresco.constants.MENU_ARROW_SYMBOL = "&#9662;";
+      Alfresco.constants.MENU_ARROW_SYMBOL = "&#9662";
       
       <#if PORTLET>
       document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=";

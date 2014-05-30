@@ -148,14 +148,14 @@
          {
             // update selected item menu button label
             var form = this.options.searchForms[p_aArgs[1].index];
-            this.widgets.formButton.set("label", form.label + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
+            this.widgets.formButton.set("label", form.label);
             this.widgets.formButton.set("title", form.description);
 
             // render the appropriate form template
             this.renderFormTemplate(form);
          },
          {
-            label: defaultForm.label + " " + Alfresco.constants.MENU_ARROW_SYMBOL,
+            label: defaultForm.label,
             title: defaultForm.description,
             type: "menu",
             menu: "selected-form-list"

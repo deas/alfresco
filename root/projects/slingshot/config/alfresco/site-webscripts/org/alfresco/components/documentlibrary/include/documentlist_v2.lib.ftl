@@ -22,7 +22,7 @@
                      <#-- FILE SELECT -->
                      <@markup id="fileSelect">
                         <div class="file-select">
-                           <button id="${id}-fileSelect-button" name="doclist-fileSelect-button">${msg("menu.select")}&nbsp;&#9662;</button>
+                           <button id="${id}-fileSelect-button" name="doclist-fileSelect-button">${msg("menu.select")}</button>
                            <div id="${id}-fileSelect-menu" class="yuimenu">
                               <div class="bd">
                                  <ul>
@@ -42,7 +42,7 @@
                         <#if createContent?size != 0 || createContentByTemplateEnabled>
                            <span id="${id}-createContent-button" class="yui-button yui-push-button">
                               <span class="first-child">
-                                 <button name="createContent">${msg("button.create-content")}&nbsp;&#9662;</button>
+                                 <button name="createContent">${msg("button.create-content")}</button>
                               </span>
                            </span>
                            <div id="${id}-createContent-menu" class="yuimenu">
@@ -94,7 +94,7 @@
                   <#-- SELECTED ITEMS MENU -->
                   <@markup id="selectedItems">
                      <div class="selected-items hideable toolbar-hidden DocListTree DocListFilter TagFilter DocListCategories">
-                        <button class="no-access-check" id="${id}-selectedItems-button" name="doclist-selectedItems-button">${msg("menu.selected-items")}&nbsp;&#9662;</button>
+                        <button class="no-access-check" id="${id}-selectedItems-button" name="doclist-selectedItems-button">${msg("menu.selected-items")}</button>
                         <div id="${id}-selectedItems-menu" class="yuimenu">
                            <div class="bd">
                               <ul>
@@ -114,7 +114,7 @@
             <@markup id="toolbarRight">
                <div class="right">
                   <div class="options-select">
-                     <button id="${id}-options-button" name="doclist-options-button">${msg("button.options")}&nbsp;&#9662;</button>
+                     <button id="${id}-options-button" name="doclist-options-button">${msg("button.options")}</button>
                      <div id="${id}-options-menu" class="yuimenu" style="display:none;">
                         <div class="bd">
                            <ul>

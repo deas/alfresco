@@ -18,7 +18,7 @@
          <div class="title theme-color-2">${msg("groupslist.title")}</div>
          <div id="${args.htmlid}-groupslist" class="groupslist">
             <div id="${args.htmlid}-invitationBar" class="invitelist-bar">
-               <button id="${args.htmlid}-selectallroles-button">${msg("groupslist.selectallroles")}&nbsp;&#9662;</button>
+               <button id="${args.htmlid}-selectallroles-button">${msg("groupslist.selectallroles")}</button>
                <select id="${args.htmlid}-selectallroles-menu">
                <#list siteRoles as siteRole>
                   <option value="${siteRole}">${msg('role.' + siteRole)}</option>

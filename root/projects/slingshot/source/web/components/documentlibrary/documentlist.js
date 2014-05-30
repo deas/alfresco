@@ -1287,7 +1287,7 @@
                   {
                      if (menuItems[index].value === this.options.sortField)
                      {
-                        this.widgets.sortField.set("label", menuItems[index].cfg.getProperty("text") + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
+                        this.widgets.sortField.set("label", menuItems[index].cfg.getProperty("text"));
                         break;
                      }
                   }
@@ -3272,7 +3272,7 @@
          {
             var me = this;
             this.options.sortField = eventTarget.value;
-            this.widgets.sortField.set("label", eventTarget.cfg.getProperty("text") + " " + Alfresco.constants.MENU_ARROW_SYMBOL);
+            this.widgets.sortField.set("label", eventTarget.cfg.getProperty("text"));
             this.services.preferences.set(PREF_SORT_FIELD, this.options.sortField, {
                successCallback:
                {
