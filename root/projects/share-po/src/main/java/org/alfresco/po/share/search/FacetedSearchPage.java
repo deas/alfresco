@@ -20,6 +20,7 @@ public class FacetedSearchPage extends SharePage
 {
 
     /** Constants */
+    private static final By SEARCH_INFO_DIV = By.cssSelector("div.info");
     private static final By FACET_GROUP = By.cssSelector("div.alfresco-documentlibrary-AlfDocumentFilters:not(.hidden)");
     private static final By RESULT = By.cssSelector("tr.alfresco-search-AlfSearchResult");
 
@@ -59,19 +60,47 @@ public class FacetedSearchPage extends SharePage
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-
+    
     /*
      * (non-Javadoc)
      * @see org.alfresco.webdrone.Render#render(org.alfresco.webdrone.RenderTime)
      */
     @Override
-    public FacetedSearchPage render(RenderTime maxPageLoadingTime)
+    public FacetedSearchPage render(RenderTime timer)
     {
-        basicRender(maxPageLoadingTime);
+        while (true)
+        {
+            timer.start();
+            synchronized (this)
+            {
+                try
+                {
+                    this.wait(100L);
+                }
+                catch (InterruptedException e)
+                {
+                }
+            }
+            try
+            {
+                
+                if (!drone.find(SEARCH_INFO_DIV).isDisplayed())
+                {
+                    break;
+                }
+            }
+            catch (Exception e)
+            {
+            }
+            finally
+            {
+                timer.end();
+            }
+        }
         loadElements();
         return this;
-    }
-
+    } 
+       
     /**
      * Gets the header search form.
      * 
