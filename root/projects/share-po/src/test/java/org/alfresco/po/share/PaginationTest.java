@@ -34,8 +34,14 @@ import org.openqa.selenium.NoSuchElementException;
  * @author Michael Suzuki
  * @since 1.2
  */
+ /**
+  * Pagination test has to be modified since pagination does not exist on basic search result page
+  * and exist only on advance search result page.
+  * Webdrone-704 has been raised to modify this test.  * 
+  *    
+  */
 @Listeners(FailedTestListener.class)
-@Test(groups={"Enterprise-only"})
+@Test(groups={"Enterprise-only","TestBug"})
 public class PaginationTest extends AbstractTest
 {
     private DashBoardPage dashBoard;
