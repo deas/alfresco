@@ -7,12 +7,14 @@ function main()
    AlfrescoUtil.param('container', 'documentLibrary');
    model.allowNewVersionUpload = false;
    model.isWorkingCopy = false;
+   model.exist = false;
    var documentDetails = AlfrescoUtil.getNodeDetails(model.nodeRef, model.site);
    if (documentDetails)
    {
       var userPermissions = documentDetails.item.node.permissions.user;
       model.allowNewVersionUpload = (!documentDetails.item.node.isLocked && documentDetails.item.node.permissions.user["Write"]) || false;
       model.isWorkingCopy = (documentDetails.item && documentDetails.item.workingCopy && documentDetails.item.workingCopy.isWorkingCopy) ? true : false;
+      model.exist = true;
    }
    
    // Widget instantiation metadata...
