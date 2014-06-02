@@ -7,6 +7,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
 	<classpathentry kind="lib" path="libs/postgresql-9.1-901.jdbc4.jar"/>
-	<classpathentry kind="lib" path="/3rd Party/lib/hazelcast-3.1.5.jar" sourcepath="/3rd Party/src/hazelcast-3.1.5-src.zip"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/hazelcast-2.4.jar" sourcepath="/3rd Party/src/hazelcast-2.4-src.zip"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
