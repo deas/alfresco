@@ -508,7 +508,7 @@
             {
                container: this.id + '-roleSelector-' + userName,
                type: "menu",
-               label: this.msg("role." + currentRole),
+               label: this.msg("role." + currentRole) + " " + Alfresco.constants.MENU_ARROW_SYMBOL,
                menu: rolesMenu
             });
 

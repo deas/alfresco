@@ -449,7 +449,7 @@
                {
                   container: me.id + '-roleSelector-' + groupName,
                   type: "menu",
-                  label: me._msg("role." + currentRole),
+                  label: me._msg("role." + currentRole) + " " + Alfresco.constants.MENU_ARROW_SYMBOL,
                   menu: rolesMenu
                });
                

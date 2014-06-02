@@ -249,7 +249,7 @@
             {
                type: "menu",
                name: buttonId,
-               label: me.getRoleLabel(oRecord),
+               label: me.getRoleLabel(oRecord) + " " + Alfresco.constants.MENU_ARROW_SYMBOL,
                menu: rolesMenu
             });
             me.listWidgets[id] =
@@ -429,7 +429,7 @@
          record.setData("role", role);
           
          // update the button
-         this.listWidgets[record.getData("id")].button.set("label", this.getRoleLabel(record));   
+         this.listWidgets[record.getData("id")].button.set("label", this.getRoleLabel(record) + " " + Alfresco.constants.MENU_ARROW_SYMBOL);   
       },
       
       /**
