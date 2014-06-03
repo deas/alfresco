@@ -30,6 +30,7 @@ import org.springframework.extensions.surf.FrameworkUtil;
 import org.springframework.extensions.surf.exception.ConnectorServiceException;
 import org.springframework.extensions.surf.mvc.LoginController;
 import org.springframework.extensions.surf.support.AlfrescoUserFactory;
+import org.springframework.extensions.surf.util.URLEncoder;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.connector.Connector;
 import org.springframework.extensions.webscripts.connector.ConnectorContext;
@@ -70,7 +71,7 @@ public class SlingshotLoginController extends LoginController
             Connector conn = FrameworkUtil.getConnector(request.getSession(), username, AlfrescoUserFactory.ALFRESCO_ENDPOINT_ID);
             ConnectorContext c = new ConnectorContext(HttpMethod.GET);
             c.setContentType("application/json");
-            Response res = conn.call("/api/people/" + username + "?groups=true", c);
+            Response res = conn.call("/api/people/" + URLEncoder.encode(username) + "?groups=true", c);
             if (Status.STATUS_OK == res.getStatus().getCode())
             {
                 // Assuming we get a successful response then we need to parse the response as JSON and then
