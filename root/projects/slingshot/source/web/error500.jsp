@@ -65,7 +65,7 @@ div.panel
       <img src="${pageContext.request.contextPath}/res/themes/default/images/app-logo.png">
       <br/>
       <br/>
-      <p style="font-size:150%">A server error has occured.</p>
+      <p style="font-size:150%">A server error has occurred.</p>
       <br/>
       <p>There are a number of reasons why this could have happened:</p>
       <div class="panel">
