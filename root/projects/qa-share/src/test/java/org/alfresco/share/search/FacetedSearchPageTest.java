@@ -52,7 +52,7 @@ public class FacetedSearchPageTest extends AbstractUtils
 
     private OpCloudTestContext testContext;
     private DashBoardPage dashBoardPage;
-    private FacetedSearchPage facetedSearchPage;
+    private FacetedSearchPage facetedSearchPage;    
     private SiteDashboardPage siteDashboardPage;
     private String siteName;
     private String testUser;
@@ -63,7 +63,7 @@ public class FacetedSearchPageTest extends AbstractUtils
      * Should not be cloud only.
      * 
      */
-    @BeforeClass(alwaysRun = true, groups = "Cloud-only")
+    @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
     {
         trace("Starting setup");
@@ -94,6 +94,10 @@ public class FacetedSearchPageTest extends AbstractUtils
             ShareUser.uploadFileInFolder(drone, fileInfo);
         }
 
+        // Navigate to the faceted search page
+        dashBoardPage = ShareUser.selectMyDashBoard(drone);
+        facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
+        
         // Logout
         ShareUser.logout(drone);
 
@@ -107,13 +111,13 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups= "Cloud-only")
+    @Test(groups= "alfresco-one")
     public void ALF_3112() throws Exception
     {
         trace("Starting firstRenderTest");
 
-        // Login as admin
-        adminLogin();
+        // Login as Test user
+        userLogin();
         
         // Page should have a title
         Assert.assertTrue(StringUtils.isNotEmpty(facetedSearchPage.getPageTitle()), "The faceted search page should have a title");
@@ -147,13 +151,13 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups= "Cloud-only")
+    @Test(groups= "alfresco-one")
     public void ALF_3113() throws Exception
     {
         trace("Starting searchTest");
 
-        // Login as admin
-        adminLogin();
+        // Login as Test user
+        userLogin();
 
         // Do a search for the letter 'a'
         doSearch("a");
@@ -179,13 +183,13 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups= "Cloud-only")
+    @Test(groups= "alfresco-one")
     public void ALF_3114() throws Exception
     {
         trace("Starting searchAndFacetTest");
 
-        // Login as admin
-        adminLogin();
+        // Login as test user
+        userLogin();
 
         // Do a search for the letter 'e'
         facetedSearchPage.getSearchForm().search("e");
@@ -232,13 +236,13 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups= "Cloud-only")
+    @Test(groups= "alfresco-one")
     public void ALF_3115() throws Exception
     {
         trace("Starting searchAndSortTest");
 
-        // Login as admin
-        adminLogin();
+        // Login as Test user
+        userLogin();
         
         // Do a search for the letter 'e'
         doSearch("e");
@@ -307,13 +311,13 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups = "Cloud-only")
+    @Test(groups = "alfresco-one")
     public void ALF_3121() throws Exception
     {
         trace("Starting searchAndSortTest");
 
-        // Login as admin
-        adminLogin();
+        // Login as Test user
+        userLogin();
 
         // Do a search for the letter 'a'
         doSearch("a");
@@ -358,13 +362,13 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups = "Cloud-only")
+    @Test(groups = "alfresco-one")
     public void ALF_3122() throws Exception
     {
         trace("Starting searchAndLinkTest");
 
-        // Login as admin
-        adminLogin();
+        // Login as test user
+        userLogin();
 
         // Do a search for the letter 'a'
         doSearch("a");
@@ -450,8 +454,8 @@ public class FacetedSearchPageTest extends AbstractUtils
     {
         trace("Starting searchAndScopeTest");
 
-        // Login as admin
-        adminLogin();
+        // Login as test user
+        userLogin();
 
         // Do a search for the letter 'a'
         doSearch("a");
@@ -512,13 +516,13 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups = "Cloud-only")
+    @Test(groups = "CloudOnly")
     public void ALF_3124() throws Exception
     {
         trace("Starting searchAndScopeTest");
 
-        // Login as admin
-        adminLogin();
+        // Login as test user
+        userLogin();
 
         // Do a search for the letter 'a'
         doSearch("a");
@@ -570,13 +574,13 @@ public class FacetedSearchPageTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups = "Cloud-only")
+    @Test(groups = "Alfresco-One")
     public void ALF_3123() throws Exception
     {
         trace("Starting precisionSearchAndSortTest");
 
-        // Login as admin
-        adminLogin();
+        // Login as test user
+        userLogin();
         
         // Do a search for the obscureSearchWord
         doSearch(obscureSearchWord);
@@ -614,13 +618,13 @@ public class FacetedSearchPageTest extends AbstractUtils
      * Should not be cloud only.
      * 
      */
-    @AfterClass(alwaysRun = true, groups = "Cloud-only")
+    @AfterClass(alwaysRun = true, groups = "alfresco-one")
     public void tearDown()
     {
         trace("Starting tearDown");
 
-        // Login as admin
-        adminLogin();
+        // Login as test user        
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Navigate to the document library page and delete all content
         SiteUtil.openSiteURL(drone, getSiteShortname(this.siteName));
@@ -679,10 +683,11 @@ public class FacetedSearchPageTest extends AbstractUtils
     /**
      * Login as admin.
      */
-    private void adminLogin()
+    private void userLogin()
     {
-        // Login as admin
-        dashBoardPage = ShareUser.loginAs(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+        
+        // Login as test user        
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Navigate to the faceted search page
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
