@@ -518,7 +518,7 @@ define(["dojo/_base/declare",
             }
          }
 
-         var resultsCount = this._currentData.numberFound;
+         var resultsCount = this._currentData.numberFound != -1 ? this._currentData.numberFound : 0;
          if (resultsCount != null)
          {
             // Publish the number of search results found...
