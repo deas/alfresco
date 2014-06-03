@@ -24,7 +24,7 @@
             "publishTopic": "ALF_NAVIGATE_TO_PAGE",
             "useCurrentItemAsPayload": false,
             "publishPayloadType": "CONFIGURED",
-            "payload": {
+            "publishPayload": {
                "url": "/1/2/3/4/5",
                "type": "SHARE_PAGE_RELATIVE"
             }
@@ -49,7 +49,7 @@
             "publishTopic": "ALF_NAVIGATE_TO_PAGE",
             "useCurrentItemAsPayload": false,
             "publishPayloadType": "CONFIGURED",
-            "payload": {
+            "publishPayload": {
                "url": "/5/4/3/2/1",
                "type": "SHARE_PAGE_RELATIVE"
             }

@@ -153,7 +153,7 @@ define(["dojo/_base/declare",
             useCurrentItemAsPayload: false,
             publishPayloadType: "PROCESS",
             publishPayloadModifiers: ["processCurrentItemTokens"],
-            payload: {
+            publishPayload: {
                url: "user/{modifiedByUser}/profile",
                type: "SHARE_PAGE_RELATIVE"
             }
@@ -194,7 +194,7 @@ define(["dojo/_base/declare",
                useCurrentItemAsPayload: false,
                publishPayloadType: "PROCESS",
                publishPayloadModifiers: ["processCurrentItemTokens"],
-               payload: {
+               publishPayload: {
                   url: "site/{site.shortName}/dashboard",
                   type: "SHARE_PAGE_RELATIVE"
                }
@@ -223,7 +223,7 @@ define(["dojo/_base/declare",
                useCurrentItemAsPayload: false,
                publishPayloadType: "PROCESS",
                publishPayloadModifiers: ["processCurrentItemTokens"],
-               payload: {
+               publishPayload: {
                   url: repo ? "repository?path={pathLink}" : "site/{site.shortName}/documentlibrary?path={pathLink}",
                   type: "SHARE_PAGE_RELATIVE"
                }

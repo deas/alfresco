@@ -102,7 +102,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            return this.generatePayload(this.payload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin, this.publishPayloadModifiers);
+            return this.generatePayload(this.publishPayload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin, this.publishPayloadModifiers);
          }
       },
 
