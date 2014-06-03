@@ -45,13 +45,16 @@ define(["dojo/_base/declare",
        */
       templateString: template,
 
-      postCreate: function() {
-
+      /**
+       * Iterates over the suggestions.
+       *
+       * @instance
+       */
+      postCreate: function alfresco_documentlibrary_views_AlfSearchListView_NoSearchResultsTemplate__postCreate() {
          if (this.title != null)
          {
             this.titleNode.innerHTML = this.message(this.title);
          }
-
          if (this.suggestions != null)
          {
             array.forEach(this.suggestions, function(suggestion, index) {
@@ -61,7 +64,6 @@ define(["dojo/_base/declare",
                }, this.suggestionsNode, "last");
             }, this);
          }
-
       }
    });
 
@@ -99,7 +101,7 @@ define(["dojo/_base/declare",
          this.clearOldView();
          this.messageNode = domConstruct.create("div", {}, this.domNode);
          this.docListRenderer = new NoSearchResultsTemplate({
-            title: this.searchAdviceTitle,
+            title: this.message(this.searchAdviceTitle),
             suggestions: this.searchAdvice
          },this.messageNode);
       },
@@ -109,9 +111,9 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {string}
-       * @default "Suggestions:"
+       * @default "faceted-search.advice.title"
        */
-      searchAdviceTitle: "Suggestions:",
+      searchAdviceTitle: "faceted-search.advice.title:",
       
       /**
        * A configurable array of strings where each entry is a suggestion for how to get the best results out of
