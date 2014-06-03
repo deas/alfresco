@@ -358,6 +358,7 @@ var searchDocLib = {
       ],
       selectedScope: "REPO",
       useInfiniteScroll: true,
+      blockConcurrentRequests: true, // One at a time, please.
       siteId: null, // Don't set the siteId initially (we don't want to do a site search on first load)
       rootNode: null,
       repo: true,
