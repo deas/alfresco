@@ -418,15 +418,12 @@ define(["dojo/_base/declare",
          }
          else
          {
-            // Stop any current request in progress...
-            // ACE-1857 - commenting out the request to abort the current request as this is potentiall
-            //            causing issues in DP environment.
-            // if (this.currentRequestId)
-            // {
-            //    this.alfPublish("ALF_STOP_SEARCH_REQUEST", {
-            //       requestId: this.currentRequestId
-            //    }, true);
-            // }
+            if (this.currentRequestId)
+            {
+                this.alfPublish("ALF_STOP_SEARCH_REQUEST", {
+                   requestId: this.currentRequestId
+                }, true);
+            }
 
             this.alfPublish(this.requestInProgressTopic, {});
             this.showLoadingMessage();

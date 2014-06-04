@@ -1091,6 +1091,10 @@ define(["dojo/_base/declare",
 
             this.loadData();
          }
+         else
+         {
+            this.alfPublish(this.eventsScrollReturnTopic);
+         }
       },
 
       /**

@@ -40,10 +40,10 @@ define(["dojo/_base/declare",
        * Used to keep track of the current status of the InfiniteScroll
        *
        * @instance
-       * @type {bool}
+       * @type {boolean}
        * @default false
        */
-      requestInProgress: false,
+      dataloadInProgress: false,
 
       /**
        * How close to the bottom of the page do we want to get before we request the next items?
@@ -58,30 +58,39 @@ define(["dojo/_base/declare",
        * @instance
        */
       postMixInProperties: function alfresco_documentlibrary_AlfDocumentListInfiniteScroll_postMixInProperties() {
-         this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onDocumentsRequestReturn"));
-         this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_FAILURE", lang.hitch(this, "onDocumentsRequestReturn"));
-         this.alfSubscribe(this.eventsScrollTopic, lang.hitch(this, "onEventsScroll"));
+
+         // hook point to allow other widgets to let us know when they're done processing a scroll request.
+         this.alfSubscribe(this.scrollReturn, lang.hitch(this, this.onScrollReturn));
+
+         // Bind to this explicitly to reduce duplication in other widgets
+         this.alfSubscribe(this.requestFinishedTopic, lang.hitch(this, this.onScrollReturn));
+
+         // tie in to the events scroll module.
+         this.alfSubscribe(this.eventsScrollTopic, lang.hitch(this, this.onEventsScroll));
       },
 
       /**
+       * When the scroll event triggers, check location and pass on the warning that we're near the bottom of the page
+       * sets dataloadInProgress to prevent duplicated triggers when the page is scrolled slowly.
        *
        * @instance
        * @param {object} payload
        */
       onEventsScroll: function alfresco_documentlibrary_AlfDocumentListInfiniteScroll_onEventsScroll(payload) {
-         if (this.nearBottom() && !this.requestInProgress) {
+         if (this.nearBottom() && !this.dataloadInProgress) {
+            this.dataloadInProgress = true;
             this.alfPublish(this.scrollNearBottom);
          }
       },
 
       /**
-       * Reset the request in progress flag so that another request could be triggered if we hit the bottom again.
+       * Called when infinite scroll request has been processed and allows us to trigger further scroll events
        *
        * @instance
-       * @param {object} payload The details of the documents that have been loaded
+       * @param {object} payload
        */
-      onDocumentsRequestReturn: function alfresco_documentlibrary_AlfDocumentListInfiniteScroll_onDocumentsRequestReturn(payload) {
-         this.requestInProgress = false;
+      onScrollReturn: function alfresco_documentlibrary_AlfDocumentListInfiniteScroll_onScrollReturn(payload) {
+         this.dataloadInProgress = false;
       },
 
       /**

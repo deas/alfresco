@@ -258,6 +258,15 @@ define(["dojo/_base/declare"],
       scrollNearBottom: "ALF_SCROLL_NEAR_BOTTOM",
 
       /**
+       * Used to let infinite scroll know we're finished and it can trigger again.
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_SCROLL_RETURN"
+       */
+      scrollReturn: "ALF_SCROLL_RETURN",
+
+      /**
        * Used to clear the currentData object in the view.
        *
        */
