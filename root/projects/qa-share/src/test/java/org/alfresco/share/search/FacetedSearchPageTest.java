@@ -123,7 +123,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         Assert.assertTrue(StringUtils.isNotEmpty(facetedSearchPage.getPageTitle()), "The faceted search page should have a title");
 
         // The url should not contain a hash value
-        Assert.assertNull(facetedSearchPage.getUrlHash(), "Before searching the url # should be empty");
+        Assert.assertTrue(StringUtils.isEmpty(facetedSearchPage.getUrlHash()), "Before searching the url # should be empty");
 
         // The search box should be empty
         Assert.assertTrue(StringUtils.isEmpty(facetedSearchPage.getSearchForm().getSearchTerm()), "The search box on the faceted search page should be empty");
@@ -681,11 +681,10 @@ public class FacetedSearchPageTest extends AbstractUtils
     }
 
     /**
-     * Login as admin.
+     * Login as user.
      */
     private void userLogin()
     {
-        
         // Login as test user        
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
