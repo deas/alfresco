@@ -1,6 +1,11 @@
 package org.alfresco.po.share.site.calendar;
 
-import org.alfresco.po.share.AlfrescoVersion;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
+
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.webdrone.HtmlPage;
@@ -9,14 +14,11 @@ import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.*;
-
-import java.util.Calendar;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 
 /**
  * Site Calendar Page object
@@ -32,6 +34,7 @@ public class CalendarPage extends SitePage
     int waitInMilliSeconds = 2000;
 
     private static final By ADD_EVENT = By.cssSelector("#template_x002e_toolbar_x002e_calendar_x0023_default-addEvent-button-button");
+    private static final By TAB_CONTAINER = By.cssSelector("div[id*='defaultView']");
 
     // Buttons
     private static final By DAY_BUTTON = By.cssSelector("button[id$='_default-day-button']");
@@ -44,11 +47,12 @@ public class CalendarPage extends SitePage
     private static final By WEEK_TAB_TABLE = By.cssSelector("div[class='fc-view fc-view-agendaWeek fc-agenda']");
     private static final By MONTH_TAB_TABLE = By.cssSelector("div[class='fc-view fc-view-month fc-grid']");
     private static final By AGENDA_LINK_PREVIOUS = By.cssSelector("a[class='previousEvents agendaNav']");
+    @SuppressWarnings("unused")
     private static final By AGENDA_LINK_NEXT = By.cssSelector("a[class='nextEvents agendaNav']");
 
     private final static String DAY_TAB_ADD_EVENT = "//tr[contains(@class,'fc-slot%s')]//div";
     private final static String WEEK_TAB_ADD_EVENT = "//div[contains(@class,'agendaWeek')]//table[@class='fc-agenda-slots']/tbody/tr[%s]/td/div";
-    private final static String MONTH_TAB_ADD_EVENT = "//div[@class='fc-day-content']/preceding-sibling::div[@class='fc-day-number' and text()='%s']";
+    private final static String MONTH_TAB_ADD_EVENT = "//td[not(contains(@class,'fc-other-month'))]//div[@class='fc-day-content']/preceding-sibling::div[@class='fc-day-number' and text()='%s']";
 
     private static final By SHOW_ALL_HOURS_BUTTON = By.xpath("//button[@title='Show all hours']");
     private static final By SHOW_WORKING_HOURS_BUTTON = By.xpath("//button[@title='Show working hours']");
@@ -291,19 +295,19 @@ public class CalendarPage extends SitePage
                 {
                     case DAY_TAB:
                         calendarPage = (CalendarPage) calendarPage.chooseDayTab();
-                        addEventForm = calendarPage.clickOnTabOrButtonAddEvent(createEventVia.DAY_TAB);
+                        addEventForm = calendarPage.clickOnTabOrButtonAddEvent(ActionEventVia.DAY_TAB);
                         break;
                     case WEEK_TAB:
                         calendarPage = (CalendarPage) calendarPage.chooseWeekTab();
-                        addEventForm = calendarPage.clickOnTabOrButtonAddEvent(createEventVia.WEEK_TAB);
+                        addEventForm = calendarPage.clickOnTabOrButtonAddEvent(ActionEventVia.WEEK_TAB);
                         break;
                     case MONTH_TAB:
                         calendarPage = (CalendarPage) calendarPage.chooseMonthTab();
-                        addEventForm = calendarPage.clickOnTabOrButtonAddEvent(createEventVia.MONTH_TAB);
+                        addEventForm = calendarPage.clickOnTabOrButtonAddEvent(ActionEventVia.MONTH_TAB);
                         break;
                     case AGENDA_TAB:
                         calendarPage = (CalendarPage) calendarPage.chooseAgendaTab();
-                        addEventForm = calendarPage.clickOnTabOrButtonAddEvent(createEventVia.AGENDA_TAB);
+                        addEventForm = calendarPage.clickOnTabOrButtonAddEvent(ActionEventVia.AGENDA_TAB);
                         break;
                     case ADD_EVENT_BUTTON:
                         addEventForm = calendarPage.clickOnAddEvent();
@@ -554,7 +558,7 @@ public class CalendarPage extends SitePage
         logger.info("Delete event with name " + eventName);
         try
         {
-            DeleteEventForm deleteEventForm = null;
+            DeleteEventForm deleteEventForm;
             CalendarPage calendarPage = new CalendarPage(drone);
             InformationEventForm informationEventForm;
             if (editEventVia != null)
@@ -602,6 +606,8 @@ public class CalendarPage extends SitePage
         }
         drone.waitUntilElementDisappears(INFO_PANEL, TimeUnit.SECONDS.convert(WAIT_TIME_3000, TimeUnit.MILLISECONDS));
         drone.waitUntilNotVisible(By.cssSelector(".message"), "was deleted", TimeUnit.SECONDS.convert(WAIT_TIME_3000, TimeUnit.MILLISECONDS));
+        String linkEventXpath = String.format(eventType.getXpathLocator(), eventName);
+        drone.waitUntilElementDeletedFromDom(By.xpath(linkEventXpath), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         return new CalendarPage(drone);
     }
 
@@ -1144,5 +1150,61 @@ public class CalendarPage extends SitePage
             }
         }
         return new CalendarPage(drone);
+    }
+
+    /**
+     * Method to check whether it is possible to add an event
+     * 
+     * @param viaTab
+     * @return boolean
+     */
+    public boolean isAddEventClickable(ActionEventVia viaTab)
+    {
+        if (viaTab == null)
+        {
+            throw new UnsupportedOperationException("Via Tab parameter is missing");
+        }
+
+        if (viaTab == ActionEventVia.AGENDA_TAB)
+        {
+
+            if (getTheNumOfEvents(ActionEventVia.AGENDA_TAB) > 0)
+            {
+                return false;
+            }
+            else
+            {
+                return drone.isElementDisplayed(By.cssSelector("div[id*='defaultView']>span>a"));
+            }
+        }
+        else
+        {
+            WebElement container = drone.findAndWait(TAB_CONTAINER);
+            return container.getAttribute("class").contains("calendar-editable");
+        }
+    }
+
+    /**
+     * Method to return the number of events
+     * 
+     * @param viaTab
+     * @return int
+     */
+    private int getTheNumOfEvents(ActionEventVia viaTab)
+    {
+        int size = 0;
+        switch (viaTab)
+        {
+            case AGENDA_TAB:
+                if (!drone.isElementDisplayed(By.cssSelector("tbody[class*='data']>tr")))
+                {
+                    size = 0;
+                }
+                else
+                {
+                    size = drone.findAll(By.cssSelector("tbody[class*='data']>tr")).size();
+                }
+        }
+        return size;
     }
 }

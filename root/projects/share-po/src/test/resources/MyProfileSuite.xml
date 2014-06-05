@@ -1,0 +1,24 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="My Profile Suite" verbose="6" preserve-order="true" parallel="tests" thread-count="1">
+   <test name="TrashCanPageTest">
+      <classes>
+            <class name="org.alfresco.po.share.user.TrashCanPageTest" />
+      </classes>
+    </test>
+   <test name="TrashCanPaginationTest">
+      <classes>
+            <class name="org.alfresco.po.share.user.TrashCanPaginationTest" />
+      </classes>
+    </test>
+   <test name="NotificationPageTest">
+      <classes>
+            <class name="org.alfresco.po.share.user.NotificationPageTest" />
+      </classes>
+    </test>
+   <test name="UserSitesPageTest">
+      <classes>
+            <class name="org.alfresco.po.share.user.UserSitesPageTest" />
+      </classes>
+    </test>
+</suite>

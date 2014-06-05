@@ -14,11 +14,11 @@
  */
 package org.alfresco.po.share.dashlet;
 
-import java.util.List;
-
 import org.alfresco.po.share.ShareLink;
+import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.SiteMember;
 import org.alfresco.po.share.enums.UserRole;
+import org.alfresco.po.share.site.SiteMembersPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -31,9 +31,11 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+import java.util.List;
+
 /**
  * Site members dashlet object, holds all element of the HTML relating to share's site members dashlet.
- * 
+ *
  * @author Michael Suzuki
  * @since 1.0
  */
@@ -44,6 +46,7 @@ public class SiteMembersDashlet extends AbstractDashlet implements Dashlet
     private static final By DASHLET_CONTAINER_PLACEHOLDER = By.cssSelector("div.dashlet.colleagues");
     private static final By INVITE_LINK = By.cssSelector("div.dashlet.colleagues>div.toolbar>div>span>span>a[href='invite']");
     private static final By ALL_MEMBERS_LINK = By.cssSelector("div.dashlet.colleagues>div.toolbar>div>span>span>[href$='site-members']");
+    private static final By USER_LINK = By.cssSelector("h3>.theme-color-1");
     private WebElement dashlet;
 
     /**
@@ -52,7 +55,7 @@ public class SiteMembersDashlet extends AbstractDashlet implements Dashlet
     protected SiteMembersDashlet(WebDrone drone)
     {
         super(drone, DASHLET_CONTAINER_PLACEHOLDER);
-        setResizeHandle(By.cssSelector("div.dashlet.colleagues .yui-resize-handle"));
+        setResizeHandle(By.cssSelector(".yui-resize-handle"));
     }
 
     @SuppressWarnings("unchecked")
@@ -70,7 +73,7 @@ public class SiteMembersDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * The member of the site that is displayed on site members dashlet.
-     * 
+     *
      * @return List<ShareLink> site links
      */
     public synchronized List<ShareLink> getMembers()
@@ -117,9 +120,8 @@ public class SiteMembersDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Retrieves the SiteMember that match the site members name.
-     * 
-     * @param emailId
-     *            identifier
+     *
+     * @param emailId identifier
      * @return {@link SiteMember} that matches members name
      */
     public synchronized SiteMember selectMember(String emailId)
@@ -190,5 +192,36 @@ public class SiteMembersDashlet extends AbstractDashlet implements Dashlet
         {
             return false;
         }
+    }
+
+    /**
+     * Mimic click on 'All members' button.
+     *
+     * @return
+     */
+    public SiteMembersPage clickAllMembers()
+    {
+        drone.findAndWait(ALL_MEMBERS_LINK).click();
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Mimic click on user link.
+     *
+     * @param userName
+     * @return
+     */
+    public SharePage clickOnUser(String userName)
+    {
+        List<WebElement> userLinks = dashlet.findElements(USER_LINK);
+        for (WebElement userLink : userLinks)
+        {
+            if (userLink.getText().contains(userName))
+            {
+                userLink.click();
+                return drone.getCurrentPage().render();
+            }
+        }
+        throw new PageOperationException(String.format("User[%s] didn't find in dashlet", userName));
     }
 }

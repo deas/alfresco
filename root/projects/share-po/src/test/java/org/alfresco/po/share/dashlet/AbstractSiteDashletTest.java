@@ -68,7 +68,7 @@ public class AbstractSiteDashletTest extends AbstractDocumentTest
         DashBoardPage boardPage = drone.getCurrentPage().render();
         SiteFinderPage finderPage = boardPage.getNav().selectSearchForSites().render();
         finderPage = finderPage.searchForSite(siteName).render();
-        finderPage = siteSearchRetry(finderPage, siteName);
+        finderPage = SiteUtil.siteSearchRetry(drone, finderPage, siteName);
         siteDashBoard = finderPage.selectSite(siteName).render();
     }
     

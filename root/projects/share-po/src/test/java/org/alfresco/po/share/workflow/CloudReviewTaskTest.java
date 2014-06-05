@@ -547,7 +547,7 @@ public class CloudReviewTaskTest extends AbstractTest
         Assert.assertEquals(cloudTaskOrReviewPage.getErrorBalloonMessage(), "The value cannot be empty.");
 
         assignmentPage = cloudTaskOrReviewPage.selectReviewer().render();
-        assignmentPage.selectReviewers(userList);
+        assignmentPage.selectReviewers(userList).render();
 
         cloudTaskOrReviewPage.render();
         cloudTaskOrReviewPage.selectStartWorkflow();

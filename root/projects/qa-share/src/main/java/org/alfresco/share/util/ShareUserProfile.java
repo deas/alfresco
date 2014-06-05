@@ -6,14 +6,19 @@ import java.util.List;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.site.document.SyncInfoPage.ButtonType;
+import org.alfresco.po.share.user.LanguageSettingsPage;
 import org.alfresco.po.share.user.MyProfilePage;
+import org.alfresco.po.share.user.NotificationPage;
 import org.alfresco.po.share.user.TrashCanDeleteConfirmationPage;
 import org.alfresco.po.share.user.TrashCanEmptyConfirmationPage;
 import org.alfresco.po.share.user.TrashCanItem;
 import org.alfresco.po.share.user.TrashCanPage;
 import org.alfresco.po.share.user.TrashCanValues;
+import org.alfresco.po.share.user.UserSiteItem;
+import org.alfresco.po.share.user.UserSitesPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -188,4 +193,125 @@ public class ShareUserProfile extends AbstractUtils
                  return myProfilePage.getProfileNav().selectTrashCan().render();
         }
     }
+
+    /**
+     * Navigate to the User Sites List page.
+     * 
+     * @param drone
+     * @return
+     */
+    public static UserSitesPage navigateToUserSites(WebDrone drone)
+    {
+        SharePage sharePage = getSharePage(drone);
+
+        if (sharePage instanceof UserSitesPage)
+        {
+            return ((UserSitesPage) sharePage).render();
+        }
+        else
+        {
+            MyProfilePage myProfilePage = sharePage.getNav().selectMyProfile().render();
+            return myProfilePage.getProfileNav().selectSites().render();
+        }
+    }
+
+    /**
+     * Navigate to the User Notification page.
+     * 
+     * @param drone
+     * @return
+     */
+    public static NotificationPage navigateToNotifications(WebDrone drone)
+    {
+        SharePage sharePage = getSharePage(drone);
+
+        if (sharePage instanceof NotificationPage)
+        {
+            return ((NotificationPage) sharePage).render();
+        }
+        else
+        {
+            MyProfilePage myProfilePage = sharePage.getNav().selectMyProfile().render();
+            return myProfilePage.getProfileNav().selectNotification().render();
+        }
+    }
+
+    /**
+     * Set the Email Notification Feed setting for the user.
+     * 
+     * @param drone
+     * @param enabled
+     * @param submit <code>true</code> to click OK. <code>false</code> to click
+     *            Cancel.
+     * @return
+     */
+    public static MyProfilePage setNotificationStatus(WebDrone drone, boolean enabled, boolean submit)
+    {
+        SharePage sharePage = getSharePage(drone);
+
+        if (!(getSharePage(drone) instanceof NotificationPage))
+        {
+            throw new PageException("Method only valid from NotificationPage.");
+        }
+
+        NotificationPage notPage = ((NotificationPage) sharePage).render();
+
+        notPage.toggleNotificationFeed(enabled);
+
+        if (submit)
+        {
+            return notPage.selectOk().render();
+        }
+        else
+        {
+            return notPage.selectCancel().render();
+        }
+    }
+
+    /**
+     * Enable or disable Activity Feeds for the given site.
+     * 
+     * @param drone
+     * @param siteName
+     * @param enabled
+     * @return
+     */
+    public static UserSitesPage setSiteFeedStatus(WebDrone drone, String siteName, boolean enabled)
+    {
+        SharePage sharePage = getSharePage(drone);
+
+        if (!(getSharePage(drone) instanceof UserSitesPage))
+        {
+            throw new PageException("Method only valid from UserSitesPage.");
+        }
+
+        UserSitesPage userSitesPage = ((UserSitesPage) sharePage).render();
+
+        UserSiteItem userSiteItem = userSitesPage.getSite(siteName);
+
+        return userSiteItem.toggleActivityFeed(enabled).render();
+    }
+    
+
+    /**
+     * Navigate to the User Language page.
+     * 
+     * @param drone
+     * @return
+     */
+    public static LanguageSettingsPage navigateToLanguage(WebDrone drone)
+    {
+        SharePage sharePage = getSharePage(drone);
+
+        if (sharePage instanceof LanguageSettingsPage)
+        {
+            return ((LanguageSettingsPage) sharePage).render();
+        }
+        else
+        {
+            MyProfilePage myProfilePage = sharePage.getNav().selectMyProfile().render();
+            return myProfilePage.getProfileNav().selectLanguage().render();
+        }
+    }
+
 }

@@ -3,9 +3,19 @@
  */
 package org.alfresco.share.api.cmis;
 
+import static org.testng.Assert.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.io.StringWriter;
+import java.util.*;
+
+import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.FileDirectoryInfo;
+import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.rest.api.tests.client.PublicApiClient.CmisSession;
 import org.alfresco.rest.api.tests.client.data.CMISNode;
@@ -15,28 +25,21 @@ import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CmisUtils;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.Ace;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
+import org.apache.chemistry.opencmis.commons.data.Principal;
 import org.apache.chemistry.opencmis.commons.enums.AclPropagation;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
+import org.apache.chemistry.opencmis.commons.impl.dataobjects.AccessControlEntryImpl;
+import org.apache.chemistry.opencmis.commons.impl.dataobjects.AccessControlPrincipalDataImpl;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.io.StringWriter;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.testng.Assert.*;
 
 /**
  * @author abharade
@@ -61,6 +64,7 @@ public abstract class CMISActionValuesTest extends CmisUtils
 
     protected CMISBinding binding;
     private String oldVersionLabel;
+    private String otherTestUser;
 
 
     /**
@@ -71,6 +75,7 @@ public abstract class CMISActionValuesTest extends CmisUtils
     protected void createTestData(WebDrone drone, String uniqueName) throws Exception
     {
         testUser = getUserNameFreeDomain(uniqueName);
+        otherTestUser = getUserNameFreeDomain("other" + uniqueName);
 
         siteName = getSiteName(uniqueName) + System.currentTimeMillis();
 
@@ -81,6 +86,7 @@ public abstract class CMISActionValuesTest extends CmisUtils
         sourceFolderName = getFolderName(uniqueName + "Source") + System.currentTimeMillis();
 
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, otherTestUser);
 
         ShareUser.login(drone, testUser);
 
@@ -565,10 +571,28 @@ public abstract class CMISActionValuesTest extends CmisUtils
         String docNodeRef = ShareUser.getGuid(drone, thisFileName);
         Document doc = (Document) getObject(docNodeRef);
 
-        List<Ace> removeAces = null;
-        List<Ace> addAces = null;
-        AclPropagation aclPropagation = null;
-        doc.applyAcl(addAces, removeAces, AclPropagation.OBJECTONLY);
+        Principal principalData = new AccessControlPrincipalDataImpl("GROUP_EVERYONE")        ;
+        ArrayList<String> permissions = new ArrayList<String>();
+        permissions.add("{http://www.alfresco.org/model/content/1.0}cmobject.Coordinator");
+        AccessControlEntryImpl accessControlEntry = new AccessControlEntryImpl(principalData, permissions);
+        List<Ace> aces = new ArrayList<Ace>();
+        aces.add(accessControlEntry);
+        doc.applyAcl(aces, null, AclPropagation.OBJECTONLY);
+
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        ManagePermissionsPage managePermissionsPage = ShareUserSitePage.manageContentPermissions(drone, thisFileName);
+        assertEquals(managePermissionsPage.getExistingPermission("EVERYONE"), UserRole.COORDINATOR);
+
+        doc.applyAcl(null, aces, AclPropagation.OBJECTONLY);
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        managePermissionsPage = ShareUserSitePage.manageContentPermissions(drone, thisFileName);
+        try
+        {
+            assertFalse(managePermissionsPage.getExistingPermission("EVERYONE").equals(UserRole.COORDINATOR));
+        } catch (Exception e)
+        {
+            assertTrue(e instanceof IllegalArgumentException || e instanceof PageOperationException);
+        }
     }
 
 }

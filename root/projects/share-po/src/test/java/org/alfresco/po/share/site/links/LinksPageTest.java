@@ -75,6 +75,24 @@ public class LinksPageTest extends AbstractSiteDashletTest
         assertNotNull(linksDetailsPage);
     }
 
+    @Test(groups = "Enterprise-only", dependsOnMethods = "createLink")
+    public void editLink()
+    {
+        linksPage = linksDetailsPage.browseToLinksList();
+        linksPage.editLink(text, editedText, editedText, editedText, true);
+        assertEquals(getLinkTitle(), editedText);
+        assertNotNull(linksDetailsPage);
+    }
+
+    @Test(groups = "Enterprise-only", dependsOnMethods = "editLink")
+    public void deleteLink()
+    {
+        linksPage = linksDetailsPage.browseToLinksList();
+        int expNum = linksPage.getLinksCount()-1;
+        linksPage.deleteLinkWithConfirm(editedText);
+        assertEquals(linksPage.getLinksCount(), expNum);
+    }
+
     private String getLinkTitle()
     {
         try
@@ -86,6 +104,4 @@ public class LinksPageTest extends AbstractSiteDashletTest
             throw new ShareException("Unable to find the link");
         }
     }
-
-
 }

@@ -62,11 +62,6 @@
             <class name="org.alfresco.po.share.site.document.DocumentLibraryPageFilmstripTest"/>
         </classes>
     </test>
-    <test name="DocumentLibraryPageSortTest">
-        <classes>
-            <class name="org.alfresco.po.share.site.document.DocumentLibraryPageSortTest"/>
-        </classes>
-    </test>
     <test name="DocumentLibraryPageTagTest">
         <classes>
             <class name="org.alfresco.po.share.site.document.DocumentLibraryPageTagTest"/>
@@ -173,10 +168,4 @@
             <class name="org.alfresco.po.share.site.document.TreeMenuNavigationTest"/>
         </classes>
     </test>
-    <test name="PublishJpgToFlickrTest">
-        <classes>
-            <class name="org.alfresco.po.share.site.document.PublishDocumentsTest"/>
-        </classes>
-    </test>
-
 </suite>

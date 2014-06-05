@@ -95,6 +95,12 @@ public class MyTasksPage extends SharePage
         return render(new RenderTime(time));
     }
 
+    public MyTasksPage renderTask(final long time, String taskName)
+    {
+        elementRender(new RenderTime(time), RenderElement.getVisibleRenderElement(By.xpath(String.format("//h3/a[text()='%s']/../../../..", taskName))));
+        return this;
+    }
+
     /**
      * Verify if people finder title is present on the page
      * 
@@ -271,9 +277,21 @@ public class MyTasksPage extends SharePage
         {
             for (WebElement taskRow : taskRows)
             {
-                if (StringUtils.deleteWhitespace(taskName).equals(StringUtils.deleteWhitespace(taskRow.findElement(By.cssSelector("h3 a")).getText())))
+                try
                 {
-                    return taskRow;
+                    String tName = StringUtils.deleteWhitespace(taskName);
+                    WebElement el = taskRow.findElement(By.cssSelector("h3 a"));
+                    String eln = el.getText();
+                    String elName = StringUtils.deleteWhitespace(eln);
+                    if (tName.equals(elName))
+                    {
+                        return taskRow;
+                    }
+                }
+                catch (StaleElementReferenceException e)
+                {
+                    logger.error("Element is no longer attached to the DOM", e);
+                    continue;
                 }
             }
         }
@@ -316,7 +334,7 @@ public class MyTasksPage extends SharePage
             }
             else
             {
-                throw new PageOperationException("Unable to find task :" + taskName);
+                throw new PageOperationException("Unable to find task: " + taskName);
             }
         }
         catch (NoSuchElementException nse)
@@ -346,5 +364,77 @@ public class MyTasksPage extends SharePage
     {
         performActionOnTask(taskName, WORKFLOW_VIEW_LINK);
         return new TaskHistoryPage(drone);
+    }
+
+    /**
+     * Returns <code>true</code> if the Task edit button is present and enabled,
+     * otherwise returns <code>false</code>.
+     * 
+     * @param taskName
+     * @return
+     */
+    public boolean isTaskEditButtonEnabled(String taskName)
+    {
+        WebElement task = findTaskRow(taskName);
+        if (task != null)
+        {
+            try
+            {
+                return task.findElement(By.cssSelector(".task-view-link")).isEnabled();
+            }
+            catch (NoSuchElementException e)
+            {
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns <code>true</code> if the Task view button is present and enabled,
+     * otherwise returns <code>false</code>.
+     * 
+     * @param taskName
+     * @return
+     */
+    public boolean isTaskViewButtonEnabled(String taskName)
+    {
+        WebElement task = findTaskRow(taskName);
+        if (task != null)
+        {
+            try
+            {
+                return task.findElement(By.cssSelector(".workflow-view-link")).isEnabled();
+            }
+            catch (NoSuchElementException e)
+            {
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns <code>true</code> if the Task workflow view button is present and
+     * enabled, otherwise returns <code>false</code>.
+     * 
+     * @param taskName
+     * @return
+     */
+    public boolean isTaskWorkflowButtonEnabled(String taskName)
+    {
+        WebElement task = findTaskRow(taskName);
+        if (task != null)
+        {
+            try
+            {
+                return task.findElement(By.cssSelector(".task-edit-link")).isEnabled();
+            }
+            catch (NoSuchElementException e)
+            {
+            }
+        }
+
+        return false;
     }
 }

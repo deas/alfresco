@@ -75,6 +75,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import org.sikuli.api.ImageTarget;
+import org.sikuli.api.Target;
 
 /**
  * This Class contains the tests of Gallery View functionality for files and folders.
@@ -97,7 +99,7 @@ public class GalleryViewTest extends AbstractUtils
         testUser = testName + "@" + DOMAIN_FREE;
     }
 
-    @Test(groups = "DataPrepAlfrescoOne")
+    @Test(groups = {"DataPrepAlfrescoOne", "NonGrid"})
     public void dataprep_ALF_8751() throws Exception
     {
         String testName = getTestName();
@@ -427,7 +429,7 @@ public class GalleryViewTest extends AbstractUtils
         //TODO Add explanation assert
     }
 
-    @Test(groups = "DataPrepAlfrescoOne")
+    @Test(groups = {"DataPrepAlfrescoOne", "NonGrid"})
     public void dataprep_ALF_8745() throws Exception
     {
         String testName = getTestName();
@@ -1560,7 +1562,7 @@ public class GalleryViewTest extends AbstractUtils
         Assert.assertFalse(docLibPage.isFileVisible(folderName));
     }
 
-    @Test(groups = "DataPrepAlfrescoOne")
+    @Test(groups = {"DataPrepAlfrescoOne", "NonGrid"})
     public void dataprep_ALF_8664() throws Exception
     {
         String testName = getTestName();
@@ -1840,7 +1842,7 @@ public class GalleryViewTest extends AbstractUtils
     }
 
     
-    @Test(groups = { "DataPrepAlfrescoOne" })
+    @Test(groups = { "DataPrepAlfrescoOne", "NonGrid" })
     public void dataPrep_ALF_8734() throws Exception
     {
         String testName = getTestName();
@@ -2390,4 +2392,65 @@ public class GalleryViewTest extends AbstractUtils
         //TODO Add explanation assert
         Assert.assertFalse(thisRow.isLiked());
     }    
+
+    @Test(groups = {"DataPrepEnterpriseOnly", "NonGrid"})
+    public void dataprep_ALF_14399() throws Exception
+    {
+        String testName = getTestName();
+        testUser = getUserNameFreeDomain(testName);
+
+        // User
+        String[] testUserInfo = new String[] { testUser };
+
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
+    }
+    
+    @Test(groups = {"EnterpriseOnly", "NonGrid"} )
+    public void ALF_14399() throws Exception
+    {
+        String testName = getTestName();
+        testUser = getUserNameFreeDomain(testName);
+        
+        String[] fileTypes = { "aep", "ai", "aiff", "asf", "asnd", "asx", "au", "avi", "avx", "bmp", "css", "doc", "docm", "docx", "dotm", "eml", "eps", "fla", "flac", "flv", "fxp", "gif", "html", "indd", "jpeg", "jpg", "key", "m4v", "mov", "movie", "mp2", "mp3", "mp4", "mpeg", "mpeg2", "mpv2", "numbers", "odg", "odp", "ods", "odt", "oga", "ogg", "ogv", "pages", "pdf", "png", "potm", "potx", "ppam", "ppj", "ppsm", "ppsx", "ppt", "pptm", "pptx", "psd", "qt", "rtf", "sldm", "sldx", "snd", "spx", "svg", "swf", "tiff", "txt", "wav", "webm", "wma", "wmv", "xbm", "xlam", "xls", "xlsb", "xlsm", "xlsx", "xltm", "xltx", "xml", "zip" };
+
+        String siteName = getSiteName(testName) + System.currentTimeMillis();
+
+        // Login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+
+        // Site
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        ShareUser.openDocumentLibrary(customDrone);
+        ShareUserSitePage.selectView(customDrone, ViewType.GALLERY_VIEW);
+        
+        String currentURL = customDrone.getCurrentUrl();
+        
+        // Start Test
+        for(String fileType : fileTypes)
+        {
+            String fileName = "file-type" + "-" + fileType + "." + fileType;
+            File file = newFile(fileName, fileName);
+            
+            ShareUserSitePage.uploadFile(customDrone, file);
+            
+            FileDirectoryInfo fileDirInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName);
+            String fileUrl = fileDirInfo.getThumbnailURL();
+            String imgFileName = String.format("thumbnail_placeholder_256_%s.png", fileType);
+            
+            File imgFile = new File(DATA_FOLDER + SLASH + "placeholder-thumbnails", imgFileName);
+            Target target = new ImageTarget(imgFile);
+            
+            customDrone.navigateTo(fileUrl);
+            
+            customDrone.waitForPageLoad(maxWaitTime);
+            Thread.sleep(10000);
+            
+            Assert.assertTrue(customDrone.isImageVisible(target), "File Type: " + fileType + " Image does not match test image.");
+            
+            customDrone.navigateTo(currentURL);
+            
+            ShareUser.getSharePage(customDrone).render();
+        }
+        ShareUser.logout(customDrone);
+   }    
 }

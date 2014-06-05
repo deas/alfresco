@@ -1,26 +1,25 @@
 package org.alfresco.po.share.site.wiki;
 
-import org.alfresco.po.share.SharePage;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
 import org.alfresco.po.share.exception.ShareException;
-import org.alfresco.po.share.site.discussions.TopicDirectoryInfo;
-import org.alfresco.po.share.site.discussions.TopicDirectoryInfoImpl;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
-import java.util.List;
-
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
 /**
  * Created by Marina.Nenadovets on 02.05.14.
  */
+@SuppressWarnings("unused")
 public class WikiPageList extends WikiPage
 {
+    private Log logger = LogFactory.getLog(this.getClass());
     private static final By BUTTON_CREATE = By.cssSelector("button[id$='default-create-button-button']");
     private static final By DETAILS_WIKI = By.cssSelector("a[href*='action=details']");
     private static final By DELETE_WIKI = By.cssSelector("button[id$='default-delete-button-button']");
@@ -44,6 +43,8 @@ public class WikiPageList extends WikiPage
         return this;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
     public WikiPageList render()
     {
         return render(new RenderTime(maxPageLoadingTime));
@@ -87,10 +88,11 @@ public class WikiPageList extends WikiPage
      * @param txtLines
      * @return
      */
-    public WikiPage editWikiPage (String title, List <String> txtLines)
+    public WikiPage editWikiPage (String title, String txtLines)
     {
         WikiPage wikiPage = getWikiPageDirectoryInfo(title).clickEdit();
         wikiPage.editWikiText(txtLines);
+        logger.info("Edited Wiki page");
         return wikiPage.clickSaveButton();
     }
 
@@ -144,6 +146,7 @@ public class WikiPageList extends WikiPage
             }
             drone.findAndWait(CONFIRM_DELETE).click();
             waitUntilAlert();
+            logger.info("Deleted Wiki page");
             return new WikiPageList(drone).render();
         }
         catch (TimeoutException te)

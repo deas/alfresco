@@ -1255,7 +1255,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         List<WebElement> buttonElements = getDrone().findAndWaitForElements(By.cssSelector("div>span.button-group>span>span.first-child"));
         for (WebElement webElement : buttonElements)
         {
-            if ("Remove sync".equals(webElement.getText()))
+            if (drone.getValue("remove.sync").equals(webElement.getText()))
             {
                 webElement.click();
                 drone.waitUntilElementPresent(BLACK_MESSAGE, SECONDS.convert(maxTime, MILLISECONDS));
@@ -1277,24 +1277,33 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         unSyncToCloud.click();
     }
 
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#selectForceUnSyncInCloud()
+     */
     @Override
     public DocumentLibraryPage selectForceUnSyncInCloud()
     {
-        WebElement forceUnSync = findAndWait(By.cssSelector("div#onActionCloudUnsync>a[title='Force Unsync']"));
-        forceUnSync.click();
-
-        List<WebElement> buttonElements = getDrone().findAndWaitForElements(By.cssSelector("div>span.button-group>span>span.first-child"));
-        for (WebElement webElement : buttonElements)
+        try
         {
-            if ("Remove sync".equals(webElement.getText()))
+            WebElement forceUnSync = findAndWait(By.cssSelector("div#onActionCloudUnsync>a[title='Force Unsync']"));
+            forceUnSync.click();
+    
+            List<WebElement> buttonElements = getDrone().findAndWaitForElements(By.cssSelector("div>span.button-group>span>span.first-child"));
+            for (WebElement webElement : buttonElements)
             {
-                webElement.click();
-                drone.waitUntilElementPresent(BLACK_MESSAGE, SECONDS.convert(maxTime, MILLISECONDS));
-                drone.waitUntilElementDeletedFromDom(BLACK_MESSAGE, SECONDS.convert(maxTime, MILLISECONDS));
-                break;
+                if (drone.getValue("remove.sync").equals(webElement.getText()))
+                {
+                    webElement.click();
+                    drone.waitUntilElementPresent(BLACK_MESSAGE, SECONDS.convert(maxTime, MILLISECONDS));
+                    drone.waitUntilElementDeletedFromDom(BLACK_MESSAGE, SECONDS.convert(maxTime, MILLISECONDS));
+                    break;
+                }
             }
+        }catch(TimeoutException toe)
+        {
+            throw new PageOperationException("Timeout finding the element"+toe.getMessage());
         }
-        return new DocumentLibraryPage(getDrone());
+        return FactorySharePage.resolvePage(drone).render();
     }
 
     /*
@@ -2727,5 +2736,14 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
                logger.debug("Publish Pop-up didn't closed",e);
            }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getThumbnailURL()
+    {
+        throw new UnsupportedOperationException("Not implemented in current view.");
     }
 }

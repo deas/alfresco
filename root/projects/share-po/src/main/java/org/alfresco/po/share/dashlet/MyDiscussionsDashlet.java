@@ -12,16 +12,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.alfresco.po.share.dashlet;
-
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.ShareLink;
+import org.alfresco.po.share.dashlet.mydiscussions.CreateNewTopicPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -35,9 +30,14 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
 /**
  * My Discussions dashlet object, holds all element of the HTML relating to My Discussions dashlet
- * 
+ *
  * @author jcule
  */
 public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
@@ -81,7 +81,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Constructor
-     * 
+     *
      * @param drone
      */
     protected MyDiscussionsDashlet(WebDrone drone)
@@ -129,7 +129,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Find whether Help Button is displayed on this dashlet.
-     * 
+     *
      * @return boolean True if displayed else false.
      */
     public boolean isHelpButtonDisplayed()
@@ -154,7 +154,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Find whether New Topic Link is displayed on this dashlet.
-     * 
+     *
      * @return boolean True if displayed else false.
      */
     public boolean isNewTopicLinkDisplayed()
@@ -194,12 +194,12 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
     /**
      * Clicks on New Topic button
      */
-    public HtmlPage clickNewTopicButton()
+    public CreateNewTopicPage clickNewTopicButton()
     {
         try
         {
             drone.find(NEW_TOPIC).click();
-            return FactorySharePage.resolvePage(getDrone());
+            return drone.getCurrentPage().render();
         }
         catch (NoSuchElementException nse)
         {
@@ -211,7 +211,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Finds whether help balloon is displayed on this page.
-     * 
+     *
      * @return True if the balloon displayed else false.
      */
     public boolean isBalloonDisplayed()
@@ -232,7 +232,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * This method gets the Help balloon messages and merge the message into string.
-     * 
+     *
      * @return String
      */
     public String getHelpBalloonMessage()
@@ -245,7 +245,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * This method gets the list of messages based on given cssselector and appends it to a string.
-     * 
+     *
      * @param cssLocator
      */
     private String getHelpButtonMessage(String cssLocator)
@@ -331,7 +331,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * My Discussions topic filters displayed in the dropdown.
-     * 
+     *
      * @return <List<String>> topic filter links
      */
     public List<MyDiscussionsTopicsFilter> getTopicFilters()
@@ -358,7 +358,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * My Discussions history filters displayed in the dropdown.
-     * 
+     *
      * @return <List<String>> topic filter links
      */
     public List<MyDiscussionsHistoryFilter> getHistoryFilters()
@@ -385,9 +385,9 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Select the given {@link MyDiscussionsTopicsFilter} on My Discussion Dashlet.
-     * 
+     *
      * @param filter - The {@link MyDiscussionsTopicsFilter} to be selected
-     * @return {@link SiteDashboardPage}
+     * @return {@link org.alfresco.webdrone.HtmlPage}
      */
     public HtmlPage selectTopicsFilter(MyDiscussionsTopicsFilter filter)
     {
@@ -408,7 +408,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Get the default My Discussion topic Filter on My Discussion dashlet.
-     * 
+     *
      * @return {@link MyDiscussionsTopicsFilter}
      */
     public MyDiscussionsTopicsFilter getCurrentTopicFilter()
@@ -425,7 +425,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Get the default My Discussion history Filter on My Discussion dashlet.
-     * 
+     *
      * @return {@link MyDiscussionsHistoryFilter}
      */
     public MyDiscussionsHistoryFilter getCurrentHistoryFilter()
@@ -442,9 +442,9 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Select the given {@link MyDiscussionsTopicsFilter} on My Discussion Dashlet.
-     * 
+     *
      * @param lastDayTopics - The {@link MyDiscussionsTopicsFilter} to be selected
-     * @return {@link SiteDashboardPage}
+     * @return {@link org.alfresco.webdrone.HtmlPage}
      */
     public HtmlPage selectTopicsHistoryFilter(MyDiscussionsHistoryFilter lastDayTopics)
     {
@@ -467,7 +467,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
      * Select a link from topics list by a given name
      * with a default of user, as there is additional
      * link - topic title.
-     * 
+     *
      * @param name identifier to match against link title
      */
     public ShareLink selectLink(final String name)
@@ -477,9 +477,9 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Find the match and selects on the link.
-     * 
+     *
      * @param name identifier to match against link title
-     * @param enum that determines topic title or user link
+     * @param type that determines topic title or user link
      */
     private synchronized ShareLink selectLink(final String name, LinkType type)
     {
@@ -506,7 +506,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
     /**
      * Extracts the link from the ShareLink List that matches
      * the title.
-     * 
+     *
      * @param name Title identifier
      * @param list Collection of ShareList
      * @return ShareLink link match
@@ -533,9 +533,9 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
     /**
      * Selects the topic title link on the topic that appears on my discussions dashlet
      * by matching the name to the link.
-     * 
+     *
      * @param name identifier
-     * @return {@link TopicShareLink} target link
+     * @return {@link org.alfresco.po.share.ShareLink} target link
      */
     public ShareLink selectTopicTitle(final String name)
     {
@@ -545,9 +545,9 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
     /**
      * Selects the user link on a topic that appears on my discussion dashlet
      * by matching the name to the link.
-     * 
+     *
      * @param name identifier
-     * @return {@link TopicShareLink} target link
+     * @return {@link org.alfresco.po.share.ShareLink} target link
      */
     public ShareLink selectTopicUser(final String name)
     {
@@ -557,7 +557,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
     /**
      * Populates all the possible links that appear in the dashlet topic list
      * like user and topic title
-     * 
+     *
      * @param
      */
 
@@ -587,7 +587,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
     /**
      * Populates topic status details that appear in the dashlet topic list
      * like creation time and update time
-     * 
+     *
      * @param
      */
     private synchronized void populateUpdatedTopicStatusDetails()
@@ -653,7 +653,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Checks if topic title is dispalyed in the dashlet
-     * 
+     *
      * @return
      */
 
@@ -684,7 +684,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
         {
             scrollDownToDashlet();
             getFocus();
-            WebElement resizeHandleElement = drone.findAndWait(getResizeHandle());
+            WebElement resizeHandleElement = dashlet.findElement(getResizeHandle());
             drone.dragAndDrop(resizeHandleElement, x, y);
         }
         catch (TimeoutException e)

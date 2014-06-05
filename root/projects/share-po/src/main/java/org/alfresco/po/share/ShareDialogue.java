@@ -20,9 +20,7 @@ import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 /**
  * Share Dialogue page object, holds all the methods relevant to Share Dialogue Page
@@ -39,7 +37,8 @@ public class ShareDialogue extends SharePage
     private static final By TITLE_TEXT_UPLOAD_FILE = By.cssSelector("span");
     private static final By CANCEL_BUTTON = By.cssSelector("button[id*='cancel']");
     private static final By SHARE_DIALOGUE_HEADER = By.cssSelector("div.hd");
-
+    // TODO: Fix for localisation
+    private static final String cloudSignInDialogueHeader =  "Sign in to Alfresco in the cloud";
     /**
      * Constructor.
      * 
@@ -98,11 +97,15 @@ public class ShareDialogue extends SharePage
     {
         try
         {
-            drone.findFirstDisplayedElement(CLOSE_BUTTON).click();
+            drone.findAndWait(CLOSE_BUTTON).click();
         }
-        catch (NoSuchElementException e)
+        catch (TimeoutException e)
         {
             throw new PageOperationException("Not able find the close button " + e);
+        }
+        catch (StaleElementReferenceException ser)
+        {
+            return clickClose();
         }
         return FactorySharePage.resolvePage(drone);
     }
@@ -220,6 +223,10 @@ public class ShareDialogue extends SharePage
                 else if (dialogueID.contains("copyMoveTo"))
                 {
                     pageName = "CopyOrMoveContent Page";
+                }
+                else if (cloudSignInDialogueHeader.equals(dialogue.getText()))                        
+                {
+                    pageName = "CloudSignin Page";
                 }
             }
         }

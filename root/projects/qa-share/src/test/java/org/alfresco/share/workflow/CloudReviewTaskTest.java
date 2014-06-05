@@ -211,8 +211,12 @@ public class CloudReviewTaskTest extends AbstractWorkflow
 
             // Login as User1 (OP), create a site and upload a document
             ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+            
             ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
-            DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo).render();
+            
+            ShareUser.uploadFileInFolder(drone, fileInfo);
+            
+            
             // Start a "Cloud Task or Review" workflow
             CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, fileName);
 
@@ -232,16 +236,15 @@ public class CloudReviewTaskTest extends AbstractWorkflow
             // Fill the form details and start workflow (Task Type : Cloud
             // Review Task, Priority: Medium, Keep Content Strategy: Delete
             // Content, Destination: CloudSite, Reviewer: CloudUser)
-            documentLibraryPage = cloudTaskOrReviewPage.startWorkflow(formDetails).render();
+            DocumentLibraryPage documentLibraryPage = cloudTaskOrReviewPage.startWorkflow(formDetails).render();
 
             // Open Site Document Library, verify the document is prat of the
             // workflow, document is synced and verify Sync Status
             assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName).isPartOfWorkflow(), "Verifying the document is part of a workflow");
             assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName).isCloudSynced(), "Verifying the document is synced");
             assertTrue(checkIfContentIsSynced(drone, fileName), "Verifying the Sync Status is \"Synced\"");
-
-            drone.refresh();
-            documentLibraryPage.render();
+            
+            documentLibraryPage = refreshSharePage(drone).render();
             SyncInfoPage syncInfoPage = documentLibraryPage.getFileDirectoryInfo(fileName).clickOnViewCloudSyncInfo().render();
             Assert.assertEquals(syncInfoPage.getCloudSyncLocation(), DOMAIN_HYBRID + ">" + cloudSite + ">" + DEFAULT_FOLDER_NAME);
             syncInfoPage.clickOnCloseButton();

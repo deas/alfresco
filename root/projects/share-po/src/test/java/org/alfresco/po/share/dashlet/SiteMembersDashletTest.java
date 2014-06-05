@@ -18,15 +18,10 @@
  */
 package org.alfresco.po.share.dashlet;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.alfresco.po.share.AlfrescoVersion;
-import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.ShareLink;
-import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.SiteMember;
+import org.alfresco.po.share.*;
 import org.alfresco.po.share.enums.UserRole;
+import org.alfresco.po.share.site.SiteMembersPage;
+import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.webdrone.exception.PageOperationException;
@@ -36,58 +31,67 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+import java.util.List;
+
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
 /**
  * Integration test to verify Site members dashlet page elements are in place.
- * 
+ *
  * @author Michael Suzuki
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
-@Test(groups={"check", "alfresco-one"})
+@Test(groups = { "check", "alfresco-one", "Enterprise-only" })
 public class SiteMembersDashletTest extends AbstractSiteDashletTest
 {
     String loginName;
-    @BeforeClass(groups={"check", "alfresco-one"})
+
+    @BeforeClass(groups = { "check", "alfresco-one" })
     public void setup() throws Exception
     {
         siteName = "SiteMemberTests" + System.currentTimeMillis();
-        loginAs(username,password);
+        loginAs(username, password);
         String fname = anotherUser.getfName();
         String lname = anotherUser.getlName();
-        loginName = fname +" "+ lname;
+        loginName = fname + " " + lname;
         SiteUtil.createSite(drone, siteName, "description", "Public");
         navigateToSiteDashboard();
     }
-    
-    @AfterClass(groups={"check", "alfresco-one"})
+
+    @AfterClass(groups = { "check", "alfresco-one" })
     public void deleteSite()
     {
-     SiteUtil.deleteSite(drone , siteName);
+        SiteUtil.deleteSite(drone, siteName);
     }
-    
+
     @Test
     public void instantiateMySiteDashlet()
     {
         MySitesDashlet dashlet = new MySitesDashlet(drone);
-        Assert.assertNotNull(dashlet);
+        assertNotNull(dashlet);
     }
-    
-    @Test
+
+    @Test(dependsOnMethods = "instantiateMySiteDashlet")
     public void getMembers() throws IOException
     {
         SiteMembersDashlet dashlet = new SiteMembersDashlet(drone).render();
-        if (dashlet.getMembers().isEmpty()) saveScreenShot("SiteMembersDashletTest.getMembers.empty");
+        if (dashlet.getMembers().isEmpty())
+            saveScreenShot("SiteMembersDashletTest.getMembers.empty");
         List<ShareLink> members = dashlet.getMembers();
-        Assert.assertNotNull(members);
+        assertNotNull(members);
         Assert.assertFalse(members.isEmpty());
     }
-    
+
     /**
      * Test process of accessing my site
      * dash let from the dash board view.
-     * @throws Exception 
+     *
+     * @throws Exception
      */
-    @Test
+    @Test(dependsOnMethods = "getMembers")
     public void selectMySiteDashlet() throws Exception
     {
         navigateToSiteDashboard();
@@ -104,11 +108,11 @@ public class SiteMembersDashletTest extends AbstractSiteDashletTest
         DashBoardPage dashboard = page.getNav().selectMyDashBoard().render();
         MySitesDashlet siteDashlet = dashboard.getDashlet("my-sites").render();
         siteDashBoard = siteDashlet.selectSite(siteName).click().render();
-        Assert.assertNotNull(siteDashBoard);
+        assertNotNull(siteDashBoard);
         Assert.assertEquals(siteDashBoard.getPageTitle(), siteName);
     }
 
-    @Test
+    @Test(dependsOnMethods = "navigateSiteDashboard")
     public void selectMember() throws Exception
     {
         SiteMembersDashlet dashlet = siteDashBoard.getDashlet("site-members").render();
@@ -118,14 +122,43 @@ public class SiteMembersDashletTest extends AbstractSiteDashletTest
         Assert.assertEquals(siteMember.getRole(), UserRole.MANAGER);
         SharePage page = siteMember.getShareLink().click().render();
 
-        Assert.assertNotNull(page);
+        assertNotNull(page);
         Assert.assertTrue(page.getPageTitle().contains("Profile"));
     }
 
-    @Test(expectedExceptions = PageOperationException.class)
+    @Test(expectedExceptions = PageOperationException.class, dependsOnMethods = "selectMember")
     public void selectFakeMember() throws Exception
     {
+        navigateToSiteDashboard();
         SiteMembersDashlet dashlet = siteDashBoard.getDashlet("site-members").render();
         dashlet.selectMember("bla");
     }
+
+    @Test(dependsOnMethods = "selectFakeMember")
+    public void selectAllMembers()
+    {
+        SiteMembersDashlet dashlet = siteDashBoard.getDashlet("site-members").render();
+        SiteMembersPage siteMembersPage = dashlet.clickAllMembers();
+        assertNotNull(siteMembersPage);
+        assertTrue(drone.getCurrentPage().render() instanceof SiteMembersPage);
+    }
+
+    @Test(dependsOnMethods = "selectAllMembers")
+    public void verifyClickOnUser()
+    {
+        navigateToSiteDashboard();
+        SiteMembersDashlet dashlet = siteDashBoard.getDashlet("site-members").render();
+        SharePage sharePage = dashlet.clickOnUser("Administrator");
+        assertNotNull(sharePage);
+        assertTrue(sharePage instanceof MyProfilePage);
+    }
+
+    @Test(dependsOnMethods = "verifyClickOnUser", expectedExceptions = PageOperationException.class)
+    public void verifyClickOnUserNegative()
+    {
+        navigateSiteDashboard();
+        SiteMembersDashlet dashlet = siteDashBoard.getDashlet("site-members").render();
+        dashlet.clickOnUser("gogno12345678");
+    }
+
 }

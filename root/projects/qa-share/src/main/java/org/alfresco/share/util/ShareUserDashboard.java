@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.alfresco.po.share.CustomiseUserDashboardPage;
 import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.Dashboard;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.dashlet.ConfigureSavedSearchDialogBoxPage;
 import org.alfresco.po.share.dashlet.ConfigureSiteNoticeDialogBoxPage;
@@ -14,7 +15,8 @@ import org.alfresco.po.share.dashlet.SearchLimit;
 import org.alfresco.po.share.dashlet.SiteNoticeDashlet;
 import org.alfresco.po.share.dashlet.SiteSearchDashlet;
 import org.alfresco.po.share.dashlet.SiteSearchItem;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
+import org.alfresco.po.share.dashlet.Dashlet;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
@@ -25,11 +27,14 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.By;
 
 public class ShareUserDashboard extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ShareUserDashboard.class);
     protected static final String DEFAULT_FOLDER = "Documents";
+    public static final By CREATE_SITE_BUTTON = By.cssSelector("#page_x002e_full-width-dashlet_x002e_user_x007e_admin_x007e_dashboard_x0023_default-createSite-button");
+
 
     public ShareUserDashboard()
     {
@@ -48,7 +53,7 @@ public class ShareUserDashboard extends AbstractUtils
      * @param siteName
      * @return SiteDashboardPage
      */
-    public static SiteDashboardPage addDashlet(WebDrone driver, String siteName, Dashlet dashlet)
+    public static SiteDashboardPage addDashlet(WebDrone driver, String siteName, Dashlets dashlet)
     {
         SiteDashboardPage siteDashBoard = null;
         SharePage thisPage = ShareUser.getSharePage(driver);
@@ -62,7 +67,7 @@ public class ShareUserDashboard extends AbstractUtils
             siteDashBoard = (SiteDashboardPage) thisPage;
         }
 
-        CustomiseSiteDashboardPage customiseSiteDashBoard = siteDashBoard.getSiteNav().selectCustomizeDashboard();
+        CustomiseSiteDashboardPage customiseSiteDashBoard = siteDashBoard.getSiteNav().selectCustomizeDashboard().render();
         customiseSiteDashBoard.render();
         siteDashBoard = customiseSiteDashBoard.addDashlet(dashlet, 1).render();
         return siteDashBoard;
@@ -77,7 +82,7 @@ public class ShareUserDashboard extends AbstractUtils
      * @param dashlet
      * @return SiteDashboardPage
      */
-    public static DashBoardPage addDashlet(WebDrone driver, Dashlet dashlet)
+    public static DashBoardPage addDashlet(WebDrone driver, Dashlets dashlet)
     {
         DashBoardPage dashBoard = null;
         SharePage thisPage = ShareUser.getSharePage(driver);
@@ -294,25 +299,17 @@ public class ShareUserDashboard extends AbstractUtils
      */
     public static MyDiscussionsDashlet getMyDiscussionsDashlet(WebDrone driver)
     {
-          
-        DashBoardPage dashBoard = null;
-        SharePage thisPage = ShareUser.getSharePage(driver);
-        
-        if (thisPage instanceof DashBoardPage)
+        try
         {
-            dashBoard = (DashBoardPage) thisPage;
-            return dashBoard.getDashlet(MY_DISCUSSIONS).render();          
-        } 
-        else if (!(thisPage instanceof DashBoardPage))
-        {
-            dashBoard = ShareUser.openUserDashboard(driver);
-            return dashBoard.getDashlet(MY_DISCUSSIONS).render();           
+            Dashboard sharePage = (Dashboard) getSharePage(driver).render();
+
+            return sharePage.getDashlet(MY_DISCUSSIONS).render();
+
         }
-        else
+        catch (Exception e)
         {
-            throw new PageOperationException("Cannot open My Discussion Dashlet on user dashboard page");
+            throw new PageOperationException("Cannot open My Discussion Dashlet on user or site dashboard page");
         }
-        
     }
 
     /**
@@ -451,7 +448,7 @@ public class ShareUserDashboard extends AbstractUtils
      * Waits for the dashlet entries to appear in the my discussions dashlet
      * 
      * @param driver
-     * @param entry
+     * @param entries
      * @param entryPresent
      * @return
      */
@@ -460,17 +457,21 @@ public class ShareUserDashboard extends AbstractUtils
         Boolean found = true;
         Boolean resultAsExpected = false;
 
+        Dashboard sharePage = (Dashboard) getSharePage(driver).render();
+        
+        MyDiscussionsDashlet myDiscussionsDashlet = sharePage.getDashlet(MY_DISCUSSIONS).render();
+        
         // Repeat search until the element is found or Timeout is hit
         for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
         {
             if (searchCount > 1)
             {
                 webDriverWait(driver, refreshDuration);
-                driver.refresh();
+                refreshSharePage(driver).render();
             }
 
-            DashBoardPage dashBoardPage = (DashBoardPage) getSharePage(driver);
-            MyDiscussionsDashlet myDiscussionsDashlet = dashBoardPage.getDashlet(MY_DISCUSSIONS).render(); 
+            sharePage = getCurrentPage(driver).render();
+            myDiscussionsDashlet = sharePage.getDashlet(MY_DISCUSSIONS).render(); 
 
             for (String entry : entries)
             {
@@ -493,7 +494,7 @@ public class ShareUserDashboard extends AbstractUtils
      * Assumes user is logged in and Site dashboard is open
      * @param drone
      * @param siteName
-     * @param pageType
+     * @param pageTypesToAdd
      *            {@link SitePageType}
      */
     public static void addPageToSite(WebDrone drone, String siteName, SitePageType... pageTypesToAdd)
@@ -508,4 +509,23 @@ public class ShareUserDashboard extends AbstractUtils
         customizeSizePage.addPages(pageTypes);
     }
 
+    /**
+     * This method is used to get the specified Dashlet from the user dashboard or site dashboard page.
+     * User should be on DashBoardPage.
+     * 
+     * @return Dashlet
+     */
+    public static Dashlet getDashlet(WebDrone driver, Dashlets DashletName)
+    {
+        try
+        {
+            Dashboard sharePage = getSharePage(driver).render();
+
+            return sharePage.getDashlet(DashletName.getDashletName()).render();
+        }
+        catch (Exception e)
+        {
+            throw new PageOperationException("Cannot get the Dashlet: " + DashletName.getDashletName());
+        }
+    }
 }

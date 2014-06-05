@@ -26,12 +26,14 @@ public class PostViewPage extends SharePage
 {
     private Log logger = LogFactory.getLog(this.getClass());
     private static final By ADD_COMMENT_BTN = By.cssSelector(".onAddCommentClick>span>button");
-    private static final By BACK_LINK = By.cssSelector(".backLink>a");
+    private static final By BACK_LINK = By.cssSelector("span.backLink>a");
     private static final By NEW_POST_BTN = By.cssSelector(".new-blog>span");
     private static final By POST_TITLE = By.cssSelector(".nodeTitle>a");
     private static final By COMMENT_CONTENT = By.cssSelector(".comment-content>p");
     private static final By EDIT_LINK = By.cssSelector(".onEditBlogPost>a");
     private static final By DELETE_LINK = By.cssSelector(".onDeleteBlogPost>a");
+    private static final By TAG = By.cssSelector("span.tag > a");
+    private static final By TAG_NONE = By.xpath("//span[@class='nodeAttrValue' and text()='(None)']");
 
     public PostViewPage(WebDrone drone)
     {
@@ -92,16 +94,24 @@ public class PostViewPage extends SharePage
         blogCommentForm.insertText(comment);
         blogCommentForm.clickAddComment();
         waitUntilAlert();
-        if (isCommentCorrect(comment))
+        if (isCommentPresent(comment))
         {
             return new PostViewPage(drone).render();
         }
         throw new ShareException("Comment wasn't added");
     }
 
-    private boolean isCommentCorrect(String comment)
+    private boolean isCommentPresent(String comment)
     {
-        return drone.find(COMMENT_CONTENT).getText().equals(comment);
+        boolean isPresent = false;
+        List<WebElement> allComments = drone.findAll(COMMENT_CONTENT);
+        for (WebElement allTheComments: allComments)
+        {
+           isPresent = allTheComments.getText().equalsIgnoreCase(comment);
+            if (isPresent)
+                return isPresent;
+        }
+        return isPresent;
     }
 
     public int getCommentCount ()
@@ -148,13 +158,19 @@ public class PostViewPage extends SharePage
     {
         try
         {
-            drone.findAndWait(BACK_LINK).click();
-            return new BlogPage(drone).render();
+            WebElement backLink = drone.findAndWait(BACK_LINK);
+            backLink.click();
+            waitUntilAlert(7);
         }
         catch (TimeoutException te)
         {
             throw new ShareException("Unable to find " + BACK_LINK);
         }
+        catch (NoSuchElementException nse)
+        {
+            throw new ShareException("Unable to find " + BACK_LINK);
+        }
+        return drone.getCurrentPage().render();
     }
 
     /**
@@ -216,6 +232,14 @@ public class PostViewPage extends SharePage
         return new CommentDirectoryInfo(drone, row);
     }
 
+    /**
+     * Method to edit post comment
+     *
+     * @param oldComment
+     * @param newComment
+     *
+     * @return PostViewPage
+     */
     public PostViewPage editBlogComment (String oldComment, String newComment)
     {
         try
@@ -224,7 +248,8 @@ public class PostViewPage extends SharePage
             BlogCommentForm blogCommentForm = new BlogCommentForm(drone);
             blogCommentForm.insertText(newComment);
             blogCommentForm.clickAddComment();
-            if(isCommentCorrect(newComment))
+            waitUntilAlert();
+            if(isCommentPresent(newComment))
             {
                 return new PostViewPage(drone).render();
             }
@@ -248,6 +273,14 @@ public class PostViewPage extends SharePage
         }
     }
 
+    /**
+     * Method to edit a blog post and save it as draft
+     *
+     * @param newTitle
+     * @param newLines
+     *
+     * @return PostViewPage
+     */
     public PostViewPage editBlogPostAndSaveAsDraft (String newTitle, String newLines)
     {
         EditPostForm editPostForm = clickEdit();
@@ -257,6 +290,11 @@ public class PostViewPage extends SharePage
         return new PostViewPage(drone).render();
     }
 
+    /**
+     * Method to delete a post and confirm
+     *
+     * @return BlogPage
+     */
     public BlogPage deleteBlogPostWithConfirm ()
     {
         try
@@ -272,6 +310,12 @@ public class PostViewPage extends SharePage
         }
     }
 
+    /**
+     * Method to delete a comment and confirm
+     *
+     * @param commentTitle
+     * @return PostViewPage
+     */
     public PostViewPage deleteCommentWithConfirm (String commentTitle)
     {
         try
@@ -279,11 +323,79 @@ public class PostViewPage extends SharePage
             getCommentDirectoryInfo(commentTitle).clickDelete();
             drone.findAndWait(CONFIRM_DELETE).click();
             waitUntilAlert();
-            return new PostViewPage(drone);
+            return new PostViewPage(drone).render();
         }
         catch (TimeoutException te)
         {
             throw new ShareException("Unable to delete the comment");
+        }
+    }
+
+    /**
+     * Method to verify whether edit post is displayed
+     *
+     * @return true if displayed
+     */
+    public boolean isEditPostDisplayed ()
+    {
+        return drone.isElementDisplayed(EDIT_LINK);
+    }
+
+    /**
+     * Method to verify whether delete post is displayed
+     *
+     * @return true if displayed
+     */
+    public boolean isDeletePostDisplayed ()
+    {
+        return drone.isElementDisplayed(DELETE_LINK);
+    }
+
+    /**
+     * Method to verify whether edit comment is displayed
+     * @param comment
+     * @return true if displayed
+     */
+    public boolean isEditCommentDisplayed (String comment)
+    {
+        return getCommentDirectoryInfo(comment).isEditDisplayed();
+    }
+
+    /**
+     * Method to verify whether delete comment is displayed
+     * @param comment
+     * @return true if displayed
+     */
+    public boolean isDeleteCommentDisplayed (String comment)
+    {
+        return getCommentDirectoryInfo(comment).isDeleteDisplayed();
+    }
+
+    /**
+     * Method to retrieve tag added to Blog
+     * 
+     * @return String
+     */
+    public String getTagName()
+    {
+        try
+        {
+            if (!drone.isElementDisplayed(TAG_NONE))
+            {
+                String tagName = drone.findAndWait(TAG).getText();
+                if (!tagName.isEmpty())
+                    return tagName;
+                else
+                    throw new IllegalArgumentException("Cannot find tag");
+
+            }
+            else
+                return drone.find(TAG_NONE).getText();
+
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to retrieve the tag");
         }
     }
 }

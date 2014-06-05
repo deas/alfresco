@@ -14,59 +14,31 @@
  */
 package org.alfresco.po.share;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.StringTokenizer;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.alfresco.po.share.admin.AdminConsolePage;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.adminconsole.CategoryManagerPage;
 import org.alfresco.po.share.adminconsole.ChannelManagerPage;
 import org.alfresco.po.share.adminconsole.NodeBrowserPage;
+import org.alfresco.po.share.adminconsole.TagManagerPage;
+import org.alfresco.po.share.bulkimport.BulkImportPage;
+import org.alfresco.po.share.bulkimport.InPlaceBulkImportPage;
+import org.alfresco.po.share.bulkimport.StatusBulkImportPage;
 import org.alfresco.po.share.dashlet.ConfigureSiteNoticeDialogBoxPage;
 import org.alfresco.po.share.dashlet.InsertOrEditLinkPage;
 import org.alfresco.po.share.dashlet.mydiscussions.CreateNewTopicPage;
 import org.alfresco.po.share.dashlet.mydiscussions.TopicDetailsPage;
-import org.alfresco.po.share.dashlet.mydiscussions.TopicsListPage;
-import org.alfresco.po.share.search.AdvanceSearchCRMPage;
-import org.alfresco.po.share.search.AdvanceSearchContentPage;
-import org.alfresco.po.share.search.AdvanceSearchFolderPage;
-import org.alfresco.po.share.search.AdvanceSearchPage;
-import org.alfresco.po.share.search.AllSitesResultsPage;
-import org.alfresco.po.share.search.FacetedSearchPage;
-import org.alfresco.po.share.search.RepositoryResultsPage;
-import org.alfresco.po.share.search.SiteResultsPage;
-import org.alfresco.po.share.site.AddGroupsPage;
-import org.alfresco.po.share.site.CreateSitePage;
-import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
-import org.alfresco.po.share.site.CustomizeSitePage;
-import org.alfresco.po.share.site.InviteMembersPage;
-import org.alfresco.po.share.site.NewFolderPage;
-import org.alfresco.po.share.site.PendingInvitesPage;
-import org.alfresco.po.share.site.SiteDashboardPage;
-import org.alfresco.po.share.site.SiteFinderPage;
-import org.alfresco.po.share.site.SiteGroupsPage;
-import org.alfresco.po.share.site.SiteMembersPage;
-import org.alfresco.po.share.site.UploadFilePage;
+import org.alfresco.po.share.search.*;
+import org.alfresco.po.share.site.*;
 import org.alfresco.po.share.site.blog.BlogPage;
+import org.alfresco.po.share.site.blog.PostViewPage;
 import org.alfresco.po.share.site.calendar.CalendarPage;
 import org.alfresco.po.share.site.contentrule.FolderRulesPreRender;
 import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
 import org.alfresco.po.share.site.datalist.DataListPage;
-import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
-import org.alfresco.po.share.site.document.CreateHtmlContentPage;
-import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
-import org.alfresco.po.share.site.document.EditInGoogleDocsPage;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.po.share.site.document.InlineEditPage;
-import org.alfresco.po.share.site.document.ManagePermissionsPage;
-import org.alfresco.po.share.site.document.MyFilesPage;
-import org.alfresco.po.share.site.document.SharedFilesPage;
-import org.alfresco.po.share.site.document.TagPage;
+import org.alfresco.po.share.site.datalist.NewListForm;
+import org.alfresco.po.share.site.discussions.DiscussionsPage;
+import org.alfresco.po.share.site.document.*;
+import org.alfresco.po.share.site.links.LinksDetailsPage;
 import org.alfresco.po.share.site.links.LinksPage;
 import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.po.share.site.wiki.WikiPageList;
@@ -74,12 +46,7 @@ import org.alfresco.po.share.systemsummary.RepositoryServerClusteringPage;
 import org.alfresco.po.share.systemsummary.SystemSummaryPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
-import org.alfresco.po.share.user.CloudSignInPage;
-import org.alfresco.po.share.user.CloudSyncPage;
-import org.alfresco.po.share.user.EditProfilePage;
-import org.alfresco.po.share.user.LanguageSettingsPage;
-import org.alfresco.po.share.user.MyProfilePage;
-import org.alfresco.po.share.user.TrashCanPage;
+import org.alfresco.po.share.user.*;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.po.share.workflow.WorkFlowDetailsPage;
@@ -93,6 +60,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Alfresco Share factory, creates the appropriate page object that corresponds
@@ -112,7 +84,7 @@ public class FactorySharePage implements PageFactory
     protected static final String SHARE_DIALOGUE = "div.hd";
     protected static ConcurrentHashMap<String, Class<? extends SharePage>> pages;
     private static final By SHARE_DIALOGUE_HEADER = By.cssSelector("div.hd");
-    private static final String cloudSignInDialogueHeader =  "Sign in to Alfresco in the cloud";
+    private static final String cloudSignInDialogueHeader = "Sign in to Alfresco in the cloud";
 
     static
     {
@@ -148,7 +120,6 @@ public class FactorySharePage implements PageFactory
         pages.put("customise-site", CustomizeSitePage.class);
         pages.put("customise-site-dashboard", CustomiseSiteDashboardPage.class);
         pages.put("customise-user-dashboard", CustomiseUserDashboardPage.class);
-        pages.put("data-lists", DataListPage.class);
         pages.put("advsearch", AdvanceSearchPage.class);
         pages.put("advcontent-search", AdvanceSearchContentPage.class);
         pages.put("advfolder-search", AdvanceSearchFolderPage.class);
@@ -167,7 +138,7 @@ public class FactorySharePage implements PageFactory
         pages.put("add-groups", AddGroupsPage.class);
         pages.put("discussions-createtopic", CreateNewTopicPage.class);
         pages.put("discussions-topicview", TopicDetailsPage.class);
-        pages.put("discussions-topiclist", TopicsListPage.class);
+        pages.put("discussions-topiclist", DiscussionsPage.class);
         pages.put("search", SiteResultsPage.class);
         pages.put("start-workflow", StartWorkFlowPage.class);
         pages.put("user-cloud-auth", CloudSyncPage.class);
@@ -184,11 +155,19 @@ public class FactorySharePage implements PageFactory
         pages.put("admin-clustering", RepositoryServerClusteringPage.class);
         pages.put("calendar", CalendarPage.class);
         pages.put("blog-postlist", BlogPage.class);
+        pages.put("blog-postview", PostViewPage.class);
         pages.put("data-lists", DataListPage.class);
+        pages.put("links-view", LinksDetailsPage.class);
         pages.put("links", LinksPage.class);
         pages.put("pending-invites", PendingInvitesPage.class);
         pages.put("edit-profile", EditProfilePage.class);
+        pages.put("user-notifications", NotificationPage.class);
+        pages.put("user-sites", UserSitesPage.class);
+        pages.put("tag-management", TagManagerPage.class);
         pages.put("faceted-search", FacetedSearchPage.class);
+        pages.put("bulkfsimport", BulkImportPage.class);
+        pages.put("status", StatusBulkImportPage.class);
+        pages.put("inplace", InPlaceBulkImportPage.class);
     }
 
     public HtmlPage getPage(WebDrone drone)
@@ -274,7 +253,7 @@ public class FactorySharePage implements PageFactory
         }
         if (pageClassToProxy == null)
         {
-            throw new IllegalArgumentException("Page object is required for url: "+drone.getCurrentUrl());
+            throw new IllegalArgumentException("Page object is required for url: " + drone.getCurrentUrl());
         }
         try
         {
@@ -484,6 +463,11 @@ public class FactorySharePage implements PageFactory
                     sharePage = new CopyOrMoveContentPage(drone);
                 }
 
+                else if (dialogueID.contains("historicPropertiesViewer"))
+                {
+                    sharePage = new ViewPropertiesPage(drone);
+                }
+                
                 // The below dialogeId will be changed once this ACE-1047 issue is fixed.
                 else if (dialogueID.contains("configDialog-configDialog_h"))
                 {
@@ -493,10 +477,14 @@ public class FactorySharePage implements PageFactory
                 //                {
                 //                    sharePage = new ConfirmDeletePage(drone);
                 //                }
-                
-                else if (cloudSignInDialogueHeader.equals(dialogue.getText()))                        
+
+                else if (cloudSignInDialogueHeader.equals(dialogue.getText()))
                 {
-                        sharePage = new CloudSignInPage(drone);
+                    sharePage = new CloudSignInPage(drone);
+                }
+                else if (dialogueID.contains("newList"))
+                {
+                    sharePage = new NewListForm(drone);
                 }
             }
         }

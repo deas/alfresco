@@ -187,7 +187,7 @@ public class CreateSitePage extends ShareDialogue
         }
         else
         {
-            drone.find(PUBLIC_CHECKBOX).click();
+            drone.findAndWait(PUBLIC_CHECKBOX).click();
             if (isModerated)
             {
                 drone.find(MODERATED_CHECKBOX).click();

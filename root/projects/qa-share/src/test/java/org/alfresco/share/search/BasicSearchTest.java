@@ -149,7 +149,7 @@ public class BasicSearchTest extends AbstractUtils
     		ShareUserSearchPage.basicSearch(drone, searchTerm, false);
 
     		//Check the Search Results
-    		Boolean searchOk = ShareUserSearchPage.checkSearchResultsWithRetry(drone, BASIC_SEARCH, searchTerm, fileName[fileTypes], true);
+    		Boolean searchOk = ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, BASIC_SEARCH, searchTerm, fileName[fileTypes], true);
     		Assert.assertTrue(searchOk, "Search Results don't include the last file: " + fileName[fileTypes]);
 
     		//Check each result contains the search term: apart from xlsx
@@ -163,7 +163,7 @@ public class BasicSearchTest extends AbstractUtils
     			}
     			else
     			{
-    			Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, fileName[index]),"Not Found " + fileName[index]);
+    			Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, fileName[index]),"Not Found " + fileName[index]);
     			}
     		}
 
@@ -171,7 +171,7 @@ public class BasicSearchTest extends AbstractUtils
     		ShareUserSearchPage.basicSearch(drone, searchTerm, true);
 
     		//Check the Search Results
-    		searchOk = ShareUserSearchPage.checkSearchResultsWithRetry(drone, BASIC_SEARCH, searchTerm, fileName[fileTypes], true);
+    		searchOk = ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, BASIC_SEARCH, searchTerm, fileName[fileTypes], true);
     		Assert.assertTrue((searchOk), "Search Results don't include the last file: " + fileName[fileTypes]);
 
             
@@ -186,7 +186,7 @@ public class BasicSearchTest extends AbstractUtils
                 }
                 else
                 {
-                    Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, fileName[index]), "Not Found " + fileName[index]);
+                    Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, fileName[index]), "Not Found " + fileName[index]);
                 }
             }            
     }   
@@ -266,7 +266,7 @@ public class BasicSearchTest extends AbstractUtils
         ShareUserSearchPage.basicSearch(drone, searchTerm[0], false);
 
         // Check the Results
-        searchOk = ShareUserSearchPage.checkSearchResultsWithRetry(drone, BASIC_SEARCH, searchTerm[0], fileName, false);
+        searchOk = ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, BASIC_SEARCH, searchTerm[0], fileName, false);
         Assert.assertTrue(searchOk, "Incorrect Result for search term: " + searchTerm[0]);
 
         for (int index = 1; index <= searchCount; index++)
@@ -274,7 +274,7 @@ public class BasicSearchTest extends AbstractUtils
             // Search
             ShareUserSearchPage.basicSearch(drone, searchTerm[index], false);
 
-            searchOk = ShareUserSearchPage.checkSearchResultsWithRetry(drone, BASIC_SEARCH, searchTerm[index], fileName, true);
+            searchOk = ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, BASIC_SEARCH, searchTerm[index], fileName, true);
             Assert.assertTrue(searchOk, "Incorrect Result for search term: " + searchTerm[index]);
         }
     }   

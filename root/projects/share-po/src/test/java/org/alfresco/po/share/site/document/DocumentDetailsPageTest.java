@@ -37,7 +37,7 @@ import org.testng.annotations.Test;
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
-@Test(groups={"alfresco-one", "Firefox17Ent"})
+@Test(groups={"alfresco-one"})
 @SuppressWarnings("unused")
 public class DocumentDetailsPageTest extends AbstractDocumentTest
 {
@@ -50,6 +50,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
     private String fileName;
     private String fileExt;
     private File newfile;
+    private File uploadFile;
 
     /**
      * Pre test setup of a dummy file to upload.
@@ -64,6 +65,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
       //  WebDroneUtil.loginAs(drone, shareUrl, username, password).render();
         SiteUtil.createSite(drone, siteName, "description", "Public");
         file = SiteUtil.prepareFile();
+        uploadFile = SiteUtil.prepareFile();
         StringTokenizer st = new StringTokenizer(file.getName(), ".");
         fileName = st.nextToken();
         fileExt = st.nextToken();
@@ -346,14 +348,15 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
     {
         DocumentDetailsPage page = drone.getCurrentPage().render();
         assertFalse(page.isFileShared());
-        page.clickShareLink();
-        assertTrue(page.isFileShared());
+        ShareLinkPage shareLinkPage = page.clickShareLink().render();
+        Assert.assertNotNull(shareLinkPage);
+        Assert.assertTrue(page.isFileShared());
     }
 
     /**
      * Test for cover isCheckedOut() method
      */
-    @Test(dependsOnMethods = "testIsFileShared")
+    @Test(dependsOnMethods = "testIsFileShared", enabled=false)
     public void editOffline() throws IOException {
         DocumentDetailsPage docDetailsPage = drone.getCurrentPage().render();
         if (logger.isTraceEnabled()) logger.trace("====editOffline====");
@@ -365,7 +368,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
         if (logger.isTraceEnabled()) logger.trace("---selected new version to upload----");
         updatePage.selectMinorVersionChange();
         updatePage.setComment("Reloading the file with correct image");
-        updatePage.uploadFile(file.getCanonicalPath());
+        updatePage.uploadFile(uploadFile.getCanonicalPath());
         docDetailsPage = updatePage.submit().render();
         if (logger.isTraceEnabled()) logger.trace("---upload submited----");
 

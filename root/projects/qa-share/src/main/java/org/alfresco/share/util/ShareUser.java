@@ -45,7 +45,12 @@ public class ShareUser extends AbstractUtils
     {
         Delete, Open;
     }
-
+    
+    public enum TypeOfPage
+    {
+        CopyTo,MoveTo;
+    }
+    
     public ShareUser()
     {
         if (logger.isTraceEnabled())
@@ -61,24 +66,24 @@ public class ShareUser extends AbstractUtils
      * @param userInfo String username, password
      * @return boolean true: if log in succeeds
      */
-    public static SharePage login(WebDrone driver, String... userInfo)
+    public static synchronized SharePage login(WebDrone driver, String... userInfo)
     {
         LoginPage loginPage;
         SharePage sharePage = null;
 
         try
         {
+            if (userInfo.length < 2)
+            {
+                userInfo = getAuthDetails(userInfo[0]);
+            }
+            
             checkIfDriverNull(driver);
             driver.maximize();
 
             driver.navigateTo(dronePropertiesMap.get(driver).getShareUrl());
 
             sharePage = getSharePage(driver);
-            if (userInfo.length < 2)
-            {
-                userInfo = getAuthDetails(userInfo[0]);
-            }
-
             // Logout if already logged in
             try
             {
@@ -114,7 +119,7 @@ public class ShareUser extends AbstractUtils
      *
      * @param driver WebDrone Instance
      */
-    public static HtmlPage logout(WebDrone driver)
+    public static synchronized HtmlPage logout(WebDrone driver)
     {
         HtmlPage currentPage = null;
         checkIfDriverNull(driver);
@@ -557,8 +562,7 @@ public class ShareUser extends AbstractUtils
             if (searchCount > 1)
             {
                 webDriverWait(driver, refreshDuration);
-                driver.refresh();
-                // refreshUserDashboard(driver);
+                refreshSharePage(driver).render();
             }
 
             if (dashlet.equals(DASHLET_ACTIVITIES))
@@ -602,7 +606,7 @@ public class ShareUser extends AbstractUtils
     {
         List<ActivityShareLink> entries = null;
 
-        DashBoardPage userDashBoard = (DashBoardPage) getSharePage(driver);
+        DashBoardPage userDashBoard = getCurrentPage(driver).render();
         if (dashlet == null)
         {
             dashlet = DASHLET_ACTIVITIES;
@@ -992,6 +996,7 @@ public class ShareUser extends AbstractUtils
         }
         catch (Exception e)
         {
+            logger.error(e.getMessage());
             throw new SkipException("Error in creating content." + e);
         }
 
@@ -1208,6 +1213,7 @@ public class ShareUser extends AbstractUtils
                 t.start();
                 try
                 {
+                    logger.info("NodeRef for File being checked: " + ShareUserSitePage.getFileDirectoryInfo(driver, fileName).getNodeRef());
                     syncInfoPage = docLibPage.getFileDirectoryInfo(fileName).clickOnViewCloudSyncInfo().render();
                     status = syncInfoPage.getCloudSyncStatus();
                     syncInfoPage.clickOnCloseButton();
@@ -1219,9 +1225,8 @@ public class ShareUser extends AbstractUtils
                     {
 
                         webDriverWait(driver, 1000);
-                        // Changing to drone.refresh so that it runs from RepositoryPage too
-                        // docLibPage = ShareUser.openDocumentLibrary(driver);
-                        driver.refresh();
+                        // Expected to work on repoPage too
+                        docLibPage = refreshSharePage(driver).render();
 
                     }
                     else
@@ -1290,6 +1295,29 @@ public class ShareUser extends AbstractUtils
         documentLibraryPage.selectFile(contentName).render();
         DetailsPage detailsPage = addAspects(drone, aspects);
         return detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+    }
+
+    /**
+     * This method is used to remove the aspects on Document/Folder Details Page.
+     * User should be on Folder/Document Details page.
+     * 
+     * @param drone
+     * @param aspects
+     * @return DetailsPage
+     */
+    public static DetailsPage removeAspects(WebDrone drone, List<DocumentAspect> aspects)
+    {
+        if (isAlfrescoVersionCloud(drone))
+        {
+            throw new UnsupportedOperationException("Add Aspects is not supported for Cloud");
+        }
+        DetailsPage detailsPage = (DetailsPage) ShareUser.getSharePage(drone);
+        List<DocumentAspect> aspectsList = new ArrayList<DocumentAspect>();
+        SelectAspectsPage aspectsPage = detailsPage.selectManageAspects().render();
+        aspectsList.addAll(aspects);
+        aspectsPage.remove(aspectsList);
+        detailsPage = aspectsPage.clickApplyChanges().render();
+        return detailsPage;
     }
 
     /**
@@ -1380,7 +1408,38 @@ public class ShareUser extends AbstractUtils
         detailsPage = updatePage.submit().render();
         return detailsPage;
     }
+    /**
+     * This method uploads the new version for the document with the given file
+     * from data folder. User should be on Document details page.
+     *
+     * @param drone Webdrone instance
+     * @param fileName String of file to be versioned
+     * @param comments
+     * @param major Indicates the type of version changes: if true - major version; if false - minor
+     * @return DocumentDetailsPage
+     * @throws IOException
+     */
 
+    public static DocumentDetailsPage uploadNewVersionOfDocument(WebDrone drone, String fileName, String comments, boolean major) throws IOException
+    {
+        String fileContents = "New File being created via newFile:" + fileName;
+        File newFileName = newFile(DATA_FOLDER + (fileName), fileContents);
+
+        DocumentDetailsPage detailsPage = (DocumentDetailsPage) getSharePage(drone);
+        UpdateFilePage updatePage = detailsPage.selectUploadNewVersion().render();
+        if (major)
+        {
+            updatePage.selectMajorVersionChange();
+        }
+        else
+        {
+            updatePage.selectMinorVersionChange();
+        }
+        updatePage.uploadFile(newFileName.getCanonicalPath());
+        updatePage.setComment(comments);
+        detailsPage = updatePage.submit().render();
+        return detailsPage;
+    }
     /**
      * Checks the checkbox for a content if not selected on the document library
      * page.
@@ -1894,8 +1953,7 @@ public class ShareUser extends AbstractUtils
                     }
 
                     webDriverWait(drone, 1000);
-                    drone.refresh();
-                    documentLibraryPage = getSharePage(drone).render();
+                    documentLibraryPage = refreshSharePage(drone).render();
                 }
                 finally
                 {
@@ -1926,5 +1984,120 @@ public class ShareUser extends AbstractUtils
         Set<DocumentAspect> selectedAspects = selectAspectsPage.getSelectedAspects();
         selectAspectsPage.clickCancel().render();
         return selectedAspects;
+    }
+
+    /**
+     * Copy or Move to File or folder from document library.
+     * @param drone
+     * @param destination
+     * @param siteName
+     * @param fileName
+     * @return
+     */
+    public static HtmlPage copyOrMoveArtifact(WebDrone drone, String destination, String siteName, String fileName, PerformOperation operation, TypeOfPage type)
+    {
+        DocumentLibraryPage docPage = (DocumentLibraryPage) getSharePage(drone);
+        CopyOrMoveContentPage copyOrMoveToPage ;
+        
+        if(TypeOfPage.CopyTo.equals(type))
+        {
+            copyOrMoveToPage = docPage.getFileDirectoryInfo(fileName).selectCopyTo().render();
+        }
+        else
+        {
+            copyOrMoveToPage = docPage.getFileDirectoryInfo(fileName).selectMoveTo().render();
+        }
+        
+        copyOrMoveToPage.selectDestination(destination);
+        copyOrMoveToPage.selectSite(siteName).render();
+        if (PerformOperation.OK.equals(operation))
+        {
+            copyOrMoveToPage.selectOkButton().render();
+        }
+        else if (PerformOperation.CANCEL.equals(operation))
+        {
+            copyOrMoveToPage.selectCancelButton().render();
+        }
+        return getSharePage(drone);
+    }
+
+    public static List<String> getSiteActivityDashletDescription(WebDrone driver, String dashlet)
+    {
+        List<String> entries = null;
+
+        SiteDashboardPage siteDashBoard = (SiteDashboardPage) getSharePage(driver).render();
+        if (dashlet == null)
+        {
+            dashlet = DASHLET_ACTIVITIES;
+        }
+
+        if (dashlet.equals(SITE_ACTIVITIES))
+        {
+            SiteActivitiesDashlet siteActivitiesDashlet = siteDashBoard.getDashlet(SITE_ACTIVITIES).render();
+            entries = siteActivitiesDashlet.getSiteActivityDescriptions();
+
+        }
+        else
+        {
+            throw new SkipException("Incorrect Dashlet");
+        }
+
+        return entries;
+    }
+
+    /**
+     * Helper to search for an Activity Descriptions on the Site Dashboard Page, with
+     * configurable retry search option.
+     *
+     * @param driver WebDrone instance
+     * @param dashlet String Name of the Dashlet such as
+     *            activities,content,myDocuments etc
+     * @param entry String Entry to look for within the Dashlet
+     * @param entryPresent String Parameter to indicate should the entry be visible
+     *            within the dashlet
+     * @param siteName String Parameter to indicate the site name to open the site
+     *            dashboard.
+     * @return Boolean
+     */
+    public static Boolean searchSiteDashBoardDescriptionsWithRetry(WebDrone driver, String dashlet, String entry, Boolean entryPresent, String siteName)
+    {
+        Boolean found = false;
+        Boolean resultAsExpected = false;
+
+        List<ShareLink> shareLinkEntries = null;
+
+        // Assumes User is logged in
+
+        // Waiting for Site Dashlets
+        if (dashlet == null || dashlet.isEmpty())
+        {
+            dashlet = SITE_CONTENT_DASHLET;
+        }
+
+        // Open Site DashBoard
+        openSiteDashboard(driver, siteName);
+
+        // Code to repeat search until the element is found or Timeout is hit
+        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
+        {
+            if (searchCount > 1)
+            {
+                // This below code is needed to wait for the solr indexing.
+                webDriverWait(driver, refreshDuration);
+
+                refreshSiteDashboard(driver);
+            }
+
+            found = getSiteActivityDashletDescription(driver, SITE_ACTIVITIES).contains(entry);
+
+            // Loop again if result is not as expected: To cater for solr lag: eventual consistency
+            resultAsExpected = (entryPresent.equals(found));
+            if (resultAsExpected)
+            {
+                break;
+            }
+        }
+
+        return resultAsExpected;
     }
 }

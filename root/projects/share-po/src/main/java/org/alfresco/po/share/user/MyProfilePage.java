@@ -31,6 +31,8 @@ public class MyProfilePage extends SharePage
 {
 
     private final By editProfileButton = By.cssSelector("button[id$='-button-edit-button'], button[id$='-button-following-button']");
+    private final By userName = By.cssSelector(".namelabel");
+    private final By emailName = By.cssSelector(".fieldvalue");
 
     /**
      * Constructor.
@@ -80,5 +82,25 @@ public class MyProfilePage extends SharePage
     public ProfileNavigation getProfileNav()
     {
         return new ProfileNavigation(drone);
+    }
+
+    /**
+     * Method to get element text for Username
+     *
+     * @return
+     */
+     public String getUserName()
+     {
+         return getElementText(userName);
+     }
+
+    /**
+     * Method to get element text for email.
+     *
+     * @return
+     */
+    public String getEmailName ()
+    {
+        return getElementText(emailName);
     }
 }

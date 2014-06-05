@@ -36,6 +36,7 @@ import org.testng.annotations.Test;
  * @author cbairaajoni
  */
 @Listeners(FailedTestListener.class)
+@Test(groups="AceBug")
 public class GoogleDocsTest extends ShareUserGoogleDocs
 {
     private static Log logger = LogFactory.getLog(GoogleDocsTest.class);

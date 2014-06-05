@@ -31,6 +31,7 @@ public class DeleteEventForm extends AbstractEventForm
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public DeleteEventForm render()
     {
         return render(new RenderTime(maxPageLoadingTime));

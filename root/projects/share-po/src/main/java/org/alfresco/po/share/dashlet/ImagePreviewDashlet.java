@@ -6,12 +6,15 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Page object to hold Image Preview Dashlet
@@ -29,6 +32,7 @@ public class ImagePreviewDashlet extends AbstractDashlet implements Dashlet
     private static final By DASHLET_HELP_BALLOON_TEXT = By.cssSelector("div[style*='visible']>div.bd>div.balloon>div.text");
     private static final By DASHLET_HELP_BALLOON_CLOSE_BUTTON = By.cssSelector("div[style*='visible']>div.bd>div.balloon>div.closeButton");
     private static final By titleBarActions = By.xpath("//div[starts-with(@class,'dashlet resizable')] //div[@class='titleBarActions']");
+    private static final By IMAGE_LINK = By.xpath(".//div[@class='thumbnail']/a");
 
     /**
      * Constructor.
@@ -264,4 +268,61 @@ public class ImagePreviewDashlet extends AbstractDashlet implements Dashlet
             throw new PageOperationException("Unable to click the Config icon");
         }
     }
+
+    private List<WebElement> getImagePreviewLinks()
+    {
+        try
+        {
+            return dashlet.findElements(IMAGE_LINK);
+        }
+        catch (StaleElementReferenceException e)
+        {
+            return getImagePreviewLinks();
+        }
+        catch (Exception e)
+        {
+            return Collections.emptyList();
+        }
+
+    }
+
+    /**
+     * Get Count displayed in dashlet images.
+     *
+     * @return
+     */
+    public int getImagesCount()
+    {
+        return getImagePreviewLinks().size();
+    }
+
+    /**
+     * true if images with name 'imageName' displayed in dashlet
+     *
+     * @param imageName
+     * @return
+     */
+    public boolean isImageDisplayed(String imageName)
+    {
+        checkNotNull(imageName);
+        try
+        {
+            String imageNameEncoded = URLEncoder.encode(imageName, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            throw new PageOperationException(String.format("Bad imageName[%s]", imageName), e);
+        }
+        List<WebElement> eventLinks = getImagePreviewLinks();
+        for (WebElement eventLink : eventLinks)
+        {
+            String linkHref = eventLink.getAttribute("href");
+            if (linkHref.contains(""))
+            {
+                return eventLink.findElement(By.xpath("./img")).isDisplayed();
+            }
+        }
+        return false;
+    }
+
 }

@@ -47,47 +47,6 @@ public class ShareUserSharedFilesPage extends AbstractUtils
 
     }
 
-    /**
-     * Open Shared Files page in Simple View
-     * Assumes User is logged in.
-     * 
-     * @param driver WebDrone Instance
-     * @return SharedFilesPage
-     */
-    // TODO: Remove util as redundant
-    public static SharedFilesPage openSharedFilesSimpleView(WebDrone driver)
-    {
-        return openSharedFilesInView(driver, ViewType.SIMPLE_VIEW);
-    }
-    
-    /**
-     * Open Shared Files page in Detailed View
-     * Assumes User is logged in.
-     * 
-     * @param driver WebDrone Instance
-     * @return SharedFilesPage
-     */
-    // TODO: Remove util as redundant
-    public static SharedFilesPage openSharedFilesDetailedView(WebDrone driver)
-    {
-        return openSharedFilesInView(driver, ViewType.DETAILED_VIEW);
-    }
-
-    /**
-     * Open Shared Files page in selected View
-     * Assumes User is logged in
-     * 
-     * @param driver WebDrone Instance
-     * @param ViewType View Type to be selected
-     * @return SharedFilesPage
-     */
-    public static SharedFilesPage openSharedFilesInView(WebDrone driver, ViewType viewType)
-    {
-        SharedFilesPage sharedFilesPage = openSharedFiles(driver);
-        sharedFilesPage = ((SharedFilesPage) ShareUserSitePage.selectView(driver, viewType)).render(maxWaitTime);
-        logger.info("Opened Shared Files page in:" + viewType.getName());
-        return sharedFilesPage;
-    }
 
     /**
      * Assumes User is logged in and a Shared Files page is open,
@@ -162,18 +121,15 @@ public class ShareUserSharedFilesPage extends AbstractUtils
      * User should be logged in
      * 
      * @param driver WebDrone Instance
-     * @param String folder
-     * @param String path to parent folder
+     * @param folder
+     * @param path to parent folder
      *            
      * @return SharedFilesPage
      */
     public static SharedFilesPage createNewFolderInPath(WebDrone driver, String folder, String path) throws Exception
     {
-        SharedFilesPage sharedFilesPage = navigateToFolderInSharedFiles(driver, path);
-        
-        // TODO: Remove this, I have fixed above util to render the right page
-        webDriverWait(driver, 2000);
-        
+        SharedFilesPage sharedFilesPage = navigateToFolderInSharedFiles(driver, path).render();
+
         NewFolderPage newFolderPage = sharedFilesPage.getNavigation().selectCreateNewFolder().render();
         sharedFilesPage = ((SharedFilesPage) newFolderPage.createNewFolder(folder)).render();
 
@@ -186,17 +142,16 @@ public class ShareUserSharedFilesPage extends AbstractUtils
      * User should be logged in, parent Folder is pre-selected.
      * 
      * @param driver WebDrone Instance         
-     * @param String templateName
+     * @param templateName
      * @return SharedFilesPage
      */
     public static SharedFilesPage createFolderFromTemplate(WebDrone driver, String templateName)
     {
         SharedFilesPage sharedFilesPage = openSharedFiles(driver);
-        // TODO: Use render to ensure page has completely rendered
-        sharedFilesPage.createFolderFromTemplate(templateName);
+        sharedFilesPage = ((SharedFilesPage) sharedFilesPage.createFolderFromTemplate(templateName).render());
 
         // TODO: Fix this: Do not use old reference
-        return sharedFilesPage.render();
+        return sharedFilesPage;
     }
 
     /**
@@ -220,7 +175,7 @@ public class ShareUserSharedFilesPage extends AbstractUtils
      * @param driver
      * @param fileName
      * @param comment
-     * @param String path to parent folder
+     * @param path to parent folder
      *            
      */
     public static void addCommentToFile(WebDrone driver, String fileName, String comment, String path) throws Exception
@@ -228,11 +183,6 @@ public class ShareUserSharedFilesPage extends AbstractUtils
         FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(driver, fileName);
         DocumentDetailsPage documentDetailsPage = fileInfo.clickCommentsLink().render();
         documentDetailsPage.addComment(comment).render();
-        
-        // TODO: Remove assert from utils        
-        navigateToFolderInSharedFiles(driver, path);
-        fileInfo = ShareUserSitePage.getFileDirectoryInfo(driver, fileName);       
-        assertTrue(fileInfo.getCommentsCount() > 0, "Got comments count: " + fileInfo.getCommentsCount());
     }
 
     /**
@@ -247,15 +197,10 @@ public class ShareUserSharedFilesPage extends AbstractUtils
     public static void addCommentToFolder(WebDrone driver, String folderName, String comment)
     {
         FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(driver, folderName);
-        
-        // TODO: Do not cast, if method returns HtmlPage, use render instead (as fixed above: in addCommentToFile)
-        FolderDetailsPage folderDetailsPage = (FolderDetailsPage) fileInfo.clickCommentsLink();
+
+        FolderDetailsPage folderDetailsPage = fileInfo.clickCommentsLink().render();
         folderDetailsPage.addComment(comment).render();
-        
-        // TODO: Remove assert from utils   
-        openSharedFiles(driver);
-        fileInfo = ShareUserSitePage.getFileDirectoryInfo(driver, folderName);
-        assertTrue(fileInfo.getCommentsCount() > 0, "Got comments count: " + fileInfo.getCommentsCount());
+
     }
 
 }

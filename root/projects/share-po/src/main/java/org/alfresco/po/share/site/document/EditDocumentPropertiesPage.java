@@ -493,7 +493,8 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
      *
      * @return {@link EditDocumentPropertiesPage} page response
      */
-    public HtmlPage selectAllProperties(){
+    public HtmlPage selectAllProperties()
+    {
         clickAllProperties();
         return FactorySharePage.resolvePage(drone);
     }

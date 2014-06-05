@@ -1,9 +1,12 @@
 package org.alfresco.po.share.site.blog;
 
-import org.alfresco.po.share.SharePage;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
+import java.util.List;
+
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.site.SitePage;
-import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.po.share.site.links.LinksPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.logging.Log;
@@ -13,16 +16,13 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
-import java.util.List;
-
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
 /**
  * Site Blog Page object
  * relating to Share site Blog page
  *
  * @author Marina.Nenadovets
  */
+@SuppressWarnings("unused")
 public class BlogPage extends SitePage
 {
     private Log logger = LogFactory.getLog(this.getClass());
@@ -31,6 +31,7 @@ public class BlogPage extends SitePage
     private static final By CONFIGURE_BLOG = By.cssSelector(".configure-blog>span");
     private static final By POSTS_CONTAINER = By.cssSelector("td[class*='blogposts']");
     private static final By EMPTY_POST_CONTAINER = By.cssSelector("td[class*='empty']");
+    private static final By BACK_LINK = By.cssSelector("span.backLink>a");
 
     /**
      * Constructor
@@ -49,6 +50,7 @@ public class BlogPage extends SitePage
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public BlogPage render()
     {
         return render(new RenderTime(maxPageLoadingTime));
@@ -126,6 +128,32 @@ public class BlogPage extends SitePage
             newPostForm.setTitleField(titleField);
             newPostForm.insertText(txtLines);
             newPostForm.clickPublishInternally();
+            waitUntilAlert(7);
+            return new PostViewPage(drone).render();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Post wasn't created");
+        }
+    }
+
+    /**
+     * Method to create new topic with text field and tag
+     *
+     * @param titleField
+     * @return PostViewPage
+     */
+    public PostViewPage createPostInternally(String titleField, String txtLines, String tagName)
+    {
+        try
+        {
+            BlogPage blogPage = new BlogPage(drone);
+            NewPostForm newPostForm = blogPage.clickNewPost();
+            waitUntilAlert();
+            newPostForm.setTitleField(titleField);
+            newPostForm.insertText(txtLines);
+            newPostForm.addTag(tagName);
+            newPostForm.clickPublishInternally();
             waitUntilAlert(5);
             return new PostViewPage(drone).render();
         }
@@ -134,6 +162,7 @@ public class BlogPage extends SitePage
             throw new ShareException("Post wasn't created");
         }
     }
+
 
     /**
      * Method to create new topic with text field and save as draft
@@ -208,7 +237,8 @@ public class BlogPage extends SitePage
 
     /**
      * Method to verify whether configure External Blog is enabled
-     * @return
+     *
+     * @return true if displayed
      */
     public boolean isConfigureBlogDisplayed ()
     {
@@ -223,7 +253,7 @@ public class BlogPage extends SitePage
     /**
      * Method to verify whether configure External Blog is enabled
      *
-     * @return
+     * @return true if enabled
      */
     public boolean isNewPostEnabled()
     {
@@ -245,20 +275,23 @@ public class BlogPage extends SitePage
     {
         try
         {
-            drone.findAndWait(By.xpath(String.format("//a[text()='%s']", title))).click();
-            return new PostViewPage(drone).render(3000);
+            WebElement thePost = drone.findAndWait(By.xpath(String.format("//a[text()='%s']", title)));
+            drone.mouseOver(thePost);
+            thePost.click();
+            waitUntilAlert();
         }
-        catch (TimeoutException te)
+        catch (TimeoutException e)
         {
-            throw new ShareException("Unable to find the post");
+            throw new ShareException("Unable to click the link");
         }
+        return new PostViewPage(drone);
     }
 
     /**
      * Method to create post externally
      * @param titleField
      * @param txtLines
-     * @return
+     * @return PostViewPage
      */
     public PostViewPage createPostExternally (String titleField, String txtLines)
     {

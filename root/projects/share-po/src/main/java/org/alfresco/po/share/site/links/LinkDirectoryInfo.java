@@ -48,4 +48,24 @@ public class LinkDirectoryInfo extends HtmlElement
             throw new ShareException("Unable to find " + DELETE_LINK);
         }
     }
+
+    /**
+     * Method to verify whether edit link is displayed
+     *
+     * @return boolean
+     */
+    public boolean isEditDisplayed()
+    {
+        return findElement(EDIT_LINK).isDisplayed();
+    }
+
+    /**
+     * Method to verify whether delete link is displayed
+     *
+     * @return boolean
+     */
+    public boolean isDeleteDisplayed()
+    {
+        return findElement(DELETE_LINK).isDisplayed();
+    }
 }

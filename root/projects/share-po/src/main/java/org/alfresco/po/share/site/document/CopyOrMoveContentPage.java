@@ -34,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
@@ -387,15 +388,40 @@ public class CopyOrMoveContentPage extends ShareDialogue
                 catch (TimeoutException e)
                 {
                 }
-                // drone.waitFor(WAIT_TIME_3000);
+
                 folderNames = drone.findAndWaitForElements(folderItemsListCss);
                 boolean selected = false;
+
                 for (WebElement folderName : folderNames)
                 {
                     if (folderName.getText().equalsIgnoreCase(folder))
                     {
-                        selected = true;
                         folderName.click();
+
+                        // If repository has more folders, then some times the destination folder will be the last folder in copyTo dialogue, it is not
+                        // selecting the destination folder.
+                        // The below logic is written to check the destination folder is displayed and not selected, then selecting the destination folder.
+                        try
+                        {
+                            drone.waitForElement(By.id("AlfrescoWebdronez1"), SECONDS.convert(WAIT_TIME_3000, MILLISECONDS));
+                        }
+                        catch (TimeoutException e)
+                        {
+                        }
+
+                        try
+                        {
+                            if (!drone.findAndWait(By.xpath(String.format("//span[@class='ygtvlabel' and text()='%s']/../../../../..", folderName.getText())))
+                                    .getAttribute("class").contains("selected"))
+                            {
+                                folderName.click();
+                            }
+                        }
+                        catch (StaleElementReferenceException sle)
+                        {
+                        }
+
+                        selected = true;
                         logger.info("Folder \"" + folder + "\" selected");
                         if (length > 1)
                         {

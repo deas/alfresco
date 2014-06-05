@@ -25,6 +25,8 @@ public abstract class AbstractLinkForm extends SharePage
     protected static final By DESCRIPTION_FIELD = By.cssSelector("textarea[id$='default-description']");
     protected static final By INTERNAL_CHKBOX = By.cssSelector("input[id$='default-internal']");
     protected static final By CANCEL_BTN = By.cssSelector("button[id$='default-cancel-button']");
+    protected static final By TAG_INPUT = By.cssSelector("#template_x002e_linkedit_x002e_links-linkedit_x0023_default-tag-input-field");
+    protected static final By ADD_TAG_BUTTON = By.cssSelector("#template_x002e_linkedit_x002e_links-linkedit_x0023_default-add-tag-button");
 
     /**
      * Constructor
@@ -73,6 +75,14 @@ public abstract class AbstractLinkForm extends SharePage
     protected void setInternalChkbox()
     {
         drone.findAndWait(INTERNAL_CHKBOX).click();
+    }
+
+    protected void addTag(final String tag)
+    {
+        WebElement tagField = drone.findAndWait(TAG_INPUT);
+        tagField.clear();
+        tagField.sendKeys(tag);
+        drone.find(ADD_TAG_BUTTON).click();
     }
 
     /**

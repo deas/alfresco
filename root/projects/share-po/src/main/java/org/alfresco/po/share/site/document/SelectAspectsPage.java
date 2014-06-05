@@ -16,11 +16,13 @@ package org.alfresco.po.share.site.document;
 
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
@@ -55,6 +57,8 @@ public class SelectAspectsPage extends SharePage
     private static final By CANCEL = By.cssSelector("button[id$='aspects-cancel-button']");
     private static Log logger = LogFactory.getLog(SelectAspectsPage.class);
     private static final By TITLE = By.cssSelector("div[id$='aspects-title']");
+    private static final By ASPECTS_AVAILABLE = By.xpath("//div[contains(@id,'default-aspects-right')]//td/div[@class='yui-dt-liner']");
+    private static final By ASPECTS_SELECTED = By.xpath("//div[contains(@id,'default-aspects-right')]//td/div[@class='yui-dt-liner']");
 
     /**
      * Constructor.
@@ -69,6 +73,8 @@ public class SelectAspectsPage extends SharePage
     public SelectAspectsPage render(RenderTime timer)
     {
         elementRender(timer, getVisibleRenderElement(TITLE));
+        drone.waitUntilNotVisible(ASPECTS_AVAILABLE, "Loading...", SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
+        drone.waitUntilNotVisible(ASPECTS_SELECTED, "Loading...", SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
         return this;
     }
 
@@ -128,6 +134,7 @@ public class SelectAspectsPage extends SharePage
         }
         catch (TimeoutException exception)
         {
+            return Collections.emptyMap();
         }
 
         if (availableElements != null && !availableElements.isEmpty())
@@ -243,6 +250,6 @@ public class SelectAspectsPage extends SharePage
     public String getTitle()
     {
         return drone.find(TITLE).getText();
-    }
+    }    
 
 }

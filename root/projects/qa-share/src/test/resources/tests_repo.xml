@@ -4,7 +4,8 @@
     <groups>
         <run>
             <exclude name="DataPrep.*" />
-            <exclude name="NonGrid.*" />            
+            <exclude name="NonGrid.*" />
+            <exclude name=".*Bug.*" />           
         </run>
     </groups> 
  
@@ -47,13 +48,14 @@
             <class name="org.alfresco.share.repository.RepositoryFolderTests2" />
         </classes>
     </test>
-    
+<!--       
     <test name="RepositoryManagePermissionTest" verbose="1">
         <classes>
             <class name="org.alfresco.share.repository.RepositoryManagePermissionTest" />
         </classes>
     </test>
-    
+
+ -->    
     <test name="SecurityXssTest" verbose="1">
         <classes>
             <class name="org.alfresco.share.repository.SecurityXssTest" />

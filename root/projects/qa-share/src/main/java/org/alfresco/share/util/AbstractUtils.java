@@ -23,11 +23,7 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
@@ -91,6 +87,11 @@ import org.testng.annotations.Test;
  */
 public abstract class AbstractUtils
 {
+    
+    public enum PerformOperation
+    {
+        OK, CANCEL;
+    }
     // Test Run Options
     protected static final Boolean deleteSiteFlag = true; // Indicates if Site
                                                           // is to be deleted at
@@ -168,16 +169,25 @@ public abstract class AbstractUtils
     protected static final String DASHLET_DOCUMENTS = "my-documents";
     protected static final String DASHLET_TASKS = "my-tasks";
     protected static final String DASHLET_SITES = "my-sites";
-    protected static final String DASHLET_MEMBERS = "";
-    protected static final String DASHLET_IMAGE_PREVIEW = "";
+    protected static final String DASHLET_MEMBERS = "site-members";
     protected static final String SITE_CONTENT_DASHLET = "site-contents";
     protected static final String USER_TASKS = "tasks";
     protected static final String SITE_ACTIVITIES = "site-activities";
     protected static final String SITE_NOTICE = "site-notice";
     protected static final String MY_DISCUSSIONS = "my-discussions";
+    protected static final String IMAGE_PREVIEW = "image-preview";
+    protected static final String WIKI = "wiki";
+    protected static final String WEB_VIEW = "web-view";
+    protected static final String RSS_FEED = "rss-feed";
+    protected static final String SITE_LINKS = "site-links";
+    protected static final String DATA_LISTS = "data-lists";
+    protected static final String SITE_CALENDAR = "site-calendar";
+    protected static final String SITE_PROFILE = "site-profile";
+    protected static final String SITE_SEARCH = "site-search";
 
     // Activity Feeds
     protected static final String FEED_CONTENT_ADDED = " added";
+    protected static final String FEED_CONTENT_CREATED = " created";
     protected static final String FEED_CONTENT_DELETED = " deleted";
     protected static final String FEED_CONTENT_EDITED = " edited";
     protected static final String FEED_CONTENT_UPDATED = " updated";
@@ -190,6 +200,7 @@ public abstract class AbstractUtils
     protected static final String FEED_LOCATION = " in ";
     protected static final String FEED_FOR_FOLDER = " folder ";
     protected static final String FEED_FOR_FILE = " document ";
+    protected static final String FEED_FOR_CALENDAR_EVENT = " calendar event ";
     protected static final String DOCUMENT_LOCKED_BY_YOU_MESSAGE = "This document is locked by you.";
     protected static final String LAST_SYNC_FAILED_MESSAGE = "Last sync failed.";
 
@@ -834,7 +845,7 @@ public abstract class AbstractUtils
      *            Wait duration in milliseconds
      */
     @SuppressWarnings("deprecation")
-    protected static void webDriverWait(WebDrone driver, long waitMiliSec)
+    protected static HtmlPage webDriverWait(WebDrone driver, long waitMiliSec)
     {
         if (waitMiliSec <= 0)
         {
@@ -847,6 +858,7 @@ public abstract class AbstractUtils
          * RuntimeException("Wait interrupted / timed out"); }
          */
         driver.waitFor(waitMiliSec);
+        return getSharePage(driver);
     }
 
     /**
@@ -1335,6 +1347,7 @@ public abstract class AbstractUtils
         }
         return false;
     }
+    
     @SuppressWarnings("hiding")
     public static class CustomStringList<String> extends ArrayList<String>
     {
@@ -1412,5 +1425,138 @@ public abstract class AbstractUtils
             }
         }
         return false;
+    }
+    
+    
+    /**
+     * Refreshes and returns the current page: throws PageException if not a share page.
+     * 
+     * @param driver
+     *            WebDrone Instance
+     * @return HtmlPage
+     * @throws PageException
+     *             if the current page is not a share page
+     */
+    public static HtmlPage refreshSharePage(WebDrone driver)
+    {
+        checkIfDriverNull(driver);
+        driver.refresh();
+        return getCurrentPage(driver);
+    }
+    
+    
+    /**
+     * Returns the current page: throws PageException if not a share page.
+     * 
+     * @param driver
+     *            WebDrone Instance
+     * @return HtmlPage
+     * @throws PageException
+     *             if the current page is not a share page
+     */
+    public static HtmlPage getCurrentPage(WebDrone driver)
+    {
+        checkIfDriverNull(driver);
+        try
+        {
+            HtmlPage generalPage = driver.getCurrentPage().render(refreshDuration);
+            return generalPage;
+        }
+        catch (PageException pe)
+        {
+            throw new PageException("Unable to return Share Page: Current URL: " + driver.getCurrentUrl());
+        }
+    }
+
+    /**
+     * Returns the text for file from Download Directory
+     *
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
+    public static String getTextFromDownloadDirectoryFile(String fileName) throws IOException
+    {
+        String filePath = new File(downloadDirectory + fileName).getAbsolutePath();
+
+        String everything = null;
+        BufferedReader br = null;
+        try
+        {
+            br = new BufferedReader(new FileReader(filePath));
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null)
+            {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            everything = sb.toString();
+        }
+        catch (FileNotFoundException e)
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Expected file not found " + fileName);
+            }
+        }
+        catch (IOException e)
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Failed to read file " + fileName);
+            }
+        }
+        finally
+        {
+            if (br != null)
+            {
+                br.close();
+            }
+        }
+        return everything;
+    }
+
+    /**
+     * Returns the text for file from Download Directory
+     * 
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
+    public static void changeTextForDownloadDirectoryFile(String fileName, String content) throws IOException
+    {
+        File file = new File(downloadDirectory + fileName);
+        FileOutputStream fop = new FileOutputStream(file);
+        try
+        {
+
+            // get the content in bytes
+            byte[] contentInBytes = content.getBytes();
+
+            fop.write(contentInBytes);
+        }
+        catch (FileNotFoundException e)
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Expected file not found " + fileName);
+            }
+        }
+        catch (IOException e)
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Failed to write text into file " + fileName);
+            }
+        }
+        finally
+        {
+            fop.flush();
+            fop.close();
+
+        }
     }
 }

@@ -1,0 +1,71 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Test for Sprint BY" verbose="1" preserve-order="true" parallel="classes" thread-count="5">
+
+    <groups>
+        <run>
+            <exclude name="DataPrep.*" />
+            <exclude name="Download" />
+            <exclude name="NonGrid" />
+            <exclude name=".*Bug.*" />
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+    </listeners>
+
+    <test name="Sanity Site Calendar Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteCalendarSanityTest"/>
+        </classes>
+    </test>
+
+    <test name="Site sanity tests Suite" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteTest"/>
+        </classes>
+    </test>
+
+    <test name="Site Members sanity tests Suite" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.MembersSiteTest"/>
+        </classes>
+    </test>
+	
+	<test name="Site Permissions sanity tests Suite" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.SitePermissionsSanityTest"/>
+        </classes>
+    </test>
+    <test name="Admin Tools sanity tests Suite" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.AdminTools"/>
+        </classes>
+    </test>
+    <test name="Shared Files sanity tests Suite" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.SharedFilesTest">
+                <methods>
+                    <include name="ALF_3062"/>
+                    <include name="ALF_3066"/>
+                    <include name="ALF_3067"/>
+                    <include name="ALF_3068"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    <test name="Document Library sanity test Suite" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.DocLibTest">
+            <methods>
+                <include name="ALF_3056"/>
+            </methods>
+        </class>
+        </classes>
+    </test>
+    <test name="Multi Tenancy tests Suite" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.MultiTenancyTest"/>
+        </classes>
+    </test>
+</suite>

@@ -150,7 +150,7 @@ public class ShareLinkTest extends AbstractDocumentTest
         documentLibPage = documentLibPage.getSiteNav().selectSiteDocumentLibrary().render();
     }
     
-    @Test(groups={"alfresco-one"}, priority=4)
+    @Test(groups={"alfresco-one"}, priority=4, enabled=false)
     public void testOtherShareLinks()
     {
         FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(tempFile.getName());
@@ -179,7 +179,7 @@ public class ShareLinkTest extends AbstractDocumentTest
         drone.switchToWindow(mainWindow);
     }
     
-    @Test(groups={"alfresco-one"}, priority=5, expectedExceptions=UnsupportedOperationException.class)
+    @Test(groups={"alfresco-one"}, priority=5, expectedExceptions=UnsupportedOperationException.class, enabled=false)
     public void clickShareLinkFolder()
     {
         FileDirectoryInfo thisRow =  documentLibPage.getFileDirectoryInfo(folderName1);

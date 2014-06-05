@@ -121,7 +121,7 @@ public class RepositoryFolderTests2 extends AbstractUtils
      * <li>Copy to any folder from more actions in repository page</li>
      * </ul>
      */
-    @Test(groups = { "Repository" })
+    @Test(groups = { "Repository", "SharePOBug" })
     public void Enterprise40x_5409() throws Exception
     {
         String testName = getTestName();
@@ -166,7 +166,7 @@ public class RepositoryFolderTests2 extends AbstractUtils
      * actions in repository page</li>
      * </ul>
      */
-    @Test(groups = { "Repository" })
+    @Test(groups = { "Repository", "SharePOBug"  })
     public void Enterprise40x_5410() throws Exception
     {
         String testName = getTestName();
@@ -210,7 +210,7 @@ public class RepositoryFolderTests2 extends AbstractUtils
      * cancel</li>
      * </ul>
      */
-    @Test (groups = { "Repository" })
+    @Test (groups = { "Repository", "SharePOBug"  })
     public void Enterprise40x_5411() throws Exception
     {
         String testName = getTestName();
@@ -253,7 +253,7 @@ public class RepositoryFolderTests2 extends AbstractUtils
      * <li>Move to any folder from more actions in repository page</li>
      * </ul>
      */
-    @Test (groups = { "Repository" })
+    @Test (groups = { "Repository", "SharePOBug"  })
     public void Enterprise40x_5413() throws Exception
     {
         String testName = getTestName();
@@ -302,7 +302,7 @@ public class RepositoryFolderTests2 extends AbstractUtils
      * actions in repository page</li>
      * </ul>
      */
-    @Test (groups = { "Repository" })
+    @Test (groups = { "Repository", "SharePOBug"  })
     public void Enterprise40x_5414() throws Exception
     {
         String testName = getTestName();
@@ -348,7 +348,7 @@ public class RepositoryFolderTests2 extends AbstractUtils
      * page</li>
      * </ul>
      */
-    @Test (groups = { "Repository" })
+    @Test (groups = { "Repository", "SharePOBug"  })
     public void Enterprise40x_5415() throws Exception
     {
         String testName = getTestName();
@@ -542,7 +542,7 @@ public class RepositoryFolderTests2 extends AbstractUtils
      * <li>Copy any folder with documents from repository to User Home page and cancel</li>
      * </ul>
      */
-    @Test (groups = { "Repository" })
+    @Test (groups = { "Repository", "SharePOBug"  })
     public void Enterprise40x_5427() throws Exception
     {
         String testName = getTestName();
@@ -614,7 +614,7 @@ public class RepositoryFolderTests2 extends AbstractUtils
      * <li>Move any folder with documents from repository to User Home page</li>
      * </ul>
      */
-    @Test (groups = { "Repository" })
+    @Test (groups = { "Repository", "SharePOBug" })
     public void Enterprise40x_5428() throws Exception
     {
         String testName = getTestName();
@@ -693,7 +693,7 @@ public class RepositoryFolderTests2 extends AbstractUtils
      * <li>Move any folder with documents from repository to User Home page and cancel</li>
      * </ul>
      */
-    @Test (groups = { "Repository" })
+    @Test (groups = { "Repository" , "SharePOBug" })
     public void Enterprise40x_5429() throws Exception
     {
         String testName = getTestName();

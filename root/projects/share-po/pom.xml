@@ -213,6 +213,8 @@
 						<suiteXmlFile>src/test/resources/DiscussionsPageSuite.xml</suiteXmlFile>
 						<suiteXmlFile>src/test/resources/LinksPageSuite.xml</suiteXmlFile>						
 						<suiteXmlFile>src/test/resources/CalendarPageSuite.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/MyProfileSuite.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/AlfrescoTestSuite.xml</suiteXmlFile>
                     </suiteXmlFiles>
                     <argLine>-Xms512m -Xmx1024m</argLine>
                     <excludedGroups>
@@ -226,6 +228,7 @@
                     <!--<systemPropertyVariables>-->
                         <!--<webdrone.element.wait.time>${webdrone.element.wait.time}</webdrone.element.wait.time>-->
                     <!--</systemPropertyVariables>-->
+                   <redirectTestOutputToFile>false</redirectTestOutputToFile>
                 </configuration>
             </plugin>
 
@@ -404,10 +407,4 @@ sync.cloud.url=https://webdronehwa.alfresco.me/alfresco/a/{network}/
             </build>
         </profile>
     </profiles>
-
-  <scm>
-    <connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/benchmark/webdrone/share-po/tags/V2.2</connection>
-    <developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/benchmark/webdrone/share-po/tags/V2.2</developerConnection>
-    <url>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/benchmark/webdrone/share-po/tags/V2.2</url>
-  </scm>
 </project>

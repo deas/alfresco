@@ -104,7 +104,7 @@ public class ContentFormatPageTest extends AbstractTest
         if (logger.isTraceEnabled()) logger.trace("====testBoldFontOfRichTextFormatter====");
         textEditor.clickTextFormatter(FormatType.BOLD);
         Assert.assertEquals(commentText, textEditor.getText());       
-        Assert.assertTrue(textEditor.getContent().contains("<b>"+commentText+"</b>"));
+        Assert.assertTrue(textEditor.getContent().contains("<strong>"+commentText+"</strong>"));
         textEditor.removeFormatting();
 
     }
@@ -117,7 +117,7 @@ public class ContentFormatPageTest extends AbstractTest
         if (logger.isTraceEnabled()) logger.trace("====testItalicFontOfRichTextFormatter====");
         textEditor.clickTextFormatter(FormatType.ITALIC);
         Assert.assertEquals(commentText, textEditor.getText());       
-        Assert.assertTrue(textEditor.getContent().contains("<i>"+commentText+"</i>"));
+        Assert.assertTrue(textEditor.getContent().contains("<em>"+commentText+"</em>"));
         textEditor.removeFormatting();
     }
     // 1) Enter text in the Rich Text Editor
@@ -128,7 +128,7 @@ public class ContentFormatPageTest extends AbstractTest
         if (logger.isTraceEnabled()) logger.trace("====testUnderLinedFontOfRichTextFormatter====");
         textEditor.clickTextFormatter(FormatType.UNDERLINED);
         Assert.assertEquals(commentText, textEditor.getText());       
-        Assert.assertTrue(textEditor.getContent().contains("<u>"+commentText+"</u>"));
+        Assert.assertTrue(textEditor.getContent().contains("<span style=\"text-decoration: underline;\">"+commentText+"</span>"));
         textEditor.removeFormatting();
     }
 
@@ -156,7 +156,7 @@ public class ContentFormatPageTest extends AbstractTest
             logger.trace("====testNumberInsertionInRichTextFormatter====");
         textEditor.clickTextFormatter(FormatType.NUMBER);
         Assert.assertEquals(commentText, textEditor.getText());       
-        Assert.assertTrue(textEditor.getContent().contains("<ol><li>"+commentText+"</li></ol>"));
+        Assert.assertTrue(textEditor.getContent().contains("<ol style=\"\"><li>"+commentText+"</li></ol>"));
         textEditor.clickTextFormatter(FormatType.NUMBER);
         Assert.assertTrue(textEditor.getContent().contains("<p>"+commentText+"</p>"));
      }
@@ -176,7 +176,7 @@ public class ContentFormatPageTest extends AbstractTest
         {
             fontAtt = fontAttForCloud ;
         }
-        Assert.assertTrue(textEditor.getContent().contains(fontAtt +commentText+"</font>"));
+        Assert.assertTrue(textEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">"+commentText+"</span>"));
         textEditor.removeFormatting();
         
     }
@@ -197,7 +197,7 @@ public class ContentFormatPageTest extends AbstractTest
         {
             fontAtt = fontAttForCloud;
         }
-        Assert.assertTrue(textEditor.getContent().contains(fontAtt +commentText+"</font>"));
+        Assert.assertTrue(textEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">"+commentText+"</span>"));
         textEditor.clickUndo();        
         Assert.assertTrue(textEditor.getContent().contains("<p>"+commentText+"</p>"));
     }
@@ -219,7 +219,7 @@ public class ContentFormatPageTest extends AbstractTest
         {
             fontAtt = fontAttForCloud;
         }
-        Assert.assertTrue(textEditor.getContent().contains(fontAtt +commentText+"</font>"));
+        Assert.assertTrue(textEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">"+commentText+"</span>"));
         textEditor.clickUndo();        
         Assert.assertTrue(textEditor.getContent().contains("<p>"+commentText+"</p>"));
         textEditor.clickRedo();       
@@ -227,7 +227,7 @@ public class ContentFormatPageTest extends AbstractTest
         {
             fontAtt = fontAttForCloud;
         }
-        Assert.assertTrue(textEditor.getContent().contains(fontAtt +commentText+"</font>"));
+        Assert.assertTrue(textEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">"+commentText+"</span>"));
         textEditor.removeFormatting();
     }
 

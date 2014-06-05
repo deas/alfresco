@@ -14,28 +14,21 @@
  */
 package org.alfresco.po.share;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-
 import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
 import org.alfresco.po.share.site.document.UserProfile;
-import org.alfresco.webdrone.ElementState;
-import org.alfresco.webdrone.RenderElement;
-import org.alfresco.webdrone.RenderTime;
-import org.alfresco.webdrone.WebDrone;
-import org.alfresco.webdrone.WebDroneUtil;
+import org.alfresco.webdrone.*;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * @author Charu To get the list of groups and group members this page is used
@@ -65,9 +58,9 @@ public class GroupsPage extends SharePage
     {
         RenderElement actionMessage = getActionMessageElement(ElementState.INVISIBLE);
         elementRender(timer, getVisibleRenderElement(By.cssSelector(BUTTON_BROWSE)),
-        getVisibleRenderElement(By.cssSelector(BUTTON_SEARCH)),
-        getVisibleRenderElement(By.cssSelector(SHOW_ALL_LABEL)),
-        getVisibleRenderElement(By.cssSelector(SHOW_ALL_CHK_BOX)), actionMessage);
+                getVisibleRenderElement(By.cssSelector(BUTTON_SEARCH)),
+                getVisibleRenderElement(By.cssSelector(SHOW_ALL_LABEL)),
+                getVisibleRenderElement(By.cssSelector(SHOW_ALL_CHK_BOX)), actionMessage);
         return this;
     }
 
@@ -100,13 +93,20 @@ public class GroupsPage extends SharePage
      */
     public NewGroupPage navigateToNewGroupPage()
     {
-        drone.findAndWait(By.cssSelector(BUTTON_ADD)).click();
-        return new NewGroupPage(drone);
+        try
+        {
+            drone.findAndWait(By.cssSelector(BUTTON_ADD)).click();
+            return new NewGroupPage(drone);
+        }
+        catch (StaleElementReferenceException e)
+        {
+             return navigateToNewGroupPage();
+        }
     }
 
     /**
      * Get list of available groups.
-     * 
+     *
      * @return
      */
     public List<String> getGroupList()
@@ -122,7 +122,7 @@ public class GroupsPage extends SharePage
 
     /**
      * Select Group name from available group list in the Groups page
-     * 
+     *
      * @param groupName -To select this group name from the list of groups
      * @return {@link GroupsPage}
      */
@@ -150,8 +150,8 @@ public class GroupsPage extends SharePage
 
     /**
      * Assert method to verify any group name is present in the list of groups in groups page
-     * 
-     * @param groupName -To verify this group name is present in the the list of groups
+     *
+     * @param GroupName -To verify this group name is present in the the list of groups
      * @return Boolean
      */
     public boolean isGroupPresent(String GroupName)
@@ -181,7 +181,7 @@ public class GroupsPage extends SharePage
 
     /**
      * Get list of group members for any group in groups page
-     * 
+     *
      * @return List of Users
      */
     public List<UserProfile> getMembersList()
@@ -231,7 +231,7 @@ public class GroupsPage extends SharePage
 
     /**
      * click on Add user button in GroupsPage
-     * 
+     *
      * @return AddUserPage
      */
     /*
@@ -252,10 +252,10 @@ public class GroupsPage extends SharePage
      * throw new PageOperationException("Not found element is : " + BUTTON_ADD_USER);
      * }
      *//**
-     * Click on Add Group button in GroupsPage
-     * 
-     * @return AddGroupPage
-     */
+ * Click on Add Group button in GroupsPage
+ *
+ * @return AddGroupPage
+ */
     /*
      * public AddGroupPage clickAddGroup()
      * {
@@ -274,9 +274,10 @@ public class GroupsPage extends SharePage
      * throw new PageOperationException("Not found element is : " + BUTTON_ADD_GROUP);
      * }
      */
+
     /**
      * Click on Remove icon on members list in group page
-     * 
+     *
      * @param userName -To remove the userName from the list of Users in the groups page
      * @return RemoveUserFromGroupPage
      */
@@ -308,7 +309,7 @@ public class GroupsPage extends SharePage
 
     /**
      * Verify list of users are displayed in Group page
-     * 
+     *
      * @return Boolean
      */
     public boolean hasMembers()
@@ -336,7 +337,7 @@ public class GroupsPage extends SharePage
 
     /**
      * Verify User is the member of group
-     * 
+     *
      * @return Boolean
      */
     public boolean isUserGroupMember(String fName, String lName, String groupName)
@@ -359,7 +360,7 @@ public class GroupsPage extends SharePage
 
     /**
      * Verify User is Admin
-     * 
+     *
      * @return Boolean
      */
 

@@ -56,6 +56,9 @@
         <constructor-arg name="licenseShare" value="${share.license}" />
         <property name="cloudUserName" value="${test.hybrid.username}" />
         <property name="cloudUserPassword" value="${test.hybrid.password}" />
+        <property name="blogUrl" value="${blog.url}" />
+        <property name="blogUsername" value="${blog.username}" />
+        <property name="blogPassword" value="${blog.password}" />
     </bean>
 
     <!-- Initiating another user that will be required for unit tests.  -->
@@ -78,6 +81,9 @@
         <constructor-arg name="downloadDirectory" value="${download.hybrid.directory}" />
         <constructor-arg name="licenseShare" value="${share.license}" />
         <constructor-arg name="hybridEnabled" value="${hrbrid.enabled}" />
+        <property name="blogUrl" value="${blog.url}" />
+        <property name="blogUsername" value="${blog.username}" />
+        <property name="blogPassword" value="${blog.password}" />
     </bean>
 
     <bean id="hybridWebDroneFactoryBean" class="org.alfresco.webdrone.WebDroneFactory" lazy-init="true">

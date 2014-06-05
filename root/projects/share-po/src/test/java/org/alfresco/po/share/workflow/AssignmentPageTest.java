@@ -166,7 +166,7 @@ public class AssignmentPageTest extends AbstractTest
         List<String> userNames = new ArrayList<String>();
         userNames.add(cloudUserName);
 
-        assignmentPage.selectReviewers(userNames);
+        assignmentPage.selectReviewers(userNames).render();
     }
 
     @Test(groups = "Hybrid", dependsOnMethods = "isUserFound")

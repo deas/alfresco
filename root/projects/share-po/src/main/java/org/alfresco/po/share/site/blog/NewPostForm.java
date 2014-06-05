@@ -1,16 +1,14 @@
 package org.alfresco.po.share.site.blog;
 
-import org.alfresco.webdrone.RenderTime;
-import org.alfresco.webdrone.WebDrone;
-import org.alfresco.webdrone.exception.PageException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 import java.util.NoSuchElementException;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 /**
  * New Post Form page object
@@ -40,6 +38,8 @@ public class NewPostForm extends AbstractPostForm
         return this;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
     public NewPostForm render()
     {
         return render(new RenderTime(maxPageLoadingTime));
@@ -78,7 +78,7 @@ public class NewPostForm extends AbstractPostForm
         try
         {
             saveButton.click();
-            waitUntilAlert();
+            waitUntilAlert(5);
             return new PostViewPage(drone).render();
         }
         catch (NoSuchElementException e)

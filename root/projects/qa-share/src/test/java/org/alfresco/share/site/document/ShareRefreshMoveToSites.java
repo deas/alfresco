@@ -9,6 +9,7 @@ import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.SiteUtil;
+import org.alfresco.share.util.ShareUser.TypeOfPage;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.log4j.Logger;
@@ -107,12 +108,12 @@ public class ShareRefreshMoveToSites extends AbstractUtils {
 		if (isAlfrescoVersionCloud(drone)) {
 			//cloud
 			Assert.assertTrue(destinations.contains("Recent Sites"));
-			Assert.assertTrue(destinations.contains("Favourite Sites"));
+			Assert.assertTrue(destinations.contains("Favorite Sites"));
 			Assert.assertTrue(destinations.contains("All Sites"));
 		} else {
 			//enterprise
 			Assert.assertTrue(destinations.contains("Recent Sites"));
-			Assert.assertTrue(destinations.contains("Favourite Sites"));
+			Assert.assertTrue(destinations.contains("Favorite Sites"));
 			Assert.assertTrue(destinations.contains("All Sites"));
 			Assert.assertTrue(destinations.contains("Repository"));
 			Assert.assertTrue(destinations.contains("Shared Files"));
@@ -152,10 +153,8 @@ public class ShareRefreshMoveToSites extends AbstractUtils {
 			  
 		//move file to recent site
 		docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-		CopyOrMoveContentPage moveToPage = docPage.getFileDirectoryInfo(sampleFile.getName()).selectMoveTo().render();
-		moveToPage.selectDestination("Recent Sites");
-		moveToPage.selectSite(recentSiteName).render();
-		moveToPage.selectOkButton().render();
+
+		ShareUser.copyOrMoveArtifact(drone, "Recent Sites", recentSiteName, sampleFile.getName(), PerformOperation.OK, TypeOfPage.MoveTo);
 			  
 		//check the file is not present anymore in the original site
 		Assert.assertFalse(docPage.isFileVisible(sampleFile.getName()));
@@ -195,10 +194,8 @@ public class ShareRefreshMoveToSites extends AbstractUtils {
 			  
 		//move file to recent site - cancel
 		docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-		CopyOrMoveContentPage moveToPage = docPage.getFileDirectoryInfo(sampleFile.getName()).selectMoveTo().render();
-		moveToPage.selectDestination("Recent Sites");
-		moveToPage.selectSite(recentSiteName).render();
-		moveToPage.selectCancelButton().render();
+		
+		ShareUser.copyOrMoveArtifact(drone, "Recent Sites", recentSiteName, sampleFile.getName(), PerformOperation.CANCEL, TypeOfPage.MoveTo);
 			  
 		//check the file is still present in the original site
 		Assert.assertTrue(docPage.isFileVisible(sampleFile.getName()));
@@ -238,10 +235,8 @@ public class ShareRefreshMoveToSites extends AbstractUtils {
 			  
 		//move file to recent site
 		docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-		CopyOrMoveContentPage moveToPage = docPage.getFileDirectoryInfo(sampleFile.getName()).selectMoveTo().render();
-		moveToPage.selectDestination("Favourite Sites");
-		moveToPage.selectSite(favouriteSiteName).render();
-		moveToPage.selectOkButton().render();
+
+		ShareUser.copyOrMoveArtifact(drone, "Favorite Sites", favouriteSiteName, sampleFile.getName(), PerformOperation.OK, TypeOfPage.MoveTo);
 			  
 		//check the file is not present anymore in the original site
 		Assert.assertFalse(docPage.isFileVisible(sampleFile.getName()));
@@ -281,10 +276,8 @@ public class ShareRefreshMoveToSites extends AbstractUtils {
 			  
 		//move file to recent site - cancel
 		docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-		CopyOrMoveContentPage moveToPage = docPage.getFileDirectoryInfo(sampleFile.getName()).selectMoveTo().render();
-		moveToPage.selectDestination("Favourite Sites");
-		moveToPage.selectSite(favouriteSiteName).render();
-		moveToPage.selectCancelButton().render();
+
+		ShareUser.copyOrMoveArtifact(drone, "Favorite Sites", favouriteSiteName, sampleFile.getName(), PerformOperation.CANCEL, TypeOfPage.MoveTo);
 			  
 		//check the file is still present in the original site
 		Assert.assertTrue(docPage.isFileVisible(sampleFile.getName()));
@@ -325,10 +318,8 @@ public class ShareRefreshMoveToSites extends AbstractUtils {
 			  
 		//move file to recent site
 		docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-		CopyOrMoveContentPage moveToPage = docPage.getFileDirectoryInfo(sampleFile.getName()).selectMoveTo().render();
-		moveToPage.selectDestination("All Sites");
-		moveToPage.selectSite(anySiteName).render();
-		moveToPage.selectOkButton().render();
+
+		ShareUser.copyOrMoveArtifact(drone, "All Sites", anySiteName, sampleFile.getName(), PerformOperation.OK, TypeOfPage.MoveTo);
 			  
 		//check the file is not present anymore in the original site
 		Assert.assertFalse(docPage.isFileVisible(sampleFile.getName()));
@@ -369,10 +360,9 @@ public class ShareRefreshMoveToSites extends AbstractUtils {
 			  
 		//move file to recent site - cancel
 		docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-		CopyOrMoveContentPage moveToPage = docPage.getFileDirectoryInfo(sampleFile.getName()).selectMoveTo().render();
-		moveToPage.selectDestination("All Sites");
-		moveToPage.selectSite(anySiteName).render();
-		moveToPage.selectCancelButton().render();
+
+		ShareUser.copyOrMoveArtifact(drone, "All Sites", anySiteName, sampleFile.getName(), PerformOperation.CANCEL, TypeOfPage.MoveTo);
+                
 			  
 		//check the file is still present in the original site
 		Assert.assertTrue(docPage.isFileVisible(sampleFile.getName()));

@@ -13,15 +13,21 @@
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.alfresco.share.api;
+package org.alfresco.share.api.cmis;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
+import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.rest.api.tests.client.PublicApiClient;
+import org.alfresco.rest.api.tests.client.data.CMISNode;
+import org.alfresco.rest.api.tests.client.data.ContentData;
+import org.alfresco.rest.api.tests.client.data.FolderNode;
 import org.alfresco.share.enums.CMISBinding;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.api.CmisUtils;
@@ -31,6 +37,9 @@ import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
+import org.apache.chemistry.opencmis.commons.data.RepositoryInfo;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisStreamNotSupportedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
@@ -158,4 +167,105 @@ public class CmisBrowserTests extends CmisUtils
 
         assertEquals(2, d1.getAllVersions().size());
     }
+
+    @Test
+    public void ALF_219001() throws Exception
+    {
+        String testName = getTestName();
+        String thisFolderName = getFolderName(testName);
+        String thisFileName = getFileName(testName);
+
+        ShareUser.login(drone, testUser2);
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        ShareUser.createFolderInFolder(drone, thisFolderName, thisFolderName, DOCLIB);
+        ShareUser.uploadFileInFolder(drone, new String[] { thisFileName });
+        String thisFileNameGuid = ShareUser.getGuid(drone, thisFileName);
+        String thisFolderNameGuid = ShareUser.getGuid(drone, thisFolderName);
+
+
+        PublicApiClient.CmisSession cmisSession = getCmisSession(CMISBinding.ATOMPUB10, testUser2, DOMAIN);
+
+        ContentData document = cmisSession.getContent(thisFileNameGuid);
+        assertTrue(document.getBytes().length > 0);
+
+        String invalidId = thisFileNameGuid + "inv";
+        try {
+            document = cmisSession.getContent(invalidId);
+        } catch (Exception e) {
+            assertTrue(e instanceof CmisObjectNotFoundException, "Document should be null as the id does not exist:" + e);
+        }
+        try {
+            document = cmisSession.getContent(thisFolderNameGuid);
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException, "Object is not a document!:" + e);
+        }
+
+    }
+
+    @Test
+    public void ALF_219101() throws Exception
+    {
+        String testName = getTestName();
+        String thisFolderName = getFolderName(testName);
+        String thisFileName = getFileName(testName);
+
+        ShareUser.login(drone, testUser2);
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        ShareUser.createFolderInFolder(drone, thisFolderName, thisFolderName, DOCLIB);
+        ShareUser.uploadFileInFolder(drone, new String[] { thisFileName, thisFolderName });
+        String thisFileNameGuid = ShareUser.getGuid(drone, thisFileName);
+        String thisFolderNameGuid = ShareUser.getGuid(drone, thisFolderName);
+
+
+        PublicApiClient.CmisSession cmisSession = getCmisSession(CMISBinding.ATOMPUB10, testUser2, DOMAIN);
+
+        FolderNode children = cmisSession.getChildren(thisFolderNameGuid, 0, 100);
+        Map<String, CMISNode> documentNodes = children.getDocumentNodes();
+        Collection<CMISNode> values = documentNodes.values();
+        assertTrue(values.contains(getObject(CMISBinding.ATOMPUB10,testUser2, DOMAIN, thisFileNameGuid)));
+
+        String invalidId = thisFolderName + "inv";
+
+        try {
+            children = cmisSession.getChildren(invalidId, 0, 100);
+        } catch (Exception e) {
+            assertTrue(e instanceof CmisObjectNotFoundException, "Document should be null as the id does not exist:" + e);
+        }
+
+        try {
+            children = cmisSession.getChildren(thisFileNameGuid, 0, 100);
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException, "Object is not a document!:" + e);
+        }
+    }
+
+    @Test
+    public void ALF_235301() throws Exception
+    {
+        PublicApiClient.CmisSession cmisSession = getCmisSession(CMISBinding.ATOMPUB10, testUser2, DOMAIN);
+        RepositoryInfo repositoryInfo = cmisSession.getCMISSession().getRepositoryInfo();
+    }
+
+    @Test
+    public void ALF_235701() throws Exception {
+        String testName = getTestName();
+        String thisFileName = getFileName(testName);
+
+        ShareUser.login(drone, testUser2);
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        ShareUser.uploadFileInFolder(drone, new String[]{thisFileName});
+        String thisFileNameGuid = ShareUser.getGuid(drone, thisFileName);
+
+        PublicApiClient.CmisSession cmisSession = getCmisSession(CMISBinding.ATOMPUB10, testUser2, DOMAIN);
+        List<Document> allVersions = cmisSession.getAllVersions(thisFileNameGuid);
+    }
+
+
+    @Test
+    public void ALF_237201() throws Exception
+    {
+        PublicApiClient.CmisSession cmisSession = getCmisSession(CMISBinding.ATOMPUB10, testUser2, DOMAIN);
+//        cmisSession.
+    }
+
 }

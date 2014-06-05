@@ -113,13 +113,13 @@ public class NodeBrowserTests extends AbstractUtils
         NodeBrowserPage nodeBrowserPage = NodeBrowserPageUtil.executeQuery(drone, STORE_ROOT, WORKSPACE_SPACE_STORE);
         assertTrue(nodeBrowserPage.isSearchResults(), "Query return Nothing");
         assertEquals(nodeBrowserPage.getSearchResultsCount(), 1, "Query returned more then one root node.");
-        assertTrue(nodeBrowserPage.isInResults("workspace://SpacesStore/\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}"));
+        assertTrue(nodeBrowserPage.isInResultsByNodeRef("workspace://SpacesStore/\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}"));
         assertTrue(nodeBrowserPage.isOnSearchBar("search took [0-9]+ms"));
 
         nodeBrowserPage = NodeBrowserPageUtil.executeQuery(drone, ARCHIVE_SPACE_STORE);
         assertTrue(nodeBrowserPage.isSearchResults(), "Query return Nothing");
         assertEquals(nodeBrowserPage.getSearchResultsCount(), 1, "Query returned more then one root node.");
-        assertTrue(nodeBrowserPage.isInResults("archive://SpacesStore/\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}"));
+        assertTrue(nodeBrowserPage.isInResultsByNodeRef("archive://SpacesStore/\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}"));
         assertTrue(nodeBrowserPage.isOnSearchBar("search took [0-9]+ms"));
     }
 

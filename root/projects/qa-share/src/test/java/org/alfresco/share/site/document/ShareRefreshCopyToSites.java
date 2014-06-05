@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.service.cmr.site.SiteVisibility;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUser.TypeOfPage;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -117,7 +117,7 @@ public class ShareRefreshCopyToSites extends AbstractUtils
         {
             // enterprise
             Assert.assertTrue(destinations.contains("Recent Sites"));
-            Assert.assertTrue(destinations.contains("Favourite Sites"));
+            Assert.assertTrue(destinations.contains("Favorite Sites"));
             Assert.assertTrue(destinations.contains("All Sites"));
             Assert.assertTrue(destinations.contains("Repository"));
             Assert.assertTrue(destinations.contains("Shared Files"));
@@ -157,10 +157,8 @@ public class ShareRefreshCopyToSites extends AbstractUtils
 
         // move file to recent site
         docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-        CopyOrMoveContentPage copyToPage = docPage.getFileDirectoryInfo(sampleFile.getName()).selectCopyTo().render();
-        copyToPage.selectDestination("Recent Sites");
-        copyToPage.selectSite(recentSiteName).render();
-        copyToPage.selectOkButton().render();
+        
+        ShareUser.copyOrMoveArtifact(drone, "Recent Sites", recentSiteName, sampleFile.getName(), PerformOperation.OK, TypeOfPage.CopyTo);
 
         // check the file is copied to recent site
         docPage = ShareUser.openSitesDocumentLibrary(drone, recentSiteName);
@@ -197,10 +195,8 @@ public class ShareRefreshCopyToSites extends AbstractUtils
 
         // move file to recent site - cancel
         docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-        CopyOrMoveContentPage copyToPage = docPage.getFileDirectoryInfo(sampleFile.getName()).selectCopyTo().render();
-        copyToPage.selectDestination("Recent Sites");
-        copyToPage.selectSite(recentSiteName).render();
-        copyToPage.selectCancelButton().render();
+
+        ShareUser.copyOrMoveArtifact(drone, "Recent Sites", recentSiteName, sampleFile.getName(), PerformOperation.CANCEL, TypeOfPage.CopyTo );
 
         // check the file is not copied to the recent site
         docPage = ShareUser.openSitesDocumentLibrary(drone, recentSiteName);
@@ -237,11 +233,9 @@ public class ShareRefreshCopyToSites extends AbstractUtils
 
         // move file to recent site
         docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-        CopyOrMoveContentPage copyToPage = docPage.getFileDirectoryInfo(sampleFile.getName()).selectCopyTo().render();
-        copyToPage.selectDestination("Favourite Sites");
-        copyToPage.selectSite(favouriteSiteName).render();
-        copyToPage.selectOkButton().render();
 
+        ShareUser.copyOrMoveArtifact(drone, "Favorite Sites", favouriteSiteName, sampleFile.getName(), PerformOperation.OK, TypeOfPage.CopyTo);
+        
         // check the file is copied to favourite site
         docPage = ShareUser.openSitesDocumentLibrary(drone, favouriteSiteName);
         Assert.assertTrue(docPage.isFileVisible(sampleFile.getName()));
@@ -276,10 +270,8 @@ public class ShareRefreshCopyToSites extends AbstractUtils
 
         // move file to recent site - cancel
         docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-        CopyOrMoveContentPage copyToPage = docPage.getFileDirectoryInfo(sampleFile.getName()).selectCopyTo().render();
-        copyToPage.selectDestination("Favourite Sites");
-        copyToPage.selectSite(favouriteSiteName).render();
-        copyToPage.selectCancelButton().render();
+
+        ShareUser.copyOrMoveArtifact(drone, "Favorite Sites", favouriteSiteName, sampleFile.getName(), PerformOperation.CANCEL, TypeOfPage.CopyTo);
 
         // check the file is not present in the favourite site
         docPage = ShareUser.openSitesDocumentLibrary(drone, favouriteSiteName);
@@ -315,10 +307,8 @@ public class ShareRefreshCopyToSites extends AbstractUtils
 
         // move file to recent site
         docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-        CopyOrMoveContentPage copyToPage = docPage.getFileDirectoryInfo(sampleFile.getName()).selectCopyTo().render();
-        copyToPage.selectDestination("All Sites");
-        copyToPage.selectSite(anySiteName).render();
-        copyToPage.selectOkButton().render();
+
+        ShareUser.copyOrMoveArtifact(drone, "All Sites", anySiteName, sampleFile.getName(), PerformOperation.OK, TypeOfPage.CopyTo);
 
         // check the file is present in public site
         docPage = ShareUser.openSitesDocumentLibrary(drone, anySiteName);
@@ -353,10 +343,8 @@ public class ShareRefreshCopyToSites extends AbstractUtils
 
         // move file to recent site - cancel
         docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-        CopyOrMoveContentPage copyToPage = docPage.getFileDirectoryInfo(sampleFile.getName()).selectCopyTo().render();
-        copyToPage.selectDestination("All Sites");
-        copyToPage.selectSite(anySiteName).render();
-        copyToPage.selectCancelButton().render();
+    
+        ShareUser.copyOrMoveArtifact(drone, "All Sites", anySiteName, sampleFile.getName(), PerformOperation.CANCEL, TypeOfPage.CopyTo);
 
         // check the file is not present in public site
         docPage = ShareUser.openSitesDocumentLibrary(drone, anySiteName);

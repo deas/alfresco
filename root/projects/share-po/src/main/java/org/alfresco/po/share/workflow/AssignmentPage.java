@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.ElementState;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -117,22 +119,54 @@ public class AssignmentPage extends SharePage
     {
         for (String userName : userNames)
         {
-            selectUser(userName);
+            selectUserWithRetry(userName);
         }
     }
 
     /**
      * Method to add a single user
-     * 
+     * Move this as a util in qa-share 
      * @param userName
      */
-    public void selectUser(String userName)
+    @Deprecated
+    public void selectUserWithRetry(String userName)
     {
+        boolean found = false;
+        // TODO: Add this as a test property
+        int retryCount = 3;
+
+        while (!found && retryCount>0)
+        {
+            try
+            {
+                found = selectUser(userName);
+            }
+            catch (PageException pe)
+            {
+                logger.info("User Not Found: Retrying ...");
+            }
+            finally
+            {
+                retryCount--;
+            }
+        }
+    }
+    
+    /**
+     * Method to add a single user
+     * 
+     * @param userName
+     * @return 
+     */
+    public boolean selectUser(String userName)
+    {
+        boolean userFound = false;
+        
         if (StringUtils.isEmpty(userName))
         {
             throw new IllegalArgumentException("User Name can't empty or null.");
         }
-        List<WebElement> elements = retrieveCloudUsers(userName);
+        List<WebElement> elements = retrieveUsers(userName);
 
         userName = userName.toLowerCase();
         for (WebElement webElement : elements)
@@ -153,9 +187,11 @@ public class AssignmentPage extends SharePage
 
                     }
                 }
+                userFound = true;
                 break;
             }
         }
+        return userFound;
     }
 
     /**
@@ -164,10 +200,11 @@ public class AssignmentPage extends SharePage
      * @return Assignment Page return type clod sync cloud user part will be
      *         modified after completing other page objects.
      */
-    public void selectReviewers(List<String> userNames)
+    public HtmlPage selectReviewers(List<String> userNames)
     {
         selectUsers(userNames);
         selectOKButton();
+        return FactorySharePage.resolvePage(drone);
     }
 
     /**
@@ -195,11 +232,11 @@ public class AssignmentPage extends SharePage
     }
 
     /**
-     * Method to get the cloud reviewers
+     * Method to get the cloud reviewers or list of assignees
      * 
      * @return List of users
      */
-    public List<WebElement> retrieveCloudUsers(String userName)
+    public List<WebElement> retrieveUsers(String userName)
     {
         if (StringUtils.isEmpty(userName))
         {
@@ -291,7 +328,7 @@ public class AssignmentPage extends SharePage
         }
         try
         {
-            List<WebElement> users = retrieveCloudUsers(userName);
+            List<WebElement> users = retrieveUsers(userName);
             for (WebElement user : users)
             {
                 if (user.findElement(By.cssSelector(".item-name")).getText().contains("(" + userName + ")"))
@@ -330,7 +367,7 @@ public class AssignmentPage extends SharePage
     {
         try
         {
-            getVisibleElement(SEARCH_TEXT).clear();
+            drone.findFirstDisplayedElement(SEARCH_TEXT).clear();
         }
         catch (NoSuchElementException nse)
         {
@@ -406,7 +443,7 @@ public class AssignmentPage extends SharePage
      */
     public List<String> getUserList(String userName)
     {
-        List<WebElement> userElements = retrieveCloudUsers(userName);
+        List<WebElement> userElements = retrieveUsers(userName);
         List<String> userList = new ArrayList<String>(userElements.size());
         for (WebElement user : userElements)
         {
@@ -427,7 +464,7 @@ public class AssignmentPage extends SharePage
         {
             throw new IllegalArgumentException("User Name cannot be empty");
         }
-        List<WebElement> elements = retrieveCloudUsers(userName);
+        List<WebElement> elements = retrieveUsers(userName);
         boolean isDisplayed = false;
 
         for (WebElement webElement : elements)

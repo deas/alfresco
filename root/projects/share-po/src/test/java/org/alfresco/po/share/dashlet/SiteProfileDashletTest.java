@@ -1,6 +1,6 @@
 package org.alfresco.po.share.dashlet;
 
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
@@ -49,7 +49,7 @@ public class SiteProfileDashletTest extends AbstractSiteDashletTest
     {
         customiseSiteDashBoard = siteDashBoard.getSiteNav().selectCustomizeDashboard();
         customiseSiteDashBoard.render();
-        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlet.SITE_PROFILE, 1).render();
+        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlets.SITE_PROFILE, 1).render();
         siteProfileDashlet = siteDashBoard.getDashlet(SITE_PROFILE_DASHLET).render();
         assertNotNull(siteProfileDashlet);
     }

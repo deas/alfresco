@@ -32,6 +32,7 @@ import org.testng.annotations.Test;
  * 
  * @author Ranjith Manyam
  */
+
 @Listeners(FailedTestListener.class)
 public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
 {
@@ -229,7 +230,7 @@ public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = "EnterpriseOnly")
+    @Test
     public void ALF_2517() throws Exception
     {
         testName = getTestName();
@@ -239,7 +240,7 @@ public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
         addTaggableAspect(drone, testUser, folderName, siteName, tag, cmisVersionAtom11);
     }
 
-    @Test(dependsOnMethods = "ALF_2517", groups = "EnterpriseOnly")
+    @Test(dependsOnMethods = "ALF_2517")
     public void ALF_2532() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));

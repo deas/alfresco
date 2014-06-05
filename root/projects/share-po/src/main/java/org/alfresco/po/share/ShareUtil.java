@@ -30,6 +30,8 @@ public class ShareUtil
     private static Log logger = LogFactory.getLog(ShareUtil.class);
 
     private static final String ADMIN_SYSTEMSUMMARY_PAGE = "alfresco/service/enterprise/admin";
+    private static final String BULK_IMPORT_PAGE = "alfresco/service/bulkfsimport";
+    private static final String BULK_IMPORT_IN_PLACE_PAGE = "alfresco/service/bulkfsimport/inplace";
 
     /**
      * A simple Enum to request the required Alfresco version.
@@ -55,7 +57,7 @@ public class ShareUtil
      * has not labelled the logout with an id or css element to indicate a
      * logout link.
      */
-    public static void logout(final WebDrone drone)
+    public static synchronized void logout(final WebDrone drone)
     {
         String currentUrl = drone.getCurrentUrl();
         String url = currentUrl.replaceFirst(BASE_URL_PATTERN, LOGOUT_PATTERN);
@@ -113,14 +115,14 @@ public class ShareUtil
 
     /**
      * @param drone
-     * @param url
      * @param userInfo
      * @return
      */
-    public static HtmlPage navigateToSystemSummary(final WebDrone drone, final String url, final String... userInfo)
+    public static HtmlPage navigateToSystemSummary(final WebDrone drone, String url, final String... userInfo)
     {
+//        String url = drone.getCurrentUrl();
         String protocolVar = PageUtils.getProtocol(url);
-        String consoleUrlVar = PageUtils.getUrl(url);
+        String consoleUrlVar = PageUtils.getAddress(url);
         String systemUrl = String.format("%s%s:%s@%s/" + ADMIN_SYSTEMSUMMARY_PAGE, protocolVar, userInfo[0], userInfo[1], consoleUrlVar);
         try {
             drone.navigateTo(systemUrl);
@@ -128,6 +130,45 @@ public class ShareUtil
             if (logger.isDebugEnabled())
             {
                 logger.debug("Following exception was occurred" + e + ". Param systemUrl was " + systemUrl);
+            }
+        }
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Methods for navigation bulk import page
+     * 
+     * @param drone
+     * @param inPlace
+     * @param userInfo
+     * @return
+     */
+    public static HtmlPage navigateToBulkImport(final WebDrone drone, boolean inPlace, final String... userInfo)
+    {
+        String currentUrl = drone.getCurrentUrl();
+        String protocolVar = PageUtils.getProtocol(currentUrl);
+        String consoleUrlVar = PageUtils.getAddress(currentUrl);
+        if (inPlace)
+        {
+            currentUrl = String.format("%s%s:%s@%s/" + BULK_IMPORT_IN_PLACE_PAGE, protocolVar, userInfo[0], userInfo[1], consoleUrlVar);
+            logger.info("Property 'currentUrl' is: " + currentUrl);
+        }
+        else
+        {
+            currentUrl = String.format("%s%s:%s@%s/" + BULK_IMPORT_PAGE, protocolVar, userInfo[0], userInfo[1], consoleUrlVar);
+            logger.info("Property 'currentUrl' is: " + currentUrl);
+        }
+
+        try
+        {
+            logger.info("Navigate to 'currentUrl': " + currentUrl);
+            drone.navigateTo(currentUrl);
+        }
+        catch (Exception e)
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Following exception was occurred" + e + ". Param systemUrl was " + currentUrl);
             }
         }
         return drone.getCurrentPage().render();

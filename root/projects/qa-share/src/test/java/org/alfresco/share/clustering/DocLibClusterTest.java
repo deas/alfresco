@@ -36,7 +36,7 @@ import static org.testng.Assert.*;
 // import javax.management.openmbean.TabularDataSupport;
 
 /**
- * TODO: Add info, Author
+ * @author Sergey Kardash
  */
 public class DocLibClusterTest extends AbstractUtils
 {
@@ -84,8 +84,7 @@ public class DocLibClusterTest extends AbstractUtils
          * }
          * }
          */
-        // TODO: Do not cast, use render to render appropriate page object if util returns HtmlPage
-        SystemSummaryPage sysSummaryPage = (SystemSummaryPage) ShareUtil.navigateToSystemSummary(drone, shareUrl, ADMIN_USERNAME, ADMIN_PASSWORD);
+        SystemSummaryPage sysSummaryPage = ShareUtil.navigateToSystemSummary(drone, shareUrl, ADMIN_USERNAME, ADMIN_PASSWORD).render();
 
         RepositoryServerClusteringPage clusteringPage = sysSummaryPage.openConsolePage(AdminConsoleLink.RepositoryServerClustering);
 
@@ -725,9 +724,9 @@ public class DocLibClusterTest extends AbstractUtils
         // Try to search "testFile" on server B using simple search
         Assert.assertTrue(CollectionUtils.hasElements(ShareUserSearchPage.basicSearch(drone, fileName1, false)), "The file " + fileName1
                 + " isn't found successfully");
-
-        Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, fileName1), "Not Found " + fileName1);
-
+        
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, fileName1), "Not Found " + fileName1);
+        
         ShareUser.logout(drone);
     }
 
@@ -1292,8 +1291,6 @@ public class DocLibClusterTest extends AbstractUtils
         Assert.assertTrue(docLibPage.isFileVisible(folderName), "Folder " + folderName + " isn't visible");
 
         rulesPage = docLibPage.getFileDirectoryInfo(folderName).selectManageRules().render();
-        // TODO: Remove redundant render, since the page is rendered above already
-        rulesPage.render(maxWaitTime);
 
         createRulePage = rulesPage.clickEditButton().render();
 
@@ -1318,8 +1315,6 @@ public class DocLibClusterTest extends AbstractUtils
         Assert.assertTrue(docLibPage.isFileVisible(folderName), "Folder " + folderName + " isn't visible");
 
         rulesPage = docLibPage.getFileDirectoryInfo(folderName).selectManageRules().render();
-        // TODO: Remove redundant render, since the page is rendered above already
-        rulesPage.render(maxWaitTime);
 
         // "testRule" rule is edited from server B
         Assert.assertTrue(rulesPage.isPageCorrect(folderName), "Rule page isn't correct");

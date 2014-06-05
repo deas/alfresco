@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.ShareLink;
+import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.blog.BlogPage;
 import org.alfresco.po.share.site.calendar.CalendarPage;
-import org.alfresco.po.share.site.datalist.DataListPage;
 import org.alfresco.po.share.site.discussions.DiscussionsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.links.LinksPage;
@@ -30,8 +30,11 @@ import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
@@ -44,6 +47,8 @@ import org.openqa.selenium.WebElement;
  */
 public class SiteNavigation extends AbstractSiteNavigation
 {
+    private Log logger = LogFactory.getLog(SiteNavigation.class);
+
     protected final String siteMembersCSS;
     protected final By moreButton;
     private final String documentLibLink;
@@ -83,16 +88,27 @@ public class SiteNavigation extends AbstractSiteNavigation
      * 
      * @return HtmlPage site document lib page object
      */
-    public HtmlPage selectSiteDocumentLibrary()
+    public DocumentLibraryPage selectSiteDocumentLibrary()
     {
         if (getAlfrescoVersion().isDojoSupported())
         {
             // extractLink(drone.getLanguageValue("document.library")).click();
-            extractLink(DOCUMENT_LIBRARY).click();
-            return new DocumentLibraryPage(getDrone());
+
+            if (drone.find(DOCLIB_LINK).isDisplayed())
+            {
+                extractLink(DOCUMENT_LIBRARY).click();
+                return new DocumentLibraryPage(drone).render();
+            }
+            else
+            {
+                drone.findAndWait(SITE_MORE_PAGES).click();
+                drone.findAndWait(DOCLIB_LINK).click();
+                return new DocumentLibraryPage(drone).render();
+            }
+
         }
         // return drone.getLanguageValue("document.library");
-        return select(DOCUMENT_LIBRARY);
+        return select(DOCUMENT_LIBRARY).render();
     }
 
     /**
@@ -109,6 +125,22 @@ public class SiteNavigation extends AbstractSiteNavigation
             return new WikiPage(getDrone());
         }
         return select(WIKI);
+    }
+
+    /**
+     * Mimics the action of selecting the site
+     * calendar link.
+     * 
+     * @return HtmlPage site calendar page object
+     */
+    public HtmlPage selectSiteCalendarPage()
+    {
+        if (getAlfrescoVersion().isDojoSupported())
+        {
+            extractLink(CALENDAR).click();
+            return new CalendarPage(getDrone());
+        }
+        return select(CALENDAR);
     }
 
     /**
@@ -246,7 +278,7 @@ public class SiteNavigation extends AbstractSiteNavigation
         try
         {
             findElement(By.cssSelector(siteMembersCSS)).click();
-            return new SiteMembersPage(getDrone());
+            return new SiteMembersPage(getDrone()).render();
         }
         catch (NoSuchElementException e)
         {
@@ -324,17 +356,9 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public CalendarPage selectCalendarPage()
     {
-        if (drone.find(CALENDAR_LINK).isDisplayed())
-        {
-            drone.findAndWait(CALENDAR_LINK).click();
-            return new CalendarPage(drone);
-        }
-        else
-        {
-            drone.findAndWait(SITE_MORE_PAGES).click();
-            drone.findAndWait(CALENDAR_LINK).click();
-            return new CalendarPage(drone);
-        }
+        clickMoreIfExist();
+        drone.findAndWait(CALENDAR_LINK).click();
+        return drone.getCurrentPage().render();
     }
 
     /**
@@ -345,17 +369,9 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public SiteMembersPage selectMembersPage()
     {
-        if (drone.find(MEMBERS_LINK).isDisplayed())
-        {
-            drone.findAndWait(MEMBERS_LINK).click();
-            return new SiteMembersPage(drone);
-        }
-        else
-        {
-            drone.findAndWait(SITE_MORE_PAGES).click();
-            drone.findAndWait(MEMBERS_LINK).click();
-            return new SiteMembersPage(drone);
-        }
+        clickMoreIfExist();
+        drone.findAndWait(MEMBERS_LINK).click();
+        return drone.getCurrentPage().render();
     }
 
     /**
@@ -366,17 +382,9 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public WikiPage selectWikiPage()
     {
-        if (drone.find(WIKI_LINK).isDisplayed())
-        {
-            drone.findAndWait(WIKI_LINK).click();
-            return new WikiPage(drone);
-        }
-        else
-        {
-            drone.findAndWait(SITE_MORE_PAGES).click();
-            drone.findAndWait(WIKI_LINK).click();
-            return new WikiPage(drone);
-        }
+        clickMoreIfExist();
+        drone.findAndWait(WIKI_LINK).click();
+        return drone.getCurrentPage().render();
     }
 
     /**
@@ -387,17 +395,9 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public DiscussionsPage selectDiscussionsPage()
     {
-        if (drone.find(DISCUSSIONS_LINK).isDisplayed())
-        {
-            drone.findAndWait(DISCUSSIONS_LINK).click();
-            return new DiscussionsPage(drone);
-        }
-        else
-        {
-            drone.findAndWait(SITE_MORE_PAGES).click();
-            drone.findAndWait(DISCUSSIONS_LINK).click();
-            return new DiscussionsPage(drone);
-        }
+        clickMoreIfExist();
+        drone.findAndWait(DISCUSSIONS_LINK).click();
+        return drone.getCurrentPage().render();
     }
 
     /**
@@ -408,17 +408,9 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public BlogPage selectBlogPage()
     {
-        if (drone.find(BLOG_LINK).isDisplayed())
-        {
-            drone.findAndWait(BLOG_LINK).click();
-            return new BlogPage(drone);
-        }
-        else
-        {
-            drone.findAndWait(SITE_MORE_PAGES).click();
-            drone.findAndWait(BLOG_LINK).click();
-            return new BlogPage(drone);
-        }
+        clickMoreIfExist();
+        drone.findAndWait(BLOG_LINK).click();
+        return drone.getCurrentPage().render();
     }
 
     /**
@@ -429,17 +421,9 @@ public class SiteNavigation extends AbstractSiteNavigation
      */
     public LinksPage selectLinksPage()
     {
-        if (drone.find(LINKS_LINK).isDisplayed())
-        {
-            drone.findAndWait(LINKS_LINK).click();
-            return new LinksPage(drone);
-        }
-        else
-        {
-            drone.findAndWait(SITE_MORE_PAGES).click();
-            drone.findAndWait(LINKS_LINK).click();
-            return new LinksPage(drone);
-        }
+        clickMoreIfExist();
+        drone.findAndWait(LINKS_LINK).click();
+        return drone.getCurrentPage().render();
     }
 
     /**
@@ -448,18 +432,59 @@ public class SiteNavigation extends AbstractSiteNavigation
      * 
      * @return HtmlPage site members page object
      */
-    public DataListPage selectDataListPage()
+    public SharePage selectDataListPage()
     {
-        if (drone.find(DATA_LISTS_LINK).isDisplayed())
+        clickMoreIfExist();
+        drone.findAndWait(DATA_LISTS_LINK).click();
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Mimics the action of leave Site.
+     * 
+     * @return {@link CustomizeSitePage}
+     */
+    public HtmlPage leaveSite()
+    {
+        try
         {
-            drone.findAndWait(DATA_LISTS_LINK).click();
-            return new DataListPage(drone).render();
+            if (Enterprise41.equals(getAlfrescoVersion()))
+            {
+                selectMore();
+                drone.findAndWait(LEAVE_SITE).click();
+            }
+            else
+            {
+                selectConfigure();
+                drone.find(LEAVE_SITE).click();
+            }
+            drone.findAndWait(By.xpath("//span[text()='OK']")).click();
+            return drone.getCurrentPage().render();
         }
-        else
+        catch (TimeoutException te)
         {
-            drone.findAndWait(SITE_MORE_PAGES).click();
-            drone.findAndWait(DATA_LISTS_LINK).click();
-            return new DataListPage(drone).render();
+        }
+        throw new PageException("Not able to find Leave Site Link.");
+    }
+
+    private void clickMoreIfExist()
+    {
+        try
+        {
+            WebElement element = drone.find(SITE_MORE_PAGES);
+            element.click();
+        }
+        catch (StaleElementReferenceException e)
+        {
+            clickMoreIfExist();
+        }
+        catch (NoSuchElementException e)
+        {
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("More button is not found.", e);
+            }
         }
     }
+
 }

@@ -1,7 +1,5 @@
 package org.alfresco.po.share.site.discussions;
 
-import org.openqa.selenium.WebElement;
-
 /**
  *
  * @author Marina.Nenadovets
@@ -26,4 +24,16 @@ public interface TopicDirectoryInfo
      * @return
      */
     DiscussionsPage deleteTopic();
+
+    /**
+     * Verify whether edit topic is displayed
+     * @return
+     */
+    boolean isEditTopicDisplayed ();
+
+    /**
+     * Verify whether delete topic is displayed
+     * @return
+     */
+    boolean isDeleteTopicDisplayed ();
 }

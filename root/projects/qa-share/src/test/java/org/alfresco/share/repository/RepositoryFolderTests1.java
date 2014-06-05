@@ -138,7 +138,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
         Assert.assertTrue(repositorypage.isFileVisible(folderName), "verifying folder present in repository");
 
         // Select folder and view folder details
-        FolderDetailsPage folderDetailsPage = repositorypage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
+        FolderDetailsPage folderDetailsPage = ShareUserSitePage.getFileDirectoryInfo(drone, folderName).selectViewFolderDetails().render();
 
         // TODO - Name, Title and Description assertions missing
 
@@ -246,7 +246,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
         repositorypage = ShareUserRepositoryPage.addTag(drone, folderName, tagName);
 
         // Select folder and click on edit properties
-        EditDocumentPropertiesPage editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folderName).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = ShareUserSitePage.getFileDirectoryInfo(drone, folderName).selectEditProperties().render();
 
         // Edit the folder name
         editDocumentPropertiesPopup.setName(newFolderName);
@@ -266,19 +266,19 @@ public class RepositoryFolderTests1 extends AbstractUtils
 
         repositorypage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderPath);
 
-        editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(newFolderName).selectEditProperties().render();
+        editDocumentPropertiesPopup = ShareUserSitePage.getFileDirectoryInfo(drone, newFolderName).selectEditProperties().render();
 
         ShareUserRepositoryPage.operationOnTag(drone, Operation.SAVE, tagName + "1");
 
         editDocumentPropertiesPopup.selectSave().render();
 
         // Verify Name field changed successfully
-        Assert.assertEquals(repositorypage.getFileDirectoryInfo(newFolderName).getName(), newFolderName, "verifying folder name is changed successfully");
+        Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(drone, newFolderName).getName(), newFolderName, "verifying folder name is changed successfully");
 
         // Verify Tag Value changed successfully
         ShareUserSitePage.clickOnTagNameInTreeMenu(drone, tagName + "1").render();
 
-        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, newFolderName, "tags", tagName + "1", true));
+        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, newFolderName, "isContentVisible", "", true));
         Assert.assertEquals(ShareUserSitePage.getContentCount(drone), 1);
 
     }
@@ -336,7 +336,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
         Assert.assertTrue(repositorypage.isFileVisible(folder1), "verifying folder present in repository");
 
         // Select more options in folder1 and click on Manage permissions
-        ManagePermissionsPage managePermissionsPage = repositorypage.getFileDirectoryInfo(folder1).selectManagePermission().render();
+        ManagePermissionsPage managePermissionsPage = ShareUserSitePage.getFileDirectoryInfo(drone, folder1).selectManagePermission().render();
 
         // Verify Manage Permissions page is displayed
         Assert.assertTrue(managePermissionsPage.isTitlePresent(Title), "Verify manage permissions page is displayed");
@@ -358,7 +358,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
         // Navigate to repository page
         repositorypage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderPath);
 
-        ManagePermissionsPage managepermissionsPage = repositorypage.getFileDirectoryInfo(folder1).selectManagePermission().render();
+        ManagePermissionsPage managepermissionsPage = ShareUserSitePage.getFileDirectoryInfo(drone, folder1).selectManagePermission().render();
 
         Assert.assertFalse(managepermissionsPage.toggleInheritPermission(false, ButtonType.Yes).isUserExistForPermission(GroupName),
                 "Verify user exists or not");
@@ -524,7 +524,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
         // repositorypage =
         // ShareUserRepositoryPage.openUserFromUserHomesFolderOfRepository(drone,
         // testUser);
-        EditDocumentPropertiesPage editDocumentPropertiesPopup = repositorypage.getFileDirectoryInfo(folder1).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = ShareUserSitePage.getFileDirectoryInfo(drone, folder1).selectEditProperties().render();
 
         // Edit folder details
         editDocumentPropertiesPopup.setName(folder1 + "1");
@@ -661,7 +661,7 @@ public class RepositoryFolderTests1 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test
+    @Test(groups = { "SharePOBug" })
     public void Enterprise40x_5431() throws Exception
     {
         String testName = getTestName();
@@ -941,8 +941,8 @@ public class RepositoryFolderTests1 extends AbstractUtils
         // Create sub folder2 in folder1
         repositorypage = (RepositoryPage) ShareUserSitePage.createFolder(drone, folder2, folder2);
 
-        Assert.assertTrue(folder2.equals(repositorypage.getFileDirectoryInfo(folder2).getName()));
-        Assert.assertTrue(repositorypage.getFileDirectoryInfo(folder2).getContentEditInfo().contains("Administrator"));
+        Assert.assertTrue(folder2.equals(ShareUserSitePage.getFileDirectoryInfo(drone, folder2).getName()));
+        Assert.assertTrue(ShareUserSitePage.getFileDirectoryInfo(drone, folder2).getContentEditInfo().contains("Administrator"));
 
         ShareUserRepositoryPage.openRepositoryDetailedView(drone);
 
@@ -950,8 +950,8 @@ public class RepositoryFolderTests1 extends AbstractUtils
 
         repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folder1);
 
-        Assert.assertTrue(folder2.equals(repositorypage.getFileDirectoryInfo(folder2).getName()));
-        Assert.assertTrue(repositorypage.getFileDirectoryInfo(folder2).getContentEditInfo().contains("Administrator"));
+        Assert.assertTrue(folder2.equals(ShareUserSitePage.getFileDirectoryInfo(drone, folder2).getName()));
+        Assert.assertTrue(ShareUserSitePage.getFileDirectoryInfo(drone, folder2).getContentEditInfo().contains("Administrator"));
 
     }
 

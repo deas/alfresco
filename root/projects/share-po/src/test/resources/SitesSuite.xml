@@ -37,6 +37,11 @@
    <class name="org.alfresco.po.share.site.NewFolderPageTest" />
   </classes>
  </test>
+  <test name="PendingInvitesPageTest">
+  <classes>
+   <class name="org.alfresco.po.share.site.PendingInvitesPageTest" />
+  </classes>
+ </test>
  <test name="SiteFinderPageTest">
   <classes>
    <class name="org.alfresco.po.share.site.SiteFinderPageTest" />
@@ -65,6 +70,11 @@
  <test name="WikiPageLibraryTest">
   <classes>
    <class name="org.alfresco.po.share.site.WikiPageLibraryTest" />
+  </classes>
+ </test>
+ <test name="WikiPageListTest">
+  <classes>
+   <class name="org.alfresco.po.share.site.WikiPageListTest" />
   </classes>
  </test>
  <test name="WikiPageTest">

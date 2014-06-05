@@ -23,6 +23,8 @@ import java.util.List;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.GroupsPage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.UserProfilePage;
+import org.alfresco.po.share.UserSearchPage;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.admin.ManagedSiteRow;
 import org.alfresco.po.share.adminconsole.NodeBrowserPage;
@@ -247,5 +249,23 @@ public class ShareUserAdmin extends AbstractUtils
             throw new MalformedNodeRefException("Invalid node ref:" + categoryNodeRef);
         }
         return categoryNodeRef;
+    }
+    
+    /**
+     * Util to delete user by using delete button on the User search page
+     * Assumes user with admin rights is logged in
+     * @param drone
+     * @param userName
+     * @return
+     */
+    public static UserSearchPage deleteUser(WebDrone drone, String userName)
+    {
+        SharePage sharePage = ShareUser.getSharePage(drone);
+        UserSearchPage page = sharePage.getNav().getUsersPage().render();
+        page = page.searchFor(userName).render();
+
+        UserProfilePage userProfile = page.clickOnUser(userName).render();
+        page = userProfile.deleteUser().render();
+        return page;
     }
 }

@@ -6,7 +6,7 @@ import org.alfresco.webdrone.WebDrone;
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
- * New Post Form page object
+ * Edit Post Form page object
  *
  * @author Marina.Nenadovets
  */
@@ -30,6 +30,7 @@ public class EditPostForm extends AbstractPostForm
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public EditPostForm render()
     {
         return render(new RenderTime(maxPageLoadingTime));

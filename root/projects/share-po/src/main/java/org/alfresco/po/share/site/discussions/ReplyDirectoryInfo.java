@@ -4,6 +4,7 @@ import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
@@ -11,24 +12,24 @@ import org.openqa.selenium.WebElement;
  * Holds html elements related to Reply Directory info
  *
  * @author Marina.Nenadovets
- *
  */
 public class ReplyDirectoryInfo extends HtmlElement
 {
     private static final By EDIT_LINK = By.cssSelector(".onEditReply>a");
     private static final By DELETE_LINK = By.cssSelector(".onDeleteReply>a");
+
     /**
      * Constructor
      */
     protected ReplyDirectoryInfo(WebDrone drone, WebElement webElement)
     {
-        super(webElement,drone);
+        super(webElement, drone);
     }
 
     /**
      * Method to click Edit
      */
-    public void clickEdit ()
+    public void clickEdit()
     {
         try
         {
@@ -43,7 +44,7 @@ public class ReplyDirectoryInfo extends HtmlElement
     /**
      * Method to click Delete
      */
-    public void clickDelete ()
+    public void clickDelete()
     {
         try
         {
@@ -53,5 +54,41 @@ public class ReplyDirectoryInfo extends HtmlElement
         {
             throw new ShareException("Unable to find " + DELETE_LINK);
         }
+    }
+
+    /**
+     * Method to verify whether edit is displayed
+     *
+     * @return true if displayed
+     */
+    public boolean isEditDisplayed()
+    {
+        try
+        {
+            WebElement editLink = findElement(EDIT_LINK);
+            return editLink.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * Method to verify whether delete is displayed
+     *
+     * @return true if displayed
+     */
+    public boolean isDeleteDisplayed()
+    {
+        try
+        {
+            WebElement editLink = findElement(EDIT_LINK);
+            return editLink.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        return false;
     }
 }

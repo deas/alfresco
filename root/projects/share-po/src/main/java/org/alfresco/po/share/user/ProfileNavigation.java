@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * This file is part of Alfresco
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,6 +36,9 @@ public class ProfileNavigation
     private static final By CLOUD_SYNC_LINK = By.cssSelector("div>a[href='user-cloud-auth']");
     private static final By TRASHCAN_LINK = By.cssSelector("div>a[href='user-trashcan']");
     private static final By LANGUAGE_LINK = By.cssSelector("div>a[href='change-locale']");
+    private static final By NOTIFICATIONS_LINK = By.cssSelector("div>a[href='user-notifications']");
+    private static final By SITES_LINK = By.cssSelector("div>a[href='user-sites']");
+    
     private final Log logger = LogFactory.getLog(ProfileNavigation.class);
 
     private final WebDrone drone;
@@ -81,7 +84,6 @@ public class ProfileNavigation
      * @return - {@link TrashCanPage}
      * @author sprasanna
      */
-
     public TrashCanPage selectTrashCan()
     {
         drone.find(TRASHCAN_LINK).click();
@@ -109,5 +111,29 @@ public class ProfileNavigation
         {
             throw new PageOperationException("Unable to find Language link" + nse);
         }
+    }
+
+    /**
+     * Click on the Notifications link
+     * 
+     * @return - {@link NotificationPage}
+     * @author sprasanna
+     */
+    public NotificationPage selectNotification()
+    {
+        drone.find(NOTIFICATIONS_LINK).click();
+        return new NotificationPage(drone);
+    }
+
+    /**
+     * Click on the Sites link
+     * 
+     * @return - {@link UserSitesPage}
+     * @author sprasanna
+     */
+    public UserSitesPage selectSites()
+    {
+        drone.find(SITES_LINK).click();
+        return new UserSitesPage(drone);
     }
 }

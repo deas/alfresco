@@ -160,7 +160,7 @@ public class TreeMenuNavigationTest extends AbstractDocumentTest
             
             retry--;
         } while(retry > 0);
-        assertTrue(documentLibPage.getFiles().size() == 1);
+        assertTrue(documentLibPage.getFiles().size() == 1, "JIRA - ACE-1860");
         assertEquals(documentLibPage.getFiles().get(0).getName(), file1.getName());
     }
 

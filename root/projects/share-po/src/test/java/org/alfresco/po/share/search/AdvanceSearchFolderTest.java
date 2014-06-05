@@ -35,7 +35,7 @@ import org.testng.annotations.Test;
  * @since 1.6
  */
 @Listeners(FailedTestListener.class)
-@Test(groups="Enterprise-only")
+@Test(groups="Enterprise-only", enabled=false)
 public class AdvanceSearchFolderTest extends AbstractTest
 {
     @SuppressWarnings("unused")

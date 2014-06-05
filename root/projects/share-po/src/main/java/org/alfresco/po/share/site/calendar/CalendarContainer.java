@@ -25,6 +25,7 @@ public class CalendarContainer extends AbstractCalendarContainer
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public CalendarContainer render()
     {
         return render(new RenderTime(maxPageLoadingTime));

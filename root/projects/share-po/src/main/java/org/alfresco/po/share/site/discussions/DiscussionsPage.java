@@ -1,10 +1,10 @@
 package org.alfresco.po.share.site.discussions;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 import org.alfresco.po.share.dashlet.mydiscussions.TopicsListPage;
 import org.alfresco.po.share.exception.ShareException;
-import org.alfresco.po.share.site.datalist.DataListPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -40,11 +40,12 @@ public class DiscussionsPage extends TopicsListPage
     @Override
     public DiscussionsPage render(RenderTime timer)
     {
-        basicRender(timer);
+        elementRender(timer, getVisibleRenderElement(NEW_TOPIC_BTN));
         return this;
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public DiscussionsPage render()
     {
         return render(new RenderTime(maxPageLoadingTime));
@@ -146,7 +147,48 @@ public class DiscussionsPage extends TopicsListPage
         return new TopicViewPage(drone).render();
     }
 
-    private TopicDirectoryInfo getTopicDirectoryInfo(final String title)
+    /**
+     * Method to create new topic with tag
+     *
+     * @param titleField
+     * @param textLines
+     * @param tag
+     * @return
+     */
+
+    public TopicViewPage createTopic(String titleField, String textLines, String tag)
+    {
+        try
+        {
+            DiscussionsPage discussionsPage = new DiscussionsPage(drone);
+            NewTopicForm newTopicForm = discussionsPage.clickNewTopic();
+
+            newTopicForm.setTitleField(titleField);
+            try
+            {
+                checkNotNull(textLines);
+            }
+            catch (NullPointerException e)
+            {
+                throw new ShareException("The lines are null!");
+            }
+            newTopicForm.insertText(textLines);
+            newTopicForm.addTag(tag);
+
+            newTopicForm.clickSave();
+        }
+        catch (TimeoutException te)
+        {
+            logger.debug("The operation has timed out");
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.debug("Unable to find the elements");
+        }
+        return new TopicViewPage(drone).render();
+    }
+
+    public TopicDirectoryInfo getTopicDirectoryInfo(final String title)
     {
         if (title == null || title.isEmpty())
         {
@@ -220,6 +262,7 @@ public class DiscussionsPage extends TopicsListPage
             newTopicForm.insertText(txtLines);
             newTopicForm.clickSave();
             waitUntilAlert();
+            logger.info("Edited topic " + oldTitle);
             return new TopicViewPage(drone).render();
         }
         catch (TimeoutException te)
@@ -237,13 +280,14 @@ public class DiscussionsPage extends TopicsListPage
     {
         try
         {
-            DiscussionsPage discussionsPage = getTopicDirectoryInfo(title).deleteTopic();
+            getTopicDirectoryInfo(title).deleteTopic();
             if (!drone.isElementDisplayed(PROMPT_PANEL_ID))
             {
                 throw new ShareException("The prompt dialogue isn't popped up");
             }
             drone.findAndWait(CONFIRM_DELETE).click();
             waitUntilAlert();
+            logger.info("Topic " + title + "was deleted");
             return new DiscussionsPage(drone).render();
         }
         catch (TimeoutException te)
@@ -270,5 +314,27 @@ public class DiscussionsPage extends TopicsListPage
         {
             throw new ShareException("Unable to find " + TOPIC_CONTAINER);
         }
+    }
+
+    /**
+     * Method to verify whether edit topic is displayed
+     *
+     * @param title
+     * @return true if displayed
+     */
+    public boolean isEditTopicDisplayed(String title)
+    {
+        return getTopicDirectoryInfo(title).isEditTopicDisplayed();
+    }
+
+    /**
+     * Method to verify whether delete topic is displayed
+     *
+     * @param title
+     * @return true if displayed
+     */
+    public boolean isDeleteTopicDisplayed(String title)
+    {
+        return getTopicDirectoryInfo(title).isDeleteTopicDisplayed();
     }
 }

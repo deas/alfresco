@@ -17,10 +17,12 @@ import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 @SuppressWarnings("unused")
 public class LinksDetailsPage extends SharePage
 {
-    private static final By LINKS_LIST_LINK = By.cssSelector(".forward-link>a");
+    private static final By LINKS_LIST_LINK = By.cssSelector("span[class*='link']>a");
     private static final By COMMENT_LINK = By.cssSelector(".onAddCommentClick");
     private static final By EDIT_LINK = By.cssSelector(".onEditLink>a");
     private static final By DELETE_LINK = By.cssSelector(".onDeleteLink>a");
+    private static final By TAG = By.cssSelector("a[class='tag-link']");
+    private static final By TAG_NONE = By.xpath("//span[@class='nodeAttrValue' and text()='(None)']");
 
     /**
      * Constructor
@@ -69,6 +71,33 @@ public class LinksDetailsPage extends SharePage
         catch (TimeoutException te)
         {
             throw new ShareException("Unable to find " + LINKS_LIST_LINK);
+        }
+    }
+
+    /**
+     * Method to retrieve tag added to Link
+     * 
+     * @return String
+     */
+    public String getTagName()
+    {
+        try
+        {
+            if (!drone.isElementDisplayed(TAG_NONE))
+            {
+                String tagName = drone.findAndWait(TAG).getAttribute("title");
+                if (!tagName.isEmpty())
+                    return tagName;
+                else
+                    throw new IllegalArgumentException("Cannot find tag");
+
+            }
+            else
+                return drone.find(TAG_NONE).getText();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to retrieve the tag");
         }
     }
 }

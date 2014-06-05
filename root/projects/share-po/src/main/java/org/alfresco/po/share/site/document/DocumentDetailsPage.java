@@ -15,6 +15,7 @@
 package org.alfresco.po.share.site.document;
 
 import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.po.share.adminconsole.Channel;
 import org.alfresco.po.share.preview.PdfJsPlugin;
 import org.alfresco.po.share.site.UpdateFilePage;
@@ -48,6 +49,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * @author Michael Suzuki
  * @since 1.0
  */
+@SuppressWarnings("unused")
 public class DocumentDetailsPage extends DetailsPage
 {
     private static final Log logger = LogFactory.getLog(DocumentDetailsPage.class);
@@ -55,6 +57,7 @@ public class DocumentDetailsPage extends DetailsPage
     private static final String REVISON_HISTORY_PANEL = "document.detail.version.history.panel";
     private static final String DOWNLOAD_FILE_CSS_LOCATOR = "div.node-header>div.node-action>span>span>a";
     private static final String EDIT_OFFLINE_LINK = "div.document-edit-offline>a";
+    private static final String EDIT_ONLINE_LINK = "div.document-edit-online>a";
     private static final String INLINE_EDIT_LINK = ".document-inline-edit>a";
     private static final String DOCUMENT_PROPERTIES_DISPLAYED_SIZE = "span[id$='-formContainer_prop_size']";
     private static final String DOCUMENT_PREVIEWER = "div > div.web-preview > div.previewer";
@@ -71,6 +74,7 @@ public class DocumentDetailsPage extends DetailsPage
     protected static final String ACTION_SET_ID = "document.detail.action.set.id";
     public static final String DOCUMENT_VERSION_PLACEHOLDER = "div.node-header>div.node-info>h1.thin.dark>span.document-version";
     private static final String LINK_EDIT_IN_GOOGLE_DOCS = "div[id$='default-actionSet'] div.google-docs-edit-action-link a";
+    private static final String LINK_VIEW_ON_GOOGLE_MAPS = "div[id$='default-actionSet'] div.document-view-googlemaps a";
     private static final String LINK_RESUME_EDIT_IN_GOOGLE_DOCS = "div[id$='default-actionSet'] div.google-docs-resume-action-link a";
     private static final String REQUEST_SYNC_ICON = "a.document-requestsync-link[title='Request Sync']";
     private static final String LOCATION_IN_CLOUD = "p.location";
@@ -85,7 +89,14 @@ public class DocumentDetailsPage extends DetailsPage
     private static final String COPY_THIS_LINK_TO_SHARE_THE_CURRENT_PAGE = "div.link-info input";
     private static final By QUICK_SHARE_LINK = By.cssSelector("a.quickshare-action");
     private static final By QUICK_SHARE_LINK_ENABLED = By.cssSelector("a[class='quickshare-action enabled']");
+    private static final String DOWNLOAD_ACTION_LINK = ".document-download>a";
+    private static final String VIEW_IN_BROWSER = ".document-view-content>a";
     private static final By VIEW_WORKING_COPY = By.cssSelector("div.document-view-working-copy>a");
+    private static final By VERSION_HISTORY_PANEL = By.cssSelector("div[class*='document-versions']");
+    private static final By WORKFLOWS_PANEL = By.cssSelector("div[class*='document-workflows']");
+    private static final String START_WORKFLOW_ICON = ".template_x002e_document-workflows_x002e_document-details_x0023_default.edit";
+    private static final String UPLOAD_NEW_VERSION_ICON = "span[class*='twister-actions']>a[class*='document-versions']";
+
 
     public synchronized void setPreviousVersion(final String previousVersion)
     {
@@ -1353,6 +1364,24 @@ public class DocumentDetailsPage extends DetailsPage
     }
 
     /**
+     * Verify if Link View on Google Maps is visible.
+     *
+     * @author rmanyam
+     * @return true if displayed
+     */
+    public boolean isViewOnGoogleMapsLinkVisible()
+    {
+        try
+        {
+            return drone.find(By.cssSelector(LINK_VIEW_ON_GOOGLE_MAPS)).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+    }
+
+    /**
      * Method to check whether download button is present
      *
      * @return true if displayed
@@ -1367,6 +1396,59 @@ public class DocumentDetailsPage extends DetailsPage
         {
             return false;
         }
+    }
+    /**
+     * Mimics the action of selecting Online Edit.
+     *
+     * @return {@link InlineEditPage}
+     */
+    public EditTextDocumentPage selectOnlineEdit()
+    {
+        try
+        {
+            WebElement link = drone.findAndWait(By.cssSelector(EDIT_ONLINE_LINK));
+            link.click();
+        }
+        catch (TimeoutException exception)
+        {
+            logger.error("Not able to find the web element", exception);
+            throw new PageOperationException("Unable to select Online Edit", exception);
+        }
+
+        return new EditTextDocumentPage(drone);
+
+    }
+
+/**
+     * Downloads the document shown by the current page from Actions panel, optionally
+     * doing it by clicking the link in the browser (no control) or
+     * by doing a URL-based download.
+     *
+     * @param file optional file to download to. When given
+     *            the link <b>will not be clicked</b> but the
+     *            file will be downloaded directly from the server.
+     * @return {@link HtmlPage} page response
+     */
+
+    public HtmlPage selectDownloadFromActions(File file)
+    {
+        boolean click = (file == null);
+        String path = downloadFile(DOWNLOAD_ACTION_LINK, click);
+
+        // A file was provided so stream into it
+        if (file != null)
+        {
+            FileDownloader downloader = new FileDownloader(drone);
+            try
+            {
+                downloader.download(path, file);
+            }
+            catch (Exception e)
+            {
+                throw new PageException("Unable to download file", e);
+            }
+        }
+        return FactorySharePage.resolvePage(drone);
     }
 
     /**
@@ -1431,6 +1513,23 @@ public class DocumentDetailsPage extends DetailsPage
             return false;
         }
     }
+    /**
+     * Verify the Version histiry panel is present in the page.
+     * 
+     * @return
+     */
+    public boolean isVersionHistoryPanelPresent()
+    {
+        try
+        {
+            return drone.find(VERSION_HISTORY_PANEL).isDisplayed();
+        }
+        catch (NoSuchElementException exce)
+        {
+        }
+        return false;
+
+    }
 
     /**
      * Close PopUp message about content publishing
@@ -1452,5 +1551,104 @@ public class DocumentDetailsPage extends DetailsPage
                 logger.debug("Publish Pop-up didn't closed", e);
             }
         }
+    }
+
+    public boolean isStartWorkflowIconDisplayed()
+    {
+        return isEditIconPresent(WORKFLOWS_PANEL);
+    }
+
+    public boolean isUploadNewVersionIconDisplayed()
+    {
+        return isEditIconPresent(VERSION_HISTORY_PANEL);
+    }
+
+ /**
+     * Click on Start Workflow icon in Workflow panel at Details Page
+     * 
+     * @return StartWorkFlowPage
+     */
+    public StartWorkFlowPage clickStartWorkflowIcon()
+    {
+        WebElement icon = drone.findAndWait(By.cssSelector(START_WORKFLOW_ICON));
+        icon.click();
+        drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return new StartWorkFlowPage(drone);
+    }
+
+    /**
+     * Mimics the action of clicking on the upload new version icon in the .
+     * 
+     * @return HtmlPage page response object
+     */
+    public HtmlPage selectUploadNewVersionIcon()
+    {
+        if (!alfrescoVersion.isFileUploadHtml5())
+        {
+            setSingleMode();
+        }
+        WebElement link = drone.findAndWait(By.cssSelector("span[class*='twister-actions']>a[class*='document-versions']"));
+        String version = getDocumentVersion();
+        link.click();
+
+        return getFileUpdatePage(drone, version, isEditOfflineLinkDisplayed());
+    }
+
+    /**
+     * Method to open properties to the specified version.
+     * 
+     * @param versionNumber revision number
+     */
+    public HtmlPage selectViewProperties(String versionNumber)
+    {
+
+        try
+        {
+            Double.parseDouble(versionNumber);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new IllegalArgumentException("Version number passed is not a number : " + versionNumber, e);
+        }
+        try
+        {
+            drone.find(By.cssSelector("a[rel='" + versionNumber + "']~a[class*='historicProperties']")).click();
+
+            HtmlPage page = FactorySharePage.resolvePage(drone);
+            if (page instanceof ShareDialogue)
+            {
+                return FactorySharePage.resolvePage(drone);
+            }
+            return page;
+        }
+        catch (NoSuchElementException nse)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("View Properties button to version " + versionNumber + " is not displayed", nse);
+            }
+        }
+        throw new PageException("View Properties button to version " + versionNumber + " is not displayed");
+    }
+
+    /**
+     * Select the inline edit link
+     *
+     * @return {@link HtmlPage} edit inline page for HTML documents.
+     */
+    public HtmlPage selectInlineHtmlEdit ()
+    {
+        try
+        {
+            WebElement link = drone.findAndWait(By.cssSelector(INLINE_EDIT_LINK));
+            link.click();
+        }
+        catch (TimeoutException exception)
+        {
+            logger.error("Not able to find the web element", exception);
+            throw new PageOperationException("Unable to select Inline Edit", exception);
+        }
+
+        return new EditHtmlDocumentPage(drone);
     }
 }

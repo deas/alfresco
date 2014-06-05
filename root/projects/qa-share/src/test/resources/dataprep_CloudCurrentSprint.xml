@@ -61,6 +61,37 @@
             <class name="org.alfresco.share.api.cmis.CMISBrowserAppendTest" />
         </classes>
     </test>
+
+    <test name="CMIS Browser Selector Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CMISBrowserSelectorParameter" />
+        </classes>
+    </test>
+
+    <test name="CMIS Browser Selector more Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CMISBrowserSelectorParameter2" />
+        </classes>
+    </test>
+
+    <test name="CMIS Browser Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CmisBrowserTests"/>
+        </classes>
+    </test>
+    
+    <test name="Site Notification Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.user.SiteNotificationsTest"/>
+        </classes>
+    </test>
+
+    <test name="My Tasks Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.workflow.MyTasksTest"/>
+        </classes>
+    </test>
+    
     <!--<test name="Granular Manage Permission" verbose="1">-->
         <!--<classes>-->
             <!--<class name="org.alfresco.share.site.document.ManagePermissionTest">-->

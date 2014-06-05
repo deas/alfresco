@@ -68,7 +68,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
         String[] testUserInfo = new String[] { testUser };
         String folderName = getFolderName(testName);
         String folderName_with_splChars = "!@";
-        String folderName_with_nativeChars = "désir Bedürfnis è il あなたの名前は何ですか ¿Cuál";
+        String folderName_with_nativeChars = "désir Bedürfnis";
 
         try
         {
@@ -116,7 +116,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
         String siteName = getSiteName(testName);
         String folderName = getFolderName(testName);
         String folderName_with_splChars = "!@";
-        String folderName_with_nativeChars = "désir Bedürfnis è il あなたの名前は何ですか ¿Cuál";
+        String folderName_with_nativeChars = "désir Bedürfnis";
 
         if (alfrescoVersion.equals(AlfrescoVersion.Enterprise41) || isAlfrescoVersionCloud(customDrone))
         {
@@ -135,7 +135,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
         FolderDetailsPage folderDetailsPage = ShareUserSitePage.getContentDetailsPage(customDrone, folderName).render();
 
         // Select DownloadFolder as Zip
-        folderDetailsPage.selectDownloadFolderAsZip("folder");
+        folderDetailsPage = folderDetailsPage.selectDownloadFolderAsZip("folder").render();
         folderDetailsPage.waitForFile(downloadDirectory + folderName + FILE_ZIP_EXT);
 
         // Thread needs to be stopped for some time to make sure the file download stream has been closed properly
@@ -148,7 +148,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
         // Download and verifying the folder with special characters
         docLibPage = ShareUser.openDocumentLibrary(customDrone);
         folderDetailsPage = docLibPage.getFileDirectoryInfo(folderName_with_splChars).selectViewFolderDetails().render();
-        folderDetailsPage.selectDownloadFolderAsZip("folder");
+        folderDetailsPage = folderDetailsPage.selectDownloadFolderAsZip("folder").render();
         folderDetailsPage.waitForFile(downloadDirectory + folderName_with_splChars + FILE_ZIP_EXT);
 
         // Thread needs to be stopped for some time to make sure the file download stream has been closed properly
@@ -160,7 +160,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
         // Download and verifying the folder with native characters
         docLibPage = ShareUser.openDocumentLibrary(customDrone);
         folderDetailsPage = docLibPage.getFileDirectoryInfo(folderName_with_nativeChars).selectViewFolderDetails().render();
-        folderDetailsPage.selectDownloadFolderAsZip("folder");
+        folderDetailsPage = folderDetailsPage.selectDownloadFolderAsZip("folder").render();
         folderDetailsPage.waitForFile(downloadDirectory + folderName_with_nativeChars + FILE_ZIP_EXT);
 
         // Thread needs to be stopped for some time to make sure the file download stream has been closed properly

@@ -21,7 +21,7 @@ package org.alfresco.po.share.dashlet;
 import java.util.Arrays;
 import java.util.List;
 
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.testng.Assert;
@@ -63,7 +63,7 @@ public class SiteSearchDashletTest extends AbstractSiteDashletTest
     {
         customiseSiteDashBoard = siteDashBoard.getSiteNav().selectCustomizeDashboard();
         customiseSiteDashBoard.render();
-        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlet.SITE_SEARCH, 1).render();
+        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlets.SITE_SEARCH, 1).render();
         searchDashlet = siteDashBoard.getDashlet(SITE_SEARCH).render();
         Assert.assertNotNull(searchDashlet);
     }

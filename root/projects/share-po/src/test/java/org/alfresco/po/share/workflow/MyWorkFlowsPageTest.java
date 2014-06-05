@@ -311,4 +311,16 @@ public class MyWorkFlowsPageTest extends AbstractTest
         Assert.assertEquals(taskDetails.getDescription(), "Task allocated by colleague");
         Assert.assertEquals(taskDetails.getStartedBy(), uname + "@test.com");
     }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "verifyTaskDetailsWithDueDateNone")
+    public void verifyTaskButtonsPresent()
+    {
+        myTasksPage = workFlowDetailsPage.getNav().selectMyTasks().render();
+        Assert.assertEquals(myTasksPage.getSubTitle(), "Active Tasks");
+        myTasksPage.renderTask(3000, workFlow3);
+
+        Assert.assertTrue(myTasksPage.isTaskEditButtonEnabled(workFlow3), "Task Edit button is not present.");
+        Assert.assertTrue(myTasksPage.isTaskViewButtonEnabled(workFlow3), "Task View button is not present.");
+        Assert.assertTrue(myTasksPage.isTaskWorkflowButtonEnabled(workFlow3), "Task Workflow View button is not present.");
+    }
 }

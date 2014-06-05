@@ -14,23 +14,22 @@
  */
 package org.alfresco.po.share.site.datalist;
 
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.exception.ShareException;
-import org.alfresco.po.share.site.SitePage;
-import org.alfresco.po.share.site.datalist.items.ContactListItem;
-import org.alfresco.po.share.site.links.LinkDirectoryInfo;
-import org.alfresco.webdrone.HtmlElement;
-import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.*;
-
-import java.util.List;
-
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 
 /**
  * Site data list page object, holds all element of the HTML page
@@ -106,7 +105,8 @@ public class DataListPage extends AbstractDataList
      */
     public DataListPage createDataList(NewListForm.TypeOptions listType, String title, String desc)
     {
-        if(isNewListEnabled())
+        logger.info("Creating a Data List of given type");
+        if(!drone.isElementDisplayed(NEW_LIST_FORM))
         {
             clickNewList();
             waitUntilAlert();
@@ -131,6 +131,7 @@ public class DataListPage extends AbstractDataList
         try
         {
             drone.findAndWait(By.xpath(String.format("//div[contains(@id,'default-lists')]//a[text()='%s']", name))).click();
+            waitUntilAlert();
         }
         catch (TimeoutException te)
         {
@@ -189,6 +190,7 @@ public class DataListPage extends AbstractDataList
      */
     public DataListPage editDataList (String oldTitle, String newTitle, String newDescription)
     {
+        logger.info("Editing the data list " + oldTitle);
         NewListForm newListForm = getDataListDirectoryInfo(oldTitle).clickEdit();
         newListForm.inputTitleField(newTitle);
         newListForm.inputDescriptionField(newDescription);
@@ -203,6 +205,7 @@ public class DataListPage extends AbstractDataList
      */
     public DataListPage deleteDataListWithConfirm (String title)
     {
+        logger.info("Deleting " + title + "data list");
         try
         {
             getDataListDirectoryInfo(title).clickDelete();
@@ -238,5 +241,15 @@ public class DataListPage extends AbstractDataList
         {
             throw new ShareException("Unable to find lists container");
         }
+    }
+
+    public boolean isEditDataListDisplayed(String list)
+    {
+        return getDataListDirectoryInfo(list).isEditDisplayed();
+    }
+
+    public boolean isDeleteDataListDisplayed(String list)
+    {
+        return getDataListDirectoryInfo(list).isDeleteDisplayed();
     }
 }

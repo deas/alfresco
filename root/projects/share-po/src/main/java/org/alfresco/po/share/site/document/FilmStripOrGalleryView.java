@@ -1041,10 +1041,24 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         return result;
     }
 
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#selectForceUnSyncInCloud()
+     */
     @Override
     public DocumentLibraryPage selectForceUnSyncInCloud()
     {
         clickInfoIcon(true);
         return super.selectForceUnSyncInCloud();
+    }
+    
+    @Override
+    public void enterTagString(final String tagName)
+    {
+        if(!isInfoPopUpDisplayed())
+        {
+            WebElement infoIcon = getInfoIcon();
+            infoIcon.click();  
+        }
+        super.enterTagString(tagName);
     }
 }

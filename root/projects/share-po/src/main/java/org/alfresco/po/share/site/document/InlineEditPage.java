@@ -21,6 +21,7 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 /**
  * In Line Edit Page Object, Where user edit the content.
@@ -75,5 +76,27 @@ public class InlineEditPage extends SitePage
             default:
                 return new EditTextDocumentPage(drone);
         }
+    }
+
+    /**
+     * Clear the input field and inserts the new value.
+     *
+     * @param input {@link org.openqa.selenium.WebElement} represents the form input
+     * @param value String input value to enter
+     */
+    public void setInput(final WebElement input, final String value)
+    {
+        input.clear();
+        input.sendKeys(value);
+    }
+
+    /**
+     * Enters a value in to the properties form.
+     *
+     * @param name String name input
+     */
+    public void setName(final String name)
+    {
+        setInput(drone.findAndWait(NAME), name);
     }
 }

@@ -8,7 +8,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
@@ -30,6 +29,8 @@ public abstract class AbstractTopicForm extends SharePage
     protected static final By TITLE_FIELD = By.cssSelector("#template_x002e_createtopic_x002e_discussions-createtopic_x0023_default-title");
     protected static final String TOPIC_FORMAT_IFRAME = ("template_x002e_createtopic_x002e_discussions-createtopic_x0023_default-content_ifr");
     protected static final By SAVE_BUTTON = (By.cssSelector("#template_x002e_createtopic_x002e_discussions-createtopic_x0023_default-submit-button"));
+    protected static final By TAG_INPUT = By.cssSelector("#template_x002e_createtopic_x002e_discussions-createtopic_x0023_default-tag-input-field");
+    protected static final By ADD_TAG_BUTTON = By.cssSelector("#template_x002e_createtopic_x002e_discussions-createtopic_x0023_default-add-tag-button");
 
     protected AbstractTopicForm(WebDrone drone)
     {
@@ -211,6 +212,26 @@ public abstract class AbstractTopicForm extends SharePage
         catch (NoSuchElementException e)
         {
             throw new PageException("Unable to find Save button");
+        }
+    }
+
+    /**
+     * Method to add tag
+     *
+     * @param tag
+     */
+    protected void addTag(final String tag)
+    {
+        try
+        {
+            WebElement tagField = drone.findAndWait(TAG_INPUT);
+            tagField.clear();
+            tagField.sendKeys(tag);
+            drone.find(ADD_TAG_BUTTON).click();
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.debug("Unable to find tag input");
         }
     }
 }

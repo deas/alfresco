@@ -1,14 +1,14 @@
 package org.alfresco.po.share.site.datalist;
 
+import mx4j.tools.config.DefaultConfigurationBuilder;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.dashlet.AbstractSiteDashletTest;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SitePageType;
+import org.alfresco.po.share.site.datalist.items.ContactListItem;
 import org.alfresco.po.share.site.datalist.lists.ContactList;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -26,7 +26,7 @@ import static org.testng.Assert.*;
  */
 
 @Listeners(FailedTestListener.class)
-@Test(groups = { "Enterprise4.2" })
+@Test(groups = { "Enterprise-only" })
 public class DataListPageTest extends AbstractSiteDashletTest
 {
     DashBoardPage dashBoard;
@@ -35,6 +35,7 @@ public class DataListPageTest extends AbstractSiteDashletTest
     NewListForm newListForm;
     ContactList contactList;
     String text = getClass().getSimpleName();
+    String editedText = text + "edited";
 
     @BeforeClass
     public void createSite() throws Exception
@@ -51,20 +52,19 @@ public class DataListPageTest extends AbstractSiteDashletTest
         SiteUtil.deleteSite(drone, siteName);
     }
 
-    @Test(groups = "Enterprise-only")
+    @Test
     public void addDataListPage()
     {
         customizeSitePage = siteDashBoard.getSiteNav().selectCustomizeSite();
         List<SitePageType> addPageTypes = new ArrayList<SitePageType>();
         addPageTypes.add(SitePageType.DATA_LISTS);
         customizeSitePage.addPages(addPageTypes);
-        dataListPage = siteDashBoard.getSiteNav().selectDataListPage().render();
-        newListForm = new NewListForm(drone);
+        newListForm = (NewListForm)siteDashBoard.getSiteNav().selectDataListPage();
         dataListPage = newListForm.clickCancel();
         assertNotNull(dataListPage);
     }
 
-    @Test(groups = "Enterprise-only", dependsOnMethods = "addDataListPage")
+    @Test(dependsOnMethods = "addDataListPage")
     public void createContactDataList()
     {
         assertTrue(dataListPage.isNewListEnabled());
@@ -72,7 +72,7 @@ public class DataListPageTest extends AbstractSiteDashletTest
         assertNotNull(dataListPage);
     }
 
-    @Test(groups = "Enterprise-only", dependsOnMethods = "createContactDataList")
+    @Test(dependsOnMethods = "createContactDataList")
     public void createItem()
     {
         dataListPage.selectDataList(text);
@@ -80,17 +80,43 @@ public class DataListPageTest extends AbstractSiteDashletTest
         assertNotNull(contactList);
     }
 
-    @Test(groups = "Enterprise-only", dependsOnMethods = "createItem")
+    @Test(dependsOnMethods = "createItem")
     public void duplicateItems()
     {
         assertTrue(contactList.isDuplicateDisplayed(text));
         dataListPage.duplicateAnItem(text);
-        assertEquals(getTheNumOfItems(), 2);
+        assertEquals(contactList.getItemsCount(), 2);
     }
 
-    private int getTheNumOfItems()
+    @Test(dependsOnMethods = "createContactDataList")
+    public void editDataList()
     {
-        List<WebElement> numOfItems = drone.findAll(By.cssSelector("tbody[class$='data']>tr"));
-        return numOfItems.size();
+        dataListPage.editDataList(text, editedText, editedText);
+        dataListPage.selectDataList(editedText);
+        assertNotNull(dataListPage);
+    }
+
+    @Test(dependsOnMethods = "duplicateItems")
+    public void editAnItem()
+    {
+        assertTrue(contactList.isEditDisplayed(text));
+        contactList.editItem(text, editedText);
+        assertNotNull(dataListPage);
+    }
+
+    @Test(dependsOnMethods = "editAnItem")
+    public void deleteItem ()
+    {
+        int expNum = contactList.getItemsCount();
+        contactList.deleteAnItemWithConfirm(editedText);
+        assertEquals(contactList.getItemsCount(), expNum-1);
+    }
+
+    @Test(dependsOnMethods = "deleteItem")
+    public void deleteList ()
+    {
+        int expNum = dataListPage.getListsCount();
+        dataListPage.deleteDataListWithConfirm(editedText);
+        assertEquals(dataListPage.getListsCount(), expNum-1);
     }
 }

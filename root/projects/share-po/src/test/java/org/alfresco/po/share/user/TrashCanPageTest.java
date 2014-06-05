@@ -24,7 +24,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.alfresco.po.share.AbstractTest;
-import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
@@ -55,15 +54,15 @@ public class TrashCanPageTest extends AbstractTest
     private String fileName3;
     private String fileName4;
     private String fileName5;
-    private String userName ;
     private String folderName;
     DocumentLibraryPage docPage;
     DashBoardPage dashBoard;
     SiteDashboardPage site;
     MyProfilePage myprofile;
     TrashCanPage trashCan;
+    private String userName;
+    private String userFullName;
 
-   
     /**
      * Pre test to create a content with properties set.
      * 
@@ -72,16 +71,8 @@ public class TrashCanPageTest extends AbstractTest
     @BeforeClass(groups = { "Enterprise4.2" })
     public void prepare() throws Exception
     {
-        String fname = anotherUser.getfName();
-        String lname = anotherUser.getlName();
-        AlfrescoVersion version = drone.getProperties().getVersion();
-        if(version.equals(AlfrescoVersion.Enterprise42))
-        {
-            userName = "Administrator";
-        }
-        else userName = fname + lname;
         siteName = "TrashCanTest" + System.currentTimeMillis();
-        siteName1 = "TrashCanTest1" + System.currentTimeMillis();
+        siteName1 = "DeleteTrashCanSite" + System.currentTimeMillis();
         folderName = "folder1" + System.currentTimeMillis();;
         File file0 = SiteUtil.prepareFile("file1.txt");
         fileName1 = file0.getName();
@@ -93,12 +84,15 @@ public class TrashCanPageTest extends AbstractTest
         fileName4 = file3.getName();
         File file4 = SiteUtil.prepareFile("file5.txt");
         fileName5 = file4.getName();
-        loginAs(username, password);
+        userName = "user" + System.currentTimeMillis();
+        userFullName = userName + "@test.com " + userName + "@test.com";
+        createEnterpriseUser(userName);
+        loginAs(userName, "password");
         SiteUtil.createSite(drone, siteName, "Public");
         SiteUtil.createSite(drone, siteName1, "Public");
         SiteUtil.deleteSite(drone, siteName1);
         SiteFinderPage siteFinderPage = drone.getCurrentPage().render();
-        siteFinderPage = siteFinderPage.searchForSite(siteName).render();
+        siteFinderPage = SiteUtil.siteSearchRetry(drone, siteFinderPage, siteName).render();
         SiteDashboardPage site = siteFinderPage.selectSite(siteName).render();
         docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
         NewFolderPage folder = docPage.getNavigation().selectCreateNewFolder().render();
@@ -122,7 +116,7 @@ public class TrashCanPageTest extends AbstractTest
         docPage = docPage.deleteItem(fileName5).render();
         docPage = docPage.deleteItem(folderName).render();
     }
-
+    
     @AfterClass(groups = { "Enterprise4.2" })
     public void deleteSite()
     {
@@ -162,7 +156,7 @@ public class TrashCanPageTest extends AbstractTest
         if(item1.size() == 1)
         {
             Assert.assertTrue(item1.get(0).getFileName().equalsIgnoreCase(fileName1));
-            Assert.assertTrue(item1.get(0).getUserFullName().equalsIgnoreCase(userName));
+            Assert.assertTrue(item1.get(0).getUserFullName().equalsIgnoreCase(userFullName));
             Assert.assertTrue(item1.get(0).getDate().contains(Integer.toString(Calendar.getInstance().get(Calendar.YEAR))));
         }
         else

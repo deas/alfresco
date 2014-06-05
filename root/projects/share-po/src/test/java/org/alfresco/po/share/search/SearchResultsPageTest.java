@@ -44,6 +44,7 @@ import org.openqa.selenium.NoSuchElementException;
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
+@Test(enabled=false)
 public class SearchResultsPageTest extends AbstractTest
 {
     private DashBoardPage dashBoard;

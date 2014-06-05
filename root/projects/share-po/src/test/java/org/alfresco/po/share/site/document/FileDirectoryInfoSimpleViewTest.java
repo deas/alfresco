@@ -46,7 +46,6 @@ import org.testng.annotations.Test;
  * @since 1.6.1
  */
 @Listeners(FailedTestListener.class)
-@Test(groups="AceBug")
 public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
 {
     private final Log logger = LogFactory.getLog(this.getClass());
@@ -140,7 +139,7 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
      *
      * @throws Exception
      */
-    //@Test(groups={"alfresco-one"})
+
     public void createData() throws Exception
     {
         SitePage page = drone.getCurrentPage().render();
@@ -371,6 +370,8 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
         Assert.assertTrue(thisRow.isDeletePresent());
     }
+    
+    
 
     @Test(groups={"alfresco-one"}, priority=17)
     public void test117SelectThumbnailForFile() throws Exception
@@ -605,5 +606,13 @@ public class FileDirectoryInfoSimpleViewTest extends AbstractDocumentTest
         FileDirectoryInfo thisRow = documentLibPage.getFileDirectoryInfo(file.getName());
         // Like
         thisRow.clickOnCategoryNameLink(Categories.LANGUAGES.getValue());
+    }
+    
+    @Test(enabled = true, groups = "alfresco-one", priority = 38)
+    public void testClickTitle()
+    {
+        SitePage page = drone.getCurrentPage().render();
+        documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();       
+        documentLibPage.getFileDirectoryInfo(file.getName()).clickOnTitle().render();
     }
 }

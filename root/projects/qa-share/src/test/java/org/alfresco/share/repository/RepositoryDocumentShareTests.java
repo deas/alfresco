@@ -89,7 +89,7 @@ public class RepositoryDocumentShareTests extends AbstractUtils
 
         ShareUserRepositoryPage.openRepository(drone);
         
-        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName).render();
         ShareUserRepositoryPage.createFolderInRepository(drone, subFolderName, subFolderName);
         
         ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName + SLASH + subFolderName);        
@@ -138,6 +138,7 @@ public class RepositoryDocumentShareTests extends AbstractUtils
         ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName + SLASH + subFolderName);
         ShareUserRepositoryPage.uploadFileInRepository(drone, file1);
 
+        ShareUserRepositoryPage.selectView(drone, ViewType.GALLERY_VIEW);
         ShareLinkPage shareLinkPage = ShareUserSitePage.getFileDirectoryInfo(drone, fileName1).clickShareLink().render();
 
         assertTrue(shareLinkPage.isEmailLinkPresent());
@@ -231,6 +232,8 @@ public class RepositoryDocumentShareTests extends AbstractUtils
         ShareUserRepositoryPage.uploadFileInRepository(drone, file1);
         ShareUserRepositoryPage.uploadFileInRepository(drone, file2);
         ShareUserRepositoryPage.uploadFileInRepository(drone, file3);
+        
+        ShareUserRepositoryPage.selectView(drone, ViewType.DETAILED_VIEW);
 
         ShareUserSitePage.getFileDirectoryInfo(drone, fileName1).clickShareLink().render();
         ShareUserSitePage.getFileDirectoryInfo(drone, fileName2).clickShareLink().render();

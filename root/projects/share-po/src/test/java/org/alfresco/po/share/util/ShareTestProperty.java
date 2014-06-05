@@ -41,6 +41,9 @@ public class ShareTestProperty
     private String cloudUserPassword;
     protected long popupRendertime;
     private String licenseShare;
+    private String blogUrl;
+    private String blogUsername;
+    private String blogPassword;
     
     public ShareTestProperty (final String shareUrl,
                               final String gridUrl, 
@@ -146,5 +149,36 @@ public class ShareTestProperty
     public void setPopupRendertime(long popupRendertime) {
         this.popupRendertime = popupRendertime;
     }
+
+    public String getBlogUrl()
+    {
+        return blogUrl;
+    }
+
+    public void setBlogUrl(String blogUrl)
+    {
+        this.blogUrl = blogUrl;
+    }
+
+    public String getBlogUsername()
+    {
+        return blogUsername;
+    }
+
+    public void setBlogUsername(String blogUsername)
+    {
+        this.blogUsername = blogUsername;
+    }
+
+    public String getBlogPassword()
+    {
+        return blogPassword;
+    }
+
+    public void setBlogPassword(String blogPassword)
+    {
+        this.blogPassword = blogPassword;
+    }
+
 }
 

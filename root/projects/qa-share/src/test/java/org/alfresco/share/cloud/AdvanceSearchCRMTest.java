@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.alfresco.po.share.search.FacetedSearchResult;
 import org.alfresco.po.share.search.SearchResultItem;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
@@ -763,8 +764,8 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         // Login
         ShareUser.login(drone, salesforceUserName, salesforcePassword);
 
-        // Advance Basic Search with caseNameOrNumber
-        List<SearchResultItem> results = ShareUserSearchPage.basicSearch(drone, caseNameOrNumber, false);
+        // Advance Basic Search with caseNameOrNumber      
+        List<FacetedSearchResult> results = ShareUserSearchPage.basicSearch(drone, caseNameOrNumber, false);
         Assert.assertTrue(results.size() > 0);
         
         // Advance Basic Search with caseNameOrNumber

@@ -26,19 +26,18 @@ import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
 import org.alfresco.share.util.ShareUserSitePage;
+import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
@@ -48,6 +47,7 @@ import org.testng.annotations.Test;
  *
  */
 @Listeners(FailedTestListener.class)
+@Test(groups = {"SharePOBug" })
 public class RepositoryFolderTests extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(RepositoryFolderTests.class);
@@ -72,11 +72,12 @@ public class RepositoryFolderTests extends AbstractUtils
     {
         super.setup();
         testName = this.getClass().getSimpleName();
-        testUser = getUserNameFreeDomain(testName);
-        logger.info("[Suite ] : Start Tests in: " + testName);
-        dataPrepRepositoryFolderTests(testName);
-        ShareUtil.logout(drone);
 
+        testUser = getUserNameFreeDomain(testName);        
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUser);
+        
+        logger.info("[Suite ] : Start Tests in: " + testName);
+        dataPrepRepositoryFolderTests(testName);       
     }
 
     private void dataPrepRepositoryFolderTests(String testName) throws Exception
@@ -87,7 +88,7 @@ public class RepositoryFolderTests extends AbstractUtils
         baseFolderPath = REPO + SLASH + baseFolderName;
 
         // login as admin
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+        ShareUser.login(drone, testUser);
         
         // Navigate to repository page
         RepositoryPage repositorypage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
@@ -96,38 +97,16 @@ public class RepositoryFolderTests extends AbstractUtils
         if (!repositorypage.isFileVisible(baseFolderName))
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, baseFolderName, baseFolderTitle, description);
-        }        
+        }   
+        
+        ShareUtil.logout(drone);
 
     }
 
-    @BeforeMethod(groups = { "Repository" })
-    public void prepare() throws Exception
-    {
-        // login as admin user
-        try
-        {
-            ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-            logger.info("Repository user logged in - drone.");
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-    }
-
-    @AfterMethod(groups = { "Repository" })
+    @AfterMethod(alwaysRun=true)
     public void quit() throws Exception
     {
-        // logout as created user
-        try
-        {
-            ShareUser.logout(drone);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        logger.info("RepositoryDocumentCreate user logged out - drone.");
+        ShareUser.logout(drone);
     }
 
     /**
@@ -144,11 +123,12 @@ public class RepositoryFolderTests extends AbstractUtils
         String folderName = getFolderName(testName) + System.currentTimeMillis();
         String description = (testName) + System.currentTimeMillis();
 
-        drone.getCurrentPage();
+        ShareUser.login(drone, testUser);
+        
         // Navigate to repository page
-        RepositoryPage repositorypage = ShareUserRepositoryPage.openRepository(drone);
+        ShareUserRepositoryPage.openRepository(drone);
 
-        ShareUserRepositoryPage.createFolderInFolderInRepository(drone, folderName, description, baseFolderPath);
+        RepositoryPage repositorypage = ShareUserRepositoryPage.createFolderInFolderInRepository(drone, folderName, description, baseFolderPath);
 
         // verify created folder is present in the main repository
         Assert.assertTrue(repositorypage.isFileVisible(folderName), "verifying folder present in repository");
@@ -158,7 +138,7 @@ public class RepositoryFolderTests extends AbstractUtils
         FolderDetailsPage folderdetailsPage = repositorypage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
 
         // Adding comment in folder details page
-        folderdetailsPage.addComment(description);
+        folderdetailsPage = folderdetailsPage.addComment(description).render();
 
         // Verify comment added successfully in folder details page
         Assert.assertTrue(folderdetailsPage.isCommentLinkPresent(), "Verify comment link is present");
@@ -179,6 +159,8 @@ public class RepositoryFolderTests extends AbstractUtils
         String folderName = getFolderName(testName) + System.currentTimeMillis();
         String folderTitle = (testUser) + System.currentTimeMillis();
         String description = (testName) + System.currentTimeMillis();
+        
+        ShareUser.login(drone, testUser);
 
         // Navigate to repository page
         RepositoryPage repositorypage = ShareUserRepositoryPage.openRepository(drone);
@@ -188,7 +170,7 @@ public class RepositoryFolderTests extends AbstractUtils
         newFolderPage.typeName(folderName);
         newFolderPage.typeTitle(folderTitle);
         newFolderPage.typeDescription(description);
-        newFolderPage.selectCancel();
+        repositorypage = newFolderPage.selectCancel().render();
 
         // verify created folder is present in the main repository
         Assert.assertFalse(repositorypage.isFileVisible(folderName), "verifying folder present in repository");
@@ -217,17 +199,21 @@ public class RepositoryFolderTests extends AbstractUtils
         String description1 = testName + System.currentTimeMillis();
         String guestHomePath = REPO + SLASH + "Guest Home";
 
+        ShareUser.login(drone, testUser);
+        
         // Navigate to repository page
-        RepositoryPage repositorypage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
         // Create new folder1 in root folder
         ShareUserRepositoryPage.createFolderInFolderInRepository(drone, folder1, description1, baseFolderPath);
 
         // verify created folder1 is displayed in root folder
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
         String[] baseFolderPath = new String[] { baseFolderName };
-        ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, baseFolderPath);
-        Assert.assertTrue(repositorypage.isFileVisible(folder1), "verifying folder present in baseFolderPath");
+        RepositoryPage repoPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, baseFolderPath);
+        
+        Assert.assertTrue(repoPage.isFileVisible(folder1), "verifying folder present in baseFolderPath");
 
         // Create content1 in folder1
         ContentDetails contentDetails = new ContentDetails();
@@ -238,6 +224,7 @@ public class RepositoryFolderTests extends AbstractUtils
 
         // Create content 1 in folder1
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
         String[] subfolderPath = new String[] { baseFolderName, folder1 };
         ShareUserRepositoryPage.createContentInFolder(drone, contentDetails, ContentType.PLAINTEXT, subfolderPath);
 
@@ -250,21 +237,25 @@ public class RepositoryFolderTests extends AbstractUtils
 
         // Create content 2 in folder1
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
         String[] subFolderPath = new String[] { baseFolderName, folder1 };
         ShareUserRepositoryPage.createContentInFolder(drone, contentdetails, ContentType.PLAINTEXT, subFolderPath);
 
         // Navigate to folder1
-        RepositoryPage repopag = repositorypage.getNavigation().selectAll().render();
+        repoPage = repoPage.getNavigation().selectAll().render();
 
         // Select copy to from top menu selected items
-        CopyOrMoveContentPage copyOrMoveContentPage = repopag.getNavigation().selectCopyTo().render();
-        copyOrMoveContentPage.selectPath("Repository", "Guest Home").render().selectOkButton().render();
+        CopyOrMoveContentPage copyOrMoveContentPage = repoPage.getNavigation().selectCopyTo().render();
+        copyOrMoveContentPage = copyOrMoveContentPage.selectPath("Repository", "Guest Home").render();
+        copyOrMoveContentPage.selectOkButton().render();
 
         // Verify folders are copied successfully to guest home path
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        RepositoryPage repage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, guestHomePath);
-        Assert.assertTrue(repage.isFileVisible(file1));
-        Assert.assertTrue(repage.isFileVisible(file2));
+        
+        repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, guestHomePath);
+        
+        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, file1, "isContentVisible", "", true));
+        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, file2, "isContentVisible", "", true));
 
     }
 
@@ -293,16 +284,17 @@ public class RepositoryFolderTests extends AbstractUtils
         String Description2 = getTestName() + System.currentTimeMillis() + "1";
 
         opSiteName = "A" + opSiteName;
+        
+        ShareUser.login(drone, testUser);
 
         // Create Site
         ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
 
         // Open site from document library page
-        DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+        ShareUser.openSitesDocumentLibrary(drone, opSiteName);
 
         // Create new folder1 in site
-        NewFolderPage newFolderPage = documentLibraryPage.getNavigation().selectCreateNewFolder();
-        newFolderPage.createNewFolder(folder1, description1);
+        ShareUserSitePage.createFolder(drone, folder1, description1);
 
         // Navigate to repository page
         RepositoryPage repositorypage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
@@ -319,6 +311,7 @@ public class RepositoryFolderTests extends AbstractUtils
 
         // Create content 1 in folder
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
         String[] subFolderPath = new String[] { baseFolderName, folder };
         ShareUserRepositoryPage.createContentInFolder(drone, contentDetails, ContentType.PLAINTEXT, subFolderPath);
 
@@ -331,22 +324,23 @@ public class RepositoryFolderTests extends AbstractUtils
 
         // Create content 2 in folder
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
+
         String[] subfolderPath = new String[] { baseFolderName, folder };
         ShareUserRepositoryPage.createContentInFolder(drone, contentdetails, ContentType.PLAINTEXT, subfolderPath);
 
         // Select all in folder and copy to site doclib folder1
-        RepositoryPage repopag = repositorypage.getNavigation().selectAll().render();
-        CopyOrMoveContentPage copyOrMoveContentPage = repopag.getNavigation().selectCopyTo();
-        copyOrMoveContentPage.selectPath("Repository", "Sites", opSiteName, "documentLibrary", folder1).render().selectOkButton().render();
+        RepositoryPage repoPage = repositorypage.getNavigation().selectAll().render();
+        CopyOrMoveContentPage copyOrMoveContentPage = repoPage.getNavigation().selectCopyTo().render();
+        copyOrMoveContentPage = copyOrMoveContentPage.selectPath("Repository", "Sites", opSiteName, "documentLibrary", folder1).render();
+        copyOrMoveContentPage.selectOkButton().render();
 
         // Open folder1 from site document library page
-        DocumentLibraryPage documentlibrarypage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
-        documentlibrarypage = documentlibrarypage.selectFolder(folder1).render();
+        ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+        ShareUserSitePage.selectContent(drone, folder1).render();
 
         // verify files are copied successfully
-        Assert.assertTrue(documentlibrarypage.isFileVisible(file1), "Verifying copied folder is present in site doclib folder");
-        Assert.assertTrue(documentlibrarypage.isFileVisible(file2), "Verifying copied folder is present in site doclib folder");
-
+        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, file1, "isContentVisible", "", true),"Copied file : file1 not found");
+        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, file2, "isContentVisible", "", true), "Copied file : file2 not found");
     }
 
     /**
@@ -355,7 +349,7 @@ public class RepositoryFolderTests extends AbstractUtils
      * <li>Verify Copy to-action for multi selected folders- copy to sites</li>
      * </ul>
      */
-    @Test(groups = { "Repository" })
+    @Test(groups = { "Repository", "SharePOBug" })
     public void Enterprise40x_5340() throws Exception
     {
         String testName = getTestName();
@@ -370,6 +364,8 @@ public class RepositoryFolderTests extends AbstractUtils
         String Description2 = getTestName() + System.currentTimeMillis() + "1";
 
         opSiteName = "A" + opSiteName;
+        
+        ShareUser.login(drone, testUser);
 
         // Create Site
         ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
@@ -388,6 +384,7 @@ public class RepositoryFolderTests extends AbstractUtils
 
         // Navigate to folder
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
         String[] basefolderPath = new String[] { baseFolderName, folder };
         repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, basefolderPath);
 
@@ -398,18 +395,18 @@ public class RepositoryFolderTests extends AbstractUtils
         ShareUserSitePage.createFolder(drone, subfolder2, Description2);
 
         // Select all from Top menu and copy to folder1 in site doclib
-        RepositoryPage repopag = repositorypage.getNavigation().selectAll().render();
-        CopyOrMoveContentPage copyOrMoveContentPage = repopag.getNavigation().selectCopyTo();
-        copyOrMoveContentPage.selectPath("Repository", "Sites", opSiteName, "documentLibrary", folder1).render().selectOkButton().render();
+        RepositoryPage repoPage = repositorypage.getNavigation().selectAll().render();
+        CopyOrMoveContentPage copyOrMoveContentPage = repoPage.getNavigation().selectCopyTo().render();
+        copyOrMoveContentPage = copyOrMoveContentPage.selectPath("Repository", "Sites", opSiteName, "documentLibrary", folder1).render();
+        copyOrMoveContentPage.selectOkButton().render();
 
         // Open site from document library page
-        DocumentLibraryPage documentlibrarypage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
-        documentlibrarypage = documentlibrarypage.selectFolder(folder1).render();
+        ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+        ShareUserSitePage.selectContent(drone, folder1).render();
 
         // verify sub folder1 & sub folder2 are copied successfully
-        Assert.assertTrue(documentlibrarypage.isFileVisible(subfolder1), "Verifying copied folder is present in site doclib");
-        Assert.assertTrue(documentlibrarypage.isFileVisible(subfolder2), "Verifying copied folder is present in site doclib");
-
+        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, subfolder1, "isContentVisible", "", true), "Copied folder : 1 not found");
+        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, subfolder2, "isContentVisible", "", true), "Copied folder : 2 not found");
     }
 
     /**
@@ -429,9 +426,11 @@ public class RepositoryFolderTests extends AbstractUtils
         String Description1 = getTestName() + System.currentTimeMillis();
         String Description2 = getTestName() + System.currentTimeMillis() + "1";
         String guestHomePath = REPO + SLASH + "Guest Home";
+        
+        ShareUser.login(drone, testUser);
 
         // Navigate to repository page
-        RepositoryPage repositorypage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
         // Create new folder
         ShareUserRepositoryPage.createFolderInFolderInRepository(drone, folder, description, baseFolderPath);
@@ -439,25 +438,26 @@ public class RepositoryFolderTests extends AbstractUtils
         // Navigate to folder
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
         String[] basefolderPath = new String[] { baseFolderName, folder };
-        repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, basefolderPath);
+        ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, basefolderPath);
 
         // Create sub folder1 in folder
         ShareUserSitePage.createFolder(drone, subfolder1, Description1);
 
         // Create sub folder2 in folder
-        ShareUserSitePage.createFolder(drone, subfolder2, Description2);
+        RepositoryPage repositorypage = ShareUserRepositoryPage.createFolderInRepository(drone, subfolder2, Description2);
 
         // Select all from Top menu and copy to Guest Home
-        RepositoryPage repopag = repositorypage.getNavigation().selectAll().render();
-        CopyOrMoveContentPage copyOrMoveContentPage = repopag.getNavigation().selectCopyTo().render();
-        copyOrMoveContentPage.selectPath("Repository", "Guest Home").render().selectOkButton().render();
+        RepositoryPage repoPage = repositorypage.getNavigation().selectAll().render();
+        CopyOrMoveContentPage copyOrMoveContentPage = repoPage.getNavigation().selectCopyTo().render();
+        copyOrMoveContentPage = copyOrMoveContentPage.selectPath("Repository", "Guest Home").render();
+        copyOrMoveContentPage.selectOkButton().render();
 
         // verify sub folder1 & 2 is copied successfully
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        RepositoryPage repage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, guestHomePath);
-        Assert.assertTrue(repage.isFileVisible(subfolder1), "Verifying copied folder is present in site doclib");
-        Assert.assertTrue(repage.isFileVisible(subfolder2), "Verifying copied folder is present in site doclib");
-
+        repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, guestHomePath);
+        
+        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, subfolder1, "isContentVisible", "", true),"Verifying copied folder is present in site doclib");
+        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, subfolder2, "isContentVisible", "", true),"Verifying copied folder is present in site doclib");
     }
 
     /**
@@ -485,6 +485,8 @@ public class RepositoryFolderTests extends AbstractUtils
         String Description2 = getTestName() + System.currentTimeMillis() + "1";
 
         opSiteName = "A" + opSiteName;
+        
+        ShareUser.login(drone, testUser);
 
         // Create Site
         ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
@@ -496,7 +498,7 @@ public class RepositoryFolderTests extends AbstractUtils
         ShareUserSitePage.createFolder(drone, folder1, description1);
 
         // Navigate to repository page
-        RepositoryPage repositorypage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
         // Create new folder
         ShareUserRepositoryPage.createFolderInFolderInRepository(drone, folder, description, baseFolderPath);
@@ -510,6 +512,7 @@ public class RepositoryFolderTests extends AbstractUtils
 
         // Create content 1 in folder
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
         String[] subFolderPath = new String[] { baseFolderName, folder };
         ShareUserRepositoryPage.createContentInFolder(drone, contentDetails, ContentType.PLAINTEXT, subFolderPath);
 
@@ -523,22 +526,23 @@ public class RepositoryFolderTests extends AbstractUtils
         // Create content 2 in folder
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
         String[] subfolderPath = new String[] { baseFolderName, folder };
-        ShareUserRepositoryPage.createContentInFolder(drone, contentdetails, ContentType.PLAINTEXT, subfolderPath);
+        RepositoryPage repositorypage = ShareUserRepositoryPage.createContentInFolder(drone, contentdetails, ContentType.PLAINTEXT, subfolderPath);
 
         // Select all from Top menu in folder3 and move to folder1 in site doclib
-        RepositoryPage repopag = repositorypage.getNavigation().selectAll().render();
-        CopyOrMoveContentPage copyOrMoveContentPage = repopag.getNavigation().selectMoveTo().render();
-        ;
-        copyOrMoveContentPage.selectPath("Repository", "Sites", opSiteName, "documentLibrary", folder1).render().selectOkButton().render();
+        RepositoryPage repoPage = repositorypage.getNavigation().selectAll().render();
+        CopyOrMoveContentPage copyOrMoveContentPage = repoPage.getNavigation().selectMoveTo().render();
+        copyOrMoveContentPage = copyOrMoveContentPage.selectPath("Repository", "Sites", opSiteName, "documentLibrary", folder1).render();
+        copyOrMoveContentPage.selectOkButton().render();
 
         // Open site from document library page
-        DocumentLibraryPage documentlibrarypage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
-        documentlibrarypage = documentlibrarypage.selectFolder(folder1).render();
+         ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+         
+         ShareUserSitePage.selectContent(drone, folder1).render();
 
         // verify file1 & file2 are moved successfully
-        Assert.assertTrue(documentlibrarypage.isFileVisible(file1), "Verifying moved folder is present in site doclib");
-        Assert.assertTrue(documentlibrarypage.isFileVisible(file2), "Verifying moved folder is present in site doclib");
-
+         
+         Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, file1, "isContentVisible", "", true),"Verifying moved file is present in site doclib");
+         Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, file2, "isContentVisible", "", true),"Verifying moved file is present in site doclib");
     }
 
     /**
@@ -547,7 +551,7 @@ public class RepositoryFolderTests extends AbstractUtils
      * <li>Verify Move to action for multi-selected folders</li>
      * </ul>
      */
-    @Test(groups = { "Repository" })
+    @Test(groups = { "Repository", "SharePOBug" })
     public void Enterprise40x_5343() throws Exception
     {
         String testName = getTestName();
@@ -562,6 +566,8 @@ public class RepositoryFolderTests extends AbstractUtils
         String Description2 = getTestName() + System.currentTimeMillis() + "1";
 
         opSiteName = "A" + opSiteName;
+        
+        ShareUser.login(drone, testUser);
 
         // Create Site
         ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
@@ -573,7 +579,7 @@ public class RepositoryFolderTests extends AbstractUtils
         ShareUserSitePage.createFolder(drone, folder1, description1);
 
         // Navigate to repository page
-        RepositoryPage repositorypage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
         // Create new folder
         ShareUserRepositoryPage.createFolderInFolderInRepository(drone, folder, description, baseFolderPath);
@@ -581,27 +587,28 @@ public class RepositoryFolderTests extends AbstractUtils
         // Navigate to folder
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
         String[] basefolderPath = new String[] { baseFolderName, folder };
-        repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, basefolderPath);
+        ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, basefolderPath);
 
         // Create sub folder1 in folder
-        ShareUserSitePage.createFolder(drone, subfolder1, Description1);
+        ShareUserRepositoryPage.createFolderInRepository(drone, subfolder1, Description1);
 
         // Create sub folder2 in folder
-        ShareUserSitePage.createFolder(drone, subfolder2, Description2);
+        RepositoryPage repositorypage = ShareUserRepositoryPage.createFolderInRepository(drone, subfolder2, Description2);
 
         // Select all from Top menu and move to folder1 in site doclib
         RepositoryPage repopag = repositorypage.getNavigation().selectAll().render();
-        CopyOrMoveContentPage copyOrMoveContentPage = repopag.getNavigation().selectMoveTo();
-        copyOrMoveContentPage.selectPath("Repository", "Sites", opSiteName, "documentLibrary", folder1).render().selectOkButton().render();
+        CopyOrMoveContentPage copyOrMoveContentPage = repopag.getNavigation().selectMoveTo().render();
+        copyOrMoveContentPage = copyOrMoveContentPage.selectPath("Repository", "Sites", opSiteName, "documentLibrary", folder1).render();
+        copyOrMoveContentPage.selectOkButton().render();
 
         // Open folder1 in site document library page
-        DocumentLibraryPage documentlibrarypage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
-        documentlibrarypage = documentlibrarypage.selectFolder(folder1).render();
+        ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+        ShareUserSitePage.selectContent(drone, folder1).render();
 
         // verify sub folder1 & sub folder2 is copied successfully
-        Assert.assertTrue(documentlibrarypage.isFileVisible(subfolder1), "Verifying copied folder is present in site doclib");
-        Assert.assertTrue(documentlibrarypage.isFileVisible(subfolder2), "Verifying copied folder is present in site doclib");
-
+        
+        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, subfolder1, "isContentVisible", "", true),"Verifying moved folder is present in site doclib");
+        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, subfolder2, "isContentVisible", "", true),"Verifying moved folder is present in site doclib");
     }
 
     /**
@@ -631,23 +638,26 @@ public class RepositoryFolderTests extends AbstractUtils
         String description2 = testName + System.currentTimeMillis() + "1";
         String description3 = testName + System.currentTimeMillis() + "2";
 
+        ShareUser.login(drone, testUser);
+        
         // Navigate to repository page
-        RepositoryPage repositorypage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
         // Create new folder
-        ShareUserRepositoryPage.createFolderInFolderInRepository(drone, folder1, description, baseFolderPath);
+        RepositoryPage repoPage = ShareUserRepositoryPage.createFolderInFolderInRepository(drone, folder1, description, baseFolderPath);
 
         // verify created folder is present in the main repository
-        Assert.assertTrue(repositorypage.isFileVisible(folder1), "verifying folder1 present in repository");
+        Assert.assertTrue(repoPage.isFileVisible(folder1), "verifying folder1 present in repository");
 
         // Navigate to folder
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
         String[] basefolderPath = new String[] { baseFolderName, folder1 };
-        repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, basefolderPath);
+        ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, basefolderPath);
 
         // Create folder2, folder3 in folder1
-        ShareUserSitePage.createFolder(drone, folder2, description2);
-        ShareUserSitePage.createFolder(drone, folder3, description3);
+        ShareUserRepositoryPage.createFolderInRepository(drone, folder2, description2);
+        ShareUserRepositoryPage.createFolderInRepository(drone, folder3, description3);
 
         // Create content1 in folder1
         ContentDetails contentDetails = new ContentDetails();
@@ -658,6 +668,7 @@ public class RepositoryFolderTests extends AbstractUtils
 
         // Create content 1 in folder1
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
         String[] subFolderPath = new String[] { baseFolderName, folder1 };
         ShareUserRepositoryPage.createContentInFolder(drone, contentDetails, ContentType.PLAINTEXT, subFolderPath);
 
@@ -670,39 +681,42 @@ public class RepositoryFolderTests extends AbstractUtils
 
         // Create content 2 in folder1
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
         String[] subfolderPath = new String[] { baseFolderName, folder1 };
         ShareUserRepositoryPage.createContentInFolder(drone, contentdetails, ContentType.PLAINTEXT, subfolderPath);
 
         // Select all from Top menu
-        RepositoryPage repopag = repositorypage.getNavigation().selectAll().render();
+        repoPage = repoPage.getNavigation().selectAll().render();
 
         // Confirm cancel delete
-        ConfirmDeletePage confirmDeletePage = repopag.getNavigation().selectDelete();
-        confirmDeletePage.selectAction(Action.Cancel);
+        ConfirmDeletePage confirmDeletePage = repoPage.getNavigation().selectDelete();
+        confirmDeletePage.selectAction(Action.Cancel).render();
 
         // Verify folders are not deleted
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, basefolderPath);
-        Assert.assertTrue(repositorypage.isFileVisible(folder2));
-        Assert.assertTrue(repositorypage.isFileVisible(folder3));
-        Assert.assertTrue(repositorypage.isFileVisible(file1));
-        Assert.assertTrue(repositorypage.isFileVisible(file2));
+        
+        repoPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, basefolderPath);
+        Assert.assertTrue(repoPage.isFileVisible(folder2));
+        Assert.assertTrue(repoPage.isFileVisible(folder3));
+        Assert.assertTrue(repoPage.isFileVisible(file1));
+        Assert.assertTrue(repoPage.isFileVisible(file2));
 
         // Select all from Top menu
-        RepositoryPage repopage = repositorypage.getNavigation().selectAll().render();
+        repoPage = repoPage.getNavigation().selectAll().render();
 
         // Confirm delete
-        ConfirmDeletePage confirmdeletePage = repopage.getNavigation().selectDelete();
-        confirmdeletePage.selectAction(Action.Delete);
+        ConfirmDeletePage confirmdeletePage = repoPage.getNavigation().selectDelete();
+        confirmdeletePage.selectAction(Action.Delete).render();
 
         // Verify folders are deleted
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, basefolderPath);
-        Assert.assertFalse(repositorypage.isFileVisible(folder1));
-        Assert.assertFalse(repositorypage.isFileVisible(folder2));
-        Assert.assertFalse(repositorypage.isFileVisible(folder3));
-        Assert.assertFalse(repositorypage.isFileVisible(file1));
-        Assert.assertFalse(repositorypage.isFileVisible(file2));
+        
+        repoPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, basefolderPath);
+        Assert.assertFalse(repoPage.isFileVisible(folder1));
+        Assert.assertFalse(repoPage.isFileVisible(folder2));
+        Assert.assertFalse(repoPage.isFileVisible(folder3));
+        Assert.assertFalse(repoPage.isFileVisible(file1));
+        Assert.assertFalse(repoPage.isFileVisible(file2));
 
     }
 

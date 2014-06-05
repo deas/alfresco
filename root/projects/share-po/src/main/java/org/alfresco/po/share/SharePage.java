@@ -815,4 +815,53 @@ public abstract class SharePage extends Page
         }
         throw new PageOperationException("CopyRight details are not present");
     }
+
+    /**
+     * Get background color of element or color of element (font color)
+     * @param locator
+     * @param background
+     *          if needed to find color of element's background - param must be true
+     *          if needed to find color of element itself - param must be false
+     * @return hex
+     *         return color in Hex color model
+     */
+    public String getColor(By locator, boolean background)
+    {
+        WebElement element;
+        String hex = "";
+        String color;
+        try
+        {
+            element = drone.findAndWait(locator);
+            if(background)
+                color = element.getCssValue("background-color");
+            else
+                color = element.getCssValue("color");
+
+            String[] numbers = color.replace("rgba(", "").replace(")", "").split(",");
+            int number1=Integer.parseInt(numbers[0]);
+            numbers[1] = numbers[1].trim();
+            int number2=Integer.parseInt(numbers[1]);
+            numbers[2] = numbers[2].trim();
+            int number3=Integer.parseInt(numbers[2]);
+            hex = String.format("#%02x%02x%02x", number1,number2,number3);
+
+        }
+        catch (StaleElementReferenceException e)
+        {
+            getColor(locator, background);
+        }
+
+        catch (TimeoutException e)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Exceeded time to find " + locator + " locator");
+            }
+        }
+
+        return hex;
+
+    }
+
 }

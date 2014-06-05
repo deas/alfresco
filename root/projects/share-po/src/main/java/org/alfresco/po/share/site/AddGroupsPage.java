@@ -27,19 +27,21 @@
     */
 package org.alfresco.po.share.site;
 
-import java.util.List;
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
-import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
-import org.alfresco.po.share.SharePage;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+
+import java.util.List;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * @author nshah
@@ -57,6 +59,11 @@ public class AddGroupsPage extends SharePage
     public static final String ROW_ROLE_BUTTON = "td[class*='yui-dt-col-role'] button";
     public static final String ROW_ROLE_OPTION = "div[id$='inviteelist'] div > ul > li > a";
     public static final String ADD_GROUP = "button[id$='add-button-button']";
+    private static final By SELECT_ROLE_FOR_ALL = By.cssSelector("button[id$='selectallroles-button-button']");
+
+    private static final String ADD_BUTTON_FOR_USER_XPATH = "//div[contains(text(),'%s')]/../../..//button";
+    private static final String SELECT_ROLE_BUTTON_FOR_USER_XPATH = "//span[contains(text(),'%s')]/../../../..//button";
+    private static final String REMOVE_USER_ICON_FOR_USER_XPATH = "//h3[contains(text(),'%s')]/../../..//span[@class='removeIcon']/..";
 
     public AddGroupsPage(WebDrone drone)
     {
@@ -99,7 +106,7 @@ public class AddGroupsPage extends SharePage
      * @param groupDisplayName
      * @return
      */
-    private AddGroupsPage addGroupToSite(String groupDisplayName)
+    public AddGroupsPage addGroupToSite(String groupDisplayName)
     {
         if (StringUtils.isEmpty(groupDisplayName))
         {
@@ -113,7 +120,7 @@ public class AddGroupsPage extends SharePage
                 String resultGroupName = row.findElement(By.cssSelector(GROUP_DISPLAY_NAME)).getText();
                 if (groupDisplayName.equals(resultGroupName))
                 {
-                    WebElement addButton = drone.find(By.cssSelector(ADD_BUTTON));
+                    WebElement addButton = row.findElement(By.cssSelector(ADD_BUTTON));
                     if (addButton.isEnabled())
                     {
                         addButton.click();
@@ -137,7 +144,7 @@ public class AddGroupsPage extends SharePage
      * @param groupDisplayName
      * @return
      */
-    private AddGroupsPage searchGroup(String groupDisplayName)
+    public AddGroupsPage searchGroup(String groupDisplayName)
     {
         if (StringUtils.isEmpty(groupDisplayName))
         {
@@ -145,11 +152,12 @@ public class AddGroupsPage extends SharePage
         }
         try
         {
-            WebElement input = drone.find(By.cssSelector(SEARCH_INPUT_TEXT));
+            WebElement input = drone.findAndWait(By.cssSelector(SEARCH_INPUT_TEXT));
             input.clear();
             input.sendKeys(groupDisplayName);
             drone.findAndWait(By.cssSelector(SEARCH_BUTTON)).click();
-            return new AddGroupsPage(drone);
+            drone.waitForElement(By.cssSelector(SEARCH_RESULT_ROW), 2);
+            return new AddGroupsPage(drone).render();
         }
         catch (NoSuchElementException nse)
         {
@@ -164,12 +172,12 @@ public class AddGroupsPage extends SharePage
 
     /**
      * Assign role to group.
-     * 
+     *
      * @param groupDisplayName
      * @param roleToAssign
      * @return
      */
-    private AddGroupsPage assignRoleToGroup(String groupDisplayName, UserRole roleToAssign)
+    public AddGroupsPage assignRoleToGroup(String groupDisplayName, UserRole roleToAssign)
     {
         try
         {
@@ -210,23 +218,23 @@ public class AddGroupsPage extends SharePage
         return new AddGroupsPage(drone);
     }
 
-    private void clickAddGroupsButton()
+    public void clickAddGroupsButton()
     {
         try
         {
 
-            WebElement addGroupsButton = drone.find(By.cssSelector(ADD_GROUP));
+            WebElement addGroupsButton = drone.findAndWait(By.cssSelector(ADD_GROUP));
             if (addGroupsButton.isEnabled())
             {
                 addGroupsButton.click();
-                canResume();
+                waitUntilAlert();
             }
             else
             {
                 throw new PageOperationException("Add Group is disabled!!");
             }
         }
-        catch (NoSuchElementException nse)
+        catch (TimeoutException nse)
         {
             throw new PageOperationException("Not found element is : " + ADD_GROUP, nse);
         }
@@ -234,7 +242,6 @@ public class AddGroupsPage extends SharePage
 
     /**
      * @param groupDisplayName
-     * @param roleToAssign
      * @return
      */
     public boolean isGroupAdded(String groupDisplayName)
@@ -261,5 +268,84 @@ public class AddGroupsPage extends SharePage
             throw new PageOperationException("Group not found", nse);
         }
         return false;
+    }
+
+
+    public void removeGroupFromAdd(String groupName)
+    {
+        By removeUsers = By.xpath(String.format(REMOVE_USER_ICON_FOR_USER_XPATH, groupName));
+        drone.findAndWait(removeUsers).click();
+    }
+
+    /**
+     * @param role
+     */
+    public void selectRoleForAll(UserRole role)
+    {
+        drone.findAndWait(SELECT_ROLE_FOR_ALL).click();
+        drone.findAndWait(By.xpath(String.format("//a[contains(text(),'%s')]", role.getRoleName()))).click();
+    }
+
+    /**
+     * true if 'Add' button displayed and enabled for user.
+     *
+     * @param groupName
+     * @return
+     */
+    public boolean isAddButtonEnabledFor(String groupName)
+    {
+        return isSmThEnabledFor(groupName, ADD_BUTTON_FOR_USER_XPATH);
+    }
+
+    /**
+     * @return
+     */
+    public boolean isAddGroupsButtonEnabled()
+    {
+        try
+        {
+            WebElement inviteButton = drone.find(By.cssSelector(ADD_GROUP));
+            return inviteButton.isDisplayed() && inviteButton.isEnabled();
+        }
+        catch (NoSuchElementException e)
+        {
+            throw new PageException("Not found Element:" + ADD_GROUP, e);
+        }
+    }
+
+    /**
+     * true if 'SelectRole' button displayed and enabled for user.
+     *
+     * @param groupName
+     * @return
+     */
+    public boolean isSelectRoleEnabledFor(String groupName)
+    {
+        return isSmThEnabledFor(groupName, SELECT_ROLE_BUTTON_FOR_USER_XPATH);
+    }
+
+    /**
+     * true if 'Remove Icon' image displayed and enabled for user.
+     *
+     * @param groupName
+     * @return
+     */
+    public boolean isRemoveIconEnabledFor(String groupName)
+    {
+        return isSmThEnabledFor(groupName, REMOVE_USER_ICON_FOR_USER_XPATH);
+    }
+
+    private boolean isSmThEnabledFor(String userName, String smthXpath)
+    {
+        By smthElement = By.xpath(String.format(smthXpath, userName));
+        try
+        {
+            WebElement addButton = drone.findAndWait(smthElement, 2000);
+            return addButton.isDisplayed() && addButton.isEnabled();
+        }
+        catch (TimeoutException e)
+        {
+            throw new PageException("Not found Element:" + smthElement, e);
+        }
     }
 }

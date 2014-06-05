@@ -85,6 +85,10 @@ public class DocumentLibraryNavigation extends SharePage
     private static final By SORT_DIRECTION = By.cssSelector("span[id$='default-sortAscending-button']");
     private static final By CURRENT_SORT_FIELD = By.cssSelector("div[class$='sort-field'] button");
     private static final By SORT_FIELD = By.cssSelector("div[class$='sort-field'] > div");
+    private static final By SELECT_FOLDERS = By.cssSelector(".selectFolders");
+    private static final By SELECT_DOCUMENTS = By.cssSelector(".selectDocuments");
+    private static final By SELECT_INVERT_SELECTION = By.cssSelector(".selectInvert");
+    private static final String CREATE_A_FOLDER_LINK = (".docListInstructionsWithDND div[id$='new-folder-template'] a");
 
     private Log logger = LogFactory.getLog(this.getClass());
 
@@ -263,10 +267,12 @@ public class DocumentLibraryNavigation extends SharePage
      * @return {@link DocumentLibraryPage}
      * @throws TimeoutException
      */
-    public DocumentLibraryPage selectCreateContentFromTemplate(){
+    public DocumentLibraryPage selectCreateContentFromTemplate()
+    {
 
         WebElement button;
-        try{
+        try
+        {
             selectCreateContentDropdown();
             button = drone.findAndWait(By.xpath("//span[text()='Create document from template']/parent::a"));
             button.click();
@@ -286,11 +292,13 @@ public class DocumentLibraryNavigation extends SharePage
      * @return {@link NewFolderPage}
      * @throws TimeoutException
      */
-    public NewFolderPage selectCreateFolderFromTemplate(){
+    public NewFolderPage selectCreateFolderFromTemplate()
+    {
 
         WebElement button;
 
-        try{
+        try
+        {
             selectCreateContentDropdown();
             button = drone.findAndWait(By.xpath("//span[text()='Create folder from template']/parent::a"));
             button.click();
@@ -304,6 +312,54 @@ public class DocumentLibraryNavigation extends SharePage
         return new NewFolderPage(drone);
     }
 
+    /**
+     * Action of selecting Create document from template.
+     *
+     * @return {@link DocumentLibraryPage}
+     * @throws TimeoutException
+     */
+    public HtmlPage selectCreateContentFromTemplateHover(){
+
+        WebElement button;
+        try{
+            selectCreateContentDropdown();
+
+            button = drone.findAndWait(By.xpath("//span[text()='Create document from template']/parent::a"));
+            drone.mouseOver(button);
+            return FactorySharePage.resolvePage(drone);
+
+        }
+        catch (TimeoutException exception)
+        {
+            logger.error("Not able to find the web element");
+            throw new PageException("Unable to fine the Create document from template.", exception);
+        }
+
+    }
+
+    /**
+     * Action of selecting Create folder from template.
+     *
+     * @return {@link DocumentLibraryPage}
+     * @throws TimeoutException
+     */
+    public HtmlPage selectCreateFolderFromTemplateHover(){
+
+        WebElement button;
+        try{
+            selectCreateContentDropdown();
+
+            button = drone.findAndWait(By.xpath("//span[text()='Create folder from template']/parent::a"));
+            drone.mouseOver(button);
+            return FactorySharePage.resolvePage(drone);
+
+        }
+        catch (TimeoutException exception)
+        {
+            logger.error("Not able to find the web element");
+            throw new PageException("Unable to fine the Create folder from template.", exception);
+        }
+    }
 
     /**
      * Mimics the action of selecting Create Plain Text.
@@ -610,6 +666,90 @@ public class DocumentLibraryNavigation extends SharePage
     }
 
     /**
+     * Mimics the action select All select dropdown.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectFolders()
+    {
+        try
+        {
+            clickSelectDropDown();
+            if (isSelectMenuVisible())
+            {
+                drone.findAndWait(SELECT_FOLDERS).click();
+                return FactorySharePage.resolvePage(drone);
+            }
+            else
+            {
+                throw new PageException("Select dropdown menu not visible");
+            }
+        }
+        catch (TimeoutException e)
+        {
+            String exceptionMessage = "Not able to find select All option";
+            logger.error(exceptionMessage, e);
+            throw new PageException(exceptionMessage);
+        }
+    }
+
+    /**
+     * Mimics the action select All select dropdown.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectDocuments()
+    {
+        try
+        {
+            clickSelectDropDown();
+            if (isSelectMenuVisible())
+            {
+                drone.findAndWait(SELECT_DOCUMENTS).click();
+                return FactorySharePage.resolvePage(drone);
+            }
+            else
+            {
+                throw new PageException("Select dropdown menu not visible");
+            }
+        }
+        catch (TimeoutException e)
+        {
+            String exceptionMessage = "Not able to find select All option";
+            logger.error(exceptionMessage, e);
+            throw new PageException(exceptionMessage);
+        }
+    }
+
+    /**
+     * Mimics the action select All select dropdown.
+     * 
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage selectInvert()
+    {
+        try
+        {
+            clickSelectDropDown();
+            if (isSelectMenuVisible())
+            {
+                drone.findAndWait(SELECT_INVERT_SELECTION).click();
+                return FactorySharePage.resolvePage(drone);
+            }
+            else
+            {
+                throw new PageException("Select dropdown menu not visible");
+            }
+        }
+        catch (TimeoutException e)
+        {
+            String exceptionMessage = "Not able to find select All option";
+            logger.error(exceptionMessage, e);
+            throw new PageException(exceptionMessage);
+        }
+    }
+
+    /**
      * Returns true if Sign In To Alfresco Cloud popup opens (User haven't set up CloudSync)
      *
      * @return boolean
@@ -829,6 +969,34 @@ public class DocumentLibraryNavigation extends SharePage
             String exceptionMessage = "Not able to find the \"Deselect All\" Link";
             logger.error(exceptionMessage, e);
             throw new PageOperationException(exceptionMessage, e);
+        }
+    }
+
+    /**
+     * Mimics the action select All select dropdown.
+     *
+     * @return {@link DocumentLibraryPage}
+     */
+    public HtmlPage deselectAll()
+    {
+        try
+        {
+            clickSelectedItems();
+            if (isSelectedItemMenuVisible())
+            {
+                drone.findAndWait(DESELECT_ALL).click();
+                return FactorySharePage.resolvePage(drone);
+            }
+            else
+            {
+                throw new PageException("Select dropdown menu not visible");
+            }
+        }
+        catch (TimeoutException e)
+        {
+            String exceptionMessage = "Not able to find deselect All option";
+            logger.error(exceptionMessage, e);
+            throw new PageException(exceptionMessage);
         }
     }
 
@@ -1870,5 +2038,17 @@ public class DocumentLibraryNavigation extends SharePage
             logger.error("Exceeded the time to find css.", e);
         }
         throw new PageOperationException("Not able to select RSS Feed option");
+    }
+
+    /**
+     * Selecting the create a folder link when the parent folder is empty
+     *
+     * @return {@link NewFolderPage} page response
+     */
+    public NewFolderPage selectCreateAFolder()
+    {
+        WebElement button = drone.findAndWait(By.cssSelector(CREATE_A_FOLDER_LINK));
+        button.click();
+        return getNewFolderPage(drone);
     }
 }

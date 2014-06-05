@@ -3,11 +3,11 @@ package org.alfresco.po.share.dashlet;
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.*;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Page object to hold Web View dashlet
@@ -17,6 +17,8 @@ import org.openqa.selenium.TimeoutException;
 public class WebViewDashlet extends AbstractDashlet implements Dashlet
 {
     private static final By DASHLET_CONTAINER_PLACEHOLDER = By.cssSelector("div.dashlet.webview");
+    private static final By IF_FRAME_WITH_SITE = By.cssSelector("iframe[class='iframe-body']");
+    private static final By DEFAULT_MESSAGE = By.cssSelector("h3[class$='default-body']");
 
     /**
      * Constructor.
@@ -24,7 +26,7 @@ public class WebViewDashlet extends AbstractDashlet implements Dashlet
     protected WebViewDashlet(WebDrone drone)
     {
         super(drone, DASHLET_CONTAINER_PLACEHOLDER);
-        setResizeHandle(By.cssSelector("div.dashlet.webview .yui-resize-handle"));
+        setResizeHandle(By.cssSelector(".yui-resize-handle"));
     }
 
     @SuppressWarnings("unchecked")
@@ -100,12 +102,12 @@ public class WebViewDashlet extends AbstractDashlet implements Dashlet
      *
      * @return ConfigureWebViewDashletBox page object
      */
-    protected ConfigureWebViewDashletBoxPage clickConfigure()
+    public ConfigureWebViewDashletBoxPage clickConfigure()
     {
         try
         {
             getFocus();
-            drone.findAndWait(CONFIGURE_DASHLET_ICON).click();
+            dashlet.findElement(CONFIGURE_DASHLET_ICON).click();
             return new ConfigureWebViewDashletBoxPage(drone).render();
         }
         catch (TimeoutException te)
@@ -113,4 +115,43 @@ public class WebViewDashlet extends AbstractDashlet implements Dashlet
             throw new ShareException("The operation has timed out");
         }
     }
+
+    /**
+     * return default text from dashlet. or throw Exception.
+     *
+     * @return
+     */
+    public String getDefaultMessage()
+    {
+        try
+        {
+            return dashlet.findElement(DEFAULT_MESSAGE).getText();
+        }
+        catch (NoSuchElementException e)
+        {
+            throw new PageOperationException("Default message in web view dashlet missing or don't display.");
+        }
+    }
+
+    /**
+     * return true if frame with url displayed.
+     *
+     * @param url
+     * @return
+     */
+    public boolean isFrameShow(String url)
+    {
+        checkNotNull(url);
+        try
+        {
+            WebElement element = dashlet.findElement(IF_FRAME_WITH_SITE);
+            return element.getAttribute("src").equals(url);
+        }
+        catch (NoSuchElementException e)
+        {
+            return false;
+        }
+    }
+
+
 }

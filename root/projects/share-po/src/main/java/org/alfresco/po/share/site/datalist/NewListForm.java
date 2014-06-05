@@ -1,7 +1,5 @@
 package org.alfresco.po.share.site.datalist;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
 import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.RenderTime;
@@ -12,6 +10,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+
+import java.util.List;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * New List form page object
@@ -25,7 +27,6 @@ public class NewListForm extends ShareDialogue
 
     private static final By SAVE_BTN = By.cssSelector("button[id$=submit-button]");
     private static final By CANCEL_BTN = By.cssSelector("button[id$=cancel-button]");
-    @SuppressWarnings("unused")
     private static final By LISTS_TYPES_CONTAINER = By.cssSelector("div[id$='itemTypesContainer']>div");
     private static final By TITLE_FIELD = By.cssSelector("input[id$='cm_title']");
     private static final By DESCRIPTION_FIELD = By.cssSelector("textarea[id$='cm_description']");
@@ -40,9 +41,8 @@ public class NewListForm extends ShareDialogue
     public NewListForm render(RenderTime timer)
     {
         elementRender(timer,
-            getVisibleRenderElement(SAVE_BTN),
-            getVisibleRenderElement(CANCEL_BTN));
-
+                getVisibleRenderElement(SAVE_BTN),
+                getVisibleRenderElement(CANCEL_BTN));
         return this;
     }
 
@@ -136,7 +136,7 @@ public class NewListForm extends ShareDialogue
     }
 
     /**
-     * Method for clickin cancel button
+     * Method for click on cancel button
      *
      * @return DataListPage
      */
@@ -151,5 +151,15 @@ public class NewListForm extends ShareDialogue
         {
             throw new ShareException("unable to find " + CANCEL_BTN);
         }
+    }
+
+    /**
+     * Mimic select type data-list
+     * @param listType
+     */
+    public void selectListType(TypeOptions listType)
+    {
+        List<WebElement> typeOptions = drone.findAndWaitForElements(LISTS_TYPES_CONTAINER);
+        typeOptions.get(listType.ordinal()).click();
     }
 }

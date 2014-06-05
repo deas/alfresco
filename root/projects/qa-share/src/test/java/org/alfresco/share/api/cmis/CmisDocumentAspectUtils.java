@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.alfresco.po.share.site.document.Categories;
 import org.alfresco.po.share.site.document.DetailsPage;
@@ -60,6 +61,30 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         if (!ShareUserSitePage.isFileVisible(drone, fileName))
         {
             ShareUser.uploadFileInFolder(drone, fileInfo);
+        }
+        ShareUser.logout(drone);
+    }
+
+    public void dataPrepSecondaryObjectTypeIDsProperty(WebDrone drone, String userName, String testName, String siteName) throws Exception
+    {
+        String fileName = getFileName(testName);
+        String[] fileInfo = { fileName };
+        String folderName = getFolderName(testName);
+
+        ShareUser.login(drone, userName, DEFAULT_PASSWORD);
+
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        if (!ShareUserSitePage.isFileVisible(drone, fileName))
+        {
+            ShareUser.uploadFileInFolder(drone, fileInfo);
+            ShareUser.editProperties(drone, fileName, fileName, fileName, fileName);
+        }
+
+        if (!ShareUserSitePage.isFileVisible(drone, folderName))
+        {
+            // Create Folder
+            ShareUserSitePage.createFolder(drone, folderName, folderName);
         }
         ShareUser.logout(drone);
     }
@@ -428,7 +453,9 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
     public void addTaggableAspect(WebDrone drone, String userName, String fileName, String siteName, String tagName, CMISBinding cmisBinding) throws Exception
     {
-        String tagNodeRef = ShareUserAdmin.getTagNodeRef(drone, tagName);
+        String fileName1 = getFileName(testName + "-1");
+        String tagDocumentNodeRef = getNodeRef(cmisBinding, userName, DOMAIN, siteName, "", fileName1);
+        String tagNodeRef = getTagNodeRef(cmisBinding, userName, DOMAIN, tagDocumentNodeRef);
 
         ShareUser.login(drone, userName, DEFAULT_PASSWORD);
         String documentNodeRef = getNodeRef(cmisBinding, userName, DOMAIN, siteName, "", fileName);
@@ -724,7 +751,7 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         ShareUserSearchPage.basicSearch(drone, fileName, false);
         // Code amended to cater for Eventual consistency
-        Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, BASIC_SEARCH, fileName, fileName, false),
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, BASIC_SEARCH, fileName, fileName, false),
                 "Document NOT found in search results after adding the INDEX_CONTROL aspect");
 
         ShareUser.logout(drone);
@@ -748,7 +775,7 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         ShareUserSearchPage.basicSearch(drone, fileName, false);
         // Code amended to cater for Eventual consistency
-        Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, BASIC_SEARCH, fileName, fileName, true),
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, BASIC_SEARCH, fileName, fileName, true),
                 "Document found in search results after adding the INDEX_CONTROL aspect");
 
         ShareUser.logout(drone);
@@ -793,6 +820,65 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         Map<String, Object> properties = getProperties(drone, siteName, fileName);
         Assert.assertNull(properties.get("OfflineExpiresAfter(hours)"));
 
+        ShareUser.logout(drone);
+    }
+
+    public void dataPrepRemoveVersionableAspect(WebDrone drone, String userName, String testName, String siteName, CMISBinding cmisBinding) throws Exception
+    {
+        String fileName = getFileName(testName);
+        String[] fileInfo = { fileName };
+
+        ShareUser.login(drone, userName, DEFAULT_PASSWORD);
+
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        if (!ShareUserSitePage.isFileVisible(drone, fileName))
+        {
+            ShareUser.uploadFileInFolder(drone, fileInfo);
+        }
+
+        ShareUserSitePage.openDetailsPage(drone, fileName);
+        ShareUser.uploadNewVersionOfDocument(drone, fileName, fileName);
+
+        if(!alfrescoVersion.isCloud())
+        {
+            Set<DocumentAspect> selectedAspects = ShareUser.getSelectedAspects(drone, siteName, fileName);
+            Assert.assertTrue(selectedAspects.contains(DocumentAspect.VERSIONABLE), "Verifying VERSIONABLE aspect is added");
+        }
+
+        ShareUser.logout(drone);
+
+    }
+
+    public void removeVersionableAspect(WebDrone drone, String userName, String fileName, String siteName, CMISBinding cmisBinding) throws Exception
+    {
+        ShareUser.login(drone, userName, DEFAULT_PASSWORD);
+        String documentNodeRef = getNodeRef(cmisBinding, userName, DOMAIN, siteName, "", fileName);
+
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        DocumentDetailsPage documentDetailsPage = ShareUser.openDocumentDetailPage(drone, fileName);
+
+        String initialVersion = documentDetailsPage.getDocumentVersion();
+
+        List<String> aspectsToRemove = new ArrayList<>();
+        aspectsToRemove.add("P:sys:localized");
+        aspectsToRemove.add("P:cm:thumbnailModification");
+        aspectsToRemove.add("P:cm:titled");
+        aspectsToRemove.add("P:cm:author");
+
+        removeAspect(cmisBinding, userName, DOMAIN, aspectsToRemove, documentNodeRef);
+
+        documentDetailsPage = ShareUser.getSharePage(drone).render();
+
+        String versionAfter = documentDetailsPage.getDocumentVersion();
+
+        Assert.assertEquals(versionAfter, initialVersion , "Verifying versions aren't crashed");
+
+        if(!alfrescoVersion.isCloud())
+        {
+            Set<DocumentAspect> selectedAspects = ShareUser.getSelectedAspects(drone, siteName, fileName);
+            Assert.assertTrue(selectedAspects.contains(DocumentAspect.VERSIONABLE), "Verifying VERSIONABLE aspect is added");
+        }
         ShareUser.logout(drone);
     }
 }

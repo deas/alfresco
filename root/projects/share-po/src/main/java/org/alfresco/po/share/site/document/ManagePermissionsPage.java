@@ -335,7 +335,7 @@ public class ManagePermissionsPage extends SharePage
         boolean isExist = false;
         try
         {
-            List<WebElement> userList = drone.findAndWaitForElements(userListLocator, WAIT_TIME_3000);
+            List<WebElement> userList = drone.findAndWaitForElements(userListLocator, 10000);
             for (WebElement webElement : userList)
             {
                 if (webElement.findElement(userNameLocator).getText().contains(name))

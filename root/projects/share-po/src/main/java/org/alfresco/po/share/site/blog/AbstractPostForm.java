@@ -1,15 +1,18 @@
 package org.alfresco.po.share.site.blog;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
-
-import java.util.*;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 
 /**
  * Abstract of Blog post Form
@@ -25,6 +28,8 @@ public abstract class AbstractPostForm extends SharePage
     protected static final By CANCEL_BTN = By.cssSelector("#template_x002e_postedit_x002e_blog-postedit_x0023_default-cancel-button-button");
     protected static final By DEFAULT_SAVE = By.cssSelector("button[id$='default-save-button-button']");
     protected static final By PUBLISH_INTERNALLY_EXTERNALLY = By.cssSelector("button[id$='default-publishexternal-button-button']");
+    private static final By POST_TAG_INPUT = By.cssSelector("#template_x002e_postedit_x002e_blog-postedit_x0023_default-tag-input-field");
+    private static final By ADD_TAG_BUTTON = By.cssSelector("#template_x002e_postedit_x002e_blog-postedit_x0023_default-add-tag-button-button");
 
     protected AbstractPostForm(WebDrone drone)
     {
@@ -113,4 +118,23 @@ public abstract class AbstractPostForm extends SharePage
             throw new PageException("Unable to find Save button");
         }
     }
+
+    /**
+     * Method to add tag to the new blog post page
+     *
+     * @param tag
+     * @return NewPostForm object
+     */
+    public NewPostForm addTag(String tag)
+    {
+
+        checkNotNull(tag);
+        WebElement inputTag = drone.findAndWait(POST_TAG_INPUT);
+        inputTag.sendKeys(tag);
+        WebElement addButton = drone.find(ADD_TAG_BUTTON);
+        addButton.click();
+
+        return new NewPostForm(drone);
+    }
+
 }

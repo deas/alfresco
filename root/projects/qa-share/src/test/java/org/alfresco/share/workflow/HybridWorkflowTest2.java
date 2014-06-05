@@ -475,7 +475,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
 
         documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName).render();
         CopyOrMoveContentPage moveToPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectMoveTo().render();
-        moveToPage.selectPath(folderName).render().selectOkButton();
+        moveToPage.selectPath(folderName).render().selectOkButton().render();
         ShareUser.logout(drone);
 
         ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
@@ -588,7 +588,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
         documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSiteName).render();
         CopyOrMoveContentPage moveToPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectMoveTo().render();
-        moveToPage.selectPath(folderName).render().selectOkButton();
+        moveToPage.selectPath(folderName).render().selectOkButton().render();
         ShareUser.logout(hybridDrone);
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
@@ -819,7 +819,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
 
         documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName).render();
         CopyOrMoveContentPage moveToPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectMoveTo().render();
-        moveToPage.selectPath(folderName).render().selectOkButton();
+        moveToPage.selectPath(folderName).render().selectOkButton().render();
         ShareUser.logout(drone);
 
         // TODO : TestLink: Please update the 2nd step accordingly.
@@ -929,7 +929,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
         documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSiteName).render();
         CopyOrMoveContentPage moveToPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectMoveTo().render();
-        moveToPage.selectPath(folderName).render().selectOkButton();
+        moveToPage.selectPath(folderName).render().selectOkButton().render();
         ShareUser.logout(hybridDrone);
         // TODO : TestLink: Please update the 2nd step accordingly.
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
@@ -1564,7 +1564,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
 
         documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName).render();
         CopyOrMoveContentPage moveToPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectMoveTo().render();
-        moveToPage.selectPath(folderName).render().selectOkButton();
+        moveToPage.selectPath(folderName).render().selectOkButton().render();
         ShareUser.logout(drone);
         // TODO : Please update 2nd step in TestLink as verifying in logs is not
         // present.
@@ -1681,7 +1681,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
         documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSiteName).render();
         CopyOrMoveContentPage moveToPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectMoveTo().render();
-        moveToPage.selectPath(folderName).render().selectOkButton();
+        moveToPage.selectPath(folderName).render().selectOkButton().render();
         ShareUser.logout(hybridDrone);
         // TODO : Please update 2nd step in TestLink as verifying in logs is not
         // present.
@@ -2357,7 +2357,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
 
         documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName).render();
         CopyOrMoveContentPage moveToPage = documentLibraryPage.getFileDirectoryInfo(fileName).selectMoveTo().render();
-        moveToPage.selectPath(folderName).render().selectOkButton();
+        moveToPage.selectPath(folderName).render().selectOkButton().render();
         ShareUser.logout(drone);
         // TODO : Please update 2nd step in TestLink as verifying in logs is not
         // present.

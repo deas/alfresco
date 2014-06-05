@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.alfresco.po.share.CustomiseUserDashboardPage;
 import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.testng.Assert;
@@ -67,7 +67,7 @@ public class ConfigureSavedSearchDialogBoxPageTest extends AbstractSiteDashletTe
     {
         customiseSiteDashBoard = siteDashBoard.getSiteNav().selectCustomizeDashboard();
         customiseSiteDashBoard.render();
-        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlet.SAVED_SEARCH, 1).render();
+        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlets.SAVED_SEARCH, 1).render();
         savedSearchDashlet = siteDashBoard.getDashlet(SAVED_SEARCH).render();
     }
 
@@ -137,7 +137,7 @@ public class ConfigureSavedSearchDialogBoxPageTest extends AbstractSiteDashletTe
         dashBoardPage = siteDashBoard.getNav().selectMyDashBoard().render();
         CustomiseUserDashboardPage customiseUserDashBoard = dashBoardPage.getNav().selectCustomizeUserDashboard();
         customiseUserDashBoard.render();
-        dashBoardPage = customiseUserDashBoard.addDashlet(Dashlet.SAVED_SEARCH, 1).render();
+        dashBoardPage = customiseUserDashBoard.addDashlet(Dashlets.SAVED_SEARCH, 1).render();
         savedSearchDashlet = dashBoardPage.getDashlet("saved-search").render();
 
         configureSavedSearchDialogBoxPage = savedSearchDashlet.clickOnEditButton().render();

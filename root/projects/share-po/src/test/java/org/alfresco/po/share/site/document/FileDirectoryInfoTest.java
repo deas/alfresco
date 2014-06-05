@@ -47,7 +47,6 @@ import org.testng.annotations.Test;
  * @since 1.6.1
  */
 @Listeners(FailedTestListener.class)
-@Test(groups="AceBug")
 public class FileDirectoryInfoTest extends AbstractDocumentTest
 {
     private final Log logger = LogFactory.getLog(this.getClass());
@@ -117,8 +116,8 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
      *
      * @throws Exception
      */
-    // @Test(groups={"alfresco-one"})
-    public void createData() throws Exception
+   
+    private void createData() throws Exception
     {
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
@@ -465,7 +464,7 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         Assert.assertNotNull(documentLibPage);
     }
     
-
+    
     @Test(groups = { "Hybrid" }, priority = 25)
     public void test125SelectSyncToCloud() throws Exception
     {
@@ -619,4 +618,11 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         Assert.assertNotNull(shareLinkPage);
         assertTrue(documentLibPage.getFileDirectoryInfo(file.getName()).isFileShared());
     }
+    @Test(enabled = true, groups = "alfresco-one", priority = 34)
+    public void testClickTitle()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        DocumentDetailsPage detailsPAge = documentLibPage.getFileDirectoryInfo(file.getName()).clickOnTitle().render();
+        Assert.assertTrue(detailsPAge.isDocumentDetailsPage());
+    }   
 }

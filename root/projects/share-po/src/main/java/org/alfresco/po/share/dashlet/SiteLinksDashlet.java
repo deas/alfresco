@@ -7,9 +7,12 @@ import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.*;
+
+import java.util.Collections;
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Page object to hold site links dashlet
@@ -23,8 +26,7 @@ public class SiteLinksDashlet extends AbstractDashlet implements Dashlet
     private static final By DASHLET_CONTAINER_PLACEHOLDER = By.cssSelector("div.dashlet.site-links");
     private static final By CREATE_LINK = By.cssSelector("a[href='links-linkedit']");
     private static final By LINK_DETAILS = By.cssSelector("div.actions>a.details");
-    @SuppressWarnings("unused")
-    private static final By LINKS_LIST =By.cssSelector("div.dashlet.site-links>div.scrollableList>div>div");
+    private static final By LINKS_LIST = By.cssSelector("div.dashlet.site-links>div.scrollableList div[class='link']>a");
 
     /**
      * Constructor.
@@ -32,7 +34,7 @@ public class SiteLinksDashlet extends AbstractDashlet implements Dashlet
     protected SiteLinksDashlet(WebDrone drone)
     {
         super(drone, DASHLET_CONTAINER_PLACEHOLDER);
-        setResizeHandle(By.cssSelector("div.dashlet.site-links .yui-resize-handle"));
+        setResizeHandle(By.cssSelector(".yui-resize-handle"));
     }
 
     @SuppressWarnings("unchecked")
@@ -103,14 +105,61 @@ public class SiteLinksDashlet extends AbstractDashlet implements Dashlet
         drone.mouseOver(drone.findAndWait(DASHLET_CONTAINER_PLACEHOLDER));
     }
 
+    private List<WebElement> getLinkElements()
+    {
+        try
+        {
+            return drone.findAndWaitForElements(LINKS_LIST);
+        }
+        catch (TimeoutException e)
+        {
+            return Collections.emptyList();
+        }
+        catch (StaleElementReferenceException e)
+        {
+            return getLinkElements();
+        }
+    }
+
+    /**
+     * Return links count displayed in dashlet.
+     *
+     * @return
+     */
+    public int getLinksCount()
+    {
+        return getLinkElements().size();
+    }
+
+    /**
+     * Return true if link 'linkName' displayed in dashlet
+     *
+     * @param linkName
+     * @return
+     */
+    public boolean isLinkDisplayed(String linkName)
+    {
+        checkNotNull(linkName);
+        List<WebElement> eventLinks = getLinkElements();
+        for (WebElement eventLink : eventLinks)
+        {
+            String linkText = eventLink.getText();
+            if (linkName.equals(linkText))
+            {
+                return eventLink.isDisplayed();
+            }
+        }
+        return false;
+    }
+
     /**
      * Method to create a link
+     *
      * @param name
      * @param url
      * @return
      */
-
-    public LinksDetailsPage createLink (String name, String url)
+    public LinksDetailsPage createLink(String name, String url)
     {
         drone.findAndWait(CREATE_LINK).click();
         LinksPage linksPage = new LinksPage(drone);
@@ -123,8 +172,7 @@ public class SiteLinksDashlet extends AbstractDashlet implements Dashlet
      *
      * @return boolean
      */
-
-    public boolean isDetailsLinkDisplayed ()
+    public boolean isDetailsLinkDisplayed()
     {
         try
         {
@@ -136,4 +184,5 @@ public class SiteLinksDashlet extends AbstractDashlet implements Dashlet
             return false;
         }
     }
+
 }

@@ -3439,7 +3439,7 @@ public class ManagePermissionTest extends AbstractAspectTests
         ShareUser.logout(drone);
     }
 
-    @Test(groups = "AlfrescoOne")
+    @Test(groups = "EnterpriseOnly")
     public void ALF_10790() throws Exception
     {
         String testName = getTestName();
@@ -3487,7 +3487,7 @@ public class ManagePermissionTest extends AbstractAspectTests
         // User1 logins.
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
 
-        docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docLibPage = ShareUser.openSiteDocumentLibraryFromSearch(drone, siteName);
 
         docLibPage = ((DocumentLibraryPage) docLibPage.selectFolder(folderName)).render();
         // TODO - Adding following assertion in testlink test step would be useful
@@ -3499,7 +3499,7 @@ public class ManagePermissionTest extends AbstractAspectTests
         ShareUser.login(drone, user, DEFAULT_PASSWORD);
 
         // Navigate to the site document library
-        docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docLibPage = ShareUser.openSiteDocumentLibraryFromSearch(drone, siteName);
 
         docLibPage.selectFolder(folderName).render();
 
@@ -3516,7 +3516,7 @@ public class ManagePermissionTest extends AbstractAspectTests
         // User1 logins.
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
 
-        docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docLibPage = ShareUser.openSiteDocumentLibraryFromSearch(drone, siteName);
 
         docLibPage = ((DocumentLibraryPage) docLibPage.selectFolder(folderName)).render();
         // TODO - Enable this step? as Edit properties will be available for both SiteManager and Collaborator
@@ -4249,7 +4249,7 @@ public class ManagePermissionTest extends AbstractAspectTests
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
 
-        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.openSitesDocumentLibrary(drone, siteNamePub);
+        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.openSiteDocumentLibraryFromSearch(drone, siteNamePub);
 
         Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isEditPropertiesLinkPresent());
         Assert.assertFalse(docLibPage.getFileDirectoryInfo(folderName).isCommentLinkPresent());
@@ -4318,7 +4318,7 @@ public class ManagePermissionTest extends AbstractAspectTests
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
 
-        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.openSitesDocumentLibrary(drone, siteNamePub);
+        DocumentLibraryPage docLibPage = (DocumentLibraryPage) ShareUser.openSiteDocumentLibraryFromSearch(drone, siteNamePub);
 
         Assert.assertFalse(docLibPage.getFileDirectoryInfo(fileName).isEditOfflineLinkPresent());
         Assert.assertFalse(docLibPage.getFileDirectoryInfo(fileName).isCommentLinkPresent());
@@ -4395,7 +4395,7 @@ public class ManagePermissionTest extends AbstractAspectTests
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
 
-        docLibPage = (DocumentLibraryPage) ShareUser.openSitesDocumentLibrary(drone, siteNamePub);
+        docLibPage = (DocumentLibraryPage) ShareUser.openSiteDocumentLibraryFromSearch(drone, siteNamePub);
 
         Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isEditPropertiesLinkPresent());
         Assert.assertTrue(docLibPage.getFileDirectoryInfo(folderName).isCommentLinkPresent());

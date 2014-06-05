@@ -45,7 +45,7 @@ public class NavigationBarTest extends AbstractTest
 {
     private SharePage page;    
     private String siteName;
-    @BeforeClass(groups={"alfresco-one"})
+    @BeforeClass(groups={"alfresco-one"}, alwaysRun=true)
     public void setup() throws Exception
     {
         siteName = String.format("test-%d-site-crud",System.currentTimeMillis());
@@ -145,7 +145,7 @@ public class NavigationBarTest extends AbstractTest
      * Note supported in cloud.
      * @throws Exception if error
      */
-    @Test(dependsOnMethods= "navigateToRepository",groups= "Enterprise-only")
+    @Test(dependsOnMethods= "navigateToRepository",groups= "Enterprise-only", enabled = false)
     public void advanceSearch() throws Exception
     {
     	AlfrescoVersion version = drone.getProperties().getVersion();
@@ -157,13 +157,13 @@ public class NavigationBarTest extends AbstractTest
         Assert.assertEquals(searchPage.getPageTitle(), "Advanced Search");
     }
 
-    @Test(dependsOnMethods = "advanceSearch", groups = {"Enterprise-only"}, expectedExceptions = UnsupportedOperationException.class)
+    @Test(dependsOnMethods = "advanceSearch", groups = {"Enterprise-only"}, expectedExceptions = UnsupportedOperationException.class, enabled = false)
     public void testSelectNetworkDropdownInEnterprise() throws Exception
     {
         page.getNav().selectNetworkDropdown();
     }
     
-    @Test(dependsOnMethods = "testSelectNetworkDropdownInEnterprise", groups = {"Enterprise-only"}, expectedExceptions = UnsupportedOperationException.class)
+    @Test(dependsOnMethods = "testSelectNetworkDropdownInEnterprise", groups = {"Enterprise-only"}, expectedExceptions = UnsupportedOperationException.class, enabled = false)
     public void testSelectNetworkInEnterprise() throws Exception
     {
         String strInvitedUser = username.substring(username.lastIndexOf("@") + 1, username.length());

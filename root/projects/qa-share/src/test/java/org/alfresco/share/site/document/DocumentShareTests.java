@@ -27,7 +27,6 @@ import java.io.File;
 
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.ShareLinkPage;
 import org.alfresco.po.share.site.document.ViewPublicLinkPage;

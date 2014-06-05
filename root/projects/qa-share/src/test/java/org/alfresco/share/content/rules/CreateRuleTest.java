@@ -187,8 +187,7 @@ public class CreateRuleTest extends AbstractUtils
 
         // Effectivity aspect is added
         List<DocumentAspect> aspects = Arrays.asList(DocumentAspect.EFFECTIVITY);
-        // TODO: Remove cast, use render in all tests
-        DocumentDetailsPage detailsPage = (DocumentDetailsPage) ShareUser.addAspects(drone, aspects);
+        DocumentDetailsPage detailsPage = ShareUser.addAspects(drone, aspects).render();
 
         // Open document details page and verify Effectivity is present in document's metadata
         Map<String, Object> properties = detailsPage.getProperties();
@@ -284,7 +283,8 @@ public class CreateRuleTest extends AbstractUtils
 
         // Templatable aspect is added
         List<DocumentAspect> aspects = Arrays.asList(DocumentAspect.TEMPLATABLE);
-        DocumentDetailsPage detailsPage = (DocumentDetailsPage) ShareUser.addAspects(drone, aspects);
+        DocumentDetailsPage detailsPage;
+        ShareUser.addAspects(drone, aspects).render();
 
         // Creating folder
         ShareUserSitePage.createFolder(drone, folderName, null);
@@ -372,7 +372,7 @@ public class CreateRuleTest extends AbstractUtils
 
         // Emailed aspect is added
         List<DocumentAspect> aspects = Arrays.asList(DocumentAspect.EMAILED);
-        DocumentDetailsPage detailsPage = (DocumentDetailsPage) ShareUser.addAspects(drone, aspects);
+        DocumentDetailsPage detailsPage = ShareUser.addAspects(drone, aspects).render();
 
         // Open document details page and verify category is present in document's metadata
         Map<String, Object> properties = detailsPage.getProperties();
@@ -469,7 +469,8 @@ public class CreateRuleTest extends AbstractUtils
 
         // Aliasable (Email) aspect is added
         List<DocumentAspect> aspects = Arrays.asList(DocumentAspect.ALIASABLE_EMAIL);
-        DocumentDetailsPage detailsPage = (DocumentDetailsPage) ShareUser.addAspects(drone, aspects);
+        DocumentDetailsPage detailsPage;
+        ShareUser.addAspects(drone, aspects).render();
 
         // Creating folder
         ShareUserSitePage.createFolder(drone, folderName, null);
@@ -557,7 +558,7 @@ public class CreateRuleTest extends AbstractUtils
 
         // Summarizable aspect is added
         List<DocumentAspect> aspects = Arrays.asList(DocumentAspect.SUMMARIZABLE);
-        DocumentDetailsPage detailsPage = (DocumentDetailsPage) ShareUser.addAspects(drone, aspects);
+        DocumentDetailsPage detailsPage = ShareUser.addAspects(drone, aspects).render();
 
         // Open document details page and verify category is present in document's metadata
         Map<String, Object> properties = detailsPage.getProperties();
@@ -653,7 +654,7 @@ public class CreateRuleTest extends AbstractUtils
 
         // Dublin Core aspect is added
         List<DocumentAspect> aspects = Arrays.asList(DocumentAspect.DUBLIN_CORE);
-        DocumentDetailsPage detailsPage = (DocumentDetailsPage) ShareUser.addAspects(drone, aspects);
+        DocumentDetailsPage detailsPage = ShareUser.addAspects(drone, aspects).render();
 
         // Open document details page and verify category is present in document's metadata
         Map<String, Object> properties = detailsPage.getProperties();
@@ -749,7 +750,7 @@ public class CreateRuleTest extends AbstractUtils
 
         // Complianceable aspect is added
         List<DocumentAspect> aspects = Arrays.asList(DocumentAspect.COMPLIANCEABLE);
-        DocumentDetailsPage detailsPage = (DocumentDetailsPage) ShareUser.addAspects(drone, aspects);
+        DocumentDetailsPage detailsPage = ShareUser.addAspects(drone, aspects).render();
 
         // Open document details page and verify category is present in document's metadata
         Map<String, Object> properties = detailsPage.getProperties();
@@ -845,7 +846,8 @@ public class CreateRuleTest extends AbstractUtils
 
         // Versionable aspect is added
         List<DocumentAspect> aspects = Arrays.asList(DocumentAspect.VERSIONABLE);
-        DocumentDetailsPage detailsPage = (DocumentDetailsPage) ShareUser.addAspects(drone, aspects);
+        DocumentDetailsPage detailsPage;
+        ShareUser.addAspects(drone, aspects).render();
 
         // Creating folder
         ShareUserSitePage.createFolder(drone, folderName, null);
@@ -932,7 +934,8 @@ public class CreateRuleTest extends AbstractUtils
 
         // Inline Editable aspect is added
         List<DocumentAspect> aspects = Arrays.asList(DocumentAspect.INLINE_EDITABLE);
-        DocumentDetailsPage detailsPage = (DocumentDetailsPage) ShareUser.addAspects(drone, aspects);
+        DocumentDetailsPage detailsPage;
+        ShareUser.addAspects(drone, aspects).render();
 
         // Creating folder
         ShareUserSitePage.createFolder(drone, folderName, null);
@@ -1019,7 +1022,8 @@ public class CreateRuleTest extends AbstractUtils
 
         // Taggeble aspect is added
         List<DocumentAspect> aspects = Arrays.asList(DocumentAspect.TAGGABLE);
-        DocumentDetailsPage detailsPage = (DocumentDetailsPage) ShareUser.addAspects(drone, aspects);
+        DocumentDetailsPage detailsPage;
+        ShareUser.addAspects(drone, aspects).render();
 
         // Creating folder
         ShareUserSitePage.createFolder(drone, folderName, null);
@@ -1106,7 +1110,7 @@ public class CreateRuleTest extends AbstractUtils
 
         // EXIF aspect is added
         List<DocumentAspect> aspects = Arrays.asList(DocumentAspect.EXIF);
-        DocumentDetailsPage detailsPage = (DocumentDetailsPage) ShareUser.addAspects(drone, aspects);
+        DocumentDetailsPage detailsPage = ShareUser.addAspects(drone, aspects).render();
 
         // Open document details page and verify category is present in document's metadata
         Map<String, Object> properties = detailsPage.getProperties();
@@ -1202,7 +1206,7 @@ public class CreateRuleTest extends AbstractUtils
 
         // Geographic aspect is added
         List<DocumentAspect> aspects = Arrays.asList(DocumentAspect.GEOGRAPHIC);
-        DocumentDetailsPage detailsPage = (DocumentDetailsPage) ShareUser.addAspects(drone, aspects);
+        DocumentDetailsPage detailsPage = ShareUser.addAspects(drone, aspects).render();
 
         // Open document details page and verify category is present in document's metadata
         Map<String, Object> properties = detailsPage.getProperties();
@@ -1789,7 +1793,8 @@ public class CreateRuleTest extends AbstractUtils
         // Create Site
         ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        DocumentLibraryPage docLibPage;
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         // Creating folder
         ShareUserSitePage.createFolder(drone, folderName, null);

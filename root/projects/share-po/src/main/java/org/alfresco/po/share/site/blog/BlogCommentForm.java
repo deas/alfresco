@@ -17,7 +17,7 @@ import org.openqa.selenium.WebElement;
  *
  * @author Marina.Nenadovets
  */
-
+@SuppressWarnings("unused")
 public class BlogCommentForm extends SharePage
 {
     private Log logger = LogFactory.getLog(this.getClass());
@@ -38,6 +38,7 @@ public class BlogCommentForm extends SharePage
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public BlogCommentForm render()
     {
         return render(new RenderTime(maxPageLoadingTime));

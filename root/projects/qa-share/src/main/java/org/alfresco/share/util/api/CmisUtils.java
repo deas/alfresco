@@ -61,8 +61,8 @@ public class CmisUtils extends PublicAPIAbstract
 
     /**
      * Creates a CMIS session using the publicApiClient
-     * 
-     * @param {@link CMISBindin} CMIS binding and Version
+     *
+     * @param {@link   CMISBindin} CMIS binding and Version
      * @param authUser
      * @param domain
      */
@@ -73,22 +73,22 @@ public class CmisUtils extends PublicAPIAbstract
 
         switch (cmisBinding)
         {
-        case ATOMPUB10:
-            cmisSession = publicApiClient.createPublicApiCMISSession(Binding.atom, "1.0");
-            logger.info("Binding: atom 1.0");
-            break;
-        case ATOMPUB11:
-            cmisSession = publicApiClient.createPublicApiCMISSession(Binding.atom, "1.1");
-            logger.info("Binding: atom 1.1");
-            break;
-        case BROWSER11:
-            cmisSession = publicApiClient.createPublicApiCMISSession(Binding.browser, "1.1");
-            logger.info("Binding: browser 1.1");
-            break;
-        default:
-            // cmisSession =
-            // publicApiClient.createPublicApiCMISSession(Binding.atom, "1.0");
-            logger.info("Binding: Not specified");
+            case ATOMPUB10:
+                cmisSession = publicApiClient.createPublicApiCMISSession(Binding.atom, "1.0");
+                logger.info("Binding: atom 1.0");
+                break;
+            case ATOMPUB11:
+                cmisSession = publicApiClient.createPublicApiCMISSession(Binding.atom, "1.1");
+                logger.info("Binding: atom 1.1");
+                break;
+            case BROWSER11:
+                cmisSession = publicApiClient.createPublicApiCMISSession(Binding.browser, "1.1");
+                logger.info("Binding: browser 1.1");
+                break;
+            default:
+                // cmisSession =
+                // publicApiClient.createPublicApiCMISSession(Binding.atom, "1.0");
+                logger.info("Binding: Not specified");
         }
 
         return cmisSession;
@@ -96,9 +96,8 @@ public class CmisUtils extends PublicAPIAbstract
 
     /**
      * Creates a folder using CMIS
-     * 
-     * @param cmisBinding
-     *            {@link CMISBinding} CMIS binding and Version
+     *
+     * @param cmisBinding      {@link CMISBinding} CMIS binding and Version
      * @param authUser
      * @param forUser
      * @param domain
@@ -125,9 +124,8 @@ public class CmisUtils extends PublicAPIAbstract
 
     /**
      * Creates a Document using CMIS
-     * 
-     * @param cmisBinding
-     *            {@link CMISBinding} CMIS binding and Version
+     *
+     * @param cmisBinding      {@link CMISBinding} CMIS binding and Version
      * @param authUser
      * @param forUser
      * @param domain
@@ -162,9 +160,8 @@ public class CmisUtils extends PublicAPIAbstract
 
     /**
      * Creates a Document using CMIS from folder node ref
-     * 
-     * @param cmisBinding
-     *            {@link CMISBinding} CMIS binding and Version
+     *
+     * @param cmisBinding     {@link CMISBinding} CMIS binding and Version
      * @param authUser
      * @param fileName
      * @param domain
@@ -201,9 +198,8 @@ public class CmisUtils extends PublicAPIAbstract
 
     /**
      * Creates a Document using CMIS from source.
-     * 
-     * @param cmisBinding
-     *            {@link CMISBinding} CMIS binding and Version
+     *
+     * @param cmisBinding     {@link CMISBinding} CMIS binding and Version
      * @param authUser
      * @param fileName
      * @param domain
@@ -229,9 +225,8 @@ public class CmisUtils extends PublicAPIAbstract
 
     /**
      * Creates a Document using CMIS
-     * 
-     * @param cmisBinding
-     *            {@link CMISBinding} CMIS binding and Version
+     *
+     * @param cmisBinding    {@link CMISBinding} CMIS binding and Version
      * @param authUser
      * @param forUser
      * @param domain
@@ -371,7 +366,7 @@ public class CmisUtils extends PublicAPIAbstract
 
     /**
      * Method to add aspect
-     * 
+     *
      * @param cmisBinding
      * @param userName
      * @param domain
@@ -405,7 +400,7 @@ public class CmisUtils extends PublicAPIAbstract
 
     /**
      * Method to add aspect
-     * 
+     *
      * @param cmisBinding
      * @param userName
      * @param domain
@@ -438,8 +433,42 @@ public class CmisUtils extends PublicAPIAbstract
     }
 
     /**
+     * Method to add aspect using SecondaryTypeID's
+     *
+     * @param cmisBinding
+     * @param userName
+     * @param domain
+     * @param secondaryTypeIDList
+     * @param documentNodeRef
+     */
+    public void removeAspect(CMISBinding cmisBinding, String userName, String domain, List<String> secondaryTypeIDList, String documentNodeRef)
+    {
+        CmisSession cmisSession = getCmisSession(cmisBinding, userName, domain);
+
+        CmisObject content = cmisSession.getObject(documentNodeRef);
+
+        List<SecondaryType> secondaryTypesList = content.getSecondaryTypes();
+        List<String> secondaryTypes = new ArrayList<String>();
+
+        for (SecondaryType secondaryType : secondaryTypesList)
+        {
+            secondaryTypes.add(secondaryType.getId());
+        }
+        for (String id : secondaryTypeIDList)
+        {
+            secondaryTypes.remove(id);
+        }
+
+        Map<String, Object> properties = new HashMap<String, Object>();
+        {
+            properties.put(PropertyIds.SECONDARY_OBJECT_TYPE_IDS, secondaryTypes);
+        }
+        content.updateProperties(properties);
+    }
+
+    /**
      * Method to add properties
-     * 
+     *
      * @param cmisBinding
      * @param userName
      * @param domain
@@ -456,20 +485,20 @@ public class CmisUtils extends PublicAPIAbstract
     }
 
     /**
-     * Method to get Folder Properties
-     * 
+     * Method to get Cmis object Properties
+     *
      * @param cmisBinding
      * @param userName
      * @param domain
-     * @param folderNodeRef
+     * @param nodeRef
      */
-    public List<Property<?>> getFolderProperties(CMISBinding cmisBinding, String userName, String domain, String folderNodeRef)
+    public List<Property<?>> getProperties(CMISBinding cmisBinding, String userName, String domain, String nodeRef)
     {
         CmisSession cmisSession = getCmisSession(cmisBinding, userName, domain);
 
-        Folder folder = (Folder) cmisSession.getObject(folderNodeRef);
+        CmisObject content = cmisSession.getObject(nodeRef);
 
-        return folder.getProperties();
+        return content.getProperties();
     }
 
     /**
@@ -487,7 +516,7 @@ public class CmisUtils extends PublicAPIAbstract
 
     /**
      * Method to get Content Node ref.
-     * 
+     *
      * @param cmisBinding
      * @param authUser
      * @param domain
@@ -516,6 +545,58 @@ public class CmisUtils extends PublicAPIAbstract
             }
         }
         throw new UnsupportedOperationException("Unable to find the document node ref");
+    }
+
+    /**
+     * Method to get Object ID of a content item.
+     *
+     * @param cmisBinding
+     * @param authUser
+     * @param domain
+     * @param siteName
+     * @param parentForlderPath
+     * @param ContentName
+     * @return
+     */
+    public String getObjectID(CMISBinding cmisBinding, String authUser, String domain, String siteName, String parentForlderPath, String ContentName)
+    {
+        CmisSession cmisSession = getCmisSession(cmisBinding, authUser, domain);
+
+        Folder documentLibrary = (Folder) cmisSession.getObjectByPath("/Sites/" + siteName + "/documentLibrary/" + parentForlderPath);
+        ItemIterable<CmisObject> allContent = documentLibrary.getChildren();
+        for (CmisObject content : allContent)
+        {
+            if (content.getName().equalsIgnoreCase(ContentName))
+            {
+                String objectID = content.getId();
+                logger.info("Object ID: " + objectID);
+                return objectID;
+            }
+        }
+        throw new UnsupportedOperationException("Unable to find the objectID");
+    }
+
+    /**
+     * Method to get Tag Node ref.
+     *
+     * @param cmisBinding
+     * @param authUser
+     * @param domain
+     * @param nodeRef
+     * @return
+     */
+    public String getTagNodeRef(CMISBinding cmisBinding, String authUser, String domain, String nodeRef)
+    {
+        List<Property<?>> properties = getProperties(cmisBinding, authUser, domain, nodeRef);
+
+        for(Property property: properties)
+        {
+            if(property.getDisplayName().equals("Tags"))
+            {
+                return property.getValueAsString();
+            }
+        }
+        throw new UnsupportedOperationException("Unable to find Tag Node ref");
     }
 
     /**

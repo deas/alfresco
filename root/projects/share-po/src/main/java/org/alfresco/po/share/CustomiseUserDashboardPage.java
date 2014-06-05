@@ -17,7 +17,7 @@ package org.alfresco.po.share;
 
 import java.util.List;
 
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.site.SiteLayout;
 import org.alfresco.webdrone.RenderTime;
@@ -193,7 +193,7 @@ public class CustomiseUserDashboardPage extends SharePage
      * @param columnNumber
      * @return {@link SiteDashboardPage}
      */
-    public DashBoardPage addDashlet(Dashlet dashletName, int columnNumber)
+    public DashBoardPage addDashlet(Dashlets dashletName, int columnNumber)
     {
         if (dashletName == null)
         {

@@ -321,186 +321,6 @@ public class FilmStripDocLibTest extends AbstractUtils
         assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
     }
 
-    /**
-     * DataPreparation method - ALF-14197
-     * <ul>
-     * <li>Login</li>
-     * <li>Create User</li>
-     * <li>Create Site</li>
-     * </ul>
-     * 
-     * @throws Exception
-     */
-    @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14197() throws Exception
-    {
-        String testName = getTestName();
-        String siteName = getSiteName(testName);
-        String testUser = getUserNameFreeDomain(testName);
-        String fileName1 = getFileName(testName + "1");
-        String folderName = getFolderName(testName);
-
-        // User
-        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, new String[] { testUser });
-
-        // User login
-        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
-
-        // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-
-        // Upload FIles
-        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-        ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
-        ShareUser.logout(customDrone);
-
-    }
-
-    @Test(groups = { "AlfrescoOne", "NonGrid" })
-    public void ALF_14197() throws Exception
-    {
-        /** Start Test */
-        String testName = getTestName();
-        String folderName = getFolderName(testName);
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        String fileName1 = getFileName(testName + "1");
-
-        // User login.
-        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
-
-        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
-
-        // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
-
-        // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
-
-        // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
-
-        // Verify that only thumbnails of items are displayed without metadata;
-        // Gets the list of visible files from thumbnails.
-        assertFalse(docLibPage.getFiles().isEmpty(), docLibPage.getFiles().toString());
-
-        // No metadata is displayed, only thumbnails of items are displayed;
-        FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
-        assertFalse(folderInfo.isVersionVisible());
-        assertFalse(folderInfo.isInfoPopUpDisplayed());
-
-        // Click the "Info" icon on the top right corner of the panel;
-        FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
-
-        // Item Name with version
-        assertTrue(fileInfo.getContentEditInfo().contains(testUser), fileInfo.getContentEditInfo() + " should contain " + testUser);
-
-        // Download icon
-        fileInfo.selectDownload();
-
-        // View in browser icon
-        fileInfo.clickInfoIcon();
-        fileInfo.selectMoreLink();
-        assertTrue(fileInfo.isViewInBrowserVisible());
-
-        // Edit Properties icon
-        // + More... menu
-        fileInfo.clickInfoIcon();
-        fileInfo.selectMoreLink();
-        assertTrue(fileInfo.isEditPropertiesLinkPresent());
-
-        // Date created/modified and author
-        // Size
-        // Description
-        assertTrue(fileInfo.getDescription().contains(testUser), fileInfo.getDescription() + " should contain " + testUser);
-
-        // Tags
-        fileInfo.addTag(testName.toLowerCase());
-        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
-        assertTrue(fileInfo.getTags().contains(testName.toLowerCase()), fileInfo.getTags() + " should contain " + testName);
-
-        // Favorite icon and label
-        fileInfo.selectFavourite();
-
-        // Like icon and label
-        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
-        fileInfo.selectLike();
-
-        // Comment icon and label
-        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
-        fileInfo.clickInfoIcon();
-        fileInfo.selectMoreLink();
-        assertTrue(fileInfo.isCommentLinkPresent(), "comment link should be visible");
-
-        // QuickShare icon
-        fileInfo.clickInfoIcon();
-        fileInfo.selectMoreLink();
-        assertTrue(fileInfo.isShareLinkVisible(), "share link should be visible");
-    }
-
-    /**
-     * DataPreparation method - ALF-14198
-     * <ul>
-     * <li>Login</li>
-     * <li>Create User</li>
-     * <li>Create Site</li>
-     * </ul>
-     * 
-     * @throws Exception
-     */
-    @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14198() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        String[] testUserInfo = new String[] { testUser };
-        String fileName1 = getFileName(testName);
-        String folderName = getFolderName(testName);
-
-        // User
-        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
-
-        // User login
-        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
-
-        // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-
-        // Upload FIles
-        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
-        ShareUser.createFolderInFolder(customDrone, folderName, folderName, DOCLIB_CONTAINER);
-        ShareUser.logout(customDrone);
-    }
-
-    /**
-     * TODO - Need to implement video player.
-     * 
-     * @throws Exception
-     */
-    @Test(groups = "AlfrescoOne")
-    public void ALF_14198() throws Exception
-    {
-        /** Start Test */
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-
-        // User login.
-        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
-
-        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
-
-        // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
-
-        // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
-
-        // Verify the ability to play the video file and control the player;
-
-        assertEquals(true, true);
-    }
 
     /**
      * DataPreparation method - ALF-14199
@@ -659,6 +479,8 @@ public class FilmStripDocLibTest extends AbstractUtils
         // Step 4
         fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         fileInfo.clickOnTagRemoveButton(tagName0);
+        List<String> tags = fileInfo.getTags();
+        assertFalse(tags.contains(tagName0), tags + " should contain " + testName);
 
         // Tags added step 5
         String tagName2 = "tag2";
@@ -669,7 +491,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
         fileInfo.clickOnTagCancelButton();
         fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
-        List<String> tags = fileInfo.getTags();
+        tags = fileInfo.getTags();
         assertFalse(tags.contains(tagName2), tags + " should contain " + testName);
         assertTrue(tags.contains(tagName0), tags + " should contain " + testName);
         assertTrue(tags.contains(tagName1), tags + " should contain " + testName);
@@ -747,7 +569,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
         String tagName0 = "tag0"+ folderName.substring(folderName.length() -5, folderName.length() -1);
-        String tagName1 = "tag1"+ folderName.substring(folderName.length() -5, folderName.length() -1);
+        String tagName1 = "tag1"+ folderName.substring(folderName.length() -5, folderName.length() -2);
         folderInfo.addTag(tagName0);
 
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
@@ -764,15 +586,17 @@ public class FilmStripDocLibTest extends AbstractUtils
         folderInfo.clickOnTagCancelButton();
 
         // Step 4, 5 and 6
-        String tagName2 = "tag2"+ folderName.substring(folderName.length() -5, folderName.length() -1);
+        String tagName2 = "tag2"+ folderName.substring(folderName.length() -5, folderName.length() -3);
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
         folderInfo.clickOnAddTag();
         folderInfo.clickOnTagRemoveButton(tagName0);
+        assertFalse(folderInfo.getTags().contains(tagName0), "Taglist - '" + folderInfo.getTags() + "' should contain - " + tagName0);
         folderInfo.enterTagString(tagName2);
+     
         folderInfo.clickOnTagCancelButton();
         assertTrue(folderInfo.getTags().contains(tagName0), "Taglist - '" + folderInfo.getTags() + "' should contain - " + tagName0);
         assertTrue(folderInfo.getTags().contains(tagName1), "Taglist - '" + folderInfo.getTags() + "' should contain - " + tagName1);
-        assertFalse(folderInfo.getTags().contains(tagName2), "Taglist - '" + folderInfo.getTags() + "' should not contain - " + tagName0);
+        assertFalse(folderInfo.getTags().contains(tagName2), "Taglist - '" + folderInfo.getTags() + "' should not contain - " + tagName2);
 
         // step 7
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
@@ -1517,21 +1341,6 @@ public class FilmStripDocLibTest extends AbstractUtils
 
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
-        // Click on the document's Info panel icon;
-        folderInfo.clickInfoIcon();
-        // Info Panel is displayed for the document;
-        assertTrue(folderInfo.isInfoPopUpDisplayed());
-
-        if (!isAlfrescoVersionCloud(customDrone))
-        {
-            folderInfo = docLibPage.getFileDirectoryInfo(folderName);
-
-            // Click the "Download as Zip" action (only for Ent.); //Step 2
-            folderInfo.selectDownloadFolderAsZip();
-            docLibPage.waitForFile(downloadDirectory + folderName + ".zip");
-        }
-
-        folderInfo = docLibPage.getFileDirectoryInfo(folderName);
         // Return to the folder's Info panel and click the "View Details" action;
         FolderDetailsPage folderDetailsPage = folderInfo.selectViewFolderDetails().render();
         assertTrue(folderDetailsPage.isDetailsPage("folder"));
@@ -1546,10 +1355,8 @@ public class FilmStripDocLibTest extends AbstractUtils
         docLibPage = propDialog.selectCancel().render();
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
-        // folder is downloaded checking here as folder gets time to download //Step 2 assert.
-        assertTrue(ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory).contains(folderName + ".zip"));
-
         // Return to the document's Info panel and click the "Copy to..." action;
+        folderInfo = docLibPage.getFileDirectoryInfo(folderName);
         CopyOrMoveContentPage copyToForm = folderInfo.selectCopyTo().render();
         // "Copy %itemname% to..." form is opened;
         assertEquals(copyToForm.getDialogTitle(), "Copy " + folderName + " to...");
@@ -1586,6 +1393,25 @@ public class FilmStripDocLibTest extends AbstractUtils
         assertNotNull(page);
         // Rules page is opened;
         assertTrue(page.isPageCorrect(folderName));
+        
+        docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
+        folderInfo = docLibPage.getFileDirectoryInfo(folderName);
+
+        // Click on the document's Info panel icon;
+        folderInfo.clickInfoIcon();
+        // Info Panel is displayed for the document;
+        assertTrue(folderInfo.isInfoPopUpDisplayed());
+
+        if (!isAlfrescoVersionCloud(customDrone))
+        {
+            folderInfo = docLibPage.getFileDirectoryInfo(folderName);
+
+            // Click the "Download as Zip" action (only for Ent.); //Step 2
+            folderInfo.selectDownloadFolderAsZip();
+            docLibPage.waitForFile(downloadDirectory + folderName + ".zip");
+        }
+        // folder is downloaded checking here as folder gets time to download //Step 2 assert.
+        assertTrue(ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory).contains(folderName + ".zip"));
     }
 
     /**
@@ -1757,67 +1583,4 @@ public class FilmStripDocLibTest extends AbstractUtils
         docLibPage = docLibPage.getNavigation().selectMediaView().render();
         assertEquals(docLibPage.getViewType(), ViewType.MEDIA_VIEW);
     }
-
-    /**
-     * DataPreparation method - ALF-14234
-     * <ul>
-     * <li>Login</li>
-     * <li>Create User</li>
-     * <li>Create Site</li>
-     * </ul>
-     * 
-     * @throws Exception
-     */
-    @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14234() throws Exception
-    {
-        String testName = getTestName();
-        String siteName = getSiteName(testName);
-        String testUser = getUserNameFreeDomain(testName);
-
-        // User
-        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUser);
-
-        // User login
-        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
-
-        // Site creation
-        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-
-        ShareUser.logout(customDrone);
-
-    }
-
-    // Waiting for webdrone implementation of checking icons.
-    @Test(groups = "AlfrescoOne", enabled = false)
-    public void ALF_14234() throws Exception
-    {
-        /** Start Test */
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        String folderName = getFolderName(testName);
-        // String fileName1 = getFileName(testName + "1");
-        // String fileName2 = getFileName(testName + "2");
-
-        // User login.
-        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
-
-        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(customDrone, siteName);
-
-        // Expand the "Options" menu and click the "Filmstrip View" button;
-        docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
-
-        // The view is changed to Filmstrip mode;
-        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
-
-        FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
-
-        folderInfo.selectThumbnail();
-
-        // We are checking this using the class folder which creates the folder icon.
-        assertTrue(folderInfo.isFolder());
-
-    }
-
 }

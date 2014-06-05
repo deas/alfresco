@@ -44,6 +44,11 @@ public enum SitePageType
         return By.xpath(id);
     }
 
+    public String getXpath()
+    {
+        return id;
+    }
+
     public String getDisplayText()
     {
         return text;

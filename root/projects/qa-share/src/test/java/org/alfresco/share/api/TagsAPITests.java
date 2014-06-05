@@ -64,6 +64,7 @@ public class TagsAPITests extends TagsAPI
     private String tagName;
     @SuppressWarnings("unused")
     private static Log logger = LogFactory.getLog(TagsAPITests.class);
+    private String tag13;
 
     @Override
     @BeforeClass(alwaysRun = true)
@@ -90,7 +91,9 @@ public class TagsAPITests extends TagsAPI
         ShareUserSitePage.addTagsFromDocLib(drone, fileName, Arrays.asList(siteName));
 
         ShareUser.uploadFileInFolder(drone, new String[] { fileName2 });
-        ShareUserSitePage.addTagsFromDocLib(drone, fileName2, Arrays.asList("TAG12", "TAG13"));
+        tag13 = "TAG13";
+        ShareUserSitePage.addTagsFromDocLib(drone, fileName2, Arrays.asList("TAG12", tag13));
+
     }
 
     @Test
@@ -355,6 +358,16 @@ public class TagsAPITests extends TagsAPI
     @Test
     public void ALF_221801() throws Exception
     {
+
+        // Check on Share UI: that the tag is updated
+        ShareUser.login(drone, testUser);
+
+        doclibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        // Verify Tag Value changed successfully
+        ShareUserSitePage.clickOnTagNameInTreeMenu(drone, tag13).render();
+
+        ShareUserSitePage.getDocLibInfoWithRetry(drone, fileName2, "isContentVisible", "", true);
 
         Map<String, String> param = new HashMap<String, String>();
         param.put("maxItems", "2147483647");

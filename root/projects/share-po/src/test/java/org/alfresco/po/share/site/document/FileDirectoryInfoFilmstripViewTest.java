@@ -804,6 +804,13 @@ public class FileDirectoryInfoFilmstripViewTest extends AbstractDocumentTest
         
         Assert.assertTrue(documentLibPage.isFileVisible(folderName));
     }
+    
+    @Test(enabled = true, groups = "alfresco-one", priority = 48)
+    public void testClickTitle()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        documentLibPage.getFileDirectoryInfo(folderName).clickOnTitle().render();
+    }
 
 
 }

@@ -29,12 +29,66 @@
     </test>
     <test name="GalleryViewTests" verbose="1" parallel="classes" thread-count="1">
         <classes>
-            <class name="org.alfresco.share.site.document.GalleryViewTest" />
+            <class name="org.alfresco.share.site.document.GalleryViewTest" >
+            <methods>
+                    <include name="ALF_8751" />
+                    <include name="ALF_8745" />
+                    <include name="ALF_8664" />
+                    <include name="ALF_8734" />
+                    <include name="ALF_14399" />
+                </methods>
+            </class>
         </classes>
     </test>
     <test name="FilmStripTests" verbose="1" parallel="classes" thread-count="1">
         <classes>
-            <class name="org.alfresco.share.site.document.FilmStripDocLibTest" />
+            <class name="org.alfresco.share.site.document.FilmStripDocLibTest" >
+              <methods>
+                    <include name="ALF_14197" />
+                    <include name="ALF_14200" />
+                    <include name="ALF_14210" />
+                    <include name="ALF_14214" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+    <test name="Sanity Shared Files Tests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.SharedFilesTest">
+                <methods>
+                    <include name="ALF_3063" />
+                    <include name="ALF_3064" />
+                    <include name="ALF_3065" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Sanity Bulk Import Tests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.repository.bulkimport.BulkImportTest" />
+        </classes>
+    </test>
+   <test name="Sanity Document Library Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.DocLibTest">
+                <methods>
+                    <include name="ALF_3057" />
+                    <include name="ALF_3058" />
+                    <include name="ALF_3059" />
+                    <include name="ALF_3100" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Site Notification Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.user.SiteNotificationsTest">
+                <methods>
+                    <include name="ALF_15251" />
+                </methods>
+            </class>
         </classes>
     </test>
 </suite>

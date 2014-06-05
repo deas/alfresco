@@ -14,17 +14,15 @@
  */
 package org.alfresco.po.share.site;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.exception.ShareException;
-import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
@@ -35,6 +33,8 @@ import org.openqa.selenium.WebElement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * @author nshah
@@ -184,11 +184,11 @@ public class SiteGroupsPage extends SharePage
         }
         try
         {
-            WebElement groupRoleSearchTextBox = drone.find(SEARCH_GROUP_ROLE_TEXT);
+            WebElement groupRoleSearchTextBox = drone.findAndWait(SEARCH_GROUP_ROLE_TEXT);
             groupRoleSearchTextBox.clear();
             groupRoleSearchTextBox.sendKeys(groupName);
 
-            WebElement searchButton = drone.find(SEARCH_GROUP_ROLE_BUTTON);
+            WebElement searchButton = drone.findAndWait(SEARCH_GROUP_ROLE_BUTTON);
             searchButton.click();
             List<WebElement> list = drone.findAndWaitForElements(LIST_OF_GROUPS, WAIT_TIME_3000);
             List<String> groupNamesList = new ArrayList<String>();
@@ -286,6 +286,12 @@ public class SiteGroupsPage extends SharePage
         throw new PageException("Unable to find the rolename.");
     }
 
+    /**
+     * Method to verify whether assign role drop down is available
+     *
+     * @param groupName
+     * @return true if displayed
+     */
     public boolean isAssignRolePresent (String groupName)
     {
         String name = groupName.trim();
@@ -297,6 +303,60 @@ public class SiteGroupsPage extends SharePage
         {
             throw new ShareException("The operation has timed out");
         }
+    }
+
+    /**
+     * Method to verify whether remove button is present
+     *
+     * @param groupName
+     * @return true if displayed
+     */
+    public boolean isRemoveButtonPresent(String groupName)
+    {
+        String name = groupName.trim();
+        try
+        {
+            return drone.isElementDisplayed(By.cssSelector(String.format("span[id$='button-GROUP_%s']>span>span>button", name)));
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("The operation has timed out");
+        }
+    }
+
+    /**
+     * Method to remove given group from Site.
+     *
+     * @param groupName
+     */
+    public SiteGroupsPage removeGroup(String groupName)
+    {
+        if (StringUtils.isEmpty(groupName))
+        {
+            throw new IllegalArgumentException("User Name is required.");
+        }
+
+        if (alfrescoVersion.isCloud())
+        {
+            groupName = groupName.toLowerCase();
+        }
+
+        try
+        {
+            WebElement element = drone.findAndWait(By.cssSelector("span[id$='_default-button-GROUP_" + groupName + "']>span>span>button"));
+            String id = element.getAttribute("id");
+            element.click();
+            drone.waitUntilElementDeletedFromDom(By.id(id), maxPageLoadingTime);
+            return new SiteGroupsPage(getDrone());
+        }
+        catch (TimeoutException e)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Group: \"" + groupName + "\" can not be found in groups list.", e);
+            }
+        }
+        throw new PageException("Group: \"" + groupName + "\" can not be found in groups list.");
     }
 
     protected AlfrescoVersion getAlfrescoVersion()

@@ -382,6 +382,7 @@ public abstract class AbstractCloudSyncTest extends AbstractUtils
                 t.start();
                 try
                 {
+                    logger.info("NodeRef for File being checked: " + ShareUserSitePage.getFileDirectoryInfo(driver, fileName).getNodeRef());
                     syncInfoPage = docLibPage.getFileDirectoryInfo(fileName).clickOnViewCloudSyncInfo().render();
                     status = syncInfoPage.getCloudSyncStatus();
                     syncInfoPage.clickOnCloseButton();
@@ -391,11 +392,8 @@ public abstract class AbstractCloudSyncTest extends AbstractUtils
                     if (status.contains("Pending"))
                     {
                         webDriverWait(driver, 1000);
-                        // Changing to drone.refresh so that it runs from
-                        // RepositoryPage too
-                        // docLibPage = ShareUser.openDocumentLibrary(driver);
-                        driver.refresh();
-                        docLibPage = driver.getCurrentPage().render();
+                        // Expected to work for RepoPage too
+                        docLibPage = refreshSharePage(driver).render();
                         docLibPage = docLibPage.renderItem(maxWaitTime, fileName).render();
                     }
                     else
@@ -545,8 +543,7 @@ public abstract class AbstractCloudSyncTest extends AbstractUtils
                     if (!newVersion.equals(expectedVersion))
                     {
                         webDriverWait(driver, 1000);
-                        driver.refresh();
-                        docDetailPage.render();
+                        docDetailPage = refreshSharePage(driver).render();
                         results = false;
 
                     }
@@ -599,8 +596,7 @@ public abstract class AbstractCloudSyncTest extends AbstractUtils
                     if (!expectedDescription.equals(actualDescription))
                     {
                         webDriverWait(driver, 1000);
-                        driver.refresh();
-                        docLibPage.render();
+                        docLibPage = refreshSharePage(driver).render();
                     }
                     else
                     {

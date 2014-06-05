@@ -14,11 +14,6 @@
  */
 package org.alfresco.po.share.site;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import java.util.List;
-
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.Dashboard;
 import org.alfresco.po.share.FactorySharePage;
@@ -28,17 +23,17 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
-import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+
+import java.util.List;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Site dashboard page object, holds all element of the HTML page relating to
  * share's site dashboard page.
- * 
+ *
  * @author Michael Suzuki
  * @since 1.0
  */
@@ -48,10 +43,12 @@ public class SiteDashboardPage extends SitePage implements Dashboard
     private static final String PROJECT_WIKI_ID = "#HEADER_SITE_WIKI-PAGE_text";
     private static final String WELCOME_DASHLET = "div.dashlet.dynamic-welcome";
     private String clickableElements;
-    private static final By CONFIGURE_SEARCH_DIALOG_BOX = By
-            .cssSelector("div[id$='default-configDialog-configDialog_c'][style*='visibility: visible']>div[id$='_default-configDialog-configDialog']");
+    private static final By CONFIGURE_SEARCH_DIALOG_BOX = By.cssSelector("div[id$='default-configDialog-configDialog_c'][style*='visibility: visible']>div[id$='_default-configDialog-configDialog']");
     private static final By DASHLET_HELP_BALLOON = By.cssSelector("div[style*='visible']>div>div.balloon");
     private static final By HELP_ICON = By.cssSelector("div[class$='titleBarActionIcon help']");
+    private static final By MORE_PAGES_BUTTON = By.cssSelector("#HEADER_SITE_MORE_PAGES");
+    private static final By PAGES_LINKS = By.xpath("//div[@id='HEADER_NAVIGATION_MENU_BAR']//a");
+
     /**
      * Constructor
      */
@@ -76,7 +73,6 @@ public class SiteDashboardPage extends SitePage implements Dashboard
                     {
                         getDashlet("site-members").render(timer);
                         getDashlet("site-contents").render(timer);
-                        getDashlet("site-activities").render(timer);
                     }
                     catch (PageException pe)
                     {
@@ -113,7 +109,7 @@ public class SiteDashboardPage extends SitePage implements Dashboard
     /**
      * Verify if we are on site dashboard page and the site profile dashlet is
      * displayed.
-     * 
+     *
      * @return true if site profile is visible
      */
     public boolean siteProfileDisplayed()
@@ -137,9 +133,8 @@ public class SiteDashboardPage extends SitePage implements Dashboard
 
     /**
      * Gets dashlets in the dashboard page.
-     * 
-     * @param name
-     *            String title of dashlet
+     *
+     * @param name String title of dashlet
      * @return HtmlPage page object
      * @throws Exception
      */
@@ -153,12 +148,11 @@ public class SiteDashboardPage extends SitePage implements Dashboard
      * Return page based on name of the Dash clickable element passed.
      * This method is as of now only direct to Wiki page for other pages enums
      * with returning css selector to be added.
-     * 
-     * @example: For Sample Site if you want to navigate to wiki page pass @Project
-     *           Wiki@
+     *
      * @param name
-     * @param fromClass
      * @return
+     * @example: For Sample Site if you want to navigate to wiki page pass @Project
+     * Wiki@
      */
     public HtmlPage getDashBoardElement(final String name)
     {
@@ -188,7 +182,7 @@ public class SiteDashboardPage extends SitePage implements Dashboard
 
     /**
      * Checks the title of the site
-     * 
+     *
      * @return
      */
     public boolean isSiteTitle(String title)
@@ -206,7 +200,7 @@ public class SiteDashboardPage extends SitePage implements Dashboard
 
     /**
      * Check if welcome message is displayed.
-     * 
+     *
      * @return true if displayed.
      */
     public boolean isWelcomeMessageDashletDisplayed()
@@ -226,7 +220,7 @@ public class SiteDashboardPage extends SitePage implements Dashboard
 
     /**
      * Method to find if the Configure Saved Search dialog displayed
-     * 
+     *
      * @return True if displayed
      */
     public boolean isConfigureSavedSearchDialogDisplayed()
@@ -342,5 +336,32 @@ public class SiteDashboardPage extends SitePage implements Dashboard
                 return false;
         }
         return true;
+    }
+
+    /**
+     * Check is more button for site pages displayed.
+     *
+     * @return
+     */
+    public boolean isPagesMoreButtonDisplayed()
+    {
+        try
+        {
+            return drone.find(MORE_PAGES_BUTTON).isDisplayed();
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Method for get counts links for site pages.
+     *
+     * @return
+     */
+    public int getPagesLinkCount()
+    {
+        return drone.findAndWaitForElements(PAGES_LINKS).size();
     }
 }

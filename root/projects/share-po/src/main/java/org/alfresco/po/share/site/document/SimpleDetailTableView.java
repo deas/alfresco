@@ -504,6 +504,9 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         return super.getVersionInfo();
     }
 
+    /* (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoImpl#selectForceUnSyncInCloud()
+     */
     @Override
     public DocumentLibraryPage selectForceUnSyncInCloud()
     {

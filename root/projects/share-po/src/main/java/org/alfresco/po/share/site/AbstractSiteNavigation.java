@@ -19,15 +19,12 @@ import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 /**
  * Abstract site navigation for the different types
  * of site navigation, base to collaboration based sites
- * 
+ *
  * @author Michael Suzuki
  * @version 1.7.1
  */
@@ -48,13 +45,15 @@ public abstract class AbstractSiteNavigation extends HtmlElement
     protected static final String INVITE_BUTTON = "a[href$='invite']";
     protected static final String CUSTOMIZE_LINK_TEXT = "Customize Site";
     protected static final String WIKI = "Wiki";
+    protected static final String CALENDAR = "Calendar";
     protected static final By WIKI_LINK = By.cssSelector("#HEADER_SITE_WIKI-PAGE_text");
-    protected static final By CALENDAR_LINK = By.cssSelector("#HEADER_SITE_CALENDAR");
+    protected static final By CALENDAR_LINK = By.cssSelector("#HEADER_SITE_CALENDAR_text");
     protected static final By DISCUSSIONS_LINK = By.cssSelector("#HEADER_SITE_DISCUSSIONS-TOPICLIST_text");
     protected static final By BLOG_LINK = By.cssSelector("#HEADER_SITE_BLOG-POSTLIST_text");
     protected static final By LINKS_LINK = By.cssSelector("#HEADER_SITE_LINKS_text");
     protected static final By DATA_LISTS_LINK = By.cssSelector("#HEADER_SITE_DATA-LISTS_text");
     protected static final By MEMBERS_LINK = By.cssSelector("#HEADER_SITE_MEMBERS_text");
+    protected static final By DOCLIB_LINK = By.cssSelector("#HEADER_SITE_DOCUMENTLIBRARY_text");
     protected static final By SITE_MORE_PAGES = By.cssSelector("#HEADER_SITE_MORE_PAGES_text");
     protected static final String SITE_LINK_NAV_PLACEHOLER = "div.site-navigation > span:nth-of-type(%d) > a";
     public static final String LABEL_DOCUMENTLIBRARY_TEXT = "span#HEADER_SITE_DOCUMENTLIBRARY_text";
@@ -74,6 +73,7 @@ public abstract class AbstractSiteNavigation extends HtmlElement
 
     /**
      * Check if the site navigation link is highlighted.
+     *
      * @param by selector of site nav link
      * @return if link is highlighted
      */
@@ -84,13 +84,13 @@ public abstract class AbstractSiteNavigation extends HtmlElement
             throw new UnsupportedOperationException("By selector is required");
         }
         try
-        {
-            String active = alfrescoVersion.isDojoSupported() ? "Selected" : "active-page";
+        {            
             WebElement element = getDrone().findAndWait(by);
+   
             String value = element.getAttribute("class");
             if (value != null && !value.isEmpty())
             {
-                return value.contains(active);
+                return value.contains(drone.getValue("web.element.highlighted"));
             }
         }
         catch (TimeoutException e)
@@ -101,7 +101,7 @@ public abstract class AbstractSiteNavigation extends HtmlElement
 
     /**
      * Check if the site dashboard navigation link is highlighted.
-     * 
+     *
      * @return if link is highlighted
      */
     public boolean isDashboardActive()
@@ -112,15 +112,25 @@ public abstract class AbstractSiteNavigation extends HtmlElement
     /**
      * Action of selecting on Site Dash board link.
      */
-    public HtmlPage selectSiteDashBoard()
+    public SiteDashboardPage selectSiteDashBoard()
     {
-        drone.find(By.cssSelector(dashboardLink)).click();
-        return FactorySharePage.resolvePage(drone);
+        //bottleneck. Simple click() sometimes not work.
+        try
+        {
+            WebElement dashBoarLink = drone.findAndWait(By.cssSelector(dashboardLink));
+            drone.mouseOverOnElement(dashBoarLink);
+            dashBoarLink.click();
+        }
+        catch (StaleElementReferenceException e)
+        {
+            selectSiteDashBoard();
+        }
+        return drone.getCurrentPage().render();
     }
 
     /**
      * Checks if dash board link is displayed.
-     * 
+     *
      * @return true if displayed
      */
     public boolean isDashboardDisplayed()
@@ -130,7 +140,7 @@ public abstract class AbstractSiteNavigation extends HtmlElement
 
     /**
      * Select the drop down on the page and clicks on the link.
-     * 
+     *
      * @param title String title label of site nav
      * @return HtmlPage page object result of selecting the link.
      */
@@ -143,7 +153,7 @@ public abstract class AbstractSiteNavigation extends HtmlElement
 
     /**
      * Select the drop down on the page and clicks on the link.
-     * 
+     *
      * @param by css locator
      * @return HtmlPage page object result of selecting the link.
      */
@@ -155,7 +165,7 @@ public abstract class AbstractSiteNavigation extends HtmlElement
 
     /**
      * Checks if item is displayed.
-     * 
+     *
      * @return true if displayed
      */
     public boolean isLinkDisplayed(final By by)

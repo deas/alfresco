@@ -25,7 +25,7 @@ import java.util.List;
 import org.alfresco.po.share.dashlet.SearchLimit;
 import org.alfresco.po.share.dashlet.SiteSearchDashlet;
 import org.alfresco.po.share.dashlet.SiteSearchItem;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
@@ -82,7 +82,7 @@ public class SiteSearchDashletTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -103,7 +103,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         Assert.assertNotNull(siteDashBoard);
         SiteSearchDashlet searchDashlet = ShareUserDashboard.getSiteSearchDashlet(drone);
         Assert.assertNotNull(searchDashlet);
-        Assert.assertEquals(searchDashlet.getTitle(), Dashlet.SITE_SEARCH.getDashletName());
+        Assert.assertEquals(searchDashlet.getTitle(), Dashlets.SITE_SEARCH.getDashletName());
 
         searchDashlet.clickOnHelpIcon();
         Assert.assertTrue(searchDashlet.isBalloonDisplayed());
@@ -132,7 +132,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         // Create Site
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         // Add Saved Search Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
 
         ShareUser.logout(drone);
     }
@@ -183,7 +183,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         // Upload File
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -231,7 +231,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.uploadFileInFolder(drone, fileInfo);
 
         // Add Site Search Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -308,7 +308,7 @@ public class SiteSearchDashletTest extends AbstractUtils
             ShareUser.uploadFileInFolder(drone, fileInfo);
         }
         
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
 
         ShareUser.logout(drone);
      
@@ -381,7 +381,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUserSitePage.createFolder(drone, folderName, folderName);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -414,7 +414,7 @@ public class SiteSearchDashletTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
 
     }
@@ -472,7 +472,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -535,7 +535,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         documentLibraryPage.getSiteNav().selectSiteDashBoard().render();
         Assert.assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_CONTENT_DASHLET, fileName, true, siteName));
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
 
         List<SiteSearchItem> items;
 
@@ -565,7 +565,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, userName, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
   //TODO : Bug with new product version 270.
@@ -623,7 +623,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         contentDetails.setDescription(fileName1);
         ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -685,7 +685,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         contentDetails.setName(fileName3);
         ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -749,7 +749,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         contentDetails.setTitle(fileName1);
         ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -805,7 +805,7 @@ public class SiteSearchDashletTest extends AbstractUtils
 
         ShareUser.setAuthor(drone, fileName2, testUser);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -848,7 +848,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, userName, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
   //TODO : Bug with new product version 270.
@@ -920,7 +920,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         contentDetails.setContent(fileName);
         ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
 
         ShareUser.logout(drone);
     }
@@ -979,7 +979,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.uploadFileInFolder(drone, fileInfo);
 
         // Add Site Search Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
 
         // Wait till file has been indexed
         Assert.assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_CONTENT_DASHLET, fileName, true, siteName));
@@ -1026,7 +1026,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         // Create Folder
         ShareUserSitePage.createFolder(drone, folderName, testName);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1065,7 +1065,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1122,7 +1122,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.addAspects(drone, Arrays.asList(DocumentAspect.TAGGABLE), fileName2);
         ShareUser.addAspects(drone, Arrays.asList(DocumentAspect.CLASSIFIABLE), fileName3);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
 
         ShareUser.logout(drone);
     }
@@ -1192,7 +1192,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         String[] htmlFileInfo = { htmlFileName };
         ShareUser.uploadFileInFolder(drone, htmlFileInfo);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
 
         ShareUser.logout(drone);
     }
@@ -1240,7 +1240,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1301,7 +1301,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
   //TODO : Bug with new product version 270.
@@ -1370,7 +1370,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         contentDetails = new ContentDetails(fileName4, title4, description4, content4);
         ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
 
         ShareUser.logout(drone);
     }
@@ -1419,7 +1419,7 @@ public class SiteSearchDashletTest extends AbstractUtils
 
         ShareUser.addAspects(drone, Arrays.asList(DocumentAspect.DUBLIN_CORE), fileName);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
 
         ShareUser.logout(drone);
     }
@@ -1433,6 +1433,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         String fileName = "Content.txt";
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        
         ShareUser.openSiteDashboard(drone, siteName);
 
         List<SiteSearchItem> items = ShareUserDashboard.searchSiteSearchDashlet(drone, " ASPECT:\"{http://www.alfresco.org/model/content/1.0}dublincore\"");
@@ -1457,7 +1458,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1507,7 +1508,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1553,7 +1554,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1597,7 +1598,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.uploadFileInFolder(drone, fileInfo1);
         ShareUser.uploadFileInFolder(drone, fileInfo2);
         ShareUser.uploadFileInFolder(drone, fileInfo3);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1639,7 +1640,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo1);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1684,7 +1685,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         // Add Comment for File1
         ShareUser.addComment(drone, fileName1, comment);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1731,7 +1732,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         documentLibraryPage.selectFile(fileName1).render();
         ShareUser.editTextDocument(drone, fileName1, fileName1, fileName1);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1787,7 +1788,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.addComment(drone, fileName3, comment);
         ShareUser.addComment(drone, fileName3, comment);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
     // TODO: Test case should be modified according to fix ACE-805 Issue is still opened. 
@@ -1837,7 +1838,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.uploadFileInFolder(drone, fileInfo1);
         ShareUser.uploadFileInFolder(drone, fileInfo2);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1885,7 +1886,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1930,7 +1931,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.uploadFileInFolder(drone, fileInfo1);
         ShareUser.uploadFileInFolder(drone, fileInfo2);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1972,7 +1973,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -2011,7 +2012,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
 

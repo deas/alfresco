@@ -1,9 +1,9 @@
 package org.alfresco.po.share.site.discussions;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * Add Event form page object
@@ -33,6 +33,7 @@ public class NewTopicForm extends AbstractTopicForm
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public NewTopicForm render()
     {
         return render(new RenderTime(maxPageLoadingTime));

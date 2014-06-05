@@ -11,7 +11,9 @@ import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.ContentDetails;
+import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
+import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
 import org.alfresco.po.share.site.document.DetailsPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
@@ -26,18 +28,21 @@ import org.alfresco.po.share.site.document.SortField;
 import org.alfresco.po.share.site.document.TagPage;
 import org.alfresco.po.share.site.document.TreeMenuNavigation;
 import org.alfresco.po.share.site.document.TreeMenuNavigation.DocumentsMenu;
+import org.alfresco.po.share.site.document.TreeMenuNavigation.TreeMenu;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.By;
 import org.testng.SkipException;
 
 public class ShareUserSitePage extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(ShareUser.class);
     protected static final String DEFAULT_FOLDER = "Documents";
+    public static final By INVITE_TO_SITE = By.cssSelector("a[id*='default-invite-button']");
 
     public ShareUserSitePage()
     {
@@ -606,7 +611,7 @@ public class ShareUserSitePage extends AbstractUtils
             if (searchCount > 1)
             {
                 webDriverWait(driver, refreshDuration);
-                driver.refresh();
+                refreshSharePage(driver).render();
             }
 
             DocumentLibraryPage documentLibraryPage = getSharePage(driver).render();
@@ -873,7 +878,7 @@ public class ShareUserSitePage extends AbstractUtils
             if (searchCount > 1)
             {
                 webDriverWait(driver, refreshDuration);
-                driver.refresh();
+                refreshSharePage(driver).render();
             }
 
             if (methodName.equals("tags"))
@@ -1017,7 +1022,7 @@ public class ShareUserSitePage extends AbstractUtils
             if (searchCount > 1)
             {
                 webDriverWait(driver, refreshDuration);
-                driver.refresh();
+                refreshSharePage(driver).render();
             }
 
             TreeMenuNavigation treeMenu = docLibPage.getLeftMenus();
@@ -1050,10 +1055,55 @@ public class ShareUserSitePage extends AbstractUtils
             throw new UnsupportedOperationException("TagName is required.");
         }
 
+        TreeMenuNavigation treeMenu = getLeftTreeMenu(drone);
+        
+        return treeMenu.selectTagNode(tagName).render();
+    }
+    
+
+    /**
+     * This method clicks on the given Categories name in the Left Tree menu on Document Library page.
+     *
+     * @param nodePath
+     * @return {@link HtmlPage}
+     */
+    public static HtmlPage clickOnCategoriesInTreeMenu(WebDrone drone, String... nodePath)
+    {
+        if (nodePath == null)
+        {
+            throw new UnsupportedOperationException("nodePath is required.");
+        }
+
+        TreeMenuNavigation treeMenu = getLeftTreeMenu(drone);
+
+        return treeMenu.selectNode(TreeMenu.CATEGORIES, nodePath).render();
+    }
+    
+
+    /**
+     * This method clicks on the given option in the Documents Tree menu on Document Library page.
+     * 
+     * @param tagName
+     * @return {@link HtmlPage}
+     */
+    public static HtmlPage clickOnDocumentsInTreeMenu(WebDrone drone, DocumentsMenu docMenu)
+    {
+        TreeMenuNavigation treeMenu = getLeftTreeMenu(drone);
+        return treeMenu.selectDocumentNode(docMenu).render();
+    }
+    
+    /**
+     * This method clicks on the given option in the Documents Tree menu on Document Library page.
+     * 
+     * @param tagName
+     * @return {@link HtmlPage}
+     */
+    public static TreeMenuNavigation getLeftTreeMenu(WebDrone drone)
+    {
         DocumentLibraryPage doclibPage = getSharePage(drone).render();
 
-        TreeMenuNavigation treeMenu = doclibPage.getLeftMenus();
-        return treeMenu.selectTagNode(tagName).render();
+        TreeMenuNavigation treeMenu = doclibPage.getLeftMenus().render();
+        return treeMenu;
     }
 
     /**
@@ -1067,5 +1117,47 @@ public class ShareUserSitePage extends AbstractUtils
         DocumentLibraryPage doclibPage = getSharePage(drone).render();
 
         return doclibPage.getFiles().size();
+    }
+
+    /**
+     * This method is used to create content with name, title and description.
+     * User should be logged in
+     * 
+     * @param drone
+     * @param contentDetails
+     * @param contentType
+     * @param siteName
+     * @return {@link DocumentDetailsPage}
+     * @throws Exception
+     */
+    public static DocumentDetailsPage createContentInFolder(WebDrone drone, ContentDetails contentDetails, ContentType contentType, String siteName, String folderPath) throws Exception
+    {
+        // Open Folder in repository Library
+        DocumentLibraryPage docLibPage = navigateToFolder(drone, folderPath);
+        DocumentDetailsPage detailsPage = null;
+
+        try
+        {
+            CreatePlainTextContentPage contentPage = docLibPage.getNavigation().selectCreateContent(contentType).render();
+            detailsPage = contentPage.create(contentDetails).render();
+        }
+        catch (Exception e)
+        {
+            throw new SkipException("Error in creating content." + e);
+        }
+
+        return detailsPage;
+    }
+
+    /**
+     * Like content from DocumentLibraryPage.
+     * @param drone
+     * @param contentName
+     */
+    public static DocumentLibraryPage likeContent(WebDrone drone, String contentName)
+    {
+        FileDirectoryInfo content = ShareUserSitePage.getFileDirectoryInfo(drone, contentName);
+        content.selectLike();
+        return getSharePage(drone).render();
     }
 }

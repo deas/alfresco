@@ -151,8 +151,8 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         Assert.assertTrue(repositoryPage.isFileVisible(fileName));
 
         // Check name, description and content are correct
-        Assert.assertEquals(repositoryPage.getFileDirectoryInfo(fileName).getName(), fileName);
-        Assert.assertEquals(repositoryPage.getFileDirectoryInfo(fileName).getDescription(), description);
+        Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getName(), fileName);
+        Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getDescription(), description);
 
         // TODO: Consider implementing this as a Util: using View in Browser?
         DocumentDetailsPage detailsPage = repositoryPage.selectFile(fileName).render();
@@ -221,7 +221,7 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
 
@@ -253,7 +253,7 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         }
 
         // Cancel file upload to the test folder in repository
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         UploadFilePage uploadForm = repositoryPage.getNavigation().selectFileUpload().render();
         uploadForm.cancel();
 
@@ -284,7 +284,8 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + USER_HOMES_FOLDER + SLASH + testUser + SLASH + testName);
+        //repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
 
@@ -293,7 +294,7 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         String descriptionNew = testName + " enterprise40x_5436 description new";
         String tagNew = testName + " enterprise40x_5436 tag new";
 
-        EditDocumentPropertiesPage editDocumentPropertiesPopup = repositoryPage.getFileDirectoryInfo(sampleFile.getName()).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = ShareUserSitePage.getFileDirectoryInfo(drone, sampleFile.getName()).selectEditProperties().render();
 
         String fileName = getTestName() + System.currentTimeMillis();
 
@@ -306,9 +307,9 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         editDocumentPropertiesPopup.selectSave().render();
 
         // Check file properties are correct
-        Assert.assertEquals(repositoryPage.getFileDirectoryInfo(fileName).getTitle(), "(" + titleNew + ")");
-        Assert.assertEquals(repositoryPage.getFileDirectoryInfo(fileName).getDescription(), descriptionNew);
-        Assert.assertTrue(repositoryPage.getFileDirectoryInfo(fileName).getTags().contains(tagNew.toLowerCase()));
+        Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getTitle(), "(" + titleNew + ")");
+        Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getDescription(), descriptionNew);
+        Assert.assertTrue(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getTags().contains(tagNew.toLowerCase()));
 
     }
 
@@ -334,11 +335,11 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
         // edit file properties
-        EditDocumentPropertiesPage editDocumentPropertiesPopup = repositoryPage.getFileDirectoryInfo(sampleFile.getName()).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = ShareUserSitePage.getFileDirectoryInfo(drone, sampleFile.getName()).selectEditProperties().render();
 
         String titleNew = testName + " enterprise40x_5437 title new";
         String descriptionNew = testName + " enterprise40x_5437 description new";
@@ -355,10 +356,10 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
 
         List<FileDirectoryInfo> files = repositoryPage.getFiles();
         Assert.assertFalse(files.contains(fileName));
-        Assert.assertEquals(repositoryPage.getFileDirectoryInfo(sampleFile.getName()).getDescription(), "No Description");
+        Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(drone, sampleFile.getName()).getDescription(), "No Description");
 
         // Check file properties didn't change
-        Assert.assertFalse(repositoryPage.getFileDirectoryInfo(sampleFile.getName()).hasTags());
+        Assert.assertFalse(ShareUserSitePage.getFileDirectoryInfo(drone, sampleFile.getName()).hasTags());
     }
 
     /**
@@ -383,11 +384,11 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
         // select to view it browser
-        repositoryPage.getFileDirectoryInfo(sampleFile.getName()).selectViewInBrowser();
+        ShareUserSitePage.getFileDirectoryInfo(drone, sampleFile.getName()).selectViewInBrowser();
 
         // check the document is correctly displayed
         String content = "this is a sample test upload file";
@@ -418,7 +419,7 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage)ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
         // Upload new version of document with minor changes
@@ -451,7 +452,7 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
         // Upload new version of document with minor changes
@@ -484,7 +485,7 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
 
@@ -525,7 +526,7 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
 
@@ -550,9 +551,9 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
 
         // check file properties are correct
-        Assert.assertEquals(repositoryPage.getFileDirectoryInfo(fileName).getName(), fileName);
-        Assert.assertEquals(repositoryPage.getFileDirectoryInfo(fileName).getTitle(), "(" + newTitle + ")");
-        Assert.assertEquals(repositoryPage.getFileDirectoryInfo(fileName).getDescription(), newDescription);
+        Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getName(), fileName);
+        Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getTitle(), "(" + newTitle + ")");
+        Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getDescription(), newDescription);
 
         detailsPage = repositoryPage.selectFile(fileName).render();
         editTextDocumentPage = detailsPage.selectInlineEdit().render();

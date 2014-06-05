@@ -14,15 +14,16 @@
  */
 package org.alfresco.po.share.dashlet;
 
-import java.util.NoSuchElementException;
-
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
+
+import java.util.NoSuchElementException;
 
 /**
  * Alfresco Share factory, creates the appropriate page object that corresponds
  * to the browser view.
- * 
+ *
  * @author Michael Suzuki
  */
 public final class FactoryShareDashlet
@@ -33,7 +34,7 @@ public final class FactoryShareDashlet
 
     /**
      * Gets the dashlet HTML element from the dashboard page.
-     * 
+     *
      * @param drone {@link WebDrone}
      * @return name dashlet title
      */
@@ -41,91 +42,95 @@ public final class FactoryShareDashlet
     {
         try
         {
-            if ("my-sites".equalsIgnoreCase(name))
+            if ("my-sites".equalsIgnoreCase(name) || Dashlets.MY_SITES.getDashletName().equalsIgnoreCase(name))
             {
                 return new MySitesDashlet(drone);
             }
-            if ("my-documents".equalsIgnoreCase(name))
+            if ("my-documents".equalsIgnoreCase(name) || Dashlets.MY_DOCUMENTS.getDashletName().equalsIgnoreCase(name))
             {
                 return new MyDocumentsDashlet(drone);
             }
-            if ("activities".equalsIgnoreCase(name))
+            if ("activities".equalsIgnoreCase(name) || Dashlets.MY_ACTIVITIES.getDashletName().equalsIgnoreCase(name))
             {
                 return new MyActivitiesDashlet(drone);
             }
-            if ("tasks".equalsIgnoreCase(name))
+            if ("my-tasks".equalsIgnoreCase(name) || "tasks".equalsIgnoreCase(name) || Dashlets.MY_TASKS.getDashletName().equalsIgnoreCase(name))
             {
                 return new MyTasksDashlet(drone);
             }
-            if ("site-members".equalsIgnoreCase(name))
+            if ("site-members".equalsIgnoreCase(name) || Dashlets.SITE_MEMBERS.getDashletName().equalsIgnoreCase(name))
             {
                 return new SiteMembersDashlet(drone);
             }
-            if ("site-contents".equalsIgnoreCase(name))
+            if ("site-contents".equalsIgnoreCase(name) || Dashlets.SITE_CONTENT.getDashletName().equalsIgnoreCase(name))
             {
                 return new SiteContentDashlet(drone);
             }
-            if ("site-activities".equalsIgnoreCase(name))
+            if ("site-activities".equalsIgnoreCase(name) || Dashlets.SITE_ACTIVITIES.getDashletName().equalsIgnoreCase(name))
             {
                 return new SiteActivitiesDashlet(drone);
             }
-            if ("welcome-site".equalsIgnoreCase(name))
+            if ("welcome-site".equalsIgnoreCase(name) || Dashlets.WELCOME_SITE.getDashletName().equalsIgnoreCase(name))
             {
                 return new SiteWelcomeDashlet(drone);
             }
-            if ("site-notice".equalsIgnoreCase(name))
+            if ("site-notice".equalsIgnoreCase(name) || Dashlets.SITE_NOTICE.getDashletName().equalsIgnoreCase(name))
             {
                 return new SiteNoticeDashlet(drone);
             }
-            if ("site-search".equalsIgnoreCase(name))
+            if ("site-search".equalsIgnoreCase(name) || Dashlets.SITE_SEARCH.getDashletName().equalsIgnoreCase(name))
             {
                 return new SiteSearchDashlet(drone);
             }
-            if ("my-discussions".equalsIgnoreCase(name))
+            if ("my-discussions".equalsIgnoreCase(name) || Dashlets.MY_DISCUSSIONS.getDashletName().equalsIgnoreCase(name))
             {
                 return new MyDiscussionsDashlet(drone);
             }
-            if ("saved-search".equalsIgnoreCase(name))
+            if ("saved-search".equalsIgnoreCase(name) || Dashlets.SAVED_SEARCH.getDashletName().equalsIgnoreCase(name))
             {
                 return new SavedSearchDashlet(drone);
             }
-            if ("image-preview".equalsIgnoreCase(name))
+            if ("image-preview".equalsIgnoreCase(name) || Dashlets.IMAGE_PREVIEW.getDashletName().equalsIgnoreCase(name))
             {
                 return new ImagePreviewDashlet(drone);
             }
-            if ("wiki".equalsIgnoreCase(name))
+            if ("wiki".equalsIgnoreCase(name) || Dashlets.WIKI.getDashletName().equalsIgnoreCase(name))
             {
                 return new WikiDashlet(drone);
             }
-            if ("web-view".equalsIgnoreCase(name))
+            if ("web-view".equalsIgnoreCase(name) || Dashlets.WEB_VIEW.getDashletName().equalsIgnoreCase(name))
             {
                 return new WebViewDashlet(drone);
             }
-            if ("rss-feed".equalsIgnoreCase(name))
+            if ("rss-feed".equalsIgnoreCase(name) || Dashlets.RSS_FEED.getDashletName().equalsIgnoreCase(name))
             {
                 return new RssFeedDashlet(drone);
             }
-            if ("site-links".equalsIgnoreCase(name))
+            if ("site-links".equalsIgnoreCase(name) || Dashlets.SITE_LINKS.getDashletName().equalsIgnoreCase(name))
             {
                 return new SiteLinksDashlet(drone);
             }
-            if ("data-lists".equalsIgnoreCase(name))
+            if ("data-lists".equalsIgnoreCase(name) || Dashlets.DATA_LISTS.getDashletName().equalsIgnoreCase(name))
             {
                 return new SiteDataListsDashlet(drone);
             }
-            if ("site-calendar".equalsIgnoreCase(name))
+            if ("site-calendar".equalsIgnoreCase(name) || Dashlets.SITE_CALENDAR.getDashletName().equalsIgnoreCase(name))
             {
                 return new SiteCalendarDashlet(drone);
             }
-            if ("site-profile".equalsIgnoreCase(name))
+            if ("site-profile".equalsIgnoreCase(name) || Dashlets.SITE_PROFILE.getDashletName().equalsIgnoreCase(name))
             {
                 return new SiteProfileDashlet(drone);
+            }
+            if ("addOns-rss".equalsIgnoreCase(name) || Dashlets.ALFRESCO_ADDONS_RSS_FEED.getDashletName().equalsIgnoreCase(name))
+            {
+                return new AddOnsRssFeedDashlet(drone);
             }
             throw new PageException(String.format("%s does not match any known dashlet name", name));
         }
         catch (NoSuchElementException ex)
         {
-            throw new PageException("Dashlet can not be matched to an exsisting alfresco dashlet object: " + name, ex);
+            throw new PageException("Dashlet can not be matched to an existing alfresco dashlet object: " + name, ex);
         }
     }
 }

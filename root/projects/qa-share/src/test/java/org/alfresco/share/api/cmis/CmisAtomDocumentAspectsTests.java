@@ -16,6 +16,7 @@
 package org.alfresco.share.api.cmis;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.alfresco.share.enums.CMISBinding;
 import org.alfresco.share.util.ShareUser;
@@ -23,6 +24,8 @@ import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
+import org.apache.chemistry.opencmis.client.api.Property;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -61,6 +64,54 @@ public class CmisAtomDocumentAspectsTests extends CmisDocumentAspectUtils
         SiteUtil.createSite(drone, siteName, testName, SITE_VISIBILITY_PUBLIC, true);
 
         ShareUser.logout(drone);
+    }
+
+    @Test(groups = { "DataPrepCmisBrowser" })
+    public void dataPrep_ALF_2477() throws Exception
+    {
+        dataPrepSecondaryObjectTypeIDsProperty(drone, testUser, getTestName(), siteName);
+    }
+
+    @Test
+    public void ALF_2477() throws Exception
+    {
+        testName = getTestName();
+        fileName = getFileName(testName);
+        String folderName = getFolderName(testName);
+        String fileNodeRef = getNodeRef(cmisVersionAtom11, testUser, DOMAIN, siteName, "", fileName);
+        String folderNodeRef = getNodeRef(cmisVersionAtom11, testUser, DOMAIN, siteName, "", folderName);
+
+        List<Property<?>> fileProperties = getProperties(cmisVersionAtom11, testUser, DOMAIN, fileNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisVersionAtom11, testUser, DOMAIN, folderNodeRef);
+
+        for (Property property : fileProperties)
+        {
+            if(property.getId().equals("cmis:secondaryObjectTypeIds"))
+            {
+                Assert.assertEquals(property.getId(), "cmis:secondaryObjectTypeIds", "Verifying propertyDefinitionId");
+                Assert.assertEquals(property.getLocalName(), "secondaryObjectTypeIds", "Verifying LocalName");
+                Assert.assertEquals(property.getDisplayName(), "Secondary Object Type Ids", "Verifying DisplayName");
+                Assert.assertEquals(property.getQueryName(), "cmis:secondaryObjectTypeIds", "Verifying QueryName");
+                Assert.assertEquals(property.getType().value(), "id", "Verifying ID");
+                Assert.assertTrue(property.getValuesAsString().contains("P:cm:titled"), "Verifying \"P:cm:titled\" value exists");
+                Assert.assertTrue(property.getValuesAsString().contains("P:sys:localized"), "Verifying \"P:sys:localized\" value exists");
+            }
+        }
+
+        for (Property property : folderProperties)
+        {
+            if(property.getId().equals("cmis:secondaryObjectTypeIds"))
+            {
+                Assert.assertEquals(property.getId(), "cmis:secondaryObjectTypeIds", "Verifying propertyDefinitionId");
+                Assert.assertEquals(property.getLocalName(), "secondaryObjectTypeIds", "Verifying LocalName");
+                Assert.assertEquals(property.getDisplayName(), "Secondary Object Type Ids", "Verifying DisplayName");
+                Assert.assertEquals(property.getQueryName(), "cmis:secondaryObjectTypeIds", "Verifying QueryName");
+                Assert.assertEquals(property.getType().value(), "id", "Verifying ID");
+                Assert.assertTrue(property.getValuesAsString().contains("P:cm:titled"), "Verifying \"P:cm:titled\" value exists");
+                Assert.assertTrue(property.getValuesAsString().contains("P:sys:localized"), "Verifying \"P:sys:localized\" value exists");
+            }
+        }
+
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
@@ -206,7 +257,7 @@ public class CmisAtomDocumentAspectsTests extends CmisDocumentAspectUtils
         removeEmailedAspect(drone, testUser, fileName, siteName, cmisVersionAtom11);
     }
 
-    @Test(groups = { "DataPrepCmisAtom", "EnterpriseOnly" })
+    @Test(groups = { "DataPrepCmisAtom" })
     public void dataPrep_ALF_2486() throws Exception
     {
         testName = getTestName();
@@ -229,8 +280,7 @@ public class CmisAtomDocumentAspectsTests extends CmisDocumentAspectUtils
         ShareUser.logout(drone);
     }
 
-    // TODO - Need to know how to get Tag NodeRef in Cloud.
-    @Test (groups = "EnterpriseOnly")
+    @Test
     public void ALF_2486() throws Exception
     {
         testName = getTestName();
@@ -240,7 +290,7 @@ public class CmisAtomDocumentAspectsTests extends CmisDocumentAspectUtils
         addTaggableAspect(drone, testUser, fileName, siteName, tag, cmisVersionAtom11);
     }
 
-    @Test (dependsOnMethods = "ALF_2486", groups = "EnterpriseOnly")
+    @Test (dependsOnMethods = "ALF_2486")
     public void ALF_2502() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
@@ -345,5 +395,18 @@ public class CmisAtomDocumentAspectsTests extends CmisDocumentAspectUtils
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeRestrictableAspect(drone, testUser, fileName, siteName, cmisVersionAtom11);
+    }
+
+    @Test(groups = { "DataPrepCmisAtom" })
+    public void dataPrep_ALF_2498() throws Exception
+    {
+        dataPrepRemoveVersionableAspect(drone, testUser, getTestName(), siteName, cmisVersionAtom11);
+    }
+
+    @Test
+    public void ALF_2498() throws Exception
+    {
+        fileName = getFileName(getTestName());
+        removeVersionableAspect(drone, testUser, fileName, siteName, cmisVersionAtom11);
     }
 }

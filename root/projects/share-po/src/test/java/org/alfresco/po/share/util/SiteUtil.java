@@ -18,14 +18,12 @@
  */
 package org.alfresco.po.share.util;
 
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-
-import javax.imageio.ImageIO;
 
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.SharePage;
@@ -39,6 +37,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.NoSuchElementException;
 import org.testng.SkipException;
+
+import javax.imageio.ImageIO;
 
 /**
  * Utility class to manage site related operations
@@ -247,7 +247,7 @@ public class SiteUtil
                 count++;
             }
             SiteFinderPage siteFinder = drone.getCurrentPage().render();
-            siteFinder = siteFinder.searchForSite(siteName).render();
+            siteFinder = siteSearchRetry(drone, siteFinder, siteName).render();
             if (siteFinder.hasResults())
             {
                 siteFinder = siteFinder.deleteSite(siteName).render();
@@ -309,7 +309,8 @@ public class SiteUtil
     {
         BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
         Graphics g = image.getGraphics();
-        g.drawString("Test Publish file.", 10, 20);
+        g.drawString("Test Publish file.", 5, 10);
+        g.drawString(jpgName, 5, 50);
         try
         {
             File jpgFile = File.createTempFile(jpgName, ".jpg");
@@ -321,5 +322,40 @@ public class SiteUtil
             e.printStackTrace();
         }
         throw new SkipException("Can't create JPG file");
+    }
+    
+    /**
+     * 
+     * Searching with retry for sites to handle solr lag
+     * 
+     * @param finderPage
+     * @param siteName
+     * @return
+     */
+    public static SiteFinderPage siteSearchRetry(WebDrone drone, SiteFinderPage finderPage, String siteName)
+    {
+        int counter = 0;
+        int waitInMilliSeconds = 2000;
+        int retrySearchCount = 5;
+        while(counter < retrySearchCount)
+        {
+            SiteFinderPage siteSearchResults = finderPage.searchForSite(siteName).render();
+            if(siteSearchResults.getSiteList().contains(siteName))
+            {
+                return siteSearchResults;
+            }
+            else
+            {
+                counter++;
+                drone.getCurrentPage().render();
+            }
+            //double wait time to not over do solr search
+            waitInMilliSeconds = (waitInMilliSeconds*2);
+            synchronized (SiteUtil.class)
+            {
+                try{ SiteUtil.class.wait(waitInMilliSeconds); } catch (InterruptedException e) {}
+            }
+        }
+        throw new PageException("site search failed");
     }
 }

@@ -27,7 +27,7 @@ import org.alfresco.po.share.dashlet.InsertOrEditImagePage.ImageAlignment;
 import org.alfresco.po.share.dashlet.InsertOrEditLinkPage;
 import org.alfresco.po.share.dashlet.InsertOrEditLinkPage.InsertLinkPageTargetItems;
 import org.alfresco.po.share.dashlet.SiteNoticeDashlet;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.enums.TinyMceColourCode;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.TinyMceEditor.FormatType;
@@ -53,7 +53,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
 
     private static Log logger = LogFactory.getLog(SiteNoticetDashletTest.class);
     private String siteDomain = "siteNotice.test";
-    private static final String DEFAULT_SITE_NOTICE_TITLE = Dashlet.SITE_NOTICE.getDashletName();
+    private static final String DEFAULT_SITE_NOTICE_TITLE = Dashlets.SITE_NOTICE.getDashletName();
     private static final String DEFAULT_SITE_NOTICE_TEXT = "No text has been configured";
     private static final String EMPTY = "";
     private static final String SPACE = " ";
@@ -104,7 +104,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        SiteDashboardPage siteDashBoard = ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        SiteDashboardPage siteDashBoard = ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Verify dashlet is added successfully.
         Assert.assertNotNull(siteDashBoard);
@@ -150,7 +150,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -214,7 +214,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -272,7 +272,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -329,7 +329,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -408,7 +408,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -515,7 +515,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -620,7 +620,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -678,7 +678,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -734,7 +734,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -791,7 +791,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -872,7 +872,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -965,7 +965,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -1041,7 +1041,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -1162,7 +1162,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -1241,7 +1241,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
@@ -1324,7 +1324,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add SiteNotice Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_NOTICE);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
 
         // Get Site Notice Dashlet
         SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);

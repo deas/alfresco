@@ -2794,6 +2794,7 @@ public class AdvanceSearchTest extends AbstractUtils
             ShareUserSitePage.editPropertiesFromDocLibPage(drone, siteName, (siteName + "_test1"));
             ShareUserSitePage.editPropertiesFromDocLibPage(drone, siteName, (siteName + "_testing1"));
             
+            // This is required to keep the edit time difference between 2 files
             webDriverWait(drone,70000);
             
             // Modifying 3rd content and folder.

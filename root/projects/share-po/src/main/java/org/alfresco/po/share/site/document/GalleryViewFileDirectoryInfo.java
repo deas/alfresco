@@ -18,6 +18,7 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -36,7 +37,7 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
     {
         super(nodeRef, webElement, drone);
 
-        FILENAME_IDENTIFIER = "div.alf-label";
+        FILENAME_IDENTIFIER = "div.alf-label>a";
         THUMBNAIL_TYPE = "div.alf-gallery-item-thumbnail>span";
         rowElementXPath = "../../../..";
         FILE_DESC_IDENTIFIER = "h3.filename+div.detail+div.detail>span";
@@ -93,5 +94,36 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
     {
         drone.mouseOver(drone.findAndWait(By.xpath(String.format(".//div[@class='alf-label']/a[text()='%s']", getName()))));
         super.selectCheckbox();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#
+     * getThumbnailSize()
+     */
+    @Override
+    public String getThumbnailURL()
+    {
+        try
+        {
+            String xPath;
+
+            if (isFolder())
+            {
+                xPath = ".//div[@class='alf-label']/a[text()='%s']/../../span/a/img";
+            }
+            else
+            {
+                xPath = ".//div[@class='alf-label']/a[text()='%s']/../../a/img";
+            }
+
+            WebElement img = drone.findAndWait(By.xpath(String.format(xPath, getName())));
+
+            return img.getAttribute("src");
+        }
+        catch (TimeoutException e)
+        {
+            throw new PageOperationException("Error in finding the file size.");
+        }
     }
 }

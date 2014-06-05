@@ -21,7 +21,7 @@ package org.alfresco.po.share.dashlet;
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.dashlet.InsertOrEditImagePage.ImageAlignment;
 import org.alfresco.po.share.dashlet.InsertOrEditLinkPage.InsertLinkPageTargetItems;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.enums.TinyMceColourCode;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.site.document.TinyMceEditor.FormatType;
@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
  * @author Chiran
  */
 @Listeners(FailedTestListener.class)
-@Test(groups = { "Enterprise4.2", "Cloud2" })
+@Test(groups = { "Enterprise4.2", "Cloud2" }, enabled = false)
 public class SiteNoticeDashletTest extends AbstractSiteDashletTest
 {
     private static final String SITE_NOTICE = "site-notice";
@@ -86,7 +86,7 @@ public class SiteNoticeDashletTest extends AbstractSiteDashletTest
     public void instantiateDashlet()
     {
         customiseSiteDashBoard = siteDashBoard.getSiteNav().selectCustomizeDashboard().render();
-        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlet.SITE_NOTICE, 1).render();
+        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlets.SITE_NOTICE, 1).render();
         noticeDashlet = siteDashBoard.getDashlet(SITE_NOTICE).render();
         Assert.assertNotNull(noticeDashlet);
     }

@@ -1,5 +1,6 @@
 package org.alfresco.po.share.site.document;
 
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
 
@@ -44,5 +45,11 @@ public class AddCommentForm extends AbstractCommentForm
     public boolean isButtonsEnable()
     {
         return super.isButtonsEnable(SUBMIT_BUTTON, CANCEL_BUTTON);
+    }
+
+    public HtmlPage selectAddCommentButton()
+    {
+        click(SUBMIT_BUTTON);
+        return drone.getCurrentPage().render();
     }
 }

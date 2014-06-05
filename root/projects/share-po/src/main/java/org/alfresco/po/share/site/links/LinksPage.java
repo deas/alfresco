@@ -25,7 +25,7 @@ public class LinksPage extends SharePage
 {
     private Log logger = LogFactory.getLog(this.getClass());
 
-    private static final By NEW_LINK_BTN = By.cssSelector("[id$='create-link-button']");
+    private static final By NEW_LINK_BTN = By.cssSelector("button[id*='default-create-link']");
     private static final By EDIT_LINK_LINK = By.cssSelector(".edit-link>a>span");
     private static final By DELETE_LINK_LINK = By.cssSelector(".delete-link>a>span");
     private static final By LINKS_CONTAINER = By.cssSelector("tbody[class*='data']>tr");
@@ -101,6 +101,33 @@ public class LinksPage extends SharePage
         }
     }
 
+
+    /**
+     * Method to create a link with tag
+     *
+     * @param name
+     * @param url
+     * @param tagName
+     * @return LinksDetailsPage
+     */
+    public LinksDetailsPage createLink(String name, String url, String tagName)
+    {
+        try
+        {
+            AddLinkForm addLinkForm = new AddLinkForm(drone);
+            addLinkForm.setTitleField(name);
+            addLinkForm.setUrlField(url);
+            addLinkForm.addTag(tagName);
+            addLinkForm.clickSaveBtn();
+            waitUntilAlert();
+            return new LinksDetailsPage(drone);
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new ShareException("Unable to find element");
+        }
+    }
+
     /**
      * Method to check if Create Link button is displayed
      *
@@ -108,12 +135,7 @@ public class LinksPage extends SharePage
      */
     public boolean isCreateLinkEnabled ()
     {
-        String someButton = drone.findAndWait(NEW_LINK_BTN).getAttribute("class");
-        if (someButton.contains("yui-button-disabled"))
-        {
-            return false;
-        }
-        else return true;
+        return drone.find(NEW_LINK_BTN).isEnabled();
     }
 
     private LinkDirectoryInfo getLinkDirectoryInfo(final String title)
@@ -174,7 +196,8 @@ public class LinksPage extends SharePage
      */
     public LinksPage deleteLinkWithConfirm (String title)
     {
-        getLinkDirectoryInfo(title).clickDelete();
+        LinkDirectoryInfo theItem = getLinkDirectoryInfo(title);
+        theItem.clickDelete();
         if (!drone.isElementDisplayed(PROMPT_PANEL_ID))
         {
             throw new ShareException("The prompt isn't popped up");
@@ -198,6 +221,48 @@ public class LinksPage extends SharePage
                 return 0;
             }
             return drone.findAll(LINKS_CONTAINER).size();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to get links count");
+        }
+    }
+
+    /**
+     * Method to verify whether edit link is displayed
+     *
+     * @param linkName
+     * @return boolean
+     */
+    public boolean isEditLinkDisplayed(String linkName)
+    {
+        return getLinkDirectoryInfo(linkName).isEditDisplayed();
+    }
+
+    /**
+     * Method to verify whether delete link is displayed
+     *
+     * @param linkName
+     * @return boolean
+     */
+    public boolean isDeleteLinkDisplayed(String linkName)
+    {
+        return getLinkDirectoryInfo(linkName).isDeleteDisplayed();
+    }
+
+    /**
+     * Method to click to the link
+     *
+     * @param linkTitle
+     * @return LinksDetailsPage
+     */
+    public LinksDetailsPage clickLink(String linkTitle)
+    {
+        try
+        {
+            WebElement link = drone.findAndWait(By.xpath("//a[text()='" + linkTitle + "']"));
+            link.click();
+            return new LinksDetailsPage(drone);
         }
         catch (TimeoutException te)
         {

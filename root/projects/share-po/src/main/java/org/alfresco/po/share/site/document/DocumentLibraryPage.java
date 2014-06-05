@@ -62,6 +62,7 @@ public class DocumentLibraryPage extends SitePage
 
     private static final By THUMBNAIL_IMAGE = By.cssSelector("td[class$='yui-dt-col-thumbnail'] img");
     private static final By DOCUMENTS_TREE_CSS = By.cssSelector("div.filter.doclib-filter h2");
+    private static final By CATEGORIES_TREE_CSS = By.cssSelector("div[class='categoryview filter'] > h2");
     private static final By MY_FAVOURITES = By.cssSelector("span.favourites > a");
     private static final By RECENTLY_MODIFIED = By.cssSelector("span.recentlyModified > a");
     private static final By RECENTLY_ADDED = By.cssSelector("span.recentlyAdded > a");
@@ -74,6 +75,9 @@ public class DocumentLibraryPage extends SitePage
     private ViewType viewType = ViewType.DETAILED_VIEW;
     private static final String TEMPLATE_LIST = "//div[contains(@class, 'menu visible')]//div[@class='bd']//ul//ul//li";
     private final By submitButton = By.cssSelector("button[id$='default-createFolder-form-submit-button']");
+    private static final By ALL_CATEGORIES_PRESENT_ON_DOC_LIB = By.xpath("//span[text()='Category Root']/ancestor-or-self::table/parent::div/child::div/div");
+    private static String CATEGORY_ROOT_SPACER = "//span[text()='Category Root']/ancestor-or-self::table[contains(@class, 'depth0')]";
+    private static By CATEGORY_ROOT_SPACER_LINK = By.xpath(CATEGORY_ROOT_SPACER + "//a");
 
     public enum Optype
     {
@@ -899,6 +903,59 @@ public class DocumentLibraryPage extends SitePage
         return tagNames;
     }
 
+
+    /**
+     * This method gets the list of tag names present on document library Categories tree menu.
+     *
+     * @return List<String>
+     */
+    public List<String> getAllCategoriesNames()
+    {
+        List<String> categoryNames = new ArrayList<>();
+        String text;
+        openCategoriesTree();
+        WebElement spacer = drone.findAndWait(By.xpath(CATEGORY_ROOT_SPACER), 5000);
+        if(spacer.getAttribute("class").contains("collapsed"))
+        {
+            drone.findAndWait(CATEGORY_ROOT_SPACER_LINK).click();
+            drone.waitUntilElementPresent(CATEGORY_ROOT_SPACER_LINK, 5);
+        }
+
+        List<WebElement> categories = getAllCategories();
+
+        for (WebElement category : categories)
+        {
+            text = category.getText();
+
+            if (text != null)
+            {
+                categoryNames.add(text);
+            }
+        }
+        return categoryNames;
+    }
+
+    /**
+     * This method gets the all categories elements present on document library Categories tree menu.
+     *
+     * @return List<WebElement>
+     */
+    private List<WebElement> getAllCategories()
+    {
+        try
+        {
+            return drone.findAndWaitForElements(ALL_CATEGORIES_PRESENT_ON_DOC_LIB);
+        }
+        catch (TimeoutException e)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Exceeded the time to find the All Categories css.", e);
+            }
+            return Collections.emptyList();
+        }
+    }
+
     public boolean isItemVisble(String contentName)
     {
         WebDroneUtil.checkMandotaryParam("contentName", contentName);
@@ -1146,6 +1203,28 @@ public class DocumentLibraryPage extends SitePage
         throw new PageException("Unable to find the Documents Tree link.");
     }
 
+    /**
+     * This method is used to open on the categories tree, on DocumentLibraryPage or Repository Page.
+     *
+     * @return - DocumentLibraryPage
+     */
+    public HtmlPage openCategoriesTree()
+    {
+        try
+        {
+            WebElement cat = drone.findAndWait(CATEGORIES_IN_TREE);
+            if(cat.getAttribute("class").contains("closed"))
+                drone.findAndWait(CATEGORIES_TREE_CSS).click();
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded time to find the categories tree.", e);
+        }
+        throw new PageException("Unable to find the Categories Tree link.");
+    }
+
+
     private FileDirectoryInfo getFileDirectoryInfo(String nodeRef, WebElement webElement)
     {
         if (viewType == null)
@@ -1324,8 +1403,10 @@ public class DocumentLibraryPage extends SitePage
      */
     public DocumentLibraryPage createContentFromTemplate(String templateName)
     {
-        try{
-            if(!templateName.isEmpty()){
+        try
+        {
+            if(!templateName.isEmpty())
+            {
                 getNavigation().selectCreateContentFromTemplate();
                 WebElement template = getTemplate(templateName);
                 template.click();
@@ -1355,13 +1436,12 @@ public class DocumentLibraryPage extends SitePage
                 getNavigation().selectCreateFolderFromTemplate();
                 WebElement template = getTemplate(templateName);
                 template.click();
-                drone.getCurrentPage().render();
                 WebElement okButton = drone.findAndWait(submitButton);
                 okButton.click();
                 waitUntilMessageAppearAndDisappear("Folder", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                 DocumentLibraryPage page = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
                 page.setShouldHaveFiles(true);
-                return page;
+                return page.render();
             }
         }
         catch (StaleElementReferenceException ste)
@@ -1408,6 +1488,62 @@ public class DocumentLibraryPage extends SitePage
             }
         }
         throw new PageOperationException(String.format("Template [%s] didn't found on page.", templateName));
+    }
+
+    /**
+     * Create content from template
+     *
+     * @param templateName
+     * @return {@link DocumentLibraryPage}
+     */
+    public DocumentLibraryPage createContentFromTemplateHover(String templateName)
+    {
+        try{
+            if(!templateName.isEmpty()){
+                getNavigation().selectCreateContentFromTemplateHover().render();
+                WebElement template = getTemplate(templateName);
+                template.click();
+
+                return  new DocumentLibraryPage(drone).render();
+            }
+        }
+        catch (StaleElementReferenceException ste)
+        {
+        }
+
+        throw new PageOperationException(String.format("Template didn't found [%s]", templateName));
+
+    }
+
+    /**
+     * Create folder from template
+     *
+     * @param templateName
+     * @return {@link DocumentLibraryPage}
+     */
+    public DocumentLibraryPage createFolderFromTemplateHover(String templateName)
+    {
+        try{
+            if(!templateName.isEmpty()){
+                getNavigation().selectCreateFolderFromTemplateHover().render();
+//                WebElement template = getTemplate(templateName);
+//                template.click();
+                drone.findAndWait(By.xpath("//div[@class='bd']//span[contains(text(), '" + templateName + "')]")).click();
+//                drone.getCurrentPage().render();
+                WebElement okButton = drone.findAndWait(submitButton);
+                okButton.click();
+                waitUntilMessageAppearAndDisappear("Folder", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                DocumentLibraryPage page = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
+                page.setShouldHaveFiles(true);
+                return page;
+            }
+        }
+        catch (StaleElementReferenceException ste)
+        {
+        }
+
+        throw new PageOperationException(String.format("Template didn't found [%s]", templateName));
+
     }
 
 }

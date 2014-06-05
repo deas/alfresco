@@ -28,13 +28,13 @@ import java.util.List;
 import org.alfresco.po.share.dashlet.SiteContentDashlet;
 import org.alfresco.po.share.dashlet.SiteContentFilter;
 import org.alfresco.po.share.dashlet.sitecontent.SimpleViewInformation;
-import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserDashboard;
 import org.alfresco.share.util.api.CreateUserAPI;
-import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -98,27 +98,27 @@ public class RecentlyModifiedDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Open Site DashBoard
-        SiteDashboardPage siteDashBoardPage = openSiteDashboard(drone, siteName);
+        openSiteDashboard(drone, siteName);
 
-        SiteContentDashlet siteContentDashlet = siteDashBoardPage.getDashlet(SITE_CONTENT_DASHLET).render();
+        SiteContentDashlet siteContentDashlet = ShareUserDashboard.getDashlet(drone, Dashlets.SITE_CONTENT).render();
 
         siteContentDashlet.selectFilter(SiteContentFilter.MY_FAVOURITES);
 
         siteContentDashlet.clickSimpleView();
 
-        for (int i = 0; i < retrySearchCount; i++)
-        {
-            try
-            {
-                siteContentDashlet.renderSimpleViewWithContent();
-            }
-            catch (PageRenderTimeException e)
-            {
-                // There is Exception going retry again.
-                continue;
-            }
-            break;
-        }
+//        for (int i = 0; i < retrySearchCount; i++)
+//        {
+//            try
+//            {
+//                siteContentDashlet.renderSimpleViewWithContent();
+//            }
+//            catch (PageRenderTimeException e)
+//            {
+//                // There is Exception going retry again.
+//                continue;
+//            }
+//            break;
+//        }
 
         siteContentDashlet.renderSimpleViewWithContent();
 
@@ -136,7 +136,9 @@ public class RecentlyModifiedDashletTest extends AbstractUtils
         // MyProfilePage profilePage = simpleViewInformation.clickUser();
         // assertTrue(profilePage.titlePresent());
 
-        siteDashBoardPage = openSiteDashboard(drone, siteName);
+        openSiteDashboard(drone, siteName);
+        
+        siteContentDashlet = ShareUserDashboard.getDashlet(drone, Dashlets.SITE_CONTENT).render();
         informations = siteContentDashlet.getSimpleViewInformation();
         simpleViewInformation = informations.get(0);
 

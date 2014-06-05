@@ -128,7 +128,7 @@ public class SecurityXssTest extends AbstractUtils
         assertNull(messages.get(CreatePlainTextContentPage.Fields.DESCRIPTION));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.CONTENT));
 
-        contentPage.cancel();
+        contentPage.cancel().render();
 
         repoPage = ShareUserRepositoryPage.openRepository(drone);
         contentDetails.setName(fileName);
@@ -277,7 +277,7 @@ public class SecurityXssTest extends AbstractUtils
         NewFolderPage newFolderPage = ShareUserRepositoryPage.createFolderInRepositoryWithValidation(drone, XSS_STRING_4, title, description).render();
         assertEquals(newFolderPage.getMessage(NewFolderPage.Fields.NAME), drone.getValue("message.value.contains.illegal.characters"));
 
-        newFolderPage.selectCancel();
+        newFolderPage.selectCancel().render();
 
         RepositoryPage repoPage = ShareUserRepositoryPage.createFolderInRepositoryWithValidation(drone, subFolderName, title, description).render();
 
@@ -519,7 +519,7 @@ public class SecurityXssTest extends AbstractUtils
         assertNull(messages.get(CreatePlainTextContentPage.Fields.DESCRIPTION));
         assertNull(messages.get(CreatePlainTextContentPage.Fields.CONTENT));
 
-        editTextDocumentPage.cancel();
+        editTextDocumentPage.cancel().render();
         contentDetails.setName(fileName);
 
         ShareUserRepositoryPage.editTextDocumentInLine(drone, fileName, contentDetails).render();
@@ -559,15 +559,15 @@ public class SecurityXssTest extends AbstractUtils
         ShareUserRepositoryPage.uploadFileInFolderInRepository(drone, fileInfo);
 
         //ensure the new file is visible on the screen
-        repoPage.getNavigation().selectSortFieldFromDropDown(SortField.CREATED);
-        repoPage.getNavigation().sortAscending(false);
+        repoPage.getNavigation().selectSortFieldFromDropDown(SortField.CREATED).render();
+        repoPage.getNavigation().sortAscending(false).render();
 
         FileDirectoryInfo fileDirInfo = repoPage.getFileDirectoryInfo(fileName);
-        StartWorkFlowPage stWorkFlow = fileDirInfo.selectStartWorkFlow();
+        StartWorkFlowPage stWorkFlow = fileDirInfo.selectStartWorkFlow().render();
 
         WorkFlow workFlow = stWorkFlow.getWorkflowPage(WorkFlowType.NEW_WORKFLOW).render(maxWaitTime);
 
-        AssignmentPage assignPage = workFlow.selectReviewer();
+        AssignmentPage assignPage = workFlow.selectReviewer().render();
 
         assignPage.searchForUser(XSS_STRING_1);
 

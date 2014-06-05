@@ -69,7 +69,7 @@ public class ChannelManagerPageTest extends AbstractTest
         assertFalse(channelManagerPage.isChannelPresent(Flickr));
     }
 
-    @Test(groups = "Enterprise-only", dependsOnMethods = "checkDeletingNonAuthorisedChannel", timeOut = 400000)
+    @Test(groups = "Enterprise-only", dependsOnMethods = "checkDeletingNonAuthorisedChannel", timeOut = 400000, enabled=false)
     public void checkCreatingAuthorisedChannel() throws Exception
     {
         ChannelManagerPage channelManagerPage = drone.getCurrentPage().render();
@@ -79,7 +79,7 @@ public class ChannelManagerPageTest extends AbstractTest
         assertTrue(channelManagerPage.isChannelAuthorised(Flickr));
     }
 
-    @Test(groups = "Enterprise-only", dependsOnMethods = "checkCreatingAuthorisedChannel", timeOut = 400000)
+    @Test(groups = "Enterprise-only", dependsOnMethods = "checkCreatingAuthorisedChannel", timeOut = 400000, enabled=false)
     public void checkDeletingAuthorisedChannel() throws Exception
     {
         ChannelManagerPage channelManagerPage = drone.getCurrentPage().render();

@@ -4,6 +4,7 @@ import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
@@ -29,7 +30,7 @@ public class DataListDirectoryInfo extends HtmlElement
      *
      * @return NewList Form
      */
-    public NewListForm clickEdit ()
+    protected NewListForm clickEdit ()
     {
         try
         {
@@ -47,7 +48,7 @@ public class DataListDirectoryInfo extends HtmlElement
      *
      * @return DataList page
      */
-    public DataListPage clickDelete ()
+    protected DataListPage clickDelete ()
     {
         try
         {
@@ -58,5 +59,31 @@ public class DataListDirectoryInfo extends HtmlElement
         {
             throw new ShareException("Unable to find " + DELETE_LINK);
         }
+    }
+
+    protected boolean isEditDisplayed()
+    {
+        try
+        {
+            WebElement editLink = findElement(EDIT_LINK);
+            return editLink.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        return false;
+    }
+
+    protected boolean isDeleteDisplayed()
+    {
+        try
+        {
+            WebElement deleteLink = findElement(DELETE_LINK);
+            return deleteLink.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        return false;
     }
 }

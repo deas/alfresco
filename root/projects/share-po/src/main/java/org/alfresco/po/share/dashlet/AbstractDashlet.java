@@ -14,11 +14,6 @@
  */
 package org.alfresco.po.share.dashlet;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.RenderTime;
@@ -28,10 +23,12 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -85,7 +82,7 @@ abstract class AbstractDashlet extends SharePage
      * Checks if dashlet is empty by verifying that dashlet div class empty
      * is not displayed.
      *
-     * @param dashlet css locator
+     * @param css locator
      * @return true if empty
      */
     protected synchronized boolean isEmpty(final String css)
@@ -132,23 +129,30 @@ abstract class AbstractDashlet extends SharePage
      */
     protected synchronized List<ShareLink> getList(final String csslocator)
     {
-        if (csslocator == null || csslocator.isEmpty())
+        try
         {
-            throw new UnsupportedOperationException("Selector By value is required");
-        }
-        // Populate ShareLinks with content in dashlet
-        List<WebElement> links = dashlet.findElements(By.cssSelector(csslocator));
-        if (links == null)
-        {
-            return Collections.emptyList();
-        }
+            if (csslocator == null || csslocator.isEmpty())
+            {
+                throw new UnsupportedOperationException("Selector By value is required");
+            }
+            // Populate ShareLinks with content in dashlet
+            List<WebElement> links = dashlet.findElements(By.cssSelector(csslocator));
+            if (links == null)
+            {
+                return Collections.emptyList();
+            }
 
-        List<ShareLink> shareLinks = new ArrayList<ShareLink>();
-        for (WebElement site : links)
-        {
-            shareLinks.add(new ShareLink(site, drone));
+            List<ShareLink> shareLinks = new ArrayList<ShareLink>();
+            for (WebElement site : links)
+            {
+                shareLinks.add(new ShareLink(site, drone));
+            }
+            return shareLinks;
         }
-        return shareLinks;
+        catch (StaleElementReferenceException e)
+        {
+            return getList(csslocator);
+        }
     }
 
     protected synchronized boolean renderBasic(RenderTime timer, final String css)
@@ -222,7 +226,7 @@ abstract class AbstractDashlet extends SharePage
      */
     protected void scrollDownToDashlet()
     {
-        drone.findAndWait(resizeHandle).click();
+        dashlet.findElement(resizeHandle).click();
 
     }
 
@@ -322,7 +326,7 @@ abstract class AbstractDashlet extends SharePage
     {
         try
         {
-            return drone.findAndWait(DASHLET_TITLE).getText();
+            return dashlet.findElement(DASHLET_TITLE).getText();
         }
         catch (TimeoutException te)
         {

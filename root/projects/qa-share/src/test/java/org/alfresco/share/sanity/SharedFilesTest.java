@@ -1,7 +1,37 @@
+/*
+ * Copyright (C) 2005-2013s Alfresco Software Limited.
+ * This file is part of Alfresco
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.alfresco.share.sanity;
+
+import static org.alfresco.po.share.site.document.DocumentAspect.CLASSIFIABLE;
+import static org.alfresco.po.share.site.document.DocumentAspect.EMAILED;
+import static org.alfresco.po.share.site.document.DocumentAspect.VERSIONABLE;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertTrue;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.enums.UserRole;
+import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.site.contentrule.FolderRulesPage;
@@ -11,36 +41,36 @@ import org.alfresco.po.share.site.contentrule.createrules.selectors.AbstractIfSe
 import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.ActionSelectorEnterpImpl;
 import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.WhenSelectorImpl;
 import org.alfresco.po.share.site.document.*;
-import org.alfresco.po.share.site.document.TreeMenuNavigation.DocumentsMenu;
-import org.alfresco.po.share.workflow.*;
+import org.alfresco.po.share.workflow.NewWorkflowPage;
+import org.alfresco.po.share.workflow.Priority;
+import org.alfresco.po.share.workflow.StartWorkFlowPage;
+import org.alfresco.po.share.workflow.WorkFlowFormDetails;
+import org.alfresco.po.share.workflow.WorkFlowType;
 import org.alfresco.share.site.document.DocumentDetailsActionsTest;
-import org.alfresco.share.util.*;
+import org.alfresco.share.util.AbstractUtils;
+import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserMembers;
+import org.alfresco.share.util.ShareUserRepositoryPage;
+import org.alfresco.share.util.ShareUserSharedFilesPage;
+import org.alfresco.share.util.ShareUserSitePage;
+import org.alfresco.share.util.WebDroneType;
 import org.alfresco.share.util.api.CreateUserAPI;
-import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.WebDroneImpl;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
-import static org.alfresco.po.share.site.document.DocumentAspect.*;
-import static org.testng.Assert.*;
 
 /**
  * This class contains the sanity tests for shared files.
  * 
  * @author Antonik Olga
  */
-// TODO: Add listener
+@Listeners(FailedTestListener.class)
 public class SharedFilesTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(DocumentDetailsActionsTest.class);
@@ -51,6 +81,7 @@ public class SharedFilesTest extends AbstractUtils
     protected String file = "testFile";
     protected String folder = "testFolder";
     protected String user = "Enterprise40x_14676";
+    public static long downloadWaitTime = 3000;
 
     @Override
     @BeforeClass(alwaysRun = true)
@@ -71,7 +102,7 @@ public class SharedFilesTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepSanity" })
-    public void dataPrep_Enterprise40x_14638() throws Exception
+    public void dataPrep_ALF_3062() throws Exception
     {
         testName = getTestName();
         testUser = getUserNameFreeDomain(testName);
@@ -87,20 +118,22 @@ public class SharedFilesTest extends AbstractUtils
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
         // navigate to the Share Repository page
-        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        ShareUserRepositoryPage.openRepositorySimpleView(drone).render();
 
         // open Data Dictionary > Node Templates folder and upload template file to the Node Templates
         String[] fileInfo = { fileName, folderPath };
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.uploadFileInFolderInRepository(drone, fileInfo);
+        RepositoryPage repositoryPage = ShareUserRepositoryPage.uploadFileInFolderInRepository(drone, fileInfo).render();
+
+        new File(DATA_FOLDER + SLASH + fileName).delete();
 
         // TODO: Discuss: Remove asserts from dataprep methods. For sanity no separate dataprep is necessary
         assertTrue(repositoryPage.isFileVisible(fileName), "File wasn't be uploaded to the Data Dictionary > Node Templates");
 
         // navigate to the Dictionary > SpaceTemplates
-        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + "Data Dictionary" + SLASH + "Space Templates").render(maxWaitTime);
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + "Data Dictionary" + SLASH + "Space Templates").render();
 
         // create template folder
-        repositoryPage = ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
+        repositoryPage = ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName).render();
 
         assertTrue(repositoryPage.isItemVisble(folderName), "Failed to create new folder template into the Data Dictionary > Space Templates");
 
@@ -115,7 +148,7 @@ public class SharedFilesTest extends AbstractUtils
     }
 
     @Test(groups = { "Sanity", "EnterpriseOnly" })
-    public void Enterprise40x_14638() throws Exception
+    public void ALF_3062() throws Exception
     {
         testName = getTestName();
         testUser = getUserNameFreeDomain(testName);
@@ -136,8 +169,7 @@ public class SharedFilesTest extends AbstractUtils
         // click Upload, select some files and upload
         File newFileName1 = newFile(DATA_FOLDER + (file1), file1);
         sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(drone, newFileName1);
-        
-        // TODO: Why is the step necessary (only) here?
+
         FileUtils.forceDelete(newFileName1);
 
         assertTrue(sharedFilesPage.isFileVisible(newFileName1.getName()), "Uploaded file is not visible on the Shared Files page");
@@ -159,7 +191,7 @@ public class SharedFilesTest extends AbstractUtils
         fileDirectoryInfo = sharedFilesPage.getFileDirectoryInfo(plainFile);
         assertTrue(!fileDirectoryInfo.getPreViewUrl().isEmpty());
 
-        detailsPage = sharedFilesPage.selectFile(plainFile);
+        detailsPage = sharedFilesPage.selectFile(plainFile).render();
         assertTrue(detailsPage.isDocumentDetailsPage(), "Failed to open Document Details page for plain text file");
         assertTrue(detailsPage.getPreviewerClassName().equals("previewer PdfJs"), "Preview isn't correctly displayed on details page for plain text file");
 
@@ -172,7 +204,7 @@ public class SharedFilesTest extends AbstractUtils
         fileDirectoryInfo = sharedFilesPage.getFileDirectoryInfo(xmlFile);
         assertTrue(!fileDirectoryInfo.getPreViewUrl().isEmpty());
 
-        detailsPage = sharedFilesPage.selectFile(xmlFile);
+        detailsPage = sharedFilesPage.selectFile(xmlFile).render();
         assertTrue(detailsPage.isDocumentDetailsPage(), "Failed to open Document Details page for XML file");
         assertTrue(detailsPage.getPreviewerClassName().equals("previewer PdfJs"), "Preview isn't correctly displayed on details page for XML file");
 
@@ -185,18 +217,19 @@ public class SharedFilesTest extends AbstractUtils
         fileDirectoryInfo = sharedFilesPage.getFileDirectoryInfo(htmlFile);
         assertTrue(!fileDirectoryInfo.getPreViewUrl().isEmpty());
 
-        detailsPage = sharedFilesPage.selectFile(htmlFile);
+        detailsPage = sharedFilesPage.selectFile(htmlFile).render();
         assertTrue(detailsPage.isDocumentDetailsPage(), "Failed to open Document Details page for HTML file");
-        assertTrue(detailsPage.getPreviewerClassName().equals("previewer PdfJs"), "Preview isn't correctly displayed on details page for HTML file");
+        // assertTrue(detailsPage.getPreviewerClassName().equals("previewer PdfJs"), "Preview isn't correctly displayed on details page for HTML file");
 
         // create document from template
-        sharedFilesPage = ShareUserSharedFilesPage.createContentFromTemplate(drone, fileName);
+        sharedFilesPage = ShareUserSharedFilesPage.createContentFromTemplate(drone, fileName).render();
         fileDirectoryInfo = sharedFilesPage.getFileDirectoryInfo(fileName);
         assertTrue(!fileDirectoryInfo.getPreViewUrl().isEmpty());
 
-        detailsPage = sharedFilesPage.selectFile(fileName);
+        detailsPage = sharedFilesPage.selectFile(fileName).render();
         assertTrue(detailsPage.isDocumentDetailsPage(), "Failed to open Document Details page for file created from template");
-        assertTrue(detailsPage.getPreviewerClassName().equals("previewer PdfJs"), "Preview isn't correctly displayed on details page for file created from template");
+        assertTrue(detailsPage.getPreviewerClassName().equals("previewer PdfJs"),
+                "Preview isn't correctly displayed on details page for file created from template");
 
         // create folder
         sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone);
@@ -204,7 +237,7 @@ public class SharedFilesTest extends AbstractUtils
         assertTrue(sharedFilesPage.isItemVisble(newFolder), "Folder wasn't be created");
 
         // create folder from template
-        sharedFilesPage = ShareUserSharedFilesPage.createFolderFromTemplate(drone, folderName).render(maxWaitTime);
+        sharedFilesPage = ShareUserSharedFilesPage.createFolderFromTemplate(drone, folderName).render();
         assertTrue(sharedFilesPage.isItemVisble(folderName), "Failed to create new folder from template");
 
         ShareUser.logout(drone);
@@ -220,7 +253,7 @@ public class SharedFilesTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepSanity" })
-    public void dataPrep_Enterprise40x_14639() throws Exception
+    public void dataPrep_ALF_3063() throws Exception
     {
         testName = getTestName();
         testUser = getUserNameFreeDomain(testName);
@@ -229,43 +262,38 @@ public class SharedFilesTest extends AbstractUtils
         // create user
         String[] testUserInfo = new String[] { testUser };
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-        // created user is logged in
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-        // navigate to Shared Files
-        SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone);
-        assertTrue(sharedFilesPage.getTitle().contains("Shared Files"), "Failed to navigate to the Shared Files page");
-
-        // click Upload, select some files and upload
-        File newFileName1 = newFile(DATA_FOLDER + (fileName), fileName);
-        sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(drone, newFileName1);
-
-        FileUtils.forceDelete(newFileName1);
-
-        assertTrue(sharedFilesPage.isFileVisible(newFileName1.getName()), "Uploaded file is not visible on the Shared Files page");
-
     }
 
     @Test(groups = { "Sanity", "EnterpriseOnly" })
-    public void Enterprise40x_14639() throws Exception
+    public void ALF_3063() throws Exception
     {
         testName = getTestName();
         testUser = getUserNameFreeDomain(testName);
-        fileName = getFileName(testName);
+        fileName = getFileName(testName) + System.currentTimeMillis();
         String tag = getRandomString(5);
-        String folderForCopy = "4copy";
-        String folderForMove = "4move";
+        String folderForCopy = "4copy" + System.currentTimeMillis();
+        String folderForMove = "4move" + System.currentTimeMillis();
+
         try
         {
-            customDrone = ((WebDroneImpl) ctx.getBean(WebDroneType.DownLoadDrone.getName()));
-            dronePropertiesMap.put(customDrone, (ShareTestProperty) ctx.getBean("shareTestProperties"));
-            maxWaitTime = ((WebDroneImpl) customDrone).getMaxPageRenderWaitTime();
+            setupCustomDrone(WebDroneType.DownLoadDrone);
 
             ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
             // navigate to Shared Files
-            SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(customDrone).render(maxWaitTime);
+            SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
+            assertTrue(sharedFilesPage.getTitle().contains("Shared Files"), "Failed to navigate to the Shared Files page");
+
+            // click Upload, select some files and upload
+            File newFileName1 = newFile(DATA_FOLDER + (fileName + ".txt"), fileName);
+            sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(customDrone, newFileName1);
+
+            FileUtils.forceDelete(newFileName1);
+
+            assertTrue(sharedFilesPage.isFileVisible(newFileName1.getName()), "Uploaded file is not visible on the Shared Files page");
+
+            // navigate to Shared Files
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
             assertTrue(sharedFilesPage.getTitle().contains("Shared Files"), "Failed to navigate to the Shared Files page");
 
             // mark the document as favorite
@@ -290,6 +318,9 @@ public class SharedFilesTest extends AbstractUtils
 
             // comment on the document
             ShareUserSharedFilesPage.addCommentToFile(customDrone, fileName + ".txt", "test", REPO);
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render();
+            fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName + ".txt");
+            assertTrue(fileInfo.getCommentsCount() > 0, "Got comments count: " + fileInfo.getCommentsCount());
 
             // click Share link
             ShareLinkPage shareLinkPage = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName + ".txt").clickShareLink().render();
@@ -299,8 +330,37 @@ public class SharedFilesTest extends AbstractUtils
             assertTrue(shareLinkPage.isGooglePlusLinkPresent());
             assertTrue(shareLinkPage.isViewLinkPresent());
 
-            sharedFilesPage = shareLinkPage.clickOnUnShareButton().render();
+            sharedFilesPage = shareLinkPage.clickOnUnShareButton().render(maxWaitTime);
+
             assertFalse(sharedFilesPage.getFileDirectoryInfo(fileName + ".txt").isFileShared());
+
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
+
+            // click View in Browser
+            String mainWindow = customDrone.getWindowHandle();
+            fileInfo = sharedFilesPage.getFileDirectoryInfo(fileName + ".txt");
+            fileInfo.selectViewInBrowser();
+            String htmlSource = ((WebDroneImpl) customDrone).getDriver().getPageSource();
+            assertTrue(htmlSource.contains(fileName), "Document isn't opened in a browser");
+            customDrone.closeWindow();
+            customDrone.switchToWindow(mainWindow);
+            // String newWindow = null;
+            // assertTrue(htmlSource.contains(fileName));
+            //
+            // // close opened window after View in Browser action
+            // for (final String window : customDrone.getWindowHandles())
+            // {
+            // if (!currentWindow.equals(window))
+            // {
+            // newWindow = window;
+            // }
+            // }
+            //
+            // if (newWindow != null)
+            // {
+            // ((WebDroneImpl) customDrone).getDriver().close();
+            // customDrone.switchToWindow(newWindow);
+            // }
 
             // click Download from the document actions
             fileInfo = sharedFilesPage.getFileDirectoryInfo(fileName + ".txt");
@@ -309,36 +369,15 @@ public class SharedFilesTest extends AbstractUtils
             // Check the file is downloaded successfully
             sharedFilesPage.waitForFile(downloadDirectory + fileName + ".txt");
             List<String> extractedChildFilesOrFolders = ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory);
-            Assert.assertTrue(extractedChildFilesOrFolders.contains(fileName + ".txt"));
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesSimpleView(customDrone).render(maxWaitTime);
-            // click View in Browser
-            fileInfo = sharedFilesPage.getFileDirectoryInfo(fileName + ".txt");
-            fileInfo.selectViewInBrowser();
-            String htmlSource = ((WebDroneImpl) customDrone).getDriver().getPageSource();
-            String currentWindow = customDrone.getWindowHandle();
-            String newWindow = null;
-            Assert.assertTrue(htmlSource.contains(fileName));
+            assertTrue(extractedChildFilesOrFolders.contains(fileName + ".txt"));
+            sharedFilesPage = (SharedFilesPage) ShareUserSitePage.selectView(customDrone, ViewType.DETAILED_VIEW).render(maxWaitTime);
 
-            // close opened window after View in Browser action
-            for (final String window : customDrone.getWindowHandles())
-            {
-                if (!currentWindow.equals(window))
-                {
-                    newWindow = window;
-                }
-            }
-
-            if (newWindow != null)
-            {
-                ((WebDroneImpl) customDrone).getDriver().close();
-                customDrone.switchToWindow(newWindow);
-            }
-
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(customDrone).render(maxWaitTime);
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
 
             // click Edit Properties for content
+            sharedFilesPage = (SharedFilesPage) ShareUserSitePage.selectView(customDrone, ViewType.DETAILED_VIEW).render(maxWaitTime);
             fileInfo = sharedFilesPage.getFileDirectoryInfo(fileName + ".txt");
-            EditDocumentPropertiesPage editDocumentPropertiesPage = fileInfo.selectEditProperties().render(maxWaitTime);
+            EditDocumentPropertiesPage editDocumentPropertiesPage = fileInfo.selectEditProperties().render();
             assertTrue(editDocumentPropertiesPage.isEditPropertiesPopupVisible());
 
             // click All Properties
@@ -373,7 +412,7 @@ public class SharedFilesTest extends AbstractUtils
             FileUtils.forceDelete(newFileName);
 
             // verify version
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render();
             fileInfo = sharedFilesPage.getFileDirectoryInfo(fileName + ".txt");
             String currentVersion = fileInfo.getVersionInfo();
             assertNotEquals(actualVersion, currentVersion);
@@ -390,10 +429,13 @@ public class SharedFilesTest extends AbstractUtils
             sharedFilesPage = editTextDocumentPage.save(contentDetails).render();
 
             assertTrue(sharedFilesPage.isFileVisible(fileName));
+            sharedFilesPage = (SharedFilesPage) ShareUserSitePage.selectView(customDrone, ViewType.DETAILED_VIEW).render(maxWaitTime);
 
             // edit content offline
             fileInfo = sharedFilesPage.getFileDirectoryInfo(fileName);
             fileInfo.selectEditOffline().render();
+
+            sharedFilesPage = sharedFilesPage.render();
 
             sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
             fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName);
@@ -414,15 +456,19 @@ public class SharedFilesTest extends AbstractUtils
 
             // copy the document to any place
             sharedFilesPage = ShareUserSharedFilesPage.createNewFolder(customDrone, folderForCopy);
+            fileInfo = sharedFilesPage.getFileDirectoryInfo(fileName);
+
             CopyOrMoveContentPage copyOrMoveContentPage = fileInfo.selectCopyTo().render();
             copyOrMoveContentPage.selectPath(REPO, folderForCopy).render().selectOkButton().render();
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(customDrone);
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render();
             sharedFilesPage = ShareUserSharedFilesPage.navigateToFolderInSharedFiles(customDrone, REPO + SLASH + folderForCopy);
-            Assert.assertTrue(sharedFilesPage.isFileVisible(fileName));
+            assertTrue(sharedFilesPage.isFileVisible(fileName));
 
             // move the document to any place
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
-            sharedFilesPage = ShareUserSharedFilesPage.createNewFolder(customDrone, folderForMove);
+            ShareUserSitePage.selectView(customDrone, ViewType.DETAILED_VIEW).render(maxWaitTime);
+
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
+            sharedFilesPage = ShareUserSharedFilesPage.createNewFolder(customDrone, folderForMove).render();
             fileInfo = sharedFilesPage.getFileDirectoryInfo(fileName);
             copyOrMoveContentPage = fileInfo.selectMoveTo().render();
             copyOrMoveContentPage.selectPath(REPO, folderForMove).render().selectOkButton().render();
@@ -455,17 +501,15 @@ public class SharedFilesTest extends AbstractUtils
             ConfirmDeletePage confirmDeletePage = fileInfo.selectDelete().render(maxWaitTime);
             sharedFilesPage = confirmDeletePage.selectAction(ConfirmDeletePage.Action.Delete).render(maxWaitTime);
             assertFalse(sharedFilesPage.isFileVisible(fileName));
-
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
             ShareUser.logout(customDrone);
             customDrone.quit();
 
+        }
+
+        catch (Exception e)
+        {
+            ShareUser.logout(customDrone);
+            customDrone.quit();
         }
     }
 
@@ -478,7 +522,7 @@ public class SharedFilesTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepSanity" })
-    public void dataPrep_Enterprise40x_14640() throws Exception
+    public void dataPrep_ALF_3064() throws Exception
     {
         testName = getTestName();
         testUser = getUserNameFreeDomain(testName);
@@ -499,34 +543,31 @@ public class SharedFilesTest extends AbstractUtils
         sharedFilesPage = ShareUserSharedFilesPage.createNewFolder(drone, folderName);
         sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone);
         assertTrue(sharedFilesPage.isItemVisble(folderName), "Failed to create new folder in Shared Files page");
-
+        ShareUser.logout(drone);
     }
 
     @Test(groups = { "Sanity", "EnterpriseOnly" })
-    public void Enterprise40x_14640() throws Exception
+    public void ALF_3064() throws Exception
     {
-        testName = getTestName();
-        testUser = getUserNameFreeDomain(testName);
-        folderName = testName + "_folder";
-        fileName = getTestName() + ".txt";
-        String tag = getRandomString(5);
-        String folderForCopy = "4copyFolder";
-        String folderForMove = "4moveFolder";
-
         try
         {
-            customDrone = ((WebDroneImpl) ctx.getBean(WebDroneType.DownLoadDrone.getName()));
-            dronePropertiesMap.put(customDrone, (ShareTestProperty) ctx.getBean("shareTestProperties"));
-            maxWaitTime = ((WebDroneImpl) customDrone).getMaxPageRenderWaitTime();
+            testName = getTestName();
+            testUser = getUserNameFreeDomain(testName);
+            folderName = testName + "_folder";
+            fileName = getTestName() + ".txt";
+            String tag = getRandomString(5);
+            String folderForCopy = "4copyFolder";
+            String folderForMove = "4moveFolder";
+
+            setupCustomDrone(WebDroneType.DownLoadDrone);
 
             // created user logs in
             ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
             // navigate to Shared Files
-            SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(customDrone).render(maxWaitTime);
+            SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
             assertTrue(sharedFilesPage.getTitle().contains("Shared Files"), "Failed to navigate to the Shared Files page");
 
-            Thread.sleep(2000);
             // mark the folder as favorite
             FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName);
 
@@ -549,17 +590,28 @@ public class SharedFilesTest extends AbstractUtils
 
             // comment on the folder
             ShareUserSharedFilesPage.addCommentToFolder(customDrone, folderName, "test");
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
+            fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName);
+            assertTrue(fileInfo.getCommentsCount() > 0, "Got comments count: " + fileInfo.getCommentsCount());
 
             // click Download as Zip from the actions
+            //
             fileInfo.selectDownloadFolderAsZip();
             sharedFilesPage.waitForFile(downloadDirectory + folderName + ".zip");
+
+            // Getting the refreshed FileDirectoryInfo object.
+            ShareUser.webDriverWait(customDrone, downloadWaitTime);
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
+            fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName);
 
             // click View Details
             FolderDetailsPage folderDetailsPage = fileInfo.selectViewFolderDetails().render(maxWaitTime);
             assertTrue(folderDetailsPage.getTitle().contains("Folder Details"), "Failed to open Folder Details page");
 
-            // navigate back to Shared Files. Edit Properties for folder and add any tag to it
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
+            // navigate back to Shared Files. Edit Properties for folder and add any
+            // tag to it
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render();
+            sharedFilesPage = (SharedFilesPage) ShareUserSitePage.selectView(customDrone, ViewType.DETAILED_VIEW).render(maxWaitTime);
             fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName);
             EditDocumentPropertiesPage editDocumentPropertiesPage = fileInfo.selectEditProperties().render();
             assertTrue(editDocumentPropertiesPage.isEditPropertiesPopupVisible());
@@ -591,9 +643,9 @@ public class SharedFilesTest extends AbstractUtils
 
             // move the folder to any place
             sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
-            sharedFilesPage = ShareUserSharedFilesPage.createNewFolder(customDrone, folderForMove);
+            sharedFilesPage = ShareUserSharedFilesPage.createNewFolder(customDrone, folderForMove).render(maxWaitTime);
             fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName);
-            copyOrMoveContentPage = fileInfo.selectMoveTo().render();
+            copyOrMoveContentPage = fileInfo.selectMoveTo().render(maxWaitTime);
             copyOrMoveContentPage.selectPath(REPO, folderForMove).selectOkButton().render(maxWaitTime);
 
             assertFalse(sharedFilesPage.isItemVisble(folderName));
@@ -603,7 +655,7 @@ public class SharedFilesTest extends AbstractUtils
 
             // manage Rules for the folder, create any rule.
             FolderRulesPage folderRulesPage = sharedFilesPage.getFileDirectoryInfo(folderName).selectManageRules().render(maxWaitTime);
-            Assert.assertTrue(folderRulesPage.isPageCorrect(folderName), "Rule page isn't correct");
+            assertTrue(folderRulesPage.isPageCorrect(folderName), "Rule page isn't correct");
 
             // fill "Name" field with correct data
             CreateRulePage createRulePage = folderRulesPage.openCreateRulePage().render();
@@ -626,12 +678,12 @@ public class SharedFilesTest extends AbstractUtils
 
             // click "Create" button
             FolderRulesPageWithRules folderRulesPageWithRules = createRulePage.clickCreate().render(maxWaitTime);
-            Assert.assertTrue(folderRulesPageWithRules.isPageCorrect(folderName), "Rule page with rule isn't correct");
+            assertTrue(folderRulesPageWithRules.isPageCorrect(folderName), "Rule page with rule isn't correct");
 
             sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
-            sharedFilesPage = ShareUserSharedFilesPage.navigateToFolderInSharedFiles(customDrone, REPO + SLASH + folderForMove + SLASH + folderName).render(maxWaitTime);
+            sharedFilesPage = ShareUserSharedFilesPage.navigateToFolderInSharedFiles(customDrone, REPO + SLASH + folderForMove + SLASH + folderName).render(
+                    maxWaitTime);
 
-            Thread.sleep(2000);
             File newFileName = newFile(DATA_FOLDER + (fileName), fileName);
             sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(customDrone, newFileName);
 
@@ -644,14 +696,18 @@ public class SharedFilesTest extends AbstractUtils
 
             // Manage Permissions, make some changes and click Cancel
             sharedFilesPage = ShareUserSharedFilesPage.navigateToFolderInSharedFiles(customDrone, REPO + SLASH + folderForMove).render(maxWaitTime);
+            sharedFilesPage = (SharedFilesPage) ShareUserSitePage.selectView(customDrone, ViewType.DETAILED_VIEW).render(maxWaitTime);
             fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName);
-            ManagePermissionsPage managePermissionsPage = fileInfo.selectManagePermission().render();
+            ManagePermissionsPage managePermissionsPage = fileInfo.selectManagePermission().render(maxWaitTime);
+            webDriverWait(customDrone, 7000);
             assertTrue(managePermissionsPage.isInheritPermissionEnabled());
-            managePermissionsPage = managePermissionsPage.toggleInheritPermission(false, ManagePermissionsPage.ButtonType.Yes);
+
+            managePermissionsPage = managePermissionsPage.toggleInheritPermission(false, ManagePermissionsPage.ButtonType.Yes).render();
             assertFalse(managePermissionsPage.isInheritPermissionEnabled());
             sharedFilesPage = managePermissionsPage.selectCancel().render();
 
-            // navigate to Manage Permissions page and verify that changes wasn't be saved
+            // navigate to Manage Permissions page and verify that changes wasn't be
+            // saved
             managePermissionsPage = fileInfo.selectManagePermission().render(maxWaitTime);
             assertTrue(managePermissionsPage.isInheritPermissionEnabled());
 
@@ -681,20 +737,16 @@ public class SharedFilesTest extends AbstractUtils
             ConfirmDeletePage confirmDeletePage = fileInfo.selectDelete().render();
             sharedFilesPage = confirmDeletePage.selectAction(ConfirmDeletePage.Action.Delete).render();
             assertFalse(sharedFilesPage.isItemVisble(folderName));
-
+            ShareUser.logout(customDrone);
+            customDrone.quit();
         }
-
-        catch (Throwable e)
+        catch (Exception e)
         {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-
             ShareUser.logout(customDrone);
             customDrone.quit();
 
         }
+
     }
 
     /**
@@ -711,7 +763,7 @@ public class SharedFilesTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepSanity" })
-    public void dataPrep_Enterprise40x_14641() throws Exception
+    public void dataPrep_ALF_3065() throws Exception
     {
         testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName + 1);
@@ -726,209 +778,203 @@ public class SharedFilesTest extends AbstractUtils
         String tag1 = testName + "tag1";
         String tag2 = testName + "tag2";
 
-        try
+        setupCustomDrone(WebDroneType.DownLoadDrone);
+
+        // create user
+        String[] testUserInfo = new String[] { testUser1 };
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
+        testUserInfo = new String[] { testUser2 };
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
+
+        // created user is logged in
+        ShareUser.login(customDrone, testUser1, DEFAULT_PASSWORD);
+
+        // navigate to Shared Files
+        SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
+        assertTrue(sharedFilesPage.getTitle().contains("Shared Files"), "Failed to navigate to the Shared Files page");
+
+        // upload files
+        File newFileName1 = newFile(DATA_FOLDER + (fileName1), fileName1);
+        File newFileName2 = newFile(DATA_FOLDER + (fileName2), fileName2);
+        File newFileName3 = newFile(DATA_FOLDER + (fileName3), fileName3);
+        File newFileName4 = newFile(DATA_FOLDER + (fileName4), fileName4);
+
+        sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(customDrone, newFileName1);
+        sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(customDrone, newFileName2);
+        sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(customDrone, newFileName3);
+        sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(customDrone, newFileName4);
+
+        FileUtils.forceDelete(newFileName1);
+        FileUtils.forceDelete(newFileName2);
+        FileUtils.forceDelete(newFileName3);
+        FileUtils.forceDelete(newFileName4);
+
+        assertTrue(sharedFilesPage.isFileVisible(newFileName1.getName()), "Uploaded " + newFileName1.getName()
+                + " file is not visible on the Shared Files page");
+        assertTrue(sharedFilesPage.isFileVisible(newFileName2.getName()), "Uploaded " + newFileName2.getName()
+                + " file is not visible on the Shared Files page");
+        assertTrue(sharedFilesPage.isFileVisible(newFileName3.getName()), "Uploaded " + newFileName3.getName()
+                + " file is not visible on the Shared Files page");
+        assertTrue(sharedFilesPage.isFileVisible(newFileName4.getName()), "Uploaded " + newFileName4.getName()
+                + " file is not visible on the Shared Files page");
+
+        // create folders
+        sharedFilesPage = ShareUserSharedFilesPage.createNewFolder(customDrone, folderName1);
+        sharedFilesPage = ShareUserSharedFilesPage.createNewFolder(customDrone, folderName2);
+        sharedFilesPage = ShareUserSharedFilesPage.createNewFolder(customDrone, folderName3);
+
+        sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
+        assertTrue(sharedFilesPage.isItemVisble(folderName1), "Failed to create " + folderName1 + " folder in Shared Files page");
+        assertTrue(sharedFilesPage.isItemVisble(folderName2), "Failed to create " + folderName2 + " folder in Shared Files page");
+        assertTrue(sharedFilesPage.isItemVisble(folderName3), "Failed to create " + folderName3 + " folder in Shared Files page");
+
+        // add permissions to user2
+        DocumentDetailsPage documentDetailsPage = sharedFilesPage.selectFile(fileName3).render(maxWaitTime);
+        ShareUserMembers.managePermissionsOnContent(customDrone, testUser2, fileName3, UserRole.EDITOR, true);
+
+        // one doc and folder with tag1
+        sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
+        FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
+        fileInfo.addTag(tag1);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName1);
+        fileInfo.addTag(tag1);
+
+        // one doc and folder with tag2
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName2);
+        fileInfo.addTag(tag2);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName2);
+        fileInfo.addTag(tag2);
+
+        // one doc is being edited offline
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
+        fileInfo.selectEditOffline().render();
+
+        sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
+        assertEquals(fileInfo.getContentInfo(), "This document is locked by you for offline editing.");
+
+        // one doc is being edited online
+        // TODO edit online
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName2);
+
+        // one doc is being edited offline by other user
+        ShareUser.login(customDrone, testUser2, DEFAULT_PASSWORD);
+        sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName3);
+
+        fileInfo.selectEditOffline().render(maxWaitTime);
+        assertTrue(ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName3).isEdited(), "The file is blocked for editing");
+
+        sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName3);
+        assertEquals(fileInfo.getContentInfo(), "This document is locked by you for offline editing.");
+
+        // one doc recently modified, one doc recently added
+        ShareUser.login(customDrone, testUser1, DEFAULT_PASSWORD);
+        sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
+        sharedFilesPage = (SharedFilesPage) ShareUserSitePage.selectView(customDrone, ViewType.DETAILED_VIEW).render(maxWaitTime);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName2);
+        EditDocumentPropertiesPage editDocumentPropertiesPage = fileInfo.selectEditProperties().render(maxWaitTime);
+        editDocumentPropertiesPage.setDescription(fileName2);
+        sharedFilesPage = editDocumentPropertiesPage.selectSaveWithValidation().render();
+
+        // one doc and folder is marked as favourite by current user
+        for (FileDirectoryInfo file : new FileDirectoryInfo[] { ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName2),
+                ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName2) })
         {
-            customDrone = ((WebDroneImpl) ctx.getBean(WebDroneType.DownLoadDrone.getName()));
-            dronePropertiesMap.put(customDrone, (ShareTestProperty) ctx.getBean("shareTestProperties"));
-            maxWaitTime = ((WebDroneImpl) customDrone).getMaxPageRenderWaitTime();
-
-            // create user
-            String[] testUserInfo = new String[] { testUser1 };
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
-            testUserInfo = new String[] { testUser2 };
-            CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
-
-            // created user is logged in
-            ShareUser.login(customDrone, testUser1, DEFAULT_PASSWORD);
-
-            // navigate to Shared Files
-            SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
-            assertTrue(sharedFilesPage.getTitle().contains("Shared Files"), "Failed to navigate to the Shared Files page");
-
-            // upload files
-            File newFileName1 = newFile(DATA_FOLDER + (fileName1), fileName1);
-            File newFileName2 = newFile(DATA_FOLDER + (fileName2), fileName2);
-            File newFileName3 = newFile(DATA_FOLDER + (fileName3), fileName3);
-            File newFileName4 = newFile(DATA_FOLDER + (fileName4), fileName4);
-
-            sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(customDrone, newFileName1);
-            sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(customDrone, newFileName2);
-            sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(customDrone, newFileName3);
-            sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(customDrone, newFileName4);
-
-            FileUtils.forceDelete(newFileName1);
-            FileUtils.forceDelete(newFileName2);
-            FileUtils.forceDelete(newFileName3);
-            FileUtils.forceDelete(newFileName4);
-
-            assertTrue(sharedFilesPage.isFileVisible(newFileName1.getName()), "Uploaded " + newFileName1.getName() + " file is not visible on the Shared Files page");
-            assertTrue(sharedFilesPage.isFileVisible(newFileName2.getName()), "Uploaded " + newFileName2.getName() + " file is not visible on the Shared Files page");
-            assertTrue(sharedFilesPage.isFileVisible(newFileName3.getName()), "Uploaded " + newFileName3.getName() + " file is not visible on the Shared Files page");
-            assertTrue(sharedFilesPage.isFileVisible(newFileName4.getName()), "Uploaded " + newFileName4.getName() + " file is not visible on the Shared Files page");
-
-            // create folders
-            sharedFilesPage = ShareUserSharedFilesPage.createNewFolder(customDrone, folderName1);
-            sharedFilesPage = ShareUserSharedFilesPage.createNewFolder(customDrone, folderName2);
-            sharedFilesPage = ShareUserSharedFilesPage.createNewFolder(customDrone, folderName3);
-
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(customDrone).render(maxWaitTime);
-            assertTrue(sharedFilesPage.isItemVisble(folderName1), "Failed to create " + folderName1 + " folder in Shared Files page");
-            assertTrue(sharedFilesPage.isItemVisble(folderName2), "Failed to create " + folderName2 + " folder in Shared Files page");
-            assertTrue(sharedFilesPage.isItemVisble(folderName3), "Failed to create " + folderName3 + " folder in Shared Files page");
-
-            // add permissions to user2
-            DocumentDetailsPage documentDetailsPage = sharedFilesPage.selectFile(fileName3).render(maxWaitTime);
-            ShareUserMembers.managePermissionsOnContent(customDrone, testUser2, fileName3, UserRole.EDITOR, true);
-
-            // one doc and folder with tag1
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
-            FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
-            fileInfo.addTag(tag1);
-            fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName1);
-            fileInfo.addTag(tag1);
-
-            // one doc and folder with tag2
-            fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName2);
-            fileInfo.addTag(tag2);
-            fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName2);
-            fileInfo.addTag(tag2);
-
-            // one doc is being edited offline
-            fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
-            fileInfo.selectEditOffline().render();
-
+            boolean beforeStatus = file.isFavourite();
+            if (!beforeStatus)
+                file.selectFavourite();
             sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
-            fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
-            assertEquals(fileInfo.getContentInfo(), "This document is locked by you for offline editing.");
-
-            // one doc is being edited online
-            // TODO edit online
-            fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName2);
-
-            // one doc is being edited offline by other user
-            ShareUser.login(customDrone, testUser2, DEFAULT_PASSWORD);
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(customDrone);
-            fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName3);
-
-            fileInfo.selectEditOffline().render();
-
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
-            fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName3);
-            assertEquals(fileInfo.getContentInfo(), "This document is locked by you for offline editing.");
-
-            // one doc recently modified, one doc recently added
-            ShareUser.login(customDrone, testUser1, DEFAULT_PASSWORD);
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(customDrone);
-            fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName2);
-
-            EditDocumentPropertiesPage editDocumentPropertiesPage = fileInfo.selectEditProperties().render(maxWaitTime);
-            editDocumentPropertiesPage.setDescription(fileName2);
-            sharedFilesPage = editDocumentPropertiesPage.selectSaveWithValidation().render();
-
-            // one doc and folder is marked as favourite by current user
-            for (FileDirectoryInfo file : new FileDirectoryInfo[] { ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName2),
-                    ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName2) })
-            {
-                boolean beforeStatus = file.isFavourite();
-                if (!beforeStatus)
-                    file.selectFavourite();
-                sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
-                assertTrue(file.isFavourite(), "File wasn't be marked as favorite");
-
-            }
-
-            // one doc and folder is favorite for another user
-            ShareUser.login(customDrone, testUser2, DEFAULT_PASSWORD);
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(customDrone);
-
-            for (FileDirectoryInfo file : new FileDirectoryInfo[] { ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName4),
-                    ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName3) })
-            {
-                boolean beforeStatus = file.isFavourite();
-                if (!beforeStatus)
-                    file.selectFavourite();
-                sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
-                assertTrue(file.isFavourite(), "File wasn't be marked as favorite");
-
-            }
-
-            // one doc and folder with category1, one doc and folder with category2
-            ShareUser.login(customDrone, testUser1, DEFAULT_PASSWORD);
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(customDrone);
-
-            List<DocumentAspect> aspects = new ArrayList<>();
-            aspects.add(CLASSIFIABLE);
-
-            List<Categories> category1 = new ArrayList<>();
-            category1.add(Categories.LANGUAGES);
-
-            List<Categories> category2 = new ArrayList<>();
-            category2.add(Categories.REGIONS);
-
-            documentDetailsPage = sharedFilesPage.selectFile(fileName2).render();
-            for (int i = 0; i < 2; i++)
-            {
-                if (i == 1)
-                    documentDetailsPage = sharedFilesPage.selectFile(fileName4).render();
-
-                SelectAspectsPage aspectsPage = documentDetailsPage.selectManageAspects().render();
-
-                aspectsPage.add(aspects);
-                documentDetailsPage = aspectsPage.clickApplyChanges().render();
-                editDocumentPropertiesPage = documentDetailsPage.selectEditProperties().render();
-                CategoryPage categoryPage = editDocumentPropertiesPage.getCategory();
-
-                if (i == 0)
-                    categoryPage.add(category1).render();
-                else
-                    categoryPage.add(category2).render();
-
-                categoryPage.clickOk();
-                documentDetailsPage = editDocumentPropertiesPage.selectSave().render();
-
-                if (i == 0)
-                    sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
-            }
-
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
-
-            fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName2);
-            for (int i = 0; i < 2; i++)
-            {
-                if (i == 1)
-                    fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName2);
-                FolderDetailsPage folderDetailsPage = fileInfo.selectViewFolderDetails().render();
-                SelectAspectsPage aspectsPage = folderDetailsPage.selectManageAspects().render();
-                aspectsPage.add(aspects);
-                folderDetailsPage = aspectsPage.clickApplyChanges().render();
-
-                editDocumentPropertiesPage = folderDetailsPage.selectEditProperties().render();
-                CategoryPage categoryPage = editDocumentPropertiesPage.getCategory();
-                if (i == 0)
-                    categoryPage.add(category1).render();
-                else
-                    categoryPage.add(category2).render();
-
-                categoryPage.clickOk();
-                folderDetailsPage = editDocumentPropertiesPage.selectSave().render();
-                sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
-            }
-        }
-        catch (Throwable e)
-        {
-            reportError(customDrone, testName, e);
-        }
-        finally
-        {
-
-            ShareUser.logout(customDrone);
-            customDrone.quit();
+            assertTrue(file.isFavourite(), "File wasn't be marked as favorite");
 
         }
+
+        // one doc and folder is favorite for another user
+        ShareUser.login(customDrone, testUser2, DEFAULT_PASSWORD);
+        sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
+
+        for (FileDirectoryInfo file : new FileDirectoryInfo[] { ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName4),
+                ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName3) })
+        {
+            boolean beforeStatus = file.isFavourite();
+            if (!beforeStatus)
+                file.selectFavourite();
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render();
+            assertTrue(file.isFavourite(), "File wasn't be marked as favorite");
+
+        }
+
+        // one doc and folder with category1, one doc and folder with category2
+        ShareUser.login(customDrone, testUser1, DEFAULT_PASSWORD);
+        sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render();
+
+        List<DocumentAspect> aspects = new ArrayList<>();
+        aspects.add(CLASSIFIABLE);
+
+        List<Categories> category1 = new ArrayList<>();
+        category1.add(Categories.LANGUAGES);
+
+        List<Categories> category2 = new ArrayList<>();
+        category2.add(Categories.REGIONS);
+
+        documentDetailsPage = sharedFilesPage.selectFile(fileName2).render();
+        for (int i = 0; i < 2; i++)
+        {
+            if (i == 1)
+                documentDetailsPage = sharedFilesPage.selectFile(fileName4).render();
+
+            SelectAspectsPage aspectsPage = documentDetailsPage.selectManageAspects().render();
+
+            aspectsPage.add(aspects);
+            documentDetailsPage = aspectsPage.clickApplyChanges().render();
+
+            documentDetailsPage = refreshSharePage(customDrone).render(maxWaitTime);
+            webDriverWait(customDrone, 7000);
+            editDocumentPropertiesPage = documentDetailsPage.selectEditProperties().render();
+            CategoryPage categoryPage = editDocumentPropertiesPage.getCategory();
+
+            if (i == 0)
+                categoryPage.add(category1).render();
+            else
+                categoryPage.add(category2).render();
+
+            categoryPage.clickOk();
+            documentDetailsPage = editDocumentPropertiesPage.selectSave().render();
+
+            if (i == 0)
+                sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
+        }
+
+        sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
+
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName2);
+        for (int i = 0; i < 2; i++)
+        {
+            if (i == 1)
+                fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, folderName2);
+            FolderDetailsPage folderDetailsPage = fileInfo.selectViewFolderDetails().render();
+            SelectAspectsPage aspectsPage = folderDetailsPage.selectManageAspects().render();
+            aspectsPage.add(aspects);
+            folderDetailsPage = aspectsPage.clickApplyChanges().render();
+
+            editDocumentPropertiesPage = folderDetailsPage.selectEditProperties().render();
+            CategoryPage categoryPage = editDocumentPropertiesPage.getCategory();
+            if (i == 0)
+                categoryPage.add(category1).render();
+            else
+                categoryPage.add(category2).render();
+
+            categoryPage.clickOk();
+            folderDetailsPage = editDocumentPropertiesPage.selectSave().render();
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone);
+        }
+
+        ShareUser.logout(customDrone);
     }
 
     @Test(groups = { "Sanity", "EnterpriseOnly" })
-    public void Enterprise40x_14641() throws Exception
+    public void ALF_3065() throws Exception
     {
         testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName + 1);
@@ -941,75 +987,99 @@ public class SharedFilesTest extends AbstractUtils
         String folderName3 = getFolderName(testName + 3);
         String tag2 = testName + "tag2";
 
+        setupCustomDrone(WebDroneType.DownLoadDrone);
+
         // click All Documents
-        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
-        SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(drone).render(maxWaitTime);
+        ShareUser.login(customDrone, testUser1, DEFAULT_PASSWORD);
+        SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(customDrone).render(maxWaitTime);
         assertTrue(sharedFilesPage.getTitle().contains("Shared Files"));
 
-        TreeMenuNavigation treeMenuNavigation = sharedFilesPage.getLeftMenus();
-        treeMenuNavigation.selectDocumentNode(TreeMenuNavigation.DocumentsMenu.ALL_DOCUMENTS).render();
-        
-        // TODO: Replace all thread.sleep and inconsistent results possibility with appropriate retry util with renderItem
-        // TODO: Use the pattern below for all remainder Document menu selections. Use getDocTreeMenuWithNavigation for the last file uploaded
-        // and individual asserts for the remaining files.  Do not aggregate multiple files into one assert.
-        // Thread.sleep(1000);
-        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(drone, fileName4, DocumentsMenu.ALL_DOCUMENTS, true), fileName4 + " cannot be found.");
-        assertTrue(sharedFilesPage.isFileVisible(fileName1), fileName1 + " cannot be found.");
-        assertTrue(sharedFilesPage.isFileVisible(fileName2), fileName2 + " cannot be found.");
-        assertTrue(sharedFilesPage.isFileVisible(fileName3), fileName3 + " cannot be found.");
-        assertFalse(sharedFilesPage.isItemVisble(folderName1), folderName1 + " should not be visible.");
-        assertFalse(sharedFilesPage.isItemVisble(folderName2), folderName2 + " should not be visible.");
-        assertFalse(sharedFilesPage.isItemVisble(folderName3), folderName3 + " should not be visible.");
+        TreeMenuNavigation treeMenuNavigation = sharedFilesPage.getLeftMenus().render();
+        webDriverWait(customDrone, 4000);
+
+        // TODO:inconsistent results possibility with appropriate retry util with renderItem
+        // and individual asserts for the remaining files.
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, fileName1, TreeMenuNavigation.DocumentsMenu.ALL_DOCUMENTS, true), fileName1
+                + " cannot be found.");
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, fileName2, TreeMenuNavigation.DocumentsMenu.ALL_DOCUMENTS, true), fileName2
+                + " cannot be found.");
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, fileName3, TreeMenuNavigation.DocumentsMenu.ALL_DOCUMENTS, true), fileName3
+                + " cannot be found.");
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, fileName4, TreeMenuNavigation.DocumentsMenu.ALL_DOCUMENTS, true), fileName4
+                + " cannot be found.");
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, folderName1, TreeMenuNavigation.DocumentsMenu.ALL_DOCUMENTS, false), folderName1
+                + " should not be visible.");
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, folderName2, TreeMenuNavigation.DocumentsMenu.ALL_DOCUMENTS, false), folderName2
+                + " should not be visible.");
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, folderName3, TreeMenuNavigation.DocumentsMenu.ALL_DOCUMENTS, false), folderName3
+                + " should not be visible.");
 
         // click I'm editing
         treeMenuNavigation = sharedFilesPage.getLeftMenus();
         treeMenuNavigation.selectDocumentNode(TreeMenuNavigation.DocumentsMenu.IM_EDITING).render();
-        // Thread.sleep(1000);
-        assertTrue(sharedFilesPage.isFileVisible(fileName1) && !sharedFilesPage.isFileVisible(fileName3));
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, fileName1, TreeMenuNavigation.DocumentsMenu.IM_EDITING, true), fileName1
+                + " cannot be found.");
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, fileName3, TreeMenuNavigation.DocumentsMenu.IM_EDITING, false), fileName3
+                + " should not be visible.");
 
         // click Others are Editing
         treeMenuNavigation.selectDocumentNode(TreeMenuNavigation.DocumentsMenu.OTHERS_EDITING).render();
-        // Thread.sleep(1000);
-        assertTrue(sharedFilesPage.isFileVisible(fileName3) && !sharedFilesPage.isFileVisible(fileName1));
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, fileName3, TreeMenuNavigation.DocumentsMenu.OTHERS_EDITING, true), fileName3
+                + " cannot be found.");
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, fileName1, TreeMenuNavigation.DocumentsMenu.OTHERS_EDITING, false), fileName1
+                + " should not be visible.");
 
         // click Recently Modified
         treeMenuNavigation.selectDocumentNode(TreeMenuNavigation.DocumentsMenu.RECENTLY_MODIFIED).render();
-        // Thread.sleep(1000);
-        assertTrue(sharedFilesPage.isFileVisible(fileName2));
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, fileName2, TreeMenuNavigation.DocumentsMenu.RECENTLY_MODIFIED, true), fileName2
+                + " cannot be found.");
 
         // click Recently Added
-        treeMenuNavigation.selectDocumentNode(TreeMenuNavigation.DocumentsMenu.RECENTLY_ADDED).render();
-        // Thread.sleep(1000);
-        assertTrue(sharedFilesPage.isFileVisible(fileName4));
+        treeMenuNavigation.selectDocumentNode(TreeMenuNavigation.DocumentsMenu.RECENTLY_ADDED).render(maxWaitTime);
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, fileName4, TreeMenuNavigation.DocumentsMenu.RECENTLY_ADDED, true), fileName4
+                + " cannot be found.");
 
         // click My Favourites
         treeMenuNavigation.selectDocumentNode(TreeMenuNavigation.DocumentsMenu.MY_FAVORITES).render();
-        // Thread.sleep(1000);
-        assertTrue(sharedFilesPage.isFileVisible(fileName2) && sharedFilesPage.isItemVisble(folderName2) && !sharedFilesPage.isFileVisible(fileName4)
-                && !sharedFilesPage.isItemVisble(folderName3));
+        webDriverWait(customDrone, 3000);
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, fileName2, TreeMenuNavigation.DocumentsMenu.MY_FAVORITES, true), fileName2
+                + " cannot be found.");
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, folderName2, TreeMenuNavigation.DocumentsMenu.MY_FAVORITES, true), folderName2
+                + " cannot be found.");
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, fileName4, TreeMenuNavigation.DocumentsMenu.MY_FAVORITES, false), fileName4
+                + " should not be visible.");
+        assertTrue(ShareUserSitePage.getDocTreeMenuWithRetry(customDrone, folderName3, TreeMenuNavigation.DocumentsMenu.MY_FAVORITES, false), folderName3
+                + " should not be visible.");
 
         // click on any folder under Shared Files section
         treeMenuNavigation = sharedFilesPage.getLeftMenus();
-        List<String> children = treeMenuNavigation.getNodeChildren(TreeMenuNavigation.TreeMenu.LIBRARY, drone.getValue(TreeMenuNavigation.SHARED_FILES_ROOT_PROPERTY));
+        List<String> children = treeMenuNavigation.getNodeChildren(TreeMenuNavigation.TreeMenu.LIBRARY,
+                customDrone.getValue(TreeMenuNavigation.SHARED_FILES_ROOT_PROPERTY));
         assertTrue(children.contains(folderName1));
-        treeMenuNavigation.selectNode(TreeMenuNavigation.TreeMenu.LIBRARY, drone.getValue(TreeMenuNavigation.SHARED_FILES_ROOT_PROPERTY), folderName1);
-        assertFalse(sharedFilesPage.isFileVisible(fileName1) && sharedFilesPage.isFileVisible(fileName2) && sharedFilesPage.isFileVisible(fileName3)
-                && sharedFilesPage.isFileVisible(fileName4) && sharedFilesPage.isItemVisble(folderName2) && sharedFilesPage.isItemVisble(folderName3));
+        treeMenuNavigation.selectNode(TreeMenuNavigation.TreeMenu.LIBRARY, customDrone.getValue(TreeMenuNavigation.SHARED_FILES_ROOT_PROPERTY), folderName1).render();
+        assertFalse(sharedFilesPage.isFileVisible(fileName1), fileName1 + " should not be visible.");
+        assertFalse(sharedFilesPage.isFileVisible(fileName2), fileName2 + " should not be visible.");
+        assertFalse(sharedFilesPage.isFileVisible(fileName3), fileName3 + " should not be visible.");
+        assertFalse(sharedFilesPage.isFileVisible(fileName4), fileName4 + " should not be visible.");
+        assertFalse(sharedFilesPage.isItemVisble(folderName2), folderName2 + " should not be visible.");
+        assertFalse(sharedFilesPage.isItemVisble(folderName3), folderName3 + " should not be visible.");
 
         // click on <category1> under Categories section
         treeMenuNavigation = sharedFilesPage.getLeftMenus();
-        sharedFilesPage = treeMenuNavigation.selectNode(TreeMenuNavigation.TreeMenu.CATEGORIES, drone.getValue(TreeMenuNavigation.CATEGORY_ROOT_PROPERTY), drone.getValue("category.languages")).render(
-                maxWaitTime);
-        // Thread.sleep(1000);
-        assertTrue(sharedFilesPage.isFileVisible(fileName2) && sharedFilesPage.isItemVisble(folderName2) && !sharedFilesPage.isFileVisible(fileName4)
-                && !sharedFilesPage.isItemVisble(folderName3));
+        sharedFilesPage = treeMenuNavigation.selectNode(TreeMenuNavigation.TreeMenu.CATEGORIES, customDrone.getValue(TreeMenuNavigation.CATEGORY_ROOT_PROPERTY),
+                customDrone.getValue("category.languages")).render(maxWaitTime);
+        webDriverWait(customDrone, 7000);
+        assertTrue(sharedFilesPage.isFileVisible(fileName2), fileName2 + " cannot be found.");
+        assertTrue(sharedFilesPage.isItemVisble(folderName2), folderName2 + " cannot be found.");
+        assertFalse(sharedFilesPage.isFileVisible(fileName4), fileName4 + " should not be visible.");
+        assertFalse(sharedFilesPage.isItemVisble(folderName3), folderName3 + " should not be visible.");
 
         // click on tag1 under Tags section
         sharedFilesPage = treeMenuNavigation.selectTagNode(tag2.toLowerCase()).render();
-        assertTrue(sharedFilesPage.isFileVisible(fileName2) && sharedFilesPage.isItemVisble(folderName2) && !sharedFilesPage.isFileVisible(fileName1)
-                && !sharedFilesPage.isItemVisble(folderName1));
-
-        ShareUser.logout(drone);
+        assertTrue(sharedFilesPage.isFileVisible(fileName2), fileName2 + " cannot be found.");
+        assertTrue(sharedFilesPage.isItemVisble(folderName2), folderName2 + " cannot be found.");
+        assertFalse(sharedFilesPage.isFileVisible(fileName1), fileName1 + " should not be visible.");
+        assertFalse(sharedFilesPage.isItemVisble(folderName1), folderName1 + " should not be visible.");
 
     }
 
@@ -1028,7 +1098,7 @@ public class SharedFilesTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepSanity" })
-    public void dataPrep_Enterprise40x_14676() throws Exception
+    public void dataPrep_ALF_3066() throws Exception
     {
         testName = getTestName();
         String testUser1 = getUserNameFreeDomain(user + 1);
@@ -1043,7 +1113,7 @@ public class SharedFilesTest extends AbstractUtils
         String folderName2 = folder + 2;
 
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-        SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(drone);
+        SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone);
 
         // create folder1
         sharedFilesPage = ShareUserSharedFilesPage.createNewFolder(drone, folderName1).render(maxWaitTime);
@@ -1054,7 +1124,7 @@ public class SharedFilesTest extends AbstractUtils
 
         // create document1
         File newFileName1 = newFile(DATA_FOLDER + (fileName1), fileName1);
-        sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(drone, newFileName1);
+        sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(drone, newFileName1).render();
         assertTrue(sharedFilesPage.isItemVisble(fileName1));
 
         // create folder2
@@ -1063,7 +1133,7 @@ public class SharedFilesTest extends AbstractUtils
         assertTrue(sharedFilesPage.isItemVisble(folderName2));
 
         File newFileName2 = newFile(DATA_FOLDER + (fileName2), fileName2);
-        sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(drone, newFileName2);
+        sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(drone, newFileName2).render();
         assertTrue(sharedFilesPage.isFileVisible(fileName2));
 
         // delete files
@@ -1095,12 +1165,12 @@ public class SharedFilesTest extends AbstractUtils
         ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
 
         // Shared Files is opened
-        sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(drone);
+        sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone);
 
     }
 
     @Test(groups = { "Sanity", "EnterpriseOnly" })
-    public void Enterprise40x_14676() throws Exception
+    public void ALF_3066() throws Exception
     {
         testName = getTestName();
         String testUser1 = getUserNameFreeDomain(user + 1);
@@ -1121,7 +1191,7 @@ public class SharedFilesTest extends AbstractUtils
         ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
 
         // Shared Files is opened
-        SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(drone).render(maxWaitTime);
+        SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone).render(maxWaitTime);
 
         // verify the actions available for Folder2
         assertTrue(sharedFilesPage.isItemVisble(folderName2));
@@ -1222,7 +1292,8 @@ public class SharedFilesTest extends AbstractUtils
         File newFileName1 = newFile(DATA_FOLDER + (newFile), newFile);
         sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(drone, newFileName1);
 
-        assertTrue(sharedFilesPage.isItemVisble(newFolder) && sharedFilesPage.isFileVisible(newFile));
+        assertTrue(sharedFilesPage.isItemVisble(newFolder));
+        assertTrue(sharedFilesPage.isFileVisible(newFile));
 
         FileUtils.forceDelete(newFileName1);
 
@@ -1230,10 +1301,17 @@ public class SharedFilesTest extends AbstractUtils
         sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone);
         ShareUserSharedFilesPage.addCommentToFolder(drone, folderName1, comment);
 
+        sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone).render();
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(drone, folderName1);
+        assertTrue(fileInfo.getCommentsCount() > 0, "Got comments count: " + fileInfo.getCommentsCount());
+
         // navigate to folder1 and add comment to document1
         sharedFilesPage = ShareUserSharedFilesPage.navigateToFolderInSharedFiles(drone, folderPath);
-
         ShareUserSharedFilesPage.addCommentToFile(drone, fileName1, comment, folderPath);
+
+        sharedFilesPage = ShareUserSharedFilesPage.navigateToFolderInSharedFiles(drone, folderPath);
+        fileInfo = ShareUserSitePage.getFileDirectoryInfo(drone, fileName1);
+        assertTrue(fileInfo.getCommentsCount() > 0, "Got comments count: " + fileInfo.getCommentsCount());
 
         // log in as User2. Navigate to Shared Files
         ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
@@ -1278,7 +1356,7 @@ public class SharedFilesTest extends AbstractUtils
             }
 
             // Shared Files is opened
-            sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(drone).render(maxWaitTime);
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone).render(maxWaitTime);
 
             // verify the actions available for Folder1
             fileInfo = ShareUserSitePage.getFileDirectoryInfo(drone, folderName1);
@@ -1317,7 +1395,7 @@ public class SharedFilesTest extends AbstractUtils
             // verify the actions available for Document1
             sharedFilesPage = ShareUserSharedFilesPage.navigateToFolderInSharedFiles(drone, folderPath).render(maxWaitTime);
 
-            documentDetailsPage = sharedFilesPage.selectFile(fileName1);
+            documentDetailsPage = sharedFilesPage.selectFile(fileName1).render();
             documentActionsList.clear();
             documentActionsList = documentDetailsPage.getDocumentActionList();
 
@@ -1357,19 +1435,26 @@ public class SharedFilesTest extends AbstractUtils
             // create new folder and new file
             sharedFilesPage = ShareUserSharedFilesPage.createNewFolderInPath(drone, newFolder, folderPath);
             newFileName1 = newFile(DATA_FOLDER + (newFile), newFile);
-            sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(drone, newFileName1).render(maxWaitTime);
-            assertTrue(sharedFilesPage.isItemVisble(newFolder) && sharedFilesPage.isFileVisible(newFile));
+            sharedFilesPage = ShareUserSharedFilesPage.uploadFileInSharedFiles(drone, newFileName1).render();
+            assertTrue(sharedFilesPage.isItemVisble(newFolder));
+            assertTrue(sharedFilesPage.isFileVisible(newFile));
 
             FileUtils.forceDelete(newFileName1);
 
             // add a comment to the Folder1 and Document1
             sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone).render(maxWaitTime);
             ShareUserSharedFilesPage.addCommentToFolder(drone, folderName1, comment);
+            sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone);
+            fileInfo = ShareUserSitePage.getFileDirectoryInfo(drone, folderName1);
+            assertTrue(fileInfo.getCommentsCount() > 0, "Got comments count: " + fileInfo.getCommentsCount());
 
             // navigate to folder1 and add comment to document1
             sharedFilesPage = ShareUserSharedFilesPage.navigateToFolderInSharedFiles(drone, folderPath);
 
             ShareUserSharedFilesPage.addCommentToFile(drone, fileName1, comment, folderPath);
+            sharedFilesPage = ShareUserSharedFilesPage.navigateToFolderInSharedFiles(drone, folderPath);
+            fileInfo = ShareUserSitePage.getFileDirectoryInfo(drone, fileName1);
+            assertTrue(fileInfo.getCommentsCount() > 0, "Got comments count: " + fileInfo.getCommentsCount());
 
         }
 
@@ -1377,8 +1462,8 @@ public class SharedFilesTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "Sanity", "EnterpriseOnly" }, alwaysRun = true, dependsOnMethods = { "Enterprise40x_14676" })
-    public void Enterprise40x_14677() throws Exception
+    @Test(groups = { "Sanity", "EnterpriseOnly" }, alwaysRun = true, dependsOnMethods = { "ALF_3066" })
+    public void ALF_3067() throws Exception
     {
         testName = getTestName();
         String testUser1 = getUserNameFreeDomain(user + 1);
@@ -1402,7 +1487,7 @@ public class SharedFilesTest extends AbstractUtils
             ShareUser.login(drone, users[i], DEFAULT_PASSWORD);
 
             // navigate to the Shared Files
-            SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(drone).render(maxWaitTime);
+            SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone).render(maxWaitTime);
 
             // select Edit Properties of Folder1
             FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(drone, folderName1);
@@ -1515,8 +1600,8 @@ public class SharedFilesTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "Sanity", "EnterpriseOnly" }, alwaysRun = true, dependsOnMethods = { "Enterprise40x_14677" })
-    public void Enterprise40x_14678() throws Exception
+    @Test(groups = { "Sanity", "EnterpriseOnly" }, alwaysRun = true, dependsOnMethods = { "ALF_3067" })
+    public void ALF_3068() throws Exception
     {
         testName = getTestName();
         String testUser1 = getUserNameFreeDomain(user + 1);
@@ -1539,11 +1624,11 @@ public class SharedFilesTest extends AbstractUtils
             ShareUser.login(drone, users[i], DEFAULT_PASSWORD);
 
             // navigate to the Shared Files
-            SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(drone).render(maxWaitTime);
+            SharedFilesPage sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone).render(maxWaitTime);
 
             // try to delete manager's comment to the Folder1 and to the Document1
             sharedFilesPage.selectFolder(folderName1).render();
-            DocumentDetailsPage documentDetailsPage = sharedFilesPage.selectFile(fileName1).render(maxWaitTime);
+            DocumentDetailsPage documentDetailsPage = sharedFilesPage.selectFile(fileName1).render();
 
             // try to delete the Document1
             List<String> documentActions = documentDetailsPage.getDocumentActionList();
@@ -1577,14 +1662,14 @@ public class SharedFilesTest extends AbstractUtils
                 assertFalse(documentActions.contains("Delete Document"));
             else
             {
-                sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesSimpleView(drone).render(maxWaitTime);
+                sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone).render(maxWaitTime);
                 sharedFilesPage.selectFolder(folderName1).render(maxWaitTime);
                 FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(drone, fileName1);
                 assertTrue(fileInfo.isDeletePresent());
-                ConfirmDeletePage deletePage = fileInfo.selectDelete();
+                ConfirmDeletePage deletePage = fileInfo.selectDelete().render();
                 sharedFilesPage = deletePage.selectAction(ConfirmDeletePage.Action.Delete).render(maxWaitTime);
 
-                sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(drone).render(maxWaitTime);
+                sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone).render(maxWaitTime);
                 assertFalse(sharedFilesPage.isFileVisible(fileName1));
             }
 
@@ -1623,12 +1708,12 @@ public class SharedFilesTest extends AbstractUtils
                 assertFalse(folderActions.contains("Delete Folder"));
             else
             {
-                sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesSimpleView(drone).render();
+                sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone).render();
                 fileInfo = ShareUserSitePage.getFileDirectoryInfo(drone, folderName1);
                 ConfirmDeletePage deletePage = fileInfo.selectDelete().render();
                 sharedFilesPage = deletePage.selectAction(ConfirmDeletePage.Action.Delete).render(maxWaitTime);
 
-                sharedFilesPage = ShareUserSharedFilesPage.openSharedFilesDetailedView(drone).render();
+                sharedFilesPage = ShareUserSharedFilesPage.openSharedFiles(drone).render();
                 assertFalse(sharedFilesPage.isItemVisble(folderName1));
             }
 

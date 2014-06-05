@@ -135,7 +135,7 @@ public class SiteTest extends AbstractTest
         SharePage sharePage = drone.getCurrentPage().render();
         SiteFinderPage siteFinder = sharePage.getNav().selectSearchForSites().render();
         siteFinder = siteFinder.searchForSite(siteName).render();
-        siteFinder = siteSearchRetry(siteFinder, siteName);
+        siteFinder = SiteUtil.siteSearchRetry(drone, siteFinder, siteName);
         SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
         DocumentLibraryPage docPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
         
@@ -234,7 +234,7 @@ public class SiteTest extends AbstractTest
     {
         SiteFinderPage siteFinder = dashBoard.getNav().selectSearchForSites().render();
         siteFinder = siteFinder.searchForSite(siteName).render();
-        siteFinder = siteSearchRetry(siteFinder, siteName);
+        siteFinder = SiteUtil.siteSearchRetry(drone, siteFinder, siteName);
         boolean hasResults = siteFinder.hasResults();
         Assert.assertTrue(hasResults);
         siteFinder = siteFinder.deleteSite(siteName).render();

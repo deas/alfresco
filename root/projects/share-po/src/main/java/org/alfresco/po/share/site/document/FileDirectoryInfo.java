@@ -308,7 +308,7 @@ public interface FileDirectoryInfo
      * Selects the "Force UnSync" link on the selected data row on
      * DocumentLibrary Page. Only applicable for Cloud environment
      *
-     * @return
+     * @return DocumentLibraryPage
      */
     DocumentLibraryPage selectForceUnSyncInCloud();
 
@@ -811,4 +811,10 @@ public interface FileDirectoryInfo
      * Close PopUp message about content publishing
      */
     public void closePublishPopup();
+
+    /**
+     * Return the URL of the thumbnail
+     * @return
+     */
+    public String getThumbnailURL();
 }

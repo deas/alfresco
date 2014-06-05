@@ -23,7 +23,6 @@ import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.adminconsole.NodeBrowserPage;
 import org.alfresco.po.share.dashlet.mydiscussions.CreateNewTopicPage;
 import org.alfresco.po.share.dashlet.mydiscussions.TopicDetailsPage;
-import org.alfresco.po.share.dashlet.mydiscussions.TopicsListPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.search.AdvanceSearchFolderPage;
 import org.alfresco.po.share.search.AdvanceSearchPage;
@@ -35,10 +34,14 @@ import org.alfresco.po.share.site.AddGroupsPage;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.InviteMembersPage;
+import org.alfresco.po.share.site.PendingInvitesPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SiteGroupsPage;
+import org.alfresco.po.share.site.blog.BlogPage;
+import org.alfresco.po.share.site.blog.PostViewPage;
 import org.alfresco.po.share.site.datalist.DataListPage;
+import org.alfresco.po.share.site.discussions.DiscussionsPage;
 import org.alfresco.po.share.site.document.CreateHtmlContentPage;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
@@ -50,11 +53,15 @@ import org.alfresco.po.share.site.document.InlineEditPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.document.MyFilesPage;
 import org.alfresco.po.share.site.document.SharedFilesPage;
+import org.alfresco.po.share.site.links.LinksPage;
 import org.alfresco.po.share.site.wiki.WikiPage;
+import org.alfresco.po.share.site.wiki.WikiPageList;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.user.CloudSyncPage;
 import org.alfresco.po.share.user.LanguageSettingsPage;
 import org.alfresco.po.share.user.MyProfilePage;
+import org.alfresco.po.share.user.NotificationPage;
+import org.alfresco.po.share.user.UserSitesPage;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.po.share.workflow.WorkFlowDetailsPage;
@@ -133,13 +140,20 @@ public class FactorySharePageTest
     private final String repositoryWithFolder = baseUrl+"%s/page/repository#filter=path|/Folderhtc-RepositoryFolderTests3|&page=1";
     private final String createNewTopicPage = baseUrl+"%s/page/site/new-site/discussions-createtopic";
     private final String topicDetailsPage = baseUrl+"%s/page/site/new-site/discussions-topicview?topicId=post-1394637958079_1640&listViewLinkBack=true";
-    private final String topicsListPage = baseUrl+"%s/page/site/new-site/discussions-topiclist";
+    private final String discussionsPage = baseUrl+"%s/page/site/new-site/discussions-topiclist";
     private final String customiseUserDashboardPage = baseUrl+"%s/page/customise-user-dashboard";
-    private final String nodeBrowserPage = baseUrl+"%s/page/console/admin-console/node-browser";
-    private final String adminConsolePage = baseUrl+"%s/page/console/admin-console/application";
-    private final String manageSitesPage = baseUrl+"%s/page/console/admin-console/manage-sites";
-    private final String myFilesPage = baseUrl+"%s/page/context/mine/myfiles";
-    private final String sharedFilesPage = baseUrl+"%s/page/context/shared/sharedfiles";
+    private final String nodeBrowserPage  = baseUrl+"%s/page/console/admin-console/node-browser";
+    private final String adminConsolePage= baseUrl+"%s/page/console/admin-console/application";
+    private final String manageSitesPage= baseUrl+"%s/page/console/admin-console/manage-sites";
+    private final String myFilesPage= baseUrl+"%s/page/context/mine/myfiles";
+    private final String sharedFilesPage= baseUrl+"%s/page/context/shared/sharedfiles";
+    private final String notificationPage = baseUrl + "%s/share/page/user/admin/user-notifications";
+    private final String userSitesPage = baseUrl + "%s/share/page/user/admin/user-sites";
+    private final String blogPage = baseUrl + "%s/page/site/swsdp/blog-postlist";
+    private final String postView = baseUrl + "%s/page/site/swsdp/blog-postview?postId=post-1400227519808&listViewLinkBack=true";
+    private final String links = baseUrl + "%s/page/site/swsdp/links";
+    private final String wikiList = baseUrl + "%s/page/site/swsdp/wiki";
+    private final String pendingInvites = baseUrl + "%s/page/site/swsdp/pending-invites";
     private final String facetedSearchPage = baseUrl+"%s/page/dp/ws/faceted-search";
 
     @Test(groups={"unit"})
@@ -182,6 +196,9 @@ public class FactorySharePageTest
 
             page = resolvePage(wiki, "wiki", drone);
             Assert.assertTrue(page instanceof WikiPage);
+
+            page = resolvePage(wikiList, "wikiList", drone);
+            Assert.assertTrue(page instanceof WikiPageList);
 
             page = resolvePage(changePaswword, "changePaswword", drone);
             Assert.assertTrue(page instanceof ChangePasswordPage);
@@ -236,7 +253,18 @@ public class FactorySharePageTest
             
             page = resolvePage(sharedFilesPage, "sharedFilesPage", drone);
             Assert.assertTrue(page instanceof SharedFilesPage);
-            
+
+            page = resolvePage(blogPage, "blog-postlist", drone);
+            Assert.assertTrue(page instanceof BlogPage);
+
+            page = resolvePage(postView, "blog-postview", drone);
+            Assert.assertTrue(page instanceof PostViewPage);
+
+            page = resolvePage(links, "links", drone);
+            Assert.assertTrue(page instanceof LinksPage);
+
+            page = resolvePage(pendingInvites, "pending-invites", drone);
+            Assert.assertTrue(page instanceof PendingInvitesPage);
 
             //---------------search ----------------
             page = resolvePage(advanceSearch, "advanceSearch", drone);
@@ -277,6 +305,7 @@ public class FactorySharePageTest
             
             page = resolvePage(editTasks, "edit-task", drone);
             Assert.assertTrue(page instanceof EditTaskPage);
+
             page = resolvePage(taskDetailsPage, "task-edit", drone);
             Assert.assertTrue(page instanceof MyWorkFlowsPage);
 
@@ -301,11 +330,8 @@ public class FactorySharePageTest
             page = resolvePage(topicDetailsPage, "discussions-topicview", drone);
             Assert.assertTrue(page instanceof TopicDetailsPage);
 
-            page = resolvePage(topicsListPage, "discussions-topiclist", drone);
-            Assert.assertTrue(page instanceof TopicsListPage);
-
-            page = resolvePage(topicsListPage, "discussions-topiclist", drone);
-            Assert.assertTrue(page instanceof TopicsListPage);
+            page = resolvePage(discussionsPage, "discussions-topiclist", drone);
+            Assert.assertTrue(page instanceof DiscussionsPage);
 
             page = resolvePage(customiseUserDashboardPage, "customise-user-dashboard", drone);
             Assert.assertTrue(page instanceof CustomiseUserDashboardPage);
@@ -319,6 +345,12 @@ public class FactorySharePageTest
             
             page = resolvePage(manageSitesPage, "manage-sites", drone);
             Assert.assertTrue(page instanceof ManageSitesPage);
+            
+            page = resolvePage(notificationPage, "user-notifications", drone);
+            Assert.assertTrue(page instanceof NotificationPage);
+            
+            page = resolvePage(userSitesPage, "user-sites", drone);
+            Assert.assertTrue(page instanceof UserSitesPage);
 
             //---------------faceted search ----------------
             page = resolvePage(facetedSearchPage, "faceted-search", drone);

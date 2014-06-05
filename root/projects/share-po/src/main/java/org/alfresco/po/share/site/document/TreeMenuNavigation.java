@@ -70,7 +70,7 @@ public class TreeMenuNavigation extends SharePage
             this.hirearchy = hirearchy;
         }
 
-        private String getXpath()
+        public String getXpath()
         {
             return xpath;
         }
@@ -120,7 +120,7 @@ public class TreeMenuNavigation extends SharePage
     private static final String TAG_NODE = "//a[text()='%s']";
     private static final long FOLDER_LOAD_TIME = 5000;
 
-    protected TreeMenuNavigation(WebDrone drone)
+    public TreeMenuNavigation(WebDrone drone)
     {
         super(drone);
     }
@@ -292,7 +292,7 @@ public class TreeMenuNavigation extends SharePage
     /**
      * Expands the Tags menu and selects the given link.
      * 
-     * @param docMenu
+     * @param tagName
      * @return The page loaded when the node is selected.
      */
     public HtmlPage selectTagNode(String tagName)

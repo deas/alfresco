@@ -14,12 +14,6 @@
  */
 package org.alfresco.po.share.site;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.enums.UserRole;
@@ -35,10 +29,16 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
 /**
  * The class represents the Site Members page and handles the site members page
  * functionality.
- * 
+ *
  * @author cbairaajoni
  * @version 1.6.2
  */
@@ -59,6 +59,10 @@ public class SiteMembersPage extends SharePage
     private static final By PEOPLE_LINK = By.cssSelector(".members-bar-links>a[href='site-members']");
     private static final By GROUPS_LINK = By.cssSelector(".members-bar-links>a[href='site-groups']");
     private static final By INVITE_BTN = By.cssSelector("a[href='invite']");
+    @SuppressWarnings("unused")
+    private static final By REMOVE_BTN = By.cssSelector("td[class*='uninvite']>div>span>span>span>button");
+
+    private static final String USER_ROLE_XPATH = "//a[contains(text(),'%s')]/../../../..//td[contains(@class,'col-role')]/div/*";
 
 
     /**
@@ -110,7 +114,7 @@ public class SiteMembersPage extends SharePage
 
     /**
      * This method search for the given userName and returns the list of users.
-     * 
+     *
      * @param userName
      * @return List<String>
      */
@@ -163,7 +167,7 @@ public class SiteMembersPage extends SharePage
 
     /**
      * The filters of the Site content those are diplayed in filters dropdown.
-     * 
+     *
      * @param userName
      * @return <List<WebElement>>
      */
@@ -198,7 +202,7 @@ public class SiteMembersPage extends SharePage
 
     /**
      * This method assigns role from drop down values.
-     * 
+     *
      * @param userName
      * @param userRole
      * @return {@link SiteMembersPage}
@@ -236,7 +240,7 @@ public class SiteMembersPage extends SharePage
 
     /**
      * Method to remove given user from Site.
-     * 
+     *
      * @param userName
      */
     public SiteMembersPage removeUser(String userName)
@@ -271,7 +275,7 @@ public class SiteMembersPage extends SharePage
 
     /**
      * Action of selecting invite people button.
-     * 
+     *
      * @return {@link InviteMembersPage} page response.
      */
     public InviteMembersPage selectInvitePeople()
@@ -381,6 +385,29 @@ public class SiteMembersPage extends SharePage
     }
 
     /**
+     * Method to verify remove link is displayed
+     *
+     * @param userName
+     * @return true if displayed
+     */
+    public boolean isRemoveButtonPresent(String userName)
+    {
+        String name = userName.trim();
+        if (alfrescoVersion.isCloud())
+        {
+            name = name.toLowerCase();
+        }
+        try
+        {
+            return drone.isElementDisplayed(By.cssSelector(String.format("span[id$='button-%s']>span>span>button", name)));
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Timed out waiting for elements");
+        }
+    }
+
+    /**
      * Method to open Groups tab from Site Members page
      *
      * @return SiteGroupsPage
@@ -398,7 +425,13 @@ public class SiteMembersPage extends SharePage
         }
     }
 
-    public boolean isAssignRolePresent (String userName)
+    /**
+     * Method to verify whether assign role is displayeed
+     *
+     * @param userName
+     * @return true if displayed
+     */
+    public boolean isAssignRolePresent(String userName)
     {
         String name = userName.trim();
 
@@ -413,6 +446,27 @@ public class SiteMembersPage extends SharePage
         catch (TimeoutException te)
         {
             throw new ShareException("Timed out waiting for elements");
+        }
+    }
+
+    /**
+     * True if found user has role userRole.
+     *
+     * @param userName
+     * @param userRole
+     * @return
+     */
+    public boolean isUserHasRole(String userName, UserRole userRole)
+    {
+        By smthElement = By.xpath(String.format(USER_ROLE_XPATH, userName));
+        try
+        {
+            WebElement element = drone.findAndWait(smthElement, 1000);
+            return element.getText().contains(userRole.getRoleName());
+        }
+        catch (TimeoutException e)
+        {
+            throw new PageException("Not found Element:" + smthElement, e);
         }
     }
 }

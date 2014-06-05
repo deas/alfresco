@@ -12,11 +12,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.alfresco.po.share.site;
 
 import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
@@ -137,7 +136,7 @@ public class CustomiseSiteDashboardPage extends SharePage
      *
      * @param dashlet
      */
-    public SiteDashboardPage remove(Dashlet dashlet)
+    public SiteDashboardPage remove(Dashlets dashlet)
     {
         String dashletXpath = String.format("//div[@class='column']//span[text()='%s']/../div", dashlet.getDashletName());
         WebElement element = drone.findAndWait(By.xpath(dashletXpath));
@@ -206,6 +205,8 @@ public class CustomiseSiteDashboardPage extends SharePage
         for (WebElement source : dashlets)
         {
             target = drone.find(By.cssSelector(String.format(COLUMN_FORMAT, currentColumn)));
+            target.click();
+
             drone.dragAndDrop(source, target);
             waitUntilAlert();
 
@@ -226,7 +227,7 @@ public class CustomiseSiteDashboardPage extends SharePage
      * @param columnNumber
      * @return {@link SiteDashboardPage}
      */
-    public SiteDashboardPage addDashlet(Dashlet dashletName, int columnNumber)
+    public SiteDashboardPage addDashlet(Dashlets dashletName, int columnNumber)
     {
         if (dashletName == null)
         {
@@ -251,7 +252,7 @@ public class CustomiseSiteDashboardPage extends SharePage
             List<WebElement> dashlets = drone.findAndWaitForElements(AVAILABLE_DASHLETS_NAMES);
             for (WebElement source : dashlets)
             {
-                if (source.getText().contains(dashletName.getDashletName()))
+                if (source.getText().equals(dashletName.getDashletName()))
                 {
                     newDashlet = source;
                     break;
@@ -412,7 +413,7 @@ public class CustomiseSiteDashboardPage extends SharePage
      * @param columnNumber
      * @return
      */
-    public boolean isDashletInColumn(Dashlet dashlet, int columnNumber)
+    public boolean isDashletInColumn(Dashlets dashlet, int columnNumber)
     {
         List<WebElement> dashletsElem = getDashletsElemFrom(columnNumber);
         for (WebElement dashletElem : dashletsElem)

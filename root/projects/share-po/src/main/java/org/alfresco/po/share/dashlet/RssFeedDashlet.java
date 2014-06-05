@@ -1,13 +1,30 @@
+/*
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.po.share.dashlet;
 
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
-import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * Page object to hold RSS Feed dashlet
@@ -17,8 +34,8 @@ import org.openqa.selenium.TimeoutException;
 
 public class RssFeedDashlet extends AbstractDashlet implements Dashlet
 {
-    private static final By DASHLET_CONTAINER_PLACEHOLDER = By.cssSelector("div.rssfeed");
-    private static final By titleBarActions = By.cssSelector("div.rssfeed .titleBarActions");
+    private static final By DASHLET_CONTAINER_PLACEHOLDER = By.xpath("//div[count(./div[@class='toolbar'])=0 and contains(@class,'rssfeed')]");
+    private static final By titleBarActions = By.cssSelector(".titleBarActions");
 
     /**
      * Constructor.
@@ -26,52 +43,14 @@ public class RssFeedDashlet extends AbstractDashlet implements Dashlet
     protected RssFeedDashlet(WebDrone drone)
     {
         super(drone, DASHLET_CONTAINER_PLACEHOLDER);
-        setResizeHandle(By.cssSelector("div.dashlet.rssfeed .yui-resize-handle"));
+        setResizeHandle(By.xpath(".//div[contains(@class, 'yui-resize-handle')]"));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public synchronized RssFeedDashlet render(RenderTime timer)
     {
-        try
-        {
-            while (true)
-            {
-                timer.start();
-                synchronized (this)
-                {
-                    try
-                    {
-                        this.wait(50L);
-                    }
-                    catch (InterruptedException e)
-                    {
-                    }
-                }
-                try
-                {
-                    this.dashlet = drone.findAndWait((DASHLET_CONTAINER_PLACEHOLDER), 100L, 10L);
-                    break;
-                }
-                catch (NoSuchElementException e)
-                {
-
-                }
-                catch (StaleElementReferenceException ste)
-                {
-                    // DOM has changed therefore page should render once change
-                    // is completed
-                }
-                finally
-                {
-                    timer.end();
-                }
-            }
-        }
-        catch (PageRenderTimeException te)
-        {
-            throw new NoSuchDashletExpection(this.getClass().getName() + " failed to find site notice dashlet", te);
-        }
+        elementRender(timer, getVisibleRenderElement(DASHLET_CONTAINER_PLACEHOLDER));
         return this;
     }
 
@@ -107,7 +86,7 @@ public class RssFeedDashlet extends AbstractDashlet implements Dashlet
         try
         {
             drone.mouseOverOnElement(drone.find(titleBarActions));
-            drone.findAndWait(CONFIGURE_DASHLET_ICON).click();
+            dashlet.findElement(CONFIGURE_DASHLET_ICON).click();
             return new RssFeedUrlBoxPage(drone).render();
         }
         catch (TimeoutException te)

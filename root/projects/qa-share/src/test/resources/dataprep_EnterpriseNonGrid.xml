@@ -4,6 +4,7 @@
         <groups>
             <run>
                 <include name="DataPrep.*" />
+                 <exclude name=".*Bug.*" />
             </run>
         </groups>
         <classes>
@@ -15,6 +16,7 @@
                     <include name="dataprep_ALF_8745" />
                     <include name="dataprep_ALF_8664" />
                     <include name="dataPrep_ALF_8734" />
+                    <include name="dataprep_ALF_14399" />
                 </methods>
             </class>
             <class name="org.alfresco.share.site.document.FilmStripDocLibTest">
@@ -25,7 +27,18 @@
                     <include name="dataPrep_FilmStrip_ALF_14214" />
                 </methods>
             </class>
-            
+            <class name="org.alfresco.share.sanity.SharedFilesTest">
+                <methods>
+                    <include name="dataPrep_ALF_3063" />
+                    <include name="dataPrep_ALF_3064" />
+                    <include name="dataPrep_ALF_3065" />
+                </methods>
+            </class>
+            <class name="org.alfresco.share.user.SiteNotificationsTest">
+                <methods>
+                    <include name="dataPrep_ALF_15251" />
+                </methods>
+            </class>
         </classes>
     </test>
 </suite>

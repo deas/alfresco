@@ -149,7 +149,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsAdded(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.COMPLIANCEABLE);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
 
         Assert.assertEquals(getPropertyValue(folderProperties, "removeAfter"), new SimpleDateFormat(PROPERTY_DATE_FORMAT).format(removeAfterDate));
 
@@ -169,7 +169,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsRemoved(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.COMPLIANCEABLE);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
         Assert.assertNull(getPropertyValue(folderProperties, "removeAfter"), "Verifying the property doesn't exists");
 
         ShareUser.logout(drone);
@@ -198,7 +198,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsAdded(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.DUBLIN_CORE);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
 
         Assert.assertEquals(getPropertyValue(folderProperties, "dcsource"), "test-source");
         Assert.assertEquals(getPropertyValue(folderProperties, "contributor"), "test-contributor");
@@ -224,7 +224,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsRemoved(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.DUBLIN_CORE);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
         Assert.assertNull(getPropertyValue(folderProperties, "source"));
         Assert.assertNull(getPropertyValue(folderProperties, "contributor"));
         Assert.assertNull(getPropertyValue(folderProperties, "publisher"));
@@ -259,7 +259,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsAdded(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.EFFECTIVITY);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
 
         Assert.assertEquals(getPropertyValue(folderProperties, "from"), new SimpleDateFormat(PROPERTY_DATE_FORMAT).format(fromDate));
         Assert.assertEquals(getPropertyValue(folderProperties, "to"), new SimpleDateFormat(PROPERTY_DATE_FORMAT).format(toDate));
@@ -279,7 +279,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsRemoved(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.EFFECTIVITY);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
 
         Assert.assertNull(getPropertyValue(folderProperties, "from"));
         Assert.assertNull(getPropertyValue(folderProperties, "to"));
@@ -303,7 +303,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsAdded(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.SUMMARIZABLE);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
 
         Assert.assertEquals(getPropertyValue(folderProperties, "summary"), "test-summary");
 
@@ -322,7 +322,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsRemoved(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.SUMMARIZABLE);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
         Assert.assertNull(getPropertyValue(folderProperties, "summary"));
 
         ShareUser.logout(drone);
@@ -407,7 +407,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsAdded(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.EMAILED);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
 
         Assert.assertEquals(getPropertyValue(folderProperties, "addressee"), "test Addressee");
         Assert.assertEquals((getPropertyValue(folderProperties, "addressees")), "addresses@test.com");
@@ -430,7 +430,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsRemoved(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.EMAILED);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
 
         Assert.assertNull(getPropertyValue(folderProperties, "addressee"));
         Assert.assertNull((getPropertyValue(folderProperties, "addressees")));
@@ -444,7 +444,11 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
     public void addTaggableAspect(WebDrone drone, String userName, String folderName, String siteName, String tagName, CMISBinding cmisBinding)
             throws Exception
     {
-        String tagNodeRef = ShareUserAdmin.getTagNodeRef(drone, tagName);
+//        String tagNodeRef = ShareUserAdmin.getTagNodeRef(drone, tagName);
+
+        String folderName1 = getFolderName(testName + "-1");
+        String tagFolderNodeRef = getNodeRef(cmisBinding, userName, DOMAIN, siteName, "", folderName1);
+        String tagNodeRef = getTagNodeRef(cmisBinding, userName, DOMAIN, tagFolderNodeRef);
 
         ShareUser.login(drone, userName, DEFAULT_PASSWORD);
         String folderNodeRef = getNodeRef(cmisBinding, userName, DOMAIN, siteName, "", folderName);
@@ -460,7 +464,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsAdded(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.TAGGABLE);
 
-        DetailsPage detailsPage = ShareUser.getSharePage(drone).render();
+        DetailsPage detailsPage = getDetailsPage(drone, siteName, folderName);
 
         Assert.assertTrue(detailsPage.getTagList().contains(tagName), "Verifying " + tagName + " is displayed");
 
@@ -507,7 +511,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsAdded(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.GEOGRAPHIC);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
 
         Assert.assertEquals(getPropertyValue(folderProperties, "longitude"), String.valueOf(longitude));
         Assert.assertEquals((getPropertyValue(folderProperties, "latitude")), String.valueOf(latitude));
@@ -530,7 +534,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsRemoved(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.GEOGRAPHIC);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
 
         Assert.assertNull(getPropertyValue(folderProperties, "longitude"));
         Assert.assertNull(getPropertyValue(folderProperties, "latitude"));
@@ -585,7 +589,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsAdded(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.EXIF);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
 
         Assert.assertEquals(getPropertyValue(folderProperties, "dateTimeOriginal"), new SimpleDateFormat(PROPERTY_DATE_FORMAT).format(dateTimeOriginal));
         Assert.assertEquals(getPropertyValue(folderProperties, "manufacturer"), manufacturer);
@@ -617,7 +621,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsRemoved(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.EXIF);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
 
         Assert.assertNull(getPropertyValue(folderProperties, "dateTimeOriginal"));
         Assert.assertNull(getPropertyValue(folderProperties, "manufacturer"));
@@ -675,7 +679,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsAdded(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.AUDIO);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
 
         Assert.assertEquals(getPropertyValue(folderProperties, "engineer"), engineer);
         Assert.assertEquals(getPropertyValue(folderProperties, "compressor"), compressor);
@@ -704,7 +708,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsRemoved(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.AUDIO);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
 
         Assert.assertNull(getPropertyValue(folderProperties, "engineer"));
         Assert.assertNull(getPropertyValue(folderProperties, "compressor"));
@@ -741,12 +745,12 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsAdded(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.INDEX_CONTROL);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
         Assert.assertEquals(getPropertyValue(folderProperties, "isIndexed"), String.valueOf(isIndexed));
         Assert.assertEquals(getPropertyValue(folderProperties, "isContentIndexed"), String.valueOf(isContentIndexed));
 
         ShareUserSearchPage.basicSearch(drone, folderName, false);
-        Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, BASIC_SEARCH, folderName, folderName, false),
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, BASIC_SEARCH, folderName, folderName, false),
                 "Folder NOT found in search results after adding the INDEX_CONTROL aspect");
 
         ShareUser.logout(drone);
@@ -764,12 +768,12 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsRemoved(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.INDEX_CONTROL);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
         Assert.assertNull(getPropertyValue(folderProperties, "isIndexed"));
         Assert.assertNull(getPropertyValue(folderProperties, "isContentIndexed"));
 
         ShareUserSearchPage.basicSearch(drone, folderName, false);
-        Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, BASIC_SEARCH, folderName, folderName, true),
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, BASIC_SEARCH, folderName, folderName, true),
                 "Folder found in search results after removing the INDEX_CONTROL aspect");
 
         ShareUser.logout(drone);
@@ -793,7 +797,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsAdded(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.RESTRICTABLE);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
         Assert.assertEquals(getPropertyValue(folderProperties, "offlineExpiresAfter"), String.valueOf(offlineExpiresAfter));
 
         ShareUser.logout(drone);
@@ -811,7 +815,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsRemoved(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.RESTRICTABLE);
 
-        List<Property<?>> folderProperties = getFolderProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+        List<Property<?>> folderProperties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
         Assert.assertNull(getPropertyValue(folderProperties, "offlineExpiresAfter"));
 
         ShareUser.logout(drone);

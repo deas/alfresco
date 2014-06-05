@@ -10,7 +10,7 @@
  *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -28,11 +28,7 @@ import static org.alfresco.po.share.dashlet.MyDiscussionsTopicsFilter.MY_TOPICS;
 
 import java.util.List;
 
-import org.openqa.selenium.WebElement;
-import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.ShareLink;
-import org.alfresco.po.share.UserProfilePage;
-import org.alfresco.po.share.UserSearchPage;
 import org.alfresco.po.share.dashlet.MyDiscussionsDashlet;
 import org.alfresco.po.share.dashlet.MyDiscussionsHistoryFilter;
 import org.alfresco.po.share.dashlet.MyDiscussionsTopicsFilter;
@@ -42,12 +38,13 @@ import org.alfresco.po.share.dashlet.mydiscussions.CreateNewTopicPage;
 import org.alfresco.po.share.dashlet.mydiscussions.DeleteTopicDialogPage;
 import org.alfresco.po.share.dashlet.mydiscussions.TopicDetailsPage;
 import org.alfresco.po.share.dashlet.mydiscussions.TopicsListPage;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserAdmin;
 import org.alfresco.share.util.ShareUserDashboard;
 import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.share.util.SiteUtil;
@@ -55,7 +52,6 @@ import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -72,7 +68,7 @@ import org.testng.annotations.Test;
  * 8) ALF_8944() - My Discussions dashlet. Link to user's profile
  * 9) ALF_8945() - My Discussions dashlet. Create topics in different sites
  * 10)ALF_8947() - My Discussions dashlet. Expand/narrow My Discussions dashlet
- *
+ * 
  * @author jcule
  */
 @Listeners(FailedTestListener.class)
@@ -93,7 +89,6 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
     private static final String TOPIC_DETAILS_TEXT_THREE = "topic text 3";
     private static final String TOPIC_DETAILS_CREATED_ON = "Created on:";
     private static final String NUMBER_OF_REPLIES = "There is 1 reply.";
-
 
     private String testUser;
     private String testUser1;
@@ -136,7 +131,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
      * last 28 days;
      * 10) Verify New Topic button and click on the button
      * 11) Verify Create New Topic Page is displayed
-     *
+     * 
      * @throws Exception
      */
     @Test(groups = "SiteDashboardMyDiscussionTests")
@@ -151,22 +146,22 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Get My Discussions Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
         Assert.assertNotNull(myDiscussionsDashlet);
 
-        //verify dashlet is empty
+        // verify dashlet is empty
         List<ShareLink> topicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
         Assert.assertEquals(topicsTitles.size(), 0);
 
-        //verify empty dashlet message - "There are no topics matching your filters." is displayed
+        // verify empty dashlet message - "There are no topics matching your filters." is displayed
         String emptyDashletMessage = myDiscussionsDashlet.getEmptyDashletMessage();
         Assert.assertEquals(emptyDashletMessage, EMPTY_DASHLET_MESSAGE);
 
-        //verify ? icon is present and click on the icon
+        // verify ? icon is present and click on the icon
         Assert.assertTrue(myDiscussionsDashlet.isHelpButtonDisplayed());
 
-        //verify baloon popup with Discussion Forum dashlet. View your latest posts on the Discussion Forum. is displayed
+        // verify baloon popup with Discussion Forum dashlet. View your latest posts on the Discussion Forum. is displayed
         myDiscussionsDashlet.clickHelpButton();
         Assert.assertTrue(myDiscussionsDashlet.isBalloonDisplayed());
         String actualHelpBallonMsg = myDiscussionsDashlet.getHelpBalloonMessage();
@@ -200,7 +195,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
 
         // verify Create New Topic Page is displayed
-        Assert.assertNotNull(createNewTopicPage);
+
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
 
         // logout
@@ -217,7 +212,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
      * 6) Verify topic details page is displayed
      * 7) Click user's name link
      * 8) Verify User Profile page is displayed
-     *
+     * 
      * @throws Exception
      */
     @Test(groups = "SiteDashboardMyDiscussionTests")
@@ -232,159 +227,51 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Get My Discussions Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
-        Assert.assertNotNull(myDiscussionsDashlet);
 
         // add a topic for the site
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
+
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
         createNewTopicPage.enterTopicTitle(TOPIC_DETAILS_TITLE_ONE);
-        TopicDetailsPage topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        TopicDetailsPage topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE);
 
-        //check why LName appears??????
+        // check why LName appears??????
         Assert.assertEquals(topicDetailsPage.getTopicAuthor(), testUser + " LName");
         Assert.assertFalse("".equalsIgnoreCase(topicDetailsPage.getTopicCreationDate()));
 
         // Verify topic's name link is displayed on the My Discussion dashlet
-        SiteDashboardPage siteDashboardPage = ShareUser.openSiteDashboard(drone, siteName);
-        myDiscussionsDashlet = siteDashboardPage.getDashlet(MY_DISCUSSIONS).render();
-        siteDashboardPage = myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render();
+        myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
+        myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render();
 
         // Repeat search until the element is found or Timeout is hit
-        //TODO: move somewhere to share po
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_ONE }, true);
 
         // click topic's name link
         topicDetailsPage = myDiscussionsDashlet.selectTopicTitle(TOPIC_DETAILS_TITLE_ONE).click().render();
 
         // verify topic details page is displayed
-        Assert.assertNotNull(topicDetailsPage);
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE);
         Assert.assertEquals(topicDetailsPage.getTopicCreatedBy(), TOPIC_DETAILS_CREATED_ON);
 
         // click user's name link
-        siteDashboardPage = ShareUser.openSiteDashboard(drone, siteName);
-        myDiscussionsDashlet = siteDashboardPage.getDashlet(MY_DISCUSSIONS).render();
-        siteDashboardPage = myDiscussionsDashlet.selectTopicsFilter(ALL_TOPICS).render();
+        myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
+
+        myDiscussionsDashlet.selectTopicsFilter(ALL_TOPICS).render();
+        myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
+
         MyProfilePage myProfilePage = myDiscussionsDashlet.selectTopicUser(testUser + " LName").click().render();
 
         // verify User Profile page is displayed
-        Assert.assertNotNull(myProfilePage);
         Assert.assertTrue(myProfilePage.titlePresent());
 
-        // logout
-        ShareUser.logout(drone);
-
-    }
-
-    /**
-     * My Discussions dashlet. Update topic
-     * 1) Login as created user
-     * 2) Create a site
-     * 3) Add a topic for the site
-     * 4) Update created topic
-     * 5) Verify the following notification is displayed on My Discussion dashlet: [topic name's link] (Updated [time ago]) Created by [user name's link] about
-     * [time ago].
-     * 6) Click topic's name link
-     * 7) Verify topic details page is displayed
-     * 8) Click user's name link
-     * 9) Verify User Profile page is displayed
-     *
-     * @throws Exception
-     */
-    /**
-    @Test(groups = "SiteDashboardMyDiscussionTests")
-    public void ALF_8899() throws Exception
-    {
-        // login as created user
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-        // create a site
-        String testName = getTestName();
-        String siteName = testName + System.currentTimeMillis();
-        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-
-        // Get My Discussions Dashlet
-        ShareUserSitePage.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
-        MyDiscussionsDashlet myDiscussionsDashlet = ShareUserSitePage.getMyDiscussionsDashlet(drone, siteName);
-        Assert.assertNotNull(myDiscussionsDashlet);
-
-        // add a topic for the site
-        CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
-        Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
-        createNewTopicPage.enterTopicTitle(TOPIC_DETAILS_TITLE_ONE);
-        TopicDetailsPage topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
-        Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE);
-
-        // Update created topic
-        createNewTopicPage = topicDetailsPage.clickOnEditLink().render();
-        Assert.assertEquals(createNewTopicPage.getPageTitle(), EDIT_TOPIC_TITLE);
-        createNewTopicPage.enterTopicTitle(TOPIC_DETAILS_TITLE_ONE + " Updated");
-        topicDetailsPage =  createNewTopicPage.saveTopic().render();
-
-        // Post a reply to created topic
-        topicDetailsPage.clickOnReplyLink().render();
-        topicDetailsPage.clickOnCreateReply().render();
-
-        SiteDashboardPage siteDashboardPage = ShareUser.openSiteDashboard(drone, siteName);
-        drone.findAndWaitWithRefresh(By.xpath(String.format("//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE + " Updated")));
-        myDiscussionsDashlet = siteDashboardPage.getDashlet(MY_DISCUSSIONS).render();
-
-        List<ShareLink> topicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
-        Assert.assertNotNull(topicsTitles);
-        Assert.assertEquals(topicsTitles.size(), 1);
-        Assert.assertEquals(topicsTitles.get(0).getDescription(), TOPIC_DETAILS_TITLE_ONE + " Updated");
-
-
-        // Verify the following notification is displayed: [topic name's link] (Updated [time ago]) Created by [user name's link] about [time ago].
-        List<TopicStatusDetails> topicStatusDetails = myDiscussionsDashlet.getUpdatedTopics();
-        String createdByJustNow = String.format("Created by %s just now.", this.getClass().getSimpleName() + "@" + DOMAIN_FREE + " LName");
-        for (TopicStatusDetails topicStatusDetail : topicStatusDetails)
-        {
-            Assert.assertEquals(topicStatusDetail.getCreationTime(), createdByJustNow);
-            Assert.assertEquals(topicStatusDetail.getUpdateTime(), UPDATED_JUST_NOW);
-        }
-
-        // click topic's name link
-        topicDetailsPage = myDiscussionsDashlet.selectTopicTitle(TOPIC_DETAILS_TITLE_ONE + " Updated").click().render();
-
-        // verify topic details page is displayed
-        Assert.assertNotNull(topicDetailsPage);
-        Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE + " Updated");
-        Assert.assertEquals(topicDetailsPage.getTopicCreatedBy(), TOPIC_DETAILS_CREATED_ON);
-
-        // click user's name link
-        siteDashboardPage = ShareUser.openSiteDashboard(drone, siteName);
-        drone.findAndWaitWithRefresh(By.xpath(String.format("//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
-        myDiscussionsDashlet = siteDashboardPage.getDashlet(MY_DISCUSSIONS).render();
-        MyProfilePage myProfilePage = myDiscussionsDashlet.selectTopicUser(this.getClass().getSimpleName() + "@" + DOMAIN_FREE + " LName").click().render();
-
-        // verify User Profile page is displayed
-        Assert.assertNotNull(myProfilePage);
-        Assert.assertTrue(myProfilePage.titlePresent());
-
-        // logout
         ShareUser.logout(drone);
     }
-    **/
+
     /**
      * My Discussions dashlet. Update topic. Reply to topic
      * 1) Login as created user
@@ -396,75 +283,60 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
      * [quantity] replies. The last reply was posted by [user name's link] [time ago].
      * 7) Click user's name link
      * 8) Verify User Profile page is displayed
-     *
+     * 
      * @throws Exception
      */
     @Test(groups = "SiteDashboardMyDiscussionTests")
-    public void ALF_8899_8901() throws Exception
+    public void ALF_8899() throws Exception
     {
+        String newTopicName = TOPIC_DETAILS_TITLE_ONE + " Updated";
+
         // login as created user
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // create a site
         String testName = getTestName();
         String siteName = testName + System.currentTimeMillis();
-        ShareUser.createSite(drone, siteName,  SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Get My Discussions Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
-        Assert.assertNotNull(myDiscussionsDashlet);
 
         // add a topic for the site
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
+
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
+
         createNewTopicPage.enterTopicTitle(TOPIC_DETAILS_TITLE_ONE);
-        TopicDetailsPage topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        TopicDetailsPage topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE);
 
         // Update created topic
         createNewTopicPage = topicDetailsPage.clickOnEditLink().render();
         Assert.assertEquals(createNewTopicPage.getPageTitle(), EDIT_TOPIC_TITLE);
-        createNewTopicPage.enterTopicTitle(TOPIC_DETAILS_TITLE_ONE + " Updated");
-        topicDetailsPage =  createNewTopicPage.saveTopic().render();
+
+        createNewTopicPage.enterTopicTitle(newTopicName);
+        topicDetailsPage = createNewTopicPage.saveTopic().render();
 
         // Post a reply to created topic
         topicDetailsPage.clickOnReplyLink().render();
         topicDetailsPage.clickOnCreateReply().render();
 
-        SiteDashboardPage siteDashboardPage = ShareUser.openSiteDashboard(drone, siteName);
-        myDiscussionsDashlet = siteDashboardPage.getDashlet(MY_DISCUSSIONS).render();
-        siteDashboardPage = myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render();
+        ShareUser.openSiteDashboard(drone, siteName);
+        myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone);
+        myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render();
 
         // Repeat search until the element is found or Timeout is hit
-        //TODO: move somewhere to share po ?????
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE + " Updated")));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
-
-        List<ShareLink> topicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
-        Assert.assertNotNull(topicsTitles);
-        Assert.assertEquals(topicsTitles.size(), 1);
-        Assert.assertEquals(topicsTitles.get(0).getDescription(), TOPIC_DETAILS_TITLE_ONE + " Updated");
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { newTopicName }, true);
 
         // Verify the following notification is displayed: [topic name's link] Created by [user name's link] [time ago]. There is/are [quantity] replies.
-        // The last reply was posted by [user name's link] [time ago].
-
+        myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone);
         List<TopicStatusDetails> topicStatusDetails = myDiscussionsDashlet.getUpdatedTopics();
-        String createdBy = String.format("Created by %s ", this.getClass().getSimpleName() + "@" + DOMAIN_FREE + " LName");
-        String replyDetails = String.format("The last reply was posted by %s ", this.getClass().getSimpleName() + "@" + DOMAIN_FREE + " LName");
+        String createdBy = String.format("Created by %s ", testUser + " LName");
+        String replyDetails = String.format("The last reply was posted by %s ", testUser + " LName");
+        
         for (TopicStatusDetails topicStatusDetail : topicStatusDetails)
         {
             Assert.assertTrue(topicStatusDetail.getCreationTime().indexOf(createdBy) != -1);
@@ -473,11 +345,19 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
             Assert.assertTrue(topicStatusDetail.getReplyDetails().indexOf(replyDetails) != -1);
         }
 
+        // click topic's name link
+        topicDetailsPage = myDiscussionsDashlet.selectTopicTitle(TOPIC_DETAILS_TITLE_ONE + " Updated").click().render();
+
+        // verify topic details page is displayed
+        Assert.assertNotNull(topicDetailsPage);
+        Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE + " Updated");
+        Assert.assertEquals(topicDetailsPage.getTopicCreatedBy(), TOPIC_DETAILS_CREATED_ON);
+
         // click user's name link
+        myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
         MyProfilePage myProfilePage = myDiscussionsDashlet.selectTopicUser(testUser + " LName").click().render();
 
         // verify User Profile page is displayed
-        Assert.assertNotNull(myProfilePage);
         Assert.assertTrue(myProfilePage.titlePresent());
 
         // logout
@@ -491,7 +371,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
      * 3) Add a topic for the site
      * 4) Delete the topic
      * 5) Verify the notification about deleted topic is not displayed on My Discussions dashlet.
-     *
+     * 
      * @throws Exception
      */
     @Test(groups = "SiteDashboardMyDiscussionTests")
@@ -506,17 +386,17 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Get My Discussions Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
         Assert.assertNotNull(myDiscussionsDashlet);
 
         // add a topic for the site
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
+
         createNewTopicPage.enterTopicTitle(TOPIC_DETAILS_TITLE_ONE);
-        TopicDetailsPage topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        TopicDetailsPage topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE);
 
         // Delete the topic
@@ -526,13 +406,13 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         TopicsListPage topicsListPage = deleteTopicDialogPage.clickOnDeleteButton().render();
         Assert.assertNotNull(topicsListPage);
 
-        //verify the notification about deleted topic is not displayed in My Discussions dashlet.??????????
+        // verify the notification about deleted topic is not displayed in My Discussions dashlet.??????????
 
-        //verify topic is not displayed in dashlet anymore
+        // verify topic is not displayed in dashlet anymore
         SiteDashboardPage siteDashboardPage = ShareUser.openSiteDashboard(drone, siteName);
         myDiscussionsDashlet = siteDashboardPage.getDashlet(MY_DISCUSSIONS).render();
 
-        //verify empty dashlet message - "There are no topics matching your filters." is displayed
+        // verify empty dashlet message - "There are no topics matching your filters." is displayed
         String emptyDashletMessage = myDiscussionsDashlet.getEmptyDashletMessage();
         Assert.assertEquals(emptyDashletMessage, EMPTY_DASHLET_MESSAGE);
 
@@ -550,7 +430,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
      * 5) Fill the required fields (Title and Text)
      * 6) Click "Save" button
      * 7) Go back to My Discussions dashlet and verify information about the created topic
-     *
+     * 
      * @throws Exception
      */
     @Test(groups = "SiteDashboardMyDiscussionTests")
@@ -565,13 +445,12 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Open My Discussions dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
         Assert.assertNotNull(myDiscussionsDashlet);
 
         // Click on New Topic button
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
 
         // Fill in the required fields (Title and Text) on CreateNewTopicPage
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
@@ -579,32 +458,18 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         createNewTopicPage.getTinyMCEEditor().setText(TOPIC_DETAILS_TEXT_ONE);
 
         // Click "Save" button on CreateNewTopicPage
-        TopicDetailsPage topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        TopicDetailsPage topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_ONE);
 
         // Go back to My Discussions dashlet and verify information about the created topic
-
         SiteDashboardPage siteDashboardPage = ShareUser.openSiteDashboard(drone, siteName);
         myDiscussionsDashlet = siteDashboardPage.getDashlet(MY_DISCUSSIONS).render();
 
-        //TODO: move somewhere to share po
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                siteDashboardPage = myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render();
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_ONE }, true);
 
+        myDiscussionsDashlet = siteDashboardPage.getDashlet(MY_DISCUSSIONS).render();
         List<ShareLink> topicsUsers = myDiscussionsDashlet.getTopics(LinkType.User);
         Assert.assertNotNull(topicsUsers);
 
@@ -634,7 +499,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
      * 8) Verify only topics created by site creator are displayed
      * 9) Select "All Topics" value from drop-down menu
      * 10) Verify all topics created by users of the site are displayed
-     *
+     * 
      * @throws Exception
      */
     @Test(groups = "SiteDashboardMyDiscussionTests")
@@ -649,13 +514,11 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Open My Discussions dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
-        Assert.assertNotNull(myDiscussionsDashlet);
 
         // Click on New Topic button
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
 
         // Fill in the required fields (Title and Text) on CreateNewTopicPage
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
@@ -663,8 +526,8 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         createNewTopicPage.getTinyMCEEditor().setText(TOPIC_DETAILS_TEXT_ONE);
 
         // Click "Save" button on CreateNewTopicPage - create a topic1 for a site
-        TopicDetailsPage topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        TopicDetailsPage topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_ONE);
 
@@ -682,7 +545,6 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         // invited user creates a topic2 for the site
         // Click on New Topic button
         createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
 
         // Fill in the required fields (Title and Text) on CreateNewTopicPage
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
@@ -690,8 +552,8 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         createNewTopicPage.getTinyMCEEditor().setText(TOPIC_DETAILS_TEXT_TWO);
 
         // Click "Save" button on CreateNewTopicPage - create a topic1 for a site
-        topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_TWO);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_TWO);
 
@@ -704,22 +566,9 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         myDiscussionsDashlet = siteDashPage.getDashlet(MY_DISCUSSIONS).render();
         siteDashPage = myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render();
 
-        //Selected "My Topics" and verify only topics created by site creator are displayed
+        // Selected "My Topics" and verify only topics created by site creator are displayed
         // Repeat search until the element is found or Timeout is hit
-        //TODO: move somewhere to share po
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_ONE }, true);
 
         List<ShareLink> myTopicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
         Assert.assertNotNull(myTopicsTitles);
@@ -729,21 +578,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         myDiscussionsDashlet = siteDashPage.getDashlet(MY_DISCUSSIONS).render();
         siteDashPage = myDiscussionsDashlet.selectTopicsFilter(ALL_TOPICS).render();
 
-        //Selected "All Topics" and verify only topics created by site creator are displayed
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_TWO)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
-
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_TWO }, true);
 
         List<ShareLink> allTopicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
         Assert.assertNotNull(allTopicsTitles);
@@ -769,7 +604,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
      * 11) Verify Topics updated in the last 14 days are displayed
      * 12) Select Topics updated in the last 28 days value from drop-down menu
      * 13) Verify Topics updated in the last 28 days are displayed
-     *
+     * 
      * @throws Exception
      */
     @Test(groups = "SiteDashboardMyDiscussionTests")
@@ -784,13 +619,11 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Open My Discussions dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
-        Assert.assertNotNull(myDiscussionsDashlet);
 
         // Click on New Topic button
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
 
         // Fill in the required fields (Title and Text) on CreateNewTopicPage
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
@@ -798,26 +631,26 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         createNewTopicPage.getTinyMCEEditor().setText(TOPIC_DETAILS_TEXT_ONE);
 
         // Click "Save" button on CreateNewTopicPage - create a topic1 for a site
-        TopicDetailsPage topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        TopicDetailsPage topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_ONE);
 
-        //create a topic2 for a site
+        // create a topic2 for a site
         createNewTopicPage = topicDetailsPage.clickOnNewTopicLink().render();
         createNewTopicPage.enterTopicTitle(TOPIC_DETAILS_TITLE_TWO);
         createNewTopicPage.getTinyMCEEditor().setText(TOPIC_DETAILS_TEXT_TWO);
-        topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_TWO);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_TWO);
 
-        //create a topic3 for a site
+        // create a topic3 for a site
         createNewTopicPage = topicDetailsPage.clickOnNewTopicLink().render();
         createNewTopicPage.enterTopicTitle(TOPIC_DETAILS_TITLE_THREE);
         createNewTopicPage.getTinyMCEEditor().setText(TOPIC_DETAILS_TEXT_THREE);
-        topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_THREE);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_THREE);
 
@@ -827,21 +660,12 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         // Select Topics updated in the last day value from drop-down menu;
         myDiscussionsDashlet.clickHistoryButtton();
         myDiscussionsDashlet.selectTopicsHistoryFilter(LAST_DAY_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement titleThree = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_THREE)));
-            WebElement titleTwo = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_TWO)));
-            WebElement titleOne = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
-            if (titleThree.isDisplayed() && titleTwo.isEnabled() && titleOne.isDisplayed())
-            {
-                break;
-            }
-        }
+
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_THREE }, true);
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_TWO }, true);
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_ONE }, true);
+
+        myDiscussionsDashlet = siteDashPage.getDashlet(MY_DISCUSSIONS).render();
         List<ShareLink> lastDayTopics = myDiscussionsDashlet.getTopics(LinkType.Topic);
 
         // Verify Topics updated in the last day are displayed
@@ -854,21 +678,11 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         // Select Topics updated in the last 7 days value from drop-down menu
         myDiscussionsDashlet.clickHistoryButtton();
         myDiscussionsDashlet.selectTopicsHistoryFilter(SEVEN_DAYS_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement titleThree = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_THREE)));
-            WebElement titleTwo = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_TWO)));
-            WebElement titleOne = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
-            if (titleThree.isDisplayed() && titleTwo.isEnabled() && titleOne.isDisplayed())
-            {
-                break;
-            }
-        }
+
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_THREE }, true);
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_TWO }, true);
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_ONE }, true);
+
         List<ShareLink> sevenDaysTopics = myDiscussionsDashlet.getTopics(LinkType.Topic);
 
         // Verify Topics updated in the last 7 days are displayed
@@ -881,21 +695,11 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         // Select Topics updated in the last 14 days value from drop-down menu
         myDiscussionsDashlet.clickHistoryButtton();
         myDiscussionsDashlet.selectTopicsHistoryFilter(FOURTEEN_DAYS_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement titleThree = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_THREE)));
-            WebElement titleTwo = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_TWO)));
-            WebElement titleOne = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
-            if (titleThree.isDisplayed() && titleTwo.isEnabled() && titleOne.isDisplayed())
-            {
-                break;
-            }
-        }
+
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_THREE }, true);
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_TWO }, true);
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_ONE }, true);
+
         List<ShareLink> fourteenDaysTopics = myDiscussionsDashlet.getTopics(LinkType.Topic);
 
         // Verify Topics updated in the last 14 days are displayed
@@ -908,21 +712,11 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         // Select Topics updated in the last 28 days value from drop-down menu
         myDiscussionsDashlet.clickHistoryButtton();
         myDiscussionsDashlet.selectTopicsHistoryFilter(TWENTY_EIGHT_DAYS_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement titleThree = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_THREE)));
-            WebElement titleTwo = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_TWO)));
-            WebElement titleOne = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
-            if (titleThree.isDisplayed() && titleTwo.isEnabled() && titleOne.isDisplayed())
-            {
-                break;
-            }
-        }
+
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_THREE }, true);
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_TWO }, true);
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_ONE }, true);
+
         List<ShareLink> twentyEightDaysTopics = myDiscussionsDashlet.getTopics(LinkType.Topic);
 
         // Verify Topics updated in the last 28 days are displayed
@@ -954,7 +748,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
      * 12) Verify that UserB name link is not active
      * 13) Click on the topic2 name link
      * 14) Verify topic2 details page is displayed correctly
-     *
+     * 
      * @throws Exception
      */
     @Test(groups = "SiteDashboardMyDiscussionTests")
@@ -968,7 +762,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         String siteName = testName + System.currentTimeMillis();
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
         Assert.assertNotNull(myDiscussionsDashlet);
 
@@ -989,7 +783,6 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
 
         // Click on New Topic button
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
 
         // Fill in the required fields (Title and Text) on CreateNewTopicPage
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
@@ -997,12 +790,12 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         createNewTopicPage.getTinyMCEEditor().setText(TOPIC_DETAILS_TEXT_ONE);
 
         // Click "Save" button on CreateNewTopicPage - create a topic1 for a site
-        TopicDetailsPage topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        TopicDetailsPage topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_ONE);
 
-        //Invited User1 logs out
+        // Invited User1 logs out
         ShareUser.logout(drone);
 
         // Invited User2 logs in
@@ -1014,7 +807,6 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
 
         // Click on New Topic button
         createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
 
         // Fill in the required fields (Title and Text) on CreateNewTopicPage
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
@@ -1022,42 +814,27 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         createNewTopicPage.getTinyMCEEditor().setText(TOPIC_DETAILS_TEXT_TWO);
 
         // Click "Save" button on CreateNewTopicPage - create a topic2 for a site
-        topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_TWO);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_TWO);
 
-        //Invited User2 logs out
+        // Invited User2 logs out
         ShareUser.logout(drone);
 
-        //admin logs in, removes User1 and deletes User2
+        // admin logs in, removes User1 and deletes User2
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
         ShareUserMembers.removeSiteMember(drone, testUser1, siteName);
-        DashBoardPage dashboardPage = ShareUser.openUserDashboard(drone);
-        UserSearchPage page = dashboardPage.getNav().getUsersPage().render();
-        page = page.searchFor(testUser2).render();
-        Assert.assertTrue(page.hasResults());
-        UserProfilePage userProfile = page.clickOnUser(testUser2).render();
-        page = userProfile.deleteUser().render();
+
+        ShareUserAdmin.deleteUser(drone, testUser2);
 
         // Open My Discussions dashlet
         siteDashPage = SiteUtil.openSiteURL(drone, getSiteShortname(siteName));
         myDiscussionsDashlet = siteDashPage.getDashlet(MY_DISCUSSIONS).render();
         siteDashPage = myDiscussionsDashlet.selectTopicsFilter(ALL_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_TWO)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
+
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_TWO }, true);
 
         List<ShareLink> allTopics = myDiscussionsDashlet.getTopics(LinkType.Topic);
         Assert.assertNotNull(allTopics);
@@ -1069,7 +846,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         topicDetailsPage = myDiscussionsDashlet.selectTopicTitle(TOPIC_DETAILS_TITLE_ONE).click().render();
 
         // verify topic details page is displayed
-        Assert.assertNotNull(topicDetailsPage);
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE);
         Assert.assertEquals(topicDetailsPage.getTopicCreatedBy(), TOPIC_DETAILS_CREATED_ON);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_ONE);
@@ -1077,7 +854,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         siteDashPage = SiteUtil.openSiteURL(drone, getSiteShortname(siteName));
         myDiscussionsDashlet = siteDashPage.getDashlet(MY_DISCUSSIONS).render();
 
-        //Verify that invited user's name link is not active
+        // Verify that invited user's name link is not active
         List<ShareLink> allUsers = myDiscussionsDashlet.getTopics(LinkType.User);
         Assert.assertEquals(allUsers.size(), 1);
 
@@ -1085,31 +862,19 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         MyProfilePage myProfilePage = myDiscussionsDashlet.selectTopicUser(testUser1 + " LName").click().render();
 
         // verify User Profile page is displayed
-        Assert.assertNotNull(myProfilePage);
         Assert.assertTrue(myProfilePage.titlePresent());
 
         siteDashPage = SiteUtil.openSiteURL(drone, getSiteShortname(siteName));
         myDiscussionsDashlet = siteDashPage.getDashlet(MY_DISCUSSIONS).render();
         siteDashPage = myDiscussionsDashlet.selectTopicsFilter(ALL_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_TWO)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
+
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_TWO }, true);
 
         // Click on the topic2 name link
         topicDetailsPage = myDiscussionsDashlet.selectTopicTitle(TOPIC_DETAILS_TITLE_TWO).click().render();
 
         // Verify topic2 details page is displayed correctly
-        Assert.assertNotNull(topicDetailsPage);
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_TWO);
         Assert.assertEquals(topicDetailsPage.getTopicCreatedBy(), TOPIC_DETAILS_CREATED_ON);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_TWO);
@@ -1126,7 +891,7 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
      * 3) Add several topics for each site
      * 4) Open My Discussions dashlet ('All Topics' view and 'My Topics' view) for site1
      * 5) Verify only created topics in site1 are displayed in My Discussions dashlet
-     *
+     * 
      * @throws Exception
      */
     @Test(groups = "SiteDashboardMyDiscussionTests")
@@ -1140,14 +905,12 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         String siteName1 = testName + System.currentTimeMillis() + "-Site1";
         ShareUser.createSite(drone, siteName1, SITE_VISIBILITY_PUBLIC);
 
-        //create topic1 for site1 - Open My Discussions dashlet for site1
-        ShareUserDashboard.addDashlet(drone, siteName1, Dashlet.MY_DISCUSSIONS);
+        // create topic1 for site1 - Open My Discussions dashlet for site1
+        ShareUserDashboard.addDashlet(drone, siteName1, Dashlets.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName1);
-        Assert.assertNotNull(myDiscussionsDashlet);
 
         // Click on New Topic button
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
 
         // Fill in the required fields (Title and Text) on CreateNewTopicPage
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
@@ -1155,8 +918,8 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         createNewTopicPage.getTinyMCEEditor().setText(TOPIC_DETAILS_TEXT_ONE);
 
         // Click "Save" button on CreateNewTopicPage - create a topic1 for site1
-        TopicDetailsPage topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        TopicDetailsPage topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_ONE);
 
@@ -1165,13 +928,11 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         ShareUser.createSite(drone, siteName2, SITE_VISIBILITY_PUBLIC);
 
         // Open My Discussions dashlet for site2
-        ShareUserDashboard.addDashlet(drone, siteName2, Dashlet.MY_DISCUSSIONS);
+        ShareUserDashboard.addDashlet(drone, siteName2, Dashlets.MY_DISCUSSIONS);
         myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName2);
-        Assert.assertNotNull(myDiscussionsDashlet);
 
         // Click on New Topic button
         createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
 
         // Fill in the required fields (Title and Text) on CreateNewTopicPage
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
@@ -1179,27 +940,16 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         createNewTopicPage.getTinyMCEEditor().setText(TOPIC_DETAILS_TEXT_TWO);
 
         // Click "Save" button on CreateNewTopicPage - create a topic2 for site2
-        topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_TWO);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_TWO);
 
         SiteDashboardPage siteDashPage = SiteUtil.openSiteURL(drone, getSiteShortname(siteName1));
         myDiscussionsDashlet = siteDashPage.getDashlet(MY_DISCUSSIONS).render();
         siteDashPage = myDiscussionsDashlet.selectTopicsFilter(MY_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
+
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_ONE }, true);
 
         // Selected "My Topics" value from drop-down menu by default
         // Verify only topics created by site creator are displayed
@@ -1210,19 +960,9 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
 
         // Select "All Topics" value from drop-down menu
         siteDashPage = myDiscussionsDashlet.selectTopicsFilter(ALL_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
+
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_ONE }, true);
+
         List<ShareLink> allTopics = myDiscussionsDashlet.getTopics(LinkType.Topic);
 
         // Verify all topics created by users of the site are displayed (no topic2)
@@ -1242,10 +982,10 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
      * 3) Add several topics for the site
      * 4) Open My Discussions dashlet and try to expand and narrow dashlet to possible size
      * 5) Verify that dashlet is expanded and narrowed, all items is correctly displayed
-     *
+     * 
      * @throws Exception
      */
-    @Test(groups = "AlfrescoBug")
+    @Test(groups = "SiteDashboardMyDiscussionTests")
     public void ALF_8947() throws Exception
     {
         // login as created user
@@ -1256,35 +996,32 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         String siteName = testName + System.currentTimeMillis();
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
-        // Create several topics for site
         // Open My Discussions dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.MY_DISCUSSIONS);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.MY_DISCUSSIONS);
         MyDiscussionsDashlet myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
-        Assert.assertNotNull(myDiscussionsDashlet);
 
         // Click on New Topic button
         CreateNewTopicPage createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
 
         // Fill in the required fields (Title and Text) on CreateNewTopicPage
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
         createNewTopicPage.enterTopicTitle(TOPIC_DETAILS_TITLE_ONE);
         createNewTopicPage.getTinyMCEEditor().setText(TOPIC_DETAILS_TEXT_ONE);
 
-        // Click "Save" button on CreateNewTopicPage - create a topic1 for a site
-        TopicDetailsPage topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        TopicDetailsPage topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_ONE);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_ONE);
 
-        SiteDashboardPage siteDashPage = SiteUtil.openSiteURL(drone, getSiteShortname(siteName));
-        drone.findAndWaitWithRefresh(By.xpath(String.format("//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
+        SiteDashboardPage siteDashPage = ShareUser.openSiteDashboard(drone, siteName);
+
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_ONE }, true);
+
         myDiscussionsDashlet = siteDashPage.getDashlet(MY_DISCUSSIONS).render();
 
         // invited user creates a topic2 for the site
         // Click on New Topic button
         createNewTopicPage = myDiscussionsDashlet.clickNewTopicButton().render();
-        Assert.assertNotNull(createNewTopicPage);
 
         // Fill in the required fields (Title and Text) on CreateNewTopicPage
         Assert.assertEquals(createNewTopicPage.getPageTitle(), CREATE_NEW_TOPIC_TITLE);
@@ -1292,47 +1029,26 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
         createNewTopicPage.getTinyMCEEditor().setText(TOPIC_DETAILS_TEXT_TWO);
 
         // Click "Save" button on CreateNewTopicPage - create a topic1 for a site
-        topicDetailsPage =  createNewTopicPage.saveTopic().render();
-        Assert.assertNotNull(topicDetailsPage);
+        topicDetailsPage = createNewTopicPage.saveTopic().render();
+
         Assert.assertEquals(topicDetailsPage.getTopicTitle(), TOPIC_DETAILS_TITLE_TWO);
         Assert.assertEquals(topicDetailsPage.getTopicText(), TOPIC_DETAILS_TEXT_TWO);
 
         // Try to expand dashlet to possible size
-        siteDashPage = SiteUtil.openSiteURL(drone, getSiteShortname(siteName));
-        myDiscussionsDashlet = siteDashPage.getDashlet(MY_DISCUSSIONS).render();
+        myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
         siteDashPage = myDiscussionsDashlet.selectTopicsFilter(ALL_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }
 
-        myDiscussionsDashlet.resizeDashlet(0, +400);
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_ONE }, true);
+
+        myDiscussionsDashlet.resizeDashlet(+50, +50);
 
         // Verify that all items is correctly displayed
         siteDashPage = myDiscussionsDashlet.selectTopicsFilter(ALL_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement titleTwo = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_TWO)));
-            WebElement titleOne = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
-            if (titleOne.isDisplayed() && titleTwo.isDisplayed())
-            {
-                break;
-            }
-        }
+
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_TWO }, true);
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_ONE }, true);
+
+        myDiscussionsDashlet = ShareUserDashboard.getMyDiscussionsDashlet(drone, siteName);
         List<ShareLink> expandedTopicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
         Assert.assertNotNull(expandedTopicsTitles);
 
@@ -1351,34 +1067,25 @@ public class SiteDashboardMyDiscussionTests extends AbstractUtils
 
         // Verify that all items is correctly displayed
         siteDashPage = myDiscussionsDashlet.selectTopicsFilter(ALL_TOPICS).render();
-        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
-        {
-            if (searchCount > 1)
-            {
-                webDriverWait(drone, refreshDuration);
-                drone.refresh();
-            }
-            WebElement title = drone.findAndWaitWithRefresh(By.xpath(String.format("//span[@class='nodeTitle']//a[text()='%s']", TOPIC_DETAILS_TITLE_ONE)));
-            if (title.isDisplayed())
-            {
-                break;
-            }
-        }        List<ShareLink> narrowedTopicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
+
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_TWO }, true);
+        ShareUserDashboard.searchMyDiscussionDashletWithRetry(drone, new String[] { TOPIC_DETAILS_TITLE_ONE }, true);
+
+        List<ShareLink> narrowedTopicsTitles = myDiscussionsDashlet.getTopics(LinkType.Topic);
         Assert.assertNotNull(narrowedTopicsTitles);
 
         Assert.assertEquals(narrowedTopicsTitles.size(), 2);
         Assert.assertEquals(narrowedTopicsTitles.get(0).getDescription(), TOPIC_DETAILS_TITLE_TWO);
         Assert.assertEquals(narrowedTopicsTitles.get(1).getDescription(), TOPIC_DETAILS_TITLE_ONE);
 
-        List<ShareLink>narrowedTopicsUsers = myDiscussionsDashlet.getTopics(LinkType.User);
+        List<ShareLink> narrowedTopicsUsers = myDiscussionsDashlet.getTopics(LinkType.User);
         Assert.assertNotNull(narrowedTopicsUsers);
+
         Assert.assertEquals(narrowedTopicsUsers.size(), 2);
         Assert.assertEquals(narrowedTopicsUsers.get(0).getDescription(), testUser + " LName");
         Assert.assertEquals(narrowedTopicsUsers.get(1).getDescription(), testUser + " LName");
 
-        // logout
         ShareUser.logout(drone);
-
     }
 
 }

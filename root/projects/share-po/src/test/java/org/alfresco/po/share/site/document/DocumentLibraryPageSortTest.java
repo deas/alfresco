@@ -41,6 +41,7 @@ import org.testng.Assert;
  * @since 2.1.1
  */
 @Listeners(FailedTestListener.class)
+@Test(enabled=false)
 public class DocumentLibraryPageSortTest extends AbstractTest
 {
     private static String siteName;

@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
  * @author Will Abson
  */
 @Listeners(FailedTestListener.class)
-@Test(groups={"alfresco-one", "Firefox17Ent"})
+@Test(groups={"alfresco-one"})
 public class DocumentDetailsPagePreviewTest extends AbstractDocumentTest
 {
     private String siteName;

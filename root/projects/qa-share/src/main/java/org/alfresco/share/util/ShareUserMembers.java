@@ -29,6 +29,7 @@ import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.TimeoutException;
 import org.testng.SkipException;
 
 /**
@@ -61,7 +62,7 @@ public class ShareUserMembers extends AbstractUtils
      * @param role
      * @return Boolean
      */
-    private static Boolean inviteUserToSiteWithRoleENT(WebDrone driver, String invitingUser, String userJoiningSite, String siteName, UserRole role)
+    public static Boolean inviteUserToSiteWithRoleENT(WebDrone driver, String invitingUser, String userJoiningSite, String siteName, UserRole role)
     {
         List<String> searchUsers = null;
         Boolean retVal = false;
@@ -320,6 +321,73 @@ public class ShareUserMembers extends AbstractUtils
     }
 
     /**
+     * This method allows the Site Manager to assign the role to site group for the public sites
+     *
+     * @param drone
+     * @param siteGroup
+     * @param siteName
+     * @param role
+     * @return {@link SiteGroupsPage}
+     */
+    public static SiteGroupsPage assignRoleToSiteGroup(WebDrone drone, String siteGroup, String siteName, UserRole role)
+    {
+        SiteDashboardPage siteDashBoard = ShareUser.openSiteDashboard(drone, siteName);
+
+        SiteMembersPage siteMemberspage = siteDashBoard.getSiteNav().selectMembersPage().render();
+        SiteGroupsPage siteGroupsPage = siteMemberspage.navigateToSiteGroups().render();
+
+        if (ShareUserMembers.searchGroupWithRetryFromGroupsPage(drone, siteGroup))
+        {
+            siteGroupsPage = siteGroupsPage.assignRole(siteGroup, role).render();
+
+            logger.info(role + " role assigned successfully to " + siteGroup);
+        }
+        return siteGroupsPage;
+    }
+
+    /**
+     * This method is used to retry the search to get group details in members
+     * page and returns true if group is found otherwise false.
+     *
+     * @param driver
+     * @param groupName
+     * @return boolean
+     */
+    public static boolean searchGroupWithRetryFromGroupsPage(WebDrone driver, String groupName)
+    {
+        SiteGroupsPage siteGroupsPage = ShareUser.getSharePage(driver).render();
+
+        List<String> searchGroups = null;
+        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
+        {
+            try
+            {
+                searchGroups = siteGroupsPage.searchGroup(groupName);
+                siteGroupsPage.renderWithGroupSearchResults(refreshDuration);
+            }
+            catch (PageException e)
+            {
+            }
+            catch (PageRenderTimeException exception)
+            {
+            }
+
+            if (searchGroups != null && searchGroups.size() > 0)
+            {
+                for (String group : searchGroups)
+                {
+                    if (group.contains(groupName))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * This method allows the Site Manager to remove the site member for the
      * public sites.
      * 
@@ -337,7 +405,7 @@ public class ShareUserMembers extends AbstractUtils
         if (ShareUserMembers.searchUserWithRetryFromMembersPage(driver, siteMember))
         {
             // TODO: Chiran: Need a webdrone unit test for removeUser
-            siteMemberspage = siteMemberspage.removeUser(siteMember);
+            siteMemberspage = siteMemberspage.removeUser(siteMember).render();
             logger.info(siteMember + " has been removed from sitemembers");
             return siteMemberspage;
         }
@@ -442,7 +510,7 @@ public class ShareUserMembers extends AbstractUtils
             retVal = true;
 
         }
-        catch (Exception e)
+        catch (TimeoutException e)
         {
             logger.info("Error in inviting User To Site : " + e.getMessage());
             throw new SkipException(String.format("Error in inviting group %s To Site %s as %s: ", groupDisplayName, siteName, role) + e);
@@ -622,7 +690,7 @@ public class ShareUserMembers extends AbstractUtils
      */
     public static SiteMembersPage setUserRoleWithSite(WebDrone drone, String user, UserRole userRole, String siteName)
     {
-        SiteDashboardPage dashBoardPage = SiteUtil.openSiteFromSearch(drone, siteName);
+        SiteDashboardPage dashBoardPage = ShareUser.openSiteDashboard(drone, siteName);
         SiteMembersPage siteMembersPage = dashBoardPage.getSiteNav().selectMembers().render();
         return siteMembersPage.assignRole(user, userRole);
     }
@@ -670,5 +738,21 @@ public class ShareUserMembers extends AbstractUtils
         
         return managePermissionPage;
     }
-    
+
+    /**
+     * This method allows the user to leave a site.  Assumes user is logged in
+     * 
+     * @param driver
+     * @param siteName
+     * @return {@link SiteFinderPage}
+     */
+    public static SiteFinderPage userRequestToLeaveSite(WebDrone driver, String siteName)
+    {
+        logger.info(" User request to leave the Site " + siteName);
+
+        SharePage page = ShareUser.getSharePage(driver);
+        SiteFinderPage siteFinder = page.getNav().selectSearchForSites().render();
+        siteFinder = SiteUtil.searchSiteWithRetry(driver, siteName, true);
+        return siteFinder.leaveSite(siteName).render();
+    }
 }

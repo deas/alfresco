@@ -4,7 +4,9 @@ import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
@@ -34,7 +36,7 @@ public class ConfigureWebViewDashletBoxPage extends SharePage
     public ConfigureWebViewDashletBoxPage render(RenderTime timer)
     {
         elementRender(timer, getVisibleRenderElement(OK_BUTTON), getVisibleRenderElement(CANCEL_BUTTON), getVisibleRenderElement(CLOSE_BUTTON),
-            getVisibleRenderElement(LINK_TITLE_FIELD), getVisibleRenderElement(URL_FIELD));
+                getVisibleRenderElement(LINK_TITLE_FIELD), getVisibleRenderElement(URL_FIELD));
         return this;
 
     }
@@ -51,5 +53,53 @@ public class ConfigureWebViewDashletBoxPage extends SharePage
     public ConfigureWebViewDashletBoxPage render()
     {
         return render(new RenderTime(maxPageLoadingTime));
+    }
+
+    public void config(String title, String url)
+    {
+        fillLinkTitle(title);
+        fillUrlField(url);
+        clickOkButton();
+    }
+
+    /**
+     * Mimic fill title field on Box.
+     *
+     * @param text
+     */
+    public void fillLinkTitle(String text)
+    {
+        checkNotNull(text);
+        fillField(LINK_TITLE_FIELD, text);
+    }
+
+    /**
+     * Mimic fill url field on Box.
+     *
+     * @param text
+     */
+    public void fillUrlField(String text)
+    {
+        checkNotNull(text);
+        fillField(URL_FIELD, text);
+    }
+
+    public void clickOkButton()
+    {
+        click(OK_BUTTON);
+    }
+
+    private void click(By locator)
+    {
+        WebElement element = drone.findAndWait(locator);
+        element.click();
+    }
+
+    private void fillField(By selector, String text)
+    {
+        checkNotNull(text);
+        WebElement inputField = drone.findAndWait(selector);
+        inputField.clear();
+        inputField.sendKeys(text);
     }
 }

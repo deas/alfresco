@@ -16,6 +16,7 @@ package org.alfresco.po.share.dashlet;
 
 import java.util.List;
 
+import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -40,7 +41,7 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
 {
     private static Log logger = LogFactory.getLog(MyTasksDashlet.class);
 
-    private static final String DATA_LIST_CSS_LOCATION = "h3.filename > a";
+    private static final String DATA_LIST_CSS_LOCATION = "h3 > a";
     private static final String DIV_DASHLET_CONTENT_PLACEHOLDER = "div.dashlet.my-tasks";
     private static final String ACCEPT_BUTTON = "button[id*='accept-button']";
     private static final String LIST_OF_TASKS = "h3>a[href*='referrer=tasks']";
@@ -124,6 +125,19 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
     }
 
     /**
+     * Renderer to ensure the task is fully loaded.
+     * 
+     * @param time
+     * @param taskName
+     * @return
+     */
+    public MyTasksDashlet renderTask(final long time, String taskName)
+    {
+        elementRender(new RenderTime(time), RenderElement.getVisibleRenderElement(By.xpath(String.format("//h3/a[text()='%s']/../../../..", taskName))));
+        return this;
+    }
+
+    /**
      * Selects the accept button on Invitation page.
      * 
      * @return {@link MyTasksDashlet}
@@ -156,15 +170,16 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
                 if (taskName != null && taskName.contains(task.toLowerCase()))
                 {
                     element.click();
+                    return this;
                 }
             }
 
-            return this;
         }
         catch (Exception e)
         {
-            throw new PageException("Unable to find the List of Tasks.", e);
+            logger.error("Unable to find the List of Tasks.", e);
         }
+        throw new PageException("Unable to click task: " + task);
     }
 
     /**

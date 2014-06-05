@@ -1,7 +1,5 @@
 package org.alfresco.po.share.site;
 
-import java.util.List;
-
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.NewUserPage;
@@ -22,17 +20,18 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 /**
- * 
  * @author Shan Nagarajan
- *
  */
 @Listeners(FailedTestListener.class)
 public class InviteMembersPageTest extends AbstractTest
 {
     private static Log logger = LogFactory.getLog(InviteMembersPageTest.class);
-    
+
     InviteMembersPage membersPage;
+    SiteNavigation siteNavigation;
     String user;
     WebElement invitee;
     DashBoardPage dashBoard;
@@ -40,7 +39,7 @@ public class InviteMembersPageTest extends AbstractTest
     List<WebElement> inviteesList;
     String userNameTest;
 
-    @BeforeClass(groups="Enterprise-only")
+    @BeforeClass(groups = "Enterprise-only")
     public void instantiateMembers() throws Exception
     {
         userNameTest = "user" + System.currentTimeMillis() + "@test.com";
@@ -65,7 +64,7 @@ public class InviteMembersPageTest extends AbstractTest
          * userName, userName, userName, alfrescoVersion.isCloud(),
          * shareUrl));
          */
-        
+
         // TODO: Cloud user creation needs to be implemented
         // Assert.assertTrue(UserUtil.createUser(userName, userName,
         // userName, userName, userName, alfrescoVersion.isCloud(),
@@ -73,16 +72,17 @@ public class InviteMembersPageTest extends AbstractTest
 
         CreateSitePage createSitePage = dashBoard.getNav().selectCreateSite().render();
         SitePage site = createSitePage.createNewSite(siteName).render();
-        membersPage = site.getSiteNav().selectInvite().render();
+        siteNavigation = site.getSiteNav();
+        membersPage = siteNavigation.selectInvite().render();
     }
 
-    @Test(groups="Enterprise-only")
+    @Test(groups = "Enterprise-only")
     public void testIsMembersPageTitlePresent()
     {
         Assert.assertTrue(membersPage.titlePresent());
     }
 
-    @Test(groups="Enterprise-only")
+    @Test(groups = "Enterprise-only")
     public void testSearchUser() throws Exception
     {
         List<String> searchUsers = null;
@@ -90,13 +90,13 @@ public class InviteMembersPageTest extends AbstractTest
         RenderTime t = new RenderTime(4000);
         try
         {
-            while(true)
+            while (true)
             {
                 t.start();
                 try
                 {
                     searchUsers = membersPage.searchUser(userNameTest);
-                    if(searchUsers != null) 
+                    if (searchUsers != null)
                     {
                         break;
                     }
@@ -122,43 +122,81 @@ public class InviteMembersPageTest extends AbstractTest
     {
         Assert.assertNotNull(membersPage.clickAddUser(user));
     }
+
     @Test(dependsOnMethods = "testSearchUser", groups = "Enterprise-only", expectedExceptions = UnsupportedOperationException.class)
     public void testAddingNullUser()
     {
         Assert.assertNotNull(membersPage.clickAddUser(null));
     }
-    
-    
-    @Test(dependsOnMethods = "testAddUser", groups="Enterprise-only", expectedExceptions = UnsupportedOperationException.class)
+
+
+    @Test(dependsOnMethods = "testAddUser", groups = "Enterprise-only", expectedExceptions = UnsupportedOperationException.class)
     public void testSelectInviteeAndAssignRoleToNull()
     {
         Assert.assertNotNull(membersPage.selectInviteeAndAssignRole(user, null));
     }
-    
-    @Test(dependsOnMethods = "testSelectInviteeAndAssignRoleToNull", groups="Enterprise-only", expectedExceptions = UnsupportedOperationException.class)
+
+    @Test(dependsOnMethods = "testSelectInviteeAndAssignRoleToNull", groups = "Enterprise-only", expectedExceptions = UnsupportedOperationException.class)
     public void testSelectNullInviteeAndAssignRole()
     {
         Assert.assertNotNull(membersPage.selectInviteeAndAssignRole(null, UserRole.COLLABORATOR));
     }
 
-    @Test(dependsOnMethods = "testSelectNullInviteeAndAssignRole", groups="Enterprise-only")
+    @Test(dependsOnMethods = "testSelectNullInviteeAndAssignRole", groups = "Enterprise-only")
     public void testSelectInviteeAndAssignRole()
     {
         Assert.assertNotNull(membersPage.selectInviteeAndAssignRole(user, UserRole.COLLABORATOR));
     }
-    
-    @Test(dependsOnMethods = "testSelectInviteeAndAssignRole", groups="Enterprise-only")
+
+    @Test(dependsOnMethods = "testSelectInviteeAndAssignRole", groups = "Enterprise-only")
+    public void testStateMethods()
+    {
+        Assert.assertFalse(membersPage.isAddButtonEnabledFor(userNameTest));
+        Assert.assertTrue(membersPage.isSelectRoleEnabledFor(userNameTest));
+        Assert.assertTrue(membersPage.isRemoveIconEnabledFor(userNameTest));
+    }
+
+    @Test(dependsOnMethods = "testStateMethods", groups = "Enterprise-only")
+    public void testSelectAllRole()
+    {
+        membersPage.selectRoleForAll(UserRole.MANAGER);
+    }
+
+    @Test(dependsOnMethods = "testSelectAllRole", groups = "Enterprise-only")
     public void testEnabledInviteButton()
     {
+        Assert.assertTrue(membersPage.isInviteButtonEnabled());
         Assert.assertNotNull(membersPage.clickInviteButton());
     }
 
-    @AfterClass(groups="Enterprise-only")
+    @Test(dependsOnMethods = "testEnabledInviteButton", groups = "Enterprise-only")
+    public void testNavigateToPendingInvitesPage()
+    {
+        membersPage.navigateToPendingInvitesPage();
+        Assert.assertTrue(drone.getCurrentPage().render() instanceof PendingInvitesPage);
+        membersPage = siteNavigation.selectInvite().render();
+    }
+
+    @Test(dependsOnMethods = "testNavigateToPendingInvitesPage", groups = "Enterprise-only")
+    public void testNavigateToGroupsInvitePage()
+    {
+        membersPage.navigateToSiteGroupsPage();
+        Assert.assertTrue(drone.getCurrentPage().render() instanceof SiteGroupsPage);
+        membersPage = siteNavigation.selectInvite().render();
+    }
+
+    @Test(dependsOnMethods = "testNavigateToGroupsInvitePage", groups = "Enterprise-only")
+    public void testSendExtInvite()
+    {
+        membersPage.invExternalUser("Gogi", "Gruzinidze", "gogi@vaikrasava.com", UserRole.CONSUMER);
+    }
+
+    @AfterClass(groups = "Enterprise-only")
     public void deleteSite() throws Exception
     {
         try
         {
-            if(drone != null && !StringUtils.isEmpty(siteName))
+            if (drone != null && !StringUtils.isEmpty(siteName))
             {
                 SiteUtil.deleteSite(drone, siteName);
                 closeWebDrone();
@@ -167,5 +205,6 @@ public class InviteMembersPageTest extends AbstractTest
         catch (Exception e)
         {
             logger.error("Problem deleting site", e);
-        }    }
+        }
+    }
 }

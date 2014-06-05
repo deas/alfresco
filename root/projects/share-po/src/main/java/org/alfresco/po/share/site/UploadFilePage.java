@@ -116,7 +116,7 @@ public class UploadFilePage extends ShareDialogue
     {
         try
         {
-            return drone.find(uploadField).isDisplayed();
+            return drone.isElementDisplayed(uploadField);
         }
         catch (Exception e)
         {

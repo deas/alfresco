@@ -187,7 +187,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
             {
                 throw new UnsupportedOperationException("At least one reviewer should be present");
             }
-            assignmentPage.selectReviewers(formDetails.getReviewers());
+            assignmentPage.selectReviewers(formDetails.getReviewers()).render();
         }
 
         selectLockOnPremiseCheckbox(formDetails.isLockOnPremise());
@@ -863,7 +863,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
             {
                 throw new UnsupportedOperationException("At least one reviewer should be present");
             }
-            assignmentPage.selectReviewers(formDetails.getReviewers());
+            assignmentPage.selectReviewers(formDetails.getReviewers()).render();
         }
 
         selectLockOnPremiseCheckbox(formDetails.isLockOnPremise());

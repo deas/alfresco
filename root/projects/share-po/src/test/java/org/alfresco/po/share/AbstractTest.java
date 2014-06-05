@@ -45,6 +45,7 @@ import org.alfresco.po.share.user.CloudSignInPage;
 import org.alfresco.po.share.user.CloudSyncPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.util.ShareTestProperty;
+import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -99,7 +100,10 @@ public abstract class AbstractTest
     protected long popupRendertime;
     public static long maxWaitTime_CloudSync = 50000;
     public static String licenseShare;
-    
+    protected static String blogUrl;
+    protected static String blogUsername;
+    protected static String blogPassword;
+
     public WebDrone getDrone()
     {
         return drone;
@@ -132,6 +136,9 @@ public abstract class AbstractTest
         cloudUserPassword = t.getCloudUserPassword();
         popupRendertime = t.getPopupRendertime();
         licenseShare = t.getLicenseShare();
+        blogUrl = t.getBlogUrl();
+        blogUsername = t.getBlogUsername();
+        blogPassword = t.getBlogPassword();
 
         if(hybridEnabled)
         {
@@ -392,7 +399,7 @@ public abstract class AbstractTest
         SharePage sharePage = drone.getCurrentPage().render();
         SiteFinderPage siteFinderPage = sharePage.getNav().selectSearchForSites().render();
         siteFinderPage.searchForSite(siteName).render();
-        siteFinderPage = siteSearchRetry(siteFinderPage, siteName);
+        siteFinderPage = SiteUtil.siteSearchRetry(drone, siteFinderPage, siteName);
         SiteDashboardPage siteDashboardPage = siteFinderPage.selectSite(siteName).render();
         DocumentLibraryPage documentLibPage = siteDashboardPage.getSiteNav().selectSiteDocumentLibrary().render();
         return documentLibPage;
@@ -551,40 +558,6 @@ public abstract class AbstractTest
         DocumentLibraryPage documentLibraryPage = drone.getCurrentPage().render();
         UploadFilePage uploadForm = documentLibraryPage.getNavigation().selectFileUpload().render();
         return uploadForm.uploadFile(filePath).render();
-    }
-    
-    /**
-     * 
-     * Searching with retry for sites to handle solr lag
-     * 
-     * @param finderPage
-     * @param siteName
-     * @return
-     */
-    protected SiteFinderPage siteSearchRetry(SiteFinderPage finderPage, String siteName)
-    {
-        int counter = 0;
-        int waitInMilliSeconds = 2000;
-        while(counter < retrySearchCount)
-        {
-            SiteFinderPage siteSearchResults = finderPage.searchForSite(siteName).render();
-            if(siteSearchResults.getSiteList().contains(siteName))
-            {
-                return siteSearchResults;
-            }
-            else
-            {
-                counter++;
-                drone.getCurrentPage().render();
-            }
-            //double wait time to not over do solr search
-            waitInMilliSeconds = (waitInMilliSeconds*2);
-            synchronized (this)
-            {
-                try{ this.wait(waitInMilliSeconds); } catch (InterruptedException e) {}
-            }
-        }
-        throw new PageException("site search failed");
     }
     
 }

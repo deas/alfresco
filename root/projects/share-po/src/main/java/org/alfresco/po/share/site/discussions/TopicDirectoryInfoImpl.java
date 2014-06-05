@@ -1,6 +1,5 @@
 package org.alfresco.po.share.site.discussions;
 
-import org.alfresco.po.share.site.datalist.DataListPage;
 import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.logging.Log;
@@ -94,5 +93,41 @@ public class TopicDirectoryInfoImpl extends HtmlElement implements TopicDirector
             logger.error("The operation has timed out");
         }
         return new DiscussionsPage(drone);
+    }
+
+    /**
+     * Method to verify whether edit topic is displayed
+     *
+     * @return boolean
+     */
+    public boolean isEditTopicDisplayed ()
+    {
+        try
+        {
+            WebElement editLink = findElement(EDIT_TOPIC);
+            return editLink.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        return false;
+    }
+
+    /**
+     * Method to verify whether edit topic is displayed
+     *
+     * @return boolean
+     */
+    public boolean isDeleteTopicDisplayed ()
+    {
+        try
+        {
+            WebElement deleteLink = findElement(DELETE_TOPIC);
+            return deleteLink.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        return false;
     }
 }

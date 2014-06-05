@@ -65,7 +65,7 @@ public class LiveSearchDropdown extends SharePage
     private static final String PEOPLE_RESULTS = "div[data-dojo-attach-point='containerNodePeople'] div.alf-livesearch-item";
 
     // See more document results
-    private static final String MORE_RESULTS = "a[title='More']";
+    private static final String MORE_RESULTS = "a[title='More'] span";
 
     /**
      * Constructor
@@ -340,6 +340,7 @@ public class LiveSearchDropdown extends SharePage
         try
         {
             WebElement expandDocumentResults = drone.findAndWait(By.cssSelector(MORE_RESULTS));
+            drone.mouseOver(expandDocumentResults);
             expandDocumentResults.click();
 
         }

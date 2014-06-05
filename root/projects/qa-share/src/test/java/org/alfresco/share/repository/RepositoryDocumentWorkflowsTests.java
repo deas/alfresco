@@ -22,6 +22,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.alfresco.po.share.site.document.*;
@@ -30,7 +31,6 @@ import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.ShareUserWorkFlow;
-import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.alfresco.po.share.MyTasksPage;
@@ -49,15 +49,12 @@ import org.alfresco.po.share.workflow.WorkFlowType;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
  * @author jcule
- *
  */
 @Listeners(FailedTestListener.class)
 public class RepositoryDocumentWorkflowsTests extends AbstractUtils
@@ -66,8 +63,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
 
     private String testUser;
     private static final String USER_HOMES_FOLDER = "User Homes";
-    private static final String DOCUMENT_LIBRARY = "documentLibrary";
-    private String testUserFolderHome = REPO + SLASH + USER_HOMES_FOLDER + SLASH;
+    private String baseFolderName = REPO + SLASH + USER_HOMES_FOLDER;
 
     /**
      * A single user for the class is created and assigned admin rights
@@ -77,53 +73,20 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
     public void setup() throws Exception
     {
         super.setup();
+
         // create a single user
         testName = this.getClass().getSimpleName();
-        testUser = testName + "@" + DOMAIN_FREE;
+        testUser = getUserNameFreeDomain(testName + System.currentTimeMillis());
+        
+        baseFolderName = REPO + SLASH + USER_HOMES_FOLDER + SLASH + testUser;
+        
+        logger.info("Starting Tests: " + testName);
 
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUser);
-    }
 
-    /**
-     * User logs in before test is executed
-     * 
-     * @throws Exception
-     */
-    @BeforeMethod(groups = { "RepositoryDocumentWorkflows" })
-    public void prepare() throws Exception
-    {
-        // login as created user
-        try
-        {
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            logger.info("RepositoryDocumentWorkflowsTests user logged in - drone.");
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
+        ShareUser.login(drone, testUser);
 
-    }
-
-    /**
-     * User logs out after executing test
-     * 
-     * @throws Exception
-     */
-    @AfterMethod(groups = { "RepositoryDocumentWorkflows" })
-    public void quit() throws Exception
-    {
-        // login as created user
-        try
-        {
-            ShareUser.logout(drone);
-            logger.info("RepositoryDocumentWorkflowsTests user logged out - drone.");
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName);        
     }
 
     /**
@@ -140,63 +103,65 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentWorkflows" })
+    @Test(groups = { "RepositoryDocumentWorkflows", "SharePOBug" })
     public void enterprise40x_5449() throws Exception
     {
-        // Upload file to test folder
         String testName = getTestName();
-        File sampleFile = SiteUtil.prepareFile();
-        String fileName = sampleFile.getName();
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
-        }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
-        repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
-        Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
+
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
+
+        String folderName = getFolderName(testName);
+
+        String copyFolderName = "Copy Folder" + folderName;        
+        String copyFolderDescription = "Copy Folder Description";
+        
+        String tag = "tag" + System.currentTimeMillis();
+        
+        String[] destinationFolders = { copyFolderName };
+        String copiedFileName = "Copy of " + fileName;        
+        
+        String[] copyDestinationFolders = { testUser, copyFolderName };
+        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, folderName, copyFolderName };
+
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName);
+
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
+
+        ShareUserSitePage.selectContent(drone, folderName).render();
+
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName));
 
         // add a tag to the file
-        String tag = "tag" + System.currentTimeMillis();
-        EditDocumentPropertiesPage editDocumentPropertiesPopup = repositoryPage.getFileDirectoryInfo(fileName).selectEditProperties().render();
-        TagPage tagPage = editDocumentPropertiesPopup.getTag().render();
-        tagPage = tagPage.enterTagValue(tag).render();
-        tagPage.clickOkButton();
-        editDocumentPropertiesPopup.selectSave().render();
+        ShareUserRepositoryPage.addTagsInRepo(drone, fileName, Arrays.asList(tag));
 
-        // create folder in users home folder
-        String copyFolderName = "Copy Folder" + System.currentTimeMillis();
-        String copyFolderDescription = "Copy Folder Description";
         ShareUserRepositoryPage.createFolderInRepository(drone, copyFolderName, copyFolderName, copyFolderDescription);
 
         // copy file to the created folder
-        repositoryPage.getFileDirectoryInfo(copyFolderName).selectCheckbox();
-        String[] copyDestinationFolders = { testUser, copyFolderName };
-        repositoryPage = ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, fileName, copyDestinationFolders, true);
+        ShareUserSitePage.getFileDirectoryInfo(drone, copyFolderName).selectCheckbox();
+
+        ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, fileName, copyDestinationFolders, true);
 
         // check the file is copied to the folder - go to created folder first
-        repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, testName, copyFolderName };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
-        FileDirectoryInfo copyFolderFileDirectoryInfo = repositoryPage.getFileDirectoryInfo(fileName);
-        Assert.assertNotNull(copyFolderFileDirectoryInfo);
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
+        ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName), "File is visible in the new destination");
 
         // copy copied file in copy folder
-        String[] destinationFolders = { copyFolderName };
-        repositoryPage = ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, fileName, destinationFolders, true);
-        String copiedFileName = "Copy of " + fileName;
-
-        // check the file is copied
-        Assert.assertNotNull(repositoryPage.getFileDirectoryInfo(copiedFileName));
+        ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, fileName, destinationFolders, true);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, copiedFileName), "File is visible in the new destination");
 
         // check the tag scope increased
-        DocumentLibraryPage documentLibraryPage = repositoryPage.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(tag).render();
-        Assert.assertTrue(ShareUserSitePage.searchDocumentLibraryWithRetry(drone, copiedFileName, true));
-        List<FileDirectoryInfo> files = documentLibraryPage.getFiles();
-        Assert.assertTrue(files.size() == 3);
+        ShareUserSitePage.clickOnTagNameInTreeMenu(drone, tag).render();
 
+        Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, copiedFileName, "isContentVisible", "", true));
+        Assert.assertEquals(ShareUserSitePage.getContentCount(drone), 3);
     }
 
     /**
@@ -209,35 +174,42 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentWorkflows" })
+    @Test(groups = { "RepositoryDocumentWorkflows", "SharePOBug" })
     public void enterprise40x_5450() throws Exception
     {
         // create a site
         String testName = getTestName();
-        String siteName = testName + System.currentTimeMillis();
-        ShareUser.createSite(drone, siteName, "Public");
+        
+        String siteName = getSiteName(testName + System.currentTimeMillis());
+        
+        String folderName = getFolderName(testName);
 
         // Upload file to test folder
-        File sampleFile = SiteUtil.prepareFile();
-        String fileName = sampleFile.getName();
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
-        }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
-        repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
-        Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
+
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName);
+
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
+
+        ShareUserSitePage.selectContent(drone, folderName).render();
+
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName));
 
         // copy uploaded file to the site
-        String[] copySitesFolders = { "Sites", siteName, DOCUMENT_LIBRARY };
+        String[] copySitesFolders = { "Sites", siteName, DOCLIB };
         ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, fileName, copySitesFolders, true);
 
         // check the file is present in the sites document library
-        DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-        Assert.assertNotNull(documentLibraryPage.getFileDirectoryInfo(fileName));
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName), "Copied File not found");
 
     }
 
@@ -255,30 +227,36 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentWorkflows" })
+    @Test(groups = { "RepositoryDocumentWorkflows", "SharePOBug"  })
     public void enterprise40x_5451() throws Exception
     {
         // create site
         String testName = getTestName();
         String siteName = testName + System.currentTimeMillis();
-        ShareUser.createSite(drone, siteName, "Public");
+        
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
+        
+        String folderName = getFolderName(testName);
+
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Upload file to test folder
-        File sampleFile = SiteUtil.prepareFile();
-        String fileName = sampleFile.getName();
         RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
-        }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
-        repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
-        Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
+        
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName);
+
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
+
+        ShareUserSitePage.selectContent(drone, folderName).render();
+
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName));
 
         // cancel copying to the site's document library
-        String[] copySitesFolders = { "Sites", siteName, DOCUMENT_LIBRARY };
+        String[] copySitesFolders = { "Sites", siteName, DOCLIB };
         ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryCancel(drone, fileName, copySitesFolders, true);
 
         // check the file is not copied to the site's document library
@@ -289,9 +267,12 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
         // create folder in users home folder
         String copyFolderName = "Copy Folder" + System.currentTimeMillis();
         String copyFolderDescription = "Copy Folder Description";
-        repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, testName };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
+        
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
+        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, folderName };
+        ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
+        
         ShareUserRepositoryPage.createFolderInRepository(drone, copyFolderName, copyFolderName, copyFolderDescription);
 
         // cancel copying of the file to the created folder
@@ -314,48 +295,56 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentWorkflows" })
+    @Test(groups = { "RepositoryDocumentWorkflows", "SharePOBug" })
     public void enterprise40x_5452() throws Exception
     {
-
         // Upload file to test folder
         String testName = getTestName();
-        File sampleFile = SiteUtil.prepareFile();
-        String fileName = sampleFile.getName();
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
 
-        }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
-        repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
-        Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
+        
+        String folderName = getFolderName(testName);
+
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName);
+
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
+
+        ShareUserSitePage.selectContent(drone, folderName).render();
+
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName));
 
         // create folder in users home folder
         String moveFolderName = "Move Folder" + System.currentTimeMillis();
         String moveFolderDescription = "Move Folder Description";
-        repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-	  ShareUserRepositoryPage.createFolderInFolderInRepository(drone, moveFolderName, moveFolderDescription, testUserFolderHome + testUser + SLASH + testName);
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
+        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, folderName };
+        ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
+        
+        ShareUserRepositoryPage.createFolderInRepository(drone, moveFolderName, moveFolderDescription, moveFolderDescription);
 
         // move the file to the created folder
         String[] moveDestinationFolders = { testUser, moveFolderName };
-        repositoryPage = ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, fileName, moveDestinationFolders, false);
+        ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, fileName, moveDestinationFolders, false);
 
         // check there is no file in users home directory
-        List<FileDirectoryInfo> files = repositoryPage.getFiles();
-        for (FileDirectoryInfo file : files)
-        {
-            Assert.assertFalse(fileName.equalsIgnoreCase(file.getName()));
-        }
+        ShareUserSitePage.isFileVisible(drone, fileName);
 
         // check the file is moved to the folder - first navigate to created folder
-        repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, testName, moveFolderName };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
-        Assert.assertNotNull(repositoryPage.getFileDirectoryInfo(fileName));
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
+        String[] testFolderPathMove = { USER_HOMES_FOLDER, testUser, folderName, moveFolderName };
+        ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPathMove);
+        
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName), "File is not moved to the desitnation folder");
 
     }
 
@@ -370,39 +359,40 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentWorkflows" })
+    @Test(groups = { "RepositoryDocumentWorkflows", "SharePOBug" })
     public void enterprise40x_5453() throws Exception
     {
         // create site
         String testName = getTestName();
         String siteName = testName + System.currentTimeMillis();
-        ShareUser.createSite(drone, siteName, "Public");
+        
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
+        
+        String folderName = getFolderName(testName);
 
         // Upload file to test folder
-        File sampleFile = SiteUtil.prepareFile();
-        String fileName = sampleFile.getName();
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
-        }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
-        repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
-        Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName);
+
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
+
+        ShareUserSitePage.selectContent(drone, folderName).render();
+
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName));
 
         // move the file to the site
-        String[] moveSitesFolders = { "Sites", siteName, DOCUMENT_LIBRARY };
+        String[] moveSitesFolders = { "Sites", siteName, DOCLIB };
         ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryOk(drone, fileName, moveSitesFolders, false);
 
         // check there is no file in users home folder
-        List<FileDirectoryInfo> files = repositoryPage.getFiles();
-        for (FileDirectoryInfo file : files)
-        {
-            Assert.assertFalse(fileName.equalsIgnoreCase(file.getName()));
-        }
+        Assert.assertFalse(ShareUserSitePage.isFileVisible(drone, fileName),"File is not visible");
 
         // check the file is in the sites document library
         DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
@@ -426,32 +416,36 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentWorkflows" })
+    @Test(groups = { "RepositoryDocumentWorkflows", "SharePOBug"  })
     public void enterprise40x_5454() throws Exception
     {
 
         // create site
         String testName = getTestName();
         String siteName = testName + System.currentTimeMillis();
-        ShareUser.createSite(drone, siteName, "Public");
+        
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
+        
+        String folderName = getFolderName(testName);
 
-        // Upload file to test folder
-        File sampleFile = SiteUtil.prepareFile();
-        String fileName = sampleFile.getName();
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+
         RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
+        
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName);
 
-        }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
-        repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
-        Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
+
+        ShareUserSitePage.selectContent(drone, folderName).render();
+
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName));
 
         // move to sites document library - cancel
-        String[] moveSitesFolders = { "Sites", siteName, DOCUMENT_LIBRARY };
+        String[] moveSitesFolders = { "Sites", siteName, DOCLIB, folderName };
         ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryCancel(drone, fileName, moveSitesFolders, false);
 
         // check the file is not moved to sites document library
@@ -459,32 +453,32 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
         List<FileDirectoryInfo> files = documentLibraryPage.getFiles();
         Assert.assertTrue(files.size() == 0);
         repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, testName };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
+        
+        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, folderName };
+        ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
 
         // check the file is still present in users home folder
-        Assert.assertNotNull(repositoryPage.getFileDirectoryInfo(fileName));
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName), "File is not visible");
 
         // create folder in users home folder
         String moveFolderName = "Move Folder" + System.currentTimeMillis();
         String moveFolderDescription = "Move Folder Description";
         repositoryPage = ShareUserRepositoryPage.createFolderInRepository(drone, moveFolderName, moveFolderName, moveFolderDescription);
-        repositoryPage.getFileDirectoryInfo(moveFolderName).selectCheckbox();
+        ShareUserSitePage.getFileDirectoryInfo(drone, moveFolderName).selectCheckbox();
 
         // cancel moving of file to the created folder
         String[] moveDestinationFolders = { testUser, moveFolderName };
-        repositoryPage = ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryCancel(drone, fileName, moveDestinationFolders, false);
+        ShareUserRepositoryPage.copyOrMoveToFolderInRepositoryCancel(drone, fileName, moveDestinationFolders, false);
 
         // check the file is not moved to folder -- navigate to created folder
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(moveFolderName);
-        Assert.assertTrue(repositoryPage.getFiles().size() == 0);
+        repositoryPage = ShareUserSitePage.selectContent(drone, moveFolderName).render();
+        Assert.assertFalse(repositoryPage.hasFiles());
 
         // check the file is still present in users home folder
-        repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
 
-        // repositoryPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, testUserFolder + SLASH + testName);
-        Assert.assertNotNull(repositoryPage.getFileDirectoryInfo(fileName));
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName));
 
     }
 
@@ -503,20 +497,24 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
 
         // Upload file to test folder
         String testName = getTestName();
-        File sampleFile = SiteUtil.prepareFile();
-        String fileName = sampleFile.getName();
+
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
+        
+        String folderName = getFolderName(testName);
+
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
         RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
+        
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName);
 
-        }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
-        repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
-        Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
 
+        ShareUserSitePage.selectContent(drone, folderName).render();
+
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName));
         // delete file
         ShareUser.selectContentCheckBox(drone, fileName);
         ShareUser.deleteSelectedContent(drone);
@@ -538,22 +536,26 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
     @Test(groups = { "RepositoryDocumentWorkflows" })
     public void enterprise40x_5456() throws Exception
     {
-
         // Upload file to test folder
         String testName = getTestName();
-        File sampleFile = SiteUtil.prepareFile();
-        String fileName = sampleFile.getName();
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
 
-        }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
-        repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
-        Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
+        
+        String folderName = getFolderName(testName);
+
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName);
+
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
+
+        ShareUserSitePage.selectContent(drone, folderName).render();
+
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName));
 
         // cancel deleting of the file
         ShareUser.selectContentCheckBox(drone, fileName);
@@ -591,25 +593,31 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
     {
         // create site
         String testName = getTestName();
+
         String siteName = testName + System.currentTimeMillis();
-        ShareUser.createSite(drone, siteName, "Public");
+        
+        String folderName = getFolderName(testName);
+        
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
 
-        // Upload file to test folder
-        File sampleFile = SiteUtil.prepareFile();
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+
         RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
+        
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName);
 
-        }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
-        repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
-        Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
+
+        ShareUserSitePage.selectContent(drone, folderName).render();
+
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName));
 
         // start the new workflow
-        StartWorkFlowPage startWorkFlowPage = repositoryPage.getFileDirectoryInfo(sampleFile.getName()).selectStartWorkFlow().render();
+        StartWorkFlowPage startWorkFlowPage = ShareUserSitePage.getFileDirectoryInfo(drone, fileName).selectStartWorkFlow().render();
         NewWorkflowPage newWorkflowPage = ((NewWorkflowPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.NEW_WORKFLOW)).render();
         String workFlowName1 = testName + System.currentTimeMillis() + "-1-WF";
         String dueDate = new DateTime().plusDays(2).toString("dd/MM/yyyy");
@@ -621,8 +629,9 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
         formDetails.setTaskPriority(Priority.MEDIUM);
         repositoryPage = newWorkflowPage.startWorkflow(formDetails).render();
 
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName + SLASH + folderName);
         // check the document is marked with icon
-        assertTrue(repositoryPage.getFileDirectoryInfo(sampleFile.getName()).isPartOfWorkflow(), "Verifying the file is part of a workflow");
+        assertTrue(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).isPartOfWorkflow(), "Verifying the file is part of a workflow");
 
         // check the workflow is not present in MyTasks - active tasks
         MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
@@ -663,10 +672,12 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
         assertFalse(myTasksPage.isTaskPresent(workFlowName1));
 
         // check the document is not marked with icon
-        repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, testName };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
-        Assert.assertFalse(repositoryPage.getFileDirectoryInfo(sampleFile.getName()).isPartOfWorkflow(), "Verifying the file is not part of a workflow");
+        ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        
+        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, folderName };
+        ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
+        
+        Assert.assertFalse(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).isPartOfWorkflow(), "Verifying the file is not part of a workflow");
 
     }
 
@@ -697,25 +708,31 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
     {
         // create site
         String testName = getTestName();
+
         String siteName = testName + System.currentTimeMillis();
-        ShareUser.createSite(drone, siteName, "Public");
+        
+        String folderName = getFolderName(testName);
+        
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
 
-        // Upload file to test folder
-        File sampleFile = SiteUtil.prepareFile();
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+
         RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
+        
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName);
 
-        }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
-        repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
-        Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
+
+        ShareUserSitePage.selectContent(drone, folderName).render();
+
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName));
 
         // start Review and Approve workflow
-        StartWorkFlowPage startWorkFlowPage = repositoryPage.getFileDirectoryInfo(sampleFile.getName()).selectStartWorkFlow().render();
+        StartWorkFlowPage startWorkFlowPage = ShareUserSitePage.getFileDirectoryInfo(drone, fileName).selectStartWorkFlow().render();
         NewWorkflowPage newWorkflowPage = ((NewWorkflowPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.REVIEW_AND_APPROVE)).render();
         String workFlowName1 = testName + System.currentTimeMillis() + "-1-WF";
         String dueDate = new DateTime().plusDays(2).toString("dd/MM/yyyy");
@@ -728,8 +745,9 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
         formDetails.setTaskPriority(Priority.MEDIUM);
         repositoryPage = newWorkflowPage.startWorkflow(formDetails).render();
 
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName + SLASH + folderName);
         // check the document is marked with icon
-        assertTrue(repositoryPage.getFileDirectoryInfo(sampleFile.getName()).isPartOfWorkflow(), "Verifying the file is part of a workflow");
+        assertTrue(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).isPartOfWorkflow(), "Verifying the file is part of a workflow");
 
         // check the workflow is not present in MyTasks - active tasks
         MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
@@ -771,9 +789,9 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
 
         // check the document is not marked with icon
         repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, testName };
+        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, folderName };
         repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
-        assertFalse(repositoryPage.getFileDirectoryInfo(sampleFile.getName()).isPartOfWorkflow(), "Verifying the file is not part of a workflow");
+        assertFalse(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).isPartOfWorkflow(), "Verifying the file is not part of a workflow");
 
     }
 
@@ -801,25 +819,32 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
     {
         // create site
         String testName = getTestName();
+
         String siteName = testName + System.currentTimeMillis();
-        ShareUser.createSite(drone, siteName, "Public");
+        
+        String folderName = getFolderName(testName);
+        
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
+
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Upload file to test folder
-        File sampleFile = SiteUtil.prepareFile();
         RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
+        
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName);
 
-        }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
-        repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
-        Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
+
+        ShareUserSitePage.selectContent(drone, folderName).render();
+
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName));
 
         // start Review and Approve workflow
-        StartWorkFlowPage startWorkFlowPage = repositoryPage.getFileDirectoryInfo(sampleFile.getName()).selectStartWorkFlow().render();
+        StartWorkFlowPage startWorkFlowPage = ShareUserSitePage.getFileDirectoryInfo(drone, fileName).selectStartWorkFlow().render();
         NewWorkflowPage newWorkflowPage = ((NewWorkflowPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.REVIEW_AND_APPROVE)).render();
         String workFlowName1 = testName + System.currentTimeMillis() + "-1-WF";
         String dueDate = new DateTime().plusDays(2).toString("dd/MM/yyyy");
@@ -833,7 +858,8 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
         repositoryPage = newWorkflowPage.startWorkflow(formDetails).render();
 
         // check the document is marked with icon
-        assertTrue(repositoryPage.getFileDirectoryInfo(sampleFile.getName()).isPartOfWorkflow(), "Verifying the file is part of a workflow");
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName + SLASH + folderName);
+        assertTrue(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).isPartOfWorkflow(), "Verifying the file is part of a workflow");
 
         // check the workflow is not present in MyTasks - active tasks
         MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
@@ -877,9 +903,11 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
 
         // check the document is not marked with icon
         repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, testName };
+        
+        String[] testFolderPath = { USER_HOMES_FOLDER, testUser, folderName };
         repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, testFolderPath);
-        Assert.assertFalse(repositoryPage.getFileDirectoryInfo(sampleFile.getName()).isPartOfWorkflow(), "Verifying the file is not part of a workflow");
+        
+        Assert.assertFalse(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).isPartOfWorkflow(), "Verifying the file is not part of a workflow");
 
     }
 
@@ -900,25 +928,31 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
     {
         // create site
         String testName = getTestName();
+
         String siteName = testName + System.currentTimeMillis();
-        ShareUser.createSite(drone, siteName, "Public");
+        
+        String folderName = getFolderName(testName);
+        
+        String fileName = getFileName(testName);
+        File file = newFile(fileName, "New file");
 
-        // Upload file to test folder
-        File sampleFile = SiteUtil.prepareFile();
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+
         RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
+        
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName);
 
-        }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
-        repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
-        Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
+        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
 
+        ShareUserSitePage.selectContent(drone, folderName).render();
+
+        ShareUserRepositoryPage.uploadFileInRepository(drone, file);
+        Assert.assertTrue(ShareUserSitePage.isFileVisible(drone, fileName));
+        
         // cancel the new workflow
-        StartWorkFlowPage startWorkFlowPage = repositoryPage.getFileDirectoryInfo(sampleFile.getName()).selectStartWorkFlow().render();
+        StartWorkFlowPage startWorkFlowPage = ShareUserSitePage.getFileDirectoryInfo(drone, fileName).selectStartWorkFlow().render();
         NewWorkflowPage newWorkflowPage = ((NewWorkflowPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.NEW_WORKFLOW)).render();
         String workFlowName1 = testName + System.currentTimeMillis() + "-1-WF";
         String dueDate = new DateTime().plusDays(2).toString("dd/MM/yyyy");
@@ -932,12 +966,11 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
         repositoryPage = newWorkflowPage.cancelCreateWorkflow(formDetails).render();
 
         // check the document is not marked with icon
-        assertFalse(repositoryPage.getFileDirectoryInfo(sampleFile.getName()).isPartOfWorkflow(), "Verifying the file is part of a workflow");
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, baseFolderName + SLASH + folderName);
+        assertFalse(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).isPartOfWorkflow(), "Verifying the file is part of a workflow");
 
         // check the workflow is not present in MyTasks - active tasks
         MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
         assertFalse(myTasksPage.isTaskPresent(workFlowName1));
-
     }
-
 }

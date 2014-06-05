@@ -14,6 +14,9 @@
  */
 package org.alfresco.po.share.site;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -22,8 +25,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Customize Site Page Object have to add pages, get current pages and get available pages.
@@ -40,6 +41,8 @@ public class CustomizeSitePage extends SitePage
     private static final By CANCEL_BUTTON = By.cssSelector("#template_x002e_customise-pages_x002e_customise-site_x0023_default-save-button-button");
     private static final By THEME_MENU = By.cssSelector("#template_x002e_customise-pages_x002e_customise-site_x0023_default-theme-menu");
     private static final By DOCUMENT_LIB = By.cssSelector("li#template_x002e_customise-pages_x002e_customise-site_x0023_default-page-documentlibrary");
+    @SuppressWarnings("unused")
+    private static final String PARENT_AVAILABLE_PAGES_XPATH = "/parent::ul[contains(@id,'_default-currentPages-ul')]";
 
     public CustomizeSitePage(WebDrone drone)
     {
@@ -114,7 +117,7 @@ public class CustomizeSitePage extends SitePage
      */
     public SiteDashboardPage addPages(List<SitePageType> pageTypes)
     {
-        WebElement target = drone.findAndWait(DOCUMENT_LIB);
+       WebElement target = drone.findAndWait(DOCUMENT_LIB);
 
         if (getAvailablePages().containsAll(pageTypes))
         {
@@ -140,5 +143,4 @@ public class CustomizeSitePage extends SitePage
         waitUntilAlert();
         return drone.getCurrentPage().render();
     }
-
 }

@@ -1,16 +1,17 @@
 package org.alfresco.po.share.site.datalist;
 
+import java.util.List;
+
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.exception.ShareException;
-import org.alfresco.po.share.site.datalist.lists.ContactList;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-
-import java.util.List;
 
 /**
  * An abstract of Data List
@@ -19,12 +20,15 @@ import java.util.List;
  */
 public abstract class AbstractDataList extends SharePage
 {
+    private static final Log logger = LogFactory.getLog(AbstractDataList.class);
+
     protected static final By NEW_ITEM_LINK = By.cssSelector("button[id$='newRowButton-button']");
     protected static final By LIST_TABLE = By.cssSelector("table");
     protected static final By EDIT_LINK = By.cssSelector(".onActionEdit>a");
     protected static final By DUPLICATE_LINK = By.cssSelector(".onActionDuplicate>a");
     protected static final By DELETE_LINK = By.cssSelector(".onActionDelete>a");
     private static final By CONFIRM_DELETE = By.xpath("//span[@class='button-group']/span[1]/span/button");
+    @SuppressWarnings("unused")
     private static final By CANCEL_DELETE = By.xpath("//span[@class='button-group']/span[2]/span/button");
     private static final By ITEM_CONTAINER = By.cssSelector("table>tbody>tr[class*='dt']");
 
@@ -60,10 +64,26 @@ public abstract class AbstractDataList extends SharePage
      *
      * @param fieldValue
      */
-    private void locateAnItem(String fieldValue)
+    protected WebElement locateItemActions(String fieldValue)
     {
-        WebElement theItem = drone.findAndWait(By.xpath(String.format("//td//div[text()='%s']", fieldValue)));
-        drone.mouseOver(theItem);
+
+        if (!(fieldValue == null))
+        {
+            try
+            {
+                WebElement theItem = drone.findAndWait(By.xpath(String.format("//td//div[text()='%s']/../../td[contains(@class, 'actions')]", fieldValue)));
+                drone.mouseOver(theItem);
+                return theItem;
+            }
+            catch (NoSuchElementException nse)
+            {
+                throw new ShareException("Unable to locate " + fieldValue + "item");
+            }
+        }
+        else
+        {
+            throw new UnsupportedOperationException("Field value parameter cannot be empty");
+        }
     }
 
     /**
@@ -73,9 +93,17 @@ public abstract class AbstractDataList extends SharePage
      */
     public void duplicateAnItem(String fieldValue)
     {
-        locateAnItem(fieldValue);
-        drone.findAndWait(DUPLICATE_LINK).click();
-        waitUntilAlert();
+        try
+        {
+            WebElement theItem = locateItemActions(fieldValue);
+            theItem.findElement(DUPLICATE_LINK).click();
+            waitUntilAlert();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new ShareException("unable to find the " + DUPLICATE_LINK);
+        }
+        logger.info("Duplicated the " + fieldValue + " item");
     }
 
     /**
@@ -85,10 +113,18 @@ public abstract class AbstractDataList extends SharePage
      */
     public void deleteAnItemWithConfirm(String fieldValue)
     {
-        locateAnItem(fieldValue);
-        drone.findAndWait(DELETE_LINK).click();
-        drone.findAndWait(CONFIRM_DELETE).click();
-        waitUntilAlert();
+        try
+        {
+            WebElement theItem = locateItemActions(fieldValue);
+            theItem.findElement(DELETE_LINK).click();
+            drone.findAndWait(CONFIRM_DELETE).click();
+            waitUntilAlert();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new ShareException("Unable to find " + DELETE_LINK);
+        }
+        logger.info("Deleted the " + fieldValue + " item");
     }
 
     /**
@@ -98,9 +134,16 @@ public abstract class AbstractDataList extends SharePage
      */
     public void clickEditItem(String fieldValue)
     {
-        locateAnItem(fieldValue);
-        drone.findAndWait(EDIT_LINK).click();
-        waitUntilAlert();
+        try
+        {
+            WebElement theItem = locateItemActions(fieldValue);
+            theItem.findElement(EDIT_LINK).click();
+            waitUntilAlert();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new ShareException("Unable to find " + EDIT_LINK);
+        }
     }
 
     /**
@@ -112,6 +155,7 @@ public abstract class AbstractDataList extends SharePage
         {
             waitUntilAlert();
             drone.findAndWait(NEW_ITEM_LINK).click();
+            logger.info("Selected new item");
         }
         catch (NoSuchElementException nse)
         {
@@ -127,7 +171,7 @@ public abstract class AbstractDataList extends SharePage
     {
         try
         {
-            return drone.findAndWait(locator, 2000).isDisplayed();
+            return drone.find(locator).isDisplayed();
         }
         catch (TimeoutException e)
         {
@@ -158,8 +202,19 @@ public abstract class AbstractDataList extends SharePage
      */
     public boolean isDuplicateDisplayed(String itemName)
     {
-        locateAnItem(itemName);
+        locateItemActions(itemName);
         return isDisplayed(DUPLICATE_LINK);
+    }
+
+    /**
+     * Method to verify whether edit item link is available
+     *
+     * @param itemName
+     * @return boolean
+     */
+    public boolean isEditDisplayed(String itemName)
+    {
+        return locateItemActions(itemName).findElement(EDIT_LINK).isDisplayed();
     }
 
     /**
@@ -169,7 +224,7 @@ public abstract class AbstractDataList extends SharePage
      */
     public boolean isDeleteDisplayed (String itemName)
     {
-        locateAnItem(itemName);
+        locateItemActions(itemName);
         return isDisplayed(DELETE_LINK);
     }
 
@@ -183,10 +238,6 @@ public abstract class AbstractDataList extends SharePage
         try
         {
             List<WebElement> allItems = drone.findAll(ITEM_CONTAINER);
-            if(allItems.size()==1)
-            {
-                return 0;
-            }
             return allItems.size()-1;
         }
         catch (TimeoutException te)

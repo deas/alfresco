@@ -26,6 +26,8 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+import java.util.List;
+
 /**
  * User Search page object, holds all element of the html page relating to
  * share's Users page.
@@ -319,5 +321,32 @@ public class UserSearchPage extends SharePage
         {
         }
         throw new PageException("Unable to find the userName to open the userProfie Page for : " + userName);
+    }
+
+
+    /**
+     * Checks if user present in a search page
+     *
+     * @param userName
+     * @return
+     */
+    public boolean isUserPresent (String userName){
+
+        try
+        {
+            List<WebElement> usersList = drone.findAndWaitForElements(By.cssSelector("tr>td>div.yui-dt-liner>a"));
+
+            for (WebElement user : usersList)
+            {
+                if (user.getText().contains(userName))
+                {
+                    return true;
+                }
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        return false;
     }
 }

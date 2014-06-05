@@ -4,21 +4,10 @@ import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
-import org.alfresco.webdrone.exception.PageOperationException;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
-
-import java.util.Calendar;
-import java.util.List;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Abstract of Calendar Event form
@@ -56,6 +45,7 @@ public abstract class AbstractEventForm extends ShareDialogue
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public AbstractEventForm render()
     {
         return render(new RenderTime(maxPageLoadingTime));

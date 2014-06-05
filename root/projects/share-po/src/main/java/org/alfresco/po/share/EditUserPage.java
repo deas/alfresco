@@ -381,4 +381,22 @@ public class EditUserPage extends SharePage
         }
         return false;
     }
+
+    /**
+     * Deselects the Disable Account checkbox.
+     */
+    public void deSelectDisableAccount()
+    {
+        try
+        {
+            WebElement selectDisableAccount = drone.find(By.cssSelector(DISABLE_ACCOUNT));
+            if (selectDisableAccount.isSelected())
+            {
+                selectDisableAccount.click();
+            }
+        }
+        catch (NoSuchElementException te)
+        {
+        }
+    }
 }

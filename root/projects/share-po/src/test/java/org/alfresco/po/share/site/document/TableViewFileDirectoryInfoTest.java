@@ -183,7 +183,7 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
 
         Assert.assertEquals(fileInfo.getModifier(), userFullName);
     }
-
+    
     @Test(dependsOnMethods = "getModifier", groups="alfresco-one")
     public void selectModifier() throws Exception
     {
@@ -197,7 +197,14 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         navigateDocumentLib(profile);
     }
 
-    @Test(dependsOnMethods = "selectModifier", groups="alfresco-one")
+    @Test(enabled = true, groups = "alfresco-one", dependsOnMethods ="selectModifier")
+    public void testClickTitle()
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        documentLibPage.getFileDirectoryInfo(file2.getName()).clickOnTitle().render();
+    }
+    
+    @Test(dependsOnMethods = "testClickTitle", groups="alfresco-one")
     public void getModified() throws Exception
     {
         SitePage page = drone.getCurrentPage().render();
@@ -286,4 +293,11 @@ public class TableViewFileDirectoryInfoTest extends AbstractDocumentTest
         drone.closeWindow();
         drone.switchToWindow(mainWinHandle);
     }
+    
+//    @Test(enabled = true, groups = "alfresco-one", dependsOnMethods ="testSelectViewInBrowser")
+//    public void testClickTitle()
+//    {
+//        documentLibPage = drone.getCurrentPage().render();
+//        documentLibPage.getFileDirectoryInfo(file2.getName()).clickOnTitle().render();
+//    }
 }

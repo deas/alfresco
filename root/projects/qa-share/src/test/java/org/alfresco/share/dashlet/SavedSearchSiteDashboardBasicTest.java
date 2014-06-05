@@ -24,7 +24,7 @@ import org.alfresco.po.share.dashlet.ConfigureSavedSearchDialogBoxPage;
 import org.alfresco.po.share.dashlet.SavedSearchDashlet;
 import org.alfresco.po.share.dashlet.SearchLimit;
 import org.alfresco.po.share.dashlet.SiteSearchItem;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
@@ -82,12 +82,12 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
         // Add Saved Search Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
 
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2" })
+    @Test(groups = { "EnterpriseOnly" })
     public void ALF_10338() throws Exception
     {
         String testName = getTestName();
@@ -101,7 +101,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractUtils
         Assert.assertNotNull(siteDashBoard);
         SavedSearchDashlet searchDashlet = ShareUserDashboard.getSavedSearchDashlet(drone);
         Assert.assertNotNull(searchDashlet);
-        Assert.assertEquals(searchDashlet.getTitle(), Dashlet.SAVED_SEARCH.getDashletName());
+        Assert.assertEquals(searchDashlet.getTitle(), Dashlets.SAVED_SEARCH.getDashletName());
         Assert.assertEquals(searchDashlet.getContent(), "No results found.");
 
         // Verify Help balloon message has been displayed correctly
@@ -143,11 +143,11 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractUtils
         }
 
         // Add Saved Search Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2" })
+    @Test(groups = { "EnterpriseOnly" })
     public void ALF_10339() throws Exception
     {
         String testName = getTestName();
@@ -207,11 +207,11 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractUtils
         String fileName = contentPrefix + getFileName(testName) + "-.txt";
         String[] fileInfo = { fileName, DOCLIB };
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2" })
+    @Test(groups = { "EnterpriseOnly" })
     public void ALF_10340() throws Exception
     {
         String testName = getTestName();
@@ -227,7 +227,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractUtils
 
         // Saved Search details before configure
         Assert.assertNotNull(searchDashlet);
-        Assert.assertEquals(searchDashlet.getTitle(), Dashlet.SAVED_SEARCH.getDashletName());
+        Assert.assertEquals(searchDashlet.getTitle(), Dashlets.SAVED_SEARCH.getDashletName());
         Assert.assertEquals(searchDashlet.getContent(), "No results found.");
 
         // Configure Saved Search and Cancel
@@ -240,7 +240,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractUtils
         // Verify Saved Search dashlet after cancel
         searchDashlet = ShareUserDashboard.getSavedSearchDashlet(drone);
         Assert.assertNotNull(searchDashlet);
-        Assert.assertEquals(searchDashlet.getTitle(), Dashlet.SAVED_SEARCH.getDashletName());
+        Assert.assertEquals(searchDashlet.getTitle(), Dashlets.SAVED_SEARCH.getDashletName());
         Assert.assertEquals(searchDashlet.getContent(), "No results found.");
     }
 
@@ -260,11 +260,11 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractUtils
         String fileName = getFileName(testName) + "-.txt";
         String[] fileInfo = { fileName, DOCLIB };
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2" })
+    @Test(groups = { "EnterpriseOnly" })
     public void ALF_10341() throws Exception
     {
         String testName = getTestName();
@@ -312,11 +312,11 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2" })
+    @Test(groups = { "EnterpriseOnly" })
     public void ALF_10342() throws Exception
     {
         String testName = getTestName();
@@ -375,11 +375,11 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2" })
+    @Test(groups = { "EnterpriseOnly" })
     public void ALF_10347() throws Exception
     {
         String testName = getTestName();
@@ -417,11 +417,11 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUserSitePage.createFolder(drone, folderName, folderName);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2" })
+    @Test(groups = { "EnterpriseOnly" })
     public void ALF_10349() throws Exception
     {
         String testName = getTestName();
@@ -446,7 +446,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
     }
 
-    @Test(groups = { "Enterprise4.2" })
+    @Test(groups = { "EnterpriseOnly" })
     public void ALF_10350() throws Exception
     {
         String testName = getTestName();
@@ -464,7 +464,7 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractUtils
         DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo);
         documentLibraryPage.getSiteNav().selectSiteDashBoard().render();
         // Add Saved Search Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
 
         // Wait till index
         Assert.assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_CONTENT_DASHLET, fileName, true, siteName));
@@ -502,11 +502,11 @@ public class SavedSearchSiteDashboardBasicTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "Enterprise4.2" })
+    @Test(groups = { "EnterpriseOnly" })
     public void ALF_10351() throws Exception
     {
         String testName = getTestName();

@@ -14,22 +14,19 @@
  */
 package org.alfresco.po.share.dashlet;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Site Search dashlet object, holds all element of the HTML relating to site Notice dashlet.
@@ -52,6 +49,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
     private static final By SEARCH_RESULTS = By.cssSelector("div[id$='default-search-results']");
     private static final By SEARCH_BUTTON = By.cssSelector("button[id$='default-search-button']");
     private static final By LOADING_MESSAGE = By.cssSelector("table>tbody>tr>td.yui-dt-loading>div");
+    public static Integer retrySearchCount = 3;
 
     /**
      * Constructor.
@@ -59,7 +57,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
     protected SiteSearchDashlet(WebDrone drone)
     {
         super(drone, DASHLET_CONTAINER_PLACEHOLDER);
-        setResizeHandle(By.cssSelector("div.dashlet.sitesearch .yui-resize-handle"));
+        setResizeHandle(By.cssSelector(".yui-resize-handle"));
     }
 
     @SuppressWarnings("unchecked")
@@ -83,7 +81,6 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
                 }
                 try
                 {
-                    scrollDownToDashlet();
                     getFocus();
                     drone.find(DASHLET_CONTAINER_PLACEHOLDER);
                     drone.find(HELP_ICON);
@@ -314,6 +311,48 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
     }
 
     /**
+     * Method to perform search with retry
+     *
+     * @param fileName
+     * @return true is item is found
+     */
+    public boolean siteSearchWithRetry(String fileName)
+    {
+        logger.info("Start search with retry on Site Search dashlet");
+        int counter = 0;
+        int waitInMilliSeconds = 2000;
+        boolean found = false;
+        while (counter < retrySearchCount)
+        {
+            search(fileName);
+            List<SiteSearchItem> siteSearchResults = getSearchItems();
+            for (SiteSearchItem results : siteSearchResults)
+            {
+                if (results.getItemName().toString().contains(fileName))
+                {
+                    found = true;
+                    return found;
+                }
+            }
+            counter++;
+            //double wait time to not over do solr search
+            waitInMilliSeconds = (waitInMilliSeconds * 2);
+            synchronized (this)
+            {
+                try
+                {
+                    this.wait(waitInMilliSeconds);
+                }
+                catch (InterruptedException e)
+                {
+                    throw new PageException("site search dashlet failed to retrieve results");
+                }
+            }
+        }
+        return found;
+    }
+
+    /**
      * Returns the list result sizes.
      * 
      * @return {@link List} of {@link String}
@@ -362,6 +401,11 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
      */
     public void setResultSize(SearchLimit searchLimit)
     {
+       
+        if(searchLimit == null)
+        {
+            throw new UnsupportedOperationException("This "+searchLimit+" Search Limit is not supproted :"); 
+        }
         scrollDownToDashlet();
         try
         {
@@ -379,7 +423,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
         }
         catch (TimeoutException te)
         {
-            throw new UnsupportedOperationException("Unable to select result size", te);
+            throw new PageOperationException("Unable to select result size", te);
         }
     }
 

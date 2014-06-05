@@ -6,10 +6,7 @@ import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.*;
 
 /**
  * Page object to represent site wiki dashlet
@@ -21,6 +18,7 @@ public class WikiDashlet extends AbstractDashlet implements Dashlet
     @SuppressWarnings("unused")
     private static Log logger = LogFactory.getLog(WikiDashlet.class);
     private static final By DASHLET_CONTAINER_PLACEHOLDER = By.cssSelector("div.dashlet.wiki");
+    private static final By TEXT_IN_DASHLET = By.cssSelector("div[class^=body]>div>*");
 
     /**
      * Constructor.
@@ -28,7 +26,7 @@ public class WikiDashlet extends AbstractDashlet implements Dashlet
     protected WikiDashlet(WebDrone drone)
     {
         super(drone, DASHLET_CONTAINER_PLACEHOLDER);
-        setResizeHandle(By.cssSelector("div.dashlet.wiki .yui-resize-handle"));
+        setResizeHandle(By.cssSelector(".yui-resize-handle"));
     }
 
     @SuppressWarnings("unchecked")
@@ -104,17 +102,34 @@ public class WikiDashlet extends AbstractDashlet implements Dashlet
      *
      * @return
      */
-    public SelectWikiDialogueBoxPage clickConfigure ()
+    public SelectWikiDialogueBoxPage clickConfigure()
     {
         try
         {
             getFocus();
-            drone.findAndWait(CONFIGURE_DASHLET_ICON).click();
+            dashlet.findElement(CONFIGURE_DASHLET_ICON).click();
             return new SelectWikiDialogueBoxPage(drone).render();
         }
         catch (TimeoutException te)
         {
             throw new ShareException("timed out finding " + CONFIGURE_DASHLET_ICON);
+        }
+    }
+
+    /**
+     * Return content text from dashlet
+     *
+     * @return
+     */
+    public String getContent()
+    {
+        try
+        {
+            return dashlet.findElement(TEXT_IN_DASHLET).getText();
+        }
+        catch (StaleElementReferenceException e)
+        {
+            return getContent();
         }
     }
 }

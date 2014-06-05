@@ -27,8 +27,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-import static org.alfresco.po.share.enums.Dashlet.SITE_MEMBERS;
-import static org.alfresco.po.share.enums.Dashlet.SITE_NOTICE;
+import static org.alfresco.po.share.enums.Dashlets.SITE_MEMBERS;
+import static org.alfresco.po.share.enums.Dashlets.SITE_NOTICE;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 

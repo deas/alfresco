@@ -13,10 +13,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
- * Page objectc to represent Pending Invites page
+ * Page object to represent Pending Invites page
  *
  * @author Marina.Nenadovets
  */
@@ -40,8 +41,8 @@ public class PendingInvitesPage extends SharePage
     public PendingInvitesPage render(RenderTime timer)
     {
         elementRender(timer,
-            getVisibleRenderElement(SEARCH_FIELD),
-            getVisibleRenderElement(SEARCH_BTN));
+                getVisibleRenderElement(SEARCH_FIELD),
+                getVisibleRenderElement(SEARCH_BTN));
 
         return this;
     }
@@ -64,7 +65,7 @@ public class PendingInvitesPage extends SharePage
      *
      * @return List<WebElement>
      */
-    private List<WebElement> getInvitees()
+    public List<WebElement> getInvitees()
     {
         try
         {
@@ -106,8 +107,24 @@ public class PendingInvitesPage extends SharePage
                     inviteeList.findElement(CANCEL_BTN).click();
                     break;
                 }
-                else throw new NoSuchElementException("Unable to find username provided");
+                else
+                    throw new NoSuchElementException("Unable to find username provided");
             }
         }
+    }
+
+    /**
+     * Mimic serach invitation on page.
+     *
+     * @param searchText
+     */
+    public void search(String searchText)
+    {
+        checkNotNull(searchText);
+        WebElement inputField = drone.findAndWait(SEARCH_FIELD);
+        inputField.clear();
+        inputField.sendKeys(searchText);
+        WebElement searchButton = drone.findAndWait(SEARCH_BTN);
+        searchButton.click();
     }
 }

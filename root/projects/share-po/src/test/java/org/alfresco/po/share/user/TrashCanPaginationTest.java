@@ -153,8 +153,7 @@ public class TrashCanPaginationTest extends AbstractTest
     {
        prepare();
        trashCan  = getTrashCan();
-        Assert.assertTrue(trashCan.hasNextPage());
-        trashCan.selectNextPage();
+        Assert.assertTrue(trashCan.hasNextPage());    
         trashCan = trashCan.selectNextPage().render();
         Assert.assertTrue(trashCan.getTrashCanItems().size() > 0);
         Assert.assertTrue(trashCan.hasPreviousPage());

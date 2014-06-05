@@ -32,7 +32,6 @@ import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.document.DetailsPage;
 import org.alfresco.po.share.site.document.DocumentAspect;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
 import org.alfresco.po.share.site.document.LibraryOption;
 import org.alfresco.po.share.site.document.SelectAspectsPage;
@@ -87,7 +86,7 @@ public class RepositoryBrowserTests extends AbstractUtils
 
         RepositoryPage repoPage = ShareUserRepositoryPage.openRepositoryDetailedView(drone);
 
-        TreeMenuNavigation treeMenu = repoPage.getLeftMenus();
+        TreeMenuNavigation treeMenu = ShareUserSitePage.getLeftTreeMenu(drone);
 
         assertTrue(treeMenu.isMenuTreeVisible(TreeMenu.DOCUMENTS));
         assertTrue(treeMenu.isMenuTreeVisible(TreeMenu.LIBRARY));
@@ -99,14 +98,14 @@ public class RepositoryBrowserTests extends AbstractUtils
 
         assertTrue(repoPage.getNavigation().isSelectVisible());
         assertTrue(repoPage.getNavigation().isCreateContentVisible());
-        repoPage.getNavigation().selectCreateContentDropdown();
+        repoPage = repoPage.getNavigation().selectCreateContentDropdown().render();
         assertTrue(repoPage.getNavigation().isNewFolderVisible());
 
         assertTrue(repoPage.getNavigation().isFileUploadVisible());
 
-        repoPage.getNavigation().selectNone();
+        repoPage = repoPage.getNavigation().selectNone().render();
         assertFalse(repoPage.getNavigation().isSelectedItemEnabled());
-        repoPage.getNavigation().selectAll();
+        repoPage = repoPage.getNavigation().selectAll().render();
         assertTrue(repoPage.getNavigation().isSelectedItemEnabled());
 
         assertTrue(repoPage.getNavigation().isFolderUpVisible());
@@ -128,7 +127,7 @@ public class RepositoryBrowserTests extends AbstractUtils
         assertTrue(repoPage.getNavigation().isOptionPresent(LibraryOption.AUDIO_VIEW));
         assertTrue(repoPage.getNavigation().isOptionPresent(LibraryOption.MEDIA_VIEW));
 
-        assertTrue(repoPage.getNavigation().selectFolderInNavBar(drone.getValue("repository.tree.root")) instanceof DetailsPage);
+        assertTrue(repoPage.getNavigation().selectFolderInNavBar(drone.getValue("repository.tree.root")).render() instanceof DetailsPage);
     }
 
     @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
@@ -166,19 +165,20 @@ public class RepositoryBrowserTests extends AbstractUtils
         ShareUserRepositoryPage.uploadFileInRepository(drone, file1);
         RepositoryPage repoPage = ShareUserRepositoryPage.uploadFileInRepository(drone, file2);
 
-        repoPage.getFileDirectoryInfo(fileName1).selectEditOffline();
+        repoPage.getFileDirectoryInfo(fileName1).selectEditOffline().render();
+        repoPage = getCurrentPage(drone).render();
         repoPage.getFileDirectoryInfo(fileName2).selectFavourite();
         repoPage.getFileDirectoryInfo(testFolder).selectFavourite();
 
         // Test starts here
-        TreeMenuNavigation treeMenu = repoPage.getLeftMenus();
-
-        DocumentLibraryPage docLibPage = treeMenu.selectDocumentNode(DocumentsMenu.IM_EDITING).render();
+        ShareUserSitePage.clickOnDocumentsInTreeMenu(drone, DocumentsMenu.IM_EDITING).render();
+        
         assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, fileName1, "editing", "", true));
 
-        docLibPage = treeMenu.selectDocumentNode(DocumentsMenu.MY_FAVORITES).render();
-        assertTrue(docLibPage.isFileVisible(fileName2));
-        assertTrue(docLibPage.isFileVisible(testFolder));
+        ShareUserSitePage.clickOnDocumentsInTreeMenu(drone, DocumentsMenu.MY_FAVORITES).render();
+        
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, fileName2, "isContentVisible", "", true), fileName2 + "is not visible.");
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, testFolder, "isContentVisible", "", true), testFolder + "is not visible.");
     }
 
     @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
@@ -199,11 +199,11 @@ public class RepositoryBrowserTests extends AbstractUtils
     {
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
-        RepositoryPage repoPage = ShareUserRepositoryPage.openRepositoryDetailedView(drone);
+        ShareUserRepositoryPage.openRepositoryDetailedView(drone);
 
-        TreeMenuNavigation treeMenuNav = repoPage.getLeftMenus();
+        TreeMenuNavigation treeMenu = ShareUserSitePage.getLeftTreeMenu(drone).render();
 
-        List<String> children = treeMenuNav.getNodeChildren(TreeMenu.LIBRARY, drone.getValue("repository.tree.root"));
+        List<String> children = treeMenu.getNodeChildren(TreeMenu.LIBRARY, drone.getValue("repository.tree.root"));
 
         assertTrue(children.contains(drone.getValue("system.folder.sites")), "System folder " + drone.getValue("system.folder.sites")
                 + "could not be found in Repository tree");
@@ -220,8 +220,8 @@ public class RepositoryBrowserTests extends AbstractUtils
         assertTrue(children.contains(drone.getValue("system.folder.data.dictionary")), "System folder " + drone.getValue("system.folder.data.dictionary")
                 + "could not be found in Repository tree");
 
-        treeMenuNav = repoPage.getLeftMenus();
-        children = treeMenuNav.getNodeChildren(TreeMenu.LIBRARY, drone.getValue("repository.tree.root"), drone.getValue("system.folder.data.dictionary"));
+        treeMenu = ShareUserSitePage.getLeftTreeMenu(drone).render();
+        children = treeMenu.getNodeChildren(TreeMenu.LIBRARY, drone.getValue("repository.tree.root"), drone.getValue("system.folder.data.dictionary"));
 
         assertTrue(children.contains(drone.getValue("system.folder.email.templates")),
                 "Data Dictionary folder " + drone.getValue("system.folder.email.templates") + "could not be found in Repository tree");
@@ -294,7 +294,7 @@ public class RepositoryBrowserTests extends AbstractUtils
         List<DocumentAspect> aspects = new ArrayList<>();
         aspects.add(DocumentAspect.CLASSIFIABLE);
 
-        DocumentDetailsPage docDetailsPage = repoPage.selectFile(fileName1);
+        DocumentDetailsPage docDetailsPage = repoPage.selectFile(fileName1).render();
         SelectAspectsPage selectAspectsPage = docDetailsPage.selectManageAspects().render();
         selectAspectsPage = selectAspectsPage.add(aspects).render();
         docDetailsPage = selectAspectsPage.clickApplyChanges().render();
@@ -302,7 +302,7 @@ public class RepositoryBrowserTests extends AbstractUtils
         ShareUserRepositoryPage.openRepository(drone);
         repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
 
-        docDetailsPage = repoPage.selectFile(fileName2);
+        docDetailsPage = repoPage.selectFile(fileName2).render();
         selectAspectsPage = docDetailsPage.selectManageAspects().render();
         selectAspectsPage = selectAspectsPage.add(aspects).render();
         docDetailsPage = selectAspectsPage.clickApplyChanges().render();
@@ -322,7 +322,7 @@ public class RepositoryBrowserTests extends AbstractUtils
 
         repoPage.render();
 
-        docDetailsPage = repoPage.selectFile(fileName1);
+        docDetailsPage = repoPage.selectFile(fileName1).render();
         docDetailsPage.selectEditProperties().render();
         editDocPropsPage = ShareUserRepositoryPage.addCategories(drone, fileName1, drone.getValue("category.languages"), true);
         editDocPropsPage.clickSave();
@@ -330,7 +330,7 @@ public class RepositoryBrowserTests extends AbstractUtils
         ShareUserRepositoryPage.openRepository(drone);
         repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
 
-        docDetailsPage = repoPage.selectFile(fileName2);
+        docDetailsPage = repoPage.selectFile(fileName2).render();
         docDetailsPage.selectEditProperties().render();
         editDocPropsPage = ShareUserRepositoryPage.addCategories(drone, fileName2, drone.getValue("category.english"), true,
                 drone.getValue("category.languages"));
@@ -349,23 +349,18 @@ public class RepositoryBrowserTests extends AbstractUtils
 
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
-        RepositoryPage repoPage = ShareUserRepositoryPage.openRepositoryDetailedView(drone);
+        ShareUserRepositoryPage.openRepositoryDetailedView(drone);        
+        
+        ShareUserSitePage.clickOnCategoriesInTreeMenu(drone, drone.getValue("categories.tree.root"), drone.getValue("category.languages"));
 
-        TreeMenuNavigation treeMenuNav = repoPage.getLeftMenus();
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, fileName1, "isContentVisible", "", true), fileName1 + "is not visible.");
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, testFolder1, "isContentVisible", "", true), testFolder1 + "is not visible.");
 
-        DocumentLibraryPage docLibPage = treeMenuNav.selectNode(TreeMenu.CATEGORIES, drone.getValue("categories.tree.root"),
-                drone.getValue("category.languages")).render();
+        ShareUserSitePage.clickOnCategoriesInTreeMenu(drone, drone.getValue("categories.tree.root"), drone.getValue("category.languages"), drone.getValue("category.english"));
 
-        // TODO: Fix inconsistent test: check if retry util is necessary in all tests
-        assertTrue(docLibPage.isFileVisible(fileName1), fileName1 + "is not visible.");
-        assertTrue(docLibPage.isFileVisible(testFolder1), testFolder1 + "is not visible.");
-
-        docLibPage = treeMenuNav.selectNode(TreeMenu.CATEGORIES, drone.getValue("categories.tree.root"), drone.getValue("category.languages"),
-                drone.getValue("category.english")).render();
-        // TODO: Fix inconsistent test: check if retry util is necessary in all tests
-        assertTrue(docLibPage.isFileVisible(fileName2), fileName2 + "is not visible.");
-        assertTrue(docLibPage.isFileVisible(testFolder2), testFolder2 + "is not visible.");
-    }
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, fileName2, "isContentVisible", "", true), fileName2 + "is not visible.");
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, testFolder2, "isContentVisible", "", true), testFolder2 + "is not visible.");
+   }
 
     @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
     public void dataPrep_Enterprise40x_5353() throws Exception
@@ -424,25 +419,23 @@ public class RepositoryBrowserTests extends AbstractUtils
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
         // Begin Test
-        RepositoryPage repoPage = ShareUserRepositoryPage.openRepositoryDetailedView(drone);
+        ShareUserRepositoryPage.openRepositoryDetailedView(drone);
+        
+        ShareUserSitePage.clickOnTagNameInTreeMenu(drone, tagName1);
 
-        TreeMenuNavigation treeMenuNav = repoPage.getLeftMenus();
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, fileName1, "isContentVisible", "", true), fileName1 + "is not visible.");
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, subFolderName1, "isContentVisible", "", true), subFolderName1 + "is not visible.");
+        
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, fileName2, "isContentVisible", "", false), fileName2 + "is visible.");
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, subFolderName2, "isContentVisible", "", false), subFolderName2 + "is visible.");
 
-        repoPage = treeMenuNav.selectTagNode(tagName1).render();
+        ShareUserSitePage.clickOnTagNameInTreeMenu(drone, tagName2);
 
-        // TODO: Fix inconsistent test: check if retry util is necessary in all tests
-        assertTrue(repoPage.isFileVisible(subFolderName1), subFolderName1 + "is not visible.");
-        assertTrue(repoPage.isFileVisible(fileName1), fileName1 + "is not visible.");
-        assertFalse(repoPage.isFileVisible(subFolderName2), subFolderName2 + "should not be visible in this view.");
-        assertFalse(repoPage.isFileVisible(fileName2), fileName2 + "should not be visible in this view.");
-
-        repoPage = treeMenuNav.selectTagNode(tagName2).render();
-
-        // TODO: Fix inconsistent test: check if retry util is necessary in all tests
-        assertTrue(repoPage.isFileVisible(subFolderName2), subFolderName2 + "is not visible.");
-        assertTrue(repoPage.isFileVisible(fileName2), fileName2 + "is not visible.");
-        assertFalse(repoPage.isFileVisible(subFolderName1), subFolderName1 + "should not be visible in this view.");
-        assertFalse(repoPage.isFileVisible(fileName1), fileName1 + "should not be visible in this view.");
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, fileName1, "isContentVisible", "", false), fileName1 + "is visible.");
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, subFolderName1, "isContentVisible", "", false), subFolderName1 + "is visible.");
+        
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, fileName2, "isContentVisible", "", true), fileName2 + "is not visible.");
+        assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, subFolderName2, "isContentVisible", "", true), subFolderName2 + "is not visible.");
     }
 
     @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
@@ -481,15 +474,17 @@ public class RepositoryBrowserTests extends AbstractUtils
         // Test starts here
         RepositoryPage repoPage = ShareUserRepositoryPage.uploadFileInRepository(drone, file1);
 
-        assertEquals(repoPage.getFiles().size(), 2);
         repoPage.renderItem(maxWaitTime, officeFileName);
         repoPage.renderItem(maxWaitTime, fileName);
+        
+        assertEquals(repoPage.getFiles().size(), 2);
 
         ShareUserRepositoryPage.createFolderInRepository(drone, subFolderName2, subFolderName2);
 
-        assertEquals(repoPage.getFiles().size(), 3);
         repoPage.renderItem(maxWaitTime, officeFileName);
         repoPage.renderItem(maxWaitTime, fileName);
         repoPage.renderItem(maxWaitTime, subFolderName2);
+        
+        assertEquals(repoPage.getFiles().size(), 3);
     }
 }

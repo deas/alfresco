@@ -5,10 +5,12 @@ import org.alfresco.po.share.site.datalist.NewListForm;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.*;
+
+import java.util.Collections;
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Page object to hold data list dashlet
@@ -19,6 +21,7 @@ public class SiteDataListsDashlet extends AbstractDashlet implements Dashlet
 {
     private static final By DASHLET_CONTAINER_PLACEHOLDER = By.cssSelector("div.dashlet.site-data-lists");
     private static final By CREATE_DATA_LIST = By.cssSelector("a[href='data-lists#new']");
+    private static final By DATA_LIST_IN_DASHLET = By.cssSelector("div#list>a");
 
     /**
      * Constructor.
@@ -26,7 +29,7 @@ public class SiteDataListsDashlet extends AbstractDashlet implements Dashlet
     protected SiteDataListsDashlet(WebDrone drone)
     {
         super(drone, DASHLET_CONTAINER_PLACEHOLDER);
-        setResizeHandle(By.cssSelector("div.dashlet.site-data-lists .yui-resize-handle"));
+        setResizeHandle(By.cssSelector(".yui-resize-handle"));
     }
 
     @SuppressWarnings("unchecked")
@@ -132,6 +135,50 @@ public class SiteDataListsDashlet extends AbstractDashlet implements Dashlet
         catch (TimeoutException te)
         {
             throw new ShareException("Unable to find " + CREATE_DATA_LIST);
+        }
+    }
+
+
+    /**
+     * Get Count displayed in dashlet data-lists.
+     *
+     * @return
+     */
+    public int getListsCount()
+    {
+        return getListElements().size();
+    }
+
+    /**
+     * true if data-list with name 'dataListName' displayed in dashlet
+     *
+     * @param dataListName
+     * @return
+     */
+    public boolean isDataListDisplayed(String dataListName)
+    {
+        checkNotNull(dataListName);
+        List<WebElement> eventLinks = getListElements();
+        for (WebElement eventLink : eventLinks)
+        {
+            if (eventLink.getText().contains(dataListName))
+            {
+                return eventLink.isDisplayed();
+            }
+        }
+        return false;
+    }
+
+
+    private List<WebElement> getListElements()
+    {
+        try
+        {
+            return drone.findAndWaitForElements(DATA_LIST_IN_DASHLET);
+        }
+        catch (TimeoutException e)
+        {
+            return Collections.emptyList();
         }
     }
 }

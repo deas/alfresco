@@ -26,7 +26,7 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.dashlet.SearchLimit;
 import org.alfresco.po.share.dashlet.SiteSearchDashlet;
 import org.alfresco.po.share.dashlet.SiteSearchItem;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
@@ -80,7 +80,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         
         // Add Site Search Dashlet
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         
         ShareUser.logout(drone);
     }
@@ -97,7 +97,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         Assert.assertNotNull(dashBoardPage);
         SiteSearchDashlet searchDashlet = ShareUserDashboard.getSiteSearchDashlet(drone);
         Assert.assertNotNull(searchDashlet);
-        Assert.assertEquals(searchDashlet.getTitle(), Dashlet.SITE_SEARCH.getDashletName());
+        Assert.assertEquals(searchDashlet.getTitle(), Dashlets.SITE_SEARCH.getDashletName());
 
         // Verify Help balloon message has been displayed correctly
         searchDashlet.clickOnHelpIcon();
@@ -124,7 +124,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         // Add Site Search Dashlet
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
 
         ShareUser.logout(drone);
     }
@@ -165,7 +165,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         // Add Site Search Dashlet
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         // Upload File
         ShareUser.uploadFileInFolder(drone, fileInfo);
@@ -206,7 +206,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
         ShareUser.logout(drone);
@@ -245,7 +245,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUserSitePage.createFolder(drone, folderName, folderName);
         ShareUser.logout(drone);
@@ -277,7 +277,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         // Add Site Search Dashlet
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.logout(drone);
     }
@@ -334,7 +334,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
         ShareUser.logout(drone);
@@ -371,7 +371,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         // Add Site Search Dashlet
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
 
     }
@@ -429,7 +429,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, userName, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
         ShareUser.logout(drone);
@@ -474,7 +474,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         // Create File
         ContentDetails contentDetails = new ContentDetails(fileName1);
@@ -524,7 +524,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
 
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
@@ -586,7 +586,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         // Create File1
         ContentDetails contentDetails = new ContentDetails(fileName1);
@@ -643,7 +643,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
 
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
@@ -688,7 +688,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, userName, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
         ShareUser.logout(drone);
@@ -734,7 +734,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
 
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
@@ -789,7 +789,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         // Add Site Search Dashlet
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
 
     }
@@ -849,7 +849,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         // Create Site
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
@@ -893,7 +893,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
         ShareUser.logout(drone);
@@ -933,7 +933,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         // Create Site
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
@@ -1002,7 +1002,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         // Create Site
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
@@ -1063,7 +1063,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.openSiteDashboard(drone, siteName);
         ShareUser.uploadFileInFolder(drone, fileInfo);
@@ -1118,7 +1118,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
         ShareUser.logout(drone);
@@ -1158,7 +1158,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         // Create Site
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
@@ -1201,7 +1201,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
 
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
@@ -1243,7 +1243,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
         ShareUser.logout(drone);
@@ -1291,7 +1291,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
         ShareUser.logout(drone);
@@ -1335,7 +1335,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
         ShareUser.logout(drone);
@@ -1373,7 +1373,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo1);
         ShareUser.uploadFileInFolder(drone, fileInfo2);
@@ -1414,7 +1414,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
         ShareUser.logout(drone);
@@ -1452,7 +1452,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
 
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         // Upload two files and add comment to file1
@@ -1497,7 +1497,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
 
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         // Upload two documents
@@ -1546,7 +1546,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         // Upload 3 files
         ShareUser.uploadFileInFolder(drone, fileInfo1);
@@ -1599,7 +1599,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
 
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         // Create Files
@@ -1645,7 +1645,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         // Create Files
         ShareUser.uploadFileInFolder(drone, fileInfo);
@@ -1686,7 +1686,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         // Create Files
         ShareUser.uploadFileInFolder(drone, fileInfo1);
@@ -1728,7 +1728,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
         ShareUser.logout(drone);
@@ -1764,7 +1764,7 @@ public class SiteSearchMyDashboardTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        ShareUserDashboard.addDashlet(drone, Dashlet.SITE_SEARCH);
+        ShareUserDashboard.addDashlet(drone, Dashlets.SITE_SEARCH);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
         ShareUser.logout(drone);

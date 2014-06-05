@@ -76,7 +76,7 @@ public enum SortField
 
         for (SortField value : values())
         {
-            if (name.equalsIgnoreCase(value.name))
+            if (value.name.startsWith(name))
             {
                 return value;
             }

@@ -28,6 +28,7 @@ import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.enums.Encoder;
+import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.document.DocumentAction.DetailsPageType;
 import org.alfresco.webdrone.HtmlPage;
@@ -80,13 +81,21 @@ public abstract class DetailsPage extends SitePage
     private static final By NODE_PATH = By.cssSelector("div.node-path span a");
     private static final By TAGS_PANEL = By.cssSelector("div[class*='tags']");
     private static final By PROPERTIES_PANEL = By.cssSelector("div[class*='metadata-header']");
+    private static final By PERMISSIONS_PANEL = By.cssSelector("div[id*='permissions']");
     private static final By COMMENT_COUNT = By.cssSelector("span.comment-count");
     protected String PERMISSION_SETTINGS_PANEL_CSS = null;
     private final By SYNC_SETTINGS_PANEL_CSS = By.cssSelector(".document-sync");
     private final By COMMENTS_PANEL_CSS = By.cssSelector("div.comments-list");
     private final By COPY_TO_SHARE_LINKS = By.cssSelector("h3.thin.dark");
     private static final String LINK_VIEW_ON_GOOGLE_MAPS = "div[id$='default-actionSet'] div.document-view-googlemaps a";
-
+    private static final String EDIT_TAGS_ICON = ".folder-tags h2 .edit";
+    private static final String EDIT_PROPERTIES_ICON = ".folder-metadata-header h2 .edit";
+    private static final String COMMENT_FIELD = "table[id$='add-content_tbl']";
+    private static final String EDIT_TAGS_ICON_DOC = ".document-tags h2 .edit";
+    private static final String EDIT_PROPERTIES_ICON_DOC = ".document-metadata-header h2 .edit";
+    @SuppressWarnings("unused")
+    private static final String MANAGE_RULES = "div[class$='-permissions'] a";
+    
     public enum ShareLinks
     {
         COPY_LINK_TO_SHARE_THIS_PAGE("Copy this link to share the current page"),
@@ -552,17 +561,32 @@ public abstract class DetailsPage extends SitePage
             boolean isDocument = false;
             boolean isFolder = false;
             String jsElementButtonId = "";
-            String whichPage = getTitle();
+            //String whichPage = getTitle();
             String addCommentButtonId = null;
 
-            if (whichPage.contains("Document"))
+            try
+            {
+                isDocument = drone.find(By.cssSelector(".document-actions")).isDisplayed();
+            }
+            catch(Exception e)
+            {
+                try
+                {
+                    isFolder = drone.find(By.cssSelector(".folder-actions")).isDisplayed();
+                }
+                catch(Exception f)
+                {
+                }
+            }
+
+            /*if (whichPage.contains("Document"))
             {
                 isDocument = true;
             }
             else if (whichPage.contains("Folder"))
             {
                 isFolder = true;
-            }
+            }*/
 
             /*
              * Adding comment uses the rich editor to ensure it works on all
@@ -1523,6 +1547,83 @@ public abstract class DetailsPage extends SitePage
     }
 
     /**
+     * Add comment by clicking 'Comment' link
+     * @return
+     */
+
+    public AddCommentForm selectAddComment()
+    {
+        drone.findAndWait(By.xpath("//a[contains(@class,'comment')]")).click();
+        drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return new AddCommentForm(drone);
+    }
+
+    /**
+     * Click Add comment button from the comment form after clicking 'Comment' link
+     * @return
+     */
+    public AddCommentForm clickAddButton()
+    {
+        drone.findAndWait(By.xpath("//button[contains(@id,'comments')]")).click();
+        drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return new AddCommentForm(drone);
+    }
+
+    /**
+     * Click on Edit Tags icon from Tags panel at Details page
+     * @param folder when true is for folder details page; false - document details page
+     * @return
+     */
+    public EditDocumentPropertiesPage clickEditTagsIcon(boolean folder)
+    {
+        if (folder)
+    {
+            drone.findAndWait(By.cssSelector(EDIT_TAGS_ICON)).click();
+        }
+        else
+        {
+            drone.findAndWait(By.cssSelector(EDIT_TAGS_ICON_DOC)).click();
+        }
+        drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return new EditDocumentPropertiesPage(drone);
+    }
+    
+    /**
+     * Click on Edit Properties icon from Properties panel at Details page
+     * @param folder when true is for folder details page; false - document details page
+     * @return EditDocumentPropertiesPage
+     */
+    public EditDocumentPropertiesPage clickEditPropertiesIcon(boolean folder)
+    {
+        if (folder)
+        {
+            drone.findAndWait(By.cssSelector(EDIT_PROPERTIES_ICON)).click();
+        }
+        else
+    {
+            drone.findAndWait(By.cssSelector(EDIT_PROPERTIES_ICON_DOC)).click();
+        }
+        drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return new EditDocumentPropertiesPage(drone);
+    }
+
+    /**
+     * @return
+     */
+    public boolean isCommentFieldPresent()
+    {
+        try
+        {
+            return drone.findAndWait(By.cssSelector(COMMENT_FIELD)).isDisplayed();
+        }
+        catch (TimeoutException toe)
+        {
+
+        }
+        throw new PageException("Comment field isn't present!");
+    }
+
+    /**
      * Verify if Link View on Google Maps is visible.
      *
      * @author rmanyam
@@ -1555,5 +1656,80 @@ public abstract class DetailsPage extends SitePage
         {
             return false;
         }
+    }
+
+    public boolean isTagIconDisplayed()
+    {
+        return isEditIconPresent(TAGS_PANEL);
+    }
+
+    public boolean isEditPropertiesIconDisplayed()
+    {
+        return isEditIconPresent(PROPERTIES_PANEL);
+    }
+
+    public boolean isEditPermissionsIconDisplayed ()
+    {
+        return isEditIconPresent(PERMISSIONS_PANEL);
+    }
+
+    protected boolean isEditIconPresent (By locator)
+    {
+        try
+        {
+            WebElement webElement = drone.findAndWait(locator);
+            return webElement.findElement(By.cssSelector(".alfresco-twister-actions>a")).isDisplayed();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to locate the panel");
+        }
+    }
+  /**
+     * Click at any action from the Details Page
+     *
+     * @return
+     */
+    public HtmlPage selectAction (DocumentAction action)
+    {
+        DetailsPageType type;
+        try
+        {
+
+            if (this instanceof FolderDetailsPage)
+            {
+                type = DetailsPageType.FOLDER;
+            }
+            else if (this instanceof DocumentDetailsPage)
+            {
+                type = DetailsPageType.DOCUMENT;
+            }
+            else
+            {
+                throw new UnsupportedOperationException("This action is not supported.");
+            }
+            drone.find(By.cssSelector(action.getDocumentAction(type))).click();
+            return FactorySharePage.resolvePage(drone);
+
+        }
+        catch (NoSuchElementException nse)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Action is not present Css value is :", nse);
+            }
+        }
+        throw new PageException("Action page isn't opened.");
+    }
+
+    /**
+     * Mimics the action of deleting a document/folder.
+     */
+    public DocumentLibraryPage delete()
+    {
+        WebElement button = drone.findAndWait(By.cssSelector("div.document-delete>a"));
+        button.click();
+        confirmDelete();
+        return new DocumentLibraryPage(drone);
     }
 }

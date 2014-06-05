@@ -6,6 +6,7 @@ import java.util.List;
 import org.alfresco.share.util.AbstractWorkflow;
 import org.alfresco.share.util.EditTaskAction;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.ShareUserWorkFlow;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -226,8 +227,9 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         documentLibraryPage.render();
 
         // Verify Sync location is displayed correctly.
-        SyncInfoPage syncInfoPage = documentLibraryPage.getFileDirectoryInfo(fileName).clickOnViewCloudSyncInfo().render();
+        SyncInfoPage syncInfoPage = ShareUserSitePage.getFileDirectoryInfo(drone, fileName).clickOnViewCloudSyncInfo().render();
         assertEquals(syncInfoPage.getCloudSyncLocation(), DOMAIN_HYBRID + ">" + cloudSiteName + ">" + DEFAULT_FOLDER_NAME);
+        syncInfoPage.close();
 
         MyWorkFlowsPage myWorkFlowsPage = ShareUserWorkFlow.navigateToMyWorkFlowsPage(drone);
         // Verify workflow details

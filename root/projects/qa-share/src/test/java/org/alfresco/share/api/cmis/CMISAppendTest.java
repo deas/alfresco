@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 /**
  * @author abharade
@@ -109,15 +110,24 @@ public abstract class CMISAppendTest extends CmisUtils
         ShareUser.openDocumentLibrary(drone);
         documentDetailsPage = ShareUser.openDocumentDetailPage(drone, thisFileName);
 
+        String stringVersion = documentDetailsPage.getDocumentVersion();
+        double docVersion = 0;
+        double versionBefore = 0;
+        try {
+            docVersion = Double.parseDouble(stringVersion);
+            versionBefore = Double.parseDouble(expectedVersion);
+        } catch (NumberFormatException e) {
+            fail("The version before - " + expectedVersion + "or the later version - " + stringVersion + " was not received properly.");
+        }
         if (isLastChunk)
         {
-            assertTrue(Double.parseDouble(documentDetailsPage.getDocumentVersion()) > Double.parseDouble(expectedVersion),
-                    documentDetailsPage.getDocumentVersion() + " should be greater than " + Double.parseDouble(expectedVersion));
+            assertTrue(docVersion > versionBefore,
+                    stringVersion + " should be greater than " + versionBefore);
         }
         else
         {
-            assertTrue(Double.parseDouble(documentDetailsPage.getDocumentVersion()) == Double.parseDouble(expectedVersion),
-                    documentDetailsPage.getDocumentVersion() + " should be greater than " + Double.parseDouble(expectedVersion));
+            assertTrue(docVersion == versionBefore,
+                    stringVersion + " should be greater than " + versionBefore);
         }
         assertTrue(doc1.getContentStreamLength() > documentSize, doc1.getContentStreamLength() + " should be more than " + (documentSize));
         return doc1;

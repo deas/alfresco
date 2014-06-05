@@ -53,7 +53,7 @@ public class NodeBrowserPage extends AdminConsolePage
 
     private final static String SEARCH_RESULT_BASE_CSS = "tr[class~='yui-dt-rec']";
     private final static By SEARCH_RESULT = By.cssSelector(SEARCH_RESULT_BASE_CSS);
-    private final static By RESULT_NAME = By.cssSelector(SEARCH_RESULT_BASE_CSS + "> td[class~='yui-dt-col-nodeRef'] > div > a[href='#']");
+    private final static By RESULT_REFERENCE = By.cssSelector(SEARCH_RESULT_BASE_CSS + "> td[class~='yui-dt-col-nodeRef'] > div > a[href='#']");
 
     private final static By SEARCH_QUERY_TYPE_BUTTON = By.cssSelector("#page_x002e_ctool_x002e_admin-console_x0023_default-lang-menu-button-button");
     private final static By STORE_TYPE_BUTTON = By.cssSelector("#page_x002e_ctool_x002e_admin-console_x0023_default-store-menu-button-button");
@@ -65,6 +65,7 @@ public class NodeBrowserPage extends AdminConsolePage
 
     private final static String REGEXP_PATTERN = ".*%s.*";
 
+    private final static By RESULT_NAMES = By.cssSelector("td[class*='sortable'][headers*='-name'] > div > a[href='#']");
 
     public enum Store
     {
@@ -229,16 +230,38 @@ public class NodeBrowserPage extends AdminConsolePage
     }
 
     /**
+     * Check results by node ref.
+     * 
+     * @param regExp - expect result node ref(or regExp)
+     * @return true if results has matches with expect
+     */
+    public boolean isInResultsByNodeRef(String regExp)
+    {
+        return isInResults(regExp, RESULT_REFERENCE);
+    }
+
+    /**
      * Check results by name.
      *
      * @param regExp - expect resultName(or regExp)
      * @return true if results has matches with expect
      */
-    public boolean isInResults(String regExp)
+    public boolean isInResultsByName(String regExp)
+    {
+        return isInResults(regExp, RESULT_NAMES);
+    }
+
+    /**
+     * Check results by name or node ref.
+     * 
+     * @param regExp - expect resultName(or regExp)
+     * @return true if results has matches with expect
+     */
+    private boolean isInResults(String regExp, By locator)
     {
         checkNotNull(regExp);
         String fRegExp = formatRegExp(regExp);
-        List<WebElement> resultsName = drone.findAndWaitForElements(RESULT_NAME, 5000);
+        List<WebElement> resultsName = drone.findAndWaitForElements(locator, 5000);
         for (WebElement resultName : resultsName)
         {
             String name = resultName.getText();

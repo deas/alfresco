@@ -21,16 +21,19 @@ package org.alfresco.po.share;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.po.share.adminconsole.ChannelManagerPage;
 import org.alfresco.po.share.ShareUtil.RequiredAlfrescoVersion;
+import org.alfresco.po.share.admin.AdminConsolePage;
 import org.alfresco.po.share.adminconsole.CategoryManagerPage;
+import org.alfresco.po.share.adminconsole.ChannelManagerPage;
 import org.alfresco.po.share.adminconsole.NodeBrowserPage;
+import org.alfresco.po.share.adminconsole.TagManagerPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
+import org.alfresco.po.share.site.document.MyFilesPage;
 import org.alfresco.po.share.site.document.SharedFilesPage;
 import org.alfresco.po.share.user.AccountSettingsPage;
 import org.alfresco.po.share.user.MyProfilePage;
@@ -44,6 +47,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
@@ -69,7 +73,9 @@ public class Navigation extends SharePage
     private static final String FAVOURITE_TEXT = "div[id^='HEADER_SITES_MENU_FAVOURITES'] td[class$='dijitMenuItemLabel']";
     private static final String FAVOURITE_SITES = "div[id^='HEADER_SITES_MENU_FAVOURITES'] td[class$='dijitMenuItemLabel'] a";
     private static final String LINK_FAVOURITES= "#HEADER_SITES_MENU_FAVOURITES_text";
-    private static final String SHARED_FILES_LINK = "div#HEADER_SHARED_FILES";
+    private static final String SHARED_FILES_LINK = "//span[@id='HEADER_SHARED_FILES_text']/a";
+    private static final String MY_FILES_LINK = "div#HEADER_MY_FILES";
+
     /**
      * Constructor
      * 
@@ -182,7 +188,7 @@ public class Navigation extends SharePage
             WebElement siteButton = drone.findAndWait(By.cssSelector(selector));
             siteButton.click();
         }
-        catch(TimeoutException te)
+        catch (TimeoutException te)
         {
             throw new PageOperationException("Exceeded time to find the Sites dropdown css.", te);
         }
@@ -223,7 +229,7 @@ public class Navigation extends SharePage
         {
             throw new UnsupportedOperationException("This option is in cloud only, not available for Enterprise");
         }
-        String selector = "td#CLOUD__NetworkAdminToolsLink_text>a.alfresco-menus-_AlfMenuItemMixin";
+        String selector = "td#CLOUD__NetworkAdminToolsLink_text>a.alfresco-navigation-_HtmlAnchorMixin";
         drone.findAndWait(By.cssSelector(selector)).click();
         return new AccountSettingsPage(drone);
     }
@@ -589,7 +595,8 @@ public class Navigation extends SharePage
             {
                 return selectManageSitesSiteAdmin();
             }
-        } catch (NoSuchElementException e)
+        } 
+        catch (NoSuchElementException e)
         {
             throw new PageOperationException("Unable to select manage sites link", e);
         }
@@ -785,7 +792,6 @@ public class Navigation extends SharePage
         }
     }
     
-
     /**
      * Does any sites been selectd as favourite.
      * @return
@@ -865,7 +871,13 @@ public class Navigation extends SharePage
      */
     public SharedFilesPage selectSharedFilesPage()
     {
-        drone.find(By.cssSelector(SHARED_FILES_LINK)).click();
+        try
+        {
+            drone.find(By.xpath(SHARED_FILES_LINK)).click();
+        }
+        catch(InvalidElementStateException ise)
+        {
+        }
         return new SharedFilesPage(drone);
     }
 
@@ -884,5 +896,56 @@ public class Navigation extends SharePage
             drone.navigateTo(url);
         }
         return new FacetedSearchPage(drone);
+    }
+
+    /**
+     *   Go to Admin Console page (application) use direct URL.
+     * @return {@link org.alfresco.po.share.admin.AdminConsolePage}
+     */
+    public AdminConsolePage getAdminConsolePage()
+    {
+        if (alfrescoVersion.isCloud())
+        {
+            throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
+        }
+        String usersPageURL = "/page/console/admin-console/application";
+        String currentUrl = drone.getCurrentUrl();
+        if (currentUrl != null)
+        {
+            String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
+            drone.navigateTo(url);
+        }
+        return new AdminConsolePage(drone).render();
+    }
+
+    /**
+     *   Go to Tag Manager page use direct URL.
+     * @return {@link org.alfresco.po.share.adminconsole.TagManagerPage}
+     */
+    public TagManagerPage getTagManagerPage()
+    {
+        if (alfrescoVersion.isCloud())
+        {
+            throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
+        }
+        String usersPageURL = "/page/console/admin-console/tag-management";
+        String currentUrl = drone.getCurrentUrl();
+        if (currentUrl != null)
+        {
+            String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
+            drone.navigateTo(url);
+        }
+        return new TagManagerPage(drone).render();
+    }
+
+    /**
+     * Mimics the action of selecting My files link.
+     *
+     * @return HtmlPage shared files page object
+     */
+    public MyFilesPage selectMyFilesPage()
+    {
+        drone.find(By.cssSelector(MY_FILES_LINK)).click();
+        return new MyFilesPage(drone);
     }
 }

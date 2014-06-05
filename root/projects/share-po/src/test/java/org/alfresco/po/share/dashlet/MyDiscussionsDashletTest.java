@@ -33,7 +33,7 @@ import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.dashlet.MyDiscussionsDashlet.LinkType;
 import org.alfresco.po.share.dashlet.mydiscussions.CreateNewTopicPage;
 import org.alfresco.po.share.dashlet.mydiscussions.TopicDetailsPage;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.util.FailedTestListener;
@@ -97,7 +97,7 @@ public class MyDiscussionsDashletTest extends AbstractSiteDashletTest
     {
         customiseSiteDashBoard = siteDashBoard.getSiteNav().selectCustomizeDashboard();
         customiseSiteDashBoard.render();
-        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlet.MY_DISCUSSIONS, 1).render();
+        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlets.MY_DISCUSSIONS, 1).render();
         myDiscussionsDashlet = siteDashBoard.getDashlet(MY_DISCUSSIONS).render();
         Assert.assertNotNull(myDiscussionsDashlet);
     }

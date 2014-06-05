@@ -1,0 +1,43 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Sprint BY Data Prep Suite" verbose="1" preserve-order="true" parallel="classes" thread-count="5">
+    <groups>
+        <run>
+            <include name="DataPrep.*"/>
+            <exclude name="Enterprise4.2"/>
+			<exclude name="Sanity"/>
+            <exclude name="NonGrid"/>
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
+    </listeners>
+
+    <test name="Site sanity tests Suite" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteTest"/>
+        </classes>
+    </test>
+
+    <test name="Site Members sanity tests Suite" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.MembersSiteTest"/>
+        </classes>
+    </test>
+	
+	<test name="Site Permissions sanity tests Suite" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.SitePermissionsSanityTest"/>
+        </classes>
+    </test>
+    <test name="Shared Files sanity tests Suite" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.sanity.SharedFilesTest">
+            <methods>
+                <include name="dataPrep_ALF_3062"/>
+                <include name="dataPrep_ALF_3066"/>
+            </methods>
+        </class>
+        </classes>
+    </test>
+</suite>

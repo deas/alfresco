@@ -208,6 +208,8 @@ public class TableViewDocLibTest extends AbstractUtils
         String folderName = getFolderName(testName) + System.currentTimeMillis();
         String fileName1 = "aaaaaaa";
         String fileName2 = "bbbbbbb";
+        String fileName1Desc = "aaaa" + System.currentTimeMillis();
+        String fileName2Desc = "bbbb" + System.currentTimeMillis();
 
         File file1 = newFile(fileName1, fileName1);
         File file2 = newFile(fileName2, fileName1);
@@ -223,8 +225,8 @@ public class TableViewDocLibTest extends AbstractUtils
         ShareUserSitePage.uploadFile(drone, file1);
         ShareUserSitePage.uploadFile(drone, file2);
 
-        ShareUserSitePage.editContentProperties(drone, fileName1, fileName1, true);
-        ShareUserSitePage.editContentProperties(drone, fileName2, fileName2, true);
+        ShareUserSitePage.editContentProperties(drone, fileName1, fileName1Desc, true);
+        ShareUserSitePage.editContentProperties(drone, fileName2, fileName2Desc, true);
 
         // Start Test
         DocumentLibraryPage docLibPage = ShareUserSitePage.selectView(drone, ViewType.TABLE_VIEW);
@@ -253,15 +255,15 @@ public class TableViewDocLibTest extends AbstractUtils
 
         files = docLibPage.getFiles();
         // WebDriver sendKeys issue. Complete Path is sent rather than just the filename. Hence the assert had to be amended
-        assertTrue(files.get(0).getDescription().endsWith(fileName1));
-        assertTrue(files.get(1).getDescription().endsWith(fileName2));
+        assertTrue(files.get(0).getDescription().endsWith(fileName1Desc));
+        assertTrue(files.get(1).getDescription().endsWith(fileName2Desc));
 
         docLibPage = ShareUserSitePage.sortLibraryOn(drone, SortField.DESCRIPTION, false);
         assertFalse(docLibPage.getNavigation().isSortAscending());
 
         files = docLibPage.getFiles();
-        assertTrue(files.get(0).getDescription().endsWith(fileName2));
-        assertTrue(files.get(1).getDescription().endsWith(fileName1));
+        assertTrue(files.get(0).getDescription().endsWith(fileName2Desc));
+        assertTrue(files.get(1).getDescription().endsWith(fileName1Desc));
     }
 
     /**

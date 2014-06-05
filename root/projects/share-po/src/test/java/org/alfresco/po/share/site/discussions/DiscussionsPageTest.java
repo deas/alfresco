@@ -2,6 +2,7 @@ package org.alfresco.po.share.site.discussions;
 
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.dashlet.AbstractSiteDashletTest;
+import org.alfresco.po.share.dashlet.mydiscussions.TopicsListPage;
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SitePageType;
@@ -26,7 +27,7 @@ import static org.testng.Assert.*;
  */
 
 @Listeners(FailedTestListener.class)
-@Test(groups = { "Enterprise4.2" })
+@Test(groups = { "Enterprise-only" })
 public class DiscussionsPageTest extends AbstractSiteDashletTest
 {
     DashBoardPage dashBoard;
@@ -52,18 +53,18 @@ public class DiscussionsPageTest extends AbstractSiteDashletTest
         SiteUtil.deleteSite(drone, siteName);
     }
 
-    @Test(groups = "Enterprise-only")
+    @Test
     public void addDiscussionsPage()
     {
-        customizeSitePage = siteDashBoard.getSiteNav().selectCustomizeSite();
+        customizeSitePage = siteDashBoard.getSiteNav().selectCustomizeSite().render();
         List<SitePageType> addPageTypes = new ArrayList<SitePageType>();
         addPageTypes.add(SitePageType.DISCUSSIONS);
         customizeSitePage.addPages(addPageTypes);
-        discussionsPage = siteDashBoard.getSiteNav().selectDiscussionsPage();
+        discussionsPage = siteDashBoard.getSiteNav().selectDiscussionsPage().render();
         assertNotNull(discussionsPage);
     }
 
-    @Test(groups = "Enterprise-only", dependsOnMethods = "addDiscussionsPage")
+    @Test(dependsOnMethods = "addDiscussionsPage")
     public void createTopic()
     {
         assertTrue(discussionsPage.isNewTopicEnabled());
@@ -72,28 +73,52 @@ public class DiscussionsPageTest extends AbstractSiteDashletTest
         assertEquals(verifyCreatedTopic(), text);
     }
 
-    @Test(groups = "Enterprise-only", dependsOnMethods = "createTopic")
+    @Test(dependsOnMethods = "createTopic")
     public void viewTopic()
     {
         topicViewPage.clickBack();
         assertNotNull(discussionsPage);
-        topicViewPage = discussionsPage.viewTopic(text);
+        topicViewPage = discussionsPage.viewTopic(text).render();
         assertNotNull(topicViewPage);
     }
 
-    @Test(groups = "Enterprise-only", dependsOnMethods = "viewTopic")
+    @Test(dependsOnMethods = "viewTopic")
     public void createReply()
     {
         assertTrue(topicViewPage.isReplyLinkDisplayed());
-        topicViewPage.createReply(text);
+        topicViewPage.createReply(text).render();
         assertEquals(verifyCreatedReply(), text);
+    }
+
+    @Test(dependsOnMethods = "viewTopic")
+    public void editTopic()
+    {
+        discussionsPage = topicViewPage.clickBack().render();
+        topicViewPage = discussionsPage.editTopic(text, editedText, textLines).render();
+        assertEquals(editedText, verifyCreatedTopic());
+    }
+
+    @Test(dependsOnMethods = "createReply")
+    public void editReply ()
+    {
+        topicViewPage.editReply(text, editedText).render();
+        assertEquals(verifyCreatedReply(), editedText);
+    }
+
+    @Test(dependsOnMethods = "editReply")
+    public void deleteTopic ()
+    {
+        discussionsPage = topicViewPage.clickBack().render();
+        int expNum = discussionsPage.getTopicCount()-1;
+        discussionsPage.deleteTopicWithConfirm(editedText).render();
+        assertEquals(discussionsPage.getTopicCount(), expNum);
     }
 
     private String verifyCreatedTopic()
     {
         try
         {
-            return drone.find(By.cssSelector(".nodeTitle>a")).getText();
+            return drone.findAndWait(By.cssSelector(".nodeTitle>a")).getText();
         }
         catch (TimeoutException te)
         {
@@ -105,7 +130,7 @@ public class DiscussionsPageTest extends AbstractSiteDashletTest
     {
         try
         {
-            return drone.find(By.cssSelector("div[class='reply']>.nodeContent>div[class*='content']>p")).getText();
+            return drone.findAndWait(By.cssSelector("div[class='reply']>.nodeContent>div[class*='content']>p")).getText();
         }
         catch (TimeoutException te)
         {

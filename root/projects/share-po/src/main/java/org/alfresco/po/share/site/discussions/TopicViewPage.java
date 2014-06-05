@@ -25,6 +25,8 @@ public class TopicViewPage extends DiscussionsPage
     private static final By REPLY_LINK = By.cssSelector(".onAddReply>a");
     private static final By BACK_LINK = By.cssSelector(".backLink>a");
     private static final By REPLY_CONTAINER = By.cssSelector(".reply");
+    private static final By TAG = By.cssSelector(".tag-link");
+    private static final By TAG_NONE = By.xpath("//span[@class='nodeAttrValue' and text()='(None)']");
 
     /**
      * Constructor
@@ -115,6 +117,7 @@ public class TopicViewPage extends DiscussionsPage
             addReplyForm.insertText(replyText);
             addReplyForm.clickSubmit().render();
             waitUntilAlert();
+            logger.info("Created a reply " + "'" + replyText + "'");
             return new TopicViewPage(drone);
         }
         catch (TimeoutException te)
@@ -173,7 +176,15 @@ public class TopicViewPage extends DiscussionsPage
         AddReplyForm addReplyForm = new AddReplyForm(drone);
         addReplyForm.insertText(replyText);
         addReplyForm.clickSubmit().render();
+        logger.info("Reply was edited");
         return new TopicViewPage(drone);
+    }
+
+    public TopicViewPage deleteReply (String title)
+    {
+        getReplyDirectoryInfo(title).clickDelete();
+        logger.info("Reply was deleted");
+        return drone.getCurrentPage().render();
     }
 
     /**
@@ -196,4 +207,44 @@ public class TopicViewPage extends DiscussionsPage
             throw new ShareException("Unable to find " + REPLY_CONTAINER);
         }
     }
+
+    public boolean isEditReplyDisplayed (String reply)
+    {
+        boolean isDisplayed = getReplyDirectoryInfo(reply).isEditDisplayed();
+        return isDisplayed;
+    }
+
+    public boolean isDeleteReplyDisplayed (String reply)
+    {
+        boolean isDisplayed = getReplyDirectoryInfo(reply).isDeleteDisplayed();
+        return isDisplayed;
+    }
+
+    /**
+     * Method to retrieve tag added to Discussion Topic
+     * 
+     * @return String
+     */
+    public String getTagName()
+    {
+        try
+        {
+            if (!drone.isElementDisplayed(TAG_NONE))
+            {
+                String tagName = drone.findAndWait(TAG).getText();
+                if (!tagName.isEmpty())
+                    return tagName;
+                else
+                    throw new IllegalArgumentException("Cannot find tag");
+
+            }
+            else
+                return drone.find(TAG_NONE).getText();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to retrieve the tag");
+        }
+    }
+
 }

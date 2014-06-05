@@ -76,7 +76,7 @@ public class TrashCanRecoverConfirmDialog extends TrashCanPage
      */
     public TrashCanPage clickRecoverOK()
     {
-        drone.find(RECOVER_OK_BUTTON).click();
+        drone.findAndWait(RECOVER_OK_BUTTON).click();
         return new TrashCanPage(drone);
     }
 }

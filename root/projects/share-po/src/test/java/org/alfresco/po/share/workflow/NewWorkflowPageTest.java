@@ -56,7 +56,7 @@ import org.testng.annotations.Test;
  * @since 1.6.2
  */
 @Listeners(FailedTestListener.class)
-@Test(groups = { "Enterprise4.2", "Firefox17Ent"})
+@Test(groups = { "Enterprise4.2"})
 public class NewWorkflowPageTest extends AbstractTest
 {
     private String siteName;

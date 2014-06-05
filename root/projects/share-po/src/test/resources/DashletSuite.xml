@@ -76,11 +76,6 @@
             <class name="org.alfresco.po.share.dashlet.SiteMembersDashletTest" />
         </classes>
     </test>
-    <test name="SiteNoticeDashletTest">
-        <classes>
-            <class name="org.alfresco.po.share.dashlet.SiteNoticeDashletTest" />
-        </classes>
-    </test>
     <test name="SiteProfileDashletTest">
         <classes>
             <class name="org.alfresco.po.share.dashlet.SiteProfileDashletTest" />

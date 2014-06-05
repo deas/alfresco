@@ -32,6 +32,7 @@ public class AbstractCalendarContainer extends AbstractEventForm
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public AbstractCalendarContainer render()
     {
         return render(new RenderTime(maxPageLoadingTime));

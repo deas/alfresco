@@ -251,14 +251,16 @@ public class MyWorkFlowsPage extends SharePage
         {
             throw new IllegalArgumentException("Work flow name cannot be null");
         }
+        String xpathExpression = String.format("//h3/a[contains(.,'%s')]", workFlowName);
         try
         {
-            String xpathExpression = String.format("//h3/a[contains(.,'%s')]", workFlowName);
-            WebElement workFlowRow = drone.findAndWait(By.xpath(xpathExpression));
+            
+            WebElement workFlowRow = drone.find(By.xpath(xpathExpression));
             return workFlowRow.isDisplayed();
         }
-        catch (Exception e)
+        catch (NoSuchElementException e)
         {
+            logger.error("Element not found :"+xpathExpression);            
         }
         return false;
     }

@@ -18,6 +18,8 @@
  */
 package org.alfresco.share.util;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,6 +43,9 @@ import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.NoSuchElementException;
+import org.testng.SkipException;
+
+import javax.imageio.ImageIO;
 
 /**
  * Utility class to manage site related operations
@@ -115,11 +120,36 @@ public class SiteUtil extends AbstractUtils
     }
 
     /**
+     * This method create in Temp directory jpg file for uploading.
+     *
+     * @param jpgName
+     * @return File object for created Image.
+     */
+    public static File prepareJpg(String jpgName)
+    {
+        BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+        Graphics g = image.getGraphics();
+        g.drawString("Test Publish file.", 5, 10);
+        g.drawString(jpgName, 5, 50);
+        try
+        {
+            File jpgFile = File.createTempFile(jpgName, ".jpg");
+            ImageIO.write(image, "jpg", jpgFile);
+            return jpgFile;
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        throw new SkipException("Can't create JPG file");
+    }
+
+    /**
      * Create site using share
      * 
-     * @param webDrone
+     * @param drone
      * @param siteName String site name
-     * @param SiteVisiblity
+     * @param siteVisibility
      * @return true if site created
      * @throws Exception if error
      */
@@ -152,7 +182,7 @@ public class SiteUtil extends AbstractUtils
             // Will create public site
             else
             {
-                site = (SiteDashboardPage) createSite.createNewSite(siteName, desc);
+                site = createSite.createNewSite(siteName, desc).render();
             }
 
             site.render();

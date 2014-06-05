@@ -38,10 +38,7 @@ import org.alfresco.po.share.site.document.EditTextDocumentPage;
 import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.site.document.SelectAspectsPage;
 import org.alfresco.po.share.site.document.TagPage;
-import org.alfresco.share.util.AbstractUtils;
-import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.ShareUserRepositoryPage;
-import org.alfresco.share.util.SiteUtil;
+import org.alfresco.share.util.*;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.log4j.Logger;
@@ -149,7 +146,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
 
@@ -194,7 +191,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
 
@@ -248,7 +245,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
 
@@ -300,7 +297,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
 
@@ -379,7 +376,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
 
@@ -460,7 +457,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
         DocumentDetailsPage detailsPage = repositoryPage.selectFile(sampleFile.getName()).render();
@@ -486,7 +483,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentUsersHome" })
+    @Test(groups = { "RepositoryDocumentUsersHome", "SharePOBug" })
     public void enterprise40x_5467() throws Exception
     {
         // upload file to repository
@@ -540,7 +537,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentUsersHome" })
+    @Test(groups = { "RepositoryDocumentUsersHome", "SharePOBug" })
     public void enterprise40x_5468() throws Exception
     {
 
@@ -583,7 +580,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentUsersHome" })
+    @Test(groups = { "RepositoryDocumentUsersHome" , "SharePOBug"})
     public void enterprise40x_5469() throws Exception
     {
 
@@ -634,7 +631,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "RepositoryDocumentUsersHome" })
+    @Test(groups = { "RepositoryDocumentUsersHome", "SharePOBug"  })
     public void enterprise40x_5470() throws Exception
     {
 
@@ -688,7 +685,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage) repositoryPage.selectFolder(testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
 

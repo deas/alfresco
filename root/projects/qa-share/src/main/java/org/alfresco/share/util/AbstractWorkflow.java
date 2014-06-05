@@ -441,7 +441,8 @@ public abstract class AbstractWorkflow extends AbstractCloudSyncTest
                         {
                             return true;
                         }
-                    } else
+                    }
+                    else
                     {
                         if (!myTasksPage.isTaskPresent(taskName))
                         {
@@ -450,14 +451,15 @@ public abstract class AbstractWorkflow extends AbstractCloudSyncTest
                     }
 
                     webDriverWait(drone, 1000);
-                    drone.refresh();
-                    myTasksPage = getSharePage(drone).render();
-                } finally
+                    myTasksPage = refreshSharePage(drone).render();
+                }
+                finally
                 {
                     t.end();
                 }
             }
-        } catch (PageRenderTimeException p)
+        }
+        catch (PageRenderTimeException p)
         {
         }
 

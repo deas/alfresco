@@ -87,18 +87,17 @@ public class NewWorkflowPage extends WorkFlowPage
     @Override
     public HtmlPage startWorkflow(WorkFlowFormDetails formDetails) throws InterruptedException
     {
-        if (formDetails == null || StringUtils.isEmpty(formDetails.getMessage()) || formDetails.getReviewers().size() < 1
-                || isReviewersBlank(formDetails.getReviewers()))
-        {
-            throw new UnsupportedOperationException("siteName or message or cloudUsers cannot be blank");
-        }
-        enterMessageText(formDetails.getMessage());
-        if (formDetails.getDueDate() != null)
-        {
-            enterDueDateText(formDetails.getDueDate());
-        }
+        fillUpWorkflowForm(formDetails);
         AssignmentPage assignmentPage = selectReviewer().render();
-        assignmentPage.selectReviewers(formDetails.getReviewers());
+        assignmentPage.selectReviewers(formDetails.getReviewers()).render();
+        return submitWorkflow();
+    }
+
+    /**
+     * Method clicks on the StartWorkFlow button 
+     */
+    public HtmlPage submitWorkflow()
+    {
         WebElement saveButton = drone.findAndWait(SUBMIT_BUTTON);
         String saveButtonId = saveButton.getAttribute("id");
         saveButton.click();
@@ -148,6 +147,18 @@ public class NewWorkflowPage extends WorkFlowPage
     @Override
     public HtmlPage cancelCreateWorkflow(WorkFlowFormDetails formDetails) throws InterruptedException
     {
+        fillUpWorkflowForm(formDetails);
+        AssignmentPage assignmentPage = selectReviewer().render();
+        assignmentPage.selectReviewers(formDetails.getReviewers()).render();
+        return cancelWorkflow();
+    }
+
+    /**
+     * Method to fill up all static details on the current Workflow form page object
+     * @param formDetails
+     */
+    public void fillUpWorkflowForm(WorkFlowFormDetails formDetails)
+    {
         if (formDetails == null || StringUtils.isEmpty(formDetails.getMessage()) || formDetails.getReviewers().size() < 1
                 || isReviewersBlank(formDetails.getReviewers()))
         {
@@ -158,8 +169,13 @@ public class NewWorkflowPage extends WorkFlowPage
         {
             enterDueDateText(formDetails.getDueDate());
         }
-        AssignmentPage assignmentPage = selectReviewer().render();
-        assignmentPage.selectReviewers(formDetails.getReviewers());
+    }
+
+    /**
+     * Method clicks on the Cancel WorkFlow button 
+     */
+    public HtmlPage cancelWorkflow()
+    {
         WebElement cancelButton = drone.findAndWait(CANCEL_BUTTON);
         String cancelButtonId = cancelButton.getAttribute("id");
         cancelButton.click();

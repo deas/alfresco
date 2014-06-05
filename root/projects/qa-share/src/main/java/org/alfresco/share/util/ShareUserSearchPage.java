@@ -12,6 +12,8 @@ import org.alfresco.po.share.search.AdvanceSearchCRMPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.search.AdvanceSearchFolderPage;
 import org.alfresco.po.share.search.AdvanceSearchPage;
+import org.alfresco.po.share.search.FacetedSearchPage;
+import org.alfresco.po.share.search.FacetedSearchResult;
 import org.alfresco.po.share.search.SearchResultItem;
 import org.alfresco.po.share.search.SearchResultsPage;
 import org.alfresco.po.share.search.SortType;
@@ -30,37 +32,32 @@ public class ShareUserSearchPage extends AbstractUtils
         }
     }
 
-    /**
-     * Helper to Perform Search from DashBoard or Search Results Page.
+     /**
+     * Helper to Perform Search from DashBoard or Faceted Search Results Page.
      * 
-     * @param driver WebDriver Instance
+     * @param drone WebDriver Instance
      * @param searchTerm String
      * @param searchAllSites Boolean <tt>false</tt> indicates search is restricted to opened site,: When <tt>true</tt>, opens dashboard before search, so as to
-     * search all sites
+     * search all sites      
      * @return searchResults
      */
-    public static List<SearchResultItem> basicSearch(WebDrone driver, String searchTerm, Boolean searchAllSitesFromMyDashBoard)
+    public static List<FacetedSearchResult> basicSearch(WebDrone drone, String searchTerm, Boolean isSiteDashBoard)
     {
-        SharePage sharePage;
+        SharePage sharePage = ShareUser.getSharePage(drone);
 
-        if (searchAllSitesFromMyDashBoard)
+        if (isSiteDashBoard)
         {
             // Open User DashBoard
-            sharePage = ShareUser.openUserDashboard(driver);
+            sharePage = ShareUser.openUserDashboard(drone);
         }
 
-        sharePage = ShareUser.getSharePage(driver);
-
-        // Search
-        SharePage searchResultsPage = sharePage.getSearch().search(searchTerm).render();
-        SearchResultsPage searchResults = searchResultsPage.render(refreshDuration);
-
-        // Sort By: TODO Later
+        // faceted search replace
+        SharePage facetedSearchResult = sharePage.getSearch().search(searchTerm).render();
+        FacetedSearchPage facetedsearchResult = facetedSearchResult.render(refreshDuration);
 
         // Get Results
-        List<SearchResultItem> searchOutput = searchResults.getResults();
+        return facetedsearchResult.getResults();
 
-        return searchOutput;
     }
 
     /**
@@ -74,8 +71,37 @@ public class ShareUserSearchPage extends AbstractUtils
     {
         try
         {
-            SearchResultItem searchEntry = findInSearchResults(driver, entryToBeFound);
+            SearchResultItem searchEntry = findInSearchResults(driver, entryToBeFound);            
+            
+            if (searchEntry == null)
+            {
+                if (entryToBeFound.equals(SERACH_ZERO_CONTENT))
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
 
+        return true;
+    }
+    
+    /**
+     * Helper to identify if the entryToBeFound is found in the <FacetedSearchResult>.
+     * 
+     * @param driver WebDrone Instance
+     * @param entryToBeFound String Case in-sensitive value to look for
+     * @return Boolean <tt>true</tt> if entryToBeFound is found in the search results, <tt>false</tt> if not
+     */
+    public static Boolean isSearchItemInFacetSearchPage(WebDrone driver, String entryToBeFound)
+    {
+        try
+        {            
+            FacetedSearchResult searchEntry = findInFacetSearchResults(driver, entryToBeFound);            
             if (searchEntry == null)
             {
                 if (entryToBeFound.equals(SERACH_ZERO_CONTENT))
@@ -148,10 +174,69 @@ public class ShareUserSearchPage extends AbstractUtils
             }
         }
         return searchEntry;
-    }
-
+    }    
+    
     /**
-     * Helper to check the search results for a SearchTerm on the SearchResultsPage, with configurable retrySearchCount.
+     * Helper to search for the entryToBeFound in the <FacetedSearchResult>.
+     * 
+     * @param driver WebDrone Instance
+     * @param entryToBeFound String Case in-sensitive value to look for
+     * @return FacetedSearchResult if found, else null
+     */
+    public static FacetedSearchResult findInFacetSearchResults(WebDrone driver, String entryToBeFound)
+    
+    {
+        int position = -1;        
+        FacetedSearchResult searchEntry = null;        
+        int expectedResultLength = 25;
+
+        // Assumes User is on search Results Page
+        FacetedSearchPage facetedSearchPage = (FacetedSearchPage) ShareUser.getSharePage(driver);
+        int resultsCount = facetedSearchPage.getResults().size();
+        
+        // Check if results are available
+        if (!(resultsCount>0))
+        {
+            return searchEntry;
+        }
+
+        // Scroll down to next page
+        if (resultsCount > 0)
+        {
+            if (resultsCount >= expectedResultLength)
+            {
+                facetedSearchPage.scrollSome(50);
+                facetedSearchPage.scrollToPageBottom();
+
+                // Wait 2 seconds to allow the extra results to render
+                webDriverWait(driver, 2000);
+
+                // Reload the page objects
+                facetedSearchPage.render();
+            }
+            // Get Search Results
+            List<FacetedSearchResult> searchOutput = facetedSearchPage.getResults();
+
+            for (FacetedSearchResult item : searchOutput)
+            {
+                position = position + 1;
+
+                if (item.getName().contains(entryToBeFound))
+                {
+                    searchEntry = item;
+                    return searchEntry;
+                }
+            }
+            
+            //
+        }
+        return searchEntry;
+    }    
+         
+    
+    
+    /**
+     * Helper to check the search results for a SearchTerm on the SearchPage, with configurable retrySearchCount.
      * 
      * @param driver WebDrone Instance
      * @param searchType String Type of search to be performed during retry
@@ -190,6 +275,52 @@ public class ShareUserSearchPage extends AbstractUtils
         {
             found = isSearchItemAvailable(driver, entryToBeFound);
             resultAsExpected = (entryVisible.equals(found));
+        }
+
+        return resultAsExpected;
+
+    }
+    
+    /**
+     * Helper to check the search results for a SearchTerm on the FacetedSearchResultsPage, with configurable retrySearchCount.
+     * 
+     * @param driver WebDrone Instance
+     * @param searchType String Type of search to be performed during retry
+     * @param searchTerm String Term used in the search box
+     * @param entryToBeFound String entry to look for in the search results
+     * @param entryVisible Boolean <tt>true</tt> if we are expecting the entryToBeFound to be visible in FacetedsearchResults
+     * @return <tt>true</tt> if element is found when expected, <tt>false</tt> if found when not expected
+     */
+    public static Boolean checkFacetedSearchResultsWithRetry(WebDrone driver, String searchType, String searchTerm, String entryToBeFound, Boolean isEntryVisible)
+    {
+        Boolean found = false;
+        Boolean resultAsExpected = false;
+
+        // Code to repeat search until the element is found or Timeout is hit
+        for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
+        {
+            found = isSearchItemInFacetSearchPage(driver, entryToBeFound);
+
+            // Loop again if result is not as expected: To cater for Solr lag:
+            // Eventual consistency
+            resultAsExpected = (isEntryVisible.equals(found));
+            if (resultAsExpected)
+            {
+                break;
+            }
+            else
+            {
+                logger.info("Search for: " + searchTerm + " : Entry not found: " + entryToBeFound);
+                webDriverWait(driver, refreshDuration);
+
+                repeatBasicSearch(driver, searchType, searchTerm);
+            }
+        }
+
+        if (!resultAsExpected)
+        {
+            found = isSearchItemInFacetSearchPage(driver, entryToBeFound);
+            resultAsExpected = (isEntryVisible.equals(found));
         }
 
         return resultAsExpected;
@@ -261,13 +392,9 @@ public class ShareUserSearchPage extends AbstractUtils
      * @return {@link SearchResultsPage}
      */
     public static SearchResultsPage repeatSearch(WebDrone driver, String searchType, String searchTerm)
-    {
+    {        
         SearchResultsPage searchResults = (SearchResultsPage) ShareUser.getSharePage(driver);
-        if (searchType.equals(BASIC_SEARCH))
-        {
-            searchResults.doSearch(searchTerm).render();
-        }
-        else if (searchType.equals(ADV_FOLDER_SEARCH))
+        if (searchType.equals(ADV_FOLDER_SEARCH))
         {
             logger.info("Folder Search retry");
             AdvanceSearchFolderPage folderSearchPage = searchResults.goBackToAdvanceSearch().render();
@@ -279,6 +406,25 @@ public class ShareUserSearchPage extends AbstractUtils
             AdvanceSearchContentPage contentSearchPage = searchResults.goBackToAdvanceSearch().render();
             searchResults = contentSearchPage.clickSearch().render(refreshDuration);
         }
+        
+        return searchResults;
+    }
+    
+    /**
+     * This method will allow to override the advance search for retry.
+     * This will initiate the search again on the same page and returns the FacetedSearchPage.
+     * @param driver
+     * @param searchType
+     * @param searchTerm
+     * @return {@link FacetedSearchPage}
+     */ 
+    public static FacetedSearchPage repeatBasicSearch(WebDrone driver, String searchType, String searchTerm)
+    {
+        FacetedSearchPage searchResults = (FacetedSearchPage) ShareUser.getSharePage(driver);
+        if (BASIC_SEARCH.equals(searchType))
+        {
+            searchResults.getSearchForm().search(searchTerm).render();
+        }       
 
         return searchResults;
     }

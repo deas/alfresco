@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.alfresco.po.share.dashlet.SavedSearchDashlet;
 import org.alfresco.po.share.dashlet.SiteSearchItem;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.DocumentAspect;
@@ -96,7 +96,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo);
         documentLibraryPage.getSiteNav().selectSiteDashBoard().render();
         // Add Saved Search Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
 
         List<SiteSearchItem> items;
 
@@ -128,7 +128,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.login(drone, userName, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -184,7 +184,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         contentDetails = new ContentDetails(fileName2, null, fileName1, null);
         ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -238,7 +238,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         contentDetails = new ContentDetails(fileName3);
         ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -297,7 +297,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         contentDetails = new ContentDetails(fileName2, fileName1, null, null);
         ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
 
         ShareUser.logout(drone);
     }
@@ -351,7 +351,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
 
         ShareUser.setAuthor(drone, fileName2, testUser);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -395,7 +395,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.login(drone, userName, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
     @Test(groups = { "alfrscoBug" })
@@ -455,7 +455,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         contentDetails = new ContentDetails(fileName3, null, null, fileName);
         ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
 
         ShareUser.logout(drone);
     }
@@ -512,7 +512,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.uploadFileInFolder(drone, fileInfo);
 
         // Add Site Search Dashlet
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
 
         // Wait till file has been indexed
         Assert.assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_CONTENT_DASHLET, fileName, true, siteName));
@@ -558,7 +558,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         // Create Folder
         ShareUserSitePage.createFolder(drone, folderName, testName);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -597,7 +597,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -651,7 +651,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.addAspects(drone, Arrays.asList(DocumentAspect.TAGGABLE), fileName2);
         ShareUser.addAspects(drone, Arrays.asList(DocumentAspect.CLASSIFIABLE), fileName3);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
 
         ShareUser.logout(drone);
     }
@@ -721,7 +721,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         String[] htmlFileInfo = { htmlFileName };
         ShareUser.uploadFileInFolder(drone, htmlFileInfo);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
 
         ShareUser.logout(drone);
     }
@@ -769,7 +769,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -829,7 +829,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -883,7 +883,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         contentDetails = new ContentDetails(fileName2, title2, description2, content2);
         ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
 
         ShareUser.logout(drone);
     }
@@ -929,7 +929,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         // Add aspect
         ShareUser.addAspects(drone, Arrays.asList(DocumentAspect.DUBLIN_CORE), fileName);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
 
         ShareUser.logout(drone);
     }
@@ -967,7 +967,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1017,7 +1017,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1063,7 +1063,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1106,7 +1106,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.uploadFileInFolder(drone, fileInfo1);
         ShareUser.uploadFileInFolder(drone, fileInfo2);
         ShareUser.uploadFileInFolder(drone, fileInfo3);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1145,7 +1145,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo1);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1190,7 +1190,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         // Add Comment for File1
         ShareUser.addComment(drone, fileName1, comment);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1236,7 +1236,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         documentLibraryPage.selectFile(fileName1).render();
         ShareUser.editTextDocument(drone, fileName1, fileName1, fileName1);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1290,7 +1290,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.addComment(drone, fileName3, comment);
         ShareUser.addComment(drone, fileName3, comment);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
     
@@ -1340,7 +1340,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.uploadFileInFolder(drone, fileInfo1);
         ShareUser.uploadFileInFolder(drone, fileInfo2);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1390,7 +1390,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         // Create Files
         ShareUser.uploadFileInFolder(drone, fileInfo);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1435,7 +1435,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.uploadFileInFolder(drone, fileInfo1);
         ShareUser.uploadFileInFolder(drone, fileInfo2);
 
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1476,7 +1476,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 
@@ -1515,7 +1515,7 @@ public class SavedSearchSiteDashboardAdvancedTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
         ShareUser.uploadFileInFolder(drone, fileInfo);
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SAVED_SEARCH);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SAVED_SEARCH);
         ShareUser.logout(drone);
     }
 

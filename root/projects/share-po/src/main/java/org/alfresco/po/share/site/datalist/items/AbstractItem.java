@@ -60,7 +60,7 @@ public abstract class AbstractItem extends ShareDialogue
      * @param input
      * @param value
      */
-    private void setInput(final WebElement input, final String value)
+    public void setInput(final WebElement input, final String value)
     {
         try
         {
@@ -107,5 +107,16 @@ public abstract class AbstractItem extends ShareDialogue
         {
             throw new ShareException("Save button isn't displayed!");
         }
+    }
+    /**
+     * Method for editing an item
+     *
+     * @param newTitle
+     */
+    public void editAnItem (String newTitle)
+    {
+        fillItemFields(newTitle);
+        clickSave();
+        waitUntilAlert();
     }
 }
