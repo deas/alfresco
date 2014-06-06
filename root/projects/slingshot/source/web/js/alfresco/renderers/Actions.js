@@ -53,6 +53,15 @@ define(["dojo/_base/declare",
       cssRequirements: [{cssFile:"./css/Actions.css"}],
 
       /**
+      * The array of file(s) containing internationalised strings.
+      *
+      * @instance
+      * @type {object}
+      * @default [{i18nFile: "./i18n/Actions.properties"}]
+      */
+      i18nRequirements: [{i18nFile: "./i18n/Actions.properties"}],
+
+      /**
        * Indicates that this should only be displayed when the item (note: NOT the renderer) is
        * hovered over.
        * 
@@ -89,7 +98,7 @@ define(["dojo/_base/declare",
          
          // Create a menu popup to hold the group...
          this.actionsMenu = new AlfMenuBarPopup({
-            label: "Actions"
+            label:  this.message("alf.renderers.Actions.menuLabel")
          });
          this.actionsMenu.popup.addChild(this.actionsGroup);
          
