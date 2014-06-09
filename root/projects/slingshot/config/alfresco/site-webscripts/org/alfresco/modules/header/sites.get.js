@@ -36,7 +36,7 @@ function main()
    {
       // Process the user's favourite sites
       // TODO: Clean-up old favourites here?
-      prefs = JSON.parse(result);
+      prefs = JSON.parse(preferences.value);
 
       // Populate the favourites object literal for easy look-up later
       favourites = eval('try{(prefs.' + PREF_FAVOURITE_SITES + ')}catch(e){}');
