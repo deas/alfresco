@@ -217,20 +217,25 @@ function getSortFieldsFromConfig()
    // Iterate over configuration sort fields
    for(var i=0; i < configSortFields.size(); i+=1)
    {
-      // Extract sort properties from configuration
-      var configSortField = configSortFields.get(i),
-          label = String(configSortField.attributes["labelId"]),
-          sortable = String(configSortField.attributes["isSortable"]) == "true" ? true : false,
-          valueTokens = String(configSortField.value).split("|"),
-          value = valueTokens[0],
-          direction = "ascending",
-          checked = (i==0 ? true : false);
-
-      // The value may contain 2 pieces of data - the optional 2nd is for sort direction
-      if(valueTokens instanceof Array && valueTokens.length > 1 && valueTokens[1] === "false")
+      var direction = "ascending";
+      var value = null;
+      var configSortField = configSortFields.get(i);
+      if (configSortField.value != null)
       {
-         direction = "descending";
+         valueTokens = String(configSortField.value).split("|"),
+         value = valueTokens[0];
+
+         // The value may contain 2 pieces of data - the optional 2nd is for sort direction
+         if(valueTokens instanceof Array && valueTokens.length > 1 && valueTokens[1] === "false")
+         {
+            direction = "descending";
+         }
       }
+
+      // Extract sort properties from configuration
+      var label = String(configSortField.attributes["labelId"]),
+          sortable = String(configSortField.attributes["isSortable"]) == "true" ? true : false,
+          checked = (i==0 ? true : false);
 
       // Create a new sort widget
       var labelMsg = msg.get(label);
