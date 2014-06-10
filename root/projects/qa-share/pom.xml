@@ -13,7 +13,7 @@
     </parent>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <webdrone.version>2.5-SNAPSHOT</webdrone.version>
+        <webdrone.version>2.5</webdrone.version>
         <share-po.version>${project.version}</share-po.version>
         <office.component>libreofficecomponent</office.component>
         <enable.hybrid>false</enable.hybrid>
