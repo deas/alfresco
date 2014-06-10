@@ -63,7 +63,6 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_menus_AlfMenuBarSelect__postCreate() {
-         
          if (this.selectionTopic)
          {
             this.alfSubscribe(this.selectionTopic, lang.hitch(this, "handleSelection"));

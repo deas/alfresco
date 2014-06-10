@@ -195,6 +195,10 @@ define(["dojo/_base/declare",
             {
                // No action required - leave as the empty string which is relevance - no direction can be applied
             }
+            else if (payload.sortField === "Relevance")
+            {
+               sort = "";
+            }
             else
             {
                sort = ((payload.sortField != null) ? payload.sortField : this.sort) + "|" + 

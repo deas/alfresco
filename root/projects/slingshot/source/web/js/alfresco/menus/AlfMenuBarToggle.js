@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -61,14 +61,17 @@
  */
 define(["dojo/_base/declare",
         "alfresco/menus/AlfMenuBarItem",
+        "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
         "dojo/dom-construct",
         "dojo/dom-class",
         "dojo/dom-attr",
-        "dojo/_base/lang"], 
-        function(declare, AlfMenuBarItem, domConstruct, domClass, domAttr, lang) {
+        "dojo/_base/lang",
+        "dojo/hash",
+        "dojo/io-query"], 
+        function(declare, AlfMenuBarItem, _AlfDocumentListTopicMixin, domConstruct, domClass, domAttr, lang, hash, ioQuery) {
    
    
-   return declare([AlfMenuBarItem], {
+   return declare([AlfMenuBarItem, _AlfDocumentListTopicMixin], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -144,13 +147,47 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * This is a topic that can be subscribed to that when published on will set the state of the
+       * toggle
+       * 
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      subscriptionTopic: null,
+
+      /**
+       * This is the attribute to look for in the payload when handling external requests to control
+       * the toggle.
+       *
+       * @instance
+       * @type {string}
+       * @default "value"
+       */
+      subscriptionAttribute: "value",
+
+      /**
        * Subscribe the document list topics.
        * 
        * @instance
        */
       postMixInProperties: function alfresco_menus_AlfMenuBarToggle__postMixInProperties() {
-         this.alfSubscribe("ALF_DOCLIST_SORT_FIELD_SELECTION", lang.hitch(this, "setState"));
+         if (this.subscriptionTopic)
+         {
+            this.alfSubscribe(this.subscriptionTopic, lang.hitch(this, this.setState));
+         }
       },
+
+      /**
+       * If this instance should be set according to a hash fragment value then this attribute should be
+       * set to the name of the fragment parameter to use. If the hash fragment parameter exists and 
+       * the value is "true" then the toggle will be automatically checked.
+       * 
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      hashName: null,
 
       /**
        * Sets up the initial state of the widget based on the [onConfig]{@link module:alfresco/menus/AlfMenuBarToggle#onConfig}
@@ -174,6 +211,14 @@ define(["dojo/_base/declare",
          {
             this.iconClass = this.offConfig.iconClass;
          }
+
+         if (this.hashName)
+         {
+            var currHash = ioQuery.queryToObject(hash());
+            this.checked = (currHash[this.hashName] && currHash[this.hashName] === "true");
+            this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "setState"));
+         }
+
          this.inherited(arguments);
          if (this.checked)
          {
@@ -271,10 +316,10 @@ define(["dojo/_base/declare",
        * @instance
        */
       setState: function alfresco_menus_AlfMenuBarToggle__setState(payload) {
-         if (payload && payload.direction != null)
+         if (payload && payload[this.subscriptionAttribute] != null)
          {
-            this.alfLog("log", "Setting state");
-            this.checked = payload.direction == "ascending";
+            this.alfLog("log", "Setting toggle state", payload, this);
+            this.checked = ("true" == payload[this.subscriptionAttribute]);
             if (this.checked)
             {
                this.renderToggle(this.onConfig, this.offConfig);

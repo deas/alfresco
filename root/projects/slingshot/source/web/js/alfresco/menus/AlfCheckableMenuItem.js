@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -28,8 +28,10 @@ define(["dojo/_base/declare",
         "dojo/_base/event",
         "dojo/dom-construct",
         "dojo/dom-class",
-        "dojo/dom-style"], 
-        function(declare, AlfMenuItem, lang, event, domConstruct, domClass, domStyle) {
+        "dojo/dom-style",
+        "dojo/hash",
+        "dojo/io-query"], 
+        function(declare, AlfMenuItem, lang, event, domConstruct, domClass, domStyle, hash, ioQuery) {
    
    return declare([AlfMenuItem], {
       
@@ -97,6 +99,17 @@ define(["dojo/_base/declare",
       subscriptionHandle: null,
       
       /**
+       * If this instance should be set according to a hash fragment value then this attribute should be
+       * set to the name of the fragment parameter to use. If the hash fragment parameter exists and its
+       * value matches the current value then this will automatically be checked.
+       * 
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      hashName: null,
+
+      /**
        * @instance
        */
       postCreate: function alfresco_menus_AlfCheckableMenuItem__postCreate() {
@@ -106,6 +119,12 @@ define(["dojo/_base/declare",
             this.publishPayload = {};
          }
          
+         if (this.hashName)
+         {
+            var currHash = ioQuery.queryToObject(hash());
+            this.checked = (currHash[this.hashName] && currHash[this.hashName] === this.value);
+         }
+
          this.alfLog("log", "Create checkable cell");
          this.checkCell = domConstruct.create("td", { className: "alf-checkable-menu-item", innerHTML: "&nbsp;"}, this.focusNode, "first");
          if (this.checked)
@@ -119,6 +138,7 @@ define(["dojo/_base/declare",
          }
          
          this.inherited(arguments);
+
          if (this.checked)
          {
             this.publishSelection();
