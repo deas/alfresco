@@ -4000,8 +4000,9 @@
                filter: strFilter
             };
 
-            // Initial navigation won't fire the History event. Fix for ALF-19161: reload doclist when user click on currently selected filter.
-            if (obj.doclistFirstTimeNav || (typeof this.currentFilter.filterId !== "undefined" && this.currentFilter.filterId == filter.filterId))
+            // Initial navigation won't fire the History event.
+            // multiNavigate won't do anything if the filter is the same, so trigger an update instead, see ACE-2000.
+            if (obj.doclistFirstTimeNav || strFilter === YAHOO.util.History.getCurrentState("filter") )
             {
                this._updateDocList.call(this,
                {
