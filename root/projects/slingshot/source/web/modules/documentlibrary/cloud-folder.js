@@ -408,6 +408,16 @@
        */
       onExpandComplete: function cloudFolder_onExpandComplete(oNode)
       {
+         var addFolder = Dom.getElementsByClassName("cloud-path-add-folder", "div")[0];  
+         if (oNode.data.userAccess.create)
+         {
+	        addFolder.style.display = 'block';
+         }
+         else
+         {
+            addFolder.style.display = 'none';
+         }
+         
          if (this.pathsToExpand != null)
          {
             var node = this.widgets.treeview.getNodeByProperty("path", this.pathsToExpand.shift());
