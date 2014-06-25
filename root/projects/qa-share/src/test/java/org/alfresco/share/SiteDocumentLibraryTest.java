@@ -161,6 +161,7 @@ public class SiteDocumentLibraryTest extends AbstractUtils
                 content.clickOnTagRemoveButton(tagName);
                 documentLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
                 documentLibPage.getFileDirectoryInfo(contentName).clickOnTagSaveButton();
+                documentLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
                 content = documentLibPage.getFileDirectoryInfo(contentName);
             }
 
