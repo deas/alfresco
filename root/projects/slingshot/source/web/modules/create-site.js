@@ -132,30 +132,24 @@
          var createSiteForm = new Alfresco.forms.Form(this.id + "-form");
          this.widgets.form = createSiteForm;
 
-         var elTitle = Dom.get(this.id + "-title"),
-            elShortName = Dom.get(this.id + "-shortName");
+         this.elTitle = Dom.get(this.id + "-title");
+         this.elShortName = Dom.get(this.id + "-shortName");
 
          /**
           * Title field
           */
          // Title is mandatory
-         createSiteForm.addValidation(elTitle, Alfresco.forms.validation.mandatory, null, "keyup", this.msg("validation-hint.mandatory"));
+         createSiteForm.addValidation(this.elTitle, Alfresco.forms.validation.mandatory, null, "keyup", this.msg("validation-hint.mandatory"));
          // ...and has a maximum length
-         createSiteForm.addValidation(elTitle, Alfresco.forms.validation.length,
+         createSiteForm.addValidation(this.elTitle, Alfresco.forms.validation.length,
          {
             max: 256,
             crop: true
          }, "keyup");
 
          // Auto-generate a short name as long as the user hasn't manually entered one first
-         Event.addListener(elTitle, "keyup", function CreateSite_title_keyUp()
-         {
-            if (!this.shortNameEdited)
-            {
-               elShortName.value = this.safeURL(elTitle.value).substring(0, 72);
-               createSiteForm.validate();
-            }
-         }, this, true);
+         Event.addListener(this.elTitle, "keyup", this.onSiteNameChange, this, true);
+         Event.addListener(this.elTitle, "mouseout", this.onSiteNameChange, this, true);
 
          /**
           * Short name field
@@ -163,23 +157,23 @@
          this.shortNameEdited = false;
 
          // Shortname is mandatory
-         createSiteForm.addValidation(elShortName, Alfresco.forms.validation.mandatory, null, "keyup", this.msg("validation-hint.mandatory"));
+         createSiteForm.addValidation(this.elShortName, Alfresco.forms.validation.mandatory, null, "keyup", this.msg("validation-hint.mandatory"));
          // ...and is restricted to a limited set of characters
-         createSiteForm.addValidation(elShortName, Alfresco.forms.validation.regexMatch,
+         createSiteForm.addValidation(this.elShortName, Alfresco.forms.validation.regexMatch,
          {
             pattern: /^[ ]*[0-9a-zA-Z\-]+[ ]*$/
          }, "keyup", this.msg("validation-hint.siteName"));
          // ...and has a maximum length
-         createSiteForm.addValidation(elShortName, Alfresco.forms.validation.length,
+         createSiteForm.addValidation(this.elShortName, Alfresco.forms.validation.length,
          {
             max: 72,
             crop: true
          }, "keyup");
 
          // Flag that the user has edited the short name
-         Event.addListener(elShortName, "keyup", function CreateSite_shortName_keyUp()
+         Event.addListener(this.elShortName, "keyup", function CreateSite_shortName_keyUp()
          {
-            this.shortNameEdited = elShortName.value.length > 0;
+            this.shortNameEdited = this.elShortName.value.length > 0;
          }, this, true);
 
          /**
@@ -323,6 +317,22 @@
       onVisibilityChange: function CreateSite_onVisibilityChange(type, el)
       {
          new Element(this.widgets.isModerated).set("disabled", el == this.widgets.isPrivate);
+      },
+
+      /**
+       * Called when user fills site name input
+       *
+       * @method onSiteNameChange
+       * @param type {object} DomEvent
+       * @param args {array} Event parameters (depends on event type)
+       */
+      onSiteNameChange: function CreateSite_title_keyUp(type, args)
+      {
+         if (!this.shortNameEdited)
+         {
+            this.elShortName.value = this.safeURL(this.elTitle.value).substring(0, 72);
+            this.widgets.form.validate();
+         }
       },
       
       /**
