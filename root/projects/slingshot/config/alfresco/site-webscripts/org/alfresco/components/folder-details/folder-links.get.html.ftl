@@ -37,7 +37,7 @@
                <#-- webdav link -->
                <h3 class="thin dark">${msg("webdav.header")}</h3>
                <div class="link-info">
-                  <input id="${el}-page" value="${webdavUrl}" />
+                  <input id="${el}-page-webdav" value="${webdavUrl}" />
                   <a href="#" name=".onCopyLinkClick" class="${el} hidden">${msg("webdav.copy")}</a>
                </div>
                </#if>
