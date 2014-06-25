@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,7 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.alfresco.po.share.site.document.*;
+import org.alfresco.po.share.site.document.DocumentAspect;
+import org.alfresco.po.share.site.document.DocumentDetailsPage;
+import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.site.document.FolderDetailsPage;
+import org.alfresco.po.share.site.document.SelectAspectsPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
@@ -37,10 +37,6 @@ import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.testng.annotations.Listeners;
 
 /**
@@ -80,56 +76,121 @@ public class AbstractAspectTests extends AbstractUtils
         aspectDataPrep(name, false);
     }
 
-    public void addAspectTest(AspectTestProptery proptery)
+    public void addAspectTest(AspectTestProptery proptery) throws Exception
     {
         addRemoveAspectTest(proptery, false);
     }
 
-    public void removeAspectTest(AspectTestProptery proptery)
+    public void removeAspectTest(AspectTestProptery proptery) throws Exception
     {
         addRemoveAspectTest(proptery, true);
     }
 
-    public void addRemoveAspectTest(AspectTestProptery proptery, boolean removeAspect)
+    public void addRemoveAspectTest(AspectTestProptery proptery, boolean removeAspect) throws Exception
     {
 
-        try
+        String testName = proptery.getTestName();
+        this.testName = testName;
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+        String fileName = getFileName(testName + System.currentTimeMillis()) + ".txt";
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        // Open Site DashBoard
+        openSiteDashboard(drone, siteName);
+
+        DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
+
+        // Upload File
+        String[] fileInfo = { fileName, DOCLIB };
+        ShareUser.uploadFileInFolder(drone, fileInfo);
+
+        DocumentDetailsPage documentDetailsPage = documentLibraryPage.selectFile(fileName).render();
+
+        SelectAspectsPage aspectsPage = documentDetailsPage.selectManageAspects().render();
+
+        Map<String, Object> properties = documentDetailsPage.getProperties();
+
+        // Check and Set property size before adding aspect
+        proptery.setSizeBeforeAspectAdded(properties.size());
+
+        List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
+        aspects.add(proptery.getAspect());
+        aspectsPage = aspectsPage.add(aspects).render();
+        documentDetailsPage = aspectsPage.clickApplyChanges().render();
+
+        // TODO: Shan: Add notification check on: Successful update to aspects'?
+        documentDetailsPage = documentDetailsPage.render();
+
+        // Set property size before adding aspect
+        int propsToBeAdded = proptery.getExpectedProprtyKey().size();
+
+        // Get property size after adding aspect
+        properties = documentDetailsPage.getProperties();
+
+        // Check appropriate properties have been added: Count
+        assertEquals(properties.size(), proptery.getSizeBeforeAspectAdded() + propsToBeAdded);
+
+        // Check appropriate properties have been added: List of properties
+        Set<String> actualPropertKey = properties.keySet();
+        assertTrue(actualPropertKey.containsAll(proptery.getExpectedProprtyKey()));
+
+        if (removeAspect)
         {
-            String testName = proptery.getTestName();
-            this.testName = testName;
-            String testUser = getUserNameFreeDomain(testName);
-            String siteName = getSiteName(testName);
-            String fileName = getFileName(testName + System.currentTimeMillis()) + ".txt";
-
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-            // Open Site DashBoard
-            openSiteDashboard(drone, siteName);
-
-            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
-
-            // Upload File
-            String[] fileInfo = { fileName, DOCLIB };
-            ShareUser.uploadFileInFolder(drone, fileInfo);
-
-            DocumentDetailsPage documentDetailsPage = documentLibraryPage.selectFile(fileName).render();
-
-            SelectAspectsPage aspectsPage = documentDetailsPage.selectManageAspects().render();
-
-            Map<String, Object> properties = documentDetailsPage.getProperties();
-
-            // Check and Set property size before adding aspect
-            proptery.setSizeBeforeAspectAdded(properties.size());
-
-            List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
-            aspects.add(proptery.getAspect());
-            aspectsPage = aspectsPage.add(aspects).render();
+            aspectsPage = documentDetailsPage.selectManageAspects().render();
+            aspectsPage = aspectsPage.remove(aspects).render();
             documentDetailsPage = aspectsPage.clickApplyChanges().render();
 
-            // TODO: Shan: Add notification check on: Successful update to aspects'?
-            documentDetailsPage = documentDetailsPage.render();
+            properties = documentDetailsPage.getProperties();
+            assertEquals(properties.size(), proptery.getSizeBeforeAspectAdded());
+            actualPropertKey = properties.keySet();
 
+            assertFalse(actualPropertKey.containsAll(proptery.getExpectedProprtyKey()));
+        }
+
+    }
+
+    public void addRemoveAspectDoc(AspectTestProptery proptery, boolean removeAspect, boolean PropertyKey) throws Exception
+    {
+
+        String testName = proptery.getTestName();
+        this.testName = testName;
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+        String fileName = getFileName(testName) + ".txt";
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        // Open Site DashBoard
+        openSiteDashboard(drone, siteName);
+
+        DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
+
+        // Upload File
+        String[] fileInfo = { fileName, DOCLIB };
+        ShareUser.uploadFileInFolder(drone, fileInfo);
+
+        DocumentDetailsPage documentDetailsPage = documentLibraryPage.selectFile(fileName).render();
+
+        SelectAspectsPage aspectsPage = documentDetailsPage.selectManageAspects().render();
+
+        Map<String, Object> properties = documentDetailsPage.getProperties();
+
+        // Check and Set property size before adding aspect
+        proptery.setSizeBeforeAspectAdded(properties.size());
+
+        List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
+        aspects.add(proptery.getAspect());
+        aspectsPage = aspectsPage.add(aspects).render();
+        documentDetailsPage = aspectsPage.clickApplyChanges().render();
+
+        documentDetailsPage = documentDetailsPage.render();
+
+        if (PropertyKey)
+        {
             // Set property size before adding aspect
             int propsToBeAdded = proptery.getExpectedProprtyKey().size();
 
@@ -142,114 +203,26 @@ public class AbstractAspectTests extends AbstractUtils
             // Check appropriate properties have been added: List of properties
             Set<String> actualPropertKey = properties.keySet();
             assertTrue(actualPropertKey.containsAll(proptery.getExpectedProprtyKey()));
-
-            if (removeAspect)
-            {
-                aspectsPage = documentDetailsPage.selectManageAspects().render();
-                aspectsPage = aspectsPage.remove(aspects).render();
-                documentDetailsPage = aspectsPage.clickApplyChanges().render();
-
-                properties = documentDetailsPage.getProperties();
-                assertEquals(properties.size(), proptery.getSizeBeforeAspectAdded());
-                actualPropertKey = properties.keySet();
-
-                assertFalse(actualPropertKey.containsAll(proptery.getExpectedProprtyKey()));
-            }
         }
-        catch (Throwable e)
+        else
         {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
+            // Get property size after adding aspect
+            properties = documentDetailsPage.getProperties();
+            assertEquals(properties.size(), proptery.getSizeBeforeAspectAdded(), "New properties on the Edit Properties page appeared/disappeared.");
+
         }
 
-    }
-
-    public void addRemoveAspectDoc(AspectTestProptery proptery, boolean removeAspect, boolean PropertyKey)
-    {
-
-        try
+        if (removeAspect)
         {
-            String testName = proptery.getTestName();
-            this.testName = testName;
-            String testUser = getUserNameFreeDomain(testName);
-            String siteName = getSiteName(testName);
-            String fileName = getFileName(testName) + ".txt";
-
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-            // Open Site DashBoard
-            openSiteDashboard(drone, siteName);
-
-            DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
-
-            // Upload File
-            String[] fileInfo = { fileName, DOCLIB };
-            ShareUser.uploadFileInFolder(drone, fileInfo);
-
-            DocumentDetailsPage documentDetailsPage = documentLibraryPage.selectFile(fileName).render();
-
-            SelectAspectsPage aspectsPage = documentDetailsPage.selectManageAspects().render();
-
-            Map<String, Object> properties = documentDetailsPage.getProperties();
-
-            // Check and Set property size before adding aspect
-            proptery.setSizeBeforeAspectAdded(properties.size());
-
-            List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
-            aspects.add(proptery.getAspect());
-            aspectsPage = aspectsPage.add(aspects).render();
+            aspectsPage = documentDetailsPage.selectManageAspects();
+            aspectsPage = aspectsPage.remove(aspects).render();
             documentDetailsPage = aspectsPage.clickApplyChanges().render();
 
-            documentDetailsPage = documentDetailsPage.render();
+            properties = documentDetailsPage.getProperties();
+            assertEquals(properties.size(), proptery.getSizeBeforeAspectAdded());
+            Set<String> actualPropertKey = properties.keySet();
 
-            if (PropertyKey)
-            {
-                // Set property size before adding aspect
-                int propsToBeAdded = proptery.getExpectedProprtyKey().size();
-
-                // Get property size after adding aspect
-                properties = documentDetailsPage.getProperties();
-
-                // Check appropriate properties have been added: Count
-                assertEquals(properties.size(), proptery.getSizeBeforeAspectAdded() + propsToBeAdded);
-
-                // Check appropriate properties have been added: List of properties
-                Set<String> actualPropertKey = properties.keySet();
-                assertTrue(actualPropertKey.containsAll(proptery.getExpectedProprtyKey()));
-            }
-            else
-            {
-                // Get property size after adding aspect
-                properties = documentDetailsPage.getProperties();
-                assertEquals(properties.size(), proptery.getSizeBeforeAspectAdded(), "New properties on the Edit Properties page appeared/disappeared.");
-
-            }
-
-            if (removeAspect)
-            {
-                aspectsPage = documentDetailsPage.selectManageAspects();
-                aspectsPage = aspectsPage.remove(aspects).render();
-                documentDetailsPage = aspectsPage.clickApplyChanges().render();
-
-                properties = documentDetailsPage.getProperties();
-                assertEquals(properties.size(), proptery.getSizeBeforeAspectAdded());
-                Set<String> actualPropertKey = properties.keySet();
-
-                assertFalse(actualPropertKey.containsAll(proptery.getExpectedProprtyKey()));
-            }
-
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
+            assertFalse(actualPropertKey.containsAll(proptery.getExpectedProprtyKey()));
         }
 
     }

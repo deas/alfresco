@@ -21,8 +21,10 @@ package org.alfresco.share.site.document;
 import static org.alfresco.po.share.site.document.DocumentAspect.*;
 import static org.alfresco.share.util.ShareUser.openSiteDashboard;
 import static org.testng.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.alfresco.po.share.site.document.*;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.alfresco.share.util.ShareUser;
@@ -57,7 +59,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_9652()
+    public void Enterprise40x_9652() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -76,7 +78,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_9653()
+    public void Enterprise40x_9653() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -95,7 +97,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14321()
+    public void Enterprise40x_14321() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -114,7 +116,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14327()
+    public void Enterprise40x_14327() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -133,7 +135,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14326()
+    public void Enterprise40x_14326() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -152,7 +154,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14328()
+    public void Enterprise40x_14328() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -171,7 +173,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14338()
+    public void Enterprise40x_14338() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -190,7 +192,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14350()
+    public void Enterprise40x_14350() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -209,7 +211,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14349()
+    public void Enterprise40x_14349() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -228,7 +230,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14348()
+    public void Enterprise40x_14348() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -247,7 +249,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14346()
+    public void Enterprise40x_14346() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -266,7 +268,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14345()
+    public void Enterprise40x_14345() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -285,7 +287,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14322()
+    public void Enterprise40x_14322() throws Exception
     {
         try
         {            
@@ -347,7 +349,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14339()
+    public void Enterprise40x_14339() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -364,7 +366,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14340()
+    public void Enterprise40x_14340() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -381,7 +383,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14341()
+    public void Enterprise40x_14341() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -456,7 +458,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14342()
+    public void Enterprise40x_14342() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -473,7 +475,7 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14344()
+    public void Enterprise40x_14344()throws Exception
     {
 
         AspectTestProptery proptery = new AspectTestProptery();
