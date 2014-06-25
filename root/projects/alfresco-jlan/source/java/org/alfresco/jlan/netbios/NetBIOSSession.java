@@ -31,6 +31,7 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
@@ -1343,13 +1344,22 @@ public final class NetBIOSSession extends NetworkSession {
 		boolean fromNI = false;
 		
 		try {
-			NetworkInterface ni = NetworkInterface.getByInetAddress( InetAddress.getByName( localIP));
-			
-			for ( InterfaceAddress iAddr : ni.getInterfaceAddresses()) {
-				InetAddress broadcast = iAddr.getBroadcast();
-				if ( broadcast != null) {
-					_subnetMask = broadcast.getHostAddress();
-					fromNI = true;
+			Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+			while (nis.hasMoreElements())
+			{
+				NetworkInterface ni = nis.nextElement();
+				
+				if (ni.isLoopback())
+				{
+					continue;
+				}
+				
+				for ( InterfaceAddress iAddr : ni.getInterfaceAddresses()) {
+					InetAddress broadcast = iAddr.getBroadcast();
+					if ( broadcast != null) {
+						_subnetMask = broadcast.getHostAddress();
+						fromNI = true;
+					}
 				}
 			}
 		}
