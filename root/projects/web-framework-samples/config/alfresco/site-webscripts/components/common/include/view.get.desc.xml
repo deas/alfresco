@@ -1,6 +1,0 @@
-<webscript>
-  <shortname>Include</shortname>
-  <description>Includes Content into the Page</description>
-  <family>component</family>
-  <url>/component/common/include</url>
-</webscript>

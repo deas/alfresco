@@ -1,5 +1,0 @@
-<properties>
-	<views>
-		<view>views/list/list.ftl</view>
-	</views>
-</properties>

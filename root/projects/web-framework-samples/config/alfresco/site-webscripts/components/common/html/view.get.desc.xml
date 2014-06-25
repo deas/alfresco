@@ -1,6 +1,0 @@
-<webscript>
-  <shortname>HTML</shortname>
-  <description>Displays HTML</description>
-  <family>component</family>
-  <url>/component/common/html</url>
-</webscript>
