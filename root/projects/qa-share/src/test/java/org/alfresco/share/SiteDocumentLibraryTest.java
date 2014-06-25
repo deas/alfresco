@@ -121,12 +121,20 @@ public class SiteDocumentLibraryTest extends AbstractUtils
             documentLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render(maxWaitTime);
 
             // Adding test tag to folders with same name on both folders.
-            documentLibPage.getFileDirectoryInfo(fileName).addTag("1234567890");
-            documentLibPage.getFileDirectoryInfo(fileName).addTag("`¬!£$%^&();{}[]'@#~,");
-            documentLibPage
-                    .getFileDirectoryInfo(fileName)
-                    .addTag("abcdefghijklmnopqrstuvwxyzsdsdfknoiwenirnskdnfernlkaniifsdreiwolektkmnsdmfnlksisdlkfnksdnfksnnnnnnnnnnnnnnnnnwsierfweknfknsdfxckvnksdifksdfike");
+            FileDirectoryInfo fileDirInfo =  documentLibPage.getFileDirectoryInfo(fileName);
+            fileDirInfo.addTag("1234567890");
+            
+            documentLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
+            fileDirInfo = documentLibPage.getFileDirectoryInfo(fileName);
+            
+            fileDirInfo.addTag("`¬!£$%^&();{}[]'@#~,");
+            documentLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
+            
+            fileDirInfo =documentLibPage
+                    .getFileDirectoryInfo(fileName);
+            fileDirInfo.addTag("abcdefghijklmnopqrstuvwxyzsdsdfknoiwenirnskdnfernlkaniifsdreiwolektkmnsdmfnlksisdlkfnksdnfksnnnnnnnnnnnnnnnnnwsierfweknfknsdfxckvnksdifksdfike");
 
+            documentLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
             FileDirectoryInfo content = documentLibPage.getFileDirectoryInfo(fileName);
 
             // Tag
