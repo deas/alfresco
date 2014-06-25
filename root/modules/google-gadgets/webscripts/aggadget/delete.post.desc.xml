@@ -1,6 +1,0 @@
-<webscript>
-  <shortname>Delete Item Post GG</shortname>
-  <description>Delete item return screen for iGoogle Gadgets</description>
-  <url>/aggadget/delete</url>
-  <authentication>user</authentication>
-</webscript>
