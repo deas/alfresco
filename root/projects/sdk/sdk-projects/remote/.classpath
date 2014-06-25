@@ -6,7 +6,7 @@
 	<classpathentry exported="true" kind="lib" path="dependencies/commons-discovery-0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="dependencies/commons-logging-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="dependencies/jaxrpc.jar"/>
-	<classpathentry exported="true" kind="lib" path="dependencies/mail.jar"/>
+	<classpathentry exported="true" kind="lib" path="dependencies/javax.mail.jar"/>
 	<classpathentry exported="true" kind="lib" path="dependencies/opensaml-1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="dependencies/saaj.jar"/>
 	<classpathentry exported="true" kind="lib" path="dependencies/wsdl4j-1.6.2.jar"/>
