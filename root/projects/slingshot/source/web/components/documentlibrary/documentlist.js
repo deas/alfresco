@@ -672,6 +672,11 @@
    {
       var jsNode = record.jsNode,
          nodeRef = jsNode.isLink ? jsNode.linkedNode.nodeRef : jsNode.nodeRef;
+      if (jsNode.isLink && !nodeRef)
+      {
+         // broken link has no thumbnail
+         return '';
+      }
       if (renditionName == null)
           renditionName = "doclib";
       return Alfresco.util.generateThumbnailUrl(jsNode, renditionName);

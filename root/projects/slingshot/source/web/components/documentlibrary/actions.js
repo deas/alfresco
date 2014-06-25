@@ -197,6 +197,7 @@
       {
          var jsNode = record.jsNode,
             nodeRef = jsNode.isLink ? jsNode.linkedNode.nodeRef : jsNode.nodeRef,
+            nodeRef = jsNode.isLink && !$isValueSet(nodeRef) ? "invalidlink" : nodeRef,
             strNodeRef = nodeRef.toString(),
             nodeRefUri = nodeRef.uri,
             contentUrl = jsNode.contentURL,
@@ -445,8 +446,20 @@
       {
          var jsNode = record.jsNode,
             path = record.location.path,
-            file = jsNode.isLink ? jsNode.linkedNode.properties.name : record.displayName,
+            file,
             recordSiteName = $isValueSet(record.location.site) ? record.location.site.name : null;
+         if (jsNode.isLink)
+         {
+             file = $isValueSet(jsNode.linkedNode.properties) ? jsNode.linkedNode.properties.name : null;
+             Alfresco.util.PopupManager.displayMessage(
+             {
+                text: this.msg("message.actions.failure.locate")
+             });
+         }
+         else
+         {
+             file = record.displayName;
+         }
 
          if ($isValueSet(this.options.siteId) && recordSiteName !== this.options.siteId)
          {
