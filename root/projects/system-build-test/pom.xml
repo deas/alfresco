@@ -18,6 +18,7 @@
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-solr</artifactId>
             <version>${project.version}</version>
+            <classifier>classes</classifier>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>

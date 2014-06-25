@@ -383,7 +383,8 @@
 				</execution>
 			</executions>
 		</plugin>
-		<!-- Create a jar of test classes, to be reused later in remote-api -->
+
+		<!-- Create jar of test classes -->
 		<plugin>
 			<artifactId>maven-jar-plugin</artifactId>
 			<executions>
@@ -814,13 +815,33 @@
         <id>allprojects</id>
         <modules>
             <module>packaging</module>
-            <module>privatemodules/funtests</module>
-            <module>privatemodules/packaging</module>
             <module>projects/qa-share</module>
             <module>projects/share-po</module>
             <module>projects/share</module>
             <module>projects/system-build-test</module>
         </modules>
+
+        <build>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>2.0-1588784</version>
+                    <executions>
+                        <execution>
+                            <id>enforcer</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <reactorModuleConvergence></reactorModuleConvergence>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
     </profile>
 
 	<!-- Behavioral profiles inherited by all modules -->
