@@ -328,8 +328,6 @@
             }
          }
          data = siteEvents;
-         // TODO: These take no account of timezone. E.g. day view of 6th June. server time = GMT+1000, event time = 06 JUN 2010 05:00GMT+1000, date returned from server is 05 JUN 2010 19:00GMT+0000. 05 JUN != 06 JUN.
-         // TODO: This would be better done on the server in the userevents webscript
          comparisonFn = function()
          {
 
@@ -360,8 +358,9 @@
                datum.name = ev.title;
                datum.isoutlook = ev.isoutlook == "true" ? "isoutlook" : "";
                datum.contEl = 'div';
-               datum.from = ev.startAt.iso8601;
-               datum.to = ev.endAt.iso8601;
+               // MNT-9021 fix. Parsing date with toISO8601 in order to convert the date to one with a local timezone offset
+               datum.from = toISO8601(date);
+               datum.to = toISO8601(endDate);
                datum.uri = '/calendar/event/' + this.options.siteId + '/' + ev.name + '?date=' + ev.startAt.iso8601;
                datum.hidden = '';
                datum.allday = '';
