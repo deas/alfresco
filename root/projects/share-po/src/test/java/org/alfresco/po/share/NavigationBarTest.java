@@ -223,7 +223,7 @@ public class NavigationBarTest extends AbstractTest
     public void navigateToAdminTools() throws Exception
     {
         AdminConsolePage adminConsolePage = page.getNav().selectAdminTools().render();
-        Assert.assertEquals(adminConsolePage.getPageTitle(), "Admin Console");
+        Assert.assertEquals(adminConsolePage.getPageTitle(), "Admin Tools");
     }
 
     /**

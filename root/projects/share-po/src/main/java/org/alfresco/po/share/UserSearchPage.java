@@ -108,7 +108,7 @@ public class UserSearchPage extends SharePage
      */
     protected boolean isTitlePresent()
     {
-        return isBrowserTitle("Admin Console");
+        return isBrowserTitle("Admin Tools");
     }
 
     /**
