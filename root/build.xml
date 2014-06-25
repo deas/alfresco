@@ -1169,8 +1169,9 @@
    </target>
 
    <target name="minimize-slingshot-deployed-javascript" depends="init">
+      <!-- ACE-1147, create yui-common for both production and debug YUI libs -->
       <echo>Merging selected Slingshot Javascript files...</echo>
-      <concat destfile="${dir.deploy.tomcat.application.slingshot}/js/yui-common.js" force="no">
+      <concat destfile="${dir.deploy.tomcat.application.slingshot}/js/yui-common-min.js" force="no">
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/utilities/utilities.js" />
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/button/button-min.js" />
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/container/container-min.js" />
@@ -1183,10 +1184,38 @@
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/datatable/datatable-min.js" />
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/history/history-min.js" />
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/treeview/treeview-min.js" />
-		   <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/cookie/cookie-min.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/cookie/cookie-min.js" />
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/uploader/uploader-min.js" />
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/calendar/calendar-min.js" />
          <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/resize/resize-min.js" />
+         <fileset file="${dir.project.slingshot.src.web}/yui/yui-patch.js" />
+      </concat>
+      <concat destfile="${dir.deploy.tomcat.application.slingshot}/js/yui-common.js" force="no">
+         <fileset file="${dir.project.slingshot.src.web}/js/log4javascript.v1.4.1.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/yahoo/yahoo-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/event/event-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/dom/dom-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/dragdrop/dragdrop-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/animation/animation-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/logger/logger-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/connection/connection-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/element/element-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/get/get-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/yuiloader/yuiloader-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/button/button-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/container/container-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/menu/menu-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/json/json-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/selector/selector-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/datasource/datasource-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/autocomplete/autocomplete-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/paginator/paginator-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/datatable/datatable-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/treeview/treeview-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/cookie/cookie-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/uploader/uploader-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/calendar/calendar-debug.js" />
+         <fileset file="${dir.deploy.tomcat.application.slingshot}/yui/resize/resize-debug.js" />
          <fileset file="${dir.project.slingshot.src.web}/yui/yui-patch.js" />
       </concat>
 

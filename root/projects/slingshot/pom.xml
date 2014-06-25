@@ -3,7 +3,7 @@
 <!-- ****************************************************** -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.alfresco</groupId>
@@ -16,7 +16,7 @@
     <packaging>war</packaging>
     <name>Alfresco Share</name>
     <description>Alfresco Share</description>
-    
+
     <properties>
         <maven.tomcat.path>/share</maven.tomcat.path>
         <maven.tomcat.port>${tomcat.default.share.port}</maven.tomcat.port>
@@ -30,9 +30,9 @@
             <classifier>classes</classifier>
             <exclusions>
                 <exclusion>
-                   <groupId>javax.servlet</groupId>
-                   <artifactId>jsp-api</artifactId>
-               </exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>jsp-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -192,7 +192,8 @@
             <artifactId>alfresco-web-framework-commons</artifactId>
             <version>${project.version}</version>
             <type>war</type>
-            <optional>true</optional> <!-- MNT-10118 -->
+            <optional>true</optional>
+            <!-- MNT-10118 -->
         </dependency>
         <dependency>
             <artifactId>stax-api</artifactId>
@@ -240,20 +241,20 @@
             <artifactId>myfaces-impl</artifactId>
             <version>1.1.8</version>
         </dependency>
-		<!-- Dependency on Dojo ZIP -->
-		<dependency>
-			<groupId>org.dojotoolkit</groupId>
-			<artifactId>dojo</artifactId>
-			<version>1.9.0</version>
-			<type>zip</type>
-		</dependency>
-		<!-- Dependency on YUI ZIP (custom version deployed at artifacts.alfresco.com) -->
-		<dependency>
-			<groupId>com.yahoo.platform.yui</groupId>
-			<artifactId>yui</artifactId>
-			<version>2.9.0-alfresco-20140211</version>
-			<type>zip</type>
-		</dependency>
+        <!-- Dependency on Dojo ZIP -->
+        <dependency>
+            <groupId>org.dojotoolkit</groupId>
+            <artifactId>dojo</artifactId>
+            <version>1.9.0</version>
+            <type>zip</type>
+        </dependency>
+        <!-- Dependency on YUI ZIP (custom version deployed at artifacts.alfresco.com) -->
+        <dependency>
+            <groupId>com.yahoo.platform.yui</groupId>
+            <artifactId>yui</artifactId>
+            <version>2.9.0-alfresco-20140211</version>
+            <type>zip</type>
+        </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
@@ -265,27 +266,27 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-        
-      <!-- This is used for the LESS CSS processing. It allows us to include LESS code in both
-           the Theme XML files and in widget CSS files. We deliberately exclude it's preferred
-           Rhino version so as to avoid conflicts with our own dependencies. -->
-      <dependency>
-         <groupId>com.asual.lesscss</groupId>
-         <artifactId>lesscss-engine</artifactId>
-         <version>1.5.0</version>
-         <exclusions>
-            <exclusion>
-               <groupId>org.mozilla</groupId>
-               <artifactId>rhino</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
+
+        <!-- This is used for the LESS CSS processing. It allows us to include LESS code in both
+             the Theme XML files and in widget CSS files. We deliberately exclude it's preferred
+             Rhino version so as to avoid conflicts with our own dependencies. -->
+        <dependency>
+            <groupId>com.asual.lesscss</groupId>
+            <artifactId>lesscss-engine</artifactId>
+            <version>1.5.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mozilla</groupId>
+                    <artifactId>rhino</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
     </dependencies>
 
     <build>
         <plugins>
-        <!-- Configuration of the WAR build -->
+            <!-- Configuration of the WAR build -->
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
@@ -322,104 +323,139 @@
                     </execution>
                 </executions>
             </plugin>
-			<plugin>
-				<groupId>net.alchim31.maven</groupId>
-				<artifactId>yuicompressor-maven-plugin</artifactId>
-				<version>1.4.0</version>
-				<executions>
-					<execution>
-						<id>minimize-slingshot-javascript</id>
-						<goals>
-							<goal>compress</goal>
-						</goals>
-						<phase>prepare-package</phase>
-					</execution>
-				</executions>
-				<!-- ensure YUI Compressor 2.4.8-rhino-alfresco-patched is used - as 2.4.7 is the default -->
-            <dependencies>
-               <dependency>
-                  <groupId>com.yahoo.platform.yui</groupId>
-                  <artifactId>yuicompressor</artifactId>
-                  <version>2.4.8-rhino-alfresco-patched</version>
-               </dependency>
-            </dependencies>
-				<configuration>
-				    <jswarn>false</jswarn>
-				    <encoding>UTF-8</encoding>
-				    <includes>
-				        <include>**/*.js</include>
-                </includes>
-                 <!-- We don't need to re-minify YUI or 3rd party libs -->   
-			        <excludes>
-                     <exclude>**/*-min.js</exclude>
-                     <exclude>**/WEB-INF/**</exclude>
-                     <exclude>**/tiny_mce/**</exclude>
-                     <exclude>**/yui/**</exclude>
-                     <exclude>js/lib/dojo*/**</exclude>  
-                     <exclude>**/log4javascript*.js</exclude>
-                 </excludes>
-                 <sourceDirectory>${project.build.directory}/${project.build.finalName}</sourceDirectory>
-                 <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
-                 <excludeResources>true</excludeResources>
-						<!-- <nocompress>true</nocompress> -->
-						<!-- <disableOptimizations>true</disableOptimizations> -->
-						<!-- <nosuffix>true</nosuffix> -->
-						<!-- <preserveAllSemiColons>true</preserveAllSemiColons> -->
-						<!-- <nomunge>true</nomunge> -->
-				     <aggregations>
-						<aggregation>
-							<!-- remove files after aggregation (default: false) <removeIncluded>true</removeIncluded> -->
-							<output>${project.build.directory}/${project.build.finalName}/js/yui-common.js</output>
-							<!-- files to include, path relative to output's directory or absolute path -->
-							<includes>
-								<include>${project.build.directory}/${project.build.finalName}/yui/utilities/utilities.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/button/button-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/container/container-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/menu/menu-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/json/json-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/selector/selector-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/datasource/datasource-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/autocomplete/autocomplete-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/paginator/paginator-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/datatable/datatable-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/treeview/treeview-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/cookie/cookie-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/uploader/uploader-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/calendar/calendar-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/resize/resize-min.js</include>
-								<include>${project.build.directory}/${project.build.finalName}/yui/yui-patch.js</include>
-							</includes>
-							<!-- files to exclude, path relative to output's directory <excludes> <exclude>**/*.pack.js</exclude> 
-								<exclude>**/compressed.css</exclude> </excludes> -->
-						</aggregation>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>yuicompressor-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <executions>
+                    <execution>
+                        <id>minimize-slingshot-javascript</id>
+                        <goals>
+                            <goal>compress</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+                <!-- ensure YUI Compressor 2.4.8-rhino-alfresco-patched is used - as 2.4.7 is the default -->
+                <dependencies>
+                    <dependency>
+                        <groupId>com.yahoo.platform.yui</groupId>
+                        <artifactId>yuicompressor</artifactId>
+                        <version>2.4.8-rhino-alfresco-patched</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <jswarn>false</jswarn>
+                    <encoding>UTF-8</encoding>
+                    <includes>
+                        <include>**/*.js</include>
+                    </includes>
+                    <!-- We don't need to re-minify YUI or 3rd party libs -->
+                    <excludes>
+                        <exclude>**/*-min.js</exclude>
+                        <exclude>**/WEB-INF/**</exclude>
+                        <exclude>**/tiny_mce/**</exclude>
+                        <exclude>**/yui/**</exclude>
+                        <exclude>js/lib/dojo*/**</exclude>
+                        <exclude>**/log4javascript*.js</exclude>
+                    </excludes>
+                    <sourceDirectory>${project.build.directory}/${project.build.finalName}</sourceDirectory>
+                    <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+                    <excludeResources>true</excludeResources>
+                    <!-- <nocompress>true</nocompress> -->
+                    <!-- <disableOptimizations>true</disableOptimizations> -->
+                    <!-- <nosuffix>true</nosuffix> -->
+                    <!-- <preserveAllSemiColons>true</preserveAllSemiColons> -->
+                    <!-- <nomunge>true</nomunge> -->
+                    <aggregations>
+                        <aggregation>
+                            <!-- remove files after aggregation (default: false) <removeIncluded>true</removeIncluded> -->
+                            <output>${project.build.directory}/${project.build.finalName}/js/yui-common-min.js</output>
+                            <!-- files to include, path relative to output's directory or absolute path -->
+                            <includes>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/utilities/utilities.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/button/button-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/container/container-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/menu/menu-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/json/json-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/selector/selector-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/datasource/datasource-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/autocomplete/autocomplete-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/paginator/paginator-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/datatable/datatable-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/treeview/treeview-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/cookie/cookie-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/uploader/uploader-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/calendar/calendar-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/resize/resize-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/yui-patch.js</include>
+                            </includes>
+                            <!-- files to exclude, path relative to output's directory <excludes> <exclude>**/*.pack.js</exclude>
+                                <exclude>**/compressed.css</exclude> </excludes> -->
+                        </aggregation>
+                        <aggregation>
+                            <!-- remove files after aggregation (default: false) <removeIncluded>true</removeIncluded> -->
+                            <output>${project.build.directory}/${project.build.finalName}/js/yui-common.js</output>
+                            <!-- files to include, path relative to output's directory or absolute path -->
+                            <includes>
+                                <include>${project.build.directory}/${project.build.finalName}/js/log4javascript.v1.4.1.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/yahoo/yahoo-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/event/event-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/dom/dom-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/dragdrop/dragdrop-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/animation/animation-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/logger/logger-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/connection/connection-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/element/element-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/get/get-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/yuiloader/yuiloader-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/button/button-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/container/container-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/menu/menu-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/json/json-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/selector/selector-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/datasource/datasource-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/autocomplete/autocomplete-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/paginator/paginator-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/datatable/datatable-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/treeview/treeview-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/cookie/cookie-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/uploader/uploader-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/calendar/calendar-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/resize/resize-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/yui-patch.js</include>
+                            </includes>
+                            <!-- files to exclude, path relative to output's directory <excludes> <exclude>**/*.pack.js</exclude>
+                               <exclude>**/compressed.css</exclude> </excludes> -->
+                        </aggregation>
                     </aggregations>
-		  		</configuration>
-			</plugin>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
-	<profiles>
-		<profile>
-			<id>run</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.tomcat.maven</groupId>
-						<artifactId>tomcat7-maven-plugin</artifactId>
-						<version>2.1</version>
-						<executions>
-							<execution>
-								<id>run-exploded-webapp</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>run-war-only</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+    <profiles>
+        <profile>
+            <id>run</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.1</version>
+                        <executions>
+                            <execution>
+                                <id>run-exploded-webapp</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>run-war-only</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

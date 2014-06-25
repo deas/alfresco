@@ -1650,7 +1650,8 @@
    <target name="minimize-slingshot-javascript"
            depends="init">
       <echo>Merging selected Slingshot Javascript files...</echo>
-      <concat destfile="${dir.project.slingshot.assemble}/js/yui-common.js" force="no">
+      <!-- ACE-1147, create yui-common for both production and debug YUI libs -->
+      <concat destfile="${dir.project.slingshot.assemble}/js/yui-common-min.js" force="no">
          <fileset file="${dir.project.slingshot.assemble}/yui/utilities/utilities.js" />
          <fileset file="${dir.project.slingshot.assemble}/yui/button/button-min.js" />
          <fileset file="${dir.project.slingshot.assemble}/yui/container/container-min.js" />
@@ -1666,7 +1667,34 @@
          <fileset file="${dir.project.slingshot.assemble}/yui/cookie/cookie-min.js" />
          <fileset file="${dir.project.slingshot.src.web}/yui/yui-patch.js" />
       </concat>
-
+      <concat destfile="${dir.project.slingshot.assemble}/js/yui-common.js" force="no">
+         <fileset file="${dir.project.slingshot.src.web}/js/log4javascript.v1.4.1.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/yahoo/yahoo-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/event/event-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/dom/dom-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/dragdrop/dragdrop-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/animation/animation-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/logger/logger-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/connection/connection-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/element/element-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/get/get-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/yuiloader/yuiloader-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/button/button-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/container/container-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/menu/menu-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/json/json-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/selector/selector-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/datasource/datasource-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/autocomplete/autocomplete-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/paginator/paginator-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/datatable/datatable-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/treeview/treeview-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/cookie/cookie-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/uploader/uploader-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/calendar/calendar-debug.js" />
+         <fileset file="${dir.project.slingshot.assemble}/yui/resize/resize-debug.js" />
+         <fileset file="${dir.project.slingshot.src.web}/yui/yui-patch.js" />
+      </concat>
       <!-- Note: This is manually duplicated from the build.xml file
            Note: disabled currently - no longer used - SpringSurf will automatically concat related files in future release
                  since the addition of far future expire time CRC based URLs for resources, multiple scripts not an issue.

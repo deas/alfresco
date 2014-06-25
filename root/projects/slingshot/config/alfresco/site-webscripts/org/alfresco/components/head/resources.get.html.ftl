@@ -21,40 +21,12 @@
       <@link rel="stylesheet" type="text/css" href="${url.context}/res/themes/${theme}/yui/assets/skin.css" group="template-common" />
    </#if>
 
-   <#if DEBUG>
-   <@script type="text/javascript" src="${url.context}/res/js/log4javascript.v1.4.1.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/yahoo/yahoo-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/event/event-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/dom/dom-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/dragdrop/dragdrop-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/animation/animation-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/logger/logger-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/connection/connection-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/element/element-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/get/get-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/yuiloader/yuiloader-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/button/button-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/container/container-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/menu/menu-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/json/json-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/selector/selector-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/datasource/datasource-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/autocomplete/autocomplete-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/paginator/paginator-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/datatable/datatable-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/history/history-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/treeview/treeview-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/cookie/cookie-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/uploader/uploader-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/calendar/calendar-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/resize/resize-debug.js" group="template-common"/>
-   <@script type="text/javascript" src="${url.context}/res/yui/yui-patch.js" group="template-common"/>
-   <@inlineScript group="template-common">
-      YAHOO.util.Event.throwErrors = true;
-   </@>
-   <#else>
+   <#--
+      ACE-1147: Debug and Production files are combined into a yui-common.js and yui-common-min.js
+                Surf automatically selects the correct one depending on config mode.
+   -->
    <@script type="text/javascript" src="${url.context}/res/js/yui-common.js" group="template-common"/>
-   </#if>
+
    <@script type="text/javascript" src="${url.context}/res/js/bubbling.v2.1.js" group="template-common"/>
    <@inlineScript group="template-common">
       YAHOO.Bubbling.unsubscribe = function(layer, handler, scope)
