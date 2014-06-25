@@ -1452,7 +1452,7 @@
          this.popups.deleteDialog = Alfresco.util.createYUIPanel("deleteDialog", 
          {
             width: "36em",
-            text: '<div class="yui-u" style="text-align:center"><br/>' + this._msg("panel.delete.msg") + '<br/><br/></div>',
+            text: '<div class="yui-u" style="text-align:center"><br/>' + this._msg("panel.delete.msg") + '<br/><br/>' + this._msg("panel.delete.note") + '<br/><br/></div>',
             buttons: [
             {
                text: this._msg("button.delete"),
