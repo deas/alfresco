@@ -60,6 +60,7 @@ public class SelectAspectsPage extends SharePage
     private static final By ASPECTS_AVAILABLE = By.xpath("//div[contains(@id,'default-aspects-right')]//td/div[@class='yui-dt-liner']");
     private static final By ASPECTS_SELECTED = By.xpath("//div[contains(@id,'default-aspects-right')]//td/div[@class='yui-dt-liner']");
 
+    private static final String ASPECT_AVAILBLE_XPATH ="//div[contains(@id,'aspects-left')]//td/div[@class='yui-dt-liner']//h3[text()='%s']";
     /**
      * Constructor.
      */
@@ -186,6 +187,11 @@ public class SelectAspectsPage extends SharePage
                 {
                     try
                     {
+                        WebElement aspectElement = drone.find(By.xpath(String.format(ASPECT_AVAILBLE_XPATH, aspect.getValue())));
+                        if(!aspectElement.isSelected())
+                        {
+                            aspectElement.click();
+                        }
                         link.click();
                         if (logger.isTraceEnabled())
                         {
