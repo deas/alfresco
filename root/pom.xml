@@ -111,6 +111,7 @@
     <module>modules/wcmquickstart/wcmquickstartclientapi</module>
     <module>modules/wcmquickstart/wcmquickstartwebsite</module>
     <module>projects/web-editor-samples/customer-site</module>
+    <module>projects/mmt</module>
   </modules>
 
   <properties>
