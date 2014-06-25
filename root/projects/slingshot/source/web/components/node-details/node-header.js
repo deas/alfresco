@@ -224,10 +224,12 @@
              // Moved to a site...
              if (this.options.actualSiteId != null)
              {
-                var correctUrl = window.location.href.replace(this.options.siteId, this.options.actualSiteId);
+                var inRepository = this.options.actualSiteId === null,
+                    correctUrl = window.location.protocol + "//" + window.location.host + Alfresco.constants.URL_PAGECONTEXT + 
+                          (inRepository ? "" : "site/" + this.options.actualSiteId + "/") + "document-details" + window.location.search;
                 Alfresco.util.PopupManager.displayPrompt(
                 {
-                   text: this.msg("message.document.moved", this.options.actualSiteId),
+                   text: (inRepository ? this.msg("message.document.moved.repo") : this.msg("message.document.moved", this.options.actualSiteId)),
                    buttons: [
                    {
                       text: this.msg("button.ok"),
