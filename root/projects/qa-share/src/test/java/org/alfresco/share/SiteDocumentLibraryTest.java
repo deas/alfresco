@@ -468,19 +468,19 @@ public class SiteDocumentLibraryTest extends AbstractUtils
         // test text as BOLD
         tinyMceEditor.clickTextFormatter(FormatType.BOLD);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains("<b>" + comment + "</b>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<strong>"+comment+"</strong>"));
         tinyMceEditor.removeFormatting();
 
         // test text as ITALIC
         tinyMceEditor.clickTextFormatter(FormatType.ITALIC);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains("<i>" + comment + "</i>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<em>"+comment+"</em>"));
         tinyMceEditor.removeFormatting();
 
         // test text as UNDERLINED
         tinyMceEditor.clickTextFormatter(FormatType.UNDERLINED);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains("<u>" + comment + "</u>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"text-decoration: underline;\">"+comment+"</span>"));
         tinyMceEditor.removeFormatting();
 
         // test BULLET on text
@@ -494,31 +494,31 @@ public class SiteDocumentLibraryTest extends AbstractUtils
         // test NUMBER on test
         tinyMceEditor.clickTextFormatter(FormatType.NUMBER);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains("<ol><li>" + comment + "</li></ol>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<ol style=\"\"><li>"+comment+"</li></ol>"));
         tinyMceEditor.clickTextFormatter(FormatType.NUMBER);
         Assert.assertTrue(tinyMceEditor.getContent().contains("<p>" + comment + "</p>"));
 
         // test text color as BLUE
         tinyMceEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains(fontStyle + comment + "</font>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">"+comment+"</span>"));
         tinyMceEditor.removeFormatting();
 
         // test UNDO button on text
         tinyMceEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains(fontStyle + comment + "</font>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">"+comment+"</span>"));
         tinyMceEditor.clickUndo();
         Assert.assertTrue(tinyMceEditor.getContent().contains("<p>" + comment + "</p>"));
 
         // text REDO button on text
         tinyMceEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains(fontStyle + comment + "</font>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">"+comment+"</span>"));
         tinyMceEditor.clickUndo();
         Assert.assertTrue(tinyMceEditor.getContent().contains("<p>" + comment + "</p>"));
         tinyMceEditor.clickRedo();
-        Assert.assertTrue(tinyMceEditor.getContent().contains(fontStyle + comment + "</font>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">"+comment+"</span>"));
         tinyMceEditor.removeFormatting();
     }
 

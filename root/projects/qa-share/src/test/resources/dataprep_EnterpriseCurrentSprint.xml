@@ -13,7 +13,7 @@
     </listeners>
 
 
-    <test name="CMIS Browser Document Aspects Tests" verbose="1">
+<!--     <test name="CMIS Browser Document Aspects Tests" verbose="1">
         <classes>
             <class name="org.alfresco.share.api.cmis.CmisBrowserDocumentAspectsTests"/>
         </classes>
@@ -91,6 +91,21 @@
             <class name="org.alfresco.share.workflow.MyTasksTest"/>
         </classes>
     </test>
+   
+    
+    <test name="Manage Aspects" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.ManageAspectTest"/>
+        </classes>
+    </test>
+      -->
+    
+      <test name="Site Doc Lib Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.SiteDocumentLibraryTest"/>
+        </classes>
+    </test>
+    
 
     <!--<test name="Site Search Site Dashlet Tests" verbose="1">-->
     <!--<classes>-->
