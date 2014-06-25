@@ -107,8 +107,7 @@
            depends="distribute-amps,
                     distribute-installers,
                     distribute-extras,
-                    distribute-fdk,
-                    distribute-docs" />
+                    distribute-fdk" />
 
    <target name="distribute-core" 
            description="Creates the patch distribution files for all platforms"
@@ -958,57 +957,6 @@
         </zip>
     </target>
 
-   <!-- *************************** -->
-   <!-- ** Documentation targets ** -->
-   <!-- *************************** -->
-
-   <target name="distribute-docs" 
-           description="Assembles the documentation from all projects"
-           depends="continuous-init">
-      <mkdir dir="${dir.continuous.assemble.docs.java}" />
-      <mkdir dir="${dir.continuous.assemble.docs.taglib}" />
-      
-      <!-- java docs -->
-      <copy todir="${dir.continuous.assemble.docs.java}/catalina-virtual">
-         <fileset dir="${dir.project.catalinavirtual.docs.java}" />
-      </copy>
-      <copy todir="${dir.continuous.assemble.docs.java}/core">
-         <fileset dir="${dir.project.core.docs.java}" />
-      </copy>
-      <copy todir="${dir.continuous.assemble.docs.java}/deployment">
-         <fileset dir="${dir.project.deployment.docs.java}" />
-      </copy>
-      <copy todir="${dir.continuous.assemble.docs.java}/jndi-client">
-         <fileset dir="${dir.project.jndi.docs.java}" />
-      </copy>
-      <copy todir="${dir.continuous.assemble.docs.java}/mbeans">
-         <fileset dir="${dir.project.mbeans.docs.java}" />
-      </copy>
-      <copy todir="${dir.continuous.assemble.docs.java}/remote-api">
-         <fileset dir="${dir.project.remoteapi.docs.java}" />
-      </copy>
-      <copy todir="${dir.continuous.assemble.docs.java}/datamodel">
-         <fileset dir="${dir.project.datamodel.docs.java}" />
-      </copy>
-      <copy todir="${dir.continuous.assemble.docs.java}/legacylucene">
-         <fileset dir="${dir.project.legacylucene.docs.java}" />
-      </copy>
-      <copy todir="${dir.continuous.assemble.docs.java}/repository">
-         <fileset dir="${dir.project.repository.docs.java}" />
-      </copy>
-      <copy todir="${dir.continuous.assemble.docs.java}/web-client">
-         <fileset dir="${dir.project.webclient.docs.java}" />
-      </copy>
-      <copy todir="${dir.continuous.assemble.docs.java}/web-service-client">
-         <fileset dir="${dir.project.webserviceclient.docs.java}" />
-      </copy>
-      
-      <!-- taglib docs -->
-      <copy todir="${dir.continuous.assemble.docs.taglib}/web-client">
-         <fileset dir="${dir.project.webclient.docs.taglib}" />
-      </copy>
-   </target>
-   
    <!-- *********************** -->
    <!-- ** Webeditor targets ** -->
    <!-- *********************** -->
