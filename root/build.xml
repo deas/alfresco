@@ -10,7 +10,6 @@
 
    <import file="${alfresco.basedir}/macros.xml" />
    <import file="${alfresco.basedir}/projects.xml" />
-   <import file="${alfresco.basedir}/maven.xml" />
 
    <!-- For support of the script tag (Ant 1.6 fails to load the BSF or -->
    <!-- JSR-223 jars from anywhere other than the ant lib directory) -->
@@ -1743,7 +1742,5 @@
    <target name="distribute-extras" description="Build distribution targets for enterprise projects" />
 
    <target name="assemble-command-extras" description="Assemble commands" />
-
-   <target name="sdk-extras" description="Community additions for the SDK" />
 
 </project>
