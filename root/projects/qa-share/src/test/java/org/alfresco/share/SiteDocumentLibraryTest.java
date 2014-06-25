@@ -149,6 +149,7 @@ public class SiteDocumentLibraryTest extends AbstractUtils
                 content.clickOnAddTag();
                 Assert.assertTrue(content.removeTagButtonIsDisplayed(tagName));
                 content.clickOnTagCancelButton();
+                documentLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
                 content = documentLibPage.getFileDirectoryInfo(contentName);
             }
 
@@ -158,6 +159,7 @@ public class SiteDocumentLibraryTest extends AbstractUtils
             {
                 content.clickOnAddTag();
                 content.clickOnTagRemoveButton(tagName);
+                documentLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
                 documentLibPage.getFileDirectoryInfo(contentName).clickOnTagSaveButton();
                 content = documentLibPage.getFileDirectoryInfo(contentName);
             }
