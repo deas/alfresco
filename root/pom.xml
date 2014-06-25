@@ -527,7 +527,6 @@
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
-                            <Specification-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</Specification-Version>
                             <Implementation-Version>${manifest.implementation.version}</Implementation-Version>
                             <Build-Date>${maven.build.timestamp}</Build-Date>
                         </manifestEntries>
@@ -544,7 +543,6 @@
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
-                            <Specification-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</Specification-Version>
                             <Implementation-Version>${manifest.implementation.version}</Implementation-Version>
                             <Build-Date>${maven.build.timestamp}</Build-Date>
                         </manifestEntries>
