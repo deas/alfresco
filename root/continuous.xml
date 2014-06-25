@@ -105,7 +105,6 @@
    <target name="distribute-non-core" 
            description="Creates the distribution files for all platforms"
            depends="distribute-amps,
-                    distribute-sdk, 
                     distribute-installers,
                     distribute-extras,
                     distribute-fdk,
@@ -143,7 +142,7 @@
    </target>
 
    <!-- Aggregator target putting together all build targets to build artifacts prior to maven-deploy --> 
-    <target name="maven-build-prerequisites" depends="set-build-number, incremental, distribute-core, distribute-amps, distribute-fdk, distribute-sdk"/>
+    <target name="maven-build-prerequisites" depends="set-build-number, incremental, distribute-core, distribute-amps, distribute-fdk"/>
 
 	<!-- Builds all necessary artifacts and delegates deployment to the Maven repository to the maven-deploy target. -->
 	<target name="maven-build-deploy" description="Deploys JAR/WAR/ZIP dist artifacts to the Alfresco Maven Repository" depends="maven-build-prerequisites, maven-deploy" />
