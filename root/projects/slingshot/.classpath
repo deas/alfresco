@@ -35,5 +35,6 @@
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-client-api-0.10.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/chemistry-opencmis-commons-api-0.10.0.jar"/>
 	<classpathentry kind="lib" path="/3rd Party/lib/alfresco-opencmis-extension-0.9.jar" sourcepath="/3rd Party/src/alfresco-opencmis-extension-0.9-sources.jar"/>
+	<classpathentry kind="lib" path="/3rd Party/lib/htmllexer-2.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
