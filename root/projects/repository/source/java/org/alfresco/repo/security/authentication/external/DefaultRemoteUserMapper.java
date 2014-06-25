@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.web.app.servlet;
+package org.alfresco.repo.security.authentication.external;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,8 +27,6 @@ import org.alfresco.repo.management.subsystems.ActivateableBean;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.service.cmr.security.PersonService;
-
-import org.alfresco.repo.webdav.auth.RemoteUserMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 /**
