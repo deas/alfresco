@@ -612,6 +612,16 @@ public class CMISMapping implements InitializingBean
         {
             return true;
         }
+        
+        if (dictionaryService.isSubClass(typeQName, ContentModel.TYPE_FOLDER))
+        {
+            return true;
+        }
+        
+        if (dictionaryService.isSubClass(ContentModel.TYPE_FOLDER, typeQName))
+        {
+            return true;
+        }
 
         
         if (typeQName.equals(DOCUMENT_QNAME))
@@ -619,10 +629,16 @@ public class CMISMapping implements InitializingBean
             return true;
         }
 
-        if (dictionaryService.isSubClass(typeQName, ContentModel.TYPE_BASE))
+        if (dictionaryService.isSubClass(typeQName, ContentModel.TYPE_CONTENT))
         {
             return true;
         }
+        
+        if (dictionaryService.isSubClass( ContentModel.TYPE_CONTENT, typeQName))
+        {
+            return true;
+        }
+        
         return false;
     }
     
