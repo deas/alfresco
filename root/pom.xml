@@ -168,6 +168,9 @@
     <dependency.poi.version>3.10-FINAL</dependency.poi.version>
     <dependency.dojo.version>1.8.3</dependency.dojo.version>
     
+    <manifest.major.version>5</manifest.major.version>
+    <manifest.minor.version>0</manifest.minor.version>
+    <manifest.servicepack.version>0</manifest.servicepack.version>
     <manifest.implementation.version>${project.version}</manifest.implementation.version>
   </properties>
   
@@ -393,24 +396,6 @@
 				</execution>
 			</executions>
 		</plugin>
-
-        <!-- Parse project.version and produces version properties out of it -->
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <version>1.9</version>
-            <executions>
-                <execution>
-                    <id>parse-version</id>
-                    <goals>
-                        <goal>parse-version</goal>
-                    </goals>
-                    <configuration>
-                        <propertyPrefix>parsedVersion</propertyPrefix>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
     </plugins>
 
     <!-- Defining version and some configuration of Maven plugins -->
@@ -529,7 +514,7 @@
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
-                            <Specification-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</Specification-Version>
+                            <Specification-Version>${manifest.major.version}.${manifest.minor.version}.${manifest.servicepack.version}</Specification-Version>
                             <Implementation-Version>${manifest.implementation.version}</Implementation-Version>
                             <Build-Date>${maven.build.timestamp}</Build-Date>
                         </manifestEntries>
@@ -546,7 +531,7 @@
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
-                            <Specification-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</Specification-Version>
+                            <Specification-Version>${manifest.major.version}.${manifest.minor.version}.${manifest.servicepack.version}</Specification-Version>
                             <Implementation-Version>${manifest.implementation.version}</Implementation-Version>
                             <Build-Date>${maven.build.timestamp}</Build-Date>
                         </manifestEntries>
