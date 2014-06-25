@@ -225,12 +225,6 @@
          <exclude name="**/org/alfresco/filesys/repo/ContentDiskDriverTest.java" />
          <exclude name="**/org/alfresco/filesys/repo/LockKeeperImplTest.java" />
          <exclude name="**/org/alfresco/filesys/repo/rules/ShuffleTest.java" />
-         <exclude name="**/org/alfresco/jcr/importer/ImportTest.java" />
-         <exclude name="**/org/alfresco/jcr/item/Alf1791Test.java" />
-         <exclude name="**/org/alfresco/jcr/item/ItemTest.java" />
-         <exclude name="**/org/alfresco/jcr/query/QueryManagerImplTest.java" />
-         <exclude name="**/org/alfresco/jcr/repository/RepositoryImplTest.java" />
-         <exclude name="**/org/alfresco/jcr/session/SessionImplTest.java" />
          <exclude name="**/org/alfresco/opencmis/CMISTest.java" />
          <exclude name="**/org/alfresco/opencmis/OpenCmisLocalTest.java" />
          <exclude name="**/org/alfresco/opencmis/search/OpenCmisQueryTest.java" />
@@ -568,7 +562,6 @@
          <exclude name="**/org/alfresco/cmis/search/*.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/filesys/FTPServerTest.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/filesys/repo/*.java" if="minimal.testing" />
-         <exclude name="**/org/alfresco/jcr/**/*.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/opencmis/search/*.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/util/schemacomp/DbToXMLTest.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/util/schemacomp/ExportDbTest.java" if="minimal.testing" />
