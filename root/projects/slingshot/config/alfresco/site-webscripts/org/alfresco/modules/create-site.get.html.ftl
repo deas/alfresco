@@ -50,7 +50,7 @@
                <div class="yui-u">
                   <input id="${el}-isPublic" type="radio" <#if defaultVisibility == "PUBLIC">checked="checked" </#if>tabindex="0" name="-" /> <label for="${el}-isPublic">${msg("label.isPublic")}</label><br />
                   <div class="moderated">
-                     <input id="${el}-isModerated" type="checkbox" tabindex="0" name="-"/> <label for="${el}-isModerated">${msg("label.isModerated")}</label><br />
+                     <input id="${el}-isModerated" type="checkbox" tabindex="0" name="-" <#if defaultVisibility == "PRIVATE">disabled </#if> /> <label for="${el}-isModerated">${msg("label.isModerated")}</label><br />
                      <span class="help">${msg("label.moderatedHelp")}</span>
                   </div>
                </div>
