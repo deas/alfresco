@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,12 +18,15 @@
  */
 package org.alfresco.util.transaction;
 
+import java.util.NoSuchElementException;
+
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import junit.framework.TestCase;
 
+import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.transaction.NoTransactionException;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -38,6 +41,7 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
 public class SpringAwareUserTransactionTest extends TestCase
 {
     private DummyTransactionManager transactionManager;
+    private FailingTransactionManager failingTransactionManager;
     private UserTransaction txn;
     
     public SpringAwareUserTransactionTest()
@@ -49,6 +53,7 @@ public class SpringAwareUserTransactionTest extends TestCase
     protected void setUp() throws Exception
     {
         transactionManager = new DummyTransactionManager();
+        failingTransactionManager = new FailingTransactionManager();
         txn = getTxn();
     }
     
@@ -291,6 +296,31 @@ public class SpringAwareUserTransactionTest extends TestCase
         }
     }
     
+    public void testConnectionPoolException() throws Exception
+    {
+        testNoTxnStatus();
+        txn = getFailingTxn();
+        try
+        {
+            txn.begin();
+            fail("ConnectionPoolException should be thrown.");
+        }
+        catch (ConnectionPoolException cpe)
+        {
+            // Expected fail
+        }
+    }
+    
+    private UserTransaction getFailingTxn()
+    {
+        return new SpringAwareUserTransaction(
+                failingTransactionManager,
+                false,
+                TransactionDefinition.ISOLATION_DEFAULT,
+                TransactionDefinition.PROPAGATION_REQUIRED,
+                TransactionDefinition.TIMEOUT_DEFAULT);
+    }
+    
     /**
      * Used to check that the transaction manager is being called correctly
      * 
@@ -312,6 +342,47 @@ public class SpringAwareUserTransactionTest extends TestCase
         protected void doBegin(Object arg0, TransactionDefinition arg1)
         {
             status = Status.STATUS_ACTIVE;
+        }
+
+        protected void doCommit(DefaultTransactionStatus arg0)
+        {
+            status = Status.STATUS_COMMITTED;
+        }
+
+        protected Object doGetTransaction()
+        {
+            return txn;
+        }
+
+        protected void doRollback(DefaultTransactionStatus arg0)
+        {
+            status = Status.STATUS_ROLLEDBACK;
+        }
+    }
+    
+    /**
+     * Throws {@link NoSuchElementException} on begin()
+     * 
+     * @author alex.mukha
+     */
+    private static class FailingTransactionManager extends AbstractPlatformTransactionManager
+    {
+        private static final long serialVersionUID = 1L;
+        private int status = Status.STATUS_NO_TRANSACTION;
+        private Object txn = new Object();
+        
+        /**
+         * @return Returns one of the {@link Status Status.STATUS_XXX} constants
+         */
+        @SuppressWarnings("unused")
+        public int getStatus()
+        {
+            return status;
+        }
+
+        protected void doBegin(Object arg0, TransactionDefinition arg1)
+        {
+            throw new CannotCreateTransactionException("Test exception.");
         }
 
         protected void doCommit(DefaultTransactionStatus arg0)

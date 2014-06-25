@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -31,6 +31,7 @@ import javax.transaction.UserTransaction;
 import org.alfresco.error.StackTraceUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.transaction.NoTransactionException;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -408,9 +409,17 @@ public class SpringAwareUserTransaction
         }
         
         // begin a transaction
-        internalTxnInfo = createTransactionIfNecessary(
-                (Method) null,
-                (Class) null);  // super class will just pass nulls back to us
+        try
+        {
+            internalTxnInfo = createTransactionIfNecessary(
+                    (Method) null,
+                    (Class) null);  // super class will just pass nulls back to us
+        }
+        catch (CannotCreateTransactionException e)
+        {
+            throw new ConnectionPoolException("The DB connection pool is depleted.", e);
+        }
+
         internalStatus = Status.STATUS_ACTIVE;
         threadId = Thread.currentThread().getId();
         
