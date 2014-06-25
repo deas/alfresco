@@ -26,9 +26,12 @@ function main()
          {
             model.followers = JSON.parse(followers).count;
          }
-
-         model.syncEnabled = (syncMode.getValue() != "OFF");
       }
+   }
+
+   if (model.activeUserProfile)
+   {
+      model.syncEnabled = (syncMode.getValue() != "OFF");
    }
 
    model.links = [];
