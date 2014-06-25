@@ -25,7 +25,7 @@ function main()
    
    // Call the repository to see if the user is site manager or not
    var userIsSiteManager = false,
-       userIsMember = false,
+       userIsMember = user.isAdmin,
        userIsDirectMember = false;
 
    json = remote.call("/api/sites/" + page.url.templateArgs.site + "/memberships/" + encodeURIComponent(user.name));
