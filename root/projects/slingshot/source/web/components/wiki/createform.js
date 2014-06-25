@@ -187,7 +187,7 @@
                var title = Dom.get(this.id + "-title").value;
                title = title.replace(/\s+/g, "_");
                // Set the "action" attribute of the form based on the page title
-               form.action =  Alfresco.constants.PROXY_URI + "slingshot/wiki/page/" + this.options.siteId + "/" + encodeURIComponent(title);
+               form.action =  Alfresco.constants.PROXY_URI + "slingshot/wiki/page/" + this.options.siteId + "/" + Alfresco.util.encodeURIPath(title);
                
                // Display pop-up to indicate that the page is being saved
                this.widgets.savingMessage = Alfresco.util.PopupManager.displayMessage(
