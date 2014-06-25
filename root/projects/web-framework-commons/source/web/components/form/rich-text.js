@@ -154,10 +154,6 @@
 
             YAHOO.util.Event.on(submitButton, "click", saveClicked);
          }
-         // ALF-16991:
-         this.editor.getEditor().on('BeforeExecCommand', function(e) {
-            _this._handleContentChange();
-         });
          // MNT-10232: Description is displayed with tags
          if (this.id.indexOf("_prop_cm_") > 0 && this.id.indexOf("_prop_cm_content") == -1)
          {
