@@ -326,7 +326,7 @@
        * @param type {object} DomEvent
        * @param args {array} Event parameters (depends on event type)
        */
-      onSiteNameChange: function CreateSite_title_keyUp(type, args)
+      onSiteNameChange: function CreateSite_onSiteNameChange(type, args)
       {
          if (!this.shortNameEdited)
          {
