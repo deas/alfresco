@@ -16,4 +16,9 @@
             <class name="org.alfresco.po.share.search.LiveSearchDropdownTest" />
         </classes>
     </test>
+    <test name="FacetedSearchResultsPageTest">
+        <classes>
+            <class name="org.alfresco.po.share.search.FacetedSearchResultsPageTest" />
+        </classes>
+    </test>
 </suite>
