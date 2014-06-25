@@ -200,6 +200,18 @@
          
          var containerTarget; // This will only get set if thumbnail represents a container
          
+         if (elCell.baseURI.search(/\/sharedfiles$/) != -1 && record.location.path.search("/Shared") == 0)
+         {
+            record.location.path = record.location.path.substring(7);
+         }
+         else
+         {
+            if (elCell.baseURI.search(/\/myfiles$/) != -1 && record.location.path.search("/User Homes") == 0)
+            {
+               record.location.path = "/" + record.location.path.split("/").slice(3).join("/");
+            }
+         }
+         
          oColumn.width = this.thumbnailColumnWidth;
          Dom.setStyle(elCell, "width", oColumn.width + "px");
          Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
