@@ -325,7 +325,7 @@
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
 				<artifactId>yuicompressor-maven-plugin</artifactId>
-				<version>1.3.2</version>
+				<version>1.4.0</version>
 				<executions>
 					<execution>
 						<id>minimize-slingshot-javascript</id>
@@ -335,31 +335,38 @@
 						<phase>prepare-package</phase>
 					</execution>
 				</executions>
+				<!-- ensure YUI Compressor 2.4.8-rhino-alfresco-patched is used - as 2.4.7 is the default -->
+            <dependencies>
+               <dependency>
+                  <groupId>com.yahoo.platform.yui</groupId>
+                  <artifactId>yuicompressor</artifactId>
+                  <version>2.4.8-rhino-alfresco-patched</version>
+               </dependency>
+            </dependencies>
 				<configuration>
 				    <jswarn>false</jswarn>
 				    <encoding>UTF-8</encoding>
 				    <includes>
 				        <include>**/*.js</include>
-                    </includes>
-                    <!-- We don't need to re-minify YUI or 3rd party libs -->   
-				    <excludes>
-                        <exclude>**/*-min.js</exclude>
-                        <exclude>**/WEB-INF/**</exclude>
-                        <exclude>**/tiny_mce/**</exclude>
-                        <exclude>**/yui/**</exclude>
-                        <exclude>js/lib/dojo*/**</exclude>  
-                        <exclude>**/log4javascript*.js</exclude>
-                        <exclude>**/pdfjs/*.js</exclude>
-                    </excludes>
-                    <sourceDirectory>${project.build.directory}/${project.build.finalName}</sourceDirectory>
-                    <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
-                    <excludeResources>true</excludeResources>
+                </includes>
+                 <!-- We don't need to re-minify YUI or 3rd party libs -->   
+			        <excludes>
+                     <exclude>**/*-min.js</exclude>
+                     <exclude>**/WEB-INF/**</exclude>
+                     <exclude>**/tiny_mce/**</exclude>
+                     <exclude>**/yui/**</exclude>
+                     <exclude>js/lib/dojo*/**</exclude>  
+                     <exclude>**/log4javascript*.js</exclude>
+                 </excludes>
+                 <sourceDirectory>${project.build.directory}/${project.build.finalName}</sourceDirectory>
+                 <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+                 <excludeResources>true</excludeResources>
 						<!-- <nocompress>true</nocompress> -->
 						<!-- <disableOptimizations>true</disableOptimizations> -->
 						<!-- <nosuffix>true</nosuffix> -->
 						<!-- <preserveAllSemiColons>true</preserveAllSemiColons> -->
 						<!-- <nomunge>true</nomunge> -->
-				    <aggregations>
+				     <aggregations>
 						<aggregation>
 							<!-- remove files after aggregation (default: false) <removeIncluded>true</removeIncluded> -->
 							<output>${project.build.directory}/${project.build.finalName}/js/yui-common.js</output>

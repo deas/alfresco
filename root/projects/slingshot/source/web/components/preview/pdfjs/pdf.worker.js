@@ -18030,7 +18030,7 @@ var BinaryCMapReader = (function BinaryCMapReaderClosure() {
     var useCMap = null;
     var start = new Uint8Array(MAX_NUM_SIZE);
     var end = new Uint8Array(MAX_NUM_SIZE);
-    var char = new Uint8Array(MAX_NUM_SIZE);
+    var _char = new Uint8Array(MAX_NUM_SIZE);
     var charCode = new Uint8Array(MAX_NUM_SIZE);
     var tmp = new Uint8Array(MAX_NUM_SIZE);
     var code;
@@ -18091,17 +18091,17 @@ var BinaryCMapReader = (function BinaryCMapReaderClosure() {
           }
           break;
         case 2: // cidchar
-          stream.readHex(char, dataSize);
+          stream.readHex(_char, dataSize);
           code = stream.readNumber();
-          cMap.mapOne(hexToInt(char, dataSize), String.fromCharCode(code));
+          cMap.mapOne(hexToInt(_char, dataSize), String.fromCharCode(code));
           for (i = 1; i < subitemsCount; i++) {
-            incHex(char, dataSize);
+            incHex(_char, dataSize);
             if (!sequence) {
               stream.readHexNumber(tmp, dataSize);
-              addHex(char, tmp, dataSize);
+              addHex(_char, tmp, dataSize);
             }
             code = stream.readSigned() + (code + 1);
-            cMap.mapOne(hexToInt(char, dataSize), String.fromCharCode(code));
+            cMap.mapOne(hexToInt(_char, dataSize), String.fromCharCode(code));
           }
           break;
         case 3: // cidrange
@@ -18127,20 +18127,20 @@ var BinaryCMapReader = (function BinaryCMapReaderClosure() {
           }
           break;
         case 4: // bfchar
-          stream.readHex(char, ucs2DataSize);
+          stream.readHex(_char, ucs2DataSize);
           stream.readHex(charCode, dataSize);
-          cMap.mapOne(hexToInt(char, ucs2DataSize),
+          cMap.mapOne(hexToInt(_char, ucs2DataSize),
                       hexToStr(charCode, dataSize));
           for (i = 1; i < subitemsCount; i++) {
-            incHex(char, ucs2DataSize);
+            incHex(_char, ucs2DataSize);
             if (!sequence) {
               stream.readHexNumber(tmp, ucs2DataSize);
-              addHex(char, tmp, ucs2DataSize);
+              addHex(_char, tmp, ucs2DataSize);
             }
             incHex(charCode, dataSize);
             stream.readHexSigned(tmp, dataSize);
             addHex(charCode, tmp, dataSize);
-            cMap.mapOne(hexToInt(char, ucs2DataSize),
+            cMap.mapOne(hexToInt(_char, ucs2DataSize),
                         hexToStr(charCode, dataSize));
           }
           break;

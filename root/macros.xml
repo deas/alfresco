@@ -267,7 +267,7 @@
 		<sequential>
          <taskdef name="yui-compressor" 
              classname="net.noha.tools.ant.yuicompressor.tasks.YuiCompressorTask"
-             classpath="${dir.project.3rdparty.lib}/devenv/guava-13.0.1.jar;${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.7-rhino.jar;${dir.project.3rdparty.lib}/devenv/yui-compressor-ant-task-0.6.0.jar">
+             classpath="${dir.project.3rdparty.lib}/devenv/guava-13.0.1.jar;${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.8-rhino.jar;${dir.project.3rdparty.lib}/devenv/yui-compressor-ant-task-0.6.0.jar">
          </taskdef>
          <yui-compressor 
              warn="false"
@@ -278,8 +278,6 @@
              fromDir="@{sourcedir}"
              toDir="@{destdir}">
 				<include name="**/*.js" />
-				<exclude name="**/pdf.js" />
-				<exclude name="**/pdf.worker.js" />
 				<exclude name="**/*-min.js" />
 				<exclude name="**/WEB-INF/**" />
 				<exclude name="**/tiny_mce/**" />
@@ -299,7 +297,7 @@
 			        <exclude name="js/lib/**"/>
 				</fileset>
 				<arg line="-jar"/>
-				<arg path="${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.7-rhino.jar"/>
+				<arg path="${dir.project.3rdparty.lib}/devenv/yuicompressor-2.4.8-rhino.jar"/>
 				<arg line="-o"/>
 				<arg line="@{destfile}" />
 				<srcfile />
