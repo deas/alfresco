@@ -107,7 +107,7 @@ public class AdvanceSearchFolderPage extends AdvanceSearchPage
         try
         {
             WebElement folderSearchForm = drone.find(FOLDER_SEARCH_FORM);
-            if (folderSearchForm != null && folderSearchForm.getText().equalsIgnoreCase("Folders"))
+            if (folderSearchForm != null && folderSearchForm.getText().contains("Folders"))
             {
                 displayed = true;
             }
