@@ -314,7 +314,7 @@ public class CoreTracker implements CloseHook
 
     private Set<QName> typesForSkippingDescendantAuxDocs = new HashSet<QName>();
 
-    private BooleanQuery skippingDocsQuery;
+    private BooleanQuery skippingDocsQuery = new BooleanQuery();
 
     //
 
