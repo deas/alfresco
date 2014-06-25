@@ -337,6 +337,15 @@
                         {
                            if (data.owner && data.owner.userName == Alfresco.constants.USERNAME)
                            {
+                              // MNT-11418: Save previous URL
+                              {
+                                 var prevUrl = (history.state && history.state.previous_url) ? history.state.previous_url : document.referrer;
+                                 var currUrl = document.location.href;
+                                 if (prevUrl && prevUrl != "")
+                                 {
+                                    history.pushState({'previous_url': prevUrl, 'current_url': currUrl}, document.title, "");
+                                 }
+                              }
                               // Let the user keep working on the task since he claimed it
                               document.location.reload();
                            }

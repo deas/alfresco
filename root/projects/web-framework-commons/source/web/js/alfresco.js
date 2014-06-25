@@ -10939,6 +10939,21 @@ Alfresco.util.RENDERLOOPSIZE = 25;
             },
 
             /**
+             * MNT-11418
+             * Override this method to and return true  if Crome rewrites "document.referrer" property at
+             * page reloading via code: document.location.reload().
+             * This function tries to detect this behavior on "tasks-edit" page
+             *
+             * @method isCromeRedirectToTheSamePage
+             * @param url
+             * @return {boolean} True if the url is the same as current, it is a "tasks-edit" page and browser is Chrome
+             */
+            isCromeRedirectToTheSamePage: function FormManager_isCromeRedirectToTheSamePage(url)
+            {
+               return false;
+            },
+
+            /**
              * Override this method to make the user visit this url if no preferred urls was given for a form and
              * there was no page visited before the user came to the form page.
              *
@@ -10985,6 +11000,10 @@ Alfresco.util.RENDERLOOPSIZE = 25;
                       * history.go(-1) so the page can restore to its previous ajax state.
                       */
                      history.go(-1);
+                  }
+                  else if (history.state && history.state.previous_url && this.isCromeRedirectToTheSamePage(document.referrer))
+                  {
+                     document.location.href = history.state.previous_url;
                   }
                   else
                   {

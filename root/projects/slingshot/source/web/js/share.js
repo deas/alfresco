@@ -2337,6 +2337,29 @@ var DASHLET_TITLE_BAR_ACTIONS_OPACITY = 0,
       },
 
       /**
+       * MNT-11418
+       * Crome rewrites "document.referrer" property at page reloading via code: document.location.reload().
+       * This function tries to detect this behavior on "tasks-edit" page
+       *
+       * @override
+       * @method isCromeRedirectToTheSamePage
+       * @param url
+       * @return {boolean} True if the url is recognised as a page that uses ajax states (adds values after "#" on the url)
+       */
+      isCromeRedirectToTheSamePage: function FormManager_isCromeRedirectToTheSamePage(url)
+      {
+         var isChromium = window.chrome,
+             vendorName = window.navigator.vendor;
+         if(isChromium !== null && vendorName === "Google Inc.") {
+            // It is Chrome 
+            return url == document.location.href;
+         } else { 
+            // other browsers
+            return false;
+         }
+      },
+
+      /**
        * Override this method to make the user visit this url if no preferred url was given for a form and
        * there was no page visited before the user came to the form page.
        *
