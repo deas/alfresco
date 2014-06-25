@@ -371,6 +371,7 @@
          <exclude name="**/org/alfresco/repo/transaction/RetryingTransactionHelperTest.java" />
          <exclude name="**/org/alfresco/repo/transaction/TransactionAwareSingletonTest.java" />
          <exclude name="**/org/alfresco/repo/transaction/TransactionServiceImplTest.java" />
+         <exclude name="**/org/alfresco/repo/transaction/ConnectionPoolOverloadTest.java" />
          <exclude name="**/org/alfresco/repo/transfer/ContentChunkerImplTest.java" />
          <exclude name="**/org/alfresco/repo/transfer/HttpClientTransmitterImplTest.java" />
          <exclude name="**/org/alfresco/repo/transfer/NodeCrawlerTest.java" />
