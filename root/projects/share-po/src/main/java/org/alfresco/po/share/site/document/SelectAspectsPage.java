@@ -187,10 +187,13 @@ public class SelectAspectsPage extends SharePage
                 {
                     try
                     {
-                        WebElement aspectElement = drone.find(By.xpath(String.format(ASPECT_AVAILBLE_XPATH, aspect.getValue())));
-                        if(!aspectElement.isSelected())
+                        if (AVAILABLE_ASPECT_TABLE.equals(by))
                         {
-                            aspectElement.click();
+                            WebElement aspectElement = drone.find(By.xpath(String.format(ASPECT_AVAILBLE_XPATH, aspect.getValue())));
+                            if (!aspectElement.isSelected())
+                            {
+                                aspectElement.click();
+                            }
                         }
                         link.click();
                         if (logger.isTraceEnabled())
