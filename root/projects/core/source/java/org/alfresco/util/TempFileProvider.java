@@ -137,11 +137,20 @@ public class TempFileProvider
             // not there yet
             if (!tempDir.mkdirs())
             {
-                throw new AlfrescoRuntimeException("Failed to create temp directory: " + tempDir);
+                // We didn't create it but perhaps it was made by some other thread
+                if (!tempDir.exists())
+                {
+                    // It's definitely not there
+                    throw new AlfrescoRuntimeException("Failed to create temp directory: " + tempDir);
+                }
             }
-            if (logger.isDebugEnabled())
+            else
             {
-                logger.debug("Created temp directory: " + tempDir);
+                // This thread created it
+                if (logger.isDebugEnabled())
+                {
+                    logger.debug("Created temp directory: " + tempDir);
+                }
             }
         }
         // done
