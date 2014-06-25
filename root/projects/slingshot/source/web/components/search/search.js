@@ -281,6 +281,9 @@
 		 
          this.widgets.enterListener.enable();
          
+          // search YUI button
+         this.widgets.searchButton = Alfresco.util.createYUIButton(this, "search-button", this.onSearchClick);
+		 
          // trigger the initial search
          YAHOO.Bubbling.fire("onSearch",
          {
@@ -290,11 +293,6 @@
             searchAllSites: this.options.initialSearchAllSites,
             searchRepository: this.options.initialSearchRepository
          });
-         
-         // search YUI button
-         this.widgets.searchButton = Alfresco.util.createYUIButton(this, "search-button", this.onSearchClick);
-         
-         this._disableItems();
          
          // menu button for sort options
          this.widgets.sortButton = new YAHOO.widget.Button(this.id + "-sort-menubutton",
@@ -700,6 +698,9 @@
             {
                searchSort = obj.searchSort;
             }
+
+            this._disableItems();
+			
             this._performSearch(
             {
                searchTerm: searchTerm,
