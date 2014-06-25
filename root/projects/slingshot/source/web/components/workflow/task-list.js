@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -219,7 +219,12 @@
                status = $html(oRecord.getData("properties")["bpm_status"]),
                assignee = oRecord.getData("owner"),
                description = $html(oRecord.getData("description")),
-               initiator = $html(workflowInstance.initiator.firstName);
+               initiator;
+         // initiator may not be present, see MNT-11622
+         if (workflowInstance.initiator)
+         {
+            initiator = $html(workflowInstance.initiator.firstName);
+         }
                
          // if there is a property label available for the status use that instead
          var data = oRecord.getData();
@@ -255,7 +260,10 @@
          info += '<div class="status"><label>' + this.msg("label.status") + ':</label><span>' + status + '</span></div>';
          info += '<div class="type"><label>' + this.msg("label.type", type) + ':</label><span>' + type + '</span></div>';
          info += '<div class="description"><label>' + this.msg("label.description") + ':</label><span>' + description + '</span></div>';
-         info += '<div class="initiator"><label>' + this.msg("label.initiator") + ':</label><span>' + initiator + '</span></div>';
+         if (initiator)
+         {
+            info += '<div class="initiator"><label>' + this.msg("label.initiator") + ':</label><span>' + initiator + '</span></div>';
+         }
          if (!assignee || !assignee.userName)
          {
             info += '<div class="unassigned"><span class="theme-bg-color-5 theme-color-5 unassigned-task">' + this.msg("label.unassignedTask") + '</span></div>';
