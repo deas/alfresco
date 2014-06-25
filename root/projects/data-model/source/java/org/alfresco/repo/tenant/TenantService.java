@@ -69,8 +69,6 @@ public interface TenantService extends TenantUserService
     
     /**
      * @return          the reference <b>with</b> the tenant-specific ID attached
-     * 
-     * @deprecated
      */
     public StoreRef getName(String username, StoreRef storeRef);
     
@@ -142,16 +140,10 @@ public interface TenantService extends TenantUserService
     
     public boolean isTenantUser();
     
-    /**
-     * @deprecated
-     */
     public boolean isTenantUser(String username);
     
     public boolean isTenantName(String name);
     
-    /**
-     * @deprecated
-     */
     public String getUserDomain(String username);
     
     public Tenant getTenant(String tenantDomain);

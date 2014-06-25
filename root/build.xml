@@ -363,6 +363,7 @@
          <exclude name="**/org/alfresco/repo/template/TemplateServiceImplTest.java" />
          <exclude name="**/org/alfresco/repo/template/XSLTProcessorTest.java" />
          <exclude name="**/org/alfresco/repo/tenant/MultiTDemoTest.java" />
+         <exclude name="**/org/alfresco/repo/tenant/MultiTServiceImplTest.java" />
          <exclude name="**/org/alfresco/repo/tenant/MultiTNodeServiceInterceptorTest.java" />
          <exclude name="**/org/alfresco/repo/thumbnail/ThumbnailServiceImplParameterTest.java" />
          <exclude name="**/org/alfresco/repo/thumbnail/ThumbnailServiceImplTest.java" />
