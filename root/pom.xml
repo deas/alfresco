@@ -154,6 +154,8 @@
     <maven.license.url>http://www.gnu.org/licenses/lgpl-3.0-standalone.html</maven.license.url>
 
     <alfresco.googledocs.version>2.0.7</alfresco.googledocs.version>
+    <!-- Default location of the root of the checkout. To be overrided if project is deeper than 2 levels -->
+    <highest.basedir>${basedir}/../..</highest.basedir>
 
     <!-- Centralized dependency versions -->
     <dependency.lucene.version>2.4.1</dependency.lucene.version>
@@ -387,9 +389,6 @@
 			<executions>
 				<execution>
 					<id>create-test-jar</id>
-					<!-- Usually bound to package phase, but set earlier so that we can trigger it in sonar.phase -->
-					<!-- That's because this jar is used later in enterprise-repository, and Sonar hits MDEP-98 -->
-                    <!-- <phase>process-test-classes</phase> -->
 					<goals>
 						<goal>test-jar</goal>
 					</goals>
@@ -508,6 +507,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
+                    <skipIfEmpty>true</skipIfEmpty>
                     <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
