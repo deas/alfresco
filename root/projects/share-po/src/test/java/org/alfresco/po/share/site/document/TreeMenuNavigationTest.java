@@ -48,7 +48,6 @@ import org.testng.annotations.Test;
  * @since 4.3.0
  */
 @Listeners(FailedTestListener.class)
-@Test(groups = { "alfresco-one" })
 public class TreeMenuNavigationTest extends AbstractDocumentTest
 {
     private static String siteName;
