@@ -5,7 +5,29 @@
    <#local documentLinkResolver>
 function(item)
 {
-   return item.isContainer ? Alfresco.util.siteURL("folder-details?nodeRef=" + item.nodeRef, { site: item.site }) : Alfresco.util.siteURL("document-details?nodeRef=" + item.nodeRef, { site: item.site });
+   var path;
+   if (item.isContainer)
+   {
+      path = "folder-details?nodeRef=" + item.nodeRef;
+   }
+   else if (item.container)
+   {
+      switch(item.container){
+        case 'blog': path = "blog-postview?postId=" + item.name; item.displayName = item.title; break;
+        case 'discussions': path = "discussions-topicview?topicId=" + item.name; item.displayName = item.title; break;
+        case 'calendar': path = item.container + (item.fromDate?"?date=" + Alfresco.util.formatDate(item.fromDate, "yyyy-mm-dd"):""); item.displayName = item.title; break;
+        case 'wiki': path = "wiki-page?title=" + encodeURIComponent(item.title); item.displayName = item.title.replace(/_/g, " "); break;
+        case 'links': path = "links-view?linkId=" + item.name; item.displayName = item.title; break;
+        case 'dataLists': path = "data-lists?list=" + item.parentName; break;
+        default: path = "document-details?nodeRef=" + item.nodeRef;
+      }
+   }
+   else
+   {
+      path = "document-details?nodeRef=" + item.nodeRef;
+   }
+
+   return Alfresco.util.siteURL(path, { site: item.site });
 }
    </#local>
    <#local allowAddAction = false>

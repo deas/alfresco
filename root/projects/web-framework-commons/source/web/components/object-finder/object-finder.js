@@ -1369,7 +1369,7 @@
                      site : item.site
                   });
                }
-               title = '<a href="' + link + '">' + $html(item.name) + '</a>';
+               title = '<a href="' + link + '">' + $html(item.displayName?item.displayName:item.name) + '</a>';
             }
             var template = '<h3 class="name">' + title + '</h3>';
             template += '<div class="description">' + scope.msg("form.control.object-picker.description") + ': ' + description + '</div>';
