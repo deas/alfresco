@@ -24,7 +24,7 @@
                <#assign fileExtIndex = item.fileName?last_index_of(".")>
                <#if fileExtIndex gt -1>
                   <#assign fileExt = item.fileName?substring(fileExtIndex + 1)?lower_case>
-               <#elseif node.mimetype??><#-- Mimetype may be null if it is not known in the repository -->
+               <#elseif node.mimetype?? && mimetypes.getExtension(node.mimetype)??><#-- Mimetype may be null if it is not known in the repository -->
                   <#assign fileExt = mimetypes.getExtension(node.mimetype)>
                <#else>
                   <#assign fileExt = "generic">
