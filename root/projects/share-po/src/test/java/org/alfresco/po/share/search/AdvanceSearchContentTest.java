@@ -263,7 +263,7 @@ public class AdvanceSearchContentTest extends AbstractTest
     /**
      * Test to validate modified from date.
      */
-    @Test(groups={"Enterprise-only"}, enabled = false)
+    @Test(groups={"Enterprise-only"})
     public void validateFromDateTest() throws Exception
     {
         contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
@@ -274,7 +274,7 @@ public class AdvanceSearchContentTest extends AbstractTest
     /**
      * Test to validate invalid modified from date.
      */
-    @Test(groups={"Enterprise-only"}, enabled = false)
+    @Test(groups={"Enterprise-only"})
     public void validateInvalidFromDateTest() throws Exception
     {
         contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
@@ -287,7 +287,7 @@ public class AdvanceSearchContentTest extends AbstractTest
      * 
      * @throw Exception
      */
-    @Test(dependsOnMethods = "toDateNullCheckTest", groups="Enterprise-only", enabled = false)
+    @Test(dependsOnMethods = "toDateNullCheckTest", groups="Enterprise-only")
     public void testIsFolder() throws Exception
     {
         contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();

@@ -99,7 +99,7 @@ public class AdvanceSearchContentPage extends AdvanceSearchPage
         try
         {
             WebElement contentSearchForm = drone.find(CONTENT_SEARCH_FORM_DROPDOWN);
-            if (contentSearchForm != null && contentSearchForm.getText().equals("Content"))
+            if (contentSearchForm != null && contentSearchForm.getText().contains("Content"))
             {
                 displayed = true;
             }

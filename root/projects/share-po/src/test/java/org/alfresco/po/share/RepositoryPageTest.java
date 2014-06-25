@@ -199,7 +199,7 @@ public class RepositoryPageTest extends AbstractDocumentTest
       }
     }
     
-    @Test(dependsOnMethods="selectFolderByName", enabled = false)
+    @Test(dependsOnMethods="selectFolderByName")
     public void createInSubFolder()
     {
         RepositoryPage repoPage = drone.getCurrentPage().render();
@@ -210,7 +210,7 @@ public class RepositoryPageTest extends AbstractDocumentTest
         Assert.assertEquals(folder.getName(),"test");
     }
     
-    @Test(dependsOnMethods="createInSubFolder", enabled = false)
+    @Test(dependsOnMethods="createInSubFolder")
     public void uploadInSubFolder() throws Exception
     {
         RepositoryPage repositoryPage = drone.getCurrentPage().render();
@@ -221,7 +221,7 @@ public class RepositoryPageTest extends AbstractDocumentTest
         Assert.assertEquals(file.getName(), sampleFile.getName());
     }
     
-    @Test(dependsOnMethods="uploadInSubFolder", enabled = false)
+    @Test(dependsOnMethods="uploadInSubFolder")
     public void delete()
     {
         SharePage page = drone.getCurrentPage().render();
@@ -246,7 +246,7 @@ public class RepositoryPageTest extends AbstractDocumentTest
      * @author sprasanna 
      */
     
-    @Test(dependsOnMethods="delete", enabled = false)
+    @Test(dependsOnMethods="delete")
     public void createContent()
     {
         ContentDetails contentDetails = new ContentDetails();
@@ -267,7 +267,7 @@ public class RepositoryPageTest extends AbstractDocumentTest
      */
     
     @Test(
-    dependsOnMethods="createContent", enabled = false)
+    dependsOnMethods="createContent")
     public void selectMangeAspectTest()
     {
         SharePage page = drone.getCurrentPage().render();
