@@ -112,6 +112,7 @@
     <module>modules/wcmquickstart/wcmquickstartwebsite</module>
     <module>projects/web-editor-samples/customer-site</module>
     <module>projects/mmt</module>
+    <module>projects/sdk/alfresco-platform-distribution</module>
   </modules>
 
   <properties>
