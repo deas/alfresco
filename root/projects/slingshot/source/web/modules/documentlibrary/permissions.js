@@ -150,13 +150,16 @@
          }
          else
          {
+            // MNT-11006 fix - there can be multiple files in this.options.files
+            this.nodeRefToRefresh = YAHOO.lang.isArray(this.options.files) ? this.options.files[0].node.nodeRef : this.options.files.node.nodeRef;
+            
             // Load the latest permissions for the document
             Alfresco.util.Ajax.jsonRequest(
             {
                url: Alfresco.constants.URL_SERVICECONTEXT + "components/document-details/document-permissions",
                dataObj:
                {
-                  nodeRef: this.options.files.node.nodeRef,
+                  nodeRef: this.nodeRefToRefresh,
                   site: this.options.siteId,
                   format: "json"
                },
