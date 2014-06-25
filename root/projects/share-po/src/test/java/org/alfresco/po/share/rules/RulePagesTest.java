@@ -14,28 +14,40 @@
  */
 package org.alfresco.po.share.rules;
 
-import org.alfresco.po.share.*;
+import static org.alfresco.po.share.site.contentrule.createrules.selectors.AbstractIfSelector.StringCompareOption.CONTAINS;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import org.alfresco.po.share.AbstractTest;
+import org.alfresco.po.share.AlfrescoVersion;
+import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.NewUserPage;
+import org.alfresco.po.share.ShareUtil;
+import org.alfresco.po.share.UserSearchPage;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.contentrule.FolderRulesPage;
 import org.alfresco.po.share.site.contentrule.FolderRulesPageWithRules;
 import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
 import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.ActionSelectorEnterpImpl;
+import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.IfSelectorCloudImpl;
 import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.IfSelectorEnterpImpl;
 import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.WhenSelectorImpl;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.FileDirectoryInfo;
+import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
-import static org.alfresco.po.share.site.contentrule.createrules.selectors.AbstractIfSelector.StringCompareOption.CONTAINS;
-import static org.testng.Assert.*;
 
 /**
  * @author Aliaksei Boole
  */
+@Listeners(FailedTestListener.class)
 public class RulePagesTest extends AbstractTest
 {
 
@@ -144,11 +156,21 @@ public class RulePagesTest extends AbstractTest
         WhenSelectorImpl whenSelector = createRulePage.getWhenOptionObj();
         whenSelector.selectInbound();
 
-        ActionSelectorEnterpImpl actionSelectorEnterp = createRulePage.getActionOptionsObj();
-        actionSelectorEnterp.selectIncrementCounter();
-
-        IfSelectorEnterpImpl ifSelectorEnterp = createRulePage.getIfOptionObj();
-        ifSelectorEnterp.selectAllItems();
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        
+        if(!version.isCloud())
+        {
+            ActionSelectorEnterpImpl actionSelectorEnterp = createRulePage.getActionOptionsObj();
+            actionSelectorEnterp.selectIncrementCounter();
+            
+            IfSelectorEnterpImpl ifSelectorEnterp = createRulePage.getIfOptionObj();
+            ifSelectorEnterp.selectAllItems();
+        }
+        else
+        {
+            IfSelectorCloudImpl ifSelectorEnterp = createRulePage.getIfOptionObj();
+            ifSelectorEnterp.selectAllItems();
+        }
 
         createRulePage.selectApplyToSubfolderCheckbox();
 
@@ -166,11 +188,21 @@ public class RulePagesTest extends AbstractTest
         WhenSelectorImpl whenSelector = createRulePage.getWhenOptionObj();
         whenSelector.selectUpdate();
 
-        ActionSelectorEnterpImpl actionSelectorEnterp = createRulePage.getActionOptionsObj();
-        actionSelectorEnterp.selectExtractMetadata();
-
-        IfSelectorEnterpImpl ifSelectorEnterp = createRulePage.getIfOptionObj();
-        ifSelectorEnterp.selectAuthor(CONTAINS, "a");
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        
+        if(!version.isCloud())
+        {
+            ActionSelectorEnterpImpl actionSelectorEnterp = createRulePage.getActionOptionsObj();
+            actionSelectorEnterp.selectExtractMetadata();
+            
+            IfSelectorEnterpImpl ifSelectorEnterp = createRulePage.getIfOptionObj();
+            ifSelectorEnterp.selectAuthor(CONTAINS, "a");
+        }
+        else
+        {
+            IfSelectorCloudImpl ifSelectorEnterp = createRulePage.getIfOptionObj();
+            ifSelectorEnterp.selectAllItems();
+        }
 
         createRulePage.selectRunRuleInBackgroundCheckbox();
 
@@ -220,11 +252,21 @@ public class RulePagesTest extends AbstractTest
         WhenSelectorImpl whenSelector = createRulePage.getWhenOptionObj();
         whenSelector.selectUpdate();
 
-        ActionSelectorEnterpImpl actionSelectorEnterp = createRulePage.getActionOptionsObj();
-        actionSelectorEnterp.selectExtractMetadata();
-
-        IfSelectorEnterpImpl ifSelectorEnterp = createRulePage.getIfOptionObj();
-        ifSelectorEnterp.selectAuthor(CONTAINS, "a");
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        
+        if(!version.isCloud())
+        {
+            ActionSelectorEnterpImpl actionSelectorEnterp = createRulePage.getActionOptionsObj();
+            actionSelectorEnterp.selectExtractMetadata();
+            
+            IfSelectorEnterpImpl ifSelectorEnterp = createRulePage.getIfOptionObj();
+            ifSelectorEnterp.selectAuthor(CONTAINS, "a");
+        }
+        else
+        {
+            IfSelectorEnterpImpl ifSelectorEnterp = createRulePage.getIfOptionObj();
+            ifSelectorEnterp.selectAuthor(CONTAINS, "a");
+        }
 
         createRulePage.selectRunRuleInBackgroundCheckbox();
 

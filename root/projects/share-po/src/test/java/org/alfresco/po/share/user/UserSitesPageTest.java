@@ -23,6 +23,9 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.DashBoardPage;
@@ -113,7 +116,16 @@ public class UserSitesPageTest extends AbstractTest
         myprofile = siteDashboardPage.getNav().selectMyProfile().render();
         userSitesPage = myprofile.getProfileNav().selectSites().render();
 
-        assertEquals(userSitesPage.getSites().size(), 2);
+        List<UserSiteItem> userSiteItems = userSitesPage.getSites();
+        List<String> siteNames = new ArrayList<String>(2);
+        siteNames.add(siteName1);
+        siteNames.add(siteName2);
+        
+        assertTrue(userSiteItems.size()>=2);
+        for (UserSiteItem userSiteItem : userSiteItems)
+        {
+            siteNames.contains(userSiteItem.getSiteName());
+        }
     }
 
     @Test(dependsOnMethods = "getSites", groups = { "alfresco-one" })

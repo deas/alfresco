@@ -148,7 +148,16 @@ public class SiteMembersDashletTest extends AbstractSiteDashletTest
     {
         navigateToSiteDashboard();
         SiteMembersDashlet dashlet = siteDashBoard.getDashlet("site-members").render();
-        SharePage sharePage = dashlet.clickOnUser("Administrator");
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        SharePage sharePage = null;
+        if (version.isCloud())
+        {
+            sharePage = dashlet.clickOnUser(anotherUser.getfName() + " " + anotherUser.getlName());
+        }
+        else 
+        {
+            sharePage = dashlet.clickOnUser("Administrator");
+        }
         assertNotNull(sharePage);
         assertTrue(sharePage instanceof MyProfilePage);
     }

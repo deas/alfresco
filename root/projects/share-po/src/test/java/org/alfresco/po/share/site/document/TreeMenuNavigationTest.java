@@ -91,6 +91,7 @@ public class TreeMenuNavigationTest extends AbstractDocumentTest
 
         SitePage page = drone.getCurrentPage().render();
         documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.getNavigation().selectDetailedView().render();
 
         NewFolderPage newFolderPage = documentLibPage.getNavigation().selectCreateNewFolder();
         documentLibPage = newFolderPage.createNewFolder(folderName1).render();
@@ -124,8 +125,15 @@ public class TreeMenuNavigationTest extends AbstractDocumentTest
 
         assertTrue(treeMenuNav.isMenuTreeVisible(TreeMenu.DOCUMENTS));
         assertTrue(treeMenuNav.isMenuTreeVisible(TreeMenu.LIBRARY));
-        assertTrue(treeMenuNav.isMenuTreeVisible(TreeMenu.CATEGORIES));
         assertTrue(treeMenuNav.isMenuTreeVisible(TreeMenu.TAGS));
+        
+        AlfrescoVersion version = drone.getProperties().getVersion();
+        
+        if(!version.isCloud())
+        {
+            assertTrue(treeMenuNav.isMenuTreeVisible(TreeMenu.CATEGORIES));
+        }
+        
     }
 
     @Test(dependsOnMethods = "isMenuTreeVisible", groups = "alfresco-one")
@@ -174,7 +182,7 @@ public class TreeMenuNavigationTest extends AbstractDocumentTest
         assertTrue(files.size() == 2);
     }
 
-    @Test(dependsOnMethods = "selectNode", groups = "alfresco-one")
+    @Test(dependsOnMethods = "selectNode", groups = "Enterprise4.2", priority = 1)
     public void getNodeChildren() throws Exception
     {
         TreeMenuNavigation treeMenuNav = documentLibPage.getLeftMenus();
@@ -190,7 +198,7 @@ public class TreeMenuNavigationTest extends AbstractDocumentTest
         assertTrue(children.contains("Indian English"));
     }
 
-    @Test(dependsOnMethods = "getNodeChildren", groups = "alfresco-one")
+    @Test(dependsOnMethods = "selectNode", groups = "alfresco-one", priority = 2)
     public void selectTagNode() throws Exception
     {
         TreeMenuNavigation treeMenuNav = documentLibPage.getLeftMenus();

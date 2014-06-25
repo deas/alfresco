@@ -44,7 +44,6 @@ import static org.alfresco.po.share.AlfrescoVersion.Enterprise42;
  */
 @Listeners(FailedTestListener.class)
 @Test(groups = { "Enterprise-only" })
-// @Test(groups={"Enterprise4.2Bug"})
 public class WikiPageTest extends AbstractSiteDashletTest
 {
 
