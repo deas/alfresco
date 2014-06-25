@@ -16,6 +16,10 @@
 .alfresco-share .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItem {
    margin: 0 5px;
    padding: 2px 5px;
+   text-overflow: ellipsis;
+   overflow: hidden;
+   white-space: nowrap;
+   max-width: 150px;
 }
 
 .alfresco-share .dijitIcon.dijitMenuItemIcon.alf-edit-icon {
