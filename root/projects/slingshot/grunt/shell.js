@@ -29,7 +29,6 @@ module.exports = function (grunt, alf) {
       // Shell Commands run by grunt
       // @see: https://github.com/sindresorhus/grunt-shell
       shell: {
-
          antClean: {
             command: 'ant clean',
             options: {
@@ -41,7 +40,17 @@ module.exports = function (grunt, alf) {
                }
             }
          },
-
+         mvnClean: {
+            command: 'mvn clean',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true,
+               execOptions: {
+                  cwd: alf.rootDir
+               }
+            }
+         },
          // Generate JSDocs
          jsdoc: {
             command: 'jsdoc ../../' + alf.jsdocFiles + ' -c ../../conf.json', // TODO: Make this work with defined paths.
@@ -52,6 +61,28 @@ module.exports = function (grunt, alf) {
                execOptions: {
                   cwd: alf.nodeBinDir
                }
+            }
+         },
+
+         jsdocServer: {
+            command: 'python -m SimpleHTTPServer 8082',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true,
+               execOptions: {
+                  cwd: alf.docsDir
+               }
+            }
+         },
+
+         // Reset Share's Caches:
+         resetCaches: {
+            command: 'ws -s; ds -s',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
             }
          },
 
@@ -72,6 +103,22 @@ module.exports = function (grunt, alf) {
          // start share & alfresco
          startRepo: {
             command: 'r -ie && r -t',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
+         startRepoExistingBuild: {
+            command: 'r -t',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
+         se: {
+            command: 's -e',
             options: {
                stdout: true,
                stderr: true,
@@ -175,5 +222,5 @@ module.exports = function (grunt, alf) {
             }
          }
       }
-   }
-}
+   };
+};

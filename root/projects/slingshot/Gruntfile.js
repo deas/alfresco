@@ -5,12 +5,14 @@ var alf = {
       cssFiles: 'source/web/**/*.css',
       jsdocFiles: 'source/web/js/alfresco',
       jsInstFiles: 'source/web/js/alfrescoInst',
-      jsFiles: [this.jsdocFiles + '/**/*.js'],
+      jsFiles: ['source/web/js/alfresco/**/*.js'],
+      xmlFiles: ['/**/*.xml'],
       testResourcesDir: 'source/test-resources',
       nodeBinDir: 'node_modules/.bin/',
       coverageDirectory: "code-coverage-reports",
       rootDir: '../../',
-      codeDir: '../../../'
+      codeDir: '../../../',
+      docsDir: 'docs'
    };
 
 module.exports = function(grunt) {
@@ -60,18 +62,23 @@ module.exports = function(grunt) {
    //      g si: incremental build, exploded delopy
 
 
-   // Standard Dev task - sets up environment and then waits for your awesome code changes
-   grunt.registerTask('start', [
-      'concurrent:startRepoAndShare',
-      'vag-up',
-      'watch:docsAndTests'
-   ])
+   // Dev
+   grunt.registerTask('d', [
+      'shell:startRepoExistingBuild', // Don't do a repo build, just start an existing one.
+      'shell:startShare',
+      'dev'
+   ]);
 
-   // Dev - bring up vagrant, provision and then 'watch' tests
+   // Dev - as per dev, but with a clean update first.
+   grunt.registerTask('d-cup', [
+      'cup',
+      'dev'
+   ]);
+
    grunt.registerTask('dev', [
-      'shell:vagrantUp',
+      'vup',
       'watch'
-   ]);   
+   ]);
 
    // Shortcuts to incremental builds of Share/Repo
    grunt.registerTask('r', [
@@ -79,8 +86,8 @@ module.exports = function(grunt) {
       'shell:startRepo'
    ]);
    grunt.registerTask('s', [
-      'shell:killShare',
-      'shell:startShare'
+      'shell:se',
+      'shell:resetCaches'
    ]);
    grunt.registerTask('si', [
       'shell:killShare',
@@ -92,11 +99,17 @@ module.exports = function(grunt) {
       'shell:svnUp'
    ]);
 
+   // Do a mvn and an ant clean.
+   grunt.registerTask('clean', [
+      'shell:antClean',
+      'shell:mvnClean'
+   ])
+
    // Build & start after a Clean & UPdate
    grunt.registerTask('cup', [
       'shell:killRepo',
       'shell:killShare',
-      'shell:antClean',
+      'clean',
       'shell:svnUp',
       'shell:startRepo',
       'shell:startShareInc'
@@ -104,5 +117,11 @@ module.exports = function(grunt) {
 
    grunt.registerTask('sel', [
       'shell:seleniumUp'
+   ]);
+
+   grunt.registerTask('down', [
+      'shell:killRepo',
+      'shell:killShare',
+      'vdown'
    ]);
 };

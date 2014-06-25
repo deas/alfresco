@@ -29,37 +29,22 @@ module.exports = function (grunt, alf) {
       // Watch Commands (when the specified watch is active, task is run when files change.)
       // @see: https://github.com/gruntjs/grunt-contrib-watch
       watch: {
-         // Triggers the jsdocs updates & runs the tests when the listed js files change.
-         docsAndTests: {
-            files: alf.jsFiles,
+         // Trigger a deploy and restart & tests when a file changes
+         // It works best to have only one watch, otherwise multiple builds could happen simultaneously.
+         // TODO: Aikau files only...
+         all: {
+            files: [alf.jsFiles, alf.cssFiles],
             tasks: [
-               //'jshint' TODO: Make it friendly to our code...
-               //'deployJS',
-               'concurrent:docsAndTests'
-            ]
-         },
-         // Triggers the jsdocs updates when the listed js files change.
-       // DON'T ADD A SAUCE LABS WATCH HERE!
-         jsdoc: {
-            files: alf.jsFiles,
-            tasks: ['shell:jsdoc']
-         },
-         intern: {
-             files: alf.jsFiles,
-             tasks: ['intern:dev']
-         },
-         intern_local: {
-             files: alf.jsFiles,
-             tasks: ['intern:local']
-          },
-         // CSS
-         css: {
-            files: alf.cssFiles,
-            tasks: [
-               'deployCSS'
-               //'csslint'
-            ]
+               // These could be run concurrently, but the output is messy.
+               //'concurrent:jsWatch'
+               's',
+               'shell:jsdoc',
+               'intern:dev'
+            ],
+            options: {
+               interrupt: true
+            }
          }
       }
-   }
-}
+   };
+};

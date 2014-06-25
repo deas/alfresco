@@ -34,9 +34,19 @@ module.exports = function (grunt, alf) {
             'shell:startShare'
          ],
          docsAndTests: [
-            'shell:jsdoc', 
+            'shell:jsdoc',
             'intern:dev'
-         ]
+         ],
+         jsWatch: {
+            tasks: [
+               's',
+               'shell:jsdoc',
+               'intern:dev'
+            ],
+            options: {
+               logConcurrentOutput: true
+            }
+         }
       }
-   }
-}
+   };
+};
