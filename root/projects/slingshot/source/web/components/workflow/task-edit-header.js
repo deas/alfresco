@@ -338,6 +338,7 @@
                            if (data.owner && data.owner.userName == Alfresco.constants.USERNAME)
                            {
                               // MNT-11418: Save previous URL
+                              if (YAHOO.env.ua.chrome > 0)
                               {
                                  var prevUrl = (history.state && history.state.previous_url) ? history.state.previous_url : document.referrer;
                                  var currUrl = document.location.href;
