@@ -45,19 +45,12 @@ public class InMemoryTicketComponentImpl implements TicketComponent
     public static final String GRANTED_AUTHORITY_TICKET_PREFIX = "TICKET_";
 
     private static ThreadLocal<String> currentTicket = new ThreadLocal<String>();
-
     private boolean ticketsExpire;
-
     private Duration validDuration;
-   
     private boolean oneOff;
-
     private String guid;
-
     private SimpleCache<String, Ticket> ticketsCache; // Can't use Ticket as it's private
-
     private ExpiryMode expiryMode = ExpiryMode.AFTER_INACTIVITY;
-    
     private boolean useSingleTicketPerUser = true;
 
     /**
@@ -71,8 +64,6 @@ public class InMemoryTicketComponentImpl implements TicketComponent
 
     /**
      * Set the ticket cache to support clustering
-     * 
-     * @param ticketsCache
      */
     public void setTicketsCache(SimpleCache<String, Ticket> ticketsCache)
     {
@@ -95,6 +86,39 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         return useSingleTicketPerUser;
     }
 
+    /**
+     * Are tickets single use
+     */
+    public void setOneOff(boolean oneOff)
+    {
+        this.oneOff = oneOff;
+    }
+
+    /**
+     * Do tickets expire
+     */
+    public void setTicketsExpire(boolean ticketsExpire)
+    {
+        this.ticketsExpire = ticketsExpire;
+    }
+
+    /**
+     * How should tickets expire.
+     */
+    public void setExpiryMode(String expiryMode)
+    {
+        this.expiryMode = ExpiryMode.valueOf(expiryMode);
+    }
+
+    /**
+     * How long are tickets valid (XML duration as a string)
+     */
+    public void setValidDuration(String validDuration)
+    {
+        this.validDuration = new Duration(validDuration);
+    }
+
+    @Override
     public String getNewTicket(String userName) throws AuthenticationException
     {
         Ticket ticket = null;
@@ -119,7 +143,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         return ticketString;
     }
 
-    public Ticket findNonExpiredUserTicket(String userName)
+    private Ticket findNonExpiredUserTicket(String userName)
     {
         for (String key : ticketsCache.getKeys())
         {
@@ -143,6 +167,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         return null;
     }
     
+    @Override
     public String validateTicket(String ticketString) throws AuthenticationException
     {
         String ticketKey = getTicketKey(ticketString);
@@ -201,16 +226,14 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         return key;
     }
 
+    @Override
     public void invalidateTicketById(String ticketString)
     {
         String key = ticketString.substring(GRANTED_AUTHORITY_TICKET_PREFIX.length());
         ticketsCache.remove(key);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.alfresco.repo.security.authentication.TicketComponent#getUsersWithTickets(boolean)
-     */
+    @Override
     public Set<String> getUsersWithTickets(boolean nonExpiredOnly)
     {
         Date now = new Date();
@@ -229,10 +252,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         return users;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.alfresco.repo.security.authentication.TicketComponent#countTickets(boolean)
-     */
+    @Override
     public int countTickets(boolean nonExpiredOnly)
     {
         Date now = new Date();
@@ -255,10 +275,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.alfresco.repo.security.authentication.TicketComponent#invalidateTickets(boolean)
-     */
+    @Override
     public int invalidateTickets(boolean expiredOnly)
     {
         Date now = new Date();
@@ -288,6 +305,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         return count;
     }
 
+    @Override
     public void invalidateTicketByUser(String userName)
     {
         Set<String> toRemove = new HashSet<String>();
@@ -502,46 +520,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
 
     }
 
-    /**
-     * Are tickets single use
-     * 
-     * @param oneOff
-     */
-    public void setOneOff(boolean oneOff)
-    {
-        this.oneOff = oneOff;
-    }
-
-    /**
-     * Do tickets expire
-     * 
-     * @param ticketsExpire
-     */
-    public void setTicketsExpire(boolean ticketsExpire)
-    {
-        this.ticketsExpire = ticketsExpire;
-    }
-
-    /**
-     * How should tickets expire.
-     * 
-     * @param exipryMode
-     */
-    public void setExpiryMode(String expiryMode)
-    {
-        this.expiryMode = ExpiryMode.valueOf(expiryMode);
-    }
-
-    /**
-     * How long are tickets valid (XML duration as a string)
-     * 
-     * @param validDuration
-     */
-    public void setValidDuration(String validDuration)
-    {
-        this.validDuration = new Duration(validDuration);
-    }
-
+    @Override
     public String getAuthorityForTicket(String ticketString)
     {
         Ticket ticket = getTicketByTicketString(ticketString);
@@ -552,6 +531,7 @@ public class InMemoryTicketComponentImpl implements TicketComponent
         return ticket.getUserName();
     }
 
+    @Override
     public String getCurrentTicket(String userName, boolean autoCreate)
     {
         String ticket = currentTicket.get();
