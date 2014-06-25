@@ -495,12 +495,25 @@
     	  // Value based on list 'bpm:allowedStatus' in bpmModel.xml 
     	  if(status != null && status != "Completed") 
     	  {
-    		  elCell.innerHTML = this.msg("label.none");
+             elCell.innerHTML = this.msg("label.none");
     	  }
     	  else
     	  {
-    		  this.renderCellOwner(elCell, oRecord, oColumn, oData);
-    	  }
+             var creator = oRecord.getData("creator");
+             if (creator == null)
+             {
+                creator = oRecord.getData("owner");
+             }
+             if (creator != null && creator.userName)
+             {
+                var displayName = $html(this.msg("field.owner", creator.firstName, creator.lastName));
+                elCell.innerHTML = $userProfileLink(creator.userName, creator.firstName && creator.lastName ? displayName : null, null, !creator.firstName);
+             }
+             else
+             {
+                elCell.innerHTML = this.msg("label.none");
+             }
+          }
       },
 
       /**
