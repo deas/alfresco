@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-parent</artifactId>
-        <version>5.0.a-SNAPSHOT</version>
+        <version>5.0.b-SNAPSHOT</version>
     </parent>
     <artifactId>alfresco-packaging</artifactId>
     <packaging>pom</packaging>
