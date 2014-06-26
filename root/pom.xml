@@ -7,9 +7,9 @@
 <!-- ** against Alfresco with Maven. POMs, dependencies and ** -->
 <!-- ** projects information are up to date and released    ** -->
 <!-- ** together with the official Alfresco artifacts at    ** -->
-<!---**          https://artifacts.alfresco.com.            ** -->  
-<!---** Fox the SDK and Maven project samples check         ** -->
-<!---** http://code.google.com/p/maven-alfresco-archetypes/ ** -->  
+<!-- **          https://artifacts.alfresco.com.            ** -->  
+<!-- ** Fox the SDK and Maven project samples check         ** -->
+<!-- ** http://code.google.com/p/maven-alfresco-archetypes/ ** -->  
 <!-- ********************************************************* -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -75,11 +75,6 @@
           <id>alfresco-internal-snapshots</id>
           <url>${maven.distributionManagement.snapshot.url}</url>
       </snapshotRepository>      
-      <site>      
-          <id>alfresco-site</id>
-          <name>Alfresco Maven site</name>
-          <url>http://localhost/</url>
-      </site>      
   </distributionManagement>
 
   <modules>
@@ -144,8 +139,8 @@
     <sonar.branch>HEAD-BUG-FIX</sonar.branch>
 
     <!-- Community build specific properties -->
-    <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD-BUG-FIX</maven.scm.connection>
-    <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD-BUG-FIX</maven.scm.developerConnection>
+    <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD</maven.scm.connection>
+    <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD</maven.scm.developerConnection>
     <maven.scm.url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</maven.scm.url>
     <maven.repository.url>https://artifacts.alfresco.com/nexus/content/groups/public</maven.repository.url>
     <maven.distributionManagement.snapshot.url>https://artifacts.alfresco.com/nexus/content/repositories/snapshots</maven.distributionManagement.snapshot.url>
@@ -447,6 +442,12 @@
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.5</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <tagBase>https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/TAGS/CLOUD</tagBase>
+                    <tagNameFormat>V@{project.version}</tagNameFormat>
+                    <stagingRepository>alfresco-internal::default::https://artifacts.alfresco.com/nexus/content/repositories/internal-staging/</stagingRepository>
+                </configuration>        
             </plugin>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
@@ -791,8 +792,8 @@
         </modules>
         <properties>
             <!-- Enterprise specific properties -->
-            <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-enterprise-mirror/alfresco/HEAD-BUG-FIX</maven.scm.connection>
-            <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD-BUG-FIX</maven.scm.developerConnection>
+            <maven.scm.connection>scm:svn:http://svn.alfresco.com/repos/alfresco-enterprise-mirror/alfresco/HEAD</maven.scm.connection>
+            <maven.scm.developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/HEAD</maven.scm.developerConnection>
             <maven.scm.url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</maven.scm.url>
             <maven.repository.url>https://artifacts.alfresco.com/nexus/content/groups/private</maven.repository.url>
             <maven.distributionManagement.snapshot.url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</maven.distributionManagement.snapshot.url>
