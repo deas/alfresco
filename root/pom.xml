@@ -11,13 +11,12 @@
 <!-- ** Fox the SDK and Maven project samples check         ** -->
 <!-- ** http://code.google.com/p/maven-alfresco-archetypes/ ** -->  
 <!-- ********************************************************* -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.alfresco</groupId>
   <artifactId>alfresco-parent</artifactId>
   <packaging>pom</packaging>
-  <version>5.0.a-SNAPSHOT</version>
+  <version>5.0.a</version>
   <name>Alfresco Project</name>
 
   <url>http://www.alfresco.org/</url>
@@ -33,9 +32,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>${maven.scm.connection}</connection>
-    <developerConnection>${maven.scm.developerConnection}</developerConnection>
-    <url>${maven.scm.url}</url>
+    <connection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/TAGS/CLOUD/V5.0.a</connection>
+    <developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/TAGS/CLOUD/V5.0.a</developerConnection>
+    <url>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/TAGS/CLOUD/V5.0.a</url>
   </scm>
   <issueManagement>
     <system>JIRA</system>
@@ -134,8 +133,8 @@
 
     <!-- Sonar specific properties -->
     <sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
-    <sonar.exclusions></sonar.exclusions>
-    <sonar.skippedModules></sonar.skippedModules>
+    <sonar.exclusions />
+    <sonar.skippedModules />
     <sonar.branch>HEAD-BUG-FIX</sonar.branch>
 
     <!-- Community build specific properties -->
@@ -657,7 +656,7 @@
 									</goals>
 								</pluginExecutionFilter>
 								<action>
-									<ignore></ignore>
+									<ignore />
 								</action>
 							</pluginExecution>
 							<pluginExecution>
@@ -671,7 +670,7 @@
 									</goals>
 								</pluginExecutionFilter>
 								<action>
-									<ignore></ignore>
+									<ignore />
 								</action>
 							</pluginExecution>
 							<pluginExecution>
@@ -835,7 +834,7 @@
                             </goals>
                             <configuration>
                                 <rules>
-                                    <reactorModuleConvergence></reactorModuleConvergence>
+                                    <reactorModuleConvergence />
                                 </rules>
                             </configuration>
                         </execution>
