@@ -16,7 +16,7 @@
   <groupId>org.alfresco</groupId>
   <artifactId>alfresco-parent</artifactId>
   <packaging>pom</packaging>
-  <version>5.0.a</version>
+  <version>5.0.b-SNAPSHOT</version>
   <name>Alfresco Project</name>
 
   <url>http://www.alfresco.org/</url>
