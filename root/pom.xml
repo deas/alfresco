@@ -16,7 +16,7 @@
   <groupId>org.alfresco</groupId>
   <artifactId>alfresco-parent</artifactId>
   <packaging>pom</packaging>
-  <version>5.0.a</version>
+  <version>5.0.b-SNAPSHOT</version>
   <name>Alfresco Project</name>
 
   <url>http://www.alfresco.org/</url>
@@ -32,9 +32,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/TAGS/CLOUD/V5.0.a</connection>
-    <developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/TAGS/CLOUD/V5.0.a</developerConnection>
-    <url>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/alfresco/TAGS/CLOUD/V5.0.a</url>
+    <connection>${maven.scm.connection}</connection>
+    <developerConnection>${maven.scm.developerConnection}</developerConnection>
+    <url>${maven.scm.url}</url>
   </scm>
   <issueManagement>
     <system>JIRA</system>
