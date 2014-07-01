@@ -42,9 +42,9 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
 {
     private static Log logger = LogFactory.getLog(TopSiteContributorDashlet.class);
 
-    private static final String TOP_SITE_CONTRIBUTOR_REPORT_DASHLET = "div[id*='TopSiteContributorReportDashlet']";
-    private static final String TOP_SITE_CONTRIBUTOR_USERS = "div[id*='TopSiteContributorReportDashlet'] svg g text:nth-of-type(1)";
-    private static final String TOP_SITE_CONTRIBUTOR_COUNTS = "div[id*='TopSiteContributorReportDashlet'] svg g text:nth-of-type(2)";
+    private static final String TOP_SITE_CONTRIBUTOR_REPORT_DASHLET = "div[id*='TopSiteContributorReport']";
+    private static final String TOP_SITE_CONTRIBUTOR_USERS = "div[id*='TopSiteContributorReport'] svg g text:nth-of-type(1)";
+    private static final String TOP_SITE_CONTRIBUTOR_COUNTS = "div[id*='TopSiteContributorReport'] svg g text:nth-of-type(2)";
     private static final String FROM_DATE_INPUT_FIELD = "";
     private static final String TO_DATE_INPUT_FIELD = "";
     private static final String OK_BUTTON = "";
