@@ -64,7 +64,7 @@ define(["dojo/_base/declare",
             hoverable: false,
 
             tooltip: {
-               enabled: false
+               enabled: true
             },
 
             readers: null,
@@ -216,11 +216,11 @@ define(["dojo/_base/declare",
             },
 
             performRenderChart: function(){
-               if (!this.chart) {
+               if (true) { //!this.chart) {
                   this.createChart();
                }
                this.chart.setData(this._currentData, this._currentDataDescriptor);
-               this.chart.render();
+               this.chart.render(true, true, false);
             },
 
             getWidth: function(){

@@ -26,14 +26,26 @@
  */
 define(["dojo/_base/declare",
    "alfresco/core/Core",
+   "alfresco/core/I18nUtils",
    "alfresco/charts/ccc/Chart"],
-      function(declare, AlfCore, Chart) {
+      function(declare, AlfCore, I18nUtils, Chart) {
+
+         var i18nScope = "alfresco.reports.PieChart";
 
          return declare([Chart], {
 
             pvcChartType: "PieChart",
 
-            valuesMask: "{category} ({value.percent})",
+            valuesMask: I18nUtils.msg(i18nScope, "label", "{category}", "{value}", "{value.percent}"),
+
+            /**
+             * An array of the i18n files to use with this widget.
+             *
+             * @instance
+             * @type {object[]}
+             * @default [{i18nFile: "./i18n/PieChart.properties"}]
+             */
+            i18nRequirements: [{i18nFile: "./i18n/PieChart.properties"}],
 
             createChartConfig: function alfresco_charts_ccc_PieChart__createChartConfig(){
                var config = this.inherited(arguments);
