@@ -15,7 +15,7 @@
     <test name="WAT2 Data Prep Cloud Suite" verbose="1" parallel="classes" thread-count="1">
         <classes>
  			<!-- New in the Sprint -->		
-			<!-- <class name="org.alfresco.share.api.CommentsAPITests" />
+			<class name="org.alfresco.share.api.CommentsAPITests" />
 			<class name="org.alfresco.share.api.DeploymentsAPITests" />
 			<class name="org.alfresco.share.api.FavouriteAPITests" />
 			<class name="org.alfresco.share.api.NodesAPITests" />
@@ -24,11 +24,11 @@
 		 	<class name="org.alfresco.share.api.SiteMembershipAPITests" />
 			<class name="org.alfresco.share.api.SitesAPITests" />
 			<class name="org.alfresco.share.api.TagsAPITests" />
-			<class name="org.alfresco.share.api.WorkflowAPITests" />-->	
+			<class name="org.alfresco.share.api.WorkflowAPITests" />
 
 			<!--  Merged -->
-			<!-- <class name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest"/>
-			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet"/>-->	
+			<class name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest"/>
+			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet"/>
 			<class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete">
 				<methods>
                      <include name="dataPrep_ALF_3162" />
@@ -37,29 +37,28 @@
 		<!--	<class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
 			<class name="org.alfresco.share.reports.TopSiteContributorReportTest" /> -->
 			
-			<!-- 
+			
 			<class name="org.alfresco.share.site.document.GoogleDocsTest"/>
 			<class name="org.alfresco.share.site.document.ManageAspectTest"/>
 			<class name="org.alfresco.share.user.trashcan.TrashCanTest"/>
 			
-		    <class name="org.alfresco.share.search.AdvanceSearchTest"/>  -->
-            <!-- <class name="org.alfresco.share.search.AdvanceSearchTest2"/>
-            <class name="org.alfresco.share.search.BasicSearchTest"/>-->
+		    <!-- <class name="org.alfresco.share.search.AdvanceSearchTest"/>  -->
+            <class name="org.alfresco.share.search.AdvanceSearchTest2"/>
+            <class name="org.alfresco.share.search.BasicSearchTest"/>
             <class name="org.alfresco.share.search.LiveSearchTest"/>
                         
 		<!--	<class name="org.alfresco.share.DownloadFilesAndFoldersTest"/> -->
-			<!-- <class name="org.alfresco.share.LoginTest"/>
+			<class name="org.alfresco.share.LoginTest"/>
 			<class name="org.alfresco.share.MyDashBoardTest"/>
-			<class name="org.alfresco.share.SiteDashBoardTest"/>-->
+			<class name="org.alfresco.share.SiteDashBoardTest"/>
 			<class name="org.alfresco.share.HeaderBarTest">
 			 	<methods>
                      <include name="dataPrep_ALF_3161" />
                 </methods>
 			</class>
 			<class name="org.alfresco.share.site.document.DocumentDetailsTest"/>
-			<!-- 
 			<class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
-			<class name="org.alfresco.share.SiteDocumentLibraryTest"/>-->
+			<class name="org.alfresco.share.SiteDocumentLibraryTest"/>
         </classes>
     </test>
 </suite>

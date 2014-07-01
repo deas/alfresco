@@ -760,75 +760,7 @@ public class LiveSearchTest extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "DataPrepLiveSearch", "Cloud-only" })
-    public void dataPrep_LiveSearch_ALF_3028() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = testName + "@" + DOMAIN_FREE;
-        String[] testUserInfo = new String[] { testUser };
-        String siteName = getSiteName(testName);
-
-        try
-        {
-            // Create user
-            CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
-
-            // Login as created user
-            ShareUser.login(drone, testUser, testPassword);
-
-            // Create site
-            SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-
-            // Uploading file with testName as document title.
-            String[] fileInfo = { testName };
-            ShareUser.uploadFileInFolder(drone, fileInfo);
-
-            // Created user logs out
-            ShareUser.logout(drone);
-
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
-
-    }
-
-    /**
-     * 1) User that is not system tenant logs into cloud
-     * 2) Performs live search with testName as a search term
-     * 3) Checks that the live search is not enabled for the user
-     * (it should be enabled only for the system tenants)
-     */
-/**
-    @Test(groups = { "CloudOnly", "TestLiveSearch" })
-    public void ALF_3028()
-    {
-
-        // live search term is document title
-        testName = getTestName();
-        String testUser = testName + "@" + DOMAIN_FREE;
-        ShareUser.login(drone, testUser, testPassword);
-
-        try
-        {
-            LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, testName);
-            liveSearchDropdown.isDocumentsTitleVisible();
-            Assert.assertTrue(false, "Above line should have thrown page exception");
-        }
-        catch (PageException e)
-        {
-            Assert.assertEquals(e.getMessage(), "Unable to find live search documents title.");
-            ShareUser.logout(drone);
-
-        }
-    }
-    **/
-
+   
     /**
      * DataPreparation method - ALF_3029
      * 1) Login
