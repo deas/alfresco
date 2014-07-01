@@ -21,9 +21,10 @@ public class StatsParameters implements BasicSearchParameters
     public static final String PARAM_FACET = "facet";
     public static final String FACET_PREFIX = "@";
     
-    private String language;
-    private String query;
-    private String filterQuery;
+    private final String language;
+    private final String query;
+    private final String filterQuery;
+    private final boolean dateSearch;
     private List<StoreRef> stores = new ArrayList<>();
     private List<Locale> locales = new ArrayList<>();
     private List<SortDefinition> sortDefinitions = new ArrayList<>();
@@ -31,15 +32,21 @@ public class StatsParameters implements BasicSearchParameters
     
     public StatsParameters(String language, String query)
     {
-        this(language, query, null);
+        this(language, query, null, false);
     }
     
-    public StatsParameters(String language, String query, String filterQuery)
+    public StatsParameters(String language, String query, boolean isDateSearch)
+    {
+        this(language, query, null, isDateSearch);
+    }
+    
+    public StatsParameters(String language, String query, String filterQuery, boolean isDateSearch)
     {
         super();
         this.language = language;
         this.query = query;
         this.filterQuery = filterQuery;
+        this.dateSearch = isDateSearch;
     }
     
     public String getLanguage()
@@ -70,7 +77,11 @@ public class StatsParameters implements BasicSearchParameters
     {
         return this.statsParameters;
     }
-    
+    public boolean isDateSearch()
+    {
+        return this.dateSearch;
+    }
+
     /**
      * Add a sort definition.
      * 
@@ -115,7 +126,8 @@ public class StatsParameters implements BasicSearchParameters
                     .append(this.language).append(", stores=").append(this.stores)
                     .append(", locales=").append(this.locales).append(", sortDefinitions=")
                     .append(this.sortDefinitions).append(", statsParameters=")
-                    .append(this.statsParameters).append("]");
+                    .append(this.statsParameters).append(", isDateSearch=")
+                    .append(this.dateSearch).append("]");
         return builder.toString();
     }
 
