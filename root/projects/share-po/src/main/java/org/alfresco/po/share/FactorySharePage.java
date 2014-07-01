@@ -48,6 +48,7 @@ import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
 import org.alfresco.po.share.user.*;
 import org.alfresco.po.share.user.UserSitesPage;
+import org.alfresco.po.share.user.NotificationPage;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.po.share.workflow.WorkFlowDetailsPage;

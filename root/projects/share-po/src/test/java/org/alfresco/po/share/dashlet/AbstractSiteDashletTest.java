@@ -60,7 +60,7 @@ public class AbstractSiteDashletTest extends AbstractDocumentTest
         }
     }
    
-    protected void navigateToSiteDashboard() throws Exception
+    protected void navigateToSiteDashboard()
     {
         if(logger.isTraceEnabled())
         {

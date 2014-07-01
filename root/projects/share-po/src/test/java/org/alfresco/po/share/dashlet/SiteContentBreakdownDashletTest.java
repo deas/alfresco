@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
@@ -99,7 +99,7 @@ public class SiteContentBreakdownDashletTest extends AbstractSiteDashletTest
     @AfterClass
     public void deleteSite()
     {
-        SiteUtil.deleteSite(drone, siteName);
+      SiteUtil.deleteSite(drone, siteName);
     }
     
 
@@ -133,7 +133,7 @@ public class SiteContentBreakdownDashletTest extends AbstractSiteDashletTest
     {
         customiseSiteDashBoard = siteDashBoard.getSiteNav().selectCustomizeDashboard();
         customiseSiteDashBoard.render();
-        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlet.SITE_CONTENT_REPORT, 2).render();
+        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlets.SITE_CONTENT_REPORT, 2).render();
         siteContentBreakdownDashlet = siteDashBoard.getDashlet(SITE_CONTENT_REPORT).render();
         Assert.assertNotNull(siteContentBreakdownDashlet);
     }

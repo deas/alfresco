@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
 import org.alfresco.po.share.site.InviteMembersPage;
@@ -154,7 +154,7 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         SiteDashboardPage siteDashBoard = siteFinder.selectSite(siteName).render();
         customiseSiteDashBoard = siteDashBoard.getSiteNav().selectCustomizeDashboard();
         customiseSiteDashBoard.render();
-        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlet.TOP_SITE_CONTRIBUTOR_REPORT, 2).render();
+        siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlets.TOP_SITE_CONTRIBUTOR_REPORT, 2).render();
         topSiteContributorDashlet = siteDashBoard.getDashlet(TOP_SITE_CONTRIBUTOR_REPORT).render();
         Assert.assertNotNull(topSiteContributorDashlet);
     }
