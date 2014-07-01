@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.alfresco.po.share.dashlet.SiteContentBreakdownDashlet;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.UploadFilePage;
@@ -137,7 +137,7 @@ public class SiteContentBreakdownReportTest extends AbstractUtils
         ShareUser.login(drone, testUser, testPassword);
 
         // test user (site creator) adds Site Content Report Dashlet to site's dashboard
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_CONTENT_REPORT);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_CONTENT_REPORT);
         SiteContentBreakdownDashlet siteContentBreakdownDashlet = ShareUserDashboard.getSiteContentBreakdownDashlet(drone, siteName);
         
         List<String> mimeTypes = siteContentBreakdownDashlet.getTooltipFileTypes();

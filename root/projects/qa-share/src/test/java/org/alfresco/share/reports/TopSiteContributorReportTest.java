@@ -18,7 +18,7 @@ package org.alfresco.share.reports;
 import java.util.List;
 
 import org.alfresco.po.share.dashlet.TopSiteContributorDashlet;
-import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.util.FailedTestListener;
@@ -224,7 +224,7 @@ public class TopSiteContributorReportTest extends AbstractUtils
         ShareUser.login(drone, testUser, testPassword);
 
         // test user (site creator) adds Top Site Contributor Dashlet to site's dashboard
-        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.TOP_SITE_CONTRIBUTOR_REPORT);
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.TOP_SITE_CONTRIBUTOR_REPORT);
         TopSiteContributorDashlet topSiteContributorDashlet = ShareUserDashboard.getTopSiteContributorDashlet(drone, siteName);
  
         List<String> users = topSiteContributorDashlet.getTooltipUsers();
