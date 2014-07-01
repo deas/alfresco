@@ -34,20 +34,20 @@
                      <include name="dataPrep_ALF_3162" />
                 </methods>
 			</class>
-			<class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
-			<class name="org.alfresco.share.reports.TopSiteContributorReportTest" />
+		<!--	<class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
+			<class name="org.alfresco.share.reports.TopSiteContributorReportTest" /> -->
 			
 			
 			<class name="org.alfresco.share.site.document.GoogleDocsTest"/>
 			<class name="org.alfresco.share.site.document.ManageAspectTest"/>
 			<class name="org.alfresco.share.user.trashcan.TrashCanTest"/>
 			
-			<class name="org.alfresco.share.search.AdvanceSearchTest"/>
+		<!-- <class name="org.alfresco.share.search.AdvanceSearchTest"/>  -->
             <class name="org.alfresco.share.search.AdvanceSearchTest2"/>
             <class name="org.alfresco.share.search.BasicSearchTest"/>
             <class name="org.alfresco.share.search.LiveSearchTest"/>
                         
-			<class name="org.alfresco.share.DownloadFilesAndFoldersTest"/>
+		<!--	<class name="org.alfresco.share.DownloadFilesAndFoldersTest"/> -->
 			<class name="org.alfresco.share.LoginTest"/>
 			<class name="org.alfresco.share.MyDashBoardTest"/>
 			<class name="org.alfresco.share.SiteDashBoardTest"/>

@@ -101,4 +101,16 @@
             <class name="org.alfresco.po.share.dashlet.WikiDashletTest" />
         </classes>
     </test>
+    <!-- 
+    <test name="SiteContentBreakdownDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.SiteContentBreakdownDashletTest" />
+        </classes>
+    </test>
+    <test name="TopSiteContributorDashletTest">
+        <classes>
+            <class name="org.alfresco.po.share.dashlet.TopSiteContributorDashletTest" />
+        </classes>
+    </test>
+     -->
 </suite>

@@ -32,14 +32,14 @@
                      <include name="ALF_3162" />
                 </methods>
 			</class>
-			<class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
-			<class name="org.alfresco.share.reports.TopSiteContributorReportTest" />
+	<!-- 		<class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
+			<class name="org.alfresco.share.reports.TopSiteContributorReportTest" />  -->
         </classes>
     </test>
 
     <test name="SearchTest" verbose="1" parallel="classes" thread-count="1">
         <classes>
-            <class name="org.alfresco.share.search.AdvanceSearchTest"/>
+        <!-- <class name="org.alfresco.share.search.AdvanceSearchTest"/>  --> 
             <class name="org.alfresco.share.search.AdvanceSearchTest2" />
             <class name="org.alfresco.share.search.BasicSearchTest" />
             <class name="org.alfresco.share.search.LiveSearchTest" />
@@ -53,7 +53,7 @@
                     <include name="ALF_3160" />
                 </methods>
              </class>
-            <class name="org.alfresco.share.DownloadFilesAndFoldersTest"/>
+          <!--  <class name="org.alfresco.share.DownloadFilesAndFoldersTest"/> -->
             <class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
             <class name="org.alfresco.share.SiteDocumentLibraryTest">
             
