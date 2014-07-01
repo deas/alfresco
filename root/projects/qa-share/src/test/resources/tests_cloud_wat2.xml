@@ -48,13 +48,13 @@
 
     <test name="DocLibTest" verbose="1" parallel="classes" thread-count="1">
         <classes>
+             <class name="org.alfresco.share.site.document.DocumentDetailsTest">
+            	<methods>
+                    <include name="ALF_3160" />
+                </methods>
+             </class>
             <class name="org.alfresco.share.DownloadFilesAndFoldersTest"/>
             <class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
-            <class name="org.alfresco.share.site.document.DocumentDetailsTest">
-            	<methods>
-                    <exclude name="Enterprise40x_8573" />
-                </methods>
-            </class>
             <class name="org.alfresco.share.SiteDocumentLibraryTest">
             
                 <methods>
