@@ -1,12 +1,19 @@
+var pubSubScope = "HELLO";//instance.object.id;
+
 model.jsonModel = {
    rootNodeId: args.htmlid,
-   services: ["alfresco/services/ReportService"],
+   services: [{
+      name: "alfresco/services/ReportService",
+      config: {
+         //pubSubScope: pubSubScope
+      }
+   }],
    widgets: [
       {
          id: "DASHLET",
          name: "alfresco/dashlets/TopSiteContributorReportDashlet",
          config: {
-            generatePubSubScope: true
+            //pubSubScope: pubSubScope
          }
       }
    ]

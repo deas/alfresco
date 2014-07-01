@@ -6,7 +6,7 @@ model.jsonModel = {
          id: "DASHLET",
          name: "alfresco/dashlets/SiteContentReportDashlet",
          config: {
-            generatePubSubScope: true
+            //generatePubSubScope: true
          }
       }
    ]

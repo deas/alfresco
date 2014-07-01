@@ -28,8 +28,9 @@ define(["dojo/_base/declare",
    "alfresco/core/Core",
    "alfresco/core/I18nUtils",
    "alfresco/reports/Report",
-   "dojo/_base/lang"],
-      function(declare, AlfCore, I18nUtils, Report, lang) {
+   "dojo/_base/lang",
+   "service/constants/Default"],
+      function(declare, AlfCore, I18nUtils, Report, lang, AlfConstants) {
 
          var i18nScope = "alfresco.reports.TopSiteContributorReport";
          return declare([Report], {
@@ -63,14 +64,46 @@ define(["dojo/_base/declare",
              */
             widgets: [
                {
-                  name: "alfresco/charts/ccc/PieChart",
+                  name: "alfresco/forms/Form",
                   config: {
-                     title: I18nUtils.msg(i18nScope, "title"),
-                     dataTopic: "ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT",
-                     clickTopic: "REPORT_ITEM_CLICKED"
+                     okButtonPublishTopic: "SHOW_CONTRIBUTORS_BY_DATE",
+                     okButtonPublishGlobal: true,
+                     widgets: [
+                        {
+                           name: "alfresco/forms/controls/DojoDateTextBox",
+                           config: {
+                              label: I18nUtils.msg(i18nScope, "from")
+                           }
+                        },
+                        {
+                           name: "alfresco/forms/controls/DojoDateTextBox",
+                           config: {
+                              label: I18nUtils.msg(i18nScope, "to")
+                           }
+                        }
+                     ]
+                  }
+               },
+               {
+                  name: "alfresco/charts/ccc/ChartsView",
+                  config:
+                  {
+                     dataRequestTopic: "ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT",
+                     dataRequestPayload: { site: "$$SITE$$" },
+                     subscriptionTopic: "SHOW_CONTRIBUTORS_BY_DATE",
+                     widgets: [
+                        {
+                           name: "alfresco/charts/ccc/PieChart",
+                           config: {
+                              legend: true,
+                              selectable: true,
+                              hoverable:  true,
+                              clickTopic: "REPORT_ITEM_CLICKED"
+                           }
+                        }
+                     ]
                   }
                }
             ]
-
          });
       });

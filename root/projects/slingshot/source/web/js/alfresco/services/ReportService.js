@@ -31,11 +31,8 @@ define(["dojo/_base/declare",
    "dojo/request/xhr",
    "dojo/json",
    "dojo/_base/lang",
-   "dojo/dom-construct",
-   "alfresco/buttons/AlfButton",
-   "service/constants/Default",
-   "alfresco/dialogs/AlfDialog"],
-      function(declare, AlfCore, AlfXhr, NotificationUtils, ObjectTypeUtils, xhr, JSON, lang, domConstruct, AlfButton, AlfConstants, AlfDialog) {
+   "service/constants/Default"],
+      function(declare, AlfCore, AlfXhr, NotificationUtils, ObjectTypeUtils, xhr, JSON, lang, AlfConstants) {
 
          return declare([AlfCore, AlfXhr, NotificationUtils], {
 
@@ -58,8 +55,8 @@ define(["dojo/_base/declare",
              */
             constructor: function alfresco_services_SiteService__constructor(args) {
                lang.mixin(this, args);
-               this.alfSubscribe("ALF_RETRIEVE_SITE_CONTENT_REPORT", lang.hitch(this, "getSiteContentReport"));
-               this.alfSubscribe("ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT", lang.hitch(this, "getTopSiteContributorReport"));
+               this.alfSubscribe("ALF_RETRIEVE_SITE_CONTENT_REPORT", lang.hitch(this, this.getSiteContentReport));
+               this.alfSubscribe("ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT", lang.hitch(this, this.getTopSiteContributorReport));
             },
 
             /**
@@ -69,7 +66,11 @@ define(["dojo/_base/declare",
              */
             getSiteContentReport: function alfresco_services_ReportService__getSiteContentReport(payload) {
                var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_SITE_CONTENT_REPORT";
-               var url = Alfresco.constants.URL_RESCONTEXT + "/ctools/SITE_CONTENT_REPORT-MOCKUP-DATA.json";
+               var url = AlfConstants.PROXY_URI + "/api/solr";
+               if (payload.site) {
+                  //url += "/site/" + encodeURIComponent(payload.site);
+               }
+               url += "/stats?facet=content.mimetype";
                var config = {
                   alfTopic: alfTopic,
                   url: url,
@@ -100,7 +101,11 @@ define(["dojo/_base/declare",
              */
             getTopSiteContributorReport: function alfresco_services_ReportService__getSiteContentReport(payload) {
                var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT";
-               var url = Alfresco.constants.URL_RESCONTEXT + "/ctools/TOP_SITE_CONTRIBUTOR_REPORT-MOCKUP-DATA.json";
+               var url = AlfConstants.PROXY_URI + "/api/solr";
+               if (payload.site) {
+                  //url += "/sites/" + encodeURIComponent(payload.site);
+               }
+               url += "/stats?facet=content.creator";
                var config = {
                   alfTopic: alfTopic,
                   url: url,

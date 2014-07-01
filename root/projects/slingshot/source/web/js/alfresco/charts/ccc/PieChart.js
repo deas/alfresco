@@ -33,29 +33,16 @@ define(["dojo/_base/declare",
 
             pvcChartType: "PieChart",
 
-            titlePosition: "bottom",
-
-            i18nScope: "alfresco.charts.ccc.PieChart",
-
-            /**
-             * An array of the i18n files to use with this widget.
-             *
-             * @instance
-             * @type {object[]}
-             * @default [{i18nFile: "./i18n/PieChart.properties"}]
-             */
-            i18nRequirements: [{i18nFile: "./i18n/PieChart.properties"}],
+            valuesMask: "{category} ({value.percent})",
 
             createChartConfig: function alfresco_charts_ccc_PieChart__createChartConfig(){
                var config = this.inherited(arguments);
 
                // PieChart specific options
-               config.titlePosition = this.titlePosition;
-
-               // Do no expose these options to avoid usage of this widget becoming dependent on pvc specifics
-               config.tooltipEnabled = true; // deprecated
-               config.explodedSliceRadius = 15; // valid option?
-               config.valuesVisible = true; // valid option?
+               if (this.valuesMask)
+               {
+                  config.valuesMask = this.valuesMask;
+               }
 
                return config;
             }

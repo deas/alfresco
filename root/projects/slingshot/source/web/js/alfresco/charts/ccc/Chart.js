@@ -52,18 +52,26 @@ define(["dojo/_base/declare",
 
          return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
 
+            baseClass: "alfresco-charts-ccc-Chart",
+
             pvcChartType: 'Chart',
 
             chartsNode: null,
 
             dataTopic: null,
 
-            title: null, // todo make i18n
+            title: null,
+            titlePosition: "bottom",
+
             width: 600,
             height: 400,
+
             legend: false,
+            legendPosition: 'left',
+            legendAlign: 'middle',
 
-
+            selectable: false,
+            hoverable: false,
 
             /**
              * Declare the dependencies on "legacy" JS files that this is wrapping.
@@ -79,17 +87,6 @@ define(["dojo/_base/declare",
                "/ctools/def.js",
                "/ctools/pvc.js"
             ],
-
-            i18nScope: "alfresco.charts.ccc.Base",
-
-            /**
-             * An array of the i18n files to use with this widget.
-             *
-             * @instance
-             * @type {object[]}
-             * @default [{i18nFile: "./i18n/Chart.properties"}]
-             */
-            i18nRequirements: [{i18nFile: "./i18n/Chart.properties"}],
 
             /**
              * An array of the CSS files to use with this widget.
@@ -129,28 +126,29 @@ define(["dojo/_base/declare",
 
                // Common configurable properties
                config.canvas = this.chartsNode;
+
                config.width = this.width;
                config.height = this.height;
-               if (this.title === undefined || this.title === null)
-               {
-                  config.title = this.message('title');
-               }
-               else
-               {
-                  config.title = this.title;
-               }
+
+               config.title = this.title;
+               config.titlePosition = this.titlePosition;
 
                config.legend = this.legend;
+               config.legendPosition = this.legendPosition;
+               config.legendAlign = this.legendAlign;
 
-               // Do not expose these options to the user of this widget to avoid being to dependent on the pvc charts
-               config.selectable = false;
-               config.hoverable = false;
+               config.selectable = this.selectable;
+               config.hoverable = this.hoverable;
 
                if (this.clickTopic)
                {
                   config.clickable = true;
                   config.clickAction = lang.hitch(this, this.onItemClick);
                }
+
+               config.tooltipEnabled = true; // deprecated
+               //config.explodedSliceRadius = 15; // valid option?
+               config.valuesVisible = true; // valid option?
 
                return config;
             },
@@ -174,20 +172,30 @@ define(["dojo/_base/declare",
             postCreate: function alfresco_charts_ccc_Chart__postCreate() {
                this.createChart();
 
-               // Set a response topic that is scoped to this widget...
-               var dataTopicPayload = {};
-               dataTopicPayload.alfResponseTopic = this.pubSubScope + this.dataTopic;
-               this.alfPublish(this.dataTopic, dataTopicPayload, true);
+               if (this.dataTopic) {
+                  // Set a response topic that is scoped to this widget...
+                  var dataTopicPayload = {};
+                  dataTopicPayload.alfResponseTopic = this.pubSubScope + this.dataTopic;
+                  this.alfPublish(this.dataTopic, dataTopicPayload);
+               }
+            },
+
+            setData: function(data, dataDescriptor){
+               this.chart.setData(data, dataDescriptor);
+            },
+
+            render: function(){
+               this.chart.render();
             },
 
             onDataLoadSuccess: function(payload){
-               this.chart.setData(payload.response.data, payload.response.dataDescriptor);
-               this.chart.render();
+               this.setData(payload.response.data, payload.response.dataDescriptor);
+               this.render();
             },
 
             onDataLoadFailure: function(payload){
-               this.chart.setData({}, {});
-               this.chart.render();
+               this.setData({}, {});
+               this.render();
             }
 
          });

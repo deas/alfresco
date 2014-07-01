@@ -30,7 +30,6 @@ define(["dojo/_base/declare",
    "alfresco/reports/Report"],
       function(declare, AlfCore, I18nUtils, Report) {
 
-         var i18nScope = "alfresco.reports.SiteContentReport";
          return declare([Report], {
 
             i18nScope: "alfresco.reports.SiteContentReport",
@@ -55,7 +54,7 @@ define(["dojo/_base/declare",
                {
                   name: "alfresco/charts/ccc/PieChart",
                   config: {
-                     title: I18nUtils.msg(i18nScope, "title"),
+                     legend: true,
                      dataTopic: "ALF_RETRIEVE_SITE_CONTENT_REPORT"
                   }
                }
