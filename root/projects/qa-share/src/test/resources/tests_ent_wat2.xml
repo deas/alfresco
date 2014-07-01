@@ -12,6 +12,7 @@
         <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
     </listeners>
  
+ <!-- 
      <test name="DeploymentsAPITests" verbose="1" parallel="classes" thread-count="1">
          <classes>
              <class name="org.alfresco.share.api.DeploymentsAPITests" />
@@ -62,17 +63,17 @@
              <class name="org.alfresco.share.api.SitesAPITests" />
          </classes>
      </test>
- 
+  -->
      <!-- Merged Already -->
      <test name="UserLoginAndDashBoardTest" verbose="1" parallel="classes" thread-count="1">
          <classes>
-             <class name="org.alfresco.share.LoginTest" />
+             <!-- <class name="org.alfresco.share.LoginTest" />
              <class name="org.alfresco.share.MyDashBoardTest">
                  <methods>
                      <exclude name="cloud_1507" />
                  </methods>
              </class>
-             <class name="org.alfresco.share.SiteDashBoardTest" />
+             <class name="org.alfresco.share.SiteDashBoardTest" /> -->
  			<class name="org.alfresco.share.HeaderBarTest">
 			 	<methods>
                      <include name="ALF_3161" />
@@ -83,20 +84,20 @@
  
      <test name="DashletTest" verbose="1" parallel="classes" thread-count="1">
          <classes>
-             <class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet" />
+             <!-- <class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet" /> -->
              <class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete">
 				<methods>
                      <include name="ALF_3162" />
                 </methods>
 			</class>
-			<class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
-			<class name="org.alfresco.share.reports.TopSiteContributorReportTest" />
+			 <!--<class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
+			<class name="org.alfresco.share.reports.TopSiteContributorReportTest" /> -->
 		 </classes>
      </test>
  
      <test name="SearchTest" verbose="1" parallel="classes" thread-count="1">
          <classes>
-             <class name="org.alfresco.share.search.AdvanceSearchTest2" />
+           <!--  <class name="org.alfresco.share.search.AdvanceSearchTest2" /> -->
              <class name="org.alfresco.share.search.LiveSearchTest" />
          </classes>
      </test>
@@ -108,6 +109,7 @@
                     <include name="ALF_3160" />
                 </methods>
              </class>
+             <!-- 
               <class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
              <class name="org.alfresco.share.SiteDocumentLibraryTest">
                  <methods>
@@ -120,6 +122,7 @@
                      <exclude name="Enterprise40x_8586" />
                  </methods>
              </class>
+              -->
  		</classes>
 	</test>
 </suite>
