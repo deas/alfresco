@@ -9,6 +9,13 @@
    color: #fff;
 }
 
+.alfresco-share .dijitIcon.dijitMenuItemIcon.alf-my-sites-icon {
+   background: url("./images/recent-site.png");
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+}
+
 .alfresco-share .dijitIcon.dijitMenuItemIcon.alf-recent-site-icon {
    background: url("./images/recent-site.png");
    background-repeat: no-repeat;

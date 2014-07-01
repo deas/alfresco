@@ -119,6 +119,14 @@ define(["dojo/_base/declare",
        * @default true
        */
       showCreateSite: true,
+
+      /**
+       * Indicates whether or not the "My Sites" menu item should be displayed or not.
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      showMySites: true,
       
       /**
        * Indicates whether or not to show the "Favourites" cascading menu item.
@@ -525,7 +533,17 @@ define(["dojo/_base/declare",
                label: this.usefulGroupLabel
             });
             
-            // Create and add the 'Site Finder' and 'Create Site' menu items to it...
+            // Create and add the 'My Sites', 'Site Finder' and 'Create Site' menu items to it...
+            if (this.showMySites)
+            {
+               this.mySites = new AlfMenuItem({
+                  id: this.id + "_MY_SITES",
+                  label: this.mySitesLabel,
+                  iconClass: this.mySitesIconClass,
+                  targetUrl: "user/" + encodeURIComponent(AlfConstants.USERNAME) + "/user-sites"
+               });
+               this.usefulGroup.addChild(this.mySites);
+            }
             if (this.showSiteFinder)
             {
                this.siteFinder = new AlfMenuItem({
@@ -880,6 +898,20 @@ define(["dojo/_base/declare",
        * @default "alf-create-site-icon"
        */
       createSiteIconClass: "alf-create-site-icon",
+      
+      /**
+       * @instance
+       * @type {string}
+       * @default "my-sites.label"
+       */
+      mySitesLabel: "my-sites.label",
+      
+      /**
+       * @instance
+       * @type {string}
+       * @default "alf-my-sites-icon"
+       */
+      mySitesIconClass: "alf-my-sites-icon",
       
       /**
        * @instance
