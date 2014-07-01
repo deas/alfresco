@@ -47,6 +47,7 @@ public class ShareTestProperty
     private final String domainFree;
     private final String domainPremium;
     private final String domainHybrid;
+    private final String domainLiveSearch;
     private final String defaultUser;
     private final String uniqueTestDataString;
     private final String adminUsername;
@@ -65,7 +66,7 @@ public class ShareTestProperty
 
     public ShareTestProperty(final String shareUrl, final String apiUrl, final String gridUrl, final String username, final String password, String alfrescoVersion,
             String cloudUrlForHybrid, final String downloadDirectory, final String googleUserName, final String googlePassword, final boolean hybridEnabled,
-            final String uniqueTestRunName, final String domainFree, final String domainPremium, final String domainHybrid, final String defaultUser,
+            final String uniqueTestRunName, final String domainFree, final String domainPremium, final String domainHybrid, final String domainLiveSearch, final String defaultUser,
             final String uniqueTestDataString, final String adminUsername, final String adminPassword, final String superadminUsername,
             final String superadminPassword, final int httpSecurePort, final String headerKey, final String mimeTypes, final String jmxrmiPort, final String jmxrmiUser, final String jmxrmiPassword, final String nodePort, final String licenseShare, final String maxWaitTimeCloudSync)
     {
@@ -84,6 +85,7 @@ public class ShareTestProperty
         this.domainFree = domainFree;
         this.domainPremium = domainPremium;
         this.domainHybrid = domainHybrid;
+        this.domainLiveSearch = domainLiveSearch;
         this.defaultUser = defaultUser;
         this.uniqueTestDataString = uniqueTestDataString;
         this.adminUsername = adminUsername;
@@ -218,6 +220,16 @@ public class ShareTestProperty
         return domainHybrid;
     }
 
+    
+    /**
+     * @return the domainLiveSearch
+     */
+    public String getdomainLiveSearch()
+    {
+        return domainLiveSearch;
+    }    
+    
+    
     /**
      * @return the defaultUser
      */

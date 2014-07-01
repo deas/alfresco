@@ -67,6 +67,7 @@
         <constructor-arg name="uniqueTestRunName" value="${uniqueTestRunName}" />
         <constructor-arg name="domainFree" value="${domainFree}" />
         <constructor-arg name="domainPremium" value="${domainPremium}" />
+        <constructor-arg name="domainLiveSearch" value="${domainLiveSearch}" />
         <constructor-arg name="domainHybrid" value="${domainHybrid}" />
         <constructor-arg name="defaultUser" value="${defaultUser}" />
         <constructor-arg name="uniqueTestDataString"
@@ -110,6 +111,7 @@
         <constructor-arg name="domainFree" value="${domainFree}" />
         <constructor-arg name="domainPremium" value="${domainPremium}" />
         <constructor-arg name="domainHybrid" value="${domainHybrid}" />
+        <constructor-arg name="domainLiveSearch" value="${domainLiveSearch}" />
         <constructor-arg name="defaultUser" value="${defaultUser}" />
         <constructor-arg name="uniqueTestDataString"
             value="${uniqueTestDataString}" />

@@ -27,7 +27,7 @@ public class AbstractUtilsTest extends AbstractUtils
         ShareTestProperty testProperties = new ShareTestProperty("https://my.alfresco.me/share", 
                 "", "", SUPERADMIN_USERNAME, DEFAULT_PASSWORD, 
                 AlfrescoVersion.Cloud.toString(), cloudUrlForHybrid, downloadDirectory, 
-                googleUserName, googlePassword, false, "", "", "", "", "", "", "", "", "", "", 
+                googleUserName, googlePassword, false, "", "", "", "", "", "", "", "", "", "", "", 
                 0, "", mimeTypes,"","","","", licenseShare, maxWaitTimeCloudSync.toString());
 
         // Will create a new instance of the bean since it has the prototype scope
@@ -56,7 +56,7 @@ public class AbstractUtilsTest extends AbstractUtils
         ShareTestProperty testProperties = new ShareTestProperty("http://localhost:8080/share", 
                 "", "", SUPERADMIN_USERNAME, DEFAULT_PASSWORD, 
                 AlfrescoVersion.Enterprise.toString(), cloudUrlForHybrid, downloadDirectory, 
-                googleUserName, googlePassword, false, "", "", "", "", "", "", "", "", "", "", 
+                googleUserName, googlePassword, false, "", "", "", "", "", "", "", "", "", "", "", 
                 0, "", mimeTypes,"","","","", licenseShare, maxWaitTimeCloudSync.toString());
 
         // Will create a new instance of the bean since it has the prototype scope
@@ -76,7 +76,7 @@ public class AbstractUtilsTest extends AbstractUtils
         ShareTestProperty testProperties = new ShareTestProperty("http://localhost:8081/share", 
                 "http://localhost:8080/", "", SUPERADMIN_USERNAME, DEFAULT_PASSWORD, 
                 AlfrescoVersion.Enterprise.toString(), cloudUrlForHybrid, downloadDirectory, 
-                googleUserName, googlePassword, false, "", "", "", "", "", "", "", "", "", "", 
+                googleUserName, googlePassword, false, "", "", "", "", "", "", "", "", "", "", "", 
                 0, "", mimeTypes,"","","","", licenseShare, maxWaitTimeCloudSync.toString());
 
         // Will create a new instance of the bean since it has the prototype scope

@@ -216,6 +216,7 @@ public abstract class AbstractUtils
     protected static String DOMAIN_FREE;
     protected static String DOMAIN_PREMIUM;
     protected static String DOMAIN_HYBRID;
+    protected static String DOMAIN_LIVE_SEARCH;
     protected static String SUPERADMIN_USERNAME;
     protected static String SUPERADMIN_PASSWORD;
     protected static String ADMIN_USERNAME;
@@ -266,6 +267,7 @@ public abstract class AbstractUtils
         DOMAIN_FREE = testProperties.getdomainFree();
         DOMAIN_PREMIUM = testProperties.getdomainPremium();
         DOMAIN_HYBRID = testProperties.getdomainHybrid();
+        DOMAIN_LIVE_SEARCH = testProperties.getdomainLiveSearch();
         DEFAULT_USER = testProperties.getdefaultUser();
         UNIQUE_TESTDATA_STRING = testProperties.getuniqueTestDataString();
         SUPERADMIN_USERNAME = testProperties.getSuperadminUsername();

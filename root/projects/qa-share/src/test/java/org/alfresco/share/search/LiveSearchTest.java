@@ -64,7 +64,7 @@ public class LiveSearchTest extends AbstractUtils
     public void dataPrep_LiveSearch_ALF_3023() throws Exception
     {
         String testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
 
@@ -102,7 +102,7 @@ public class LiveSearchTest extends AbstractUtils
 
         // live search term is document title
         testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String siteName = getSiteName(testName);
 
         ShareUser.login(drone, testUser, testPassword);
@@ -179,7 +179,7 @@ public class LiveSearchTest extends AbstractUtils
     public void dataPrep_LiveSearch_ALF_3024() throws Exception
     {
         String testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
 
@@ -237,10 +237,11 @@ public class LiveSearchTest extends AbstractUtils
     {
 
         testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String siteName = getSiteName(testName);
 
         String searchTerm1 = testName + ".xml";
+
         String searchTerm2 = testName;
 
         ShareUser.login(drone, testUser, testPassword);
@@ -305,7 +306,7 @@ public class LiveSearchTest extends AbstractUtils
     public void dataPrep_LiveSearch_ALF_3025() throws Exception
     {
         String testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String siteName = getSiteName(testName);
         String fileName = "}{+_)(&^%$#@!";
 
@@ -356,7 +357,7 @@ public class LiveSearchTest extends AbstractUtils
     {
 
         testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
 
         String searchTerm1 = "!@#$%^&*()_+:\"|<>?;";
         String searchTerm2 = "}{+_)(&^%$#@!";
@@ -393,7 +394,7 @@ public class LiveSearchTest extends AbstractUtils
     public void dataPrep_LiveSearch_ALF_3026() throws Exception
     {
         String testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
 
@@ -429,7 +430,7 @@ public class LiveSearchTest extends AbstractUtils
     public void ALF_3026()
     {
         testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String searchTerm = ShareUser.getRandomStringWithNumders(1030);
 
         ShareUser.login(drone, testUser, testPassword);
@@ -459,7 +460,7 @@ public class LiveSearchTest extends AbstractUtils
     public void dataPrep_LiveSearch_ALF_3027() throws Exception
     {
         String testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
 
@@ -525,7 +526,7 @@ public class LiveSearchTest extends AbstractUtils
     public void ALF_3027()
     {
         testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String searchTerm = "H0us8 my 31";
 
         ShareUser.login(drone, testUser, testPassword);
@@ -557,7 +558,7 @@ public class LiveSearchTest extends AbstractUtils
     public void dataPrep_LiveSearch_ALF_3039() throws Exception
     {
         String testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
 
@@ -625,7 +626,7 @@ public class LiveSearchTest extends AbstractUtils
     public void ALF_3039()
     {
         testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String searchTerm = "H0us8 31";
 
         ShareUser.login(drone, testUser, testPassword);
@@ -662,7 +663,7 @@ public class LiveSearchTest extends AbstractUtils
     public void dataPrep_LiveSearch_ALF_3040() throws Exception
     {
         String testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
 
@@ -727,7 +728,7 @@ public class LiveSearchTest extends AbstractUtils
     public void ALF_3040()
     {
         testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String searchTerm = "T3chn0";
 
         ShareUser.login(drone, testUser, testPassword);
@@ -841,7 +842,7 @@ public class LiveSearchTest extends AbstractUtils
     public void dataPrep_LiveSearch_ALF_3029() throws Exception
     {
         String testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String[] testUserInfo = new String[] { testUser };
         String siteName1 = "n3w s1t3 creat3ed 88";
         String siteName2 = "n3w s1t3 creat3ed 99";
@@ -886,7 +887,7 @@ public class LiveSearchTest extends AbstractUtils
 
         // live search term is document title
         testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         ShareUser.login(drone, testUser, testPassword);
 
         String searchTerm1 = "n3w s1t3 88";
@@ -916,10 +917,10 @@ public class LiveSearchTest extends AbstractUtils
     public void dataPrep_LiveSearch_ALF_3030() throws Exception
     {
         String testName = getTestName();
-        String testUser1 = "n3w.us3r.77" + "@" + "alfresco.com";
+        String testUser1 = "n3w.us3r.77" + "@" + DOMAIN_LIVE_SEARCH;
         String[] testUserInfo1 = new String[] { testUser1 };
 
-        String testUser2 = "n3w.us3r.55" + "@" + "alfresco.com";
+        String testUser2 = "n3w.us3r.55" + "@" + DOMAIN_LIVE_SEARCH;
         String[] testUserInfo2 = new String[] { testUser2 };
 
         try
@@ -955,8 +956,8 @@ public class LiveSearchTest extends AbstractUtils
     {
 
         testName = getTestName();
-        String testUser1 = "n3w.us3r.77" + "@" + "alfresco.com";
-        String testUser2 = "n3w.us3r.55" + "@" + "alfresco.com";
+        String testUser1 = "n3w.us3r.77" + "@" + DOMAIN_LIVE_SEARCH;
+        String testUser2 = "n3w.us3r.55" + "@" + DOMAIN_LIVE_SEARCH;
         ShareUser.login(drone, testUser1, testPassword);
 
         String searchTerm = "n3w us3r 77";
@@ -988,7 +989,7 @@ public class LiveSearchTest extends AbstractUtils
     public void dataPrep_LiveSearch_ALF_3032() throws Exception
     {
         String testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
 
@@ -1038,7 +1039,7 @@ public class LiveSearchTest extends AbstractUtils
     {
         // live search term is document title
         testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         //String siteName = getSiteName(testName);
 
         String searchTerm = "w0rd1 w0rd5";
@@ -1079,7 +1080,7 @@ public class LiveSearchTest extends AbstractUtils
     public void dataPrep_LiveSearch_ALF_3033() throws Exception
     {
         String testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
 
@@ -1127,7 +1128,7 @@ public class LiveSearchTest extends AbstractUtils
 
         // live search term is document title
         testName = getTestName();
-        String testUser = testName + "@" + "alfresco.com";
+        String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
 
         ShareUser.login(drone, testUser, testPassword);
 
