@@ -119,7 +119,7 @@ public class WelcomeDashletCreateDelete extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test
+    @Test(groups = { "EnterpriseOnly" })
     public void enterprise40x_7950() throws Exception
     {
         String testName = getTestName();

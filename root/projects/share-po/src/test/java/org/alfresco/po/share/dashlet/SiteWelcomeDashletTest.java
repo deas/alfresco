@@ -25,6 +25,7 @@ import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
+import org.alfresco.webdrone.exception.PageException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -58,7 +59,7 @@ public class SiteWelcomeDashletTest extends AbstractSiteDashletTest
         SiteUtil.deleteSite(drone, siteName);
     }
 
-    @Test
+    @Test(groups = "Enterprise-only")
     public void instantiateDashlet()
     {
         SiteWelcomeDashlet dashlet = new SiteWelcomeDashlet(drone);
@@ -70,7 +71,7 @@ public class SiteWelcomeDashletTest extends AbstractSiteDashletTest
      * 
      * @throws Exception
      */
-    @Test(dependsOnMethods = "instantiateDashlet")
+    @Test(dependsOnMethods = "instantiateDashlet", groups = "Enterprise-only")
     public void selectSiteWelcometDashlet() throws Exception
     {
         SiteWelcomeDashlet dashlet = siteDashBoard.getDashlet(SITE_WELCOME).render();
@@ -91,12 +92,24 @@ public class SiteWelcomeDashletTest extends AbstractSiteDashletTest
      * 
      * @throws Exception
      */
-    @Test(dependsOnMethods = "selectSiteWelcometDashlet", expectedExceptions = NoSuchDashletExpection.class)
+    @Test(dependsOnMethods = "selectSiteWelcometDashlet", groups = "Enterprise-only", 
+            expectedExceptions = NoSuchDashletExpection.class)
     public void removeAndFindDashlet() throws Exception 
     {
         SiteWelcomeDashlet dashlet;
         dashlet = siteDashBoard.getDashlet(SITE_WELCOME).render();
         dashlet.removeDashlet().render();
         dashlet = siteDashBoard.getDashlet(SITE_WELCOME).render(100);
+    }
+    
+    /**
+     * Test the welcome dashlet in Cloud, which should throw an exception because it is not present.
+     * 
+     * @throws Exception
+     */
+    @Test(groups = "Cloud-only", expectedExceptions = NoSuchDashletExpection.class)
+    public void findCloudDashlet() throws Exception 
+    {
+        siteDashBoard.getDashlet(SITE_WELCOME).render();
     }
 }
