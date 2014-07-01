@@ -72,7 +72,8 @@ public abstract class DetailsPage extends SitePage
     private static final String DIV_COMMENT_CONTENT = "//div[@class='comment-content']";
     private static final String SPAN_LIKE_COMMENT = "span.likes-count";
     private static final String THIN_DARK_TITLE_ELEMENT = "div.node-header>div.node-info>h1.thin.dark";
-    private static final String PAGE_SHARE_PANEL = "div.panel-body>div.link-info>a";
+    //private static final String PAGE_SHARE_PANEL = "div.panel-body>div.link-info>a";
+    private static final String PAGE_SHARE_PANEL = "//h2[text()='Share']";
     private static final String COMMENT_LINK = "a[class*='comment']";
     private static final String MANAGE_PERMISSIONS = "div[class$='-permissions'] a";
     private final static By PAGINATION = By.xpath(".//*[@id='template_x002e_comments_x002e_folder-details_x0023_default-paginator-top']");
@@ -783,11 +784,8 @@ public abstract class DetailsPage extends SitePage
     {
         try
         {
-            WebElement sharePaneElement = drone.find(By.cssSelector(PAGE_SHARE_PANEL));
-            if (drone.getCurrentUrl().equals(sharePaneElement.getAttribute("href").replace("#", "").trim()))
-            {
-                return true;
-            }
+            WebElement sharePaneElement = drone.find(By.xpath(PAGE_SHARE_PANEL));
+            return sharePaneElement.isDisplayed();
         }
         catch (NoSuchElementException exce)
         {
