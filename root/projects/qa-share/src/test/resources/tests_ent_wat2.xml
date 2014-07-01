@@ -79,7 +79,9 @@
      <test name="DashletTest" verbose="1" parallel="classes" thread-count="1">
          <classes>
              <class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet" />
-         </classes>
+			<class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
+			<class name="org.alfresco.share.reports.TopSiteContributorReportTest" />
+		 </classes>
      </test>
  
      <test name="SearchTest" verbose="1" parallel="classes" thread-count="1">
