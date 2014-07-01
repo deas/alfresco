@@ -77,7 +77,7 @@ define(["dojo/_base/declare",
          }
 
          var msg = p_messageId;
-         
+
          // Check the global message bundle for the message id (this will get overridden if a more specific
          // property is available)...
          if (typeof Alfresco.messages.global === "object")
@@ -88,7 +88,7 @@ define(["dojo/_base/declare",
                msg = globalMsg;
             }
          }
-         
+
          // Overwrite with page scope...
          if (typeof Alfresco.messages.pageScope === "object")
          {
@@ -98,7 +98,7 @@ define(["dojo/_base/declare",
                msg = pageScopeMsg;
             }
          }
-         
+
          // Overwrite page scope with default scope...
          if (typeof Alfresco.messages.scope[Alfresco.messages.defaultScope] === "object")
          {
@@ -108,29 +108,30 @@ define(["dojo/_base/declare",
                msg = scopeMsg;
             }
          }
-         
-         // Work through the base classes and use their i18nScope property (if available) as a scope to 
+
+         // Work through the base classes and use their i18nScope property (if available) as a scope to
          // check. This allows a widget to check its class hierarchy for message scopes.
-         array.forEach(this.constructor._meta.parents, function(entry, i) {
-            
-            // PLEASE NOTE: Use of the constructor _meta property is used at risk. It is the recognised
-            //              way of accessing parent classes (for example it is used in the .isInstanceOf()
-            //              function but there is a warning that it is not part of an API that can be relied
-            //              upon to never change. Should message handling fail, then this might be an area
-            //              to investigate.
-            if (entry._meta && entry._meta.hidden && entry._meta.hidden.i18nScope && Alfresco.messages.scope[entry._meta.hidden.i18nScope])
-            {
-               var scopeMsg = Alfresco.messages.scope[entry._meta.hidden.i18nScope][p_messageId];
-               if (typeof scopeMsg == "string")
+         if (this.constructor && this.constructor._meta) {
+            array.forEach(this.constructor._meta.parents, function(entry, i) {
+
+               // PLEASE NOTE: Use of the constructor _meta property is used at risk. It is the recognised
+               //              way of accessing parent classes (for example it is used in the .isInstanceOf()
+               //              function but there is a warning that it is not part of an API that can be relied
+               //              upon to never change. Should message handling fail, then this might be an area
+               //              to investigate.
+               if (entry._meta && entry._meta.hidden && entry._meta.hidden.i18nScope && Alfresco.messages.scope[entry._meta.hidden.i18nScope])
                {
-                  msg = scopeMsg;
+                  var scopeMsg = Alfresco.messages.scope[entry._meta.hidden.i18nScope][p_messageId];
+                  if (typeof scopeMsg == "string")
+                  {
+                     msg = scopeMsg;
+                  }
                }
-            }
-         });
-         
+            });
+         }
+
          // Set the main scope for the calling class...
          // This will either be the i18nScope or the default message scope if i18nScope is not defined
-         var messageScope;
          if (typeof this.i18nScope != "undefined" && typeof Alfresco.messages.scope[this.i18nScope] === "object")
          {
             var scopeMsg = Alfresco.messages.scope[this.i18nScope][p_messageId];
