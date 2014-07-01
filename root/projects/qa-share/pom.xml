@@ -79,7 +79,7 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>webdrone</artifactId>
-            <version>${webdrone.version}</version>
+            <version>2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
