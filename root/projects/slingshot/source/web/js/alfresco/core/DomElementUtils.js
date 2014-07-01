@@ -136,14 +136,14 @@ define(["dojo/_base/declare",
        */
       getDocumentHeight: function() {
          var doc = document.documentElement,
-            body = document.body;
+               body = document.body;
 
          return Math.max(
-            body.scrollHeight,
-            body.offsetHeight,
-            doc.scrollHeight,
-            doc.offsetHeight,
-            doc.clientHeight
+               body.scrollHeight,
+               body.offsetHeight,
+               doc.scrollHeight,
+               doc.offsetHeight,
+               doc.clientHeight
          );
       },
 

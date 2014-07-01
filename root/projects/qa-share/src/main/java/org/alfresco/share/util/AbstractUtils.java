@@ -186,7 +186,7 @@ public abstract class AbstractUtils
     protected static final String SITE_CALENDAR = "site-calendar";
     protected static final String SITE_PROFILE = "site-profile";
     protected static final String SITE_SEARCH = "site-search";
-    
+
     // Activity Feeds
     protected static final String FEED_CONTENT_ADDED = " added";
     protected static final String FEED_CONTENT_CREATED = " created";

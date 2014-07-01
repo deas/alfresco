@@ -88,5 +88,5 @@ public class AbstractSiteDashletTest extends AbstractDocumentTest
             logger.error("Problem deleting site", e);
         }
     }
-
+    
 }

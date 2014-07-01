@@ -101,7 +101,7 @@
          // Shadows
          @standard-box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
          @inset-box-shadow: 1px 1px 3px @standard-button-border-color inset;
-
+         
          // Generic colours for displaying collections of items
          @collectionColour1: #225DA8;
          @collectionColour2: #F5993D;

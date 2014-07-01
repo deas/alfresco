@@ -98,7 +98,7 @@ define(["dojo/_base/declare",
                   payload.url = "site/" + site + "/links-view?linkId=" + linkid;
                }
                break;
-
+            
             case "datalist":
 
                var listid = lang.getObject("name", false, this.currentItem);

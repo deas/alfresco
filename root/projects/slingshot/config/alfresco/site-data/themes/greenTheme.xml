@@ -120,7 +120,7 @@
          @chartItemColour5: @collectionColour5;
          @chartItemColour6: @collectionColour6;
          @chartItemColour7: @collectionColour7;
-         @chartItemColour8: @collectionColour8;
+         @chartItemColour8: @collectionColour8;         
       </less-variables>
 
    </css-tokens>

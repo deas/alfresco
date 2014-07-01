@@ -45,7 +45,7 @@ import org.testng.annotations.Test;
 
 /**
  * Unit tests for live search dropdown
- * 
+ *
  * @author jcule
  */
 @Test(groups={"alfresco-one"})
@@ -106,7 +106,7 @@ public class LiveSearchDropdownTest extends AbstractTest
     @AfterClass
     public void deleteSite()
     {
-        SiteUtil.deleteSite(drone, siteName);
+      SiteUtil.deleteSite(drone, siteName);
     }
 
     @Test
@@ -119,12 +119,12 @@ public class LiveSearchDropdownTest extends AbstractTest
         Assert.assertFalse(liveSearchResultPage.isPeopleTitleVisible());
 
     }
-    
-    
+
+
     /**
      * Checks that the document search result contains document name,
      * site name and user name
-     * 
+     *
      * @throws InterruptedException
      */
     @Test(dependsOnMethods = "checkNoLiveSearchResults")
@@ -142,7 +142,7 @@ public class LiveSearchDropdownTest extends AbstractTest
     /**
      * Expands document search results
      */
-    
+
     @Test(dependsOnMethods = "liveSearchDocumentResult")
     public void expandLiveSearchDocumentResult()
     {
@@ -154,14 +154,14 @@ public class LiveSearchDropdownTest extends AbstractTest
         List<LiveSearchDocumentResult> liveSearchResultsPage = liveSearchResultPage.getSearchDocumentResults();
 
         Assert.assertTrue(liveSearchResultsPage.size() > 0);
-               
+
         liveSearchResultPage.closeLiveSearchDropdown();
         Assert.assertFalse(liveSearchResultPage.isDocumentsTitleVisible());
         Assert.assertFalse(liveSearchResultPage.isSitesTitleVisible());
         Assert.assertFalse(liveSearchResultPage.isPeopleTitleVisible());
     }
-   
-    
+
+
     /**
      * Clicks on the document name in the document search result and checks that
      * the documents details page is displayed
@@ -177,14 +177,14 @@ public class LiveSearchDropdownTest extends AbstractTest
         }
 
     }
-    
+
 
     /**
      * Clicks on the site name in the document search result and checks
      * that document site library page is displayed
      */
     @Test(dependsOnMethods = "clickOnDocumentTitle")
-    public void clickOnDocumentSiteName() throws Exception 
+    public void clickOnDocumentSiteName() throws Exception
     {
         List<LiveSearchDocumentResult> liveSearchDocumentResults = liveSearchDocumentsRetry();
         Assert.assertTrue(liveSearchDocumentResults.size() > 0);
@@ -226,8 +226,8 @@ public class LiveSearchDropdownTest extends AbstractTest
         }
 
     }
-    
-      
+
+
 
     /**
      * Searches for username and checks that it is displayed in people search results
@@ -315,8 +315,8 @@ public class LiveSearchDropdownTest extends AbstractTest
             if ((liveSearchDocumentResults.size() == 1) && liveSearchDocumentResults.get(0).getTitle().getDescription().equalsIgnoreCase(fileName))
             {
                 return liveSearchDocumentResults;
-           
-            }  
+
+            }
             else
             {
                 counter++;
@@ -329,7 +329,7 @@ public class LiveSearchDropdownTest extends AbstractTest
         }
         throw new Exception("livesearch failed");
     }
-    
+
     /**
      * Retries search for a site result
      * @return
@@ -367,7 +367,7 @@ public class LiveSearchDropdownTest extends AbstractTest
             }
             // double wait time to not overdo solr search
             waitInMilliSeconds = (waitInMilliSeconds * 2);
- 
+
         }
         throw new Exception("livesearch failed");
     }

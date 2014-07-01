@@ -312,6 +312,7 @@ public class ShareUserDashboard extends AbstractUtils
         {
             throw new PageOperationException("Cannot open My Discussion Dashlet on user or site dashboard page");
         }
+        
     }
     
     /**
