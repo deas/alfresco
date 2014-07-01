@@ -73,6 +73,11 @@
                  </methods>
              </class>
              <class name="org.alfresco.share.SiteDashBoardTest" />
+ 			<class name="org.alfresco.share.HeaderBarTest">
+			 	<methods>
+                     <include name="ALF_3161" />
+                </methods>
+			</class>
          </classes>
      </test>
  

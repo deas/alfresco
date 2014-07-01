@@ -46,6 +46,11 @@
 			<class name="org.alfresco.share.LoginTest"/>
 			<class name="org.alfresco.share.MyDashBoardTest"/>
 			<class name="org.alfresco.share.SiteDashBoardTest"/>
+			<class name="org.alfresco.share.HeaderBarTest">
+			 	<methods>
+                     <include name="dataPrep_ALF_3161" />
+                </methods>
+			</class>
 			<class name="org.alfresco.share.SiteDocumentLibraryTest"/>
 			<class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
 			<class name="org.alfresco.share.site.document.DocumentDetailsTest"/>

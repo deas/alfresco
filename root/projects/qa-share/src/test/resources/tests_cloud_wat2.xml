@@ -15,6 +15,11 @@
     <test name="LiveSearchTest Cloud Tests" verbose="1" parallel="classes" thread-count="1">
         <classes>
             <class name="org.alfresco.share.search.LiveSearchTest"></class>
+            <class name="org.alfresco.share.HeaderBarTest">
+			 	<methods>
+                     <include name="ALF_3161" />
+                </methods>
+			</class>
         </classes>
     </test>
 

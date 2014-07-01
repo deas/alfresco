@@ -41,7 +41,7 @@
 			<!-- <class name="org.alfresco.share.DownloadFilesAndFoldersTest" /> -->
 			<class name="org.alfresco.share.SiteDocumentLibraryTest" />
 			<class name="org.alfresco.share.site.document.ManageAspectTest" />
-            <class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
+			<class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
 		</classes>
 	</test>
 </suite>

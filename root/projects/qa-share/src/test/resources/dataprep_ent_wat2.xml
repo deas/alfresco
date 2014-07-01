@@ -29,6 +29,11 @@
 			<class name="org.alfresco.share.LoginTest" />
 			<class name="org.alfresco.share.MyDashBoardTest" />
 			<class name="org.alfresco.share.SiteDashBoardTest" />
+			<class name="org.alfresco.share.HeaderBarTest">
+			 	<methods>
+                     <include name="dataPrep_ALF_3161" />
+                </methods>
+			</class>
 
 			<!-- <class name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest" /> -->
 			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet" />
