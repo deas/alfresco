@@ -11,13 +11,16 @@
         <version>5.0.b-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <webdrone.version>2.5</webdrone.version>
-        <share-po.version>${project.version}</share-po.version>
-        <office.component>libreofficecomponent</office.component>
-        <enable.hybrid>false</enable.hybrid>
-        <hybrid.url>https://autohybrida.alfresco.me/alfresco/a/{network}/</hybrid.url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+<!-- 		<alfVersionStable>"tomcat@pbld01.alfresco.com:/data/releases/Enterprise?4.2/4.2.0/build-00028/ALL/alfresco-enterprise-*-installer-linux-x64.???"</alfVersionStable>
+		<alfVersionLatest>"tomcat@pbld01.alfresco.com:/data/nightlybuilds/Enterprise?${enterprise.installer.version}/*/ALL/alfresco-enterprise-*-installer-linux-x64.???"</alfVersionLatest>
+		<alfVersion>${alfVersionStable}</alfVersion> -->
+		<webdrone.version>2.5-SNAPSHOT</webdrone.version>
+		<share-po.version>WAT2-SNAPSHOT</share-po.version>
+		<office.component>libreofficecomponent</office.component>
+		<enable.hybrid>false</enable.hybrid>
+		<hybrid.url>https://autohybrida.alfresco.me/alfresco/a/{network}/</hybrid.url>
         <uniqueTestRunName>TestReports</uniqueTestRunName>
         <!-- Default suite allows a single test to be run via -Dtest=... in this case the suite will be ignored then anyway -->
         <testng.xml>src/test/resources/tests_debug.xml</testng.xml>
@@ -140,7 +143,7 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>share-po</artifactId>
-            <version>${share-po.version}</version>
+            <version>WAT2-SNAPSHOT</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
