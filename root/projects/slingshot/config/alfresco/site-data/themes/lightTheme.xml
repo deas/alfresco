@@ -21,29 +21,6 @@
          @standard-column-width: 15px;
          // This is used when the columns need some breathing space.
          @standard-column-spacing: 5px;
-      @toolTipBorderColour: #e5e5e5;
-      @toolTipTailBg: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEIAAAAOCAYAAACbzsr/AAAB10lEQVR42t2XT2rCUBDGs+kZuu++R+kx6gF6jh6ha3ddunJnVgERRJBiF4KgKKhIEo1a89L8wAePmGjeKEScrZmZ7/vmzR8d50Y2nU4nyQVTSiW9Xs917tVms9lkMBj8NpvNF2kM/IMg2J4TYj6fx57nfVTJFY5ghfPJj4CExGKxUJ1O50uaAH+qnme+70cpgGGVIsANjLpguULop7vZbOLRaOS7rvsmSYR/XksAoNFovFYhAFzgBDazUIVCaDscDmq1WiX9ft+r1+vPNklJiL8ZLwzDv263+y0hYZs/6wsHuGQxlRJC2263U8vlMm6325826pPYFHU8Hke1Wu1J0m5pfmWTXxs+YIdDEb/SQmD7/R4xlE1lqIIGkM4G1Wq13iUV/UntmD+2yc+3YMb3HLdSQlBJSADGdpscgcQAwV8iAuKRX79MxLV9TeQmRl5bXBSCYUJP85yllTSeppKsZNqI/CYB2k0ywOFALDhlN1qhEOlaiZjuDDZJT99q0JEf4NkXyiCWxIMLMY+rMyoUAqU4dtjzVa04beQvukdYf9I7R8eGI1yJf/IBZ2/VF59xoQ7NquXdI9dcwBhc7/rUByDVOjfp1+v1lhPZeWSjSkkJy/2fcKX9A7C42B2OZ69LAAAAAElFTkSuQmCC);
-
-      // Generic colours for displaying collections of items
-      @collectionColour1: #225DA8;
-      @collectionColour2: #F5993D;
-      @collectionColour3: #47AC50;
-      @collectionColour4: #F8E23C;
-      @collectionColour5: #2881C3;
-      @collectionColour6: #f8b828;
-      @collectionColour7: #8CC84F;
-      @collectionColour8: #f8f866;
-
-      // Charting item colours
-      @chartItemColour1: @collectionColour1;
-      @chartItemColour2: @collectionColour2;
-      @chartItemColour3: @collectionColour3;
-      @chartItemColour4: @collectionColour4;
-      @chartItemColour5: @collectionColour5;
-      @chartItemColour6: @collectionColour6;
-      @chartItemColour7: @collectionColour7;
-      @chartItemColour8: @collectionColour8;
-      </less-variables>
 
          // Font Colours
          @general-font-color: #333;
@@ -125,6 +102,25 @@
          @standard-box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
          @inset-box-shadow: 1px 1px 3px @standard-button-border-color inset;
 
+         // Generic colours for displaying collections of items
+         @collectionColour1: #225DA8;
+         @collectionColour2: #F5993D;
+         @collectionColour3: #47AC50;
+         @collectionColour4: #F8E23C;
+         @collectionColour5: #2881C3;
+         @collectionColour6: #f8b828;
+         @collectionColour7: #8CC84F;
+         @collectionColour8: #f8f866;
+
+         // Charting item colours
+         @chartItemColour1: @collectionColour1;
+         @chartItemColour2: @collectionColour2;
+         @chartItemColour3: @collectionColour3;
+         @chartItemColour4: @collectionColour4;
+         @chartItemColour5: @collectionColour5;
+         @chartItemColour6: @collectionColour6;
+         @chartItemColour7: @collectionColour7;
+         @chartItemColour8: @collectionColour8;
       </less-variables>
    </css-tokens>
 </theme>
