@@ -33,14 +33,15 @@ define(["dojo/_base/declare",
    "dojo/text!./templates/Chart.html",
    "alfresco/core/Core",
    "alfresco/core/CoreWidgetProcessing",
+   "alfresco/core/DomElementUtils",
    "dojo/_base/lang",
    "dojo/on",
    "dojo/dom-geometry",
    "dojo/dom-style"],
       function(declare, _WidgetBase, _TemplatedMixin, template,
-               AlfCore, CoreWidgetProcessing, lang, dojoOn, domGeom, domStyle) {
+               AlfCore, CoreWidgetProcessing, DomElementUtils, lang, dojoOn, domGeom, domStyle) {
 
-         return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
+         return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, DomElementUtils], {
 
             baseClass: "alfresco-charts-ccc-Chart",
 
@@ -155,6 +156,21 @@ define(["dojo/_base/declare",
 
                config.tooltip = this.tooltip;
 
+               var styles = this.resolveCssStyles(this.baseClass + "--color", [1,2,3,4,5,6,7,8], {
+                  backgroundColor: ["rgba(0, 0, 0, 0)", "transparent"]
+               });
+               config.colors = styles.backgroundColor;
+               /*
+               //config.colors = ["#013564", "#004D71", "#01677E", "#007C86", "#298B8C", "#93A599"];
+               //config.colors = ["#B53E1E", "#B24B1E", "#B5692B", "#B99340", "#B7AA4E", "#B8AF76"];
+               var el = document.createElement("div");
+               el.className = this.baseClass + "--color1";
+               //el.innerHTML = "test";
+               document.body.appendChild(el);
+               var color = getComputedStyle(el)["backgroundColor"];
+
+               config.colors = [color];
+               */
                return config;
             },
 

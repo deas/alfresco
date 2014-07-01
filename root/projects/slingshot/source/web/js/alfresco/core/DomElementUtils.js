@@ -23,9 +23,15 @@
  * @module alfresco/core/DomElementUtils
  * @author Dave Draper
  */
-define(["dojo/_base/declare"], 
-        function(declare) {
-   
+define(["dojo/_base/declare",
+   "dojo/dom-style",
+   "dojo/_base/lang",
+   "dojo/_base/array",
+   "dojo/json"],
+        function(declare, domStyle, lang, array, json) {
+
+   var stylePropertiesCache = {};
+
    /**
     * This class can be mixed into other classes to provide additional DOM element utility functions.
     */
@@ -139,6 +145,92 @@ define(["dojo/_base/declare"],
             doc.offsetHeight,
             doc.clientHeight
          );
+      },
+
+      /**
+       * Certain widgets (i.e. 3rd party svg chart elements) weants to get the colors to use specified as a javascript
+       * attribute rather than using css. This helper method makes it possible to theme such colors using css by
+       * creating elements and adding certain class names to the elements and then inspect the computed style
+       * properties.
+       *
+       * I.e.
+       *
+       * var styles = this.resolveCssStyles("alfresco-charts-ccc-Chart--color", [1,2,3,4,5,6,7,8], {
+       *   backgroundColor: ["rgba(0, 0, 0, 0)", "transparent"]
+       * });
+       * config.colors = styles.backgroundColor;
+       *
+       * Will collect all the background colors for the css class "alfresco-charts-ccc-Chart--color1",
+       * "alfresco-charts-ccc-Chart--color2" and so on but exclude values matching "rgba(0, 0, 0, 0)" or "transparent".
+       *
+       * @instance
+       * @param prefix {string} The common "base" name to prefix before each of the name in names, which will create
+       *    the css selector to look for style properties in
+       * @param names {array} The names that will get added to the prefix when creating the css selector to look for
+       *    style properties in
+       * @param styleProperties {object} An object holding the name of the style properties to look for as keys and
+       *    specific values to ignore (if any) as the value
+       * @param cache {boolean} Set to false if cache shouldn't be used
+       * @return {Object} An object with a "byName" property that contains all values for each name but also a property
+       *    for each the keys specified in styleProperties with all values for that key (except the ones matching the
+       *    values to ignore).
+       */
+      resolveCssStyles: function(prefix, names, styleProperties, cache){
+         cache = typeof cache == "boolean" ? cache : true;
+
+         var result;
+         if (cache) {
+            var cacheKey = json.stringify([prefix, names, styleProperties]);
+            result = stylePropertiesCache[cacheKey];
+            if (result) {
+               return result;
+            }
+         }
+
+         result = {
+            byName: []
+         };
+         var el = document.createElement("div");
+         document.body.appendChild(el);
+         var computedStyle;
+         var styleProperty;
+         var stylePropertiesPerName;
+         for (var i = 0, il = names.length; i < il; i++) {
+            el.className = (prefix || "") + names[i];
+            computedStyle = domStyle.getComputedStyle(el);
+            stylePropertiesPerName = {};
+            for (var s in styleProperties) {
+               styleProperty = computedStyle[s];
+
+               // Make sure there is an array to store result in
+               if (!result[s]) {
+                  result[s] = [];
+               }
+
+               // Make sure we are not adding a valu that shall be ignored
+               if (lang.isArray(styleProperties[s])) {
+                  if (array.indexOf(styleProperties[s], styleProperty) == -1) {
+                     result[s].push(styleProperty);
+                  }
+               }
+               else if (styleProperty != styleProperties) {
+                  result[s].push(styleProperty);
+               }
+
+               // Store style property value on a per name basis as well
+               stylePropertiesPerName[s] = styleProperty;
+            }
+            result.byName.push({
+               name: names[i],
+               style: stylePropertiesPerName
+            })
+         }
+
+         if (cache) {
+            stylePropertiesCache[cacheKey] = result;
+         }
+
+         return result;
       }
    });
 });
