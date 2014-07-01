@@ -340,13 +340,17 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
     }
 
     /**
-     * Tests is the document is shared
+     * Tests is the document is shared and that share pane is not present for cloud
      * 
      */
     @Test(dependsOnMethods = "testClickOnDownloadLinkForUnsupportedPreview")
     public void testIsFileShared()
     {
         DocumentDetailsPage page = drone.getCurrentPage().render();
+        if (alfrescoVersion.isCloud())
+        {
+            assertFalse(page.isSharePanePresent()); 
+        }            
         assertFalse(page.isFileShared());
         ShareLinkPage shareLinkPage = page.clickShareLink().render();
         Assert.assertNotNull(shareLinkPage);
