@@ -17,10 +17,13 @@
             <filter class="org.apache.solr.analysis.LowerCaseFilterFactory" />
          </analyzer>
       </fieldType>
+      <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0"/>
    </types>
    <fields>
       <field name="ID" type="alfrescoDataType" indexed="true" omitNorms="true" stored="true" multiValued="true"></field>
       <dynamicField name="*" type="alfrescoDataType" indexed="true" omitNorms="true" stored="true" multiValued="true"></dynamicField>
+      <field name="contentsize" type="int" indexed="true" stored="true" />
+      <copyField source="@{http://www.alfresco.org/model/content/1.0}content.size" dest="contentsize"/>
    </fields>
    <uniqueKey>ID</uniqueKey>
    <defaultSearchField>ID</defaultSearchField>
