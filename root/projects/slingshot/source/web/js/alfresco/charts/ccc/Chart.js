@@ -221,15 +221,20 @@ define(["dojo/_base/declare",
                }
                this.chart.setData(this._currentData, this._currentDataDescriptor);
                this.chart.render();
-
-
             },
 
             getWidth: function(){
-               var style = domStyle.getComputedStyle(this.domNode);
-               style = style.width.split('.')[0];
-               style = style.split('px')[0];
-               return style;
+               try {
+                  var style = domStyle.getComputedStyle(this.domNode);
+                  var s = domGeom.getContentBox(this.domNode, style);
+                  var w = (s.w + "").split('.')[0];
+                  w = w.split('px')[0];
+                  w = parseInt(w);
+                  return w;
+               }
+               catch(e) {
+                  return null;
+               }
             },
 
             onDataLoadSuccess: function(payload){
