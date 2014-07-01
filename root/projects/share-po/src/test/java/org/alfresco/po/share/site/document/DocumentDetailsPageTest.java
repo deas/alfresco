@@ -350,7 +350,11 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
         if (alfrescoVersion.isCloud())
         {
             assertFalse(page.isSharePanePresent()); 
-        }            
+        }           
+        else
+        {
+            assertTrue(page.isSharePanePresent()); 
+        }
         assertFalse(page.isFileShared());
         ShareLinkPage shareLinkPage = page.clickShareLink().render();
         Assert.assertNotNull(shareLinkPage);

@@ -129,7 +129,7 @@ public class DocumentDetailsTest extends AbstractUtils
 
             DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
 
-            DocumentDetailsPage detailsPage = documentLibraryPage.selectFile(fileName);
+            DocumentDetailsPage detailsPage = documentLibraryPage.selectFile(fileName).render();
             
             if (!isAlfrescoVersionCloud(drone))
             {
