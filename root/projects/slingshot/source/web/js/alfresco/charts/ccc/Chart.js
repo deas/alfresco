@@ -192,7 +192,7 @@ define(["dojo/_base/declare",
                if (this.dataTopic) {
                   // Set a response topic that is scoped to this widget...
                   var dataTopicPayload = {};
-                  dataTopicPayload.alfResponseTopic = this.pubSubScope + this.dataTopic;
+                  dataTopicPayload.alfResponseTopic = this.dataTopic;
                   this.alfPublish(this.dataTopic, dataTopicPayload);
                }
 
