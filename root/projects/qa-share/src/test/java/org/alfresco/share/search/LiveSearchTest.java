@@ -804,7 +804,7 @@ public class LiveSearchTest extends AbstractUtils
      * 3) Checks that the live search is not enabled for the user
      * (it should be enabled only for the system tenants)
      */
-
+/**
     @Test(groups = { "CloudOnly", "TestLiveSearch" })
     public void ALF_3028()
     {
@@ -827,6 +827,7 @@ public class LiveSearchTest extends AbstractUtils
 
         }
     }
+    **/
 
     /**
      * DataPreparation method - ALF_3029

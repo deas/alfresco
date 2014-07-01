@@ -2,9 +2,12 @@
 <suite name="Cloud Tests for WAT2" verbose="1" preserve-order="true" thread-count="5" parallel="classes">
     <groups>
         <run>
-            <exclude name="DataPrep.*" />
-            <exclude name="Enterprise.*" />
-            <exclude name="Hybrid.*" />
+			<exclude name="DataPrep.*" />
+   			<exclude name="Enterprise.*" />
+   			<exclude name="EnterpriseOnly" />
+   			<exclude name="Hybrid.*" />
+   			<exclude name="NonGrid" />
+   			<exclude name=".*Bug.*" />        
         </run>
     </groups>
 
@@ -100,7 +103,7 @@
         <!-- <class name="org.alfresco.share.search.AdvanceSearchTest"/>  
             <class name="org.alfresco.share.search.AdvanceSearchTest2" />
             <class name="org.alfresco.share.search.BasicSearchTest" />--> 
-         <!--    <class name="org.alfresco.share.search.LiveSearchTest" />--> 
+            <class name="org.alfresco.share.search.LiveSearchTest" />
         </classes>
     </test>
 
