@@ -82,6 +82,7 @@ public class LiveSearchDropdownTest extends AbstractTest
                 EditDocumentPropertiesPage propertiesPage = detailsPage.selectEditProperties().render();
                 propertiesPage.setName(fileName);
                 detailsPage = propertiesPage.selectSave().render();
+                docPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
             }
             else
             {
