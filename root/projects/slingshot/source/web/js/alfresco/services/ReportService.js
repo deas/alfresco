@@ -66,9 +66,9 @@ define(["dojo/_base/declare",
              */
             getSiteContentReport: function alfresco_services_ReportService__getSiteContentReport(payload) {
                var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_SITE_CONTENT_REPORT";
-               var url = AlfConstants.PROXY_URI + "/api/solr";
+               var url = AlfConstants.PROXY_URI + "api/solr";
                if (payload.site) {
-                  //url += "/site/" + encodeURIComponent(payload.site);
+                  url += "/site/" + encodeURIComponent(payload.site);
                }
                url += "/stats?facet=content.mimetype";
                var config = {
@@ -91,7 +91,7 @@ define(["dojo/_base/declare",
                         seriesInRows: false
                      }
                   }
-               });
+               }, true);
             },
 
             /**
@@ -101,9 +101,9 @@ define(["dojo/_base/declare",
              */
             getTopSiteContributorReport: function alfresco_services_ReportService__getSiteContentReport(payload) {
                var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT";
-               var url = AlfConstants.PROXY_URI + "/api/solr";
+               var url = AlfConstants.PROXY_URI + "api/solr";
                if (payload.site) {
-                  //url += "/sites/" + encodeURIComponent(payload.site);
+                  url += "/site/" + encodeURIComponent(payload.site);
                }
                url += "/stats?facet=content.creator";
                if (payload.startDate) {

@@ -234,8 +234,40 @@ define(["dojo/_base/declare",
                button.publishPayload = formValue;
             }
          });
+
+         if (this.widgetProcessingComplete) {
+            this.publishValidValue();
+         }
       },
-      
+
+      /**
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      validFormValuesPublishTopic: null,
+
+      /**
+       * @instance
+       * @type {object}
+       * @defualt null
+       */
+      validFormValuesPublishPayload: null,
+
+      /**
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      validFormValuesPublishGlobal: null,
+
+      /**
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      validFormValuesPublishOnInit: false,
+
       /**
        * Indicates whether or not the "OK" button should be displayed or not.
        * 
@@ -487,7 +519,12 @@ define(["dojo/_base/declare",
 
          
 
+
          this.validate();
+
+         if (this.validFormValuesPublishOnInit) {
+            this.publishValidValue();
+         }
       },
       
       /**
@@ -581,9 +618,25 @@ define(["dojo/_base/declare",
                widget.validate();
             }
          });
-         
+
          // The form is valid if there are no invalid form controls...
-         return this.invalidFormControls.length == 0;
+         return this.invalidFormControls.length === 0;
+      },
+
+      /**
+       * @instance
+       */
+      publishValidValue: function alfresco_forms_Form__publishValidValue() {
+         // The form is valid if there are no invalid form controls...
+         if (this.invalidFormControls.length === 0 && this.validFormValuesPublishTopic) {
+            var payload = this.validFormValuesPublishPayload;
+            if (!payload)
+            {
+               payload = this.getValue();
+            }
+            this.alfPublish(this.validFormValuesPublishTopic, payload, this.validFormValuesPublishGlobal);
+         }
       }
+
    });
 });

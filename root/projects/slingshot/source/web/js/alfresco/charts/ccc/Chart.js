@@ -35,18 +35,10 @@ define(["dojo/_base/declare",
    "alfresco/core/CoreWidgetProcessing",
    "dojo/_base/lang",
    "dojo/on",
+   "dojo/dom-geometry",
    "dojo/dom-style"],
       function(declare, _WidgetBase, _TemplatedMixin, template,
-               AlfCore, CoreWidgetProcessing, lang, dojoOn, domStyle) {
-         /*
-          alert('$: ' + (typeof $) +
-          ', pv: ' + pv +
-          ', pv.have_SVG: ' + pv.have_SVG +
-          ', jquery.tipsy: ' + (typeof $.fn.tipsy) +
-          ', pv.Behavior.tipsy: ' + (typeof pv.Behavior.tipsy) +
-          ', def: ' + def +
-          ', pvc: ' + pvc);
-          */
+               AlfCore, CoreWidgetProcessing, lang, dojoOn, domGeom, domStyle) {
 
          return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
 
@@ -54,14 +46,14 @@ define(["dojo/_base/declare",
 
             pvcChartType: 'Chart',
 
-            chartsNode: null,
+            chartNode: null,
 
             dataTopic: null,
 
             title: null,
             titlePosition: "bottom",
 
-            width: 600,
+            width: null,
             height: 400,
 
             legend: false,
@@ -70,6 +62,9 @@ define(["dojo/_base/declare",
 
             selectable: false,
             hoverable: false,
+
+            _currentData: null,
+            _currentDataDescriptor: null,
 
             /**
              * Declare the dependencies on "legacy" JS files that this is wrapping.
@@ -123,9 +118,9 @@ define(["dojo/_base/declare",
                var config = {};
 
                // Common configurable properties
-               config.canvas = this.chartsNode;
+               config.canvas = this.chartNode;
 
-               config.width = this.width;
+               config.width = this.getWidth();
                config.height = this.height;
 
                config.title = this.title;
@@ -138,7 +133,7 @@ define(["dojo/_base/declare",
                config.selectable = this.selectable;
                config.hoverable = this.hoverable;
 
-               config.animate = false;
+               //config.animate = false;
 
                if (this.clickTopic)
                {
@@ -163,15 +158,11 @@ define(["dojo/_base/declare",
             },
 
             /**
-             * Implements the widget life-cycle method to add drag-and-drop upload capabilities to the root DOM node.
-             * This allows files to be dragged and dropped from the operating system directly into the browser
-             * and uploaded to the location represented by the document list.
+             *
              *
              * @instance
              */
             postCreate: function alfresco_charts_ccc_Chart__postCreate() {
-               this.createChart();
-
                if (this.dataTopic) {
                   // Set a response topic that is scoped to this widget...
                   var dataTopicPayload = {};
@@ -181,28 +172,62 @@ define(["dojo/_base/declare",
 
                var me = this;
                dojoOn(window, "resize", function(){
-                  var style = domStyle.getComputedStyle(me.domNode);
-                  style.width;
-                  me.chart.render();
+                  // Avoid re-rendering until the chart has been rendered a first time
+                  if (me.chart) {
+                     // Now remove old chart so it gets created again
+                     me.chart = null;
+                     me.renderChart();
+                  }
                });
             },
 
             setData: function(data, dataDescriptor){
-               this.chart.setData(data, dataDescriptor);
+               this._currentData = data;
+               this._currentDataDescriptor = dataDescriptor;
+               this.renderChart();
             },
 
-            render: function(){
+            renderChart: function(){
+               if (this.getWidth()) {
+                  this.performRenderChart();
+                  return;
+               }
+
+               // This element has not been added to the dom yet and has therefor no width, wait until its set
+               var me = this;
+               var timeoutId;
+               function callPerformRenderChartWhenReady(){
+                  if (me.getWidth()) {
+                     clearTimeout(timeoutId);
+                     me.performRenderChart();
+                  }
+               }
+               timeoutId = window.setInterval(callPerformRenderChartWhenReady, 100);
+            },
+
+            performRenderChart: function(){
+               if (!this.chart) {
+                  this.createChart();
+               }
+               this.chart.setData(this._currentData, this._currentDataDescriptor);
                this.chart.render();
+
+
+            },
+
+            getWidth: function(){
+               var style = domStyle.getComputedStyle(this.domNode);
+               style = style.width.split('.')[0];
+               style = style.split('px')[0];
+               return style;
             },
 
             onDataLoadSuccess: function(payload){
                this.setData(payload.response.data, payload.response.dataDescriptor);
-               this.render();
             },
 
             onDataLoadFailure: function(payload){
                this.setData({}, {});
-               this.render();
             }
 
          });

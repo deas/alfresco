@@ -1,0 +1,11 @@
+.alfresco-reports-TopSiteContributorReport {
+   margin: 1em;
+}
+.alfresco-reports-TopSiteContributorReport form .alfresco-forms-controls-BaseFormControl {
+   display: inline-block !important;
+}
+
+.alfresco-reports-TopSiteContributorReport form .alfresco-forms-controls-BaseFormControl > div {
+   display: inline-block !important;
+   float: none;
+}

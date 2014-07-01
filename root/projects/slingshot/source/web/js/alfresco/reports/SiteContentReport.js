@@ -54,8 +54,10 @@ define(["dojo/_base/declare",
                {
                   name: "alfresco/charts/ccc/PieChart",
                   config: {
-                     legend: true,
-                     dataTopic: "ALF_RETRIEVE_SITE_CONTENT_REPORT"
+                     dataTopic: "ALF_RETRIEVE_SITE_CONTENT_REPORT",
+                     dataTopicPayload: {
+                        site: Alfresco.constants.SITE // todo replace with $$SITE$$ once supported
+                     }
                   }
                }
             ]

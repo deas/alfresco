@@ -37,7 +37,7 @@ define(["alfresco/forms/controls/BaseFormControl",
        * @type {object[]}
        * @default [{cssFile:"./css/DojoSelect.css"}]
        */
-      cssRequirements: [{cssFile:"./css/DojoSelect.css"}],
+      cssRequirements: [{cssFile:"./css/DojoDateTextBox.css"}],
 
       /**
        * @instance

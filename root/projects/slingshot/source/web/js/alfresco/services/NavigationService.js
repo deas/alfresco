@@ -113,7 +113,7 @@ define(["dojo/_base/declare",
             }
             else if (data.type == this.contextRelativePath)
             {
-               url = Alfresco.contants.URL_CONTEXT + data.url;
+               url = AlfConstants.URL_CONTEXT + data.url;
             }
             else if (data.type == this.fullPath)
             {

@@ -94,6 +94,9 @@ define(["dojo/_base/declare",
                      value: this._currentlySelectedChart
                   });
                }
+
+               this._currentDataRequestPayload = lang.mixin({}, this.dataRequestPayload);
+               this.requestData();
             },
 
             postCreate: function()
@@ -103,9 +106,6 @@ define(["dojo/_base/declare",
                if (this.widgets) {
                   this.processWidgets(this.widgets);
                }
-
-               this._currentDataRequestPayload = lang.mixin({}, this.dataRequestPayload);
-               this.requestData();
             },
 
             requestData: function()
@@ -119,7 +119,6 @@ define(["dojo/_base/declare",
                var chart = this.chartMap[this._currentlySelectedChart];
                if (chart != null) {
                   chart.setData(data, dataDescriptor);
-                  chart.render();
                   this.showChart(chart);
                }
             },

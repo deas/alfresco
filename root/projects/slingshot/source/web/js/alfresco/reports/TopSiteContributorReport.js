@@ -28,17 +28,17 @@ define(["dojo/_base/declare",
    "alfresco/core/Core",
    "alfresco/core/I18nUtils",
    "alfresco/reports/Report",
+   "alfresco/services/_NavigationServiceTopicMixin",
    "dojo/_base/lang",
    "dojo/date",
    "dojo/date/stamp"],
-      function(declare, AlfCore, I18nUtils, Report, lang, date, stamp) {
+      function(declare, AlfCore, I18nUtils, Report, _NavigationServiceTopicMixin, lang, date, stamp) {
 
-         var startDate = date.add(new Date(), "month", -3);
-         startDate = stamp.toISOString(startDate, { selector: "date" });
-         var endDate = new Date();
-         endDate = stamp.toISOString(endDate, { selector: "date" });
+         var startDate = stamp.toISOString(date.add(new Date(), "month", -1), { selector: "date" });
+         var endDate = stamp.toISOString(new Date(), { selector: "date" });
          var i18nScope = "alfresco.reports.TopSiteContributorReport";
-         return declare([Report], {
+
+         return declare([Report, _NavigationServiceTopicMixin], {
 
             i18nScope: "alfresco.reports.TopSiteContributorReport",
 
@@ -51,13 +51,34 @@ define(["dojo/_base/declare",
              */
             i18nRequirements: [{i18nFile: "./i18n/TopSiteContributorReport.properties"}],
 
+            /**
+             * An array of the CSS files to use with this widget.
+             *
+             * @instance cssRequirements {Array}
+             * @type {object[]}
+             * @default [{cssFile:"./css/TopSiteContributorReport.css"}]
+             */
+            cssRequirements: [{cssFile:"./css/TopSiteContributorReport.css"}],
+
+            /**
+             * The CSS class (or a space separated list of classes) to include in the DOM node.
+             *
+             * @instance
+             * @type {string}
+             * @default "alfresco-reports-TopSiteContributorReport"
+             */
+            baseClass: "alfresco-reports-TopSiteContributorReport",
+
             postMixInProperties: function alfresco_reports_TopSiteContributorReport__postMixInProperties() {
                this.inherited(arguments);
                this.alfSubscribe("REPORT_ITEM_CLICKED", lang.hitch(this, this.onReportItemClick));
             },
 
             onReportItemClick: function(value){
-               alert('Clicked: ' + value);
+               this.alfPublish(this.navigateToPageTopic, {
+                  type: this.contextRelativePath,
+                  url: "page/user/" + encodeURIComponent(value) + "/profile"
+               }, true);
             },
 
             /**
@@ -71,7 +92,9 @@ define(["dojo/_base/declare",
                {
                   name: "alfresco/forms/Form",
                   config: {
-                     okButtonPublishTopic: "SHOW_CONTRIBUTORS_BY_DATE",
+                     displayButtons: false,
+                     validFormValuesPublishTopic: "SHOW_CONTRIBUTORS_BY_DATE",
+                     validFormValuesPublishOnInit: false,
                      widgets: [
                         {
                            name: "alfresco/forms/controls/DojoDateTextBox",
@@ -98,7 +121,7 @@ define(["dojo/_base/declare",
                   {
                      dataRequestTopic: "ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT",
                      dataRequestPayload: {
-                        site: "$$SITE$$",
+                        site: Alfresco.constants.SITE, // todo replace with $$SITE$$ once supported
                         startDate: startDate,
                         endDate: endDate
                      },

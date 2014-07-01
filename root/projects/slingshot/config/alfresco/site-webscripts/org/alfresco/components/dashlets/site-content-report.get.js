@@ -8,7 +8,8 @@ model.jsonModel = {
          config: {
             pubSubScope: pubSubScope
          }
-      }],
+      }
+   ],
    widgets: [
       {
          id: "DASHLET",
