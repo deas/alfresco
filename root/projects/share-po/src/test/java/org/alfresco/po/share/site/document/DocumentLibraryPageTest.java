@@ -45,7 +45,6 @@ import org.testng.annotations.Test;
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
-@Test(groups = { "Firefox17Ent" })
 public class DocumentLibraryPageTest extends AbstractDocumentTest
 {
     private static final String NEW_TEST_FILENAME = "test.txt";
