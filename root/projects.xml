@@ -2110,6 +2110,8 @@
                   includes="${file.name.jar.core}" />
          <fileset dir="${dir.project.datamodel.dist}" 
                   includes="${file.name.jar.datamodel}" />
+         <fileset dir="${dir.project.events.dist}" 
+                  includes="${file.name.jar.events}" />
          <fileset dir="${dir.project.legacylucene.dist}" 
                   includes="${file.name.jar.legacylucene}" />
          <fileset dir="${dir.project.repository.dist}" 
