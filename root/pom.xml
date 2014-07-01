@@ -81,6 +81,7 @@
     <module>projects/data-model</module>
     <module>projects/legacy-lucene</module>
     <module>projects/alfresco-jlan</module>
+    <module>projects/alfresco-events</module>
     <module>projects/mbeans</module>
     <module>projects/deployment</module>
     <module>projects/repository</module>
