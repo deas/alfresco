@@ -51,7 +51,7 @@ public class LiveSearchTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ACE_1063_01
+     * DataPreparation method - ALF_3023
      * 1) Login
      * 2) Create User
      * 3) Create Site
@@ -166,7 +166,7 @@ public class LiveSearchTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ACE_1063_02
+     * DataPreparation method - ALF_3024
      * 1) Login
      * 2) Create User
      * 3) Create Site
@@ -262,12 +262,10 @@ public class LiveSearchTest extends AbstractUtils
         Assert.assertTrue(documentUserNames.contains(testUser.toLowerCase()));
 
         // Checks site result
-        List<LiveSearchSiteResult> liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchSitesResults.size() == 0);
+        Assert.assertFalse(liveSearchDropdown.isSitesTitleVisible());
 
-        // Checks people result
-        List<LiveSearchPeopleResult> liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchPeopleResults.size() == 0);
+        //Checks people result
+        Assert.assertFalse(liveSearchDropdown.isPeopleTitleVisible());
 
         // Clicks on document title
         DocumentDetailsPage documentDetailsPage = ShareUserLiveSearch.clickOnDocumentSearchResultTitle(liveSearchDropdown, getFileName(testName + "." + "xml")).render();
@@ -294,7 +292,7 @@ public class LiveSearchTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ACE_1063_03
+     * DataPreparation method - ALF_3025
      * 1) Login
      * 2) Create User
      * 3) Create Site
@@ -367,34 +365,22 @@ public class LiveSearchTest extends AbstractUtils
 
         // Check document results
         LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm1);
-        List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchDocumentResults.size() == 0);
-
-        // Checks site result
-        List<LiveSearchSiteResult> liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchSitesResults.size() == 0);
-
-        // Checks people result
-        List<LiveSearchPeopleResult> liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchPeopleResults.size() == 0);
-
+        
+        Assert.assertFalse(liveSearchDropdown.isDocumentsTitleVisible());
+        Assert.assertFalse(liveSearchDropdown.isSitesTitleVisible());
+        Assert.assertFalse(liveSearchDropdown.isPeopleTitleVisible());
+        
         liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm2);
-        liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchDocumentResults.size() == 0);
-
-        // Checks site result
-        liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchSitesResults.size() == 0);
-
-        // Checks people result
-        liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchPeopleResults.size() == 0);
+        
+        Assert.assertFalse(liveSearchDropdown.isDocumentsTitleVisible());
+        Assert.assertFalse(liveSearchDropdown.isSitesTitleVisible());
+        Assert.assertFalse(liveSearchDropdown.isPeopleTitleVisible());
 
         ShareUser.logout(drone);
     }
 
     /**
-     * DataPreparation method - ACE_1063_04
+     * DataPreparation method - ALF_3026
      * 1) Login
      * 2) Create User
      * 3) Create Site
@@ -450,23 +436,16 @@ public class LiveSearchTest extends AbstractUtils
 
         // Check document results
         LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm);
-        List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchDocumentResults.size() == 0);
-
-        // Checks site result
-        List<LiveSearchSiteResult> liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchSitesResults.size() == 0);
-
-        // Checks people result
-        List<LiveSearchPeopleResult> liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchPeopleResults.size() == 0);
+        Assert.assertFalse(liveSearchDropdown.isDocumentsTitleVisible());
+        Assert.assertFalse(liveSearchDropdown.isSitesTitleVisible());
+        Assert.assertFalse(liveSearchDropdown.isPeopleTitleVisible());
 
         ShareUser.logout(drone);
 
     }
 
     /**
-     * DataPreparation method - ACE__1063_05
+     * DataPreparation method - ALF_3027
      * 1) Login
      * 2) Create User
      * 3) Create Site
@@ -551,26 +530,29 @@ public class LiveSearchTest extends AbstractUtils
         
         ShareUser.login(drone, testUser, testPassword);
 
-        // Check document results
-        
+        // Check document results       
         LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm);
         List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
         List<String> documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
         Assert.assertTrue(documentTitles.contains("H0us8 my 31"));
         Assert.assertFalse(documentTitles.contains("T3chn0 my"));
         
-        // Checks site result
-        List<LiveSearchSiteResult> liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchSitesResults.size() == 0);
-
-        // Checks people result
-        List<LiveSearchPeopleResult> liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchPeopleResults.size() == 0);
-        
+        Assert.assertFalse(liveSearchDropdown.isSitesTitleVisible());
+        Assert.assertFalse(liveSearchDropdown.isPeopleTitleVisible());
+         
         ShareUser.logout(drone);
     }
 
-    
+    /**
+     * DataPreparation method - ALF_3039
+     * 1) Login
+     * 2) Create User
+     * 3) Create Site
+     * 4) Create folders and files
+     * 4) Log out
+     * 
+     * @throws Exception
+     */
     @Test(groups = { "DataPrepLiveSearch" })
     public void dataPrep_LiveSearch_ALF_3039() throws Exception
     {
@@ -658,16 +640,24 @@ public class LiveSearchTest extends AbstractUtils
         Assert.assertFalse(documentTitles.contains("T3chn0 my"));
         
         // Checks site result
-        List<LiveSearchSiteResult> liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchSitesResults.size() == 0);
+        Assert.assertFalse(liveSearchDropdown.isSitesTitleVisible());
 
-        // Checks people result
-        List<LiveSearchPeopleResult> liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchPeopleResults.size() == 0);
-        
+        //Checks people result
+        Assert.assertFalse(liveSearchDropdown.isPeopleTitleVisible());
+ 
         ShareUser.logout(drone);
     }
       
+    /**
+     * DataPreparation method - ALF_3034
+     * 1) Login
+     * 2) Create User
+     * 3) Create Site
+     * 4) Create folders and files
+     * 4) Log out
+     * 
+     * @throws Exception
+     */
     @Test(groups = { "DataPrepLiveSearch" })
     public void dataPrep_LiveSearch_ALF_3040() throws Exception
     {
@@ -751,18 +741,16 @@ public class LiveSearchTest extends AbstractUtils
         Assert.assertTrue(documentTitles.contains("H0us8 my 21"));
        
         // Checks site result
-        List<LiveSearchSiteResult> liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchSitesResults.size() == 0);
+        Assert.assertFalse(liveSearchDropdown.isSitesTitleVisible());
 
-        // Checks people result
-        List<LiveSearchPeopleResult> liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchPeopleResults.size() == 0);
-        
+        //Checks people result
+        Assert.assertFalse(liveSearchDropdown.isPeopleTitleVisible());
+         
         ShareUser.logout(drone);
     }
     
     /**
-     * DataPreparation method - ACE_1063_06
+     * DataPreparation method - ALF_3028
      * 1) Login
      * 2) Create User that is not system tenant i.e. not alfresco.com user
      * 3) Create Site
@@ -839,7 +827,7 @@ public class LiveSearchTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ACE_1063_07
+     * DataPreparation method - ALF_3029
      * 1) Login
      * 2) Create User that is not system tenant i.e. not alfresco.com user
      * 3) Create site with site name = "n3w s1t3 creat3ed 88"
@@ -914,7 +902,7 @@ public class LiveSearchTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ACE_1063_08
+     * DataPreparation method - ALF_3030
      * 1) Login
      * 2) Create user that is not system tenant i.e. not alfresco.com user with user name = "n3w us3r creat3ed 77"
      * 3) Create user that is not system tenant i.e. not alfresco.com user with user name = "n3w us3r creat3ed 55"
@@ -984,7 +972,7 @@ public class LiveSearchTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ACE__1063_09
+     * DataPreparation method - ALF_3032
      * 1) Login
      * 2) Create User
      * 3) Create Site
@@ -1067,19 +1055,17 @@ public class LiveSearchTest extends AbstractUtils
         List<String> documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
         Assert.assertTrue(documentTitles.contains(fileName1));
         Assert.assertFalse(documentTitles.contains(fileName2));
-
-        // Checks site result
-        List<LiveSearchSiteResult> liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchSitesResults.size() == 0);
-
-        // Checks people result
-        List<LiveSearchPeopleResult> liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
-        Assert.assertTrue(liveSearchPeopleResults.size() == 0);   
         
+        // Checks site result
+        Assert.assertFalse(liveSearchDropdown.isSitesTitleVisible());
+
+        //Checks people result
+        Assert.assertFalse(liveSearchDropdown.isPeopleTitleVisible());
+                
     }
     
     /**
-     * DataPreparation method - ACE_1063_10
+     * DataPreparation method - ALF_3033
      * 1) Login
      * 2) Create User
      * 3) Create Site

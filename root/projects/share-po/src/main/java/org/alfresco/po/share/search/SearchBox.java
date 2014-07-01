@@ -41,7 +41,6 @@ public class SearchBox extends HtmlElement
 {
     private final Log logger = LogFactory.getLog(SearchBox.class);
     private final By selector;
-    private final By liveSearchDropdownSelector;
 
     /**
      * Constructor.
@@ -51,7 +50,6 @@ public class SearchBox extends HtmlElement
         super(drone);
         String searchField = isDojoSupport ? "input.alf-search-box-text" : "input[id$='searchText']";
         selector = By.cssSelector(searchField);
-        liveSearchDropdownSelector = By.cssSelector("div[data-dojo-attach-point='titleNodeDocs']");
     }
 
     /**
@@ -109,7 +107,6 @@ public class SearchBox extends HtmlElement
             {
                 logger.trace("Apply live search on the keyword: " + term);
             }
-            drone.waitUntilElementPresent(liveSearchDropdownSelector, SECONDS.convert(drone.getDefaultWaitTime(), MILLISECONDS));
             return new LiveSearchDropdown(drone);
         }
         catch (TimeoutException nse)

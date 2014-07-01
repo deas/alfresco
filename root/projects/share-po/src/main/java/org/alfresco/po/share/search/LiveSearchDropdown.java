@@ -15,12 +15,9 @@
 
 package org.alfresco.po.share.search;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
@@ -89,8 +86,6 @@ public class LiveSearchDropdown extends SharePage
     @Override
     public LiveSearchDropdown render(RenderTime timer)
     {
-        elementRender(timer, getVisibleRenderElement(By.cssSelector(DOCUMENTS_TITLE)), getVisibleRenderElement(By.cssSelector(CLOSE_DROPDOWN)), getVisibleRenderElement(By
-                .cssSelector(SITES_TITLE)), getVisibleRenderElement(By.cssSelector(PEOPLE_TITLE)));
         return this;
     }
 
@@ -342,7 +337,6 @@ public class LiveSearchDropdown extends SharePage
             WebElement expandDocumentResults = drone.findAndWait(By.cssSelector(MORE_RESULTS));
             drone.mouseOver(expandDocumentResults);
             expandDocumentResults.click();
-
         }
         catch (NoSuchElementException nse)
         {

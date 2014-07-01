@@ -303,10 +303,7 @@ define(["dojo/_base/declare",
                DomStyle.set(this._LiveSearch.containerNode, "display", "none");
             }));
             on(this._searchTextNode, "click", lang.hitch(this, function(evt) {
-               if (this.resultsCounts["docs"] > 0 || this.resultsCounts["sites"] > 0 || this.resultsCounts["people"] > 0)
-               {
-                  DomStyle.set(this._LiveSearch.containerNode, "display", "block");
-               }
+               this.updateResults();
                evt.stopPropagation();
             }));
             on(this._LiveSearch, "click", function(evt) {
@@ -393,8 +390,6 @@ define(["dojo/_base/declare",
                {
                   if (terms.length >= this._minimumSearchLength && terms !== this.lastSearchText)
                   {
-                     DomStyle.set(this._LiveSearch.containerNode, "display", "block");
-
                      this.lastSearchText = terms;
 
                      // abort previous XHR requests to ensure we don't display results from a previous potentially slower query
@@ -427,18 +422,11 @@ define(["dojo/_base/declare",
       },
       
       liveSearchDocuments: function alfresco_header_SearchBox_liveSearchDocuments(terms, startIndex) {
-         var _this = this;
-         this._documentsWaitTimeout = setTimeout(function() {
-            DomClass.add(_this._LiveSearch.titleNodeDocs, "wait");
-         }, 2000);
-         
          this._requests.push(
             this.serviceXhr({
                url: AlfConstants.PROXY_URI + "slingshot/live-search-docs?t=" + encodeURIComponent(terms) + "&maxResults=" + this._resultPageSize + "&startIndex=" + startIndex,
                method: "GET",
                successCallback: function(response) {
-                  clearTimeout(this._documentsWaitTimeout);
-                  DomClass.remove(this._LiveSearch.titleNodeDocs, "wait");
                   if (startIndex === 0)
                   {
                      this._LiveSearch.containerNodeDocs.innerHTML = "";
@@ -479,34 +467,27 @@ define(["dojo/_base/declare",
                      this.resultsCounts["docs"] = 0;
                   }
                   this.resultsCounts["docs"] += response.items.length;
+                  this.updateResults();
                },
                failureCallback: function(response) {
-                  clearTimeout(this._documentsWaitTimeout);
-                  DomClass.remove(this._LiveSearch.titleNodeDocs, "wait");
                   DomStyle.set(this._LiveSearch.nodeDocsMore, "display", "none");
                   if (startIndex === 0)
                   {
                      this._LiveSearch.containerNodeDocs.innerHTML = "";
                      this.resultsCounts["docs"] = 0;
                   }
+                  this.updateResults();
                },
                callbackScope: this
             }));
       },
 
       liveSearchSites: function alfresco_header_SearchBox_liveSearchSites(terms, startIndex) {
-         var _this = this;
-         this._sitesWaitTimeout = setTimeout(function() {
-            DomClass.add(_this._LiveSearch.titleNodeSites, "wait");
-         }, 2000);
-         
          this._requests.push(
             this.serviceXhr({
                url: AlfConstants.PROXY_URI + "slingshot/live-search-sites?t=" + encodeURIComponent(terms) + "&maxResults=" + this._resultPageSize,
                method: "GET",
                successCallback: function(response) {
-                  clearTimeout(this._sitesWaitTimeout);
-                  DomClass.remove(this._LiveSearch.titleNodeSites, "wait");
                   this._LiveSearch.containerNodeSites.innerHTML = "";
                   
                   // construct each Site item as a LiveSearchItem widget
@@ -523,30 +504,23 @@ define(["dojo/_base/declare",
                      itemLink.placeAt(this._LiveSearch.containerNodeSites);
                   }, this);
                   this.resultsCounts["sites"] = response.items.length;
+                  this.updateResults();
                },
                failureCallback: function(response) {
-                  clearTimeout(this._sitesWaitTimeout);
-                  DomClass.remove(this._LiveSearch.titleNodeSites, "wait");
                   this._LiveSearch.containerNodeSites.innerHTML = "";
                   this.resultsCounts["sites"] = 0;
+                  this.updateResults();
                },
                callbackScope: this
             }));
       },
       
       liveSearchPeople: function alfresco_header_SearchBox_liveSearchPeople(terms, startIndex) {
-         var _this = this;
-         this._peopleWaitTimeout = setTimeout(function() {
-            DomClass.add(_this._LiveSearch.titleNodePeople, "wait");
-         }, 2000);
-         
          this._requests.push(
             this.serviceXhr({
                url: AlfConstants.PROXY_URI + "slingshot/live-search-people?t=" + encodeURIComponent(terms) + "&maxResults=" + this._resultPageSize,
                method: "GET",
                successCallback: function(response) {
-                  clearTimeout(this._peopleWaitTimeout);
-                  DomClass.remove(this._LiveSearch.titleNodePeople, "wait");
                   this._LiveSearch.containerNodePeople.innerHTML = "";
                   
                   // construct each Person item as a LiveSearchItem widget
@@ -565,17 +539,71 @@ define(["dojo/_base/declare",
                      itemLink.placeAt(this._LiveSearch.containerNodePeople);
                   }, this);
                   this.resultsCounts["people"] = response.items.length;
+                  this.updateResults();
                },
                failureCallback: function(response) {
-                  clearTimeout(this._peopleWaitTimeout);
-                  DomClass.remove(this._LiveSearch.titleNodePeople, "wait");
                   this._LiveSearch.containerNodePeople.innerHTML = "";
                   this.resultsCounts["people"] = 0;
+                  this.updateResults();
                },
                callbackScope: this
             }));
       },
-      
+
+      updateResults: function alfresco_header_SearchBox_showResults()
+      {
+         var anyResults = false;
+
+         // Documents
+         if (this.resultsCounts["docs"] > 0)
+         {
+            anyResults = true;
+            DomStyle.set(this._LiveSearch.titleNodeDocs, "display", "block");
+            DomStyle.set(this._LiveSearch.containerNodeDocs, "display", "block");
+         }
+         else
+         {
+            DomStyle.set(this._LiveSearch.titleNodeDocs, "display", "none");
+            DomStyle.set(this._LiveSearch.containerNodeDocs, "display", "none");
+         }
+
+         // Sites
+         if (this.resultsCounts["sites"] > 0)
+         {
+            anyResults = true;
+            DomStyle.set(this._LiveSearch.titleNodeSites, "display", "block");
+            DomStyle.set(this._LiveSearch.containerNodeSites, "display", "block");
+         }
+         else
+         {
+            DomStyle.set(this._LiveSearch.titleNodeSites, "display", "none");
+            DomStyle.set(this._LiveSearch.containerNodeSites, "display", "none");
+         }
+
+         // People
+         if (this.resultsCounts["people"] > 0)
+         {
+            anyResults = true;
+            DomStyle.set(this._LiveSearch.titleNodePeople, "display", "block");
+            DomStyle.set(this._LiveSearch.containerNodePeople, "display", "block");
+         }
+         else
+         {
+            DomStyle.set(this._LiveSearch.titleNodePeople, "display", "none");
+            DomStyle.set(this._LiveSearch.containerNodePeople, "display", "none");
+         }
+
+         // Results pane
+         if (anyResults)
+         {
+            DomStyle.set(this._LiveSearch.containerNode, "display", "block");
+         }
+         else
+         {
+            DomStyle.set(this._LiveSearch.containerNode, "display", "none");
+         }
+      },
+
       clearResults: function alfresco_header_SearchBox_clearResults()
       {
          this._searchTextNode.value = "";
@@ -593,13 +621,10 @@ define(["dojo/_base/declare",
             this._LiveSearch.containerNodeDocs.innerHTML = "";
             this._LiveSearch.containerNodePeople.innerHTML = "";
             this._LiveSearch.containerNodeSites.innerHTML = "";
-            DomClass.remove(this._LiveSearch.titleNodeDocs, "wait");
-            DomClass.remove(this._LiveSearch.titleNodePeople, "wait");
-            DomClass.remove(this._LiveSearch.titleNodeSites, "wait");
 
             DomStyle.set(this._LiveSearch.nodeDocsMore, "display", "none");
 
-            DomStyle.set(this._LiveSearch.containerNode, "display", "none");
+            this.updateResults();
          }
          this._searchTextNode.focus();
       },

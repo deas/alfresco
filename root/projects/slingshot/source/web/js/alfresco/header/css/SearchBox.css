@@ -86,14 +86,12 @@
 
         .alf-livesearch-more {
             display: none;
-            margin-top: -8px;
-            margin-bottom: 4px;
+            margin-top: -4px;
+            padding-bottom: 7px;
+            text-align: right;
 
             span {
-                position: absolute;
-                right: 10px;
-                height: 10px;
-                background: url("../../css/images/ArrowDown.PNG") no-repeat 100% 100%;
+                background: url("../../css/images/ArrowDown.PNG") no-repeat 100% 50%;
                 padding-right: 22px;
             }
         }
