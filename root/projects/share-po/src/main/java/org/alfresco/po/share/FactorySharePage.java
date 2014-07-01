@@ -47,6 +47,7 @@ import org.alfresco.po.share.systemsummary.SystemSummaryPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
 import org.alfresco.po.share.user.*;
+import org.alfresco.po.share.user.UserSitesPage;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.po.share.workflow.WorkFlowDetailsPage;
@@ -165,6 +166,7 @@ public class FactorySharePage implements PageFactory
         pages.put("user-sites", UserSitesPage.class);
         pages.put("tag-management", TagManagerPage.class);
         pages.put("faceted-search", FacetedSearchPage.class);
+        pages.put("user-sites", UserSitesPage.class);
         pages.put("bulkfsimport", BulkImportPage.class);
         pages.put("status", StatusBulkImportPage.class);
         pages.put("inplace", InPlaceBulkImportPage.class);

@@ -70,6 +70,8 @@ public class Navigation extends SharePage
     private static final String SELECT_SITE_AS_FAVOURITE = "#HEADER_SITES_MENU_ADD_FAVOURITE_text";
     private static final String REMOVE_SITE_AS_FAVOURITE = "#HEADER_SITES_MENU_REMOVE_FAVOURITE_text";
     private static final String RECENT_SITES = "td[id^='HEADER_SITES_MENU_RECENT'] a";
+    private static final String MY_SITES = "td[id^='HEADER_SITES_MENU_MY_SITES'] a";
+    
     private static final String FAVOURITE_TEXT = "div[id^='HEADER_SITES_MENU_FAVOURITES'] td[class$='dijitMenuItemLabel']";
     private static final String FAVOURITE_SITES = "div[id^='HEADER_SITES_MENU_FAVOURITES'] td[class$='dijitMenuItemLabel'] a";
     private static final String LINK_FAVOURITES= "#HEADER_SITES_MENU_FAVOURITES_text";
@@ -863,6 +865,30 @@ public class Navigation extends SharePage
         }
         throw new PageOperationException("Fvourties option is not found in the option");
     }
+    
+    
+    /**
+     * Select My Sites from sites dropdown.
+     * @return
+     */
+    public HtmlPage selectMySites()
+    {
+        try
+        {
+            //Refresh is needed since sites added in favourites dont reflect.
+            selectSitesDropdown(); 
+            drone.find(By.cssSelector(MY_SITES)).click();
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch(NoSuchElementException nse)
+        {
+            logger.error("My Sites option is not found in the options", nse);
+        }
+        throw new PageOperationException("My Sites option is not found in the options");
+    }
+    
+    
+    
     
     /**
      * Mimics the action of selecting shared files link.
