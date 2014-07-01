@@ -48,12 +48,12 @@ define(["dojo/_base/declare",
             i18nRequirements: [{i18nFile: "./i18n/ReportService.properties"}],
 
             /**
-             * Sets up the subscriptions for the SiteService
+             * Sets up the subscriptions for the ReportService
              *
              * @instance
              * @param {array} args The constructor arguments.
              */
-            constructor: function alfresco_services_SiteService__constructor(args) {
+            constructor: function alfresco_services_ReportService__constructor(args) {
                lang.mixin(this, args);
                this.alfSubscribe("ALF_RETRIEVE_SITE_CONTENT_REPORT", lang.hitch(this, this.getSiteContentReport));
                this.alfSubscribe("ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT", lang.hitch(this, this.getTopSiteContributorReport));
@@ -81,7 +81,7 @@ define(["dojo/_base/declare",
                this.serviceXhr(config);
             },
 
-            publishSiteContentReport: function(response, requestConfig){
+            publishSiteContentReport: function alfresco_services_ReportService__publishSiteContentReport(response, requestConfig){
                this.alfPublish(requestConfig.alfTopic + "_SUCCESS", {
                   requestConfig: requestConfig,
                   response: {
@@ -95,21 +95,25 @@ define(["dojo/_base/declare",
             },
 
             /**
+             * Requests data that gives an overview of the amount of created content for each user in the site.
              *
              * @instance
              * @param {object} payload The details of the request
              */
-            getTopSiteContributorReport: function alfresco_services_ReportService__getSiteContentReport(payload) {
+            getTopSiteContributorReport: function alfresco_services_ReportService__getTopSiteContributorReport(payload) {
                var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT";
                var url = AlfConstants.PROXY_URI + "api/solr";
-               if (payload.site) {
+               if (payload.site)
+               {
                   url += "/site/" + encodeURIComponent(payload.site);
                }
                url += "/stats?facet=content.creator";
-               if (payload.startDate) {
+               if (payload.startDate)
+               {
                   url += "&startDate=" + encodeURIComponent(payload.startDate);
                }
-               if (payload.endDate) {
+               if (payload.endDate)
+               {
                   url += "&endDate=" + encodeURIComponent(payload.endDate);
                }
                var config = {
@@ -122,7 +126,7 @@ define(["dojo/_base/declare",
                this.serviceXhr(config);
             },
 
-            publishTopSiteContributorReport: function(response, requestConfig){
+            publishTopSiteContributorReport: function alfresco_services_ReportService__publishTopSiteContributorReport(response, requestConfig){
                this.alfPublish(requestConfig.alfTopic + "_SUCCESS", {
                   requestConfig: requestConfig,
                   response: {

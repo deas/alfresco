@@ -18,7 +18,8 @@
  */
 
 /**
- * TopSiteContributorReport
+ * TopSiteContributorReport displays a chart giving an overview of the amount of created content for each user in the
+ * site.
  *
  * @module alfresco/reports/TopSiteContributorReport
  * @extends alfresco/reports/Report
@@ -34,13 +35,13 @@ define(["dojo/_base/declare",
    "dojo/date/stamp"],
       function(declare, AlfCore, I18nUtils, Report, _NavigationServiceTopicMixin, lang, date, stamp) {
 
+         // Lets default the report to show data from the last month
          var startDate = stamp.toISOString(date.add(new Date(), "month", -1), { selector: "date" });
          var endDate = stamp.toISOString(new Date(), { selector: "date" });
+
          var i18nScope = "alfresco.reports.TopSiteContributorReport";
 
          return declare([Report, _NavigationServiceTopicMixin], {
-
-            i18nScope: "alfresco.reports.TopSiteContributorReport",
 
             /**
              * An array of the i18n files to use with this widget.
@@ -69,12 +70,23 @@ define(["dojo/_base/declare",
              */
             baseClass: "alfresco-reports-TopSiteContributorReport",
 
+            /**
+             * Makes sure we listen to when a user is clicked in the chart
+             *
+             * @instance
+             */
             postMixInProperties: function alfresco_reports_TopSiteContributorReport__postMixInProperties() {
                this.inherited(arguments);
                this.alfSubscribe("REPORT_ITEM_CLICKED", lang.hitch(this, this.onReportItemClick));
             },
 
-            onReportItemClick: function(value){
+            /**
+             * Called when a user is clicked in the chart and will navigate browser to the clicked user's profile.
+             *
+             * @instance
+             * @param value The name of the clicked user
+             */
+            onReportItemClick: function(value) {
                this.alfPublish(this.navigateToPageTopic, {
                   type: this.contextRelativePath,
                   url: "page/user/" + encodeURIComponent(value) + "/profile"
@@ -130,6 +142,10 @@ define(["dojo/_base/declare",
                         {
                            name: "alfresco/charts/ccc/PieChart",
                            config: {
+                              readers: [
+                                 {names: 'category', indexes: 0 },
+                                 {names: 'value', indexes: 2 }
+                              ],
                               selectable: true,
                               hoverable:  true,
                               clickTopic: "REPORT_ITEM_CLICKED"

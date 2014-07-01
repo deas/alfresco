@@ -63,6 +63,12 @@ define(["dojo/_base/declare",
             selectable: false,
             hoverable: false,
 
+            tooltip: {
+               enabled: false
+            },
+
+            readers: null,
+
             _currentData: null,
             _currentDataDescriptor: null,
 
@@ -133,6 +139,10 @@ define(["dojo/_base/declare",
                config.selectable = this.selectable;
                config.hoverable = this.hoverable;
 
+               if (this.readers) {
+                  config.readers = this.readers;
+               }
+
                //config.animate = false;
 
                if (this.clickTopic)
@@ -141,9 +151,9 @@ define(["dojo/_base/declare",
                   config.clickAction = lang.hitch(this, this.onItemClick);
                }
 
-               config.tooltipEnabled = true; // deprecated
+               config.tooltip = this.tooltip;
                //config.explodedSliceRadius = 15; // valid option?
-               config.valuesVisible = true; // valid option?
+               //config.valuesVisible = true; // valid option?
 
                return config;
             },

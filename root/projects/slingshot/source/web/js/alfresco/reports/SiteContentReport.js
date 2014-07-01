@@ -18,7 +18,7 @@
  */
 
 /**
- * SiteContentReport
+ * SiteContentReport displays a chart giving an overview of the type of content that exist in the current site.
  *
  * @module alfresco/reports/SiteContentReport
  * @extends alfresco/reports/Report
@@ -31,8 +31,6 @@ define(["dojo/_base/declare",
       function(declare, AlfCore, I18nUtils, Report) {
 
          return declare([Report], {
-
-            i18nScope: "alfresco.reports.SiteContentReport",
 
             /**
              * An array of the i18n files to use with this widget.
@@ -57,7 +55,11 @@ define(["dojo/_base/declare",
                      dataTopic: "ALF_RETRIEVE_SITE_CONTENT_REPORT",
                      dataTopicPayload: {
                         site: Alfresco.constants.SITE // todo replace with $$SITE$$ once supported
-                     }
+                     },
+                     readers: [
+                        {names: 'category', indexes: 0 },
+                        {names: 'value', indexes: 2 }
+                     ]
                   }
                }
             ]

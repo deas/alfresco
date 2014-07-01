@@ -1,5 +1,6 @@
 .alfresco-reports-TopSiteContributorReport {
    margin: 1em;
+   text-align: center;
 }
 .alfresco-reports-TopSiteContributorReport form .alfresco-forms-controls-BaseFormControl {
    display: inline-block !important;

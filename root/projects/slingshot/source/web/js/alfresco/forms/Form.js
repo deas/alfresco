@@ -241,6 +241,8 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * This topic will be published when the form contains valid data
+       *
        * @instance
        * @type {string}
        * @default null
@@ -248,6 +250,8 @@ define(["dojo/_base/declare",
       validFormValuesPublishTopic: null,
 
       /**
+       * The payload of validFormValuesPublishTopic. If left as null the form's value will be dispatched.
+       *
        * @instance
        * @type {object}
        * @defualt null
@@ -255,13 +259,17 @@ define(["dojo/_base/declare",
       validFormValuesPublishPayload: null,
 
       /**
+       * Set to true if a the validFormValuesPublishTopic shall be globally published.
+       *
        * @instance
        * @type {string}
-       * @default null
+       * @default false
        */
-      validFormValuesPublishGlobal: null,
+      validFormValuesPublishGlobal: false,
 
       /**
+       * If set to true the form will fire an event when it has been processed (as long as all values are valid)
+       *
        * @instance
        * @type {boolean}
        * @default false
@@ -522,6 +530,7 @@ define(["dojo/_base/declare",
 
          this.validate();
 
+         // If requested publish a topic now that the form has been initially processed
          if (this.validFormValuesPublishOnInit) {
             this.publishValidValue();
          }
@@ -627,8 +636,10 @@ define(["dojo/_base/declare",
        * @instance
        */
       publishValidValue: function alfresco_forms_Form__publishValidValue() {
+
          // The form is valid if there are no invalid form controls...
-         if (this.invalidFormControls.length === 0 && this.validFormValuesPublishTopic) {
+         if (this.invalidFormControls.length === 0 && this.validFormValuesPublishTopic)
+         {
             var payload = this.validFormValuesPublishPayload;
             if (!payload)
             {
