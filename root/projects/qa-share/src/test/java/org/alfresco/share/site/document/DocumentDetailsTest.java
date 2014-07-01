@@ -133,11 +133,11 @@ public class DocumentDetailsTest extends AbstractUtils
             
             if (!isAlfrescoVersionCloud(drone))
             {
-                Assert.assertTrue(detailsPage.isSharePanePresent(), "Share Panel is not present.");
+                Assert.assertTrue(detailsPage.isSharePanePresent());
             }
             else
             {
-                Assert.assertFalse(detailsPage.isSharePanePresent(), "Share Panel is not present.");
+                Assert.assertFalse(detailsPage.isSharePanePresent());
             }
   
         }    
