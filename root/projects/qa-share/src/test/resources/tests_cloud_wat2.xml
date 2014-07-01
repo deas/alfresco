@@ -100,7 +100,7 @@
         <!-- <class name="org.alfresco.share.search.AdvanceSearchTest"/>  
             <class name="org.alfresco.share.search.AdvanceSearchTest2" />
             <class name="org.alfresco.share.search.BasicSearchTest" />--> 
-            <class name="org.alfresco.share.search.LiveSearchTest" />
+         <!--    <class name="org.alfresco.share.search.LiveSearchTest" />--> 
         </classes>
     </test>
 
