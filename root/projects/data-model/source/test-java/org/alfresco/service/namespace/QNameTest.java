@@ -160,6 +160,23 @@ public class QNameTest extends TestCase
         assertEquals("{}name5", qname5.toString());
     }
 
+    public void testCommonTypes()
+    {
+        QName qname1 = QName.createQName("{http://www.alfresco.org/model/wcmappmodel/1.0}*");
+        assertEquals("{http://www.alfresco.org/model/wcmappmodel/1.0}*", qname1.toString());
+        
+        QName qname2 = QName.createQName("{http://www.jcp.org/jcr/sv/1.0}*");
+        assertEquals("{http://www.jcp.org/jcr/sv/1.0}*", qname2.toString());
+        
+        QName qname3 = QName.createQName("{http://www.alfresco.org/model/content/1.0}created");
+        assertEquals("{http://www.alfresco.org/model/content/1.0}created", qname3.toString());
+
+        QName qname4 = QName.createQName("{http://www.alfresco.org/model/content/1.0}creator.__");
+        assertEquals("{http://www.alfresco.org/model/content/1.0}creator.__", qname4.toString());
+
+        QName qname5 = QName.createQName("{http://www.alfresco.org/model/content/1.0}content.mimetype");
+        assertEquals("{http://www.alfresco.org/model/content/1.0}content.mimetype", qname5.toString());
+    }
 
     public void testEquality()
     {
