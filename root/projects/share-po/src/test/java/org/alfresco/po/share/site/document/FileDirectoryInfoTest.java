@@ -64,7 +64,8 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @BeforeClass(groups={"alfresco-one"})
+    //@BeforeClass(groups={"alfresco-one"})
+    @Test
     public void prepare() throws Exception
     {
         siteName = "site" + System.currentTimeMillis();

@@ -323,4 +323,5 @@ public class SiteUtil
         }
         throw new SkipException("Can't create JPG file");
     }
+
 }

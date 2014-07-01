@@ -96,7 +96,14 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
             {
                 for (WebElement count : counts)
                 {
-                    topSiteContributorCounts.add(count.getText());
+                    String [] tokens = count.getText().trim().split(" ");
+                    for (String token : tokens)
+                    {
+                        if (token.trim().matches("[0-9]+"))
+                        {
+                            topSiteContributorCounts.add(token.trim());
+                        }    
+                    }
                 }
             }
 

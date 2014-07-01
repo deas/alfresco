@@ -53,6 +53,12 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
     private TopSiteContributorDashlet topSiteContributorDashlet = null;
     private CustomiseSiteDashboardPage customiseSiteDashBoard = null;
 
+    private String random1 = UUID.randomUUID().toString();
+    private String random2 = UUID.randomUUID().toString();
+    private String random3 = UUID.randomUUID().toString();
+    private String random4 = UUID.randomUUID().toString();
+    private String random5 = UUID.randomUUID().toString();
+    
     private static int firstNumberOfFiles = 7;
     private static int secondNumberOfFiles = 4;
     private static int thirdNumberOfFiles = 1;
@@ -78,11 +84,11 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
 
         logout(drone);
 
-        createUsersAndFiles(firstNumberOfFiles);
-        createUsersAndFiles(secondNumberOfFiles);
-        createUsersAndFiles(thirdNumberOfFiles);
-        createUsersAndFiles(fourthNumberOfFiles);
-        createUsersAndFiles(fifthNumberOfFiles);
+        createUsersAndFiles(firstNumberOfFiles, random1);
+        createUsersAndFiles(secondNumberOfFiles, random2);
+        createUsersAndFiles(thirdNumberOfFiles, random3);
+        createUsersAndFiles(fourthNumberOfFiles, random4);
+        createUsersAndFiles(fifthNumberOfFiles, random5);
 
     }
 
@@ -92,10 +98,17 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         SiteUtil.deleteSite(drone, siteName);
     }
 
-    private void createUsersAndFiles(int numberOfFiles) throws Exception
+    /**
+     * Creates a user, invites it to the site as a collaborator and logs out
+     * Collaborator logs in and uploads files to site's document library
+     * 
+     * @param numberOfFiles
+     * @throws Exception
+     */
+    
+    private void createUsersAndFiles(int numberOfFiles, String random1) throws Exception
     {
-        String random1 = UUID.randomUUID().toString();
-
+ 
         createEnterpriseUser(random1);
         loginAs(username, password).render();
 
@@ -129,6 +142,9 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         logout(drone);
     }
 
+    /**
+     * Drags and drops Top site contributor report dashlet to site's dashboard
+     */
     @Test
     public void instantiateDashlet() throws Exception
     {
@@ -143,16 +159,51 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         Assert.assertNotNull(topSiteContributorDashlet);
     }
 
+    /**
+     * Checks Top Site Contributor report counts
+     * @throws Exception
+     */
     @Test(dependsOnMethods = "instantiateDashlet")
     public void testTopSiteContributorCounts() throws Exception
     {
         List<String> topSiteContributorCounts = topSiteContributorDashlet.getTopSiteContributorCounts();
-        for (String topSiteContributorCount : topSiteContributorCounts)
-        {
-            System.out.println("Top site contributor count **** " + topSiteContributorCount);
-        }
+        //assert the counts
+        Assert.assertTrue(topSiteContributorCounts.size() == 5);
+          
+        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(firstNumberOfFiles)));
+        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(secondNumberOfFiles)));
+        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(thirdNumberOfFiles)));
+        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(fourthNumberOfFiles)));
+        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(fifthNumberOfFiles)));
+
     }
 
+    
+    /**
+     * Checks Top Site Contributor report users
+     * @throws Exception
+     */
+    @Test(dependsOnMethods = "testTopSiteContributorCounts")
+    public void testTopSiteContributorUsers() throws Exception
+    {
+        List<String> topSiteContributorUsers = topSiteContributorDashlet.getTopSiteContributorUsers();
+        //assert the users
+        Assert.assertTrue(topSiteContributorUsers.size() == 5);
+          
+        Assert.assertTrue(topSiteContributorUsers.contains(random1));
+        Assert.assertTrue(topSiteContributorUsers.contains(random2));
+        Assert.assertTrue(topSiteContributorUsers.contains(random3));
+        Assert.assertTrue(topSiteContributorUsers.contains(random4));
+        Assert.assertTrue(topSiteContributorUsers.contains(random5));
+
+    }
+    
+    /**
+     * Site members user search retry
+     * 
+     * @param user
+     * @return
+     */
     private List<String> userSearchRetry(String user)
     {
         int counter = 0;

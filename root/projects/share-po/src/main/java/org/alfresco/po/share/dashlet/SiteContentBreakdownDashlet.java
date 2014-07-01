@@ -39,9 +39,8 @@ public class SiteContentBreakdownDashlet extends AbstractDashlet implements Dash
     private static Log logger = LogFactory.getLog(SiteContentBreakdownDashlet.class);
 
     private static final String SITE_CONTENT_REPORT_DASHLET = "div[id*='SiteContentReportDashlet']";
-    private static final String MIME_TYPES = "div[id*='SiteContentReportDashlet'] svg g text:nth-of-type(1)";
-    private static final String MIME_TYPES_COUNTS = "div[id*='SiteContentReportDashlet'] svg g text:nth-of-type(2)";
-
+    private static final String SITE_CONTENT_DATA = "text[pointer-events='none']";
+ 
     /**
      * Constructor
      * 
@@ -71,61 +70,59 @@ public class SiteContentBreakdownDashlet extends AbstractDashlet implements Dash
         elementRender(timer, getVisibleRenderElement(By.cssSelector(SITE_CONTENT_REPORT_DASHLET)));
         return this;
     }
-
+    
+    
     /**
-     * Gets the list of mime type counts
+     * Gets the list of content data
      * 
      * @return
      */
-    public List<String> getMimeTypeCounts()
+    public List<String> getSiteContentReportData()
     {
-        List<String> mimeTypeCounts = new ArrayList<String>();
+        List<String> siteContentData = new ArrayList<String>();
         try
         {
 
-            List<WebElement> counts = drone.findAll(By.cssSelector(MIME_TYPES_COUNTS));
-            if (counts.size() > 0)
+            List<WebElement> siteContentDataElements = drone.findAll(By.cssSelector(SITE_CONTENT_DATA));
+            if (siteContentDataElements.size() > 0)
             {
-                for (WebElement count : counts)
+                for (WebElement contentDataElement : siteContentDataElements)
                 {
-                    mimeTypeCounts.add(count.getText());
+                    siteContentData.add(contentDataElement.getText());
                 }
             }
 
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("No mime type counts " + nse);
+            logger.error("No site content data " + nse);
         }
-        return mimeTypeCounts;
+        return siteContentData;
     }
-
+    
     /**
-     * Gets the list of mime types
-     * 
+     * Gets the list of strings: mime type - count
      * @return
      */
-    public List<String> getMimeTypes()
+    public List<String> getTypesAndCounts()
     {
-        List<String> mimeTypes = new ArrayList<String>();
-        try
+        List<String> siteContentData = getSiteContentReportData();
+        StringBuilder builder = new StringBuilder(" ");
+        List<String> typesAndCounts = new ArrayList<String>();
+        for (String data : siteContentData)
         {
-
-            List<WebElement> types = drone.findAll(By.cssSelector(MIME_TYPES));
-            if (types.size() > 0)
+            builder.append(data).append(" ");
+        }
+        String [] items = builder.toString().split("items");
+        for (String item : items)
+        {
+            if (item.indexOf("-") != -1)
             {
-                for (WebElement type : types)
-                {
-                    mimeTypes.add(type.getText());
-                }
-            }
-
+                typesAndCounts.add(item.trim().substring(item.indexOf(")")+1));
+            }   
         }
-        catch (NoSuchElementException nse)
-        {
-            logger.error("No mime types " + nse);
-        }
-        return mimeTypes;
+        return typesAndCounts;
     }
+    
 
 }

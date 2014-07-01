@@ -101,8 +101,8 @@
         <classes>
             <class name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest"/>
 			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet"/>
-			<class name="org.alfresco.po.share.dashlet.SiteContentBreakdownDashletTest" />
-			<class name="org.alfresco.po.share.dashlet.TopSiteContributorDashletTest" />
+			<class name="org.alfresco.po.share.dashlet.SiteContentBreakdownReportTest" />
+			<class name="org.alfresco.po.share.dashlet.TopSiteContributorReportTest" />
         </classes>
     </test>
 

@@ -41,6 +41,7 @@
 			<class name="org.alfresco.share.MyDashBoardTest"/>
 			<class name="org.alfresco.share.SiteDashBoardTest"/>
 			<class name="org.alfresco.share.SiteDocumentLibraryTest"/>
+			<class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
 
 		</classes>
 	</test>

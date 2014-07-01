@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.alfresco.po.share.dashlet.SiteContentBreakdownDashlet;
+import org.alfresco.po.share.enums.Dashlet;
+import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
@@ -34,8 +36,10 @@ import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserDashboard;
+import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.apache.log4j.Logger;
+import org.openqa.selenium.NoSuchElementException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -58,6 +62,18 @@ public class SiteContentBreakdownReportTest extends AbstractUtils
     private static String testPassword = DEFAULT_PASSWORD;
     protected String testUser;
     protected String siteName = "";
+    
+    private static final String JPEG_TYPE = "JPEG Image";
+    private static final String TXT_TYPE =  "Plain Text"; 
+    private static final String DOCX_TYPE = "Microsoft Word";
+    private static final String HTML_TYPE = "HTML";
+    private static final String PDF_TYPE =  "Adobe PDF Document";
+
+    private static int numberOfTxtFiles = 5;
+    private static int numberOfDocxFiles = 4;
+    private static int numberOfHtmlFiles = 2;
+    private static int numberOfJpgFiles = 3;
+    private static int numberOfPdfFiles = 9;
 
     @Override
     @BeforeClass(alwaysRun = true)
@@ -70,22 +86,18 @@ public class SiteContentBreakdownReportTest extends AbstractUtils
     }
     
     /**
-     * 
-     * @throws Exception
+     * 1) Test user is created
+     * 2) Test user creates a private site
+     * 3) Test user uploads 5 txt files, 4 docx files, 2 html files, 3 jpg files and 9 pdf files
+     * 4) Test user logs out
      */
-    @Test(groups = { "DataSiteContentBreakdownReport" })
-    public void dataPrep_TopSiteContributor_ALF_1056() throws Exception
+    @Test(groups = { "DataPrepSiteContentBreakdownReport" })
+    public void dataPrep_SiteContentBreakdownReport_ALF_1056() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
-               
-        int numberOfTxtFiles = 5;
-        int numberOfDocxFiles = 4;
-        int numberOfHtmlFiles = 2;
-        int numberOfJpgFiles = 3;
-        int numberOfPdfFiles = 9;
         
         // Create test user
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
@@ -126,16 +138,144 @@ public class SiteContentBreakdownReportTest extends AbstractUtils
 
 
         // test user (site creator) adds Site Content Report Dashlet to site's dashboard
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlet.SITE_CONTENT_REPORT);
         SiteContentBreakdownDashlet siteContentBreakdownDashlet = ShareUserDashboard.getSiteContentBreakdownDashlet(drone, siteName);
-        List<String> mimeTypes = siteContentBreakdownDashlet.getMimeTypes();
-        List<String> mimeTypeCounts = siteContentBreakdownDashlet.getMimeTypeCounts();
+        
+       
+        List<String> mimeTypesCounts = siteContentBreakdownDashlet.getTypesAndCounts();
+        for (String mimeTypesCount : mimeTypesCounts)
+        {
+            String count = mimeTypesCount.trim().substring(mimeTypesCount.indexOf("-")+2).trim();
+            int mimeTypeCounts = Integer.parseInt(count);
+                   
+            Assert.assertEquals(mimeTypesCounts.size(), 5);
+            
+            if (mimeTypesCount.trim().startsWith(TXT_TYPE))
+            {
+                //System.out.println("TYPE-COUNT ++++ " + mimeTypesCount);
+                //System.out.println("TXT COUNT **** " + mimeTypeCounts); 
+                Assert.assertEquals(mimeTypeCounts, numberOfTxtFiles);
+            }
+            if (mimeTypesCount.trim().startsWith(JPEG_TYPE))
+            {
+                //System.out.println("TYPE-COUNT ++++ " + mimeTypesCount);
+                //System.out.println("JPEG COUNT **** " + mimeTypeCounts);
+                Assert.assertEquals(mimeTypeCounts, numberOfJpgFiles);
+            }
+            if (mimeTypesCount.trim().startsWith(DOCX_TYPE))
+            {
+                //System.out.println("TYPE-COUNT ++++ " + mimeTypesCount);
+                //System.out.println("DOCX COUNT **** " + mimeTypeCounts);
+                Assert.assertEquals(mimeTypeCounts, numberOfDocxFiles);
+            }
+            if (mimeTypesCount.trim().startsWith(PDF_TYPE))
+            {
+                //System.out.println("TYPE-COUNT ++++ " + mimeTypesCount);
+                //System.out.println("PDF COUNT **** " + mimeTypeCounts);
+                Assert.assertEquals(mimeTypeCounts, numberOfPdfFiles);
+            }
+            if (mimeTypesCount.trim().startsWith(HTML_TYPE))
+            {
+                //System.out.println("TYPE-COUNT ++++ " + mimeTypesCount);
+                //System.out.println("HTML COUNT **** " + mimeTypeCounts);
+                Assert.assertEquals(mimeTypeCounts, numberOfHtmlFiles);
+            }
+        }
 
-        Assert.assertEquals(mimeTypes.size(), 5);
-        Assert.assertEquals(mimeTypeCounts.size(), 5);
- 
     }
     
+    /**
+     * 1) Create test user
+     * 2) Login as test user
+     * 3) Create site
+     * 4) Create user1
+     * 5) Add user1 with write permissions to write to the site
+     * 6) User1 uploads txt files to site's document library
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "DataPrepSiteContentBreakdownReport" })
+    public void dataPrep_SiteContentBreakdownReport_ALF_1057() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        String[] testUserInfo = new String[] { testUser };
+        String siteName = getSiteName(testName);
+
+        int numberOfTxtFiles = 2;
+
+        // Create test user
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login as created user
+        ShareUser.login(drone, testUser, testPassword);
+
+        // Create site
+        SiteDashboardPage siteDashboard = ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE);
+
+        // first user
+        String testUser1 = getUserNameForDomain(testName + "-1", DOMAIN_FREE);
+        String[] testUserInfo1 = new String[] { testUser1 };
+
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo1);
+
+        // add user with write permissions to write to the site
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser1, siteName, UserRole.COLLABORATOR);
+
+        // Inviting user logs out
+        ShareUser.logout(drone);
+
+        // Invited User logs in
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+     
+        // first user uploads files
+        ShareUser.openSiteDashboard(drone, siteName);
+        DocumentLibraryPage docPage = siteDashboard.getSiteNav().selectSiteDocumentLibrary().render();
+     
+        //DocumentLibraryPage docPage = ShareUser.openSitesDocumentLibrary(driver, siteName)openDocumentLibrary(drone);
+        uploadFiles(docPage, numberOfTxtFiles, ".txt");
+
+        // first user logs out
+        ShareUser.logout(drone);
+
    
+    }   
+    
+    
+    /**
+     * 1) Collaborator logs in
+     * 2) Collaborator adds Site Content Report Dashlet to site's dashboard
+     * 3) Verify user can't customize the site dasboard 
+     */
+    @Test(groups = { "SiteContentBreakdownReport" })
+    public void ALF_1057()
+    {
+        //created logs in
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String testUser1 = getUserNameForDomain(testName + "-1", DOMAIN_FREE);
+        
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+        SiteDashboardPage siteDashBoard = ShareUser.openSiteDashboard(drone, siteName);
+       
+        //verify user can't customize the site dasboard
+        try
+        {
+            siteDashBoard.getSiteNav().selectCustomizeSite();
+            Assert.assertTrue(false, "Above line should have thrown page exception");
+        }
+        catch (NoSuchElementException e)
+        {
+            Assert.assertTrue(e.getMessage().startsWith( "Unable to locate element:"));
+            ShareUser.logout(drone);
+
+        }
+        
+    }
+    
+    
     /**
      * 
      * Uploads files to site's dodocument library
