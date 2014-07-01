@@ -271,5 +271,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/guava-11.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/alfresco-xmlfactory-1.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.10.0-alfresco-patched.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/alfresco-events-1.1-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
