@@ -37,7 +37,6 @@ import org.testng.annotations.Test;
  * @author Shan Nagarajan
  * @since  1.6.1
  */
-@Test(groups = "alfresco-one")
 @Listeners(FailedTestListener.class)
 public class SiteWelcomeDashletTest extends AbstractSiteDashletTest
 {
