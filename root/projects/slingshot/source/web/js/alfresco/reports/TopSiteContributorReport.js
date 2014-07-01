@@ -29,9 +29,14 @@ define(["dojo/_base/declare",
    "alfresco/core/I18nUtils",
    "alfresco/reports/Report",
    "dojo/_base/lang",
-   "service/constants/Default"],
-      function(declare, AlfCore, I18nUtils, Report, lang, AlfConstants) {
+   "dojo/date",
+   "dojo/date/stamp"],
+      function(declare, AlfCore, I18nUtils, Report, lang, date, stamp) {
 
+         var startDate = date.add(new Date(), "month", -3);
+         startDate = stamp.toISOString(startDate, { selector: "date" });
+         var endDate = new Date();
+         endDate = stamp.toISOString(endDate, { selector: "date" });
          var i18nScope = "alfresco.reports.TopSiteContributorReport";
          return declare([Report], {
 
@@ -67,18 +72,21 @@ define(["dojo/_base/declare",
                   name: "alfresco/forms/Form",
                   config: {
                      okButtonPublishTopic: "SHOW_CONTRIBUTORS_BY_DATE",
-                     okButtonPublishGlobal: true,
                      widgets: [
                         {
                            name: "alfresco/forms/controls/DojoDateTextBox",
                            config: {
-                              label: I18nUtils.msg(i18nScope, "from")
+                              name: "startDate",
+                              value: startDate,
+                              label: I18nUtils.msg(i18nScope, "startDate")
                            }
                         },
                         {
                            name: "alfresco/forms/controls/DojoDateTextBox",
                            config: {
-                              label: I18nUtils.msg(i18nScope, "to")
+                              name: "endDate",
+                              value: endDate,
+                              label: I18nUtils.msg(i18nScope, "endDate")
                            }
                         }
                      ]
@@ -89,13 +97,16 @@ define(["dojo/_base/declare",
                   config:
                   {
                      dataRequestTopic: "ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT",
-                     dataRequestPayload: { site: "$$SITE$$" },
+                     dataRequestPayload: {
+                        site: "$$SITE$$",
+                        startDate: startDate,
+                        endDate: endDate
+                     },
                      subscriptionTopic: "SHOW_CONTRIBUTORS_BY_DATE",
                      widgets: [
                         {
                            name: "alfresco/charts/ccc/PieChart",
                            config: {
-                              legend: true,
                               selectable: true,
                               hoverable:  true,
                               clickTopic: "REPORT_ITEM_CLICKED"

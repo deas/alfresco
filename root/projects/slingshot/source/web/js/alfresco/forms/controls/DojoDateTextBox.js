@@ -24,10 +24,10 @@
  */
 define(["alfresco/forms/controls/BaseFormControl",
         "dojo/_base/declare",
-        "dijit/form/DateTextBox",
-        "dijit/focus"], 
-        function(BaseFormControl, declare, DateTextBox, focusUtil) {
-
+        "dojo/_base/lang",
+        "dojo/date/stamp",
+        "dijit/form/DateTextBox"],
+        function(BaseFormControl, declare, lang, stamp, DateTextBox) {
    return declare([BaseFormControl], {
 
       /**
@@ -44,14 +44,28 @@ define(["alfresco/forms/controls/BaseFormControl",
        */
       getWidgetConfig: function alfresco_forms_controls_DojoDateTextBox__getWidgetConfig() {
          // Return the configuration for the widget
+         var value = null;
+         if (this.value instanceof Date)
+         {
+            value = this.value;
+         }
+         else if (lang.isString(this.value))
+         {
+            value = stamp.fromISOString(this.value, { selector: "date" })
+         }
          return {
             id : this.id + "_CONTROL",
             name: this.name,
-            value: (this.value != null) ? this.value : null,
+            value: value,
             options: (this.options != null) ? this.options : []
          };
       },
-      
+
+      getValue: function alfresco_forms_controls_DojoDateTextBox__getValue() {
+         var value = this.inherited(arguments);
+         return stamp.toISOString(value, { selector: "date" })
+      },
+
       /**
        * @instance
        */

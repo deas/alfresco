@@ -34,12 +34,10 @@ define(["dojo/_base/declare",
    "alfresco/core/Core",
    "alfresco/core/CoreWidgetProcessing",
    "dojo/_base/lang",
-   "dojo/_base/array",
-   "dojo/dom-construct",
-   "dojo/dom-class",
-   "dijit/registry"],
+   "dojo/on",
+   "dojo/dom-style"],
       function(declare, _WidgetBase, _TemplatedMixin, template,
-               AlfCore, CoreWidgetProcessing, lang, array, domConstruct, domClass, registry) {
+               AlfCore, CoreWidgetProcessing, lang, dojoOn, domStyle) {
          /*
           alert('$: ' + (typeof $) +
           ', pv: ' + pv +
@@ -140,6 +138,8 @@ define(["dojo/_base/declare",
                config.selectable = this.selectable;
                config.hoverable = this.hoverable;
 
+               config.animate = false;
+
                if (this.clickTopic)
                {
                   config.clickable = true;
@@ -178,6 +178,13 @@ define(["dojo/_base/declare",
                   dataTopicPayload.alfResponseTopic = this.pubSubScope + this.dataTopic;
                   this.alfPublish(this.dataTopic, dataTopicPayload);
                }
+
+               var me = this;
+               dojoOn(window, "resize", function(){
+                  var style = domStyle.getComputedStyle(me.domNode);
+                  style.width;
+                  me.chart.render();
+               });
             },
 
             setData: function(data, dataDescriptor){

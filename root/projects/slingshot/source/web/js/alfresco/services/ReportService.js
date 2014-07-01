@@ -106,6 +106,12 @@ define(["dojo/_base/declare",
                   //url += "/sites/" + encodeURIComponent(payload.site);
                }
                url += "/stats?facet=content.creator";
+               if (payload.startDate) {
+                  url += "&startDate=" + encodeURIComponent(payload.startDate);
+               }
+               if (payload.endDate) {
+                  url += "&endDate=" + encodeURIComponent(payload.endDate);
+               }
                var config = {
                   alfTopic: alfTopic,
                   url: url,
@@ -126,7 +132,7 @@ define(["dojo/_base/declare",
                         seriesInRows: false
                      }
                   }
-               });
+               }, true);
             }
 
 

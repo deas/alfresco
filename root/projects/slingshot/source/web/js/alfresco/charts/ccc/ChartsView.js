@@ -104,12 +104,12 @@ define(["dojo/_base/declare",
                   this.processWidgets(this.widgets);
                }
 
+               this._currentDataRequestPayload = lang.mixin({}, this.dataRequestPayload);
                this.requestData();
             },
 
             requestData: function()
             {
-               this._currentDataRequestPayload = lang.mixin({}, this.dataRequestPayload);
                this._currentDataRequestPayload.alfResponseTopic = this.pubSubScope + this.dataRequestTopic;
                this.alfPublish(this.dataRequestTopic, this._currentDataRequestPayload);
             },
