@@ -103,6 +103,12 @@
  
      <test name="DocLibTest" verbose="1" parallel="classes" thread-count="1">
          <classes>
+             <class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
+             <class name="org.alfresco.share.site.document.DocumentDetailsTest">
+            	<methods>
+                    <exclude name="Enterprise40x_8573" />
+                </methods>
+             </class>
              <class name="org.alfresco.share.SiteDocumentLibraryTest">
                  <methods>
                      <exclude name="enterprise40x_5606" />
@@ -113,12 +119,6 @@
                      <exclude name="Enterprise40x_14344" />
                      <exclude name="Enterprise40x_8586" />
                  </methods>
-             </class>
-             <class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
-             <class name="org.alfresco.share.site.document.DocumentDetailsTest">
-            	<methods>
-                    <exclude name="Enterprise40x_8573" />
-                </methods>
              </class>
  		</classes>
 	</test>
