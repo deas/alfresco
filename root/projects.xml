@@ -117,6 +117,34 @@
       </bind>
    </target>
 
+   <!-- *********************** -->
+   <!-- ** Events Project ** -->
+   <!-- *********************** -->
+   
+   <target name="incremental-events" 
+           depends="package-events" />
+      
+   <target name="build-events" 
+           depends="clean-events, 
+                    incremental-events" />
+   
+   <target name="clean-events" 
+           depends="init">
+      <clean projectdir="${dir.project.events}" />
+   </target>
+   
+   <target name="compile-events" 
+           depends="init">
+      <compile-java projectdir="${dir.project.events}" />
+   </target>
+   
+   <target name="package-events"
+           depends="compile-events">
+      <mkdir dir="${dir.project.events.dist}" />
+      <jar jarfile="${dir.project.events.dist}/${file.name.jar.events}" 
+           basedir="${dir.project.events.classes}" />
+   </target>
+
 
    <!-- *************************** -->
    <!-- ** Legacy Lucene Project ** -->

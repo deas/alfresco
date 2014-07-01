@@ -94,6 +94,7 @@
          <pathelement location="${dir.project.datamodel.classes}" />
          <pathelement location="${dir.project.datamodel.classes.test}" />
          <pathelement location="${dir.project.datamodel.test.resources}" />
+         <pathelement location="${dir.project.events.classes}" />
          <pathelement location="${dir.project.legacylucene.classes}" />
          <pathelement location="${dir.project.legacylucene.classes.test}" />
          <pathelement location="${dir.project.jlan.classes}" />
@@ -620,6 +621,7 @@
            description="Performs an incremental build of the dependencies of the Alfresco WAR"
            depends="incremental-core,
                     incremental-datamodel,
+                    incremental-events,
                     incremental-legacylucene,
                     incremental-jlan,
                     incremental-mbeans,
@@ -770,6 +772,7 @@
            description="Cleans all projects related to the webclient project" 
            depends="clean-core,
                     clean-datamodel,
+                    clean-events,
                     clean-legacylucene,
                     clean-jlan, 
                     clean-mbeans,
@@ -919,6 +922,7 @@
          <!-- copy class files -->
          <fileset dir="${dir.project.core.classes}" />
          <fileset dir="${dir.project.datamodel.classes}" />
+         <fileset dir="${dir.project.events.classes}" />
          <fileset dir="${dir.project.legacylucene.classes}" />
          <fileset dir="${dir.project.mbeans.classes}" />
          <fileset dir="${dir.project.deployment.classes}" />
