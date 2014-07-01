@@ -14,6 +14,17 @@
  */
 package org.alfresco.po.share.dashlet;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.RenderTime;
@@ -24,6 +35,7 @@ import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.*;
+import org.xml.sax.InputSource;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -374,4 +386,29 @@ abstract class AbstractDashlet extends SharePage
         return false;
     }
 
+    
+    /**
+     * Parses the xml string of the original-title attribute element to get tooltip 
+     * data for report dashlets
+     * 
+     * @param xml
+     * @param element
+     * @return
+     */
+    protected String getElement(String xml, String element)
+    {
+        String tooltipElement = " ";
+
+        XPathFactory xpathFactory = XPathFactory.newInstance();
+        XPath xpath = xpathFactory.newXPath();
+        InputSource source = new InputSource(new StringReader(xml));
+        try
+        {
+            tooltipElement = (String) xpath.evaluate(element, source, XPathConstants.STRING);
+        } catch (XPathExpressionException ee)
+        {
+            logger.error("Cannot parse xml string " + ee);
+        }
+        return tooltipElement;
+    }
 }

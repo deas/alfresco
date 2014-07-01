@@ -52,7 +52,16 @@ public class SiteContentBreakdownDashletTest extends AbstractSiteDashletTest
     private static final String TXT_TYPE =  "Plain Text"; 
     private static final String DOCX_TYPE = "Microsoft Word";
     private static final String HTML_TYPE = "HTML";
-    private static final String PDF_TYPE =  "Adobe PDF Document";
+    private static final String PDF_TYPE = "Adobe PDF Document";
+    private static final String EMAIL_TYPE =  "EMail";
+    private static final String STYLE_SHEET_TYPE =  "Style Sheet";
+    private static final String OPEN_DOCUMENT_TEXT_TYPE =  "OpenDocument Text";
+    private static final String MICROSOFT_EXCEL_TYPE =  "Microsoft Excel";
+    private static final String MICROSOFT_OUTLOOK_TYPE =  "Microsoft Outlook";
+    private static final String XML_TYPE =  "XML";
+    private static final String VIDEO_TYPE =  "MPEG4 Video";
+    private static final String RICH_TEXT_TYPE =  "Rich Text Format";
+    
 
     private static int numberOfTxtFiles = 5;
     private static int numberOfDocxFiles = 4;
@@ -86,11 +95,13 @@ public class SiteContentBreakdownDashletTest extends AbstractSiteDashletTest
 
     }
 
+    
     @AfterClass
     public void deleteSite()
     {
         SiteUtil.deleteSite(drone, siteName);
     }
+    
 
     /**
      * 
@@ -126,54 +137,63 @@ public class SiteContentBreakdownDashletTest extends AbstractSiteDashletTest
         siteContentBreakdownDashlet = siteDashBoard.getDashlet(SITE_CONTENT_REPORT).render();
         Assert.assertNotNull(siteContentBreakdownDashlet);
     }
-
+    
     /**
-     * Checks mime types counts of the documents in the site's document library
-     * 
-     * @throws Exception
+     * Checks files mime types and counts on the pie chert
      */
     @Test(dependsOnMethods = "instantiateDashlet")
     public void testMimeTypesAndCounts() throws Exception
     {
-        List<String> mimeTypesCounts = siteContentBreakdownDashlet.getTypesAndCounts();
-        for (String mimeTypesCount : mimeTypesCounts)
+        List<String> mimeTypes = siteContentBreakdownDashlet.getTooltipFileTypes();
+        Assert.assertTrue(mimeTypes.contains(TXT_TYPE));
+        Assert.assertTrue(mimeTypes.contains(JPEG_TYPE));
+        //Assert.assertTrue(mimeTypes.contains(DOCX_TYPE));
+        Assert.assertTrue(mimeTypes.contains(PDF_TYPE));
+        Assert.assertTrue(mimeTypes.contains(HTML_TYPE));   
+                
+        
+        List<String> mimeTypesData = siteContentBreakdownDashlet.getTooltipFileData();
+        
+        for(String mimeType : mimeTypesData)
         {
-            String count = mimeTypesCount.trim().substring(mimeTypesCount.indexOf("-")+2).trim();
-            int mimeTypeCounts = Integer.parseInt(count);
-                   
-            Assert.assertEquals(mimeTypesCounts.size(), 5);
+           //System.out.println("TTTTT 0 **** " + mimeType);
+           String [] counts = mimeType.split("-");
+           String fileCount = counts[1];
+
+           Assert.assertEquals(mimeTypesData.size(), 5);
             
-            if (mimeTypesCount.trim().startsWith(TXT_TYPE))
-            {
-                //System.out.println("TYPE-COUNT ++++ " + mimeTypesCount);
-                //System.out.println("TXT COUNT **** " + mimeTypeCounts); 
-                Assert.assertEquals(mimeTypeCounts, numberOfTxtFiles);
-            }
-            if (mimeTypesCount.trim().startsWith(JPEG_TYPE))
-            {
-                //System.out.println("TYPE-COUNT ++++ " + mimeTypesCount);
-                //System.out.println("JPEG COUNT **** " + mimeTypeCounts);
-                Assert.assertEquals(mimeTypeCounts, numberOfJpgFiles);
-            }
-            if (mimeTypesCount.trim().startsWith(DOCX_TYPE))
-            {
-                //System.out.println("TYPE-COUNT ++++ " + mimeTypesCount);
-                //System.out.println("DOCX COUNT **** " + mimeTypeCounts);
-                Assert.assertEquals(mimeTypeCounts, numberOfDocxFiles);
-            }
-            if (mimeTypesCount.trim().startsWith(PDF_TYPE))
-            {
-                //System.out.println("TYPE-COUNT ++++ " + mimeTypesCount);
-                //System.out.println("PDF COUNT **** " + mimeTypeCounts);
-                Assert.assertEquals(mimeTypeCounts, numberOfPdfFiles);
-            }
-            if (mimeTypesCount.trim().startsWith(HTML_TYPE))
-            {
-                //System.out.println("TYPE-COUNT ++++ " + mimeTypesCount);
-                //System.out.println("HTML COUNT **** " + mimeTypeCounts);
-                Assert.assertEquals(mimeTypeCounts, numberOfHtmlFiles);
-            }
+           if (mimeType.trim().startsWith(TXT_TYPE))
+           {
+                //System.out.println("TYPE-COUNT ++++ " + mimeType);
+                //System.out.println("TXT COUNT **** " + fileCount); 
+                Assert.assertEquals(fileCount, numberOfTxtFiles);
+           }
+           if (mimeType.trim().startsWith(JPEG_TYPE))
+           {
+                //System.out.println("TYPE-COUNT ++++ " + mimeType);
+                //System.out.println("JPEG COUNT **** " + fileCount);
+                Assert.assertEquals(fileCount, numberOfJpgFiles);
+           }
+           if (mimeType.trim().startsWith(DOCX_TYPE))
+           {
+                //System.out.println("TYPE-COUNT ++++ " + mimeType);
+                //System.out.println("DOCX COUNT **** " + fileCount);
+                Assert.assertEquals(fileCount, numberOfDocxFiles);
+           }
+           if (mimeType.trim().startsWith(PDF_TYPE))
+           {
+                //System.out.println("TYPE-COUNT ++++ " + mimeType);
+                //System.out.println("PDF COUNT **** " + fileCount);
+                Assert.assertEquals(fileCount, numberOfPdfFiles);
+           }
+           if (mimeType.trim().startsWith(HTML_TYPE))
+           {
+                //System.out.println("TYPE-COUNT ++++ " + mimeType);
+                //System.out.println("HTML COUNT **** " + fileCount);
+                Assert.assertEquals(fileCount, numberOfHtmlFiles);
+           }
+            
         }
     }
-    
+     
 }

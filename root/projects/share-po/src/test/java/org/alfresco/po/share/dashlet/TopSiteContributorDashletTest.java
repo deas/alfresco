@@ -158,43 +158,53 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         topSiteContributorDashlet = siteDashBoard.getDashlet(TOP_SITE_CONTRIBUTOR_REPORT).render();
         Assert.assertNotNull(topSiteContributorDashlet);
     }
-
-    /**
-     * Checks Top Site Contributor report counts
-     * @throws Exception
-     */
-    @Test(dependsOnMethods = "instantiateDashlet")
-    public void testTopSiteContributorCounts() throws Exception
-    {
-        List<String> topSiteContributorCounts = topSiteContributorDashlet.getTopSiteContributorCounts();
-        //assert the counts
-        Assert.assertTrue(topSiteContributorCounts.size() == 5);
-          
-        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(firstNumberOfFiles)));
-        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(secondNumberOfFiles)));
-        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(thirdNumberOfFiles)));
-        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(fourthNumberOfFiles)));
-        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(fifthNumberOfFiles)));
-
-    }
-
     
-    /**
-     * Checks Top Site Contributor report users
-     * @throws Exception
-     */
-    @Test(dependsOnMethods = "testTopSiteContributorCounts")
-    public void testTopSiteContributorUsers() throws Exception
+    
+    @Test(dependsOnMethods = "instantiateDashlet")
+    public void testTopSiteContributorData() throws Exception
     {
-        List<String> topSiteContributorUsers = topSiteContributorDashlet.getTopSiteContributorUsers();
-        //assert the users
-        Assert.assertTrue(topSiteContributorUsers.size() == 5);
+        List<String> users = topSiteContributorDashlet.getTooltipUsers();
+        Assert.assertTrue(users.contains(random1));
+        Assert.assertTrue(users.contains(random2));
+        Assert.assertTrue(users.contains(random3));
+        Assert.assertTrue(users.contains(random4));
+        Assert.assertTrue(users.contains(random5)); 
+        
+        List<String> usersData = topSiteContributorDashlet.getTooltipUserData();
+        Assert.assertEquals(usersData.size(), 5);
+        
+        for(String userData : usersData)
+        {
+           String [] tokens = userData.split("-");
+           String user = tokens[0];
+           String fileCount = tokens[1];
+           
+           if (user.trim().equalsIgnoreCase(random1))
+           {
+               Assert.assertEquals(Integer.parseInt(fileCount), firstNumberOfFiles);
+           }
+           
+           if (user.trim().equalsIgnoreCase(random2))
+           {
+               Assert.assertEquals(Integer.parseInt(fileCount), secondNumberOfFiles);
+           }
+           
+           if (user.trim().equalsIgnoreCase(random3))
+           {
+                Assert.assertEquals(Integer.parseInt(fileCount), thirdNumberOfFiles);
+           }
           
-        Assert.assertTrue(topSiteContributorUsers.contains(random1));
-        Assert.assertTrue(topSiteContributorUsers.contains(random2));
-        Assert.assertTrue(topSiteContributorUsers.contains(random3));
-        Assert.assertTrue(topSiteContributorUsers.contains(random4));
-        Assert.assertTrue(topSiteContributorUsers.contains(random5));
+           if (user.trim().equalsIgnoreCase(random4))
+           {
+                Assert.assertEquals(Integer.parseInt(fileCount), fourthNumberOfFiles);
+           }
+
+           if (user.trim().equalsIgnoreCase(random5))
+           {
+                Assert.assertEquals(Integer.parseInt(fileCount), fifthNumberOfFiles);
+           }
+            
+        }        
 
     }
     

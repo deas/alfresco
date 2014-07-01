@@ -226,34 +226,57 @@ public class TopSiteContributorReportTest extends AbstractUtils
         // test user (site creator) adds Top Site Contributor Dashlet to site's dashboard
         ShareUserDashboard.addDashlet(drone, siteName, Dashlet.TOP_SITE_CONTRIBUTOR_REPORT);
         TopSiteContributorDashlet topSiteContributorDashlet = ShareUserDashboard.getTopSiteContributorDashlet(drone, siteName);
-        List<String> topSiteContributorUsers = topSiteContributorDashlet.getTopSiteContributorUsers();
-        List<String> topSiteContributorCounts = topSiteContributorDashlet.getTopSiteContributorCounts();
+ 
+        List<String> users = topSiteContributorDashlet.getTooltipUsers();
   
-        String testUser1 = getUserNameForDomain(testName + "1", DOMAIN_FREE);
-        String testUser2 = getUserNameForDomain(testName + "2", DOMAIN_FREE);
-        String testUser3 = getUserNameForDomain(testName + "3", DOMAIN_FREE);
-        String testUser4 = getUserNameForDomain(testName + "4", DOMAIN_FREE);
-        String testUser5 = getUserNameForDomain(testName + "5", DOMAIN_FREE);
-
-        // assert the users
-        Assert.assertTrue(topSiteContributorUsers.size() == 5);
+        String testUser1 = getUserNameForDomain(testName + "1", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
+        String testUser2 = getUserNameForDomain(testName + "2", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
+        String testUser3 = getUserNameForDomain(testName + "3", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
+        String testUser4 = getUserNameForDomain(testName + "4", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
+        String testUser5 = getUserNameForDomain(testName + "5", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
         
-        Assert.assertTrue(topSiteContributorUsers.contains(testUser1.replaceAll("[^A-Za-z0-9]", "")));
-        Assert.assertTrue(topSiteContributorUsers.contains(testUser2.replaceAll("[^A-Za-z0-9]", "")));
-        Assert.assertTrue(topSiteContributorUsers.contains(testUser3.replaceAll("[^A-Za-z0-9]", "")));
-        Assert.assertTrue(topSiteContributorUsers.contains(testUser4.replaceAll("[^A-Za-z0-9]", "")));
-        Assert.assertTrue(topSiteContributorUsers.contains(testUser5.replaceAll("[^A-Za-z0-9]", "")));
-
+        Assert.assertTrue(users.contains(testUser1));
+        Assert.assertTrue(users.contains(testUser2));
+        Assert.assertTrue(users.contains(testUser3));
+        Assert.assertTrue(users.contains(testUser4));
+        Assert.assertTrue(users.contains(testUser5));        
         
-        //assert the counts
-        Assert.assertTrue(topSiteContributorCounts.size() == 5);
+        List<String> usersData = topSiteContributorDashlet.getTooltipUserData();
+        Assert.assertEquals(usersData.size(), 5);
+        
+        for(String userData : usersData)
+        {
+           String [] tokens = userData.split("-");
+           String user = tokens[0];
+           String fileCount = tokens[1];
+                      
+           if (user.trim().equalsIgnoreCase(testUser1))
+           {
+               Assert.assertEquals(Integer.parseInt(fileCount), firstNumberOfFiles);
+           }
+           
+           if (user.trim().equalsIgnoreCase(testUser2))
+           {
+               Assert.assertEquals(Integer.parseInt(fileCount), secondNumberOfFiles);
+           }
+           
+           if (user.trim().equalsIgnoreCase(testUser3))
+           {
+                Assert.assertEquals(Integer.parseInt(fileCount), thirdNumberOfFiles);
+           }
           
-        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(firstNumberOfFiles)));
-        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(secondNumberOfFiles)));
-        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(thirdNumberOfFiles)));
-        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(fourthNumberOfFiles)));
-        Assert.assertTrue(topSiteContributorCounts.contains(Integer.toString(fifthNumberOfFiles)));
+           if (user.trim().equalsIgnoreCase(testUser4))
+           {
+                Assert.assertEquals(Integer.parseInt(fileCount), fourthNumberOfFiles);
+           }
 
+           if (user.trim().equalsIgnoreCase(testUser5))
+           {
+                Assert.assertEquals(Integer.parseInt(fileCount), fifthNumberOfFiles);
+           }
+            
+        }        
+      
     }
     
     

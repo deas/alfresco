@@ -43,8 +43,9 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
     private static Log logger = LogFactory.getLog(TopSiteContributorDashlet.class);
 
     private static final String TOP_SITE_CONTRIBUTOR_REPORT_DASHLET = "div[id*='TopSiteContributorReport']";
-    private static final String TOP_SITE_CONTRIBUTOR_USERS = "div[id*='TopSiteContributorReport'] svg g text:nth-of-type(1)";
-    private static final String TOP_SITE_CONTRIBUTOR_COUNTS = "div[id*='TopSiteContributorReport'] svg g text:nth-of-type(2)";
+    private static final String PIE_CHART_SLICES = "path[transform]";
+    private static final String TOOLTIP_DATA = "div[id^='tipsyPvBehavior']";
+    private static final String ORIGINAL_TITLE_ATTRIBUTE = "original-title";
     private static final String FROM_DATE_INPUT_FIELD = "";
     private static final String TO_DATE_INPUT_FIELD = "";
     private static final String OK_BUTTON = "";
@@ -80,69 +81,77 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
         return this;
     }
 
+    
     /**
-     * Returns the list of top site contributor counts
+     * Gets the list of user data appearing in tooltips (file type-count) 
+     * @return
+     */
+    public List<String> getTooltipUserData()
+    {
+        List<WebElement> pieChartSlices = getPieChartSlices();
+        List<String> toolTipData = new ArrayList<String>();
+        for (WebElement pieChartSlice : pieChartSlices)
+        {
+            drone.mouseOver(pieChartSlice);
+            WebElement tooltipElement = drone.findAndWait(By.cssSelector(TOOLTIP_DATA));
+            String user = getElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/div/strong");
+            String items = getElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/div/text()[preceding-sibling::br]");
+            String [] counts = items.split(" ");
+            String fileCount = counts[0];
+            StringBuilder builder = new StringBuilder();
+            builder.append(user).append("-").append(fileCount);
+            toolTipData.add(builder.toString());
+        }   
+        return toolTipData;
+    }
+    
+    
+    /**
+     * Gets the list of usernames appearing in tooltips 
+     * @return
+     */
+    public List<String> getTooltipUsers()
+    {
+        List<WebElement> pieChartSlices = getPieChartSlices();
+        List<String> users = new ArrayList<String>();
+        for (WebElement pieChartSlice : pieChartSlices)
+        {
+            drone.mouseOver(pieChartSlice);
+            WebElement tooltipElement = drone.findAndWait(By.cssSelector(TOOLTIP_DATA));
+            String user = getElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/div/strong");
+            users.add(user);
+        }   
+        return users;
+    }
+    
+    
+    
+    
+    
+    
+    /**
+     * Gets the list of pie chart slices elements
      * 
      * @return
      */
-    public List<String> getTopSiteContributorCounts()
+    private List<WebElement> getPieChartSlices()
     {
-        List<String> topSiteContributorCounts = new ArrayList<String>();
+        List<WebElement> pieChartSlices = new ArrayList<WebElement>();
         try
         {
-
-            List<WebElement> counts = drone.findAll(By.cssSelector(TOP_SITE_CONTRIBUTOR_COUNTS));
-            if (counts.size() > 0)
-            {
-                for (WebElement count : counts)
-                {
-                    String [] tokens = count.getText().trim().split(" ");
-                    for (String token : tokens)
-                    {
-                        if (token.trim().matches("[0-9]+"))
-                        {
-                            topSiteContributorCounts.add(token.trim());
-                        }    
-                    }
-                }
-            }
+            pieChartSlices = drone.findAll(By.cssSelector(PIE_CHART_SLICES));
 
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("No top site contributor counts " + nse);
+            logger.error("No Top Contributor Report pie chart slices " + nse);
         }
-        return topSiteContributorCounts;
+        return pieChartSlices;
     }
+    
 
-    /**
-     * Returns the list of top site contributor usernames
-     * 
-     * @return
-     */
-    public List<String> getTopSiteContributorUsers()
-    {
-        List<String> topSiteContributorUsers = new ArrayList<String>();
-        try
-        {
-
-            List<WebElement> usernames = drone.findAll(By.cssSelector(TOP_SITE_CONTRIBUTOR_USERS));
-            if (usernames.size() > 0)
-            {
-                for (WebElement username : usernames)
-                {
-                    topSiteContributorUsers.add(username.getText());
-                }
-            }
-
-        }
-        catch (NoSuchElementException nse)
-        {
-            logger.error("No top site contributor usernames " + nse);
-        }
-        return topSiteContributorUsers;
-    }
-
+    
+    
     /**
      * Enters from date into calendar
      * 
