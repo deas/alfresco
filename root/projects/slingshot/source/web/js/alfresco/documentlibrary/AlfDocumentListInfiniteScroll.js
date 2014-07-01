@@ -46,10 +46,12 @@ define(["dojo/_base/declare",
       dataloadInProgress: false,
 
       /**
+       * Scroll tolerance in pixels.
+       *
        * How close to the bottom of the page do we want to get before we request the next items?
        *
        * @instance
-       * @type {number} number of pixels.
+       * @type {number}
        * @default 500
        */
       scrollTolerance: 500,

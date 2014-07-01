@@ -33,6 +33,11 @@ define(["dojo/_base/declare",
          var i18nScope = "alfresco.reports.SiteContentReportDashlet";
          return declare([Dashlet], {
 
+            /**
+             * The i18n scope to use for this widget.
+             *
+             * @instance
+             */
             i18nScope: "alfresco.reports.SiteContentReportDashlet",
 
             /**

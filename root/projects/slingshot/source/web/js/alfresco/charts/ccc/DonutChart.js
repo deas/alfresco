@@ -18,40 +18,35 @@
  */
 
 /**
- * Abstract Report class
+ * A donut chart widget wrapping the CCC2 pie chart class
  *
- * @module alfresco/reports/Report
- * @extends module:alfresco/core/ProcessWidgets
- * @abstract
- *
+ * @module alfresco/charts/ccc/DonutChart
+ * @extends module:alfresco/charts/ccc/PieChart
  * @author Erik Winlöf
  */
-define(["alfresco/core/ProcessWidgets",
-   "dojo/_base/declare",
-   "dojo/_base/lang"],
-      function(ProcessWidgets, declare, lang) {
+define(["dojo/_base/declare",
+   "alfresco/core/Core",
+   "alfresco/core/I18nUtils",
+   "alfresco/charts/ccc/PieChart"],
+      function(declare, AlfCore, I18nUtils, PieChart) {
 
-         return declare([ProcessWidgets], {
-
-            /**
-             * The CSS class (or a space separated list of classes) to include in the DOM node.
-             *
-             * @instance
-             * @type {string}
-             * @default "alfresco-reports-Report"
-             */
-            baseClass: "alfresco-reports-Report",
+         return declare([PieChart], {
 
             /**
-             * Creates the widgets as defined in widgets
+             * Adds spacing between the pie slices.
              *
              * @instance
              */
-            postCreate: function alfresco_reports_Report__postCreate() {
-               if (this.widgets)
-               {
-                  this.processWidgets(lang.clone(this.widgets), this.containerNode);
-               }
+            explodedSliceRadius: '1%',
+
+            /**
+             * Adds a margin into the centre of the pie chart, making it look like a donut instead.
+             *
+             * @instance
+             */
+            extensionPoints: {
+               slice_innerRadiusEx: '20%'
             }
+
          });
       });

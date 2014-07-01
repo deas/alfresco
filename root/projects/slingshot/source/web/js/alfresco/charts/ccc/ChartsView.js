@@ -24,7 +24,7 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
- * @mixes alfresco/core/CoreWidgetProcessing
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Erik Winlöf
  */
 define(["dojo/_base/declare",
@@ -43,31 +43,91 @@ define(["dojo/_base/declare",
 
          return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
 
+            /**
+             * The base css class to use for this widget
+             *
+             * @instance
+             * @type {string}
+             * @default "alfresco-charts-ccc-Chart"
+             */
             baseClass: "alfresco-charts-ccc-ChartsView",
 
             /**
              * The HTML template to use for the widget.
+             *
              * @instance
-             * @type {String}
+             * @type {string}
              */
             templateString: template,
 
+
+            /**
+             * The container element that holds the charts (will be set by dojo)
+             * @instance
+             * @type {HTMLElement}
+             */
             chartsNode: null,
 
-            chart: null,
-            chartMap: null,
-
+            /**
+             * Publication of this topic will cause this widget to publish an event with the same name as
+             * [dataRequestTopic]{@link module:alfresco/charts/css/ChartsView#dataRequestTopic} and with a payload set to the payload merged with
+             * all previous payloads.
+             *
+             * @instance
+             */
             subscriptionTopic: null,
 
+            /**
+             * The topic to publish to request chart data.
+             *
+             * @instance
+             */
             dataRequestTopic: null,
+
+            /**
+             * The initial payload of the [dataRequestTopic]{@link module:alfresco/charts/css/ChartsView#dataRequestTopic}.
+             *
+             * @instance
+             */
             dataRequestPayload: {},
+
+            /**
+             * The current payload of the [dataRequestTopic]{@link module:alfresco/charts/css/ChartsView#dataRequestTopic}
+             */
             _currentDataRequestPayload: {},
 
+            /**
+             * Instance of the chart currently being displayed
+             *
+             * @instance
+             */
+            _chart: null,
+
+            /**
+             * Instances of the charts to display
+             *
+             * @instance
+             */
+            _chartMap: null,
+
+            /**
+             * The topic to publish when a chart selection has been made
+             *
+             * @instance
+             */
             chartSelectionTopic: null,
+
+            /**
+             * The currently selected chart
+             *
+             * @instance
+             */
             _currentlySelectedChart: null,
 
-            postMixInProperties: function()
-            {
+            /**
+             * Sets up subscriptions to the topics
+             */
+            postMixInProperties: function() {
                if (this.subscriptionTopic)
                {
                   this.alfSubscribe(this.subscriptionTopic, lang.hitch(this, this.onSubscriptionTopic));
@@ -84,7 +144,7 @@ define(["dojo/_base/declare",
              * function with each one.
              *
              * @instance
-             * @param {object[]} The created widgets
+             * @param {object[]} The widgets to create
              */
             allWidgetsProcessed: function(widgets) {
                array.forEach(widgets, lang.hitch(this, this.registerChart));
@@ -99,59 +159,96 @@ define(["dojo/_base/declare",
                this.requestData();
             },
 
-            postCreate: function()
-            {
-               this.chartMap = {};
+            /**
+             * Creates the charts as defined in [widgets]{@link module:alfresco/charts/css/ChartsView#widgets}
+             *
+             * @instance
+             */
+            postCreate: function() {
+               this._chartMap = {};
 
                if (this.widgets) {
                   this.processWidgets(this.widgets);
                }
             },
 
-            requestData: function()
-            {
+            /**
+             * Publishes a topic with the name defined in
+             * [dataRequestTopic]{@link module:alfresco/charts/css/ChartsView#dataRequestTopic} to request data
+             *
+             * @instance
+             */
+            requestData: function() {
                this._currentDataRequestPayload.alfResponseTopic = this.dataRequestTopic;
                this.alfPublish(this.dataRequestTopic, this._currentDataRequestPayload);
             },
 
-            onDataRequestTopic: function(data, dataDescriptor)
-            {
-               var chart = this.chartMap[this._currentlySelectedChart];
+            /**
+             * Makes the current chart display new data.
+             *
+             * @param data {object} The data
+             * @param dataDescriptor {object} Metadata describing data
+             */
+            onDataRequestTopic: function(data, dataDescriptor) {
+               var chart = this._chartMap[this._currentlySelectedChart];
                if (chart != null) {
-                  chart.setData(data, dataDescriptor);
+                  chart.showData(data, dataDescriptor);
                   this.showChart(chart);
                }
             },
 
-            onDataRequestTopicSuccess: function(payload){
+            /**
+             * Called when the chart data has been successfully returned.
+             *
+             * @instance
+             * @param payload
+             */
+            onDataRequestTopicSuccess: function(payload) {
                this.onDataRequestTopic(payload.response.data, payload.response.dataDescriptor);
             },
 
-            onDataRequestTopicFailure: function(){
+            /**
+             * Called when the chart data has been successfully returned.
+             *
+             * @instance
+             */
+            onDataRequestTopicFailure: function() {
                this.onDataRequestTopic({}, {});
             },
 
-            onSubscriptionTopic: function(payload)
-            {
+            /**
+             * Called when the topic defined in
+             * [subscriptionTopic]{@link module:alfresco/charts/css/ChartsView#subscriptionTopic} has been called.
+             *
+             * @param payload
+             */
+            onSubscriptionTopic: function(payload) {
                lang.mixin(this._currentDataRequestPayload, payload);
                this.requestData();
             },
 
-            registerChart: function (chart, index) {
+            /**
+             * Registers a chart with a given name.
+             *
+             * @instance
+             * @param chart
+             * @param name
+             */
+            registerChart: function (chart, name) {
                if (chart instanceof Chart)
                {
                   this.alfLog("log", "Registering Chart", chart);
 
-                  var chartName = index;
+                  var chartName = name;
 
                   // Check if this is the initially requested chart...
-                  if (chartName == this.chart || (!this._currentlySelectedChart && !this.chart))
+                  if (chartName == this._chart || (!this._currentlySelectedChart && !this._chart))
                   {
                      this._currentlySelectedChart = chartName;
                   }
 
                   // Step 2: Add the chart to the map of known charts...
-                  this.chartMap[chartName] = chart;
+                  this._chartMap[chartName] = chart;
                }
                else
                {
@@ -159,7 +256,13 @@ define(["dojo/_base/declare",
                }
             },
 
-            showChart: function(chart){
+            /**
+             * Shows a chart and hiddes the pother charts using the CSS class "share-hidden".
+             *
+             * @instance
+             * @param chart
+             */
+            showChart: function(chart) {
                this.hideChildren(this.domNode);
                if (this.chartsNode.children.length > 0)
                {

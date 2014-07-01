@@ -21,7 +21,7 @@
  * SiteContentReport displays a chart giving an overview of the type of content that exist in the current site.
  *
  * @module alfresco/reports/SiteContentReport
- * @extends alfresco/reports/Report
+ * @extends module:alfresco/reports/Report
  * @author Erik Winlöf
  */
 define(["dojo/_base/declare",

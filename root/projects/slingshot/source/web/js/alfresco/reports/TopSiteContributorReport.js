@@ -22,7 +22,7 @@
  * site.
  *
  * @module alfresco/reports/TopSiteContributorReport
- * @extends alfresco/reports/Report
+ * @extends module:alfresco/reports/Report
  * @author Erik Winlöf
  */
 define(["dojo/_base/declare",
@@ -133,29 +133,35 @@ define(["dojo/_base/declare",
                   {
                      dataRequestTopic: "ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT",
                      dataRequestPayload: {
-                        site: Alfresco.constants.SITE, // todo replace with $$SITE$$ once supported
+                        site: Alfresco.constants.SITE,
                         startDate: startDate,
                         endDate: endDate
                      },
                      subscriptionTopic: "SHOW_CONTRIBUTORS_BY_DATE",
                      widgets: [
                         {
-                           name: "alfresco/charts/ccc/PieChart",
+                           name: "alfresco/charts/ccc/DonutChart",
                            config: {
                               readers: [
-                                 {names: 'category', indexes: 0 },
-                                 {names: 'value', indexes: 2 }
+                                 { names: 'category', indexes: 0 },
+                                 { names: 'value', indexes: 2 }
                               ],
                               selectable: true,
                               hoverable:  true,
                               clickTopic: "REPORT_ITEM_CLICKED",
                               tooltip: {
                                  format: function(scene){
-                                    var tooltip = '<div style="text-align: left;">';
+                                    var avatarUrl = Alfresco.constants.PROXY_URI + "slingshot/profile/avatar/" + encodeURIComponent(scene.datum.atoms.category.value) + "/thumbnail/avatar32";
+                                    var tooltip = '';
+                                    tooltip += '<table><tr><td>';
+                                    tooltip += '<img class="avatar" src="' + avatarUrl + '" alt="avatar"><br>';
+                                    tooltip += '</td><td>';
+                                    tooltip += '<div style="text-align: left;">';
                                     tooltip += '<strong>' + Alfresco.util.encodeHTML(scene.datum.atoms.category.value) + '</strong><br/>';
                                     tooltip += I18nUtils.msg(i18nScope, "count", Alfresco.util.encodeHTML(scene.datum.atoms.value.value), Alfresco.util.encodeHTML(scene.vars.value.percent.label)) + '<br/>';
                                     tooltip += I18nUtils.msg(i18nScope, "sum", Alfresco.util.encodeHTML(Alfresco.util.formatFileSize(scene.datum.atoms.value2.value)));
                                     tooltip += '</div>';
+                                    tooltip += '</td></tr></table>';
                                     return tooltip;
                                  }
                               }

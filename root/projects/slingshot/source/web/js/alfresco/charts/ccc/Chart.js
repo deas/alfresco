@@ -20,11 +20,13 @@
 /**
  * A base class for charts
  *
- * @module alfresco/charts/css/Chart
+ * @module alfresco/charts/ccc/Chart
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
- * @mixes alfresco/core/CoreWidgetProcessing
+ * @mixes module:alfresco/core/CoreWidgetProcessing
+ * @abstract
+ *
  * @author Erik Winlöf
  */
 define(["dojo/_base/declare",
@@ -43,41 +45,181 @@ define(["dojo/_base/declare",
 
          return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, DomElementUtils], {
 
+            /**
+             * The base css class to use for this widget
+             *
+             * @instance
+             * @type {string}
+             * @default "alfresco-charts-ccc-Chart"
+             */
             baseClass: "alfresco-charts-ccc-Chart",
 
-            pvcChartType: 'Chart',
+            /**
+             * The Protovis class that will be wrapped inside this widget.
+             * Note! MUST be overridden by a sub class.
+             *
+             * @instance
+             * @type {string}
+             */
+            pvcChartType: null,
 
+            /**
+             * The charts container element (will be set by dojo)
+             * @instance
+             * @type {HTMLElement}
+             */
             chartNode: null,
 
+            /**
+             * The topic to publish when requesting chart data
+             *
+             * @instance
+             * @type {string}
+             */
             dataTopic: null,
 
+            /**
+             * The topic to publish when chart data item has been clicked.
+             *
+             * @instance
+             * @type {string}
+             */
+            clickTopic: null,
+
+            /**
+             * The chart title
+             *
+             * @instance
+             * @type {string}
+             */
             title: null,
+
+            /**
+             * The position of the chart title
+             *
+             * @instance
+             * @type {string}
+             */
             titlePosition: "bottom",
 
+            /**
+             * The width in pixels of the chart. A null value indicates 100%
+             *
+             * @instance
+             * @type {number|null}
+             * @default null
+             */
             width: null,
+
+            /**
+             * The height in pixels.
+             *
+             * @instance
+             * @type {number}
+             * @default 400
+             */
             height: 400,
 
+            /**
+             * Decides if a legend shall be displayed and if so how it should appear.
+             *
+             * For more details see:
+             * {@link http://www.webdetails.pt/ctools/charts/jsdoc/symbols/pvc.options.panels.LegendPanel.html}
+             *
+             * @instance
+             * @type {boolean|pvc.options.panels.LegendPanel}
+             * @default false
+             */
             legend: false,
-            legendPosition: 'left',
-            legendAlign: 'middle',
 
+            /**
+             * Indicates if the chart's visual elements can be selected by the user, by clicking on them or using the
+             * rubber-band.
+             *
+             * @instance
+             * @type {boolean}
+             * @default false
+             */
             selectable: false,
+
+            /**
+             * Indicates if the chart's visual elements are automatically highlighted when the user hovers over them
+             * with the mouse.
+             *
+             * @instance
+             * @type {boolean}
+             * @default false
+             */
             hoverable: false,
 
+            /**
+             * Indicates if tooltips are enabled and contains additional tooltip presentation options.
+             *
+             * For more details see:
+             * {@link http://www.webdetails.pt/ctools/charts/jsdoc/symbols/pvc.options.Tooltip.html}
+             *
+             * @instance
+             * @type {pvc.options.Tooltip}
+             * @default { enabled: true }
+             */
             tooltip: {
                enabled: true
             },
 
+            /**
+             * An array of dimensions readers.
+             * Can be specified to customize the translation process of the data source.
+             *
+             * For more details see:
+             * {@link http://www.webdetails.pt/ctools/charts/jsdoc/symbols/pvc.options.DimensionsReader.html}
+             *
+             * @instance
+             * @type {null|pvc.options.DimensionsReader}
+             * @default null
+             */
             readers: null,
+
+            /**
+             * A map whose keys are the dimension type names and whose values are the dimension type options.
+             *
+             * For more details see:
+             * {@link http://www.webdetails.pt/ctools/charts/jsdoc/symbols/pvc.options.DimensionType.html}
+             *
+             * @instance
+             * @type {null|pvc.options.DimensionType}
+             * @default null
+             */
             dimensions: null,
 
+            /**
+             * Extension points for the chart, will vary depending on the CCC2 class.
+             *
+             * For more details visit:
+             * {@link http://www.webdetails.pt/ctools/charts/jsdoc/symbols/pvc.options.ext.ChartExtensionPoints.html}
+             */
+            extensionPoints: null,
+
+            /**
+             * Variable for storing the current data
+             *
+             * @instance
+             * @type {object}
+             */
             _currentData: null,
+
+            /**
+             * Variable for storing meta data about the current data
+             *
+             * @instance
+             * @type {object}
+             */
             _currentDataDescriptor: null,
 
             /**
-             * Declare the dependencies on "legacy" JS files that this is wrapping.
+             * Declare the dependencies on "legacy" JS files that this widget is wrapping.
              *
              * @instance
+             * @type {string[]}
              */
             nonAmdDependencies: [
                "/ctools/jquery.js",
@@ -103,13 +245,14 @@ define(["dojo/_base/declare",
 
             /**
              * The HTML template to use for the widget.
+             *
              * @instance
-             * @type {String}
+             * @type {string}
              */
             templateString: template,
 
             /**
-             * Subscribe the document list topics.
+             * Subscribes to the data topic
              *
              * @instance
              */
@@ -122,21 +265,25 @@ define(["dojo/_base/declare",
                }
             },
 
+            /**
+             * Creates and returns the chart config
+             *
+             * @instance
+             * @return {object}
+             */
             createChartConfig: function(){
                var config = {};
 
                // Common configurable properties
                config.canvas = this.chartNode;
 
-               config.width = this.getWidth();
+               config.width = this._getWidth();
                config.height = this.height;
 
                config.title = this.title;
                config.titlePosition = this.titlePosition;
 
                config.legend = this.legend;
-               config.legendPosition = this.legendPosition;
-               config.legendAlign = this.legendAlign;
 
                config.selectable = this.selectable;
                config.hoverable = this.hoverable;
@@ -146,6 +293,10 @@ define(["dojo/_base/declare",
                }
                if (this.dimensions) {
                   config.dimensions = this.dimensions;
+               }
+               if (this.extensionPoints)
+               {
+                  config.extensionPoints = this.extensionPoints;
                }
 
                if (this.clickTopic)
@@ -160,31 +311,30 @@ define(["dojo/_base/declare",
                   backgroundColor: ["rgba(0, 0, 0, 0)", "transparent"]
                });
                config.colors = styles.backgroundColor;
-               /*
-               //config.colors = ["#013564", "#004D71", "#01677E", "#007C86", "#298B8C", "#93A599"];
-               //config.colors = ["#B53E1E", "#B24B1E", "#B5692B", "#B99340", "#B7AA4E", "#B8AF76"];
-               var el = document.createElement("div");
-               el.className = this.baseClass + "--color1";
-               //el.innerHTML = "test";
-               document.body.appendChild(el);
-               var color = getComputedStyle(el)["backgroundColor"];
-
-               config.colors = [color];
-               */
                return config;
             },
 
-
+            /**
+             * Creates the CCC chart.
+             *
+             * @instance
+             */
             createChart: function alfresco_charts_ccc_Chart__createChart(){
                this.chart = new pvc[this.pvcChartType](this.createChartConfig());
             },
 
+            /**
+             * Called when a chart item is clicked, will publish a topic with the name defined in the
+             * [clickTopic]{@link module:alfresco/charts/ccc/Chart#clickTopic}
+             *
+             * @param scene {object}
+             */
             onItemClick: function(scene){
                this.alfPublish(this.clickTopic, scene.atoms.category.rawValue);
             },
 
             /**
-             *
+             * Sets up topic subscriptions and makes sure the chart is resized when the window is resized.
              *
              * @instance
              */
@@ -199,21 +349,21 @@ define(["dojo/_base/declare",
                var me = this;
                var lastResizeEvent;
                var skippedResizeEvents = 0;
+
                function doResize() {
                   // Avoid re-rendering until the chart has been rendered a first time
                   if (me.chart) {
-                     console.log('render chart');
-                     me.renderChart();
+                     me._renderChart();
                   }
                }
-               function onResize(){
-                  console.log('on resize');
+
+               function onResize() {
                   if (lastResizeEvent) {
                      clearTimeout(lastResizeEvent);
                      skippedResizeEvents++;
                      if (skippedResizeEvents > 1) {
                         skippedResizeEvents = 0;
-                        me.renderChart();
+                        me._renderChart();
                         return;
                      }
                   }
@@ -222,15 +372,27 @@ define(["dojo/_base/declare",
                dojoOn(window, "resize", onResize);
             },
 
-            setData: function(data, dataDescriptor){
+            /**
+             * Shows the data in the chart
+             *
+             * @instance
+             * @param data {object} The data to display
+             * @param dataDescriptor {object} Metadata description about the data 
+             */
+            showData: function(data, dataDescriptor){
                this._currentData = data;
                this._currentDataDescriptor = dataDescriptor;
-               this.renderChart();
+               this._renderChart();
             },
 
-            renderChart: function(){
-               if (this.getWidth()) {
-                  this.performRenderChart();
+            /**
+             * Renders the chart.
+             *
+             * @instance
+             */
+            _renderChart: function(){
+               if (this._getWidth()) {
+                  this._performRenderChart();
                   return;
                }
 
@@ -238,21 +400,32 @@ define(["dojo/_base/declare",
                var me = this;
                var timeoutId;
                function callPerformRenderChartWhenReady(){
-                  if (me.getWidth()) {
+                  if (me._getWidth()) {
                      clearTimeout(timeoutId);
-                     me.performRenderChart();
+                     me._performRenderChart();
                   }
                }
                timeoutId = window.setInterval(callPerformRenderChartWhenReady, 100);
             },
 
-            performRenderChart: function(){
+            /**
+             * Performs the actual rendering of the chart.
+             *
+             * @instance
+             */
+            _performRenderChart: function(){
                this.createChart();
                this.chart.setData(this._currentData, this._currentDataDescriptor);
                this.chart.render(true, true, false);
             },
 
-            getWidth: function(){
+            /**
+             * Calculates the width (in pixels) of an element.
+             *
+             * @return {null|number}
+             * @private
+             */
+            _getWidth: function(){
                try {
                   var style = domStyle.getComputedStyle(this.domNode);
                   var s = domGeom.getContentBox(this.domNode, style);
@@ -266,12 +439,22 @@ define(["dojo/_base/declare",
                }
             },
 
+            /**
+             * Called when chart is loaded.
+             *
+             * @param payload {object}
+             */
             onDataLoadSuccess: function(payload){
-               this.setData(payload.response.data, payload.response.dataDescriptor);
+               this.showData(payload.response.data, payload.response.dataDescriptor);
             },
 
+            /**
+             * Called when chart data failed to load.
+             *
+             * @param payload {object}
+             */
             onDataLoadFailure: function(payload){
-               this.setData({}, {});
+               this.showData({}, {});
             }
 
          });

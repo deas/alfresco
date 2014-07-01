@@ -41,8 +41,11 @@ define({
     * @instance
     * @type [string]
     */
-   baseFunctionalSuites: [
+   baseFunctionalSuites: ['tests/alfresco/charts/ccc/PieChartTest'],
+   baseFunctionalSuites__SKIP: [
       'tests/alfresco/accessibility/AccessibilityMenuTest',
+
+      'tests/alfresco/charts/ccc/PieChartTest',
 
       'tests/alfresco/core/PublishPayloadMixinTest',
       'tests/alfresco/core/RenderFilterTest',

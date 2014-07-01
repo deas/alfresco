@@ -25,7 +25,8 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
- * @mixes alfresco/core/CoreWidgetProcessing*
+ * @mixes module:alfresco/core/CoreWidgetProcessing*
+ * @abstract
  * @author Erik Winlöf
  */
 define(["dojo/_base/declare",
@@ -44,8 +45,21 @@ define(["dojo/_base/declare",
 
          return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
 
+            /**
+             * The base css class to use for this widget
+             *
+             * @instance
+             * @type {string}
+             * @default "alfresco-dashlets-Dashlet"
+             */
             baseClass: "alfresco-dashlets-Dashlet",
 
+            /**
+             * The i18n scope to use for this widget
+             *
+             * @instance
+             * @type {string}
+             */
             i18nScope: "alfresco.dashlets.Dashlet",
 
             /**
@@ -73,14 +87,72 @@ define(["dojo/_base/declare",
              */
             templateString: template,
 
+            /**
+             * Widgets to place as title bar actions.
+             *
+             * @instance
+             * @type {object[]}
+             */
             widgetsForTitleBarActions: null,
+
+            /**
+             * Widgets to place in the first toolbar
+             *
+             * @instance
+             * @type {object[]}
+             */
             widgetsForToolbar: null,
+
+            /**
+             * Widgets to place in the second toolbar
+             *
+             * @instance
+             * @type {object[]}
+             */
             widgetsForToolbar2: null,
+
+            /**
+             * Widgets to place in the body
+             *
+             * @instance
+             * @type {object[]}
+             */
             widgetsForBody: null,
 
+            /**
+             * The container that holds the title bar action widgets.
+             * Will be populated by dojo.
+             *
+             * @instance
+             * @type {HTMLElement}
+             */
             titleBarActionsNode: null,
+
+            /**
+             * The container that holds the first toolbar widgets.
+             * Will be populated by dojo.
+             *
+             * @instance
+             * @type {HTMLElement}
+             */
             toolbarNode: null,
+
+            /**
+             * The container that holds the title second tollbar widgets.
+             * Will be populated by dojo.
+             *
+             * @instance
+             * @type {HTMLElement}
+             */
             toolbar2Node: null,
+
+            /**
+             * The container that holds the body widgets.
+             * Will be populated by dojo.
+             *
+             * @instance
+             * @type {HTMLElement}
+             */
             bodyNode: null,
 
             /**
@@ -97,8 +169,14 @@ define(["dojo/_base/declare",
                this.processContainer(this.widgetsForBody, this.bodyNode);
             },
 
+            /**
+             * Creates the widgets inside a container
+             *
+             * @instance
+             * @param widgets The widgets to create
+             * @param container The container to place the widgets in
+             */
             processContainer: function alfresco_dashlets_Dashlet__processContainer(widgets, container) {
-               // this.inherited(arguments);
                if (widgets != null && widgets.length > 0)
                {
                   this.processWidgets(lang.clone(widgets), container);
@@ -110,6 +188,11 @@ define(["dojo/_base/declare",
                }
             },
 
+            /**
+             * Make some of the i18n keys available for the template
+             *
+             * @instance
+             */
             postMixInProperties: function alfresco_dashlets_Dashlet__postMixInProperties() {
                // construct our I18N labels ready for template
                this.label = {};

@@ -21,7 +21,7 @@
  * A PieChart
  *
  * @module alfresco/charts/ccc/PieChart
- * @extends alfresco/charts/ccc/Chart
+ * @extends module:alfresco/charts/ccc/Chart
  * @author Erik Winlöf
  */
 define(["dojo/_base/declare",
@@ -34,8 +34,31 @@ define(["dojo/_base/declare",
 
          return declare([Chart], {
 
+            /**
+             * The Protovis class that will be wrapped inside this widget.
+             *
+             * @instance
+             * @type {string}
+             */
             pvcChartType: "PieChart",
 
+            /**
+             * Increment radius of an exploded slice, in pixel units or as a percentage.
+             * When the value is a string, and if it is suffixed with "%", it represents a percentage of the biggest
+             * radius that can fit in the client area of the plot.
+             *
+             * For more details visit:
+             * {@link http://www.webdetails.pt/ctools/charts/jsdoc/symbols/pvc.options.plots.PiePlot.html#explodedSliceRadius}
+             *
+             * @instance
+             * @default 0
+             */
+            explodedSliceRadius: 0,
+
+            /**
+             * @instance
+             * @type {string}
+             */
             valuesMask: I18nUtils.msg(i18nScope, "label", "{category}", "{value}", "{value.percent}"),
 
             /**
@@ -54,6 +77,10 @@ define(["dojo/_base/declare",
                if (this.valuesMask)
                {
                   config.valuesMask = this.valuesMask;
+               }
+               if (this.explodedSliceRadius)
+               {
+                  config.explodedSliceRadius = this.explodedSliceRadius;
                }
 
                return config;

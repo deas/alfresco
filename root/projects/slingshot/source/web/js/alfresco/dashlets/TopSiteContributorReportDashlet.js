@@ -33,6 +33,11 @@ define(["dojo/_base/declare",
 
          return declare([Dashlet], {
 
+            /**
+             * The i18n scope to use for this widget.
+             *
+             * @instance
+             */
             i18nScope: "alfresco.reports.TopSiteContributorReportDashlet",
 
             /**
