@@ -11,10 +11,68 @@
     <listeners>
         <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
     </listeners>
-
+    <!--     
+ <test name="DeploymentsAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.DeploymentsAPITests" />
+        </classes>
+    </test>
+    <test name="FavouriteAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.FavouriteAPITests" />
+        </classes>
+    </test>
+    <test name="ProcessesAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.ProcessesAPITests" />
+        </classes>
+    </test>
+    <test name="SiteMembershipAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.SiteMembershipAPITests" />
+        </classes>
+    </test>
+    <test name="TagsAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.TagsAPITests" />
+        </classes>
+    </test>
+    <test name="WorkflowAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.WorkflowAPITests" />
+        </classes>
+    </test>
+    <test name="CommentsAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.CommentsAPITests" />
+        </classes>
+    </test>
+    <test name="NodesAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.NodesAPITests" />
+        </classes>
+    </test>
+    <test name="PeopleAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.PeopleAPITests" />
+        </classes>
+    </test>
+    <test name="SitesAPITests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.api.SitesAPITests" />
+        </classes>
+    </test>
+-->
     <test name="LiveSearchTest Cloud Tests" verbose="1" parallel="classes" thread-count="1">
         <classes>
-            <class name="org.alfresco.share.search.LiveSearchTest"></class>
+     <!--
+            <class name="org.alfresco.share.LoginTest" />
+            <class name="org.alfresco.share.MyDashBoardTest">
+                <methods>
+                    <exclude name="cloud_1507" />
+                </methods>
+            </class>
+            <class name="org.alfresco.share.SiteDashBoardTest" /> -->
             <class name="org.alfresco.share.HeaderBarTest">
 			 	<methods>
                      <include name="ALF_3161" />
@@ -25,8 +83,8 @@
 
     <test name="DashletTest" verbose="1" parallel="classes" thread-count="1">
         <classes>
-            <class name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest"/>
-			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet"/>
+           <!--  <class name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest"/>
+			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet"/>-->
 			<class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete">
 				<methods>
                      <include name="ALF_3162" />
@@ -39,9 +97,9 @@
 
     <test name="SearchTest" verbose="1" parallel="classes" thread-count="1">
         <classes>
-        <!-- <class name="org.alfresco.share.search.AdvanceSearchTest"/>  --> 
+        <!-- <class name="org.alfresco.share.search.AdvanceSearchTest"/>  
             <class name="org.alfresco.share.search.AdvanceSearchTest2" />
-            <class name="org.alfresco.share.search.BasicSearchTest" />
+            <class name="org.alfresco.share.search.BasicSearchTest" />--> 
             <class name="org.alfresco.share.search.LiveSearchTest" />
         </classes>
     </test>
@@ -53,7 +111,7 @@
                     <include name="ALF_3160" />
                 </methods>
              </class>
-          <!--  <class name="org.alfresco.share.DownloadFilesAndFoldersTest"/> -->
+          <!--  <class name="org.alfresco.share.DownloadFilesAndFoldersTest"/> 
             <class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
             <class name="org.alfresco.share.SiteDocumentLibraryTest">
             
@@ -68,7 +126,7 @@
                     <exclude name="Enterprise40x_8586" />
                 </methods>
             </class>
-            <class name="org.alfresco.share.user.trashcan.TrashCanTest"/>
+            <class name="org.alfresco.share.user.trashcan.TrashCanTest"/>-->
 		</classes>
 	</test>
 
