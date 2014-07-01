@@ -43,7 +43,7 @@ import org.springframework.extensions.surf.util.I18NUtil;
  * @author Andy Hind
  */
 @AlfrescoPublicApi
-public class SearchParameters
+public class SearchParameters implements BasicSearchParameters
 {
     /*
      * The default limit if someone asks for a limited result set but does not say how to limit....
