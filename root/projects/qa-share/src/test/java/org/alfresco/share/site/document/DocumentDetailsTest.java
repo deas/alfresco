@@ -8,12 +8,13 @@ import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+
 
 /**
  * @author Aliaksei Boole
@@ -69,13 +70,79 @@ public class DocumentDetailsTest extends AbstractUtils
                 String[] fileInfo = { fileCSV };
                 DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo);
 
-                assertTrue(documentLibraryPage.isFileVisible(fileCSV), String.format("File %s didn't uploaded", fileCSV));
+                Assert.assertTrue(documentLibraryPage.isFileVisible(fileCSV), String.format("File %s didn't uploaded", fileCSV));
 
                 DocumentDetailsPage documentDetailsPage = documentLibraryPage.selectFile(fileCSV);
-                assertTrue(documentDetailsPage.isFlashPreviewDisplayed(), "Preview for file didn't displayed.");
-                assertEquals(documentDetailsPage.getDocumentSize(), "45 bytes", "File has the wrong size");
+                Assert.assertTrue(documentDetailsPage.isFlashPreviewDisplayed(), "Preview for file didn't displayed.");
+                Assert.assertEquals(documentDetailsPage.getDocumentSize(), "45 bytes", "File has the wrong size");
         }
 
+        /**
+         * 1) Creates test user 
+         * 2) Test user logs in
+         * 3) Test user creates site
+         * 4) Test user uploads file to site's document library
+         * 5) Test user logs out
+         * 
+         * @throws Exception
+         */
+        @Test(groups = "DataPrepAlfrescoOne")
+        public void dataPrep_ALF_3160() throws Exception
+        {
+            String testName = getTestName();
+            String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+            String[] testUserInfo = new String[] { testUser };
+            String siteName = getSiteName(testName);
+
+            // Create test user
+            CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
+
+            // Login as created user
+            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+            // Create site
+            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+            
+            //Upload a file in site's document library
+            String fileName = getFileName(testName);
+            String[] fileInfo = { fileName };
+            ShareUser.uploadFileInFolder(drone, fileInfo);
+           
+        }
+        
+        /**
+         * 1) Test user logs in, opens site document library
+         * 2) Clicks on file's name
+         * 3) Verfies Share pane is present on the right handside of document details page for enterprise
+         * 4) Verfies Share pane is not present on the right handside of document details page for cloud  
+         */
+        @Test(groups = "AlfrescoOne")
+        public void ALF_3160()
+        {
+            // test user (site creator) logs in
+            String testName = getTestName();
+            String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+            String siteName = getSiteName(testName);
+            String fileName = getFileName(testName);
+            
+            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+            DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+            DocumentDetailsPage detailsPage = documentLibraryPage.selectFile(fileName);
+            
+            if (!isAlfrescoVersionCloud(drone))
+            {
+                Assert.assertTrue(detailsPage.isSharePanePresent(), "Share Panel is not present.");
+            }
+            else
+            {
+                Assert.assertFalse(detailsPage.isSharePanePresent(), "Share Panel is not present.");
+            }
+  
+        }    
+        
+        
         @AfterMethod(alwaysRun = true)
         public void logout()
         {

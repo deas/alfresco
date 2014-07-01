@@ -105,6 +105,11 @@
                  </methods>
              </class>
              <class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
+             <class name="org.alfresco.share.site.document.DocumentDetailsTest">
+            	<methods>
+                    <exclude name="Enterprise40x_8573" />
+                </methods>
+             </class>
  		</classes>
 	</test>
 </suite>
