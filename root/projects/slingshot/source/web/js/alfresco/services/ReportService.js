@@ -91,7 +91,7 @@ define(["dojo/_base/declare",
                         seriesInRows: false
                      }
                   }
-               }, true);
+               });
             },
 
             /**
@@ -136,7 +136,7 @@ define(["dojo/_base/declare",
                         seriesInRows: false
                      }
                   }
-               }, true);
+               });
             }
 
 

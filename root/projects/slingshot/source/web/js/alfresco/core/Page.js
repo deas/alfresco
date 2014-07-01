@@ -151,6 +151,12 @@ define(["alfresco/core/ProcessWidgets",
                serviceConfig = config.config;
             }
          }
+         if (serviceConfig.pubSubScope === undefined)
+         {
+            // ...otherwise inherit the callers pubSubScope if one hasn't been explicitly configured...
+            serviceConfig.pubSubScope = this.pubSubScope;
+         }
+
          var _this = this;
          var requires = [dep];
          require(requires, function(ServiceType) {

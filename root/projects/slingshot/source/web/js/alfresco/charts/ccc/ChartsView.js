@@ -110,7 +110,7 @@ define(["dojo/_base/declare",
 
             requestData: function()
             {
-               this._currentDataRequestPayload.alfResponseTopic = this.pubSubScope + this.dataRequestTopic;
+               this._currentDataRequestPayload.alfResponseTopic = this.dataRequestTopic;
                this.alfPublish(this.dataRequestTopic, this._currentDataRequestPayload);
             },
 

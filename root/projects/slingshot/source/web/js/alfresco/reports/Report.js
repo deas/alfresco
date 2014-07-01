@@ -26,10 +26,8 @@
  */
 define(["alfresco/core/ProcessWidgets",
    "dojo/_base/declare",
-   "dojo/dom-construct",
-   "dojo/dom-style",
-   "dojo/_base/array"],
-      function(ProcessWidgets, declare) {
+   "dojo/_base/lang"],
+      function(ProcessWidgets, declare, lang) {
 
          return declare([ProcessWidgets], {
 
@@ -40,7 +38,13 @@ define(["alfresco/core/ProcessWidgets",
              * @type {string}
              * @default "alfresco-reports-Report"
              */
-            baseClass: "alfresco-reports-Report"
+            baseClass: "alfresco-reports-Report",
 
+            postCreate: function alfresco_reports_Report__postCreate() {
+               if (this.widgets)
+               {
+                  this.processWidgets(lang.clone(this.widgets), this.containerNode);
+               }
+            }
          });
       });

@@ -101,7 +101,7 @@ define(["dojo/_base/declare",
                // this.inherited(arguments);
                if (widgets != null && widgets.length > 0)
                {
-                  this.processWidgets(widgets, container);
+                  this.processWidgets(lang.clone(widgets), container);
                   domClass.add(container, 'alfresco-dashlets-Dashlet--widgets');
                }
                else
