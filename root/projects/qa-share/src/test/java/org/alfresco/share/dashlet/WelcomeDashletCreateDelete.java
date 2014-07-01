@@ -162,6 +162,57 @@ public class WelcomeDashletCreateDelete extends AbstractUtils
             testCleanup(drone, testName);
         }
     }
+    
+    
+    @Test(groups = "DataPrepAlfrescoOne")
+    public void dataPrep_ALF_3162() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        String[] testUserInfo = new String[] { testUser };
+        String siteName = getSiteName(testName);
+
+        // Create test user
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login as created user
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        // Create site
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+                           
+        //Log out
+        ShareUser.logout(drone);
+       
+    }
+    
+    
+    @Test(groups = "AlfrescoOne")
+    public void ALF_3162()
+    {
+        // test user (site creator) logs in
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        String siteName = getSiteName(testName);
+        
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        SiteDashboardPage siteDashbboardPage = ShareUser.openSiteDashboard(drone, siteName);
+
+        if (!isAlfrescoVersionCloud(drone))
+        {
+            Assert.assertTrue(siteDashbboardPage.isWelcomeMessageDashletDisplayed(), "Welcome Dashlet is not present.");
+        }
+        else
+        {
+            Assert.assertFalse(siteDashbboardPage.isWelcomeMessageDashletDisplayed(), "Welcome Dashlet is present.");
+        }
+        
+        //Log out
+        ShareUser.logout(drone);
+    }    
+    
+   
 
     /**
      * Create site & validate the expected options present in welcome dashlet.
