@@ -254,13 +254,9 @@ public class LiveSearchDropdownTest extends AbstractTest
      * that the site dashboard page is displayed
      */
     @Test(dependsOnMethods = "liveSearchPeopleResult")
-    public void clickOnSiteResult()
+    public void clickOnSiteResult() throws Exception
     {
-        SearchBox search = dashBoard.getSearch();
-        LiveSearchDropdown liveSearchResultPage = search.liveSearch(siteName).render();
-        Assert.assertNotNull(liveSearchResultPage);
-
-        List<LiveSearchSiteResult> liveSearchSiteResults = liveSearchResultPage.getSearchSitesResults();
+        List<LiveSearchSiteResult> liveSearchSiteResults = liveSearchSitesRetry();
         Assert.assertTrue(liveSearchSiteResults.size() > 0);
         for (LiveSearchSiteResult liveSearchSitesResult : liveSearchSiteResults)
         {
