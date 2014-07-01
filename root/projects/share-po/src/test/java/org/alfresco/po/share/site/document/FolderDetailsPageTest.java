@@ -61,7 +61,6 @@ public class FolderDetailsPageTest extends AbstractTest
         siteName = "site" + System.currentTimeMillis();
         folderName = "The first folder";
         folderDescription = String.format("Description of %s", folderName);
-        System.out.println("XXXXXX " + alfrescoVersion);
         if (!alfrescoVersion.isCloud())
         {
             DashBoardPage dashBoard = loginAs(username, password);
@@ -84,11 +83,11 @@ public class FolderDetailsPageTest extends AbstractTest
         SiteUtil.createSite(drone, siteName, "description", "Public");
     }
 
-    //@AfterClass(groups = { "alfresco-one" })
-    //public void teardown()
-    //{
-        //SiteUtil.deleteSite(drone, siteName);
-    //}
+    @AfterClass(groups = { "alfresco-one" })
+    public void teardown()
+    {
+        SiteUtil.deleteSite(drone, siteName);
+    }
 
     /**
      * Test updating an existing file with a new uploaded file. The test covers

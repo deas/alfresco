@@ -36,8 +36,7 @@
     </test>
     <test name="SiteContent" preserve-order="true">
         <packages>
-            <package name="org.alfresco.po.share.dashlet" />
-            <!--  <package name="org.alfresco.po.share.dashlet.sitecontent" /> -->
+            <package name="org.alfresco.po.share.dashlet.sitecontent" />
         </packages>
     </test>
     <test name="Search" preserve-order="true">

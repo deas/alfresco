@@ -3,7 +3,6 @@ package org.alfresco.po.share.dashlet;
 import java.io.File;
 
 import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SitePage;
@@ -29,7 +28,6 @@ public class AbstractSiteDashletTest extends AbstractDocumentTest
     protected String siteName;
     protected String fileName;
     protected SiteDashboardPage siteDashBoard;
-    protected SiteFinderPage finderPage;
     
     /**
      * Creates a site and uploads a document to the site.
@@ -68,13 +66,12 @@ public class AbstractSiteDashletTest extends AbstractDocumentTest
         }
         drone.navigateTo(shareUrl);
         DashBoardPage boardPage = drone.getCurrentPage().render();
-        finderPage = boardPage.getNav().selectSearchForSites().render();
+        SiteFinderPage finderPage = boardPage.getNav().selectSearchForSites().render();
         finderPage = finderPage.searchForSite(siteName).render();
-        finderPage = siteSearchRetry(finderPage, siteName);
-        System.out.println("NNNNNN SSSSS ***** " + siteName);
+        finderPage = SiteUtil.siteSearchRetry(drone, finderPage, siteName);
         siteDashBoard = finderPage.selectSite(siteName).render();
     }
-    /**
+    
     @AfterClass(alwaysRun=true)
     public void deleteSite()
     {
@@ -91,5 +88,5 @@ public class AbstractSiteDashletTest extends AbstractDocumentTest
             logger.error("Problem deleting site", e);
         }
     }
-    
+
 }

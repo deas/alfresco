@@ -323,5 +323,39 @@ public class SiteUtil
         }
         throw new SkipException("Can't create JPG file");
     }
-
+    
+    /**
+     * 
+     * Searching with retry for sites to handle solr lag
+     * 
+     * @param finderPage
+     * @param siteName
+     * @return
+     */
+    public static SiteFinderPage siteSearchRetry(WebDrone drone, SiteFinderPage finderPage, String siteName)
+    {
+        int counter = 0;
+        int waitInMilliSeconds = 2000;
+        int retrySearchCount = 5;
+        while(counter < retrySearchCount)
+        {
+            SiteFinderPage siteSearchResults = finderPage.searchForSite(siteName).render();
+            if(siteSearchResults.getSiteList().contains(siteName))
+            {
+                return siteSearchResults;
+            }
+            else
+            {
+                counter++;
+                drone.getCurrentPage().render();
+            }
+            //double wait time to not over do solr search
+            waitInMilliSeconds = (waitInMilliSeconds*2);
+            synchronized (SiteUtil.class)
+            {
+                try{ SiteUtil.class.wait(waitInMilliSeconds); } catch (InterruptedException e) {}
+            }
+        }
+        throw new PageException("site search failed");
+    }
 }

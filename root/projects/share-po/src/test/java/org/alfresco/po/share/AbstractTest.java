@@ -38,9 +38,7 @@ import org.alfresco.po.share.dashlet.MySitesDashlet;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.UploadFilePage;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
 import org.alfresco.po.share.site.document.SyncInfoPage;
 import org.alfresco.po.share.site.document.UserProfile;
 import org.alfresco.po.share.user.CloudSignInPage;
@@ -340,7 +338,6 @@ public abstract class AbstractTest
             UserSearchPage page = dashBoard.getNav().getUsersPage().render();
             NewUserPage newPage = page.selectNewUser().render();
             String userinfo = uname + "@test.com";
-            System.out.println("UUUUU **** " + userinfo);
             newPage.inputFirstName(userinfo);
             newPage.inputLastName(userinfo);
             newPage.inputEmail(userinfo);
