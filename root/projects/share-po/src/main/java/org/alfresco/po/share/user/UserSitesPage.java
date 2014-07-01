@@ -84,7 +84,7 @@ public class UserSitesPage extends SharePage
                 {
                 }
 
-                if (drone.find(NO_SITES_MESSAGE).isDisplayed() && drone.find(NO_SITES_MESSAGE).getText().equals(drone.getValue("user.profile.sites.nosite")))
+                if (drone.find(NO_SITES_MESSAGE).isDisplayed() || drone.find(NO_SITES_MESSAGE).getText().equals(drone.getValue("user.profile.sites.nosite")))
                 {
                     break;
                 }
