@@ -1901,7 +1901,6 @@ public class GalleryViewTest extends AbstractUtils
         Assert.assertTrue(detailsPage.isDocumentActionPresent(DocumentAction.MANAGE_RULES), "Manage Rules is not present");
         Assert.assertTrue(detailsPage.isDocumentActionPresent(DocumentAction.MANAGE_PERMISSION_FOL), "Manage Permission not present");
         Assert.assertTrue(detailsPage.isTagPanelPresent(), "Tags Panel is not present.");
-        Assert.assertTrue(detailsPage.isSharePanePresent(), "Share Panel is not present.");
         Assert.assertTrue(detailsPage.isCopyShareLinkPresent(), "Copy Share LInk is not present.");
         
         Map<String, Object> properties = detailsPage.getProperties();
@@ -1913,6 +1912,7 @@ public class GalleryViewTest extends AbstractUtils
         
         if(!isAlfrescoVersionCloud(customDrone))
         {
+            Assert.assertTrue(detailsPage.isSharePanePresent(), "Share Panel is not present.");
             Assert.assertTrue(detailsPage.isDownloadAsZipAtTopRight(), "Download as zip is not present.");
             Assert.assertTrue(detailsPage.isDocumentActionPresent(DocumentAction.MANAGE_ASPECTS), "Manager Aspect not present");
             Assert.assertTrue(detailsPage.isDocumentActionPresent(DocumentAction.CHNAGE_TYPE), "Change Type is not present");

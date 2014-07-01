@@ -126,12 +126,12 @@ public class DocumentShareTests extends AbstractUtils
         assertTrue(detailsPage.isAddCommentButtonPresent(), "Add Comment button is not present");
         assertTrue(detailsPage.getCommentsPagination().isDisplay(), "Comments paging is not present");
         assertTrue(detailsPage.isTagsPanelPresent(), "Tags Panel is not present");
-        assertTrue(detailsPage.isSharePanePresent(), "Share Panel is not present");
         assertTrue(detailsPage.isPropertiesPanelPresent(), "Properties Panel is not present");
         assertTrue(detailsPage.isSynPanelPresent(), "Sync Panel is not present");
 
         if (!isAlfrescoVersionCloud(drone))
         {
+            assertTrue(detailsPage.isSharePanePresent(), "Share Panel is not present");
             assertTrue(detailsPage.isPermissionsPanelPresent(), "Permissions Panel is not present");
         }
     }
