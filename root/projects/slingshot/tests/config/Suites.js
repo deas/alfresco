@@ -62,6 +62,7 @@ define({
       'tests/alfresco/forms/SingleTextFieldFormTest',
       'tests/alfresco/forms/controls/DocumentPickerTest',
       'tests/alfresco/forms/controls/DojoSelectTest',
+      'tests/alfresco/forms/controls/DojoDateTextBoxTest',
       'tests/alfresco/forms/controls/DojoValidationTextBoxTest',
       'tests/alfresco/forms/controls/FormButtonDialogTest',
 
