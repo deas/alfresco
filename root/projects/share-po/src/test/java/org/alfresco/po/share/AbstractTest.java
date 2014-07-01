@@ -45,7 +45,6 @@ import org.alfresco.po.share.user.CloudSignInPage;
 import org.alfresco.po.share.user.CloudSyncPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.util.ShareTestProperty;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
