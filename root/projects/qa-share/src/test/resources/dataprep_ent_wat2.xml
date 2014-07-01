@@ -16,13 +16,13 @@
 			<class name="org.alfresco.share.api.CommentsAPITests" />
 			<class name="org.alfresco.share.api.DeploymentsAPITests" />
 			<class name="org.alfresco.share.api.FavouriteAPITests" />
-			<!-- <class name="org.alfresco.share.api.NodesAPITests" /> -->
-			<!-- <class name="org.alfresco.share.api.PeopleAPITests" /> -->
+			<class name="org.alfresco.share.api.NodesAPITests" />
+			<class name="org.alfresco.share.api.PeopleAPITests" />
 			<class name="org.alfresco.share.api.ProcessesAPITests" />
 			<class name="org.alfresco.share.api.SiteMembershipAPITests" />
 			<class name="org.alfresco.share.api.SitesAPITests" />
 			<class name="org.alfresco.share.api.TagsAPITests" />
-			<class name="org.alfresco.share.api.WorkflowAPITests" />
+			<class name="org.alfresco.share.api.WorkflowAPITests" />			  
 
 			<!-- Merged -->
 
@@ -41,7 +41,6 @@
 			<!-- <class name="org.alfresco.share.DownloadFilesAndFoldersTest" /> -->
 			<class name="org.alfresco.share.SiteDocumentLibraryTest" />
 			<class name="org.alfresco.share.site.document.ManageAspectTest" />
-            <class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
 		</classes>
 	</test>
 </suite>
