@@ -886,7 +886,6 @@ public class HeaderBarTest extends AbstractUtils
         Assert.assertFalse(CollectionUtils.hasElements(sites));
 
     }
-<<<<<<< .working
     
     @Test(groups = { "DataPrepSiteDashboard", "AlfrescoOne" })
     public void dataPrep_ALF_3161() throws Exception
@@ -927,47 +926,5 @@ public class HeaderBarTest extends AbstractUtils
         
         //Log out
         ShareUser.logout(drone);
-    }    
-    
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_ALF_1752() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
-        String[] testUserInfo = new String[] { testUser };
-        String siteName = getSiteName(testName);
-
-        // Create test user
-        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
-
-        // Login as created user
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-        // Create site
-        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-        
-        //Log out
-        ShareUser.logout(drone);
-       
-    }
-    
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_1752()
-    {
-        // test user (site creator) logs in
-        String testName = getTestName();
-        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
-        String siteName = getSiteName(testName);
-        
-        String userSitesPageTitle = "User Sites List";
-        
-        DashBoardPage dashboardPage = ShareUser.login(drone, testUser, DEFAULT_PASSWORD).render();
-        
-        UserSitesPage userSitesPage = dashboardPage.getNav().selectMySites().render();
-        List<UserSiteItem> userSites = userSitesPage.getSites();
-        Assert.assertEquals(userSitesPage.getPageTitle(), userSitesPageTitle);
-        Assert.assertEquals(userSites.size(), 1);
-        Assert.assertEquals(userSites.get(0).getSiteName(), siteName);
-        
     }    
 }
