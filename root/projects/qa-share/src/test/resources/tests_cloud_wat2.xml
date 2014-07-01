@@ -66,7 +66,8 @@
         </classes>
     </test>
 
-    <test name="LiveSearchTest Cloud Tests" verbose="1" parallel="classes" thread-count="1">
+    <!-- Merged Already -->
+    <test name="UserLoginAndDashBoardTest" verbose="1" parallel="classes" thread-count="1">
         <classes>
             <class name="org.alfresco.share.LoginTest" />
             <class name="org.alfresco.share.MyDashBoardTest">
@@ -94,6 +95,14 @@
 			</class>
 	<!-- 		<class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
 			<class name="org.alfresco.share.reports.TopSiteContributorReportTest" />  -->
+        </classes>
+    </test>
+    <test name="DashletTest" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest"/>
+			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet"/>
+			<class name="org.alfresco.po.share.dashlet.SiteContentBreakdownDashletTest" />
+			<class name="org.alfresco.po.share.dashlet.TopSiteContributorDashletTest" />
         </classes>
     </test>
 

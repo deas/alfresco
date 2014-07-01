@@ -126,6 +126,15 @@ public final class FactoryShareDashlet
             {
                 return new AddOnsRssFeedDashlet(drone);
             }
+            if ("site-content-report".equalsIgnoreCase(name))
+            {
+                return new SiteContentBreakdownDashlet(drone);
+            }
+            if ("top-site-contributor-report".equalsIgnoreCase(name))
+            {
+                return new TopSiteContributorDashlet(drone);
+            }
+
             throw new PageException(String.format("%s does not match any known dashlet name", name));
         }
         catch (NoSuchElementException ex)

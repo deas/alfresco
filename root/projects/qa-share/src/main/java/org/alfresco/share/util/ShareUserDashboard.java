@@ -12,9 +12,11 @@ import org.alfresco.po.share.dashlet.ConfigureSiteNoticeDialogBoxPage;
 import org.alfresco.po.share.dashlet.MyDiscussionsDashlet;
 import org.alfresco.po.share.dashlet.SavedSearchDashlet;
 import org.alfresco.po.share.dashlet.SearchLimit;
+import org.alfresco.po.share.dashlet.SiteContentBreakdownDashlet;
 import org.alfresco.po.share.dashlet.SiteNoticeDashlet;
 import org.alfresco.po.share.dashlet.SiteSearchDashlet;
 import org.alfresco.po.share.dashlet.SiteSearchItem;
+import org.alfresco.po.share.dashlet.TopSiteContributorDashlet;
 import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.dashlet.Dashlet;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
@@ -310,6 +312,69 @@ public class ShareUserDashboard extends AbstractUtils
         {
             throw new PageOperationException("Cannot open My Discussion Dashlet on user or site dashboard page");
         }
+    }
+    
+    /**
+     * This method is used to get the Site Content Breakdown Dashlet page object from the site dashboard page.
+     * User should be present on site dashboard page.
+     * 
+     * @return SiteContentBreakdownDashlet
+     */
+    public static SiteContentBreakdownDashlet getSiteContentBreakdownDashlet(WebDrone driver, String siteName)
+    {
+        SiteDashboardPage siteDashBoard = null;
+        SharePage thisPage = ShareUser.getSharePage(driver);
+        
+        
+        if (thisPage instanceof SiteDashboardPage)
+        {
+            siteDashBoard = (SiteDashboardPage) thisPage; 
+            return siteDashBoard.getDashlet(SITE_CONTENT_BREAKDOWN_REPORT).render();
+        }
+        else if (!(thisPage instanceof SiteDashboardPage))
+        {
+            siteDashBoard = ShareUser.openSiteDashboard(driver, siteName);
+            return siteDashBoard.getDashlet(SITE_CONTENT_BREAKDOWN_REPORT).render();
+        }
+        else
+        {
+            throw new PageOperationException("Cannot open Site Content Breakdown Dashlet on site dashboard page");
+        }
+ 
+    }
+    
+    
+    
+    
+    
+    
+    /**
+     * This method is used to get the Top Site Contributor Report Dashlet page object from the site dashboard page.
+     * User should be present on site dashboard page.
+     * 
+     * @return TopSiteContributorDashlet
+     */
+    public static TopSiteContributorDashlet getTopSiteContributorDashlet(WebDrone driver, String siteName)
+    {
+        SiteDashboardPage siteDashBoard = null;
+        SharePage thisPage = ShareUser.getSharePage(driver);
+        
+        
+        if (thisPage instanceof SiteDashboardPage)
+        {
+            siteDashBoard = (SiteDashboardPage) thisPage; 
+            return siteDashBoard.getDashlet(TOP_SITE_CONTRIBUTOR_REPORT).render();
+        }
+        else if (!(thisPage instanceof SiteDashboardPage))
+        {
+            siteDashBoard = ShareUser.openSiteDashboard(driver, siteName);
+            return siteDashBoard.getDashlet(TOP_SITE_CONTRIBUTOR_REPORT).render();
+        }
+        else
+        {
+            throw new PageOperationException("Cannot open Top Site Contributor Dashlet on site dashboard page");
+        }
+ 
     }
 
     /**

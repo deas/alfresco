@@ -185,6 +185,9 @@ public abstract class AbstractUtils
     protected static final String SITE_PROFILE = "site-profile";
     protected static final String SITE_SEARCH = "site-search";
 
+    protected static final String TOP_SITE_CONTRIBUTOR_REPORT = "top-site-contributor-report";
+    protected static final String SITE_CONTENT_BREAKDOWN_REPORT = "site-content-report";
+    
     // Activity Feeds
     protected static final String FEED_CONTENT_ADDED = " added";
     protected static final String FEED_CONTENT_CREATED = " created";
