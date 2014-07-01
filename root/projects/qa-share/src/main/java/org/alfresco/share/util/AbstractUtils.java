@@ -175,6 +175,8 @@ public abstract class AbstractUtils
     protected static final String SITE_ACTIVITIES = "site-activities";
     protected static final String SITE_NOTICE = "site-notice";
     protected static final String MY_DISCUSSIONS = "my-discussions";
+    protected static final String TOP_SITE_CONTRIBUTOR_REPORT = "top-site-contributor-report";
+    protected static final String SITE_CONTENT_BREAKDOWN_REPORT = "site-content-report";
     protected static final String IMAGE_PREVIEW = "image-preview";
     protected static final String WIKI = "wiki";
     protected static final String WEB_VIEW = "web-view";
@@ -184,9 +186,6 @@ public abstract class AbstractUtils
     protected static final String SITE_CALENDAR = "site-calendar";
     protected static final String SITE_PROFILE = "site-profile";
     protected static final String SITE_SEARCH = "site-search";
-
-    protected static final String TOP_SITE_CONTRIBUTOR_REPORT = "top-site-contributor-report";
-    protected static final String SITE_CONTENT_BREAKDOWN_REPORT = "site-content-report";
     
     // Activity Feeds
     protected static final String FEED_CONTENT_ADDED = " added";
