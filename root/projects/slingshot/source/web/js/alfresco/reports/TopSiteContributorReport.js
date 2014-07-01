@@ -148,7 +148,17 @@ define(["dojo/_base/declare",
                               ],
                               selectable: true,
                               hoverable:  true,
-                              clickTopic: "REPORT_ITEM_CLICKED"
+                              clickTopic: "REPORT_ITEM_CLICKED",
+                              tooltip: {
+                                 format: function(scene){
+                                    var tooltip = '<div style="text-align: left;">';
+                                    tooltip += '<strong>' + Alfresco.util.encodeHTML(scene.datum.atoms.category.value) + '</strong><br/>';
+                                    tooltip += I18nUtils.msg(i18nScope, "count", Alfresco.util.encodeHTML(scene.datum.atoms.value.value), Alfresco.util.encodeHTML(scene.vars.value.percent.label)) + '<br/>';
+                                    tooltip += I18nUtils.msg(i18nScope, "sum", Alfresco.util.encodeHTML(Alfresco.util.formatFileSize(scene.datum.atoms.value2.value)));
+                                    tooltip += '</div>';
+                                    return tooltip;
+                                 }
+                              }
                            }
                         }
                      ]

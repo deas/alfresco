@@ -68,6 +68,7 @@ define(["dojo/_base/declare",
             },
 
             readers: null,
+            dimensions: null,
 
             _currentData: null,
             _currentDataDescriptor: null,
@@ -142,8 +143,9 @@ define(["dojo/_base/declare",
                if (this.readers) {
                   config.readers = this.readers;
                }
-
-               //config.animate = false;
+               if (this.dimensions) {
+                  config.dimensions = this.dimensions;
+               }
 
                if (this.clickTopic)
                {
@@ -152,8 +154,6 @@ define(["dojo/_base/declare",
                }
 
                config.tooltip = this.tooltip;
-               //config.explodedSliceRadius = 15; // valid option?
-               //config.valuesVisible = true; // valid option?
 
                return config;
             },
@@ -181,14 +181,29 @@ define(["dojo/_base/declare",
                }
 
                var me = this;
-               dojoOn(window, "resize", function(){
+               var lastResizeEvent;
+               var skippedResizeEvents = 0;
+               function doResize() {
                   // Avoid re-rendering until the chart has been rendered a first time
                   if (me.chart) {
-                     // Now remove old chart so it gets created again
-                     me.chart = null;
+                     console.log('render chart');
                      me.renderChart();
                   }
-               });
+               }
+               function onResize(){
+                  console.log('on resize');
+                  if (lastResizeEvent) {
+                     clearTimeout(lastResizeEvent);
+                     skippedResizeEvents++;
+                     if (skippedResizeEvents > 1) {
+                        skippedResizeEvents = 0;
+                        me.renderChart();
+                        return;
+                     }
+                  }
+                  lastResizeEvent = window.setTimeout(doResize, 100);
+               }
+               dojoOn(window, "resize", onResize);
             },
 
             setData: function(data, dataDescriptor){
@@ -216,9 +231,7 @@ define(["dojo/_base/declare",
             },
 
             performRenderChart: function(){
-               if (true) { //!this.chart) {
-                  this.createChart();
-               }
+               this.createChart();
                this.chart.setData(this._currentData, this._currentDataDescriptor);
                this.chart.render(true, true, false);
             },

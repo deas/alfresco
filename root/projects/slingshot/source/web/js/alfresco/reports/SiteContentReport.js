@@ -29,7 +29,7 @@ define(["dojo/_base/declare",
    "alfresco/core/I18nUtils",
    "alfresco/reports/Report"],
       function(declare, AlfCore, I18nUtils, Report) {
-
+         var i18nScope = "alfresco.reports.SiteContentReport";
          return declare([Report], {
 
             /**
@@ -40,6 +40,15 @@ define(["dojo/_base/declare",
              * @default [{i18nFile: "./i18n/SiteContentReport.properties"}]
              */
             i18nRequirements: [{i18nFile: "./i18n/SiteContentReport.properties"}],
+
+            /**
+             * Declare the dependencies on "legacy" JS files that this is wrapping.
+             *
+             * @instance
+             * @type {string[]}
+             * @default ["/js/alfresco.js"]
+             */
+            nonAmdDependencies: ["/js/alfresco.js"],
 
             /**
              * The widgets to be processed to generate each item in the rendered view.
@@ -57,9 +66,19 @@ define(["dojo/_base/declare",
                         site: Alfresco.constants.SITE // todo replace with $$SITE$$ once supported
                      },
                      readers: [
-                        {names: 'category', indexes: 0 },
-                        {names: 'value', indexes: 2 }
-                     ]
+                        { names: 'category', indexes: 0 },
+                        { names: 'value', indexes: 2 }
+                     ],
+                     tooltip: {
+                        format: function(scene){
+                           var tooltip = '<div style="text-align: left;">';
+                           tooltip += '<strong>' + Alfresco.util.encodeHTML(scene.datum.atoms.category.value) + '</strong><br/>';
+                           tooltip += I18nUtils.msg(i18nScope, "count", Alfresco.util.encodeHTML(scene.datum.atoms.value.value), Alfresco.util.encodeHTML(scene.vars.value.percent.label)) + '<br/>';
+                           tooltip += I18nUtils.msg(i18nScope, "sum", Alfresco.util.encodeHTML(Alfresco.util.formatFileSize(scene.datum.atoms.value2.value)));
+                           tooltip += '</div>';
+                           return tooltip;
+                        }
+                     }
                   }
                }
             ]
