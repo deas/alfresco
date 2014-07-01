@@ -27,6 +27,8 @@ public enum Dashlets
     SITE_MEMBERS("Site Members"),
     SITE_PROFILE("Site Profile"),
     SITE_SEARCH("Site Search"),
+    SITE_CONTENT_REPORT("Site Content Report"),
+    TOP_SITE_CONTRIBUTOR_REPORT("Top Site Contributor Rep..."),
     WEB_VIEW("Web View"),
     WELCOME_SITE("Welcome Site"),
     WIKI("Wiki");
