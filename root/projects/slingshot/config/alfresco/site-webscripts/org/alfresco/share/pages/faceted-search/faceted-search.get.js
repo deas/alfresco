@@ -179,6 +179,7 @@ var facets = [
          useHash: false
       }
    },
+/* see ACE-2131
    {
       id: "FCTSRCH_FACET_DESCRIPTION",
       name: "alfresco/search/FacetFilters",
@@ -192,6 +193,7 @@ var facets = [
          useHash: false
       }
    },
+*/
    {
       id: "FCTSRCH_FACET_SIZE",
       name: "alfresco/search/FacetFilters",
