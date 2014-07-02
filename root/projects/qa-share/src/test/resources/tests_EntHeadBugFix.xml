@@ -74,12 +74,22 @@
                 </methods>
             </class>
             <class name="org.alfresco.share.SiteDashBoardTest" />
+            <class name="org.alfresco.share.HeaderBarTest">
+			 	<methods>
+                     <include name="ALF_3161" />
+                </methods>
+			</class>
         </classes>
     </test>
 
     <test name="DashletTest" verbose="1" parallel="classes" thread-count="1">
         <classes>
             <class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet" />
+            <class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete">
+				<methods>
+                     <include name="ALF_3162" />
+                </methods>
+			</class>
         </classes>
     </test>
 
@@ -93,6 +103,11 @@
 
     <test name="DocLibTest" verbose="1" parallel="classes" thread-count="1">
         <classes>
+             <class name="org.alfresco.share.site.document.DocumentDetailsTest">
+            	<methods>
+                    <include name="ALF_3160" />
+                </methods>
+             </class>
             <class name="org.alfresco.share.SiteDocumentLibraryTest">
                 <methods>
                     <exclude name="enterprise40x_5606" />

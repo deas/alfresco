@@ -27,6 +27,11 @@
 <!--  Merged -->
 			<class name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest"/>
 			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet"/>
+						<class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete">
+				<methods>
+                     <include name="dataPrep_ALF_3162" />
+                </methods>
+			</class>
 			
 			<class name="org.alfresco.share.site.document.GoogleDocsTest"/>
 			<class name="org.alfresco.share.site.document.ManageAspectTest"/>
@@ -41,8 +46,13 @@
 			<class name="org.alfresco.share.MyDashBoardTest"/>
 			<class name="org.alfresco.share.SiteDashBoardTest"/>
 			<class name="org.alfresco.share.SiteDocumentLibraryTest"/>
+			<class name="org.alfresco.share.HeaderBarTest">
+			 	<methods>
+                     <include name="dataPrep_ALF_3161" />
+                </methods>
+			</class>
 			<class name="org.alfresco.share.site.document.PdfJsPreviewTest" />
-
+			<class name="org.alfresco.share.site.document.DocumentDetailsTest"/>
 		</classes>
 	</test>
 </suite>

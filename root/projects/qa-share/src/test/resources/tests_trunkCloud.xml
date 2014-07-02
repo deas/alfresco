@@ -27,8 +27,23 @@
 			<class name="org.alfresco.share.api.WorkflowAPITests" />
             <class name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest"/>
             <class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet"/>
+            <class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete">
+				<methods>
+                     <include name="ALF_3162" />
+                </methods>
+			</class>
             
             <class name="org.alfresco.share.LoginTest"/>
+            <class name="org.alfresco.share.HeaderBarTest">
+			 	<methods>
+                     <include name="ALF_3161" />
+                </methods>
+			</class>
+			<class name="org.alfresco.share.site.document.DocumentDetailsTest">
+            	<methods>
+                    <include name="ALF_3160" />
+                </methods>
+            </class>
 <!--             <class name="org.alfresco.share.MyDashBoardTest"/>
             <class name="org.alfresco.share.SiteDashBoardTest"/>
             <class name="org.alfresco.share.SiteDocumentLibraryTest"/>
