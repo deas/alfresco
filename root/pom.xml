@@ -829,7 +829,7 @@
                     <version>2.0-1588784</version>
                     <executions>
                         <execution>
-                            <id>enforcer</id>
+                            <id>default-cli</id>
                             <goals>
                                 <goal>enforce</goal>
                             </goals>
