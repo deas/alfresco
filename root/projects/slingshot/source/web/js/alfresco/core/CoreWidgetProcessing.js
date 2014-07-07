@@ -315,7 +315,7 @@ define(["dojo/_base/declare",
          {
             // Attempt to use the model ID as the DOM ID if available, but if not just generate an ID
             // based on the module name...
-            if (config.id == null || config.id.trim() == "")
+            if (config.id == null || lang.trim(config.id) == "")
             {
                initArgs.id = config.name.replace(/\//g, "_") + "___" + this.generateUuid();
             }
