@@ -80,15 +80,13 @@ public class MessagesWebScript extends org.springframework.extensions.webscripts
         }
         writer.write(";\r\n");
 
-        // TEMPORARILY COMMENTED OUT - THIS WILL NEED TO BE RE-INSTATED BEFORE THE NEXT COMMUNITY RELEASE
-        // THE ADDITIONAL OVERHEAD OF LOADING THE TRACKING IMAGE CAUSES A HUGE UNIT TEST OVERHEAD
         // start logo 
         // community logo
-        // final String serverPath = req.getServerPath();
-        // final int schemaIndex = serverPath.indexOf(':');
-        // writer.write("window.setTimeout(function(){(document.getElementById('alfresco-yuiloader')||document.createElement('div')).innerHTML = '<img src=\"");
-        // writer.write(serverPath.substring(0, schemaIndex));
-        // writer.write("://www.alfresco.com/assets/images/logos/community-5.0-share.png\" alt=\"*\" style=\"display:none\"/>\'}, 100);\r\n");
+        final String serverPath = req.getServerPath();
+        final int schemaIndex = serverPath.indexOf(':');
+        writer.write("window.setTimeout(function(){(document.getElementById('alfresco-yuiloader')||document.createElement('div')).innerHTML = '<img src=\"");
+        writer.write(serverPath.substring(0, schemaIndex));
+        writer.write("://www.alfresco.com/assets/images/logos/community-5.0-share.png\" alt=\"*\" style=\"display:none\"/>\'}, 100);\r\n");
         // end logo
 
         return writer.toString();
@@ -106,15 +104,13 @@ public class MessagesWebScript extends org.springframework.extensions.webscripts
         StringBuilder sb = new StringBuilder();
         sb.append(";\r\n");
 
-        // TEMPORARILY COMMENTED OUT - THIS WILL NEED TO BE RE-INSTATED BEFORE THE NEXT COMMUNITY RELEASE
-        // THE ADDITIONAL OVERHEAD OF LOADING THE TRACKING IMAGE CAUSES A HUGE UNIT TEST OVERHEAD
         // start logo 
         // community logo
-        // final String serverPath = req.getServerPath();
-        // final int schemaIndex = serverPath.indexOf(':');
-        // sb.append("window.setTimeout(function(){(document.getElementById('alfresco-yuiloader')||document.createElement('div')).innerHTML = '<img src=\"");
-        // sb.append(serverPath.substring(0, schemaIndex));
-        // sb.append("://www.alfresco.com/assets/images/logos/community-5.0-share.png\" alt=\"*\" style=\"display:none\"/>\'}, 100);\r\n");
+        final String serverPath = req.getServerPath();
+        final int schemaIndex = serverPath.indexOf(':');
+        sb.append("window.setTimeout(function(){(document.getElementById('alfresco-yuiloader')||document.createElement('div')).innerHTML = '<img src=\"");
+        sb.append(serverPath.substring(0, schemaIndex));
+        sb.append("://www.alfresco.com/assets/images/logos/community-5.0-share.png\" alt=\"*\" style=\"display:none\"/>\'}, 100);\r\n");
         // end logo
         return sb.toString();
     }
