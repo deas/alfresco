@@ -88,10 +88,11 @@
             display: none;
             margin-top: -8px;
             margin-bottom: 4px;
+            height: 16px;
 
             span {
                 position: absolute;
-                right: 10px;
+                right: 1px;
                 height: 10px;
                 background: url("../../css/images/ArrowDown.PNG") no-repeat 100% 100%;
                 padding-right: 22px;
