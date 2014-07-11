@@ -154,9 +154,17 @@ define(["alfresco/core/ProcessWidgets",
             {
                leftMarginsSize = widgets.length * parseInt(this.widgetMarginLeft);
             }
+            else
+            {
+               this.widgetMarginLeft = 0;
+            }
             if (this.widgetMarginRight != null && !isNaN(this.widgetMarginLeft))
             {
                rightMarginsSize = widgets.length * parseInt(this.widgetMarginRight);
+            }
+            else
+            {
+               this.widgetMarginRight = 0;
             }
             var remainingWidth = overallwidth - leftMarginsSize - rightMarginsSize;
 

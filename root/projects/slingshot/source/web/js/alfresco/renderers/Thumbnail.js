@@ -211,7 +211,7 @@ define(["dojo/_base/declare",
       onLinkClick: function alfresco_renderers_Thumbnail__onLinkClick(evt) {
          event.stop(evt);
          // var publishTopic = this.getPublishTopic();
-         if (this.publishTopic == null || this.publishTopic.trim() == "")
+         if (this.publishTopic == null || lang.trim(this.publishTopic) == "")
          {
             this.alfLog("warn", "No publishTopic provided for PropertyLink", this);
          }

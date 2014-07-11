@@ -1057,7 +1057,7 @@ define(["dojo/_base/declare",
          this.alfDisabled(this._disabled);
          
          // Set the label...
-         if (this.label != null && this.label.trim() != "")
+         if (this.label != null && lang.trim(this.label) != "")
          {
             this._labelNode.innerHTML = this.encodeHTML(this.message(this.label));
          }
@@ -1067,7 +1067,7 @@ define(["dojo/_base/declare",
          }
 
          // Set the description...
-         if (this.description != null && this.description.trim() != "")
+         if (this.description != null && lang.trim(this.description) != "")
          {
             this._descriptionNode.innerHTML = this.encodeHTML(this.message(this.description));
          }

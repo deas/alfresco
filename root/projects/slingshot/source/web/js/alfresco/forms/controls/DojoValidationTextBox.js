@@ -25,9 +25,10 @@
 define(["alfresco/forms/controls/BaseFormControl",
         "dojo/_base/declare",
         "dijit/form/ValidationTextBox",
+        "dojo/_base/lang",
         "dojo/dom-construct",
         "dojo/dom-class"], 
-        function(BaseFormControl, declare, ValidationTextBox, domConstruct, domClass) {
+        function(BaseFormControl, declare, ValidationTextBox, lang, domConstruct, domClass) {
    
    return declare([BaseFormControl], {
       
@@ -76,7 +77,7 @@ define(["alfresco/forms/controls/BaseFormControl",
          }
          domClass.add(this.domNode, "alfresco-forms-controls-DojoValidationTextBox " + additionalCssClasses);
 
-         if (config.iconClass != null && config.iconClass.trim() != "")
+         if (config.iconClass != null && lang.trim(config.iconClass) != "")
          {
             domConstruct.create("span", {
                "class": "alf-icon " + config.iconClass

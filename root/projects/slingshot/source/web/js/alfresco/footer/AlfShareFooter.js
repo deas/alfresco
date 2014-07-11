@@ -33,8 +33,9 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/AlfShareFooter.html",
         "alfresco/core/Core",
+        "dojo/_base/lang",
         "dojo/dom-class"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, domClass) {
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domClass) {
    
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
 
@@ -91,7 +92,7 @@ define(["dojo/_base/declare",
          this.licensedToLabel = this.message("label.licensedTo");
 
          // Get the correct license if available
-         if (this.licenseLabel != null && this.licenseLabel.trim() != "" && this.licenseLabel != "UNKNOWN")
+         if (this.licenseLabel != null && lang.trim(this.licenseLabel) != "" && this.licenseLabel != "UNKNOWN")
          {
             this.licenseLabel = this.message(this.licenseLabel);
          }
@@ -101,7 +102,7 @@ define(["dojo/_base/declare",
          }
 
          // Set the appropriate copyright label
-         if (this.copyrightLabel != null && this.copyrightLabel.trim() != "")
+         if (this.copyrightLabel != null && lang.trim(this.copyrightLabel) != "")
          {
             this.copyrightLabel = this.message(this.copyrightLabel);
          }
@@ -111,7 +112,7 @@ define(["dojo/_base/declare",
          }
 
          // Set the appropriate alt-text for the logo image
-         if (this.altText != null && this.altText.trim() != null)
+         if (this.altText != null && lang.trim(this.altText) != null)
          {
             this.altText = this.message(this.altText);
          }
@@ -147,7 +148,7 @@ define(["dojo/_base/declare",
          domClass.add(this.footerParentNode, "footer");
 
          // Set the appropriate css class
-         if (this.cssClass != null && this.cssClass.trim() != "")
+         if (this.cssClass != null && lang.trim(this.cssClass) != "")
          {
             domClass.add(this.footerParentNode, this.cssClass);
          }
@@ -157,7 +158,7 @@ define(["dojo/_base/declare",
          }
 
          // Hide the license label if not available
-         if (this.licenseLabel == null || this.licenseLabel.trim() == "" || this.licenseLabel == "UNKNOWN")
+         if (this.licenseLabel == null || lang.trim(this.licenseLabel) == "" || this.licenseLabel == "UNKNOWN")
          {
             domClass.add(this.licenseHolderNode, "hidden");
          }

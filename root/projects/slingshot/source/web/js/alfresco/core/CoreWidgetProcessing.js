@@ -82,7 +82,7 @@ define(["dojo/_base/declare",
       processWidget: function alfresco_core_CoreWidgetProcessing__processWidget(rootNode, widgetConfig, index) {
          if (widgetConfig != null && this.filterWidget(widgetConfig, index))
          {
-            var domNode = this.createWidgetDomNode(widgetConfig, rootNode, widgetConfig.className);
+            var domNode = this.createWidgetDomNode(widgetConfig, rootNode, (widgetConfig.className ? widgetConfig.className : ""));
             this.createWidget(widgetConfig, domNode, this._registerProcessedWidget, this, index);
          }
       },
@@ -452,7 +452,7 @@ define(["dojo/_base/declare",
             {
                // Check that the widget passes all the filter checks...
                var renderFilterMethod = lang.getObject("config.renderFilterMethod", false, widgetConfig);
-               if (renderFilterMethod == null || renderFilterMethod.trim() == "ALL")
+               if (renderFilterMethod == null || lang.trim(renderFilterMethod) == "ALL")
                {
                   // Handle AND logic (all filters must pass)
                   shouldRender = array.every(renderFilterConfig, lang.hitch(this, "processFilterConfig"));

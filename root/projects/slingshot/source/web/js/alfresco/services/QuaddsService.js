@@ -124,13 +124,13 @@ define(["dojo/_base/declare",
        */
       onGetQuaddsItems: function alfresco_services_QuaddsService__onGetQuaddsItems(payload) {
          var quadds = lang.getObject("quadds", false, payload);
-         if (quadds == null || quadds.trim() == "")
+         if (quadds == null || lang.trim(quadds) == "")
          {
             this.alfLog("warn", "A request was made to retrieve the data items from a QuADDS but no QuADDS was provided", payload, this);
          }
          else
          {
-            var url = AlfConstants.PROXY_URI + "aikau/quadds/" + quadds.trim();
+            var url = AlfConstants.PROXY_URI + "aikau/quadds/" + lang.trim(quadds);
             this.serviceXhr({url : url,
                              alfTopic: payload.responseTopic,
                              method: "GET",
@@ -152,13 +152,13 @@ define(["dojo/_base/declare",
          {
             this.alfLog("warn", "A request was made to retrieve a data item from a QuADDS but no QuADDS was provided", payload, this);
          }
-         else if (name == null || name.trim() == "")
+         else if (name == null || lang.trim(name) == "")
          {
             this.alfLog("warn", "A request was made to retrieve a data item from a QuADDS but no item name was provided", payload, this);
          }
          else
          {
-            var url = AlfConstants.PROXY_URI + "aikau/quadds/" + quadds.trim() + "/item/" + name.trim();
+            var url = AlfConstants.PROXY_URI + "aikau/quadds/" + lang.trim(quadds) + "/item/" + lang.trim(name);
             this.serviceXhr({url : url,
                              method: "GET"});
          }
@@ -174,11 +174,11 @@ define(["dojo/_base/declare",
          var quadds = lang.getObject("quadds", false, payload);
          var name = lang.getObject("name", false, payload);
          var data = lang.getObject("data", false, payload);
-         if (quadds == null || quadds.trim() == "")
+         if (quadds == null || lang.trim(quadds) == "")
          {
             this.alfLog("warn", "A request was made to create a data item in a QuADDS but no QuADDS was provided", payload, this);
          }
-         else if (name == null || name.trim() == "")
+         else if (name == null || lang.trim(name) == "")
          {
             this.alfLog("warn", "A request was made to create a data item in a QuADDS but no item name was provided", payload, this);
          }
@@ -188,7 +188,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            var url = AlfConstants.PROXY_URI + "aikau/quadds/" + quadds.trim();
+            var url = AlfConstants.PROXY_URI + "aikau/quadds/" + lang.trim(quadds);
             var config = {
                name: name,
                data: data
@@ -211,11 +211,11 @@ define(["dojo/_base/declare",
          var quadds = lang.getObject("quadds", false, payload);
          var name = lang.getObject("name", false, payload);
          var data = lang.getObject("data", false, payload);
-         if (quadds == null || quadds.trim() == "")
+         if (quadds == null || lang.trim(quadds) == "")
          {
             this.alfLog("warn", "A request was made to update a data item in a QuADDS but no QuADDS was provided", payload, this);
          }
-         else if (name == null || name.trim() == "")
+         else if (name == null || lang.trim(name) == "")
          {
             this.alfLog("warn", "A request was made to update a data item in a QuADDS but no item name was provided", payload, this);
          }
@@ -225,7 +225,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            var url = AlfConstants.PROXY_URI + "aikau/quadds/" + quadds.trim() + "/item/" + name.trim();
+            var url = AlfConstants.PROXY_URI + "aikau/quadds/" + lang.trim(quadds) + "/item/" + lang.trim(name);
             var config = {
                name: name,
                data: data
@@ -251,13 +251,13 @@ define(["dojo/_base/declare",
          {
             this.alfLog("warn", "A request was made to delete a data item from a QuADDS but no QuADDS was provided", payload, this);
          }
-         else if (name == null || name.trim() == "")
+         else if (name == null || lang.trim(name) == "")
          {
             this.alfLog("warn", "A request was made to delete a data item from a QuADDS but no item name was provided", payload, this);
          }
          else
          {
-            var url = AlfConstants.PROXY_URI + "aikau/quadds/" + quadds.trim() + "/item/" + name.trim();
+            var url = AlfConstants.PROXY_URI + "aikau/quadds/" + lang.trim(quadds) + "/item/" + lang.trim(name);
             this.serviceXhr({url : url,
                              method: "DELETE",
                              alfTopic: payload.responseTopic,

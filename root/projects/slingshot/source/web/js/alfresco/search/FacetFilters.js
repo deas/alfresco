@@ -264,19 +264,19 @@ define(["dojo/_base/declare",
        * @returns {array} The sorted filters
        */
       sortFacetFilters: function alfresco_search_FacetFilters__sortFacetFilters(filters) {
-         if (this.sortBy == null || this.sortBy.trim() === "ALPHABETICALLY")
+         if (this.sortBy == null || lang.trim(this.sortBy) === "ALPHABETICALLY")
          {
             return filters.sort(this._alphaSort);
          }
-         else if (this.sortBy.trim() === "ASCENDING")
+         else if (lang.trim(this.sortBy) === "ASCENDING")
          {
             return filters.sort(this._ascSort);
          }
-         else if (this.sortBy.trim() === "DESCENDING")
+         else if (lang.trim(this.sortBy) === "DESCENDING")
          {
             return filters.sort(this._descSort);
          }
-         else if (this.sortBy.trim() === "INDEX")
+         else if (lang.trim(this.sortBy) === "INDEX")
          {
             return filters.sort(this._indexSort);
          }

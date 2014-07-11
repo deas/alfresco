@@ -459,7 +459,7 @@ define(["dojo/_base/declare",
             if (this.setHash == true)
             {
                if (this.okButtonPublishTopic != null &&
-                   this.okButtonPublishTopic.trim() != null)
+                   lang.trim(this.okButtonPublishTopic) != null)
                {
                   this.alfSubscribe(this.okButtonPublishTopic, lang.hitch(this, "setHashFragment"), this.okButtonPublishGlobal);
                }
