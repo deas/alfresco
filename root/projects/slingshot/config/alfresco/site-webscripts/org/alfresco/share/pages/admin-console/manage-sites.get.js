@@ -135,7 +135,7 @@ model.jsonModel = {
                                                          useCurrentItemAsPayload: false,
                                                          publishPayloadType: "PROCESS",
                                                          publishPayloadModifiers: ["processCurrentItemTokens"],
-                                                         payload: {
+                                                         publishPayload: {
                                                             url: "site/{shortName}/site-members",
                                                             type: "SHARE_PAGE_RELATIVE"
                                                          }
