@@ -36,6 +36,7 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreWidgetProcessing",
         "dojo/_base/lang",
+        "dojo/sniff",
         "dojo/_base/array",
         "dojo/dom-construct",
         "dojo/dom-class",
@@ -43,7 +44,7 @@ define(["dojo/_base/declare",
         "dojo/html",
         "dojo/aspect",
         "dijit/registry"], 
-        function(declare, Dialog, AlfCore, CoreWidgetProcessing, lang, array, domConstruct, domClass, domStyle, html, aspect, registry) {
+        function(declare, Dialog, AlfCore, CoreWidgetProcessing, lang, sniff, array, domConstruct, domClass, domStyle, html, aspect, registry) {
    
    return declare([Dialog, AlfCore, CoreWidgetProcessing], {
       
@@ -218,7 +219,15 @@ define(["dojo/_base/declare",
          if (widget != null)
          {
             this._buttons.push(widget); // Add the button so we can add the content to them later...
-            aspect.before(widget, "onClick", lang.hitch(this, "hide"));
+            if (sniff("ie") == 8)
+            {
+               // Need to use "after" rather than "before" for IE8...
+               aspect.after(widget, "onClick", lang.hitch(this, this.hide));
+            }
+            else
+            {
+               aspect.before(widget, "onClick", lang.hitch(this, this.hide));
+            }
          }
       }
    });
