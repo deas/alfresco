@@ -400,7 +400,7 @@ define(["dojo/_base/declare",
                      this._requests = [];
 
                      // execute our live search queries in a few ms if user has not continued typing
-                     var then = Date.now();
+                     // var then = Date.now();
                      if (this._timeoutHandle)
                      {
                         clearTimeout(this._timeoutHandle);
