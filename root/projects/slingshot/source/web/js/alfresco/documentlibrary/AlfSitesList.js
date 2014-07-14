@@ -114,10 +114,19 @@ define(["dojo/_base/declare",
 
          var pagination = payload.response.list.pagination;
 
-         this._currentData = {
+         try
+         {
             // Site admin API returns items nested inside individual entry objects inside an entries array, this just removes that entry object.
-            items: payload.response.list.entries.map(function(entries){ return entries.entry;})
-         };
+            var items = array.map(payload.response.list.entries, function(entries){ return entries.entry;});
+            this._currentData = {
+               items: items
+            };
+         }
+         catch (e)
+         {
+            this.alfLog("error", "Could not get entries");
+         }
+         
 
          // Publish the details of the loaded documents.
          // With the pagination items mapped to what the documentList expects

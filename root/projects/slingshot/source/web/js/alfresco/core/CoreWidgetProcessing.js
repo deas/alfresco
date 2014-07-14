@@ -82,7 +82,7 @@ define(["dojo/_base/declare",
       processWidget: function alfresco_core_CoreWidgetProcessing__processWidget(rootNode, widgetConfig, index) {
          if (widgetConfig != null && this.filterWidget(widgetConfig, index))
          {
-            var domNode = this.createWidgetDomNode(widgetConfig, rootNode, (widgetConfig.className ? widgetConfig.className : ""));
+            var domNode = this.createWidgetDomNode(widgetConfig, rootNode, (widgetConfig.className != null ? widgetConfig.className : ""));
             this.createWidget(widgetConfig, domNode, this._registerProcessedWidget, this, index);
          }
       },

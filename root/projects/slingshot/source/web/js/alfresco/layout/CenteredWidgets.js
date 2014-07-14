@@ -128,10 +128,13 @@ define(["alfresco/core/ProcessWidgets",
        */
       createWidgetDomNode: function alfresco_layout_CenteredWidgets__createWidgetDomNode(widget, rootNode, rootClassName) {
 
+         var marginLeft =  (this.widgetMarginLeft != null && !isNaN(this.widgetMarginLeft)) ? this.widgetMarginLeft: 0;
+         var marginRight =  (this.widgetMarginRight != null && !isNaN(this.widgetMarginRight)) ? this.widgetMarginRight: 0;
+
          var outerDiv = domConstruct.create("span", { className: "centered-widget"}, this.containerNode);
          var style = {
-            "marginLeft": this.widgetMarginLeft + "px",
-            "marginRight": this.widgetMarginRight + "px"
+            "marginLeft": marginLeft + "px",
+            "marginRight": marginRight + "px"
          }
          if (widget.widthCalc != 0)
          {
