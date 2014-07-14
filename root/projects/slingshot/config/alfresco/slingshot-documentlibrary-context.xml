@@ -272,6 +272,9 @@
          </bean>
       </property>
    </bean>
+   <bean id="evaluator.doclib.action.isNotIE8" parent="evaluator.doclib.action.notBrowser">
+      <property name="regex" value="MSIE\s 8.0;" />
+   </bean>
    <bean id="evaluator.doclib.action.onlineEditBrowser" parent="evaluator.doclib.action.isBrowser">
       <property name="regex" value="MSIE\s([^;]*)(?!.*Opera.*)" />
    </bean>
@@ -499,6 +502,7 @@
    <bean id="evaluator.doclib.action.googleDocsCheckOut" parent="evaluator.doclib.action.chainedMatchAll">
       <property name="evaluators">
          <list>
+            <ref bean="evaluator.doclib.action.isNotIE8" />
             <ref bean="evaluator.doclib.action.googleDocsEnabled" />
             <ref bean="evaluator.doclib.action.googleDocsEditableAspect" />
             <ref bean="evaluator.doclib.action.isNotWorkingCopy" />
@@ -510,6 +514,7 @@
    <bean id="evaluator.doclib.action.googleDocsView" parent="evaluator.doclib.action.chainedMatchAll">
       <property name="evaluators">
          <list>
+            <ref bean="evaluator.doclib.action.isNotIE8" />
             <ref bean="evaluator.doclib.action.googleDocsEnabled" />
             <ref bean="evaluator.doclib.action.googleDocsResourceAspect" />
          </list>
@@ -520,6 +525,7 @@
    <bean id="evaluator.doclib.action.googleDocsCheckIn" parent="evaluator.doclib.action.chainedMatchAll">
       <property name="evaluators">
          <list>
+            <ref bean="evaluator.doclib.action.isNotIE8" />
             <ref bean="evaluator.doclib.action.googleDocsEnabled" />
             <ref bean="evaluator.doclib.action.googleDocsCheckInCustom" />
          </list>
