@@ -118,7 +118,7 @@ define(["dojo/_base/declare",
          }
          
          // Set the current status...
-         this.statusNode.innerHTML = this.userStatus.replace(/\n/g, "<br>");
+         this.statusNode.innerHTML = this.userStatus.replace(/\n/g, "<br>").replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
          // Set the relative time (the time supplied should be in ISO8061 standard)...
          this.setStatusRelativeTime();
@@ -249,7 +249,7 @@ define(["dojo/_base/declare",
             {
                domClass.remove(this.statusNode, "blank");
             }
-            this.statusNode.innerHTML = this.userStatus.replace(/\n/g, "<br>");
+            this.statusNode.innerHTML = this.userStatus.replace(/\n/g, "<br>").replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
          }
          else
          {
