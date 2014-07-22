@@ -805,6 +805,10 @@
                         // show them if they are.
                         Dom.removeClass(document.getElementsByName('start')[0].parentNode, "hidden")
                         Dom.removeClass(document.getElementsByName('end')[0].parentNode, "hidden")
+						
+                        //Set default start/end dates to prevent AllDay event(see MNT-9498)
+                        document.getElementsByName('start')[0].value="12:00 PM";
+                        document.getElementsByName('end')[0].value="1:00 PM";
                      }
                   });
 
