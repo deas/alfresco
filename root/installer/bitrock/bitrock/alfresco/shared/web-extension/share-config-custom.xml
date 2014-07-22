@@ -315,6 +315,11 @@
             JAAS login configuration entry name.
          -->
          <config-entry>ShareHTTP</config-entry>
+        <!--
+           A Boolean which when true strips the @domain sufix from Kerberos authenticated usernames.
+           Use together with stripUsernameSuffix property in alfresco-global.properties file.
+        -->
+        <stripUserNameSuffix>true</stripUserNameSuffix>
       </kerberos>
    </config>
 
