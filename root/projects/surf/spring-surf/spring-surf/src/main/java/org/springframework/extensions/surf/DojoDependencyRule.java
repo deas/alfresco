@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2009 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of the Spring Surf Extension project.
  *
@@ -20,10 +20,13 @@ package org.springframework.extensions.surf;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * This is the rule that is used to detect Dojo dependencies defined by the standard "define" function call in Dojo source
@@ -177,10 +180,43 @@ public class DojoDependencyRule
         if (dependency.contains("!"))
         {
             // Process all "dojo/text" plugin requests...
-            if (dependency.startsWith("dojo/text!"))
+            if (dependency.contains("dojo/text!"))
             {
-                String textDependency = dependency.substring(10);
+                String textDependency = dependency.substring(dependency.indexOf("!") + 1);
                 dependencies.addTextDep(textDependency);
+            }
+            else if (dependency.contains("/i18n!"))
+            {
+                String i18nDependency = dependency.substring(dependency.indexOf("!") + 1);
+                Locale locale = I18NUtil.getLocale();
+                String depPath = this.dojoDependencyHandler.getPath(sourcePath, i18nDependency) + ".js";
+                addJavaScriptDependency(dependencies, depPath);
+                
+                String languageDep = null;
+                String languageCountryDep = null;
+                int lastSlash = i18nDependency.lastIndexOf("/");
+                if (lastSlash == -1)
+                {
+                    languageDep = locale.getLanguage() + "/" + i18nDependency;
+                    languageCountryDep = locale.getLanguage() + "-" + locale.getCountry().toLowerCase() + "/" + i18nDependency;
+                }
+                else
+                {
+                    String prefix = i18nDependency.substring(0, lastSlash);
+                    String suffix = i18nDependency.substring(lastSlash);
+                    languageDep = prefix + "/" + locale.getLanguage() + suffix;
+                    languageCountryDep = prefix + "/" + locale.getLanguage() + "-" + locale.getCountry().toLowerCase() + suffix;
+                }
+                if (languageDep != null)
+                {
+                    depPath = this.dojoDependencyHandler.getPath(sourcePath, languageDep) + ".js";
+                    addJavaScriptDependency(dependencies, depPath);
+                }
+                if (languageCountryDep != null)
+                {
+                    depPath = this.dojoDependencyHandler.getPath(sourcePath, languageCountryDep) + ".js";
+                    addJavaScriptDependency(dependencies, depPath);
+                }
             }
             
             // Add the dependency prior to the "!" as this should still map to a JavaScript file...
