@@ -32,6 +32,18 @@ Alfresco.gutter = function(myEditor)
             Dom.setStyle("image_results", "overflow", "auto");
          }, this, true);
          
+         new YAHOO.util.KeyListener(document, {
+            keys: YAHOO.util.KeyListener.KEY.ESCAPE
+         },
+         {
+            fn: function()
+            {
+               if (this.status) this.toggle();
+            },
+            scope: this,
+            correctScope: true
+         }).enable();
+         
          var libraryTitle = Alfresco.util.message("imagelib.title");
          this.gutter.setBody('<div class="yui-toolbar-container"><div class="yui-toolbar-titlebar"><h2>' + libraryTitle + '</h2></div></div><div id="image_results"></div>');
          this.gutter.render(document.body);
@@ -42,13 +54,13 @@ Alfresco.gutter = function(myEditor)
          this.gutter.show();
          this.status = true;
       },
-         
+      
       close: function()
       {
          this.gutter.hide();
          this.status = false;
       },
-         
+      
       toggle: function()
       {
          if (this.status)
@@ -82,7 +94,7 @@ Alfresco.util.createImageEditor = function(id, options)
    /**
     * Alfresco Slingshot aliases
     */
-   var $html = Alfresco.util.encodeHTML;   
+   var $html = Alfresco.util.encodeHTML;
    
    YAHOO.Bubbling.on('editorInitialized', function(e)
    {
@@ -216,7 +228,7 @@ Alfresco.util.createImageEditor = function(id, options)
          }
       }, editor, true);
 
-       // Load the "images"
+      // Load the "images"
       Alfresco.util.Ajax.request(
       {
          method: Alfresco.util.Ajax.GET,

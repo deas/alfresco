@@ -133,7 +133,7 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id, config)
          editor.isNotDirty = 1;
       },
       
-      addPageUnloadBehaviour: function RichEditorManage_tinyMCE_addUnloadBehaviour(message, callback)
+      addPageUnloadBehaviour: function RichEditorManager_tinyMCE_addUnloadBehaviour(message, callback)
       {
          // Page unload / unsaved changes behaviour
          window.onbeforeunload = function(e)
@@ -151,6 +151,23 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id, config)
                }
             }
          };
+      },
+      
+      addSaveKeyBehaviour: function RichEditorManager_tinyMCE_addSaveKeyBehaviour(fn)
+      {
+         // iframe editor document save key event - and also stop the outer document event
+         new YAHOO.util.KeyListener(editor.getDoc(), { keys: 83, ctrl: true }, {
+            fn: fn,
+            scope: this,
+            correctScope: true
+         }).enable();
+         new YAHOO.util.KeyListener(document, { keys: 83, ctrl: true }, {
+            fn: function(id, e) {
+               Event.stopEvent(e[1]);
+            },
+            scope: this,
+            correctScope: true
+         }).enable();
       }
    });
 });

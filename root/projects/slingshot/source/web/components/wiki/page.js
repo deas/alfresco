@@ -343,8 +343,16 @@
          {
             this.tagLibrary.setTags(this.options.tags);
          }
-
-         // Tiny MCE
+         
+         // Form buttons
+         var saveButton = new YAHOO.widget.Button(this.id + "-save-button",
+         {
+            type: "submit"
+         });
+         Alfresco.util.createYUIButton(this, "cancel-button", this.onCancelSelect);
+         
+         // TinyMCE
+         var me = this;
          this.pageEditor = Alfresco.util.createImageEditor(this.id + '-content',
          {
             height: 300,
@@ -352,18 +360,22 @@
             extended_valid_elements : "style[type]",
             valid_children : "+body[style]",
             siteId: this.options.siteId,
-            language: this.options.locale
+            language: this.options.locale,
+            init_instance_callback: function(o) {
+               // must fire the "editorInitialized" as that is what the default init_instance_callback behaviour would do
+               YAHOO.Bubbling.fire("editorInitialized", o);
+               // save key behaviour - stop the outer document event and save the Wiki form
+               me.pageEditor.addSaveKeyBehaviour(function(id, e) {
+                  Event.stopEvent(e[1]);
+                  saveButton.fireEvent('click', {
+                     type: 'click'
+                  });
+               });
+            }
          });
          this.pageEditor.addPageUnloadBehaviour(this.msg("message.unsavedChanges.wiki"));
          this.pageEditor.render();
 
-         var saveButton = new YAHOO.widget.Button(this.id + "-save-button",
-         {
-            type: "submit"
-         });
-
-         Alfresco.util.createYUIButton(this, "cancel-button", this.onCancelSelect);
-         
          // create the form that does the validation/submit
          var form = new Alfresco.forms.Form(this.id + "-form");
          form.setSubmitElements(saveButton);

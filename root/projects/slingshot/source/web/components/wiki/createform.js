@@ -105,7 +105,7 @@
             siteId: this.options.siteId
          });
 
-         // Tiny MCE
+         // TinyMCE
          this.widgets.editor = Alfresco.util.createImageEditor(this.id + '-content',
          {
             height: 300,
