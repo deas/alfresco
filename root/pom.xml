@@ -78,7 +78,6 @@
     <module>projects/remote-api</module>
     <module>projects/web-framework-commons</module>
     <module>projects/web-client</module>
-    <module>projects/web-service-client</module>
     <module>projects/slingshot</module>
     <module>projects/web-editor</module>
     <module>projects/web-editor-plugin</module>

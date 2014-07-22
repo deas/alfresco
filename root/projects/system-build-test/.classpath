@@ -4,7 +4,6 @@
 	<classpathentry kind="lib" path="lib/jetty-7.0/servlet-api-2.5.jar"/>
 	<classpathentry kind="lib" path="/Web-Client/build/dist"/>
 	<classpathentry kind="lib" path="/Remote API/build/classes"/>
-	<classpathentry kind="lib" path="/Web Service Client/build/classes" sourcepath="/Web Service Client"/>
 	<classpathentry kind="lib" path="/DataModel/build/classes" sourcepath="/DataModel"/>
 	<classpathentry kind="lib" path="/Core/build/classes"/>
 	<classpathentry kind="lib" path="config"/>
@@ -51,7 +50,6 @@
 	<classpathentry kind="lib" path="/SOLR/lib/lucene-queries-2.9.3.jar"/>
 	<classpathentry kind="lib" path="/SOLR/lib/lucene-spellchecker-2.9.3.jar"/>
 	<classpathentry kind="lib" path="/SOLR Client/build/classes"/>
-	<classpathentry kind="lib" path="/Web Service Client/source/test-resources"/>
 	<classpathentry kind="lib" path="/Legacy Lucene/build/classes"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

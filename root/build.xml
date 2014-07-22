@@ -123,15 +123,12 @@
          <pathelement location="${dir.project.webframeworkcommons.classes.test}" />
          <pathelement location="${dir.project.webclient.classes}" />
          <pathelement location="${dir.project.webclient.classes.test}" />
-         <pathelement location="${dir.project.webserviceclient.classes}" />
-         <pathelement location="${dir.project.webserviceclient.classes.test}" />
 
          <pathelement location="${dir.project.remoteapi.config}" />
          <pathelement location="${dir.project.webclient.config}" />
 
          <pathelement location="${dir.project.remoteapi}/${dir.name.source}/${dir.name.test.resources}" />
          <pathelement location="${dir.project.webclient}/${dir.name.source}/${dir.name.test.resources}" />
-         <pathelement location="${dir.project.webserviceclient}/${dir.name.source}/${dir.name.test.resources}" />
       </path>
 
       <!-- Add on all the 3rd party libs based on the eclipse project -->
@@ -429,7 +426,6 @@
          <exclude name="**/org/alfresco/repo/webdav/MoveMethodTest.java" />
          <exclude name="**/org/alfresco/rest/api/tests/TestCMISAPI.java" />
          <exclude name="**/org/alfresco/repo/webdav/GetMethodTest.java" />
-         <exclude name="**/org/alfresco/repo/webservice/CMLUtilTest.java" />
          <exclude name="**/org/alfresco/rest/workflow/api/tests/ProcessDefinitionWorkflowApiTest.java" />
          <exclude name="**/org/alfresco/rest/workflow/api/tests/ProcessWorkflowApiTest.java" />
          <exclude name="**/org/alfresco/repo/webdav/WebDAVMethodTest.java" />
@@ -529,7 +525,7 @@
          <exclude name="**/org/alfresco/repo/usage/**/*Test.java" />
          <!-- System Build Tests (runs using embedded Jetty) -->
          <exclude name="**/org/alfresco/repo/RepoJetty*Test.java" />
-         <!-- embeds: SiteActivitySystemTest,WebServiceSuiteSystemTest, ... -->
+         <!-- embeds: SiteActivitySystemTest, ... -->
          <exclude name="**/org/alfresco/repo/transfer/fsr/**/*Test.java" />
          <!-- Messaging facade -->
          <exclude name="**/org/alfresco/repo/cluster/**/*Test.java"/> 
@@ -619,7 +615,6 @@
            description="Performs an incremental build of all projects"
            depends="incremental-webclient-depends,
                     incremental-webclient,  
-                    incremental-webserviceclient,
                     incremental-slingshot,
                     incremental-webeditor,
                     incremental-webeditor-plugin,
@@ -721,7 +716,6 @@
                     generate-javadocs-remoteapi, 
                     generate-javadocs-webclient, 
                     generate-taglibdocs-webclient, 
-                    generate-javadocs-webserviceclient,
                     generate-javadocs-jlan,
                     generate-javadocs-slingshot,
                     generate-javadocs-solrclient,
@@ -742,7 +736,6 @@
            depends="clean-webclient-projects,
                     clean-slingshot-projects,
                     clean-webeditor-projects,
-                    clean-webserviceclient,
                     clean-solrclient,
                     clean-solr,
                     clean-file-transfer-receiver" />
@@ -942,14 +935,6 @@
 		 <fileset dir="${dir.project.3rdparty.lib}/opensaml" includes="*.jar"/>
       </copy>
       
-      <!-- copy webservices files -->
-      <copy todir="${dir.deploy.tomcat.webclient}/wsdl" verbose="${copy.verbose}">
-         <fileset dir="${dir.project.remoteapi.src.wsdl}" />
-      </copy>
-      <copy todir="${dir.deploy.tomcat.webclient}/WEB-INF/classes/META-INF" verbose="${copy.verbose}">
-         <fileset dir="${dir.project.remoteapi.src.metainf}"/>
-      </copy>
-
       <!-- Installing auto apply repository AMPs into repository WAR -->
       <install-amps-in-dir ampfilesdir="${dir.modules.autoapplyamps.repo}"
                                warfile="${dir.deploy.tomcat.webclient}" />
@@ -1482,7 +1467,6 @@
                     test-remoteapi,
                     test-webframeworkcommons, 
                     test-webclient, 
-                    test-webserviceclient,
                     test-system-build-test" />
 
    <target name="run-junit-test" 

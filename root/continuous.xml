@@ -114,7 +114,6 @@
                     distribute-amps,
                     assemble-tomcat,
                     distribute-war,
-                    distribute-webserviceclient,
                     distribute-deployment,
                     distribute-webeditor,
                     distribute-wcmqs-extension,
@@ -727,25 +726,6 @@
       <zip destfile="${dir.continuous.dist}/${file.name.dist.solr}.zip">
          <zipfileset dir="${dir.project.solr.instance}" />
          <zipfileset prefix="alf_data/keystore" dir="${dir.project.repository.config}/alfresco/keystore" />
-      </zip>
-
-   </target>
-
-
-   <!-- ******************************** -->
-   <!-- ** Web Service Client targets ** -->
-   <!-- ******************************** -->
-
-   <target name="distribute-webserviceclient"
-           description="Creates the web service client distribution file for all platforms"
-           depends="continuous-init">
-      <mkdir dir="${dir.continuous.dist}" />
-
-      <zip destfile="${dir.continuous.dist}/${file.name.dist.webserviceclient}.zip">
-         <zipfileset dir="${dir.project.webserviceclient.dist}" />
-         <zipfileset dir="${dir.project.webserviceclient.config}/alfresco" 
-                     prefix="alfresco"/>
-         <fileset file="${dir.project.webserviceclient}/README_ws_client.txt" />
       </zip>
 
    </target>

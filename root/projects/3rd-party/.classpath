@@ -81,7 +81,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-extensions-json-0.4.0-incubating.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-i18n-0.4.0-incubating.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-parser-0.4.0-incubating.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/cxf-2.2.2-patched.jar" sourcepath="src/apache-cxf-2.2.2-patched-src.zip"/>
 	<classpathentry kind="lib" path="lib/FastInfoset-1.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/geronimo-annotation_1.0_spec-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/geronimo-stax-api_1.0_spec-1.0.1.jar"/>
