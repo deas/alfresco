@@ -643,12 +643,37 @@
             var node = this.widgets.treeview.getNodeByProperty("nodeRef", obj.file.node.nodeRef);
             if (node !== null)
             {
-               // Node found, so rename it
+               var index = -1;
+               var replacePaths = function(node)
+               {
+                  // rebuild path based on existing node path data - otherwise repointed root node may not be taken into account
+                  var paths = node.data.path.split("/");
+
+                  if (index < 0)
+                  {
+                     paths.pop();
+                     index = paths.length;
+                     node.data.path = $combine(paths.join("/"), obj.file.location.file);
+                  }
+                  else
+                  {
+                     paths[index] = obj.file.displayName;
+                     node.data.path = paths.join("/");
+                  }
+
+                  if (node.hasChildren)
+                  {
+                     for (var i = 0; i < node.children.length; i++)
+                     {
+                        replacePaths(node.children[i]);
+                     }
+                  }
+               };
+
+               // Node found, so rename it and replace the paths
+               replacePaths(node);
                node.label = obj.file.displayName;
-               // rebuild path based on existing node path data - otherwise repointed root node may not be taken into account
-               var paths = node.data.path.split("/");
-               paths.pop();
-               node.data.path = $combine(paths.join("/"), obj.file.location.file);
+
                this.widgets.treeview.render();
                this._showHighlight(true);
             }
