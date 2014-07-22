@@ -283,7 +283,8 @@
          
           // search YUI button
          this.widgets.searchButton = Alfresco.util.createYUIButton(this, "search-button", this.onSearchClick);
-		 
+         this._disableItems();
+         
          // trigger the initial search
          YAHOO.Bubbling.fire("onSearch",
          {
