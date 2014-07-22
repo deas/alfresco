@@ -359,8 +359,11 @@ public class LiveSearchTest extends AbstractUtils
         testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
 
-        String searchTerm1 = "!@#$%^&*()_+:\"|<>?;";
-        String searchTerm2 = "}{+_)(&^%$#@!";
+        //String searchTerm1 = "!@#$%^&*()_+:\"|<>?;";
+        //String searchTerm2 = "}{+_)(&^%$#@!";
+
+        String searchTerm1 = "!@#";
+        String searchTerm2 = "}{";
 
         ShareUser.login(drone, testUser, testPassword);
 
@@ -760,7 +763,7 @@ public class LiveSearchTest extends AbstractUtils
      * @throws Exception
      */
 
-   
+
     /**
      * DataPreparation method - ALF_3029
      * 1) Login
