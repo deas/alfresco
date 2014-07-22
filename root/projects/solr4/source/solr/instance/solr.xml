@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?><solr sharedLib="lib" persistent="true">
+<cores adminPath="/admin/cores" adminHandler="org.alfresco.solr.AlfrescoCoreAdminHandler">
+  <core name="archive" instanceDir="archive-SpacesStore"/>
+  <core name="alfresco" instanceDir="workspace-SpacesStore"/>
+</cores>
+</solr>
