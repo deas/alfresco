@@ -35,7 +35,9 @@
                <@formLib.renderFormContainer formId=formId>
                   <#list form.structure as item>
                      <#if item.kind == "set">
-                        <@formLib.renderSet set=item />
+                        <#if item.children?size &gt; 0>
+                           <@formLib.renderSet set=item />
+                        </#if>
                      <#else>
                         <@formLib.renderField field=form.fields[item.id] />
                      </#if>
