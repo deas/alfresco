@@ -22,7 +22,7 @@
    <div class="${class} grid columnSize${columns?size}">
       <#list columns as column>
          <#if (column_index % 2 == 0)>
-            <div class="yui-g<#if column_index == 0> first</#if> column${column_index + 1} dcolumn">
+            <div class="yui-g<#if column_index == 0> first</#if> column${column_index + 1}">
          </#if>
          <div class="yui-u<#if column_index%2 == 0> first</#if> column${column_index + 1} dcolumn">
             <#list 1..column.components as component>
