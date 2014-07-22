@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+
+   <!--              -->   
+   <!--  Test Server -->
+   <!--              -->
+      
+   <bean id="web.configsource" class="org.springframework.extensions.config.source.UrlConfigSource">
+      <constructor-arg>
+         <list>
+            <value>classpath:org/springframework/extensions/webscripts/spring-webscripts-config.xml</value>
+            <value>jar:*!/META-INF/spring-webscripts-config-custom.xml</value>
+         </list>
+      </constructor-arg>
+   </bean>
+
+
+   <bean id="webscripts.test" class="org.springframework.extensions.webscripts.TestWebScriptServer">
+      <property name="container" ref="webscripts.container" />
+      <property name="configService" ref="web.config" />
+      <property name="messages">
+         <bean class="org.springframework.context.support.ResourceBundleMessageSource">
+            <property name="basenames">
+               <list>
+                  <value>webscripts/messages/webscripts</value>
+               </list>
+            </property>
+         </bean>
+      </property>
+   </bean>   
+
+</beans>

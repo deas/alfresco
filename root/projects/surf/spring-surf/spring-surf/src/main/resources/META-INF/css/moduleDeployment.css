@@ -1,0 +1,61 @@
+select
+{
+    width: 400px;
+}
+
+input[type="button"]
+{
+   width: 75px;
+}
+
+input[type="submit"]
+{
+   width: 100px;
+}
+
+input[type="text"]
+{
+   background-color: white;
+}
+
+select
+{
+   font-family: Trebuchet MS, Arial, sans-serif;
+   font-size: 12px;
+   margin: 2px;
+   padding: 1px 2px 1px 2px;
+   color: #515D6B;
+   background-color: white;
+   border: 1px solid #CCD4DB;
+}
+
+.hidden
+{
+   visibility: hidden;
+}
+
+.addPropertyButton
+{
+   float: right;
+}
+
+.moduleToolbar
+{
+   clear: both;
+}
+
+.alignTop
+{
+   vertical-align: top;
+}
+
+.alignBottom
+{
+   vertical-align: bottom;
+}
+
+.errors
+{
+	color: red;
+	font-weight: bolder;
+}

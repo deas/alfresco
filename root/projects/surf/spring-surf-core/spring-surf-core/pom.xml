@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>org.springframework.extensions.surf</groupId>
+		<artifactId>spring-surf-parent</artifactId>
+		<version>5.0-EOL2-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+	
+	<artifactId>spring-surf-core</artifactId>
+	<name>Spring Surf Core</name>
+	<description>Spring Surf Core</description>
+	<url>spring-surf-core/${project.artifactId}</url>
+	<packaging>jar</packaging>
+	<build>
+	    <plugins>
+	      <plugin>
+	        <groupId>org.codehaus.mojo</groupId>
+	        <artifactId>properties-maven-plugin</artifactId>
+	        <version>1.0-alpha-2</version>
+	        <executions>
+	          <execution>
+	            <phase>generate-resources</phase>
+	            <goals>
+	              <goal>write-project-properties</goal>
+	            </goals>
+	            <configuration>
+	              <outputFile>
+					${project.build.outputDirectory}/surfversion.properties
+	              </outputFile>
+	            </configuration>
+	          </execution>
+	        </executions>
+	      </plugin>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+        	<artifactId>maven-surefire-plugin</artifactId>
+        	<configuration>
+	          <excludes>
+	            <!-- TODO: Fix this test since it works only in the UK. Timezone issues, disabling for now -->
+	            <exclude>**/I18NUtilTest.java</exclude>
+	          </excludes>
+        	</configuration>
+	      </plugin>
+	    </plugins>
+	  </build>
+	
+	
+	<dependencies>
+
+		<!-- Spring 3.0 dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+	</dependencies>
+	
+</project>

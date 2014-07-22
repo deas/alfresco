@@ -1,0 +1,20 @@
+<webscript>
+  <shortname>Web Script Lifecycle Index</shortname>
+  <description><![CDATA[Provide an index of Web Scripts in the various lifecycle states
+  
+none   : This web script is not part of a lifecycle.
+sample : This web script is a sample and is not intended for production use.
+draft  : This method may be incomplete, experimental or still subject to change.
+public_api : This method is part of the Alfresco public api and should be stable and well tested.
+draft_public_api : This method is intended to eventually become part of the public api but is 
+                   incomplete or still subject to change.
+deprecated : This method should be avoided.  It may be removed in future versions of Alfresco.
+internal   : This script is for Alfresco use only. This script should not be relied upon between 
+             versions.It is likely to change.
+]]>
+  </description>
+  <url>/index/lifecycle/{lifecycle}</url>
+  <lifecycle>internal</lifecycle>
+  <authentication>admin</authentication>
+  <transaction allow="readonly">required</transaction>
+</webscript>

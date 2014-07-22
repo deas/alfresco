@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Test Bogus Request Types</shortname>
+  <description>Ensure that format extensions used for .js scripts have a registered FormatReader</description>
+  <url>/test/bogus</url>
+</webscript>

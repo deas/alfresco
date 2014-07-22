@@ -1,0 +1,37 @@
+<webscript>
+    <shortname>sample3get</shortname>
+    <description>Sample3 - Get</description>
+    <url>/samples/sample3?arg1={arg1?}&amp;arg2={arg2}&amp;arg3={arg3}</url>
+    <url>/samples/sample3.xml?arg1={arg1?}&amp;arg2={arg2}&amp;arg3={arg3}</url>
+    <format default="html">extension</format>
+    <lifecycle>sample</lifecycle>
+    <authentication runas="fred">user</authentication>
+    <transaction>required</transaction>
+    <family>Sample</family>
+    <cache>
+        <never>false</never>
+        <public>false</public>
+        <mustrevalidate />
+    </cache>
+    <negotiate accept="text/html">html</negotiate>
+    <negotiate accept="text/xml">xml</negotiate>
+    <args>
+        <arg>
+            <shortname>arg1</shortname>
+            <description>argument 1</description>
+            <default>arg1</default>
+        </arg>
+        <arg>
+            <shortname>arg2</shortname>
+            <description>argument 2</description>
+        </arg>
+        <arg>
+            <shortname>arg3</shortname>
+            <description>argument 3</description>
+        </arg>
+    </args>
+    <responses>
+        <response type="samples.sample1.status1" />
+        <response type="samples.sample1.address1" />
+    </responses>
+</webscript>

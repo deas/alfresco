@@ -1,0 +1,17 @@
+<schema1>
+  <shortname>Schema for sample1</shortname>
+  <description>Schema for sample1 in package samples</description>
+  <types>
+   <type>
+    <id>status</id>
+    <shortname>status</shortname>
+    <description>Sample Status</description>
+    <format>json</format>
+    <definition>
+     <![CDATA[
+       { "name":"Status", "description":"Processing Status", "type":"string" }
+     ]]>
+    </definition>
+   </type>
+  </types>
+</schema1>

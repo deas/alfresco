@@ -1,0 +1,35 @@
+<schema>
+  <shortname>Schema for sample1</shortname>
+  <description>Schema for sample1 in package samples</description>
+  <types>
+   <type>
+    <id>status</id>
+    <shortname>status</shortname>
+    <description>Sample Status</description>
+    <format>json</format>
+    <definition>
+     <![CDATA[
+       { "name":"Status", "description":"Processing Status", "type":"string" }
+     ]]>
+    </definition>
+   </type>
+   <type>
+    <id>address</id>
+    <shortname>address</shortname>
+    <description>Sample Address</description>
+    <format>xml</format>
+    <definition>
+     <![CDATA[
+      <xml:element name='address' xmlns:xml = 'http://www.w3.org/2001/XMLSchema'>
+       <xml:complexType>
+        <xml:sequence>
+          <xml:element name="street" type="xml:string"/>
+        </xml:sequence>
+       </xml:complexType>
+      </xml:element>
+     </definition>
+    ]]>
+   </definition>
+   </type>
+  </types>
+</schema>

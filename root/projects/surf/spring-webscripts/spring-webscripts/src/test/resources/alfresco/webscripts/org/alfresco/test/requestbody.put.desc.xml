@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Echo Request Body</shortname>
+  <description>Echo Request Body</description>
+  <url>/test/requestbody</url>
+</webscript>

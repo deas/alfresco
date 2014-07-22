@@ -1,0 +1,8 @@
+<webscript>
+  <shortname>Failed Web Scripts Index</shortname>
+  <description>Retrieve an index of all failed Web Scripts</description>
+  <url>/index/failures</url>
+  <lifecycle>internal</lifecycle>
+  <authentication>admin</authentication>
+  <transaction allow="readonly">required</transaction>
+</webscript>

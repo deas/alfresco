@@ -1,0 +1,49 @@
+<alfresco-config>
+
+   <!-- Global Config -->
+   <config>
+      <!-- GenericConfigElement test -->
+      <foo name="foo" title="Foo">
+         <bar id="bar1Id" />
+         <bar id="bar2Id" />
+         <bar id="bar3Id">bar3Value</bar>
+         <baz>bazValue</baz>
+      </foo>
+      
+      <!-- Override test -->
+      <param>hello</param>
+   </config>
+   
+   <!-- Scoped Config -->
+   <config evaluator="string-compare" condition="ServerConfigElementTest">
+      <server>
+         <scheme>http</scheme>
+         <hostname>localhost</hostname>
+         <port>8080</port>
+      </server>
+   </config>
+   
+   <config evaluator="string-compare" condition="OverrideTest">
+      <param>goodbye</param>
+   </config>
+
+   <config evaluator="string-compare" condition="Remote">
+      <remote>
+
+         <!-- Test Endpoint -->
+	     <endpoint>
+	        <id>alfresco-test</id>
+	        <name>Alfresco - test access</name>
+	        <description>Test account access to Alfresco</description>
+	        <connector-id>alfresco</connector-id>
+	        <endpoint-url>http://localhost:8080/alfresco/s</endpoint-url>
+	        <identity>declared</identity>
+	        <username>admin</username>
+	        <password>admin</password>
+	        <unsecure>true</unsecure>
+	     </endpoint>
+	
+	  </remote>
+    </config>
+
+</alfresco-config>

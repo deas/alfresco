@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+   
+   <!-- Writable classpath store (ClassPathStoreTest) -->
+   <bean id="webscripts.store.test" parent="webscripts.classpathstore">
+      <property name="classPath"><value>alfresco/webscripts/classpath</value></property>
+   </bean>
+   
+</beans>

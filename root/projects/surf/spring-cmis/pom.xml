@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>spring-surf-cmis</artifactId>
+    <name>Spring Cmis Modules</name>
+    <packaging>pom</packaging>
+    <modules>
+		  <!-- Spring CMIS modules -->
+		  <module>spring-cmis-framework</module>
+    </modules>
+	
+    <parent>
+        <groupId>org.springframework.extensions.surf</groupId>
+        <artifactId>spring-surf-parent</artifactId>
+        <version>5.0-EOL2-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    
+    <repositories>
+        <repository>
+            <id>apache.snapshots</id>
+            <name>Apache Snapshots Repository</name>
+            <url>http://repository.apache.org/content/groups/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+</project>

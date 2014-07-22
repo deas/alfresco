@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Javascript Debugger</shortname>
+  <description>Javascript Debugger</description>
+  <url>/api/javascript/debugger</url>
+  <authentication>admin</authentication>
+  <transaction allow="readonly">required</transaction>
+</webscript>

@@ -1,0 +1,14 @@
+ ------
+ Spring Webscripts
+ ------
+
+Introduction
+  
+  {{{http://www.springsource.org/extensions/se-surf}Spring Webscripts}} is a framework that allows developers to build their own RESTful interface using light-weight scripting technologies such as JavaScript and Freemarker.  
+
+  Spring Webscripts is part of {{{http://www.springsource.org/extensions/se-surf}Spring Surf}}.
+
+Documentation
+
+  Visit the Spring Webscripts {{{../spring-webscripts-documentation/index.html} Reference Documentation}} to learn more.
+

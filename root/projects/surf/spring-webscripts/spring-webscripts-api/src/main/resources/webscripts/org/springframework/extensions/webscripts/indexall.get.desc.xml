@@ -1,0 +1,9 @@
+<webscript>
+  <shortname>All Web Scripts Index</shortname>
+  <description>Retrieve an index of all Web Scripts</description>
+  <url>/index/all?package={package?}&amp;url={url?}&amp;family={family?}</url>
+  <url>/index/all.mediawiki?package={package?}&amp;url={url?}&amp;family={family?}</url>
+  <lifecycle>internal</lifecycle>
+  <authentication>admin</authentication>
+  <transaction allow="readonly">required</transaction>
+</webscript>

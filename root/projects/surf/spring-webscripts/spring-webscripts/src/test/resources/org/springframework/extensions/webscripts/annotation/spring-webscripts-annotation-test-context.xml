@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="webscripts.script.sample"
+		class="org.springframework.extensions.webscripts.annotation.samples.Sample" />
+
+	<bean id="webscripts.container.test" parent="webscripts.container"
+		class="org.springframework.extensions.webscripts.PresentationContainer">
+		<property name="name">
+			<value>Spring Web Scripts Test Container</value>
+		</property>
+		<property name="registry" ref="webscripts.registry" />
+		<property name="templateProcessorRegistry" ref="webscripts.web.templateregistry" />
+		<property name="scriptProcessorRegistry" ref="webscripts.web.scriptregistry" />
+		<property name="scriptObjects">
+			<map merge="true">
+				<entry key="sample" value-ref="webscripts.script.sample" />
+			</map>
+		</property>
+	</bean>
+
+</beans>

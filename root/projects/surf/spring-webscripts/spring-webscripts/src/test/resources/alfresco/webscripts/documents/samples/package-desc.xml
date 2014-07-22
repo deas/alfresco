@@ -1,0 +1,16 @@
+<package>
+    <shortname>Alfresco samples</shortname>
+    <description>Alfresco sample webscripts</description>
+    <resources>
+        <resource>
+            <shortname>Alfresco sample1</shortname>
+            <description>Alfresco sample1 webscript</description>
+            <webscripts>sample1.get,sample1.put,sample1.delete,sample1.post</webscripts>
+        </resource>
+        <resource>
+            <shortname>Alfresco sample2</shortname>
+            <description>Alfresco sample2 webscript</description>
+            <webscripts>sample2.get,sample2.put,sample2.delete,sample2.post</webscripts>
+        </resource>
+    </resources>
+</package>

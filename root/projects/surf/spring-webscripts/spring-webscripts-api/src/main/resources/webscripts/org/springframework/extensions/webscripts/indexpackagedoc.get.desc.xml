@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Web Script Package Documentation</shortname>
+  <description>Provides reference documentation for the specified Web Script package</description>
+  <url>/index/package/{package}/doc</url>
+  <authentication>admin</authentication>
+  <transaction allow="readonly">required</transaction>
+</webscript>

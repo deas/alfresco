@@ -1,0 +1,21 @@
+<package>
+    <shortname>Webscript Core</shortname>
+    <description>Core webscripts for index page, js debugger, installation etc.</description>
+    <resources>
+        <resource>
+            <shortname>Index</shortname>
+            <description>Index related webscripts.</description>
+            <webscripts>index.get,index.post,indexall.get,indexfailures.get,indexfamily.get,indexlifecycle.get,indexpackage.get,indexuri.get</webscripts>
+        </resource>
+        <resource>
+            <shortname>Javascript Debugger</shortname>
+            <description>Webscripts for managing Javascript Debugger.</description>
+            <webscripts>jsdebugger.get,jsdebugger.post</webscripts>
+        </resource>
+        <resource>
+            <shortname>Tools</shortname>
+            <description>Tools for Webscript inspection, display, installation etc.</description>
+            <webscripts>scriptdescription.get,scriptdump.get,scriptinstall.get,scriptinstall.post</webscripts>
+        </resource>
+    </resources>
+</package>

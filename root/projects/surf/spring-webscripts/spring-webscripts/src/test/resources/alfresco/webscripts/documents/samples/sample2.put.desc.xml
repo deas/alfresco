@@ -1,0 +1,69 @@
+<webscript>
+ <shortname>sample2put</shortname>
+ <description>Sample2 - Put</description>
+ <url>/samples/sample2?arg1={arg1}&amp;arg2={arg2}&amp;arg3={arg3}</url>
+ <url>/samples/sample2.xml?arg1={arg1}&amp;arg2={arg2}&amp;arg3={arg3}</url>
+ <format default="html">extension</format>
+ <lifecycle>sample</lifecycle>
+ <transaction>required</transaction>
+ <family>Sample</family>
+ <cache>
+   <never>false</never>
+   <public>false</public>
+   <mustrevalidate/>
+ </cache>
+ <negotiate accept="text/html">html</negotiate>
+ <negotiate accept="text/xml">xml</negotiate>
+ <args>
+  <arg>
+   <shortname>arg1</shortname>
+   <description>argument 1</description>
+   <default>arg1</default>
+  </arg>	
+  <arg>
+   <shortname>arg2</shortname>
+   <description>argument 2</description>
+  </arg>	
+  <arg>
+   <shortname>arg3</shortname>
+   <description>argument 3</description>
+  </arg>	
+ </args>
+ <requests>
+        <request>
+            <type>
+                <format>json</format>
+                <definition>
+    <![CDATA[
+      {"description":"A person",
+       "type":"object",
+       "properties": {
+         "name": {"type":"string"},
+         "born" : {"type":["integer","string"], allow for a numeric year, or a full date
+         "minimum":1900, min/max for when a numeric value is used
+         "maximum":2010,
+         "format":"date-time", format when a string value is used
+         "optional":true}
+       ],
+       "gender" : {"type":"string",
+           "options : [[{"value":"male","label":"Guy"},
+                     {"value":"female","label":"Gal"}]},
+       "address" : {"type":"object",
+        "properties":{
+         "street":{"type":"string"},
+         "city":{"type":"string"},
+         "state":{"type":"string"}
+       }
+      }
+     }
+    }
+   ]]>
+                </definition>
+            </type>
+        </request>
+    </requests>
+    <responses>
+        <response type="samples.sample1.status" />
+        <response type="samples.sample1.address" />
+    </responses>
+</webscript>

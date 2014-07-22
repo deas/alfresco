@@ -1,0 +1,6 @@
+<!-- FIXME URL-encoded post of forms data is not yet working. -->
+<webscript>
+  <shortname>x-www-form-urlencoded post</shortname>
+  <description>Extracts parameters, decodes them and echoes as simple string</description>
+  <url>/test/encodedpost</url>
+</webscript>

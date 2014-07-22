@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>org.springframework.extensions.surf</groupId>
+		<artifactId>spring-surf-parent</artifactId>
+		<version>5.0-EOL2-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+	
+	<artifactId>spring-webscripts-api</artifactId>
+	<name>Spring Web Scripts - API</name>
+	<description>Spring Web Scripts - API</description>
+	<url>spring-webscripts/${project.artifactId}</url>
+	<packaging>jar</packaging>
+	<dependencies>
+	
+		<!-- Spring Web Scripts Runtime -->
+		<dependency>
+			<groupId>org.springframework.extensions.surf</groupId>
+			<artifactId>spring-webscripts</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+	</dependencies>
+</project>

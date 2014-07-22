@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Echo JSON Request</shortname>
+  <description>Echo postCode from JSON Request</description>
+  <url>/test/jsonecho</url>
+</webscript>

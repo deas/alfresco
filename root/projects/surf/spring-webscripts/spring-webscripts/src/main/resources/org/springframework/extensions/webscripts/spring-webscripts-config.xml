@@ -1,0 +1,111 @@
+<app-config>
+
+   <plug-ins>
+      <element-readers>
+         <element-reader element-name="server" class="org.springframework.extensions.config.ServerElementReader"/>
+		 <element-reader element-name="remote" class="org.springframework.extensions.config.RemoteConfigElementReader"/>
+      </element-readers>
+   </plug-ins>
+
+
+   <config evaluator="string-compare" condition="Server">
+      <server>
+         <!-- Enable and adjust the following settings to allow for external access URLs to the
+              WebScript Framework - to return an externally accessable address for absolute url generation.
+         <scheme>http</scheme>
+         <hostname>localhost</hostname>
+         <port>8080</port>
+         <path>alfresco</path>
+         -->
+      </server>
+   </config>
+
+
+   <config evaluator="string-compare" condition="Remote">
+		<remote>
+
+			<!-- Connector Implementations -->
+			<connector>
+				<id>http</id>
+				<name>Simple Http Connector</name>
+				<description>Simple HTTP Connector</description>
+				<class>org.springframework.extensions.webscripts.connector.HttpConnector</class>
+			</connector>
+
+			<connector>
+				<id>alfresco</id>
+				<name>Alfresco Connector</name>
+				<description>Connects to an Alfresco instance using ticket-based authentication</description>
+				<class>org.springframework.extensions.webscripts.connector.AlfrescoConnector</class>
+				<authenticator-id>alfresco-ticket</authenticator-id>
+			</connector>
+
+			<!-- Authenticator Implementations -->
+			<authenticator>
+				<id>alfresco-ticket</id>
+				<name>Alfresco Authenticator</name>
+				<description>Alfresco Authenticator</description>
+				<class>org.springframework.extensions.webscripts.connector.AlfrescoAuthenticator</class>
+			</authenticator>
+
+			<!-- Endpoints -->
+			<!-- Example of a 'declared' identity endpoint configuration
+			<endpoint>
+				<id>alfresco-system</id>
+				<name>Alfresco - System access</name>
+				<description>System account access to Alfresco</description>
+				<connector-id>alfresco</connector-id>
+				<endpoint-url>http://localhost:8080/alfresco/s</endpoint-url>
+				<identity>declared</identity>
+				<username>admin</username>
+				<password>admin</password>
+				<unsecure>true</unsecure>
+			</endpoint> -->
+
+			<endpoint>
+				<id>alfresco-noauth</id>
+				<name>Alfresco - unauthenticated access</name>
+				<description>Access to Alfresco Repository WebScripts that do not require authentication</description>
+				<connector-id>alfresco</connector-id>
+				<endpoint-url>http://localhost:8080/alfresco/s</endpoint-url>
+				<identity>none</identity>
+			</endpoint>
+
+			<endpoint>
+				<id>alfresco</id>
+				<name>Alfresco - user access</name>
+				<description>Access to Alfresco Repository WebScripts that require user authentication</description>
+				<connector-id>alfresco</connector-id>
+				<endpoint-url>http://localhost:8080/alfresco/s</endpoint-url>
+				<identity>user</identity>
+			</endpoint>
+
+			<endpoint>
+				<id>alfresco-feed</id>
+				<name>Alfresco Feed</name>
+				<description>Alfresco Feed - supports basic HTTP authentication via the EndPointProxyServlet</description>
+				<connector-id>http</connector-id>
+				<endpoint-url>http://localhost:8080/alfresco/s</endpoint-url>
+				<basic-auth>true</basic-auth>
+				<identity>user</identity>
+			</endpoint>
+			
+			<endpoint>
+    			<id>alfresco-php</id>
+    			<name>Alfresco - PHP servlet access</name>
+    			<description>Access to Alfresco Repository PHP servlet that require user authentication</description>
+    			<connector-id>alfresco</connector-id>
+    			<endpoint-url>http://localhost:8080/alfresco/php</endpoint-url>    
+    			<identity>user</identity>
+   			</endpoint>
+
+			<!-- The default endpoint -->
+			<default-endpoint-id>alfresco</default-endpoint-id>
+
+			<!-- The default credential vault -->
+			<default-credential-vault-provider-id>credential.vault.provider</default-credential-vault-provider-id>
+
+		</remote>
+	</config>
+
+</app-config>

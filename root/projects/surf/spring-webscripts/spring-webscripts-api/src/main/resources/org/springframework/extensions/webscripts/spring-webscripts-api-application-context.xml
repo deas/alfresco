@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+   <!--            -->
+   <!--  API Beans -->
+   <!--            -->
+
+   <!--  Index -->
+   <bean id="webscript.org.springframework.extensions.webscripts.index.get" class="org.springframework.extensions.webscripts.bean.Index" parent="webscript" scope="prototype"/>
+   <bean id="webscript.org.springframework.extensions.webscripts.indexall.get" class="org.springframework.extensions.webscripts.bean.IndexAll" parent="webscript" scope="prototype"/>
+   <alias name="webscript.org.springframework.extensions.webscripts.index.get" alias="webscript.org.springframework.extensions.webscripts.indexfailures.get"/>
+   <bean id="webscript.org.springframework.extensions.webscripts.indexfamily.get" class="org.springframework.extensions.webscripts.bean.IndexFamily" parent="webscript" scope="prototype" />
+   <bean id="webscript.org.springframework.extensions.webscripts.indexlifecycle.get" class="org.springframework.extensions.webscripts.bean.IndexLifecycle" parent="webscript" scope="prototype" />
+   <bean id="webscript.org.springframework.extensions.webscripts.indexuri.get" class="org.springframework.extensions.webscripts.bean.IndexURI" parent="webscript" scope="prototype" />
+   <bean id="webscript.org.springframework.extensions.webscripts.indexpackage.get" class="org.springframework.extensions.webscripts.bean.IndexPackage" parent="webscript" scope="prototype" />
+   <bean id="webscript.org.springframework.extensions.webscripts.indexpackagedoc.get" class="org.springframework.extensions.webscripts.bean.IndexPackageDoc" parent="webscript" scope="prototype" />
+   <bean id="webscript.org.springframework.extensions.webscripts.index.post" class="org.springframework.extensions.webscripts.bean.IndexUpdate" parent="webscript" scope="prototype" />
+
+   <!--  Get Description Document -->
+   <bean id="webscript.org.springframework.extensions.webscripts.scriptdescription.get" class="org.springframework.extensions.webscripts.bean.ServiceDescription" parent="webscript" scope="prototype" />
+
+   <!--  Get Web Script -->
+   <bean id="webscript.org.springframework.extensions.webscripts.scriptdump.get" class="org.springframework.extensions.webscripts.bean.ServiceDump" parent="webscript" scope="prototype" />
+
+   <!--  Install -->
+   <bean id="webscript.org.springframework.extensions.webscripts.scriptinstall.post" class="org.springframework.extensions.webscripts.bean.ServiceInstall" parent="webscript" scope="prototype" />
+   
+   <!--  Javascript APIs -->   
+   <bean id="webscript.org.springframework.extensions.webscripts.jsdebugger.get" class="org.springframework.extensions.webscripts.bean.JavascriptDebugger" parent="webscript" scope="prototype">
+      <property name="debugger" ref="scriptDebugger" />
+   </bean>
+   <bean id="webscript.org.springframework.extensions.webscripts.jsdebugger.post" class="org.springframework.extensions.webscripts.bean.JavascriptDebuggerPost" parent="webscript" scope="prototype">
+      <property name="debugger" ref="scriptDebugger" />
+   </bean>
+   
+</beans>

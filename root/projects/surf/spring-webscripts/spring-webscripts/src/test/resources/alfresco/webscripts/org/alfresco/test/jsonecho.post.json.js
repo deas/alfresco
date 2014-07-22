@@ -1,0 +1,1 @@
+model.postCode = jsonUtils.toObject(json).postCode;

@@ -1,0 +1,507 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+   <!--                 -->
+   <!--  Configuration  -->
+   <!--                 -->
+   
+   <bean id="web.configsource" class="org.springframework.extensions.config.source.UrlConfigSource">
+      <constructor-arg>
+         <list>
+            <value>classpath:org/springframework/extensions/webscripts/spring-webscripts-config.xml</value>
+            <value>classpath:META-INF/spring-webscripts-config-custom.xml</value>
+            <value>jar:*!/META-INF/spring-webscripts-config-custom.xml</value>
+         </list>
+      </constructor-arg>
+   </bean>
+   
+   <bean id="web.config" class="org.springframework.extensions.config.xml.XMLConfigService">
+       <constructor-arg>
+         <ref bean="web.configsource" />
+      </constructor-arg>
+   </bean>
+   
+   
+   <!--                      -->
+   <!--  Formats / Mimetypes -->
+   <!--                      -->
+
+   <!--  Format Registry -->
+   <bean id="webscripts.formatregistry" class="org.springframework.extensions.webscripts.FormatRegistry">
+      <property name="defaultReader"><bean class="org.springframework.extensions.webscripts.RequestReader"/></property>
+   </bean>
+
+   <!--  Format Map -->
+   <bean id="webscripts.formatmap" class="org.springframework.extensions.webscripts.FormatMap" abstract="true">
+      <property name="registry" ref="webscripts.formatregistry" />
+   </bean>
+
+   <!--  Reader/Writer Map -->
+   <bean id="webscripts.adaptorset" class="org.springframework.extensions.webscripts.FormatAdaptorSet" abstract="true">
+      <property name="registry" ref="webscripts.formatregistry" />
+   </bean>
+
+   <!--  Default Readers / Writers -->
+   
+   <bean id="webscripts.adaptors" parent="webscripts.adaptorset">
+      <property name="readers">
+         <list>
+           <bean class="org.springframework.extensions.webscripts.servlet.FormDataReader" />
+           <bean class="org.springframework.extensions.webscripts.json.JSONReader" />
+         </list>
+      </property>
+   </bean>
+
+   <!--  Default Formats -->
+   <bean id="webscripts.formats" parent="webscripts.formatmap">
+      <property name="formats">
+         <props>
+            <prop key="html">text/html</prop>
+            <prop key="text">text/plain</prop>
+            <prop key="xml">text/xml</prop>
+            <prop key="xsd">text/xml</prop>
+            <prop key="atom">application/atom+xml</prop>
+            <prop key="atomentry">application/atom+xml;type=entry</prop>
+            <prop key="atomfeed">application/atom+xml;type=feed</prop>
+            <prop key="atomsvc">application/atomsvc+xml</prop>
+            <prop key="rss">application/rss+xml</prop>
+            <prop key="json">application/json</prop>
+            <prop key="opensearchdescription">application/opensearchdescription+xml</prop>
+            <prop key="mediawiki">text/plain</prop>
+            <prop key="portlet">text/html</prop>
+            <prop key="fbml">text/html</prop>
+            <prop key="php">text/html</prop>
+            <prop key="js">text/javascript</prop>
+            <prop key="calendar">text/calendar</prop>
+            <prop key="csv">text/csv</prop>
+            <prop key="xls">application/vnd.ms-excel</prop>
+            <prop key="xlsx">application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</prop>
+         </props>
+      </property>
+      <property name="mimetypes">
+         <props>
+            <prop key="text/html">html</prop>
+            <prop key="text/plain">text</prop>
+            <prop key="text/xml">xml</prop>
+            <prop key="text/calendar">calendar</prop>
+            <prop key="application/atom+xml">atom</prop>
+            <prop key="application/atom+xml;type=entry">atomentry</prop>
+            <prop key="application/atom+xml;type=feed">atomfeed</prop>
+            <prop key="application/atomsvc+xml">atomsvc</prop>
+            <prop key="application/rss+xml">rss</prop>
+            <prop key="application/json">json</prop>
+            <prop key="application/x-www-form-urlencoded">xwwwformurlencoded</prop>
+            <prop key="application/opensearchdescription+xml">opensearchdescription</prop>
+            <prop key="text/csv">csv</prop>
+            <prop key="application/vnd.ms-excel">xls</prop>
+            <prop key="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">xlsx</prop>
+         </props>
+      </property>
+   </bean>
+
+   <!--  IE Specific set of API Formats -->
+   <bean id="webscripts.formats.IE" parent="webscripts.formatmap">
+      <property name="agent"><value>MSIE</value></property>
+      <property name="formats">
+         <props>
+            <prop key="atom">text/xml</prop>
+            <prop key="atomentry">text/xml</prop>
+            <prop key="atomfeed">text/xml</prop>
+            <prop key="rss">text/xml</prop>
+            <prop key="opensearchdescription">text/xml</prop>
+         </props>
+      </property>
+   </bean>
+
+
+   <!--                      -->
+   <!--  Web Script Messages -->
+   <!--                      -->
+
+   <bean id="webscripts.resources" class="org.springframework.extensions.surf.util.ResourceBundleBootstrapComponent">
+      <property name="resourceBundles">
+         <list>
+            <value>webscripts.messages.webscripts</value>
+         </list>
+      </property>
+   </bean>
+
+
+   <!--                     -->
+   <!--  Web Script Storage -->
+   <!--                     -->
+
+   <bean id="webscripts.classpathstore" class="org.springframework.extensions.webscripts.ClassPathStore" abstract="true" />
+
+   <bean id="webscripts.remotestore" class="org.springframework.extensions.webscripts.RemoteStore" abstract="true" />
+   
+   <bean id="webscripts.store" parent="webscripts.classpathstore">
+      <property name="mustExist"><value>false</value></property>
+      <property name="classPath"><value>webscripts</value></property>
+   </bean>
+   <bean id="webscripts.store.alfresco" parent="webscripts.classpathstore">
+      <property name="mustExist"><value>false</value></property>
+      <property name="classPath"><value>alfresco/webscripts</value></property>
+   </bean>
+
+   <bean id="webscripts.searchpath" class="org.springframework.extensions.webscripts.SearchPath">
+      <property name="searchPath">
+         <list>
+            <ref bean="webscripts.store.alfresco" />
+            <ref bean="webscripts.store" />
+         </list>
+      </property>
+   </bean>
+   
+   <!--                                     --> 
+   <!-- Extensibility Configuration Storage -->
+   <!--                                     -->
+   
+   <bean id="extensibility.config.store" parent="webscripts.classpathstore">
+      <property name="mustExist"><value>false</value></property>
+      <property name="classPath"><value>alfresco/webscripts/extensions/config</value></property>
+   </bean>
+   
+   <bean id="extensibility.config.searchpath" class="org.springframework.extensions.webscripts.SearchPath">
+      <property name="searchPath">
+         <list>
+            <ref bean="extensibility.config.store" />
+         </list>
+      </property>
+   </bean>
+   
+   <bean id="extensibility.handler" class="org.springframework.extensions.surf.extensibility.WebScriptExtensibilityModuleHandler">
+      <property name="configurationSearchPath" ref="extensibility.config.searchpath"/>
+   </bean>
+   
+   <!-- This is an example of the WebScripts extensibility container - this could replace the other "webscripts.container" 
+        definition to provide extensibility capabilities for WebScripts...
+   <bean id="webscripts.container" parent="webscripts.abstractcontainer" class="org.springframework.extensions.webscripts.ExtensibilityContainer">
+      <property name="name"><value>Spring Web Scripts Extensibility Container</value></property>
+      <property name="extensibilityModuleHandler" ref="extensibility.handler"/>
+      <property name="registry" ref="webscripts.registry" />
+      <property name="templateProcessorRegistry" ref="webscripts.web.templateregistry" />
+      <property name="scriptProcessorRegistry" ref="webscripts.web.scriptregistry" />
+      <property name="scriptParameterFactoryRegistry" ref="webscripts.web.scriptparameterfactoryregistry" />
+      <property name="scriptObjects">
+         <map merge="true">
+            <entry key="remote" value-ref="webscripts.script.remote" />
+         </map>
+      </property>
+   </bean>
+   -->
+
+   <!--                     -->
+   <!--  Abstract Container -->
+   <!--                     -->
+
+   <bean abstract="true" id="webscripts.abstractcontainer">
+      <property name="formatRegistry" ref="webscripts.formatregistry" />
+      <property name="searchPath" ref="webscripts.searchpath" />
+      <property name="configService" ref="web.config" />
+      <property name="scriptObjects">
+         <map>
+           <entry key="logger">
+              <bean class="org.springframework.extensions.webscripts.ScriptLogger"/>
+           </entry>
+           <entry key="jsonUtils">
+              <bean class="org.springframework.extensions.webscripts.json.JSONUtils"/>
+           </entry>
+           <entry key="stringUtils">
+              <bean class="org.springframework.extensions.webscripts.ScriptableUtils"/>
+           </entry>
+         </map>
+      </property>
+      <property name="templateObjects">
+         <map>
+           <entry key="argreplace">
+              <bean class="org.springframework.extensions.webscripts.ArgReplaceMethod"/>
+           </entry>
+           <entry key="encodeuri">
+              <bean class="org.springframework.extensions.webscripts.UrlEncodeMethod"/>
+           </entry>
+           <entry key="dateCompare">
+              <bean class="org.springframework.extensions.webscripts.DateCompareMethod"/>
+           </entry>
+           <entry key="xmldate">
+              <bean class="org.springframework.extensions.webscripts.ISO8601DateFormatMethod"/>
+           </entry>
+           <entry key="jsonUtils">
+              <bean class="org.springframework.extensions.webscripts.json.JSONUtils"/>
+           </entry>
+           <entry key="stringUtils">
+              <bean class="org.springframework.extensions.webscripts.ScriptableUtils"/>
+           </entry>
+         </map>
+      </property>
+   </bean>
+
+
+   <!--                                               -->
+   <!--  Web Script Presentation (Web Tier) Container -->
+   <!--                                               -->
+
+   <bean id="webscripts.web.templateregistry" class="org.springframework.extensions.webscripts.TemplateProcessorRegistry" />      
+
+   <bean id="webscripts.web.scriptregistry" class="org.springframework.extensions.webscripts.ScriptProcessorRegistry" />
+   
+   <bean id="webscripts.web.scriptparameterfactoryregistry" class="org.springframework.extensions.webscripts.ScriptParameterFactoryRegistry" />
+
+   <bean id="webscripts.container" parent="webscripts.abstractcontainer" class="org.springframework.extensions.webscripts.PresentationContainer">
+      <property name="name"><value>Spring Web Scripts Container</value></property>
+      <property name="registry" ref="webscripts.registry" />
+      <property name="templateProcessorRegistry" ref="webscripts.web.templateregistry" />
+      <property name="scriptProcessorRegistry" ref="webscripts.web.scriptregistry" />
+      <property name="scriptParameterFactoryRegistry" ref="webscripts.web.scriptparameterfactoryregistry" />
+      <property name="scriptObjects">
+         <map merge="true">
+            <entry key="remote" value-ref="webscripts.script.remote" />
+         </map>
+      </property>
+   </bean>
+      
+      
+   <!--                                                   -->
+   <!--  Web Script Default Script and Template Procesors -->
+   <!--                                                   -->
+   
+   <bean id="webscripts.templateprocessor.freemarker" class="org.springframework.extensions.webscripts.processor.FTLTemplateProcessor">
+      <property name="searchPath" ref="webscripts.searchpath" />
+      <property name="defaultEncoding"><value>UTF-8</value></property>
+      <property name="updateDelay"><value>600</value></property>
+      <property name="templateProcessorRegistry" ref="webscripts.web.templateregistry" />
+   </bean>
+
+   <bean id="webscripts.scriptprocessor.javascript" class="org.springframework.extensions.webscripts.processor.JSScriptProcessor">
+      <property name="searchPath" ref="webscripts.searchpath" />
+      <property name="scriptProcessorRegistry" ref="webscripts.web.scriptregistry" />
+   </bean>
+
+      
+   <!--                             -->
+   <!-- Web Scripts Remote Instance -->
+   <!--                             -->
+   <bean id="webscripts.script.remote" class="org.springframework.extensions.webscripts.ScriptRemote">
+      <property name="connectorService" ref="connector.service" />
+      <property name="connectorProvider" ref="webscripts.connector.provider"/>
+   </bean>
+   
+   <!--                                -->
+   <!-- Web Scripts Connector Provider -->
+   <!--                                -->
+   <bean id="webscripts.connector.provider" class="org.springframework.extensions.webscripts.connector.ConnectorProviderImpl">
+      <property name="connectorService" ref="connector.service" />
+   </bean>
+   
+
+   <!--                      -->
+   <!--  Web Script Registry -->
+   <!--                      -->
+
+   <!--
+     // Note: This URI index was used until v3.0. It may be switched back on, if the newer
+     //       Jax-RS index is not compatible with your URIs 
+     <bean id="webscripts.index" class="org.springframework.extensions.webscripts.PrefixTemplateUriIndex" /> 
+   -->
+   <bean id="webscripts.index" class="org.springframework.extensions.webscripts.JaxRSUriIndex" />
+   
+   <bean id="webscripts.registry" class="org.springframework.extensions.webscripts.DeclarativeRegistry">
+      <property name="container" ref="webscripts.container" />
+      <property name="uriIndex" ref="webscripts.index" />
+      <property name="searchPath" ref="webscripts.searchpath" />
+      <property name="defaultWebScript"><value>webscript.default</value></property>
+   </bean>
+      
+   
+   <!--                   -->
+   <!-- Connector Service -->
+   <!--                   -->
+   <bean id="connector.service" class="org.springframework.extensions.webscripts.connector.ConnectorService">
+      <property name="configService" ref="web.config" />
+   </bean>
+   
+   
+   <!--               -->
+   <!-- Remote Client -->
+   <!--               -->
+   <!-- This bean is responsible for performing remote connections and proxying requests to remote servers.
+        It is generated for each connector instance (per endpoint config) - a new bean instance is used per
+        connection. Each connector will apply state such as the current authentication ticket/cookie and
+        content type as appropriate for the request. The configuration values below will be applied to all
+        instances of the RemoteClient. Override the concrete "connector.remoteclient" bean definition to
+        modify individual properties or to extend the implementing class. -->
+   <bean id="connector.remoteclient" parent="connector.remoteclient.abstract"
+         class="org.springframework.extensions.webscripts.connector.RemoteClient" scope="prototype" />
+   <bean id="connector.remoteclient.abstract" abstract="true">
+      <!-- name of authentication ticket that can be optionally applied to proxied URLs -->
+      <!-- the ticket value is set programmatically by the connector making use of the RemoteClient instance -->
+      <property name="ticketName"><value>alf_ticket</value></property>
+      <!-- default encoding to use when decoded responses when none is set in the response - set to null for platform default -->
+      <property name="defaultEncoding"><null/></property>
+      <!-- default Content-Type header value to use for PUT or POST responses when none is supplied -->
+      <property name="defaultContentType"><value>application/octet-stream</value></property>
+      <!-- size of the internal byte buffer used when proxying responses -->
+      <property name="bufferSize"><value>4096</value></property>
+      <!-- the http.connection.timeout value in milliseconds to apply to HTTP connections -->
+      <property name="connectTimeout"><value>10000</value></property>
+      <!-- the http.socket.timeout value in milliseconds to apply to HTTP connections -->
+      <property name="readTimeout"><value>120000</value></property>
+      <!-- the maximum number of redirects to process from a GET request while maintaining cookies -->
+      <property name="maxRedirects"><value>10</value></property>
+      <!-- the connection thread pool size to use -->
+      <property name="poolSize"><value>200</value></property>
+      <!-- the RemoteClient will automatically use an HTTP proxy if the JVM property 'http.proxyHost' is set
+           but this feature can be disabled by setting this bean property to false -->
+      <property name="allowHttpProxy"><value>true</value></property>
+      <!-- the RemoteClient will automatically use an HTTPS proxy if the JVM property 'https.proxyHost' is set
+           but this feature can be disabled by setting this bean property to false -->
+      <property name="allowHttpsProxy"><value>true</value></property>
+      <!-- the set of headers to remove when proxying a request from a client to a remote endpoint -->
+      <property name="removeRequestHeaders">
+         <set>
+            <value>Cookie</value>
+         </set>
+      </property>
+      <!-- the set of headers to remove when proxying a response from a remote endpoint to a client -->
+      <property name="removeResponseHeaders">
+         <set>
+            <value>Set-Cookie</value>
+         </set>
+      </property>
+      <!-- http.tcp.nodelay setting - default is true
+           NOTE: DEPRECATED SINCE 5.0! -->
+      <property name="httpTcpNodelay"><value>true</value></property>
+      <!-- http.connection.stalecheck setting - default is true -->
+      <property name="httpConnectionStalecheck"><value>true</value></property>
+   </bean>
+   
+   
+   <!--                            -->
+   <!-- Credential Vault Providers -->
+   <!--                            -->
+   <bean id="credential.vault.provider" class="org.springframework.extensions.webscripts.connector.SimpleCredentialVaultProvider" />
+
+   <bean id="credential.vault.provider.xml" class="org.springframework.extensions.webscripts.connector.XMLCredentialVaultProvider">
+      <property name="configService" ref="web.config" />
+      <property name="location" value="/webscripts/xml" />
+   </bean>
+   
+   
+   <!--                 -->
+   <!-- Utility classes -->
+   <!--                 -->
+   
+   <!-- String Utils - responsible for HTML encoding and safe HTML sanitisation before rendering -->
+   <!--              - removes unsafe tags and sanitises potentially unsafe attributes values -->
+   <bean id="webframework.webscripts.stringutils" parent="webframework.webscripts.stringutils.abstract"
+         class="org.springframework.extensions.webscripts.ui.common.StringUtils" />
+   <bean id="webframework.webscripts.stringutils.abstract" abstract="true">
+      <!-- the set of HTML tags considered safe for rendering when mixing with existing client-side output -->
+      <!-- NOTE: define all tags in UPPER CASE only -->
+      <property name="tagWhiteList">
+         <set>
+            <value>!DOCTYPE</value>
+            <value>HTML</value>
+            <value>HEAD</value>
+            <value>BODY</value>
+            <value>META</value>
+            <value>BASE</value>
+            <value>TITLE</value>
+            <value>LINK</value>
+            <value>CENTER</value>
+            <value>EM</value>
+            <value>STRONG</value>
+            <value>SUP</value>
+            <value>SUB</value>
+            <value>P</value>
+            <value>B</value>
+            <value>I</value>
+            <value>U</value>
+            <value>BR</value>
+            <value>UL</value>
+            <value>OL</value>
+            <value>LI</value>
+            <value>H1</value>
+            <value>H2</value>
+            <value>H3</value>
+            <value>H4</value>
+            <value>H5</value>
+            <value>H6</value>
+            <value>SPAN</value>
+            <value>DIV</value>
+            <value>A</value>
+            <value>IMG</value>
+            <value>FONT</value>
+            <value>TABLE</value>
+            <value>THEAD</value>
+            <value>TBODY</value>
+            <value>TR</value>
+            <value>TH</value>
+            <value>TD</value>
+            <value>HR</value>
+            <value>DT</value>
+            <value>DL</value>
+            <value>DT</value>
+            <value>PRE</value>
+            <value>BLOCKQUOTE</value>
+            <value>BUTTON</value>
+            <value>CODE</value>
+            <value>FORM</value>
+            <value>OPTION</value>
+            <value>SELECT</value>
+            <value>TEXTAREA</value>
+            <value>STRIKE</value>
+         </set>
+      </property>
+      <!-- The set of HTML tag attributes that are to be removed before rendering -->
+      <!-- NOTE: define all attributes in UPPER CASE only -->
+      <!-- IMPORTANT: JavaScript event handler attributes starting with "on" are always removed -->
+      <property name="attributeBlackList">
+         <set>
+            <value>CONTENT</value>
+         </set>
+      </property>
+      <!-- The set of HTML tag attributes that are considered for sanitisation i.e. script content removed -->
+      <!-- NOTE: define all attributes in UPPER CASE only -->
+      <property name="attributeGreyList">
+         <set>
+            <value>STYLE</value>
+            <value>SRC</value>
+            <value>DYNSRC</value>
+            <value>LOWSRC</value>
+            <value>HREF</value>
+            <value>BACKGROUND</value>
+            <value>FORMACTION</value>
+            <value>FORMMETHOD</value>
+            <value>ACTION</value>
+         </set>
+      </property>
+      <!-- Adds or replaces a doctype that enforces the latest browser mode: <!DOCTYPE html> -->
+      <!-- NOTE: Will only be used when stripping an entire html document, not snippets -->
+      <property name="overrideDocType" value="true"/>
+   </bean>
+   
+   
+   <!--                             -->
+   <!--  Web Script Implementations -->
+   <!--                             -->
+
+   <!--  Abstract Web Script Implementations -->
+   <bean id="webscript" abstract="true"/>
+   <bean id="webscriptdesc" abstract="true"/>
+
+   <!--  Declarative Web Script Implementation -->
+   <bean id="webscript.default" parent="webscript" class="org.springframework.extensions.webscripts.DeclarativeWebScript" scope="prototype"/>
+   
+   <!--  Javascript Debugger -->
+   
+   <!--  Switch on debugger by setting log4j.logger.org.springframework.extensions.webscripts.ScriptDebugger to DEBUG -->
+   <bean id="scriptDebugger" class="org.springframework.extensions.webscripts.ScriptDebugger" init-method="start">
+      <property name="title" value="JavaScript Debugger"/>
+   </bean>
+   
+</beans>
