@@ -6,6 +6,7 @@ import java.util.List;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -273,5 +274,17 @@ public class FacetedSearchPage extends SharePage
     {
         String val = drone.find(By.cssSelector("#FCTSRCH_RESULTS_MENU_BAR span.alfresco-html-Label.bold")).getText();
         return Integer.valueOf(val).intValue();
+    }
+    /**
+     * Select the facet that matches the title from the facet grouping. 
+     * @param title facet name, eg Microsoft Word
+     * @return FacetedSearchPage with filtered results
+     */
+    public FacetedSearchPage selectFacet(final String title)
+    {
+        WebDroneUtil.checkMandotaryParam("Facet title", title);
+        WebElement facet = drone.find(By.xpath(String.format("//span[@class = 'filterLabel'][contains(., '%s')]",title)));
+        facet.click();
+        return this;
     }
 }
