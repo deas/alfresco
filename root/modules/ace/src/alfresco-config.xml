@@ -1,4 +1,0 @@
-<?xml version="1.0"?>
-<alfresco-config>
-   <url protocol="http" domain="localhost" port="8080"/>
-</alfresco-config>
