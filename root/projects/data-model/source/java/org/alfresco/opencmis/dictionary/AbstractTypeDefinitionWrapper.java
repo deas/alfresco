@@ -403,6 +403,7 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
         }
 
         // MNT-9089 fix, set min/max values for numeric properties
+        // MNT-11304 fix, use default boundaries only for numeric types
         if (result instanceof PropertyIntegerDefinitionImpl)
         {
             if (propDef.getDataType().getName().equals(DataTypeDefinition.INT))
@@ -414,20 +415,6 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
             {
                 ((PropertyIntegerDefinitionImpl) result).setMinValue(BigInteger.valueOf(Long.MIN_VALUE));
                 ((PropertyIntegerDefinitionImpl) result).setMaxValue(BigInteger.valueOf(Long.MAX_VALUE));
-            }
-        }
-        
-        if (result instanceof PropertyDecimalDefinitionImpl)
-        {
-            if (propDef.getDataType().getName().equals(DataTypeDefinition.FLOAT))
-            {
-                ((PropertyDecimalDefinitionImpl) result).setMinValue(BigDecimal.valueOf(Float.MIN_VALUE));
-                ((PropertyDecimalDefinitionImpl) result).setMaxValue(BigDecimal.valueOf(Float.MAX_VALUE));
-            }
-            if (propDef.getDataType().getName().equals(DataTypeDefinition.DOUBLE))
-            {
-                ((PropertyDecimalDefinitionImpl) result).setMinValue(BigDecimal.valueOf(Double.MIN_VALUE));
-                ((PropertyDecimalDefinitionImpl) result).setMaxValue(BigDecimal.valueOf(Double.MAX_VALUE));
             }
         }
         // end MNT-9089
