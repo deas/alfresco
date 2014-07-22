@@ -771,7 +771,26 @@
 
          // Get the pop-up div, sibling of the "More Actions" link
          var elMoreActions = Dom.getNextSibling(elMore);
+         
+         // MNT-11703 Menus disappearing off bottom of screen when clicking on more in list view
+         Dom.setStyle(elMoreActions , "height" , "" );
+         
+         var scrollY = window.scrollY;
+         if (scrollY === undefined)
+         {
+            scrollY = document.documentElement.scrollTop;
+         }
+         
+         var result = Dom.getViewportHeight() - (Dom.getY(elMore) - scrollY + elMore.offsetHeight);	
+         
          Dom.removeClass(elMoreActions, "hidden");
+         
+         if (elMoreActions.offsetHeight > result)
+         {
+            Dom.setStyle(elMoreActions , "overflowY" , "auto" );
+            Dom.setStyle(elMoreActions , "height" , result + "px" );
+         }
+         
          scope.hideMoreActionsFn = function DL_oASM_fnHidePopup()
          {
             scope.hideMoreActionsFn = null;
