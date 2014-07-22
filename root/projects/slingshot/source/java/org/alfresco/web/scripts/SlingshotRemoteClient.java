@@ -28,8 +28,12 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.Header;
-import org.htmlparser.*;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.htmlparser.Attribute;
+import org.htmlparser.Node;
+import org.htmlparser.Parser;
+import org.htmlparser.PrototypicalNodeFactory;
 import org.htmlparser.tags.DoctypeTag;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.ParserException;
@@ -60,13 +64,15 @@ public class SlingshotRemoteClient extends RemoteClient
     
     @Override
     protected void copyResponseStreamOutput(URL url, HttpServletResponse res, OutputStream out,
-            org.apache.commons.httpclient.HttpMethod method, String contentType, int bufferSize) throws IOException
+            HttpResponse response, String contentType, int bufferSize) throws IOException
     {
         boolean processed = false;
-        if (res != null && getRequestMethod() == HttpMethod.GET && method.getStatusCode() >= 200 && method.getStatusCode() < 300)
+        if (res != null && getRequestMethod() == HttpMethod.GET &&
+                response.getStatusLine().getStatusCode() >= 200 &&
+                response.getStatusLine().getStatusCode() < 300)
         {
             // only match if content is not an attachment - don't interfere with downloading of file content 
-            Header cd = method.getResponseHeader("Content-Disposition");
+            Header cd = response.getFirstHeader("Content-Disposition");
             if (cd == null || !cd.getValue().startsWith("attachment"))
             {
                 // only match appropriate content REST URIs 
@@ -89,8 +95,8 @@ public class SlingshotRemoteClient extends RemoteClient
                     {
                         // found HTML content we need to process in-memory and perform stripping on
                         ByteArrayOutputStream bos = new ByteArrayOutputStream(bufferSize);
-                        final InputStream input = method.getResponseBodyAsStream();
-                        if (input != null)
+                        final InputStream input;
+                        if (response.getEntity() != null && (input = response.getEntity().getContent()) != null)
                         {
                             // get data into our byte buffer for processing
                             try
@@ -187,7 +193,7 @@ public class SlingshotRemoteClient extends RemoteClient
         }
         if (!processed)
         {
-            super.copyResponseStreamOutput(url, res, out, method, contentType, bufferSize);
+            super.copyResponseStreamOutput(url, res, out, response, contentType, bufferSize);
         }
     }
 
