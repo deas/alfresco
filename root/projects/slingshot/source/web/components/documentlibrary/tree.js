@@ -737,6 +737,11 @@
             var parentNode = this.widgets.treeview.getNodeByProperty("nodeRef", obj.parentNodeRef);
             if (parentNode !== null)
             {
+               if (!parentNode.hasChildren())
+               {
+                  // Now parent has a child - it is a created folder
+                  parentNode.isLeaf = false;
+               }
                this._sortNodeChildren(parentNode);
             }
          }
