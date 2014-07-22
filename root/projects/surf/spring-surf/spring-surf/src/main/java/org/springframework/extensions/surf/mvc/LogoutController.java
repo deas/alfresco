@@ -26,7 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 /**
- * Listen for call from the web client to log the user out from the current session.
+ * Listen for call from a client to log the user out from the current session.
  * 
  * @author kevinr
  * @author muzquiano
@@ -43,6 +43,8 @@ public class LogoutController extends AbstractController
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception
     {
         AuthenticationUtil.logout(request, response);
+        
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         
         // Check for a redirect URL - this should only be used when login is not required...
         String redirectURL = request.getParameter(REDIRECT_URL_PARAMETER);
@@ -62,16 +64,12 @@ public class LogoutController extends AbstractController
                     redirectURL = redirectURL + delim + keys[i] + "=" + values[i];
                 }
             }
-            else
-            {
-                // Not used correctly so ignore...
-            }
-            response.sendRedirect(redirectURL);
+            response.setHeader("Location", redirectURL);
         }
         else
         {
             // redirect to the root of the website
-            response.sendRedirect(request.getContextPath());
+            response.setHeader("Location", request.getContextPath());
         }
         
         return null;

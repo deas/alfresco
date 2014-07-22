@@ -36,11 +36,11 @@
             <property name="supportedMethods">
                <list>
                   <value>GET</value>
-                  <value>HEAD</value>				  
-                  <value>POST</value>				  				  
+                  <value>HEAD</value>
+                  <value>POST</value>
                   <value>OPTIONS</value>
                </list>
-            </property>			
+            </property>
          </bean>
       </property>
    </bean>

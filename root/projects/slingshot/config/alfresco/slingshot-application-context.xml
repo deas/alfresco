@@ -95,18 +95,32 @@
    
    <!-- Override Login Controller - get users group membership -->
    <bean id="loginController" class="org.alfresco.web.site.servlet.SlingshotLoginController">
-        <property name="cacheSeconds" value="-1" />
-        <property name="useExpiresHeader"><value>true</value></property>
-        <property name="useCacheControlHeader"><value>true</value></property>
-        <property name="userFactory" ref="user.factory"></property>
-    </bean>
+       <property name="cacheSeconds" value="-1" />
+       <property name="useExpiresHeader"><value>true</value></property>
+       <property name="useCacheControlHeader"><value>true</value></property>
+       <property name="userFactory" ref="user.factory"></property>
+       <property name="supportedMethods">
+           <list>
+               <value>HEAD</value>
+               <value>POST</value>
+               <value>OPTIONS</value>
+           </list>
+       </property>
+   </bean>
     
    <!-- Override Logout Controller - to expire Alfresco tickets -->
    <bean id="logoutController" class="org.alfresco.web.site.servlet.SlingshotLogoutController">
-      <property name="cacheSeconds" value="-1" />
-      <property name="useExpiresHeader"><value>true</value></property>
-      <property name="useCacheControlHeader"><value>true</value></property>
-      <property name="connectorService" ref="connector.service" />
+       <property name="cacheSeconds" value="-1" />
+       <property name="useExpiresHeader"><value>true</value></property>
+       <property name="useCacheControlHeader"><value>true</value></property>
+       <property name="connectorService" ref="connector.service" />
+       <property name="supportedMethods">
+           <list>
+               <value>HEAD</value>
+               <value>POST</value>
+               <value>OPTIONS</value>
+           </list>
+       </property>
    </bean>
 
    <!-- Override EndPointProxyController to enable Basic HTTP auth challenge on 401 response -->

@@ -1342,7 +1342,7 @@ function getUserMenuWidgets()
             id: "HEADER_USER_MENU_LOGOUT",
             label: "logout.label",
             iconClass: "alf-user-logout-icon",
-            targetUrl: "dologout"
+            publishTopic: "ALF_DOLOGOUT"
          }
       });
    }
@@ -1758,7 +1758,8 @@ function getHeaderServices() {
       },
       "alfresco/services/NavigationService",
       "alfresco/services/UserService",
-      "alfresco/services/SiteService"
+      "alfresco/services/SiteService",
+      "alfresco/services/LogoutService"
    ];
    // Only add the logging service when in client-debug mode...
    if (config.global.flags.getChildValue("client-debug") == "true")

@@ -106,7 +106,7 @@ define(["dojo/_base/declare",
                   data: (config.data) ? JSON.stringify(config.data) : null,
                   query: (config.query) ? config.query : null,
                   headers: headers
-               }).then(function(response){
+               }).then(function(response) {
                   
                   var id = lang.getObject("requestId", false, config)
                   if (id != null)
@@ -137,7 +137,23 @@ define(["dojo/_base/declare",
                      _this.defaultSuccessCallback(response, config);
                   }
                   
-               }, function(response){
+               }, function(response) {
+                  
+                  // HANDLE SESSION TIMEOUT
+                  if (response.response && response.response.status === 401)
+                  {
+                     var redirect = response.response.getHeader("Location");
+                     if (redirect)
+                     {
+                        window.location.href = window.location.protocol + "//" + window.location.host + redirect;
+                        return;
+                     }
+                     else
+                     {
+                        window.location.reload(true);
+                        return;
+                     }
+                  }
                   
                   // HANDLE FAILURE...
                   var id = lang.getObject("requestId", false, config)
@@ -166,10 +182,9 @@ define(["dojo/_base/declare",
                      _this.defaultFailureCallback(response, config);
                   }
 
-               }, function(response){
+               }, function(response) {
                   
                   // HANDLE PROGRESS...
-                  
                   if (typeof response == "string")
                   {
                      try
