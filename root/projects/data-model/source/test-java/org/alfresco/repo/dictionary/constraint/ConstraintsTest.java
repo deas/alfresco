@@ -18,6 +18,7 @@
  */
 package org.alfresco.repo.dictionary.constraint;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,6 +43,8 @@ import org.springframework.extensions.surf.util.I18NUtil;
  */
 public class ConstraintsTest extends TestCase
 {
+    private static String PLUS_SYMBOL = new DecimalFormat().getPositivePrefix();
+	
     @Override
     protected void setUp() throws Exception
     {
@@ -235,7 +238,7 @@ public class ConstraintsTest extends TestCase
         assertEquals("maxValue should be 5", 5.0D, constraint.getParameters().get("maxValue"));
         
         evaluate(constraint, "-1.0", false);
-        evaluate(constraint, "+1.0", false);
+        evaluate(constraint, PLUS_SYMBOL + "1.0", false);
         evaluate(constraint, Arrays.asList(-1, 0, 1), false);
         evaluate(constraint, "abc", true);
         evaluate(constraint, 56.453E4, true);

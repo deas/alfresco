@@ -140,7 +140,7 @@ public class DefaultTypeConverter extends TypeConverter
                 }
                 catch(ParseException e)
                 {
-                    throw new TypeConversionException("Failed to parse number " + source, e);
+                    throw new NumberFormatException("Failed to parse number " + source);
                 }
             }
         });
@@ -154,7 +154,7 @@ public class DefaultTypeConverter extends TypeConverter
                 }
                 catch(ParseException e)
                 {
-                    throw new TypeConversionException("Failed to parse number " + source, e);
+                    throw new NumberFormatException("Failed to parse number " + source);
                 }
             }
         });
@@ -168,7 +168,7 @@ public class DefaultTypeConverter extends TypeConverter
                 }
                 catch(ParseException e)
                 {
-                    throw new TypeConversionException("Failed to parse number " + source, e);
+                    throw new NumberFormatException("Failed to parse number " + source);
                 }
             }
         });
@@ -182,7 +182,7 @@ public class DefaultTypeConverter extends TypeConverter
                 }
                 catch(ParseException e)
                 {
-                    throw new TypeConversionException("Failed to parse number " + source, e);
+                    throw new NumberFormatException("Failed to parse number " + source);
                 }
             }
         });
@@ -196,7 +196,7 @@ public class DefaultTypeConverter extends TypeConverter
                 }
                 catch(ParseException e)
                 {
-                    throw new TypeConversionException("Failed to parse number " + source, e);
+                    throw new NumberFormatException("Failed to parse number " + source);
                 }
             }
         });
@@ -210,7 +210,7 @@ public class DefaultTypeConverter extends TypeConverter
                 }
                 catch(ParseException e)
                 {
-                    throw new TypeConversionException("Failed to parse number " + source, e);
+                    throw new NumberFormatException("Failed to parse number " + source);
                 }
             }
         });
@@ -623,7 +623,7 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public String convert(Byte source)
             {
-                return source.toString();
+                return NumberFormat.getInstance().format(source);
             }
         });
         addDynamicTwoStageConverter(Byte.class, String.class, InputStream.class);
@@ -635,7 +635,7 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public String convert(Short source)
             {
-                return source.toString();
+                return NumberFormat.getInstance().format(source);
             }
         });
         addDynamicTwoStageConverter(Short.class, String.class, InputStream.class);
@@ -647,7 +647,7 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public String convert(Integer source)
             {
-                return source.toString();
+                return NumberFormat.getInstance().format(source);
             }
         });
         addDynamicTwoStageConverter(Integer.class, String.class, InputStream.class);
@@ -659,7 +659,7 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public String convert(Long source)
             {
-                return source.toString();
+                return NumberFormat.getInstance().format(source);
             }
         });
         addDynamicTwoStageConverter(Long.class, String.class, InputStream.class);
@@ -671,7 +671,8 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public String convert(Float source)
             {
-                return source.toString();
+                //return source.toString();
+            	return NumberFormat.getInstance().format(source);
             }
         });
         addDynamicTwoStageConverter(Float.class, String.class, InputStream.class);
@@ -683,7 +684,7 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public String convert(Double source)
             {
-                return source.toString();
+                return NumberFormat.getInstance().format(source);
             }
         });
         addDynamicTwoStageConverter(Double.class, String.class, InputStream.class);
