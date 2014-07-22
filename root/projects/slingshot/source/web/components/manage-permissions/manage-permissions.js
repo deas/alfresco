@@ -924,7 +924,16 @@
             // Newly created, or existing and removed or modified
             if ((perm.created && !perm.removed) || (!perm.created && (perm.removed || perm.modified)))
             {
-               // Modified existing: remove old permission
+               // Modified existing
+               // First add a new one, see MNT-11725
+               permissions.push(
+               {
+                  authority: perm.authority.name,
+                  role: perm.role,
+                  remove: perm.removed
+               });
+
+               // Remove old permission
                if (perm.modified && !perm.created)
                {
                   permissions.push(
@@ -934,13 +943,6 @@
                      remove: true
                   });
                }
-               
-               permissions.push(
-               {
-                  authority: perm.authority.name,
-                  role: perm.role,
-                  remove: perm.removed
-               });
             }
          }
 
