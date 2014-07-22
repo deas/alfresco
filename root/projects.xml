@@ -333,64 +333,7 @@
                          windowtitle="Alfresco Deployment Receiver" 
                          projectdir="${dir.project.deployment}" />
    </target>
-	
-	   <!-- **************************** -->
-	   <!-- ** WDR Deployment Project ** -->
-	   <!-- **************************** -->
-	  
-	   <target name="incremental-wdrdeployment" 
-	           depends="package-wdrdeployment" />
-	      
-	   <target name="build-wdrdeployment" 
-	           depends="clean-wdrdeployment, 
-	           incremental-wdrdeployment" />
-	   
-	   <target name="clean-wdrdeployment" 
-	           depends="init">
-	      <clean projectdir="${dir.project.wdrdeployment}" />
-	   </target>
-	   
-	   <target name="compile-wdrdeployment" 
-	           depends="init">
-	      <compile-java projectdir="${dir.project.wdrdeployment}" />
-          <compile-java-javac srcdir="${dir.project.wdrdeployment.src.test}" classesdir="${dir.project.wdrdeployment.classes.test}">
-            <addPath2>
-                <pathelement location="${dir.project.wdrdeployment.classes}" />
-                <pathelement location="${dir.project.repository.classes.test}" />
-            </addPath2>
-          </compile-java-javac>
-	   </target>
-	   
-	   <target name="package-wdrdeployment"
-	           depends="package-wdrdeployment-jar">
-	   </target>
-	         
-	   <target name="package-wdrdeployment-jar"
-	           depends="compile-wdrdeployment">
-	    
-	    <copy todir="${dir.project.wdrdeployment.classes}">
-	          <fileset dir="${dir.project.wdrdeployment.config}" 
-	                   includes="**/*" />
-	    </copy>
-	   	
-	   	<mkdir dir="${dir.project.wdrdeployment.dist}" />
-	   	
-	      <jar jarfile="${dir.project.wdrdeployment.dist}/${file.name.jar.wdrdeployment}" 
-	                 basedir="${dir.project.wdrdeployment.classes}" />
-	   </target>
-	   	   
-	   <target name="test-wdrdeployment" 
-	           depends="compile-wdrdeployment">
-	      <run-tests projectdir="${dir.project.wdrdeployment}" additionalclasspath="classpath.unit.test.beyondrepo" />
-	   </target>
-	   
-	   <target name="generate-javadocs-wdrdeployment" 
-	           depends="init">
-	      <generate-javadocs documenttitle="Alfresco WCM Runtime Deployment Receivers ${version.number}" 
-	                         windowtitle="Alfresco WCM Development Runtime Deployment Receiver" 
-	                         projectdir="${dir.project.wdrdeployment}" />
-	   </target>
-      
+
    <!-- ************************ -->
    <!-- ** Repository Project ** -->
    <!-- ************************ -->
@@ -668,21 +611,9 @@
       <tomcat-start/>
    </target>
 
-   <target name="start-virtual-tomcat-if-necessary"
-           depends="virtual-tomcat-check-status" 
-           unless="virtual.tomcat.started">
-       <virtual-tomcat-start/>
-   </target>
-
    <target name="tomcat-check-status">
       <condition property="tomcat.started">
          <socket server="localhost" port="8080"/>
-      </condition>
-   </target>
-
-   <target name="virtual-tomcat-check-status">
-      <condition property="virtual.tomcat.started">
-         <socket server="localhost" port="8180"/>
       </condition>
    </target>
 
@@ -695,26 +626,10 @@
       </waitfor>
    </target>
 
-   <target name="wait-for-virtual-tomcat">
-      <waitfor maxwaitunit    = "second"
-               checkeveryunit = "second"
-               maxwait        = "20"
-               checkevery     = "2">
-          <!-- Any non-existent virtual host will do for testing liveness -->
-         <http url="http://dummy-project.www--sandbox.127-0-0-1.ip.alfrescodemo.net:8180/"/>
-      </waitfor>
-    </target>
-
    <target name="tomcat-stop-if-necessary" 
            depends="tomcat-check-status" 
            if="tomcat.started">
       <antcall target="java-tomcat-stop"/>
-   </target>
-
-   <target name="virtual-tomcat-stop-if-necessary" 
-           depends="virtual-tomcat-check-status" 
-           if="virtual.tomcat.started">
-      <antcall target="java-virtual-tomcat-stop"/>
    </target>
 
    <target name="java-tomcat-stop"
@@ -726,17 +641,6 @@
       </java>
       <sleep seconds="2"/>
    </target>
-
-   <target name="java-virtual-tomcat-stop"
-           unless="virtual.tomcat.previously.started">
-      <java jar="${virtual.tomcat.home}/bin/bootstrap.jar" 
-            fork="true">
-         <jvmarg value="-Dcatalina.home=${virtual.tomcat.home}"/>
-         <arg line="stop"/>
-      </java>
-      <sleep seconds="2"/>
-   </target>
-
    
    <!-- ************************ -->
    <!-- ** Remote API Project ** -->
@@ -1012,43 +916,6 @@
 
 
    <!-- ****************** -->
-   <!-- ** JNDI Project ** -->
-   <!-- ****************** -->
-
-   <target name="incremental-jndi"
-           depends="package-jndi" />
-      
-   <target name="build-jndi" 
-           depends="clean-jndi, 
-                    incremental-jndi" />
-   
-   <target name="clean-jndi" 
-           depends="init">
-      <clean projectdir="${dir.project.jndi}" />
-   </target>
-   
-   <target name="compile-jndi" 
-           depends="init">
-      <compile-java projectdir="${dir.project.jndi}" />
-   </target>
-   
-   <target name="package-jndi" 
-           depends="compile-jndi">
-      <mkdir dir="${dir.project.jndi.dist}" />
-      <jar jarfile="${dir.project.jndi.dist}/${file.name.jar.jndi}" 
-           basedir="${dir.project.jndi.classes}" />
-   </target>
-   
-   <target name="generate-javadocs-jndi" 
-           depends="init">
-      <generate-javadocs documenttitle="Alfresco JNDI (Java Naming and Directory Interface) ${version.number}" 
-                         windowtitle="Alfresco JNDI" 
-                         projectdir="${dir.project.jndi}"/>
-   </target>
-
-
-
-   <!-- ****************** -->
    <!-- ** SOLR Project ** -->
    <!-- ****************** -->
    
@@ -1159,186 +1026,6 @@
             projectdir="${dir.project.solrclient}"/>
    </target>
 
-
-   <!-- ******************************************************************** -->
-   <!-- ** Tomcat-virtserver Project                                         -->
-   <!-- **                                                                   -->
-   <!-- **   Normally, you just want to build the various .jar files used    -->
-   <!-- **   by the virtualization server, not the virtualization server     -->
-   <!-- **   itself.   This target builds the virtualization server itself.  -->
-   <!-- **                                                                   -->
-   <!-- **   This target is only run by hand on an as-needed basis           -->
-   <!-- **   because the Tomcat build requires network access.  The build    -->
-   <!-- **   artifact created by running this project is automatically put   -->
-   <!-- **   in 3rd-party/distro/apache-tomcat-[vers]-virtserver-[vers].zip  -->
-   <!-- **   This arragement preserves the desriable quality of allowing     -->
-   <!-- **   builds to run disconnected from any network.                    -->
-   <!-- **                                                                   -->
-   <!-- **   There are only 3 things that force you to re-run this project:  -->
-   <!-- **                                                                   -->
-   <!-- **   [1]  Changing file(s) in dir.project.tomcatvirt.src.java        -->
-   <!-- **   [2]  Changing the Tomcat version used by the virt server.       -->
-   <!-- **   [3]  Changing the Tomcat build config (see replaceregexp below) -->
-   <!-- **                                                                   -->
-   <!-- **  If you do run this target, be sure to checkin its build artifact -->
-   <!-- **  (3rd-party/distro/apache-tomcat-[vers]-virtserver-[vers].zip)    -->
-   <!-- **                                                                   -->
-   <!-- **                                                                   -->
-   <!-- **   Devloper note:                                                  -->
-   <!-- **                                                                   -->
-   <!-- **       To assemble a virt server with all the libs it needs:       -->
-   <!-- **              ant -f continuous.xml  assemble-virtual              -->
-   <!-- **       Then on UNIX chmod +x all the .sh files in                  -->
-   <!-- **               build/assemble/virtual-tomcat/bin                   -->
-   <!-- **       (the real installer takes care of the chmod step).          -->
-   <!-- ******************************************************************** -->
-   <target name="tomcat-virtserver"
-           depends="init, incremental-catalinavirtual">
-
-      <property name  ="dir.name.src.tomcatvirt.custom"
-                value="${dir.project.tomcatvirt.custom.src}/${file.name.base.src.zip.tomcatvirt.apache}" />
-
-      <!-- Expand pristine tomcat source code that will be modified for virt server -->
-      <unzip src="${dir.project.tomcatvirt.apache.src}/${file.name.src.zip.tomcatvirt.apache}"
-             dest="${dir.project.tomcatvirt.custom.src}" />
-       
-
-
-      <!-- Include extras: tomcat5.exe  (which is just prunsrv.exe)           -->
-      <!--            and: tomcat5w.exe (which is just prunmgr.exe)           -->
-      <!--                                                                    -->
-      <!-- This makes it easy to configure the virt server as a daemon        --> 
-      <!-- For more details, see:  http://jakarta.apache.org/commons/daemon   -->
-      <!-- and:  "What's the proper way to start the virtualization server?"  -->
-      <!-- in:   http://wiki.alfresco.com/wiki/Virtualization_Server_FAQ      -->
-
-      <copy        todir = "${dir.name.src.tomcatvirt.custom}/build/build/bin">
-            <fileset dir = "${dir.name.src.tomcatvirt.custom}/connectors/procrun/bin"/>
-      </copy>
- 
-      <!-- Add/override any files in Tomcat's source code with customized files -->
-      <copy        todir = "${dir.name.src.tomcatvirt.custom}">
-            <fileset dir = "${dir.project.tomcatvirt.src.java}" />
-      </copy>
-
-      <!-- Make a custom configuration file -->
-      <!-- 
-        Note:  An alternative to the following copy an 3 replaceregexp tasks 
-               would have been to just include the build.properties file in
-               the customized file tree (see: dir.name.src.tomcatvirt.custom).
-               However, as the tomcat prop file has a lot of obscure stuff
-               in it, in-place surgery was deemed preferable.   This could
-               change if the "surgery approach" gets significantly more 
-               complex over time.
-      -->
-
-      <copy   file="${dir.name.src.tomcatvirt.custom}/build/build.properties.default"
-            tofile="${dir.name.src.tomcatvirt.custom}/build/build.properties"/>
-
-      <!-- Set base.path so tomcat's build can download/cache its required libs  -->
-      <replaceregexp
-            file="${dir.name.src.tomcatvirt.custom}/build/build.properties"  
-            match="^base\.path=.*"
-            replace="base.path=${dir.project.tomcatvirt.lib}"
-            byline="true"/>
-
-      <!-- Build everything (note: adds 10k to zip file) -->
-      <replaceregexp
-            file="${dir.name.src.tomcatvirt.custom}/build/build.properties"  
-            match="^#full\.dist=.*"
-            replace="full\.dist=on"
-            byline="true"/>
-
-      <!-- Oddly, we need to tell the build where mail.jar is, but no other libs.  -->
-      <replaceregexp
-            file="${dir.name.src.tomcatvirt.custom}/build/build.properties"  
-            match="^mail\.lib=.*"
-            replace="mail.lib=${dir.project.3rdparty.lib}"
-            byline="true"/>
-
-      <!-- 
-           Augment the classpath of the catatalina project within 
-           the tomcat virtserver's build so it can reference the
-           path umangling logic within AVMUrlValve. 
-
-           XML-escaped regexes are pretty darned ugly!
-           Oh well.
-       -->
-      <replaceregexp
-            file="${dir.name.src.tomcatvirt.custom}/container/catalina/build.xml"  
-            match="^\s*&lt;path\s+id\s*=\s*&quot;catalina\.classpath&quot;&gt;"
-            replace="  &lt;path id=&quot;catalina.classpath&quot;&gt;&#xD;&#xA;    &lt;pathelement location=&quot;${dir.project.catalinavirtual.dist}/${file.name.jar.catalinavirtual}&quot;/&gt;"
-            byline="true"/>
-         
-
-      <!-- Comple the modified version of tomcat used as the virt server -->
-      <ant dir="${dir.name.src.tomcatvirt.custom}"
-           inheritAll="false"/>
-
-      <!-- Set +rx permissions on all the .sh files for UNIX (for testing only) -->
-      <chmod dir="${dir.name.src.tomcatvirt.custom}/build/build"
-             perm="ugo+rx"
-             includes="**/*.sh"/>
-
-
-      <!-- Get rid of stuff that the virt server does not actually need -->
-      <delete dir="${dir.name.src.tomcatvirt.custom}/build/build/webapps/balancer"/>
-      <delete dir="${dir.name.src.tomcatvirt.custom}/build/build/webapps/jsp-examples"/>
-      <delete dir="${dir.name.src.tomcatvirt.custom}/build/build/webapps/servlet-examples"/>
-      <delete dir="${dir.name.src.tomcatvirt.custom}/build/build/webapps/tomcat-docs"/>
-      <delete dir="${dir.name.src.tomcatvirt.custom}/build/build/webapps/webdav"/>
-      <delete dir="${dir.name.src.tomcatvirt.custom}/build/build/server/webapps/admin"/>
-      <delete file="${dir.name.src.tomcatvirt.custom}/build/build/conf/Catalina/localhost/admin.xml"/>
-
-
-      <!-- Refresh cached base virtserver tomcat distro in 3rd party 
-           Note:  During the install process, other files are added/removed 
-                  from this zip file (e.g.: jndi-related stuff).  
-                  See continuous.xml for the gory details.
-      -->
-      <zip destfile="${dir.project.3rdparty}/distro/${file.name.zip.tomcatvirt.custom}">
-           <zipfileset dir="${dir.name.src.tomcatvirt.custom}/build/build"
-                       prefix="${file.name.base.zip.tomcatvirt.custom}"/>
-      </zip>
-   </target>
-
-
-   <!-- **************************** -->
-   <!-- ** Virtual Tomcat Project ** -->
-   <!-- **************************** -->
-
-   <target name="incremental-catalinavirtual" 
-           depends="package-catalinavirtual" />
-
-   <target name="build-catalinavirtual" 
-           depends="clean-catalinavirtual, 
-                    incremental-catalinavirtual" />
-
-   <target name="clean-catalinavirtual" 
-           depends="init">
-      <clean projectdir="${dir.project.catalinavirtual}" />
-   </target>
-
-   <target name="compile-catalinavirtual" 
-           depends="init">
-      <compile-java projectdir="${dir.project.catalinavirtual}" />
-   </target>
-
-   <target name="package-catalinavirtual" 
-           depends="compile-catalinavirtual">
-      <mkdir dir="${dir.project.catalinavirtual.dist}" />
-      <jar jarfile="${dir.project.catalinavirtual.dist}/${file.name.jar.catalinavirtual}" 
-           basedir="${dir.project.catalinavirtual.classes}" />
-   </target>
-
-   <target name="generate-javadocs-catalinavirtual" 
-           depends="init">
-      <generate-javadocs documenttitle="Alfresco Catalina Valve ${version.number}" 
-                         windowtitle="Alfresco Catalina Valve" 
-                         projectdir="${dir.project.catalinavirtual}"/>
-   </target>
-   
-   
    <!-- *********************************** -->
    <!-- ** Web Framework Commons Project ** -->
    <!-- *********************************** -->
@@ -2120,8 +1807,6 @@
                   includes="${file.name.jar.mbeans}" />
          <fileset dir="${dir.project.deployment.dist}"
                   includes="${file.name.jar.deployment}"/>
-         <fileset dir="${dir.project.wdrdeployment.dist}"
-                 includes="${file.name.jar.wdrdeployment}"/>
          <fileset dir="${dir.project.remoteapi.dist}" 
                   includes="${file.name.jar.remoteapi}" />
          <fileset dir="${dir.project.webframeworkcommons.dist}" 
@@ -2167,9 +1852,6 @@
               quiet="yes" 
               dir="${dir.project.webclient.samplewebsite}" />
       <mkdir dir="${dir.project.webclient.samplewebsite}/alfresco/classes"/>
-
-      <compile-java-javac srcdir="${dir.project.webclient.test.resources}/websites/alfresco/ROOT/WEB-INF/classes"
-           classesdir="${dir.project.webclient.samplewebsite}/alfresco/classes" />
 
       <jar basedir="${dir.project.webclient.classes}"
            destfile="${dir.project.webclient.samplewebsite}/alfresco/alfresco-form-data-functions.jar"

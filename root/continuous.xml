@@ -114,7 +114,6 @@
                     distribute-amps,
                     assemble-tomcat,
                     distribute-war,
-                    distribute-wcm,
                     distribute-webserviceclient,
                     distribute-deployment,
                     distribute-webeditor,
@@ -496,53 +495,6 @@
          <arg value="db2 drop database ${db.name}"/>
        </exec>
    </target>
-
-
-   <!-- ***************** -->
-   <!-- ** WCM targets ** -->
-   <!-- ***************** -->
-
-   <target name="distribute-wcm" 
-           description="Creates the distibution files for WCM"
-           depends="assemble-virtual">
-      <tar destfile="${dir.continuous.assemble}/temp.tar" 
-           longfile="gnu">
-         <tarfileset dir="${dir.continuous.assemble.virtualtomcat}" 
-                     prefix="virtual-tomcat"
-                     excludes="**/bin/*.sh" />
-         <tarfileset dir="${dir.continuous.assemble.virtualtomcat}/bin"
-                     prefix="virtual-tomcat/bin"
-                     includes="*.sh" 
-                     mode="755" />
-         <tarfileset file="${file.name.wcm.bootstrap}"/>
-         <tarfileset dir="${dir.project.installer}/wcm-commands"
-                     prefix="bin" 
-                     mode="755"/>
-         <tarfileset dir="${dir.project.webclient.xforms.examples}"
-                     prefix="wcm-examples"
-                     excludes="unit-tests/**" />
-      </tar>
-	  <zip destfile="${dir.continuous.dist}/${file.name.dist.wcm}.zip">
-        <tarfileset src="${dir.continuous.assemble}/temp.tar"/>
-      </zip>
-      <delete quiet="yes" file="${dir.continuous.assemble}/temp.tar" />
-   </target>
-
-   <target name="assemble-virtual"
-           depends="continuous-init">
-      <mkdir dir="${dir.continuous.dist}" />
-      <delete quiet="yes"
-              includeEmptyDirs="true"
-              dir="${dir.continuous.assemble.virtualtomcat}" />
-      <unzip src="${dir.name.binaries}/tomcat/${file.name.zip.tomcatvirt.custom}"
-             dest="${dir.continuous.assemble}" />
-      <move file="${dir.continuous.assemble}/${file.name.base.zip.tomcatvirt.custom}"
-            tofile="${dir.continuous.assemble.virtualtomcat}" />
-      <move file="${dir.continuous.assemble.virtualtomcat}/server/lib/servlets-ssi.renametojar" 
-            tofile="${dir.continuous.assemble.virtualtomcat}/server/lib/servlets-ssi.jar" />
-      <deploy-virtual-tomcat location="${dir.continuous.assemble.virtualtomcat}" />
-   </target>
-
 
    <target name="assemble-commands"
            depends="package-mmt, assemble-commands-init, assemble-command-extras"/>

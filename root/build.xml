@@ -103,8 +103,6 @@
          <pathelement location="${dir.project.deployment.classes.test}" />
          <pathelement location="${dir.project.repository.classes}" />
          <pathelement location="${dir.project.repository.classes.test}" />
-         <pathelement location="${dir.project.wdrdeployment.classes}" />
-         <pathelement location="${dir.project.wdrdeployment.classes.test}" />
          <pathelement location="${dir.project.3rdparty.lib}/junit-dep-4.11.jar" />
          
          <pathelement location="${dir.project.datamodel.config}" />
@@ -113,12 +111,9 @@
          
          <pathelement location="${dir.project.core}/${dir.name.source}/${dir.name.test.resources}" />
          <pathelement location="${dir.project.repository}/${dir.name.source}/${dir.name.test.resources}" />
-         <pathelement location="${dir.project.wdrdeployment}/${dir.name.source}/${dir.name.test.resources}" />
       </path>
 
       <path id="classpath.unit.test.beyondrepo">
-         <pathelement location="${dir.project.jndi.classes}" />
-         <pathelement location="${dir.project.catalinavirtual.classes}" />
          <pathelement location="${dir.project.remoteapi.classes}" />
          <pathelement location="${dir.project.remoteapi.classes.test}" />
          <pathelement location="${dir.project.solrclient.classes}" />
@@ -617,11 +612,8 @@
                     incremental-mbeans,
                     incremental-deployment,
                     incremental-repository,
-                    incremental-wdrdeployment,
                     incremental-remoteapi,
-                    incremental-webframeworkcommons,
-                    incremental-jndi,
-                    incremental-catalinavirtual" />
+                    incremental-webframeworkcommons" />
    
    <target name="incremental" 
            description="Performs an incremental build of all projects"
@@ -726,10 +718,7 @@
                     generate-javadocs-mbeans,
                     generate-javadocs-deployment,
                     generate-javadocs-repository, 
-                    generate-javadocs-wdrdeployment,
                     generate-javadocs-remoteapi, 
-                    generate-javadocs-jndi,
-                    generate-javadocs-catalinavirtual, 
                     generate-javadocs-webclient, 
                     generate-taglibdocs-webclient, 
                     generate-javadocs-webserviceclient,
@@ -768,10 +757,7 @@
                     clean-mbeans,
                     clean-deployment, 
                     clean-repository, 
-                    clean-wdrdeployment,
                     clean-remoteapi,
-                    clean-jndi, 
-                    clean-catalinavirtual, 
                     clean-webframeworkcommons,
                     clean-webclient,
                     clean-system-build-test" />
@@ -799,8 +785,7 @@
    <target name ="clean-tomcat-deployments" 
            description="Cleans all Tomcat server deployments"
            depends="clean-webclient-tomcat-deploy,
-                    clean-application-tomcat-deploy,
-                    clean-virtual-tomcat-deploy" />
+                    clean-application-tomcat-deploy" />
    
    <target name="clean-webclient-tomcat-deploy" 
            description="Cleans the Alfresco WAR from the Tomcat server" 
@@ -825,35 +810,9 @@
               includeEmptyDirs="true" quiet="yes" />
    </target>
 
-   <target name="clean-virtual-tomcat-deploy"
-           description="Cleans the Virtual Tomcat deployment" 
-           depends="init">
-       <delete failonerror="no">
-           <!-- Remove old spring jar files lingering in common/lib, if any -->
-           <fileset dir="${home.tomcat.virtual}/common/lib" includes="spring*.jar,org.springframework*.jar"/>
-
-           <!-- Get rid of old config files -->
-           <fileset dir="${home.tomcat.virtual}/conf" includes="alfresco-*"/>
-       </delete>
-   </target>
-   
-   <!--
-   <target name="clean-jboss-deploy" 
-           description="Cleans the Alfresco application from JBoss" 
-           depends="init">
-      <delete file="${dir.deploy.jboss}/${file.name.war.webclient}" />
-   </target>
-   -->
-
    <!-- ****************************************************** -->
    <!-- **************** Deployment targets ****************** -->
    <!-- ****************************************************** -->
-   
-   <target name="deploy-virtual-tomcat" 
-           description="Deploys to Virtual Tomcat (the virtualization server)" 
-           depends="init, clean-virtual-tomcat-deploy">
-      <deploy-virtual-tomcat location="${home.tomcat.virtual}" />
-   </target>
    
    <target name="-deploy-tomcat-common" depends="init">
 
@@ -882,15 +841,11 @@
 
       <copy todir="${home.tomcat}/endorsed" 
             file="${dir.project.3rdparty.lib}/${dir.name.xalan}/${file.name.jar.serializer}" />
-
-      <!-- enable WCM functionality -->
-      <copy todir="${home.tomcat}/shared/classes/alfresco/extension" 
-            file="${file.name.wcm.bootstrap}" />
    </target>
    
    <target name="deploy-webclient-tomcat" 
            description="Deploys the Alfresco WAR to Tomcat" 
-           depends="clean-webclient-tomcat-deploy, -deploy-tomcat-common, deploy-virtual-tomcat">
+           depends="clean-webclient-tomcat-deploy, -deploy-tomcat-common">
       <delete file="${dir.deploy.tomcat}/${file.name.war.webclient}" />
       <delete dir="${dir.deploy.tomcat.webclient}" 
               includeEmptyDirs="true" quiet="yes" />
@@ -918,9 +873,7 @@
          <fileset dir="${dir.project.deployment.classes}" />
          <fileset dir="${dir.project.repository.classes}" 
                   excludes="**/extension/**" />
-         <fileset dir="${dir.project.wdrdeployment.classes}" />
          <fileset dir="${dir.project.remoteapi.classes}" />
-         <fileset dir="${dir.project.catalinavirtual.classes}" />
          <fileset dir="${dir.project.webframeworkcommons.classes}" />
          <fileset dir="${dir.project.webclient.classes}" 
                   excludes="**/extension/**" />
@@ -1338,16 +1291,6 @@
       </exec>
    </target>
 
-   <target name="start-tomcat-virtual" 
-           description="Starts the virtual Tomcat server on Windows" 
-           depends="init">
-      <exec dir="${home.tomcat.virtual}/bin" 
-            executable="cmd.exe" 
-            spawn="true">
-         <arg line="/k startup.bat" />
-      </exec>
-   </target>
-
    <target name="start-tomcat-application" 
            description="Starts the application Tomcat server on Windows" 
            depends="init">
@@ -1537,7 +1480,6 @@
                     test-deployment, 
                     test-repository,
                     test-remoteapi,
-                    test-wdrdeployment,
                     test-webframeworkcommons, 
                     test-webclient, 
                     test-webserviceclient,
@@ -1665,7 +1607,6 @@
       <echo level="info">ant.home = ${ant.home}</echo>
       <echo level="info">home.tomcat = ${home.tomcat}</echo>
       <echo level="info">home.tomcat.application = ${home.tomcat.application}</echo>
-      <echo level="info">home.tomcat.virtual = ${home.tomcat.virtual}</echo>
       <echo level="info">home.jboss = ${home.jboss}</echo>
       <echo level="info">home.findbugs = ${home.findbugs}</echo>
    </target>

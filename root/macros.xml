@@ -212,31 +212,6 @@
 		</sequential>
 	</macrodef>
 
-	<macrodef name="deploy-virtual-tomcat" 
-             description="Deploys the files required for the virtualisation server to the given location">
-		<attribute name="location" />
-		<sequential>
-			<copy todir="@{location}/server/lib">
-				<fileset dir="${dir.project.3rdparty.lib}" includes="org.springframework*.jar"/>
-			</copy>
-			<copy todir="@{location}/server/lib"  file="${dir.project.3rdparty.lib}/hibernate-3.2.6-patched.jar"/>
-			<copy todir="@{location}/server/lib"  file="${dir.project.3rdparty.lib}/aopalliance.jar"/>
-			<copy todir="@{location}/server/lib"  file="${dir.project.catalinavirtual.dist}/${file.name.jar.catalinavirtual}"/>
-			<copy todir="@{location}/common/lib"  file="${dir.project.jndi.dist}/${file.name.jar.jndi}"/>
-			<copy todir="@{location}/common/lib"  file="${dir.project.datamodel.dist}/${file.name.jar.datamodel}"/>
-			<copy todir="@{location}/common/lib"  file="${dir.project.legacylucene.dist}/${file.name.jar.legacylucene}"/>
-			<copy todir="@{location}/common/lib"  file="${dir.project.repository.dist}/${file.name.jar.repository}"/>
-			<copy todir="@{location}/common/lib"  file="${dir.project.core.dist}/${file.name.jar.core}"/>
-			<copy todir="@{location}/conf"        file="${dir.project.repository.config}/alfresco/alfresco-shared.properties"/>
-			<copy todir="@{location}/conf"        file="${dir.project.repository.config}/alfresco/alfresco-jmxrmi.password"/>
-			<copy todir="@{location}/conf"        file="${dir.project.repository.config}/alfresco/alfresco-jmxrmi.access"/>
-			<copy todir="@{location}/conf"        file="${dir.project.jndi.config}/alfresco-virtserver-context.xml"/>
-			<copy todir="@{location}/conf"        file="${dir.project.jndi.config}/alfresco-virtserver.properties"/>
-			<copy todir="@{location}/conf"        file="${dir.project.catalinavirtual.config}/server.xml" overwrite="yes"/>
-			<copy todir="@{location}/conf"        file="${dir.project.catalinavirtual.config}/web.xml"    overwrite="yes"/>
-		</sequential>
-	</macrodef>
-
 	<macrodef name="install-amp" description="Installs an AMP file into the given WAR file">
 		<attribute name="ampfile" />
 		<attribute name="warfile" />
@@ -305,68 +280,6 @@
 		</sequential>
 	</macrodef>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-       Wrapper that brings the Alfresco webapp and the virtualization
-       server up (if they weren't already up) to execute the Ant target 
-       specified by the 'target' parameter.   After the command has 
-       completed, both servers are stopped if this wrappper was 
-       responsible for starting them (otherwise, they're left up).
-
-       Example:
-           <target name="moo">
-               <alfresco-virtual-antcall target="_moo"/>
-           </target>
-
-           <target name="_moo">
-               <echo>Alfresco webapp + virtual tomcat are both up</echo>
-           </target>
-
-       This makes it easy to run tests that need both servers when you're
-       you're doing iterative development work & don't want to wait for 
-       heavy processes to start/stop every time... yet it accommodates the 
-       need to automatically start/stop servers when in a "clean" test 
-       environment (all it assumes is that both servers are installed).
-
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<macrodef name="alfresco-virtual-antcall">
-		<attribute name="target"/>
-		<sequential>
-			<default-if-not-set  propname ="tomcat.home"
-                              propvalue="${env.TOMCAT_HOME}"/>
-
-			<default-if-not-set  propname ="virtual.tomcat.home"
-                              propvalue="${env.VIRTUAL_TOMCAT_HOME}"/>
-
-			<check-server-status propname="virtual.tomcat.previously.started"
-                              server  ="localhost"
-                              port    ="8180"/>
-
-			<check-server-status propname="tomcat.previously.started"
-                              server  ="localhost"
-                              port    ="8080"/>
-
-			<parallel>
-				<antcall target="start-tomcat-if-necessary"/>
-				<antcall target="start-virtual-tomcat-if-necessary"/>
-				<sequential>
-					<echo>Waiting for Alfresco Tomcat...</echo>
-					<antcall target="wait-for-alfresco"/>
-					<echo>Alfresco's Tomcat is up</echo>
-
-					<echo>Waiting for Virtual Tomcat...</echo>
-					<antcall target="wait-for-virtual-tomcat"/>
-					<echo>Virtual Tomcat is up</echo>
-
-					<antcall target="@{target}"/>
-
-					<antcall target="virtual-tomcat-stop-if-necessary"/>
-					<antcall target="tomcat-stop-if-necessary"/>
-				</sequential>
-			</parallel>
-		</sequential>
-	</macrodef>
-
 	<macrodef name="default-if-not-set">
 		<attribute name="propname"/>
 		<attribute name="propvalue"/>
@@ -402,23 +315,6 @@
 				<jvmarg value="@{heapmax}"/>
 				<jvmarg value="-Djava.io.tmpdir=${tomcat.home}/temp"/>
 				<jvmarg value="-Djava.security.policy=${tomcat.home}/conf/catalina.policy"/>
-			</java>
-		</sequential>
-	</macrodef>
-
-	<macrodef name="virtual-tomcat-start">
-		<attribute name="heapmax" default="-Xmx512M"/>
-		<sequential>
-			<antcall  target="wait-for-alfresco"/>
-			<echo>Starting Virtual Tomcat:  ${virtual.tomcat.home}</echo>
-			<java jar="${virtual.tomcat.home}/bin/bootstrap.jar" 
-                 fork="true" jvm="${env.JAVA_HOME}/bin/java">
-				<jvmarg value="-Dcatalina.home=${virtual.tomcat.home}"/>
-				<jvmarg value="-Dcatalina.base=${virtual.tomcat.home}"/>
-				<jvmarg value="-server"/>
-				<jvmarg value="@{heapmax}"/>
-				<jvmarg value="-Djava.io.tmpdir=${virtual.tomcat.home}/temp"/>
-				<jvmarg value="-Djava.security.policy=${virtual.tomcat.home}/conf/catalina.policy"/>
 			</java>
 		</sequential>
 	</macrodef>

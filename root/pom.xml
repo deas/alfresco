@@ -75,11 +75,8 @@
     <module>projects/mbeans</module>
     <module>projects/deployment</module>
     <module>projects/repository</module>
-    <module>projects/wdr-deployment</module>
     <module>projects/remote-api</module>
     <module>projects/web-framework-commons</module>
-    <module>projects/jndi-client</module>
-    <module>projects/catalina-virtual</module>
     <module>projects/web-client</module>
     <module>projects/web-service-client</module>
     <module>projects/slingshot</module>
