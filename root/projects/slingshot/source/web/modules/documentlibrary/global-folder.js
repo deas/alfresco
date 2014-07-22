@@ -190,9 +190,9 @@
           *
           * @property sharedRoot
           * @type string
-          * @default "alfresco://company/home/shared"
+          * @default "alfresco://company/shared"
           */
-         sharedRoot: "alfresco://company/home/shared",
+         sharedRoot: "alfresco://company/shared",
 
          /**
           * NodeRef representing root container in user home view mode
