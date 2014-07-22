@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<page>
-  <title>Search</title>
-  <title-id>page.search.title</title-id>
-  <description>Search results page for all users.</description> 
-  <description-id>page.search.description</description-id>  
-  <template-instance>search</template-instance>
-  <authentication>none</authentication>  
-</page>

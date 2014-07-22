@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<component>
-   <scope>template</scope>
-   <region-id>profile</region-id>
-   <source-id>profile</source-id>
-   <url>/components/profile/profile</url>
-</component>

@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<page>
-   <title>Document</title>
-   <title-id>page.document.title</title-id>
-   <description>Document page</description>
-   <description-id>page.document.description</description-id>
-   <template-instance>document</template-instance>
-   <authentication>user</authentication>
-</page>

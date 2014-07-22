@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<page>
-   <title>Workflow</title>
-   <title-id>page.workflow.title</title-id>
-   <description>Workflow page</description>
-   <description-id>page.workflow.description</description-id>
-   <template-instance>workflow</template-instance>
-   <authentication>user</authentication>
-</page>

@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<page>
-   <title>Site</title>
-   <title-id>page.site.title</title-id>
-   <description>Site page</description>
-   <description-id>page.site.description</description-id>
-   <template-instance>site</template-instance>
-   <authentication>user</authentication>
-</page>

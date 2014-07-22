@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<page>
-   <title>Home</title>
-   <title-id>page.home.title</title-id>
-   <description>Home launch page for all users.</description>
-   <description-id>page.home.description</description-id>
-   <template-instance>home</template-instance>
-   <authentication>user</authentication>
-</page>

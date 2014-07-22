@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<component>
-   <scope>template</scope>
-   <region-id>site</region-id>
-   <source-id>site</source-id>
-   <url>/components/site/site</url>
-</component>

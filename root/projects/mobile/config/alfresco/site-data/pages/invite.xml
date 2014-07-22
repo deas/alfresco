@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<page>
-   <title>Invite</title>
-   <title-id>page.invite.title</title-id>
-   <description>Invite Page</description>
-   <description-id>page.invite.description</description-id>
-   <template-instance>invite</template-instance>
-   <authentication>user</authentication>
-</page>
