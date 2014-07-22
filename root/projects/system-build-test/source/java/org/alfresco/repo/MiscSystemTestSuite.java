@@ -23,16 +23,6 @@ import junit.framework.TestSuite;
 
 import org.alfresco.repo.web.scripts.activities.SiteActivitySystemTest;
 import org.alfresco.solr.client.SOLRAPIClientTest;
-import org.alfresco.webservice.test.AccessControlServiceSystemTest;
-import org.alfresco.webservice.test.ActionServiceSystemTest;
-import org.alfresco.webservice.test.AdministrationServiceSystemTest;
-import org.alfresco.webservice.test.AuthenticationServiceSystemTest;
-import org.alfresco.webservice.test.AuthoringServiceSystemTest;
-import org.alfresco.webservice.test.ClassificationServiceSystemTest;
-import org.alfresco.webservice.test.ContentServiceSystemTest;
-import org.alfresco.webservice.test.DictionaryServiceSystemTest;
-import org.alfresco.webservice.test.RepositoryServiceSystemTest;
-import org.alfresco.webservice.test.TimeoutSystemTest;
 
 /**
  * Run suite of miscellaneous system tests (against embedded jetty)
@@ -57,18 +47,6 @@ public class MiscSystemTestSuite extends TestSuite
         
         // site activities
         suite.addTestSuite(SiteActivitySystemTest.class);
-        
-        // web services
-        suite.addTestSuite(AuthenticationServiceSystemTest.class);
-        suite.addTestSuite(AuthoringServiceSystemTest.class);
-        suite.addTestSuite(ClassificationServiceSystemTest.class);
-        suite.addTestSuite(ContentServiceSystemTest.class);
-        suite.addTestSuite(RepositoryServiceSystemTest.class);
-        suite.addTestSuite(ActionServiceSystemTest.class);
-        suite.addTestSuite(AdministrationServiceSystemTest.class);
-        suite.addTestSuite(AccessControlServiceSystemTest.class);
-        suite.addTestSuite(DictionaryServiceSystemTest.class);
-        suite.addTestSuite(TimeoutSystemTest.class);
         
         // SOLR
         suite.addTestSuite(SOLRAPIClientTest.class);
