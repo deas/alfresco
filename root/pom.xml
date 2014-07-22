@@ -102,7 +102,7 @@
     <tomcat.default.alfresco.port>8080</tomcat.default.alfresco.port>
     <tomcat.default.share.port>8081</tomcat.default.share.port>
     <tomcat.default.solr.port>8082</tomcat.default.solr.port>
-    <tomcat.default.solr4.port>8083</tomcat.default.solr.port>
+    <tomcat.default.solr4.port>8083</tomcat.default.solr4.port>
     
     <!-- Database properties - default values to be overridden in settings.xml -->
     <db.skip>true</db.skip>
