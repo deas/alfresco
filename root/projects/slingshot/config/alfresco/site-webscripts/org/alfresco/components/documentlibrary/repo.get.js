@@ -32,7 +32,6 @@ function widgets()
          googleDocsEnabled: toolbar.googleDocsEnabled,
          repositoryBrowsing: toolbar.rootNode != null,
          useTitle: (useTitle == "true"),
-         syncMode: toolbar.syncMode != null ? toolbar.syncMode : "",
          createContentByTemplateEnabled: model.createContentByTemplateEnabled,
          createContentActions: model.createContent
       }
