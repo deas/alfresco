@@ -66,7 +66,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/subethasmtp-3.1.6.jar" sourcepath="src/subethasmtp-3.1.6.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/axis-1.4.jar" sourcepath="src/axis-1.4-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/shale-test-1.0.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/facebook_070716.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bliki-3.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-httpclient-3.1.jar" sourcepath="src/commons-httpclient-3.1-src.zip">
 		<attributes>
