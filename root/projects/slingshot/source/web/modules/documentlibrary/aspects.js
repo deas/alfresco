@@ -415,7 +415,9 @@
             }
             return true;
          };
-         YAHOO.Bubbling.addDefaultAction("add-" + this.eventGroup, fnAddHandler);
+         // Force the new action as "me" object may have changed.
+         // See MNT-10286
+         YAHOO.Bubbling.addDefaultAction("add-" + this.eventGroup, fnAddHandler, true);
 
          /**
           * Selected values list (right-hand side)
@@ -454,7 +456,9 @@
             }
             return true;
          };
-         YAHOO.Bubbling.addDefaultAction("remove-" + this.eventGroup, fnRemoveHandler);
+         // Force the new action as "me" object may have changed.
+         // See MNT-10286
+         YAHOO.Bubbling.addDefaultAction("remove-" + this.eventGroup, fnRemoveHandler, true);
       },
       
       /**
