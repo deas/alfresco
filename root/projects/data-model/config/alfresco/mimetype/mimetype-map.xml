@@ -162,6 +162,9 @@
             <extension display="Binary">bin</extension>
             <extension display="Binary Executable">exe</extension>
          </mimetype>
+		 <mimetype mimetype="application/x-dosexec" display="Binary File">
+            <extension display="Binary Executable">exe</extension>
+         </mimetype>
          <mimetype mimetype="application/x-netcdf" display="">
             <extension>cdf</extension>
             <extension>nc</extension>
