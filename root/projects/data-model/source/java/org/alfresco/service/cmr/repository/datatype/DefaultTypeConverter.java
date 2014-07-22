@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -133,42 +134,84 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public Byte convert(String source)
             {
-                return Byte.valueOf(source);
+                try
+                {
+                    return NumberFormat.getNumberInstance().parse(source.toString()).byteValue();
+                }
+                catch(ParseException e)
+                {
+                    throw new TypeConversionException("Failed to parse number " + source, e);
+                }
             }
         });
         addConverter(String.class, Short.class, new TypeConverter.Converter<String, Short>()
         {
             public Short convert(String source)
             {
-                return Short.valueOf(source);
+                try
+                {
+                    return NumberFormat.getNumberInstance().parse(source.toString()).shortValue();
+                }
+                catch(ParseException e)
+                {
+                    throw new TypeConversionException("Failed to parse number " + source, e);
+                }
             }
         });
         addConverter(String.class, Integer.class, new TypeConverter.Converter<String, Integer>()
         {
             public Integer convert(String source)
             {
-                return Integer.valueOf(source);
+                try
+                {
+                    return NumberFormat.getNumberInstance().parse(source.toString()).intValue();
+                }
+                catch(ParseException e)
+                {
+                    throw new TypeConversionException("Failed to parse number " + source, e);
+                }
             }
         });
         addConverter(String.class, Long.class, new TypeConverter.Converter<String, Long>()
         {
             public Long convert(String source)
             {
-                return Long.valueOf(source);
+                try
+                {
+                    return NumberFormat.getNumberInstance().parse(source.toString()).longValue();
+                }
+                catch(ParseException e)
+                {
+                    throw new TypeConversionException("Failed to parse number " + source, e);
+                }
             }
         });
         addConverter(String.class, Float.class, new TypeConverter.Converter<String, Float>()
         {
             public Float convert(String source)
             {
-                return Float.valueOf(source);
+                try
+                {
+                    return NumberFormat.getNumberInstance().parse(source.toString()).floatValue();
+                }
+                catch(ParseException e)
+                {
+                    throw new TypeConversionException("Failed to parse number " + source, e);
+                }
             }
         });
         addConverter(String.class, Double.class, new TypeConverter.Converter<String, Double>()
         {
             public Double convert(String source)
             {
-                return Double.valueOf(source);
+                try
+                {
+                    return NumberFormat.getNumberInstance().parse(source.toString()).doubleValue();
+                }
+                catch(ParseException e)
+                {
+                    throw new TypeConversionException("Failed to parse number " + source, e);
+                }
             }
         });
         addConverter(String.class, BigInteger.class, new TypeConverter.Converter<String, BigInteger>()
