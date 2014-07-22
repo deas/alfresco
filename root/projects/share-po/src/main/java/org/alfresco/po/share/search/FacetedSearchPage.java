@@ -264,4 +264,14 @@ public class FacetedSearchPage extends SharePage
             this.results.add(new FacetedSearchResult(drone, result));
         }
     }
+    /**
+     * Get the numeric value display on top of search results.
+     * The number indicates the total count found for given search.
+     * @return
+     */
+    public int getResultCount()
+    {
+        String val = drone.find(By.cssSelector("#FCTSRCH_RESULTS_MENU_BAR span.alfresco-html-Label.bold")).getText();
+        return Integer.valueOf(val).intValue();
+    }
 }
