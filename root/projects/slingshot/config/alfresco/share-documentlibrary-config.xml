@@ -1046,7 +1046,7 @@
          <!-- Copy to -->
          <action id="document-copy-to" type="javascript" label="actions.document.copy-to">
             <param name="function">onActionCopyTo</param>
-            <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
          <!-- Move to -->
@@ -1055,7 +1055,7 @@
             <permissions>
                <permission allow="true">Delete</permission>
             </permissions>
-            <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
          </action>
 
          <!-- Delete -->
@@ -1064,7 +1064,7 @@
             <permissions>
                <permission allow="true">Delete</permission>
             </permissions>
-            <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
             <evaluator>evaluator.doclib.action.isNotPartOfHybridWorklfow</evaluator>
          </action>
 
