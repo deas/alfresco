@@ -81,6 +81,14 @@
          thumbnailModification: [],
          
          /**
+          * Current siteId.
+          * 
+          * @property siteId
+          * @type string
+          */
+         siteId: "",
+         
+         /**
           * Noderef to the content to display
           *
           * @property nodeRef
@@ -231,7 +239,33 @@
          
          // Setup web preview
          this.setupPreview(false);
+         
+         // Refresh preview on meta-data update
          YAHOO.Bubbling.on("metadataRefresh", this.doRefresh, this);
+         
+         // Post an activity feed item to record the preview of the node
+         if (this.options.siteId)
+         {
+            Alfresco.util.Ajax.jsonPost(
+            {
+               url: Alfresco.constants.PROXY_URI + "slingshot/doclib/activity",
+               dataObj:
+               {
+                  site: this.options.siteId,
+                  fileName: this.options.name,
+                  nodeRef: this.options.nodeRef,
+                  type: "file-previewed",
+                  page: "document-details"
+               },
+               failureCallback:
+               {
+                  fn: function()
+                  {
+                     // do nothing - not important enough to bother the user about
+                  }
+               }
+            });
+         }
       },
 
       /**
@@ -399,7 +433,7 @@
             nodeRefAsLink = this.options.nodeRef.replace(":/", ""),
             noCache = "noCache=" + new Date().getTime();
          download = download ? "a=true" : "a=false";
-         return proxy + this.options.api + "/node/" + nodeRefAsLink + "/content/" + encodeURIComponent(this.options.name) + "?c=force&" + noCache + "&" + download
+         return proxy + this.options.api + "/node/" + nodeRefAsLink + "/content/" + encodeURIComponent(this.options.name) + "?c=force&" + noCache + "&" + download;
       },
 
       /**

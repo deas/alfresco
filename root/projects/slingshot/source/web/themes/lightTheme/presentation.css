@@ -1671,6 +1671,7 @@ body.alfresco-guest
 .node-header .node-path
 {
    padding-top: 0 !important;
+   padding-bottom: 0.25em !important;
 }
 
 .node-header .status-banner
@@ -1945,3 +1946,8 @@ table td.thumbnail img
    background-image: none !important;
 }
 
+/* Activities feed */
+.activities .activity:hover
+{
+   background-color: #eee;
+}

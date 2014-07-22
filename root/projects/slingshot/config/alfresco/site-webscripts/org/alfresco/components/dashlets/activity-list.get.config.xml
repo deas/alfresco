@@ -28,6 +28,8 @@
    <style type="org.alfresco.documentlibrary.google-docs-checkout" css="document" />
    <style type="org.alfresco.documentlibrary.google-docs-checkin" css="document" />
    <style type="org.alfresco.documentlibrary.inline-edit" css="document" />
+   <style type="org.alfresco.documentlibrary.file-previewed" css="document" />
+   <style type="org.alfresco.documentlibrary.file-downloaded" css="document" />
    <style type="org.alfresco.documentlibrary.file-liked" css="like" />
    <style type="org.alfresco.documentlibrary.folder-liked" css="like" />
    <style type="org.alfresco.wiki.page-created" css="wiki" />

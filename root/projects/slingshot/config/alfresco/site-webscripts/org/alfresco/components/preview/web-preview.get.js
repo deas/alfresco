@@ -77,6 +77,7 @@ function main()
          id : "WebPreview",
          name : "Alfresco.WebPreview",
          options : {
+            siteId: page.url.templateArgs.site,
             thumbnailModification : nodeMetadata.thumbnailModifications,
             nodeRef : model.nodeRef,
             name : nodeMetadata.name,

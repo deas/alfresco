@@ -21,15 +21,15 @@
       <#assign thisDay = activity.date.isoDate>
       <#if thisDay != lastDay>
          <#assign lastDay = thisDay>
-         <div class="new-day"><div class="ruler"></div><span class="relativeDate">${thisDay}</span></div>
+         <div class="new-day"><span class="relativeDate">${thisDay}</span></div>
       </#if>
       <#assign detail = msg(activity.type, itemLink, userLink, activity.custom0?html, activity.custom1?html, siteLink, secondUserLink)>
       <#if mode = "user" && !activity.suppressSite><#assign detail = msg("in.site", detail, siteLink)></#if>
       <div class="activity">
          <#if activity.userAvatar != "avatar"> 
-            <div class="avatar"><img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${activity.userAvatar?string?replace('://','/')}/thumbnail/avatar32" alt="${activity.fullName?html}" /></div> 
+            <div class="avatar"><img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${activity.userAvatar?string?replace('://','/')}/thumbnail/avatar" alt="${activity.fullName?html}" width="48" height="48" /></div> 
          <#else>
-            <div class="avatar"><img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${activity.userName?url}/thumbnail/avatar32" alt="${activity.fullName?html}" /></div> 
+            <div class="avatar"><img src="${url.context}/proxy/alfresco/slingshot/profile/avatar/${activity.userName?url}/thumbnail/avatar" alt="${activity.fullName?html}" width="48" height="48" /></div> 
          </#if><div class="content">
             <span class="detail">${detail}</span><br />
             <span class="time relativeTime" title="${activity.date.isoDate}">${activity.date.isoDate}</span>
