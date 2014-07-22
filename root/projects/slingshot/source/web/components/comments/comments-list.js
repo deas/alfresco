@@ -434,11 +434,13 @@
          Dom.removeClass(this.widgets.onAddCommentClick.get("element"), "hidden");
          
          // ALF-19935 - Enable pagination controls on restore edit form
-         var paginatorContainers = this.widgets.alfrescoDataTable.widgets.paginator._containers, index = 0;
-         
-         for (index = 0; index < paginatorContainers.length; ++index)
+         if (this.widgets.alfrescoDataTable.lastResultCount > this.options.maxItems)
          {
-            Dom.removeClass(paginatorContainers[index], "hidden");
+            var paginatorContainers = this.widgets.alfrescoDataTable.widgets.paginator._containers, index = 0;
+            for (index = 0; index < paginatorContainers.length; ++index)
+            {
+               Dom.removeClass(paginatorContainers[index], "hidden");
+            }
          }
       },
 
