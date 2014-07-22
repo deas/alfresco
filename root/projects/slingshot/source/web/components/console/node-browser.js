@@ -1,6 +1,20 @@
 /**
- * Copyright (C) 2010-2011 Share Extras Contributors.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
@@ -166,7 +180,7 @@
             {
                var updatedResponse = oFullResponse;
                
-               if (oFullResponse)
+               if (oFullResponse && oFullResponse.results)
                {
                   var items = oFullResponse.results,
                      searchElapsedTime = parseInt(oFullResponse.searchElapsedTime, 10);
@@ -200,7 +214,7 @@
                }
 
                // update Results Bar message with number of results found and how long it took
-               if (items.length < parent.options.maxSearchResults)
+               if (items && items.length < parent.options.maxSearchResults)
                {
                   me._setResultsMessage("message.results", $html(parent.searchTerm), items.length, elapsedTimeMsg);
                }
