@@ -44,7 +44,7 @@
                <div class="workflows">
                   <#list workflows as workflow>
                      <div class="workflow <#if !workflow_has_next>workflow-last</#if>">
-                        <#if workflow.initiator.avatarUrl??>
+                        <#if workflow.initiator?? && workflow.initiator.avatarUrl??>
                         <img src="${url.context}/proxy/alfresco/${workflow.initiator.avatarUrl}" alt="${msg("label.avatar")}"/>
                         <#else>
                         <img src="${url.context}/res/components/images/no-user-photo-64.png" alt="${msg("label.avatar")}"/>
