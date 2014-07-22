@@ -182,9 +182,6 @@ public class ShareUtils
         {
            // Create the Links Component
            createLinks(httpClient, shortName, user);
-           
-           // Create the DataLists Component
-           createDataLists(httpClient, shortName, user);
         }
         else
         {
