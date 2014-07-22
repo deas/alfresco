@@ -1,15 +1,5 @@
 <!-- ********************************************************* -->
 <!-- **              Alfresco Parent POM                    ** -->
-<!-- **                                                     ** -->
-<!-- ** This Maven build is NOT usable to build Alfresco,   ** -->
-<!-- ** you should use the standard Ant build for that.     ** -->
-<!-- ** This POM is instead used to produce POMs to develop ** -->
-<!-- ** against Alfresco with Maven. POMs, dependencies and ** -->
-<!-- ** projects information are up to date and released    ** -->
-<!-- ** together with the official Alfresco artifacts at    ** -->
-<!-- **          https://artifacts.alfresco.com.            ** -->  
-<!-- ** Fox the SDK and Maven project samples check         ** -->
-<!-- ** http://code.google.com/p/maven-alfresco-archetypes/ ** -->  
 <!-- ********************************************************* -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -782,6 +772,14 @@
   </reporting>
 
   <profiles>
+    <!-- Profile to build Community packaging, including installers -->
+    <profile>
+        <id>packaging</id>
+        <modules>
+            <module>packaging</module>
+        </modules>
+    </profile>
+
     <!-- Profile to build alfresco-enterprise -->
     <profile>
         <id>enterprise</id>
@@ -803,6 +801,14 @@
         </properties>
     </profile>
 
+    <!-- Profile to build Enterprise packaging, including installers -->
+    <profile>
+        <id>enterprise-packaging</id>
+        <modules>
+            <module>enterpriseprojects/packaging</module>
+        </modules>
+    </profile>
+
     <!-- Profile to build alfresco-cloud -->
     <profile>
         <id>cloud</id>
@@ -820,6 +826,8 @@
             <module>projects/share-po</module>
             <module>projects/share</module>
             <module>projects/system-build-test</module>
+            <module>enterpriseprojects/packaging</module>
+            <module>privatemodules</module>
         </modules>
 
         <build>
