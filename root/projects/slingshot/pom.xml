@@ -260,6 +260,7 @@
     </dependencies>
 
     <build>
+        <finalName>share</finalName>
         <plugins>
             <!-- Configuration of the WAR build -->
             <plugin>
