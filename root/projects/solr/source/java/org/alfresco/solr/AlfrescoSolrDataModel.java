@@ -19,6 +19,9 @@
 package org.alfresco.solr;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -279,6 +283,37 @@ public class AlfrescoSolrDataModel
         dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
         dictionaryDAO.setTenantService(tenantService);
         dictionaryDAO.setDictionaryRegistryCache(new MemoryCache<String, DictionaryRegistry>());
+        
+        // MNT-11618 "Failed to get lock ReadLock for getting dictionary registry from cache..." error during strartup on Linux (intermittently)
+        File config = new File(id, "conf/solrcore.properties");
+        Properties properties = new Properties();
+        long lockTimeout = 4000;
+        try
+        {
+            properties.load(new FileInputStream(config));
+
+            String lockProperty = properties.getProperty("system.lockTryTimeout.AlfrescoSolrDataModel.DictionaryDAOImpl");
+
+            if (lockProperty != null)
+            {
+                lockTimeout = Long.valueOf(lockProperty);
+            }
+        }
+        catch (FileNotFoundException e1)
+        {
+            // TODO Auto-generated catch block
+        }
+        catch (IOException e1)
+        {
+            // TODO Auto-generated catch block
+        }
+        catch (NumberFormatException e)
+        {
+            // TODO Auto-generated catch block
+        }
+
+        dictionaryDAO.setTryLockTimeout(lockTimeout);
+        
         // TODO: use config ....
         dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
         dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
