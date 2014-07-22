@@ -46,20 +46,11 @@
                      <#if lockUser??>
                         <div class="status-banner theme-bg-color-2 theme-border-4">
                         <#assign lockedByLink = userProfileLink(lockUser.userName, lockUser.displayName, 'class="theme-color-1"') >
-                        <#if (item.workingCopy.googleDocUrl!"")?length != 0 >
-                           <#assign link><a href="${item.workingCopy.googleDocUrl}" target="_blank" class="theme-color-1">${msg("banner.google-docs.link")}</a></#assign>
-                           <#if lockUser.userName == user.name>
-                              <span class="google-docs-owner">${msg("banner.google-docs-owner", link)}</span>
-                           <#else>
-                              <span class="google-docs-locked">${msg("banner.google-docs-locked", lockedByLink, link)}</span>
-                           </#if>
+                        <#if lockUser.userName == user.name>
+                           <#assign status><#if node.isLocked>lock-owner<#else>editing</#if></#assign>
+                           <span class="${status}">${msg("banner." + status)}</span>
                         <#else>
-                           <#if lockUser.userName == user.name>
-                              <#assign status><#if node.isLocked>lock-owner<#else>editing</#if></#assign>
-                              <span class="${status}">${msg("banner." + status)}</span>
-                           <#else>
-                              <span class="locked">${msg("banner.locked", lockedByLink)}</span>
-                           </#if>
+                           <span class="locked">${msg("banner.locked", lockedByLink)}</span>
                         </#if>
                         </div>
                      </#if>

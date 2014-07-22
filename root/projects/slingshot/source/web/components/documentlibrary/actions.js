@@ -222,7 +222,6 @@
                manageTranslationsUrl: fnPageURL("manage-translations?nodeRef=" + strNodeRef),
                workingCopyUrl: fnPageURL("document-details?nodeRef=" + (workingCopy.workingCopyNodeRef || strNodeRef)),
                workingCopySourceUrl: fnPageURL("document-details?nodeRef=" + (workingCopy.sourceNodeRef || strNodeRef)),
-               viewGoogleDocUrl: workingCopy.googleDocUrl + "\" target=\"_blank",
                explorerViewUrl: $combine(this.options.repositoryUrl, "/n/showSpaceDetails/", nodeRefUri) + "\" target=\"_blank",
                cloudViewUrl: $combine(Alfresco.constants.URL_SERVICECONTEXT, "cloud/cloudUrl?nodeRef=" +strNodeRef)
             };
@@ -945,30 +944,6 @@
                }
             }
          }
-      },
-
-      /**
-       * Checkout to Google Docs.
-       * NOTE: Placeholder only, clients MUST implement their own checkoutToGoogleDocs action
-       *
-       * @method onActionCheckoutToGoogleDocs
-       * @param record {object} Object literal representing the file or folder to be actioned
-       */
-      onActionCheckoutToGoogleDocs: function dlA_onActionCheckoutToGoogleDocs(record)
-      {
-         Alfresco.logger.error("onActionCheckoutToGoogleDocs", "Abstract implementation not overridden");
-      },
-
-      /**
-       * Check in a new version from Google Docs.
-       * NOTE: Placeholder only, clients MUST implement their own checkinFromGoogleDocs action
-       *
-       * @method onActionCheckinFromGoogleDocs
-       * @param record {object} Object literal representing the file or folder to be actioned
-       */
-      onActionCheckinFromGoogleDocs: function dlA_onActionCheckinFromGoogleDocs(record)
-      {
-         Alfresco.logger.error("onActionCheckinFromGoogleDocs", "Abstract implementation not overridden");
       },
 
       /**

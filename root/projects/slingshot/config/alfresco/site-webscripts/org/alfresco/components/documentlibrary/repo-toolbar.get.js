@@ -17,7 +17,6 @@ function widgets()
       options: {
          rootNode: toolbar.rootNode != null ? toolbar.rootNode : "",
          hideNavBar: Boolean(toolbar.preferences.hideNavBar),
-         googleDocsEnabled: toolbar.googleDocsEnabled,
          repositoryBrowsing: toolbar.rootNode != null,
          useTitle: (useTitle == "true"),
          createContentByTemplateEnabled: model.createContentByTemplateEnabled,

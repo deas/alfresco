@@ -79,16 +79,6 @@
    background-image: url(../documentlibrary/indicators/locked-16.png);
 }
 
-.node-header .status-banner .google-docs-owner
-{
-   background-image: url(../documentlibrary/indicators/google-docs-editing-16.png);
-}
-
-.node-header .status-banner .google-docs-locked
-{
-   background-image: url(../documentlibrary/indicators/google-docs-locked-16.png);
-}
-
 .node-header .node-thumbnail
 {
    float: left;

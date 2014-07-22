@@ -22,7 +22,6 @@ function widgets()
          siteId: (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          rootNode: toolbar.rootNode != null ? toolbar.rootNode : "",
          hideNavBar: Boolean(toolbar.preferences.hideNavBar),
-         googleDocsEnabled: toolbar.googleDocsEnabled,
          repositoryBrowsing: toolbar.rootNode != null,
          useTitle: (useTitle == "true"),
          syncMode: toolbar.syncMode != null ? toolbar.syncMode : "",

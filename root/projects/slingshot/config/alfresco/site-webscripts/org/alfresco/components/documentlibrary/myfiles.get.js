@@ -22,7 +22,6 @@ function widgets()
          siteId: "",
          rootNode: user.properties['userHome'],
          hideNavBar: Boolean(toolbar.preferences.hideNavBar),
-         googleDocsEnabled: toolbar.googleDocsEnabled,
          repositoryBrowsing: toolbar.rootNode != null,
          useTitle: (useTitle == "true"),
          syncMode: toolbar.syncMode != null ? toolbar.syncMode : "",

@@ -50,8 +50,7 @@ define(["dojo/_base/declare",
          PROP_MODIFIER: "cm:modifier",
          PROP_MODIFIED: "cm:modified",
          PROP_CATEGORIES: "cm:categories",
-         PROP_TAGGABLE: "cm:taggable",
-         PROP_GOOGLEDOC_URL: "gd:url"
+         PROP_TAGGABLE: "cm:taggable"
       },
 
       /**

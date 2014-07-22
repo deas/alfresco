@@ -343,38 +343,6 @@
                </field>
             </appearance>
          </form>
-         <!-- Document Library Create Google Doc form -->
-         <form id="doclib-create-googledoc">
-            <field-visibility>
-               <show id="cm:name" />
-               <show id="cm:title" force="true" />
-               <show id="cm:description" force="true" />
-               <show id="cm:content" force="true" />
-               <show id="mimetype" />
-               <show id="gd:googleEditable" force="true" />
-            </field-visibility>
-            <appearance>
-               <field id="cm:title">
-                  <control template="/org/alfresco/components/form/controls/textfield.ftl" />
-               </field>
-               <field id="cm:content">
-                  <control>
-                     <control-param name="editorAppearance">none</control-param>
-                     <control-param name="forceContent">true</control-param>
-                  </control>
-               </field>
-               <field id="mimetype">
-                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
-                     <control-param name="contextProperty">mimeType</control-param>
-                  </control>
-               </field>
-               <field id="gd:googleEditable">
-                  <control template="/org/alfresco/components/form/controls/hidden.ftl">
-                     <control-param name="contextProperty">googleEditable</control-param>
-                  </control>
-               </field>
-            </appearance>
-         </form>
          <!-- Search form -->
          <form id="search">
             <field-visibility>

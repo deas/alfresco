@@ -142,15 +142,6 @@
           * @type boolean
           */
          hideNavBar: false,
-         
-         /**
-          * Google Docs enabled/disabled flag.
-          * 
-          * @property googleDocsEnabled
-          * @type boolean
-          * @default false
-          */
-         googleDocsEnabled: false,
 
          /**
           * Whether the Repo Browser is in use or not

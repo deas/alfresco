@@ -152,38 +152,17 @@
             {
                var lockedByLink = $userProfile(docData.lockedByUser, docData.lockedBy, 'class="theme-color-1"');
 
-               /* Google Docs Integration */
-               if (docData.custom.googleDocUrl && docData.custom.googleDocUrl !== "")
+               /* Working Copy handling */
+               if (docData.lockedByUser === Alfresco.constants.USERNAME)
                {
-                  if (docData.lockedByUser === Alfresco.constants.USERNAME)
-                  {
-                     // Google Doc / Owner banner
-                     bannerStatus = "google-docs-owner";
-                     bannerMsg = this.msg("banner.google-docs-owner", '<a href="' + docData.custom.googleDocUrl + '" target="_blank" class="theme-color-1">' +
-                        this.msg("banner.google-docs.link") + '</a>');
-                  }
-                  else
-                  {
-                     // Google Doc / Locked banner
-                     bannerStatus = "google-docs-locked";
-                     bannerMsg = this.msg("banner.google-docs-locked", lockedByLink, '<a href="' + docData.custom.googleDocUrl + '" target="_blank" class="theme-color-1">' +
-                        this.msg("banner.google-docs.link") + '</a>');
-                  }
+                  // Locked / Working Copy handling
+                  bannerStatus = docData.actionSet === "lockOwner" ? "lock-owner" : "editing";
+                  bannerMsg = this.msg("banner." + bannerStatus);
                }
-               /* Regular Working Copy handling */
-               else
+               else 
                {
-                  if (docData.lockedByUser === Alfresco.constants.USERNAME)
-                  {
-                     // Locked / Working Copy handling
-                     bannerStatus = docData.actionSet === "lockOwner" ? "lock-owner" : "editing";
-                     bannerMsg = this.msg("banner." + bannerStatus);
-                  }
-                  else 
-                  {
-                     bannerStatus = "locked";
-                     bannerMsg = this.msg("banner.locked", lockedByLink);
-                  }
+                  bannerStatus = "locked";
+                  bannerMsg = this.msg("banner.locked", lockedByLink);
                }
             }
             

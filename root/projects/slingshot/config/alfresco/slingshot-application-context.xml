@@ -243,10 +243,6 @@
       <property name="extensionName" value="preferences" />
    </bean>
    
-   <bean id="slingshot.scriptprocessor.googleDocsStatus" parent="baseScriptExtension" class="org.alfresco.web.scripts.GoogleDocsStatus">
-      <property name="extensionName" value="googleDocsStatus" />
-   </bean>
-   
    <bean id="slingshot.scriptprocessor.imapServerStatus" parent="baseScriptExtension" class="org.alfresco.web.scripts.ImapServerStatus">
       <property name="extensionName" value="imapServerStatus" />
    </bean>

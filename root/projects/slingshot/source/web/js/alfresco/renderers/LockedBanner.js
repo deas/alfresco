@@ -56,29 +56,14 @@ define(["dojo/_base/declare",
             nodeTypePrefix += "folder."
          }
 
-         // Google Docs Integration...
-         if (this.currentItem.workingCopy && this.currentItem.workingCopy.googleDocUrl != null)
+         // Working Copy handling...
+         if (this.currentItem.workingCopy && bannerUser.userName === AlfConstants.USERNAME)
          {
-            if (bannerUser.userName === AlfConstants.USERNAME)
-            {
-               this.bannerMessage = this.message(nodeTypePrefix + "google-docs-owner", { "0": '<a href="' + this.currentItem.workingCopy.googleDocUrl + '" target="_blank">' + this.message("details.banner.google-docs.link") + '</a>'});
-            }
-            else
-            {
-               this.bannerMessage = this.message(nodeTypePrefix + "google-docs-locked", { "0": bannerLink, "1": '<a href="' + this.currentItem.workingCopy.googleDocUrl + '" target="_blank">' + this.message("details.banner.google-docs.link") + '</a>'});
-            }
+            this.bannerMessage = this.message(nodeTypePrefix + (this.currentItem.workingCopy.isWorkingCopy ? "editing" : "lock-owner"));
          }
-         // Regular Working Copy handling...
-         else
+         else if (this.currentItem.workingCopy)
          {
-            if (this.currentItem.workingCopy && bannerUser.userName === AlfConstants.USERNAME)
-            {
-               this.bannerMessage = this.message(nodeTypePrefix + (this.currentItem.workingCopy.isWorkingCopy ? "editing" : "lock-owner"));
-            }
-            else if (this.currentItem.workingCopy)
-            {
-               this.bannerMessage = this.message(nodeTypePrefix + "locked", bannerLink);
-            }
+            this.bannerMessage = this.message(nodeTypePrefix + "locked", bannerLink);
          }
       }
    });

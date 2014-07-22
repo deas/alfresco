@@ -69,7 +69,6 @@
             <showCaption>true</showCaption>
             <showCancelButton>true</showCancelButton>
             <editInline>true</editInline>
-            <googleEditable>true</googleEditable>
          </properties>
       </component>
 

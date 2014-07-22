@@ -157,66 +157,10 @@ function getCreateContent()
       }
    }
 
-   // Google Docs enabled?
-   var googleDocsEnabled = false,
-      googleDocsConfig = config.scoped["DocumentLibrary"]["google-docs"];
-
-   if (googleDocsConfig !== null)
-   {
-      // Request the Google Docs status on the Repository
-      googleDocsEnabled = googleDocsStatus.enabled;
-      if (googleDocsEnabled)
-      {
-         var configs = googleDocsConfig.getChildren("creatable-types"),
-            creatableConfig,
-            configItem,
-            creatableType,
-            mimetype,
-            index,
-            url;
-
-         if (configs)
-         {
-            for (var i = 0; i < configs.size(); i++)
-            {
-               creatableConfig = configs.get(i).childrenMap["creatable"];
-               if (creatableConfig)
-               {
-                  for (var j = 0; j < creatableConfig.size(); j++)
-                  {
-                     configItem = creatableConfig.get(j);
-                     // Get type and mimetype from each config item
-                     creatableType = configItem.attributes["type"].toString();
-                     mimetype = configItem.value.toString();
-                     index = parseInt(configItem.attributes["index"] || "0");
-                     if (creatableType && mimetype)
-                     {
-                        url = "create-content?destination={nodeRef}&itemId=cm:content&formId=doclib-create-googledoc&mimeType=" + mimetype;
-                        createContent.push(
-                        {
-                           type: "pagelink",
-                           icon: creatableType,
-                           label: "google-docs." + creatableType,
-                           index: index,
-                           permission: "",
-                           params:
-                           {
-                              page: url
-                           }
-                        });
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-
    // Create content by template
    var createContentByTemplateConfig = config.scoped["DocumentLibrary"]["create-content-by-template"];
    createContentByTemplateEnabled = createContentByTemplateConfig !== null ? createContentByTemplateConfig.value.toString() == "true" : false;
 
-   toolbar.googleDocsEnabled = googleDocsEnabled;
    model.createContent = createContent.sort(sortByIndex);
    model.createContentByTemplateEnabled = createContentByTemplateEnabled;
 }

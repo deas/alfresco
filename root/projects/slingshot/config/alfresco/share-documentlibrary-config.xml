@@ -513,7 +513,6 @@
             <aspect name="emailserver:aliasable" />
             <aspect name="cm:taggable" />
             <aspect name="app:inlineeditable" />
-            <aspect name="gd:googleEditable" />
             <aspect name="cm:geographic" />
             <aspect name="exif:exif" />
             <aspect name="audio:audio" />
@@ -572,25 +571,6 @@
       <repository-url>http://localhost:8080/alfresco</repository-url>
       -->
 
-      <!--
-         Google Docs??? integration
-      -->
-      <google-docs>
-         <!--
-            Google Docs UI integration is now toggled by the respective subsystem state within the Repository.
-         -->
-         
-         <!--
-            The mimetypes of documents Google Docs allows you to create via the Share interface.
-            The I18N label is created from the "type" attribute, e.g. google-docs.doc=Google Docs&trade; Document
-         -->
-         <creatable-types>
-            <creatable type="doc">application/vnd.openxmlformats-officedocument.wordprocessingml.document</creatable>
-            <creatable type="xls">application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</creatable>
-            <creatable type="ppt">application/vnd.ms-powerpoint</creatable>
-         </creatable-types>
-      </google-docs>
-      
       <!--
          File upload configuration
       -->
@@ -675,21 +655,6 @@
             <evaluator>evaluator.doclib.indicator.nodeLocked</evaluator>
             <labelParam index="0">{jsNode.properties.cm_lockOwner.displayName}</labelParam>
             <labelParam index="1">{jsNode.properties.cm_lockOwner.userName}</labelParam>
-            <override>locked</override>
-         </indicator>
-         <!-- Google Docs Editing -->
-         <indicator id="google-docs-editing" index="10">
-            <evaluator>evaluator.doclib.indicator.googleDocsEditing</evaluator>
-            <override>editing</override>
-         </indicator>
-         <indicator id="google-docs-owner" index="10">
-            <evaluator>evaluator.doclib.indicator.googleDocsOwner</evaluator>
-            <override>lock-owner</override>
-         </indicator>
-         <indicator id="google-docs-locked" index="10">
-            <evaluator>evaluator.doclib.indicator.googleDocsLocked</evaluator>
-            <labelParam index="0">{jsNode.properties.owner.displayName}</labelParam>
-            <labelParam index="1">{jsNode.properties.owner.userName}</labelParam>
             <override>locked</override>
          </indicator>
          <!-- Workflows -->
@@ -1161,32 +1126,6 @@
             <evaluator>evaluator.doclib.action.viewInExplorer</evaluator>
          </action>
 
-         <!-- Checkout to Google Docs -->
-         <action id="document-checkout-to-googledocs" type="javascript" label="actions.document.checkout-google">
-            <param name="function">onActionCheckoutToGoogleDocs</param>
-            <permissions>
-               <permission allow="true">Write</permission>
-            </permissions>
-            <!-- gd:googleEditable -->
-            <evaluator>evaluator.doclib.action.googleDocsCheckOut</evaluator>
-         </action>
-
-         <!-- Checkin from Google Docs -->
-         <action id="document-checkin-from-googledocs" type="javascript" label="actions.document.checkin-google">
-            <param name="function">onActionCheckinFromGoogleDocs</param>
-            <!-- gd:googleResource, cm:workingcopy & cm:workingCopyOwner = currentUser OR cm:checkedOut, cm:lockOwner = currentUser -->
-            <evaluator>evaluator.doclib.action.googleDocsCheckIn</evaluator>
-            <override>document-checkout-to-googledocs</override>
-         </action>
-
-         <!-- View in Google Docs -->
-         <action id="document-view-googledoc" type="link" icon="document-view-content" label="actions.document.view-google-doc">
-            <param name="href">{workingCopy.googleDocUrl}</param>
-            <param name="target">_blank</param>
-            <!-- gd:googleResource -->
-            <evaluator>evaluator.doclib.action.googleDocsView</evaluator>
-         </action>
-
          <!-- View on Google Maps -->
          <action id="document-view-googlemaps" type="pagelink" label="actions.document.view-google-map">
             <param name="page">geographic-map?nodeRef={node.nodeRef}</param>
@@ -1273,9 +1212,6 @@
             <action index="190" id="document-inline-edit" />
             <action index="200" id="document-edit-online" />
             <action index="210" id="document-edit-offline" />
-            <action index="220" id="document-view-googledoc" />
-            <action index="230" id="document-checkout-to-googledocs" />
-            <action index="240" id="document-checkin-from-googledocs" />
             <action index="250" id="document-copy-to" />
             <action index="260" id="document-move-to" />
             <action index="270" id="document-delete" />
@@ -1304,9 +1240,6 @@
             <action index="180" id="document-inline-edit" />
             <action index="190" id="document-edit-online" />
             <action index="200" id="document-edit-offline" />
-            <action index="210" id="document-view-googledoc" />
-            <action index="220" id="document-checkout-to-googledocs" />
-            <action index="230" id="document-checkin-from-googledocs" />
             <action index="240" id="document-copy-to" />
             <action index="250" id="document-move-to" />
             <action index="260" id="document-delete" />
