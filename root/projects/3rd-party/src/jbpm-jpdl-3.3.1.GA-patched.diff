@@ -1,0 +1,13 @@
+diff -ruabB jbpm-jpdl-3.3.1.GA-sources/org/jbpm/graph/node/Join.java jbpm-jpdl-3.3.1.GA-sources-patched/org/jbpm/graph/node/Join.java
+--- jbpm-jpdl-3.3.1.GA-sources/org/jbpm/graph/node/Join.java	2014-07-08 15:01:02.500027600 +0300
++++ jbpm-jpdl-3.3.1.GA-sources-patched/org/jbpm/graph/node/Join.java	2014-07-08 14:56:38.000000000 +0300
+@@ -121,7 +121,8 @@
+         Session session = (jbpmContext!=null ? jbpmContext.getSession() : null);
+         if (session!=null) {
+           // force version increment by default (LockMode.FORCE)
+-          LockMode lockMode = parentLockMode != null ? LockMode.parse(parentLockMode) : LockMode.FORCE;
++          // MNT-11735 the default is LockMode.UPGRADE
++          LockMode lockMode = parentLockMode != null ? LockMode.parse(parentLockMode) : LockMode.UPGRADE;
+           log.debug("acquiring " + lockMode + " lock on " + parentToken);
+           // lock updates as appropriate, no need to flush here
+           session.lock(parentToken, lockMode);
