@@ -554,6 +554,19 @@
        */
       onPropertiesLoaded: function HPV_onPropertiesLoaded(response){
          this.widgets.formContainer.innerHTML = response.serverResponse.responseText;
+         var dateFields = Dom.getElementsByClassName("viewmode-value-date", "span", this.widgets.formContainer);
+		 
+         for (var i = 0; i < dateFields.length; i++)
+         {
+            var showTime = Dom.getAttribute(dateFields[i], "data-show-time"),
+                fieldValue = Dom.getAttribute(dateFields[i], "data-date-iso8601"),
+                ignoreTime = (showTime == 'false'),
+                dateFormat = ignoreTime ? Alfresco.util.message("date-format.defaultDateOnly") : Alfresco.util.message("date-format.default"),
+                theDate = Alfresco.util.fromISO8601(fieldValue, ignoreTime);
+            
+            dateFields[i].innerHTML = Alfresco.util.formatDate(theDate, dateFormat);
+         }
+         
       },
 
       /**
