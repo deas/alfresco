@@ -2897,58 +2897,6 @@
                          windowtitle="Alfresco JLAN API" 
                          projectdir="${dir.project.jlan}"/>
    </target>
-   
-      
-   <!-- *********************************** -->
-   <!-- ** Forms Development Kit Project ** -->
-   <!-- *********************************** -->
-   
-   <target name="incremental-fdk" depends="package-fdk-client, package-fdk-repo" />
-      
-   <target name="build-fdk" depends="clean-fdk, incremental-fdk" />
-   
-   <target name="clean-fdk" depends="init">
-      <clean projectdir="${dir.project.fdk.client}" />
-      <clean projectdir="${dir.project.fdk.repo}" />
-   </target>
-   
-   <!--
-   <target name="compile-fdk" depends="init">
-      <compile-java projectdir="${dir.project.fdk.client}" />
-   </target>
-   -->
-   
-   <target name="package-fdk-client" depends="assemble-fdk-client">
-      <mkdir dir="${dir.project.fdk.client.dist}" />
-      <jar jarfile="${dir.project.fdk.client.dist}/${file.name.jar.fdk}" 
-           basedir="${dir.project.fdk.client.assemble}" />
-   </target>
-   
-   <target name="assemble-fdk-client" depends="init">
-      <mkdir dir="${dir.project.fdk.client.assemble}" />
-      <copy todir="${dir.project.fdk.client.assemble}">
-         <fileset dir="${dir.project.fdk.client.config}" />
-      </copy>
-      <copy todir="${dir.project.fdk.client.assemble}/META-INF">
-         <fileset dir="${dir.project.fdk.client.src.web}" />
-      </copy>
-   </target>
-   
-   <target name="package-fdk-repo" depends="init">
-      <mkdir dir="${dir.project.fdk.repo.dist}" />
-      <zip destfile="${dir.project.fdk.repo.dist}/${file.name.amp.fdk}" update="true" encoding="UTF-8">
-         <zipfileset file="${dir.project.fdk.repo.config}/alfresco/module/org_alfresco_module_fdk/module.properties"/>
-         <zipfileset dir="${dir.project.fdk.repo.config}" prefix="config">
-            <exclude name="**/module.properties" />
-         </zipfileset>
-      </zip>
-   </target>
-   
-   <target name="install-fdk-amp" depends="package-fdk-repo">
-      <echo>Installing FDK into WAR...</echo>
-      <install-amp ampfile="${dir.project.fdk.repo.dist}/${file.name.amp.fdk}"
-                   warfile="${dir.project.webclient.dist}/${file.name.war.webclient}" />
-   </target>
 
    <!-- ******************************** -->
    <!-- ** JavaScript Library Targets ** -->

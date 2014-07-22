@@ -106,8 +106,7 @@
            description="Creates the distribution files for all platforms"
            depends="distribute-amps,
                     distribute-installers,
-                    distribute-extras,
-                    distribute-fdk" />
+                    distribute-extras" />
 
    <target name="distribute-core" 
            description="Creates the patch distribution files for all platforms"
@@ -978,20 +977,6 @@
          <zipfileset file="${file.jar.webeditor.yui}" />
       </zip>
       <copy todir="${dir.continuous.assemble}" file="${dir.project.webeditor.dist}/${file.name.war.webeditor}" />
-   </target>
-   
-   <!-- ***************** -->
-   <!-- ** FDK targets ** -->
-   <!-- ***************** -->
-   
-   <target name="distribute-fdk" depends="set-build-number, continuous-init, incremental-fdk"
-           description="Distributes the Forms Development Kit (FDK) files">
-      <mkdir dir="${dir.continuous.dist}" />
-      <zip destfile="${dir.continuous.dist}/${file.name.dist.fdk}.zip">
-         <fileset dir="${dir.project.fdk.client.dist}" includes="${file.name.jar.fdk}" />
-         <fileset dir="${dir.project.fdk.repo.dist}" includes="${file.name.amp.fdk}" />
-         <fileset file="${dir.project.fdk}/README_fdk.txt" />
-      </zip>
    </target>
 
    <!-- ************************************ -->

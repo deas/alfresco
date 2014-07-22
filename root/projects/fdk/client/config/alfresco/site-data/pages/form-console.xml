@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<page>
-   <title>Form Console</title>
-   <description>Form console page</description>
-   <template-instance>form-console</template-instance>
-   <authentication>user</authentication>
-</page>

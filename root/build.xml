@@ -1327,32 +1327,6 @@
       <minimize-javascript sourcedir="${dir.deploy.tomcat.application.webeditor}" 
                            destdir="${dir.deploy.tomcat.application.webeditor}" />
    </target>
-      
-   <target name="deploy-fdk" depends="deploy-share-fdk, deploy-repo-fdk-exploded" />
-   
-   <target name="deploy-share-fdk" depends="package-fdk-client">
-      <copy todir="${home.tomcat.application}/shared/lib" 
-            file="${dir.project.fdk.client.dist}/${file.name.jar.fdk}" />
-   </target>
-      
-   <target name="deploy-share-fdk-exploded" depends="init">
-      <copy todir="${dir.deploy.tomcat.application.slingshot}" verbose="${copy.verbose}">
-         <fileset dir="${dir.project.fdk.client.src.web}" />
-      </copy>
-      <copy todir="${dir.deploy.tomcat.application.slingshot}/WEB-INF/classes" verbose="${copy.verbose}">
-         <fileset dir="${dir.project.fdk.client.config}" />
-      </copy>
-   </target>
-   
-   <target name="deploy-repo-fdk-exploded" depends="init">
-      <copy todir="${home.tomcat}/shared/classes" verbose="${copy.verbose}" overwrite="yes">
-         <fileset dir="${dir.project.fdk.repo.config}" includes="**/fdk-*.*" excludes="**/fdk-context.xml" />
-      </copy>
-      <copy todir="${home.tomcat}/shared/classes/alfresco/extension" verbose="${copy.verbose}" overwrite="yes">
-         <fileset dir="${dir.project.fdk.repo.config}/alfresco/module/org_alfresco_module_fdk" 
-                  includes="fdk-context.xml" />
-      </copy>
-   </target>
 
    <target name="start-tomcat-webclient" 
            description="Starts the Alfresco Tomcat server on Windows" 
