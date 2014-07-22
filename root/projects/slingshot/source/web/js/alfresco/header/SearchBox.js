@@ -111,11 +111,20 @@ define(["dojo/_base/declare",
     */
    var LiveSearchItem = declare([_Widget, _Templated, AlfCore], {
 
+      searchBox: null,
+      
       /**
        * @instance
        * @type {string}
        */
-      templateString: LiveSearchItemTemplate
+      templateString: LiveSearchItemTemplate,
+      
+      /**
+       * Handle storing of a "last" user search in local storage list
+       */
+      onResultClick: function alfresco_header_LiveSearchItem_onResultClick(evt) {
+         this.searchBox.onSaveLastUserSearch();
+      }
    });
 
    /**
@@ -224,6 +233,8 @@ define(["dojo/_base/declare",
       
       _requests: null,
       
+      _lastSearchIndex: 0,
+      
       /**
        * @instance
        * @type {string}
@@ -252,8 +263,12 @@ define(["dojo/_base/declare",
          
          DomAttr.set(this._searchTextNode, "id", "HEADER_SEARCHBOX_FORM_FIELD");
          DomAttr.set(this._searchTextNode, "placeholder", this.message("search.instruction"));
+         
          on(this._searchTextNode, "keyup", lang.hitch(this, function(evt) {
             this.onSearchBoxKeyUp(evt);
+         }));
+         on(this._searchTextNode, "keydown", lang.hitch(this, function(evt) {
+            this.onSearchBoxKeyDown(evt);
          }));
          
          // construct the optional advanced search menu
@@ -326,7 +341,7 @@ define(["dojo/_base/declare",
       linkToFacetedSearch: true,
 
       /**
-       * This function is called from the [onSearchBoxKeyUp fuction]{@link module:alfresco/header/SearchBox#onSearchBoxKeyUp}
+       * This function is called from the [onSearchBoxKeyUp function]{@link module:alfresco/header/SearchBox#onSearchBoxKeyUp}
        * when the enter key is pressed and will generate a link to either the faceted search page or the old search page
        * based on the value of [linkToFacetedSearch]{@link module:alfresco/header/SearchBox#linkToFacetedSearch}. This function
        * can also be overridden by extending modules to link to an entirely new search page.
@@ -358,6 +373,107 @@ define(["dojo/_base/declare",
          this.alfLog("log", "Generated search page link", url, this);
          return url;
       },
+      
+      /**
+       * Check if the web browser supports HTML5 local storage
+       * 
+       * @returns {boolean} true if local storage is available, false otherwise
+       */
+      _supportsLocalStorage : function alfresco_header_SearchBox__supportsLocalStorage() {
+         try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+         }
+         catch (e) {
+            return false;
+         }
+      },
+      
+      onSaveLastUserSearch: function alfresco_header_SearchBox__onSaveLastUserSearch() {
+         var terms = lang.trim(this._searchTextNode.value);
+         if (terms.length !== 0)
+         {
+            if (this._supportsLocalStorage())
+            {
+               var searches = JSON.parse(localStorage.getItem("ALF_SEARCHBOX_HISTORY")) || [];
+               if (searches.length === 0 || searches[searches.length - 1] !== terms)
+               {
+                  searches.push(terms);
+                  if (searches.length > 16)
+                  {
+                     searches = searches.slice(searches.length - 16);
+                  }
+                  localStorage.setItem("ALF_SEARCHBOX_HISTORY", JSON.stringify(searches));
+               }
+            }
+         }
+      },
+      
+      /**
+       * Handles keydown events that occur on the <input> element. Used to page through last user searches
+       * and ensure no other components handle the cursor key events.
+       * @instance
+       * @param {object} evt The keydown event
+       */
+      onSearchBoxKeyDown: function alfresco_header_SearchBox__onSearchBoxKeyDown(evt) {
+         switch (evt.keyCode)
+         {
+            // Ensure left/right arrow key events are handled only by this component
+            case 37:
+            case 39:
+            {
+               evt.stopPropagation();
+               break;
+            }
+            
+            // Up Arrow press
+            case 38:
+            {
+               evt.stopPropagation();
+               if (this._supportsLocalStorage())
+               {
+                  var searches = JSON.parse(localStorage.getItem("ALF_SEARCHBOX_HISTORY"));
+                  if (searches)
+                  {
+                     if (this._lastSearchIndex === 0)
+                     {
+                        this._lastSearchIndex = searches.length - 1;
+                     }
+                     else
+                     {
+                        this._lastSearchIndex--;
+                     }
+                     this._searchTextNode.value = searches[this._lastSearchIndex];
+                     this.onSearchBoxKeyUp(evt);
+                  }
+               }
+               break;
+            }
+            
+            // Down Arrow press
+            case 40:
+            {
+               evt.stopPropagation();
+               if (this._supportsLocalStorage())
+               {
+                  var searches = JSON.parse(localStorage.getItem("ALF_SEARCHBOX_HISTORY"));
+                  if (searches)
+                  {
+                     if (this._lastSearchIndex === searches.length - 1)
+                     {
+                        this._lastSearchIndex = 0;
+                     }
+                     else
+                     {
+                        this._lastSearchIndex++;
+                     }
+                     this._searchTextNode.value = searches[this._lastSearchIndex];
+                     this.onSearchBoxKeyUp(evt);
+                  }
+               }
+               break;
+            }
+         }
+      },
 
       /**
        * Handles keyup events that occur on the <input> element used for capturing search terms.
@@ -368,10 +484,12 @@ define(["dojo/_base/declare",
          var terms = lang.trim(this._searchTextNode.value);
          switch (evt.keyCode)
          {
+            // Enter key press
             case 13:
             {
-               if (terms.length > 0)
+               if (terms.length !== 0)
                {
+                  this.onSaveLastUserSearch();
                   // ACE-1798 - always close the live search drop-down on enter keypress..
                   this.clearResults();
                   this.alfLog("log", "Search request for: ", terms);
@@ -384,6 +502,8 @@ define(["dojo/_base/declare",
                }
                break;
             }
+            
+            // Other key press
             default:
             {
                if (this.liveSearch)
@@ -449,6 +569,7 @@ define(["dojo/_base/declare",
                      if (item.description) desc += (desc.length !== 0 ? "\r\n" : "") + this.encodeHTML(item.description);
                      // build the widget for the item - including the thumbnail url for the document
                      var itemLink = new LiveSearchItem({
+                        searchBox: this,
                         cssClass: "alf-livesearch-thumbnail",
                         title: desc,
                         label: this.encodeHTML(item.name),
@@ -493,6 +614,7 @@ define(["dojo/_base/declare",
                   // construct each Site item as a LiveSearchItem widget
                   array.forEach(response.items, function(item) {
                      var itemLink = new LiveSearchItem({
+                        searchBox: this,
                         cssClass: "alf-livesearch-icon",
                         title: this.encodeHTML(item.description),
                         label: this.encodeHTML(item.title),
@@ -528,6 +650,7 @@ define(["dojo/_base/declare",
                      var fullName = item.firstName + " " + item.lastName;
                      var meta = this.encodeHTML(item.jobtitle || "") + (item.location ? (", "+this.encodeHTML(item.location)) : "");
                      var itemLink = new LiveSearchItem({
+                        searchBox: this,
                         cssClass: "alf-livesearch-icon",
                         title: this.encodeHTML(item.jobtitle || ""),
                         label: this.encodeHTML(fullName + " (" + item.userName + ")"),
