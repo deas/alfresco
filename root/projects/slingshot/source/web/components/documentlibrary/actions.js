@@ -200,7 +200,7 @@
             nodeRef = jsNode.isLink && !$isValueSet(nodeRef) ? "invalidlink" : nodeRef,
             strNodeRef = nodeRef.toString(),
             nodeRefUri = nodeRef.uri,
-            contentUrl = jsNode.contentURL,
+            contentUrl = Alfresco.util.encodeURIPath(jsNode.contentURL),
             workingCopy = record.workingCopy || {},
             recordSiteId = $isValueSet(record.location.site) ? record.location.site.name : null,
             fnPageURL = Alfresco.util.bind(function(page)
