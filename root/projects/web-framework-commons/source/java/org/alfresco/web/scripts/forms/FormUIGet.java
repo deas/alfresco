@@ -1422,7 +1422,7 @@ public class FormUIGet extends DeclarativeWebScript
     {
         // we can't continue without at least a control template
         if (fieldConfig == null || fieldConfig.getControl() == null || 
-            fieldConfig.getControl().getTemplate() == null)
+            fieldConfig.getControl().getTemplate() == null || fieldConfig.getAttributes() == null || fieldConfig.getAttributes().get("set") != null || !fieldConfig.getAttributes().get("set").isEmpty())
         {
             return null;
         }
