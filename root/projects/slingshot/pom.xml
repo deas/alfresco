@@ -360,6 +360,7 @@
                                 <include>${project.build.directory}/${project.build.finalName}/yui/uploader/uploader-min.js</include>
                                 <include>${project.build.directory}/${project.build.finalName}/yui/calendar/calendar-min.js</include>
                                 <include>${project.build.directory}/${project.build.finalName}/yui/resize/resize-min.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/history/history-min.js</include>
                                 <include>${project.build.directory}/${project.build.finalName}/yui/yui-patch.js</include>
                             </includes>
                             <!-- files to exclude, path relative to output's directory <excludes> <exclude>**/*.pack.js</exclude>
@@ -395,6 +396,7 @@
                                 <include>${project.build.directory}/${project.build.finalName}/yui/uploader/uploader-debug.js</include>
                                 <include>${project.build.directory}/${project.build.finalName}/yui/calendar/calendar-debug.js</include>
                                 <include>${project.build.directory}/${project.build.finalName}/yui/resize/resize-debug.js</include>
+                                <include>${project.build.directory}/${project.build.finalName}/yui/history/history-debug.js</include>
                                 <include>${project.build.directory}/${project.build.finalName}/yui/yui-patch.js</include>
                             </includes>
                             <!-- files to exclude, path relative to output's directory <excludes> <exclude>**/*.pack.js</exclude>
