@@ -83,8 +83,13 @@
       else
       {
          var id = scope.id + '-preview-' + oRecord.getId();
-         elCell.innerHTML = '<span id="' + id + '" class="icon32">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + Alfresco.util.getFileIcon(name) + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
-
+         var fileIcon = Alfresco.util.getFileIcon(name);
+         if (fileIcon == "generic-file-32.png")
+         {
+            fileIcon = Alfresco.util.getFileIconByMimetype(node.mimetype);
+         }
+         elCell.innerHTML = '<span id="' + id + '" class="icon32">' + (isLink ? '<span class="link"></span>' : '') + Alfresco.DocumentList.generateFileFolderLinkMarkup(scope, record) + '<img id="' + imgId + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/filetypes/' + fileIcon + '" alt="' + extn + '" title="' + $html(name) + '" /></a></span>';
+		 
          // Preview tooltip
          scope.previewTooltips.push(id);
       }
