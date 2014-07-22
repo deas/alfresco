@@ -59,8 +59,6 @@
                   includes="${includes.webscriptframework.libs.commons}" />
          <fileset dir="${dir.project.3rdparty.lib}/spring-surf" 
                   includes="${includes.webscriptframework.libs.spring-surf}" />
-         <fileset dir="${dir.project.3rdparty.lib}/abdera"  
-                  includes="${includes.webscriptframework.libs.abdera}" />
       </copy>
    </target>
 
@@ -150,8 +148,6 @@
                   includes="${includes.webscriptframework.libs.optional}" />
          <fileset dir="${dir.project.3rdparty.lib}/commons" 
                   includes="${includes.webscriptframework.libs.commons}" />
-         <fileset dir="${dir.project.3rdparty.lib}/abdera"  
-                  includes="${includes.webscriptframework.libs.abdera}" />
          <fileset dir="${dir.project.core.dist}" 
                   includes="${file.name.jar.core}" />
          <fileset dir="${dir.project.mobile.dist}" 

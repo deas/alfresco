@@ -76,10 +76,6 @@
 	<classpathentry kind="lib" path="lib/slf4j-api-1.5.11.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.11.jar"/>
 	<classpathentry kind="lib" path="lib/jsr107cache-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-core-0.4.0-incubating.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-extensions-json-0.4.0-incubating.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-i18n-0.4.0-incubating.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/abdera/abdera-parser-0.4.0-incubating.jar"/>
 	<classpathentry kind="lib" path="lib/FastInfoset-1.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/geronimo-annotation_1.0_spec-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/geronimo-stax-api_1.0_spec-1.0.1.jar"/>
@@ -116,8 +112,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-webscripts-1.2.1-SNAPSHOT-tests.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-webscripts-1.2.1-SNAPSHOT.jar" sourcepath="src/spring-webscripts-1.2.1-SNAPSHOT-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spring-surf/spring-webscripts-api-1.2.1-SNAPSHOT.jar" sourcepath="src/spring-webscripts-api-1.2.1-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="lib" path="lib/abdera/axiom-impl-1.2.5.jar"/>
-	<classpathentry kind="lib" path="lib/abdera/axiom-api-1.2.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-compress-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons/commons-io-2.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/openoffice/openoffice-juh-3.1.0.jar"/>
@@ -142,7 +136,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/rome-0.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/tagsoup-1.2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/wss4j-1.5.12.jar" sourcepath="src/wss4j-src-1.5.12.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/chemistry-abdera-0.1-incubating-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chemistry-tck-atompub-0.1-incubating-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/pdfbox-1.8.4-alfresco-patched.jar" sourcepath="src/pdfbox-1.8.4-patched-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/fontbox-1.8.4.jar"/>

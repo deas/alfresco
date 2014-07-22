@@ -146,7 +146,7 @@
     <dependency.opencmis.version>0.10.0</dependency.opencmis.version>
     <dependency.antlr.version>3.4</dependency.antlr.version>
     <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
-    <dependency.surf.version>1.2.1-M16</dependency.surf.version>
+    <dependency.surf.version>1.2.1-M17</dependency.surf.version>
     <dependency.activiti.version>5.13-alf-20140107</dependency.activiti.version>
     <dependency.poi.version>3.10-FINAL</dependency.poi.version>
     <dependency.dojo.version>1.8.3</dependency.dojo.version>

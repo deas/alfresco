@@ -929,7 +929,6 @@
          <fileset dir="${dir.project.3rdparty.lib}/jbpm" includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/activiti" includes="*.jar" />
          <fileset dir="${dir.project.3rdparty.lib}/fop" includes="*.jar"/>
-         <fileset dir="${dir.project.3rdparty.lib}/abdera" includes="*.jar"/>
          <fileset dir="${dir.project.3rdparty.lib}/gdata-1.47.1" includes="*.jar"/>
          <fileset dir="${dir.project.3rdparty.lib}/spring-social" includes="*.jar"/>
 		 <fileset dir="${dir.project.3rdparty.lib}/opensaml" includes="*.jar"/>
@@ -1000,8 +999,6 @@
                   includes="${includes.webscriptframework.libs.commons}" />
          <fileset dir="${dir.project.3rdparty.lib}/spring-surf" 
                   includes="${includes.webscriptframework.libs.spring-surf}" />
-         <fileset dir="${dir.project.3rdparty.lib}/abdera"  
-                  includes="${includes.webscriptframework.libs.abdera}" />
       </copy>
 
       <!-- unzip and add 3rd party javascript library -->
@@ -1224,8 +1221,6 @@
                   includes="${includes.webscriptframework.libs.commons}" />
          <fileset dir="${dir.project.3rdparty.lib}/spring-surf" 
                   includes="${includes.webeditor.spring-surf}" />
-         <fileset dir="${dir.project.3rdparty.lib}/abdera"  
-                  includes="${includes.webscriptframework.libs.abdera}" />
       </copy>
 
       <!-- unzip and add YUI library -->
@@ -1397,7 +1392,6 @@
             <include name="acegi-security-*.jar"/>
             <include name="alfresco-xmlfactory-*.jar"/>
             <include name="antlr-*.jar"/>
-            <include name="chemistry-abdera-*.jar"/>
             <include name="chemistry-opencmis-client-api-*.jar"/>
             <include name="chemistry-opencmis-client-bindings-*.jar"/>
             <include name="chemistry-opencmis-client-impl-*.jar"/>

@@ -158,15 +158,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-        <!-- This is now deployed at:
-            | http://artifacts.alfresco.com/nexus/content/repositories/thirdparty/org/apache/chemistry/chemistry-abdera/0.1-incubating-unreleased/
-            -->
-        <dependency>
-            <groupId>org.apache.chemistry</groupId>
-            <artifactId>chemistry-abdera</artifactId>
-            <version>0.1-incubating-unreleased</version>
-        </dependency>
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>woodstox-core-asl</artifactId>
