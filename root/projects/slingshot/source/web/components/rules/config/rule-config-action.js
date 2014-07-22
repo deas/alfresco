@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -795,7 +795,7 @@
                   this.widgets.destinationDialog.setOptions(
                   {
                      allowedViewModes: allowedViewModes,
-                     nodeRef: this.options.rootNode,
+                     rootNode: this.options.rootNode,
                      pathNodeRef: pathNodeRef ? new Alfresco.util.NodeRef(pathNodeRef) : null
                   });
                   this.widgets.destinationDialog.showDialog();
