@@ -689,6 +689,7 @@
                max: 100,
                crop: true
             }, "change", parent._msg("Alfresco.forms.validation.length.message"));
+            form.addValidation(parent.id + "-create-quota", Alfresco.forms.validation.number, null, "keyup");
 
             // Add an enter listener to the form
             new YAHOO.util.KeyListener(form.formId, {
@@ -931,6 +932,7 @@
             form.addValidation(parent.id + "-update-firstname", Alfresco.forms.validation.mandatory, null, "keyup");
             form.addValidation(parent.id + "-update-email", Alfresco.forms.validation.mandatory, null, "keyup");
             form.addValidation(parent.id + "-update-email", Alfresco.forms.validation.email, null, "keyup");
+            form.addValidation(parent.id + "-update-quota", Alfresco.forms.validation.number, null, "keyup");
             
             // Initialise the form
             form.init();
