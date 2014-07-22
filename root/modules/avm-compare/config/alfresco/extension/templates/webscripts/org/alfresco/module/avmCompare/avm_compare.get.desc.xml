@@ -1,8 +1,0 @@
-<webscript>
-   <shortname>Compare AVM directories</shortname>
-   <description>Compares two AVM directories</description>
-   <url>/admin/avm_compare?baseline_version={version}&amp;baseline_path={path}&amp;changeset_version={version}&amp;changeset_path={path}</url>
-   <format default="text">extension</format>
-   <authentication>admin</authentication>
-   <transaction>required</transaction>
-</webscript>
