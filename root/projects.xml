@@ -471,7 +471,6 @@
 	  <addPath>
             <path refid="classpath.compile.system-build-test" />
             <pathelement location="${dir.project.solrclient.classes.test}" />
-            <pathelement location="${dir.project.solr4.classes.test}" />
             <pathelement location="${dir.project.solr.classes.test}" />
          </addPath>
 		 </compile-java>
@@ -557,19 +556,13 @@
                     <include name="*.jar"/>
                 </fileset>
 
-                <pathelement location="${dir.project.solr4.instance}" />
                 <pathelement location="${dir.project.solr.instance}" />
                 <pathelement location="${dir.project.datamodel.config}" />
                 <pathelement location="${dir.project.solrclient.classes}" />
                 <pathelement location="${dir.project.solrclient.classes.test}" />
-                <pathelement location="${dir.project.solr4.classes}" />
-                <pathelement location="${dir.project.solr4.classes.test}" />
                 <pathelement location="${dir.project.solr.classes}" />
                 <pathelement location="${dir.project.solr.classes.test}" />
 
-                <fileset dir="${dir.project.solr4}/lib">
-                    <include name="*.jar"/>
-                </fileset>
                 <fileset dir="${dir.project.solr}/lib">
                     <include name="*.jar"/>
                 </fileset>
@@ -584,9 +577,6 @@
 
                 <!-- Solr dependencies -->
                 <fileset dir="${dir.project.solr.instance.lib}">
-                    <include name="*.jar"/>
-                </fileset>
-                <fileset dir="${dir.project.solr4.instance.lib}">
                     <include name="*.jar"/>
                 </fileset>
 
