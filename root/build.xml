@@ -210,12 +210,6 @@
          <include name="**/org/alfresco/Repository*TestSuite.java" />
 		 <!-- Exclude all the test classes that are run one by one -->
          <exclude name="**/org/alfresco/RepositoryStartStopTest.java" />
-         <exclude name="**/org/alfresco/cmis/PropertyFilterTest.java" />
-         <exclude name="**/org/alfresco/cmis/acl/CMISAccessControlServiceTest.java" />
-         <exclude name="**/org/alfresco/cmis/dictionary/CMISDictionaryTest.java" />
-         <exclude name="**/org/alfresco/cmis/mapping/CMISPropertyServiceTest.java" />
-         <exclude name="**/org/alfresco/cmis/renditions/CMISRenditionServiceTest.java" />
-         <exclude name="**/org/alfresco/cmis/search/QueryTest.java" />
          <exclude name="**/org/alfresco/email/server/EmailServiceImplTest.java" />
          <exclude name="**/org/alfresco/encryption/EncryptorTest.java" />
          <exclude name="**/org/alfresco/encryption/KeyStoreKeyProviderTest.java" />
@@ -435,16 +429,13 @@
          <exclude name="**/org/alfresco/repo/web/util/paging/PagingTest.java" />
          <exclude name="**/org/alfresco/repo/management/subsystems/test/SubsystemsTest.java" />
          <exclude name="**/org/alfresco/rest/api/tests/ApiTest.java" />
-         <exclude name="**/org/alfresco/repo/cmis/rest/test/PolicyTest.java" />
          <exclude name="**/org/alfresco/repo/remoteticket/RemoteAlfrescoTicketServiceTest.java" />
          <exclude name="**/org/alfresco/repo/webdav/RenameShuffleDetectionTest.java" />
          <exclude name="**/org/alfresco/repo/webdav/MoveMethodTest.java" />
          <exclude name="**/org/alfresco/rest/api/tests/TestCMISAPI.java" />
          <exclude name="**/org/alfresco/repo/webdav/GetMethodTest.java" />
          <exclude name="**/org/alfresco/repo/webservice/CMLUtilTest.java" />
-         <exclude name="**/org/alfresco/cmis/changelog/CMISChangeLogServiceTest.java" />
          <exclude name="**/org/alfresco/rest/workflow/api/tests/ProcessDefinitionWorkflowApiTest.java" />
-         <exclude name="**/org/alfresco/repo/cmis/rest/test/AspectTest.java" />
          <exclude name="**/org/alfresco/rest/workflow/api/tests/ProcessWorkflowApiTest.java" />
          <exclude name="**/org/alfresco/repo/webdav/WebDAVMethodTest.java" />
          <exclude name="**/org/alfresco/repo/webdav/WebDAVHelperTest.java" />
@@ -453,7 +444,6 @@
          <exclude name="**/org/alfresco/rest/workflow/api/tests/DeploymentWorkflowApiTest.java" />
          <exclude name="**/org/alfresco/repo/web/scripts/WebScriptTestSuite.java" />
          <exclude name="**/org/alfresco/repo/webdav/UnlockMethodTest.java" />
-         <exclude name="**/org/alfresco/repo/cmis/rest/test/CMISAtomTemplatesTest.java" />
          <exclude name="**/org/alfresco/rest/workflow/api/tests/TaskWorkflowApiTest.java" />
          <exclude name="**/org/alfresco/repo/webdav/LockInfoImplTest.java" />
 

@@ -28,7 +28,6 @@ import org.alfresco.webservice.test.ActionServiceSystemTest;
 import org.alfresco.webservice.test.AdministrationServiceSystemTest;
 import org.alfresco.webservice.test.AuthenticationServiceSystemTest;
 import org.alfresco.webservice.test.AuthoringServiceSystemTest;
-import org.alfresco.webservice.test.CXFAuthenticationSystemTest;
 import org.alfresco.webservice.test.ClassificationServiceSystemTest;
 import org.alfresco.webservice.test.ContentServiceSystemTest;
 import org.alfresco.webservice.test.DictionaryServiceSystemTest;
@@ -70,11 +69,6 @@ public class MiscSystemTestSuite extends TestSuite
         suite.addTestSuite(AccessControlServiceSystemTest.class);
         suite.addTestSuite(DictionaryServiceSystemTest.class);
         suite.addTestSuite(TimeoutSystemTest.class);
-        suite.addTestSuite(CXFAuthenticationSystemTest.class);
-        
-        // cmis
-        // TODO Work out why this is failing
-        // suite.addTest(new JUnit4TestAdapter(CmisRelationshipSystemTest.class));
         
         // SOLR
         suite.addTestSuite(SOLRAPIClientTest.class);
