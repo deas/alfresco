@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -327,7 +327,11 @@
        */
       onVisibilityChange: function CS_onVisibilityChange(type, args)
       {
-         new Element(this.widgets.isModerated).set("disabled", !new Element(this.widgets.isPublic).get("checked"));
+         var element = new Element(this.widgets.isModerated);
+         element.set("disabled", !new Element(this.widgets.isPublic).get("checked"));
+         // reset the flag
+         // ACE-2056
+         element.set("checked", false);
       },
 
       /**
