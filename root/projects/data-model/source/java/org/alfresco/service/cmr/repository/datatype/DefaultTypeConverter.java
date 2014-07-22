@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -134,84 +133,42 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public Byte convert(String source)
             {
-                try
-                {
-                    return NumberFormat.getNumberInstance().parse(source.toString()).byteValue();
-                }
-                catch(ParseException e)
-                {
-                    throw new NumberFormatException("Failed to parse number " + source);
-                }
+                return Byte.valueOf(source);
             }
         });
         addConverter(String.class, Short.class, new TypeConverter.Converter<String, Short>()
         {
             public Short convert(String source)
             {
-                try
-                {
-                    return NumberFormat.getNumberInstance().parse(source.toString()).shortValue();
-                }
-                catch(ParseException e)
-                {
-                    throw new NumberFormatException("Failed to parse number " + source);
-                }
+                return Short.valueOf(source);
             }
         });
         addConverter(String.class, Integer.class, new TypeConverter.Converter<String, Integer>()
         {
             public Integer convert(String source)
             {
-                try
-                {
-                    return NumberFormat.getNumberInstance().parse(source.toString()).intValue();
-                }
-                catch(ParseException e)
-                {
-                    throw new NumberFormatException("Failed to parse number " + source);
-                }
+                return Integer.valueOf(source);
             }
         });
         addConverter(String.class, Long.class, new TypeConverter.Converter<String, Long>()
         {
             public Long convert(String source)
             {
-                try
-                {
-                    return NumberFormat.getNumberInstance().parse(source.toString()).longValue();
-                }
-                catch(ParseException e)
-                {
-                    throw new NumberFormatException("Failed to parse number " + source);
-                }
+                return Long.valueOf(source);
             }
         });
         addConverter(String.class, Float.class, new TypeConverter.Converter<String, Float>()
         {
             public Float convert(String source)
             {
-                try
-                {
-                    return NumberFormat.getNumberInstance().parse(source.toString()).floatValue();
-                }
-                catch(ParseException e)
-                {
-                    throw new NumberFormatException("Failed to parse number " + source);
-                }
+                return Float.valueOf(source);
             }
         });
         addConverter(String.class, Double.class, new TypeConverter.Converter<String, Double>()
         {
             public Double convert(String source)
             {
-                try
-                {
-                    return NumberFormat.getNumberInstance().parse(source.toString()).doubleValue();
-                }
-                catch(ParseException e)
-                {
-                    throw new NumberFormatException("Failed to parse number " + source);
-                }
+                return Double.valueOf(source);
             }
         });
         addConverter(String.class, BigInteger.class, new TypeConverter.Converter<String, BigInteger>()
@@ -623,7 +580,7 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public String convert(Byte source)
             {
-                return NumberFormat.getInstance().format(source);
+                return source.toString();
             }
         });
         addDynamicTwoStageConverter(Byte.class, String.class, InputStream.class);
@@ -635,7 +592,7 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public String convert(Short source)
             {
-                return NumberFormat.getInstance().format(source);
+                return source.toString();
             }
         });
         addDynamicTwoStageConverter(Short.class, String.class, InputStream.class);
@@ -647,7 +604,7 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public String convert(Integer source)
             {
-                return NumberFormat.getInstance().format(source);
+                return source.toString();
             }
         });
         addDynamicTwoStageConverter(Integer.class, String.class, InputStream.class);
@@ -659,7 +616,7 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public String convert(Long source)
             {
-                return NumberFormat.getInstance().format(source);
+                return source.toString();
             }
         });
         addDynamicTwoStageConverter(Long.class, String.class, InputStream.class);
@@ -671,8 +628,7 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public String convert(Float source)
             {
-                //return source.toString();
-            	return NumberFormat.getInstance().format(source);
+                return source.toString();
             }
         });
         addDynamicTwoStageConverter(Float.class, String.class, InputStream.class);
@@ -684,7 +640,7 @@ public class DefaultTypeConverter extends TypeConverter
         {
             public String convert(Double source)
             {
-                return NumberFormat.getInstance().format(source);
+                return source.toString();
             }
         });
         addDynamicTwoStageConverter(Double.class, String.class, InputStream.class);
