@@ -471,6 +471,7 @@
 	  <addPath>
             <path refid="classpath.compile.system-build-test" />
             <pathelement location="${dir.project.solrclient.classes.test}" />
+            <pathelement location="${dir.project.solr4.classes.test}" />
             <pathelement location="${dir.project.solr.classes.test}" />
          </addPath>
 		 </compile-java>
@@ -556,13 +557,19 @@
                     <include name="*.jar"/>
                 </fileset>
 
+                <pathelement location="${dir.project.solr4.instance}" />
                 <pathelement location="${dir.project.solr.instance}" />
                 <pathelement location="${dir.project.datamodel.config}" />
                 <pathelement location="${dir.project.solrclient.classes}" />
                 <pathelement location="${dir.project.solrclient.classes.test}" />
+                <pathelement location="${dir.project.solr4.classes}" />
+                <pathelement location="${dir.project.solr4.classes.test}" />
                 <pathelement location="${dir.project.solr.classes}" />
                 <pathelement location="${dir.project.solr.classes.test}" />
 
+                <fileset dir="${dir.project.solr4}/lib">
+                    <include name="*.jar"/>
+                </fileset>
                 <fileset dir="${dir.project.solr}/lib">
                     <include name="*.jar"/>
                 </fileset>
@@ -577,6 +584,9 @@
 
                 <!-- Solr dependencies -->
                 <fileset dir="${dir.project.solr.instance.lib}">
+                    <include name="*.jar"/>
+                </fileset>
+                <fileset dir="${dir.project.solr4.instance.lib}">
                     <include name="*.jar"/>
                 </fileset>
 
@@ -753,6 +763,60 @@
       <generate-javadocs documenttitle="Alfresco SOLR integration ${version.number}" 
                          windowtitle="Alfresco SOLR Integration" 
                          projectdir="${dir.project.solr}"/>
+   </target>
+
+
+   <!-- ****************** -->
+   <!-- ** SOLR4 Project ** -->
+   <!-- ****************** -->
+   
+   <target name="incremental-solr4" 
+           depends="package-solr4" />
+      
+   <target name="build-solr4" 
+           depends="clean-solr4, 
+                    incremental-solr4" />
+   
+   <target name="clean-solr4" 
+           depends="init">
+      <clean projectdir="${dir.project.solr4}" />
+   </target>
+   
+   <target name="compile-solr4" 
+           depends="compile-solr4-java" />
+
+   <target name="compile-solr4-java" 
+           depends="init">
+      <compile-java projectdir="${dir.project.solr4}" >
+         <addPath>
+            <path refid="classpath.compile.solr4" />
+         </addPath>
+      </compile-java>
+      <compile-java-javac srcdir="${dir.project.solr4.src.test}" classesdir="${dir.project.solr4.classes.test}">
+        <addPath2>
+            <path refid="classpath.compile.solr4" />
+            <pathelement location="${dir.project.solr4.classes}" />
+        </addPath2>
+      </compile-java-javac>
+   </target>
+   
+   <target name="package-solr4"
+           depends="compile-solr4">
+      <mkdir dir="${dir.project.solr4.dist}" />
+      <jar jarfile="${dir.project.solr4.dist}/${file.name.jar.solr4}" 
+           basedir="${dir.project.solr4.classes}" />
+   </target>
+   
+   <target name="test-solr4" 
+           depends="compile-solr4">
+      <run-tests projectdir="${dir.project.solr4}" additionalclasspath="classpath.unit.test.beyondrepo" />
+   </target>
+   
+   <target name="generate-javadocs-solr4" 
+           depends="init">
+      <generate-javadocs documenttitle="Alfresco SOLR4 integration ${version.number}" 
+                         windowtitle="Alfresco SOLR4 Integration" 
+                         projectdir="${dir.project.solr4}"/>
    </target>
 
 

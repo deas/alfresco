@@ -83,6 +83,7 @@
     <module>projects/web-editor</module>
     <module>projects/web-editor-plugin</module>
     <module>projects/solr-client</module>
+    <module>projects/solr4</module>
     <module>projects/solr</module>
     <module>projects/file-transfer-receiver</module>
     <!-- Currently being worked out... see BDE-118
@@ -101,6 +102,7 @@
     <tomcat.default.alfresco.port>8080</tomcat.default.alfresco.port>
     <tomcat.default.share.port>8081</tomcat.default.share.port>
     <tomcat.default.solr.port>8082</tomcat.default.solr.port>
+    <tomcat.default.solr4.port>8083</tomcat.default.solr.port>
     
     <!-- Database properties - default values to be overridden in settings.xml -->
     <db.skip>true</db.skip>

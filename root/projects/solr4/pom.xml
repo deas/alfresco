@@ -1,0 +1,400 @@
+<!-- ****************************************************** -->
+<!-- ** Experimental Maven build - use at your own risk! ** -->
+<!-- ****************************************************** -->
+
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>alfresco-solr4</artifactId>
+    <name>Alfresco Solr 4</name>
+
+    <parent>
+        <artifactId>alfresco-parent</artifactId>
+        <groupId>org.alfresco</groupId>
+        <version>PLATFORM1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <maven.tomcat.path>/solr4</maven.tomcat.path>
+        <m2eclipse.wtp.contextRoot>${maven.tomcat.path}</m2eclipse.wtp.contextRoot>
+        <maven.tomcat.port>${tomcat.default.solr.port}</maven.tomcat.port>
+        <solr.instance.source.folder>source/solr/instance</solr.instance.source.folder>
+        <!-- This gets filtered in the solr-tomcat-context.xml and in solrcore.properties when running embedded -->
+        <solr.instance.target.folder>${project.build.directory}/solr-instance</solr.instance.target.folder>
+        <solr.nossl.instance.target.folder>${solr.instance.target.folder}-nossl</solr.nossl.instance.target.folder>
+        <solr.war.target.folder>${project.build.directory}/${project.build.finalName}</solr.war.target.folder>
+        <solr.nossl.war.target.folder>${solr.war.target.folder}-nossl</solr.nossl.war.target.folder>
+        <!-- By default we selected the SSL enabled default Solr packaging -->
+        <solr.war.exploded.folder>${solr.war.target.folder}</solr.war.exploded.folder>
+        <!-- By default we selected the SSL enabled default Solr config -->
+        <solr.config.folder>${solr.instance.target.folder}</solr.config.folder>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-legacy-lucene</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-solrclient</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- provided dependencies -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>4.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-core</artifactId>
+            <version>4.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+            <version>4.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.6.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.4</version>
+        </dependency>
+
+        <!-- War dependency on the Alfresco patched WAR.
+             Deployed at artifacts.alfresco.com because SOLR-1218 was closed in later versions  
+        <dependency>
+          <groupId>org.apache.solr</groupId>
+          <artifactId>apache-solr</artifactId>
+          <version>1.4.1-alfresco-patched</version>
+          <type>war</type>
+        </dependency>
+        
+        DO WE NEED THIS?
+        -->
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>solr4</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <attachClasses>true</attachClasses>
+                    <archiveClasses>true</archiveClasses>
+                </configuration>
+                <!-- This allows overlays to be prepared on the FS for minification and faster run -->
+                <executions>
+                    <execution>
+                        <id>prepare-exploded-war</id>
+                        <goals>
+                            <goal>exploded</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-instance-resources</id>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <outputDirectory>${solr.instance.target.folder}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${solr.instance.source.folder}</directory>
+                                    <excludes>
+                                        <exclude>**/*.jar</exclude>
+                                        <exclude>**/*.war*</exclude>
+                                        <exclude>**/ssl.repo*</exclude>
+                                    </excludes>
+                                    <filtering>true</filtering>
+                                </resource>
+                                <resource>
+                                    <directory>${solr.instance.source.folder}</directory>
+                                    <includes>
+                                        <include>**/ssl.repo*</include>
+                                    </includes>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                            <useDefaultDelimiters>false</useDefaultDelimiters>
+                            <delimiters>
+                                <delimiter>@@</delimiter>
+                            </delimiters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>package-config-jar</id>
+                        <configuration>
+                            <classesDirectory>${solr.instance.target.folder}</classesDirectory>
+                            <classifier>config</classifier>
+                        </configuration>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <profiles>
+        <!-- Profile to disablesecurecomms -->
+        <profile>
+            <id>solr-http</id>
+            <properties>
+                <!-- We configure the WAR exploded to point to the customized no-ssl folder -->
+                <solr.war.exploded.folder>${solr.nossl.war.target.folder}</solr.war.exploded.folder>
+                <!-- We configure the solr config to point to the customized no-ssl folder -->
+                <solr.config.folder>${solr.nossl.instance.target.folder}</solr.config.folder>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-instance-nossl</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <outputDirectory>${solr.nossl.instance.target.folder}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${solr.instance.target.folder}</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-war-nossl</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <outputDirectory>${solr.nossl.war.target.folder}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${solr.war.target.folder}</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Replaces web.xml where applicable, commenting out the security-constraints -->
+                    <plugin>
+                        <groupId>com.google.code.maven-replacer-plugin</groupId>
+                        <artifactId>replacer</artifactId>
+                        <executions>
+                            <execution>
+                                <id>replace-archive-SpacesStore</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>replace</goal>
+                                </goals>
+                                <configuration>
+                                    <ignoreErrors>true</ignoreErrors>
+                                    <file>${solr.config.folder}/archive-SpacesStore/conf/solrcore.properties</file>
+                                    <replacements>
+                                        <replacement>
+                                            <token><![CDATA[alfresco.secureComms=https]]></token>
+                                            <value><![CDATA[alfresco.secureComms=none]]></value>
+                                        </replacement>
+                                    </replacements>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>replace-workspace-SpacesStore</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>replace</goal>
+                                </goals>
+                                <configuration>
+                                    <ignoreErrors>true</ignoreErrors>
+                                    <file>${solr.config.folder}/workspace-SpacesStore/conf/solrcore.properties</file>
+                                    <replacements>
+                                        <replacement>
+                                            <token><![CDATA[alfresco.secureComms=https]]></token>
+                                            <value><![CDATA[alfresco.secureComms=none]]></value>
+                                        </replacement>
+                                    </replacements>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <executions>
+                            <!-- This allows overlays to be prepared on the FS for minification and faster run -->
+                            <execution>
+                                <id>prepare-exploded-nossl-war</id>
+                                <goals>
+                                    <goal>exploded</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <webappDirectory>${solr.nossl.war.target.folder}</webappDirectory>
+                                    <webResources>
+                                        <!-- To include customized web.xml to disable comms -->
+                                        <resource>
+                                            <directory>source/test-web/WEB-INF</directory>
+                                            <filtering>true</filtering>
+                                            <targetPath>WEB-INF</targetPath>
+                                        </resource>
+                                    </webResources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>package-nossl-war</id>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <webappDirectory>${solr.nossl.war.target.folder}</webappDirectory>
+                                    <classifier>nossl</classifier>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>package-config-nossl-jar</id>
+                                <configuration>
+                                    <classesDirectory>${solr.config.folder}</classesDirectory>
+                                    <classifier>config-nossl</classifier>
+                                </configuration>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile to run the webapp on HTTP -->
+        <profile>
+            <id>run</id>
+            <properties>
+                <ALFRESCO_SOLR_DIR>${solr.config.folder}</ALFRESCO_SOLR_DIR>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-context-config</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <outputDirectory>${solr.war.exploded.folder}/META-INF</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>source/test-web/META-INF</directory>
+                                            <includes>
+                                                <include>context.xml</include>
+                                            </includes>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                                    <delimiters>
+                                        <delimiter>@@</delimiter>
+                                    </delimiters>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <!-- To add log4j.properties and other test run resources -->
+                                <resource>
+                                    <directory>source/test-resources</directory>
+                                    <filtering>true</filtering>
+                                    <targetPath>WEB-INF/classes</targetPath>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>run-exploded-webapp</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>run-war-only</goal>
+                                </goals>
+                                <configuration>
+                                    <contextFile>${solr.war.exploded.folder}/META-INF/context.xml</contextFile>
+                                    <warDirectory>${solr.war.exploded.folder}</warDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

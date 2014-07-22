@@ -81,6 +81,11 @@
             <include name="**/*.jar" />
          </fileset>
       </path>
+      <path id="classpath.compile.solr4">
+         <fileset dir="${dir.project.solr4.lib}">
+            <include name="**/*.jar" />
+         </fileset>
+      </path>
       <path id="classpath.compile.system-build-test">
          <fileset dir="${dir.project.system-build-test.lib}">
             <include name="**/*.jar" />
@@ -620,6 +625,7 @@
                     incremental-webeditor,
                     incremental-webeditor-plugin,
                     incremental-solrclient,
+                    incremental-solr4,
                     incremental-solr,
                     incremental-file-transfer-receiver" />
 
@@ -720,6 +726,7 @@
                     generate-javadocs-jlan,
                     generate-javadocs-slingshot,
                     generate-javadocs-solrclient,
+                    generate-javadocs-solr4,
                     generate-javadocs-solr,
                     generate-javadocs-webframeworkcommons,
                     generate-javadocs-wcmquickstart-clientapi" />
@@ -738,6 +745,7 @@
                     clean-slingshot-projects,
                     clean-webeditor-projects,
                     clean-solrclient,
+                    clean-solr4,
                     clean-solr,
                     clean-file-transfer-receiver" />
                     
@@ -1332,6 +1340,34 @@
             message="You must supply the path to an AMP file using -Dampfile=[ampfile]"/>
       <install-amp ampfile="${ampfile}" 
                    warfile="${dir.project.webclient.dist}/${file.name.war.webclient}" />
+   </target>
+
+   <target name="deploy-solr4" description="Add the repository specific files to the SOLR4 instance" depends="package-core, package-datamodel, package-legacylucene, package-solrclient, package-solr4" >
+      <delete includeemptydirs="true">
+         <fileset dir="${dir.project.solr4.instance.lib}" includes="**/*"/>
+      </delete>
+
+      <copy todir="${dir.project.solr4.instance.lib}" 
+            file="${dir.project.core.dist}/${file.name.jar.core}" />
+      <copy todir="${dir.project.solr4.instance.lib}" 
+            file="${dir.project.datamodel.dist}/${file.name.jar.datamodel}" />
+      <copy todir="${dir.project.solr4.instance.lib}" 
+            file="${dir.project.legacylucene.dist}/${file.name.jar.legacylucene}" />
+      <copy todir="${dir.project.solr4.instance.lib}" 
+            file="${dir.project.solrclient.dist}/${file.name.jar.solrclient}" />
+      <copy todir="${dir.project.solr4.instance.lib}"
+            file="${dir.project.solr4.dist}/${file.name.jar.solr4}" />
+
+      <taskdef name="copy-libs-from-classpath"
+               classname="org.alfresco.devenv.ant.CopyLibrariesFromEclipseClasspath">
+         <classpath refid="classpath.compile" />
+      </taskdef>
+
+      <copy-libs-from-classpath destdir="${dir.project.solr4.instance.lib}" projectdir="${dir.project.core}" libdir="${dir.project.3rdparty}" />
+      <copy-libs-from-classpath destdir="${dir.project.solr4.instance.lib}" projectdir="${dir.project.datamodel}" libdir="${dir.project.3rdparty}" />
+      <copy-libs-from-classpath destdir="${dir.project.solr4.instance.lib}" projectdir="${dir.project.legacylucene}" libdir="${dir.project.3rdparty}" />
+      <copy-libs-from-classpath destdir="${dir.project.solr4.instance.lib}" projectdir="${dir.project.solrclient}" libdir="${dir.project.3rdparty}" />
+      <copy-libs-from-classpath destdir="${dir.project.solr4.instance.lib}" projectdir="${dir.project.solr4}" libdir="${dir.project.3rdparty}" />
    </target>
 
    <target name="deploy-solr" description="Add the repository specific files to the SOLR instance" depends="package-core, package-datamodel, package-legacylucene, package-solrclient, package-solr" >
