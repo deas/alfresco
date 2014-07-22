@@ -27,9 +27,11 @@
             <@markup id="msgTitle">
             <div class="title">${msg("page.adminConsole.description")}</div>
             </@>
-            <@markup id="msgNewAdminConsole">
-            <div class="row info">${msg("message.new-admin-console")}</div>
-            </@>
+            <#if isEnterprise>
+               <@markup id="msgNewAdminConsole">
+               <div class="row info">${msg("message.new-admin-console")}</div>
+               </@>
+            </#if>
             <form id="${el}-options-form" action="${url.context}/service/components/console/application" method="post">
                <div class="title">${msg("label.options")}</div>
                <!-- Theme -->

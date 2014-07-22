@@ -38,6 +38,8 @@ function main()
       }
    };
    model.widgets = [widget];
+   var editionInfo = context.properties["editionInfo"].edition;
+   model.isEnterprise = "ENTERPRISE" == editionInfo;
 }
 
 main();
