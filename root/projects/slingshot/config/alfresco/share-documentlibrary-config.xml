@@ -904,7 +904,7 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.checkedOutAspect</evaluator>
          </action>
 
          <!-- Edit properties page -->
@@ -913,7 +913,7 @@
             <permissions>
                <permission allow="true">Write</permission>
             </permissions>
-            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.checkedOutAspect</evaluator>
          </action>
 
          <!-- Approve simple workflow -->
