@@ -151,6 +151,7 @@
           * @default [ "SiteManager" ]
           */
          nonEditableRoles: [ "SiteManager" ],
+         unDeletableRoles: [ "_SiteManager$", "_SiteCollaborator$", "_SiteContributor$", "_SiteConsumer$" ],
          showGroups: true
       },
 
@@ -691,7 +692,7 @@
             Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
 
             var html = '<div id="' + scope.id + '-actions-' + oRecord.getId() + '" class="hidden action-set">';
-            if (scope._isRoleEditable(role))
+            if (scope._isRoleEditable(role) && scope._isGroupDeletable(oRecord))
             {
                html += '<div class="onActionDelete"><a class="action-link" title="' + scope.msg("button.delete") + '"><span>' + scope.msg("button.delete") + '</span></a></div>';
             }            
@@ -846,6 +847,29 @@
       _isRoleEditable: function Permissions__isRoleEditable(role)
       {
          return this.permissions.isInherited || !Alfresco.util.arrayContains(this.options.nonEditableRoles, role);
+      },
+      
+      /**
+       * Checks if the group is deletable.
+       *
+       * @method _isGroupDeletable
+       * @param role {String} Event object.
+       * @private
+       */	  
+      _isGroupDeletable: function Permissions__isGroupDeletable(oRecord)
+	  {
+         var groupName = oRecord.getData("authority").name;
+         if (oRecord.getData("isGroup") == true)
+         {
+             for (var i = 0; i < this.options.unDeletableRoles.length; i++)
+             {
+                if (groupName.search(this.options.unDeletableRoles[i]) !== -1)
+                {
+                    return false;
+                }
+             }
+         }
+         return true;
       },
       
       /**
