@@ -144,7 +144,7 @@
             _this._handleContentChange();
          });
          // MNT-8717
-         var submitButton = YAHOO.util.Dom.get(this.id.replace(/_prop_[a-z]+_[a-z]+/,'-form-submit-button'));
+         var submitButton = YAHOO.util.Dom.get(this.id.replace(/_prop_[a-zA-Z]+_[a-zA-Z]+/,'-form-submit-button'));
          if (submitButton)
          {
             function saveClicked() 
