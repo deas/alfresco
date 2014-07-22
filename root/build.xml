@@ -437,6 +437,7 @@
          <exclude name="**/org/alfresco/repo/webdav/UnlockMethodTest.java" />
          <exclude name="**/org/alfresco/rest/workflow/api/tests/TaskWorkflowApiTest.java" />
          <exclude name="**/org/alfresco/repo/webdav/LockInfoImplTest.java" />
+         <exclude name="**/org/alfresco/rest/test/workflow/api/impl/ProcessesImplTest.java" />
 
          <!-- Enterprise Repo Tests -->
          <include name="**/org/alfresco/enterprise/EnterpriseRepository*TestSuite.java" />
