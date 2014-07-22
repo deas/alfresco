@@ -160,8 +160,14 @@
             wait = action.wait,
             config = null;
 
-         var fnCallback = function DataListActions_genericAction_callback(data, obj)
+         var fnCallback = function DataListActions_genericAction_callback(data, obj, innerCall)
          {
+            // Did the operation succeed?
+            if (!data.json.overallSuccess && !innerCall)
+            {
+               data.config.failureCallback.fn.call(undefined, data, data.config.failureCallback.obj, true);
+               return;
+            } 
             // Check for notification event
             if (obj)
             {
@@ -252,7 +258,8 @@
             {
                fn: fnCallback,
                scope: this,
-               obj: success
+               obj: success,
+               objFailure: failure
             },
             successMessage: null,
             failureCallback:
