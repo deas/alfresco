@@ -18,6 +18,9 @@
  */
 package org.alfresco.po.share.dashlet;
 
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -177,9 +180,12 @@ public class MyActivitiesDashletTest extends AbstractDashletTest
         dashBoard = dashBoard.getNav().selectMyDashBoard();
         dashBoard.render();
         MyActivitiesDashlet dashlet = dashBoard.getDashlet("activities").render();
-        ActivityShareLink activity= dashlet.selectLink(fileName);
-        String expected = String.format("%s %s added document %s in %s", firstName, lastName, fileName, siteName);
-        Assert.assertEquals(activity.getDescription(), expected);
+        List<ActivityShareLink> activityShareLinks = dashlet.getActivities();
+        assertTrue(activityShareLinks.size() == 2, "Number of Activities should be 2 but there is only: " + activityShareLinks.size());
+        String expectedPreviewed = String.format("%s %s previewed document %s in %s", firstName, lastName, fileName, siteName);
+        assertEquals(activityShareLinks.get(0).getDescription(), expectedPreviewed);
+        String expectedAdded = String.format("%s %s added document %s in %s", firstName, lastName, fileName, siteName);
+        assertEquals(activityShareLinks.get(1).getDescription(), expectedAdded);
     }
     
     protected void uploadDocument()throws Exception
