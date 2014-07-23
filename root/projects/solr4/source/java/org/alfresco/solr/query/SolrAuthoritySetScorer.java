@@ -38,18 +38,12 @@ public class SolrAuthoritySetScorer extends AbstractSolrCachingScorer
 {
     
 
-    SolrAuthoritySetScorer(Similarity similarity, DocSet in, AtomicReader reader)
+    SolrAuthoritySetScorer(Weight weight, Similarity similarity, DocSet in, AtomicReader reader)
     {
-        super(weight(), in, reader);
-    }
-
-    private static Weight weight()
-    {
-        // TODO: fix
-        throw new UnsupportedOperationException();
+        super(weight, in, reader);
     }
     
-    public static SolrAuthoritySetScorer createAuthoritySetScorer(AtomicReaderContext context, SolrIndexSearcher searcher, String authorities) throws IOException
+    public static SolrAuthoritySetScorer createAuthoritySetScorer(Weight weight, AtomicReaderContext context, SolrIndexSearcher searcher, String authorities) throws IOException
     {
         // Get hold of solr top level searcher
         // Execute query with caching
@@ -66,7 +60,7 @@ public class SolrAuthoritySetScorer extends AbstractSolrCachingScorer
         Similarity similarity = searcher.getSimilarity();
         if(answer != null)
         {
-            return new SolrAuthoritySetScorer(similarity, answer, reader);
+            return new SolrAuthoritySetScorer(weight, similarity, answer, reader);
         }
         
         HashSet<String> globalReaders = (HashSet<String>) searcher.cacheLookup(CacheConstants.ALFRESCO_CACHE, CacheConstants.KEY_GLOBAL_READERS);
@@ -89,7 +83,7 @@ public class SolrAuthoritySetScorer extends AbstractSolrCachingScorer
         {
             // can read all
             FixedBitSet allLeafDocs = (FixedBitSet) searcher.cacheLookup(CacheConstants.ALFRESCO_CACHE, CacheConstants.KEY_ALL_LEAF_DOCS);
-            return new SolrAuthoritySetScorer(similarity, new BitDocSet(allLeafDocs), reader);
+            return new SolrAuthoritySetScorer(weight, similarity, new BitDocSet(allLeafDocs), reader);
         }
 
         DocSet readableDocSet = searcher.getDocSet(new SolrReaderSetQuery(authorities));
@@ -100,7 +94,7 @@ public class SolrAuthoritySetScorer extends AbstractSolrCachingScorer
             
             DocSet toCache = readableDocSet.union(authorityOwnedDocs);
             searcher.cacheInsert(CacheConstants.ALFRESCO_AUTHORITY_CACHE, key, toCache);
-            return new SolrAuthoritySetScorer(similarity, toCache, reader);
+            return new SolrAuthoritySetScorer(weight, similarity, toCache, reader);
         }
         else
         {
@@ -112,7 +106,7 @@ public class SolrAuthoritySetScorer extends AbstractSolrCachingScorer
             
             DocSet toCache = readableDocSet.union(docsAuthorityOwnsAndCanRead);
             searcher.cacheInsert(CacheConstants.ALFRESCO_AUTHORITY_CACHE, key, toCache);
-            return new SolrAuthoritySetScorer(similarity, toCache, reader);
+            return new SolrAuthoritySetScorer(weight, similarity, toCache, reader);
         }
     }
 }

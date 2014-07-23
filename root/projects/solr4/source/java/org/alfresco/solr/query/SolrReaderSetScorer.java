@@ -30,6 +30,7 @@ import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.DocsEnum;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.Weight;
 import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.util.FixedBitSet;
 import org.apache.solr.search.BitDocSet;
@@ -39,12 +40,12 @@ import org.apache.solr.search.SolrIndexSearcher;
 public class SolrReaderSetScorer extends AbstractSolrCachingScorer
 {
 
-    SolrReaderSetScorer(Similarity similarity, DocSet in, IndexReader solrIndexReader)
+    SolrReaderSetScorer(Weight weight, Similarity similarity, DocSet in, IndexReader solrIndexReader)
     {
-        super(null/*TODO*/, in, solrIndexReader);
+        super(weight, in, solrIndexReader);
     }
 
-    public static SolrReaderSetScorer createReaderSetScorer(SolrIndexSearcher searcher, Similarity similarity, String authorities, AtomicReader reader) throws IOException
+    public static SolrReaderSetScorer createReaderSetScorer(Weight weight, SolrIndexSearcher searcher, Similarity similarity, String authorities, AtomicReader reader) throws IOException
     {
         // Get hold of solr top level searcher
         // Execute query with caching
@@ -116,7 +117,7 @@ public class SolrReaderSetScorer extends AbstractSolrCachingScorer
             }
         }
 
-        return new SolrReaderSetScorer(similarity, readableDocSet, reader);
+        return new SolrReaderSetScorer(weight, similarity, readableDocSet, reader);
 
     }
 

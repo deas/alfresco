@@ -21,7 +21,6 @@ package org.alfresco.solr.query;
 import java.io.IOException;
 
 import org.apache.lucene.index.AtomicReaderContext;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexReaderContext;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermContext;
@@ -31,9 +30,8 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.TermStatistics;
-import org.apache.lucene.search.similarities.Similarity;
-import org.apache.lucene.search.similarities.TFIDFSimilarity;
 import org.apache.lucene.search.Weight;
+import org.apache.lucene.search.similarities.TFIDFSimilarity;
 import org.apache.lucene.util.Bits;
 import org.apache.solr.search.SolrIndexSearcher;
 
@@ -180,7 +178,7 @@ public class SolrOwnerSetQuery extends Query
 //            {
 //                throw new IllegalStateException("Must have a SolrIndexReader");
 //            }
-            return SolrOwnerSetScorer.createOwnerSetScorer(context, searcher, SolrOwnerSetQuery.this.authorities);
+            return SolrOwnerSetScorer.createOwnerSetScorer(this, context, searcher, SolrOwnerSetQuery.this.authorities);
         }
 
         @Override

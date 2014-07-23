@@ -20,10 +20,8 @@ package org.alfresco.solr.query;
 
 import java.io.IOException;
 
-import org.apache.hadoop.hdfs.server.namenode.UnsupportedActionException;
 import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.AtomicReaderContext;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexReaderContext;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermContext;
@@ -183,7 +181,7 @@ public class SolrReaderSetQuery extends Query
 //            {
 //                throw new IllegalStateException("Must have a SolrIndexReader");
 //            }
-            return SolrReaderSetScorer.createReaderSetScorer(searcher, searcher.getSimilarity(), SolrReaderSetQuery.this.authorities, reader);
+            return SolrReaderSetScorer.createReaderSetScorer(this, searcher, searcher.getSimilarity(), SolrReaderSetQuery.this.authorities, reader);
         }
 
         @Override

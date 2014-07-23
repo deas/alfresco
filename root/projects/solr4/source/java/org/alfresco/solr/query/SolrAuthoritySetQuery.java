@@ -181,7 +181,7 @@ public class SolrAuthoritySetQuery extends Query
 //                throw new IllegalStateException("Must have a LiveDocsReader");
 //            }
 //            return SolrAuthoritySetScorer.createAuthoritySetScorer(searcher, getSimilarity(searcher), SolrAuthoritySetQuery.this.authorities, (SolrIndexReader)reader);
-            return SolrAuthoritySetScorer.createAuthoritySetScorer(context, searcher, SolrAuthoritySetQuery.this.authorities);
+            return SolrAuthoritySetScorer.createAuthoritySetScorer(this, context, searcher, SolrAuthoritySetQuery.this.authorities);
         }
 
         @Override

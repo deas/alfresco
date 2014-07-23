@@ -27,6 +27,7 @@ import org.alfresco.solr.cache.CacheEntry;
 import org.alfresco.solr.cache.OwnerLookUp;
 import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.AtomicReaderContext;
+import org.apache.lucene.search.Weight;
 import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.util.FixedBitSet;
 import org.apache.solr.search.BitDocSet;
@@ -41,13 +42,13 @@ public class SolrOwnerSetScorer extends AbstractSolrCachingScorer
      * @param in
      * @param solrIndexReader
      */
-    SolrOwnerSetScorer(Similarity similarity, DocSet in, AtomicReader reader)
+    SolrOwnerSetScorer(Weight weight, Similarity similarity, DocSet in, AtomicReader reader)
     {
-        super(null/*TODO*/, in, reader);
+        super(weight, in, reader);
         // TODO Auto-generated constructor stub
     }
 
-    public static SolrOwnerSetScorer createOwnerSetScorer(AtomicReaderContext context, SolrIndexSearcher searcher, String authorities) throws IOException
+    public static SolrOwnerSetScorer createOwnerSetScorer(Weight weight, AtomicReaderContext context, SolrIndexSearcher searcher, String authorities) throws IOException
     {
         // Get hold of solr top level searcher
         // Execute query with caching
@@ -75,7 +76,7 @@ public class SolrOwnerSetScorer extends AbstractSolrCachingScorer
             }
         }
 
-        return new SolrOwnerSetScorer(searcher.getSimilarity(), authorityOwnedDocs, context.reader());
+        return new SolrOwnerSetScorer(weight, searcher.getSimilarity(), authorityOwnedDocs, context.reader());
 
     }
 
