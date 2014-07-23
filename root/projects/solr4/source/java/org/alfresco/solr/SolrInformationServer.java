@@ -873,7 +873,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void indexTransaction(Transaction info, boolean overwrite) throws IOException
     {
-        AddUpdateCommand cmd = new AddUpdateCommand(null); // TODO: Add SolrQueryRequest req
+        AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
         cmd.overwrite = overwrite;
         SolrInputDocument input = new SolrInputDocument();
         //input.addField(QueryConstants.FIELD_ID, "TX-" + info.getId());
