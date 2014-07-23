@@ -63,9 +63,11 @@ import org.alfresco.util.ISO9075;
 import org.alfresco.util.NumericEncoder;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.SortedDocValues;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.FieldCache;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.NumericUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -223,6 +225,19 @@ public class AlfrescoSolrDataModel
         builder.append(":");
         builder.append(NumericEncoder.encode(txId));
         return builder.toString();
+    }
+    
+    public static Term getLongTerm(String field, long longValue)
+    {
+        BytesRef bytes = new BytesRef();
+        NumericUtils.longToPrefixCoded(longValue, 0, bytes);
+        return new Term(field,bytes);
+    }
+    
+    public static Term getLongTerm(String field, String stringValue)
+    {
+        long longValue = Long.parseLong(stringValue);
+        return getLongTerm(field, longValue); 
     }
     
     

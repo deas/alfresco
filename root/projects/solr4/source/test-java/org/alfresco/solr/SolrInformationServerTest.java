@@ -32,6 +32,7 @@ import java.util.Properties;
 
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.solr.client.AclReaders;
+import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.util.NumericEncoder;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.apache.solr.common.SolrInputDocument;
@@ -60,6 +61,7 @@ public class SolrInformationServerTest
     private @Mock AlfrescoCoreAdminHandler adminHandler;
     private @Mock UpdateHandler updateHandler;
     private @Mock SolrResourceLoader resourceLoader;
+    private @Mock SOLRAPIClient solrAPIClient;
     private SolrCore core;
     private CoreDescriptor coreDescriptor;
     private CoreContainer coreContainer;
@@ -74,7 +76,7 @@ public class SolrInformationServerTest
         core = new SolrCore("name", coreDescriptor);
         FieldUtils.writeField(core, "updateHandler", updateHandler, true);
         FieldUtils.writeField(core, "resourceLoader", resourceLoader, true);
-        infoServer = new SolrInformationServer(adminHandler, core);
+        infoServer = new SolrInformationServer(adminHandler, core, solrAPIClient);
     }
 
     @Test

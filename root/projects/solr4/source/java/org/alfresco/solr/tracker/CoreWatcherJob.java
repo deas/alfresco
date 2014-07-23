@@ -24,6 +24,7 @@ import java.util.Properties;
 import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.alfresco.solr.AlfrescoSolrCloseHook;
+import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.SolrInformationServer;
 import org.alfresco.solr.SolrKeyResourceLoader;
 import org.alfresco.solr.client.SOLRAPIClient;
@@ -65,23 +66,24 @@ public class CoreWatcherJob implements Job
 
                     core.addCloseHook(new AlfrescoSolrCloseHook(adminHandler));
 
-                    // Registers the information server and the trackers.
-                    SolrInformationServer srv = new SolrInformationServer(adminHandler, core);
-                    adminHandler.getInformationServers().put(coreName, srv);
-
                     SolrTrackerScheduler scheduler = adminHandler.getScheduler();
                     SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
                     SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
 
                     SOLRAPIClientFactory clientFactory = new SOLRAPIClientFactory();
                     SOLRAPIClient repositoryClient = clientFactory.getSOLRAPIClient(props, keyResourceLoader,
-                                srv.getDictionaryService(CMISStrictDictionaryService.DEFAULT), srv.getNamespaceDAO());
+                                AlfrescoSolrDataModel.getInstance().getDictionaryService(CMISStrictDictionaryService.DEFAULT), AlfrescoSolrDataModel.getInstance().getNamespaceDAO());
 
+                    // Registers the information server and the trackers.
+                    SolrInformationServer srv = new SolrInformationServer(adminHandler, core, repositoryClient);
+                    adminHandler.getInformationServers().put(coreName, srv);
+                    
                     if (trackerRegistry.getModelTracker() == null)
                     {
                         ModelTracker mTracker = new ModelTracker(scheduler, coreContainer.getSolrHome(), props,
                                     repositoryClient, coreName, srv);
                         trackerRegistry.setModelTracker(mTracker);
+                        mTracker.track();
                     }
 
                     AclTracker aclTracker = new AclTracker(scheduler, props, repositoryClient, coreName, srv);
