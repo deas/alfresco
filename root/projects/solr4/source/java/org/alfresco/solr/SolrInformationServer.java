@@ -39,7 +39,7 @@ public class SolrInformationServer implements InformationServer
 
         SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
         String id = loader.getInstanceDir();
-        dataModel = AlfrescoSolrDataModel.getInstance(id);
+        dataModel = AlfrescoSolrDataModel.getInstance();
     }
 
     @Override

@@ -73,6 +73,7 @@ public class AlfrescoFieldType extends FieldType
         // for now we do something basic
         analyzer = schema.getFieldTypeByName("text___").getAnalyzer();
         queryAnalyzer = schema.getFieldTypeByName("text___").getQueryAnalyzer();
+        AlfrescoSolrDataModel.getInstance().setAlfrescoFieldType(this);
     }
 
     /*

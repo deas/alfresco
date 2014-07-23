@@ -2,11 +2,12 @@
 
 <!-- 
    TODO 
-   - ICU
+   - ICU ? Is it still one locale rather then cross-locale for folding etc?
    - Truncated field that could be used for sort/faceting/clustering?
    - SITE analysis 
    - Geospatial ?
    - Currency ?
+   - ICU ordering implications
    - (default facetting configuration)
 -->
 
@@ -57,7 +58,8 @@
       <!-- TODO: Considser ICU here --> 
       <fieldType name="text___" class="solr.TextField" positionIncrementGap="100">
          <analyzer>
-            <tokenizer class="org.apache.solr.analysis.WhitespaceTokenizerFactory" />
+            <tokenizer class="solr.ICUTokenizerFactory"/>
+            <!-- <tokenizer class="org.apache.solr.analysis.WhitespaceTokenizerFactory" /> -->
             <filter class="org.apache.solr.analysis.WordDelimiterFilterFactory" 
                     generateWordParts="1"
                     generateNumberParts="1"
@@ -68,7 +70,16 @@
                     splitOnNumerics="1"
                     preserveOriginal="1"
                     stemEnglishPossessive="1"/>
-            <filter class="org.apache.solr.analysis.LowerCaseFilterFactory" />
+            <!-- <filter class="org.apache.solr.analysis.LowerCaseFilterFactory" /> -->
+            <filter class="solr.ICUNormalizer2FilterFactory" name="nfkc_cf" mode="compose"/>
+         </analyzer>
+      </fieldType>
+
+      <!-- Cross locale generic collation -->
+      <fieldType name="collatedROOT" class="solr.TextField">
+         <analyzer>
+            <tokenizer class="solr.KeywordTokenizerFactory"/>
+            <filter class="solr.CollationKeyFilterFactory"  language=""  strength="primary" />
          </analyzer>
       </fieldType>
 
@@ -527,14 +538,10 @@
       <!-- Special fields -->
       <field name="LID"                   type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
       <field name="PARENT"                type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
-      <field name="LINKASPECT"            type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
       <field name="PATH"                  type="path"        indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
       <field name="ANCESTOR"              type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
-      <field name="ISCONTAINER"           type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <field name="ISCATEGORY"            type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
       <field name="QNAME"                 type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
       <field name="PRIMARYASSOCQNAME"     type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
-      <field name="ISROOT"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
       <field name="PRIMARYASSOCTYPEQNAME" type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
       <field name="ISNODE"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
       <field name="ASSOCTYPEQNAME"        type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
@@ -563,20 +570,27 @@
       <field name="SITE" type="identifier" indexed="true" omitNorms="true" stored="false" multiValued="true"  docValues="true"/>
 
 
-      <!-- Content and text xtensions -->
+      <!-- Content and text extensions -->
+      <!-- Note we now use the .__.u extentsion for sort and cross-language identifier for text -->
+      <!-- ml.sort serialises a single mltext for best locale ordering -->      
 
-      <dynamicfield name="*.size"                    type="long"        indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
-      <dynamicfield name="*.locale"                  type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
-      <dynamicfield name="*.mimetype"                type="lower_id"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
-      <dynamicfield name="*.encoding"                type="lower_id"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
-      <dynamicfield name="*.contentDocId"            type="long"        indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
-      <dynamicfield name="*.transformationException" type="text___"     indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicfield name="*.transformationTime"      type="long"        indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicfield name="*.transformationStatus"    type="lower_id"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicfield name="*.__"                      type="text___"     indexed="true"  omitNorms="false" stored="false"  multiValued="false" />
-      <dynamicfield name="*.u"                       type="locale_id"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicfield name="*.__.u"                    type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicfield name="*.sort"                    type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+
+      <dynamicfield name="*.size"                    type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+      <dynamicfield name="*.locale"                  type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+      <dynamicfield name="*.mimetype"                type="lower_id"     indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+      <dynamicfield name="*.encoding"                type="lower_id"     indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+      <dynamicfield name="*.contentDocId"            type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+      <dynamicfield name="*.transformationException" type="text___"      indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+      <dynamicfield name="*.transformationTime"      type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+      <dynamicfield name="*.transformationStatus"    type="lower_id"     indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+      <dynamicfield name="*.__"                      type="text___"      indexed="true"  omitNorms="false" stored="false"  multiValued="false" />
+      <dynamicfield name="*.u"                       type="locale_id"    indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+      <dynamicfield name="*.__.u"                    type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+      <dynamicfield name="*.ml.__"                   type="text___"      indexed="true"  omitNorms="false" stored="false"  multiValued="true" />
+      <dynamicfield name="*.ml.u"                    type="locale_id"    indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicfield name="*.ml.__.u"                 type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicfield name="*.ml.sort"                 type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+      <dynamicfield name="*.__.u.sort"               type="collatedROOT" indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
 
 
       <!-- Single value wildcard matches -->

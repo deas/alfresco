@@ -19,32 +19,18 @@
 package org.alfresco.solr;
 
 import java.io.IOException;
-import java.text.Collator;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.alfresco.model.ContentModel;
-import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
-import org.alfresco.repo.dictionary.IndexTokenisationMode;
-import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
-import org.alfresco.service.cmr.dictionary.PropertyDefinition;
-import org.alfresco.service.cmr.repository.MLText;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.util.ISO9075;
 import org.apache.lucene.index.AtomicReaderContext;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.SortedDocValues;
 import org.apache.lucene.search.FieldCache;
 import org.apache.lucene.search.FieldComparator;
-import org.apache.lucene.search.FieldComparatorSource;
-import org.apache.lucene.search.SortField;
 import org.apache.lucene.util.BytesRef;
-import org.apache.solr.schema.SchemaField;
-import org.apache.solr.search.Sorting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
  * @author Andy
@@ -54,31 +40,30 @@ public class AlfrescoSolrDataModel
 {
 
     protected final static Logger log = LoggerFactory.getLogger(AlfrescoSolrDataModel.class);
-
-    private static HashMap<String, AlfrescoSolrDataModel> models = new HashMap<String, AlfrescoSolrDataModel>();
-
+    
     private static ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
-    private String id;
+    private static AlfrescoSolrDataModel model;
+
+    private AlfrescoFieldType alfrescoFieldType;
     
     /**
      * @param id
      */
-    public AlfrescoSolrDataModel(String id)
+    public AlfrescoSolrDataModel()
     {
-        this.id = id;
+        super();
     }
 
     /**
      * @param id
      * @return
      */
-    public static AlfrescoSolrDataModel getInstance(String id)
+    public static AlfrescoSolrDataModel getInstance()
     {
         readWriteLock.readLock().lock();
         try
         {
-            AlfrescoSolrDataModel model = models.get(id);
             if (model != null)
             {
                 return model;
@@ -94,11 +79,9 @@ public class AlfrescoSolrDataModel
         readWriteLock.writeLock().lock();
         try
         {
-            AlfrescoSolrDataModel model = models.get(id);
             if (model == null)
             {
-                model = new AlfrescoSolrDataModel(id);
-                models.put(id, model);
+                model = new AlfrescoSolrDataModel();
             }
             return model;
         }
@@ -108,6 +91,26 @@ public class AlfrescoSolrDataModel
         }
 
     }
+   
+    // Index 
+    public List<String> getIndexedFieldNamesForProperty(QName propertyQName)
+    {
+        return Collections.singletonList(propertyQName.toString());
+    }
+    
+    // FTS   - Term/Phrase/Range/Fuzzy/Prefix/Proximity/Wild
+    // ID    - Exact/ExactRange - Comparison, In, Upper, Lower
+    // FACET - Field, Range, Query, Stats
+    // SORT  - Locale
+    // CROSS-LOCALE
+    // PHRASE SUGGESTION
+    // COMPLETION
+    // HIGHLIGHT
+    public String getSearchFieldNameForProperty(QName propertyQName)
+    {
+        return propertyQName.toString();
+    }
+    
     
 //    public SortField getSortField(SchemaField field, boolean reverse)
 //    {
@@ -489,6 +492,14 @@ public class AlfrescoSolrDataModel
         }
         return val1.compareTo(val2);
       }
+    }
+
+    /**
+     * @param schema
+     */
+    public void setAlfrescoFieldType(AlfrescoFieldType alfrescoFieldType)
+    {
+        this.alfrescoFieldType = alfrescoFieldType;
     }
     
     
