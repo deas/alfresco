@@ -315,7 +315,7 @@ public class PathTokenFilter extends Tokenizer
     }
 
     @Override
-    public boolean incrementToken() throws IOException
+    public final boolean incrementToken() throws IOException
     {
         clearAttributes();
         
