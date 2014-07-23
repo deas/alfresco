@@ -1270,9 +1270,9 @@ public class SolrInformationServer implements InformationServer
             Map<Long, Node> nodeIdsToNodes = new HashMap<>();
             EnumMap<SolrApiNodeStatus, List<Long>> nodeStatusToNodeIds = new EnumMap<SolrApiNodeStatus, List<Long>>(SolrApiNodeStatus.class);
             categorizeNodes(nodes, nodeIdsToNodes, nodeStatusToNodeIds);
-            List<Long> deletedNodeIds = nodeStatusToNodeIds.get(SolrApiNodeStatus.DELETED);
-            List<Long> unknownNodeIds = nodeStatusToNodeIds.get(SolrApiNodeStatus.UNKNOWN);
-            List<Long> updatedNodeIds = nodeStatusToNodeIds.get(SolrApiNodeStatus.UPDATED);
+            List<Long> deletedNodeIds = mapNullToEmptyList(nodeStatusToNodeIds.get(SolrApiNodeStatus.DELETED));
+            List<Long> unknownNodeIds = mapNullToEmptyList(nodeStatusToNodeIds.get(SolrApiNodeStatus.UNKNOWN));
+            List<Long> updatedNodeIds = mapNullToEmptyList(nodeStatusToNodeIds.get(SolrApiNodeStatus.UPDATED));
             
             if (!deletedNodeIds.isEmpty() || !unknownNodeIds.isEmpty()) 
             {
@@ -1631,6 +1631,15 @@ public class SolrInformationServer implements InformationServer
 
     }
     
+    /**
+     * @param list
+     * @return
+     */
+    private List<Long> mapNullToEmptyList(List<Long> list)
+    {
+        return list == null ? Collections.<Long>emptyList() : list;
+    }
+
     private void categorizeNodes(List<Node> nodes, Map<Long, Node> nodeIdsToNodes,
                 EnumMap<SolrApiNodeStatus, List<Long>> nodeStatusToNodeIds)
     {
@@ -1721,7 +1730,10 @@ public class SolrInformationServer implements InformationServer
             StringBuilder sort = new StringBuilder();
             for (Locale locale : mlTextPropertyValue.getLocales())
             {
-                log.error("ML "+field.getField() + " in "+ locale+ " of "+mlTextPropertyValue.getValue(locale));
+                if(log.isDebugEnabled())
+                {
+                    log.debug("ML "+field.getField() + " in "+ locale+ " of "+mlTextPropertyValue.getValue(locale));
+                }
                 
                 StringBuilder builder = new StringBuilder();
                 builder.append("\u0000").append(locale.toString()).append("\u0000")

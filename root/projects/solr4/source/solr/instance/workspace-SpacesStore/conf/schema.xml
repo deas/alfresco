@@ -670,7 +670,7 @@
 
 
       <dynamicField name="content@__@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
-      <dynamicField name="content@l_@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
+      <dynamicField name="content@l_@*"          type="alfrescoFieldType"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
       <dynamicField name="content@lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
       <dynamicField name="content@_t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
 
