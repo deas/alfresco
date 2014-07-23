@@ -18,15 +18,9 @@
  */
 package org.alfresco.solr.adapters;
 
+import org.apache.solr.common.util.SimpleOrderedMap;
 
-/**
- * The reason we have this interface is so that lucene-free dependent classes can be dependent on ISimpleOrderedMap instead of the
- * lucene-version-specific SimpleOrderedMap.
- * @author Ahmed Owian
- */
-public interface ISimpleOrderedMap<T>
+public class SolrSimpleOrderedMap<T> extends SimpleOrderedMap<T> implements ISimpleOrderedMap<T>
 {
-
-    void add(String name, T val);
 
 }

@@ -19,19 +19,12 @@ import org.alfresco.repo.dictionary.M2Namespace;
 import org.alfresco.service.cmr.dictionary.ModelDefinition.XMLBindingType;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.solr.AlfrescoSolrDataModel;
-import org.alfresco.solr.BoundedDeque;
 import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.adapters.IOpenBitSet;
-import org.alfresco.solr.client.AclChangeSet;
-import org.alfresco.solr.client.AclChangeSets;
 import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.solr.client.AlfrescoModelDiff;
 import org.alfresco.solr.client.SOLRAPIClient;
-import org.alfresco.solr.client.Transaction;
-import org.alfresco.solr.client.Transactions;
 import org.json.JSONException;
-import org.quartz.Scheduler;
 
 public class ModelTracker extends AbstractTracker implements Tracker
 {
@@ -50,14 +43,13 @@ public class ModelTracker extends AbstractTracker implements Tracker
     private Set<String> ignoredFields = new HashSet<String>();
 
     private ReentrantReadWriteLock modelLock = new ReentrantReadWriteLock();
-    boolean hasModels = false;
+    private boolean hasModels = false;
 
-    public ModelTracker(SolrTrackerScheduler scheduler, String id, Properties p, SOLRAPIClient client, 
-                String coreName, InformationServer informationServer)
+    public ModelTracker(SolrTrackerScheduler scheduler, String id, Properties p, SOLRAPIClient client, String coreName,
+                InformationServer informationServer)
     {
         super(scheduler, id, p, client, coreName, informationServer);
     }
-    
 
     /**
      * Default constructor, for testing.
@@ -83,7 +75,8 @@ public class ModelTracker extends AbstractTracker implements Tracker
     }
 
     @Override
-    public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime) throws IOException, AuthenticationException, JSONException
+    public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime)
+                throws IOException, AuthenticationException, JSONException
     {
         IndexHealthReport indexHealthReport = new IndexHealthReport(infoSrv);
         Long minTxId = null;
@@ -99,7 +92,7 @@ public class ModelTracker extends AbstractTracker implements Tracker
         indexHealthReport.setDbAclTransactionCount(aclTxIdsInDb.cardinality());
 
         // Index TX Count
-        return this.infoSrv.checkIndexTransactions(indexHealthReport, minTxId, minAclTxId, txIdsInDb, maxTxId, 
+        return this.infoSrv.checkIndexTransactions(indexHealthReport, minTxId, minAclTxId, txIdsInDb, maxTxId,
                     aclTxIdsInDb, maxAclTxId);
     }
 
@@ -168,7 +161,8 @@ public class ModelTracker extends AbstractTracker implements Tracker
     }
 
     /**
-     * Tracks models.  Reflects changes and updates on disk copy
+     * Tracks models. Reflects changes and updates on disk copy
+     * 
      * @throws AuthenticationException
      * @throws IOException
      * @throws JSONException
@@ -323,7 +317,7 @@ public class ModelTracker extends AbstractTracker implements Tracker
         }
     }
 
-    QName expandQName(String qName)
+    private QName expandQName(String qName)
     {
         String expandedQName = qName;
         if (qName.startsWith("@"))
@@ -346,7 +340,7 @@ public class ModelTracker extends AbstractTracker implements Tracker
 
     }
 
-    String expandQNameImpl(String q)
+    private String expandQNameImpl(String q)
     {
         String eq = q;
         // Check for any prefixes and expand to the full uri
@@ -368,7 +362,7 @@ public class ModelTracker extends AbstractTracker implements Tracker
         return eq;
     }
 
-    String expandName(String qName)
+    private String expandName(String qName)
     {
         String expandedQName = qName;
         if (qName.startsWith("@"))

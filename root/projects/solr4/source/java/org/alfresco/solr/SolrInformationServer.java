@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2014 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.alfresco.solr;
 
 import java.io.IOException;
@@ -18,6 +37,8 @@ import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.adapters.ISimpleOrderedMap;
+import org.alfresco.solr.adapters.SolrOpenBitSetAdapter;
+import org.alfresco.solr.adapters.SolrSimpleOrderedMap;
 import org.alfresco.solr.client.AclChangeSet;
 import org.alfresco.solr.client.AclReaders;
 import org.alfresco.solr.client.AlfrescoModel;
@@ -30,8 +51,16 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.core.SolrCore;
+import org.apache.solr.core.SolrInfoMBean;
+import org.apache.solr.search.DocSet;
+import org.apache.solr.search.SolrIndexSearcher;
+import org.apache.solr.update.AddUpdateCommand;
+import org.apache.solr.util.RefCounted;
 import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is the Solr4 implementation of the information server (index).
@@ -57,6 +86,7 @@ public class SolrInformationServer implements InformationServer
     private boolean skipDescendantAuxDocsForSpecificTypes;
     private Set<QName> typesForSkippingDescendantAuxDocs = new HashSet<QName>();
     private BooleanQuery skippingDocsQuery;
+    protected final static Logger log = LoggerFactory.getLogger(SolrInformationServer.class);
 
     public SolrInformationServer(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
@@ -87,8 +117,8 @@ public class SolrInformationServer implements InformationServer
                 String qName = p.getProperty(key);
                 if ((null != qName) && !qName.isEmpty())
                 {
-                    QName typeQName = null; //QName.resolveToQName(dataModel.getNamespaceDAO(), qName);
-                    TypeDefinition type = null; //dataModel.getDictionaryService(CMISStrictDictionaryService.DEFAULT).getType(typeQName);
+                    QName typeQName = QName.resolveToQName(/*dataModel.getNamespaceDAO()*/null, qName); // TODO
+                    TypeDefinition type = dataModel.getDictionaryService(CMISStrictDictionaryService.DEFAULT).getType(typeQName);
                     if (null != type)
                     {
                         typesForSkippingDescendantAuxDocs.add(typeQName);
@@ -178,7 +208,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public List<AlfrescoModel> getAlfrescoModels()
     {
-        // TODO Auto-generated method stub
+//        return this.dataModel.getAlfrescoModels();
         return null;
     }
 
@@ -190,17 +220,33 @@ public class SolrInformationServer implements InformationServer
     }
 
     @Override
-    public DictionaryComponent getDictionaryService(String arg0)
+    public DictionaryComponent getDictionaryService(String alternativeDictionary)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.dataModel.getDictionaryService(alternativeDictionary);
     }
 
     @Override
-    public int getDocSetSize(String arg0, String arg1) throws IOException
+    public int getDocSetSize(String targetTxId, String targetTxCommitTime) throws IOException
     {
-        // TODO Auto-generated method stub
-        return 0;
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            BooleanQuery query = new BooleanQuery();
+            query.add(new TermQuery(new Term(QueryConstants.FIELD_TXID, targetTxId)), Occur.MUST);
+            query.add(new TermQuery(new Term(QueryConstants.FIELD_TXCOMMITTIME, targetTxCommitTime)), Occur.MUST);
+            DocSet set = solrIndexSearcher.getDocSet(query);
+
+            return set.size();
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
     }
 
     @Override
@@ -213,50 +259,64 @@ public class SolrInformationServer implements InformationServer
     @Override
     public long getHoleRetention()
     {
-        // TODO Auto-generated method stub
-        return 0;
+        return this.holeRetention;
     }
 
     @Override
-    public M2Model getM2Model(QName arg0)
+    public M2Model getM2Model(QName modelQName)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.dataModel.getM2Model(modelQName);
     }
 
     @Override
     public Map<String, Set<String>> getModelErrors()
     {
-        // TODO Auto-generated method stub
-        return null;
+//        return dataModel.getModelErrors();
+        return null; // TODO
     }
 
     @Override
     public NamespaceDAO getNamespaceDAO()
     {
-        // TODO Auto-generated method stub
-        return null;
+//        return this.dataModel.getNamespaceDAO();
+        return null; // TODO
     }
 
     @Override
     public IOpenBitSet getOpenBitSetInstance()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new SolrOpenBitSetAdapter();
     }
 
     @Override
     public int getRegisteredSearcherCount()
     {
-        // TODO Auto-generated method stub
-        return 0;
+        HashSet<String> keys = new HashSet<String>();
+
+        for (String key : core.getInfoRegistry().keySet())
+        {
+            SolrInfoMBean mBean = core.getInfoRegistry().get(key);
+            if (mBean != null)
+            {
+                if (mBean.getName().equals(SolrIndexSearcher.class.getName()))
+                {
+                    if (!key.equals("searcher"))
+                    {
+                        keys.add(key);
+                    }
+                }
+            }
+        }
+
+        log.info(".... registered Searchers for " + core.getName() + " = " + keys.size());
+        return keys.size();
+
     }
 
     @Override
     public <T> ISimpleOrderedMap<T> getSimpleOrderedMapInstance()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new SolrSimpleOrderedMap<T>();
     }
 
     @Override
@@ -275,8 +335,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public TrackerState getTrackerState()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.trackerState;
     }
 
     @Override
@@ -294,19 +353,29 @@ public class SolrInformationServer implements InformationServer
     }
 
     @Override
-    public void indexNode(Node arg0, boolean arg1) throws IOException, AuthenticationException, JSONException
+    public void indexNode(Node node, boolean overwrite) throws IOException, AuthenticationException, JSONException
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void indexTransaction(Transaction arg0, boolean arg1) throws IOException
+    public void indexTransaction(Transaction info, boolean overwrite) throws IOException
     {
-        // TODO Auto-generated method stub
-
+        AddUpdateCommand cmd = new AddUpdateCommand(null); // TODO: Add SolrQueryRequest req
+        cmd.overwrite = overwrite;
+        SolrInputDocument input = new SolrInputDocument();
+        input.addField(QueryConstants.FIELD_ID, "TX-" + info.getId());
+        input.addField(QueryConstants.FIELD_TXID, info.getId());
+        input.addField(QueryConstants.FIELD_INTXID, info.getId());
+        input.addField(QueryConstants.FIELD_TXCOMMITTIME, info.getCommitTimeMs());
+        cmd.solrDoc = input;
+//        cmd.doc = toDocument(cmd.getSolrInputDocument(), core.getLatestSchema(), dataModel);
+        core.getUpdateHandler().addDoc(cmd);
     }
 
+    
+    
     @Override
     public boolean isInIndex(String arg0, long arg1) throws IOException
     {
@@ -315,17 +384,15 @@ public class SolrInformationServer implements InformationServer
     }
 
     @Override
-    public boolean putModel(M2Model arg0)
+    public boolean putModel(M2Model model)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.dataModel.putModel(model);
     }
 
     @Override
     public void rollback() throws IOException
     {
         // TODO Auto-generated method stub
-
     }
 
 }
