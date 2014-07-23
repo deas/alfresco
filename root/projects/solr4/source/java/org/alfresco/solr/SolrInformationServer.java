@@ -104,6 +104,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.ModifiableSolrParams;
+import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.FastInputStream;
 import org.apache.solr.common.util.FastOutputStream;
 import org.apache.solr.common.util.JavaBinCodec;
@@ -326,23 +327,13 @@ public class SolrInformationServer implements InformationServer
     public List<TenantAndDbId> getDocsWithUncleanContent() throws IOException
     {
         LocalSolrQueryRequest solrReq = new LocalSolrQueryRequest(core, new NamedList<>());
-        SolrQueryResponse solrRsp = new SolrQueryResponse();
-        SolrRequestHandler requestHandler = core.getRequestHandler("/select");
-        
-        ModifiableSolrParams newParams = new ModifiableSolrParams(solrReq.getParams());
+        ModifiableSolrParams params = new ModifiableSolrParams(solrReq.getParams());
         String query = FIELD_FTSSTATUS + ":" + FTSStatus.Dirty + " OR " + FIELD_FTSSTATUS + ":" + FTSStatus.New;
-        newParams.set("q", query  );
-        newParams.set("fl", "id");
-        newParams.set("rows", "" + Integer.MAX_VALUE);
-        solrReq.setParams(newParams);
-        log.info("Running query " + query);
-        requestHandler.handleRequest(solrReq, solrRsp);
-        log.info("Response: " + solrRsp);
-        log.info("solrRsp.getReturnFields(): " + solrRsp.getReturnFields());
+// TODO batch this query instead of getting all rows at once
+        params.set("q", query).set("fl", "id").set("rows", "" + Integer.MAX_VALUE);
+        ResultContext rc = cloudSelect(solrReq, params);
         
         List<TenantAndDbId> docs = new ArrayList<>();
-        
-        ResultContext rc = (ResultContext) solrRsp.getValues().get("response");
         if (rc != null)
         {
             for(DocIterator it = rc.docs.iterator(); it.hasNext(); /**/)
@@ -367,9 +358,38 @@ public class SolrInformationServer implements InformationServer
                 
                 docs.add(tenantAndDbId);
             }
-
         }
         return docs;
+    }
+    
+    private ResultContext cloudSelect(LocalSolrQueryRequest solrReq, SolrParams params)
+    {
+        SolrRequestHandler requestHandler = core.getRequestHandler("/select");
+        solrReq.setParams(params);
+        log.info("Running query " + params.get("q"));
+        SolrQueryResponse solrRsp = new SolrQueryResponse();
+        requestHandler.handleRequest(solrReq, solrRsp);
+        ResultContext rc = (ResultContext) solrRsp.getValues().get("response");
+        
+        return rc;
+    }
+        
+    private boolean cloudSelectReturnsDoc(String query)
+    {
+        LocalSolrQueryRequest solrReq = new LocalSolrQueryRequest(core, new NamedList<>());
+        ModifiableSolrParams params = new ModifiableSolrParams(solrReq.getParams());
+        params.set("q", query).set("fl", "id").set("rows", "1");
+        ResultContext rc = this.cloudSelect(solrReq, params);
+
+        if (rc != null)
+        {
+            if (rc.docs != null)
+            {
+                return rc.docs.iterator().hasNext();
+            }
+        }
+            
+        return false;
     }
     
     @Override
@@ -1158,29 +1178,7 @@ public class SolrInformationServer implements InformationServer
                     {
                         if (mayHaveChildren(nodeMetaData))
                         {
-    //                        log.info(".. checking for path change");
-    //                        BooleanQuery bQuery = new BooleanQuery();
-    //                        bQuery.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(FIELD_DBID, nodeMetaData.getId())), Occur.MUST);
-    //                        bQuery.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(FIELD_PARENT_ASSOC_CRC, nodeMetaData.getParentAssocsCrc())), Occur.MUST);
-    //                        DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
-    //                        if (docSet.size() > 0)
-    //                        {
-    //                            log.debug("... found match");
-    //                        }
-    //                        else
-    //                        {
-    //                            docSet = solrIndexSearcher.getDocSet(new TermQuery(AlfrescoSolrDataModel.getLongTerm(FIELD_DBID, nodeMetaData.getId())));
-    //                            if (docSet.size() > 0)
-    //                            {
-    //                                log.debug("... cascade updating docs");
-    //                                LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-    //                                // TODO: updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited, solrIndexSearcher.getDocSet(skippingDocsQuery));
-    //                            }
-    //                            else
-    //                            {
-    //                                log.debug("... no doc to update");
-    //                            }
-    //                        }
+                            cascadeUpdate(nodeMetaData);
                         }
                     }
                     // else, the node has moved on to a later transaction, and it will be indexed later
@@ -1269,6 +1267,39 @@ public class SolrInformationServer implements InformationServer
         }
     }
 
+    /**
+     * Checks if a cascade update is necessary, and then updates descendants
+     * @param nodeMetaData the metadata for the current node
+     */
+    private void cascadeUpdate(NodeMetaData nodeMetaData)
+    {
+        log.info(".. checking for path change");
+
+        String query = FIELD_DBID + ":" + nodeMetaData.getId() + " AND " + FIELD_PARENT_ASSOC_CRC + ":"
+                    + nodeMetaData.getParentAssocsCrc();
+        boolean nodeHasSamePathAsBefore = cloudSelectReturnsDoc(query);
+        if (nodeHasSamePathAsBefore)
+        {
+            log.debug("... found match");
+        }
+        else
+        {
+            query = FIELD_DBID + ":" + nodeMetaData.getId();
+            boolean nodeHasBeenIndexed = cloudSelectReturnsDoc(query);
+            if (nodeHasBeenIndexed)
+            {
+                log.debug("... cascade updating docs");
+                LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
+                // TODO: updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited,
+                // solrIndexSearcher.getDocSet(skippingDocsQuery));
+            }
+            else
+            {
+                log.debug("... no doc to update");
+            }
+        }
+    }
+
     private NodeMetaData createDeletedNodeMetaData(Node node)
     {
         NodeMetaData nodeMetaData = new NodeMetaData();
@@ -1288,7 +1319,6 @@ public class SolrInformationServer implements InformationServer
         doc.addField(FIELD_DBID, nodeMetaData.getId());
         doc.addField(FIELD_LID, nodeMetaData.getNodeRef());
         doc.addField(FIELD_INTXID, nodeMetaData.getTxnId());
-        markFTSStatus(doc, FTSStatus.New);
         return doc;
     }
     
@@ -1380,29 +1410,7 @@ public class SolrInformationServer implements InformationServer
 
                     if (mayHaveChildren(nodeMetaData))
                     {
-//                        log.info(".. checking for path change");
-//                        BooleanQuery bQuery = new BooleanQuery();
-//                        bQuery.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(FIELD_DBID, nodeMetaData.getId())), Occur.MUST);
-//                        bQuery.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(FIELD_PARENT_ASSOC_CRC, nodeMetaData.getParentAssocsCrc())), Occur.MUST);
-//                        DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
-//                        if (docSet.size() > 0)
-//                        {
-//                            log.debug("... found match");
-//                        }
-//                        else
-//                        {
-//                            docSet = solrIndexSearcher.getDocSet(new TermQuery(AlfrescoSolrDataModel.getLongTerm(FIELD_DBID, nodeMetaData.getId())));
-//                            if (docSet.size() > 0)
-//                            {
-//                                log.debug("... cascade updating docs");
-//                                LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-//                                // TODO: updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited, solrIndexSearcher.getDocSet(skippingDocsQuery));
-//                            }
-//                            else
-//                            {
-//                                log.debug("... no doc to update");
-//                            }
-//                        }
+                        cascadeUpdate(nodeMetaData);
                     }
                     
                     // check index control
