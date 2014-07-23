@@ -426,7 +426,7 @@ public class AlfrescoSolrDataModel
                     || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
             {
                 indexedField.addField(getFieldForText(true, false, false, propertyDefinition), true, false);
-                indexedField.addField(getFieldForText(false, false, false, propertyDefinition), true, false);
+                indexedField.addField(getFieldForText(false, false, false, propertyDefinition), false, false);
                 
             }
 
@@ -435,7 +435,7 @@ public class AlfrescoSolrDataModel
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
                         || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    indexedField.addField(getFieldForText(false, false, true, propertyDefinition), true, true);
+                    indexedField.addField(getFieldForText(false, false, true, propertyDefinition), false, true);
                 }   
             }
             
