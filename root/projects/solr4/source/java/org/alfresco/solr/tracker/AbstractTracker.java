@@ -20,7 +20,6 @@ package org.alfresco.solr.tracker;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.text.ParseException;
 import java.util.Properties;
 
 import org.alfresco.service.cmr.repository.StoreRef;
@@ -28,12 +27,6 @@ import org.alfresco.solr.IndexTrackingShutdownException;
 import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.TrackerState;
 import org.alfresco.solr.client.SOLRAPIClient;
-import org.quartz.CronTrigger;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
