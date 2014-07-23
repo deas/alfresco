@@ -3709,8 +3709,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
      */
     protected Query createOwnerQuery(String queryText) throws ParseException
     {
-        //return new SolrCachingOwnerQuery(queryText);
-        throw new UnsupportedOperationException();
+        return getFieldQueryImplWithIOExceptionWrapped(FIELD_OWNER, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
     }
 
     /**
