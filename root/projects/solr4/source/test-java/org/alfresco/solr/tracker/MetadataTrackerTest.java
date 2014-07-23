@@ -49,6 +49,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class MetadataTrackerTest
 {
+    private final static Long TX_ID = 10000000L;
+    private final static Long DB_ID = 999L;
     private MetadataTracker metadataTracker;
 
     @Mock
@@ -122,22 +124,58 @@ public class MetadataTrackerTest
     }
 
     @Test
-    public void testCheckNode() throws AuthenticationException, IOException, JSONException
+    public void testCheckNodeLong() throws AuthenticationException, IOException, JSONException
     {
-        List<Node> nodes = new ArrayList<>();
-        Node node = new Node();
-        Long txnId = 10000000L;
-        node.setTxnId(txnId);
-        nodes.add(node);
+        List<Node> nodes = getNodes();
         when(repositoryClient.getNodes(any(GetNodesParameters.class), eq(1))).thenReturn(nodes);
         
-        Long dbId = 999L;
-        NodeReport nodeReport = this.metadataTracker.checkNode(dbId);
+        NodeReport nodeReport = this.metadataTracker.checkNode(DB_ID);
         
         assertNotNull(nodeReport);
-        assertEquals(dbId, nodeReport.getDbid());
-        assertEquals(txnId, nodeReport.getDbTx());
+        assertEquals(DB_ID, nodeReport.getDbid());
+        assertEquals(TX_ID, nodeReport.getDbTx());
         verify(srv).checkNodeCommon(nodeReport);
     }
+
+    private List<Node> getNodes()
+    {
+        List<Node> nodes = new ArrayList<>();
+        Node node = getNode();
+        nodes.add(node);
+        return nodes;
+    }
+    
+    @Test
+    public void testCheckNodeNode()
+    {
+        Node node = getNode();
+        
+        NodeReport nodeReport = this.metadataTracker.checkNode(node);
+        
+        assertNotNull(nodeReport);
+        assertEquals(DB_ID, nodeReport.getDbid());
+        assertEquals(TX_ID, nodeReport.getDbTx());
+        verify(srv).checkNodeCommon(nodeReport);
+    }
+
+    private Node getNode()
+    {
+        Node node = new Node();
+        node.setId(DB_ID);
+        node.setTxnId(TX_ID);
+        return node;
+    }
+    
+    @Test
+    public void testGetFullNodesForDbTransaction() throws AuthenticationException, IOException, JSONException
+    {
+        List<Node> nodes = getNodes();
+        when(repositoryClient.getNodes(any(GetNodesParameters.class), anyInt())).thenReturn(nodes);
+        
+        List<Node> nodes4Tx = this.metadataTracker.getFullNodesForDbTransaction(TX_ID);
+        
+        assertSame(nodes4Tx, nodes);
+    }
+    
     
 }
