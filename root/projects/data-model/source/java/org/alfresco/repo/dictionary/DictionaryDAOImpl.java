@@ -168,9 +168,6 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     private DictionaryRegistry createCoreDictionaryRegistry()
     {
     	DictionaryRegistry dictionaryRegistry = new CoreDictionaryRegistryImpl(this);
-    	getThreadLocal().put("", dictionaryRegistry);
-    	dictionaryRegistry.init();
-    	getThreadLocal().remove("");
         return dictionaryRegistry;
     }
 
@@ -182,9 +179,6 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
             {
             	DictionaryRegistry dictionaryRegistry = new TenantDictionaryRegistryImpl(DictionaryDAOImpl.this,
             			tenant);
-            	getThreadLocal().put(tenant, dictionaryRegistry);
-            	dictionaryRegistry.init();
-            	getThreadLocal().remove(tenant);
                 return dictionaryRegistry;
             }
         }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), tenant));
@@ -764,8 +758,10 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     								dictionaryRegistry = createTenantDictionaryRegistry(tenantDomain);
     							}
 
-    							dictionaryRegistryCache.put(tenantDomain, dictionaryRegistry);
+    					    	getThreadLocal().put(tenantDomain, dictionaryRegistry);
     							dictionaryRegistry.init();
+    							dictionaryRegistryCache.put(tenantDomain, dictionaryRegistry);
+    					    	getThreadLocal().remove(tenantDomain);
 
     							return dictionaryRegistry;
     						}
