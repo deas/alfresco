@@ -371,7 +371,25 @@
 			</executions>
 		</plugin>
 
-		<!-- Create jar of test classes -->
+        <plugin>
+            <groupId>org.commonjava.maven.plugins</groupId>
+            <artifactId>directory-maven-plugin</artifactId>
+            <version>0.1</version>
+            <executions>
+                <execution>
+                    <id>find-highest-basedir</id>
+                    <goals>
+                        <goal>highest-basedir</goal>
+                    </goals>
+                    <phase>initialize</phase>
+                    <configuration>
+                        <property>highest.basedir</property>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+		<!-- Create a jar of test classes, to be reused later in remote-api -->
+
 		<plugin>
 			<artifactId>maven-jar-plugin</artifactId>
 			<executions>
@@ -573,13 +591,13 @@
                         <db.password>${db.password}</db.password>
                         <dir.root>${dir.root}</dir.root>
                     </systemProperties>
-                    <keystoreFile>${project.parent.basedir}/projects/system-build-test/keystore/ssl.keystore</keystoreFile>
+                    <keystoreFile>${highest.basedir}/projects/system-build-test/keystore/ssl.keystore</keystoreFile>
                     <keystorePass>kT9X6oe68t</keystorePass>
                     <keystoreType>JCEKS</keystoreType>
-                    <truststoreFile>${project.parent.basedir}/projects/system-build-test/keystore/ssl.truststore</truststoreFile>
+                    <truststoreFile>${highest.basedir}/projects/system-build-test/keystore/ssl.truststore</truststoreFile>
                     <truststorePass>kT9X6oe68t</truststorePass>
                     <truststoreType>JCEKS</truststoreType>
-                    <tomcatUsers>${project.parent.basedir}/packaging/installer/src/main/resources/bitrock/bitrock/alfresco/shared/tomcat-users.xml</tomcatUsers>
+                    <tomcatUsers>${highest.basedir}/packaging/installer/src/main/resources/bitrock/bitrock/alfresco/shared/tomcat-users.xml</tomcatUsers>
                 </configuration>
             </plugin>
             <plugin>
