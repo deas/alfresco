@@ -33,21 +33,11 @@
     <!-- Constraint Registry -->
     <bean id="cm:constraintRegistry" class="org.alfresco.repo.dictionary.constraint.ConstraintRegistry" />
 
-    <bean id="namespaceDAO" class="org.alfresco.repo.dictionary.NamespaceDAOImpl">
-        <property name="tenantService">
-            <ref bean="tenantService"/>
-        </property>
-        <property name="namespaceRegistryCache">
-            <ref bean="prefixesCache"/>
-        </property>
-    </bean>
+    <alias name="dictionaryDAO" alias="namespaceDAO"/>
 
     <bean name="prefixesCache" class="org.alfresco.repo.cache.MemoryCache" />
 
-    <bean id="dictionaryDAO" class="org.alfresco.repo.dictionary.DictionaryDAOImpl">
-        <constructor-arg index="0">
-            <ref bean="namespaceDAO" />
-        </constructor-arg>
+    <bean id="dictionaryDAO" class="org.alfresco.repo.dictionary.DictionaryDAOImpl" init-method="init">
         <property name="tenantService">
             <ref bean="tenantService"/>
         </property>
@@ -55,10 +45,13 @@
             <ref bean="compiledModelsCache"/>
         </property>
         <property name="defaultAnalyserResourceBundleName">
-            <value>alfresco/model/dataTypeAnalyzers</value>
+            <value>${lucene.defaultAnalyserResourceBundleName}</value>
+        </property>
+        <property name="tryLockTimeout">
+            <value>2000</value>
         </property>
     </bean>
-    
+
     <bean name="compiledModelsCache" class="org.alfresco.repo.cache.MemoryCache" /> 
  
     <bean name="messageLookup" class="org.alfresco.repo.i18n.StaticMessageLookup" /> 
@@ -159,14 +152,13 @@
     
     <bean name="immutableSingletonCache" class="org.alfresco.repo.cache.MemoryCache" />
     
-    <bean id="OpenCMISDictionaryService" class="org.alfresco.opencmis.dictionary.CMISStrictDictionaryService" >
+    <bean id="OpenCMISDictionaryService" class="org.alfresco.opencmis.dictionary.CMISStrictDictionaryService" init-method="init">
         <property name="cmisMapping"                  ref="OpenCMISMapping" />
         <property name="dictionaryService"            ref="dictionaryService" />
         <property name="dictionaryDAO"                ref="dictionaryDAO" />
         <property name="singletonCache"               ref="immutableSingletonCache"/>
         <property name="propertyLuceneBuilderMapping" ref="OpenCMISPropertyLuceneBuilderMapping" />
-        <!-- NOTE: The stand-alone dictionary service does not require the runtime access to property values
-             <property name="propertyAccessorMapping"      ref="OpenCMISPropertyAccessorMapping" /> -->
+        <property name="tenantService"                ref="tenantService" />
     </bean>
 
     <bean id="OpenCMISMapping" class="org.alfresco.opencmis.mapping.CMISMapping" >
