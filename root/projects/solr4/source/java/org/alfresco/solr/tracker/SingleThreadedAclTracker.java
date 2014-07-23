@@ -86,7 +86,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         trackRepository();
     }
 
-    private void indexAclChangeSets() throws AuthenticationException, IOException, JSONException
+    protected void indexAclChangeSets() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclChangeSetsToIndex.peek() != null)
@@ -117,7 +117,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         }
     }
 
-    private void indexAcls() throws AuthenticationException, IOException, JSONException
+    protected void indexAcls() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclsToIndex.peek() != null)
@@ -139,7 +139,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         }
     }
 
-    private void reindexAclChangeSets() throws AuthenticationException, IOException, JSONException
+    protected void reindexAclChangeSets() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclChangeSetsToReindex.peek() != null)
@@ -173,7 +173,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         }
     }
 
-    private void reindexAcls() throws AuthenticationException, IOException, JSONException
+    protected void reindexAcls() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclsToReindex.peek() != null)
@@ -197,7 +197,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         }
     }
 
-    private void purgeAclChangeSets() throws AuthenticationException, IOException, JSONException
+    protected void purgeAclChangeSets() throws AuthenticationException, IOException, JSONException
     {       
         boolean requiresCommit = false;
         while (aclChangeSetsToPurge.peek() != null)
@@ -217,7 +217,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         }
     }
     
-    private void purgeAcls() throws AuthenticationException, IOException, JSONException
+    protected void purgeAcls() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclsToPurge.peek() != null)
@@ -279,7 +279,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
     }
 
     
-    private void trackRepository() throws IOException, AuthenticationException, JSONException
+    protected void trackRepository() throws IOException, AuthenticationException, JSONException
     {
         // Is the InformationServer ready to update
         int registeredSearcherCount = this.infoSrv.getRegisteredSearcherCount();
