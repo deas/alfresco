@@ -1472,8 +1472,8 @@
 
       <mkdir dir="${dir.project.webclient.dist}" />
       <war warfile="${dir.project.webclient.dist}/${file.name.war.webclient}" 
-           manifest="${dir.project.repository.dist}/MANIFEST.MF"
-           webxml="${dir.project.webclient.src.webinf}/web.xml">
+           manifest="${dir.project.repository.dist}/MANIFEST.MF">
+           <!-- NOTE: web.xml file is contained in assembled source set -->
          <fileset dir="${dir.project.webclient.assemble}" />
          <manifest>
              <attribute name="Specification-Title" value="Alfresco Repository"/>
@@ -1508,7 +1508,7 @@
 
       <copy todir="${dir.project.webclient.assemble}/WEB-INF">
          <fileset dir="${dir.project.webclient.src.webinf}" 
-                  excludes="web.xml,alfresco-object.xml" />
+                  excludes="alfresco-object.xml" />
          <fileset dir="${dir.project.installer}" 
                   includes="licenses/**" />
       </copy>
