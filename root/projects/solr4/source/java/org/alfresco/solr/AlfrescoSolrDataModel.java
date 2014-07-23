@@ -35,8 +35,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.opencmis.dictionary.CMISAbstractDictionaryService;
+import org.alfresco.opencmis.dictionary.CMISDictionaryService;
 import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.opencmis.dictionary.QNameFilter;
+import org.alfresco.opencmis.search.CMISQueryOptions;
+import org.alfresco.opencmis.search.CMISQueryParser;
+import org.alfresco.opencmis.search.CmisFunctionEvaluationContext;
+import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
@@ -46,25 +51,40 @@ import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2ModelDiff;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.i18n.StaticMessageLookup;
+import org.alfresco.repo.search.MLAnalysisMode;
+import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilder;
+import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
+import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryModelFactory;
 import org.alfresco.repo.tenant.SingleTServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.namespace.NamespaceException;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AlfrescoClientDataModelServicesFactory.DictionaryKey;
 import org.alfresco.solr.client.AlfrescoModel;
+import org.alfresco.solr.query.Lucene4QueryBuilderContextSolrImpl;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.NumericEncoder;
+import org.alfresco.util.Pair;
+import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
+import org.apache.chemistry.opencmis.commons.enums.CapabilityJoin;
+import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
 import org.apache.lucene.index.AtomicReaderContext;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.SortedDocValues;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.FieldCache;
 import org.apache.lucene.search.FieldComparator;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.NumericUtils;
+import org.apache.solr.search.SyntaxError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -991,6 +1011,84 @@ public class AlfrescoSolrDataModel
         }
     }
     
+    public org.alfresco.repo.search.impl.querymodel.Query parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode mode, SearchParameters searchParameters,
+            IndexReader indexReader, String alternativeDictionary, CmisVersion cmisVersion) 
+    {
+        // convert search parameters to cmis query options
+        // TODO: how to handle store ref
+        CMISQueryOptions options = new CMISQueryOptions(searchParameters.getQuery(), StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+        options.setQueryMode(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS);
+        options.setDefaultFieldName(searchParameters.getDefaultFieldName());
+        // TODO: options.setDefaultFTSConnective()
+        // TODO: options.setDefaultFTSFieldConnective()
+        options.setIncludeInTransactionData(!searchParameters.excludeDataInTheCurrentTransaction());
+        options.setLocales(searchParameters.getLocales());
+        options.setMlAnalaysisMode(searchParameters.getMlAnalaysisMode());
+        options.setQueryParameterDefinitions(searchParameters.getQueryParameterDefinitions());
+
+        // parse cmis syntax
+        CapabilityJoin joinSupport = (mode == CMISQueryMode.CMS_STRICT) ? CapabilityJoin.NONE : CapabilityJoin.INNERONLY;
+        CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode, cmisVersion, alternativeDictionary);
+        
+        CMISDictionaryService cmisDictionary = getCMISDictionary(alternativeDictionary, cmisVersion);
+        
+        CMISQueryParser parser = new CMISQueryParser(options, cmisDictionary, joinSupport);
+        org.alfresco.repo.search.impl.querymodel.Query queryModelQuery = parser.parse(new LuceneQueryModelFactory(), functionContext);
+
+        // build lucene query
+        Set<String> selectorGroup = null;
+        if (queryModelQuery.getSource() != null)
+        {
+            List<Set<String>> selectorGroups = queryModelQuery.getSource().getSelectorGroups(functionContext);
+            if (selectorGroups.size() == 0)
+            {
+                throw new UnsupportedOperationException("No selectors");
+            }
+            if (selectorGroups.size() > 1)
+            {
+                throw new UnsupportedOperationException("Advanced join is not supported");
+            }
+            selectorGroup = selectorGroups.get(0);
+        }
+        return queryModelQuery;
+    }
+    
+    public CmisFunctionEvaluationContext getCMISFunctionEvaluationContext(CMISQueryMode mode, CmisVersion cmisVersion, String alternativeDictionary)
+    {
+        BaseTypeId[] validScopes = (mode == CMISQueryMode.CMS_STRICT) ? CmisFunctionEvaluationContext.STRICT_SCOPES : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
+        CmisFunctionEvaluationContext functionContext = new CmisFunctionEvaluationContext();
+        functionContext.setCmisDictionaryService(getCMISDictionary(alternativeDictionary, cmisVersion));
+        functionContext.setValidScopes(validScopes);
+        return functionContext;
+    }
+    
+    /**
+     * Gets the CMISDictionaryService, if an Alternative dictionary is specified it tries to get that.
+     * It will attempt to get the DEFAULT dictionary service if null is specified or it can't find
+     * a dictionary with the name of "alternativeDictionary"
+     * @param alternativeDictionary - can be null;
+     * @return CMISDictionaryService
+     */
+    public CMISDictionaryService getCMISDictionary(String alternativeDictionary, CmisVersion cmisVersion)
+    {
+        CMISDictionaryService cmisDictionary = null;
+        
+        if (alternativeDictionary != null && !alternativeDictionary.trim().isEmpty())
+        {
+            DictionaryKey key = new DictionaryKey(cmisVersion, alternativeDictionary);
+            cmisDictionary = cmisDictionaryServices.get(key);
+        }
+        
+        if (cmisDictionary == null)
+        {
+            DictionaryKey key = new DictionaryKey(cmisVersion, CMISStrictDictionaryService.DEFAULT);
+            cmisDictionary = cmisDictionaryServices.get(key);
+        }
+        return cmisDictionary;
+    }
+    
+    
+    
 //    public static class TextSortFieldComparatorSource extends FieldComparatorSource
 //    {
 //
@@ -1659,4 +1757,40 @@ public class AlfrescoSolrDataModel
             return sort;
         }   
     }
+
+    /**
+     * @param cmsWithAlfrescoExtensions
+     * @param searchParametersAndFilter
+     * @param indexReader
+     * @param queryModelQuery
+     * @param cmisVersion
+     * @param altDic
+     * @return
+     * @throws Exception 
+     */
+     public Query getCMISQuery(CMISQueryMode mode, Pair<SearchParameters, Boolean> searchParametersAndFilter, IndexReader indexReader, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery, CmisVersion cmisVersion, String alternativeDictionary) throws SyntaxError
+    {
+        SearchParameters searchParameters = searchParametersAndFilter.getFirst();
+        Boolean isFilter = searchParametersAndFilter.getSecond();
+        
+        BaseTypeId[] validScopes = (mode == CMISQueryMode.CMS_STRICT) ? CmisFunctionEvaluationContext.STRICT_SCOPES : CmisFunctionEvaluationContext.ALFRESCO_SCOPES;
+        CmisFunctionEvaluationContext functionContext = getCMISFunctionEvaluationContext(mode, cmisVersion, alternativeDictionary);
+
+        Set<String> selectorGroup = queryModelQuery.getSource().getSelectorGroups(functionContext).get(0);
+
+        LuceneQueryBuilderContext<Query, Sort, SyntaxError> luceneContext = getLuceneQueryBuilderContext(searchParameters, indexReader, alternativeDictionary);
+        @SuppressWarnings("unchecked")
+        LuceneQueryBuilder<Query, Sort, SyntaxError> builder = (LuceneQueryBuilder<Query, Sort, SyntaxError>) queryModelQuery;
+        org.apache.lucene.search.Query luceneQuery = builder.buildQuery(selectorGroup, luceneContext, functionContext);
+
+        ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, Boolean.TRUE.equals(isFilter) ? null : searchParameters);
+        return contextAwareQuery;
+    }
+     
+     public LuceneQueryBuilderContext<Query, Sort, SyntaxError> getLuceneQueryBuilderContext(SearchParameters searchParameters, IndexReader indexReader, String alternativeDictionary)
+     {
+         Lucene4QueryBuilderContextSolrImpl luceneContext = new Lucene4QueryBuilderContextSolrImpl(getDictionaryService(alternativeDictionary), namespaceDAO, tenantService, searchParameters,
+                 MLAnalysisMode.EXACT_LANGUAGE, indexReader, null, this);
+         return luceneContext;
+     }
 }

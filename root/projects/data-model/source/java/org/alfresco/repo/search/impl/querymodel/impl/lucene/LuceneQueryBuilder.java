@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.service.cmr.search.SearchParameters.SortDefinition;
-import org.apache.lucene.queryParser.ParseException;
 
 /**
  * @author andyh
