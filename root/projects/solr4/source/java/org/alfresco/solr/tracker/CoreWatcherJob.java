@@ -20,9 +20,17 @@ package org.alfresco.solr.tracker;
 
 import java.util.Properties;
 
+import org.alfresco.encryption.KeyStoreParameters;
+import org.alfresco.encryption.ssl.SSLEncryptionParameters;
+import org.alfresco.httpclient.AlfrescoHttpClient;
+import org.alfresco.httpclient.HttpClientFactory;
+import org.alfresco.httpclient.HttpClientFactory.SecureCommsType;
+import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.alfresco.solr.SolrInformationServer;
 import org.alfresco.solr.SolrKeyResourceLoader;
+import org.alfresco.solr.client.SOLRAPIClient;
+import org.alfresco.solr.client.SOLRAPIClientFactory;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrResourceLoader;
 import org.quartz.Job;
@@ -35,7 +43,8 @@ import org.slf4j.LoggerFactory;
 public class CoreWatcherJob implements Job
 {
     protected static final Logger log = LoggerFactory.getLogger(CoreWatcherJob.class);
-
+    
+    
     @Override
     public void execute(JobExecutionContext jec) throws JobExecutionException
     {
@@ -59,8 +68,13 @@ public class CoreWatcherJob implements Job
                     String id = loader.getInstanceDir();
                     Properties props = core.getResourceLoader().getCoreProperties();
                     SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
-                    
-                    AclTracker aclTracker = new AclTracker(scheduler, id, props, keyResourceLoader, coreName, srv);
+
+                    SOLRAPIClientFactory clientFactory = new SOLRAPIClientFactory();
+                    SOLRAPIClient repositoryClient = clientFactory.getSOLRAPIClient(props, keyResourceLoader, 
+                                srv.getDictionaryService(CMISStrictDictionaryService.DEFAULT), 
+                                srv.getNamespaceDAO());
+                                
+                    AclTracker aclTracker = new AclTracker(scheduler, id, props, repositoryClient, coreName, srv);
                     adminHandler.getTrackerRegistry().register(coreName, aclTracker);
                     
                     ContentTracker contentTracker = new ContentTracker();
@@ -73,9 +87,5 @@ public class CoreWatcherJob implements Job
                 }
             }
         }
-
-        
-        
     }
-
 }

@@ -1,28 +1,21 @@
 package org.alfresco.solr.tracker;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
-import org.alfresco.repo.dictionary.M2Model;
-import org.alfresco.repo.dictionary.M2Namespace;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
-import org.alfresco.service.cmr.dictionary.ModelDefinition.XMLBindingType;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AclReport;
 import org.alfresco.solr.BoundedDeque;
 import org.alfresco.solr.InformationServer;
-import org.alfresco.solr.SolrKeyResourceLoader;
 import org.alfresco.solr.TrackerState;
 import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.client.Acl;
@@ -31,6 +24,7 @@ import org.alfresco.solr.client.AclChangeSets;
 import org.alfresco.solr.client.AclReaders;
 import org.alfresco.solr.client.GetNodesParameters;
 import org.alfresco.solr.client.Node;
+import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Transactions;
 import org.json.JSONException;
@@ -69,10 +63,10 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         // Used for testing
     }
     
-    public SingleThreadedAclTracker(Scheduler scheduler, String id, Properties p, SolrKeyResourceLoader keyResourceLoader, 
+    public SingleThreadedAclTracker(Scheduler scheduler, String id, Properties p, SOLRAPIClient client, 
                 String coreName, InformationServer informationServer)
     {
-        super(scheduler, id, p, keyResourceLoader, coreName, informationServer);
+        super(scheduler, id, p, client, coreName, informationServer);
     }
 
 
@@ -718,60 +712,6 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         return eq;
     }
 
-
-    /**
-     * @param alfrescoModelDir
-     * @param modelName
-     */
-    private void removeMatchingModels(File alfrescoModelDir, QName modelName)
-    {
-
-        final String prefix = modelName.toPrefixString(this.infoSrv.getNamespaceDAO()).replace(":", ".") + ".";
-        final String postFix = ".xml";
-
-        File[] toDelete = alfrescoModelDir.listFiles(new FileFilter()
-        {
-
-            @Override
-            public boolean accept(File pathname)
-            {
-                if (pathname.isDirectory())
-                {
-                    return false;
-                }
-                String name = pathname.getName();
-                if (false == name.endsWith(postFix))
-                {
-                    return false;
-                }
-                if (false == name.startsWith(prefix))
-                {
-                    return false;
-                }
-                // check is number between
-                String checksum = name.substring(prefix.length(), name.length() - postFix.length());
-                try
-                {
-                    Long.parseLong(checksum);
-                    return true;
-                }
-                catch (NumberFormatException nfe)
-                {
-                    return false;
-                }
-            }
-        });
-
-        if (toDelete != null)
-        {
-            for (File file : toDelete)
-            {
-                file.delete();
-            }
-        }
-
-    }
-
     /**
      * @param acl
      * @param readers
@@ -1006,34 +946,5 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
 
         // In Index
         return this.infoSrv.checkAclInIndex(aclid, aclReport);
-    }
-
-    private void loadModel(Map<String, M2Model> modelMap, HashSet<String> loadedModels, M2Model model)
-    {
-        String modelName = model.getName();
-        if (loadedModels.contains(modelName) == false)
-        {
-            for (M2Namespace importNamespace : model.getImports())
-            {
-                M2Model importedModel = modelMap.get(importNamespace.getUri());
-                if (importedModel != null)
-                {
-
-                    // Ensure that the imported model is loaded first
-                    loadModel(modelMap, loadedModels, importedModel);
-                }
-            }
-
-            if(this.infoSrv.putModel(model))
-            {
-                loadedModels.add(modelName);
-            }
-            log.info("Loading model " + model.getName());
-        }
-    }
-
-    private String getModelFileName(M2Model model)
-    {
-        return model.getName().replace(":", ".") + "." + model.getChecksum(XMLBindingType.DEFAULT) + ".xml";
     }
 }

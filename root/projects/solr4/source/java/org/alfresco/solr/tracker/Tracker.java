@@ -31,4 +31,7 @@ public interface Tracker
                 throws AuthenticationException, IOException, JSONException;
 
     String getAlfrescoVersion();
+    
+    void setShutdown(boolean shutdown);
+    void close();
 }

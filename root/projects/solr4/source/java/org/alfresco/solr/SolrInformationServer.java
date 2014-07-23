@@ -1,6 +1,7 @@
 package org.alfresco.solr;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -8,9 +9,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.alfresco.httpclient.AuthenticationException;
+import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.NamespaceDAO;
+import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
+import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.adapters.ISimpleOrderedMap;
@@ -22,6 +26,10 @@ import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.Tracker;
 import org.alfresco.solr.tracker.TrackerStats;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.solr.core.SolrCore;
 import org.json.JSONException;
 
@@ -44,6 +52,11 @@ public class SolrInformationServer implements InformationServer
     private boolean transformContent = true;
     private long lag;
     private long holeRetention;
+    
+    // Metadata pulling control
+    private boolean skipDescendantAuxDocsForSpecificTypes;
+    private Set<QName> typesForSkippingDescendantAuxDocs = new HashSet<QName>();
+    private BooleanQuery skippingDocsQuery;
 
     public SolrInformationServer(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
@@ -60,6 +73,30 @@ public class SolrInformationServer implements InformationServer
         holeRetention = Integer.parseInt(p.getProperty("alfresco.hole.retention", "3600000"));
         
         dataModel = AlfrescoSolrDataModel.getInstance();
+        
+
+        skipDescendantAuxDocsForSpecificTypes = Boolean.parseBoolean(p.getProperty("alfresco.metadata.skipDescendantAuxDocsForSpecificTypes", "false"));
+
+        if (skipDescendantAuxDocsForSpecificTypes)
+        {
+            int i = 0;
+            skippingDocsQuery = new BooleanQuery();
+            for (String key = new StringBuilder(PROP_PREFIX_PARENT_TYPE).append(i).toString(); p.containsKey(key); key = new StringBuilder(PROP_PREFIX_PARENT_TYPE).append(++i)
+                    .toString())
+            {
+                String qName = p.getProperty(key);
+                if ((null != qName) && !qName.isEmpty())
+                {
+                    QName typeQName = null; //QName.resolveToQName(dataModel.getNamespaceDAO(), qName);
+                    TypeDefinition type = null; //dataModel.getDictionaryService(CMISStrictDictionaryService.DEFAULT).getType(typeQName);
+                    if (null != type)
+                    {
+                        typesForSkippingDescendantAuxDocs.add(typeQName);
+                        skippingDocsQuery.add(new TermQuery(new Term(QueryConstants.FIELD_TYPE, typeQName.toString())), Occur.SHOULD);
+                    }
+                }
+            }
+        }
     }
 
     public String getAlfrescoVersion()

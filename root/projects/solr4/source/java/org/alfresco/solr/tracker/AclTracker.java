@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -36,16 +35,13 @@ import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.solr.BoundedDeque;
 import org.alfresco.solr.InformationServer;
-import org.alfresco.solr.SolrKeyResourceLoader;
 import org.alfresco.solr.TrackerState;
 import org.alfresco.solr.client.Acl;
 import org.alfresco.solr.client.AclChangeSet;
 import org.alfresco.solr.client.AclChangeSets;
 import org.alfresco.solr.client.AclReaders;
-import org.alfresco.solr.client.GetNodesParameters;
 import org.alfresco.solr.client.Node;
-import org.alfresco.solr.client.Transaction;
-import org.alfresco.solr.client.Transactions;
+import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.util.DynamicallySizedThreadPoolExecutor;
 import org.alfresco.util.TraceableThreadFactory;
 import org.json.JSONException;
@@ -118,10 +114,10 @@ public class AclTracker extends SingleThreadedAclTracker
         super();
     }
     
-    public AclTracker(Scheduler scheduler, String id, Properties p, SolrKeyResourceLoader keyResourceLoader, 
+    public AclTracker(Scheduler scheduler, String id, Properties p, SOLRAPIClient client, 
                 String coreName, InformationServer informationServer)
     {
-        super(scheduler, id, p, keyResourceLoader, coreName, informationServer);
+        super(scheduler, id, p, client, coreName, informationServer);
 
         enableMultiThreadedTracking = Boolean.parseBoolean(p.getProperty("alfresco.enableMultiThreadedTracking", "true"));
         corePoolSize = Integer.parseInt(p.getProperty("alfresco.corePoolSize", "3"));
