@@ -6643,14 +6643,14 @@ public class AlfrescoCoreAdminTester
             SolrIndexSearcher solrIndexSearcher = refCounted.get();
 
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"" + testType.toString() + "\"", 1);
-//            testQuery(dataModel, report, solrIndexSearcher,
-//                        "TYPE:\"" + testType.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher,
+                        "TYPE:\"" + testType.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "EXACTTYPE:\"" + testType.toString() + "\"", 1);
-//            testQuery(dataModel, report, solrIndexSearcher,
-//                        "EXACTTYPE:\"" + testType.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher,
+                        "EXACTTYPE:\"" + testType.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"" + testSuperType.toString() + "\"", 13);
-//            testQuery(dataModel, report, solrIndexSearcher,
-//                        "TYPE:\"" + testSuperType.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 13);
+            testQuery(dataModel, report, solrIndexSearcher,
+                        "TYPE:\"" + testSuperType.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 13);
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"" + ContentModel.TYPE_CONTENT.toString() + "\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"cm:content\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"cm:CONTENT\"", 1);
@@ -6662,14 +6662,14 @@ public class AlfrescoCoreAdminTester
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"" + ContentModel.TYPE_THUMBNAIL.toString()
                         + "\" TYPE:\"" + ContentModel.TYPE_CONTENT.toString() + "\"", 2);
             testQuery(dataModel, report, solrIndexSearcher, "EXACTTYPE:\"" + testSuperType.toString() + "\"", 12);
-//            testQuery(dataModel, report, solrIndexSearcher,
-//                        "EXACTTYPE:\"" + testSuperType.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 12);
+            testQuery(dataModel, report, solrIndexSearcher,
+                        "EXACTTYPE:\"" + testSuperType.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 12);
             testQuery(dataModel, report, solrIndexSearcher, "ASPECT:\"" + testAspect.toString() + "\"", 1);
-//            testQuery(dataModel, report, solrIndexSearcher,
-//                        "ASPECT:\"" + testAspect.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher,
+                        "ASPECT:\"" + testAspect.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "EXACTASPECT:\"" + testAspect.toString() + "\"", 1);
-//            testQuery(dataModel, report, solrIndexSearcher,
-//                        "EXACTASPECT:\"" + testAspect.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher,
+                        "EXACTASPECT:\"" + testAspect.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 1);
         }
         finally
         {
@@ -6991,30 +6991,30 @@ public class AlfrescoCoreAdminTester
                         solrIndexSearcher,
                         "@" + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT.toString()) + ":*ox",
                         1);
-//            testQuery(dataModel,
-//                        report,
-//                        solrIndexSearcher,
-//                        "@"
-//                                    + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT
-//                                                .toPrefixString(dataModel.getNamespaceDAO())) + ":fox", 1);
-//            testQuery(dataModel,
-//                        report,
-//                        solrIndexSearcher,
-//                        "@"
-//                                    + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT
-//                                                .toPrefixString(dataModel.getNamespaceDAO())) + ":fo*", 1);
-//            testQuery(dataModel,
-//                        report,
-//                        solrIndexSearcher,
-//                        "@"
-//                                    + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT
-//                                                .toPrefixString(dataModel.getNamespaceDAO())) + ":f*x", 1);
-//            testQuery(dataModel,
-//                        report,
-//                        solrIndexSearcher,
-//                        "@"
-//                                    + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT
-//                                                .toPrefixString(dataModel.getNamespaceDAO())) + ":*ox", 1);
+            testQuery(dataModel,
+                        report,
+                        solrIndexSearcher,
+                        "@"
+                                    + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT
+                                                .toPrefixString(dataModel.getNamespaceDAO())) + ":fox", 1);
+            testQuery(dataModel,
+                        report,
+                        solrIndexSearcher,
+                        "@"
+                                    + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT
+                                                .toPrefixString(dataModel.getNamespaceDAO())) + ":fo*", 1);
+            testQuery(dataModel,
+                        report,
+                        solrIndexSearcher,
+                        "@"
+                                    + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT
+                                                .toPrefixString(dataModel.getNamespaceDAO())) + ":f*x", 1);
+            testQuery(dataModel,
+                        report,
+                        solrIndexSearcher,
+                        "@"
+                                    + SearchLanguageConversion.escapeLuceneQuery(ContentModel.PROP_CONTENT
+                                                .toPrefixString(dataModel.getNamespaceDAO())) + ":*ox", 1);
         }
         finally
         {
@@ -7173,16 +7173,16 @@ public class AlfrescoCoreAdminTester
 
         // AbstractLuceneQueryParser.FIELD_ISROOT is not used in SOLR
 
-//        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCTYPEQNAME + ":\""
-//                    + ContentModel.ASSOC_CHILDREN.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 4, null, null,
-//                    null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCTYPEQNAME + ":\""
+                    + ContentModel.ASSOC_CHILDREN.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 4, null, null,
+                    null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ISNODE + ":T", 16, null, null, null, null, null,
                     (String) null);
 
-//        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ASSOCTYPEQNAME + ":\""
-//                    + ContentModel.ASSOC_CHILDREN.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 5, null, null,
-//                    null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ASSOCTYPEQNAME + ":\""
+                    + ContentModel.ASSOC_CHILDREN.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 5, null, null,
+                    null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYPARENT + ":\"" + nodeRef + "\"", 2, null,
                     null, null, null, null, (String) null);
