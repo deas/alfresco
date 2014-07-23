@@ -95,7 +95,6 @@
     <module>modules/wcmquickstart/wcmquickstartwebsite</module>
     <module>projects/web-editor-samples/customer-site</module>
     <module>projects/mmt</module>
-    <module>projects/sdk/alfresco-platform-distribution</module>
   </modules>
 
   <properties>
@@ -153,7 +152,8 @@
     <dependency.opencmis.version>0.10.0</dependency.opencmis.version>
     <dependency.antlr.version>3.4</dependency.antlr.version>
     <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
-    <dependency.activiti.version>5.13-alf-20140708</dependency.activiti.version>
+    <dependency.surf.version>1.2.1-M16</dependency.surf.version>
+    <dependency.activiti.version>5.13-alf-20140107</dependency.activiti.version>
     <dependency.poi.version>3.10-FINAL</dependency.poi.version>
     <dependency.dojo.version>1.8.3</dependency.dojo.version>
     
@@ -371,25 +371,7 @@
 			</executions>
 		</plugin>
 
-        <plugin>
-            <groupId>org.commonjava.maven.plugins</groupId>
-            <artifactId>directory-maven-plugin</artifactId>
-            <version>0.1</version>
-            <executions>
-                <execution>
-                    <id>find-highest-basedir</id>
-                    <goals>
-                        <goal>highest-basedir</goal>
-                    </goals>
-                    <phase>initialize</phase>
-                    <configuration>
-                        <property>highest.basedir</property>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
 		<!-- Create a jar of test classes, to be reused later in remote-api -->
-
 		<plugin>
 			<artifactId>maven-jar-plugin</artifactId>
 			<executions>
