@@ -928,20 +928,7 @@ public class AclTracker extends AbstractTracker
                 {
                     if (super.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
-                        waitForAsynchronousReindexing();
-                        for (AclChangeSet set : changeSetsIndexed)
-                        {
-                            super.infoSrv.indexAclTransaction(set, true);
-                            if (set.getCommitTimeMs() > state.getLastIndexedChangeSetCommitTime())
-                            {
-                                state.setLastIndexedChangeSetCommitTime(set.getCommitTimeMs());
-                                state.setLastIndexedChangeSetId(set.getId());
-                            }
-                            trackerStats.addChangeSetAcls((int) (set.getAclCount()));
-
-                        }
-                        changeSetsIndexed.clear();
-                        super.infoSrv.commit();
+                        indexAclChangeSetAfterAsynchronous(changeSetsIndexed, state);
                         aclCount = 0;
                     }
                 }
@@ -966,20 +953,26 @@ public class AclTracker extends AbstractTracker
 
         if (indexed)
         {
-            waitForAsynchronousReindexing();
-            for (AclChangeSet set : changeSetsIndexed)
-            {
-                super.infoSrv.indexAclTransaction(set, true);
-                if (set.getCommitTimeMs() > state.getLastIndexedChangeSetCommitTime())
-                {
-                    state.setLastIndexedChangeSetCommitTime(set.getCommitTimeMs());
-                    state.setLastIndexedChangeSetId(set.getId());
-                }
-                trackerStats.addChangeSetAcls((int) (set.getAclCount()));
-            }
-            changeSetsIndexed.clear();
-            super.infoSrv.commit();
+            indexAclChangeSetAfterAsynchronous(changeSetsIndexed, state);
         }
+    }
+
+    private void indexAclChangeSetAfterAsynchronous(HashSet<AclChangeSet> changeSetsIndexed, TrackerState state)
+                throws IOException
+    {
+        waitForAsynchronousReindexing();
+        for (AclChangeSet set : changeSetsIndexed)
+        {
+            super.infoSrv.indexAclTransaction(set, true);
+            if (set.getCommitTimeMs() > state.getLastIndexedChangeSetCommitTime())
+            {
+                state.setLastIndexedChangeSetCommitTime(set.getCommitTimeMs());
+                state.setLastIndexedChangeSetId(set.getId());
+            }
+            trackerStats.addChangeSetAcls((int) (set.getAclCount()));
+        }
+        changeSetsIndexed.clear();
+        super.infoSrv.commit();
     }
 
     private int getAclCount(List<AclChangeSet> changeSetBatch)
