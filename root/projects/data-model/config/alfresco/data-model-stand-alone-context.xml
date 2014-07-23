@@ -47,12 +47,37 @@
         <property name="defaultAnalyserResourceBundleName">
             <value>${lucene.defaultAnalyserResourceBundleName}</value>
         </property>
-        <property name="tryLockTimeout">
-            <value>2000</value>
-        </property>
+    </bean>
+	
+    <bean id="threadFactory" class="org.alfresco.util.TraceableThreadFactory">
+        <property name="threadDaemon" value="true" />
+        <property name="threadPriority" value="5" />
     </bean>
 
-    <bean name="compiledModelsCache" class="org.alfresco.repo.cache.MemoryCache" /> 
+    <bean id="handler" class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy"/>	
+    <bean id="workQueue" class="java.util.concurrent.LinkedBlockingQueue" />
+    <bean id="timeUnit" class="java.util.concurrent.TimeUnit" factory-method="valueOf">
+        <constructor-arg value="SECONDS" />
+    </bean>
+   
+    <bean id="threadPoolExecutor" class="org.alfresco.util.DynamicallySizedThreadPoolExecutor">
+        <constructor-arg value="20"/>
+        <constructor-arg value="20"/>
+        <constructor-arg value="90"/>
+        <constructor-arg ref="timeUnit"/>
+        <constructor-arg ref="workQueue"/>
+        <constructor-arg ref="threadFactory"/> 
+        <constructor-arg ref="handler"/>
+    </bean>
+	
+    <bean id="asynchronouslyRefreshedCacheRegistry" class="org.alfresco.util.cache.DefaultAsynchronouslyRefreshedCacheRegistry" />
+   
+    <bean id="compiledModelsCache" class="org.alfresco.repo.dictionary.CompiledModelsCache" >
+        <property name="dictionaryDAO" ref="dictionaryDAO" /> 	
+        <property name="tenantService" ref="tenantService" />
+        <property name="registry" ref="asynchronouslyRefreshedCacheRegistry" />
+        <property name="threadPoolExecutor" ref="threadPoolExecutor" />
+    </bean>
  
     <bean name="messageLookup" class="org.alfresco.repo.i18n.StaticMessageLookup" /> 
 

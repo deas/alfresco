@@ -362,8 +362,8 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
         result.setId(id);
         result.setLocalName(alfrescoPropName.getLocalName());
         result.setLocalNamespace(alfrescoPropName.getNamespaceURI());
-        result.setDisplayName(propDef.getTitle(dictionaryService) != null ? propDef.getTitle(dictionaryService) : id);
-        result.setDescription(propDef.getDescription(dictionaryService) != null ? propDef.getDescription(dictionaryService) : result.getDisplayName());
+        result.setDisplayName(id);
+        result.setDescription(result.getDisplayName());
         result.setPropertyType(datatype);
         result.setCardinality(propDef.isMultiValued() ? Cardinality.MULTI : Cardinality.SINGLE);
         result.setIsInherited(inherited);

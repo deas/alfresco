@@ -62,9 +62,8 @@ public class ItemTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
             }
         }
 
-        typeDef.setDisplayName((cmisClassDef.getTitle(dictionaryService) != null) ? cmisClassDef.getTitle(dictionaryService) : typeId);
-        typeDef.setDescription(cmisClassDef.getDescription(dictionaryService) != null ? cmisClassDef.getDescription(dictionaryService) : typeDef
-                .getDisplayName());
+        typeDef.setDisplayName(typeId);
+        typeDef.setDescription(typeDef.getDisplayName());
 
         if (BaseTypeId.CMIS_ITEM.value().equals(typeId) )
         {

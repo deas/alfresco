@@ -29,7 +29,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -43,6 +45,7 @@ import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.opencmis.search.CMISQueryParser;
 import org.alfresco.opencmis.search.CmisFunctionEvaluationContext;
 import org.alfresco.repo.cache.MemoryCache;
+import org.alfresco.repo.dictionary.CompiledModelsCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
 import org.alfresco.repo.dictionary.DictionaryRegistry;
@@ -75,9 +78,12 @@ import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AlfrescoClientDataModelServicesFactory.DictionaryKey;
 import org.alfresco.solr.client.AlfrescoModel;
+import org.alfresco.solr.tracker.pool.DefaultTrackerPoolFactory;
+import org.alfresco.solr.tracker.pool.TrackerPoolFactory;
 import org.alfresco.solr.query.Lucene4QueryBuilderContextSolrImpl;
 import org.alfresco.solr.query.Solr4QueryParser;
 import org.alfresco.util.ISO9075;
+import org.alfresco.util.cache.DefaultAsynchronouslyRefreshedCacheRegistry;
 import org.alfresco.util.NumericEncoder;
 import org.alfresco.util.Pair;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
@@ -173,16 +179,16 @@ public class AlfrescoSolrDataModel
         
         try
         {
-           //CompiledModelsCache compiledModelsCache = new CompiledModelsCache();
-           //compiledModelsCache.setDictionaryDAO(dictionaryDAO);
-           //compiledModelsCache.setTenantService(tenantService);
-           //compiledModelsCache.setRegistry(new DefaultAsynchronouslyRefreshedCacheRegistry());
-           //TrackerPoolFactory trackerPoolFactory = new DefaultTrackerPoolFactory(new Properties(), "_dictionary_");
-           //ThreadPoolExecutor threadPool = trackerPoolFactory.create();
-           //compiledModelsCache.setThreadPoolExecutor(threadPool);
-            dictionaryDAO.setDictionaryRegistryCache(new MemoryCache<String, DictionaryRegistry>());
+           CompiledModelsCache compiledModelsCache = new CompiledModelsCache();
+           compiledModelsCache.setDictionaryDAO(dictionaryDAO);
+           compiledModelsCache.setTenantService(tenantService);
+           compiledModelsCache.setRegistry(new DefaultAsynchronouslyRefreshedCacheRegistry());
+           TrackerPoolFactory trackerPoolFactory = new DefaultTrackerPoolFactory(new Properties(), "_dictionary_");
+           ThreadPoolExecutor threadPool = trackerPoolFactory.create();
+           compiledModelsCache.setThreadPoolExecutor(threadPool);
+           
         
-           //dictionaryDAO.setDictionaryRegistryCache(compiledModelsCache);
+           dictionaryDAO.setDictionaryRegistryCache(compiledModelsCache);
            // TODO: use config ....
            dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
            dictionaryDAO.setResourceClassLoader(getResourceClassLoader());

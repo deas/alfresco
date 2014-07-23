@@ -150,6 +150,8 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
     {
     	CMISDictionaryRegistry cmisRegistry = null;
     	boolean readLockReleased = false;
+    	//Make sure that DictionaryRegistry exist
+    	dictionaryDAO.getDictionaryRegistry(tenant);
 
     	registryReadLock.lock();
     	try
