@@ -73,7 +73,8 @@ public class ModelTracker extends AbstractTracker implements Tracker
         HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
         if (alfrescoModelDir.exists() && alfrescoModelDir.isDirectory())
         {
-            for (File file : alfrescoModelDir.listFiles(new FileFilter()
+            // A filter for XML files
+            FileFilter filter = new FileFilter()
             {
                 @Override
                 public boolean accept(File pathname)
@@ -81,28 +82,33 @@ public class ModelTracker extends AbstractTracker implements Tracker
                     return pathname.isFile() && pathname.getName().endsWith(".xml");
                 }
 
-            }))
+            };
+            // List XML files
+            for (File file : alfrescoModelDir.listFiles(filter))
             {
-                InputStream modelStream;
+                InputStream modelStream = null;
+                M2Model model;
                 try
                 {
                     modelStream = new FileInputStream(file);
-                    M2Model model = M2Model.createModel(modelStream);
-                    modelStream.close();
-                    for (M2Namespace namespace : model.getNamespaces())
-                    {
-                        modelMap.put(namespace.getUri(), model);
-                    }
-                }
-                catch (FileNotFoundException e)
-                {
-                    throw new AlfrescoRuntimeException("File not found", e);
+                    model = M2Model.createModel(modelStream);
                 }
                 catch (IOException e)
                 {
-                    throw new AlfrescoRuntimeException("File not found", e);
+                    throw new AlfrescoRuntimeException("File not found: " + file, e);
                 }
-
+                finally
+                {
+                    if (modelStream != null)
+                    {
+                        try { modelStream.close(); } catch (Exception e) {}
+                    }
+                }
+                // Model successfully loaded
+                for (M2Namespace namespace : model.getNamespaces())
+                {
+                    modelMap.put(namespace.getUri(), model);
+                }
             }
         }
         // Load the models ensuring that they are loaded in the correct order
