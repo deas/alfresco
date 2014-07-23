@@ -163,18 +163,23 @@
             </plugin>
 
             <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>package-config-jar</id>
-                        <configuration>
-                            <classesDirectory>${solr.instance.target.folder}</classesDirectory>
-                            <classifier>config</classifier>
-                        </configuration>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
+                        <id>package-config-zip</id>
                         <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <attach>true</attach>
+                            <descriptors>
+                                <descriptor>
+                                    source/assembly/solr-instance-zip.xml
+                                </descriptor>
+                            </descriptors>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -307,19 +312,25 @@
                             </execution>
                         </executions>
                     </plugin>
+                    
                     <plugin>
-                        <artifactId>maven-jar-plugin</artifactId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <inherited>false</inherited>
                         <executions>
                             <execution>
-                                <id>package-config-nossl-jar</id>
-                                <configuration>
-                                    <classesDirectory>${solr.config.folder}</classesDirectory>
-                                    <classifier>config-nossl</classifier>
-                                </configuration>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
+                                <id>package-config-zip-nossl</id>
                                 <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <attach>true</attach>
+                                    <descriptors>
+                                        <descriptor>
+                                            source/assembly/solr-instance-zip-nossl.xml
+                                        </descriptor>
+                                    </descriptors>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

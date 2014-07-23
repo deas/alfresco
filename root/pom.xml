@@ -800,9 +800,11 @@
     <profile>
         <id>enterprise</id>
         <modules>
-            <module>enterpriseprojects/repository</module>
+			<module>enterpriseprojects/repository</module>
             <module>enterpriseprojects/remote-api</module>
             <module>enterpriseprojects/overlays</module>
+            <module>enterpriseprojects/server-root</module>
+            <module>enterpriseprojects/vti-bin</module>
         </modules>
         <properties>
             <!-- Enterprise specific properties -->
@@ -975,5 +977,26 @@
 			</plugins>
 		</build>
 	</profile>
+	  <profile>
+        <id>solr4-http</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <configuration>
+                        <systemProperties>
+                            <index.subsystem.name>solr4</index.subsystem.name>
+                            <solr.host>localhost</solr.host>
+                            <solr.port>${tomcat.default.solr4.port}</solr.port>
+                            <solr.secureComms>none</solr.secureComms>
+                            <solr.backup.alfresco.numberToKeep>0</solr.backup.alfresco.numberToKeep>
+                            <solr.backup.archive.numberToKeep>0</solr.backup.archive.numberToKeep>
+                        </systemProperties>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
   </profiles>
 </project>
