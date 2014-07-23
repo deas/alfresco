@@ -100,9 +100,13 @@
 
   <properties>
     <tomcat.default.alfresco.port>8080</tomcat.default.alfresco.port>
+    <tomcat.default.alfresco.ssl.port>8443</tomcat.default.alfresco.ssl.port>
     <tomcat.default.share.port>8081</tomcat.default.share.port>
+    <tomcat.default.share.ssl.port>8444</tomcat.default.share.ssl.port>
     <tomcat.default.solr.port>8082</tomcat.default.solr.port>
+    <tomcat.default.solr.ssl.port>8445</tomcat.default.solr.ssl.port>
     <tomcat.default.solr4.port>8083</tomcat.default.solr4.port>
+    <tomcat.default.solr4.ssl.port>8446</tomcat.default.solr4.ssl.port>
     
     <!-- Database properties - default values to be overridden in settings.xml -->
     <db.skip>true</db.skip>
@@ -569,7 +573,6 @@
                         <db.password>${db.password}</db.password>
                         <dir.root>${dir.root}</dir.root>
                     </systemProperties>
-                    <httpsPort>8443</httpsPort>
                     <keystoreFile>${project.parent.basedir}/projects/system-build-test/keystore/ssl.keystore</keystoreFile>
                     <keystorePass>kT9X6oe68t</keystorePass>
                     <keystoreType>JCEKS</keystoreType>
@@ -992,7 +995,7 @@
 		</build>
 	</profile>
 	  <profile>
-        <id>solr4-http</id>
+        <id>solr4-ssl</id>
         <build>
             <plugins>
                 <plugin>
@@ -1002,7 +1005,7 @@
                         <systemProperties>
                             <index.subsystem.name>solr4</index.subsystem.name>
                             <solr.host>localhost</solr.host>
-                            <solr.port>${tomcat.default.solr4.port}</solr.port>
+                            <solr.port>${tomcat.default.solr4.ssl.port}</solr.port>
                             <solr.secureComms>none</solr.secureComms>
                             <solr.backup.alfresco.numberToKeep>0</solr.backup.alfresco.numberToKeep>
                             <solr.backup.archive.numberToKeep>0</solr.backup.archive.numberToKeep>
