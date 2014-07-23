@@ -36,7 +36,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -50,7 +49,6 @@ import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.opencmis.search.CMISQueryParser;
 import org.alfresco.opencmis.search.CmisFunctionEvaluationContext;
 import org.alfresco.repo.cache.MemoryCache;
-import org.alfresco.repo.dictionary.CompiledModelsCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
@@ -95,8 +93,6 @@ import org.alfresco.solr.query.LuceneQueryBuilderContextSolrImpl;
 import org.alfresco.solr.query.SolrQueryParser;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
-import org.alfresco.util.ThreadPoolExecutorFactoryBean;
-import org.alfresco.util.cache.DefaultAsynchronouslyRefreshedCacheRegistry;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.CapabilityJoin;
 import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
@@ -275,7 +271,7 @@ public class AlfrescoSolrDataModel
 
     }
 
-    private AlfrescoSolrDataModel(String id) 
+    private AlfrescoSolrDataModel(String id)
     {
         this.id = id;
 
@@ -283,32 +279,14 @@ public class AlfrescoSolrDataModel
         namespaceDAO = new NamespaceDAOImpl();
         namespaceDAO.setTenantService(tenantService);
         namespaceDAO.setNamespaceRegistryCache(new MemoryCache<String, NamespaceRegistry>());
-        namespaceDAO.init();
 
         dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
         dictionaryDAO.setTenantService(tenantService);
-        
-        try
-        {
-           CompiledModelsCache compiledModelsCache = new CompiledModelsCache();
-           compiledModelsCache.setDictionaryDAO(dictionaryDAO);
-           compiledModelsCache.setTenantService(tenantService);
-           compiledModelsCache.setRegistry(new DefaultAsynchronouslyRefreshedCacheRegistry());
-           ThreadPoolExecutorFactoryBean threadPoolfactory = new ThreadPoolExecutorFactoryBean();
-           threadPoolfactory.afterPropertiesSet();
-           compiledModelsCache.setThreadPoolExecutor((ThreadPoolExecutor) threadPoolfactory.getObject());
+        dictionaryDAO.setDictionaryRegistryCache(new MemoryCache<String, DictionaryRegistry>());
+        // TODO: use config ....
+        dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
+        dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
 
-        
-           dictionaryDAO.setDictionaryRegistryCache(compiledModelsCache);
-           // TODO: use config ....
-           dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
-           dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
-           dictionaryDAO.init();
-        }
-        catch (Exception e) 
-        {
-            throw new AlfrescoRuntimeException("Failed to create dictionaryDAO ", e);
-        }
         QNameFilter qnameFilter = getQNameFilter();
         dictionaryServices = AlfrescoClientDataModelServicesFactory.constructDictionaryServices(qnameFilter, dictionaryDAO);
         DictionaryComponent dictionaryComponent = getDictionaryService(CMISStrictDictionaryService.DEFAULT);
