@@ -766,73 +766,112 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     protected Query createIsNotNull(String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
-//        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
-//        if (pd != null)
-//        {
-//            ClassDefinition containerClass = pd.getContainerClass();
-//            QName container = containerClass.getName();
-//            BooleanQuery query = new BooleanQuery();
-//            String classType = containerClass.isAspect() ? FIELD_ASPECT : FIELD_TYPE;
-//            Query typeQuery = getFieldQuery(classType, container.toString(), analysisMode, luceneFunction);
-//            Query presenceQuery = getWildcardQuery(PROPERTY_FIELD_PREFIX + pd.getName().toString(), "*");
-//            if ((typeQuery != null) && (presenceQuery != null))
-//            {
-//                // query.add(typeQuery, Occur.MUST);
-//                query.add(presenceQuery, Occur.MUST);
-//            }
-//            return query;
-//        }
-//        else
-//        {
-//            return getFieldQueryImplWithIOExceptionWrapped(FIELD_ISNOTNULL, queryText, analysisMode, luceneFunction);
-//        }
-        throw new UnsupportedOperationException();
+        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
+        if (pd != null)
+        {
+            BooleanQuery query = new BooleanQuery();
+            IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getIndexedFieldNamesForProperty(pd.getName());
+            for(FieldInstance field : indexedField.getFields())
+            {
+                if(!field.isLocalised())
+                {
+                    Query presenceQuery = getWildcardQuery(field.getField(), "*");
+                    if (presenceQuery != null)
+                    {
+                        query.add(presenceQuery, Occur.SHOULD);
+                    }
+                }
+            }
+            return query;
+        }
+        else
+        {
+            BooleanQuery query = new BooleanQuery();
+            
+            Query presenceQuery = getWildcardQuery(queryText, "*");
+            if (presenceQuery != null)
+            {
+                query.add(presenceQuery, Occur.MUST);
+            }
+            return query;
+        }
     }
 
     protected Query createIsNullQuery(String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
-//        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
-//        if (pd != null)
-//        {
-//            BooleanQuery query = new BooleanQuery();
-//            Query presenceQuery = getWildcardQuery(PROPERTY_FIELD_PREFIX + pd.getName().toString(), "*");
-//            if (presenceQuery != null)
-//            {
-//                query.add(new MatchAllDocsQuery(), Occur.MUST);
-//                query.add(presenceQuery, Occur.MUST_NOT);
-//            }
-//            return query;
-//        }
-//        else
-//        {
-//            return getFieldQueryImplWithIOExceptionWrapped(FIELD_ISNULL, queryText, analysisMode, luceneFunction);
-//        }
-        throw new UnsupportedOperationException();
+        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
+        if (pd != null)
+        {
+            BooleanQuery query = new BooleanQuery();
+            IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getIndexedFieldNamesForProperty(pd.getName());
+            for(FieldInstance field : indexedField.getFields())
+            {
+                if(!field.isLocalised())
+                {
+                    Query presenceQuery = getWildcardQuery(field.getField(), "*");
+                    if (presenceQuery != null)
+                    {
+                        if(query.getClauses().length == 0)
+                        {
+                            query.add(new MatchAllDocsQuery(), Occur.MUST);
+                        }
+                        query.add(presenceQuery, Occur.MUST_NOT);
+                    }
+                }
+            }
+            return query;
+        }
+        else
+        {
+            BooleanQuery query = new BooleanQuery();
+            
+            Query presenceQuery = getWildcardQuery(queryText, "*");
+            if (presenceQuery != null)
+            {
+                query.add(new MatchAllDocsQuery(), Occur.MUST);
+                query.add(presenceQuery, Occur.MUST_NOT);
+            }
+            return query;
+        }
     }
 
     protected Query createIsUnsetQuery(String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
-//        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
-//        if (pd != null)
-//        {
-//            ClassDefinition containerClass = pd.getContainerClass();
-//            QName container = containerClass.getName();
-//            BooleanQuery query = new BooleanQuery();
-//            String classType = containerClass.isAspect() ? FIELD_ASPECT : FIELD_TYPE;
-//            Query typeQuery = getFieldQuery(classType, container.toString(), analysisMode, luceneFunction);
-//            Query presenceQuery = getWildcardQuery(PROPERTY_FIELD_PREFIX + pd.getName().toString(), "*");
-//            if ((typeQuery != null) && (presenceQuery != null))
-//            {
-//                query.add(typeQuery, Occur.MUST);
-//                query.add(presenceQuery, Occur.MUST_NOT);
-//            }
-//            return query;
-//        }
-//        else
-//        {
-//            return getFieldQueryImplWithIOExceptionWrapped(FIELD_ISUNSET, queryText, analysisMode, luceneFunction);
-//        }
-        throw new UnsupportedOperationException();
+        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
+        if (pd != null)
+        {
+            ClassDefinition containerClass = pd.getContainerClass();
+            QName container = containerClass.getName();
+            String classType = containerClass.isAspect() ? FIELD_ASPECT : FIELD_TYPE;
+            Query typeQuery = getFieldQuery(classType, container.toString(), analysisMode, luceneFunction);
+            
+            BooleanQuery query = new BooleanQuery();
+            IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getIndexedFieldNamesForProperty(pd.getName());
+            for(FieldInstance field : indexedField.getFields())
+            {
+                if(!field.isLocalised())
+                {
+                    Query presenceQuery = getWildcardQuery(field.getField(), "*");
+                    if (presenceQuery != null)
+                    {
+                        query.add(typeQuery, Occur.MUST);
+                        query.add(presenceQuery, Occur.MUST_NOT);
+                    }
+                }
+            }
+            return query;
+        }
+        else
+        {
+            BooleanQuery query = new BooleanQuery();
+            
+            Query presenceQuery = getWildcardQuery(queryText, "*");
+            if (presenceQuery != null)
+            {
+                query.add(presenceQuery, Occur.MUST_NOT);
+            }
+            return query;
+        }
     }
 
     protected Query createAllQuery(String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
@@ -1787,6 +1826,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     BooleanQuery q = newBooleanQuery(true);
                     TOKEN_SEQUENCE: for(LinkedList<org.apache.lucene.analysis.Token> tokenSequence : fixedTokenSequences)
                     {
+                        // TODO: SPAN SPAN SPAN WONDERFUL SPAN .... etc etc
                         // phrase query:
                         MultiPhraseQuery mpq = newMultiPhraseQuery();
                         mpq.setSlop(internalSlop);
@@ -2013,6 +2053,8 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     }
 
+    
+    // TODO - resort to span if we have to ...
     private void addWildcardTerms(ArrayList<Term> terms, Term term) throws ParseException
     {
 //        try
@@ -3137,11 +3179,6 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         {
             throw new UnsupportedOperationException("Span queries are only supported for d:text, d:mltext and d:content data types");    
         }
-
-        // need to build each term for the span
-        //SpanQuery firstTerm = new SpanTermQuery(new Term(field, first));
-        //SpanQuery lastTerm = new SpanTermQuery(new Term(field, last));
-        //return new SpanNearQuery(new SpanQuery[] { firstTerm, lastTerm }, slop, inOrder);
     }
 
  
