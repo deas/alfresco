@@ -1339,11 +1339,11 @@ public class SolrInformationServer implements InformationServer
 
                 List<NodeMetaData> nodeMetaDatas =  repositoryClient.getNodesMetaData(nmdp, Integer.MAX_VALUE);
 
-                AddUpdateCommand addDocCmd = new AddUpdateCommand(getLocalSolrQueryRequest());
-                addDocCmd.overwrite = overwrite;
-
                 for (NodeMetaData nodeMetaData : nodeMetaDatas)
                 {
+                    AddUpdateCommand addDocCmd = new AddUpdateCommand(getLocalSolrQueryRequest());
+                    addDocCmd.overwrite = overwrite;
+                    
                     Node node = nodeIdsToNodes.get(nodeMetaData.getId());
                     if (nodeMetaData.getTxnId() > node.getTxnId())
                     {
@@ -1561,14 +1561,12 @@ public class SolrInformationServer implements InformationServer
                     }                   
                     
                     addDocCmd.solrDoc = doc;
-
+                    
+                    if (addDocCmd.solrDoc != null)
+                    {
+                        core.getUpdateHandler().addDoc(addDocCmd);
+                    }
                 }
-
-                if (addDocCmd.solrDoc != null)
-                {
-                    core.getUpdateHandler().addDoc(addDocCmd);
-                }
-               
 
             }
             long end = System.nanoTime();
