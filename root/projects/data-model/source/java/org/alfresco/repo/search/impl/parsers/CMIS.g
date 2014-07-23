@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -246,7 +246,7 @@ tokens
             state.text = null;
             if ( input.LA(1)==CharStream.EOF ) 
             {
-                return Token.EOF_TOKEN;
+                  return getEOFToken();
             }
             try 
             {

@@ -1102,12 +1102,12 @@ public class FTSQueryParser
         return factory.createPropertyArgument(argumentName, functionEvaluationContext.isQueryable(fieldName), functionEvaluationContext.isOrderable(fieldName), alias, fieldName);
     }
 
-    static private String getText(List<Tree> nodes)
+    static private String getText(List<? extends Object> nodes)
     {
         StringBuilder builder = new StringBuilder();
-        for(Tree node : nodes)
+        for(Object node : nodes)
         {            
-            builder.append(getText(node, false));
+            builder.append(getText((Tree)node, false));
         }
         return builder.toString();
     }

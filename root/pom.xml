@@ -150,7 +150,7 @@
     <dependency.tika.version>1.6-20140428-alfresco-patched</dependency.tika.version>
     <dependency.vorbisJava.version>0.4</dependency.vorbisJava.version>
     <dependency.opencmis.version>0.10.0</dependency.opencmis.version>
-    <dependency.antlr.version>3.4</dependency.antlr.version>
+    <dependency.antlr.version>3.5.2</dependency.antlr.version>
     <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
     <dependency.surf.version>1.2.1-M16</dependency.surf.version>
     <dependency.activiti.version>5.13-alf-20140107</dependency.activiti.version>

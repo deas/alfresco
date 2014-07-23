@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -287,12 +287,7 @@ public void emit(Token token) {
 public Token nextToken() {
         nextTokenImpl();
         if ( tokens.size()==0 ) {
-            Token eof = new CommonToken((CharStream)input,Token.EOF,
-                                            Token.DEFAULT_CHANNEL,
-                                            input.index(),input.index());
-            eof.setLine(getLine());
-            eof.setCharPositionInLine(getCharPositionInLine());
-            return eof;
+            return getEOFToken();
         }
         return (Token)tokens.remove(0);
 }
@@ -308,12 +303,7 @@ public Token nextTokenImpl() {
             state.text = null;
             if ( input.LA(1)==CharStream.EOF ) 
             {
-                Token eof = new CommonToken((CharStream)input,Token.EOF,
-                                            Token.DEFAULT_CHANNEL,
-                                            input.index(),input.index());
-                eof.setLine(getLine());
-                eof.setCharPositionInLine(getCharPositionInLine());
-                return eof;
+                return getEOFToken();
             }
             try 
             {
