@@ -59,6 +59,7 @@ import org.alfresco.solr.AlfrescoSolrDataModel.FieldInstance;
 import org.alfresco.solr.AlfrescoSolrDataModel.FieldUse;
 import org.alfresco.solr.AlfrescoSolrDataModel.IndexedField;
 import org.alfresco.util.ISO9075;
+import org.alfresco.util.Pair;
 import org.alfresco.util.SearchLanguageConversion;
 import org.antlr.misc.OrderedHashSet;
 import org.apache.commons.logging.Log;
@@ -3329,6 +3330,8 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
  
+    
+    
     private Query attributeQueryBuilder(String field, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
         // TODO: Fix duplicate token generation for mltext, content and text.
@@ -3337,56 +3340,12 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         // Get type info etc
 
         // TODO: additional suffixes
-        String propertyFieldName = null;
-        String ending = "";
-        if (field.endsWith(FIELD_MIMETYPE_SUFFIX))
-        {
-            propertyFieldName = field.substring(1, field.length() - FIELD_MIMETYPE_SUFFIX.length());
-            ending = FIELD_MIMETYPE_SUFFIX;
-        }
-        else if (field.endsWith(FIELD_SIZE_SUFFIX))
-        {
-            propertyFieldName = field.substring(1, field.length() - FIELD_SIZE_SUFFIX.length());
-            ending = FIELD_SIZE_SUFFIX;
-        }
-        else if (field.endsWith(FIELD_LOCALE_SUFFIX))
-        {
-            propertyFieldName = field.substring(1, field.length() - FIELD_LOCALE_SUFFIX.length());
-            ending = FIELD_LOCALE_SUFFIX;
-        }
-        else if (field.endsWith(FIELD_ENCODING_SUFFIX))
-        {
-            propertyFieldName = field.substring(1, field.length() - FIELD_ENCODING_SUFFIX.length());
-            ending = FIELD_ENCODING_SUFFIX;
-        }
-        else if (field.endsWith(FIELD_CONTENT_DOC_ID_SUFFIX))
-        {
-            propertyFieldName = field.substring(1, field.length() - FIELD_CONTENT_DOC_ID_SUFFIX.length());
-            ending = FIELD_CONTENT_DOC_ID_SUFFIX;
-        }
-        else if (field.endsWith(FIELD_TRANSFORMATION_EXCEPTION_SUFFIX))
-        {
-            propertyFieldName = field.substring(1, field.length() - FIELD_TRANSFORMATION_EXCEPTION_SUFFIX.length());
-            ending = FIELD_TRANSFORMATION_EXCEPTION_SUFFIX;
-        }
-        else if (field.endsWith(FIELD_TRANSFORMATION_TIME_SUFFIX))
-        {
-            propertyFieldName = field.substring(1, field.length() - FIELD_TRANSFORMATION_TIME_SUFFIX.length());
-            ending = FIELD_TRANSFORMATION_TIME_SUFFIX;
-        }
-        else if (field.endsWith(FIELD_TRANSFORMATION_STATUS_SUFFIX))
-        {
-            propertyFieldName = field.substring(1, field.length() - FIELD_TRANSFORMATION_STATUS_SUFFIX.length());
-            ending = FIELD_TRANSFORMATION_STATUS_SUFFIX;
-        }
-        else
-        {
-            propertyFieldName = field.substring(1);
-        }
+        
+        Pair<String, String> fieldNameAndEnding = QueryParserUtils.extractFieldNameAndEnding(field);
 
         String expandedFieldName = null;
         QName propertyQName;
-        PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, propertyFieldName);
+        PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, fieldNameAndEnding.getFirst());
         IndexTokenisationMode tokenisationMode = IndexTokenisationMode.TRUE;
         if (propertyDef != null)
         {
@@ -3400,7 +3359,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         else
         {
             expandedFieldName = expandAttributeFieldName(field);
-            propertyQName = QName.createQName(propertyFieldName);
+            propertyQName = QName.createQName(fieldNameAndEnding.getFirst());
         }
 
         if (luceneFunction != LuceneFunction.FIELD)
@@ -3422,12 +3381,12 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     }
                 }
 
-                return functionQueryBuilder(expandedFieldName, ending, propertyQName, propertyDef, tokenisationMode, queryText, luceneFunction);
+                return functionQueryBuilder(expandedFieldName, fieldNameAndEnding.getSecond(), propertyQName, propertyDef, tokenisationMode, queryText, luceneFunction);
             }
         }
 
         // Mime type
-        if (ending.equals(FIELD_MIMETYPE_SUFFIX))
+        if (fieldNameAndEnding.getSecond().equals(FIELD_MIMETYPE_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3435,7 +3394,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
 
         }
-        else if (ending.equals(FIELD_SIZE_SUFFIX))
+        else if (fieldNameAndEnding.getSecond().equals(FIELD_SIZE_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3444,7 +3403,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
 
         }
-        else if (ending.equals(FIELD_LOCALE_SUFFIX))
+        else if (fieldNameAndEnding.getSecond().equals(FIELD_LOCALE_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3453,7 +3412,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
 
         }
-        else if (ending.equals(FIELD_ENCODING_SUFFIX))
+        else if (fieldNameAndEnding.getSecond().equals(FIELD_ENCODING_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3462,7 +3421,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
 
         }
-        else if (ending.equals(FIELD_TRANSFORMATION_STATUS_SUFFIX))
+        else if (fieldNameAndEnding.getSecond().equals(FIELD_TRANSFORMATION_STATUS_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3471,7 +3430,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
 
         }
-        else if (ending.equals(FIELD_TRANSFORMATION_TIME_SUFFIX))
+        else if (fieldNameAndEnding.getSecond().equals(FIELD_TRANSFORMATION_TIME_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3480,7 +3439,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
 
         }
-        else if (ending.equals(FIELD_TRANSFORMATION_EXCEPTION_SUFFIX))
+        else if (fieldNameAndEnding.getSecond().equals(FIELD_TRANSFORMATION_EXCEPTION_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {

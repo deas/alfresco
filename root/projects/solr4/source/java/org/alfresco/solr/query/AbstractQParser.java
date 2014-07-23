@@ -26,19 +26,32 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
+import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.repo.search.MLAnalysisMode;
+import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
+import org.alfresco.repo.search.impl.QueryParserUtils;
+import org.alfresco.repo.search.impl.parsers.AlfrescoFunctionEvaluationContext;
+import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.search.QueryConsistency;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchParameters.Operator;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.namespace.NamespaceService;
+import org.alfresco.solr.AlfrescoSolrDataModel;
+import org.alfresco.solr.AlfrescoSolrDataModel.ContentFieldType;
+import org.alfresco.solr.AlfrescoSolrDataModel.FieldUse;
+import org.alfresco.solr.AlfrescoSolrDataModel.IndexedField;
 import org.alfresco.util.Pair;
 import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.ContentStream;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.search.QParser;
+import org.apache.solr.search.QueryParsing;
+import org.apache.solr.search.SortSpec;
+import org.apache.solr.search.SyntaxError;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +63,7 @@ import org.springframework.extensions.surf.util.I18NUtil;
 /**
  * @author Andy
  */
-public abstract class AbstractQParser extends QParser
+public abstract class AbstractQParser extends QParser implements QueryConstants
 {
     private static char[] SEPARATORS = new char[] { ':', ',', '-', '!', '+', '=', ';', '~', '/' };
 
@@ -364,4 +377,179 @@ public abstract class AbstractQParser extends QParser
        }
        return 0;
     }
+
+    /* (non-Javadoc)
+     * @see org.apache.solr.search.QParser#getSort(boolean)
+     */
+    @Override
+    public SortSpec getSort(boolean useGlobalParams) throws SyntaxError
+    {
+        
+        getQuery(); // ensure query is parsed first
+
+        String sortStr = null;
+        String startS = null;
+        String rowsS = null;
+
+        if (localParams != null) {
+          sortStr = localParams.get(CommonParams.SORT);
+          startS = localParams.get(CommonParams.START);
+          rowsS = localParams.get(CommonParams.ROWS);
+
+          // if any of these parameters are present, don't go back to the global params
+          if (sortStr != null || startS != null || rowsS != null) {
+            useGlobalParams = false;
+          }
+        }
+
+        if (useGlobalParams) {
+          if (sortStr ==null) {
+              sortStr = params.get(CommonParams.SORT);
+          }
+          if (startS==null) {
+            startS = params.get(CommonParams.START);
+          }
+          if (rowsS==null) {
+            rowsS = params.get(CommonParams.ROWS);
+          }
+        }
+
+        int start = startS != null ? Integer.parseInt(startS) : 0;
+        int rows = rowsS != null ? Integer.parseInt(rowsS) : 10;
+
+        // Fix sort fields here
+        if(sortStr != null)
+        {
+            StringBuilder builder = new StringBuilder();
+            StringBuilder propertyBuilder = null;
+            char c;
+            for(int i = 0; i < sortStr.length(); i++)
+            {
+                c = sortStr.charAt(i);
+                if(propertyBuilder == null)
+                {
+                    if(c == '@')
+                    {
+                        propertyBuilder = new StringBuilder();
+                        propertyBuilder.append(c);
+                    }
+                    else
+                    {
+                        builder.append(c);
+                    }
+                }
+                else
+                {
+                    if(Character.isWhitespace(c))
+                    {
+                        String toAppend = endProperty(propertyBuilder);
+                        builder.append(toAppend);
+                        builder.append(c);
+                        propertyBuilder = null;
+                    }
+                    else
+                    {
+                        propertyBuilder.append(c);
+                    }
+                }
+            }
+            if(propertyBuilder != null)
+            {
+                String toAppend = endProperty(propertyBuilder);
+                builder.append(toAppend);
+            }
+            sortStr = builder.toString();
+        }
+        
+        SortSpec sort = QueryParsing.parseSortSpec(sortStr, req);
+
+        sort.setOffset(start);
+        sort.setCount(rows);
+        return sort;
+    }
+
+    /**
+     * @param builder
+     * @param propertyBuilder
+     * @param c
+     * @return
+     */
+    private String  endProperty(StringBuilder propertyBuilder)
+    {
+        String potentialProperty = propertyBuilder.toString();
+        AlfrescoFunctionEvaluationContext functionContext = new AlfrescoFunctionEvaluationContext( AlfrescoSolrDataModel.getInstance().getNamespaceDAO(),  AlfrescoSolrDataModel.getInstance().getDictionaryService(CMISStrictDictionaryService.DEFAULT), NamespaceService.CONTENT_MODEL_1_0_URI);
+
+        String luceneField =  functionContext.getLuceneFieldName(potentialProperty);
+
+        Pair<String, String> fieldNameAndEnding = QueryParserUtils.extractFieldNameAndEnding(luceneField);
+        PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(NamespaceService.CONTENT_MODEL_1_0_URI, AlfrescoSolrDataModel.getInstance().getNamespaceDAO(), AlfrescoSolrDataModel.getInstance().getDictionaryService(CMISStrictDictionaryService.DEFAULT), fieldNameAndEnding.getFirst());
+        
+        String solrSortField = null;
+        if(propertyDef != null)
+        {
+
+            IndexedField fields = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), getTextField(fieldNameAndEnding.getSecond()), FieldUse.SORT);
+            if(fields.getFields().size() > 0)
+            {
+                solrSortField = fields.getFields().get(0).getField();
+            }
+            else
+            {
+                solrSortField = mapNonPropertyFields(luceneField);
+            }
+        }
+        else
+        {
+            solrSortField = mapNonPropertyFields(luceneField);
+        }
+        return solrSortField;
+      
+    }
+    
+    /**
+     * @param luceneField
+     * @return
+     */
+    protected String mapNonPropertyFields(String luceneField)
+    {
+        switch(luceneField)
+        {
+        case "ID":
+            return "LID";
+        case "EXACTTYPE":
+            return "TYPE";
+        default:
+            return luceneField;
+                  
+        }
+    }
+
+    /**
+     * @param second
+     * @param sort
+     * @return
+     */
+    protected ContentFieldType getTextField(String ending)
+    {
+        switch(ending)
+        {
+        case FIELD_MIMETYPE_SUFFIX:
+            return ContentFieldType.MIMETYPE;
+        case FIELD_SIZE_SUFFIX:
+            return ContentFieldType.SIZE;
+        case FIELD_LOCALE_SUFFIX:
+            return ContentFieldType.LOCALE;
+        case FIELD_ENCODING_SUFFIX:
+            return ContentFieldType.ENCODING;
+        case FIELD_TRANSFORMATION_STATUS_SUFFIX:
+        case FIELD_TRANSFORMATION_TIME_SUFFIX:
+        case FIELD_TRANSFORMATION_EXCEPTION_SUFFIX:
+        default:
+            return null;
+                
+        }
+        
+    }
+    
+    
 }

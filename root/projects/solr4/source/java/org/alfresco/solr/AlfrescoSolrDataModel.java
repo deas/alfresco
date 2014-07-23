@@ -138,7 +138,8 @@ public class AlfrescoSolrDataModel
         TRANSFORMATION_EXCEPTION
     }
     
-    public static final String CONTENT_LOCALE_PREFIX = "content@locale@";
+    public static final String CONTENT_S_LOCALE_PREFIX = "content@s__locale@";
+    public static final String CONTENT_M_LOCALE_PREFIX = "content@m__locale@";
     
     protected final static Logger log = LoggerFactory.getLogger(AlfrescoSolrDataModel.class);
 
@@ -469,35 +470,45 @@ public class AlfrescoSolrDataModel
         DataTypeDefinition dataTypeDefinition = propertyDefinition.getDataType();
         if(dataTypeDefinition.getName().equals(DataTypeDefinition.CONTENT))
         {
+            StringBuilder builder = new StringBuilder();
+            builder.append(dataTypeDefinition.getName().getLocalName());
+            builder.append('@');
+            // TODO wher we support multi value propertis correctly .... builder.append(propertyDefinition.isMultiValued() ? "m" : "s");
+            builder.append('s');
+            builder.append(hasDocValues(propertyDefinition.getName()) ? "d" : "_");
+            builder.append('_');
             switch (type)
             {
             case DOCID:
-                indexedField.addField("content@docid@"+propertyQName, false, false);
+                builder.append("docid");
                 break;
             case ENCODING:
-                indexedField.addField("content@encoding@"+propertyQName, false, false);
+                builder.append("encoding");
                 break;
             case LOCALE:
-                indexedField.addField("content@locale@"+propertyQName, false, false);
+                builder.append("locale");
                 break;
             case MIMETYPE:
-                indexedField.addField("content@mimetype@"+propertyQName, false, false);
+                builder.append("mimetype");
                 break;
             case SIZE:
-                indexedField.addField("content@size@"+propertyQName, false, false);
+                builder.append("size");
                 break;
             case TRANSFORMATION_EXCEPTION:
-                indexedField.addField("content@tr_ex@"+propertyQName, false, false);
+                builder.append("tr_ex");
                 break;
             case TRANSFORMATION_STATUS:
-                indexedField.addField("content@tr_status@"+propertyQName, false, false);
+                builder.append("tr_status");
                 break;
             case TRANSFORMATION_TIME:
-                indexedField.addField("content@tr_time@"+propertyQName, false, false);
+                builder.append("tr_time");
                 break;
             default:
                 break;
             }
+            builder.append('@');
+            builder.append(propertyQName);
+            indexedField.addField(builder.toString(), false, false);
             
         }
         return indexedField;      
@@ -662,25 +673,42 @@ public class AlfrescoSolrDataModel
     
     private void addSortSearchFields( PropertyDefinition propertyDefinition , IndexedField indexedField)
     {
+        // Can only order on single valued fields
         DataTypeDefinition dataTypeDefinition = propertyDefinition.getDataType();
         if(dataTypeDefinition.getName().equals(DataTypeDefinition.TEXT))
         {
-            if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
-                    || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+            if(propertyDefinition.isMultiValued() == false)
             {
-                indexedField.addField(getFieldForText(false, false, true, propertyDefinition), false, true);
-            }   
+                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
+                        || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH)
+                        || isIdentifierTextProperty(propertyDefinition.getName()))
+                {
+                    indexedField.addField(getFieldForText(false, false, true, propertyDefinition), false, true);
+                }
+                else
+                {
+                    indexedField.addField(getFieldForText(false, true, false, propertyDefinition), false, false);
+                }
+            }
         }
-        
+
         if(dataTypeDefinition.getName().equals(DataTypeDefinition.MLTEXT))
         {
-            if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
-                    || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+            if(propertyDefinition.isMultiValued() == false)
             {
-                indexedField.addField(getFieldForText(true, false, true, propertyDefinition), true, true);
-            }   
+                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
+                        || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                {
+                    indexedField.addField(getFieldForText(false, false, true, propertyDefinition), false, true);
+                }
+                else
+                {
+                    indexedField.addField(getFieldForText(false, true, false, propertyDefinition), false, false);
+                }
+            }
         }
     }
+    
     
     /**
      * Get all the field names into which we must copy the source data
@@ -714,7 +742,8 @@ public class AlfrescoSolrDataModel
             }
             
             if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
-                    || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                    || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH
+                    || isIdentifierTextProperty(propertyDefinition.getName())))
             {
                 indexedField.addField(getFieldForText(true, false, false, propertyDefinition), true, false);
                 indexedField.addField(getFieldForText(false, false, false, propertyDefinition), false, false);
@@ -726,7 +755,10 @@ public class AlfrescoSolrDataModel
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
                         || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    indexedField.addField(getFieldForText(false, false, true, propertyDefinition), false, true);
+                    if(propertyDefinition.isMultiValued() == false)
+                    {
+                        indexedField.addField(getFieldForText(false, false, true, propertyDefinition), false, true);
+                    }
                 }   
             }
             
@@ -735,7 +767,10 @@ public class AlfrescoSolrDataModel
                 if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
                         || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
                 {
-                    indexedField.addField(getFieldForText(true, false, true, propertyDefinition), true, true);
+                    if(propertyDefinition.isMultiValued() == false)
+                    {
+                        indexedField.addField(getFieldForText(true, false, true, propertyDefinition), true, true);
+                    }
                 }   
             }
             
@@ -751,6 +786,19 @@ public class AlfrescoSolrDataModel
 
         return indexedField;
 
+    }
+
+    /**
+     * @param propertyDefinition
+     * @return
+     */
+    private boolean isIdentifierTextProperty(QName propertyQName)
+    {
+        if(propertyQName == null)
+        {
+            return false;
+        }
+        return propertyQName.equals(ContentModel.PROP_CREATOR) || propertyQName.equals(ContentModel.PROP_MODIFIER) || propertyQName.equals(ContentModel.PROP_USERNAME) || propertyQName.equals(ContentModel.PROP_AUTHORITY_NAME);
     }
 
     private boolean isTextField(PropertyDefinition propertyDefinition)
@@ -781,7 +829,7 @@ public class AlfrescoSolrDataModel
         {
             return false;
         }
-        return propertyQName.equals(ContentModel.PROP_NAME);
+        return propertyQName.equals(ContentModel.PROP_NAME) || propertyQName.equals(ContentModel.PROP_TITLE) || propertyQName.equals(ContentModel.PROP_DESCRIPTION);
     }
     
     private boolean hasDocValues(QName propertyQName)
@@ -812,6 +860,28 @@ public class AlfrescoSolrDataModel
         QName qName = propertyDefinition.getDataType().getName();
         builder.append(qName.getLocalName());
         builder.append("@");
+        QName propertyDataTypeQName = propertyDefinition.getDataType().getName();
+        if(propertyDataTypeQName.equals(DataTypeDefinition.MLTEXT))
+        {
+            builder.append('m');
+        }
+        else  if(propertyDataTypeQName.equals(DataTypeDefinition.CONTENT))
+        {
+            builder.append('s');
+        }
+        else
+        {
+            builder.append(propertyDefinition.isMultiValued() ? "m" : "s");
+        }
+        if(!sort && (localised || tokenised))
+        {
+            builder.append('_');
+        }
+        else
+        {
+            builder.append(hasDocValues(propertyDefinition.getName()) ? "d" : "_");
+        }
+        builder.append('_');
         if(!sort)
         {
             builder.append(localised ? "l" : "_");

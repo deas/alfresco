@@ -20,6 +20,7 @@ package org.alfresco.repo.search.impl;
 
 import java.util.HashSet;
 
+import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
@@ -30,12 +31,13 @@ import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.namespace.NamespaceException;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.Pair;
 
 /**
  * @author Andy
  *
  */
-public class QueryParserUtils
+public class QueryParserUtils implements QueryConstants
 {
     public static String expandQName(String defaultNameSpaceUri, NamespacePrefixResolver namespacePrefixResolver, String qnameString)
     {
@@ -315,5 +317,55 @@ public class QueryParserUtils
         }
     }
 
+    public static Pair<String, String> extractFieldNameAndEnding(String field)
+    {
+        String propertyFieldName = null;
+        String ending = "";
+        if (field.endsWith(FIELD_MIMETYPE_SUFFIX))
+        {
+            propertyFieldName = field.substring(1, field.length() - FIELD_MIMETYPE_SUFFIX.length());
+            ending = FIELD_MIMETYPE_SUFFIX;
+        }
+        else if (field.endsWith(FIELD_SIZE_SUFFIX))
+        {
+            propertyFieldName = field.substring(1, field.length() - FIELD_SIZE_SUFFIX.length());
+            ending = FIELD_SIZE_SUFFIX;
+        }
+        else if (field.endsWith(FIELD_LOCALE_SUFFIX))
+        {
+            propertyFieldName = field.substring(1, field.length() - FIELD_LOCALE_SUFFIX.length());
+            ending = FIELD_LOCALE_SUFFIX;
+        }
+        else if (field.endsWith(FIELD_ENCODING_SUFFIX))
+        {
+            propertyFieldName = field.substring(1, field.length() - FIELD_ENCODING_SUFFIX.length());
+            ending = FIELD_ENCODING_SUFFIX;
+        }
+        else if (field.endsWith(FIELD_CONTENT_DOC_ID_SUFFIX))
+        {
+            propertyFieldName = field.substring(1, field.length() - FIELD_CONTENT_DOC_ID_SUFFIX.length());
+            ending = FIELD_CONTENT_DOC_ID_SUFFIX;
+        }
+        else if (field.endsWith(FIELD_TRANSFORMATION_EXCEPTION_SUFFIX))
+        {
+            propertyFieldName = field.substring(1, field.length() - FIELD_TRANSFORMATION_EXCEPTION_SUFFIX.length());
+            ending = FIELD_TRANSFORMATION_EXCEPTION_SUFFIX;
+        }
+        else if (field.endsWith(FIELD_TRANSFORMATION_TIME_SUFFIX))
+        {
+            propertyFieldName = field.substring(1, field.length() - FIELD_TRANSFORMATION_TIME_SUFFIX.length());
+            ending = FIELD_TRANSFORMATION_TIME_SUFFIX;
+        }
+        else if (field.endsWith(FIELD_TRANSFORMATION_STATUS_SUFFIX))
+        {
+            propertyFieldName = field.substring(1, field.length() - FIELD_TRANSFORMATION_STATUS_SUFFIX.length());
+            ending = FIELD_TRANSFORMATION_STATUS_SUFFIX;
+        }
+        else
+        {
+            propertyFieldName = field.substring(1);
+        }
+        return new Pair<>(propertyFieldName, ending);
+    }
  
 }

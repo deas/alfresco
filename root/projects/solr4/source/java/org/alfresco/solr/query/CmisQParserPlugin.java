@@ -19,13 +19,20 @@
 package org.alfresco.solr.query;
 
 import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
+import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
+import org.alfresco.repo.search.impl.QueryParserUtils;
 import org.alfresco.repo.search.impl.querymodel.Order;
 import org.alfresco.repo.search.impl.querymodel.Ordering;
 import org.alfresco.repo.search.impl.querymodel.PropertyArgument;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.PropertyAccessor;
 import org.alfresco.repo.search.impl.querymodel.impl.functions.Score;
+import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
+import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.solr.AlfrescoSolrDataModel;
+import org.alfresco.solr.AlfrescoSolrDataModel.ContentFieldType;
+import org.alfresco.solr.AlfrescoSolrDataModel.FieldUse;
+import org.alfresco.solr.AlfrescoSolrDataModel.IndexedField;
 import org.alfresco.util.Pair;
 import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
 import org.apache.lucene.index.IndexReader;
@@ -68,7 +75,7 @@ public class CmisQParserPlugin extends QParserPlugin
     {
     }
 
-    public static class CmisQParser extends AbstractQParser
+    public static class CmisQParser extends AbstractQParser 
     {
         public CmisQParser(String qstr, SolrParams localParams, SolrParams params, SolrQueryRequest req)
         {
@@ -116,11 +123,28 @@ public class CmisQParserPlugin extends QParserPlugin
 
                             String luceneField =  AlfrescoSolrDataModel.getInstance().getCMISFunctionEvaluationContext(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS,cmisVersion,altDic).getLuceneFieldName(propertyName);
 
+                            Pair<String, String> fieldNameAndEnding = QueryParserUtils.extractFieldNameAndEnding(luceneField);
+                            PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), AlfrescoSolrDataModel.getInstance().getNamespaceDAO(), AlfrescoSolrDataModel.getInstance().getDictionaryService(altDic), fieldNameAndEnding.getFirst());
+                            
+                            String solrSortField = null;
+                            if(propertyDef != null)
+                            {
+
+                                IndexedField fields = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), getTextField(fieldNameAndEnding.getSecond()), FieldUse.SORT);
+                                if(fields.getFields().size() > 0)
+                                {
+                                    solrSortField = fields.getFields().get(0).getField();
+                                }
+                            }
+                            else
+                            {
+                                solrSortField = mapNonPropertyFields(luceneField);
+                            }
                             if(sortParameter.length() > 0)
                             {
                                 sortParameter.append(", ");
                             }
-                            sortParameter.append(luceneField).append(" ");
+                            sortParameter.append(solrSortField).append(" ");
                             if(ordering.getOrder() == Order.DESCENDING)
                             {
                                 sortParameter.append("desc");
@@ -174,6 +198,8 @@ public class CmisQParserPlugin extends QParserPlugin
                 throw new SyntaxError(e);
             }
         }
+
+        
     }
 
 }

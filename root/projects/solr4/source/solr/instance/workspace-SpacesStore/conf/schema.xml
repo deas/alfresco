@@ -562,13 +562,13 @@
       <field name="id"                    type="identifier"  indexed="true"  omitNorms="true"  stored="true"   multiValued="false"  required="true"  docValues="true"/>
 
       <!-- Special fields -->
-      <field name="LID"                   type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
+      <field name="LID"                   type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
       <field name="PARENT"                type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
       <field name="PATH"                  type="path"        indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
       <field name="ANCESTOR"              type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
       <field name="QNAME"                 type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
-      <field name="PRIMARYASSOCQNAME"     type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
-      <field name="PRIMARYASSOCTYPEQNAME" type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
+      <field name="PRIMARYASSOCQNAME"     type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+      <field name="PRIMARYASSOCTYPEQNAME" type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
       <field name="ISNODE"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
       <field name="ASSOCTYPEQNAME"        type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
       <field name="PRIMARYPARENT"         type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
@@ -599,6 +599,8 @@
       <field name="S_TXCOMMITTIME"          type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
       <field name="S_ACLTXCOMMITTIME"       type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
 
+      <!-- SOLR doc type -->
+      <field name="DOC_TYPE"   type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
 
 
       <!-- Suggestion -->
@@ -665,33 +667,57 @@
       <dynamicField name="datetime@md@*"      type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
 
 
-      <dynamicField name="text@__@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
-      <dynamicField name="text@l_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
-      <dynamicField name="text@lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
-      <dynamicField name="text@_t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
-      <dynamicField name="text@sort@*"        type="collatedROOT"      indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
+      <dynamicField name="text@s____@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
+      <dynamicField name="text@s__l_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
+      <dynamicField name="text@s__lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="false" />
+      <dynamicField name="text@s___t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="false" />
+      <dynamicField name="text@s__sort@*"        type="collatedROOT"      indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
 
-      <dynamicField name="mltext@__@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
-      <dynamicField name="mltext@l_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
-      <dynamicField name="mltext@lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
-      <dynamicField name="mltext@_t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
-      <dynamicField name="mltext@sort@*"        type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
+      <dynamicField name="text@sd__@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" docValues="true" />
 
-      <dynamicField name="content@size@*"             type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
-      <dynamicField name="content@locale@*"           type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
-      <dynamicField name="content@mimetype@*"         type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="true" docValues="true" />
-      <dynamicField name="content@encoding@*"         type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="true" docValues="true" />
-      <dynamicField name="content@docid@*"            type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
-      <dynamicField name="content@tr_ex@*"            type="text___"      indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
-      <dynamicField name="content@tr_time@*"          type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
-      <dynamicField name="content@tr_status@*"        type="lowercase_id" indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="text@m____@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
+      <dynamicField name="text@m__l_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
+      <dynamicField name="text@m__lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
+      <dynamicField name="text@m___t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
+
+      <dynamicField name="text@md___@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" docValues="true" />
+
+      <dynamicField name="mltext@m____@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
+      <dynamicField name="mltext@m__l_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
+      <dynamicField name="mltext@m__lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
+      <dynamicField name="mltext@m___t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
+      <dynamicField name="mltext@m__sort@*"        type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
+
+      <dynamicField name="content@s__size@*"             type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+      <dynamicField name="content@s__locale@*"           type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+      <dynamicField name="content@s__mimetype@*"         type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false" docValues="true" />
+      <dynamicField name="content@s__encoding@*"         type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false" docValues="true" />
+      <dynamicField name="content@s__docid@*"            type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+      <dynamicField name="content@s__tr_ex@*"            type="text___"      indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+      <dynamicField name="content@s__tr_time@*"          type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+      <dynamicField name="content@s__tr_status@*"        type="lowercase_id" indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
 
 
+      <dynamicField name="content@s____@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" termPositions="false" />
+      <dynamicField name="content@s__l_@*"          type="alfrescoFieldType"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" termPositions="false" />
+      <dynamicField name="content@s__lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="false" />
+      <dynamicField name="content@s___t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="false" />
 
-      <dynamicField name="content@__@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" termPositions="false" />
-      <dynamicField name="content@l_@*"          type="alfrescoFieldType"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" termPositions="false" />
-      <dynamicField name="content@lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
-      <dynamicField name="content@_t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
+
+      <dynamicField name="content@m__size@*"             type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
+      <dynamicField name="content@m__locale@*"           type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
+      <dynamicField name="content@m__mimetype@*"         type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="true" docValues="true" />
+      <dynamicField name="content@m__encoding@*"         type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="true" docValues="true" />
+      <dynamicField name="content@m__docid@*"            type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
+      <dynamicField name="content@m__tr_ex@*"            type="text___"      indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="content@m__tr_time@*"          type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="content@m__tr_status@*"        type="lowercase_id" indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
+
+
+      <dynamicField name="content@m____@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" termPositions="false" />
+      <dynamicField name="content@m__l_@*"          type="alfrescoFieldType"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" termPositions="false" />
+      <dynamicField name="content@m__lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
+      <dynamicField name="content@m___t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
 
 
    </fields>
