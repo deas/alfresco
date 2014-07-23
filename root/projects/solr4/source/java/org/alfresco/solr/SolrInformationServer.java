@@ -460,8 +460,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public List<AlfrescoModel> getAlfrescoModels()
     {
-//        return this.dataModel.getAlfrescoModels(); TODO
-        return null;
+        return this.dataModel.getAlfrescoModels();
     }
 
     @Override

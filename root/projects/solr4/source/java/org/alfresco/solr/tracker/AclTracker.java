@@ -136,10 +136,10 @@ public class AclTracker extends AbstractTracker
         super();
     }
     
-    public AclTracker(SolrTrackerScheduler scheduler, String id, Properties p, SOLRAPIClient client, 
+    public AclTracker(SolrTrackerScheduler scheduler, Properties p, SOLRAPIClient client, 
                 String coreName, InformationServer informationServer)
     {
-        super(scheduler, id, p, client, coreName, informationServer);
+        super(scheduler, p, client, coreName, informationServer);
 
         corePoolSize = Integer.parseInt(p.getProperty("alfresco.corePoolSize", "3"));
         maximumPoolSize = Integer.parseInt(p.getProperty("alfresco.maximumPoolSize", "-1"));

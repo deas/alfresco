@@ -68,7 +68,6 @@ public class CoreWatcherJob implements Job
 
                     SolrTrackerScheduler scheduler = adminHandler.getScheduler();
                     SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
-                    String id = loader.getInstanceDir();
                     Properties props = core.getResourceLoader().getCoreProperties();
                     SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
 
@@ -78,11 +77,11 @@ public class CoreWatcherJob implements Job
 
                     if (trackerRegistry.getModelTracker() == null)
                     {
-                        ModelTracker mTracker = new ModelTracker(scheduler, id, props, repositoryClient, coreName, srv);
+                        ModelTracker mTracker = new ModelTracker(scheduler, adminHandler.getCoreContainer().getSolrHome(), props, repositoryClient, coreName, srv);
                         trackerRegistry.setModelTracker(mTracker);
                     }
 
-                    AclTracker aclTracker = new AclTracker(scheduler, id, props, repositoryClient, coreName, srv);
+                    AclTracker aclTracker = new AclTracker(scheduler, props, repositoryClient, coreName, srv);
                     trackerRegistry.register(coreName, aclTracker);
 
                     ContentTracker contentTracker = new ContentTracker();

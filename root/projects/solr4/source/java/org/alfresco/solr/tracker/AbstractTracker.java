@@ -56,8 +56,6 @@ public abstract class AbstractTracker implements Tracker
     
     protected String alfrescoVersion;
 
-    protected String id;
-    
     protected TrackerStats trackerStats;
     
     protected boolean runPostModelLoadInit = true;
@@ -74,12 +72,11 @@ public abstract class AbstractTracker implements Tracker
     {
     }
     
-    protected AbstractTracker(SolrTrackerScheduler scheduler, String id, Properties p, SOLRAPIClient client, 
+    protected AbstractTracker(SolrTrackerScheduler scheduler, Properties p, SOLRAPIClient client, 
                 String coreName, InformationServer informationServer)
     {
         this.props = p;
         this.client = client;
-        this.id = id;
         this.coreName = coreName;
         this.infoSrv = informationServer;
 

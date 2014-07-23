@@ -44,11 +44,18 @@ public class ModelTracker extends AbstractTracker implements Tracker
 
     private ReentrantReadWriteLock modelLock = new ReentrantReadWriteLock();
     private boolean hasModels = false;
+    private File alfrescoModelDir;
 
-    public ModelTracker(SolrTrackerScheduler scheduler, String id, Properties p, SOLRAPIClient client, String coreName,
+    public ModelTracker(SolrTrackerScheduler scheduler, String solrHome, Properties p, SOLRAPIClient client, String coreName,
                 InformationServer informationServer)
     {
-        super(scheduler, id, p, client, coreName, informationServer);
+        super(scheduler, p, client, coreName, informationServer);
+        alfrescoModelDir = new File(solrHome, "alfrescoModels");
+        log.warn("Alfresco Model dir " + alfrescoModelDir);
+        if (!alfrescoModelDir.exists())
+        {
+            alfrescoModelDir.mkdir();
+        }
     }
 
     /**
@@ -212,11 +219,6 @@ public class ModelTracker extends AbstractTracker implements Tracker
             this.infoSrv.afterInitModels();
         }
 
-        File alfrescoModelDir = new File(id, "alfrescoModels");
-        if (!alfrescoModelDir.exists())
-        {
-            alfrescoModelDir.mkdir();
-        }
         for (AlfrescoModelDiff modelDiff : modelDiffs)
         {
             switch (modelDiff.getType())

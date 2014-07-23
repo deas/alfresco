@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,10 +50,12 @@ import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
 import org.alfresco.repo.tenant.SingleTServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
+import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.namespace.NamespaceException;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AlfrescoClientDataModelServicesFactory.DictionaryKey;
+import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.util.ISO9075;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.SortedDocValues;
@@ -824,6 +827,22 @@ public class AlfrescoSolrDataModel
     public void setAlfrescoFieldType(AlfrescoFieldType alfrescoFieldType)
     {
         this.alfrescoFieldType = alfrescoFieldType;
+    }
+
+    /**
+     * @return
+     */
+    public List<AlfrescoModel> getAlfrescoModels()
+    {
+
+        ArrayList<AlfrescoModel> answer = new ArrayList<AlfrescoModel>();
+        for (QName modelName : dictionaryDAO.getModels())
+        {
+            M2Model m2Model = dictionaryDAO.getCompiledModel(modelName).getM2Model();
+            answer.add(new AlfrescoModel(m2Model, getDictionaryService(CMISStrictDictionaryService.DEFAULT).getModel(modelName).getChecksum(ModelDefinition.XMLBindingType.DEFAULT)));
+        }
+        return answer;
+
     }
     
     

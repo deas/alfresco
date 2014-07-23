@@ -76,7 +76,7 @@ public class AclTrackerTest
         trackerState = new TrackerState();
         trackerState.setRunning(false); // Nothing would happen if it were already running.
         Properties props = createProperties();
-        tracker = new AclTracker(scheduler, "tracker-id", props, client, "core-name", informationServer);
+        tracker = new AclTracker(scheduler, props, client, "core-name", informationServer);
     }
 
     private Properties createProperties()
