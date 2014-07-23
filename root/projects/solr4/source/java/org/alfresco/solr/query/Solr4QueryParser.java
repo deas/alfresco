@@ -81,9 +81,11 @@ import org.apache.lucene.search.MultiPhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RegexpQuery;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TermRangeQuery;
 import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
+import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.jaxen.saxpath.SAXPathException;
 import org.springframework.extensions.surf.util.I18NUtil;
@@ -408,34 +410,21 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         {
             return null;
         }
+        else if (isPropertyField(field))
+        {
+            return spanQueryBuilder(field, first, last, slop, inOrder);   
+        }
         else
         {
-            // Default behaviour for the following fields
-
-            // FIELD_ID
-            // FIELD_DBID
-            // FIELD_ISROOT
-            // FIELD_ISCONTAINER
-            // FIELD_ISNODE
-            // FIELD_TX
-            // FIELD_PARENT
-            // FIELD_PRIMARYPARENT
-            // FIELD_QNAME
-            // FIELD_PRIMARYASSOCTYPEQNAME
-            // FIELD_ASSOCTYPEQNAME
-            // 
-            // 
-
-            SpanQuery firstTerm = new SpanTermQuery(new Term(field, first));
-            SpanQuery lastTerm = new SpanTermQuery(new Term(field, last));
-            return new SpanNearQuery(new SpanQuery[] { firstTerm, lastTerm }, slop, inOrder);
+                BytesRef firstBytes = analyzeMultitermTerm(field, first, getAnalyzer());
+                BytesRef lastBytes = analyzeMultitermTerm(field, last, getAnalyzer());
+                SpanQuery firstTerm = new SpanTermQuery(new Term(field, firstBytes));
+                SpanQuery lastTerm = new SpanTermQuery(new Term(field, lastBytes));
+                return new SpanNearQuery(new SpanQuery[] { firstTerm, lastTerm }, slop, inOrder);
         }
-
     }
 
    
-
-    
 
     /**
      * @param field
@@ -3806,7 +3795,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         return builder.toString();
     }
 
-    private FieldInstance getFieldInstance(String baseFieldName, PropertyDefinition pDef, Locale locale, IndexTokenisationMode actualIndexTokenisationMode, IndexTokenisationMode preferredIndexTokenisationMode)
+    private FieldInstance getFieldInstance(String baseFieldName, PropertyDefinition pDef, Locale locale, IndexTokenisationMode preferredIndexTokenisationMode)
     {
         if(pDef != null)
         {
@@ -3963,7 +3952,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             throws ParseException
     {
 
-        FieldInstance fieldInstance = getFieldInstance(textFieldName, pDef, locale, tokenisationMode, preferredTokenisationMode);
+        FieldInstance fieldInstance = getFieldInstance(textFieldName, pDef, locale, preferredTokenisationMode);
         StringBuilder builder = new StringBuilder(queryText.length() + 10);
         if(fieldInstance.isLocalised())
         {
@@ -4014,29 +4003,29 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
     private void addLocaleSpecificTextRange(String expandedFieldName, PropertyDefinition pDef, String part1, String part2, boolean includeLower, boolean includeUpper, BooleanQuery booleanQuery,
-            Locale locale, AnalysisMode analysisMode, IndexTokenisationMode tokenisationMode, IndexTokenisationMode preferredtokenisationMode) throws ParseException
+            Locale locale, AnalysisMode analysisMode, IndexTokenisationMode tokenisationMode, IndexTokenisationMode preferredTokenisationMode) throws ParseException
     {
-//        String field = getFieldName(expandedFieldName, locale, tokenisationMode, preferredtokenisationMode);
-//        StringBuilder builder = new StringBuilder();
-//        builder.append("\u0000").append(locale.toString()).append("\u0000").append(part1);
-//        String first = getToken(field, builder.toString(), analysisMode);
-//        if ((first == null) && (false == field.endsWith(".u")))
-//        {
-//            first = getToken(field + ".u", builder.toString(), analysisMode);
-//        }
-//
-//        builder = new StringBuilder();
-//        builder.append("\u0000").append(locale.toString()).append("\u0000").append(part2);
-//        String last = getToken(field, builder.toString(), analysisMode);
-//        if ((last == null) && (false == field.endsWith(".u")))
-//        {
-//            last = getToken(field + ".u", builder.toString(), analysisMode);
-//        }
-//
-//        Query query = new TermRangeQuery(field, first, last, includeLower, includeUpper);
-//        booleanQuery.add(query, Occur.SHOULD);
+        FieldInstance fieldInstance = getFieldInstance(expandedFieldName, pDef, locale, preferredTokenisationMode);
         
-        throw new UnsupportedOperationException();
+        StringBuilder builder = new StringBuilder(part1.length() + 10);
+        if(fieldInstance.isLocalised())
+        {
+            builder.append("\u0000").append(locale.toString()).append("\u0000");
+        }
+        builder.append(part1);
+        String firstString = builder.toString();
+       
+
+        builder = new StringBuilder(part2.length() + 10);
+        if(fieldInstance.isLocalised())
+        {
+            builder.append("\u0000").append(locale.toString()).append("\u0000");
+        }
+        builder.append(part2);
+        String lastString = builder.toString();
+
+        TermRangeQuery query = new TermRangeQuery(fieldInstance.getField(), new BytesRef(firstString), new BytesRef(lastString), includeLower, includeUpper);
+        booleanQuery.add(query, Occur.SHOULD);
     }
 
   
