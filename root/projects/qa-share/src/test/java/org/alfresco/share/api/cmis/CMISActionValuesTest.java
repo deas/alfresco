@@ -1,5 +1,20 @@
-/**
- * 
+/*
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.share.api.cmis;
 
@@ -49,6 +64,7 @@ public abstract class CMISActionValuesTest extends CmisUtils
 {
 
     protected String testUser;
+    protected String deletableTestUser;
     protected String siteName;
     protected String fileName;
     protected String fileName1;
@@ -77,6 +93,7 @@ public abstract class CMISActionValuesTest extends CmisUtils
         testUser = getUserNameFreeDomain(uniqueName);
         otherTestUser = getUserNameFreeDomain("other" + uniqueName);
 
+
         siteName = getSiteName(uniqueName) + System.currentTimeMillis();
 
         fileName = getFileName(uniqueName) + System.currentTimeMillis();
@@ -86,6 +103,7 @@ public abstract class CMISActionValuesTest extends CmisUtils
         sourceFolderName = getFolderName(uniqueName + "Source") + System.currentTimeMillis();
 
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser);
+
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, otherTestUser);
 
         ShareUser.login(drone, testUser);
@@ -595,4 +613,92 @@ public abstract class CMISActionValuesTest extends CmisUtils
         }
     }
 
+
+    public void cmisItemTypeShouldNotBeQueryable() 
+    {
+        CmisSession cmisSession = getCmisSession(binding, testUser, DOMAIN);
+        // This throws a CmisInvalidArgumentException
+        cmisSession.query("SELECT * FROM cmis:item", false, 0, Integer.MAX_VALUE);
+    }
+    
+    public void cmPersonShouldFindPeople() 
+    {
+        CmisSession cmisSession = getCmisSession(binding, testUser, DOMAIN);
+        List<CMISNode> results = cmisSession.query("SELECT * FROM cm:person", false, 0, Integer.MAX_VALUE);
+        assertNotNull(results);
+        assertFalse(results.isEmpty());
+        
+        CMISNode node = results.get(0);
+        assertNotNull(node);
+        Serializable homeFolder = node.getProperty("cm:homeFolder");
+        assertNotNull(homeFolder);
+        assertNotEquals("null", String.valueOf(homeFolder));
+        assertNotEquals("", String.valueOf(homeFolder));
+    }
+
+    public void cmPersonWithWhereClauseShouldFindPerson() 
+    {
+        CmisSession cmisSession = getCmisSession(binding, testUser, DOMAIN);
+        List<CMISNode> results = cmisSession.query("SELECT * FROM cm:person where cm:userName like '%ee%'", 
+                false, 0, Integer.MAX_VALUE);
+        assertNotNull(results);
+        assertFalse(results.isEmpty());
+    
+        // Should find engineering on the Cloud version, or abeecher in the Enterprise edition
+        CMISNode node = results.get(0);
+        assertNotNull(node);
+        Serializable username = node.getProperty("cm:userName");
+        assertNotNull(username);
+        assertTrue(String.valueOf(username).contains("ee"));
+    }
+    
+    public void cmPersonCanBeUpdatedBySelf()
+    {
+        updatePerson("cm:userName = '" + testUser + "'");
+    }
+
+    private void updatePerson(String whereClause)
+    {
+        CmisSession cmisSession = getCmisSession(binding, testUser, DOMAIN);
+        List<CMISNode> results = cmisSession.query("SELECT * FROM cm:person where " + whereClause, 
+                false, 0, Integer.MAX_VALUE);
+        CMISNode node = results.get(0);
+        String objectId = String.valueOf(node.getProperty("cmis:objectId"));
+        Serializable location = node.getProperty("cm:location");
+        Map<String, String> properties = new HashMap<>();
+        String expectedLocation = location + " a change";
+        properties.put("cm:location", expectedLocation);
+        CmisObject person = cmisSession.getObject(objectId);
+        person.updateProperties(properties, true);
+        String newLocation = person.getPropertyValue("cm:location");
+        assertEquals(newLocation, expectedLocation);
+    }
+    
+    public void cmPersonCannotBeUpdatedByUnauthorizedUser()
+    {
+        updatePerson("cm:userName like '%ee%'");
+    }
+    
+    public void cmPersonCannotBeDeletedByUnauthorizedUser()
+    {
+        deleteUser(testUser);
+    }
+    
+    public void cmPersonCannotBeDeletedByAuthorizedUserViaCmis()
+    {
+        deleteUser(ADMIN_USERNAME);
+    }
+
+    private void deleteUser(String userName)
+    {
+        CmisSession cmisSession = getCmisSession(binding, userName, DOMAIN);
+        List<CMISNode> results = cmisSession.query("SELECT * FROM cm:person where cm:userName = '" + deletableTestUser + "'", 
+                false, 0, Integer.MAX_VALUE);
+        CMISNode node = results.get(0);
+        String objectId = String.valueOf(node.getProperty("cmis:objectId"));
+        CmisObject person = cmisSession.getObject(objectId);
+        person.delete();
+        CmisObject personAfterDeletion = cmisSession.getObject(objectId);
+        assertNull(personAfterDeletion);
+    }
 }

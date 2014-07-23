@@ -1,14 +1,18 @@
 /*
  * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
  * This file is part of Alfresco
+ *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -230,4 +234,47 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
         String thisFileName = getFileName(thisTestName);
         applyACLTest(drone, thisFileName);
     }
+
+    @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException.class)
+    public void ALF_3073() 
+    {
+        super.cmisItemTypeShouldNotBeQueryable();
+    }
+
+    @Test
+    public void ALF_3074()
+    {
+        super.cmPersonShouldFindPeople();
+    }
+
+    @Test
+    public void ALF_3075()
+    {
+        super.cmPersonWithWhereClauseShouldFindPerson();
+    }
+
+    @Test
+    public void ALF_3076()
+    {
+        super.cmPersonCanBeUpdatedBySelf();
+    }
+
+    @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
+    public void ALF_3077()
+    {
+        super.cmPersonCannotBeUpdatedByUnauthorizedUser();
+    }
+
+    @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
+    public void ALF_3078()
+    {
+        super.cmPersonCannotBeDeletedByUnauthorizedUser();
+    }
+    
+    @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException.class)
+    public void ALF_3079() 
+    {
+        super.cmPersonCannotBeDeletedByAuthorizedUserViaCmis();
+    }
+    
 }
