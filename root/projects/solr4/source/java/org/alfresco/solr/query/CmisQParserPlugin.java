@@ -29,6 +29,7 @@ import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.util.Pair;
 import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.params.SolrParams;
@@ -81,90 +82,97 @@ public class CmisQParserPlugin extends QParserPlugin
         @Override
         public Query parse() throws SyntaxError
         {   
-            Pair<SearchParameters, Boolean> searchParametersAndFilter = getSearchParameters();
-            SearchParameters searchParameters = searchParametersAndFilter.getFirst();
-            // these could either be checked & set here, or in the SolrQueryParser constructor
-
-            String cmisVersionString = this.params.get("cmisVersion");
-            CmisVersion cmisVersion = (cmisVersionString == null ? CmisVersion.CMIS_1_0 : CmisVersion.valueOf(cmisVersionString));
-            
-            String altDic = this.params.get(SearchParameters.ALTERNATIVE_DICTIONARY);
-            org.alfresco.repo.search.impl.querymodel.Query queryModelQuery
-              = AlfrescoSolrDataModel.getInstance().parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParameters, req, altDic, cmisVersion);
-            
-            // build the sort param and update the params on the request if required .....
-            
-            if ((queryModelQuery.getOrderings() != null) && (queryModelQuery.getOrderings().size() > 0))
+            try
             {
-                StringBuilder sortParameter = new StringBuilder();
+                Pair<SearchParameters, Boolean> searchParametersAndFilter = getSearchParameters();
+                SearchParameters searchParameters = searchParametersAndFilter.getFirst();
+                // these could either be checked & set here, or in the SolrQueryParser constructor
 
-                for (Ordering ordering : queryModelQuery.getOrderings())
+                String cmisVersionString = this.params.get("cmisVersion");
+                CmisVersion cmisVersion = (cmisVersionString == null ? CmisVersion.CMIS_1_0 : CmisVersion.valueOf(cmisVersionString));
+
+                String altDic = this.params.get(SearchParameters.ALTERNATIVE_DICTIONARY);
+                org.alfresco.repo.search.impl.querymodel.Query queryModelQuery
+                = AlfrescoSolrDataModel.getInstance().parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParameters, req, altDic, cmisVersion);
+
+                // build the sort param and update the params on the request if required .....
+
+                if ((queryModelQuery.getOrderings() != null) && (queryModelQuery.getOrderings().size() > 0))
                 {
-                    if (ordering.getColumn().getFunction().getName().equals(PropertyAccessor.NAME))
-                    {
-                        PropertyArgument property = (PropertyArgument) ordering.getColumn().getFunctionArguments().get(PropertyAccessor.ARG_PROPERTY);
+                    StringBuilder sortParameter = new StringBuilder();
 
-                        if (property == null)
+                    for (Ordering ordering : queryModelQuery.getOrderings())
+                    {
+                        if (ordering.getColumn().getFunction().getName().equals(PropertyAccessor.NAME))
+                        {
+                            PropertyArgument property = (PropertyArgument) ordering.getColumn().getFunctionArguments().get(PropertyAccessor.ARG_PROPERTY);
+
+                            if (property == null)
+                            {
+                                throw new IllegalStateException();
+                            }
+
+                            String propertyName = property.getPropertyName();
+
+                            String luceneField =  AlfrescoSolrDataModel.getInstance().getCMISFunctionEvaluationContext(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS,cmisVersion,altDic).getLuceneFieldName(propertyName);
+
+                            if(sortParameter.length() > 0)
+                            {
+                                sortParameter.append(", ");
+                            }
+                            sortParameter.append(luceneField).append(" ");
+                            if(ordering.getOrder() == Order.DESCENDING)
+                            {
+                                sortParameter.append("desc");
+                            }
+                            else
+                            {
+                                sortParameter.append("asc");
+                            }
+
+                        }
+                        else if (ordering.getColumn().getFunction().getName().equals(Score.NAME))
+                        {
+                            if(sortParameter.length() > 0)
+                            {
+                                sortParameter.append(", ");
+                            }
+                            sortParameter.append("SCORE ");
+                            if(ordering.getOrder() == Order.DESCENDING)
+                            {
+                                sortParameter.append("desc");
+                            }
+                            else
+                            {
+                                sortParameter.append("asc");
+                            }
+                        }
+                        else
                         {
                             throw new IllegalStateException();
                         }
 
-                        String propertyName = property.getPropertyName();
-
-                        String luceneField =  AlfrescoSolrDataModel.getInstance().getCMISFunctionEvaluationContext(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS,cmisVersion,altDic).getLuceneFieldName(propertyName);
-
-                        if(sortParameter.length() > 0)
-                        {
-                            sortParameter.append(", ");
-                        }
-                        sortParameter.append(luceneField).append(" ");
-                        if(ordering.getOrder() == Order.DESCENDING)
-                        {
-                            sortParameter.append("desc");
-                        }
-                        else
-                        {
-                            sortParameter.append("asc");
-                        }
-                        
-                    }
-                    else if (ordering.getColumn().getFunction().getName().equals(Score.NAME))
-                    {
-                        if(sortParameter.length() > 0)
-                        {
-                            sortParameter.append(", ");
-                        }
-                        sortParameter.append("SCORE ");
-                        if(ordering.getOrder() == Order.DESCENDING)
-                        {
-                            sortParameter.append("desc");
-                        }
-                        else
-                        {
-                            sortParameter.append("asc");
-                        }
-                    }
-                    else
-                    {
-                        throw new IllegalStateException();
                     }
 
+                    // update request params
+
+                    ModifiableSolrParams newParams = new ModifiableSolrParams(req.getParams());
+                    newParams.set("sort", sortParameter.toString());
+                    req.setParams(newParams);
+                    this.params = newParams;
                 }
-                
-                // update request params
-                
-                ModifiableSolrParams newParams = new ModifiableSolrParams(req.getParams());
-                newParams.set("sort", sortParameter.toString());
-                req.setParams(newParams);
-                this.params = newParams;
-            }
 
-            Query query = AlfrescoSolrDataModel.getInstance().getCMISQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParametersAndFilter, req, queryModelQuery, cmisVersion, altDic);
-            if(log.isDebugEnabled())
-            {
-                log.debug("AFTS QP query as lucene:\t    "+query);
+                Query query = AlfrescoSolrDataModel.getInstance().getCMISQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParametersAndFilter, req, queryModelQuery, cmisVersion, altDic);
+                if(log.isDebugEnabled())
+                {
+                    log.debug("AFTS QP query as lucene:\t    "+query);
+                }
+                return query;
             }
-            return query;
+            catch(ParseException e)
+            {
+                throw new SyntaxError(e);
+            }
         }
     }
 

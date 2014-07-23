@@ -28,6 +28,7 @@ import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.util.Version;
@@ -37,13 +38,13 @@ import org.apache.solr.search.SyntaxError;
 /**
  * @author andyh
  */
-public class Lucene4QueryBuilderContextSolrImpl implements LuceneQueryBuilderContext<Query, Sort, SyntaxError>
+public class Lucene4QueryBuilderContextSolrImpl implements LuceneQueryBuilderContext<Query, Sort, ParseException>
 {
     private Solr4QueryParser lqp;
 
     private NamespacePrefixResolver namespacePrefixResolver;
     
-    private LuceneQueryParserAdaptor<Query, Sort, SyntaxError> lqpa;
+    private LuceneQueryParserAdaptor<Query, Sort, ParseException> lqpa;
 
     /**
      * Context for building lucene queries
@@ -75,7 +76,7 @@ public class Lucene4QueryBuilderContextSolrImpl implements LuceneQueryBuilderCon
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext#getLuceneQueryParser()
      */
-    public LuceneQueryParserAdaptor<Query, Sort, SyntaxError> getLuceneQueryParserAdaptor()
+    public LuceneQueryParserAdaptor<Query, Sort, ParseException> getLuceneQueryParserAdaptor()
     {
         return lqpa;
     }

@@ -41,6 +41,7 @@ import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.adaptor.lucene.AnalysisMode;
 import org.alfresco.repo.search.adaptor.lucene.LuceneFunction;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
+import org.alfresco.repo.search.impl.QueryParserUtils;
 import org.alfresco.repo.search.impl.lucene.analysis.DateTimeAnalyser;
 import org.alfresco.repo.search.impl.lucene.analysis.MLTokenDuplicator;
 import org.alfresco.repo.search.impl.parsers.FTSQueryException;
@@ -495,8 +496,8 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
 
     private DataTypeDefinition matchDataTypeDefinition(String string)
     {
-        QName search = QName.createQName(expandQName(string));
-        DataTypeDefinition dataTypeDefinition = dictionaryService.getDataType(QName.createQName(expandQName(string)));
+        QName search = QName.createQName(QueryParserUtils.expandQName(searchParameters.getNamespace(), namespacePrefixResolver, string));
+        DataTypeDefinition dataTypeDefinition = dictionaryService.getDataType(QName.createQName(QueryParserUtils.expandQName(searchParameters.getNamespace(), namespacePrefixResolver, string)));
         QName match = null;
         if (dataTypeDefinition == null)
         {
@@ -535,8 +536,8 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
 
     private PropertyDefinition matchPropertyDefinition(String string)
     {
-        QName search = QName.createQName(expandQName(string));
-        PropertyDefinition propertyDefinition = dictionaryService.getProperty(QName.createQName(expandQName(string)));
+        QName search = QName.createQName(QueryParserUtils.expandQName(searchParameters.getNamespace(), namespacePrefixResolver, string));
+        PropertyDefinition propertyDefinition = dictionaryService.getProperty(QName.createQName(QueryParserUtils.expandQName(searchParameters.getNamespace(), namespacePrefixResolver, string)));
         QName match = null;
         if (propertyDefinition == null)
         {
@@ -573,139 +574,9 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
         }
     }
 
-    private AspectDefinition matchAspectDefinition(String string)
-    {
-        QName search = QName.createQName(expandQName(string));
-        AspectDefinition aspectDefinition = dictionaryService.getAspect(QName.createQName(expandQName(string)));
-        QName match = null;
-        if (aspectDefinition == null)
-        {
-            for (QName definition : dictionaryService.getAllAspects())
-            {
-                if (definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
-                {
-                    if (definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
-                    {
-                        if (match == null)
-                        {
-                            match = definition;
-                        }
-                        else
-                        {
-                            throw new LuceneQueryParserException("Ambiguous data datype " + string);
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            return aspectDefinition;
-        }
-        if (match == null)
-        {
-            return null;
-        }
-        else
-        {
-            return dictionaryService.getAspect(match);
-        }
-    }
+ 
 
-    private TypeDefinition matchTypeDefinition(String string)
-    {
-        QName search = QName.createQName(expandQName(string));
-        TypeDefinition typeDefinition = dictionaryService.getType(QName.createQName(expandQName(string)));
-        QName match = null;
-        if (typeDefinition == null)
-        {
-            for (QName definition : dictionaryService.getAllTypes())
-            {
-                if (definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
-                {
-                    if (definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
-                    {
-                        if (match == null)
-                        {
-                            match = definition;
-                        }
-                        else
-                        {
-                            throw new LuceneQueryParserException("Ambiguous data datype " + string);
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            return typeDefinition;
-        }
-        if (match == null)
-        {
-            return null;
-        }
-        else
-        {
-            return dictionaryService.getType(match);
-        }
-    }
-
-    private ClassDefinition matchClassDefinition(String string)
-    {
-        QName search = QName.createQName(expandQName(string));
-        ClassDefinition classDefinition = dictionaryService.getClass(QName.createQName(expandQName(string)));
-        QName match = null;
-        if (classDefinition == null)
-        {
-            for (QName definition : dictionaryService.getAllTypes())
-            {
-                if (definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
-                {
-                    if (definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
-                    {
-                        if (match == null)
-                        {
-                            match = definition;
-                        }
-                        else
-                        {
-                            throw new LuceneQueryParserException("Ambiguous data datype " + string);
-                        }
-                    }
-                }
-            }
-            for (QName definition : dictionaryService.getAllAspects())
-            {
-                if (definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
-                {
-                    if (definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
-                    {
-                        if (match == null)
-                        {
-                            match = definition;
-                        }
-                        else
-                        {
-                            throw new LuceneQueryParserException("Ambiguous data datype " + string);
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            return classDefinition;
-        }
-        if (match == null)
-        {
-            return null;
-        }
-        else
-        {
-            return dictionaryService.getClass(match);
-        }
-    }
+    
 
     /**
      * @param field
@@ -817,7 +688,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
             }
             else if (field.equals(FIELD_CLASS))
             {
-                ClassDefinition target = matchClassDefinition(queryText);
+                ClassDefinition target = QueryParserUtils.matchClassDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService,queryText);
                 if (target == null)
                 {
                     throw new LuceneQueryParserException("Invalid type: " + queryText);
@@ -1141,7 +1012,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
 
     protected Query createAspectQuery(String queryText, boolean exactOnly)
     {
-        AspectDefinition target = matchAspectDefinition(queryText);
+        AspectDefinition target = QueryParserUtils.matchAspectDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
         if (target == null)
         {
             // failed to find the aspect in the dictionary
@@ -1179,7 +1050,7 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
 
     protected Query createTypeQuery(String queryText, boolean exactOnly)
     {
-        TypeDefinition target = matchTypeDefinition(queryText);
+        TypeDefinition target = QueryParserUtils.matchTypeDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
         if (target == null)
         {
             throw new LuceneQueryParserException("Invalid type: " + queryText);
@@ -3931,73 +3802,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
 
     private String expandAttributeFieldName(String field)
     {
-        return PROPERTY_FIELD_PREFIX + expandQName(field.substring(1));
+        return PROPERTY_FIELD_PREFIX + QueryParserUtils.expandQName(searchParameters.getNamespace(), namespacePrefixResolver, field.substring(1));
     }
 
-    private String expandQName(String qnameString)
-    {
-        String fieldName = qnameString;
-        // Check for any prefixes and expand to the full uri
-        if (qnameString.charAt(0) != '{')
-        {
-            int colonPosition = qnameString.indexOf(':');
-            if (colonPosition == -1)
-            {
-                // use the default namespace
-                fieldName = "{" + searchParameters.getNamespace() + "}" + qnameString;
-            }
-            else
-            {
-                String prefix = qnameString.substring(0, colonPosition);
-                String uri = matchURI(prefix);
-                if (uri == null)
-                {
-                    fieldName = "{" + searchParameters.getNamespace() + "}" + qnameString;
-                }
-                else
-                {
-                    fieldName = "{" + uri + "}" + qnameString.substring(colonPosition + 1);
-                }
-
-            }
-        }
-        return fieldName;
-    }
-
-    private String matchURI(String prefix)
-    {
-        HashSet<String> prefixes = new HashSet<String>(namespacePrefixResolver.getPrefixes());
-        if (prefixes.contains(prefix))
-        {
-            return namespacePrefixResolver.getNamespaceURI(prefix);
-        }
-        String match = null;
-        for (String candidate : prefixes)
-        {
-            if (candidate.equalsIgnoreCase(prefix))
-            {
-                if (match == null)
-                {
-                    match = candidate;
-                }
-                else
-                {
-
-                    throw new LuceneQueryParserException("Ambiguous namespace prefix " + prefix);
-
-                }
-            }
-        }
-        if (match == null)
-        {
-            return null;
-        }
-        else
-        {
-            return namespacePrefixResolver.getNamespaceURI(match);
-        }
-    }
-
+   
     protected String getToken(String field, String value, AnalysisMode analysisMode) throws ParseException
     {
         TokenStream source = getAnalyzer().tokenStream(field, new StringReader(value), analysisMode);

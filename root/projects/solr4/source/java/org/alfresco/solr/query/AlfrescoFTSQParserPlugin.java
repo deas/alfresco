@@ -23,6 +23,7 @@ import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.ContextAwareQuery;
 import org.alfresco.util.Pair;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
@@ -74,14 +75,21 @@ public class AlfrescoFTSQParserPlugin extends QParserPlugin
         @Override
         public Query parse() throws SyntaxError
         {
-            Pair<SearchParameters, Boolean> searchParametersAndFilter = getSearchParameters();
-
-            Query query = AlfrescoSolrDataModel.getInstance().getFTSQuery(searchParametersAndFilter, req);
-            if(log.isDebugEnabled())
+            try
             {
-                log.debug("AFTS QP query as lucene:\t    "+query);
+                Pair<SearchParameters, Boolean> searchParametersAndFilter = getSearchParameters();
+
+                Query query = AlfrescoSolrDataModel.getInstance().getFTSQuery(searchParametersAndFilter, req);
+                if(log.isDebugEnabled())
+                {
+                    log.debug("AFTS QP query as lucene:\t    "+query);
+                }
+                return query;
             }
-            return query;
+            catch(ParseException e)
+            {
+                throw new SyntaxError(e);
+            }
         }
     }
 

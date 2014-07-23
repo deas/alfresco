@@ -88,6 +88,7 @@ import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.SortedDocValues;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.FieldCache;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.Query;
@@ -1780,7 +1781,7 @@ public class AlfrescoSolrDataModel
      * @return
      * @throws Exception 
      */
-     public Query getCMISQuery(CMISQueryMode mode, Pair<SearchParameters, Boolean> searchParametersAndFilter, SolrQueryRequest req, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery, CmisVersion cmisVersion, String alternativeDictionary) throws SyntaxError
+     public Query getCMISQuery(CMISQueryMode mode, Pair<SearchParameters, Boolean> searchParametersAndFilter, SolrQueryRequest req, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery, CmisVersion cmisVersion, String alternativeDictionary) throws ParseException
     {
         SearchParameters searchParameters = searchParametersAndFilter.getFirst();
         Boolean isFilter = searchParametersAndFilter.getSecond();
@@ -1790,16 +1791,16 @@ public class AlfrescoSolrDataModel
 
         Set<String> selectorGroup = queryModelQuery.getSource().getSelectorGroups(functionContext).get(0);
 
-        LuceneQueryBuilderContext<Query, Sort, SyntaxError> luceneContext = getLuceneQueryBuilderContext(searchParameters, req, alternativeDictionary);
+        LuceneQueryBuilderContext<Query, Sort, ParseException> luceneContext = getLuceneQueryBuilderContext(searchParameters, req, alternativeDictionary);
         @SuppressWarnings("unchecked")
-        LuceneQueryBuilder<Query, Sort, SyntaxError> builder = (LuceneQueryBuilder<Query, Sort, SyntaxError>) queryModelQuery;
+        LuceneQueryBuilder<Query, Sort, ParseException> builder = (LuceneQueryBuilder<Query, Sort, ParseException>) queryModelQuery;
         org.apache.lucene.search.Query luceneQuery = builder.buildQuery(selectorGroup, luceneContext, functionContext);
 
         ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, Boolean.TRUE.equals(isFilter) ? null : searchParameters);
         return contextAwareQuery;
     }
      
-     public LuceneQueryBuilderContext<Query, Sort, SyntaxError> getLuceneQueryBuilderContext(SearchParameters searchParameters, SolrQueryRequest req, String alternativeDictionary)
+     public LuceneQueryBuilderContext<Query, Sort, ParseException> getLuceneQueryBuilderContext(SearchParameters searchParameters, SolrQueryRequest req, String alternativeDictionary)
      {
          Lucene4QueryBuilderContextSolrImpl luceneContext = new Lucene4QueryBuilderContextSolrImpl(getDictionaryService(alternativeDictionary), namespaceDAO, tenantService, searchParameters,
                  MLAnalysisMode.EXACT_LANGUAGE, req, this);
@@ -1837,7 +1838,7 @@ public class AlfrescoSolrDataModel
      * @return
      * @throws SyntaxError 
      */
-     public Query getFTSQuery(Pair<SearchParameters, Boolean> searchParametersAndFilter, SolrQueryRequest req) throws SyntaxError
+     public Query getFTSQuery(Pair<SearchParameters, Boolean> searchParametersAndFilter, SolrQueryRequest req) throws ParseException
      {
 
          SearchParameters searchParameters = searchParametersAndFilter.getFirst();
@@ -1863,9 +1864,9 @@ public class AlfrescoSolrDataModel
          org.alfresco.repo.search.impl.querymodel.Query queryModelQuery = factory.createQuery(null, null, constraint, new ArrayList<Ordering>());
 
          @SuppressWarnings("unchecked")
-         LuceneQueryBuilder<Query, Sort, SyntaxError> builder = (LuceneQueryBuilder<Query, Sort, SyntaxError>) queryModelQuery;
+         LuceneQueryBuilder<Query, Sort, ParseException> builder = (LuceneQueryBuilder<Query, Sort, ParseException>) queryModelQuery;
 
-         LuceneQueryBuilderContext<Query, Sort, SyntaxError> luceneContext = getLuceneQueryBuilderContext(searchParameters, req, CMISStrictDictionaryService.DEFAULT);
+         LuceneQueryBuilderContext<Query, Sort, ParseException> luceneContext = getLuceneQueryBuilderContext(searchParameters, req, CMISStrictDictionaryService.DEFAULT);
 
          Set<String> selectorGroup = null;
          if (queryModelQuery.getSource() != null)

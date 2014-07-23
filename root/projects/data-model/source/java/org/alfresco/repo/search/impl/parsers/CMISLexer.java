@@ -1,4 +1,4 @@
-// $ANTLR 3.5 W:\\alfresco\\WORK\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g 2014-07-02 12:26:55
+// $ANTLR 3.5 W:\\alfresco\\WORK\\root\\projects\\data-model\\source\\java\\org\\alfresco\\repo\\search\\impl\\parsers\\CMIS.g 2014-07-02 21:17:31
 
     package org.alfresco.repo.search.impl.parsers;
     import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;

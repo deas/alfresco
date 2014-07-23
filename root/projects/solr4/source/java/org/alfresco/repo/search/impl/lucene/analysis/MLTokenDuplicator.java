@@ -66,12 +66,12 @@ public class MLTokenDuplicator extends TokenStream
 
     private boolean done = false;
 
-    public MLTokenDuplicator(TokenStream source, Locale locale, Reader reader, MLAnalysisMode mlAnalaysisMode)
+    public MLTokenDuplicator(TokenStream source, Locale locale, Reader reader, MLAnalysisMode mlAnalysisMode)
     {
         this.source = source;
         this.locale = locale;
         
-        Collection<Locale> locales = MLAnalysisMode.getLocales(mlAnalaysisMode, locale, false);
+        Collection<Locale> locales = MLAnalysisMode.getLocales(mlAnalysisMode, locale, false);
         prefixes = new HashSet<String>(locales.size());
         for(Locale toAdd : locales)
         {
@@ -89,9 +89,39 @@ public class MLTokenDuplicator extends TokenStream
         }
         if(s_logger.isDebugEnabled())
         {
-            s_logger.debug("Locale "+ locale +" using "+mlAnalaysisMode+" is "+prefixes);
+            s_logger.debug("Locale "+ locale +" using "+mlAnalysisMode+" is "+prefixes);
         }
 
+    }
+
+    /**
+     * @param locale2
+     * @param mlAnalysisMode
+     */
+    public MLTokenDuplicator(Locale locale, MLAnalysisMode mlAnalysisMode)
+    {
+        this.locale = locale;
+        
+        Collection<Locale> locales = MLAnalysisMode.getLocales(mlAnalysisMode, locale, false);
+        prefixes = new HashSet<String>(locales.size());
+        for(Locale toAdd : locales)
+        {
+            String localeString = toAdd.toString();
+            if(localeString.length() == 0)
+            {
+                prefixes.add("");
+            }
+            else
+            {
+                StringBuilder builder = new StringBuilder(16);
+                builder.append("{").append(localeString).append("}");
+                prefixes.add(builder.toString());
+            }
+        }
+        if(s_logger.isDebugEnabled())
+        {
+            s_logger.debug("Locale "+ locale +" using "+mlAnalysisMode+" is "+prefixes);
+        }
     }
 
     /* (non-Javadoc)

@@ -31,6 +31,7 @@ import org.alfresco.repo.search.impl.querymodel.Ordering;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
@@ -44,7 +45,7 @@ import org.apache.solr.search.SyntaxError;
  * @author Andy
  *
  */
-public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query, Sort, SyntaxError>
+public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query, Sort, ParseException>
 {
 
     private Solr4QueryParser lqp;
@@ -61,7 +62,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getFieldQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode, org.alfresco.repo.search.adaptor.lucene.LuceneFunction)
      */
     @Override
-    public Query getFieldQuery(String field, String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws SyntaxError
+    public Query getFieldQuery(String field, String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
         return lqp.getFieldQuery(field, queryText, analysisMode, luceneFunction);
     }
@@ -71,17 +72,16 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
      */
     @Override
     public Query getRangeQuery(String field, String lower, String upper, boolean includeLower, boolean includeUpper, AnalysisMode analysisMode, LuceneFunction luceneFunction)
-            throws SyntaxError
+            throws ParseException
     {
-        //return lqp.getRangeQuery(field, lower, upper, includeLower, includeUpper, analysisMode, luceneFunction);
-        throw new UnsupportedOperationException();
+        return lqp.getRangeQuery(field, lower, upper, includeLower, includeUpper, analysisMode, luceneFunction);
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getMatchAllQuery()
      */
     @Override
-    public Query getMatchAllQuery() throws SyntaxError
+    public Query getMatchAllQuery() throws ParseException
     {
         return new MatchAllDocsQuery();
     }
@@ -90,7 +90,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getMatchNoneQuery()
      */
     @Override
-    public Query getMatchNoneQuery() throws SyntaxError
+    public Query getMatchNoneQuery() throws ParseException
     {
         return new TermQuery(new Term("NO_TOKENS", "__"));
     }
@@ -99,10 +99,9 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getLikeQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode)
      */
     @Override
-    public Query getLikeQuery(String field, String sqlLikeClause, AnalysisMode analysisMode) throws SyntaxError
+    public Query getLikeQuery(String field, String sqlLikeClause, AnalysisMode analysisMode) throws ParseException
     {
-        //return lqp.getLikeQuery(field, sqlLikeClause, analysisMode);
-        throw new UnsupportedOperationException();
+        return lqp.getLikeQuery(field, sqlLikeClause, analysisMode);
     }
 
     /* (non-Javadoc)
@@ -118,7 +117,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getSortField(java.lang.String)
      */
     @Override
-    public String getSortField(String field) throws SyntaxError
+    public String getSortField(String field) throws ParseException
     {
         // TODO 
         //return field;
@@ -129,7 +128,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getIdentifierQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode, org.alfresco.repo.search.adaptor.lucene.LuceneFunction)
      */
     @Override
-    public Query getIdentifierQuery(String field, String stringValue, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws SyntaxError
+    public Query getIdentifierQuery(String field, String stringValue, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
         String[] split = stringValue.split(";");
         if(split.length == 1)
@@ -164,7 +163,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getIdentifieLikeQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode)
      */
     @Override
-    public Query getIdentifieLikeQuery(String field, String sqlLikeClause, AnalysisMode analysisMode) throws SyntaxError
+    public Query getIdentifieLikeQuery(String field, String sqlLikeClause, AnalysisMode analysisMode) throws ParseException
     {
         return getLikeQuery(field, sqlLikeClause, analysisMode);
     }
@@ -184,7 +183,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getFieldQuery(java.lang.String, java.lang.String)
      */
     @Override
-    public Query getFieldQuery(String field, String queryText) throws SyntaxError
+    public Query getFieldQuery(String field, String queryText) throws ParseException
     {
         return lqp.getFieldQuery(field, queryText);
     }
@@ -193,7 +192,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#buildSort(java.util.List, org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext)
      */
     @Override
-    public Sort buildSort(List<Ordering> list, FunctionEvaluationContext functionContext) throws SyntaxError
+    public Sort buildSort(List<Ordering> list, FunctionEvaluationContext functionContext) throws ParseException
     {
         throw new UnsupportedOperationException();
     }
@@ -202,10 +201,9 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getFuzzyQuery(java.lang.String, java.lang.String, java.lang.Float)
      */
     @Override
-    public Query getFuzzyQuery(String luceneFieldName, String term, Float minSimilarity) throws SyntaxError
+    public Query getFuzzyQuery(String luceneFieldName, String term, Float minSimilarity) throws ParseException
     {
-        //return lqp.getFuzzyQuery(luceneFieldName, term, minSimilarity);
-        throw new UnsupportedOperationException();
+        return lqp.getFuzzyQuery(luceneFieldName, term, minSimilarity);
     }
 
     /* (non-Javadoc)
@@ -230,49 +228,45 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getFieldQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode, java.lang.Integer, org.alfresco.repo.search.adaptor.lucene.LuceneFunction)
      */
     @Override
-    public Query getFieldQuery(String luceneFieldName, String term, AnalysisMode analysisMode, Integer slop, LuceneFunction luceneFunction) throws SyntaxError
+    public Query getFieldQuery(String luceneFieldName, String term, AnalysisMode analysisMode, Integer slop, LuceneFunction luceneFunction) throws ParseException
     {
-        //return lqp.getFieldQuery(luceneFieldName, term, analysisMode, slop, luceneFunction);
-        throw new UnsupportedOperationException();
+        return lqp.getFieldQuery(luceneFieldName, term, analysisMode, slop, luceneFunction);
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getPrefixQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode)
      */
     @Override
-    public Query getPrefixQuery(String luceneFieldName, String term, AnalysisMode analysisMode) throws SyntaxError
+    public Query getPrefixQuery(String luceneFieldName, String term, AnalysisMode analysisMode) throws ParseException
     {
-        //return lqp.getPrefixQuery(luceneFieldName, term, analysisMode);
-        throw new UnsupportedOperationException();
+        return lqp.getPrefixQuery(luceneFieldName, term, analysisMode);
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getSpanQuery(java.lang.String, java.lang.String, java.lang.String, int, boolean)
      */
     @Override
-    public Query getSpanQuery(String field, String first, String last, int slop, boolean inOrder) throws SyntaxError
+    public Query getSpanQuery(String field, String first, String last, int slop, boolean inOrder) throws ParseException
     {
-        //return lqp.getSpanQuery(field, first, last, slop, inOrder);
-        throw new UnsupportedOperationException();
+        return lqp.getSpanQuery(field, first, last, slop, inOrder);
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getWildcardQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode)
      */
     @Override
-    public Query getWildcardQuery(String luceneFieldName, String term, AnalysisMode analysisMode) throws SyntaxError
+    public Query getWildcardQuery(String luceneFieldName, String term, AnalysisMode analysisMode) throws ParseException
     {
-        //return lqp.getWildcardQuery(luceneFieldName, term, analysisMode);
-        throw new UnsupportedOperationException();
+        return lqp.getWildcardQuery(luceneFieldName, term, analysisMode);
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getNegatedQuery(java.lang.Object)
      */
     @Override
-    public Query getNegatedQuery(Query query) throws SyntaxError
+    public Query getNegatedQuery(Query query) throws ParseException
     {
-        LuceneQueryParserExpressionAdaptor<Query, SyntaxError> expressionAdaptor = getExpressionAdaptor();
+        LuceneQueryParserExpressionAdaptor<Query, ParseException> expressionAdaptor = getExpressionAdaptor();
         expressionAdaptor.addRequired(getMatchAllQuery());
         expressionAdaptor.addExcluded(query);
         return expressionAdaptor.getQuery();
@@ -282,7 +276,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getExpressionAdaptor()
      */
     @Override
-    public LuceneQueryParserExpressionAdaptor<Query, SyntaxError> getExpressionAdaptor()
+    public LuceneQueryParserExpressionAdaptor<Query, ParseException> getExpressionAdaptor()
     {
         return new Lucene4QueryParserExpressionAdaptor();
     }
@@ -305,7 +299,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
         throw new UnsupportedOperationException();
     }
     
-    private class Lucene4QueryParserExpressionAdaptor implements LuceneQueryParserExpressionAdaptor<Query, SyntaxError>
+    private class Lucene4QueryParserExpressionAdaptor implements LuceneQueryParserExpressionAdaptor<Query, ParseException>
     {
         BooleanQuery booleanQuery = new BooleanQuery();
 
@@ -340,7 +334,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
          * @see org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor#getQuery()
          */
         @Override
-        public Query getQuery()  throws SyntaxError
+        public Query getQuery()  throws ParseException
         {
             if(booleanQuery.getClauses().length == 0)
             {
@@ -365,7 +359,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
             }
         }
         
-        public Query getNegatedQuery() throws SyntaxError
+        public Query getNegatedQuery() throws ParseException
         {
             if(booleanQuery.getClauses().length == 0)
             {
@@ -393,7 +387,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
          * @see org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor#addRequired(java.lang.Object, float)
          */
         @Override
-        public void addRequired(Query q, float boost) throws SyntaxError
+        public void addRequired(Query q, float boost) throws ParseException
         {
             q.setBoost(boost);
             addRequired(q);
@@ -403,7 +397,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
          * @see org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor#addExcluded(java.lang.Object, float)
          */
         @Override
-        public void addExcluded(Query q, float boost) throws SyntaxError
+        public void addExcluded(Query q, float boost) throws ParseException
         {
             q.setBoost(boost);
             addExcluded(q);
@@ -413,7 +407,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
          * @see org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor#addOptional(java.lang.Object, float)
          */
         @Override
-        public void addOptional(Query q, float boost) throws SyntaxError
+        public void addOptional(Query q, float boost) throws ParseException
         {
             q.setBoost(boost);
             addOptional(q);

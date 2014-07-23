@@ -152,4 +152,6 @@ public interface QueryConstants
 
     public static final String FIELD_EXCEPTION_STACK = "EXCEPTIONSTACK";
     
+    public static final String FIELD_SOLR4_ID = "id";
+    
 }
