@@ -187,7 +187,7 @@ public class AclTracker extends AbstractTracker
     }
 
     @Override
-    void doTrack() throws Throwable
+    protected void doTrack() throws Throwable
     {
         // Maintenance stuff
         purgeAclChangeSets();

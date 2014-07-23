@@ -104,7 +104,7 @@ public abstract class AbstractTracker implements Tracker
      * </ol>
      * @throws Throwable
      */
-    /*package*/ abstract void doTrack() throws Throwable;
+    protected abstract void doTrack() throws Throwable;
     
     /**
      * Template method - subclasses must implement the {@link Tracker}-specific indexing

@@ -127,7 +127,7 @@ public class ModelTracker extends AbstractTracker implements Tracker
     }
 
     @Override
-    public void doTrack() throws AuthenticationException, IOException, JSONException
+    protected void doTrack() throws AuthenticationException, IOException, JSONException
     {
         // Is the InformationServer ready to update
         int registeredSearcherCount = this.infoSrv.getRegisteredSearcherCount();

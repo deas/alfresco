@@ -9,7 +9,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
 {
 
     @Override
-    public void doTrack()
+    protected void doTrack()
     {
         // TODO Auto-generated method stub
 
