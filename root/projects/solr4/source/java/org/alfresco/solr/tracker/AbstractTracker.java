@@ -40,30 +40,24 @@ public abstract class AbstractTracker implements Tracker
 {
     protected final static Logger log = LoggerFactory.getLogger(AbstractTracker.class);
     
-    protected Properties props;
-    
+    protected Properties props;    
     protected SOLRAPIClient client;
     protected InformationServer infoSrv;
-
     protected String coreName;
-
     protected StoreRef storeRef;
     protected long batchCount;
-
     protected boolean isSlave = false;
-    
     protected boolean isMaster = true;
-    
     protected String alfrescoVersion;
-
     protected TrackerStats trackerStats;
-    
     protected boolean runPostModelLoadInit = true;
-    
     private int maxLiveSearchers;
-    
     private volatile boolean shutdown = false;
     
+    /*
+     * A thread handler can be used by subclasses, but they have to intentionally instantiate it.
+     */
+    protected ThreadHandler threadHandler;
 
     /**
      * Default constructor, strictly for testing.
@@ -115,7 +109,7 @@ public abstract class AbstractTracker implements Tracker
     {
         TrackerState state = this.infoSrv.getTrackerState();
 
-        synchronized (this) // TODO: Should we be synchronize on something else, such as state? 
+        synchronized (this) // TODO: Should we synchronize on something else, such as state? See the old CoreTracker 
         {
             if (state.isRunning())
             {
@@ -179,6 +173,28 @@ public abstract class AbstractTracker implements Tracker
         }
     }
     
+    /**
+     * Allows time for the scheduled asynchronous tasks to complete
+     */
+    protected synchronized void waitForAsynchronousReindexing()
+    {
+        AbstractWorkerRunnable currentRunnable = this.threadHandler.peekHeadReindexWorker();
+        while (currentRunnable != null)
+        {
+            checkShutdown();
+            synchronized (this)
+            {
+                try
+                {
+                    wait(100);
+                }
+                catch (InterruptedException e)
+                {
+                }
+            }
+            currentRunnable = this.threadHandler.peekHeadReindexWorker();
+        }
+    }
 
     public int getMaxLiveSearchers()
     {

@@ -2575,4 +2575,10 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
     {
         return this.coreTracker.getTrackerStats();
     }
+
+    @Override
+    public void indexNodes(List<Node> nodes, boolean overwrite) throws IOException, AuthenticationException, JSONException
+    {
+        throw new UnsupportedOperationException();
+    }
 }

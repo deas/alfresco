@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
-import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.BoundedDeque;
 import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.NodeReport;
@@ -42,8 +41,16 @@ import org.alfresco.solr.client.Transactions;
 import org.alfresco.solr.client.Node.SolrApiNodeStatus;
 import org.json.JSONException;
 
+/*
+ * This tracks two things: transactions and metadata nodes
+ * @author Ahmed Owian
+ */
 public class MetadataTracker extends AbstractTracker implements Tracker
 {
+    private static final int DEFAULT_TRANSACTION_DOCS_BATCH_SIZE = 100;
+    private static final int DEFAULT_NODE_BATCH_SIZE = 10;
+    private int transactionDocsBatchSize = DEFAULT_TRANSACTION_DOCS_BATCH_SIZE;
+    private int nodeBatchSize = DEFAULT_NODE_BATCH_SIZE;
     private ConcurrentLinkedQueue<Long> transactionsToReindex = new ConcurrentLinkedQueue<Long>();
     private ConcurrentLinkedQueue<Long> transactionsToIndex = new ConcurrentLinkedQueue<Long>();
     private ConcurrentLinkedQueue<Long> transactionsToPurge = new ConcurrentLinkedQueue<Long>();
@@ -56,6 +63,10 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                 InformationServer informationServer)
     {
         super(scheduler, p, client, coreName, informationServer);
+
+        transactionDocsBatchSize = Integer.parseInt(p.getProperty("alfresco.transactionDocsBatchSize", "100"));
+        nodeBatchSize = Integer.parseInt(p.getProperty("alfresco.nodeBatchSize", "10"));
+        threadHandler = new ThreadHandler(p, coreName);
     }
     
     MetadataTracker()
@@ -66,9 +77,272 @@ public class MetadataTracker extends AbstractTracker implements Tracker
     @Override
     protected void doTrack() throws AuthenticationException, IOException, JSONException
     {
-// TODO See what needs to be done around this stuff
+        purgeTransactions();
+        purgeNodes();
+
+        reindexTransactions();
+        reindexNodes();
+
+        indexTransactions();
+        indexNodes();
+        
+        trackRepository();
+    }
+
+
+    private void trackRepository() throws IOException, AuthenticationException, JSONException
+    {
+        // Is the InformationServer ready to update
+        int registeredSearcherCount = this.infoSrv.getRegisteredSearcherCount();
+        if(registeredSearcherCount >= getMaxLiveSearchers())
+        {
+            log.info(".... skipping tracking registered searcher count = " + registeredSearcherCount);
+            return;
+        }
+
+        checkShutdown();
+        
+        if(!isMaster && isSlave)
+        {
+            return;
+        }
+
+        TrackerState state = this.infoSrv.getTrackerInitialState();
+
+        // Check we are tracking the correct repository
+        // Check the first TX time
+        checkRepoAndIndexConsistency(state);
+
         checkShutdown();
         trackTransactions();
+
+        // check index state
+        if (state.isCheck())
+        {
+            this.infoSrv.checkCache();
+        }
+    }
+
+    private void checkRepoAndIndexConsistency(TrackerState state) throws AuthenticationException, IOException, JSONException
+    {
+        // TODO: Implement that which relates to metadata
+    }
+    
+    private void indexTransactions() throws IOException, AuthenticationException, JSONException
+    {
+        int docCount = 0;
+        boolean requiresCommit = false;
+        while (transactionsToIndex.peek() != null)
+        {
+            Long transactionId = transactionsToIndex.poll();
+            if (transactionId != null)
+            {
+                Transactions transactions = client.getTransactions(null, transactionId, null, transactionId+1, 1);
+                if ((transactions.getTransactions().size() > 0) && (transactionId.equals(transactions.getTransactions().get(0).getId())))
+                {
+                    Transaction info = transactions.getTransactions().get(0);
+
+                    GetNodesParameters gnp = new GetNodesParameters();
+                    ArrayList<Long> txs = new ArrayList<Long>();
+                    txs.add(info.getId());
+                    gnp.setTransactionIds(txs);
+                    gnp.setStoreProtocol(storeRef.getProtocol());
+                    gnp.setStoreIdentifier(storeRef.getIdentifier());
+                    List<Node> nodes = client.getNodes(gnp, (int) info.getUpdates());
+                    for (Node node : nodes)
+                    {
+                        docCount++;
+                        if (log.isDebugEnabled())
+                        {
+                            log.debug(node.toString());
+                        }
+                        this.infoSrv.indexNode(node, false);
+                        checkShutdown();
+                    }
+
+                    // Index the transaction doc after the node - if this is not found then a reindex will be done.
+                    this.infoSrv.indexTransaction(info, false);
+                    requiresCommit = true;
+
+                }
+            }
+
+            if (docCount > batchCount)
+            {
+                if(this.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
+                {
+                    checkShutdown();
+                    this.infoSrv.commit();
+                    docCount = 0;
+                    requiresCommit = false;
+                }
+            }
+        }
+        if (requiresCommit || (docCount > 0))
+        {
+            checkShutdown();
+            this.infoSrv.commit();
+        }
+    }
+
+    private void indexNodes() throws IOException, AuthenticationException, JSONException
+    {
+        boolean requiresCommit = false;
+        while (nodesToIndex.peek() != null)
+        {
+            Long nodeId = nodesToIndex.poll();
+            if (nodeId != null)
+            {
+                Node node = new Node();
+                node.setId(nodeId);
+                node.setStatus(SolrApiNodeStatus.UNKNOWN);
+                node.setTxnId(Long.MAX_VALUE);
+
+                this.infoSrv.indexNode(node, false);
+                requiresCommit = true;
+            }
+            checkShutdown();
+        }
+
+        if(requiresCommit)
+        {
+            checkShutdown();
+            this.infoSrv.commit();
+        }
+    }
+
+    private void reindexTransactions() throws IOException, AuthenticationException, JSONException
+    {
+        int docCount = 0;
+        boolean requiresCommit = false;
+        while (transactionsToReindex.peek() != null)
+        {
+            Long transactionId = transactionsToReindex.poll();
+            if (transactionId != null)
+            {
+                // make sure it is cleaned out so we do not miss deletes
+                this.infoSrv.deleteByTransactionId(transactionId);
+
+                Transactions transactions = client.getTransactions(null, transactionId, null, transactionId+1, 1);
+                if ((transactions.getTransactions().size() > 0) && (transactionId.equals(transactions.getTransactions().get(0).getId())))
+                {
+                    Transaction info = transactions.getTransactions().get(0);
+
+                    GetNodesParameters gnp = new GetNodesParameters();
+                    ArrayList<Long> txs = new ArrayList<Long>();
+                    txs.add(info.getId());
+                    gnp.setTransactionIds(txs);
+                    gnp.setStoreProtocol(storeRef.getProtocol());
+                    gnp.setStoreIdentifier(storeRef.getIdentifier());
+                    List<Node> nodes = client.getNodes(gnp, (int) info.getUpdates());
+                    for (Node node : nodes)
+                    {
+                        docCount++;
+                        if (log.isDebugEnabled())
+                        {
+                            log.debug(node.toString());
+                        }
+                        this.infoSrv.indexNode(node, true);
+                        checkShutdown();
+                    }
+
+                    // Index the transaction doc after the node - if this is not found then a reindex will be done.
+                    this.infoSrv.indexTransaction(info, true);
+                    requiresCommit = true;
+
+                }
+            }
+
+            if (docCount > batchCount)
+            {
+                if(this.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
+                {
+                    checkShutdown();
+                    this.infoSrv.commit();
+                    docCount = 0;
+                    requiresCommit = false;
+                }
+            }
+        }
+        if (requiresCommit || ( docCount > 0))
+        {
+            checkShutdown();
+            this.infoSrv.commit();
+        }
+    }
+
+    
+    private void reindexNodes() throws IOException, AuthenticationException, JSONException
+    {
+        boolean requiresCommit = false;
+        while (nodesToReindex.peek() != null)
+        {
+            Long nodeId = nodesToReindex.poll();
+            if (nodeId != null)
+            {
+                // make sure it is cleaned out so we do not miss deletes
+                this.infoSrv.deleteByNodeId(nodeId);
+
+                Node node = new Node();
+                node.setId(nodeId);
+                node.setStatus(SolrApiNodeStatus.UNKNOWN);
+                node.setTxnId(Long.MAX_VALUE);
+
+                this.infoSrv.indexNode(node, true);
+                requiresCommit = true;
+            }
+            checkShutdown();
+
+        }
+
+        if(requiresCommit)
+        {
+            checkShutdown();
+            this.infoSrv.commit();
+        }
+    }
+
+
+    private void purgeTransactions() throws IOException, AuthenticationException, JSONException
+    {
+        boolean requiresCommit = false;
+        while (transactionsToPurge.peek() != null)
+        {
+            Long transactionId = transactionsToPurge.poll();
+            if (transactionId != null)
+            {
+                // make sure it is cleaned out so we do not miss deletes
+                this.infoSrv.deleteByTransactionId(transactionId);
+                requiresCommit = true;
+            }
+            checkShutdown();
+        }
+        if(requiresCommit)
+        {
+            checkShutdown();
+            this.infoSrv.commit();
+        }
+    }
+
+    private void purgeNodes() throws IOException, AuthenticationException, JSONException
+    {
+        boolean requiresCommit = false;
+        while (nodesToPurge.peek() != null)
+        {
+            Long nodeId = nodesToPurge.poll();
+            if (nodeId != null)
+            {
+                // make sure it is cleaned out so we do not miss deletes
+                this.infoSrv.deleteByNodeId(nodeId);
+                requiresCommit = true;
+            }
+            checkShutdown();
+        }
+        if(requiresCommit)
+        {
+            checkShutdown();
+            this.infoSrv.commit();
+        }
     }
 
     protected Long getTxFromCommitTime(BoundedDeque<Transaction> txnsFound, long lastGoodTxCommitTimeInIndex)
@@ -132,6 +406,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         boolean upToDate = false;
         Transactions transactions;
         BoundedDeque<Transaction> txnsFound = new BoundedDeque<Transaction>(100);
+        HashSet<Transaction> txsIndexed = new HashSet<>(); 
         TrackerState state = this.infoSrv.getTrackerState();
 
         do
@@ -166,6 +441,8 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                             + ((txnsFound.size() > 0) ? txnsFound.getLast().getCommitTimeMs() : state
                                         .getLastIndexedTxCommitTime()));
             }
+            
+            ArrayList<Transaction> txBatch = new ArrayList<>();
             for (Transaction info : transactions.getTransactions())
             {
                 boolean isInIndex = this.infoSrv.isInIndex(QueryConstants.FIELD_TXID, info.getId());
@@ -180,58 +457,117 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                     if (info.getCommitTimeMs() > state.getTimeToStopIndexing())
                     {
                         upToDate = true;
+                        break;
                     }
-                    else
+                    
+                    txBatch.add(info);
+                    if (txBatch.size() > this.transactionDocsBatchSize) // TODO check for something similar to getAclCount
                     {
                         indexed = true;
-
-                        GetNodesParameters gnp = new GetNodesParameters();
-                        ArrayList<Long> txs = new ArrayList<Long>();
-                        txs.add(info.getId());
-                        gnp.setTransactionIds(txs);
-                        gnp.setStoreProtocol(storeRef.getProtocol());
-                        gnp.setStoreIdentifier(storeRef.getIdentifier());
-                        List<Node> nodes = client.getNodes(gnp, Integer.MAX_VALUE);
-                        for (Node node : nodes)
+                        docCount += indexBatchOfTransactions(txBatch);
+                        
+                        for (Transaction scheduledTx : txBatch)
                         {
-                            docCount++;
-                            if (log.isDebugEnabled())
-                            {
-                                log.debug(node.toString());
-                            }
-
-                            this.infoSrv.indexNode(node, true);
-
-                            checkShutdown();
+                            txnsFound.add(scheduledTx);
+                            txsIndexed.add(scheduledTx);
                         }
-
-                        // Index the transaction doc after the node - if this is not found then a reindex will be done.
-                        this.infoSrv.indexTransaction(info, true);
-
-                        trackerStats.addTxDocs(nodes.size());
-
-                        if (info.getCommitTimeMs() > state.getLastIndexedTxCommitTime())
-                        {
-                            state.setLastIndexedTxCommitTime(info.getCommitTimeMs());
-                            state.setLastIndexedTxId(info.getId());
-                        }
-
-                        txnsFound.add(info);
+                        txBatch.clear();
                     }
                 }
-                // could batch commit here
-                if (docCount > batchCount)
+                
+                if (docCount > batchCount) 
                 {
-                    if (this.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
+                    if (super.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
-                        checkShutdown();
-                        this.infoSrv.commit();
+                        waitForAsynchronousReindexing();
+                        for (Transaction tx : txsIndexed)
+                        {
+                            super.infoSrv.indexTransaction(tx, true);
+                            if (tx.getCommitTimeMs() > state.getLastIndexedTxCommitTime())
+                            {
+                                state.setLastIndexedTxCommitTime(tx.getCommitTimeMs());
+                                state.setLastIndexedTxId(tx.getId());
+                            }
+// TODO: Is this what we are supposed to add here?  See AclTracker: trackerStats.addChangeSetAcls((int) (set.getAclCount()));
+                            trackerStats.addTxDocs((int) tx.getDeletes());
+                            trackerStats.addTxDocs((int) tx.getUpdates());
+                        }
+                        txsIndexed.clear();
+                        super.infoSrv.commit();
                         docCount = 0;
                     }
                 }
                 checkShutdown();
             }
-        } while ((transactions.getTransactions().size() > 0) && (upToDate == false));
+            
+            if (!txBatch.isEmpty())
+            {
+                indexed = true;
+                if (txBatch.size() > 0)
+                {
+                    docCount += indexBatchOfTransactions(txBatch);
+                }
+
+                for (Transaction scheduledTx : txBatch)
+                {
+                    txnsFound.add(scheduledTx);
+                    txsIndexed.add(scheduledTx);
+                }
+                txBatch.clear();
+            }
+        }
+//            
+//                    else
+//                    {
+//                        indexed = true;
+//
+//                        GetNodesParameters gnp = new GetNodesParameters();
+//                        ArrayList<Long> txs = new ArrayList<Long>();
+//                        txs.add(info.getId());
+//                        gnp.setTransactionIds(txs);
+//                        gnp.setStoreProtocol(storeRef.getProtocol());
+//                        gnp.setStoreIdentifier(storeRef.getIdentifier());
+//                        List<Node> nodes = client.getNodes(gnp, Integer.MAX_VALUE);
+//                        for (Node node : nodes)
+//                        {
+//                            docCount++;
+//                            if (log.isDebugEnabled())
+//                            {
+//                                log.debug(node.toString());
+//                            }
+//
+//                            this.infoSrv.indexNode(node, true);
+//
+//                            checkShutdown();
+//                        }
+//
+//                        // Index the transaction doc after the node - if this is not found then a reindex will be done.
+//                        this.infoSrv.indexTransaction(info, true);
+//
+//                        trackerStats.addTxDocs(nodes.size());
+//
+//                        if (info.getCommitTimeMs() > state.getLastIndexedTxCommitTime())
+//                        {
+//                            state.setLastIndexedTxCommitTime(info.getCommitTimeMs());
+//                            state.setLastIndexedTxId(info.getId());
+//                        }
+//
+//                        txnsFound.add(info);
+//                    }
+//                }
+//                // could batch commit here
+//                if (docCount > batchCount)
+//                {
+//                    if (this.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
+//                    {
+//                        checkShutdown();
+//                        this.infoSrv.commit();
+//                        docCount = 0;
+//                    }
+//                }
+//                checkShutdown();
+//            }
+        while ((transactions.getTransactions().size() > 0) && (upToDate == false));
 
         if (indexed)
         {
@@ -240,6 +576,73 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         }
     }
 
+
+    private int indexBatchOfTransactions(List<Transaction> txBatch) throws AuthenticationException, IOException, JSONException
+    {
+        int nodeCount = 0;
+        ArrayList<Transaction> nonEmptyTxs = new ArrayList<>(txBatch.size());
+        GetNodesParameters gnp = new GetNodesParameters();
+        ArrayList<Long> txIds = new ArrayList<Long>();
+        for (Transaction tx : txBatch)
+        {
+            if (tx.getUpdates() > 0 || tx.getDeletes() > 0)
+            {
+                nonEmptyTxs.add(tx);
+                txIds.add(tx.getId());
+            }
+        }
+
+        gnp.setTransactionIds(txIds);
+        gnp.setStoreProtocol(storeRef.getProtocol());
+        gnp.setStoreIdentifier(storeRef.getIdentifier());
+        List<Node> nodes = client.getNodes(gnp, Integer.MAX_VALUE);
+        
+        ArrayList<Node> nodeBatch = new ArrayList<>();
+        for (Node node : nodes)
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug(node.toString());
+            }
+            nodeBatch.add(node);
+            if (nodeBatch.size() > nodeBatchSize)
+            {
+                nodeCount += nodeBatch.size();
+                NodeIndexWorkerRunnable niwr = new NodeIndexWorkerRunnable(this.threadHandler, nodeBatch, this.infoSrv);
+                this.threadHandler.scheduleTask(niwr);
+                nodeBatch = new ArrayList<>();
+            }
+        }
+        
+        if (nodeBatch.size() > 0)
+        {
+            nodeCount += nodeBatch.size();
+            NodeIndexWorkerRunnable niwr = new NodeIndexWorkerRunnable(this.threadHandler, nodeBatch, this.infoSrv);
+            this.threadHandler.scheduleTask(niwr);
+            nodeBatch = new ArrayList<>();
+        }
+        return nodeCount;
+    }
+
+
+    class NodeIndexWorkerRunnable extends AbstractWorkerRunnable
+    {
+        InformationServer infoServer;
+        List<Node> nodes;
+
+        NodeIndexWorkerRunnable(QueueHandler queueHandler, List<Node> nodes, InformationServer infoServer)
+        {
+            super(queueHandler);
+            this.infoServer = infoServer;
+            this.nodes = nodes;
+        }
+
+        protected void doWork() throws IOException, AuthenticationException, JSONException
+        {
+            this.infoServer.indexNodes(nodes, true);
+        }
+    }
+    
     public NodeReport checkNode(Long dbid)
     {
         NodeReport nodeReport = new NodeReport();

@@ -275,14 +275,14 @@ public class AclTrackerTest
     @Test
     public void canClose() throws IllegalAccessException
     {
-        ExecutorService threadPool = (ExecutorService) FieldUtils.readField(tracker, "threadPool", true);
-        threadPool = spy(threadPool);
-        FieldUtils.writeField(tracker, "threadPool", threadPool, true);
+        ThreadHandler threadHandler = (ThreadHandler) FieldUtils.readField(tracker, "threadHandler", true);
+        threadHandler = spy(threadHandler);
+        FieldUtils.writeField(tracker, "threadHandler", threadHandler, true);
         
         tracker.close();
         
         // AclTracker specific
-        verify(threadPool).shutdownNow();
+        verify(threadHandler).shutDownThreadPool();
         
         // Applicable to all AbstractAclTracker
         verify(client).close();

@@ -25,9 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
@@ -47,9 +44,6 @@ import org.alfresco.solr.client.Node;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Transactions;
-import org.alfresco.solr.tracker.pool.DefaultTrackerPoolFactory;
-import org.alfresco.solr.tracker.pool.TrackerPoolFactory;
-import org.alfresco.util.NumericEncoder;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,25 +57,14 @@ public class AclTracker extends AbstractTracker
 {
     protected final static Logger log = LoggerFactory.getLogger(AclTracker.class);
 
-//    private static final int DEFAULT_TRANSACTION_DOCS_BATCH_SIZE = 100;
-
     private static final int DEFAULT_CHANGE_SET_ACLS_BATCH_SIZE = 100;
 
     private static final int DEFAULT_ACL_BATCH_SIZE = 10;
 
-//    private int transactionDocsBatchSize = DEFAULT_TRANSACTION_DOCS_BATCH_SIZE;
-
     private int changeSetAclsBatchSize = DEFAULT_CHANGE_SET_ACLS_BATCH_SIZE;
 
     private int aclBatchSize = DEFAULT_ACL_BATCH_SIZE;
-
-    /** the instance that will be given out by the factory */
-    private ThreadPoolExecutor threadPool;
-
-    private LinkedBlockingQueue<AbstractWorkerRunnable> reindexThreadQueue = new LinkedBlockingQueue<AbstractWorkerRunnable>();
-
-    private ReentrantReadWriteLock reindexThreadLock = new ReentrantReadWriteLock(true);
-
+    
     private ConcurrentLinkedQueue<Long> aclChangeSetsToReindex = new ConcurrentLinkedQueue<Long>();
 
     private ConcurrentLinkedQueue<Long> aclChangeSetsToIndex = new ConcurrentLinkedQueue<Long>();
@@ -107,14 +90,12 @@ public class AclTracker extends AbstractTracker
     {
         super(scheduler, p, client, coreName, informationServer);
 
-//        transactionDocsBatchSize = Integer.parseInt(p.getProperty("alfresco.transactionDocsBatchSize", "100"));
         changeSetAclsBatchSize = Integer.parseInt(p.getProperty("alfresco.changeSetAclsBatchSize", "100"));
         aclBatchSize = Integer.parseInt(p.getProperty("alfresco.aclBatchSize", "10"));
         
-        // construct the instance
-        TrackerPoolFactory trackerPoolFactory = new DefaultTrackerPoolFactory(p, coreName);
-        threadPool = trackerPoolFactory.create();
+        threadHandler = new ThreadHandler(p, coreName);
     }
+
 
     @Override
     protected void doTrack() throws Throwable
@@ -422,24 +403,6 @@ public class AclTracker extends AbstractTracker
         }
     }
 
-
-
-    /**
-     * @param txnsFound
-     * @param lastGoodTxCommitTimeInIndex
-     * @return
-     */
-    protected Long getTxFromCommitTime(BoundedDeque<Transaction> txnsFound, long lastGoodTxCommitTimeInIndex)
-    {
-        if(txnsFound.size() > 0)
-        {
-            return txnsFound.getLast().getCommitTimeMs();
-        }
-        else
-        {
-            return lastGoodTxCommitTimeInIndex;
-        }
-    }
 
 
     /**
@@ -926,7 +889,7 @@ public class AclTracker extends AbstractTracker
             }
             else
             {
-                log.info(".... non found after lastTxCommitTime " + fromCommitTime);
+                log.info(".... none found after lastTxCommitTime " + fromCommitTime);
             }
 
             ArrayList<AclChangeSet> changeSetBatch = new ArrayList<AclChangeSet>();
@@ -1053,157 +1016,28 @@ public class AclTracker extends AbstractTracker
             if (aclBatch.size() > aclBatchSize)
             {
                 aclCount += aclBatch.size();
-                AclIndexWorkerRunnable aiwr = new AclIndexWorkerRunnable(aclBatch);
-                try
-                {
-                    reindexThreadLock.writeLock().lock();
-                    // Add the runnable to the queue to ensure ordering
-                    reindexThreadQueue.add(aiwr);
-                }
-                finally
-                {
-                    reindexThreadLock.writeLock().unlock();
-                }
-                threadPool.execute(aiwr);
+                AclIndexWorkerRunnable aiwr = new AclIndexWorkerRunnable(this.threadHandler, aclBatch);
+                this.threadHandler.scheduleTask(aiwr);
                 aclBatch = new ArrayList<Acl>();
             }
         }
         if (aclBatch.size() > 0)
         {
             aclCount += aclBatch.size();
-            AclIndexWorkerRunnable aiwr = new AclIndexWorkerRunnable(aclBatch);
-            try
-            {
-                reindexThreadLock.writeLock().lock();
-                // Add the runnable to the queue to ensure ordering
-                reindexThreadQueue.add(aiwr);
-            }
-            finally
-            {
-                reindexThreadLock.writeLock().unlock();
-            }
-            threadPool.execute(aiwr);
+            AclIndexWorkerRunnable aiwr = new AclIndexWorkerRunnable(this.threadHandler, aclBatch);
+            this.threadHandler.scheduleTask(aiwr);
             aclBatch = new ArrayList<Acl>();
         }
         return aclCount;
-    }
-
-    protected synchronized void waitForAsynchronousReindexing()
-    {
-        AbstractWorkerRunnable currentRunnable = peekHeadReindexWorker();
-        while (currentRunnable != null)
-        {
-            checkShutdown();
-            synchronized (this)
-            {
-                try
-                {
-                    wait(100);
-                }
-                catch (InterruptedException e)
-                {
-                }
-            }
-            currentRunnable = peekHeadReindexWorker();
-        }
-    }
-
-    /**
-     * Read-safe method to peek at the head of the queue
-     */
-    private AbstractWorkerRunnable peekHeadReindexWorker()
-    {
-        try
-        {
-            reindexThreadLock.readLock().lock();
-            return reindexThreadQueue.peek();
-        }
-        finally
-        {
-            reindexThreadLock.readLock().unlock();
-        }
-    }
-
-    abstract class AbstractWorkerRunnable implements Runnable
-    {
-        /*
-         * (non-Javadoc)
-         * @see java.lang.Runnable#run()
-         */
-        @Override
-        public void run()
-        {
-            try
-            {
-                doWork();
-            }
-            catch (IOException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            catch (AuthenticationException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            catch (JSONException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            finally
-            {
-                // Triple check that we get the queue state right
-                removeFromQueueAndProdHead();
-            }
-
-        }
-
-        abstract protected void doWork() throws IOException, AuthenticationException, JSONException;
-
-        /**
-         * Removes this instance from the queue and notifies the HEAD
-         */
-        private void removeFromQueueAndProdHead()
-        {
-            try
-            {
-                reindexThreadLock.writeLock().lock();
-                // Remove self from head of queue
-                reindexThreadQueue.remove(this);
-            }
-            finally
-            {
-                reindexThreadLock.writeLock().unlock();
-            }
-        }
-    }
-
-    class NodeIndexWorkerRunnable extends AbstractWorkerRunnable
-    {
-        InformationServer infoServer;
-        Node node;
-
-        NodeIndexWorkerRunnable(Node node, InformationServer infoServer)
-        {
-            this.infoServer = infoServer;
-            this.node = node;
-        }
-
-        protected void doWork() throws IOException, AuthenticationException, JSONException
-        {
-            this.infoServer.indexNode(node, true);
-        }
-
     }
 
     class AclIndexWorkerRunnable extends AbstractWorkerRunnable
     {
         List<Acl> acls;
 
-        AclIndexWorkerRunnable(List<Acl> acls)
+        AclIndexWorkerRunnable(QueueHandler queueHandler, List<Acl> acls)
         {
+            super(queueHandler);
             this.acls = acls;
         }
 
@@ -1224,10 +1058,7 @@ public class AclTracker extends AbstractTracker
         }
         finally
         {
-            if (threadPool != null)
-            {
-                threadPool.shutdownNow();
-            }
+           this.threadHandler.shutDownThreadPool();
         }
         synchronized (this)
         {
