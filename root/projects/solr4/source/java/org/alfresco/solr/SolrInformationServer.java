@@ -330,7 +330,7 @@ public class SolrInformationServer implements InformationServer
         if (rc != null)
         {
             DocIterator iterator = rc.docs.iterator();
-            while (iterator.hasNext())
+//            while (iterator.hasNext())
             {
                 //docIds.add(iterator.next());
 // TODO  Talk with Andy to get the two pieces of information
