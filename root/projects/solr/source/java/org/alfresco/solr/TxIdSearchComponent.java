@@ -26,8 +26,11 @@ public class TxIdSearchComponent extends SearchComponent
                     getCoreContainer().
                     getMultiCoreHandler();
         InformationServer infoSrv = adminHandler.getInformationServers().get(req.getCore().getName());
-        long lastIndexedTx = infoSrv.getTrackerState().getLastIndexedTxId();
-        rb.rsp.add("lastIndexedTx", lastIndexedTx);
+        if(infoSrv != null)
+        {
+            Long lastIndexedTx = infoSrv.getTrackerState().getLastIndexedTxId();
+            rb.rsp.add("lastIndexedTx", lastIndexedTx);
+        }
     }
 
     @Override
