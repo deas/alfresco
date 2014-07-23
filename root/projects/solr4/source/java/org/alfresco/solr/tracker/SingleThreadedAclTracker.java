@@ -69,7 +69,7 @@ import org.slf4j.LoggerFactory;
  *  
  * @author Matt Ward
  */
-public abstract class SingleThreadedAclTracker implements Tracker
+public abstract class SingleThreadedAclTracker extends AbstractTracker
 {
     protected final static Logger log = LoggerFactory.getLogger(SingleThreadedAclTracker.class);
 
