@@ -392,12 +392,11 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         return rc;
     }
         
-    private boolean cloudSelectReturnsDoc(String query)
+    private boolean cloudSelectReturnsDoc(SolrQueryRequest request, String query)
     {
-        LocalSolrQueryRequest solrReq = new LocalSolrQueryRequest(core, new NamedList<>());
-        ModifiableSolrParams params = new ModifiableSolrParams(solrReq.getParams());
+        ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
         params.set("q", query).set("fl", "id").set("rows", "1");
-        ResultContext rc = this.cloudSelect(solrReq, params);
+        ResultContext rc = this.cloudSelect(request, params);
 
         if (rc != null)
         {
@@ -1331,27 +1330,39 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     {
         log.info(".. checking for path change");
 
-        String query = FIELD_DBID + ":" + nodeMetaData.getId() + " AND " + FIELD_PARENT_ASSOC_CRC + ":"
-                    + nodeMetaData.getParentAssocsCrc();
-        boolean nodeHasSamePathAsBefore = cloudSelectReturnsDoc(query);
-        if (nodeHasSamePathAsBefore)
+        LocalSolrQueryRequest request = null;
+        try
         {
-            log.debug("... found match");
-        }
-        else
-        {
-            query = FIELD_DBID + ":" + nodeMetaData.getId();
-            boolean nodeHasBeenIndexed = cloudSelectReturnsDoc(query);
-            if (nodeHasBeenIndexed)
+            request = new LocalSolrQueryRequest(core, new NamedList<>());
+            String query = FIELD_DBID + ":" + nodeMetaData.getId() + " AND " + FIELD_PARENT_ASSOC_CRC + ":"
+                        + nodeMetaData.getParentAssocsCrc();
+            boolean nodeHasSamePathAsBefore = cloudSelectReturnsDoc(request, query);
+            if (nodeHasSamePathAsBefore)
             {
-                log.debug("... cascade updating docs");
-                LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-                // TODO: updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited,
-                // solrIndexSearcher.getDocSet(skippingDocsQuery));
+                log.debug("... found match");
             }
             else
             {
-                log.debug("... no doc to update");
+                query = FIELD_DBID + ":" + nodeMetaData.getId();
+                boolean nodeHasBeenIndexed = cloudSelectReturnsDoc(request, query);
+                if (nodeHasBeenIndexed)
+                {
+                    log.debug("... cascade updating docs");
+                    LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
+                    // TODO: updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited,
+                    // solrIndexSearcher.getDocSet(skippingDocsQuery));
+                }
+                else
+                {
+                    log.debug("... no doc to update");
+                }
+            }
+        }
+        finally
+        {
+            if (request != null)
+            {
+                request.close();
             }
         }
     }
