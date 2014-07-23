@@ -55,7 +55,6 @@ import org.alfresco.solr.client.Transactions;
 import org.alfresco.util.DynamicallySizedThreadPoolExecutor;
 import org.alfresco.util.TraceableThreadFactory;
 import org.json.JSONException;
-import org.quartz.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,8 +88,6 @@ public class AclTracker extends AbstractTracker
     private static final int DEFAULT_ACL_BATCH_SIZE = 10;
 
     private String poolName = "";
-
-    private boolean enableMultiThreadedTracking = false;
 
     private int corePoolSize = DEFAULT_CORE_POOL_SIZE;
 
@@ -144,7 +141,6 @@ public class AclTracker extends AbstractTracker
     {
         super(scheduler, id, p, client, coreName, informationServer);
 
-        enableMultiThreadedTracking = Boolean.parseBoolean(p.getProperty("alfresco.enableMultiThreadedTracking", "true"));
         corePoolSize = Integer.parseInt(p.getProperty("alfresco.corePoolSize", "3"));
         maximumPoolSize = Integer.parseInt(p.getProperty("alfresco.maximumPoolSize", "-1"));
         keepAliveTime = Integer.parseInt(p.getProperty("alfresco.keepAliveTime", "120"));
@@ -156,42 +152,38 @@ public class AclTracker extends AbstractTracker
         aclBatchSize = Integer.parseInt(p.getProperty("alfresco.aclBatchSize", "10"));
         
         
-        if (enableMultiThreadedTracking)
+        poolName = "SolrTrackingPool-" + coreName;
+
+        // if the maximum pool size has not been set, change it to match the core pool size
+        if (maximumPoolSize == DEFAULT_MAXIMUM_POOL_SIZE)
         {
-
-            poolName = "SolrTrackingPool-" + coreName;
-
-            // if the maximum pool size has not been set, change it to match the core pool size
-            if (maximumPoolSize == DEFAULT_MAXIMUM_POOL_SIZE)
-            {
-                maximumPoolSize = corePoolSize;
-            }
-
-            // We need a thread factory
-            TraceableThreadFactory threadFactory = new TraceableThreadFactory();
-            threadFactory.setThreadDaemon(threadDaemon);
-            threadFactory.setThreadPriority(threadPriority);
-
-            if (poolName.length() > 0)
-            {
-                threadFactory.setNamePrefix(poolName);
-            }
-
-            BlockingQueue<Runnable> workQueue;
-            if (workQueueSize < 0)
-            {
-                // We can have an unlimited queue, as we have a sensible thread pool!
-                workQueue = new LinkedBlockingQueue<Runnable>();
-            }
-            else
-            {
-                // Use an array one for consistent performance on a small queue size
-                workQueue = new ArrayBlockingQueue<Runnable>(workQueueSize);
-            }
-
-            // construct the instance
-            threadPool = new DynamicallySizedThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue, threadFactory, rejectedExecutionHandler);
+            maximumPoolSize = corePoolSize;
         }
+
+        // We need a thread factory
+        TraceableThreadFactory threadFactory = new TraceableThreadFactory();
+        threadFactory.setThreadDaemon(threadDaemon);
+        threadFactory.setThreadPriority(threadPriority);
+
+        if (poolName.length() > 0)
+        {
+            threadFactory.setNamePrefix(poolName);
+        }
+
+        BlockingQueue<Runnable> workQueue;
+        if (workQueueSize < 0)
+        {
+            // We can have an unlimited queue, as we have a sensible thread pool!
+            workQueue = new LinkedBlockingQueue<Runnable>();
+        }
+        else
+        {
+            // Use an array one for consistent performance on a small queue size
+            workQueue = new ArrayBlockingQueue<Runnable>(workQueueSize);
+        }
+
+        // construct the instance
+        threadPool = new DynamicallySizedThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue, threadFactory, rejectedExecutionHandler);
     }
 
     @Override
@@ -394,105 +386,6 @@ public class AclTracker extends AbstractTracker
     public void addAclToPurge(Long aclToPurge)
     {
         aclsToPurge.offer(aclToPurge);
-    }
-
-    /**
-     * @param reader
-     * @throws AuthenticationException
-     * @throws IOException
-     * @throws JSONException
-     */
-    protected void singleThreadedTrackAclChangeSets() throws AuthenticationException, IOException, JSONException
-    {
-        boolean aclIndexing = false;
-        AclChangeSets aclChangeSets;
-        boolean aclsUpToDate = false;
-        BoundedDeque<AclChangeSet> changeSetsFound = new  BoundedDeque<AclChangeSet>(100);
-        TrackerState state = this.infoSrv.getTrackerState();
-        
-        do
-        {
-            Long fromCommitTime =  getChangeSetFromCommitTime(changeSetsFound, state.getLastGoodChangeSetCommitTimeInIndex());
-            aclChangeSets = getSomeAclChangeSets(changeSetsFound, fromCommitTime, 60*60*1000L, 2000, state.getTimeToStopIndexing());
-
-            Long maxChangeSetCommitTime = aclChangeSets.getMaxChangeSetCommitTime();
-            if(maxChangeSetCommitTime != null)
-            {
-                state.setLastChangeSetCommitTimeOnServer(aclChangeSets.getMaxChangeSetCommitTime());
-            }
-
-            Long maxChangeSetId = aclChangeSets.getMaxChangeSetId();
-            if(maxChangeSetId != null)
-            {
-                state.setLastChangeSetIdOnServer(aclChangeSets.getMaxChangeSetId());
-            }
-
-            log.info("Scanning Acl change sets ...");
-            if (aclChangeSets.getAclChangeSets().size() > 0)
-            {
-                log.info(".... from " + aclChangeSets.getAclChangeSets().get(0));
-                log.info(".... to " + aclChangeSets.getAclChangeSets().get(aclChangeSets.getAclChangeSets().size() - 1));
-            }
-            else
-            {
-                log.info(".... non found after lastTxCommitTime " + fromCommitTime);
-            }
-
-            for (AclChangeSet changeSet : aclChangeSets.getAclChangeSets())
-            {
-                if (!aclIndexing)
-                {
-                    boolean isInIndex = this.infoSrv.isInIndex(QueryConstants.FIELD_ACLTXID, changeSet.getId());
-                    if (isInIndex) 
-                    {
-                        changeSetsFound.add(changeSet);
-                    }
-                    else 
-                    {
-                        aclIndexing = true;
-                    }
-                }
-
-                if (aclIndexing)
-                {
-                    // Make sure we do not go ahead of where we started - we will check the holes here
-                    // correctly next time
-                    if (changeSet.getCommitTimeMs() > state.getTimeToStopIndexing())
-                    {
-                        aclsUpToDate = true;
-                    }
-                    else
-                    {
-                        List<Acl> acls = client.getAcls(Collections.singletonList(changeSet), null, Integer.MAX_VALUE);
-                        for (Acl acl : acls)
-                        {
-                            List<AclReaders> readers = client.getAclReaders(Collections.singletonList(acl));
-                            indexAcl(readers, true);
-                        }
-
-                        this.infoSrv.indexAclTransaction(changeSet, true);
-                        changeSetsFound.add(changeSet);
-
-                        trackerStats.addChangeSetAcls(acls.size());
-
-                        if (changeSet.getCommitTimeMs() > state.getLastIndexedChangeSetCommitTime())
-                        {
-                            state.setLastIndexedChangeSetCommitTime(changeSet.getCommitTimeMs());
-                            state.setLastIndexedChangeSetId(changeSet.getId());
-                        }
-
-                    }
-                }
-                checkShutdown();
-            }
-        }
-        while ((aclChangeSets.getAclChangeSets().size() > 0) && (aclsUpToDate == false));
-
-        if (aclIndexing)
-        {
-            checkShutdown();
-            this.infoSrv.commit();
-        }
     }
 
     protected void trackRepository() throws IOException, AuthenticationException, JSONException
@@ -1071,12 +964,6 @@ public class AclTracker extends AbstractTracker
      */
     protected void trackAclChangeSets() throws AuthenticationException, IOException, JSONException
     {
-        if (!enableMultiThreadedTracking)
-        {
-            singleThreadedTrackAclChangeSets();
-            return;
-        }
-
         boolean indexed = false;
         boolean upToDate = false;
         AclChangeSets aclChangeSets;
