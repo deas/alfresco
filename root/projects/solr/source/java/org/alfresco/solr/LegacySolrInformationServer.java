@@ -145,6 +145,7 @@ import org.springframework.util.FileCopyUtils;
 public class LegacySolrInformationServer implements CloseHook, InformationServer
 {
     private static final String PREFIX_ERROR = "ERROR-";
+    private static final String PROP_PREFIX_PARENT_TYPE = "alfresco.metadata.ignore.datatype.";
 
     protected final static Logger log = LoggerFactory.getLogger(LegacySolrInformationServer.class);
 
@@ -162,6 +163,11 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
     private boolean transformContent = true;
     private long lag;
     private long holeRetention;
+
+    // Metadata pulling control
+    private boolean skipDescendantAuxDocsForSpecificTypes;
+    private Set<QName> typesForSkippingDescendantAuxDocs = new HashSet<QName>();
+    private BooleanQuery skippingDocsQuery;
 
     public LegacySolrInformationServer(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
@@ -189,6 +195,29 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
         
         this.coreTracker = new MultiThreadedCoreTracker(adminHandler.getScheduler(), id, p, keyResourceLoader,
                     coreName, this);
+        
+        skipDescendantAuxDocsForSpecificTypes = Boolean.parseBoolean(p.getProperty("alfresco.metadata.skipDescendantAuxDocsForSpecificTypes", "false"));
+
+        if (skipDescendantAuxDocsForSpecificTypes)
+        {
+            int i = 0;
+            skippingDocsQuery = new BooleanQuery();
+            for (String key = new StringBuilder(PROP_PREFIX_PARENT_TYPE).append(i).toString(); p.containsKey(key); key = new StringBuilder(PROP_PREFIX_PARENT_TYPE).append(++i)
+                    .toString())
+            {
+                String qName = p.getProperty(key);
+                if ((null != qName) && !qName.isEmpty())
+                {
+                    QName typeQName = QName.resolveToQName(dataModel.getNamespaceDAO(), qName);
+                    TypeDefinition type = dataModel.getDictionaryService(CMISStrictDictionaryService.DEFAULT).getType(typeQName);
+                    if (null != type)
+                    {
+                        typesForSkippingDescendantAuxDocs.add(typeQName);
+                        skippingDocsQuery.add(new TermQuery(new Term(QueryConstants.FIELD_TYPE, typeQName.toString())), Occur.SHOULD);
+                    }
+                }
+            }
+        }
     }
 
     /*
@@ -697,7 +726,7 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
                         continue;
                     }
                     LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-                    updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited);
+                    updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited, solrIndexSearcher.getDocSet(skippingDocsQuery));
                 }
 
                 log.debug(".. deleting");
@@ -777,7 +806,7 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
                             {
                                 log.debug("... cascade updating aux doc");
                                 LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-                                updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited);
+                                updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited, solrIndexSearcher.getDocSet(skippingDocsQuery));
                             }
                             else
                             {
@@ -1054,7 +1083,7 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
     }
 
     private void updateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite,
-                SolrIndexSearcher solrIndexSearcher, LinkedHashSet<Long> stack) throws AuthenticationException,
+                SolrIndexSearcher solrIndexSearcher, LinkedHashSet<Long> stack, DocSet skippingDocs) throws AuthenticationException,
                 IOException, JSONException
     {
         if (stack.contains(parentNodeMetaData.getId()))
@@ -1068,7 +1097,7 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
             try
             {
                 stack.add(parentNodeMetaData.getId());
-                doUpdateDescendantAuxDocs(parentNodeMetaData, overwrite, solrIndexSearcher, stack);
+                doUpdateDescendantAuxDocs(parentNodeMetaData, overwrite, solrIndexSearcher, stack, skippingDocs);
             }
             finally
             {
@@ -1080,9 +1109,14 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
     }
 
     private void doUpdateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite,
-                SolrIndexSearcher solrIndexSearcher, LinkedHashSet<Long> stack) throws AuthenticationException,
+                SolrIndexSearcher solrIndexSearcher, LinkedHashSet<Long> stack, DocSet skippingDocs) throws AuthenticationException,
                 IOException, JSONException
     {
+        if (skipDescendantAuxDocsForSpecificTypes && typesForSkippingDescendantAuxDocs.contains(parentNodeMetaData.getType()))
+        {
+            return;
+        }
+        
         HashSet<Long> childIds = new HashSet<Long>();
 
         if (parentNodeMetaData.getChildIds() != null)
@@ -1104,69 +1138,112 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
             int current = -1;
             while ((current = openBitSet.nextSetBit(current + 1)) != -1)
             {
-                CacheEntry entry = indexedByDocId.get(current);
-                childIds.add(entry.getDbid());
+                if (!skippingDocs.exists(current))
+                {
+                    CacheEntry entry = indexedByDocId.get(current);
+                    childIds.add(entry.getDbid());
+                }
             }
         }
         else
         {
             for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
             {
-                CacheEntry entry = indexedByDocId.get(it.nextDoc());
-                childIds.add(entry.getDbid());
+                int current = it.nextDoc();
+                if (!skippingDocs.exists(current))
+                {
+                    CacheEntry entry = indexedByDocId.get(current);
+                    childIds.add(entry.getDbid());
+                }
             }
         }
 
         for (Long childId : childIds)
         {
-            NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
-            nmdp.setFromNodeId(childId);
-            nmdp.setToNodeId(childId);
-            nmdp.setIncludeAclId(true);
-            nmdp.setIncludeAspects(true);
-            nmdp.setIncludeChildAssociations(false);
-            nmdp.setIncludeChildIds(true);
-            nmdp.setIncludeNodeRef(true);
-            nmdp.setIncludeOwner(true);
-            nmdp.setIncludeParentAssociations(true);
-            nmdp.setIncludePaths(true);
-            nmdp.setIncludeProperties(false);
-            nmdp.setIncludeType(true);
-            nmdp.setIncludeTxnId(true);
-            // call back to core tracker to talk to client
-            List<NodeMetaData> nodeMetaDatas = coreTracker.getNodesMetaData(nmdp, MAX_RESULTS_NODES_META_DATA);
-
-            for (NodeMetaData nodeMetaData : nodeMetaDatas)
+            if (!shouldElementBeIgnored(childId, solrIndexSearcher, skippingDocs))
             {
-                if (mayHaveChildren(nodeMetaData))
-                {
-                    updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, stack);
-                }
-
-                // Avoid adding aux docs for stuff yet to be indexed or unindexed (via the index control aspect)
-                log.info(".. checking aux doc exists in index before we update it");
-                Query query = new TermQuery(new Term(QueryConstants.FIELD_ID, "AUX-" + childId));
-                DocSet auxSet = solrIndexSearcher.getDocSet(query);
-                if (auxSet.size() > 0)
-                {
-                    log.debug("... cascade update aux doc " + childId);
-
-                    SolrInputDocument aux = createAuxDoc(nodeMetaData);
-                    AddUpdateCommand auxDocCmd = new AddUpdateCommand();
-                    auxDocCmd.overwriteCommitted = overwrite;
-                    auxDocCmd.overwritePending = overwrite;
-                    auxDocCmd.solrDoc = aux;
-                    auxDocCmd.doc = toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(),
-                                dataModel);
-
-                    core.getUpdateHandler().addDoc(auxDocCmd);
-                }
-                else
-                {
-                    log.debug("... no aux doc found to update " + childId);
-                }
+	            NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
+	            nmdp.setFromNodeId(childId);
+	            nmdp.setToNodeId(childId);
+	            nmdp.setIncludeAclId(true);
+	            nmdp.setIncludeAspects(true);
+	            nmdp.setIncludeChildAssociations(false);
+	            nmdp.setIncludeChildIds(true);
+	            nmdp.setIncludeNodeRef(true);
+	            nmdp.setIncludeOwner(true);
+	            nmdp.setIncludeParentAssociations(true);
+	            nmdp.setIncludePaths(true);
+	            nmdp.setIncludeProperties(false);
+	            nmdp.setIncludeType(true);
+	            nmdp.setIncludeTxnId(true);
+	            // call back to core tracker to talk to client
+	            List<NodeMetaData> nodeMetaDatas = coreTracker.getNodesMetaData(nmdp, MAX_RESULTS_NODES_META_DATA);
+	
+	            for (NodeMetaData nodeMetaData : nodeMetaDatas)
+	            {
+	                if (mayHaveChildren(nodeMetaData))
+	                {
+	                    updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, stack, skippingDocs);
+	                }
+	
+	                // Avoid adding aux docs for stuff yet to be indexed or unindexed (via the index control aspect)
+	                log.info(".. checking aux doc exists in index before we update it");
+	                Query query = new TermQuery(new Term(QueryConstants.FIELD_ID, "AUX-" + childId));
+	                DocSet auxSet = solrIndexSearcher.getDocSet(query);
+	                if (auxSet.size() > 0)
+	                {
+	                    log.debug("... cascade update aux doc " + childId);
+	
+	                    SolrInputDocument aux = createAuxDoc(nodeMetaData);
+	                    AddUpdateCommand auxDocCmd = new AddUpdateCommand();
+	                    auxDocCmd.overwriteCommitted = overwrite;
+	                    auxDocCmd.overwritePending = overwrite;
+	                    auxDocCmd.solrDoc = aux;
+	                    auxDocCmd.doc = toDocument(auxDocCmd.getSolrInputDocument(), core.getSchema(),
+	                                dataModel);
+	
+	                    core.getUpdateHandler().addDoc(auxDocCmd);
+	                }
+	                else
+	                {
+	                    log.debug("... no aux doc found to update " + childId);
+	                }
+	            }
             }
         }
+    }
+    
+    private boolean shouldElementBeIgnored(long dbId, SolrIndexSearcher solrIndexSearcher, DocSet skippingDocs) throws IOException
+    {
+        boolean result = false;
+
+        if (skipDescendantAuxDocsForSpecificTypes && !typesForSkippingDescendantAuxDocs.isEmpty())
+        {
+            BooleanQuery query = new BooleanQuery();
+            query.add(new TermQuery(new Term(QueryConstants.FIELD_DBID, NumericEncoder.encode(dbId))), Occur.MUST);
+
+            DocSet docSet = solrIndexSearcher.getDocSet(query);
+
+            int index = -1;
+            if (docSet instanceof BitDocSet)
+            {
+                BitDocSet source = (BitDocSet) docSet;
+                OpenBitSet openBitSet = source.getBits();
+                index = openBitSet.nextSetBit(index + 1);
+            }
+            else
+            {
+                DocIterator it = docSet.iterator();
+                if (it.hasNext())
+                {
+                    index = it.nextDoc();
+                }
+            }
+
+            result = (-1 != index) && skippingDocs.exists(index);
+        }
+
+        return result;
     }
 
     private SolrInputDocument createAuxDoc(NodeMetaData nodeMetaData)
