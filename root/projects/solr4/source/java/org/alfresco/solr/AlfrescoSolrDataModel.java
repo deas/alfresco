@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -57,6 +58,8 @@ import org.alfresco.solr.AlfrescoClientDataModelServicesFactory.DictionaryKey;
 import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.NumericEncoder;
+import org.alfresco.util.ThreadPoolExecutorFactoryBean;
+import org.alfresco.util.cache.DefaultAsynchronouslyRefreshedCacheRegistry;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.SortedDocValues;
 import org.apache.lucene.index.Term;
@@ -123,7 +126,29 @@ public class AlfrescoSolrDataModel
 
         dictionaryDAO = new DictionaryDAOImpl();
         dictionaryDAO.setTenantService(tenantService);
-        dictionaryDAO.setDictionaryRegistryCache(new CompiledModelsCache());
+        
+        try
+        {
+           CompiledModelsCache compiledModelsCache = new CompiledModelsCache();
+           compiledModelsCache.setDictionaryDAO(dictionaryDAO);
+           compiledModelsCache.setTenantService(tenantService);
+           compiledModelsCache.setRegistry(new DefaultAsynchronouslyRefreshedCacheRegistry());
+           ThreadPoolExecutorFactoryBean threadPoolfactory = new ThreadPoolExecutorFactoryBean();
+           threadPoolfactory.afterPropertiesSet();
+           compiledModelsCache.setThreadPoolExecutor((ThreadPoolExecutor) threadPoolfactory.getObject());
+
+        
+           dictionaryDAO.setDictionaryRegistryCache(compiledModelsCache);
+           // TODO: use config ....
+           dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
+           dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
+           dictionaryDAO.init();
+        }
+        catch (Exception e) 
+        {
+            throw new AlfrescoRuntimeException("Failed to create dictionaryDAO ", e);
+        }
+        
         // TODO: use config ....
         dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
         dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
