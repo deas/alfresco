@@ -3,11 +3,11 @@
 	<classpathentry kind="src" path="source/java"/>
 	<classpathentry kind="src" path="source/test-java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/lucene-analyzers-common-4.7.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-analyzers-common-4.7.0.jar" sourcepath="src/lucene-4.7.0.zip"/>
 	<classpathentry kind="lib" path="lib/lucene-analyzers-kuromoji-4.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-analyzers-phonetic-4.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-codecs-4.7.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-core-4.7.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-core-4.7.0.jar" sourcepath="src/lucene-4.7.0.zip"/>
 	<classpathentry kind="lib" path="lib/lucene-expressions-4.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-grouping-4.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-highlighter-4.7.0.jar"/>
