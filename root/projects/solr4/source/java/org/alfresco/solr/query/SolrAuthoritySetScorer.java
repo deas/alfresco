@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Properties;
 
 import org.alfresco.service.cmr.security.PermissionService;
+import org.alfresco.solr.cache.CacheConstants;
 import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.Query;

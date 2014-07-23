@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import org.alfresco.solr.ResizeableArrayList;
+import org.alfresco.solr.cache.CacheConstants;
 import org.alfresco.solr.cache.CacheEntry;
 import org.alfresco.solr.cache.OwnerLookUp;
 import org.apache.lucene.index.AtomicReader;

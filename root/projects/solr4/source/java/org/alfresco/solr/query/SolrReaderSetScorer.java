@@ -24,6 +24,7 @@ import java.util.HashSet;
 
 import org.alfresco.solr.ResizeableArrayList;
 import org.alfresco.solr.cache.AclLookUp;
+import org.alfresco.solr.cache.CacheConstants;
 import org.alfresco.solr.cache.CacheEntry;
 import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.DocsEnum;
