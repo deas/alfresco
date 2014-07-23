@@ -1403,9 +1403,9 @@
       <str name="name">mySuggester</str>
       <str name="lookupImpl">FuzzyLookupFactory</str>      <!-- org.apache.solr.spelling.suggest.fst -->
       <str name="dictionaryImpl">DocumentDictionaryFactory</str>     <!-- org.apache.solr.spelling.suggest.HighFrequencyDictionaryFactory --> 
-      <str name="field">cat</str>
+      <str name="field">suggest.__</str>
       <str name="weightField">price</str>
-      <str name="suggestAnalyzerFieldType">string</str>
+      <str name="suggestAnalyzerFieldType">text___</str>
     </lst>
   </searchComponent>
 
@@ -1571,7 +1571,7 @@
     -->
   <searchComponent name="elevator" class="solr.QueryElevationComponent" >
     <!-- pick a fieldType to analyze queries -->
-    <str name="queryFieldType">string</str>
+    <str name="queryFieldType">text___</str>
     <str name="config-file">elevate.xml</str>
   </searchComponent>
 

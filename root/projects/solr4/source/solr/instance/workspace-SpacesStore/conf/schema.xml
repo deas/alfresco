@@ -5,6 +5,9 @@
    - ICU
    - Truncated field that could be used for sort/faceting/clustering?
    - SITE analysis 
+   - Geospatial ?
+   - Currency ?
+   - (default facetting configuration)
 -->
 
 <schema name="Alfresco V2.0" version="1.5">
@@ -43,6 +46,9 @@
 
       <!-- TODO: truncated text field for sorting?? -->
       <fieldType name="alfrescoFieldType" class="org.alfresco.solr.AlfrescoFieldType" />
+      <fieldType name="path" class="solr.TextField" >
+         <analyzer class="org.alfresco.repo.search.impl.lucene.analysis.PathAnalyzer" />
+      </fieldType>
 
       <!-- Field types that are only used to define language specific analysis (generally ordered by ISO code) -->
 
@@ -496,7 +502,7 @@
       <fieldType name="text_tr" class="solr.TextField" positionIncrementGap="100">
         <analyzer> 
           <tokenizer class="solr.StandardTokenizerFactory"/>
-          <filter class="solr.ApostropheFilterFactory"/>
+          <!-- <filter class="solr.ApostropheFilterFactory"/> -->
           <filter class="solr.TurkishLowerCaseFilterFactory"/>
           <filter class="solr.StopFilterFactory" ignoreCase="false" words="lang/stopwords_tr.txt" />
           <filter class="solr.SnowballPorterFilterFactory" language="Turkish"/>
@@ -615,7 +621,7 @@
       <dynamicField name="svst_double.*" type="stats_double"           indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
 
       <!-- Everything else - must be tokenised text -->
-      <dynamicField name="*" type="alfrescoDataType"           indexed="true" omitNorms="false" stored="false"  multiValued="true" />
+      <dynamicField name="*" type="alfrescoFieldType"           indexed="true" omitNorms="false" stored="false"  multiValued="true" />
 
 
    </fields>
