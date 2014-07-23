@@ -954,6 +954,217 @@
       },
 
       /**
+       * Edit Online with AOS.
+       *
+       * @method onActionEditOnlineAos
+       * @param record {object} Object literal representing file or folder to be actioned
+       */
+      onActionEditOnlineAos: function dlA_onActionEditOnlineAos(record)
+      {
+         // sanity checks
+         if (!$isValueSet(this.doclistMetadata.custom.aos) || !$isValueSet(this.doclistMetadata.custom.aos.baseUrl)
+             || !$isValueSet(record.webdavUrl) || (record.webdavUrl.substring(0,8) != '/webdav/') )
+         {
+            Alfresco.logger.error("onActionEditOnlineAos", "Sanity checks failed");
+            return;
+         }
+         
+         var aosUrl = $combine(this.doclistMetadata.custom.aos.baseUrl, record.webdavUrl.substring(7));
+         var fileExtension = Alfresco.util.getFileExtension(record.location.file);
+         var protocolHandler = this.getProtocolForFileExtension(fileExtension);
+         
+         if(protocolHandler === undefined)
+         {
+            Alfresco.logger.error("onActionEditOnlineAos", "No protocol handler available for file extension.");
+            return;
+         }
+         
+         var officeLauncher = new EmbeddedOfficeLauncher();
+         
+         if(officeLauncher.isIOS())
+         {
+            // iOS is not yet supported
+            return;
+         }
+
+         // detect if we are on a supported operating system
+         if(!officeLauncher.isWin() && !officeLauncher.isMac())
+         {
+             Alfresco.util.PopupManager.displayMessage(
+             {
+                text: this.msg("message.edit-online.office.failure")
+             });
+             return;
+         }
+
+         // if we have a working PlugIn (ActiveX or NPAPI), use it. Otherwise we use the protocol handler (e.g. Chrome w/o PlugIn)
+         if(officeLauncher.isAvailable())
+         {
+             this._aos_launchOfficeByPlugin(officeLauncher, aosUrl);
+         }
+         else
+         {
+             this._aos_tryToLaunchOfficeByMsProtocolHandler(officeLauncher, protocolHandler, aosUrl);
+         }
+        
+         return;
+      },
+      
+      _aos_launchOfficeByPlugin: function dlA__aos_launchOfficeByPlugin(officeLauncher, url)
+      {
+    	  if (officeLauncher.EditDocument(url))
+          {
+             YAHOO.Bubbling.fire("metadataRefresh");
+          }
+          else
+          {
+             Alfresco.util.PopupManager.displayMessage(
+             {
+                text: this.msg("message.edit-online.office.failure")
+             });
+          }
+    	  /*
+          var checker, dlg;
+          var isNotIE = (officeLauncher.isFirefox() || officeLauncher.isChrome() || officeLauncher.isSafari());
+          if (!officeLauncher.EditDocument(url)) {
+              // check if the Plug-In has been blocked
+              if (officeLauncher.isControlNotActivated() && isNotIE)
+              {
+                  checker = window.setInterval(function()
+                  {
+                      if (officeLauncher.isControlActivated())
+                      {
+                          window.clearInterval(checker);
+                          dlg.destroy();
+                          window.setTimeout(function()
+                          {
+                              if (!officeLauncher.EditDocument(url))
+                              {
+                                  if (officeLauncher.getLastControlResult() !== -2)
+                                  {
+                                      var errorDetails = officeLauncher.getLastControlResult() !== false ? ' (Error code: ' + officeLauncher.getLastControlResult() + ')' : '';
+                                      Alfresco.util.PopupManager.displayMessage(
+                                      {
+                                          text: this.msg('message.aos.edit-online-new.starting_office_failed') + errorDetails
+                                      });
+                                  }
+                              }
+                          }, 50);
+                      }
+                  }, 250);
+                  var dlg = new YAHOO.widget.SimpleDialog('prompt',
+                     {
+                        close: false,
+                        constraintoviewport: true,
+                        draggable: false,
+                        effect: null,
+                        modal: true,
+                        visible: true,
+                        zIndex: 9999
+                     });
+                  // TODO: Properly format message and localize
+                  dlg.setHeader(this.msg('message.aos.edit-online-new.plugin_blocked.caption'));
+                  dlg.setBody(this.msg('message.aos.edit-online-new.plugin_blocked.body'));
+                  dlg.cfg.queueProperty('buttons', [ {
+                     text: this.msg('message.aos.edit-online-new.plugin_blocked.button_dismiss'),
+                     handler: function() {
+                        window.clearInterval(checker);
+                        this.destroy();
+                     },
+                     isDefault: true
+                  }]);
+                  dlg.render(document.body);
+                  dlg.center();
+                  dlg.show();
+              }
+              else
+              {
+                  if (officeLauncher.getLastControlResult() !== -2)
+                  {
+                      // error message only required if user did not cancel (result === -2)
+                      var errorDetails = officeLauncher.getLastControlResult() !== false ? ' (Error code: ' + officeLauncher.getLastControlResult() + ')' : '';
+                      Alfresco.util.PopupManager.displayMessage(
+                      {
+                          text: this.msg('message.aos.edit-online-new.starting_office_failed') + errorDetails
+                      });
+                  }
+              }
+          }
+          */
+      },
+
+      _aos_tryToLaunchOfficeByMsProtocolHandler: function dlA__aos_tryToLaunchOfficeByMsProtocolHandler(officeLauncher, protocolHandler, url)
+      {
+          var protocolUrl = protocolHandler + ':ofe%7Cu%7C' + officeLauncher.encodeUrl(url);
+          var protocolHandlerPresent = false;
+
+          // TODO: do this YUI style
+          var input = document.createElement("input");
+          YUIDom.setStyle(input, 'z-index', '1000');
+          YUIDom.setStyle(input, 'background-color', 'rgba(0, 0, 0, 0)');
+          YUIDom.setStyle(input, 'border', 'none');
+          YUIDom.setStyle(input, 'outline', 'none');
+          YUIDom.setStyle(input, 'position', 'absolute');
+          YUIDom.setStyle(input, 'left', '10px');
+          var inputTop = document.body.scrollTop + 10;
+          YUIDom.setStyle(input, 'top', inputTop+'px');
+          document.getElementById('alf-hd').appendChild(input);
+          input.focus();
+          input.onblur = function() {
+              protocolHandlerPresent = true;
+          };
+          location.href = protocolUrl;
+          setTimeout(function()
+          {
+              input.onblur = null;
+              input.remove();
+              if(!protocolHandlerPresent)
+              {
+                  Alfresco.util.PopupManager.displayMessage(
+                  {
+                      //text: this.msg('message.aos.edit-online-new.supported_office_version_required')
+                      text: this.msg("message.edit-online.office.failure")
+                  });
+              }
+          }, 500);
+      },
+      
+      getProtocolForFileExtension: function(fileExtension)
+      {
+         var msProtocolNames =
+         {
+            'doc'  : 'ms-word',
+            'docx' : 'ms-word',
+            'docm' : 'ms-word',
+            'dot'  : 'ms-word',
+            'dotx' : 'ms-word',
+            'dotm' : 'ms-word',
+            'xls'  : 'ms-excel',
+            'xlsx' : 'ms-excel',
+            'xlsb' : 'ms-excel',
+            'xlsm' : 'ms-excel',
+            'xlt'  : 'ms-excel',
+            'xltx' : 'ms-excel',
+            'xltm' : 'ms-excel',
+            'xlsm' : 'ms-excel',
+            'ppt'  : 'ms-powerpoint',
+            'pptx' : 'ms-powerpoint',
+            'pot'  : 'ms-powerpoint',
+            'potx' : 'ms-powerpoint',
+            'potm' : 'ms-powerpoint',
+            'pptm' : 'ms-powerpoint',
+            'potm' : 'ms-powerpoint',
+            'pps'  : 'ms-powerpoint',
+            'ppsx' : 'ms-powerpoint',
+            'ppam' : 'ms-powerpoint',
+            'ppsm' : 'ms-powerpoint',
+            'sldx' : 'ms-powerpoint',
+            'sldm' : 'ms-powerpoint',
+         };
+         return msProtocolNames[fileExtension];
+      },
+
+      /**
        * Simple Repo Action.
        *
        * Accepts the following <param> declarations from the <action> config:
@@ -1942,3 +2153,605 @@
       }
    };
 })();
+
+function EmbeddedOfficeLauncher()
+{
+
+// public
+
+    this.ViewDocument = function(url)
+    {
+        return openDocument(url,true);
+    };
+    
+    this.EditDocument = function(url)
+    {
+        return openDocument(url,false);
+    };
+    
+    this.setConsoleLoggingEnabled = function(enable)
+    {
+        m_consoleLogging = enable;
+    };
+    
+    this.setRules = function(rules)
+    {
+        m_ruleSet = {};
+        applyRules(rules);
+    };
+    
+    this.addRules = function(rules)
+    {
+        applyRules(rules);
+    };
+    
+    this.isAvailable = function()
+    {
+        return isAvailableOnPlatform();
+    };
+    
+    this.getLastControlResult = function()
+    {
+        return m_lastControlResult;
+    };
+    
+    this.isControlBlocked = function()
+    {
+        return (m_isFirefox || m_isChrome) && m_controlNotActivated;
+    };
+    
+    this.isWin = function()
+    {
+        return m_isWin;
+    };
+    
+    this.isMac = function()
+    {
+        return m_isMac;
+    };
+    
+    this.isIOS = function()
+    {
+        return m_isIOS;
+    };
+    
+    this.isFirefox = function()
+    {
+        return m_isFirefox;
+    };
+    
+    this.isChrome = function()
+    {
+        return m_isChrome;
+    };
+    
+    this.isSafari = function()
+    {
+        return m_isSafari;
+    };
+    
+    this.encodeUrl = function(url)
+    {
+        return encodeUrl(url);
+    };
+    
+    this.isControlNotActivated = function()
+    {
+        return m_controlNotActivated;
+    };
+    
+    this.isControlNotActivated = function()
+    {
+        return m_controlNotActivated;
+    };
+    
+    this.isControlActivated = function()
+    {
+        return isControlActivated();
+    };
+
+// private
+    var ACTIVEX_PROGID = {};
+    ACTIVEX_PROGID['sp'] = 'SharePoint.OpenDocuments';
+    ACTIVEX_PROGID['ol'] = 'OfficeLauncherOrg.OpenDocuments';
+    var NPAPI_MIMETYPE = {};
+    NPAPI_MIMETYPE['sp'] = 'application/x-sharepoint';
+    NPAPI_MIMETYPE['ol'] = 'application/x-officelauncher';
+    
+    var m_userAgent = navigator.userAgent.toLowerCase();
+    var m_isIE = (m_userAgent.indexOf('msie') !== -1) || (m_userAgent.indexOf('trident') !== -1);
+    var m_isOpera = (m_userAgent.indexOf('opr') !== -1);
+    var m_isChrome = (m_userAgent.indexOf('chrome') !== -1) && (!m_isOpera);
+    var m_isFirefox = (m_userAgent.indexOf('firefox') !== -1);
+    var m_isSafari = (m_userAgent.indexOf('safari') !== -1) && (!(m_isChrome||m_isOpera));
+    var m_isMac = (m_userAgent.indexOf('mac') !== -1);
+    var m_isWin = (m_userAgent.indexOf('win') !== -1);
+    var m_isIOS = (m_userAgent.indexOf('ipad') !== -1) || (m_userAgent.indexOf('iphone') !== -1) || (m_userAgent.indexOf('ipod') !== -1);
+    
+    var m_ruleSet = {};
+    var m_pluginOrder = null;
+    var m_control = null;
+    var m_consoleLogging = false;
+    var m_lastControlResult = null;
+    var m_controlNotActivated = false;
+    
+    // apply default rule set
+    applyRules('ax=sp,ol;npapi=sp,ol;npapi.chrome.mac=ol;sp,ol');
+
+    function openDocument(url,readOnly)
+    {
+        m_controlNotActivated = false;
+        log().log('Opening url = ',url,' readOnly = ',readOnly);
+        var control = getControl();
+        if(control)
+        {
+            var encodedUrl = encodeUrl(url);
+            log().log('encodedUrl = ',encodedUrl);
+            try
+            {
+                var result;
+                if(readOnly)
+                {
+                    if(!(m_isIE || control.ViewDocument))
+                    {
+                        m_controlNotActivated = true;
+                    }
+                    else
+                    {
+                        result = control.ViewDocument(encodedUrl);
+                    }
+                }
+                else
+                {
+                    if(!(m_isIE || control.EditDocument))
+                    {
+                        m_controlNotActivated = true;
+                    }
+                    else
+                    {
+                        result = control.EditDocument(encodedUrl);
+                    }
+                }
+                m_lastControlResult = result;
+                log().log('Control object invoked successfully. result = ',result);
+                if (result === true || result === 0 || result === '0')
+                {
+                    return true;
+                }
+            }
+            catch(e)
+            {
+                log().error('Exception invoking control object',e);
+            }
+        }
+        else
+        {
+            log().error('No control object available.');
+        }
+        return false;
+    }
+    
+    function isControlActivated()
+    {
+        log().log('Checking control activation');
+        var control = getControl();
+        return control && control.ViewDocument;
+    }
+    
+    function getControl()
+    {
+        if(m_control)
+        {
+            return m_control;
+        }
+        log().log('No control object available. Creating new one.');
+        var pluginOrder = getPluginOrder();
+        log().log('PlugIn order: ',pluginOrder);
+        if(window.ActiveXObject !== undefined)
+        {
+            log().log('Using ActiveX on this platform.');
+            m_control = createActiveXControl(pluginOrder);
+            if(!m_control)
+            {
+                log().log('Failed creating Active-X control.');
+            }
+            return m_control;
+        }
+        else
+        {
+            log().log('Using NPAPI on this platform.');
+            m_control = createNPAPIControl(pluginOrder);
+            if(!m_control)
+            {
+                log().log('Failed creating NPAPI control.');
+            }
+            return m_control;
+        }
+    }
+    
+    function isAvailableOnPlatform()
+    {
+        log().log('Detecting availability on this platform.');
+        var pluginOrder = getPluginOrder();
+        log().log('PlugIn order: ',pluginOrder);
+        if(window.ActiveXObject !== undefined)
+        {
+            log().log('Using ActiveX on this platform. Trying to create Acrive-X object to detect if launcher is available on this platform.');
+            m_control = createActiveXControl(pluginOrder);
+            if(m_control)
+            {
+                log().log('Successfully created ActiveX object. OfficeLauncher is available on this platform.');
+                return true;
+            }
+        }
+        else
+        {
+            log().log('Using NPAPI on this platform.');
+            for(var i = 0; i < pluginOrder.length; i++)
+            {
+                var pluginTypeId = pluginOrder[i];
+                var mimetype = NPAPI_MIMETYPE[pluginTypeId];
+                if(mimetype)
+                {
+                    log().log('Checking availability of '+mimetype);
+                    if(isPluginAvailable(mimetype))
+                    {
+                        log().log('Is available. OfficeLauncher is available on this platform.');
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    function createActiveXControl(pluginOrder)
+    {
+        for(var i = 0; i < pluginOrder.length; i++)
+        {
+            var pluginTypeId = pluginOrder[i];
+            log().log('Trying to create ActiveX control for plugin type id "'+pluginTypeId+'"...');
+            try
+            {
+                var progId = ACTIVEX_PROGID[pluginTypeId];
+                if(!progId)
+                {
+                    log().error('No ActiveX ProgId for plugin type id "'+pluginTypeId+'"');
+                    continue;
+                }
+                log().log('Tying to create ActiveX object with progId "'+progId+'"...');
+                var obj = new ActiveXObject(progId);
+                if(obj)
+                {
+                    log().log('Successfully created ActiveX control: ',obj);
+                    return obj;
+                }
+            }
+            catch(e)
+            {
+                log().log('Exception creating ActiveX control. progId = ',progId,' Exception = ',e);
+            }
+        }
+        log().log('No Active-X Object in plugin order could be created.');
+        return null;
+    }
+    
+    function createNPAPIControl(pluginOrder)
+    {
+        for(var i = 0; i < pluginOrder.length; i++)
+        {
+            var pluginTypeId = pluginOrder[i];
+            log().log('Trying to create NPAPI control for plugin type id "'+pluginTypeId+'"...');
+            try
+            {
+                var mimetype = NPAPI_MIMETYPE[pluginTypeId];
+                if(!mimetype)
+                {
+                    log().error('No NPAPI mimetype for plugin type id "'+pluginTypeId+'"');
+                    continue;
+                }
+                log().log('Tying to create NPAPI object with mimetype "'+mimetype+'"...');
+                var obj = getNpapiPlugin(mimetype,'officelauncher-plugin-container-'+pluginTypeId);
+                if(obj)
+                {
+                    log().log('Successfully created NPAPI control: ',obj);
+                    return obj;
+                }
+            }
+            catch(e)
+            {
+                log().log('Exception creating NPAPI control. mimetype = ',mimetype,' Exception = ',e);
+            }
+        }
+        log().log('No NPAPI Object in plugin order could be created.');
+        return null;
+    }
+    
+    function getPluginOrder()
+    {
+        if(m_pluginOrder)
+        {
+            return m_pluginOrder;
+        }
+        var selTechnology = getTechnologySelector();
+        var selBrowser = getBrowserSelector();
+        var selOS = getOSSelector();
+        m_pluginOrder = m_ruleSet[selTechnology+'.'+selBrowser+'.'+selOS];
+        if(m_pluginOrder)
+        {
+            return m_pluginOrder;
+        }
+        m_pluginOrder = m_ruleSet[selTechnology+'.'+selBrowser];
+        if(m_pluginOrder)
+        {
+            return m_pluginOrder;
+        }
+        m_pluginOrder = m_ruleSet[selTechnology];
+        if(m_pluginOrder)
+        {
+            return m_pluginOrder;
+        }
+        m_pluginOrder = m_ruleSet[''];
+        if(m_pluginOrder)
+        {
+            return m_pluginOrder;
+        }
+        m_pluginOrder = [];
+        return m_pluginOrder;
+    }
+    
+    function getTechnologySelector()
+    {
+        return (window.ActiveXObject !== undefined) ? 'ax' : 'npapi';
+    }
+    
+    function getBrowserSelector()
+    {
+        if(m_isFirefox)
+        {
+            return 'firefox';
+        }
+        if(m_isIE)
+        {
+            return 'ie';
+        }
+        if(m_isChrome)
+        {
+            return 'chrome';
+        }
+        if(m_isSafari)
+        {
+            return 'safari';
+        }
+        return 'unknown';
+    }
+    
+    function getOSSelector()
+    {
+        if(m_isWin)
+        {
+            return 'win';
+        }
+        if(m_isMac)
+        {
+            return 'mac';
+        }
+        return 'unknown';
+    }
+    
+    function applyRules(rules)
+    {
+        var ruleDefs = rules.toLowerCase().split(';');
+        for(var i = 0; i < ruleDefs.length; i++)
+        {
+            var rule = ruleDefs[i];
+            var separatorPos = rule.indexOf('=');
+            var selector;
+            var pluginOrder;
+            if(separatorPos < 0)
+            {
+                selector = '';
+                pluginOrder = (rule.length > 0) ? rule.split(',') : [];
+            }
+            else
+            {
+                selector = rule.substring(0,separatorPos);
+                rule = rule.substring(separatorPos+1);
+                pluginOrder = (rule.length > 0) ? rule.split(',') : [];
+            }
+            m_ruleSet[selector] = pluginOrder;
+        }
+        m_pluginOrder = null;
+        m_control = null;
+    }
+    
+    function getNpapiPlugin(mimeType,containerId)
+    {
+        var plugin = null;
+        try
+        {
+            plugin = document.getElementById(containerId);
+            if(!plugin)
+            {
+                log().log('Trying to create NPAPI plugin. mimeType = ',mimeType);
+                if(isPluginAvailable(mimeType))
+                {
+                    var newContainer = document.createElement('object');
+                    newContainer.id = containerId;
+                    newContainer.type = mimeType;
+                    newContainer.width = 0;
+                    newContainer.height = 0;
+                    newContainer.style.setProperty('visibility','hidden','');
+                    document.body.appendChild(newContainer);
+                    plugin = document.getElementById(containerId);
+                }
+                else
+                {
+                    log().log('NPAPI PlugIn is not available. mimeType = ',mimeType);
+                }
+            }
+        }
+        catch(e)
+        {
+            log().log('Exception creating NPAPI PlugIn object. mimeType = ',mimeType,' Exception = ',e);
+            plugin = null;
+        }
+        return plugin;
+    }
+    
+    function isPluginAvailable(mimeType)
+    {
+        return navigator && navigator.mimeTypes && navigator.mimeTypes[mimeType] && navigator.mimeTypes[mimeType].enabledPlugin;
+    }
+    
+    var URL_ESCAPE_CHARS = '<>\'\"?#@%&`';
+    
+    function encodeUrl(url)
+    {
+        var encoded = '';
+        var x = 0;
+        for(var i = 0; i < url.length; i++)
+        {
+            var charCode = url.charCodeAt(i);
+            var c = url.charAt(i);
+            if(charCode < 0x80)
+            {
+                if ( (charCode >= 33) && (charCode <= 122) && (URL_ESCAPE_CHARS.indexOf(c) < 0) )
+                {
+                    encoded += url.charAt(i);
+                }
+                else
+                {
+                    encoded += '%';
+                    var s = charCode.toString(16).toUpperCase();
+                    if(s.length < 2)
+                    {
+                        encoded += '0';
+                    }
+                    encoded += s;
+                }
+            }
+            else if(charCode < 0x0800)
+            {
+                x = (charCode >> 6) | 0xC0;
+                encoded += '%' + x.toString(16).toUpperCase();
+                x = (charCode & 0x003F) | 0x80;
+                encoded += '%'+x.toString(16).toUpperCase();
+            }
+            else if ((charCode & 0xFC00) !== 0xD800)
+            {
+                x = (charCode >> 12) | 0xE0;
+                encoded += '%'+x.toString(16).toUpperCase();
+                x = ((charCode >> 6) & 0x003F) | 0x80;
+                encoded += '%'+x.toString(16).toUpperCase();
+                x = (charCode & 0x003F) | 0x80;
+                encoded += '%'+x.toString(16).toUpperCase();
+            }
+            else
+            {
+                if(i < url.length-1)
+                {
+                    charCode = (charCode & 0x03FF) << 10;
+                    i++;
+                    charCode = charCode | (url.charCodeAt(i) & 0x03FF);
+                    charCode += 0x10000;
+                    x = (charCode >> 18) | 0xF0;
+                    encoded += '%'+x.toString(16).toUpperCase();
+                    x = ((charCode >> 12) & 0x003F) | 0x80;
+                    encoded += '%'+x.toString(16).toUpperCase();
+                    x = ((charCode >> 6) & 0x003F) | 0x80;
+                    encoded += '%'+x.toString(16).toUpperCase();
+                    x = (charCode & 0x003F) | 0x80;
+                    encoded += '%'+x.toString(16).toUpperCase();
+                }
+            }
+        }
+        return encoded;
+    }
+    
+    var DOLLAR_ESCAPE_CHARS = '$<>\'\"?#@%&`';
+
+    function dollarEncode (url) 
+    {
+        var encoded = '';
+        var x = 0;
+        for (var i = 0; i < url.length; i++) 
+        {
+            var charCode = url.charCodeAt(i);
+            var c = url.charAt(i);
+            if (charCode < 0x80) 
+            {
+                if ( (charCode >= 33) && (charCode <= 122) && (DOLLAR_ESCAPE_CHARS.indexOf(c) < 0) ) 
+                {
+                    encoded += url.charAt(i);
+                }
+                else 
+                {
+                    encoded += '$';
+                    var s = charCode.toString(16).toUpperCase();
+                    if (s.length < 2) 
+                    {
+                        encoded += '0';
+                    }
+                    encoded += s;
+                }
+            }
+            else if (charCode < 0x0800) 
+            {
+                x = (charCode >> 6) | 0xC0;
+                encoded += '$' + x.toString(16).toUpperCase();
+                x = (charCode & 0x003F) | 0x80;
+                encoded += '$' + x.toString(16).toUpperCase();
+            }
+            else if ((charCode & 0xFC00) !== 0xD800) 
+            {
+                x = (charCode >> 12) | 0xE0;
+                encoded += '$' + x.toString(16).toUpperCase();
+                x = ((charCode >> 6) & 0x003F) | 0x80;
+                encoded += '$' + x.toString(16).toUpperCase();
+                x = (charCode & 0x003F) | 0x80;
+                encoded += '$' + x.toString(16).toUpperCase();
+            }
+            else 
+            {
+                if (i < url.length - 1) 
+                {
+                    charCode = (charCode & 0x03FF) << 10;
+                    i++;
+                    charCode = charCode | (url.charCodeAt(i) & 0x03FF);
+                    charCode += 0x10000;
+                    x = (charCode >> 18) | 0xF0;
+                    encoded += '$' + x.toString(16).toUpperCase();
+                    x = ((charCode >> 12) & 0x003F) | 0x80;
+                    encoded += '$' + x.toString(16).toUpperCase();
+                    x = ((charCode >> 6) & 0x003F) | 0x80;
+                    encoded += '$' + x.toString(16).toUpperCase();
+                    x = (charCode & 0x003F) | 0x80;
+                    encoded += '$' + x.toString(16).toUpperCase();
+                }
+            }
+        }
+        return encoded;
+    }
+
+    function BlindLoggingClass()
+    {
+        this.log = function() {};
+        this.error = function() {};
+    }
+    
+    var blindLogging = new BlindLoggingClass();
+    
+    function log()
+    {
+        if(m_consoleLogging)
+        {
+            if(window.console)
+            {
+                return window.console;
+            }
+        }
+        return blindLogging;
+    }
+
+}

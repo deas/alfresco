@@ -323,6 +323,64 @@
          </list>
       </property>
    </bean>
+
+   <!-- Edit Online AOS -->
+   <bean id="evaluator.doclib.action.isMimetypeEditableAos" parent="evaluator.doclib.action.isMimetype">
+      <property name="mimetypes">
+         <list>
+            <value>application/msword</value>
+            <value>application/vnd.ms-word</value>
+            <value>application/vnd.openxmlformats-officedocument.wordprocessingml.document</value>
+            <value>application/vnd.ms-word.document.macroenabled.12</value>
+            <value>application/vnd.openxmlformats-officedocument.wordprocessingml.template</value>
+            <value>application/vnd.ms-word.template.macroenabled.12</value>
+            <value>application/msexcel</value>
+            <value>application/vnd.ms-excel</value>
+            <value>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</value>
+            <value>application/vnd.openxmlformats-officedocument.spreadsheetml.template</value>
+            <value>application/vnd.ms-excel.sheet.macroenabled.12</value>
+            <value>application/vnd.ms-excel.template.macroenabled.12</value>
+            <value>application/vnd.ms-excel.addin.macroenabled.12</value>
+            <value>application/vnd.ms-excel.sheet.binary.macroenabled.12</value>
+            <value>application/mspowerpoint</value>
+            <value>application/vnd.ms-powerpoint</value>
+            <value>application/vnd.openxmlformats-officedocument.presentationml.presentation</value>
+            <value>application/vnd.ms-powerpoint.presentation.macroenabled.12</value>
+            <value>application/vnd.openxmlformats-officedocument.presentationml.slideshow</value>
+            <value>application/vnd.ms-powerpoint.slideshow.macroenabled.12</value>
+            <value>application/vnd.openxmlformats-officedocument.presentationml.template</value>
+            <value>application/vnd.ms-powerpoint.template.macroenabled.12</value>
+            <value>application/vnd.ms-powerpoint.addin.macroenabled.12</value>
+            <value>application/vnd.openxmlformats-officedocument.presentationml.slide</value>
+            <value>application/vnd.ms-powerpoint.slide.macroEnabled.12</value>
+            <value>application/vnd.visio</value>
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.isLockedForAos" parent="evaluator.doclib.action.chainedMatchOne">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.indicator.locked" />
+            <ref bean="evaluator.doclib.action.isNotWorkingCopyAndLocked" />
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.isNotWorkingCopyAndLocked" parent="evaluator.doclib.action.chainedMatchAll">
+      <property name="evaluators">
+         <list>
+            <ref bean="evaluator.doclib.action.isLocked" />
+            <ref bean="evaluator.doclib.action.isNotWorkingCopy" />
+         </list>
+      </property>
+   </bean>
+   <bean id="evaluator.doclib.action.isAosOnlineEditAvailable" parent="evaluator.doclib.action.metadataValue">
+      <property name="accessor" value="custom.aos" />
+      <property name="comparator">
+         <bean class="org.alfresco.web.evaluator.NullValueComparator">
+            <property name="value" value="false" />
+         </bean>
+      </property>
+   </bean>
    
    <!-- Edit Offline -->
    <bean id="evaluator.doclib.action.offlineEdit" parent="evaluator.doclib.action.notEditBrowser" />

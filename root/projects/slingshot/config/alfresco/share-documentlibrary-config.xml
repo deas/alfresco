@@ -996,6 +996,18 @@
             <evaluator>evaluator.doclib.action.onlineEdit</evaluator>
             <evaluator>evaluator.doclib.action.editableByCurrentUser</evaluator>
             <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.isAosOnlineEditAvailable</evaluator>
+         </action>
+
+         <!-- Edit online AOS -->
+         <action id="document-edit-online-aos" type="javascript" label="actions.document.edit-online" icon="document-edit-online">
+            <param name="function">onActionEditOnlineAos</param>
+            <permissions>
+               <permission allow="true">Write</permission>
+            </permissions>
+            <evaluator>evaluator.doclib.action.isAosOnlineEditAvailable</evaluator>
+            <evaluator negate="true">evaluator.doclib.action.isLockedForAos</evaluator>
+            <evaluator>evaluator.doclib.action.isMimetypeEditableAos</evaluator>
          </action>
 
          <!-- Edit offline -->
@@ -1212,6 +1224,7 @@
             <action index="180" id="document-reject" />
             <action index="190" id="document-inline-edit" />
             <action index="200" id="document-edit-online" />
+            <action index="201" id="document-edit-online-aos" />
             <action index="210" id="document-edit-offline" />
             <action index="250" id="document-copy-to" />
             <action index="260" id="document-move-to" />
@@ -1240,6 +1253,7 @@
             <action index="170" id="document-reject" />
             <action index="180" id="document-inline-edit" />
             <action index="190" id="document-edit-online" />
+            <action index="191" id="document-edit-online-aos" />
             <action index="200" id="document-edit-offline" />
             <action index="240" id="document-copy-to" />
             <action index="250" id="document-move-to" />
