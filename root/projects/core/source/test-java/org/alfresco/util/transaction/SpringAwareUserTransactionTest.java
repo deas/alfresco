@@ -326,6 +326,7 @@ public class SpringAwareUserTransactionTest extends TestCase
      * 
      * @author Derek Hulley
      */
+    @SuppressWarnings("serial")
     private static class DummyTransactionManager extends AbstractPlatformTransactionManager
     {
         private int status = Status.STATUS_NO_TRANSACTION;
