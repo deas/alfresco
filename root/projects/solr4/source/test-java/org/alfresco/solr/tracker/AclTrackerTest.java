@@ -208,7 +208,7 @@ public class AclTrackerTest
         // Prove running state, before attempt to track()
         assertTrue(trackerState.isRunning());
         
-        when(tracker.getTrackerState()).thenReturn(trackerState);
+        FieldUtils.writeField(tracker, "state", trackerState, true);
         tracker.track();
 
         // Still running - these values are unaffected.

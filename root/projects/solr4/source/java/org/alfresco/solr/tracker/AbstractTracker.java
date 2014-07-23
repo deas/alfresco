@@ -21,6 +21,7 @@ package org.alfresco.solr.tracker;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.Properties;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.solr.IndexTrackingShutdownException;
@@ -53,6 +54,7 @@ public abstract class AbstractTracker implements Tracker
     protected boolean runPostModelLoadInit = true;
     private int maxLiveSearchers;
     private volatile boolean shutdown = false;
+    private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private volatile TrackerState state;
     
     /*
@@ -109,12 +111,26 @@ public abstract class AbstractTracker implements Tracker
     public void track()
     {
         // This ensures that we will get a new initial state each run
-        this.invalidateTrackerState();
-        TrackerState state = this.getTrackerState();
+       
 
-        synchronized (this) 
+        readWriteLock.readLock().lock();
+        try
         {
-            if (state.isRunning())
+            if((state != null) && state.isRunning())
+            {
+                log.info("... update for " + coreName + " is already running");
+                return;
+            }
+        }
+        finally
+        {
+            readWriteLock.readLock().unlock();
+        }
+        
+        readWriteLock.writeLock().lock();
+        try
+        {
+            if((state != null) && state.isRunning())
             {
                 log.info("... update for " + coreName + " is already running");
                 return;
@@ -122,9 +138,16 @@ public abstract class AbstractTracker implements Tracker
             else
             {
                 log.info("... updating " + coreName);
+                this.invalidateTrackerState();
+                getTrackerState();
                 state.setRunning(true);
             }
         }
+        finally
+        {
+            readWriteLock.writeLock().unlock();
+        }
+     
         try
         {
             doTrack();
@@ -171,25 +194,69 @@ public abstract class AbstractTracker implements Tracker
         }
         finally
         {
-            state.setRunning(false);
-            state.setCheck(false);
+            readWriteLock.writeLock().lock();
+            try
+            {
+                state.setRunning(false);
+                state.setCheck(false);
+            }
+            finally
+            {
+                readWriteLock.writeLock().unlock();
+            }
         }
     }
     
     private void invalidateTrackerState()
     {
-        this.state = null;
+        readWriteLock.writeLock().lock();
+        try
+        {
+            state = null;
+        }
+        finally
+        {
+            readWriteLock.writeLock().unlock();
+        }
     }
     
     @Override
     public TrackerState getTrackerState()
     {
-        if (state == null)
+        readWriteLock.readLock().lock();
+        try
         {
-            state = this.infoSrv.getTrackerInitialState();
+            if(state != null) 
+            {
+               return state;
+            }
         }
-        return state;
+        finally
+        {
+            readWriteLock.readLock().unlock();
+        }
+        
+        
+        readWriteLock.writeLock().lock();
+        try
+        {
+            if(state != null) 
+            {
+               return state;
+            }
+            else
+            {
+                state = this.infoSrv.getTrackerInitialState();
+                return state;
+            }
+        }
+        finally
+        {
+            readWriteLock.writeLock().unlock();
+        }
     }
+    
+    
 
     /**
      * Allows time for the scheduled asynchronous tasks to complete
