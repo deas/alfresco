@@ -21,7 +21,7 @@
     <properties>
         <maven.tomcat.path>/solr4</maven.tomcat.path>
         <m2eclipse.wtp.contextRoot>${maven.tomcat.path}</m2eclipse.wtp.contextRoot>
-        <maven.tomcat.port>${tomcat.default.solr.port}</maven.tomcat.port>
+        <maven.tomcat.port>${tomcat.default.solr4.port}</maven.tomcat.port>
         <solr.instance.source.folder>source/solr/instance</solr.instance.source.folder>
         <!-- This gets filtered in the solr-tomcat-context.xml and in solrcore.properties when running embedded -->
         <solr.instance.target.folder>${project.build.directory}/solr-instance</solr.instance.target.folder>

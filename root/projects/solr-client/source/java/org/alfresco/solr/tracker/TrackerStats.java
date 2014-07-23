@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -24,10 +24,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
 
+import org.alfresco.solr.InformationServer;
+import org.alfresco.solr.adapters.ISimpleOrderedMap;
 import org.alfresco.util.Pair;
-import org.apache.solr.common.util.SimpleOrderedMap;
 
 /**
  * @author Andy
@@ -47,6 +47,13 @@ public class TrackerStats
     ConcurrentHashMap<String, IncrementalStats> docTransformationTimes = new ConcurrentHashMap<String, IncrementalStats>();
 
     ConcurrentHashMap<String, IncrementalStats> nodeTimes = new ConcurrentHashMap<String, IncrementalStats>();
+
+    private InformationServer infoSrv;
+    
+    public TrackerStats(InformationServer server)
+    {
+        infoSrv = server;
+    }
     
     /**
      * @return the modelTimes
@@ -70,7 +77,7 @@ public class TrackerStats
             IncrementalStats stats = next.copy();
             if (answer == null)
             {
-                answer = new SimpleStats(stats.scale);
+                answer = new SimpleStats(stats.scale, this.infoSrv);
                 answer .start  = stats.start;
                 answer.moments[0] = stats.moments[0];
                 answer.moments[1] = stats.moments[1];
@@ -81,7 +88,7 @@ public class TrackerStats
             }
             else
             {
-                SimpleStats newAnswer = new SimpleStats(answer.scale);
+                SimpleStats newAnswer = new SimpleStats(answer.scale, this.infoSrv);
 
                 newAnswer.moments[0] = answer.moments[0] + stats.moments[0];
 
@@ -109,7 +116,7 @@ public class TrackerStats
 
         if (answer == null)
         {
-            answer = new SimpleStats(1);
+            answer = new SimpleStats(1, this.infoSrv);
         }
 
         return answer;
@@ -182,12 +189,13 @@ public class TrackerStats
     public static class SimpleStats
     {
         HashMap<String, IncrementalStats> copies = new HashMap<String, IncrementalStats>();
-
+        private InformationServer server;
         int scale;
 
-        SimpleStats(int scale)
+        SimpleStats(int scale, InformationServer server)
         {
             this.scale = scale;
+            this.server = server;
         }
 
         double[] moments = new double[3];
@@ -235,9 +243,9 @@ public class TrackerStats
             return Math.sqrt(getVarience());
         }
 
-        public synchronized SimpleOrderedMap<Object> getNamedList(boolean incdludeDetail, boolean includeHist, boolean includeValues)
+        public synchronized ISimpleOrderedMap<Object> getNamedList(boolean incdludeDetail, boolean includeHist, boolean includeValues)
         {
-            SimpleOrderedMap<Object> map = new SimpleOrderedMap<Object>();
+            ISimpleOrderedMap<Object> map = this.server.getSimpleOrderedMapInstance();
             map.add("Start", start);
             map.add("N", getN());
             map.add("Min", getMin());
@@ -363,21 +371,24 @@ public class TrackerStats
         List<Double> values;
 
         List<Bucket> hist;
+        
+        InformationServer server;
 
-        IncrementalStats(int scale, int buckets)
+        IncrementalStats(int scale, int buckets, InformationServer infoSrv)
         {
             this.scale = scale;
             this.buckets = buckets;
             values = new ArrayList<Double>(buckets);
             hist = new ArrayList<Bucket>(buckets + 1);
+            this.server = infoSrv;
         }
 
         /**
          * @return
          */
-        public SimpleOrderedMap<Object> getNamedList(boolean includeHist, boolean includeValues)
+        public ISimpleOrderedMap<Object> getNamedList(boolean includeHist, boolean includeValues)
         {
-            SimpleOrderedMap<Object> map = new SimpleOrderedMap<Object>();
+            ISimpleOrderedMap<Object> map = this.server.getSimpleOrderedMapInstance();
             map.add("Start", start);
             map.add("N", getN());
             map.add("Min", getMin());
@@ -391,7 +402,7 @@ public class TrackerStats
             if (includeHist)
             {
                 int i = 0;
-                SimpleOrderedMap<Object> buckets = new SimpleOrderedMap<Object>();
+                ISimpleOrderedMap<Object> buckets = this.server.getSimpleOrderedMapInstance();
                 for (Bucket b : hist)
                 {
                     double mark = (b.leftBoundary + b.rightBoundary) / 2.0D;
@@ -415,7 +426,7 @@ public class TrackerStats
             if (includeValues)
             {
                 int i = 0;
-                SimpleOrderedMap<Object> valuesMap = new SimpleOrderedMap<Object>();
+                ISimpleOrderedMap<Object> valuesMap = this.server.getSimpleOrderedMapInstance();
                 for (Double value : values)
                 {
                     valuesMap.add("" + i++, value);
@@ -700,7 +711,7 @@ public class TrackerStats
 
         synchronized IncrementalStats copy()
         {
-            IncrementalStats copy = new IncrementalStats(this.scale, this.buckets);
+            IncrementalStats copy = new IncrementalStats(this.scale, this.buckets, this.server);
             copy.start = this.start;
             copy.max = this.max;
             copy.min = this.min;
@@ -742,7 +753,7 @@ public class TrackerStats
         IncrementalStats stats = modelTimes.get(Thread.currentThread().getName());
         if (stats == null)
         {
-            stats = new IncrementalStats(TIME_SCALE, 50);
+            stats = new IncrementalStats(TIME_SCALE, 50, this.infoSrv);
             modelTimes.put(Thread.currentThread().getName(), stats);
         }
         stats.add(time);
@@ -756,7 +767,7 @@ public class TrackerStats
         IncrementalStats stats = aclTimes.get(Thread.currentThread().getName());
         if (stats == null)
         {
-            stats = new IncrementalStats(TIME_SCALE, 50);
+            stats = new IncrementalStats(TIME_SCALE, 50, this.infoSrv);
             aclTimes.put(Thread.currentThread().getName(), stats);
         }
         stats.add(time);
@@ -770,7 +781,7 @@ public class TrackerStats
         IncrementalStats stats = nodeTimes.get(Thread.currentThread().getName());
         if (stats == null)
         {
-            stats = new IncrementalStats(TIME_SCALE, 50);
+            stats = new IncrementalStats(TIME_SCALE, 50, this.infoSrv);
             nodeTimes.put(Thread.currentThread().getName(), stats);
         }
         stats.add(time);
@@ -784,7 +795,7 @@ public class TrackerStats
         IncrementalStats stats = txDocs.get(Thread.currentThread().getName());
         if (stats == null)
         {
-            stats = new IncrementalStats(1, 50);
+            stats = new IncrementalStats(1, 50, this.infoSrv);
             txDocs.put(Thread.currentThread().getName(), stats);
         }
         stats.add(size);
@@ -798,7 +809,7 @@ public class TrackerStats
         IncrementalStats stats = changeSetAcls.get(Thread.currentThread().getName());
         if (stats == null)
         {
-            stats = new IncrementalStats(1, 50);
+            stats = new IncrementalStats(1, 50, this.infoSrv);
             changeSetAcls.put(Thread.currentThread().getName(), stats);
         }
         stats.add(size);
@@ -812,7 +823,7 @@ public class TrackerStats
         IncrementalStats stats = docTransformationTimes.get(Thread.currentThread().getName());
         if (stats == null)
         {
-            stats = new IncrementalStats(TIME_SCALE, 50);
+            stats = new IncrementalStats(TIME_SCALE, 50, this.infoSrv);
             docTransformationTimes.put(Thread.currentThread().getName(), stats);
         }
         stats.add(time);

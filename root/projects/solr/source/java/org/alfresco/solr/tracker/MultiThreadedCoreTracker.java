@@ -20,11 +20,10 @@ package org.alfresco.solr.tracker;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -33,11 +32,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
-import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
-import org.alfresco.solr.AlfrescoCoreAdminHandler;
+import org.alfresco.solr.BoundedDeque;
+import org.alfresco.solr.InformationServer;
+import org.alfresco.solr.SolrKeyResourceLoader;
+import org.alfresco.solr.TrackerState;
 import org.alfresco.solr.client.Acl;
 import org.alfresco.solr.client.AclChangeSet;
 import org.alfresco.solr.client.AclChangeSets;
@@ -48,14 +48,8 @@ import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Transactions;
 import org.alfresco.util.DynamicallySizedThreadPoolExecutor;
 import org.alfresco.util.TraceableThreadFactory;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermEnum;
-import org.apache.solr.core.SolrCore;
-import org.apache.solr.search.SolrIndexReader;
-import org.apache.solr.search.SolrIndexSearcher;
-import org.apache.solr.update.CommitUpdateCommand;
-import org.apache.solr.util.RefCounted;
 import org.json.JSONException;
+import org.quartz.Scheduler;
 
 /**
  * @author Andy
@@ -113,15 +107,11 @@ public class MultiThreadedCoreTracker extends CoreTracker
 
     private ReentrantReadWriteLock reindexThreadLock = new ReentrantReadWriteLock(true);
 
-    /**
-     * @param adminHandler
-     * @param core
-     */
-    MultiThreadedCoreTracker(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
+    public MultiThreadedCoreTracker(Scheduler scheduler, String id, Properties p, SolrKeyResourceLoader keyResourceLoader, 
+                String coreName, InformationServer informationServer)
     {
-        super(adminHandler, core);
+        super(scheduler, id, p, keyResourceLoader, coreName, informationServer);
 
-        Properties p = core.getResourceLoader().getCoreProperties();
         enableMultiThreadedTracking = Boolean.parseBoolean(p.getProperty("alfresco.enableMultiThreadedTracking", "true"));
         corePoolSize = Integer.parseInt(p.getProperty("alfresco.corePoolSize", "3"));
         maximumPoolSize = Integer.parseInt(p.getProperty("alfresco.maximumPoolSize", "-1"));
@@ -137,7 +127,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
         if (enableMultiThreadedTracking)
         {
 
-            poolName = "SolrTrackingPool-" + core.getName();
+            poolName = "SolrTrackingPool-" + coreName;
 
             // if the maximum pool size has not been set, change it to match the core pool size
             if (maximumPoolSize == DEFAULT_MAXIMUM_POOL_SIZE)
@@ -183,27 +173,26 @@ public class MultiThreadedCoreTracker extends CoreTracker
 
         boolean indexed = false;
         boolean upToDate = false;
-        ArrayList<Transaction> transactionsOrderedById = new ArrayList<Transaction>(10000);
         Transactions transactions;
         BoundedDeque<Transaction> txnsFound = new BoundedDeque<Transaction>(100);
         HashSet<Transaction> transactionsIndexed = new HashSet<Transaction>();
         do
         {
             int docCount = 0;
-
-            Long fromCommitTime = getTxFromCommitTime(txnsFound, state.lastGoodTxCommitTimeInIndex);
-            transactions = getSomeTransactions(txnsFound, fromCommitTime, 60 * 60 * 1000L, 2000, state.timeToStopIndexing);
+            TrackerState state = super.infoSrv.getTrackerState();
+            Long fromCommitTime = getTxFromCommitTime(txnsFound, state.getLastGoodTxCommitTimeInIndex());
+            transactions = getSomeTransactions(txnsFound, fromCommitTime, 60 * 60 * 1000L, 2000, state.getTimeToStopIndexing());
 
             Long maxTxnCommitTime = transactions.getMaxTxnCommitTime();
             if (maxTxnCommitTime != null)
             {
-                state.lastTxCommitTimeOnServer = transactions.getMaxTxnCommitTime();
+                state.setLastTxCommitTimeOnServer(transactions.getMaxTxnCommitTime());
             }
 
             Long maxTxnId = transactions.getMaxTxnId();
             if (maxTxnId != null)
             {
-                state.lastTxIdOnServer = transactions.getMaxTxnId();
+                state.setLastTxIdOnServer(transactions.getMaxTxnId());
             }
 
             log.info("Scanning transactions ...");
@@ -214,79 +203,32 @@ public class MultiThreadedCoreTracker extends CoreTracker
             }
             else
             {
-                log.info(".... non found after lastTxCommitTime " + ((txnsFound.size() > 0) ? txnsFound.getLast().getCommitTimeMs() : state.lastIndexedTxCommitTime));
+                log.info(".... non found after lastTxCommitTime " + ((txnsFound.size() > 0) ? txnsFound.getLast().getCommitTimeMs() : state.getLastIndexedTxCommitTime()));
             }
 
             ArrayList<Transaction> txBatch = new ArrayList<Transaction>();
             for (Transaction info : transactions.getTransactions())
             {
-                boolean index = false;
-
-                String target = NumericEncoder.encode(info.getId());
-                
-                RefCounted<SolrIndexSearcher> refCounted = null;
-                Term term = null;
-                try
+                boolean isInIndex = super.infoSrv.isInIndex(QueryConstants.FIELD_TXID, info.getId());
+                if (isInIndex) 
                 {
-                    refCounted = core.getSearcher(false, true, null);
-                    
-                    TermEnum termEnum = refCounted.get().getReader().terms(new Term(QueryConstants.FIELD_TXID, target));
-                    term = termEnum.term();
-                    termEnum.close();
+                    txnsFound.add(info);
                 }
-                finally
-                {
-                    if(refCounted != null)
-                    {
-                        refCounted.decref();
-                    }
-                    refCounted = null;
-                }
-                
-               
-                if (term == null)
-                {
-                    index = true;
-                }
-                else
-                {
-                    if (target.equals(term.text()))
-                    {
-                        txnsFound.add(info);
-                    }
-                    else
-                    {
-                        index = true;
-                    }
-                }
-
-                if (index)
+                else 
                 {
                     // Make sure we do not go ahead of where we started - we will check the holes here
                     // correctly next time
-                    if (info.getCommitTimeMs() > state.timeToStopIndexing)
+                    if (info.getCommitTimeMs() > state.getTimeToStopIndexing())
                     {
                         upToDate = true;
                         break;
                     }
                     txBatch.add(info);
-                    if (getDocCout(txBatch) > transactionDocsBatchSize)
+                    if (getDocCount(txBatch) > transactionDocsBatchSize)
                     {
                         indexed = true;
-                        refCounted = null;
-                        try
-                        {
-                            refCounted = core.getSearcher(false, true, null);
-                            docCount += indexBatchOfTransactions(txBatch, refCounted.get());
-                        }
-                        finally
-                        {
-                            if(refCounted != null)
-                            {
-                                refCounted.decref();
-                            }
-                            refCounted = null;
-                        }
+                        docCount += indexBatchOfTransactions(txBatch);
+                        
                         for (Transaction scheduled : txBatch)
                         {
                             txnsFound.add(scheduled);
@@ -299,7 +241,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
                 // could batch commit here
                 if (docCount > batchCount)
                 {
-                    if(getRegisteredSearcherCount() < getMaxLiveSearchers())
+                    if (super.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
                         waitAndIndexTransactions(transactionsIndexed);
                         docCount = 0;
@@ -310,23 +252,11 @@ public class MultiThreadedCoreTracker extends CoreTracker
             if (!txBatch.isEmpty())
             {
                 indexed = true;
-                if (getDocCout(txBatch) > 0)
+                if (getDocCount(txBatch) > 0)
                 {
-                    RefCounted<SolrIndexSearcher> refCounted = null;
-                    try
-                    {
-                        refCounted = core.getSearcher(false, true, null);
-                        docCount += indexBatchOfTransactions(txBatch, refCounted.get());
-                    }
-                    finally
-                    {
-                        if(refCounted != null)
-                        {
-                            refCounted.decref();
-                        }
-                        refCounted = null;
-                    }
+                    docCount += indexBatchOfTransactions(txBatch);
                 }
+                
                 for (Transaction scheduled : txBatch)
                 {
                     txnsFound.add(scheduled);
@@ -343,11 +273,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
         }
     }
 
-    /**
-     * @param txBatch
-     * @return
-     */
-    private int getDocCout(ArrayList<Transaction> txBatch)
+    private int getDocCount(List<Transaction> txBatch)
     {
         int count = 0;
         for (Transaction tx : txBatch)
@@ -358,7 +284,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
         return count;
     }
 
-    private int indexBatchOfTransactions(ArrayList<Transaction> txBatch, SolrIndexSearcher solrIndexSearcher) throws AuthenticationException, IOException, JSONException
+    private int indexBatchOfTransactions(List<Transaction> txBatch) throws AuthenticationException, IOException, JSONException
     {
         int docCount = 0;
 
@@ -382,7 +308,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
             {
                 log.debug(node.toString());
             }
-            NodeIndexWorkerRunnable niwr = new NodeIndexWorkerRunnable(node, solrIndexSearcher);
+            NodeIndexWorkerRunnable niwr = new NodeIndexWorkerRunnable(node, super.infoSrv);
             try
             {
                 reindexThreadLock.writeLock().lock();
@@ -402,21 +328,22 @@ public class MultiThreadedCoreTracker extends CoreTracker
      * @param transactionsIndexed
      * @throws IOException
      */
-    private void waitAndIndexTransactions(HashSet<Transaction> transactionsIndexed) throws IOException
+    private void waitAndIndexTransactions(Set<Transaction> transactionsIndexed) throws IOException
     {
         waitForAsynchronousReindexing();
+        TrackerState trackerState = super.infoSrv.getTrackerState();
         for (Transaction tx : transactionsIndexed)
         {
-            indexTransaction(tx, true);
-            if (tx.getCommitTimeMs() > state.lastIndexedTxCommitTime)
+            super.infoSrv.indexTransaction(tx, true);
+            if (tx.getCommitTimeMs() > trackerState.getLastIndexedTxCommitTime())
             {
-                state.lastIndexedTxCommitTime = tx.getCommitTimeMs();
-                state.lastIndexedTxId = tx.getId();
+                trackerState.setLastIndexedTxCommitTime(tx.getCommitTimeMs());
+                trackerState.setLastIndexedTxId(tx.getId());
             }
             trackerStats.addTxDocs((int) (tx.getUpdates() + tx.getDeletes()));
         }
         transactionsIndexed.clear();
-        core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+        super.infoSrv.commit();
     }
 
     /**
@@ -439,23 +366,25 @@ public class MultiThreadedCoreTracker extends CoreTracker
         AclChangeSets aclChangeSets;
         BoundedDeque<AclChangeSet> changeSetsFound = new BoundedDeque<AclChangeSet>(100);
         HashSet<AclChangeSet> changeSetsIndexed = new HashSet<AclChangeSet>();
+        TrackerState state = super.infoSrv.getTrackerState();
+        
         do
         {
             int aclCount = 0;
 
-            Long fromCommitTime = getChangeSetFromCommitTime(changeSetsFound, state.lastGoodChangeSetCommitTimeInIndex);
-            aclChangeSets = getSomeAclChangeSets(changeSetsFound, fromCommitTime, 60 * 60 * 1000L, 2000, state.timeToStopIndexing);
+            Long fromCommitTime = getChangeSetFromCommitTime(changeSetsFound, state.getLastGoodChangeSetCommitTimeInIndex());
+            aclChangeSets = getSomeAclChangeSets(changeSetsFound, fromCommitTime, 60 * 60 * 1000L, 2000, state.getTimeToStopIndexing());
 
             Long maxChangeSetCommitTime = aclChangeSets.getMaxChangeSetCommitTime();
             if(maxChangeSetCommitTime != null)
             {
-                state.lastChangeSetCommitTimeOnServer = aclChangeSets.getMaxChangeSetCommitTime();
+                state.setLastChangeSetCommitTimeOnServer(aclChangeSets.getMaxChangeSetCommitTime());
             }
 
             Long maxChangeSetId = aclChangeSets.getMaxChangeSetId();
             if(maxChangeSetId != null)
             {
-                state.lastChangeSetIdOnServer = aclChangeSets.getMaxChangeSetId();
+                state.setLastChangeSetIdOnServer(aclChangeSets.getMaxChangeSetId());
             }
             
             log.info("Scanning Acl change sets ...");
@@ -472,50 +401,16 @@ public class MultiThreadedCoreTracker extends CoreTracker
             ArrayList<AclChangeSet> changeSetBatch = new ArrayList<AclChangeSet>();
             for (AclChangeSet changeSet : aclChangeSets.getAclChangeSets())
             {
-                boolean index = false;
-
-                String target = NumericEncoder.encode(changeSet.getId());
-                
-                RefCounted<SolrIndexSearcher> refCounted = null;
-                Term term = null;
-                try
+                boolean isInIndex = this.infoSrv.isInIndex(QueryConstants.FIELD_ACLTXID, changeSet.getId());
+                if (isInIndex) 
                 {
-                    refCounted = core.getSearcher(false, true, null);
-                    
-                    TermEnum termEnum = refCounted.get().getReader().terms(new Term(QueryConstants.FIELD_ACLTXID, target));
-                    term = termEnum.term();
-                    termEnum.close();
+                    changeSetsFound.add(changeSet);
                 }
-                finally
-                {
-                    if(refCounted != null)
-                    {
-                        refCounted.decref();
-                    }
-                    refCounted = null;
-                }           
-                
-                if (term == null)
-                {
-                    index = true;
-                }
-                else
-                {
-                    if (target.equals(term.text()))
-                    {
-                        changeSetsFound.add(changeSet);
-                    }
-                    else
-                    {
-                        index = true;
-                    }
-                }
-
-                if (index)
+                else 
                 {
                     // Make sure we do not go ahead of where we started - we will check the holes here
                     // correctly next time
-                    if (changeSet.getCommitTimeMs() > state.timeToStopIndexing)
+                    if (changeSet.getCommitTimeMs() > state.getTimeToStopIndexing())
                     {
                         upToDate = true;
                         break;
@@ -524,23 +419,8 @@ public class MultiThreadedCoreTracker extends CoreTracker
                     if (getAclCount(changeSetBatch) > changeSetAclsBatchSize)
                     {
                         indexed = true;
-                        
-                        try
-                        {
-                            refCounted = core.getSearcher(false, true, null);
-                            
-                            aclCount += indexBatchOfChangeSets(changeSetBatch, refCounted.get());
-                        }
-                        finally
-                        {
-                            if(refCounted != null)
-                            {
-                                refCounted.decref();
-                            }
-                            refCounted = null;
-                        }    
-                        
-
+                        aclCount += indexBatchOfChangeSets(changeSetBatch);
+                       
                         for (AclChangeSet scheduled : changeSetBatch)
                         {
                             changeSetsFound.add(scheduled);
@@ -552,22 +432,22 @@ public class MultiThreadedCoreTracker extends CoreTracker
 
                 if (aclCount > batchCount)
                 {
-                    if(getRegisteredSearcherCount() < getMaxLiveSearchers())
+                    if (super.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
                         waitForAsynchronousReindexing();
                         for (AclChangeSet set : changeSetsIndexed)
                         {
-                            indexAclTransaction(set, true);
-                            if (set.getCommitTimeMs() > state.lastIndexedChangeSetCommitTime)
+                            super.infoSrv.indexAclTransaction(set, true);
+                            if (set.getCommitTimeMs() > state.getLastIndexedChangeSetCommitTime())
                             {
-                                state.lastIndexedChangeSetCommitTime = set.getCommitTimeMs();
-                                state.lastIndexedChangeSetId = set.getId();
+                                state.setLastIndexedChangeSetCommitTime(set.getCommitTimeMs());
+                                state.setLastIndexedChangeSetId(set.getId());
                             }
                             trackerStats.addChangeSetAcls((int) (set.getAclCount()));
 
                         }
                         changeSetsIndexed.clear();
-                        core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+                        super.infoSrv.commit();
                         aclCount = 0;
                     }
                 }
@@ -576,23 +456,9 @@ public class MultiThreadedCoreTracker extends CoreTracker
             if (!changeSetBatch.isEmpty())
             {
                 indexed = true;
-                if(getAclCount(changeSetBatch) > 0)
+                if (getAclCount(changeSetBatch) > 0)
                 {
-                    RefCounted<SolrIndexSearcher> refCounted = null;
-                    try
-                    {
-                        refCounted = core.getSearcher(false, true, null);
-                        
-                        aclCount += indexBatchOfChangeSets(changeSetBatch, refCounted.get());
-                    }
-                    finally
-                    {
-                        if(refCounted != null)
-                        {
-                            refCounted.decref();
-                        }
-                        refCounted = null;
-                    }   
+                    aclCount += indexBatchOfChangeSets(changeSetBatch);
                 }
                 for (AclChangeSet scheduled : changeSetBatch)
                 {
@@ -609,24 +475,20 @@ public class MultiThreadedCoreTracker extends CoreTracker
             waitForAsynchronousReindexing();
             for (AclChangeSet set : changeSetsIndexed)
             {
-                indexAclTransaction(set, true);
-                if (set.getCommitTimeMs() > state.lastIndexedChangeSetCommitTime)
+                super.infoSrv.indexAclTransaction(set, true);
+                if (set.getCommitTimeMs() > state.getLastIndexedChangeSetCommitTime())
                 {
-                    state.lastIndexedChangeSetCommitTime = set.getCommitTimeMs();
-                    state.lastIndexedChangeSetId = set.getId();
+                    state.setLastIndexedChangeSetCommitTime(set.getCommitTimeMs());
+                    state.setLastIndexedChangeSetId(set.getId());
                 }
                 trackerStats.addChangeSetAcls((int) (set.getAclCount()));
             }
             changeSetsIndexed.clear();
-            core.getUpdateHandler().commit(new CommitUpdateCommand(false));
+            super.infoSrv.commit();
         }
     }
 
-    /**
-     * @param changeSetBatch
-     * @return
-     */
-    private int getAclCount(ArrayList<AclChangeSet> changeSetBatch)
+    private int getAclCount(List<AclChangeSet> changeSetBatch)
     {
         int count = 0;
         for (AclChangeSet set : changeSetBatch)
@@ -636,15 +498,7 @@ public class MultiThreadedCoreTracker extends CoreTracker
         return count;
     }
 
-    /**
-     * @param changeSetBatch
-     * @param solrIndexSearcher
-     * @return
-     * @throws JSONException
-     * @throws IOException
-     * @throws AuthenticationException
-     */
-    private int indexBatchOfChangeSets(ArrayList<AclChangeSet> changeSetBatch, SolrIndexSearcher solrIndexSearcher) throws AuthenticationException, IOException, JSONException
+    private int indexBatchOfChangeSets(List<AclChangeSet> changeSetBatch) throws AuthenticationException, IOException, JSONException
     {
         int aclCount = 0;
         ArrayList<AclChangeSet> nonEmptyChangeSets = new ArrayList<AclChangeSet>(changeSetBatch.size());
@@ -797,19 +651,18 @@ public class MultiThreadedCoreTracker extends CoreTracker
 
     class NodeIndexWorkerRunnable extends AbstractWorkerRunnable
     {
-        SolrIndexSearcher solrIndexSearcher;
-
+        InformationServer infoServer;
         Node node;
 
-        NodeIndexWorkerRunnable(Node node, SolrIndexSearcher solrIndexSearcher)
+        NodeIndexWorkerRunnable(Node node, InformationServer infoServer)
         {
-            this.solrIndexSearcher = solrIndexSearcher;
+            this.infoServer = infoServer;
             this.node = node;
         }
 
         protected void doWork() throws IOException, AuthenticationException, JSONException
         {
-            indexNode(node, solrIndexSearcher, true);
+            this.infoServer.indexNode(node, true);
         }
 
     }
@@ -828,14 +681,14 @@ public class MultiThreadedCoreTracker extends CoreTracker
             List<AclReaders> readers = client.getAclReaders(acls);
             indexAcl(readers, true);
         }
-
     }
 
-    public void close(SolrCore core)
+    @Override
+    public void close()
     {
         try
         {
-            super.close(core);
+            super.close();
            
         }
         finally

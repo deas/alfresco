@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -21,15 +21,11 @@ package org.alfresco.solr;
 import java.io.IOException;
 import java.util.Locale;
 
-import org.alfresco.solr.tracker.CoreTracker;
-import org.apache.solr.common.params.CommonParams;
+import org.alfresco.solr.tracker.Tracker;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.handler.component.ResponseBuilder;
 import org.apache.solr.handler.component.SearchComponent;
 import org.apache.solr.request.SolrQueryRequest;
-import org.apache.solr.request.SolrQueryResponse;
-import org.apache.solr.search.QueryParsing;
-import org.apache.solr.util.SolrPluginUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
@@ -91,7 +87,7 @@ public class SetLocaleSearchComponent extends SearchComponent
         I18NUtil.setLocale(locale);
 
         AlfrescoCoreAdminHandler adminHandler = (AlfrescoCoreAdminHandler)req.getCore().getCoreDescriptor().getCoreContainer().getMultiCoreHandler();
-        CoreTracker tracker = adminHandler.getTrackers().get(req.getCore().getName());
+        Tracker tracker = adminHandler.getTrackers().get(req.getCore().getName());
         if(tracker != null)
         {
             tracker.ensureFirstModelSync();

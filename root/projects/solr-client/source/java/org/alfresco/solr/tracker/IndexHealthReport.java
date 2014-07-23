@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,21 +18,23 @@
  */
 package org.alfresco.solr.tracker;
 
-import org.apache.lucene.util.OpenBitSet;
+import org.alfresco.solr.InformationServer;
+import org.alfresco.solr.adapters.IOpenBitSet;
+
 
 public class IndexHealthReport
 {
     long dbTransactionCount;
 
-    OpenBitSet missingTxFromIndex = new OpenBitSet();
+    IOpenBitSet missingTxFromIndex;
 
-    OpenBitSet duplicatedTxInIndex = new OpenBitSet();
+    IOpenBitSet duplicatedTxInIndex;
 
-    OpenBitSet txInIndexButNotInDb = new OpenBitSet();
+    IOpenBitSet txInIndexButNotInDb;
 
-    OpenBitSet duplicatedLeafInIndex = new OpenBitSet();
+    IOpenBitSet duplicatedLeafInIndex;
     
-    OpenBitSet duplicatedAuxInIndex = new OpenBitSet();
+    IOpenBitSet duplicatedAuxInIndex;
 
     long transactionDocsInIndex;
     
@@ -52,20 +54,35 @@ public class IndexHealthReport
 
     long dbAclTransactionCount;
 
-    OpenBitSet missingAclTxFromIndex = new OpenBitSet();
+    IOpenBitSet missingAclTxFromIndex;
 
-    OpenBitSet duplicatedAclTxInIndex = new OpenBitSet();
+    IOpenBitSet duplicatedAclTxInIndex;
 
-    OpenBitSet aclTxInIndexButNotInDb = new OpenBitSet();
+    IOpenBitSet aclTxInIndexButNotInDb;
     
-    OpenBitSet duplicatedErrorInIndex = new OpenBitSet();
+    IOpenBitSet duplicatedErrorInIndex;
     
-    OpenBitSet duplicatedUnindexedInIndex = new OpenBitSet();
+    IOpenBitSet duplicatedUnindexedInIndex;
     
     long errorDocCountInIndex;
     
     long unindexedDocCountInIndex;
 
+    public IndexHealthReport(InformationServer srv)
+    {
+        this.missingTxFromIndex = srv.getOpenBitSetInstance();
+        this.duplicatedTxInIndex = srv.getOpenBitSetInstance();
+        this.txInIndexButNotInDb = srv.getOpenBitSetInstance();
+        this.duplicatedLeafInIndex = srv.getOpenBitSetInstance();
+        this.duplicatedAuxInIndex = srv.getOpenBitSetInstance();
+        
+        this.missingAclTxFromIndex = srv.getOpenBitSetInstance();
+        this.duplicatedAclTxInIndex = srv.getOpenBitSetInstance();
+        this.aclTxInIndexButNotInDb = srv.getOpenBitSetInstance();
+        this.duplicatedErrorInIndex = srv.getOpenBitSetInstance();
+        this.duplicatedUnindexedInIndex = srv.getOpenBitSetInstance();
+    }
+    
     /**
      * @return the transactionDocsInIndex
      */
@@ -123,7 +140,7 @@ public class IndexHealthReport
     /**
      * @return the duplicatedLeafInIndex
      */
-    public OpenBitSet getDuplicatedLeafInIndex()
+    public IOpenBitSet getDuplicatedLeafInIndex()
     {
         return duplicatedLeafInIndex;
     }
@@ -140,7 +157,7 @@ public class IndexHealthReport
     /**
      * @return the duplicatedLeafInIndex
      */
-    public OpenBitSet getDuplicatedAuxInIndex()
+    public IOpenBitSet getDuplicatedAuxInIndex()
     {
         return duplicatedAuxInIndex;
     }
@@ -166,7 +183,7 @@ public class IndexHealthReport
     /**
      * @return the missingFromIndex
      */
-    public OpenBitSet getMissingTxFromIndex()
+    public IOpenBitSet getMissingTxFromIndex()
     {
         return missingTxFromIndex;
     }
@@ -174,7 +191,7 @@ public class IndexHealthReport
     /**
      * @return the missingFromIndex
      */
-    public OpenBitSet getMissingAclTxFromIndex()
+    public IOpenBitSet getMissingAclTxFromIndex()
     {
         return missingAclTxFromIndex;
     }
@@ -182,7 +199,7 @@ public class IndexHealthReport
     /**
      * @return the duplicatedInIndex
      */
-    public OpenBitSet getDuplicatedTxInIndex()
+    public IOpenBitSet getDuplicatedTxInIndex()
     {
         return duplicatedTxInIndex;
     }
@@ -190,7 +207,7 @@ public class IndexHealthReport
     /**
      * @return the duplicatedInIndex
      */
-    public OpenBitSet getDuplicatedAclTxInIndex()
+    public IOpenBitSet getDuplicatedAclTxInIndex()
     {
         return duplicatedAclTxInIndex;
     }
@@ -198,7 +215,7 @@ public class IndexHealthReport
     /**
      * @return the inIndexButNotInDb
      */
-    public OpenBitSet getTxInIndexButNotInDb()
+    public IOpenBitSet getTxInIndexButNotInDb()
     {
         return txInIndexButNotInDb;
     }
@@ -206,7 +223,7 @@ public class IndexHealthReport
     /**
      * @return the inIndexButNotInDb
      */
-    public OpenBitSet getAclTxInIndexButNotInDb()
+    public IOpenBitSet getAclTxInIndexButNotInDb()
     {
         return aclTxInIndexButNotInDb;
     }
@@ -377,7 +394,7 @@ public class IndexHealthReport
     /**
      * @return the duplicatedErrorInIndex
      */
-    public OpenBitSet getDuplicatedErrorInIndex()
+    public IOpenBitSet getDuplicatedErrorInIndex()
     {
         return duplicatedErrorInIndex;
     }
@@ -385,7 +402,7 @@ public class IndexHealthReport
     /**
      * @return the duplicatedUnindexedInIndex
      */
-    public OpenBitSet getDuplicatedUnindexedInIndex()
+    public IOpenBitSet getDuplicatedUnindexedInIndex()
     {
         return duplicatedUnindexedInIndex;
     }
