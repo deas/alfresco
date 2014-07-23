@@ -66,10 +66,10 @@ public class SolrReaderScorer extends AbstractSolrCachingScorer
                 BytesRef aclIDBytesRef = new BytesRef(Long.toString(aclID));
                 // Find real docs that match the ACL ID
                 DocSet docsForAclId = searcher.getDocSet(new TermQuery(new Term(QueryConstants.FIELD_ACLID, aclIDBytesRef)));                
-                readableDocs.union(docsForAclId);
+                readableDocs = readableDocs.union(docsForAclId);
                 // Exclude the ACL docs from the results, we only want real docs that match.
                 // Probably not very efficient, what we really want is remove(docID)
-                readableDocs.andNot(aclDocs);
+                readableDocs = readableDocs.andNot(aclDocs);
             }
             
             searcher.cacheInsert(CacheConstants.ALFRESCO_READER_CACHE, authority, readableDocs);

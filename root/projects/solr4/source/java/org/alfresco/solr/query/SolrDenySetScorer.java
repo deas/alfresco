@@ -46,7 +46,7 @@ public class SolrDenySetScorer extends AbstractSolrCachingScorer
         {
             DocSet docs = searcher.getDocSet(new SolrDeniedQuery(auth));
             // Add this authority's docs to the full set.
-            deniedDocSet.union(docs);
+            deniedDocSet = deniedDocSet.union(docs);
         }
         
         // TODO: cache the full set? e.g. searcher.cacheInsert(CacheConstants.ALFRESCO_DENYSET_CACHE, authorities, deniedDocSet)

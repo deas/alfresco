@@ -46,7 +46,7 @@ public class SolrReaderSetScorer extends AbstractSolrCachingScorer
         {
             DocSet docs = searcher.getDocSet(new SolrReaderQuery(auth));
             // Add this authority's docs to the full set.
-            readableDocSet.union(docs);
+            readableDocSet = readableDocSet.union(docs);
         }
         
         // TODO: cache the full set? e.g. searcher.cacheInsert(CacheConstants.ALFRESCO_READERSET_CACHE, authorities, readableDocSet)

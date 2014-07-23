@@ -47,7 +47,7 @@ public class SolrOwnerSetScorer extends AbstractSolrCachingScorer
     public static SolrOwnerSetScorer createOwnerSetScorer(Weight weight, AtomicReaderContext context, SolrIndexSearcher searcher, String authorities) throws IOException
     {
         // The set of docs owned by all of the authorities
-        BitDocSet authorityOwnedDocs = new BitDocSet(new FixedBitSet(searcher.maxDoc()));
+        DocSet authorityOwnedDocs = new BitDocSet(new FixedBitSet(searcher.maxDoc()));
 
         // Split the authorities. The first character in the authorities String
         // specifies the separator, e.g. ",jbloggs,abeecher"
@@ -57,7 +57,7 @@ public class SolrOwnerSetScorer extends AbstractSolrCachingScorer
         {
             DocSet currentAuthDocs = searcher.getDocSet(new SolrOwnerQuery(current));
             // Add to the doc set owned by the set of authorities.
-            authorityOwnedDocs.union(currentAuthDocs);
+            authorityOwnedDocs = authorityOwnedDocs.union(currentAuthDocs);
         }
 
         // TODO: Cache the final set? e.g. searcher.cacheInsert(authorities, authorityOwnedDocs)

@@ -66,10 +66,10 @@ public class SolrDeniedScorer extends AbstractSolrCachingScorer
                 BytesRef aclIDBytesRef = new BytesRef(Long.toString(aclID));
                 // Find real docs that match the ACL ID
                 DocSet docsForAclId = searcher.getDocSet(new TermQuery(new Term(QueryConstants.FIELD_ACLID, aclIDBytesRef)));                
-                deniedDocs.union(docsForAclId);
+                deniedDocs = deniedDocs.union(docsForAclId);
                 // Exclude the ACL docs from the results, we only want real docs that match.
                 // Probably not very efficient, what we really want is remove(docID)
-                deniedDocs.andNot(aclDocs);
+                deniedDocs = deniedDocs.andNot(aclDocs);
             }
             
             searcher.cacheInsert(CacheConstants.ALFRESCO_DENIED_CACHE, authority, deniedDocs);
