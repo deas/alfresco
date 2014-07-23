@@ -121,13 +121,23 @@ public class SolrContentStore implements ContentStore
     @Override
     public ContentReader getReader(String contentUrl)
     {
-        throw new UnsupportedOperationException("Auto-created method not implemented.");
+        File file = getFileFromUrl(contentUrl);
+        return new SolrFileContentReader(file, contentUrl);
     }
 
     @Override
     public ContentWriter getWriter(ContentContext context)
     {
-        throw new UnsupportedOperationException("Auto-created method not implemented.");
+        // Ensure that there is a context and that it has a URL
+        if (context == null || context.getContentUrl() == null)
+        {
+            throw new IllegalArgumentException("Retrieve a writer with a URL-providing ContentContext.");
+        }
+        String url = context.getContentUrl();
+        File file = getFileFromUrl(url);
+        SolrFileContentWriter writer = new SolrFileContentWriter(file, url);
+        // Done
+        return writer;
     }
 
     @Override
@@ -145,6 +155,7 @@ public class SolrContentStore implements ContentStore
     @Override
     public boolean delete(String contentUrl)
     {
-        throw new UnsupportedOperationException("Auto-created method not implemented.");
+        File file = getFileFromUrl(contentUrl);
+        return file.delete();
     }
 }

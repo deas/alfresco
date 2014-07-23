@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.zip.CRC32;
 
+import org.alfresco.repo.content.ContentContext;
 import org.alfresco.repo.content.ContentStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -196,5 +197,14 @@ public class SolrContentUrlBuilder
             logger.debug("Converted SOLR metadata to URL: " + url + "  -- " + metadata.toString());
         }
         return url;
+    }
+    
+    /**
+     * Helper method to retrieve a {@link ContentContext} constructed using the final {@link #get()} url.
+     */
+    public ContentContext getContentContext()
+    {
+        String url = get();
+        return new ContentContext(null, url);
     }
 }

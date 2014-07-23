@@ -18,10 +18,16 @@
  */
 package org.alfresco.solr.content;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
+import org.alfresco.repo.content.ContentContext;
+import org.alfresco.service.cmr.repository.ContentReader;
+import org.alfresco.service.cmr.repository.ContentWriter;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -59,6 +65,15 @@ public class SolrContentStoreTest
         }
     }
     
+    /**
+     * Generates a content context using a string.  The URL part will be the same if the
+     * data provided is the same.
+     */
+    private ContentContext createContentContext(String data)
+    {
+        return SolrContentUrlBuilder.start().add("data", data).getContentContext();
+    }
+    
     @Test
     public void rootLocation()
     {
@@ -92,5 +107,128 @@ public class SolrContentStoreTest
     {
         new SolrContentStore(rootStr);
         new SolrContentStore(rootStr);
+    }
+    
+    @Test
+    public void getWriter()
+    {
+        SolrContentStore store = new SolrContentStore(rootStr);
+        
+        ContentContext ctx = createContentContext("abc");
+        ContentWriter writer = store.getWriter(ctx);
+        String url = writer.getContentUrl();
+        
+        Assert.assertNotNull(url);
+        Assert.assertEquals("URL of the context does not match the writer URL. ", ctx.getContentUrl(), url);
+    }
+    
+    @Test
+    public void contentByString()
+    {
+        SolrContentStore store = new SolrContentStore(rootStr);
+        
+        ContentContext ctx = createContentContext("abc");
+        ContentWriter writer = store.getWriter(ctx);
+        
+        File file = new File(rootStr + "/" + writer.getContentUrl().replace("solr://", ""));
+        Assert.assertFalse("File was created before anything was written", file.exists());
+
+        String content = "Quick brown fox jumps over the lazy dog.";
+        writer.putContent(content);
+        Assert.assertTrue("File was not created.", file.exists());
+        
+        try
+        {
+            writer.putContent("Should not work");
+        }
+        catch (IllegalStateException e)
+        {
+            // Expected
+        }
+        
+        // Now get the reader
+        ContentReader reader = store.getReader(ctx.getContentUrl());
+        Assert.assertNotNull(reader);
+        Assert.assertTrue(reader.exists());
+        
+        Assert.assertEquals(content, reader.getContentString());
+    }
+    
+    @Test
+    public void contentByStream() throws Exception
+    {
+        SolrContentStore store = new SolrContentStore(rootStr);
+        
+        ContentContext ctx = createContentContext("abc");
+        ContentWriter writer = store.getWriter(ctx);
+        
+        byte[] bytes = new byte[] {1, 7, 13};
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+        writer.putContent(bis);
+        
+        // Now get the reader
+        ContentReader reader = store.getReader(ctx.getContentUrl());
+        
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(3);
+        reader.getContent(bos);
+        Assert.assertEquals(bytes[0], bos.toByteArray()[0]);
+        Assert.assertEquals(bytes[1], bos.toByteArray()[1]);
+        Assert.assertEquals(bytes[2], bos.toByteArray()[2]);
+    }
+    
+    @Test
+    public void delete() throws Exception
+    {
+        SolrContentStore store = new SolrContentStore(rootStr);
+        
+        ContentContext ctx = createContentContext("abc");
+        String url = ctx.getContentUrl();
+        ContentWriter writer = store.getWriter(ctx);
+        writer.putContent("Content goes here.");
+        
+        // Check the reader
+        ContentReader reader = store.getReader(url);
+        Assert.assertNotNull(reader);
+        Assert.assertTrue(reader.exists());
+        
+        // Delete
+        store.delete(url);
+        reader = store.getReader(url);
+        Assert.assertNotNull(reader);
+        Assert.assertFalse(reader.exists());
+    }
+    
+    /**
+     * A demonstration of how the store might be used.
+     */
+    @Test
+    public void exampleUsage()
+    {
+        SolrContentStore store = new SolrContentStore(rootStr);
+        
+        String tenant = "alfresco.com";
+        long dbId = 12345;
+        String otherData = "sdfklsfdl";
+        
+        ContentContext ctxWrite = SolrContentUrlBuilder
+                .start()
+                .add(SolrContentUrlBuilder.KEY_DB_ID, String.valueOf(dbId))
+                .add(SolrContentUrlBuilder.KEY_TENANT, tenant)
+                .add("otherData", otherData)
+                .getContentContext();
+        ContentWriter writer = store.getWriter(ctxWrite);
+        writer.putContent("a document in plain text");
+        
+        // The URL can be reliably rebuilt in any order
+        String urlRead = SolrContentUrlBuilder
+                .start()
+                .add("otherData", otherData)
+                .add(SolrContentUrlBuilder.KEY_TENANT, tenant)
+                .add(SolrContentUrlBuilder.KEY_DB_ID, String.valueOf(dbId))
+                .get();
+        ContentReader reader = store.getReader(urlRead);
+        String documentText = reader.getContentString();
+        
+        Assert.assertEquals("a document in plain text", documentText);
     }
 }

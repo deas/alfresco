@@ -18,51 +18,49 @@
  */
 package org.alfresco.solr.content;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
-import java.nio.channels.WritableByteChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.util.Locale;
 
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.ContentIOException;
 import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.ContentStreamListener;
-import org.alfresco.service.cmr.repository.ContentWriter;
 import org.apache.commons.io.FileUtils;
+import org.springframework.util.FileCopyUtils;
 
 /**
- * Bare-bones implementation of the writer for SOLR purposes
+ * Bare-bones implementation of the reader for SOLR purposes
  * 
  * @author Derek Hulley
  * @since 5.0
  */
-public class SolrFileContentWriter implements ContentWriter
+public class SolrFileContentReader implements ContentReader
 {
     private final File file;
     private final String contentUrl;
-    private boolean written;
     
     /**
      * @param file          the file to write to
      * @param contentUrl    the content URL for information purposes
      */
-    protected SolrFileContentWriter(File file, String contentUrl)
+    protected SolrFileContentReader(File file, String contentUrl)
     {
         this.file = file;
         this.contentUrl = contentUrl;
-        this.written = false;
     }
-    
+
     @Override
     public String toString()
     {
-        return "SolrFileContentWriter [file=" + file + "]";
+        return "SolrFileContentReader [file=" + file + "]";
     }
 
     @Override
@@ -96,32 +94,33 @@ public class SolrFileContentWriter implements ContentWriter
     }
     
     @Override
-    public synchronized final WritableByteChannel getWritableChannel() throws ContentIOException
+    public FileChannel getFileChannel() throws ContentIOException
     {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public FileChannel getFileChannel(boolean truncate) throws ContentIOException
+    public boolean exists()
     {
-        throw new UnsupportedOperationException();
+        return file.exists();
     }
 
     @Override
-    public synchronized OutputStream getContentOutputStream() throws ContentIOException
+    public ReadableByteChannel getReadableChannel() throws ContentIOException
     {
-        if (written == true)
+        throw new UnsupportedOperationException("Auto-created method not implemented.");
+    }
+
+    @Override
+    public synchronized InputStream getContentInputStream() throws ContentIOException
+    {
+        if (!file.exists())
         {
-            throw new IllegalStateException("The writer has already been used: " + file);
-        }
-        else if (file.exists())
-        {
-            throw new IllegalStateException("The file already exists: " + file);
+            throw new IllegalStateException("The file does not exist: " + file);
         }
         try
         {
-            OutputStream is = new BufferedOutputStream(new FileOutputStream(file));
-            written = true;
+            InputStream is = new BufferedInputStream(new FileInputStream(file));
             // done
             return is;
         }
@@ -132,26 +131,15 @@ public class SolrFileContentWriter implements ContentWriter
     }
 
     @Override
-    public void putContent(ContentReader reader) throws ContentIOException
+    public synchronized void getContent(OutputStream os) throws ContentIOException
     {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public synchronized void putContent(InputStream is) throws ContentIOException
-    {
-        if (written == true)
+        if (!file.exists())
         {
-            throw new IllegalStateException("The writer has already been used: " + file);
-        }
-        else if (file.exists())
-        {
-            throw new IllegalStateException("The file already exists: " + file);
+            throw new IllegalStateException("The file does not exist: " + file);
         }
         try
         {
-            FileUtils.copyInputStreamToFile(is, file);
-            written = true;
+            FileUtils.copyFile(file, os);
         }
         catch (Throwable e)
         {
@@ -160,64 +148,69 @@ public class SolrFileContentWriter implements ContentWriter
     }
     
     @Override
-    public synchronized void putContent(File sourceFile) throws ContentIOException
+    public synchronized void getContent(File targetFile) throws ContentIOException
     {
-        if (written == true)
+        if (!this.file.exists())
         {
-            throw new IllegalStateException("The writer has already been used: " + this.file);
+            throw new IllegalStateException("The file does not exist: " + this.file);
         }
-        else if (this.file.exists())
+        else if (targetFile.exists())
         {
-            throw new IllegalStateException("The file already exists: " + this.file);
-        }
-        else if (!sourceFile.exists())
-        {
-            throw new IllegalStateException("The source file does not exist: " + sourceFile);
+            throw new IllegalStateException("The target file already exists: " + targetFile);
         }
         try
         {
-            FileUtils.copyFile(sourceFile, this.file, false);
-            written = true;
+            FileUtils.copyFile(this.file, targetFile, false);
         }
         catch (Throwable e)
         {
-            throw new ContentIOException("Failed to copy file onto file: " + sourceFile, e);
+            throw new ContentIOException("Failed to copy stream onto file: " + targetFile, e);
         }
     }
     
     @Override
-    public synchronized void putContent(String content) throws ContentIOException
+    public String getContentString(int length) throws ContentIOException
+    {
+        String str = getContentString();
+        if (str.length() > length)
+        {
+            return str.substring(0, length - 1);
+        }
+        else
+        {
+            return str;
+        }
+    }
+
+    @Override
+    public final String getContentString() throws ContentIOException
     {
         try
         {
-            // attempt to use the correct encoding
+            // read from the stream into a byte[]
+            InputStream is = getContentInputStream();
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            FileCopyUtils.copy(is, os);  // both streams are closed
+            byte[] bytes = os.toByteArray();
+            // get the encoding for the string
             String encoding = "UTF-8";
-            byte[] bytes = content.getBytes(encoding);
-
-            // get the stream
-            ByteArrayInputStream is = new ByteArrayInputStream(bytes);
-            putContent(is);
+            // create the string from the byte[] using encoding if necessary
+            String content = (encoding == null) ? new String(bytes) : new String(bytes, encoding);
             // done
+            return content;
         }
         catch (IOException e)
         {
-            throw new ContentIOException("Failed to copy content from string: \n" +
-                    "   writer: " + this +
-                    "   content length: " + content.length(),
+            throw new ContentIOException("Failed to copy content to string: \n" +
+                    "   accessor: " + this,
                     e);
         }
     }
     
     @Override
-    public void guessEncoding()
+    public long getLastModified()
     {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void guessMimetype(String filename)
-    {
-        throw new UnsupportedOperationException();
+        return file.lastModified();
     }
 
     @Override
