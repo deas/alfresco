@@ -20,13 +20,10 @@ package org.alfresco.solr.query;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -61,9 +58,7 @@ import org.alfresco.solr.AlfrescoSolrDataModel.ContentFieldType;
 import org.alfresco.solr.AlfrescoSolrDataModel.FieldInstance;
 import org.alfresco.solr.AlfrescoSolrDataModel.FieldUse;
 import org.alfresco.solr.AlfrescoSolrDataModel.IndexedField;
-import org.alfresco.util.CachingDateFormat;
 import org.alfresco.util.ISO9075;
-import org.alfresco.util.Pair;
 import org.alfresco.util.SearchLanguageConversion;
 import org.antlr.misc.OrderedHashSet;
 import org.apache.commons.logging.Log;
@@ -75,28 +70,22 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.MultiPhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RegexpQuery;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TermRangeQuery;
 import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
-import org.apache.lucene.search.vectorhighlight.FieldQuery;
-import org.apache.lucene.util.AttributeSource.State;
 import org.apache.lucene.util.Version;
-import org.apache.solr.search.SyntaxError;
 import org.jaxen.saxpath.SAXPathException;
-import org.jaxen.saxpath.base.XPathReader;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
@@ -114,6 +103,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     {
         super(matchVersion, f, a);
         setAllowLeadingWildcard(true);
+        setAnalyzeRangeTerms(true);
     }
 
     @SuppressWarnings("unused")
@@ -787,111 +777,115 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     protected Query createIsNotNull(String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
-        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
-        if (pd != null)
-        {
-            ClassDefinition containerClass = pd.getContainerClass();
-            QName container = containerClass.getName();
-            BooleanQuery query = new BooleanQuery();
-            String classType = containerClass.isAspect() ? FIELD_ASPECT : FIELD_TYPE;
-            Query typeQuery = getFieldQuery(classType, container.toString(), analysisMode, luceneFunction);
-            Query presenceQuery = getWildcardQuery(PROPERTY_FIELD_PREFIX + pd.getName().toString(), "*");
-            if ((typeQuery != null) && (presenceQuery != null))
-            {
-                // query.add(typeQuery, Occur.MUST);
-                query.add(presenceQuery, Occur.MUST);
-            }
-            return query;
-        }
-        else
-        {
-            return getFieldQueryImplWithIOExceptionWrapped(FIELD_ISNOTNULL, queryText, analysisMode, luceneFunction);
-        }
+//        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
+//        if (pd != null)
+//        {
+//            ClassDefinition containerClass = pd.getContainerClass();
+//            QName container = containerClass.getName();
+//            BooleanQuery query = new BooleanQuery();
+//            String classType = containerClass.isAspect() ? FIELD_ASPECT : FIELD_TYPE;
+//            Query typeQuery = getFieldQuery(classType, container.toString(), analysisMode, luceneFunction);
+//            Query presenceQuery = getWildcardQuery(PROPERTY_FIELD_PREFIX + pd.getName().toString(), "*");
+//            if ((typeQuery != null) && (presenceQuery != null))
+//            {
+//                // query.add(typeQuery, Occur.MUST);
+//                query.add(presenceQuery, Occur.MUST);
+//            }
+//            return query;
+//        }
+//        else
+//        {
+//            return getFieldQueryImplWithIOExceptionWrapped(FIELD_ISNOTNULL, queryText, analysisMode, luceneFunction);
+//        }
+        throw new UnsupportedOperationException();
     }
 
     protected Query createIsNullQuery(String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
-        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
-        if (pd != null)
-        {
-            BooleanQuery query = new BooleanQuery();
-            Query presenceQuery = getWildcardQuery(PROPERTY_FIELD_PREFIX + pd.getName().toString(), "*");
-            if (presenceQuery != null)
-            {
-                query.add(new MatchAllDocsQuery(), Occur.MUST);
-                query.add(presenceQuery, Occur.MUST_NOT);
-            }
-            return query;
-        }
-        else
-        {
-            return getFieldQueryImplWithIOExceptionWrapped(FIELD_ISNULL, queryText, analysisMode, luceneFunction);
-        }
+//        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
+//        if (pd != null)
+//        {
+//            BooleanQuery query = new BooleanQuery();
+//            Query presenceQuery = getWildcardQuery(PROPERTY_FIELD_PREFIX + pd.getName().toString(), "*");
+//            if (presenceQuery != null)
+//            {
+//                query.add(new MatchAllDocsQuery(), Occur.MUST);
+//                query.add(presenceQuery, Occur.MUST_NOT);
+//            }
+//            return query;
+//        }
+//        else
+//        {
+//            return getFieldQueryImplWithIOExceptionWrapped(FIELD_ISNULL, queryText, analysisMode, luceneFunction);
+//        }
+        throw new UnsupportedOperationException();
     }
 
     protected Query createIsUnsetQuery(String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
-        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
-        if (pd != null)
-        {
-            ClassDefinition containerClass = pd.getContainerClass();
-            QName container = containerClass.getName();
-            BooleanQuery query = new BooleanQuery();
-            String classType = containerClass.isAspect() ? FIELD_ASPECT : FIELD_TYPE;
-            Query typeQuery = getFieldQuery(classType, container.toString(), analysisMode, luceneFunction);
-            Query presenceQuery = getWildcardQuery(PROPERTY_FIELD_PREFIX + pd.getName().toString(), "*");
-            if ((typeQuery != null) && (presenceQuery != null))
-            {
-                query.add(typeQuery, Occur.MUST);
-                query.add(presenceQuery, Occur.MUST_NOT);
-            }
-            return query;
-        }
-        else
-        {
-            return getFieldQueryImplWithIOExceptionWrapped(FIELD_ISUNSET, queryText, analysisMode, luceneFunction);
-        }
+//        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
+//        if (pd != null)
+//        {
+//            ClassDefinition containerClass = pd.getContainerClass();
+//            QName container = containerClass.getName();
+//            BooleanQuery query = new BooleanQuery();
+//            String classType = containerClass.isAspect() ? FIELD_ASPECT : FIELD_TYPE;
+//            Query typeQuery = getFieldQuery(classType, container.toString(), analysisMode, luceneFunction);
+//            Query presenceQuery = getWildcardQuery(PROPERTY_FIELD_PREFIX + pd.getName().toString(), "*");
+//            if ((typeQuery != null) && (presenceQuery != null))
+//            {
+//                query.add(typeQuery, Occur.MUST);
+//                query.add(presenceQuery, Occur.MUST_NOT);
+//            }
+//            return query;
+//        }
+//        else
+//        {
+//            return getFieldQueryImplWithIOExceptionWrapped(FIELD_ISUNSET, queryText, analysisMode, luceneFunction);
+//        }
+        throw new UnsupportedOperationException();
     }
 
     protected Query createAllQuery(String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
-        Set<String> all = searchParameters.getAllAttributes();
-        if ((all == null) || (all.size() == 0))
-        {
-            Collection<QName> contentAttributes = dictionaryService.getAllProperties(null);
-            BooleanQuery query = new BooleanQuery();
-            for (QName qname : contentAttributes)
-            {
-                // The super implementation will create phrase queries etc if required
-                Query part = getFieldQuery(PROPERTY_FIELD_PREFIX + qname.toString(), queryText, analysisMode, luceneFunction);
-                if (part != null)
-                {
-                    query.add(part, Occur.SHOULD);
-                }
-                else
-                {
-                    query.add(createNoMatchQuery(), Occur.SHOULD);
-                }
-            }
-            return query;
-        }
-        else
-        {
-            BooleanQuery query = new BooleanQuery();
-            for (String fieldName : all)
-            {
-                Query part = getFieldQuery(fieldName, queryText, analysisMode, luceneFunction);
-                if (part != null)
-                {
-                    query.add(part, Occur.SHOULD);
-                }
-                else
-                {
-                    query.add(createNoMatchQuery(), Occur.SHOULD);
-                }
-            }
-            return query;
-        }
+//        Set<String> all = searchParameters.getAllAttributes();
+//        if ((all == null) || (all.size() == 0))
+//        {
+//            Collection<QName> contentAttributes = dictionaryService.getAllProperties(null);
+//            BooleanQuery query = new BooleanQuery();
+//            for (QName qname : contentAttributes)
+//            {
+//                // The super implementation will create phrase queries etc if required
+//                Query part = getFieldQuery(PROPERTY_FIELD_PREFIX + qname.toString(), queryText, analysisMode, luceneFunction);
+//                if (part != null)
+//                {
+//                    query.add(part, Occur.SHOULD);
+//                }
+//                else
+//                {
+//                    query.add(createNoMatchQuery(), Occur.SHOULD);
+//                }
+//            }
+//            return query;
+//        }
+//        else
+//        {
+//            BooleanQuery query = new BooleanQuery();
+//            for (String fieldName : all)
+//            {
+//                Query part = getFieldQuery(fieldName, queryText, analysisMode, luceneFunction);
+//                if (part != null)
+//                {
+//                    query.add(part, Occur.SHOULD);
+//                }
+//                else
+//                {
+//                    query.add(createNoMatchQuery(), Occur.SHOULD);
+//                }
+//            }
+//            return query;
+//        }
+        throw new UnsupportedOperationException();
     }
 
     protected Query createAspectQuery(String queryText, boolean exactOnly)
@@ -2067,17 +2061,25 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 //        {
 //            throw new ParseException("IO error generating phares wildcards " + e.getMessage());
 //        }
+        throw new UnsupportedOperationException();
     }
 
     /**
      * @exception ParseException
      *                throw in overridden method to disallow
      */
-    protected Query getRangeQuery(String field, String part1, String part2, boolean inclusive) throws ParseException
+    
+    protected Query getRangeQuery(String field, String part1, String part2,   boolean startInclusive,
+            boolean endInclusive)  throws ParseException
+    {
+        return getRangeQuery(field, part1, part2, startInclusive, endInclusive, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+    }
+
+    protected Query getRangeQuery(String field, String part1, String part2, boolean inclusive)  throws ParseException
     {
         return getRangeQuery(field, part1, part2, inclusive, inclusive, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
     }
-
+    
     /**
      * @param field
      * @param part1
@@ -2240,11 +2242,13 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 }
                 else if (propertyDef.getDataType().getName().equals(DataTypeDefinition.DATETIME))
                 {
-                    throw new UnsupportedOperationException();
+                    String solrField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), null, FieldUse.ID).getFields().get(0).getField();
+                    return newRangeQuery(solrField, part1, part2, includeLower, includeUpper);
                 }
                 else
                 {
-                    throw new UnsupportedOperationException();
+                    String solrField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), null, FieldUse.ID).getFields().get(0).getField();
+                    return newRangeQuery(solrField, part1, part2, includeLower, includeUpper);
                 }
             }
             else
