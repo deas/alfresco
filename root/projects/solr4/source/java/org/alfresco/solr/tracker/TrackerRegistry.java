@@ -38,7 +38,8 @@ public class TrackerRegistry
     
     public Collection<Tracker> getTrackersForCore(String coreName)
     {
-        return this.trackers.get(coreName).values();
+        ConcurrentHashMap<Class<? extends Tracker>, Tracker> coreTrackers = this.trackers.get(coreName);
+        return (coreTrackers == null ? null : coreTrackers.values());
     }
     
     public boolean hasTrackersForCore(String coreName)
@@ -63,5 +64,15 @@ public class TrackerRegistry
         }
         
         coreTrackers.put(tracker.getClass(), tracker);
+    }
+
+    /**
+     * Removes the trackers for the specified core.
+     * @param coreName 
+     * @return <code>true</code> if there were trackers registered for the core
+     */
+    public boolean removeTrackersForCore(String coreName)
+    {
+        return this.trackers.remove(coreName) != null;
     }
 }

@@ -47,4 +47,40 @@ public class MetadataTracker implements Tracker
         return null;
     }
 
+    public void addTransactionToPurge(Long txid)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void addNodeToPurge(Long nodeid)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void addTransactionToReindex(Long txid)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void addNodeToReindex(Long nodeid)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void addTransactionToIndex(Long txid)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void addNodeToIndex(Long nodeid)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

@@ -35,6 +35,7 @@ public class TrackerRegistryTest
     private static Tracker modelTracker = new ModelTracker();
     private static final String CORE_NAME = "coreName";
     private static final String CORE2_NAME = "core2Name";
+    private static final String CORE3_NAME = "core3Name";
     private static final String NOT_A_CORE_NAME = "not a core name";
 
     public static void registerTrackers(String coreName)
@@ -78,6 +79,9 @@ public class TrackerRegistryTest
         assertTrue(trackersForCore.contains(contentTracker));
         assertTrue(trackersForCore.contains(modelTracker));
         assertTrue(trackersForCore.contains(metadataTracker));
+        
+        trackersForCore = reg.getTrackersForCore(NOT_A_CORE_NAME);
+        assertNull(trackersForCore);
     }
 
     @Test
@@ -94,5 +98,16 @@ public class TrackerRegistryTest
         assertEquals(contentTracker, reg.getTrackerForCore(CORE_NAME, ContentTracker.class));
         assertEquals(metadataTracker, reg.getTrackerForCore(CORE_NAME, MetadataTracker.class));
         assertEquals(modelTracker, reg.getTrackerForCore(CORE_NAME, ModelTracker.class));
+    }
+    
+    @Test
+    public void testRemoveTrackersForCore()
+    {
+        registerTrackers(CORE3_NAME);
+        boolean thereWereTrackers = reg.removeTrackersForCore(CORE3_NAME);
+        assertTrue(thereWereTrackers);
+        assertNull(reg.getTrackersForCore(CORE3_NAME));
+        thereWereTrackers = reg.removeTrackersForCore(NOT_A_CORE_NAME);
+        assertFalse(thereWereTrackers);
     }
 }
