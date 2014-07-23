@@ -31,7 +31,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.repo.cache.SimpleCache;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.tenant.TenantService;
@@ -78,7 +77,7 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     		new ThreadLocal<Map<String, DictionaryRegistry>>();
  
     // Internal cache (clusterable)
-    private SimpleCache<String, DictionaryRegistry> dictionaryRegistryCache;
+    private CompiledModelsCache dictionaryRegistryCache;
 
     // Static list of registered dictionary listeners
     private List<DictionaryListener> dictionaryListeners = new ArrayList<DictionaryListener>();
@@ -105,15 +104,9 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         this.tryLockTimeout = tryLockTimeout;
     }
 
-	public void setDictionaryRegistryCache(SimpleCache<String, DictionaryRegistry> dictionaryRegistryCache)
+	public void setDictionaryRegistryCache(CompiledModelsCache dictionaryRegistryCache)
     {
         this.dictionaryRegistryCache = dictionaryRegistryCache;
-        // We are reading straight through to a shared cache - make sure it starts empty to avoid weird behaviour in
-        // multi-context test suites that don't properly reset ehcache
-        if (dictionaryRegistryCache.get(TenantService.DEFAULT_DOMAIN) != null)
-        {
-            dictionaryRegistryCache.clear();
-        }
     }
     
     @Override 
@@ -716,70 +709,48 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     {
     	DictionaryRegistry dictionaryRegistry = null;
 
-    	if(tenantDomain == null)
+        if(tenantDomain == null)
     	{
-    		throw new AlfrescoRuntimeException("Tenant must be set");
-    	}
+           throw new AlfrescoRuntimeException("Tenant must be set");
+        }
 
-    	// check threadlocal first - return if set
-    	dictionaryRegistry = getThreadLocal().get(tenantDomain);
+        // check threadlocal first - return if set
+        dictionaryRegistry = getThreadLocal().get(tenantDomain);
     	if (dictionaryRegistry == null)
-    	{
-    		LockHelper.tryLock(readLock, tryLockTimeout, "getting dictionary registry from cache in 'DictionaryDAOImpl.getDictionaryRegistry()'");
-    		try
-    		{
-    			// check cache second - return if set
-    			dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
-    		}
-    		finally
-    		{
-    			readLock.unlock();
-    		}
+        {
+           dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
+        }
 
-    		if(dictionaryRegistry == null)
-    		{
-    			// Double check cache with write lock
-    			LockHelper.tryLock(writeLock, tryLockTimeout, "getting dictionary registry from cache in 'DictionaryDAOImpl.getDictionaryRegistry()'");
-    			try
-    			{
-    				dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
-    				if(dictionaryRegistry == null)
-    				{
-    					if (logger.isTraceEnabled())
-    					{
-    						logger.trace("getDictionaryRegistry: not in cache (or threadlocal) - re-init ["+Thread.currentThread().getId()+"]"+(tenantDomain.equals(TenantService.DEFAULT_DOMAIN) ? "" : " (Tenant: "+tenantDomain+")"));
+        return dictionaryRegistry;
     					}
 
-    					dictionaryRegistry = AuthenticationUtil.runAs(new RunAsWork<DictionaryRegistry>()
-						{
-    						public DictionaryRegistry doWork()
-    						{
-    							DictionaryRegistry dictionaryRegistry = null;
-    							if(tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
-    							{
-    								dictionaryRegistry = createCoreDictionaryRegistry();
-    							}
-    							else
-    							{
-    								dictionaryRegistry = createTenantDictionaryRegistry(tenantDomain);
-    							}
+    /**
+     * For cache use only.
+     * 
+     * @param tenantDomain
+     * @return constructed DictionaryRegistry
+     */
+    public DictionaryRegistry initDictionaryRegistry(final String tenantDomain)
+    {
+        return AuthenticationUtil.runAs(new RunAsWork<DictionaryRegistry>()
+        {
+           public DictionaryRegistry doWork()
+           {
+              DictionaryRegistry dictionaryRegistry = null;
+              if(tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
+              {
+                 dictionaryRegistry = createCoreDictionaryRegistry();
+              }
+              else
+              {
+                 dictionaryRegistry = createTenantDictionaryRegistry(tenantDomain);
+              }
 
-    							dictionaryRegistryCache.put(tenantDomain, dictionaryRegistry);
-    							dictionaryRegistry.init();
+              dictionaryRegistry.init();
 
-    							return dictionaryRegistry;
-    						}
-						}, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), tenantDomain));
-    				}
-    			}
-    			finally
-    			{
-    				writeLock.unlock();
-    			}
-    		}
-    	}
-
-    	return dictionaryRegistry;
+              return dictionaryRegistry;
+           }
+        }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), tenantDomain));
     }
 
     private DictionaryRegistry removeDictionaryRegistry(String tenantDomain)
@@ -788,7 +759,7 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     			+ tenantDomain);
         try
         {
-        	DictionaryRegistry dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
+        	DictionaryRegistry dictionaryRegistry = dictionaryRegistryCache.remove(tenantDomain);
             if (dictionaryRegistry != null)
             {
             	int numModels = dictionaryRegistry.getCompiledModels(false).size();
@@ -797,8 +768,7 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
             			+ numModels
             			+ " models from cache");
 
-            	dictionaryRegistry.remove();
-            	dictionaryRegistryCache.remove(tenantDomain);
+            	dictionaryRegistryCache.get(tenantDomain);
             }
             return dictionaryRegistry;
         }
