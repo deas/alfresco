@@ -24,13 +24,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -52,8 +48,8 @@ import org.alfresco.solr.client.Node;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Transactions;
-import org.alfresco.util.DynamicallySizedThreadPoolExecutor;
-import org.alfresco.util.TraceableThreadFactory;
+import org.alfresco.solr.tracker.pool.DefaultTrackerPoolFactory;
+import org.alfresco.solr.tracker.pool.TrackerPoolFactory;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,20 +62,6 @@ import org.slf4j.LoggerFactory;
 public class AclTracker extends AbstractTracker
 {
     protected final static Logger log = LoggerFactory.getLogger(AclTracker.class);
-    
-    private static final int DEFAULT_CORE_POOL_SIZE = 4;
-
-    private static final int DEFAULT_MAXIMUM_POOL_SIZE = -1; // -1 is a sign that it must match the core pool size
-
-    private static final int DEFAULT_KEEP_ALIVE_TIME = 120; // seconds
-
-    private static final int DEFAULT_THREAD_PRIORITY = Thread.NORM_PRIORITY;
-
-    private static final boolean DEFAULT_THREAD_DAEMON = Boolean.TRUE;
-
-    private static final int DEFAULT_WORK_QUEUE_SIZE = -1;
-
-    private static final RejectedExecutionHandler DEFAULT_REJECTED_EXECUTION_HANDLER = new ThreadPoolExecutor.CallerRunsPolicy();
 
 //    private static final int DEFAULT_TRANSACTION_DOCS_BATCH_SIZE = 100;
 
@@ -87,30 +69,14 @@ public class AclTracker extends AbstractTracker
 
     private static final int DEFAULT_ACL_BATCH_SIZE = 10;
 
-    private String poolName = "";
-
-    private int corePoolSize = DEFAULT_CORE_POOL_SIZE;
-
-    private int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
-
-    private int keepAliveTime = DEFAULT_KEEP_ALIVE_TIME;
-
-    private int threadPriority = DEFAULT_THREAD_PRIORITY;
-
-    private boolean threadDaemon = DEFAULT_THREAD_DAEMON;
-
-    private int workQueueSize = DEFAULT_WORK_QUEUE_SIZE;
-
 //    private int transactionDocsBatchSize = DEFAULT_TRANSACTION_DOCS_BATCH_SIZE;
 
     private int changeSetAclsBatchSize = DEFAULT_CHANGE_SET_ACLS_BATCH_SIZE;
 
     private int aclBatchSize = DEFAULT_ACL_BATCH_SIZE;
 
-    private RejectedExecutionHandler rejectedExecutionHandler = DEFAULT_REJECTED_EXECUTION_HANDLER;
-
     /** the instance that will be given out by the factory */
-    private DynamicallySizedThreadPoolExecutor threadPool;
+    private ThreadPoolExecutor threadPool;
 
     private LinkedBlockingQueue<AbstractWorkerRunnable> reindexThreadQueue = new LinkedBlockingQueue<AbstractWorkerRunnable>();
 
@@ -141,49 +107,13 @@ public class AclTracker extends AbstractTracker
     {
         super(scheduler, p, client, coreName, informationServer);
 
-        corePoolSize = Integer.parseInt(p.getProperty("alfresco.corePoolSize", "3"));
-        maximumPoolSize = Integer.parseInt(p.getProperty("alfresco.maximumPoolSize", "-1"));
-        keepAliveTime = Integer.parseInt(p.getProperty("alfresco.keepAliveTime", "120"));
-        threadPriority = Integer.parseInt(p.getProperty("alfresco.threadPriority", "5"));
-        threadDaemon = Boolean.parseBoolean(p.getProperty("alfresco.threadDaemon", "true"));
-        workQueueSize = Integer.parseInt(p.getProperty("alfresco.workQueueSize", "-1"));
 //        transactionDocsBatchSize = Integer.parseInt(p.getProperty("alfresco.transactionDocsBatchSize", "100"));
         changeSetAclsBatchSize = Integer.parseInt(p.getProperty("alfresco.changeSetAclsBatchSize", "100"));
         aclBatchSize = Integer.parseInt(p.getProperty("alfresco.aclBatchSize", "10"));
         
-        
-        poolName = "SolrTrackingPool-" + coreName;
-
-        // if the maximum pool size has not been set, change it to match the core pool size
-        if (maximumPoolSize == DEFAULT_MAXIMUM_POOL_SIZE)
-        {
-            maximumPoolSize = corePoolSize;
-        }
-
-        // We need a thread factory
-        TraceableThreadFactory threadFactory = new TraceableThreadFactory();
-        threadFactory.setThreadDaemon(threadDaemon);
-        threadFactory.setThreadPriority(threadPriority);
-
-        if (poolName.length() > 0)
-        {
-            threadFactory.setNamePrefix(poolName);
-        }
-
-        BlockingQueue<Runnable> workQueue;
-        if (workQueueSize < 0)
-        {
-            // We can have an unlimited queue, as we have a sensible thread pool!
-            workQueue = new LinkedBlockingQueue<Runnable>();
-        }
-        else
-        {
-            // Use an array one for consistent performance on a small queue size
-            workQueue = new ArrayBlockingQueue<Runnable>(workQueueSize);
-        }
-
         // construct the instance
-        threadPool = new DynamicallySizedThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue, threadFactory, rejectedExecutionHandler);
+        TrackerPoolFactory trackerPoolFactory = new DefaultTrackerPoolFactory(p, coreName);
+        threadPool = trackerPoolFactory.create();
     }
 
     @Override
