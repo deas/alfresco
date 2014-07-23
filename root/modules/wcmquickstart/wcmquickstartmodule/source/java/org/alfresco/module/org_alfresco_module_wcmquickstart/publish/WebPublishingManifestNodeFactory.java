@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.module.org_alfresco_module_wcmquickstart.model.WebSiteModel;
+import org.alfresco.repo.transfer.TransferContext;
 import org.alfresco.repo.transfer.manifest.TransferManifestDeletedNode;
 import org.alfresco.repo.transfer.manifest.TransferManifestNode;
 import org.alfresco.repo.transfer.manifest.TransferManifestNodeFactory;
@@ -94,18 +95,18 @@ public class WebPublishingManifestNodeFactory implements TransferManifestNodeFac
 
 
     @Override
-    public TransferManifestNode createTransferManifestNode(NodeRef nodeRef, TransferDefinition definition)
+    public TransferManifestNode createTransferManifestNode(NodeRef nodeRef, TransferDefinition definition, TransferContext transferContext)
     {
-        return createTransferManifestNode(nodeRef, definition, false);
+        return createTransferManifestNode(nodeRef, definition, transferContext, false);
     }
 
-    public TransferManifestNode createTransferManifestNode(NodeRef nodeRef, TransferDefinition definition, boolean forceDelete)
+    public TransferManifestNode createTransferManifestNode(NodeRef nodeRef, TransferDefinition definition, TransferContext transferContext, boolean forceDelete)
     {
         Date now = new Date();
         TransferManifestNode newNode = preProcess(nodeRef);
         if (newNode == null)
         {
-            newNode = realFactory.createTransferManifestNode(nodeRef, definition, forceDelete);
+            newNode = realFactory.createTransferManifestNode(nodeRef, definition, transferContext, forceDelete);
         }
 
         long start = 0L;
