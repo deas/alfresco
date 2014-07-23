@@ -820,6 +820,7 @@
 			<module>enterpriseprojects/repository</module>
             <module>enterpriseprojects/remote-api</module>
             <module>enterpriseprojects/overlays</module>
+            <module>enterpriseprojects/spring-encryptor</module>
             <module>enterpriseprojects/server-root</module>
             <module>enterpriseprojects/vti-bin</module>
         </modules>
