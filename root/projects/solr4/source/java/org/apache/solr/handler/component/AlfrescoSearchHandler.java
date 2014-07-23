@@ -21,10 +21,16 @@ package org.apache.solr.handler.component;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexableField;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.SolrException.ErrorCode;
 import org.apache.solr.common.params.CommonParams;
@@ -36,8 +42,15 @@ import org.apache.solr.core.CloseHook;
 import org.apache.solr.core.PluginInfo;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.handler.RequestHandlerBase;
+import org.apache.solr.highlight.SolrHighlighter;
 import org.apache.solr.request.SolrQueryRequest;
+import org.apache.solr.response.ResultContext;
 import org.apache.solr.response.SolrQueryResponse;
+import org.apache.solr.schema.IndexSchema;
+import org.apache.solr.schema.SchemaField;
+import org.apache.solr.search.DocIterator;
+import org.apache.solr.search.DocList;
+import org.apache.solr.search.ReturnFields;
 import org.apache.solr.util.RTimer;
 import org.apache.solr.util.SolrPluginUtils;
 import org.apache.solr.util.plugin.PluginInfoInitialized;
@@ -266,6 +279,19 @@ public class AlfrescoSearchHandler extends RequestHandlerBase implements SolrCor
                     rb.addDebugInfo("timing", timer.asNamedList());
                 }
             }
+            
+            // Fill in the Results context
+            NamedList values = rsp.getValues();
+            ResultContext response = (ResultContext)values.get("response");
+            SolrDocumentList newResponse = new SolrDocumentList();
+            DocList docs = response.docs;
+            for(DocIterator it = docs.iterator(); it.hasNext(); /**/)
+            {
+                newResponse.add(toSolrDocument(req.getSearcher().doc(it.nextDoc()), req.getSchema()));
+            }
+            values.remove("response");
+            values.add("response", newResponse);
+            
         }
         else
         {
@@ -450,8 +476,29 @@ public class AlfrescoSearchHandler extends RequestHandlerBase implements SolrCor
     {
         return "$URL: https://svn.apache.org/repos/asf/lucene/dev/branches/lucene_solr_4_8/solr/core/src/java/org/apache/solr/handler/component/SearchHandler.java $";
     }
+    
+    public final SolrDocument toSolrDocument( Document doc, IndexSchema schema)
+    {
+      SolrDocument out = new SolrDocument();
+      for( IndexableField f : doc) {
+        // Make sure multivalued fields are represented as lists
+        Object existing = out.get(f.name());
+        if (existing == null) {
+          SchemaField sf = schema.getFieldOrNull(f.name());
+          if (sf != null && sf.multiValued()) {
+            List<Object> vals = new ArrayList<>();
+            vals.add( f );
+            out.setField( f.name(), vals );
+          } 
+          else{
+            out.setField( f.name(), f );
+          }
+        }
+        else {
+          out.addField( f.name(), f );
+        }
+      }
+      return out;
+    }
 }
-
-// TODO: generalize how a comm component can fit into search component framework
-// TODO: statics should be per-core singletons
 
