@@ -109,7 +109,7 @@ public class AclTracker extends SingleThreadedAclTracker
     /**
      * Default constructor, for testing.
      */
-    public AclTracker()
+    AclTracker()
     {
         super();
     }

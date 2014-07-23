@@ -24,6 +24,7 @@ import org.alfresco.solr.tracker.Tracker;
 import org.alfresco.solr.tracker.TrackerRegistry;
 import org.apache.solr.core.CloseHook;
 import org.apache.solr.core.SolrCore;
+import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +33,13 @@ public class AlfrescoSolrCloseHook extends CloseHook
 {
     protected final static Logger log = LoggerFactory.getLogger(AlfrescoSolrCloseHook.class);
     
-    AlfrescoCoreAdminHandler adminHandler;
+    private TrackerRegistry trackerRegistry;
+    private Scheduler scheduler;
     
     public AlfrescoSolrCloseHook(AlfrescoCoreAdminHandler adminHandler)
     {
-        this.adminHandler = adminHandler;
+        this.trackerRegistry = adminHandler.getTrackerRegistry();
+        this.scheduler = adminHandler.getScheduler();
     }
     
     @Override
@@ -46,19 +49,18 @@ public class AlfrescoSolrCloseHook extends CloseHook
         
         try
         {
-            TrackerRegistry trackers = this.adminHandler.getTrackerRegistry();
-            Collection<Tracker> coreTrackers = trackers.getTrackersForCore(core.getName());
+            Collection<Tracker> coreTrackers = trackerRegistry.getTrackersForCore(core.getName());
             
-            adminHandler.getScheduler().deleteJob("CoreTracker-" + core.getName(), "Solr");
-            trackers.removeTrackersForCore(core.getName());
+            scheduler.deleteJob("CoreTracker-" + core.getName(), "Solr");
+            trackerRegistry.removeTrackersForCore(core.getName());
             
             // Shuts down the scheduler if all cores have been closed
-            if (trackers.getCoreNames().size() == 0)
+            if (trackerRegistry.getCoreNames().size() == 0)
             {
-                if (!adminHandler.getScheduler().isShutdown())
+                if (!scheduler.isShutdown())
                 {
-                    adminHandler.getScheduler().pauseAll();
-                    adminHandler.getScheduler().shutdown();
+                    scheduler.pauseAll();
+                    scheduler.shutdown();
                 }
             }
 
@@ -85,9 +87,8 @@ public class AlfrescoSolrCloseHook extends CloseHook
      */
     private void setTrackersShutdown(SolrCore core)
     {
-        this.adminHandler.getModelTracker().setShutdown(true);
-        TrackerRegistry trackers = this.adminHandler.getTrackerRegistry();
-        Collection<Tracker> coreTrackers = trackers.getTrackersForCore(core.getName());
+        trackerRegistry.getModelTracker().setShutdown(true);
+        Collection<Tracker> coreTrackers = trackerRegistry.getTrackersForCore(core.getName());
         
         for(Tracker tracker : coreTrackers)
         {

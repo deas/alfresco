@@ -58,6 +58,15 @@ public class ModelTracker extends AbstractTracker implements Tracker
         super(scheduler, id, p, client, coreName, informationServer);
     }
     
+
+    /**
+     * Default constructor, for testing.
+     */
+    ModelTracker()
+    {
+        // Testing purposes only
+    }
+
     @Override
     public void doTrack() throws AuthenticationException, IOException, JSONException
     {

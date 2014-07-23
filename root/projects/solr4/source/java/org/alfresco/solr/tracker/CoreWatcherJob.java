@@ -53,7 +53,8 @@ public class CoreWatcherJob implements Job
         for (SolrCore core : adminHandler.getCoreContainer().getCores())
         {
             String coreName = core.getName();
-            if (!adminHandler.getTrackerRegistry().hasTrackersForCore(coreName))
+            TrackerRegistry trackerRegistry = adminHandler.getTrackerRegistry();
+            if (!trackerRegistry.hasTrackersForCore(coreName))
             {
                 if (core.getSolrConfig().getBool("alfresco/track", false))
                 {
@@ -74,16 +75,20 @@ public class CoreWatcherJob implements Job
                                 srv.getDictionaryService(CMISStrictDictionaryService.DEFAULT), 
                                 srv.getNamespaceDAO());
                                 
+                    if (trackerRegistry.getModelTracker() == null)
+                    {
+                        ModelTracker mTracker = new ModelTracker(scheduler, id, props, repositoryClient, coreName, srv);
+                        trackerRegistry.setModelTracker(mTracker);
+                    }
+                    
                     AclTracker aclTracker = new AclTracker(scheduler, id, props, repositoryClient, coreName, srv);
-                    adminHandler.getTrackerRegistry().register(coreName, aclTracker);
+                    trackerRegistry.register(coreName, aclTracker);
                     
                     ContentTracker contentTracker = new ContentTracker();
-                    adminHandler.getTrackerRegistry().register(coreName, contentTracker);
+                    trackerRegistry.register(coreName, contentTracker);
                     
                     MetadataTracker metadataTracker = new MetadataTracker();
-                    adminHandler.getTrackerRegistry().register(coreName, metadataTracker);
-                    
-                    // ModelTracker is created per adminHandler, not per core, and therefore is not registered.
+                    trackerRegistry.register(coreName, metadataTracker);
                 }
             }
         }

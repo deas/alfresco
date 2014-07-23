@@ -23,13 +23,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Registry of trackers for an AdminHandler
+ * @author Ahmed Owian
+ */
 public class TrackerRegistry
 {
     /*
-     *  Keyed on core name and Tracker class
+     *  Keyed on core name and Tracker class.
      *  This facilitates getting a particular type of Tracker for a given core
      */
     private Map<String, ConcurrentHashMap<Class<? extends Tracker>, Tracker>> trackers = new ConcurrentHashMap<>();
+    
+    /*
+     * There is one ModelTracker per Alfresco data schema/repository, and it has no dependency on cores.
+     */
+    private ModelTracker modelTracker;
     
     public Set<String> getCoreNames()
     {
@@ -74,5 +83,15 @@ public class TrackerRegistry
     public boolean removeTrackersForCore(String coreName)
     {
         return this.trackers.remove(coreName) != null;
+    }
+
+    public ModelTracker getModelTracker()
+    {
+        return modelTracker;
+    }
+
+    public void setModelTracker(ModelTracker modelTracker)
+    {
+        this.modelTracker = modelTracker;
     }
 }

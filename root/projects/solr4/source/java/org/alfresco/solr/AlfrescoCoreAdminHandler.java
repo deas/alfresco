@@ -46,7 +46,6 @@ import org.alfresco.solr.tracker.AclTracker;
 import org.alfresco.solr.tracker.CoreWatcherJob;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.MetadataTracker;
-import org.alfresco.solr.tracker.ModelTracker;
 import org.alfresco.solr.tracker.Tracker;
 import org.alfresco.solr.tracker.TrackerRegistry;
 import org.alfresco.util.CachingDateFormat;
@@ -83,9 +82,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     
     private Scheduler scheduler = null;
     private TrackerRegistry trackerRegistry = new TrackerRegistry();
-    private ModelTracker modelTracker = new ModelTracker();
     private ConcurrentHashMap<String, InformationServer> informationServers = new ConcurrentHashMap<String, InformationServer>();
-
     
     public AlfrescoCoreAdminHandler()
     {
@@ -129,7 +126,6 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             {
                 e.printStackTrace();
             }
-
         }
         catch (SchedulerException e)
         {
@@ -1361,10 +1357,4 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     {
         return scheduler;
     }
-
-    public ModelTracker getModelTracker()
-    {
-        return modelTracker;
-    }
-
 }
