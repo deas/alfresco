@@ -801,14 +801,6 @@
            depends="compile-solr4">
       <run-tests projectdir="${dir.project.solr4}" additionalclasspath="classpath.unit.test.beyondrepo" />
    </target>
-   
-   <target name="generate-javadocs-solr4" 
-           depends="init">
-      <generate-javadocs documenttitle="Alfresco SOLR4 integration ${version.number}" 
-                         windowtitle="Alfresco SOLR4 Integration" 
-                         projectdir="${dir.project.solr4}"/>
-   </target>
-
 
    <!-- ****************** -->
    <!-- ** SOLR Client Project ** -->
