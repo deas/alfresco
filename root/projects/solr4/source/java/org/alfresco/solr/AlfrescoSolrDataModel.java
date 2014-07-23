@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -56,9 +57,10 @@ import org.alfresco.service.namespace.NamespaceException;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AlfrescoClientDataModelServicesFactory.DictionaryKey;
 import org.alfresco.solr.client.AlfrescoModel;
+import org.alfresco.solr.tracker.pool.DefaultTrackerPoolFactory;
+import org.alfresco.solr.tracker.pool.TrackerPoolFactory;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.NumericEncoder;
-import org.alfresco.util.ThreadPoolExecutorFactoryBean;
 import org.alfresco.util.cache.DefaultAsynchronouslyRefreshedCacheRegistry;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.SortedDocValues;
@@ -133,9 +135,9 @@ public class AlfrescoSolrDataModel
            compiledModelsCache.setDictionaryDAO(dictionaryDAO);
            compiledModelsCache.setTenantService(tenantService);
            compiledModelsCache.setRegistry(new DefaultAsynchronouslyRefreshedCacheRegistry());
-           ThreadPoolExecutorFactoryBean threadPoolfactory = new ThreadPoolExecutorFactoryBean();
-           threadPoolfactory.afterPropertiesSet();
-           compiledModelsCache.setThreadPoolExecutor((ThreadPoolExecutor) threadPoolfactory.getObject());
+           TrackerPoolFactory trackerPoolFactory = new DefaultTrackerPoolFactory(new Properties(), "_dictionary_");
+           ThreadPoolExecutor threadPool = trackerPoolFactory.create();
+           compiledModelsCache.setThreadPoolExecutor(threadPool);
 
         
            dictionaryDAO.setDictionaryRegistryCache(compiledModelsCache);
