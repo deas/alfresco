@@ -74,6 +74,19 @@ public class ModelTrackerTest
     @AfterClass
     public static void tearDownAfterClass() throws Exception
     {
+        try {
+            File alfrescoModelDir = new File("alfrescoModels");
+            File[] listFiles = alfrescoModelDir.listFiles();
+            for (File file : listFiles) 
+            {
+                file.delete();
+            }
+            alfrescoModelDir.delete();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Before
