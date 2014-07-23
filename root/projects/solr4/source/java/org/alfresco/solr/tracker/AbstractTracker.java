@@ -54,8 +54,6 @@ public abstract class AbstractTracker implements Tracker
 
     protected String coreName;
 
-    protected String cron;
-
     protected StoreRef storeRef;
     protected long batchCount;
 
@@ -83,7 +81,7 @@ public abstract class AbstractTracker implements Tracker
     {
     }
     
-    protected AbstractTracker(Scheduler scheduler, String id, Properties p, SOLRAPIClient client, 
+    protected AbstractTracker(SolrTrackerScheduler scheduler, String id, Properties p, SOLRAPIClient client, 
                 String coreName, InformationServer informationServer)
     {
         this.props = p;
@@ -92,7 +90,6 @@ public abstract class AbstractTracker implements Tracker
         this.coreName = coreName;
         this.infoSrv = informationServer;
 
-        cron =  p.getProperty("alfresco.cron", "0/15 * * * * ? *");
         storeRef = new StoreRef(p.getProperty("alfresco.stores"));
         batchCount = Integer.parseInt(p.getProperty("alfresco.batch.count", "1000"));
         maxLiveSearchers =  Integer.parseInt(p.getProperty("alfresco.maxLiveSearchers", "2"));
@@ -101,31 +98,9 @@ public abstract class AbstractTracker implements Tracker
 
         this.trackerStats = new TrackerStats(this.infoSrv);
         
-        alfrescoVersion = p.getProperty("alfresco.version", "4.2.2");
+        scheduler.schedule(this, coreName, p);
 
-        initCoreTrackerJob(scheduler);
-    }
-    
-    private void initCoreTrackerJob(Scheduler scheduler)
-    {
-        JobDetail job = new JobDetail("CoreTracker-" + coreName, "Solr", TrackerJob.class);
-        JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put("TRACKER", this);
-        job.setJobDataMap(jobDataMap);
-        Trigger trigger;
-        try
-        {
-            trigger = new CronTrigger("CoreTrackerTrigger" + coreName, "Solr", cron);
-            scheduler.scheduleJob(job, trigger);
-        }
-        catch (ParseException e)
-        {
-            e.printStackTrace();
-        }
-        catch (SchedulerException e)
-        {
-            e.printStackTrace();
-        }
+        alfrescoVersion = p.getProperty("alfresco.version", "4.2.2");
         log.info("Solr built for Alfresco version: " + alfrescoVersion);
     }
     

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.alfresco.solr.tracker;
 
 import java.util.Properties;
@@ -27,6 +28,7 @@ import org.alfresco.httpclient.HttpClientFactory;
 import org.alfresco.httpclient.HttpClientFactory.SecureCommsType;
 import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
+import org.alfresco.solr.AlfrescoSolrCloseHook;
 import org.alfresco.solr.SolrInformationServer;
 import org.alfresco.solr.SolrKeyResourceLoader;
 import org.alfresco.solr.client.SOLRAPIClient;
@@ -40,15 +42,19 @@ import org.quartz.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This job when scheduled periodically goes through the Solr cores and sets up trackers, etc. for each core.
+ */
 public class CoreWatcherJob implements Job
 {
+    public static final String JOBDATA_ADMIN_HANDLER_KEY = "ADMIN_HANDLER";
     protected static final Logger log = LoggerFactory.getLogger(CoreWatcherJob.class);
-    
-    
+
     @Override
     public void execute(JobExecutionContext jec) throws JobExecutionException
     {
-        AlfrescoCoreAdminHandler adminHandler = (AlfrescoCoreAdminHandler) jec.getJobDetail().getJobDataMap().get("ADMIN_HANDLER");
+        AlfrescoCoreAdminHandler adminHandler = (AlfrescoCoreAdminHandler) jec.getJobDetail().getJobDataMap()
+                    .get(JOBDATA_ADMIN_HANDLER_KEY);
 
         for (SolrCore core : adminHandler.getCoreContainer().getCores())
         {
@@ -59,34 +65,35 @@ public class CoreWatcherJob implements Job
                 if (core.getSolrConfig().getBool("alfresco/track", false))
                 {
                     log.info("Starting to track " + coreName);
-                    
+
+                    core.addCloseHook(new AlfrescoSolrCloseHook(adminHandler));
+
                     // Registers the information server and the trackers.
                     SolrInformationServer srv = new SolrInformationServer(adminHandler, core);
                     adminHandler.getInformationServers().put(coreName, srv);
-                    
-                    Scheduler scheduler = adminHandler.getScheduler();
+
+                    SolrTrackerScheduler scheduler = adminHandler.getScheduler();
                     SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
                     String id = loader.getInstanceDir();
                     Properties props = core.getResourceLoader().getCoreProperties();
                     SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
 
                     SOLRAPIClientFactory clientFactory = new SOLRAPIClientFactory();
-                    SOLRAPIClient repositoryClient = clientFactory.getSOLRAPIClient(props, keyResourceLoader, 
-                                srv.getDictionaryService(CMISStrictDictionaryService.DEFAULT), 
-                                srv.getNamespaceDAO());
-                                
+                    SOLRAPIClient repositoryClient = clientFactory.getSOLRAPIClient(props, keyResourceLoader,
+                                srv.getDictionaryService(CMISStrictDictionaryService.DEFAULT), srv.getNamespaceDAO());
+
                     if (trackerRegistry.getModelTracker() == null)
                     {
                         ModelTracker mTracker = new ModelTracker(scheduler, id, props, repositoryClient, coreName, srv);
                         trackerRegistry.setModelTracker(mTracker);
                     }
-                    
+
                     AclTracker aclTracker = new AclTracker(scheduler, id, props, repositoryClient, coreName, srv);
                     trackerRegistry.register(coreName, aclTracker);
-                    
+
                     ContentTracker contentTracker = new ContentTracker();
                     trackerRegistry.register(coreName, contentTracker);
-                    
+
                     MetadataTracker metadataTracker = new MetadataTracker();
                     trackerRegistry.register(coreName, metadataTracker);
                 }

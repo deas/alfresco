@@ -63,7 +63,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         // Used for testing
     }
     
-    public SingleThreadedAclTracker(Scheduler scheduler, String id, Properties p, SOLRAPIClient client, 
+    public SingleThreadedAclTracker(SolrTrackerScheduler scheduler, String id, Properties p, SOLRAPIClient client, 
                 String coreName, InformationServer informationServer)
     {
         super(scheduler, id, p, client, coreName, informationServer);

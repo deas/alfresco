@@ -52,7 +52,7 @@ public class ModelTracker extends AbstractTracker implements Tracker
     private ReentrantReadWriteLock modelLock = new ReentrantReadWriteLock();
     boolean hasModels = false;
 
-    public ModelTracker(Scheduler scheduler, String id, Properties p, SOLRAPIClient client, 
+    public ModelTracker(SolrTrackerScheduler scheduler, String id, Properties p, SOLRAPIClient client, 
                 String coreName, InformationServer informationServer)
     {
         super(scheduler, id, p, client, coreName, informationServer);

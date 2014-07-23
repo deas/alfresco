@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TrackerJob implements Job
 {
-    private static final String JOBDATA_TRACKER_KEY = "TRACKER";
+    public static final String JOBDATA_TRACKER_KEY = "TRACKER";
     protected final static Logger log = LoggerFactory.getLogger(TrackerJob.class);
 
 

@@ -114,7 +114,7 @@ public class AclTracker extends SingleThreadedAclTracker
         super();
     }
     
-    public AclTracker(Scheduler scheduler, String id, Properties p, SOLRAPIClient client, 
+    public AclTracker(SolrTrackerScheduler scheduler, String id, Properties p, SOLRAPIClient client, 
                 String coreName, InformationServer informationServer)
     {
         super(scheduler, id, p, client, coreName, informationServer);

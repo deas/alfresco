@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -43,9 +42,9 @@ import org.alfresco.service.cmr.repository.datatype.Duration;
 import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.client.Node;
 import org.alfresco.solr.tracker.AclTracker;
-import org.alfresco.solr.tracker.CoreWatcherJob;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.MetadataTracker;
+import org.alfresco.solr.tracker.SolrTrackerScheduler;
 import org.alfresco.solr.tracker.Tracker;
 import org.alfresco.solr.tracker.TrackerRegistry;
 import org.alfresco.util.CachingDateFormat;
@@ -61,13 +60,6 @@ import org.apache.solr.handler.admin.CoreAdminHandler;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.response.SolrQueryResponse;
 import org.json.JSONException;
-import org.quartz.CronTrigger;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +72,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     private static final String ARG_ACLID = "aclid";
     private static final String ARG_NODEID = "nodeid";
     
-    private Scheduler scheduler = null;
+    private SolrTrackerScheduler scheduler = null;
     private TrackerRegistry trackerRegistry = new TrackerRegistry();
     private ConcurrentHashMap<String, InformationServer> informationServers = new ConcurrentHashMap<String, InformationServer>();
     
@@ -96,41 +88,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     {
         super(coreContainer);
 
-        // TODO: pick scheduler properties from SOLR config or file ...
-        try
-        {
-            StdSchedulerFactory factory = new StdSchedulerFactory();
-            Properties properties = new Properties();
-            properties.setProperty("org.quartz.scheduler.instanceName", "SolrTrackerScheduler");
-            properties.setProperty("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
-            properties.setProperty("org.quartz.threadPool.threadCount", "3");
-            properties.setProperty("org.quartz.threadPool.makeThreadsDaemons", "true");
-            properties.setProperty("org.quartz.scheduler.makeSchedulerThreadDaemon", "true");
-            properties.setProperty("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
-            factory.initialize(properties);
-            scheduler = factory.getScheduler();
-            scheduler.start();
-
-            // Start job to manage the tracker jobs
-            JobDetail job = new JobDetail("CoreWatcher", "Solr", CoreWatcherJob.class);
-            JobDataMap jobDataMap = new JobDataMap();
-            jobDataMap.put("ADMIN_HANDLER", this);
-            job.setJobDataMap(jobDataMap);
-            Trigger trigger;
-            try
-            {
-                trigger = new CronTrigger("CoreWatcherTrigger", "Solr", "0/20 * * * * ? *");
-                scheduler.scheduleJob(job, trigger);
-            }
-            catch (ParseException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        catch (SchedulerException e)
-        {
-            e.printStackTrace();
-        }
+        this.scheduler = new SolrTrackerScheduler(this);
 
         initResourceBasedLogging("log4j.properties");
         initResourceBasedLogging("log4j-solr.properties");
@@ -1353,7 +1311,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         return trackerRegistry;
     }
 
-    public Scheduler getScheduler()
+    public SolrTrackerScheduler getScheduler()
     {
         return scheduler;
     }
