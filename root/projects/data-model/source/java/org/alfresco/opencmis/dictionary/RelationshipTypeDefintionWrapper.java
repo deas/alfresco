@@ -66,8 +66,9 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
             typeDef.setIsCreatable(true);
         }
         
-        typeDef.setDisplayName(typeId);
-        typeDef.setDescription(typeDef.getDisplayName());
+        typeDef.setDisplayName(cmisClassDef.getTitle(dictionaryService) != null ? cmisClassDef.getTitle(dictionaryService) : typeId);
+        typeDef.setDescription(cmisClassDef.getDescription(dictionaryService) != null ? cmisClassDef.getDescription(dictionaryService) : typeDef
+                .getDisplayName());
 
         typeDef.setIsQueryable(false);
         typeDef.setIsFulltextIndexed(false);
@@ -99,8 +100,9 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
         typeDef.setQueryName(cmisMapping.buildPrefixEncodedString(alfrescoName));
         typeDef.setParentTypeId(BaseTypeId.CMIS_RELATIONSHIP.value());
 
-        typeDef.setDisplayName(typeId);
-        typeDef.setDescription(typeDef.getDisplayName());
+        typeDef.setDisplayName(cmisAssocDef.getTitle(dictionaryService) != null ? cmisAssocDef.getTitle(dictionaryService) : typeId);
+        typeDef.setDescription(cmisAssocDef.getDescription(dictionaryService) != null ? cmisAssocDef.getDescription(dictionaryService) : typeDef
+                .getDisplayName());
 
         typeDef.setIsCreatable(true);
         typeDef.setIsQueryable(false);

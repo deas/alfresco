@@ -62,8 +62,9 @@ public class DocumentTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
             }
         }
 
-        typeDef.setDisplayName(typeId);
-        typeDef.setDescription(typeDef.getDisplayName());
+        typeDef.setDisplayName((cmisClassDef.getTitle(dictionaryService) != null) ? cmisClassDef.getTitle(dictionaryService) : typeId);
+        typeDef.setDescription(cmisClassDef.getDescription(dictionaryService) != null ? cmisClassDef.getDescription(dictionaryService) : typeDef
+                .getDisplayName());
 
         typeDef.setIsCreatable(true);
         typeDef.setIsQueryable(true);

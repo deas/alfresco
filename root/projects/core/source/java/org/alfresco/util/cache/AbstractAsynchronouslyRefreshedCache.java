@@ -67,10 +67,10 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	    // State
 
 	    private List<RefreshableCacheListener> listeners = new LinkedList<RefreshableCacheListener>();
-	    protected final ReentrantReadWriteLock liveLock = new ReentrantReadWriteLock();
+	    private final ReentrantReadWriteLock liveLock = new ReentrantReadWriteLock();
 	    private final ReentrantReadWriteLock refreshLock = new ReentrantReadWriteLock();
 	    private final ReentrantReadWriteLock runLock = new ReentrantReadWriteLock();
-	    protected HashMap<String, T> live = new HashMap<String, T>();
+	    private HashMap<String, T> live = new HashMap<String, T>();
 	    private LinkedHashSet<Refresh> refreshQueue = new LinkedHashSet<Refresh>();
 	    private String cacheId;
 	    private RefreshState refreshState = RefreshState.IDLE;
