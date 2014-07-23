@@ -28,18 +28,13 @@ import org.slf4j.LoggerFactory;
  * Generic Solr tracker job, allowing Quartz to initiate an index update from
  * a {@link Tracker} regardless of specific implementation.
  * 
- * TODO: type parameterisation may be unecessary.
- * 
  * @author Matt Ward
  */
-public class TrackerJob<T extends Tracker> implements Job
+public class TrackerJob implements Job
 {
+    private static final String JOBDATA_TRACKER_KEY = "TRACKER";
     protected final static Logger log = LoggerFactory.getLogger(TrackerJob.class);
 
-    public TrackerJob()
-    {
-        super();
-    }
 
     /*
      * (non-Javadoc)
@@ -48,8 +43,19 @@ public class TrackerJob<T extends Tracker> implements Job
     @Override
     public void execute(JobExecutionContext jec) throws JobExecutionException
     {
-        // TODO: check TRACKER is instance of Tracker
-        T coreTracker = (T) jec.getJobDetail().getJobDataMap().get("TRACKER");
-        coreTracker.track();
+        Tracker tracker = getTracker(jec);
+        tracker.track();
+    }
+
+    /**
+     * Retrieve the {@link Tracker} from the {@link JobExecutionContext}.
+     * 
+     * @param jec  JobExecutionContext
+     * @return The tracker
+     */
+    private Tracker getTracker(JobExecutionContext jec)
+    {
+        Tracker tracker = (Tracker) jec.getJobDetail().getJobDataMap().get(JOBDATA_TRACKER_KEY);
+        return tracker;
     }
 }
