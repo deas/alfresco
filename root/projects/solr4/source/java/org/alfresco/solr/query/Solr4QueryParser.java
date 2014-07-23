@@ -123,18 +123,9 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     private MLAnalysisMode mlAnalysisMode = MLAnalysisMode.EXACT_LANGUAGE;
 
-    private IndexReader indexReader;
-
     private int internalSlop = 0;
 
-    /**
-     * @param indexReader
-     */
-    public void setIndexReader(IndexReader indexReader)
-    {
-        this.indexReader = indexReader;
-    }
-
+    
     /**
      * @param searchParameters
      */
@@ -163,12 +154,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     {
         return searchParameters;
     }
-
-    public IndexReader getIndexReader()
-    {
-        return indexReader;
-    }
-
+    
     protected Query getFieldQuery(String field, String queryText, int slop) throws ParseException
     {
         try
@@ -365,7 +351,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         {
             throw new UnsupportedOperationException("Span is not supported for " + FIELD_EXACTASPECT);
         }
-        else if (field.startsWith(PROPERTY_FIELD_PREFIX))
+        else if (isPropertyField(field))
         {
             return spanQueryBuilder(field, first, last, slop, inOrder);
         }
@@ -407,9 +393,9 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         {
             throw new UnsupportedOperationException("Span is not supported for " + FIELD_ISNOTNULL);
         }
-        else if (matchDataTypeDefinition(field) != null)
+        else if (QueryParserUtils.matchDataTypeDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, field) != null)
         {
-            Collection<QName> contentAttributes = dictionaryService.getAllProperties(matchDataTypeDefinition(field).getName());
+            Collection<QName> contentAttributes = dictionaryService.getAllProperties(QueryParserUtils.matchDataTypeDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService,field).getName());
             BooleanQuery query = new BooleanQuery();
             for (QName qname : contentAttributes)
             {
@@ -451,87 +437,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     }
 
-    private DataTypeDefinition matchDataTypeDefinition(String string) throws ParseException
-    {
-        QName search = QName.createQName(QueryParserUtils.expandQName(searchParameters.getNamespace(), namespacePrefixResolver, string));
-        DataTypeDefinition dataTypeDefinition = dictionaryService.getDataType(QName.createQName(QueryParserUtils.expandQName(searchParameters.getNamespace(), namespacePrefixResolver, string)));
-        QName match = null;
-        if (dataTypeDefinition == null)
-        {
-            for (QName definition : dictionaryService.getAllDataTypes())
-            {
-                if (definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
-                {
-                    if (definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
-                    {
-                        if (match == null)
-                        {
-                            match = definition;
-                        }
-                        else
-                        {
-                            throw new ParseException("Ambiguous data datype " + string);
-                        }
-                    }
-                }
-
-            }
-        }
-        else
-        {
-            return dataTypeDefinition;
-        }
-        if (match == null)
-        {
-            return null;
-        }
-        else
-        {
-            return dictionaryService.getDataType(match);
-        }
-    }
-
-    private PropertyDefinition matchPropertyDefinition(String string) throws ParseException
-    {
-        QName search = QName.createQName(QueryParserUtils.expandQName(searchParameters.getNamespace(), namespacePrefixResolver, string));
-        PropertyDefinition propertyDefinition = dictionaryService.getProperty(QName.createQName(QueryParserUtils.expandQName(searchParameters.getNamespace(), namespacePrefixResolver, string)));
-        QName match = null;
-        if (propertyDefinition == null)
-        {
-            for (QName definition : dictionaryService.getAllProperties(null))
-            {
-                if (definition.getNamespaceURI().equalsIgnoreCase(search.getNamespaceURI()))
-                {
-                    if (definition.getLocalName().equalsIgnoreCase(search.getLocalName()))
-                    {
-                        if (match == null)
-                        {
-                            match = definition;
-                        }
-                        else
-                        {
-                            throw new ParseException("Ambiguous data datype " + string);
-                        }
-                    }
-                }
-
-            }
-        }
-        else
-        {
-            return propertyDefinition;
-        }
-        if (match == null)
-        {
-            return null;
-        }
-        else
-        {
-            return dictionaryService.getProperty(match);
-        }
-    }
-
- 
+   
 
     
 
@@ -669,7 +575,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 return createAspectQuery(queryText, true);
             }
-            else if (field.startsWith(PROPERTY_FIELD_PREFIX))
+            else if (isPropertyField(field))
             {
                 Query query = attributeQueryBuilder(field, queryText, new FieldQuery(), analysisMode, luceneFunction);
                 return query;
@@ -690,7 +596,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 return createIsNotNull(queryText, analysisMode, luceneFunction);
             }
-            else if (matchDataTypeDefinition(field) != null)
+            else if (QueryParserUtils.matchDataTypeDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService,field) != null)
             {
                 return createDataTypeDefinitionQuery(field, queryText, analysisMode, luceneFunction);
             }
@@ -743,6 +649,12 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     }
 
+    private boolean isPropertyField(String field)
+    {
+        return field.startsWith(PROPERTY_FIELD_PREFIX);
+    }
+  
+    
     protected Query createTenantQuery(String queryText) throws ParseException
     {
        
@@ -820,7 +732,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     protected Query createDataTypeDefinitionQuery(String field, String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
-        Collection<QName> contentAttributes = dictionaryService.getAllProperties(matchDataTypeDefinition(field).getName());
+        Collection<QName> contentAttributes = dictionaryService.getAllProperties(QueryParserUtils.matchDataTypeDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService,field).getName());
         BooleanQuery query = new BooleanQuery();
         for (QName qname : contentAttributes)
         {
@@ -840,7 +752,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     protected Query createIsNotNull(String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
-        PropertyDefinition pd = matchPropertyDefinition(queryText);
+        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
         if (pd != null)
         {
             ClassDefinition containerClass = pd.getContainerClass();
@@ -864,7 +776,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     protected Query createIsNullQuery(String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
-        PropertyDefinition pd = matchPropertyDefinition(queryText);
+        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
         if (pd != null)
         {
             BooleanQuery query = new BooleanQuery();
@@ -884,7 +796,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     protected Query createIsUnsetQuery(String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException
     {
-        PropertyDefinition pd = matchPropertyDefinition(queryText);
+        PropertyDefinition pd = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, queryText);
         if (pd != null)
         {
             ClassDefinition containerClass = pd.getContainerClass();
@@ -1153,7 +1065,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         String testText = toTokenise;
         boolean requiresMLTokenDuplication = false;
         String localeString = null;
-        if (field.startsWith(PROPERTY_FIELD_PREFIX) && (localePrefix.length() == 0))
+        if (isPropertyField(field) && (localePrefix.length() == 0))
         {
             if ((queryText.length() > 0) && (queryText.charAt(0) == '\u0000'))
             {
@@ -2203,10 +2115,10 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         // FIELD_EXACTASPECT uses the default
         // FIELD_TYPE uses the default
         // FIELD_TYPE uses the default
-        if (field.startsWith(PROPERTY_FIELD_PREFIX))
+        if (isPropertyField(field))
         {
             String fieldName;
-            PropertyDefinition propertyDef = matchPropertyDefinition(field.substring(1));
+            PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, field.substring(1));
             if (propertyDef != null)
             {
                 fieldName = PROPERTY_FIELD_PREFIX + propertyDef.getName();
@@ -2337,9 +2249,9 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         // FIELD_ISUNSET uses the default
         // FIELD_ISNULL uses the default
         // FIELD_ISNOTNULL uses the default
-        else if (matchDataTypeDefinition(field) != null)
+        else if (QueryParserUtils.matchDataTypeDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService,field) != null)
         {
-            Collection<QName> contentAttributes = dictionaryService.getAllProperties(matchDataTypeDefinition(field).getName());
+            Collection<QName> contentAttributes = dictionaryService.getAllProperties(QueryParserUtils.matchDataTypeDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService,field).getName());
             BooleanQuery query = new BooleanQuery();
             for (QName qname : contentAttributes)
             {
@@ -2504,7 +2416,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             return super.getPrefixQuery(field, termStr);
             // throw new UnsupportedOperationException("Prefix Queries are not support for "+FIELD_EXACTASPECT);
         }
-        else if (field.startsWith(PROPERTY_FIELD_PREFIX))
+        else if (isPropertyField(field))
         {
             return attributeQueryBuilder(field, termStr, new PrefixQuery(), analysisMode, LuceneFunction.FIELD);
         }
@@ -2560,9 +2472,9 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         {
             throw new UnsupportedOperationException("Prefix Queries are not support for " + FIELD_ISNOTNULL);
         }
-        else if (matchDataTypeDefinition(field) != null)
+        else if (QueryParserUtils.matchDataTypeDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService,field) != null)
         {
-            Collection<QName> contentAttributes = dictionaryService.getAllProperties(matchDataTypeDefinition(field).getName());
+            Collection<QName> contentAttributes = dictionaryService.getAllProperties(QueryParserUtils.matchDataTypeDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService,field).getName());
             BooleanQuery query = new BooleanQuery();
             for (QName qname : contentAttributes)
             {
@@ -2681,7 +2593,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             return super.getWildcardQuery(field, termStr);
             // throw new UnsupportedOperationException("Wildcard Queries are not support for "+FIELD_EXACTASPECT);
         }
-        else if (field.startsWith(PROPERTY_FIELD_PREFIX))
+        else if (isPropertyField(field))
         {
             return attributeQueryBuilder(field, termStr, new WildcardQuery(), analysisMode, LuceneFunction.FIELD);
         }
@@ -2737,9 +2649,9 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         {
             throw new UnsupportedOperationException("Wildcard Queries are not support for " + FIELD_ISNOTNULL);
         }
-        else if (matchDataTypeDefinition(field) != null)
+        else if (QueryParserUtils.matchDataTypeDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService,field) != null)
         {
-            Collection<QName> contentAttributes = dictionaryService.getAllProperties(matchDataTypeDefinition(field).getName());
+            Collection<QName> contentAttributes = dictionaryService.getAllProperties(QueryParserUtils.matchDataTypeDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService,field).getName());
             BooleanQuery query = new BooleanQuery();
             for (QName qname : contentAttributes)
             {
@@ -2848,7 +2760,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         {
             throw new UnsupportedOperationException("Fuzzy Queries are not support for " + FIELD_EXACTASPECT);
         }
-        else if (field.startsWith(PROPERTY_FIELD_PREFIX))
+        else if (isPropertyField(field))
         {
             return attributeQueryBuilder(field, termStr, new FuzzyQuery(minSimilarity), AnalysisMode.FUZZY, LuceneFunction.FIELD);
         }
@@ -2904,9 +2816,9 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         {
             throw new UnsupportedOperationException("Fuzzy Queries are not support for " + FIELD_ISNOTNULL);
         }
-        else if (matchDataTypeDefinition(field) != null)
+        else if (QueryParserUtils.matchDataTypeDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService,field) != null)
         {
-            Collection<QName> contentAttributes = dictionaryService.getAllProperties(matchDataTypeDefinition(field).getName());
+            Collection<QName> contentAttributes = dictionaryService.getAllProperties(QueryParserUtils.matchDataTypeDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService,field).getName());
             BooleanQuery query = new BooleanQuery();
             for (QName qname : contentAttributes)
             {
@@ -3130,7 +3042,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         String propertyFieldName = field.substring(1);
 
         String expandedFieldName;
-        PropertyDefinition propertyDef = matchPropertyDefinition(propertyFieldName);
+        PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, propertyFieldName);
         IndexTokenisationMode tokenisationMode = IndexTokenisationMode.TRUE;
         if (propertyDef != null)
         {
@@ -3267,7 +3179,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
         String expandedFieldName;
         QName propertyQName;
-        PropertyDefinition propertyDef = matchPropertyDefinition(propertyFieldName);
+        PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, propertyFieldName);
         IndexTokenisationMode tokenisationMode = IndexTokenisationMode.TRUE;
         if (propertyDef != null)
         {
