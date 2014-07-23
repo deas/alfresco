@@ -28,16 +28,13 @@ import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2Namespace;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
-import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.ModelDefinition.XMLBindingType;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AclReport;
-import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.BoundedDeque;
 import org.alfresco.solr.IndexTrackingShutdownException;
 import org.alfresco.solr.InformationServer;
-import org.alfresco.solr.NodeReport;
 import org.alfresco.solr.SolrKeyResourceLoader;
 import org.alfresco.solr.TrackerState;
 import org.alfresco.solr.adapters.IOpenBitSet;
@@ -49,13 +46,10 @@ import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.solr.client.AlfrescoModelDiff;
 import org.alfresco.solr.client.GetNodesParameters;
 import org.alfresco.solr.client.Node;
-import org.alfresco.solr.client.NodeMetaData;
-import org.alfresco.solr.client.NodeMetaDataParameters;
+import org.alfresco.solr.client.Node.SolrApiNodeStatus;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Transactions;
-import org.alfresco.solr.client.Node.SolrApiNodeStatus;
-import org.alfresco.solr.client.SOLRAPIClient.GetTextContentResponse;
 import org.json.JSONException;
 import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
@@ -202,11 +196,6 @@ public class AclTracker implements Tracker
     //
     private volatile boolean shutdown = false;
 
-//    @Override
-    public TrackerStats getTrackerStats()
-    {
-        return trackerStats;
-    }
 
 //    @Override
     public int getMaxLiveSearchers()
@@ -553,45 +542,6 @@ public class AclTracker implements Tracker
         }
     }
 
-    // TX
-
-//    @Override
-    public void addTransactionToReindex(Long transactionToReindex)
-    {
-        transactionsToReindex.offer(transactionToReindex);
-    }
-
-//    @Override
-    public void addTransactionToIndex(Long transactionToIndex)
-    {
-        transactionsToIndex.offer(transactionToIndex);
-    }
-
-//    @Override
-    public void addTransactionToPurge(Long transactionToPurge)
-    {
-        transactionsToPurge.offer(transactionToPurge);
-    }
-
-    // Node
-
-//    @Override
-    public void addNodeToReindex(Long nodeToReindex)
-    {
-        nodesToReindex.offer(nodeToReindex);
-    }
-
-//    @Override
-    public void addNodeToIndex(Long nodeToIndex)
-    {
-        nodesToIndex.offer(nodeToIndex);
-    }
-
-//    @Override
-    public void addNodeToPurge(Long nodeToPurge)
-    {
-        nodesToPurge.offer(nodeToPurge);
-    }
 
     // ACL change sets
 
@@ -862,7 +812,7 @@ public class AclTracker implements Tracker
         }
 
         checkShutdown();
-        trackModels(false);
+//        trackModels(false);
         
         if(!isMaster && isSlave)
         {
@@ -1632,6 +1582,7 @@ public class AclTracker implements Tracker
         trackerStats.addAclTime(time);
     }
 
+    @Override
     public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime) 
                 throws AuthenticationException, IOException, JSONException
     {
@@ -1765,71 +1716,6 @@ public class AclTracker implements Tracker
                     aclTxIdsInDb, maxAclTxId);
     }
 
-//    @Override
-    public NodeReport checkNode(Node node)
-    {
-        NodeReport nodeReport = new NodeReport();
-        nodeReport.setDbid(node.getId());
-
-        nodeReport.setDbNodeStatus(node.getStatus());
-        nodeReport.setDbTx(node.getTxnId());
-
-        this.infoSrv.checkNodeCommon(nodeReport);
-
-        return nodeReport;
-    }
-
-    /**
-     * @param dbid
-     * @return
-     */
-//    @Override
-    public NodeReport checkNode(Long dbid)
-    {
-        NodeReport nodeReport = new NodeReport();
-        nodeReport.setDbid(dbid);
-
-        // In DB
-
-        GetNodesParameters parameters = new GetNodesParameters();
-        parameters.setFromNodeId(dbid);
-        parameters.setToNodeId(dbid);
-        List<Node> dbnodes;
-        try
-        {
-            dbnodes = client.getNodes(parameters, 1);
-            if (dbnodes.size() == 1)
-            {
-                Node dbnode = dbnodes.get(0);
-                nodeReport.setDbNodeStatus(dbnode.getStatus());
-                nodeReport.setDbTx(dbnode.getTxnId());
-            }
-            else
-            {
-                nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
-                nodeReport.setDbTx(-1l);
-            }
-        }
-        catch (IOException e)
-        {
-            nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
-            nodeReport.setDbTx(-2l);
-        }
-        catch (JSONException e)
-        {
-            nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
-            nodeReport.setDbTx(-3l);
-        }
-        catch (AuthenticationException e1)
-        {
-            nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
-            nodeReport.setDbTx(-4l);
-        }
-
-        this.infoSrv.checkNodeCommon(nodeReport);
-
-        return nodeReport;
-    }
 
 //    @Override
     public List<Node> getFullNodesForDbTransaction(Long txid)
@@ -1958,79 +1844,10 @@ public class AclTracker implements Tracker
         client.close();
     }
 
-//    @Override
-    public void trackModels(boolean onlyFirstTime)  throws AuthenticationException, IOException, JSONException
-    {
-        boolean requiresWriteLock = false;
-        modelLock.readLock().lock();
-        try
-        {
-            if(hasModels)
-            {
-                if(onlyFirstTime)
-                {
-                    return;
-                }
-                else
-                {
-                    requiresWriteLock = false;
-                }
-            }
-            else
-            {
-                requiresWriteLock = true;
-            }
-        }
-        finally
-        {
-            modelLock.readLock().unlock();
-        }
-
-        if(requiresWriteLock)
-        {
-            modelLock.writeLock().lock();
-            try
-            {
-                if(hasModels)
-                {
-                    if(onlyFirstTime)
-                    {
-                        return;
-                    }
-                }
-                
-                trackModelsImpl();
-                hasModels = true;
-            }
-            finally
-            {
-                modelLock.writeLock().unlock();
-            }
-        }
-        else
-        {
-            trackModelsImpl();
-        }
-    }
-
-//    @Override
-    public void ensureFirstModelSync()
-    {
-        try
-        {
-            trackModels(true);
-        }
-        catch(Throwable t)
-        {
-            log.error("Model tracking failed", t);
-        }
-        
-    }
-
-    /**
+	/**
      * @return Alfresco version Solr was built for
      */
-//    @Override
+    @Override
     public String getAlfrescoVersion()
     {
         return alfrescoVersion;
@@ -2041,31 +1858,14 @@ public class AclTracker implements Tracker
     {
         this.shutdown = shutdown;
     }
+        
     
-//    @Override
-    public List<NodeMetaData> getNodesMetaData(NodeMetaDataParameters params, int maxResults) throws AuthenticationException, IOException, JSONException 
-    {
-        return client.getNodesMetaData(params, maxResults);
-    }
-    
-//    @Override
-    public GetTextContentResponse getTextContent(Long nodeId, QName propertyQName, Long modifiedSince) throws AuthenticationException, IOException
-    {
-        return client.getTextContent(nodeId, propertyQName, modifiedSince);
-    }
-
-//    @Override
-    public boolean canAddContentPropertyToDoc() 
-    {
-        return (indexedDataTypes.isEmpty() || indexedDataTypes.contains(DataTypeDefinition.CONTENT))
-                    && !ignoredDataTypes.contains(DataTypeDefinition.CONTENT);
-    }
-    
+    // TODO: remove this method and rename updateIndex() to track() and apply @Override annotation.
     @Override
     public void track()
     {
-        // TODO Auto-generated method stub
-
+        // Delegating to old/existing method.
+        updateIndex();
     }
 
 }
