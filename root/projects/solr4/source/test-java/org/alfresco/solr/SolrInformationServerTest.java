@@ -27,7 +27,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
@@ -42,6 +44,11 @@ import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrResourceLoader;
 import org.apache.solr.update.AddUpdateCommand;
 import org.apache.solr.update.UpdateHandler;
+import org.apache.solr.update.processor.DistributedUpdateProcessorFactory;
+import org.apache.solr.update.processor.LogUpdateProcessorFactory;
+import org.apache.solr.update.processor.RunUpdateProcessorFactory;
+import org.apache.solr.update.processor.UpdateRequestProcessorChain;
+import org.apache.solr.update.processor.UpdateRequestProcessorFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +69,7 @@ public class SolrInformationServerTest
     private @Mock UpdateHandler updateHandler;
     private @Mock SolrResourceLoader resourceLoader;
     private @Mock SOLRAPIClient solrAPIClient;
+    private @Mock RunUpdateProcessorFactory runUpdateProcessorFactory;
     private SolrCore core;
     private CoreDescriptor coreDescriptor;
     private CoreContainer coreContainer;
@@ -76,12 +84,25 @@ public class SolrInformationServerTest
         core = new SolrCore("name", coreDescriptor);
         FieldUtils.writeField(core, "updateHandler", updateHandler, true);
         FieldUtils.writeField(core, "resourceLoader", resourceLoader, true);
+        
+        Map<String, UpdateRequestProcessorChain> map = new HashMap<>();
+        UpdateRequestProcessorFactory[] factories = new UpdateRequestProcessorFactory[]{
+               runUpdateProcessorFactory
+        };
+        UpdateRequestProcessorChain def = new UpdateRequestProcessorChain(factories, core);
+        map.put(null, def);
+        map.put("", def);
+        FieldUtils.writeField(core, "updateProcessorChains", map, true);
+        
+        
         infoServer = new SolrInformationServer(adminHandler, core, solrAPIClient);
     }
 
     @Test
     public void testIndexAcl() throws IOException
     {
+        assert(core.getUpdateProcessingChain(null) != null);
+        
         // Source/expected data
         List<AclReaders> aclReadersList = new ArrayList<AclReaders>();
         aclReadersList.add(new AclReaders(101, Arrays.asList("r1", "r2", "r3"), Arrays.asList("d1", "d2"), 999, "example.com"));

@@ -116,6 +116,7 @@ import org.apache.solr.update.AddUpdateCommand;
 import org.apache.solr.update.CommitUpdateCommand;
 import org.apache.solr.update.DeleteUpdateCommand;
 import org.apache.solr.update.RollbackUpdateCommand;
+import org.apache.solr.update.processor.UpdateRequestProcessor;
 import org.apache.solr.util.RefCounted;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -370,7 +371,16 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void commit() throws IOException
     {
-        this.core.getUpdateHandler().commit(new CommitUpdateCommand(getLocalSolrQueryRequest(), false));
+        UpdateRequestProcessor processor = this.core.getUpdateProcessingChain(null).createProcessor(getLocalSolrQueryRequest(), new SolrQueryResponse());
+        try
+        {
+            processor.processCommit(new CommitUpdateCommand(getLocalSolrQueryRequest(), false));
+        }
+        finally
+        {
+            processor.finish();
+        }
+        //this.core.getUpdateHandler().commit(new CommitUpdateCommand(getLocalSolrQueryRequest(), false));
     }
 
     @Override
@@ -893,30 +903,39 @@ public class SolrInformationServer implements InformationServer
     public long indexAcl(List<AclReaders> aclReaderList, boolean overwrite) throws IOException
     {
         long start = System.nanoTime();
-        for (AclReaders aclReaders : aclReaderList)
+        UpdateRequestProcessor processor = this.core.getUpdateProcessingChain(null).createProcessor(getLocalSolrQueryRequest(), new SolrQueryResponse());
+        try
         {
-            AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
-            cmd.overwrite = overwrite;
-            SolrInputDocument input = new SolrInputDocument();
-            input.addField("id", AlfrescoSolrDataModel.getAclDocumentId(aclReaders.getTenantDomain(), aclReaders.getId()));
-            // Do we need to get this right - the version stamp from the DB? 
-            input.addField("_version_", "0");
-            input.addField(QueryConstants.FIELD_ACLID, aclReaders.getId());
-            input.addField(QueryConstants.FIELD_INACLTXID, aclReaders.getAclChangeSetId());
-            String tenant = aclReaders.getTenantDomain();
-            for (String reader : aclReaders.getReaders())
+            for (AclReaders aclReaders : aclReaderList)
             {
-                reader = addTenantToAuthority(reader, tenant);
-                input.addField(QueryConstants.FIELD_READER, reader);
+                AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
+                cmd.overwrite = overwrite;
+                SolrInputDocument input = new SolrInputDocument();
+                input.addField("id", AlfrescoSolrDataModel.getAclDocumentId(aclReaders.getTenantDomain(), aclReaders.getId()));
+                // Do we need to get this right - the version stamp from the DB? 
+                input.addField("_version_", "0");
+                input.addField(QueryConstants.FIELD_ACLID, aclReaders.getId());
+                input.addField(QueryConstants.FIELD_INACLTXID, aclReaders.getAclChangeSetId());
+                String tenant = aclReaders.getTenantDomain();
+                for (String reader : aclReaders.getReaders())
+                {
+                    reader = addTenantToAuthority(reader, tenant);
+                    input.addField(QueryConstants.FIELD_READER, reader);
+                }
+                for (String denied : aclReaders.getDenied())
+                {
+                    denied = addTenantToAuthority(denied, tenant);
+                    input.addField(QueryConstants.FIELD_DENIED, denied);
+                }
+                cmd.solrDoc = input;
+                processor.processAdd(cmd);
+                //cmd.doc = LegacySolrInformationServer.toDocument(cmd.getSolrInputDocument(), core.getSchema(),  dataModel);
+                //core.getUpdateHandler().addDoc(cmd);
             }
-            for (String denied : aclReaders.getDenied())
-            {
-                denied = addTenantToAuthority(denied, tenant);
-                input.addField(QueryConstants.FIELD_DENIED, denied);
-            }
-            cmd.solrDoc = input;
-            //cmd.doc = LegacySolrInformationServer.toDocument(cmd.getSolrInputDocument(), core.getSchema(),  dataModel);
-            core.getUpdateHandler().addDoc(cmd);
+        }
+        finally
+        {
+            processor.finish();
         }
 
         long end = System.nanoTime();
@@ -962,23 +981,31 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void indexAclTransaction(AclChangeSet changeSet, boolean overwrite) throws IOException
     {
-        LocalSolrQueryRequest req = new LocalSolrQueryRequest(core, new NamedList<>());
-        AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
-        cmd.overwrite = overwrite;
-        SolrInputDocument input = new SolrInputDocument();
-        //input.addField(QueryConstants.FIELD_ID, "ACLTX-" + changeSet.getId());
-        input.addField("id", AlfrescoSolrDataModel.getAclChangeSetDocumentId(changeSet.getId()));
-        input.addField("_version_", "0");
-        input.addField(QueryConstants.FIELD_ACLTXID, changeSet.getId());
-        input.addField(QueryConstants.FIELD_INACLTXID, changeSet.getId());
-        input.addField(QueryConstants.FIELD_ACLTXCOMMITTIME, changeSet.getCommitTimeMs());
-        cmd.solrDoc = input;
-        //cmd.doc = toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
-        core.getUpdateHandler().addDoc(cmd);
-        putAclTransactionState(changeSet);
+        UpdateRequestProcessor processor = this.core.getUpdateProcessingChain(null).createProcessor(getLocalSolrQueryRequest(), new SolrQueryResponse());
+        try
+        {
+            LocalSolrQueryRequest req = new LocalSolrQueryRequest(core, new NamedList<>());
+            AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
+            cmd.overwrite = overwrite;
+            SolrInputDocument input = new SolrInputDocument();
+            //input.addField(QueryConstants.FIELD_ID, "ACLTX-" + changeSet.getId());
+            input.addField("id", AlfrescoSolrDataModel.getAclChangeSetDocumentId(changeSet.getId()));
+            input.addField("_version_", "0");
+            input.addField(QueryConstants.FIELD_ACLTXID, changeSet.getId());
+            input.addField(QueryConstants.FIELD_INACLTXID, changeSet.getId());
+            input.addField(QueryConstants.FIELD_ACLTXCOMMITTIME, changeSet.getCommitTimeMs());
+            cmd.solrDoc = input;
+            //cmd.doc = toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
+            processor.processAdd(cmd);
+            putAclTransactionState(processor, changeSet);
+        }
+        finally
+        {
+            processor.finish();
+        }
     }
     
-    public void putAclTransactionState(AclChangeSet changeSet) throws IOException
+    public void putAclTransactionState(UpdateRequestProcessor processor, AclChangeSet changeSet) throws IOException
     {
         LocalSolrQueryRequest req = new LocalSolrQueryRequest(core, new NamedList<>());
         AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
@@ -990,19 +1017,19 @@ public class SolrInformationServer implements InformationServer
         input.addField("S_INACLTXID", changeSet.getId());
         input.addField("S_ACLTXCOMMITTIME", changeSet.getCommitTimeMs());
         cmd.solrDoc = input;
-        core.getUpdateHandler().addDoc(cmd);
+        processor.processAdd(cmd);
     }
 
     @Override
     public void indexNode(Node node, boolean overwrite) throws IOException, AuthenticationException, JSONException
     {
-        RefCounted<SolrIndexSearcher> refCounted = null;
+        UpdateRequestProcessor processor = this.core.getUpdateProcessingChain(null).createProcessor(getLocalSolrQueryRequest(), new SolrQueryResponse());
         try
         {
             long start = System.nanoTime();
 
-            refCounted = core.getSearcher(false, true, null);
-            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            //refCounted = core.getSearcher(false, true, null);
+            //SolrIndexSearcher solrIndexSearcher = refCounted.get();
 
             if ((node.getStatus() == SolrApiNodeStatus.DELETED) || (node.getStatus() == SolrApiNodeStatus.UNKNOWN))
             {
@@ -1040,7 +1067,8 @@ public class SolrInformationServer implements InformationServer
                 log.debug(".. deleting");
                 DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(getLocalSolrQueryRequest());
                 delDocCmd.setQuery("DBID:"+node.getId());
-                core.getUpdateHandler().deleteByQuery(delDocCmd);
+                processor.processDelete(delDocCmd);
+                //core.getUpdateHandler().deleteByQuery(delDocCmd);
             }
 
             if ((node.getStatus() == SolrApiNodeStatus.UPDATED) || (node.getStatus() == SolrApiNodeStatus.UNKNOWN))
@@ -1067,29 +1095,29 @@ public class SolrInformationServer implements InformationServer
 
                     if (mayHaveChildren(nodeMetaData))
                     {
-                        log.info(".. checking for path change");
-                        BooleanQuery bQuery = new BooleanQuery();
-                        bQuery.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(QueryConstants.FIELD_DBID, nodeMetaData.getId())), Occur.MUST);
-                        bQuery.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(QueryConstants.FIELD_PARENT_ASSOC_CRC, nodeMetaData.getParentAssocsCrc())), Occur.MUST);
-                        DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
-                        if (docSet.size() > 0)
-                        {
-                            log.debug("... found match");
-                        }
-                        else
-                        {
-                            docSet = solrIndexSearcher.getDocSet(new TermQuery(AlfrescoSolrDataModel.getLongTerm(QueryConstants.FIELD_DBID, nodeMetaData.getId())));
-                            if (docSet.size() > 0)
-                            {
-                                log.debug("... cascade updating docs");
-                                LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-                                // TODO: updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited, solrIndexSearcher.getDocSet(skippingDocsQuery));
-                            }
-                            else
-                            {
-                                log.debug("... no doc to update");
-                            }
-                        }
+//                        log.info(".. checking for path change");
+//                        BooleanQuery bQuery = new BooleanQuery();
+//                        bQuery.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(QueryConstants.FIELD_DBID, nodeMetaData.getId())), Occur.MUST);
+//                        bQuery.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(QueryConstants.FIELD_PARENT_ASSOC_CRC, nodeMetaData.getParentAssocsCrc())), Occur.MUST);
+//                        DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
+//                        if (docSet.size() > 0)
+//                        {
+//                            log.debug("... found match");
+//                        }
+//                        else
+//                        {
+//                            docSet = solrIndexSearcher.getDocSet(new TermQuery(AlfrescoSolrDataModel.getLongTerm(QueryConstants.FIELD_DBID, nodeMetaData.getId())));
+//                            if (docSet.size() > 0)
+//                            {
+//                                log.debug("... cascade updating docs");
+//                                LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
+//                                // TODO: updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited, solrIndexSearcher.getDocSet(skippingDocsQuery));
+//                            }
+//                            else
+//                            {
+//                                log.debug("... no doc to update");
+//                            }
+//                        }
                     }
 
                     Map<QName, PropertyValue> properties = nodeMetaData.getProperties();
@@ -1107,7 +1135,8 @@ public class SolrInformationServer implements InformationServer
                                 log.debug(".. clearing unindexed");
                                 DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(getLocalSolrQueryRequest());
                                 delDocCmd.setQuery("DBID:"+node.getId());
-                                core.getUpdateHandler().deleteByQuery(delDocCmd);
+                                processor.processDelete(delDocCmd);
+                                //core.getUpdateHandler().deleteByQuery(delDocCmd);
 
                                 SolrInputDocument doc = new SolrInputDocument();
                                 //doc.addField(QueryConstants.FIELD_ID, "UNINDEXED-" + nodeMetaData.getId());
@@ -1118,7 +1147,8 @@ public class SolrInformationServer implements InformationServer
                                 doc.addField(QueryConstants.FIELD_INTXID, nodeMetaData.getTxnId());
 
                                 addDocCmd.solrDoc = doc;
-                                core.getUpdateHandler().addDoc(addDocCmd);
+                                processor.processAdd(addDocCmd);
+                                //core.getUpdateHandler().addDoc(addDocCmd);
 
                                 long end = System.nanoTime();
                                 this.trackerStats.addNodeTime(end - start);
@@ -1146,7 +1176,8 @@ public class SolrInformationServer implements InformationServer
                     log.debug(".. deleting");
                     DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(getLocalSolrQueryRequest());
                     delDocCmd.setQuery("DBID:"+node.getId());
-                    core.getUpdateHandler().deleteByQuery(delDocCmd);
+                    processor.processDelete(delDocCmd);
+                    //core.getUpdateHandler().deleteByQuery(delDocCmd);
 
                     SolrInputDocument doc = new SolrInputDocument();
                     doc.addField("id", AlfrescoSolrDataModel.getNodeDocumentId(nodeMetaData.getTenantDomain(), nodeMetaData.getAclId(), nodeMetaData.getId()));
@@ -1275,7 +1306,8 @@ public class SolrInformationServer implements InformationServer
 
                 if (addDocCmd.solrDoc != null)
                 {
-                    core.getUpdateHandler().addDoc(addDocCmd);
+                    processor.processAdd(addDocCmd);
+                    //core.getUpdateHandler().addDoc(addDocCmd);
                 }
                
 
@@ -1294,7 +1326,8 @@ public class SolrInformationServer implements InformationServer
             log.debug(".. deleting on exception");
             DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(getLocalSolrQueryRequest());
             delDocCmd.setQuery("DBID:"+node.getId());
-            core.getUpdateHandler().deleteByQuery(delDocCmd);
+            processor.processDelete(delDocCmd);
+            //core.getUpdateHandler().deleteByQuery(delDocCmd);
 
             AddUpdateCommand addDocCmd = new AddUpdateCommand(getLocalSolrQueryRequest());
             addDocCmd.overwrite = overwrite;
@@ -1324,17 +1357,15 @@ public class SolrInformationServer implements InformationServer
            
             if (addDocCmd.solrDoc != null)
             {
-                core.getUpdateHandler().addDoc(addDocCmd);
+                processor.processAdd(addDocCmd);
+                //core.getUpdateHandler().addDoc(addDocCmd);
             }
 
             log.warn("Node index failed and skipped for " + node.getId() + " in Tx " + node.getTxnId(), e);
         }
         finally
         {
-            if (refCounted != null)
-            {
-                refCounted.decref();
-            }
+            processor.finish();
         }
       
 
@@ -1344,13 +1375,13 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void indexNodes(List<Node> nodes, boolean overwrite) throws IOException, AuthenticationException, JSONException
     {
-        RefCounted<SolrIndexSearcher> refCounted = null;
+        UpdateRequestProcessor processor = this.core.getUpdateProcessingChain(null).createProcessor(getLocalSolrQueryRequest(), new SolrQueryResponse());
         try
         {
             long start = System.nanoTime();
 
-            refCounted = core.getSearcher(false, true, null);
-            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            //refCounted = core.getSearcher(false, true, null);
+            //SolrIndexSearcher solrIndexSearcher = refCounted.get();
             
             Map<Long, Node> nodeIdsToNodes = new HashMap<>();
             EnumMap<SolrApiNodeStatus, List<Long>> nodeStatusToNodeIds = new EnumMap<SolrApiNodeStatus, List<Long>>(SolrApiNodeStatus.class);
@@ -1410,7 +1441,8 @@ public class SolrInformationServer implements InformationServer
                 }
                 query.delete(query.length() - 1 - OR.length(), query.length());
                 delDocCmd.setQuery(query.toString());
-                core.getUpdateHandler().deleteByQuery(delDocCmd);
+                processor.processDelete(delDocCmd);
+                //core.getUpdateHandler().deleteByQuery(delDocCmd);
             }
 
             if (!updatedNodeIds.isEmpty() || !unknownNodeIds.isEmpty()) 
@@ -1439,29 +1471,29 @@ public class SolrInformationServer implements InformationServer
 
                     if (mayHaveChildren(nodeMetaData))
                     {
-                        log.info(".. checking for path change");
-                        BooleanQuery bQuery = new BooleanQuery();
-                        bQuery.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(QueryConstants.FIELD_DBID, nodeMetaData.getId())), Occur.MUST);
-                        bQuery.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(QueryConstants.FIELD_PARENT_ASSOC_CRC, nodeMetaData.getParentAssocsCrc())), Occur.MUST);
-                        DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
-                        if (docSet.size() > 0)
-                        {
-                            log.debug("... found match");
-                        }
-                        else
-                        {
-                            docSet = solrIndexSearcher.getDocSet(new TermQuery(AlfrescoSolrDataModel.getLongTerm(QueryConstants.FIELD_DBID, nodeMetaData.getId())));
-                            if (docSet.size() > 0)
-                            {
-                                log.debug("... cascade updating docs");
-                                LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-                                // TODO: updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited, solrIndexSearcher.getDocSet(skippingDocsQuery));
-                            }
-                            else
-                            {
-                                log.debug("... no doc to update");
-                            }
-                        }
+//                        log.info(".. checking for path change");
+//                        BooleanQuery bQuery = new BooleanQuery();
+//                        bQuery.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(QueryConstants.FIELD_DBID, nodeMetaData.getId())), Occur.MUST);
+//                        bQuery.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(QueryConstants.FIELD_PARENT_ASSOC_CRC, nodeMetaData.getParentAssocsCrc())), Occur.MUST);
+//                        DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
+//                        if (docSet.size() > 0)
+//                        {
+//                            log.debug("... found match");
+//                        }
+//                        else
+//                        {
+//                            docSet = solrIndexSearcher.getDocSet(new TermQuery(AlfrescoSolrDataModel.getLongTerm(QueryConstants.FIELD_DBID, nodeMetaData.getId())));
+//                            if (docSet.size() > 0)
+//                            {
+//                                log.debug("... cascade updating docs");
+//                                LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
+//                                // TODO: updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited, solrIndexSearcher.getDocSet(skippingDocsQuery));
+//                            }
+//                            else
+//                            {
+//                                log.debug("... no doc to update");
+//                            }
+//                        }
                     }
 
                     Map<QName, PropertyValue> properties = nodeMetaData.getProperties();
@@ -1479,7 +1511,8 @@ public class SolrInformationServer implements InformationServer
                                 log.debug(".. clearing unindexed");
                                 DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(getLocalSolrQueryRequest());
                                 delDocCmd.setQuery("DBID:"+node.getId());
-                                core.getUpdateHandler().deleteByQuery(delDocCmd);
+                                processor.processDelete(delDocCmd);
+                                //core.getUpdateHandler().deleteByQuery(delDocCmd);
 
                                 SolrInputDocument doc = new SolrInputDocument();
                                 //doc.addField(QueryConstants.FIELD_ID, "UNINDEXED-" + nodeMetaData.getId());
@@ -1490,7 +1523,8 @@ public class SolrInformationServer implements InformationServer
                                 doc.addField(QueryConstants.FIELD_INTXID, nodeMetaData.getTxnId());
 
                                 addDocCmd.solrDoc = doc;
-                                core.getUpdateHandler().addDoc(addDocCmd);
+                                processor.processAdd(addDocCmd);
+                                //core.getUpdateHandler().addDoc(addDocCmd);
 
 //                                long end = System.nanoTime();
 //                                this.trackerStats.addNodeTime(end - start);
@@ -1518,7 +1552,8 @@ public class SolrInformationServer implements InformationServer
                     log.debug(".. deleting");
                     DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(getLocalSolrQueryRequest());
                     delDocCmd.setQuery("DBID:"+node.getId());
-                    core.getUpdateHandler().deleteByQuery(delDocCmd);
+                    processor.processDelete(delDocCmd);
+                    //core.getUpdateHandler().deleteByQuery(delDocCmd);
 
                     SolrInputDocument doc = new SolrInputDocument();
                     doc.addField("id", AlfrescoSolrDataModel.getNodeDocumentId(nodeMetaData.getTenantDomain(), nodeMetaData.getAclId(), nodeMetaData.getId()));
@@ -1649,7 +1684,8 @@ public class SolrInformationServer implements InformationServer
                     
                     if (addDocCmd.solrDoc != null)
                     {
-                        core.getUpdateHandler().addDoc(addDocCmd);
+                        processor.processAdd(addDocCmd);
+                        //core.getUpdateHandler().addDoc(addDocCmd);
                     }
                 }
 
@@ -1705,10 +1741,7 @@ public class SolrInformationServer implements InformationServer
         }
         finally
         {
-            if (refCounted != null)
-            {
-                refCounted.decref();
-            }
+            processor.finish();
         }
       
 
@@ -1933,21 +1966,30 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void indexTransaction(Transaction info, boolean overwrite) throws IOException
     {
-        AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
-        cmd.overwrite = overwrite;
-        SolrInputDocument input = new SolrInputDocument();
-        input.addField("id", AlfrescoSolrDataModel.getTransactionDocumentId(info.getId()));
-        input.addField("_version_", 0);
-        input.addField(QueryConstants.FIELD_TXID, info.getId());
-        input.addField(QueryConstants.FIELD_INTXID, info.getId());
-        input.addField(QueryConstants.FIELD_TXCOMMITTIME, info.getCommitTimeMs());
-        cmd.solrDoc = input;
-        core.getUpdateHandler().addDoc(cmd);
-        
-        putTransactionState(info);
+        UpdateRequestProcessor processor = this.core.getUpdateProcessingChain(null).createProcessor(getLocalSolrQueryRequest(), new SolrQueryResponse());
+        try
+        {
+            AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
+            cmd.overwrite = overwrite;
+            SolrInputDocument input = new SolrInputDocument();
+            input.addField("id", AlfrescoSolrDataModel.getTransactionDocumentId(info.getId()));
+            input.addField("_version_", 0);
+            input.addField(QueryConstants.FIELD_TXID, info.getId());
+            input.addField(QueryConstants.FIELD_INTXID, info.getId());
+            input.addField(QueryConstants.FIELD_TXCOMMITTIME, info.getCommitTimeMs());
+            cmd.solrDoc = input;
+            processor.processAdd(cmd);
+            //core.getUpdateHandler().addDoc(cmd);
+
+            putTransactionState(processor, info);
+        }
+        finally
+        {
+            processor.finish();
+        }
     }
     
-    public void putTransactionState(Transaction info) throws IOException
+    public void putTransactionState(UpdateRequestProcessor processor, Transaction info) throws IOException
     {
         AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
         cmd.overwrite = true;
@@ -1958,7 +2000,8 @@ public class SolrInformationServer implements InformationServer
         input.addField("S_INTXID", info.getId());
         input.addField("S_TXCOMMITTIME", info.getCommitTimeMs());
         cmd.solrDoc = input;
-        core.getUpdateHandler().addDoc(cmd);
+        processor.processAdd(cmd);
+        //core.getUpdateHandler().addDoc(cmd);
     }
 
     public boolean isInIndex(String field, long id) throws IOException
@@ -2039,7 +2082,17 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void rollback() throws IOException
     {
-        this.core.getUpdateHandler().rollback(new RollbackUpdateCommand(getLocalSolrQueryRequest()));
+        UpdateRequestProcessor processor = this.core.getUpdateProcessingChain(null).createProcessor(getLocalSolrQueryRequest(), new SolrQueryResponse());
+        try
+        {
+            processor.processRollback(new RollbackUpdateCommand(getLocalSolrQueryRequest()));
+            //this.core.getUpdateHandler().rollback(new RollbackUpdateCommand(getLocalSolrQueryRequest()));
+        }
+        finally
+        {
+            processor.finish();
+        }
+        
     }
 
 }
