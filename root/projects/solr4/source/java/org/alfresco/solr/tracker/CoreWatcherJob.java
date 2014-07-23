@@ -58,71 +58,65 @@ public class CoreWatcherJob implements Job
         CoreContainer coreContainer = adminHandler.getCoreContainer();
         for (SolrCore core : coreContainer.getCores())
         {
-            String coreName = core.getName();
-            TrackerRegistry trackerRegistry = adminHandler.getTrackerRegistry();
-            if (!trackerRegistry.hasTrackersForCore(coreName))
+            // Prevents other threads from creating trackers for this core before we are done registering
+            synchronized (core)
             {
-                Properties props = new CoreDescriptorDecorator(core.getCoreDescriptor()).getCoreProperties();
-                if (Boolean.parseBoolean(props.getProperty("enable.alfresco.tracking", "false")))
+                String coreName = core.getName();
+                TrackerRegistry trackerRegistry = adminHandler.getTrackerRegistry();
+                if (!trackerRegistry.hasTrackersForCore(coreName))
                 {
-                    log.info("Starting to track " + coreName);
-
-                    core.addCloseHook(new AlfrescoSolrCloseHook(adminHandler));
-
-                    SolrTrackerScheduler scheduler = adminHandler.getScheduler();
-                    SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
-                    SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
-
-                    SOLRAPIClientFactory clientFactory = new SOLRAPIClientFactory();
-                    SOLRAPIClient repositoryClient = clientFactory.getSOLRAPIClient(
-                                props,
-                                keyResourceLoader,
-                                AlfrescoSolrDataModel.getInstance().getDictionaryService(
-                                            CMISStrictDictionaryService.DEFAULT), AlfrescoSolrDataModel.getInstance()
-                                            .getNamespaceDAO());
-                    SolrContentStore solrContentStore = this.getSolrContentStore(coreContainer);
-                    
-                    // Registers the information server and the trackers.
-                    SolrInformationServer srv = new SolrInformationServer(adminHandler, core, repositoryClient,
-                                solrContentStore);
-                    adminHandler.getInformationServers().put(coreName, srv);
-
-                    if (trackerRegistry.getModelTracker() == null)
-                    {
-                        ModelTracker mTracker = new ModelTracker(scheduler, coreContainer.getSolrHome(), props,
-                                    repositoryClient, coreName, srv);
-                        trackerRegistry.setModelTracker(mTracker);
-                    }
-
-                    AclTracker aclTracker = new AclTracker(scheduler, props, repositoryClient, coreName, srv);
-                    trackerRegistry.register(coreName, aclTracker);
-
-                    ContentTracker contentTrkr = new ContentTracker(scheduler, props, repositoryClient, coreName, srv);
-                    trackerRegistry.register(coreName, contentTrkr);
-
-                    MetadataTracker metaTrkr = new MetadataTracker(scheduler, props, repositoryClient, coreName, srv);
-                    trackerRegistry.register(coreName, metaTrkr);
+                    registerForCore(adminHandler, coreContainer, core, coreName, trackerRegistry);
                 }
             }
         }
     }
 
 
+    /**
+     * Registers with the admin handler the information server and the trackers.
+     */
+    private void registerForCore(AlfrescoCoreAdminHandler adminHandler, CoreContainer coreContainer, SolrCore core,
+                String coreName, TrackerRegistry trackerRegistry) throws JobExecutionException
+    {
+        Properties props = new CoreDescriptorDecorator(core.getCoreDescriptor()).getCoreProperties();
+        if (Boolean.parseBoolean(props.getProperty("enable.alfresco.tracking", "false")))
+        {
+            core.addCloseHook(new AlfrescoSolrCloseHook(adminHandler));
+
+            SolrTrackerScheduler scheduler = adminHandler.getScheduler();
+            SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
+            SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
+            SOLRAPIClientFactory clientFactory = new SOLRAPIClientFactory();
+            SOLRAPIClient repositoryClient = clientFactory.getSOLRAPIClient(props, keyResourceLoader,
+                        AlfrescoSolrDataModel.getInstance().getDictionaryService(CMISStrictDictionaryService.DEFAULT),
+                        AlfrescoSolrDataModel.getInstance().getNamespaceDAO());
+            SolrContentStore solrContentStore = this.getSolrContentStore(coreContainer);
+            SolrInformationServer srv = new SolrInformationServer(adminHandler, core, repositoryClient,
+                        solrContentStore);
+            adminHandler.getInformationServers().put(coreName, srv);
+
+            log.info("Starting to track " + coreName);
+            if (trackerRegistry.getModelTracker() == null)
+            {
+                ModelTracker mTracker = new ModelTracker(scheduler, coreContainer.getSolrHome(), props,
+                            repositoryClient, coreName, srv);
+                trackerRegistry.setModelTracker(mTracker);
+            }
+
+            AclTracker aclTracker = new AclTracker(scheduler, props, repositoryClient, coreName, srv);
+            trackerRegistry.register(coreName, aclTracker);
+
+            ContentTracker contentTrkr = new ContentTracker(scheduler, props, repositoryClient, coreName, srv);
+            trackerRegistry.register(coreName, contentTrkr);
+
+            MetadataTracker metaTrkr = new MetadataTracker(scheduler, props, repositoryClient, coreName, srv);
+            trackerRegistry.register(coreName, metaTrkr);
+        }
+    }
+
     private SolrContentStore getSolrContentStore(CoreContainer coreContainer) throws JobExecutionException
     {
-        try
-        {
-            File tempFile = File.createTempFile("SolrContentStoreTest-", ".bin");
-            File tempFolder = tempFile.getParentFile();
-            String rootStr = tempFolder.getAbsolutePath() + "/" + System.currentTimeMillis();
-            rootStr = new File(rootStr).getAbsolutePath(); // Ensure we handle separator char
-            
-            // TODO: Replace with the rootStr from a properties file.
-            return new SolrContentStore(coreContainer.getSolrHome() + "ContentStore" );
-        }
-        catch (IOException e)
-        {
-            throw new JobExecutionException(e);
-        }
+        // TODO: Could specify the rootStr from a properties file.
+        return new SolrContentStore(coreContainer.getSolrHome() + "ContentStore" );
     }
 }
