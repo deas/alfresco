@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
  */
 public class SolrTrackerScheduler
 {
-    private static final String SOLR_JOB_GROUP = "Solr";
+    protected static final String SOLR_JOB_GROUP = "Solr";
     protected final static Logger log = LoggerFactory.getLogger(SolrTrackerScheduler.class);
-    private Scheduler scheduler;
+    protected Scheduler scheduler;
 
     public SolrTrackerScheduler(AlfrescoCoreAdminHandler adminHandler)
     {
@@ -111,7 +111,7 @@ public class SolrTrackerScheduler
         }
     }
 
-    private String getJobName(Tracker tracker, String coreName)
+    protected String getJobName(Tracker tracker, String coreName)
     {
         return tracker.getClass().getSimpleName() + "-" + coreName;
     }
