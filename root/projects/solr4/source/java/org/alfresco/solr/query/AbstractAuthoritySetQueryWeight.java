@@ -1,0 +1,96 @@
+/*
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.alfresco.solr.query;
+
+import java.io.IOException;
+
+import org.apache.lucene.index.AtomicReaderContext;
+import org.apache.lucene.index.IndexReaderContext;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermContext;
+import org.apache.lucene.search.CollectionStatistics;
+import org.apache.lucene.search.Explanation;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermStatistics;
+import org.apache.lucene.search.Weight;
+import org.apache.lucene.search.similarities.TFIDFSimilarity;
+import org.apache.solr.search.SolrIndexSearcher;
+
+/**
+ * Abstract {@link Weight} implementation for authority set queries.
+ * 
+ * @see AbstractAuthoritySetQuery
+ */
+public abstract class AbstractAuthoritySetQueryWeight extends Weight
+{
+    protected AbstractAuthoritySetQuery query;
+    protected SolrIndexSearcher searcher;
+    protected TFIDFSimilarity similarity;
+    protected float value;
+    protected float idf;
+    protected float queryNorm;
+    protected float queryWeight;
+    protected Explanation idfExp;
+    
+    public AbstractAuthoritySetQueryWeight(SolrIndexSearcher searcher, AbstractAuthoritySetQuery query, String termName) throws IOException
+    {
+        this.searcher = searcher;
+        this.query = query;
+        this.similarity = (TFIDFSimilarity) searcher.getSimilarity();
+        CollectionStatistics collectionStats = searcher.collectionStatistics("AUTHSET");
+        final IndexReaderContext context = searcher.getTopReaderContext();
+        final Term term = new Term(termName, query.authorities);
+        final TermContext termContext = TermContext.build(context, term);
+        TermStatistics termStats = searcher.termStatistics(term, termContext);
+        idfExp = similarity.idfExplain(collectionStats, termStats);
+        idf = idfExp.getValue();
+    }
+
+    @Override
+    public Query getQuery()
+    {
+        return query;
+    }
+    
+    @Override
+    public Explanation explain(AtomicReaderContext context, int doc) throws IOException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public float getValueForNormalization() throws IOException
+    {
+        return sumOfSquaredWeights();
+    }
+
+    @Override
+    public void normalize(float queryNorm, float topLevelBoost)
+    {
+        this.queryNorm = queryNorm;
+        queryWeight *= queryNorm;                   // normalize query weight
+        value = queryWeight * idf;                  // idf for document
+    }
+    
+    protected float sumOfSquaredWeights() throws IOException
+    {
+        queryWeight = idf * query.getBoost();       // compute query weight
+        return queryWeight * queryWeight;           // square it
+    }
+}
