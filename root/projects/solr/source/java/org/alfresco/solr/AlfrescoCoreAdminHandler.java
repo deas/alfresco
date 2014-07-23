@@ -268,7 +268,8 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
     Scheduler scheduler = null;
 
-    ConcurrentHashMap<String, Tracker> trackers = new ConcurrentHashMap<String, Tracker>();
+    // Maps keyed on core name
+    private ConcurrentHashMap<String, Tracker> trackers = new ConcurrentHashMap<String, Tracker>();
     private ConcurrentHashMap<String, InformationServer> informationServers = new ConcurrentHashMap<String, InformationServer>();
 
     private Date orderDate = new Date();
@@ -512,10 +513,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     {
                         dbid = Long.valueOf(params.get(ARG_NODEID));
                         NamedList<Object> report = new SimpleOrderedMap<Object>();
-                        for (String trackerName : trackers.keySet())
+                        for (String coreName : trackers.keySet())
                         {
-                            Tracker tracker = trackers.get(trackerName);
-                            report.add(trackerName, buildNodeReport(tracker, dbid));
+                            Tracker tracker = trackers.get(coreName);
+                            report.add(coreName, buildNodeReport(tracker, dbid));
                         }
                         rsp.add("report", report);
                     }
@@ -553,10 +554,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     {
                         aclid = Long.valueOf(params.get(ARG_ACLID));
                         NamedList<Object> report = new SimpleOrderedMap<Object>();
-                        for (String trackerName : trackers.keySet())
+                        for (String coreName : trackers.keySet())
                         {
-                            Tracker tracker = trackers.get(trackerName);
-                            report.add(trackerName, buildAclReport(tracker, aclid));
+                            Tracker tracker = trackers.get(coreName);
+                            report.add(coreName, buildAclReport(tracker, aclid));
                         }
                         rsp.add("report", report);
                     }
@@ -594,10 +595,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     {
                         txid = Long.valueOf(params.get(ARG_TXID));
                         NamedList<Object> report = new SimpleOrderedMap<Object>();
-                        for (String trackerName : trackers.keySet())
+                        for (String coreName : trackers.keySet())
                         {
-                            Tracker tracker = trackers.get(trackerName);
-                            report.add(trackerName, buildTxReport(tracker, txid));
+                            Tracker tracker = trackers.get(coreName);
+                            report.add(coreName, buildTxReport(tracker, txid));
                         }
                         rsp.add("report", report);
                     }
@@ -635,10 +636,10 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                     {
                         acltxid = Long.valueOf(params.get(ARG_ACLTXID));
                         NamedList<Object> report = new SimpleOrderedMap<Object>();
-                        for (String trackerName : trackers.keySet())
+                        for (String coreName : trackers.keySet())
                         {
-                            Tracker tracker = trackers.get(trackerName);
-                            report.add(trackerName, buildAclTxReport(tracker, acltxid));
+                            Tracker tracker = trackers.get(coreName);
+                            report.add(coreName, buildAclTxReport(tracker, acltxid));
                         }
                         rsp.add("report", report);
                     }
@@ -5711,7 +5712,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    public Map<QName, PropertyValue> getOrderProperties()
+    private Map<QName, PropertyValue> getOrderProperties()
     {
         double orderDoubleCount = -0.11d + orderTextCount * ((orderTextCount % 2 == 0) ? 0.1d : -0.1d);
         float orderFloatCount = -3.5556f + orderTextCount * ((orderTextCount % 2 == 0) ? 0.82f : -0.82f);
@@ -6942,7 +6943,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         core.getUpdateHandler().commit(new CommitUpdateCommand(false));
     }
 
-    public SolrInputDocument createLeafDocument(AlfrescoSolrDataModel dataModel, int txid, int dbid, NodeRef nodeRef, QName type, QName[] aspects,
+    private SolrInputDocument createLeafDocument(AlfrescoSolrDataModel dataModel, int txid, int dbid, NodeRef nodeRef, QName type, QName[] aspects,
             Map<QName, PropertyValue> properties, Map<QName, String> content) throws IOException
     {
         SolrInputDocument doc = new SolrInputDocument();
@@ -7214,7 +7215,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         return aux;
     }
 
-    public static SolrInputDocument createRootAclDocument()
+    private static SolrInputDocument createRootAclDocument()
     {
         SolrInputDocument doc = new SolrInputDocument();
         doc.addField("ACLID", "1");
@@ -7621,7 +7622,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
     }
 
-    public int copy(InputStream input, OutputStream output) throws IOException
+    private int copy(InputStream input, OutputStream output) throws IOException
     {
         byte[] buffer = new byte[2048 * 4];
         int count = 0;
@@ -7634,7 +7635,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         return count;
     }
 
-    public void deleteDirectory(File directory) throws IOException
+    private void deleteDirectory(File directory) throws IOException
     {
         if (!directory.exists())
         {

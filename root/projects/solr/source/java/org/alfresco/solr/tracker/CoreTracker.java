@@ -402,8 +402,7 @@ public class CoreTracker implements Tracker
         }
     }
 
-    @Override
-    public void indexAclChangeSets() throws AuthenticationException, IOException, JSONException
+    private void indexAclChangeSets() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclChangeSetsToIndex.peek() != null)
@@ -434,8 +433,7 @@ public class CoreTracker implements Tracker
         }
     }
 
-    @Override
-    public void indexAcls() throws AuthenticationException, IOException, JSONException
+    private void indexAcls() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclsToIndex.peek() != null)
@@ -457,8 +455,7 @@ public class CoreTracker implements Tracker
         }
     }
 
-    @Override
-    public void reindexAclChangeSets() throws AuthenticationException, IOException, JSONException
+    private void reindexAclChangeSets() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclChangeSetsToReindex.peek() != null)
@@ -492,8 +489,7 @@ public class CoreTracker implements Tracker
         }
     }
 
-    @Override
-    public void reindexAcls() throws AuthenticationException, IOException, JSONException
+    private void reindexAcls() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclsToReindex.peek() != null)
@@ -517,8 +513,7 @@ public class CoreTracker implements Tracker
         }
     }
 
-    @Override
-    public void purgeAclChangeSets() throws AuthenticationException, IOException, JSONException
+    private void purgeAclChangeSets() throws AuthenticationException, IOException, JSONException
     {       
         boolean requiresCommit = false;
         while (aclChangeSetsToPurge.peek() != null)
@@ -546,8 +541,7 @@ public class CoreTracker implements Tracker
         }
     }
     
-    @Override
-    public void purgeAcls() throws AuthenticationException, IOException, JSONException
+    private void purgeAcls() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclsToPurge.peek() != null)
@@ -864,8 +858,7 @@ public class CoreTracker implements Tracker
     }
 
 
-    @Override
-    public void trackRepository() throws IOException, AuthenticationException, JSONException
+    private void trackRepository() throws IOException, AuthenticationException, JSONException
     {
         // Is the InformationServer ready to update
         int registeredSearcherCount = this.infoSrv.getRegisteredSearcherCount();
