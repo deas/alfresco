@@ -137,8 +137,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void afterInitModels()
     {
-        // TODO Auto-generated method stub
-
+        this.dataModel.afterInitModels();
     }
 
     @Override

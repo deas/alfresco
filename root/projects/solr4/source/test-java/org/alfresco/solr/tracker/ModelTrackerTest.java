@@ -6,6 +6,8 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -35,10 +37,10 @@ public class ModelTrackerTest
 
     @Mock
     private SolrTrackerScheduler scheduler;
-    private String id;
+    private String id = null;
     @Mock
     private SOLRAPIClient repositoryClient;
-    private String coreName;
+    private String coreName = "theCoreName";
     @Mock
     private InformationServer srv;
     @Mock
@@ -95,6 +97,7 @@ public class ModelTrackerTest
         fail("Not yet implemented");
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testTrackModels() throws AuthenticationException, IOException, JSONException
     {
@@ -106,20 +109,39 @@ public class ModelTrackerTest
         List<AlfrescoModelDiff> modelDiffs = new ArrayList<>();
         modelDiffs.add(diff);
         when(this.repositoryClient.getModelsDiff(any(List.class))).thenReturn(modelDiffs);
-        String name = "a model name";
+        
+        final String name = "a model name";
         M2Model model = M2Model.createModel(name);
-        AlfrescoModel alfrescoModel = new AlfrescoModel(model , newChecksum);
+        M2Model spiedModel = spy(model);
+        model.createNamespace("uri", "prefix");
+        AlfrescoModel alfrescoModel = new AlfrescoModel(spiedModel , newChecksum);
         when(this.repositoryClient.getModel(modelName)).thenReturn(alfrescoModel);
+        
         NamespaceDAO namespaceDao = mock(NamespaceDAO.class);
         Collection<String> values = new ArrayList<>();
         values.add("prefix");
         when(namespaceDao.getPrefixes(anyString())).thenReturn(values);
         when(this.srv.getNamespaceDAO()).thenReturn(namespaceDao);
-        when(this.srv.getM2Model(modelName)).thenReturn(model);
+        when(this.srv.getM2Model(modelName)).thenReturn(spiedModel);
+        when(this.srv.putModel(spiedModel)).thenReturn(true);
         
         this.modelTracker.trackModels(false);
         
+        // Verification
+        verify(this.srv).afterInitModels();
         
+        File alfrescoModelDir = new File("alfrescoModels");
+        assertTrue(alfrescoModelDir.isDirectory());
+        
+        File[] modelRepresentations = alfrescoModelDir.listFiles(new FileFilter()
+            {
+                @Override
+                public boolean accept(File pathname)
+                {
+                    return pathname.getName().startsWith(name);
+                }
+            });
+        assertEquals(1, modelRepresentations.length);
     }
 
     @Test
