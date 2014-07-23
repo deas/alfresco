@@ -576,6 +576,7 @@
                     <truststoreFile>${project.parent.basedir}/projects/system-build-test/keystore/ssl.truststore</truststoreFile>
                     <truststorePass>kT9X6oe68t</truststorePass>
                     <truststoreType>JCEKS</truststoreType>
+                    <tomcatUsers>${project.parent.basedir}/packaging/installer/src/main/resources/bitrock/bitrock/alfresco/shared/tomcat-users.xml</tomcatUsers>
                 </configuration>
             </plugin>
             <plugin>
