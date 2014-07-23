@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.opencmis.dictionary.CMISAbstractDictionaryService;
@@ -42,6 +44,7 @@ import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
+import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2ModelDiff;
 import org.alfresco.repo.dictionary.NamespaceDAO;
@@ -61,6 +64,7 @@ import org.alfresco.solr.AlfrescoClientDataModelServicesFactory.DictionaryKey;
 import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.NumericEncoder;
+import org.alfresco.util.Pair;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.SortedDocValues;
 import org.apache.lucene.index.Term;
@@ -393,56 +397,102 @@ public class AlfrescoSolrDataModel
      * @param propertyQName
      * @return
      */
-    public List<String> getIndexedFieldNamesForProperty(QName propertyQName)
+    public IndexedField getIndexedFieldNamesForProperty(QName propertyQName)
     {
         // TODO: Cache and throw on model refresh
         
-        LinkedList<String> fieldNames = new LinkedList<>();
+        IndexedField indexedField = new IndexedField();
         PropertyDefinition propertyDefinition = getPropertyDefinition(propertyQName);
         if((propertyDefinition == null))
         { 
-            return fieldNames;
+            return indexedField;
         }
         if(!propertyDefinition.isIndexed() && !propertyDefinition.isStoredInIndex())
         {
-            return fieldNames;
+            return indexedField;
         }
 
         DataTypeDefinition dataTypeDefinition = propertyDefinition.getDataType();
-        if(isPrimaryType(dataTypeDefinition)) 
-        {
-            StringBuilder builder = new StringBuilder();
-            addPrefixForPrimaryType(builder, propertyDefinition.isMultiValued(), hasDocValues(propertyQName), dataTypeDefinition);
-            builder.append(QueryConstants.PROPERTY_FIELD_PREFIX);
-            builder.append(propertyQName.toString());
-            fieldNames.add(builder.toString());
-        }
-        else if(dataTypeDefinition.equals(DataTypeDefinition.MLTEXT))
-        {
+        if(isTextField(propertyDefinition))
+        { 
+            if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE)
+                    || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+            {
+                indexedField.addField(getFieldForText(true, true, false, propertyDefinition), true, false);
+                indexedField.addField(getFieldForText(false, true, false, propertyDefinition), false, false);
+            }
             
-        }
-        else if(dataTypeDefinition.equals(DataTypeDefinition.CONTENT))
-        {
+            if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
+                    || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+            {
+                indexedField.addField(getFieldForText(true, false, false, propertyDefinition), true, false);
+                indexedField.addField(getFieldForText(false, false, false, propertyDefinition), true, false);
+                
+            }
+
+            if(dataTypeDefinition.getName().equals(DataTypeDefinition.TEXT))
+            {
+                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
+                        || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                {
+                    indexedField.addField(getFieldForText(false, false, true, propertyDefinition), true, true);
+                }   
+            }
             
-        }
-        else if(dataTypeDefinition.equals(DataTypeDefinition.TEXT))
-        {
-    
+            if(dataTypeDefinition.getName().equals(DataTypeDefinition.MLTEXT))
+            {
+                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
+                        || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                {
+                    indexedField.addField(getFieldForText(true, false, true, propertyDefinition), true, true);
+                }   
+            }
+            
+            if(isSuggestable(propertyQName))
+            {
+                indexedField.addField("suggest", false, false);
+            }
         }
         else
         {
-            // generic properties as text
+            indexedField.addField(getFieldForNonText(propertyDefinition), false, false);
         }
 
-        return fieldNames;
+        return indexedField;
 
     }
 
-       
-    /**
-     * @param propertyQName
-     * @return
-     */
+    private boolean isTextField(PropertyDefinition propertyDefinition)
+    {
+        QName propertyDataTypeQName = propertyDefinition.getDataType().getName();
+        if(propertyDataTypeQName.equals(DataTypeDefinition.MLTEXT))
+        {
+            return true;
+        }
+        else if(propertyDataTypeQName.equals(DataTypeDefinition.CONTENT))
+        {
+            return true;
+        }
+        else if(propertyDataTypeQName.equals(DataTypeDefinition.TEXT))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+         
+    private boolean isSuggestable(QName propertyQName)
+    {
+        if(propertyQName == null)
+        {
+            return false;
+        }
+        return propertyQName.equals(ContentModel.PROP_NAME);
+    }
+    
     private boolean hasDocValues(QName propertyQName)
     {
         if(propertyQName == null)
@@ -451,50 +501,38 @@ public class AlfrescoSolrDataModel
         }
         return propertyQName.equals(ContentModel.PROP_CREATED) || propertyQName.equals(ContentModel.PROP_MODIFIED); 
     }
-
-    private boolean isPrimaryType(DataTypeDefinition dataTypeDefinition)
+    
+    private String getFieldForNonText(PropertyDefinition propertyDefinition)
     {
-        // TODO: Boolean - did do as text
-        QName qName = dataTypeDefinition.getName();
-        return(qName.equals(DataTypeDefinition.DATE) || qName.equals(DataTypeDefinition.DATETIME) || qName.equals(DataTypeDefinition.DOUBLE) 
-                || qName.equals(DataTypeDefinition.FLOAT) || qName.equals(DataTypeDefinition.INT) || qName.equals(DataTypeDefinition.LONG));
+        StringBuilder builder = new StringBuilder();
+        QName qName = propertyDefinition.getDataType().getName();
+        builder.append(qName.getLocalName());
+        builder.append("@");
+        builder.append(propertyDefinition.isMultiValued() ? "m" : "s");
+        builder.append(hasDocValues(propertyDefinition.getName()) ? "d" : "_");
+        builder.append("@");
+        builder.append(propertyDefinition.getName().toString());
+        return builder.toString();
     }
     
-    private void addPrefixForPrimaryType(StringBuilder builder, boolean multi, boolean docValues, DataTypeDefinition dataTypeDefinition)
+    private String getFieldForText(boolean localised, boolean tokenised, boolean sort, PropertyDefinition propertyDefinition)
     {
-        builder.append(multi ? "mv" : "sv");
-        builder.append(docValues ? "dv" : "");
-        builder.append("_");
-        QName qName = dataTypeDefinition.getName();
-        if(qName.equals(DataTypeDefinition.DATE))
+        StringBuilder builder = new StringBuilder();
+        QName qName = propertyDefinition.getDataType().getName();
+        builder.append(qName.getLocalName());
+        builder.append("@");
+        if(!sort)
         {
-            builder.append("date");
-        }    
-        else if(qName.equals(DataTypeDefinition.DATETIME))
-        {
-            builder.append("date");
-        }
-        else if(qName.equals(DataTypeDefinition.DOUBLE))
-        {
-            builder.append("double");
-        }
-        else if(qName.equals(DataTypeDefinition.FLOAT))
-        {
-            builder.append("float");
-        }
-        else if(qName.equals(DataTypeDefinition.INT))
-        {
-            builder.append("int");
-        }
-        else if(qName.equals(DataTypeDefinition.LONG))
-        {
-            builder.append("long");
+            builder.append(localised ? "l" : "_");
+            builder.append(tokenised ? "t" : "_");
         }
         else
         {
-            // is not primary
+            builder.append("sort");
         }
-        
+        builder.append("@");
+        builder.append(propertyDefinition.getName().toString());
+        return builder.toString();
     }
     
     
@@ -1011,6 +1049,14 @@ public class AlfrescoSolrDataModel
         return answer;
 
     }
+
+    /**
+     * @return
+     */
+    public Map<String, Set<String>> getModelErrors()
+    {
+       return modelErrors;
+    }
     
     
 //    public static final class TextSortFieldComparator extends FieldComparator<String>
@@ -1313,4 +1359,66 @@ public class AlfrescoSolrDataModel
 //        }
 //    }
 
+   
+    public static class IndexedField
+    {
+
+        private List<FieldInstance> fields = new LinkedList<>();
+
+        public IndexedField()
+        {
+            super();
+        }
+        
+        public IndexedField(String prefix, boolean localised, boolean sort)
+        {
+            this();
+            addField(prefix, localised, sort);
+        }
+        
+        public List<FieldInstance> getFields()
+        {
+            return fields;
+        }
+
+        public void addField(String prefix, boolean localised, boolean sort)
+        {
+            fields.add(new FieldInstance(prefix, localised, sort));
+        }
+        
+    }
+    
+    public static class FieldInstance
+    {
+        String field;
+        boolean localised;
+        boolean sort;
+        
+        /**
+         * @param prefix
+         * @param localised2
+         * @param sort2
+         */
+        public FieldInstance(String field, boolean localised, boolean sort)
+        {
+            this.field = field;
+            this.localised = localised;
+            this.sort = sort;
+        }
+
+        public String getField()
+        {
+            return field;
+        }
+        
+        public boolean isLocalised()
+        {
+            return localised;
+        }
+
+        public boolean isSort()
+        {
+            return sort;
+        }   
+    }
 }

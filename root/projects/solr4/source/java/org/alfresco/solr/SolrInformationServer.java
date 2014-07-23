@@ -19,16 +19,26 @@
 
 package org.alfresco.solr;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -38,16 +48,22 @@ import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.repo.dictionary.DictionaryComponent;
+import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
+import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
+import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.solr.AlfrescoSolrDataModel.FieldInstance;
+import org.alfresco.solr.AlfrescoSolrDataModel.IndexedField;
 import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.adapters.ISimpleOrderedMap;
 import org.alfresco.solr.adapters.SolrOpenBitSetAdapter;
@@ -66,11 +82,13 @@ import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.StringPropertyValue;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Node.SolrApiNodeStatus;
+import org.alfresco.solr.client.SOLRAPIClient.GetTextContentResponse;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.TrackerStats;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.NumericEncoder;
 import org.alfresco.util.Pair;
+import org.alfresco.util.TempFileProvider;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.AtomicReaderContext;
@@ -106,6 +124,8 @@ import org.apache.solr.util.RefCounted;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.extensions.surf.util.I18NUtil;
+import org.springframework.util.FileCopyUtils;
 
 /**
  * This is the Solr4 implementation of the information server (index).
@@ -549,8 +569,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public Map<String, Set<String>> getModelErrors()
     {
-//        return dataModel.getModelErrors();
-        return null; // TODO
+        return AlfrescoSolrDataModel.getInstance().getModelErrors();
     }
 
     @Override
@@ -945,9 +964,9 @@ public class SolrInformationServer implements InformationServer
                 }
 
                 log.debug(".. deleting");
-                DeleteUpdateCommand docCmd = new DeleteUpdateCommand(getLocalSolrQueryRequest());
-                docCmd.setQuery("DBID:"+node.getId());
-                core.getUpdateHandler().deleteByQuery(docCmd);
+                DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(getLocalSolrQueryRequest());
+                delDocCmd.setQuery("DBID:"+node.getId());
+                core.getUpdateHandler().deleteByQuery(delDocCmd);
             }
 
             if ((node.getStatus() == SolrApiNodeStatus.UPDATED) || (node.getStatus() == SolrApiNodeStatus.UNKNOWN))
@@ -1050,18 +1069,10 @@ public class SolrInformationServer implements InformationServer
                     }
 
                     // Make sure any unindexed or error doc is removed.
-                    // TODO
-//                    DeleteUpdateCommand docCmd = new DeleteUpdateCommand();
-//                    docCmd.id = "UNINDEXED-" + node.getId();
-//                    docCmd.fromPending = true;
-//                    docCmd.fromCommitted = true;
-//                    core.getUpdateHandler().delete(docCmd);
-//
-//                    docCmd = new DeleteUpdateCommand();
-//                    docCmd.id = PREFIX_ERROR + node.getId();
-//                    docCmd.fromPending = true;
-//                    docCmd.fromCommitted = true;
-//                    core.getUpdateHandler().delete(docCmd);
+                    log.debug(".. deleting");
+                    DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(getLocalSolrQueryRequest());
+                    delDocCmd.setQuery("DBID:"+node.getId());
+                    core.getUpdateHandler().deleteByQuery(delDocCmd);
 
                     SolrInputDocument doc = new SolrInputDocument();
                     doc.addField("id", AlfrescoSolrDataModel.getNodeDocumentId(nodeMetaData.getTenantDomain(), nodeMetaData.getAclId(), nodeMetaData.getId()));
@@ -1070,25 +1081,41 @@ public class SolrInformationServer implements InformationServer
                     doc.addField(QueryConstants.FIELD_LID, nodeMetaData.getNodeRef());
                     doc.addField(QueryConstants.FIELD_INTXID, nodeMetaData.getTxnId());
 
-                    for (QName propertyQname : properties.keySet())
+                    for (QName propertyQName : properties.keySet())
                     {
+                        PropertyValue value = properties.get(propertyQName);
+                        if(value != null)
+                        {
+                            if (value instanceof StringPropertyValue)
+                            {
+                                for( FieldInstance  field : AlfrescoSolrDataModel.getInstance().getIndexedFieldNamesForProperty(propertyQName).getFields())
+                                {
+                                    addStringPropertyToDoc(doc, field, (StringPropertyValue) value, properties);
+                                }
+                            }
+                            else if (value instanceof MLTextPropertyValue)
+                            {
+                                for( FieldInstance  field : AlfrescoSolrDataModel.getInstance().getIndexedFieldNamesForProperty(propertyQName).getFields())
+                                {
+                                    addMLTextPropertyToDoc(doc, field, (MLTextPropertyValue) value);
+                                }
+
+                            }
+                            else if (value instanceof ContentPropertyValue)
+                            {
+                                if (isContentIndexedForNode)
+                                {
+                                    addContentPropertyToDoc(doc, propertyQName, nodeMetaData, (ContentPropertyValue) value);
+                                }
+                            }
+                        }
+
 //                        if (dataModel.isIndexedOrStored(propertyQname))
 //                        {
 //                            PropertyValue value = properties.get(propertyQname);
 //                            if (value != null)
 //                            {
-//                                if (value instanceof ContentPropertyValue)
-//                                {
-//                                    if (isContentIndexedForNode)
-//                                    {
-//                                        addContentPropertyToDoc(doc, toClose, toDelete, nodeMetaData, propertyQname,
-//                                                    (ContentPropertyValue) value);
-//                                    }
-//                                }
-//                                else if (value instanceof MLTextPropertyValue)
-//                                {
-//                                    addMLTextPropertyToDoc(doc, propertyQname, (MLTextPropertyValue) value);
-//                                }
+//                               
 //                                else if (value instanceof MultiPropertyValue)
 //                                {
 //                                    MultiPropertyValue typedValue = (MultiPropertyValue) value;
@@ -1115,10 +1142,7 @@ public class SolrInformationServer implements InformationServer
 //                                        }
 //                                    }
 //                                }
-//                                else if (value instanceof StringPropertyValue)
-//                                {
-//                                    addStringPropertyToDoc(doc, propertyQname, (StringPropertyValue) value, properties);
-//                                }
+
 //
 //                            }
 //                        }
@@ -1202,9 +1226,9 @@ public class SolrInformationServer implements InformationServer
             // TODO: retry failed
 
             log.debug(".. deleting on exception");
-            DeleteUpdateCommand docCmd = new DeleteUpdateCommand(getLocalSolrQueryRequest());
-            docCmd.setQuery("DBID:"+node.getId());
-            core.getUpdateHandler().deleteByQuery(docCmd);
+            DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(getLocalSolrQueryRequest());
+            delDocCmd.setQuery("DBID:"+node.getId());
+            core.getUpdateHandler().deleteByQuery(delDocCmd);
 
             AddUpdateCommand addDocCmd = new AddUpdateCommand(getLocalSolrQueryRequest());
             addDocCmd.overwrite = overwrite;
@@ -1249,7 +1273,142 @@ public class SolrInformationServer implements InformationServer
 
     }
     
+    private void addContentPropertyToDoc(SolrInputDocument doc, QName propertyQName, NodeMetaData nodeMetaData, ContentPropertyValue contentPropertyValue)
+                    throws AuthenticationException, IOException
+    {
+//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".size",
+//                contentPropertyValue.getLength());
+//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".locale",
+//                contentPropertyValue.getLocale());
+//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".mimetype",
+//                contentPropertyValue.getMimetype());
+//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".encoding",
+//                contentPropertyValue.getEncoding());
 
+        if (false == transformContent) { return; }
+
+        long start = System.nanoTime();
+        GetTextContentResponse response = repositoryClient.getTextContent(nodeMetaData.getId(), propertyQName, null);
+//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".transformationStatus",
+//                response.getStatus());
+//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".transformationTime",
+//                response.getTransformDuration());
+//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".transformationException",
+//                response.getTransformException());
+
+        InputStreamReader isr = null;
+        InputStream ris = response.getContent();
+        String textContent = "";
+        try
+        {
+            if (ris != null)
+            {
+                // Get and copy content
+                byte[] bytes = FileCopyUtils.copyToByteArray(ris);
+                textContent = new String( bytes, "UTF8");
+            }
+        }
+        finally
+        {
+            // release the response only when the content has been read
+            response.release();
+        }
+
+        long end = System.nanoTime();
+        //coreTracker.getTrackerStats().addDocTransformationTime(end - start);
+
+
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
+        builder.append(textContent);
+
+        for( FieldInstance  field : AlfrescoSolrDataModel.getInstance().getIndexedFieldNamesForProperty(propertyQName).getFields())
+        {
+            if(field.isLocalised())
+            {
+                doc.addField(field.getField(), builder.toString());
+            }
+            else
+            {
+                doc.addField(field.getField(), textContent);
+            }
+        }
+        
+    }
+    
+
+    private void addMLTextPropertyToDoc(SolrInputDocument doc, FieldInstance field, MLTextPropertyValue mlTextPropertyValue) throws IOException
+    {   
+        if(field.isLocalised())
+        {
+            StringBuilder sort = new StringBuilder();
+            for (Locale locale : mlTextPropertyValue.getLocales())
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.append("\u0000").append(locale.toString()).append("\u0000")
+                .append(mlTextPropertyValue.getValue(locale));
+       
+                if(!field.isSort())
+                {
+                    doc.addField(field.getField(), builder.toString());
+                }
+                
+                if (sort.length() > 0)
+                {
+                    sort.append("\u0000");
+                }
+                sort.append(builder.toString());
+            }
+            if(field.isSort())
+            {
+                doc.addField(field.getField(), sort.toString());
+            }
+        }
+        else
+        {
+            for (Locale locale : mlTextPropertyValue.getLocales())
+            {
+                doc.addField(field.getField(), mlTextPropertyValue.getValue(locale));
+            }
+        }
+
+    }
+    
+    private void addStringPropertyToDoc(SolrInputDocument doc, FieldInstance field, StringPropertyValue stringPropertyValue, Map<QName, PropertyValue> properties) throws IOException
+    {
+
+        if(field.isLocalised())
+        {
+            Locale locale = null;
+
+            PropertyValue localePropertyValue = properties.get(ContentModel.PROP_LOCALE);
+            if (localePropertyValue != null)
+            {
+                locale = DefaultTypeConverter.INSTANCE.convert(Locale.class,
+                        ((StringPropertyValue) localePropertyValue).getValue());
+            }
+
+            if (locale == null)
+            {
+                locale = I18NUtil.getLocale();
+            }
+
+            StringBuilder builder;
+            builder = new StringBuilder();
+            builder.append("\u0000").append(locale.toString()).append("\u0000")
+            .append(stringPropertyValue.getValue());
+
+            doc.addField(field.getField(), builder.toString());
+
+        }
+        else
+        { 
+            doc.addField(field.getField(), stringPropertyValue.getValue());
+        }
+
+    }
+    
     private boolean mayHaveChildren(NodeMetaData nodeMetaData)
     {
         // 1) Does the type support children?
