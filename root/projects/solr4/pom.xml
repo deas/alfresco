@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>alfresco-solr4</artifactId>
     <name>Alfresco Solr 4</name>
+    <packaging>war</packaging>
 
     <parent>
         <artifactId>alfresco-parent</artifactId>
@@ -37,11 +38,6 @@
     <dependencies>
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-legacy-lucene</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
             <artifactId>alfresco-solrclient</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -54,18 +50,15 @@
         </dependency>
         <dependency>
             <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
+            <artifactId>lucene-analyzers-common</artifactId>
             <version>4.7.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>
             <version>4.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-solrj</artifactId>
-            <version>4.7.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -83,17 +76,13 @@
             <version>1.9.4</version>
         </dependency>
 
-        <!-- War dependency on the Alfresco patched WAR.
-             Deployed at artifacts.alfresco.com because SOLR-1218 was closed in later versions  
+        <!-- War dependency on the Vanilla Solr WAR -->
         <dependency>
-          <groupId>org.apache.solr</groupId>
-          <artifactId>apache-solr</artifactId>
-          <version>1.4.1-alfresco-patched</version>
-          <type>war</type>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr</artifactId>
+            <version>4.7.0</version>
+            <type>war</type>
         </dependency>
-        
-        DO WE NEED THIS?
-        -->
 
         <!-- Test dependencies -->
         <dependency>

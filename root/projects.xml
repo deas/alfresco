@@ -768,38 +768,25 @@
                     incremental-solr4" />
    
    <target name="clean-solr4" 
-           depends="init">
-      <clean projectdir="${dir.project.solr4}" />
-   </target>
-   
-   <target name="compile-solr4" 
-           depends="compile-solr4-java" />
-
-   <target name="compile-solr4-java" 
-           depends="init">
-      <compile-java projectdir="${dir.project.solr4}" >
-         <addPath>
-            <path refid="classpath.compile.solr4" />
-         </addPath>
-      </compile-java>
-      <compile-java-javac srcdir="${dir.project.solr4.src.test}" classesdir="${dir.project.solr4.classes.test}">
-        <addPath2>
-            <path refid="classpath.compile.solr4" />
-            <pathelement location="${dir.project.solr4.classes}" />
-        </addPath2>
-      </compile-java-javac>
+           depends="init-maven-ant-task">
+       <artifact:mvn pom="${dir.project.solr4}/pom.xml" mavenVersion="3.0.5">
+           <arg value="clean"/>
+       </artifact:mvn>
    </target>
    
    <target name="package-solr4"
-           depends="compile-solr4">
-      <mkdir dir="${dir.project.solr4.dist}" />
-      <jar jarfile="${dir.project.solr4.dist}/${file.name.jar.solr4}" 
-           basedir="${dir.project.solr4.classes}" />
+           depends="init-maven-ant-task">
+       <artifact:mvn pom="${dir.project.solr4}/pom.xml" mavenVersion="3.0.5">
+           <arg value="package"/>
+           <arg value="-DskipTests"/>
+       </artifact:mvn>
    </target>
-   
-   <target name="test-solr4" 
-           depends="compile-solr4">
-      <run-tests projectdir="${dir.project.solr4}" additionalclasspath="classpath.unit.test.beyondrepo" />
+
+   <target name="test-solr4"
+            depends="init-maven-ant-task">
+       <artifact:mvn pom="${dir.project.solr4}/pom.xml" mavenVersion="3.0.5">
+           <arg value="test"/>
+       </artifact:mvn>
    </target>
 
    <!-- ****************** -->

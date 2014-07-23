@@ -81,11 +81,6 @@
             <include name="**/*.jar" />
          </fileset>
       </path>
-      <path id="classpath.compile.solr4">
-         <fileset dir="${dir.project.solr4.lib}">
-            <include name="**/*.jar" />
-         </fileset>
-      </path>
       <path id="classpath.compile.system-build-test">
          <fileset dir="${dir.project.system-build-test.lib}">
             <include name="**/*.jar" />
@@ -594,6 +589,15 @@
       </manifest>
 
    </target>
+
+    <!-- **************************** -->
+    <!-- ** Prepare Maven Ant Task ** -->
+    <!-- **************************** -->
+    
+    <target name="init-maven-ant-task" depends="init">
+        <path id="maven-ant-tasks.classpath" path="${dir.project.3rdparty.lib}/devenv/maven-ant-tasks-2.1.3.jar" />
+        <typedef resource="org/apache/maven/artifact/ant/antlib.xml"  uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />
+    </target>
 
 
    <!-- ****************************************************** -->
@@ -1368,7 +1372,6 @@
       <copy-libs-from-classpath destdir="${dir.project.solr4.instance.lib}" projectdir="${dir.project.datamodel}" libdir="${dir.project.3rdparty}" />
       <copy-libs-from-classpath destdir="${dir.project.solr4.instance.lib}" projectdir="${dir.project.legacylucene}" libdir="${dir.project.3rdparty}" />
       <copy-libs-from-classpath destdir="${dir.project.solr4.instance.lib}" projectdir="${dir.project.solrclient}" libdir="${dir.project.3rdparty}" />
-      <copy-libs-from-classpath destdir="${dir.project.solr4.instance.lib}" projectdir="${dir.project.solr4}" libdir="${dir.project.3rdparty}" />
    </target>
 
    <target name="deploy-solr" description="Add the repository specific files to the SOLR instance" depends="package-core, package-datamodel, package-legacylucene, package-solrclient, package-solr" >
