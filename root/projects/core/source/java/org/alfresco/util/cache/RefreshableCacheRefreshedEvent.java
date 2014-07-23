@@ -16,36 +16,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.repo.cache;
+package org.alfresco.util.cache;
 
 /**
- * Basic cache API
+ * Describes a new entry has been inserted in the cache.
  * 
  * @author Andy
  *
  */
-public interface RefreshableCache <T> 
+public class RefreshableCacheRefreshedEvent extends AbstractRefreshableCacheEvent
 {
-    /**
-     * Get the cache.
-     * If there is no cache value this call will block.
-     * If the underlying cache is being refreshed, the old cache value will be returned until the refresh is complete.
-     * 
-     * @return
-     */
-    public T get();
-    
-    /**
-     * Refresh the cache asynchronously.
-     */
-    public void refresh();
 
-//    /**
-//     * Register to be informed when the cache is updated in the background.
-//     * 
-//     * Note: it is up to the implementation to provide any transactional wrapping.
-//     * Transactional wrapping is not required to invalidate a shared cache entry directly via a transactional cache 
-//     * @param listener
-//     */
-//    void register(RefreshableCacheListener listener);
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 2352511592269578075L;
+
+    /**
+     * @param cacheId
+     * @param key - the key/ tennant id
+     */
+    RefreshableCacheRefreshedEvent(String cacheId, String key)
+    {
+        super(cacheId, key);
+    }
+
 }
