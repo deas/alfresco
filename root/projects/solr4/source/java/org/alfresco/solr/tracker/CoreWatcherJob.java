@@ -21,7 +21,6 @@ package org.alfresco.solr.tracker;
 import java.util.Properties;
 
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
-import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.SolrInformationServer;
 import org.alfresco.solr.SolrKeyResourceLoader;
 import org.apache.solr.core.SolrCore;
@@ -35,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class CoreWatcherJob implements Job
 {
-    protected final static Logger log = LoggerFactory.getLogger(CoreWatcherJob.class);
+    protected static final Logger log = LoggerFactory.getLogger(CoreWatcherJob.class);
 
     @Override
     public void execute(JobExecutionContext jec) throws JobExecutionException

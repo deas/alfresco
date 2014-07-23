@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.solr.tracker.CoreWatcherJob;
+import org.alfresco.solr.tracker.MetadataTracker;
 import org.alfresco.solr.tracker.Tracker;
 import org.alfresco.solr.tracker.TrackerRegistry;
 import org.apache.solr.core.CoreContainer;
@@ -45,6 +46,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 {
     private Scheduler scheduler = null;
     private TrackerRegistry trackerRegistry = new TrackerRegistry();
+    private MetadataTracker metadataTracker = new MetadataTracker();
     private ConcurrentHashMap<String, InformationServer> informationServers = new ConcurrentHashMap<String, InformationServer>();
 
     public AlfrescoCoreAdminHandler()
@@ -174,4 +176,15 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
     {
         return trackerRegistry;
     }
+
+    public Scheduler getScheduler()
+    {
+        return scheduler;
+    }
+
+    public MetadataTracker getMetadataTracker()
+    {
+        return metadataTracker;
+    }
+
 }

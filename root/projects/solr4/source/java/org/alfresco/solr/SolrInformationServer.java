@@ -37,7 +37,13 @@ public class SolrInformationServer implements InformationServer
     private TrackerState trackerState = new TrackerState();
     private AlfrescoSolrDataModel dataModel;
     private String alfrescoVersion;
-    
+    private int authorityCacheSize;
+    private int filterCacheSize;
+    private int pathCacheSize;
+    private boolean transformContent = true;
+    private long lag;
+    private long holeRetention;
+
     public SolrInformationServer(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
         this.adminHandler = adminHandler;
@@ -45,9 +51,13 @@ public class SolrInformationServer implements InformationServer
 
         Properties p = core.getResourceLoader().getCoreProperties();
         alfrescoVersion = p.getProperty("alfresco.version", "4.2.2");
+        authorityCacheSize = Integer.parseInt(p.getProperty("solr.authorityCache.size", "64"));
+        filterCacheSize = Integer.parseInt(p.getProperty("solr.filterCache.size", "64"));
+        pathCacheSize = Integer.parseInt(p.getProperty("solr.pathCache.size", "64"));
+        transformContent = Boolean.parseBoolean(p.getProperty("alfresco.index.transformContent", "true"));
+        lag = Integer.parseInt(p.getProperty("alfresco.lag", "1000"));
+        holeRetention = Integer.parseInt(p.getProperty("alfresco.hole.retention", "3600000"));
         
-        SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
-        String id = loader.getInstanceDir();
         dataModel = AlfrescoSolrDataModel.getInstance();
     }
 
