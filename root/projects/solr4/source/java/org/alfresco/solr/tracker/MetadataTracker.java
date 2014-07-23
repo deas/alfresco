@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
+import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.BoundedDeque;
 import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.NodeReport;
@@ -445,7 +446,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             ArrayList<Transaction> txBatch = new ArrayList<>();
             for (Transaction info : transactions.getTransactions())
             {
-                boolean isInIndex = this.infoSrv.isInIndex(QueryConstants.FIELD_TXID, info.getId());
+                boolean isInIndex = this.infoSrv.isInIndex(AlfrescoSolrDataModel.getTransactionDocumentId(info.getId()), 0);
                 if (isInIndex)
                 {
                     txnsFound.add(info);

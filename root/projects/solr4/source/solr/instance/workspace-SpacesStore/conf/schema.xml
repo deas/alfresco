@@ -2,12 +2,9 @@
 
 <!-- 
    TODO 
-   - Truncated field that could be used for sort/faceting/clustering?
-   - SITE analysis 
    - Geospatial ?
    - Currency ?
    - (default facetting configuration)
-   - more complex shingling for phrases
 -->
 
 <schema name="Alfresco V2.0" version="1.5">
@@ -593,6 +590,16 @@
       <field name="OWNER"                 type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
       <field name="PARENTASSOCCRC"        type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
       <field name="TENANT"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+
+      <!-- Used to store the last transaction and acl transaction for real time get -->
+      <field name="S_TXID"                  type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
+      <field name="S_INTXID"                type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
+      <field name="S_ACLTXID"               type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
+      <field name="S_INACLTXID"             type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
+      <field name="S_TXCOMMITTIME"          type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
+      <field name="S_ACLTXCOMMITTIME"       type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
+
+
 
       <!-- Suggestion -->
       <field name="suggest"               type="text_shingle"    indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />

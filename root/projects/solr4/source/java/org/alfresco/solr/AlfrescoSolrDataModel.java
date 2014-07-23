@@ -85,11 +85,11 @@ public class AlfrescoSolrDataModel
         FTS,          // Term/Phrase/Range/Fuzzy/Prefix/Proximity/Wild
         ID,           // Exact/ExactRange - Comparison, In, Upper, Lower
         FACET,        // Field, Range, Query
-                      // Text fields will require cross language support to avoid tokenisation for facets
+        MULTI_FACET,  // Text fields will require cross language support to avoid tokenisation for facets
         STATS,        // Stats
         SORT,         // Locale
         SUGGESTION,
-        COMPETION  
+        COMPLETION  
     }
     
     static enum ContentFieldType
@@ -186,7 +186,7 @@ public class AlfrescoSolrDataModel
         }
         else
         {
-            return tenant.replaceAll(":", "_.._");
+            return tenant.replaceAll("!", "_-._");
         }
     }
     
@@ -199,11 +199,10 @@ public class AlfrescoSolrDataModel
     public static String getAclDocumentId(String tenant, Long aclId)
     {
         StringBuilder builder = new StringBuilder();
-        // TODO - check and encode for ":"
         builder.append(getTenantId(tenant));
-        builder.append(":");
+        builder.append("!");
         builder.append(NumericEncoder.encode(aclId));
-        builder.append(":ACL");
+        builder.append("!ACL");
         return builder.toString();
     }
     
@@ -213,14 +212,13 @@ public class AlfrescoSolrDataModel
      * @param aclChangeSetId
      * @return <TENANT>:CHANGE_SET:<aclChangeSetId <- max in doc if compressed>
      */
-    public static String getAclChangeSetDocumentId(String tenant, Long aclChangeSetId)
+    public static String getAclChangeSetDocumentId(Long aclChangeSetId)
     {
         StringBuilder builder = new StringBuilder();
-        // TODO - check and encode for ":"
-        builder.append(getTenantId(tenant));
-        builder.append(":");
+        builder.append("TRACKER");
+        builder.append("!");
         builder.append(CHANGE_SET);
-        builder.append(":");
+        builder.append("!");
         builder.append(NumericEncoder.encode(aclChangeSetId));
         return builder.toString();
     }
@@ -234,11 +232,10 @@ public class AlfrescoSolrDataModel
     public static String getNodeDocumentId(String tenant, Long aclId, Long dbid)
     {
         StringBuilder builder = new StringBuilder();
-        // TODO - check and encode for ":"
         builder.append(getTenantId(tenant));
-        builder.append(":");
+        builder.append("!");
         builder.append(NumericEncoder.encode(aclId));
-        builder.append(":");
+        builder.append("!");
         builder.append(NumericEncoder.encode(dbid));
         return builder.toString();
     }
@@ -249,14 +246,14 @@ public class AlfrescoSolrDataModel
      * @param txId
      * @return <TENANT>:CHANGE_SET:<txId <- max in doc if compressed>
      */
-    public static String getTransactionDocumentId(String tenant, Long txId)
+    public static String getTransactionDocumentId(Long txId)
     {
         StringBuilder builder = new StringBuilder();
         // TODO - check and encode for ":"
-        builder.append(getTenantId(tenant));
-        builder.append(":");
+        builder.append("TRACKER");
+        builder.append("!");
         builder.append(TX);
-        builder.append(":");
+        builder.append("!");
         builder.append(NumericEncoder.encode(txId));
         return builder.toString();
     }
@@ -471,9 +468,186 @@ public class AlfrescoSolrDataModel
         
     }
     
+    
+    public IndexedField getQueryableFields(QName propertyQName,  ContentFieldType type, FieldUse fieldUse)
+    {
+        if(type != null)
+        {
+            return getIndexedFieldForContentPropertyMetadata(propertyQName, type);
+        }
+        
+        IndexedField indexedField = new IndexedField();
+        PropertyDefinition propertyDefinition = getPropertyDefinition(propertyQName);
+        if((propertyDefinition == null))
+        { 
+            return indexedField;
+        }
+        if(!propertyDefinition.isIndexed() && !propertyDefinition.isStoredInIndex())
+        {
+            return indexedField;
+        }
+        
+        if(isTextField(propertyDefinition))
+        {
+           switch(fieldUse)
+           {
+           case COMPLETION:
+               addCompletionFields(propertyDefinition, indexedField);
+               break;
+           case FACET:
+               addFacetSearchFields(propertyDefinition, indexedField);
+               break;
+           case FTS:
+               addFullTextSearchFields(propertyDefinition, indexedField);
+               break;
+           case ID:
+               addIdentifierSearchFields(propertyDefinition, indexedField);
+               break;
+           case MULTI_FACET:
+               addMultiSearchFields(propertyDefinition, indexedField);
+               break;
+           case SORT:
+               addSortSearchFields(propertyDefinition, indexedField);
+               break;
+           case STATS:
+               addStatsSearchFields(propertyDefinition, indexedField);
+               break;
+           case SUGGESTION:
+               if(isSuggestable(propertyQName))
+               {
+                   indexedField.addField("suggest", false, false);
+               }
+               addCompletionFields(propertyDefinition, indexedField);
+               break;
+           }
+        }
+        else
+        {
+            indexedField.addField(getFieldForNonText(propertyDefinition), false, false);
+        }
+        return indexedField;
+    }
+    
+    /*
+     * Adds best completion fields in order of preference 
+     */
+   
+    private void addCompletionFields( PropertyDefinition propertyDefinition , IndexedField indexedField)
+    {
+        if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+        {
+            indexedField.addField(getFieldForText(false, true, false, propertyDefinition), false, false);
+        }
+        else if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE))
+        {
+            indexedField.addField(getFieldForText(false, true, false, propertyDefinition), false, false);
+        }
+        else if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE))
+        {
+            indexedField.addField(getFieldForText(false, false, false, propertyDefinition), false, false);
+        }
+                
+    }
+    
+    /*
+     * Adds best fts fields in order of preference 
+     */
+   
+    private void addFullTextSearchFields( PropertyDefinition propertyDefinition , IndexedField indexedField)
+    {
+        if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE)
+                || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+        {
+            indexedField.addField(getFieldForText(true, true, false, propertyDefinition), true, false);
+            indexedField.addField(getFieldForText(false, true, false, propertyDefinition), false, false);
+        }
+        else
+        {
+            indexedField.addField(getFieldForText(true, false, false, propertyDefinition), true, false);
+            indexedField.addField(getFieldForText(false, false, false, propertyDefinition), false, false);
+        }        
+    }
+    
+    /*
+     * Adds best identifier fields in order of preference 
+     */
+   
+    private void addIdentifierSearchFields( PropertyDefinition propertyDefinition , IndexedField indexedField)
+    {
+        if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
+                || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+        {
+            
+            indexedField.addField(getFieldForText(true, false, false, propertyDefinition), true, false);
+            indexedField.addField(getFieldForText(false, false, false, propertyDefinition), false, false);
+        }
+        else
+        {
+            indexedField.addField(getFieldForText(true, true, false, propertyDefinition), true, false);
+            indexedField.addField(getFieldForText(false, true, false, propertyDefinition), false, false);
+        }        
+    }
+    
+    /*
+     * Adds best identifier fields in order of preference 
+     */
+   
+    private void addFacetSearchFields( PropertyDefinition propertyDefinition , IndexedField indexedField)
+    {
+        if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
+                || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+        {
+            
+            indexedField.addField(getFieldForText(false, false, false, propertyDefinition), false, false);
+        }
+        else
+        {
+            indexedField.addField(getFieldForText(false, true, false, propertyDefinition), false, false);
+        }        
+    }
+    
+    private void addMultiSearchFields( PropertyDefinition propertyDefinition , IndexedField indexedField)
+    {
+        if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
+                || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+        {
+            indexedField.addField(getFieldForText(false, true, false, propertyDefinition), false, false);
+        }
+        else
+        {
+            indexedField.addField(getFieldForText(false, false, false, propertyDefinition), false, false);
+        }        
+    }
+    
+    private void addStatsSearchFields( PropertyDefinition propertyDefinition , IndexedField indexedField)
+    {
+        addFacetSearchFields(propertyDefinition, indexedField);
+    }
+    
+    private void addSortSearchFields( PropertyDefinition propertyDefinition , IndexedField indexedField)
+    {
+        DataTypeDefinition dataTypeDefinition = propertyDefinition.getDataType();
+        if(dataTypeDefinition.getName().equals(DataTypeDefinition.TEXT))
+        {
+            if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
+                    || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+            {
+                indexedField.addField(getFieldForText(false, false, true, propertyDefinition), false, true);
+            }   
+        }
+        
+        if(dataTypeDefinition.getName().equals(DataTypeDefinition.MLTEXT))
+        {
+            if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
+                    || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+            {
+                indexedField.addField(getFieldForText(true, false, true, propertyDefinition), true, true);
+            }   
+        }
+    }
+    
     /**
      * Get all the field names into which we must copy the source data
-     * TODO: Determine from the model
      * 
      * @param propertyQName
      * @return
@@ -616,19 +790,6 @@ public class AlfrescoSolrDataModel
         return builder.toString();
     }
     
-    
-//    /**
-//     * Get the schema field to use for a specific use 
-//     * TODO: Determine from the model
-//     *
-//     * @param propertyQName
-//     * @param fieldUse
-//     * @return
-//     */
-//    public String getSearchFieldNameForProperty(QName propertyQName, FieldUse fieldUse)
-//    {
-//        
-//    }
     
     
 //    public SortField getSortField(SchemaField field, boolean reverse)

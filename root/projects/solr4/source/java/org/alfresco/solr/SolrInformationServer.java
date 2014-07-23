@@ -80,6 +80,7 @@ import org.alfresco.util.ISO9075;
 import org.alfresco.util.NumericEncoder;
 import org.alfresco.util.Pair;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.StoredField;
 import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.DocsEnum;
@@ -97,11 +98,16 @@ import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.FixedBitSet;
 import org.apache.lucene.util.NumericUtils;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrInfoMBean;
 import org.apache.solr.request.LocalSolrQueryRequest;
+import org.apache.solr.request.SolrRequestHandler;
+import org.apache.solr.response.SolrQueryResponse;
 import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocSet;
@@ -615,203 +621,266 @@ public class SolrInformationServer implements InformationServer
     public TrackerState getTrackerInitialState() throws IOException
     {
         TrackerState state = new TrackerState();
-
-        RefCounted<SolrIndexSearcher> refCounted = null;
-        try
+        SolrRequestHandler handler = core.getRequestHandler("/get");
+        LocalSolrQueryRequest req = getLocalSolrQueryRequest();
+        SolrQueryResponse rsp = new SolrQueryResponse();
+        
+        ModifiableSolrParams newParams = new ModifiableSolrParams(req.getParams());
+        newParams.set("ids", "TRACKER!STATE!ACLTX,TRACKER!STATE!TX");
+        req.setParams(newParams);
+        
+        handler.handleRequest(req, rsp);
+        
+        NamedList values = rsp.getValues();
+        SolrDocumentList response = (SolrDocumentList)values.get("response");
+        SolrDocument acl = null;
+        SolrDocument tx = null;
+        if(response.getNumFound() > 0)
         {
-            refCounted = core.getSearcher(false, true, null);
-            SolrIndexSearcher solrIndexSearcher = refCounted.get();
-            IndexReader reader = solrIndexSearcher.getIndexReader();
-
-            if (state.getLastIndexedTxCommitTime() == 0)
-            {
-                state.setLastIndexedTxCommitTime(getLargestTermValue(reader, QueryConstants.FIELD_TXCOMMITTIME, -1L));
-            }
-
-            if (state.getLastIndexedTxId() == 0)
-            {
-                state.setLastIndexedTxId(getLargestTermValue(reader, QueryConstants.FIELD_TXID, -1L));
-            }
-
+            acl = response.get(0);
             if (state.getLastIndexedChangeSetCommitTime() == 0)
             {
-                state.setLastIndexedChangeSetCommitTime(getLargestTermValue(reader, QueryConstants.FIELD_ACLTXCOMMITTIME, -1L));
+                state.setLastIndexedChangeSetCommitTime(Long.parseLong( ((IndexableField)acl.getFieldValue("S_ACLTXCOMMITTIME")).stringValue()));
             }
 
             if (state.getLastIndexedChangeSetId() == 0)
             {
-                state.setLastIndexedChangeSetId(getLargestTermValue(reader, QueryConstants.FIELD_ACLTXID, -1L));
-            }
-
-            long startTime = System.currentTimeMillis();
-            state.setTimeToStopIndexing(startTime - lag);
-            state.setTimeBeforeWhichThereCanBeNoHoles(startTime - holeRetention);
-
-            long timeBeforeWhichThereCanBeNoTxHolesInIndex = state.getLastIndexedTxCommitTime() - holeRetention;
-            state.setLastGoodTxCommitTimeInIndex(getLargestTermValue(reader, QueryConstants.FIELD_TXCOMMITTIME, timeBeforeWhichThereCanBeNoTxHolesInIndex));
-
-            long timeBeforeWhichThereCanBeNoChangeSetHolesInIndex = state.getLastIndexedChangeSetCommitTime()
-                        - holeRetention;
-            state.setLastGoodChangeSetCommitTimeInIndex(getLargestTermValue(reader, QueryConstants.FIELD_ACLTXCOMMITTIME, timeBeforeWhichThereCanBeNoChangeSetHolesInIndex));
-
-            if (state.getLastGoodTxCommitTimeInIndex() > 0)
-            {
-                if (state.getLastIndexedTxIdBeforeHoles() == -1)
-                {
-                    state.setLastIndexedTxIdBeforeHoles(getStoredLongByLongTerm(reader, QueryConstants.FIELD_TXCOMMITTIME, QueryConstants.FIELD_TXID, state.getLastGoodTxCommitTimeInIndex()));
-                            
-                }
-                else
-                {
-                    long currentBestFromIndex = getStoredLongByLongTerm(reader, QueryConstants.FIELD_TXCOMMITTIME, QueryConstants.FIELD_TXID, state.getLastGoodTxCommitTimeInIndex());
-                    if (currentBestFromIndex > state.getLastIndexedTxIdBeforeHoles())
-                    {
-                        state.setLastIndexedTxIdBeforeHoles(currentBestFromIndex);
-                    }
-                }
-            }
-
-            if (state.getLastGoodChangeSetCommitTimeInIndex() > 0)
-            {
-                if (state.getLastIndexedChangeSetIdBeforeHoles() == -1)
-                {
-                    state.setLastIndexedChangeSetIdBeforeHoles(getStoredLongByLongTerm(reader, QueryConstants.FIELD_ACLTXCOMMITTIME, QueryConstants.FIELD_ACLTXID, state.getLastGoodTxCommitTimeInIndex()));
-                }
-                else
-                {
-                    long currentBestFromIndex = getStoredLongByLongTerm(reader, QueryConstants.FIELD_ACLTXCOMMITTIME, QueryConstants.FIELD_ACLTXID, state.getLastGoodTxCommitTimeInIndex());
-                    if (currentBestFromIndex > state.getLastIndexedTxIdBeforeHoles())
-                    {
-                        state.setLastIndexedChangeSetIdBeforeHoles(currentBestFromIndex);
-                    }
-                }
+                state.setLastIndexedChangeSetId(Long.parseLong( ((IndexableField)acl.getFieldValue("S_ACLTXID")).stringValue()));
             }
         }
-        finally
+        if(response.getNumFound() > 1)
         {
-            if (refCounted != null)
+            tx = response.get(1);
+            if (state.getLastIndexedTxCommitTime() == 0)
             {
-                refCounted.decref();
+                state.setLastIndexedTxCommitTime(Long.parseLong( ((IndexableField)tx.getFieldValue("S_TXCOMMITTIME")).stringValue()));
+            }
+            if (state.getLastIndexedTxId() == 0)
+            {
+                state.setLastIndexedTxId(Long.parseLong( ((IndexableField)tx.getFieldValue("S_TXID")).stringValue()));
             }
         }
+        
+        long startTime = System.currentTimeMillis();
+        state.setTimeToStopIndexing(startTime - lag);
+        state.setTimeBeforeWhichThereCanBeNoHoles(startTime - holeRetention);
 
+        long timeBeforeWhichThereCanBeNoTxHolesInIndex = state.getLastIndexedTxCommitTime() - holeRetention;
+        state.setLastGoodTxCommitTimeInIndex(timeBeforeWhichThereCanBeNoTxHolesInIndex > 0 ? timeBeforeWhichThereCanBeNoTxHolesInIndex : 0);
+
+        long timeBeforeWhichThereCanBeNoChangeSetHolesInIndex = state.getLastIndexedChangeSetCommitTime()
+                    - holeRetention;
+        state.setLastGoodChangeSetCommitTimeInIndex(timeBeforeWhichThereCanBeNoChangeSetHolesInIndex > 0 ? timeBeforeWhichThereCanBeNoChangeSetHolesInIndex : 0);
+        
+        
         // Sets the trackerState only after it has been fully initialized
         this.trackerState = state;
-        
         return this.trackerState;
-    }
-
-    /*
-     * Find the largest numeric long term value in the given index field
-     */
-    private long getLargestTermValue(IndexReader reader, String fieldName, long limit)
-    {
-        long largestValue = 0;
-        long value;
-        
-        for(AtomicReaderContext atomicReaderContext  : reader.leaves())
-        {
-            value = getLargestTermValue(atomicReaderContext.reader(), fieldName, limit);
-            if(value > largestValue)
-            {
-                largestValue = value;
-            }
-        }
-        return largestValue;
-      
-    }
-    
-    /*
-     * Find the last numeric long term value
-     * -1 indicates not found
-     */
-    private long getLargestTermValue(AtomicReader atomicReader, String fieldName, long limit)
-    {
-        long largestValue = -1;
-        try
-        {
-            Terms terms = atomicReader.terms(fieldName);
-            if(terms != null)
-            {
-                TermsEnum termEnum = terms.iterator(null);
-                BytesRef bytesRef;
-                while((bytesRef = termEnum.next()) != null)
-                {
-                    long value = NumericUtils.prefixCodedToLong(bytesRef);
-                    if(limit > -1)
-                    {
-                        if(value < limit)
-                        {
-                            if(value > largestValue)
-                            {
-                                largestValue = value;
-                            }
-                        }
-                        else
-                        {
-                            return largestValue;
-                        }
-                    }
-                    else
-                    {
-                        if(value > largestValue)
-                        {
-                            largestValue = value;
-                        }
-                    }
-
-                }
-            }
-        }
-        catch (IOException e1)
-        {
-            // do nothing
-        }
-        return largestValue;
+        //return getTrackerInitialStateOld();
     }
     
 
-    private long getStoredLongByLongTerm(IndexReader reader, String term, String fieldable, Long value) throws IOException
-    {
-        long storedValue = 0;
-        
-        for(AtomicReaderContext atomicReaderContext  : reader.leaves())
-        {
-            storedValue = getStoredLongByLongTerm(atomicReaderContext.reader(), term, fieldable, value);
-            if(storedValue > 0L)
-            {
-                return storedValue;
-            }
-        }
-        return storedValue;
-    }
-    
-    private long getStoredLongByLongTerm(AtomicReader atomicReader, String term, String fieldable, Long value) throws IOException
-    {
-        long storedLong = -1L;
-        if (value != -1L)
-        {
-            DocsEnum docsEnum = atomicReader.termDocsEnum(AlfrescoSolrDataModel.getLongTerm(term, value));
-            if(docsEnum != null)
-            {
-                int docId = -1;
-                while ((docId = docsEnum.nextDoc()) != DocIdSetIterator.NO_MORE_DOCS)
-                {
-                    Document doc = atomicReader.document(docId);
-                    IndexableField field = doc.getField(QueryConstants.FIELD_ACLTXID);
-                    if (field != null)
-                    {
-                        long curentStoredLong = field.numericValue().longValue();
-                        if (curentStoredLong > storedLong)
-                        {
-                            storedLong = curentStoredLong;
-                        }
-                    }
-                }
-            }
-        }
-        return storedLong;
-    }
+//    //@Override
+//    public TrackerState getTrackerInitialStateOld() throws IOException
+//    {
+//        TrackerState state = new TrackerState();
+//
+//        RefCounted<SolrIndexSearcher> refCounted = null;
+//        try
+//        {
+//            refCounted = core.getSearcher(false, true, null);
+//            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+//            IndexReader reader = solrIndexSearcher.getIndexReader();
+//
+//            if (state.getLastIndexedTxCommitTime() == 0)
+//            {
+//                state.setLastIndexedTxCommitTime(getLargestTermValue(reader, QueryConstants.FIELD_TXCOMMITTIME, -1L));
+//            }
+//
+//            if (state.getLastIndexedTxId() == 0)
+//            {
+//                state.setLastIndexedTxId(getLargestTermValue(reader, QueryConstants.FIELD_TXID, -1L));
+//            }
+//
+//            if (state.getLastIndexedChangeSetCommitTime() == 0)
+//            {
+//                state.setLastIndexedChangeSetCommitTime(getLargestTermValue(reader, QueryConstants.FIELD_ACLTXCOMMITTIME, -1L));
+//            }
+//
+//            if (state.getLastIndexedChangeSetId() == 0)
+//            {
+//                state.setLastIndexedChangeSetId(getLargestTermValue(reader, QueryConstants.FIELD_ACLTXID, -1L));
+//            }
+//
+//            long startTime = System.currentTimeMillis();
+//            state.setTimeToStopIndexing(startTime - lag);
+//            state.setTimeBeforeWhichThereCanBeNoHoles(startTime - holeRetention);
+//
+//            long timeBeforeWhichThereCanBeNoTxHolesInIndex = state.getLastIndexedTxCommitTime() - holeRetention;
+//            state.setLastGoodTxCommitTimeInIndex(getLargestTermValue(reader, QueryConstants.FIELD_TXCOMMITTIME, timeBeforeWhichThereCanBeNoTxHolesInIndex));
+//
+//            long timeBeforeWhichThereCanBeNoChangeSetHolesInIndex = state.getLastIndexedChangeSetCommitTime()
+//                        - holeRetention;
+//            state.setLastGoodChangeSetCommitTimeInIndex(getLargestTermValue(reader, QueryConstants.FIELD_ACLTXCOMMITTIME, timeBeforeWhichThereCanBeNoChangeSetHolesInIndex));
+//
+//            if (state.getLastGoodTxCommitTimeInIndex() > 0)
+//            {
+//                if (state.getLastIndexedTxIdBeforeHoles() == -1)
+//                {
+//                    state.setLastIndexedTxIdBeforeHoles(getStoredLongByLongTerm(reader, QueryConstants.FIELD_TXCOMMITTIME, QueryConstants.FIELD_TXID, state.getLastGoodTxCommitTimeInIndex()));
+//                            
+//                }
+//                else
+//                {
+//                    long currentBestFromIndex = getStoredLongByLongTerm(reader, QueryConstants.FIELD_TXCOMMITTIME, QueryConstants.FIELD_TXID, state.getLastGoodTxCommitTimeInIndex());
+//                    if (currentBestFromIndex > state.getLastIndexedTxIdBeforeHoles())
+//                    {
+//                        state.setLastIndexedTxIdBeforeHoles(currentBestFromIndex);
+//                    }
+//                }
+//            }
+//
+//            if (state.getLastGoodChangeSetCommitTimeInIndex() > 0)
+//            {
+//                if (state.getLastIndexedChangeSetIdBeforeHoles() == -1)
+//                {
+//                    state.setLastIndexedChangeSetIdBeforeHoles(getStoredLongByLongTerm(reader, QueryConstants.FIELD_ACLTXCOMMITTIME, QueryConstants.FIELD_ACLTXID, state.getLastGoodTxCommitTimeInIndex()));
+//                }
+//                else
+//                {
+//                    long currentBestFromIndex = getStoredLongByLongTerm(reader, QueryConstants.FIELD_ACLTXCOMMITTIME, QueryConstants.FIELD_ACLTXID, state.getLastGoodTxCommitTimeInIndex());
+//                    if (currentBestFromIndex > state.getLastIndexedTxIdBeforeHoles())
+//                    {
+//                        state.setLastIndexedChangeSetIdBeforeHoles(currentBestFromIndex);
+//                    }
+//                }
+//            }
+//        }
+//        finally
+//        {
+//            if (refCounted != null)
+//            {
+//                refCounted.decref();
+//            }
+//        }
+//
+//        // Sets the trackerState only after it has been fully initialized
+//        this.trackerState = state;
+//        
+//        return this.trackerState;
+//    }
+
+//    /*
+//     * Find the largest numeric long term value in the given index field
+//     */
+//    private long getLargestTermValue(IndexReader reader, String fieldName, long limit)
+//    {
+//        long largestValue = 0;
+//        long value;
+//        
+//        for(AtomicReaderContext atomicReaderContext  : reader.leaves())
+//        {
+//            value = getLargestTermValue(atomicReaderContext.reader(), fieldName, limit);
+//            if(value > largestValue)
+//            {
+//                largestValue = value;
+//            }
+//        }
+//        return largestValue;
+//      
+//    }
+//    
+//    /*
+//     * Find the last numeric long term value
+//     * -1 indicates not found
+//     */
+//    private long getLargestTermValue(AtomicReader atomicReader, String fieldName, long limit)
+//    {
+//        long largestValue = -1;
+//        try
+//        {
+//            Terms terms = atomicReader.terms(fieldName);
+//            if(terms != null)
+//            {
+//                TermsEnum termEnum = terms.iterator(null);
+//                BytesRef bytesRef;
+//                while((bytesRef = termEnum.next()) != null)
+//                {
+//                    long value = NumericUtils.prefixCodedToLong(bytesRef);
+//                    if(limit > -1)
+//                    {
+//                        if(value < limit)
+//                        {
+//                            if(value > largestValue)
+//                            {
+//                                largestValue = value;
+//                            }
+//                        }
+//                        else
+//                        {
+//                            return largestValue;
+//                        }
+//                    }
+//                    else
+//                    {
+//                        if(value > largestValue)
+//                        {
+//                            largestValue = value;
+//                        }
+//                    }
+//
+//                }
+//            }
+//        }
+//        catch (IOException e1)
+//        {
+//            // do nothing
+//        }
+//        return largestValue;
+//    }
+//    
+//
+//    private long getStoredLongByLongTerm(IndexReader reader, String term, String fieldable, Long value) throws IOException
+//    {
+//        long storedValue = 0;
+//        
+//        for(AtomicReaderContext atomicReaderContext  : reader.leaves())
+//        {
+//            storedValue = getStoredLongByLongTerm(atomicReaderContext.reader(), term, fieldable, value);
+//            if(storedValue > 0L)
+//            {
+//                return storedValue;
+//            }
+//        }
+//        return storedValue;
+//    }
+//    
+//    private long getStoredLongByLongTerm(AtomicReader atomicReader, String term, String fieldable, Long value) throws IOException
+//    {
+//        long storedLong = -1L;
+//        if (value != -1L)
+//        {
+//            DocsEnum docsEnum = atomicReader.termDocsEnum(AlfrescoSolrDataModel.getLongTerm(term, value));
+//            if(docsEnum != null)
+//            {
+//                int docId = -1;
+//                while ((docId = docsEnum.nextDoc()) != DocIdSetIterator.NO_MORE_DOCS)
+//                {
+//                    Document doc = atomicReader.document(docId);
+//                    IndexableField field = doc.getField(fieldable);
+//                    if (field != null)
+//                    {
+//                        long curentStoredLong = field.numericValue().longValue();
+//                        if (curentStoredLong > storedLong)
+//                        {
+//                            storedLong = curentStoredLong;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return storedLong;
+//    }
     
     
     @Override
@@ -898,7 +967,7 @@ public class SolrInformationServer implements InformationServer
         cmd.overwrite = overwrite;
         SolrInputDocument input = new SolrInputDocument();
         //input.addField(QueryConstants.FIELD_ID, "ACLTX-" + changeSet.getId());
-        input.addField("id", AlfrescoSolrDataModel.getAclChangeSetDocumentId(TenantService.DEFAULT_DOMAIN, changeSet.getId()));
+        input.addField("id", AlfrescoSolrDataModel.getAclChangeSetDocumentId(changeSet.getId()));
         input.addField("_version_", "0");
         input.addField(QueryConstants.FIELD_ACLTXID, changeSet.getId());
         input.addField(QueryConstants.FIELD_INACLTXID, changeSet.getId());
@@ -906,7 +975,22 @@ public class SolrInformationServer implements InformationServer
         cmd.solrDoc = input;
         //cmd.doc = toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
         core.getUpdateHandler().addDoc(cmd);
-
+        putAclTransactionState(changeSet);
+    }
+    
+    public void putAclTransactionState(AclChangeSet changeSet) throws IOException
+    {
+        LocalSolrQueryRequest req = new LocalSolrQueryRequest(core, new NamedList<>());
+        AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
+        cmd.overwrite = true;
+        SolrInputDocument input = new SolrInputDocument();
+        input.addField("id", "TRACKER!STATE!ACLTX");
+        input.addField("_version_", "0");
+        input.addField("S_ACLTXID", changeSet.getId());
+        input.addField("S_INACLTXID", changeSet.getId());
+        input.addField("S_ACLTXCOMMITTIME", changeSet.getCommitTimeMs());
+        cmd.solrDoc = input;
+        core.getUpdateHandler().addDoc(cmd);
     }
 
     @Override
@@ -1852,67 +1936,99 @@ public class SolrInformationServer implements InformationServer
         AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
         cmd.overwrite = overwrite;
         SolrInputDocument input = new SolrInputDocument();
-        input.addField("id", AlfrescoSolrDataModel.getTransactionDocumentId(TenantService.DEFAULT_DOMAIN, info.getId()));
+        input.addField("id", AlfrescoSolrDataModel.getTransactionDocumentId(info.getId()));
         input.addField("_version_", 0);
         input.addField(QueryConstants.FIELD_TXID, info.getId());
         input.addField(QueryConstants.FIELD_INTXID, info.getId());
         input.addField(QueryConstants.FIELD_TXCOMMITTIME, info.getCommitTimeMs());
         cmd.solrDoc = input;
-//        cmd.doc = toDocument(cmd.getSolrInputDocument(), core.getLatestSchema(), dataModel);
+        core.getUpdateHandler().addDoc(cmd);
+        
+        putTransactionState(info);
+    }
+    
+    public void putTransactionState(Transaction info) throws IOException
+    {
+        AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
+        cmd.overwrite = true;
+        SolrInputDocument input = new SolrInputDocument();
+        input.addField("id", "TRACKER!STATE!TX");
+        input.addField("_version_", 0);
+        input.addField("S_TXID", info.getId());
+        input.addField("S_INTXID", info.getId());
+        input.addField("S_TXCOMMITTIME", info.getCommitTimeMs());
+        cmd.solrDoc = input;
         core.getUpdateHandler().addDoc(cmd);
     }
 
-    
-    
-    @Override
     public boolean isInIndex(String field, long id) throws IOException
     {
-        RefCounted<SolrIndexSearcher> refCounted = null;
-        try
-        {
-            refCounted = core.getSearcher(false, true, null);
-            SolrIndexSearcher solrIndexSearcher = refCounted.get();
-            IndexReader reader = solrIndexSearcher.getIndexReader();
-            
-            return isInIndex(reader, field, id);
-        }
-        finally
-        {
-            if (refCounted != null)
-            {
-                refCounted.decref();
-            }
-        }
-            
+        TrackerState state = new TrackerState();
+        SolrRequestHandler handler = core.getRequestHandler("/get");
+        LocalSolrQueryRequest req = getLocalSolrQueryRequest();
+        SolrQueryResponse rsp = new SolrQueryResponse();
+        
+        ModifiableSolrParams newParams = new ModifiableSolrParams(req.getParams());
+        newParams.set("ids", field);
+        req.setParams(newParams);
+        
+        handler.handleRequest(req, rsp);
+        
+        NamedList values = rsp.getValues();
+        SolrDocumentList response = (SolrDocumentList)values.get("response");
+        return response.getNumFound() > 0;
     }
     
-    private boolean isInIndex(IndexReader reader, String field, long value) throws IOException
-    {
-        for(AtomicReaderContext atomicReaderContext  : reader.leaves())
-        {
-            if(isInIndex(atomicReaderContext.reader(), field, value))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
     
-    private boolean isInIndex(AtomicReader atomicReader, String field, long value) throws IOException
-    {
-        if (value != -1L)
-        {
-            DocsEnum docsEnum = atomicReader.termDocsEnum(AlfrescoSolrDataModel.getLongTerm(field, value));
-            if(docsEnum != null)
-            {
-                if(docsEnum.nextDoc() != DocIdSetIterator.NO_MORE_DOCS)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+//    @Override
+//    public boolean isInIndexOld(String field, long id) throws IOException
+//    {
+//        RefCounted<SolrIndexSearcher> refCounted = null;
+//        try
+//        {
+//            refCounted = core.getSearcher(false, true, null);
+//            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+//            IndexReader reader = solrIndexSearcher.getIndexReader();
+//            
+//            return isInIndex(reader, field, id);
+//        }
+//        finally
+//        {
+//            if (refCounted != null)
+//            {
+//                refCounted.decref();
+//            }
+//        }
+//            
+//    }
+    
+//    private boolean isInIndex(IndexReader reader, String field, long value) throws IOException
+//    {
+//        for(AtomicReaderContext atomicReaderContext  : reader.leaves())
+//        {
+//            if(isInIndex(atomicReaderContext.reader(), field, value))
+//            {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//    
+//    private boolean isInIndex(AtomicReader atomicReader, String field, long value) throws IOException
+//    {
+//        if (value != -1L)
+//        {
+//            DocsEnum docsEnum = atomicReader.termDocsEnum(AlfrescoSolrDataModel.getLongTerm(field, value));
+//            if(docsEnum != null)
+//            {
+//                if(docsEnum.nextDoc() != DocIdSetIterator.NO_MORE_DOCS)
+//                {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     @Override
     public boolean putModel(M2Model model)

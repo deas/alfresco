@@ -31,6 +31,7 @@ import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AclReport;
+import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.BoundedDeque;
 import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.TrackerState;
@@ -895,7 +896,7 @@ public class AclTracker extends AbstractTracker
             ArrayList<AclChangeSet> changeSetBatch = new ArrayList<AclChangeSet>();
             for (AclChangeSet changeSet : aclChangeSets.getAclChangeSets())
             {
-                boolean isInIndex = this.infoSrv.isInIndex(QueryConstants.FIELD_ACLTXID, changeSet.getId());
+                boolean isInIndex = this.infoSrv.isInIndex(AlfrescoSolrDataModel.getAclChangeSetDocumentId(changeSet.getId()), 0);
                 if (isInIndex) 
                 {
                     changeSetsFound.add(changeSet);
