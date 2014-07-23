@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.alfresco.solr.tracker;
 
 import static org.junit.Assert.*;
@@ -28,7 +29,11 @@ import java.util.Properties;
 
 import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.solr.InformationServer;
+import org.alfresco.solr.NodeReport;
 import org.alfresco.solr.TrackerState;
+import org.alfresco.solr.client.GetNodesParameters;
+import org.alfresco.solr.client.Node;
+import org.alfresco.solr.client.Node.SolrApiNodeStatus;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Transactions;
@@ -36,7 +41,9 @@ import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,7 +60,7 @@ public class MetadataTrackerTest
     private InformationServer srv;
     @Mock
     private Properties props;
-    
+
     @Before
     public void setUp() throws Exception
     {
@@ -65,18 +72,72 @@ public class MetadataTrackerTest
 
         this.metadataTracker = new MetadataTracker(scheduler, props, repositoryClient, coreName, srv);
     }
-    
+
     @Test
-    public void testDoTrack() throws AuthenticationException, IOException, JSONException
+    public void doTrackWithOneTransactionUpdatesOnce() throws AuthenticationException, IOException, JSONException
     {
-        doReturn(new TrackerState()).when(srv).getTrackerState();
+        TrackerState state = new TrackerState();
+        state.setTimeToStopIndexing(2L);
+        when(srv.getTrackerState()).thenReturn(state);
+
+        Transactions txs = mock(Transactions.class);
+        List<Transaction> txsList = new ArrayList<>();
+        Transaction tx = new Transaction();
+        tx.setCommitTimeMs(1L);
+        txsList.add(tx);
+        when(txs.getTransactions()).thenReturn(txsList);
+
+        // Subsequent calls to getTransactions must return a different set of transactions to avoid an infinite loop
+        when(repositoryClient.getTransactions(anyLong(), anyLong(), anyLong(), anyLong(), anyInt())).thenReturn(txs)
+                    .thenReturn(mock(Transactions.class));
+
+        List<Node> nodes = new ArrayList<>();
+        Node node = new Node();
+        nodes.add(node );
+        when(repositoryClient.getNodes(any(GetNodesParameters.class), anyInt())).thenReturn(nodes);
+        
+        this.metadataTracker.doTrack();
+
+        InOrder inOrder = inOrder(srv);
+        inOrder.verify(srv).indexNode(node, true);
+        inOrder.verify(srv).indexTransaction(tx, true);
+        inOrder.verify(srv).commit();
+    }
+
+    @Test
+    public void doTrackWithNoTransactionsDoesNothing() throws AuthenticationException, IOException, JSONException
+    {
+        TrackerState state = new TrackerState();
+        when(srv.getTrackerState()).thenReturn(state);
+
         Transactions txs = mock(Transactions.class);
         List<Transaction> txsList = new ArrayList<>();
         when(txs.getTransactions()).thenReturn(txsList);
+
         when(repositoryClient.getTransactions(anyLong(), anyLong(), anyLong(), anyLong(), anyInt())).thenReturn(txs);
+
         this.metadataTracker.doTrack();
-        
-        
+
+        verify(srv, never()).commit();
     }
 
+    @Test
+    public void testCheckNode() throws AuthenticationException, IOException, JSONException
+    {
+        List<Node> nodes = new ArrayList<>();
+        Node node = new Node();
+        Long txnId = 10000000L;
+        node.setTxnId(txnId);
+        nodes.add(node);
+        when(repositoryClient.getNodes(any(GetNodesParameters.class), eq(1))).thenReturn(nodes);
+        
+        Long dbId = 999L;
+        NodeReport nodeReport = this.metadataTracker.checkNode(dbId);
+        
+        assertNotNull(nodeReport);
+        assertEquals(dbId, nodeReport.getDbid());
+        assertEquals(txnId, nodeReport.getDbTx());
+        verify(srv).checkNodeCommon(nodeReport);
+    }
+    
 }

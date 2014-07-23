@@ -143,7 +143,6 @@ public class MetadataTracker extends AbstractTracker implements Tracker
 
             Long maxTxnCommitTime = transactions.getMaxTxnCommitTime();
             if (maxTxnCommitTime != null)
-
             {
                 state.setLastTxCommitTimeOnServer(transactions.getMaxTxnCommitTime());
             }
@@ -162,7 +161,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             }
             else
             {
-                log.info(".... non found after lastTxCommitTime "
+                log.info(".... none found after lastTxCommitTime "
                             + ((txnsFound.size() > 0) ? txnsFound.getLast().getCommitTimeMs() : state
                                         .getLastIndexedTxCommitTime()));
             }
@@ -205,8 +204,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                             checkShutdown();
                         }
 
-                        // Index the transaction doc after the node - if this is not found then a reindex will be
-                        // done.
+                        // Index the transaction doc after the node - if this is not found then a reindex will be done.
                         this.infoSrv.indexTransaction(info, true);
 
                         trackerStats.addTxDocs(nodes.size());
