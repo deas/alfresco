@@ -36,7 +36,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -49,11 +52,9 @@ import org.alfresco.opencmis.search.CMISQueryOptions;
 import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.opencmis.search.CMISQueryParser;
 import org.alfresco.opencmis.search.CmisFunctionEvaluationContext;
-import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.dictionary.CompiledModelsCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
-import org.alfresco.repo.dictionary.DictionaryRegistry;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2ModelDiff;
@@ -91,9 +92,10 @@ import org.alfresco.solr.AlfrescoClientDataModelServicesFactory.DictionaryKey;
 import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.solr.query.LuceneQueryBuilderContextSolrImpl;
 import org.alfresco.solr.query.SolrQueryParser;
+import org.alfresco.util.DynamicallySizedThreadPoolExecutor;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
-import org.alfresco.util.ThreadPoolExecutorFactoryBean;
+import org.alfresco.util.TraceableThreadFactory;
 import org.alfresco.util.cache.DefaultAsynchronouslyRefreshedCacheRegistry;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.CapabilityJoin;
@@ -289,11 +291,8 @@ public class AlfrescoSolrDataModel
            compiledModelsCache.setDictionaryDAO(dictionaryDAO);
            compiledModelsCache.setTenantService(tenantService);
            compiledModelsCache.setRegistry(new DefaultAsynchronouslyRefreshedCacheRegistry());
-           ThreadPoolExecutorFactoryBean threadPoolfactory = new ThreadPoolExecutorFactoryBean();
-           threadPoolfactory.afterPropertiesSet();
-           compiledModelsCache.setThreadPoolExecutor((ThreadPoolExecutor) threadPoolfactory.getObject());
+           compiledModelsCache.setThreadPoolExecutor(getThreadPoolExecutor());
 
-        
            dictionaryDAO.setDictionaryRegistryCache(compiledModelsCache);
            // TODO: use config ....
            dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
@@ -311,6 +310,30 @@ public class AlfrescoSolrDataModel
 
         cmisDictionaryServices = AlfrescoClientDataModelServicesFactory.constructDictionaries(qnameFilter, namespaceDAO, dictionaryComponent, dictionaryDAO);
 
+    }
+    
+    private DynamicallySizedThreadPoolExecutor getThreadPoolExecutor()
+    {
+        String poolName = "Dictionary-Pool";
+
+        // We need a thread factory
+        TraceableThreadFactory threadFactory = new TraceableThreadFactory();
+        threadFactory.setThreadDaemon(true);
+        threadFactory.setThreadPriority(Thread.NORM_PRIORITY);
+
+        if (poolName.length() > 0)
+        {
+            threadFactory.setNamePrefix(poolName);
+        }
+
+        BlockingQueue<Runnable> workQueue;
+      
+            workQueue = new LinkedBlockingQueue<Runnable>();
+       
+
+        // construct the instance
+        DynamicallySizedThreadPoolExecutor threadPool = new DynamicallySizedThreadPoolExecutor(4, 4, 120, TimeUnit.SECONDS, workQueue, threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
+        return threadPool;
     }
 
     private QNameFilter getQNameFilter()
