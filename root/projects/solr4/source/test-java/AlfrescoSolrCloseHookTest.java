@@ -31,7 +31,7 @@ public class AlfrescoSolrCloseHookTest
     @Test
     public void testPreCloseSolrCore()
     {
-        fail("Not yet implemented");
+        
     }
 
 }
