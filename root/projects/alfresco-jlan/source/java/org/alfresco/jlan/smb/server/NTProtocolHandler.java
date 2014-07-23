@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2010 Alfresco Software Limited.
+ * Copyright (C) 2006-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -3248,7 +3248,7 @@ public class NTProtocolHandler extends CoreProtocolHandler {
 
 			// Directory not empty
 
-			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.DOSDirectoryNotEmpty, SMBStatus.ErrDos);
+			m_sess.sendErrorResponseSMB( smbPkt, SMBStatus.NTDirectoryNotEmpty, SMBStatus.DOSAccessDenied, SMBStatus.NTErr);
 			return;
 		}
 		catch (DiskOfflineException ex) {
