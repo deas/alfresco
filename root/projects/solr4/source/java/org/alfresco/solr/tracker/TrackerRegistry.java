@@ -20,6 +20,7 @@ package org.alfresco.solr.tracker;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TrackerRegistry
@@ -29,10 +30,10 @@ public class TrackerRegistry
      *  This facilitates getting a particular type of Tracker for a given core
      */
     private Map<String, ConcurrentHashMap<Class<? extends Tracker>, Tracker>> trackers = new ConcurrentHashMap<>();
-
-    public Map<String, ConcurrentHashMap<Class<? extends Tracker>, Tracker>> getTrackers()
+    
+    public Set<String> getCoreNames()
     {
-        return trackers;
+        return this.trackers.keySet();
     }
     
     public Collection<Tracker> getTrackersForCore(String coreName)
@@ -45,6 +46,7 @@ public class TrackerRegistry
         return this.trackers.containsKey(coreName);
     }
     
+    @SuppressWarnings("unchecked")
     public <T extends Tracker> T getTrackerForCore(String coreName, Class<T> trackerClass)
     {
         Map<Class<? extends Tracker>, Tracker> coreTrackers = this.trackers.get(coreName);

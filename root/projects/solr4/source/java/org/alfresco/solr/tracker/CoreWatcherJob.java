@@ -40,7 +40,7 @@ public class CoreWatcherJob implements Job
         for (SolrCore core : adminHandler.getCoreContainer().getCores())
         {
 
-            if (!adminHandler.getTrackerRegistry().getTrackers().containsKey(core.getName()))
+            if (!adminHandler.getTrackerRegistry().hasTrackersForCore(core.getName()))
             {
                 if (core.getSolrConfig().getBool("alfresco/track", false))
                 {

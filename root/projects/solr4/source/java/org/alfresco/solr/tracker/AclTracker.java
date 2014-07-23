@@ -214,6 +214,11 @@ public class AclTracker implements Tracker
         return maxLiveSearchers;
     }
 
+    protected AclTracker()
+    {
+        // Used for testing
+    }
+    
     public AclTracker(Scheduler scheduler, String id, Properties p, SolrKeyResourceLoader keyResourceLoader, 
                 String coreName, InformationServer informationServer)
     {

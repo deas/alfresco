@@ -21,8 +21,7 @@ package org.alfresco.solr.tracker;
 import static org.junit.Assert.*;
 
 import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,6 +34,8 @@ public class TrackerRegistryTest
     private static Tracker metadataTracker = new MetadataTracker();
     private static Tracker modelTracker = new ModelTracker();
     private static final String CORE_NAME = "coreName";
+    private static final String CORE2_NAME = "core2Name";
+    private static final String NOT_A_CORE_NAME = "not a core name";
 
     public static void registerTrackers(String coreName)
     {
@@ -52,16 +53,19 @@ public class TrackerRegistryTest
 
     
     @Test
-    public void testGetTrackers()
+    public void testGetCoreNames()
     {
-        Map<String, ConcurrentHashMap<Class<? extends Tracker>, Tracker>> coreTrackers = reg.getTrackers();
-        assertNotNull(coreTrackers);
-        ConcurrentHashMap<Class<? extends Tracker>, Tracker> trackers = coreTrackers.get(CORE_NAME);
-        assertNotNull(trackers);
-        assertTrue(trackers.containsKey(AclTracker.class));
-        assertTrue(trackers.containsKey(ContentTracker.class));
-        assertTrue(trackers.containsKey(MetadataTracker.class));
-        assertTrue(trackers.containsKey(ModelTracker.class));
+        Set<String> coreNames = reg.getCoreNames();
+        assertNotNull(coreNames);
+        assertTrue(coreNames.contains(CORE_NAME));
+        assertEquals(1, coreNames.size());
+        
+        registerTrackers(CORE2_NAME);
+        coreNames = reg.getCoreNames();
+        assertNotNull(coreNames);
+        assertTrue(coreNames.contains(CORE_NAME));
+        assertFalse(coreNames.contains(NOT_A_CORE_NAME));
+        assertEquals(2, coreNames.size());
     }
 
     @Test
@@ -80,7 +84,7 @@ public class TrackerRegistryTest
     public void testHasTrackersForCore()
     {
         assertTrue(reg.hasTrackersForCore(CORE_NAME));
-        assertFalse(reg.hasTrackersForCore("abc"));
+        assertFalse(reg.hasTrackersForCore(NOT_A_CORE_NAME));
     }
 
     @Test

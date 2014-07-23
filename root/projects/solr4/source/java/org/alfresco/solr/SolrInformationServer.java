@@ -3,6 +3,7 @@ package org.alfresco.solr;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -24,6 +25,10 @@ import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrResourceLoader;
 import org.json.JSONException;
 
+/**
+ * This is the Solr4 implementation of the information server (index).
+ * @author Ahmed Owian
+ */
 public class SolrInformationServer implements InformationServer
 {
 
@@ -31,17 +36,26 @@ public class SolrInformationServer implements InformationServer
     private SolrCore core;
     private TrackerState trackerState = new TrackerState();
     private AlfrescoSolrDataModel dataModel;
+    private String alfrescoVersion;
     
     public SolrInformationServer(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
         this.adminHandler = adminHandler;
         this.core = core;
 
+        Properties p = core.getResourceLoader().getCoreProperties();
+        alfrescoVersion = p.getProperty("alfresco.version", "4.2.2");
+        
         SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
         String id = loader.getInstanceDir();
         dataModel = AlfrescoSolrDataModel.getInstance();
     }
 
+    public String getAlfrescoVersion()
+    {
+        return this.alfrescoVersion;
+    }
+    
     @Override
     public void afterInitModels()
     {
