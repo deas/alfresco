@@ -23,11 +23,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 
 import org.alfresco.repo.cache.MemoryCache;
-import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
 import org.alfresco.repo.dictionary.constraint.ListOfValuesConstraint;
 import org.alfresco.repo.dictionary.constraint.RegexConstraint;
@@ -47,6 +49,9 @@ import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.DynamicallySizedThreadPoolExecutor;
+import org.alfresco.util.TraceableThreadFactory;
+import org.alfresco.util.cache.DefaultAsynchronouslyRefreshedCacheRegistry;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 
@@ -64,7 +69,7 @@ public class DictionaryDAOTest extends TestCase
     
     
     @Override
-    public void setUp()
+    public void setUp() throws Exception
     {   
         // register resource bundles for messages
         I18NUtil.registerResourceBundle(TEST_RESOURCE_MESSAGES);
@@ -77,7 +82,7 @@ public class DictionaryDAOTest extends TestCase
         
         DictionaryDAOImpl dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
         dictionaryDAO.setTenantService(tenantService);
-        initDictionaryCaches(dictionaryDAO);
+        initDictionaryCaches(dictionaryDAO, tenantService);
 
         // Populate with appropriate models
         DictionaryBootstrap bootstrap = new DictionaryBootstrap();
@@ -98,18 +103,31 @@ public class DictionaryDAOTest extends TestCase
         service = component;
     }
     
-    private void initDictionaryCaches(DictionaryDAOImpl dictionaryDAO)
+    private void initDictionaryCaches(DictionaryDAOImpl dictionaryDAO, TenantService tenantService) throws Exception
     {
-        dictionaryDAO.setDictionaryRegistryCache(new MemoryCache<String, DictionaryRegistry>());
+        CompiledModelsCache compiledModelsCache = new CompiledModelsCache();
+        compiledModelsCache.setDictionaryDAO(dictionaryDAO);
+        compiledModelsCache.setTenantService(tenantService);
+        compiledModelsCache.setRegistry(new DefaultAsynchronouslyRefreshedCacheRegistry());
+        TraceableThreadFactory threadFactory = new TraceableThreadFactory();
+        threadFactory.setThreadDaemon(true);
+        threadFactory.setThreadPriority(Thread.NORM_PRIORITY);
+
+        ThreadPoolExecutor threadPoolExecutor = new DynamicallySizedThreadPoolExecutor(20, 20, 90, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), threadFactory,
+                new ThreadPoolExecutor.CallerRunsPolicy());
+        compiledModelsCache.setThreadPoolExecutor(threadPoolExecutor);
+        dictionaryDAO.setDictionaryRegistryCache(compiledModelsCache);
+        dictionaryDAO.init();
     }
     
     private void initNamespaceCaches(NamespaceDAOImpl namespaceDAO)
     {
         namespaceDAO.setNamespaceRegistryCache(new MemoryCache<String, NamespaceRegistry>());
+        namespaceDAO.init();
     }
     
 
-    public void testBootstrap()
+    public void testBootstrap() throws Exception
     {
         TenantService tenantService = new SingleTServiceImpl();   
         NamespaceDAOImpl namespaceDAO = new NamespaceDAOImpl();
@@ -118,7 +136,7 @@ public class DictionaryDAOTest extends TestCase
         
         DictionaryDAOImpl dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
         dictionaryDAO.setTenantService(tenantService);
-        initDictionaryCaches(dictionaryDAO);
+        initDictionaryCaches(dictionaryDAO, tenantService);
         
         DictionaryBootstrap bootstrap = new DictionaryBootstrap();
         List<String> bootstrapModels = new ArrayList<String>();
@@ -131,7 +149,7 @@ public class DictionaryDAOTest extends TestCase
         bootstrap.bootstrap();
     }
 
-    public void testUseImportedNamespaces()
+    public void testUseImportedNamespaces() throws Exception
     {
         TenantService tenantService = new SingleTServiceImpl();
         NamespaceDAOImpl namespaceDAO = new NamespaceDAOImpl();
@@ -140,7 +158,7 @@ public class DictionaryDAOTest extends TestCase
         
         DictionaryDAOImpl dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
         dictionaryDAO.setTenantService(tenantService);
-        initDictionaryCaches(dictionaryDAO);
+        initDictionaryCaches(dictionaryDAO, tenantService);
         
         DictionaryBootstrap bootstrap = new DictionaryBootstrap();
         List<String> bootstrapModels = new ArrayList<String>();
@@ -500,7 +518,7 @@ public class DictionaryDAOTest extends TestCase
         assertTrue("Expected 'true' for timestamp propagation", childAssocDef.getPropagateTimestamps());
     }
     
-    public void testDataTypeAnlyserResolution()
+    public void testDataTypeAnlyserResolution() throws Exception
     {
         // Stuff to configure/
         
@@ -511,7 +529,7 @@ public class DictionaryDAOTest extends TestCase
         
         DictionaryDAOImpl dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
         dictionaryDAO.setTenantService(tenantService);
-        initDictionaryCaches(dictionaryDAO);
+        initDictionaryCaches(dictionaryDAO, tenantService);
       
         ModelDefinition modelDefinition;
         DataTypeDefinition dataTypeDefinition;
@@ -793,7 +811,7 @@ public class DictionaryDAOTest extends TestCase
         return model;
     }
     
-    public void testTypeAnalyserResolution()
+    public void testTypeAnalyserResolution() throws Exception
     {
         // Stuff to configure/
         
@@ -804,7 +822,7 @@ public class DictionaryDAOTest extends TestCase
         
         DictionaryDAOImpl dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
         dictionaryDAO.setTenantService(tenantService);
-        initDictionaryCaches(dictionaryDAO);
+        initDictionaryCaches(dictionaryDAO, tenantService);
         
         // build data model - typical settings
         dictionaryDAO.putModel(createModel(dictionaryDAO, true, false, true));

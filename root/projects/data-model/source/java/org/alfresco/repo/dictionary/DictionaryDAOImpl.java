@@ -30,7 +30,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.repo.cache.SimpleCache;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.tenant.TenantService;
@@ -74,7 +73,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
     private TenantService tenantService;
     
     // Internal cache (clusterable)
-    private SimpleCache<String, DictionaryRegistry> dictionaryRegistryCache;
+    private CompiledModelsCache dictionaryRegistryCache;
 
     // used to reset the cache
     private ThreadLocal<DictionaryRegistry> dictionaryRegistryThreadLocal = new ThreadLocal<DictionaryRegistry>();
@@ -105,15 +104,9 @@ public class DictionaryDAOImpl implements DictionaryDAO
         this.tryLockTimeout = tryLockTimeout;
     }
 
-    public void setDictionaryRegistryCache(SimpleCache<String, DictionaryRegistry> dictionaryRegistryCache)
+    public void setDictionaryRegistryCache(CompiledModelsCache dictionaryRegistryCache)
     {
         this.dictionaryRegistryCache = dictionaryRegistryCache;
-        // We are reading straight through to a shared cache - make sure it starts empty to avoid weird behaviour in
-        // multi-context test suites that don't properly reset ehcache
-        if (dictionaryRegistryCache.get(TenantService.DEFAULT_DOMAIN) != null)
-        {
-            dictionaryRegistryCache.clear();
-        }
     }
     
     @Override 
@@ -217,30 +210,13 @@ public class DictionaryDAOImpl implements DictionaryDAO
             {
                 public DictionaryRegistry doWork()
                 {
-                    try
+                    DictionaryRegistry dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
+                    removeDataDictionaryLocal(tenantDomain);
+                    if (!keepNamespaceLocal)
                     {
-                        DictionaryRegistry dictionaryRegistry = initDictionaryRegistry(tenantDomain);
-                        
-                        if (dictionaryRegistry == null)
-                        {
-                            // unexpected
-                            throw new AlfrescoRuntimeException("Failed to init dictionaryRegistry " + tenantDomain);
-                        }
-                        
-                        dictionaryRegistryCache.put(tenantDomain, dictionaryRegistry);
-                        return dictionaryRegistry;
+                        namespaceDAO.clearNamespaceLocal();
                     }
-                    finally
-                    {
-                        if (dictionaryRegistryCache.get(tenantDomain) != null)
-                        {
-                            removeDataDictionaryLocal(tenantDomain);
-                            if (!keepNamespaceLocal)
-                            {
-                                namespaceDAO.clearNamespaceLocal();
-                            }
-                        }
-                    }
+                    return dictionaryRegistry;
                 }
             }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), tenantDomain));
             // Done
@@ -256,7 +232,7 @@ public class DictionaryDAOImpl implements DictionaryDAO
         }
     }
     
-    private DictionaryRegistry initDictionaryRegistry(String tenantDomain)
+    public DictionaryRegistry initDictionaryRegistry(String tenantDomain)
     {
         // create threadlocal, if needed
         DictionaryRegistry dictionaryRegistry = createDataDictionaryLocal(tenantDomain);
@@ -1055,58 +1031,17 @@ public class DictionaryDAOImpl implements DictionaryDAO
             // check cache second - return if set
             dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
             
-            if (dictionaryRegistry != null)
+            if (init)
             {
-                if (init)
-                {
-                    // Reset thread cache whilst we have this lock
-                    namespaceDAO.afterDictionaryInit();
-                }
-                return dictionaryRegistry; // return cached config
+                // Reset thread cache whilst we have this lock
+                namespaceDAO.afterDictionaryInit();
             }
+            return dictionaryRegistry; // return cached config
         }
         finally
         {
             readLock.unlock();
         }
-        
-        // Double check cache with write lock
-        LockHelper.tryLock(writeLock, tryLockTimeout, "getting dictionary registry from cache in 'DictionaryDAOImpl.getDictionaryRegistry()'");
-        try
-        {
-            dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
-            
-            if (dictionaryRegistry != null)
-            {
-                if (init)
-                {
-                    // Reset thread cache whilst we have this lock
-                    namespaceDAO.afterDictionaryInit();
-                }
-                return dictionaryRegistry; // return cached config
-            }
-
-            if (logger.isTraceEnabled())
-            {
-                logger.trace("getDictionaryRegistry: not in cache (or threadlocal) - re-init ["+Thread.currentThread().getId()+"]"+(tenantDomain.equals(TenantService.DEFAULT_DOMAIN) ? "" : " (Tenant: "+tenantDomain+")"));
-            }
-            
-            // reset caches - may have been invalidated (e.g. in a cluster)
-            dictionaryRegistry = initDictionary(tenantDomain, keepNamespaceLocal);
-        }
-        finally
-        {
-            writeLock.unlock();
-        }
-
-        
-        if (dictionaryRegistry == null)
-        {     
-            // unexpected
-            throw new AlfrescoRuntimeException("Failed to get dictionaryRegistry " + tenantDomain);
-        }
-        
-        return dictionaryRegistry;
     }
     
     // create threadlocal
@@ -1172,11 +1107,9 @@ public class DictionaryDAOImpl implements DictionaryDAO
         LockHelper.tryLock(writeLock, tryLockTimeout, "removing dictionary registry from cache in 'DictionaryDAOImpl.removeDictionaryRegistry()'");
         try
         {
-            if (dictionaryRegistryCache.get(tenantDomain) != null)
-            {
-                dictionaryRegistryCache.remove(tenantDomain);
-            }
-            
+            dictionaryRegistryCache.remove(tenantDomain);
+            //TODO refresh request should be removed when MNT-11638 will be implemented
+            dictionaryRegistryCache.refresh(tenantDomain);
             removeDataDictionaryLocal(tenantDomain);
         }
         finally
