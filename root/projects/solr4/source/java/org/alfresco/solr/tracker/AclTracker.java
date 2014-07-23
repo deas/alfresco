@@ -72,7 +72,7 @@ public class AclTracker extends SingleThreadedAclTracker
 
     private static final RejectedExecutionHandler DEFAULT_REJECTED_EXECUTION_HANDLER = new ThreadPoolExecutor.CallerRunsPolicy();
 
-    private static final int DEFAULT_TRANSACTION_DOCS_BATCH_SIZE = 100;
+//    private static final int DEFAULT_TRANSACTION_DOCS_BATCH_SIZE = 100;
 
     private static final int DEFAULT_CHANGE_SET_ACLS_BATCH_SIZE = 100;
 
@@ -94,7 +94,7 @@ public class AclTracker extends SingleThreadedAclTracker
 
     private int workQueueSize = DEFAULT_WORK_QUEUE_SIZE;
 
-    private int transactionDocsBatchSize = DEFAULT_TRANSACTION_DOCS_BATCH_SIZE;
+//    private int transactionDocsBatchSize = DEFAULT_TRANSACTION_DOCS_BATCH_SIZE;
 
     private int changeSetAclsBatchSize = DEFAULT_CHANGE_SET_ACLS_BATCH_SIZE;
 
@@ -130,7 +130,7 @@ public class AclTracker extends SingleThreadedAclTracker
         threadPriority = Integer.parseInt(p.getProperty("alfresco.threadPriority", "5"));
         threadDaemon = Boolean.parseBoolean(p.getProperty("alfresco.threadDaemon", "true"));
         workQueueSize = Integer.parseInt(p.getProperty("alfresco.workQueueSize", "-1"));
-        transactionDocsBatchSize = Integer.parseInt(p.getProperty("alfresco.transactionDocsBatchSize", "100"));
+//        transactionDocsBatchSize = Integer.parseInt(p.getProperty("alfresco.transactionDocsBatchSize", "100"));
         changeSetAclsBatchSize = Integer.parseInt(p.getProperty("alfresco.changeSetAclsBatchSize", "100"));
         aclBatchSize = Integer.parseInt(p.getProperty("alfresco.aclBatchSize", "10"));
         
@@ -173,189 +173,6 @@ public class AclTracker extends SingleThreadedAclTracker
         }
     }
 
-    @Override
-    protected void trackTransactions() throws AuthenticationException, IOException, JSONException
-    {
-        if (!enableMultiThreadedTracking)
-        {
-            super.trackTransactions();
-            return;
-        }
-
-        boolean indexed = false;
-        boolean upToDate = false;
-        Transactions transactions;
-        BoundedDeque<Transaction> txnsFound = new BoundedDeque<Transaction>(100);
-        HashSet<Transaction> transactionsIndexed = new HashSet<Transaction>();
-        do
-        {
-            int docCount = 0;
-            TrackerState state = super.infoSrv.getTrackerState();
-            Long fromCommitTime = getTxFromCommitTime(txnsFound, state.getLastGoodTxCommitTimeInIndex());
-            transactions = getSomeTransactions(txnsFound, fromCommitTime, 60 * 60 * 1000L, 2000, state.getTimeToStopIndexing());
-
-            Long maxTxnCommitTime = transactions.getMaxTxnCommitTime();
-            if (maxTxnCommitTime != null)
-            {
-                state.setLastTxCommitTimeOnServer(transactions.getMaxTxnCommitTime());
-            }
-
-            Long maxTxnId = transactions.getMaxTxnId();
-            if (maxTxnId != null)
-            {
-                state.setLastTxIdOnServer(transactions.getMaxTxnId());
-            }
-
-            log.info("Scanning transactions ...");
-            if (transactions.getTransactions().size() > 0)
-            {
-                log.info(".... from " + transactions.getTransactions().get(0));
-                log.info(".... to " + transactions.getTransactions().get(transactions.getTransactions().size() - 1));
-            }
-            else
-            {
-                log.info(".... non found after lastTxCommitTime " + ((txnsFound.size() > 0) ? txnsFound.getLast().getCommitTimeMs() : state.getLastIndexedTxCommitTime()));
-            }
-
-            ArrayList<Transaction> txBatch = new ArrayList<Transaction>();
-            for (Transaction info : transactions.getTransactions())
-            {
-                boolean isInIndex = super.infoSrv.isInIndex(QueryConstants.FIELD_TXID, info.getId());
-                if (isInIndex) 
-                {
-                    txnsFound.add(info);
-                }
-                else 
-                {
-                    // Make sure we do not go ahead of where we started - we will check the holes here
-                    // correctly next time
-                    if (info.getCommitTimeMs() > state.getTimeToStopIndexing())
-                    {
-                        upToDate = true;
-                        break;
-                    }
-                    txBatch.add(info);
-                    if (getDocCount(txBatch) > transactionDocsBatchSize)
-                    {
-                        indexed = true;
-                        docCount += indexBatchOfTransactions(txBatch);
-                        
-                        for (Transaction scheduled : txBatch)
-                        {
-                            txnsFound.add(scheduled);
-                            transactionsIndexed.add(scheduled);
-                        }
-                        txBatch.clear();
-                    }
-                }
-
-                // could batch commit here
-                if (docCount > batchCount)
-                {
-                    if (super.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
-                    {
-                        waitAndIndexTransactions(transactionsIndexed);
-                        docCount = 0;
-                    }
-                }
-                checkShutdown();
-            }
-            if (!txBatch.isEmpty())
-            {
-                indexed = true;
-                if (getDocCount(txBatch) > 0)
-                {
-                    docCount += indexBatchOfTransactions(txBatch);
-                }
-                
-                for (Transaction scheduled : txBatch)
-                {
-                    txnsFound.add(scheduled);
-                    transactionsIndexed.add(scheduled);
-                }
-                txBatch.clear();
-            }
-        }
-        while ((transactions.getTransactions().size() > 0) && (upToDate == false));
-
-        if (indexed)
-        {
-            waitAndIndexTransactions(transactionsIndexed);
-        }
-    }
-
-    private int getDocCount(List<Transaction> txBatch)
-    {
-        int count = 0;
-        for (Transaction tx : txBatch)
-        {
-            count += tx.getUpdates();
-            count += tx.getDeletes();
-        }
-        return count;
-    }
-
-    private int indexBatchOfTransactions(List<Transaction> txBatch) throws AuthenticationException, IOException, JSONException
-    {
-        int docCount = 0;
-
-        GetNodesParameters gnp = new GetNodesParameters();
-        ArrayList<Long> txs = new ArrayList<Long>();
-        for (Transaction info : txBatch)
-        {
-            if ((info.getUpdates() > 0) || (info.getDeletes() > 0))
-            {
-                txs.add(info.getId());
-            }
-        }
-        gnp.setTransactionIds(txs);
-        gnp.setStoreProtocol(storeRef.getProtocol());
-        gnp.setStoreIdentifier(storeRef.getIdentifier());
-        List<Node> nodes = client.getNodes(gnp, Integer.MAX_VALUE);
-        for (Node node : nodes)
-        {
-            docCount++;
-            if (log.isDebugEnabled())
-            {
-                log.debug(node.toString());
-            }
-            NodeIndexWorkerRunnable niwr = new NodeIndexWorkerRunnable(node, super.infoSrv);
-            try
-            {
-                reindexThreadLock.writeLock().lock();
-                // Add the runnable to the queue to ensure ordering
-                reindexThreadQueue.add(niwr);
-            }
-            finally
-            {
-                reindexThreadLock.writeLock().unlock();
-            }
-            threadPool.execute(niwr);
-        }
-        return docCount;
-    }
-
-    /**
-     * @param transactionsIndexed
-     * @throws IOException
-     */
-    private void waitAndIndexTransactions(Set<Transaction> transactionsIndexed) throws IOException
-    {
-        waitForAsynchronousReindexing();
-        TrackerState trackerState = super.infoSrv.getTrackerState();
-        for (Transaction tx : transactionsIndexed)
-        {
-            super.infoSrv.indexTransaction(tx, true);
-            if (tx.getCommitTimeMs() > trackerState.getLastIndexedTxCommitTime())
-            {
-                trackerState.setLastIndexedTxCommitTime(tx.getCommitTimeMs());
-                trackerState.setLastIndexedTxId(tx.getId());
-            }
-            trackerStats.addTxDocs((int) (tx.getUpdates() + tx.getDeletes()));
-        }
-        transactionsIndexed.clear();
-        super.infoSrv.commit();
-    }
 
     /**
      * @param reader

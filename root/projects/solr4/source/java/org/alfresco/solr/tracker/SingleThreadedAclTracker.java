@@ -2,18 +2,14 @@ package org.alfresco.solr.tracker;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
@@ -22,11 +18,9 @@ import org.alfresco.repo.dictionary.M2Namespace;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
 import org.alfresco.service.cmr.dictionary.ModelDefinition.XMLBindingType;
-import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AclReport;
 import org.alfresco.solr.BoundedDeque;
-import org.alfresco.solr.IndexTrackingShutdownException;
 import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.SolrKeyResourceLoader;
 import org.alfresco.solr.TrackerState;
@@ -35,11 +29,8 @@ import org.alfresco.solr.client.Acl;
 import org.alfresco.solr.client.AclChangeSet;
 import org.alfresco.solr.client.AclChangeSets;
 import org.alfresco.solr.client.AclReaders;
-import org.alfresco.solr.client.AlfrescoModel;
-import org.alfresco.solr.client.AlfrescoModelDiff;
 import org.alfresco.solr.client.GetNodesParameters;
 import org.alfresco.solr.client.Node;
-import org.alfresco.solr.client.Node.SolrApiNodeStatus;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Transactions;
 import org.json.JSONException;
@@ -60,60 +51,17 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
 {
     protected final static Logger log = LoggerFactory.getLogger(SingleThreadedAclTracker.class);
 
-    private ConcurrentLinkedQueue<Long> transactionsToReindex = new ConcurrentLinkedQueue<Long>();
-
-    private ConcurrentLinkedQueue<Long> transactionsToIndex = new ConcurrentLinkedQueue<Long>();
-
-    private ConcurrentLinkedQueue<Long> transactionsToPurge = new ConcurrentLinkedQueue<Long>();
-
     private ConcurrentLinkedQueue<Long> aclChangeSetsToReindex = new ConcurrentLinkedQueue<Long>();
 
     private ConcurrentLinkedQueue<Long> aclChangeSetsToIndex = new ConcurrentLinkedQueue<Long>();
 
     private ConcurrentLinkedQueue<Long> aclChangeSetsToPurge = new ConcurrentLinkedQueue<Long>();
 
-    private ConcurrentLinkedQueue<Long> nodesToReindex = new ConcurrentLinkedQueue<Long>();
-
-    private ConcurrentLinkedQueue<Long> nodesToIndex = new ConcurrentLinkedQueue<Long>();
-
-    private ConcurrentLinkedQueue<Long> nodesToPurge = new ConcurrentLinkedQueue<Long>();
-
     private ConcurrentLinkedQueue<Long> aclsToReindex = new ConcurrentLinkedQueue<Long>();
 
     private ConcurrentLinkedQueue<Long> aclsToIndex = new ConcurrentLinkedQueue<Long>();
 
     private ConcurrentLinkedQueue<Long> aclsToPurge = new ConcurrentLinkedQueue<Long>();
-
-    
-    private HashSet<StoreRef> indexedStores = new  HashSet<StoreRef>();
-
-    private HashSet<String> indexedTenants = new  HashSet<String>();
-
-    private HashSet<QName> indexedDataTypes = new  HashSet<QName>();
-
-    private HashSet<QName> indexedTypes = new  HashSet<QName>();
-
-    private HashSet<QName> indexedAspects = new  HashSet<QName>();
-
-    private HashSet<String> indexedFields = new  HashSet<String>();
-
-    //
-
-    private HashSet<StoreRef> ignoredStores = new  HashSet<StoreRef>();
-
-    private HashSet<String> ignoredTenants = new  HashSet<String>();
-
-    private HashSet<QName> ignoredDataTypes = new  HashSet<QName>();
-
-    private HashSet<QName> ignoredTypes = new  HashSet<QName>();
-
-    private HashSet<QName> ignoredAspects = new  HashSet<QName>();
-
-    private HashSet<String> ignoredFields = new  HashSet<String>();
-
-    private ReentrantReadWriteLock modelLock = new ReentrantReadWriteLock();
-    
-    boolean hasModels = false;
 
 
     protected SingleThreadedAclTracker()
@@ -127,93 +75,24 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         super(scheduler, id, p, keyResourceLoader, coreName, informationServer);
     }
 
+
     @Override
-    public void track()
+    protected void doTrack() throws Throwable
     {
-        TrackerState state = this.infoSrv.getTrackerState();
+        // Maintenance stuff
+        purgeAclChangeSets();
+        purgeAcls();
 
-        synchronized (this) // TODO: Should we be synchronize on something else, such as state? 
-        {
-            if (state.isRunning())
-            {
-                log.info("... update for " + coreName + " is already running");
-                return;
-            }
-            else
-            {
-                log.info("... updating " + coreName);
-                state.setRunning(true);
-            }
-        }
-        try
-        {
-            // Maintenance stuff
-            purgeAclChangeSets();
-            purgeAcls();
-            purgeTransactions();
-            purgeNodes();
+        reindexAclChangeSets();
+        reindexAcls();
 
-            reindexAclChangeSets();
-            reindexAcls();
-            reindexTransactions();
-            reindexNodes();
+        indexAclChangeSets();
+        indexAcls();
 
-            indexAclChangeSets();
-            indexAcls();
-            indexTransactions();
-            indexNodes();
-
-            trackRepository();
-        }
-        catch(IndexTrackingShutdownException t)
-        {
-            try
-            {
-                this.infoSrv.rollback();
-            }
-            catch (IOException e)
-            {
-                log.error("Failed to roll back pending work on error", t);
-            }
-            log.info("Stopping index tracking for "+coreName);
-        }
-        catch(Throwable t)
-        {
-            try
-            {
-                this.infoSrv.rollback();
-            }
-            catch (IOException e)
-            {
-                log.error("Failed to roll back pending work on error", t);
-            }
-            if (t instanceof SocketTimeoutException)
-            {
-                if (log.isDebugEnabled())
-                {
-                    // DEBUG, so give the whole stack trace
-                    log.warn("Tracking communication timed out.", t);
-                }
-                else
-                {
-                    // We don't need the stack trace.  It timed out.
-                    log.warn("Tracking communication timed out.");
-                }
-            }
-            else
-            {
-                log.error("Tracking failed", t);
-            }
-        }
-        finally
-        {
-            state.setRunning(false);
-            state.setCheck(false);
-        }
+        trackRepository();
     }
 
-//    @Override
-    public void indexAclChangeSets() throws AuthenticationException, IOException, JSONException
+    private void indexAclChangeSets() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclChangeSetsToIndex.peek() != null)
@@ -244,8 +123,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         }
     }
 
-//    @Override
-    public void indexAcls() throws AuthenticationException, IOException, JSONException
+    private void indexAcls() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclsToIndex.peek() != null)
@@ -267,8 +145,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         }
     }
 
-//    @Override
-    public void reindexAclChangeSets() throws AuthenticationException, IOException, JSONException
+    private void reindexAclChangeSets() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclChangeSetsToReindex.peek() != null)
@@ -302,8 +179,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         }
     }
 
-//    @Override
-    public void reindexAcls() throws AuthenticationException, IOException, JSONException
+    private void reindexAcls() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclsToReindex.peek() != null)
@@ -327,8 +203,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         }
     }
 
-//    @Override
-    public void purgeAclChangeSets() throws AuthenticationException, IOException, JSONException
+    private void purgeAclChangeSets() throws AuthenticationException, IOException, JSONException
     {       
         boolean requiresCommit = false;
         while (aclChangeSetsToPurge.peek() != null)
@@ -348,8 +223,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         }
     }
     
-//    @Override
-    public void purgeAcls() throws AuthenticationException, IOException, JSONException
+    private void purgeAcls() throws AuthenticationException, IOException, JSONException
     {
         boolean requiresCommit = false;
         while (aclsToPurge.peek() != null)
@@ -410,225 +284,8 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         aclsToPurge.offer(aclToPurge);
     }
 
-    private void reindexTransactions() throws IOException, AuthenticationException, JSONException
-    {
-        int docCount = 0;
-        boolean requiresCommit = false;
-        while (transactionsToReindex.peek() != null)
-        {
-            Long transactionId = transactionsToReindex.poll();
-            if (transactionId != null)
-            {
-                // make sure it is cleaned out so we do not miss deletes
-                this.infoSrv.deleteByTransactionId(transactionId);
-
-                Transactions transactions = client.getTransactions(null, transactionId, null, transactionId+1, 1);
-                if ((transactions.getTransactions().size() > 0) && (transactionId.equals(transactions.getTransactions().get(0).getId())))
-                {
-                    Transaction info = transactions.getTransactions().get(0);
-
-                    GetNodesParameters gnp = new GetNodesParameters();
-                    ArrayList<Long> txs = new ArrayList<Long>();
-                    txs.add(info.getId());
-                    gnp.setTransactionIds(txs);
-                    gnp.setStoreProtocol(storeRef.getProtocol());
-                    gnp.setStoreIdentifier(storeRef.getIdentifier());
-                    List<Node> nodes = client.getNodes(gnp, (int) info.getUpdates());
-                    for (Node node : nodes)
-                    {
-                        docCount++;
-                        if (log.isDebugEnabled())
-                        {
-                            log.debug(node.toString());
-                        }
-                        this.infoSrv.indexNode(node, true);
-                        checkShutdown();
-                    }
-
-                    // Index the transaction doc after the node - if this is not found then a reindex will be done.
-                    this.infoSrv.indexTransaction(info, true);
-                    requiresCommit = true;
-
-                }
-            }
-
-            if (docCount > batchCount)
-            {
-                if(this.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
-                {
-                    checkShutdown();
-                    this.infoSrv.commit();
-                    docCount = 0;
-                    requiresCommit = false;
-                }
-            }
-        }
-        if (requiresCommit || ( docCount > 0))
-        {
-            checkShutdown();
-            this.infoSrv.commit();
-        }
-    }
-
     
-    private void reindexNodes() throws IOException, AuthenticationException, JSONException
-    {
-        boolean requiresCommit = false;
-        while (nodesToReindex.peek() != null)
-        {
-            Long nodeId = nodesToReindex.poll();
-            if (nodeId != null)
-            {
-                // make sure it is cleaned out so we do not miss deletes
-                this.infoSrv.deleteByNodeId(nodeId);
-
-                Node node = new Node();
-                node.setId(nodeId);
-                node.setStatus(SolrApiNodeStatus.UNKNOWN);
-                node.setTxnId(Long.MAX_VALUE);
-
-                this.infoSrv.indexNode(node, true);
-                requiresCommit = true;
-            }
-            checkShutdown();
-
-        }
-
-        if(requiresCommit)
-        {
-            checkShutdown();
-            this.infoSrv.commit();
-        }
-    }
-
-    private void indexNodes() throws IOException, AuthenticationException, JSONException
-    {
-        boolean requiresCommit = false;
-        while (nodesToIndex.peek() != null)
-        {
-            Long nodeId = nodesToIndex.poll();
-            if (nodeId != null)
-            {
-                Node node = new Node();
-                node.setId(nodeId);
-                node.setStatus(SolrApiNodeStatus.UNKNOWN);
-                node.setTxnId(Long.MAX_VALUE);
-
-                this.infoSrv.indexNode(node, false);
-                requiresCommit = true;
-            }
-            checkShutdown();
-        }
-
-        if(requiresCommit)
-        {
-            checkShutdown();
-            this.infoSrv.commit();
-        }
-    }
-
-    private void indexTransactions() throws IOException, AuthenticationException, JSONException
-    {
-        int docCount = 0;
-        boolean requiresCommit = false;
-        while (transactionsToIndex.peek() != null)
-        {
-            Long transactionId = transactionsToIndex.poll();
-            if (transactionId != null)
-            {
-                Transactions transactions = client.getTransactions(null, transactionId, null, transactionId+1, 1);
-                if ((transactions.getTransactions().size() > 0) && (transactionId.equals(transactions.getTransactions().get(0).getId())))
-                {
-                    Transaction info = transactions.getTransactions().get(0);
-
-                    GetNodesParameters gnp = new GetNodesParameters();
-                    ArrayList<Long> txs = new ArrayList<Long>();
-                    txs.add(info.getId());
-                    gnp.setTransactionIds(txs);
-                    gnp.setStoreProtocol(storeRef.getProtocol());
-                    gnp.setStoreIdentifier(storeRef.getIdentifier());
-                    List<Node> nodes = client.getNodes(gnp, (int) info.getUpdates());
-                    for (Node node : nodes)
-                    {
-                        docCount++;
-                        if (log.isDebugEnabled())
-                        {
-                            log.debug(node.toString());
-                        }
-                        this.infoSrv.indexNode(node, false);
-                        checkShutdown();
-                    }
-
-                    // Index the transaction doc after the node - if this is not found then a reindex will be done.
-                    this.infoSrv.indexTransaction(info, false);
-                    requiresCommit = true;
-
-                }
-            }
-
-            if (docCount > batchCount)
-            {
-                if(this.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
-                {
-                    checkShutdown();
-                    this.infoSrv.commit();
-                    docCount = 0;
-                    requiresCommit = false;
-                }
-            }
-        }
-        if (requiresCommit || (docCount > 0))
-        {
-            checkShutdown();
-            this.infoSrv.commit();
-        }
-    }
-
-    private void purgeTransactions() throws IOException, AuthenticationException, JSONException
-    {
-        boolean requiresCommit = false;
-        while (transactionsToPurge.peek() != null)
-        {
-            Long transactionId = transactionsToPurge.poll();
-            if (transactionId != null)
-            {
-                // make sure it is cleaned out so we do not miss deletes
-                this.infoSrv.deleteByTransactionId(transactionId);
-                requiresCommit = true;
-            }
-            checkShutdown();
-        }
-        if(requiresCommit)
-        {
-            checkShutdown();
-            this.infoSrv.commit();
-        }
-    }
-
-    private void purgeNodes() throws IOException, AuthenticationException, JSONException
-    {
-        boolean requiresCommit = false;
-        while (nodesToPurge.peek() != null)
-        {
-            Long nodeId = nodesToPurge.poll();
-            if (nodeId != null)
-            {
-                // make sure it is cleaned out so we do not miss deletes
-                this.infoSrv.deleteByNodeId(nodeId);
-                requiresCommit = true;
-            }
-            checkShutdown();
-        }
-        if(requiresCommit)
-        {
-            checkShutdown();
-            this.infoSrv.commit();
-        }
-    }
-
-
-//    @Override
-    public void trackRepository() throws IOException, AuthenticationException, JSONException
+    private void trackRepository() throws IOException, AuthenticationException, JSONException
     {
         // Is the InformationServer ready to update
         int registeredSearcherCount = this.infoSrv.getRegisteredSearcherCount();
@@ -656,7 +313,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         trackAclChangeSets();
 
         checkShutdown();
-        trackTransactions();
+//        trackTransactions();
 
         // check index state
         if (state.isCheck())
@@ -665,131 +322,6 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         }
     }
 
-    /**
-     * @param solrIndexSearcher
-     * @param reader
-     * @throws AuthenticationException
-     * @throws IOException
-     * @throws JSONException
-     */
-    protected void trackTransactions() throws AuthenticationException, IOException, JSONException
-    {
-        boolean indexed = false;
-        boolean upToDate = false;
-// TODO: This variable is never used.  Please see if we even need it.
-        ArrayList<Transaction> transactionsOrderedById = new ArrayList<Transaction>(10000);
-        Transactions transactions;
-        BoundedDeque<Transaction> txnsFound = new BoundedDeque<Transaction>(100);
-        TrackerState state = this.infoSrv.getTrackerState();
-        
-        do
-        {
-            int docCount = 0;
-
-            Long fromCommitTime =  getTxFromCommitTime(txnsFound, state.getLastGoodTxCommitTimeInIndex());
-            transactions = getSomeTransactions(txnsFound, fromCommitTime, 60*60*1000L, 2000, state.getTimeToStopIndexing());
-
-            Long maxTxnCommitTime = transactions.getMaxTxnCommitTime();
-            if(maxTxnCommitTime != null)
-
-            {
-                state.setLastTxCommitTimeOnServer(transactions.getMaxTxnCommitTime());
-            }
-
-            Long maxTxnId = transactions.getMaxTxnId();
-            if(maxTxnId != null)
-            {
-                state.setLastTxIdOnServer(transactions.getMaxTxnId());
-            }
-
-            log.info("Scanning transactions ...");
-            if (transactions.getTransactions().size() > 0)
-            {
-                log.info(".... from " + transactions.getTransactions().get(0));
-                log.info(".... to " + transactions.getTransactions().get(transactions.getTransactions().size() - 1));
-            }
-            else
-            {
-                log.info(".... non found after lastTxCommitTime " 
-                            + ((txnsFound.size() > 0) ? txnsFound.getLast().getCommitTimeMs() : state.getLastIndexedTxCommitTime()));
-            }
-            for (Transaction info : transactions.getTransactions())
-            {
-                boolean isInIndex = this.infoSrv.isInIndex(QueryConstants.FIELD_TXID, info.getId());
-                if (isInIndex) 
-                {
-                    txnsFound.add(info);
-                }
-                else 
-                {
-                    // Make sure we do not go ahead of where we started - we will check the holes here
-                    // correctly next time
-                    if (info.getCommitTimeMs() > state.getTimeToStopIndexing())
-                    {
-                        upToDate = true;
-                    }
-                    else
-                    {
-                        indexed = true;
-
-                        GetNodesParameters gnp = new GetNodesParameters();
-                        ArrayList<Long> txs = new ArrayList<Long>();
-                        txs.add(info.getId());
-                        gnp.setTransactionIds(txs);
-                        gnp.setStoreProtocol(storeRef.getProtocol());
-                        gnp.setStoreIdentifier(storeRef.getIdentifier());
-                        List<Node> nodes = client.getNodes(gnp, Integer.MAX_VALUE);
-                        for (Node node : nodes)
-                        {
-                            docCount++;
-                            if (log.isDebugEnabled())
-                            {
-                                log.debug(node.toString());
-                            }
-                            
-                            this.infoSrv.indexNode(node, true);
-                            
-                            checkShutdown();
-                        }
-
-
-                        // Index the transaction doc after the node - if this is not found then a reindex will be
-                        // done.
-                        this.infoSrv.indexTransaction(info, true);
-
-                        trackerStats.addTxDocs(nodes.size());
-
-                        if (info.getCommitTimeMs() > state.getLastIndexedTxCommitTime())
-                        {
-                            state.setLastIndexedTxCommitTime(info.getCommitTimeMs());
-                            state.setLastIndexedTxId(info.getId());
-                        }
-
-                        txnsFound.add(info);
-                    }
-                }
-                // could batch commit here
-                if (docCount > batchCount)
-                {
-                    if(this.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
-                    {
-                        checkShutdown();
-                        this.infoSrv.commit();
-                        docCount = 0;
-                    }
-                }
-                checkShutdown();
-            }
-        }
-        while ((transactions.getTransactions().size() > 0) && (upToDate == false));
-
-
-        if (indexed)
-        {
-            checkShutdown();
-            this.infoSrv.commit();
-        }
-    }
 
     /**
      * @param reader
@@ -1095,165 +627,6 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
     }
 
 
-    /**
-     * @throws AuthenticationException
-     * @throws IOException
-     * @throws JSONException
-     */
-    private void trackModelsImpl() throws AuthenticationException, IOException, JSONException
-    {
-        // track models
-        // reflect changes changes and update on disk copy
-
-        long start = System.nanoTime();
-
-        List<AlfrescoModelDiff> modelDiffs = client.getModelsDiff(this.infoSrv.getAlfrescoModels());
-        HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
-
-        for (AlfrescoModelDiff modelDiff : modelDiffs)
-        {
-            switch (modelDiff.getType())
-            {
-            case CHANGED:
-                AlfrescoModel changedModel = client.getModel(modelDiff.getModelName());
-                for (M2Namespace namespace : changedModel.getModel().getNamespaces())
-                {
-                    modelMap.put(namespace.getUri(), changedModel.getModel());
-                }
-                break;
-            case NEW:
-                AlfrescoModel newModel = client.getModel(modelDiff.getModelName());
-                for (M2Namespace namespace : newModel.getModel().getNamespaces())
-                {
-                    modelMap.put(namespace.getUri(), newModel.getModel());
-                }
-                break;
-            case REMOVED:
-                // At the moment we do not unload models - I can see no side effects .... 
-                // However search is used to check for references to indexed properties or types
-                // This will be partially broken anyway due to eventual consistency
-                // A model should only be unloaded if there are no data dependencies
-                // Should have been on the de-lucene list.
-                break;
-            }
-        }
-
-        HashSet<String> loadedModels = new HashSet<String>();
-        for (M2Model model : modelMap.values())
-        {
-            loadModel(modelMap, loadedModels, model);
-        }
-        if(loadedModels.size() > 0)
-        {
-            this.infoSrv.afterInitModels();
-        }
-
-        File alfrescoModelDir = new File(id, "alfrescoModels");
-        if (!alfrescoModelDir.exists())
-        {
-            alfrescoModelDir.mkdir();
-        }
-        for (AlfrescoModelDiff modelDiff : modelDiffs)
-        {
-            switch (modelDiff.getType())
-            {
-            case CHANGED:
-                removeMatchingModels(alfrescoModelDir, modelDiff.getModelName());
-                M2Model changedModel = this.infoSrv.getM2Model(modelDiff.getModelName());
-                File changedFile = new File(alfrescoModelDir, getModelFileName(changedModel));
-                FileOutputStream cos = new FileOutputStream(changedFile);
-                changedModel.toXML(cos);
-                cos.flush();
-                cos.close();
-                break;
-            case NEW:
-                M2Model newModel = this.infoSrv.getM2Model(modelDiff.getModelName());
-                // add on file
-                File newFile = new File(alfrescoModelDir, getModelFileName(newModel));
-                FileOutputStream nos = new FileOutputStream(newFile);
-                newModel.toXML(nos);
-                nos.flush();
-                nos.close();
-                break;
-            case REMOVED:
-                removeMatchingModels(alfrescoModelDir, modelDiff.getModelName());
-                break;
-            }
-        }
-
-
-        long end = System.nanoTime();
-
-        trackerStats.addModelTime(end-start);
-
-        if(true == runPostModelLoadInit)
-        {
-            for(Object key : props.keySet())
-            {
-                String stringKey = (String)key;
-                if(stringKey.startsWith("alfresco.index.store"))
-                {
-                    StoreRef store = new StoreRef(props.getProperty(stringKey));
-                    indexedStores.add(store);
-                }
-                if(stringKey.startsWith("alfresco.ignore.store"))
-                {
-                    StoreRef store = new StoreRef(props.getProperty(stringKey));
-                    ignoredStores.add(store);
-                }
-                if(stringKey.startsWith("alfresco.index.tenant"))
-                {
-                    indexedTenants.add(props.getProperty(stringKey));
-                }
-                if(stringKey.startsWith("alfresco.ignore.tenant"))
-                {
-                    ignoredTenants.add(props.getProperty(stringKey));
-                }
-                if(stringKey.startsWith("alfresco.index.datatype"))
-                {
-                    QName qname = expandQName(props.getProperty(stringKey));
-                    indexedDataTypes.add(qname);
-                }
-                if(stringKey.startsWith("alfresco.ignore.datatype"))
-                {
-                    QName qname = expandQName(props.getProperty(stringKey));
-                    ignoredDataTypes.add(qname);
-                }
-                if(stringKey.startsWith("alfresco.index.type"))
-                {
-                    QName qname = expandQName(props.getProperty(stringKey));
-                    indexedTypes.add(qname);
-                }
-                if(stringKey.startsWith("alfresco.ignore.type"))
-                {
-                    QName qname = expandQName(props.getProperty(stringKey));
-                    ignoredTypes.add(qname);
-                }
-                if(stringKey.startsWith("alfresco.index.aspect"))
-                {
-                    QName qname = expandQName(props.getProperty(stringKey));
-                    indexedAspects.add(qname);
-                }
-                if(stringKey.startsWith("alfresco.ignore.aspect"))
-                {
-                    QName qname = expandQName(props.getProperty(stringKey));
-                    ignoredAspects.add(qname);
-                }
-                if(stringKey.startsWith("alfresco.index.field"))
-                {
-                    String name = expandName(props.getProperty(stringKey));
-                    indexedFields.add(name);
-                }
-                if(stringKey.startsWith("alfresco.ignore.field"))
-                {
-                    String name = expandName(props.getProperty(stringKey));
-                    ignoredFields.add(name);
-                }
-            }
-            runPostModelLoadInit = false;
-        }
-
-    }
 
     QName expandQName(String qName)
     {

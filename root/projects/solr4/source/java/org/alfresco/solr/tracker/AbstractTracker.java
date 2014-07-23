@@ -18,6 +18,8 @@
  */
 package org.alfresco.solr.tracker;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.text.ParseException;
 import java.util.Properties;
 
@@ -31,6 +33,7 @@ import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.solr.IndexTrackingShutdownException;
 import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.SolrKeyResourceLoader;
+import org.alfresco.solr.TrackerState;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
@@ -198,6 +201,91 @@ public abstract class AbstractTracker implements Tracker
             e.printStackTrace();
         }
         log.info("Solr built for Alfresco version: " + alfrescoVersion);
+    }
+    
+    /**
+     * Subclasses must implement behaviour that completes the following steps, in order:
+     * <ol>
+     *     <li>Purge</li>
+     *     <li>Reindex</li>
+     *     <li>Index</li>
+     *     <li>Track repository</li>
+     * </ol>
+     * @throws Throwable
+     */
+    protected abstract void doTrack() throws Throwable;
+    
+    /**
+     * Template method - subclasses must implement the {@link Tracker}-specific indexing
+     * by implementing the abstract method {@link #doTrack()}.
+     */
+    @Override
+    public void track()
+    {
+        TrackerState state = this.infoSrv.getTrackerState();
+
+        synchronized (this) // TODO: Should we be synchronize on something else, such as state? 
+        {
+            if (state.isRunning())
+            {
+                log.info("... update for " + coreName + " is already running");
+                return;
+            }
+            else
+            {
+                log.info("... updating " + coreName);
+                state.setRunning(true);
+            }
+        }
+        try
+        {
+            doTrack();
+        }
+        catch(IndexTrackingShutdownException t)
+        {
+            try
+            {
+                this.infoSrv.rollback();
+            }
+            catch (IOException e)
+            {
+                log.error("Failed to roll back pending work on error", t);
+            }
+            log.info("Stopping index tracking for "+coreName);
+        }
+        catch(Throwable t)
+        {
+            try
+            {
+                this.infoSrv.rollback();
+            }
+            catch (IOException e)
+            {
+                log.error("Failed to roll back pending work on error", t);
+            }
+            if (t instanceof SocketTimeoutException)
+            {
+                if (log.isDebugEnabled())
+                {
+                    // DEBUG, so give the whole stack trace
+                    log.warn("Tracking communication timed out.", t);
+                }
+                else
+                {
+                    // We don't need the stack trace.  It timed out.
+                    log.warn("Tracking communication timed out.");
+                }
+            }
+            else
+            {
+                log.error("Tracking failed", t);
+            }
+        }
+        finally
+        {
+            state.setRunning(false);
+            state.setCheck(false);
+        }
     }
     
     protected AlfrescoHttpClient getRepoClient(SolrKeyResourceLoader keyResourceLoader)
