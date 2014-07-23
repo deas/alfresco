@@ -23,6 +23,7 @@
         <maven.tomcat.path>/solr4</maven.tomcat.path>
         <m2eclipse.wtp.contextRoot>${maven.tomcat.path}</m2eclipse.wtp.contextRoot>
         <maven.tomcat.port>${tomcat.default.solr4.port}</maven.tomcat.port>
+        <maven.tomcat.httpsPort>${tomcat.default.solr4.ssl.port}</maven.tomcat.httpsPort>
         <solr.instance.source.folder>source/solr/instance</solr.instance.source.folder>
         <!-- This gets filtered in the solr-tomcat-context.xml and in solrcore.properties when running embedded -->
         <solr.ssl.instance.target.folder>${project.build.directory}/solr-instance-ssl</solr.ssl.instance.target.folder>
@@ -187,7 +188,7 @@
     <profiles>
         <!-- Profile to enable securecomms -->
         <profile>
-            <id>solr-ssl</id>
+            <id>solr4-ssl</id>
             <properties>
                 <!-- We selected the SSL enabled default Solr packaging -->
                 <solr.war.exploded.folder>${solr.ssl.war.target.folder}</solr.war.exploded.folder>
