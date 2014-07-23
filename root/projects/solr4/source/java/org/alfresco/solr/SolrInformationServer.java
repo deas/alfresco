@@ -128,7 +128,7 @@ public class SolrInformationServer implements InformationServer
                 String qName = p.getProperty(key);
                 if ((null != qName) && !qName.isEmpty())
                 {
-                    QName typeQName = QName.resolveToQName(dataModel.getNamespaceDAO(), qName); // TODO
+                    QName typeQName = QName.resolveToQName(dataModel.getNamespaceDAO(), qName);
                     TypeDefinition type = dataModel.getDictionaryService(CMISStrictDictionaryService.DEFAULT).getType(typeQName);
                     if (null != type)
                     {
@@ -530,8 +530,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public NamespaceDAO getNamespaceDAO()
     {
-//        return this.dataModel.getNamespaceDAO();
-        return null; // TODO
+        return this.dataModel.getNamespaceDAO();
     }
 
     @Override
