@@ -16,12 +16,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.solr.tracker;
+    package org.alfresco.solr.tracker;
 
+import java.util.List;
 import java.util.Properties;
 
 import org.alfresco.solr.InformationServer;
+import org.alfresco.solr.TrackerState;
 import org.alfresco.solr.client.SOLRAPIClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The tracker is triggered and then queries for docs with FTSSTATUS (Full Text Search Status) set to something other than clean.
@@ -33,6 +37,8 @@ import org.alfresco.solr.client.SOLRAPIClient;
  */
 public class ContentTracker extends AbstractTracker implements Tracker
 {
+    protected final static Logger log = LoggerFactory.getLogger(ContentTracker.class);
+    
 
     public ContentTracker(SolrTrackerScheduler scheduler, Properties p, SOLRAPIClient client, String coreName,
                 InformationServer informationServer)
@@ -49,8 +55,9 @@ public class ContentTracker extends AbstractTracker implements Tracker
     @Override
     protected void doTrack()
     {
-        // TODO Auto-generated method stub
-
+        List<Integer> docIds = this.infoSrv.getDocsIdsWithContent();
+        
+        
     }
 
     @Override

@@ -322,7 +322,7 @@ public class CoreTracker implements Tracker
     {
         TrackerState state = this.infoSrv.getTrackerState();
 
-        synchronized (this) // TODO: Should we be synchronize on something else, such as state? 
+        synchronized (this) 
         {
             if (state.isRunning())
             {

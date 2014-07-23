@@ -26,7 +26,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,18 +34,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
 
-import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.solr.IndexTrackingShutdownException;
 import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.TrackerState;
-import org.alfresco.solr.client.Acl;
 import org.alfresco.solr.client.AclChangeSet;
 import org.alfresco.solr.client.AclChangeSets;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.apache.commons.lang.reflect.FieldUtils;
-import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -76,7 +71,8 @@ public class AclTrackerTest
         trackerState = new TrackerState();
         trackerState.setRunning(false); // Nothing would happen if it were already running.
         Properties props = createProperties();
-        tracker = new AclTracker(scheduler, props, client, "core-name", informationServer);
+        // Spy in order to stub some methods and verify others. Note: non-stubbed methods go to the real class.
+        tracker = spy(new AclTracker(scheduler, props, client, "core-name", informationServer));
     }
 
     private Properties createProperties()
@@ -89,11 +85,10 @@ public class AclTrackerTest
 
     protected void testTrackChangesRan()
     {
-        when(informationServer.getTrackerState()).thenReturn(trackerState);
+        when(tracker.getTrackerState()).thenReturn(trackerState);
         
         tracker.track();
 
-        // TODO: verify a mock instead?
         assertFalse(trackerState.isRunning());
         assertFalse(trackerState.isCheck());
     }
@@ -103,9 +98,6 @@ public class AclTrackerTest
     @Test
     public void checkTrackingOperaionsPerformed() throws Throwable
     {
-        // Spy, since we want to check what methods were called internally.
-        tracker = spy(tracker);
-        
         testTrackChangesRan();
         
         verify(tracker).purgeAclChangeSets();
@@ -212,14 +204,11 @@ public class AclTrackerTest
     @Test
     public void trackingAbortsWhenAlreadyRunning() throws Throwable
     {
-        // Want to be able to verify doTrack() was called.
-        tracker = spy(tracker);
-        
         trackerState.setRunning(true);
         // Prove running state, before attempt to track()
         assertTrue(trackerState.isRunning());
         
-        when(informationServer.getTrackerState()).thenReturn(trackerState);
+        when(tracker.getTrackerState()).thenReturn(trackerState);
         tracker.track();
 
         // Still running - these values are unaffected.
@@ -233,8 +222,6 @@ public class AclTrackerTest
     @Test
     public void willRollbackOnThrowableDuringTracking() throws Throwable
     {
-        // Need to be able to mock doTrack() behaviour.
-        tracker = spy(tracker);
         doThrow(new RuntimeException("Simulated problem during tracking")).when(tracker).doTrack();
         
         testTrackChangesRan();
@@ -245,8 +232,6 @@ public class AclTrackerTest
     @Test
     public void willRollbackOnIndexTrackingShutdownException() throws Throwable
     {
-        // Need to be able to mock doTrack() behaviour.
-        tracker = spy(tracker);
         doThrow(new IndexTrackingShutdownException()).when(tracker).doTrack();
         
         testTrackChangesRan();

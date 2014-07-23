@@ -21,6 +21,7 @@ package org.alfresco.solr.tracker;
 import java.io.IOException;
 
 import org.alfresco.httpclient.AuthenticationException;
+import org.alfresco.solr.TrackerState;
 import org.json.JSONException;
 
 public interface Tracker
@@ -34,4 +35,6 @@ public interface Tracker
     
     void setShutdown(boolean shutdown);
     void close();
+
+    TrackerState getTrackerState();
 }

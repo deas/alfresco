@@ -27,7 +27,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
-import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.BoundedDeque;
 import org.alfresco.solr.InformationServer;
@@ -48,6 +47,8 @@ import org.json.JSONException;
  */
 public class MetadataTracker extends AbstractTracker implements Tracker
 {
+    private static final long TIME_STEP_32_DAYS_IN_MS = 1000 * 60 * 60 * 24 * 32L;
+    private static final long TIME_STEP_1_HR_IN_MS = 60 * 60 * 1000L;
     private static final int DEFAULT_TRANSACTION_DOCS_BATCH_SIZE = 100;
     private static final int DEFAULT_NODE_BATCH_SIZE = 10;
     private int transactionDocsBatchSize = DEFAULT_TRANSACTION_DOCS_BATCH_SIZE;
@@ -391,9 +392,9 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             transactions = client.getTransactions(startTime, null, startTime + actualTimeStep, null, maxResults);
             startTime += actualTimeStep;
             actualTimeStep *= 2;
-            if (actualTimeStep > 1000 * 60 * 60 * 24 * 32L)
+            if (actualTimeStep > TIME_STEP_32_DAYS_IN_MS)
             {
-                actualTimeStep = 1000 * 60 * 60 * 24 * 32L;
+                actualTimeStep = TIME_STEP_32_DAYS_IN_MS;
             }
         } while (((transactions.getTransactions().size() == 0) && (startTime < endTime))
                     || ((transactions.getTransactions().size() > 0) && alreadyFoundTransactions(txnsFound, transactions)));
@@ -408,14 +409,14 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         Transactions transactions;
         BoundedDeque<Transaction> txnsFound = new BoundedDeque<Transaction>(100);
         HashSet<Transaction> txsIndexed = new HashSet<>(); 
-        TrackerState state = this.infoSrv.getTrackerState();
+        TrackerState state = this.getTrackerState();
 
         do
         {
             int docCount = 0;
 
             Long fromCommitTime = getTxFromCommitTime(txnsFound, state.getLastGoodTxCommitTimeInIndex());
-            transactions = getSomeTransactions(txnsFound, fromCommitTime, 60 * 60 * 1000L, 2000,
+            transactions = getSomeTransactions(txnsFound, fromCommitTime, TIME_STEP_1_HR_IN_MS, 2000,
                         state.getTimeToStopIndexing());
 
             Long maxTxnCommitTime = transactions.getMaxTxnCommitTime();

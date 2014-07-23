@@ -65,18 +65,18 @@ public interface InformationServer
     void deleteByNodeId(Long nodeId) throws IOException;
 
     void indexNode(Node node, boolean overwrite) throws IOException, AuthenticationException, JSONException;
+    
+    void indexNodes(List<Node> nodes, boolean overwrite) throws IOException, AuthenticationException, JSONException;
 
     NodeReport checkNodeCommon(NodeReport nodeReport);
 
     long indexAcl(List<AclReaders> aclReaderList, boolean overwrite) throws IOException;
 
-    TrackerState getTrackerInitialState() throws IOException;
+    TrackerState getTrackerInitialState();
 
     int getDocSetSize(String targetTxId, String targetTxCommitTime) throws IOException;
 
     int getRegisteredSearcherCount();
-
-    TrackerState getTrackerState();
 
     void checkCache() throws IOException;
 
@@ -112,4 +112,7 @@ public interface InformationServer
 
     IndexHealthReport checkIndexTransactions(IndexHealthReport indexHealthReport, Long minTxId, Long minAclTxId,
                 IOpenBitSet txIdsInDb, long maxTxId, IOpenBitSet aclTxIdsInDb, long maxAclTxId) throws IOException;
+
+    List<Integer> getDocsIdsWithContent();
+
 }

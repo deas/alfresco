@@ -19,6 +19,8 @@
 
 package org.alfresco.solr.tracker;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
@@ -29,6 +31,7 @@ import org.alfresco.solr.SolrInformationServer;
 import org.alfresco.solr.SolrKeyResourceLoader;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.SOLRAPIClientFactory;
+import org.alfresco.solr.content.SolrContentStore;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.CoreDescriptorDecorator;
 import org.apache.solr.core.SolrCore;
@@ -71,32 +74,55 @@ public class CoreWatcherJob implements Job
                     SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
 
                     SOLRAPIClientFactory clientFactory = new SOLRAPIClientFactory();
-                    SOLRAPIClient repositoryClient = clientFactory.getSOLRAPIClient(props, keyResourceLoader,
-                                AlfrescoSolrDataModel.getInstance().getDictionaryService(CMISStrictDictionaryService.DEFAULT), AlfrescoSolrDataModel.getInstance().getNamespaceDAO());
-
-                    // Registers the information server and the trackers.
-                    SolrInformationServer srv = new SolrInformationServer(adminHandler, core, repositoryClient);
-                    adminHandler.getInformationServers().put(coreName, srv);
+                    SOLRAPIClient repositoryClient = clientFactory.getSOLRAPIClient(
+                                props,
+                                keyResourceLoader,
+                                AlfrescoSolrDataModel.getInstance().getDictionaryService(
+                                            CMISStrictDictionaryService.DEFAULT), AlfrescoSolrDataModel.getInstance()
+                                            .getNamespaceDAO());
+                    SolrContentStore solrContentStore = this.getSolrContentStore();
                     
+                    // Registers the information server and the trackers.
+                    SolrInformationServer srv = new SolrInformationServer(adminHandler, core, repositoryClient,
+                                solrContentStore);
+                    adminHandler.getInformationServers().put(coreName, srv);
+
                     if (trackerRegistry.getModelTracker() == null)
                     {
                         ModelTracker mTracker = new ModelTracker(scheduler, coreContainer.getSolrHome(), props,
                                     repositoryClient, coreName, srv);
                         trackerRegistry.setModelTracker(mTracker);
-                        mTracker.track();
                     }
 
                     AclTracker aclTracker = new AclTracker(scheduler, props, repositoryClient, coreName, srv);
                     trackerRegistry.register(coreName, aclTracker);
 
-                    ContentTracker contentTracker = new ContentTracker();
-                    trackerRegistry.register(coreName, contentTracker);
+                    ContentTracker contentTrkr = new ContentTracker(scheduler, props, repositoryClient, coreName, srv);
+                    trackerRegistry.register(coreName, contentTrkr);
 
-                    MetadataTracker metadataTracker = new MetadataTracker(scheduler, props, repositoryClient, coreName,
-                                srv);
-                    trackerRegistry.register(coreName, metadataTracker);
+                    MetadataTracker metaTrkr = new MetadataTracker(scheduler, props, repositoryClient, coreName, srv);
+                    trackerRegistry.register(coreName, metaTrkr);
                 }
             }
+        }
+    }
+
+
+    private SolrContentStore getSolrContentStore() throws JobExecutionException
+    {
+        try
+        {
+            File tempFile = File.createTempFile("SolrContentStoreTest-", ".bin");
+            File tempFolder = tempFile.getParentFile();
+            String rootStr = tempFolder.getAbsolutePath() + "/" + System.currentTimeMillis();
+            rootStr = new File(rootStr).getAbsolutePath(); // Ensure we handle separator char
+            
+            // TODO: Replace with the rootStr from a properties file.
+            return new SolrContentStore(rootStr );
+        }
+        catch (IOException e)
+        {
+            throw new JobExecutionException(e);
         }
     }
 }

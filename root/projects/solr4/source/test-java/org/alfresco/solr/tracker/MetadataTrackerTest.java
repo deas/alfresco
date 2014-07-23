@@ -66,7 +66,7 @@ public class MetadataTrackerTest
     public void setUp() throws Exception
     {
         doReturn("workspace://SpacesStore").when(props).getProperty("alfresco.stores");
-        this.metadataTracker = new MetadataTracker(scheduler, props, repositoryClient, coreName, srv);
+        this.metadataTracker = spy(new MetadataTracker(scheduler, props, repositoryClient, coreName, srv));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class MetadataTrackerTest
         state.setTimeToStopIndexing(2L);
         when(srv.getTrackerInitialState()).thenReturn(state);
 // TODO: We need to decide how to persist this state
-        when(srv.getTrackerState()).thenReturn(state);
+        when(this.metadataTracker.getTrackerState()).thenReturn(state);
 
         Transactions txs = mock(Transactions.class);
         List<Transaction> txsList = new ArrayList<>();
@@ -110,7 +110,7 @@ public class MetadataTrackerTest
         TrackerState state = new TrackerState();
         when(srv.getTrackerInitialState()).thenReturn(state);
 // TODO: We need to decide how to persist this state
-        when(srv.getTrackerState()).thenReturn(state);
+        when(this.metadataTracker.getTrackerState()).thenReturn(state);
 
         Transactions txs = mock(Transactions.class);
         List<Transaction> txsList = new ArrayList<>();

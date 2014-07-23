@@ -53,6 +53,7 @@ public abstract class AbstractTracker implements Tracker
     protected boolean runPostModelLoadInit = true;
     private int maxLiveSearchers;
     private volatile boolean shutdown = false;
+    private volatile TrackerState state;
     
     /*
      * A thread handler can be used by subclasses, but they have to intentionally instantiate it.
@@ -107,9 +108,9 @@ public abstract class AbstractTracker implements Tracker
     @Override
     public void track()
     {
-        TrackerState state = this.infoSrv.getTrackerState();
+        TrackerState state = this.getTrackerState();
 
-        synchronized (this) // TODO: Should we synchronize on something else, such as state? See the old CoreTracker 
+        synchronized (this) 
         {
             if (state.isRunning())
             {
@@ -173,6 +174,16 @@ public abstract class AbstractTracker implements Tracker
         }
     }
     
+    @Override
+    public TrackerState getTrackerState()
+    {
+        if (state == null)
+        {
+            state = this.infoSrv.getTrackerInitialState();
+        }
+        return state;
+    }
+
     /**
      * Allows time for the scheduled asynchronous tasks to complete
      */

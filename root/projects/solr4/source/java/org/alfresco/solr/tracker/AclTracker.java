@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
-import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AclReport;
 import org.alfresco.solr.AlfrescoSolrDataModel;
@@ -59,23 +58,16 @@ public class AclTracker extends AbstractTracker
     protected final static Logger log = LoggerFactory.getLogger(AclTracker.class);
 
     private static final int DEFAULT_CHANGE_SET_ACLS_BATCH_SIZE = 100;
-
     private static final int DEFAULT_ACL_BATCH_SIZE = 10;
 
     private int changeSetAclsBatchSize = DEFAULT_CHANGE_SET_ACLS_BATCH_SIZE;
-
     private int aclBatchSize = DEFAULT_ACL_BATCH_SIZE;
     
     private ConcurrentLinkedQueue<Long> aclChangeSetsToReindex = new ConcurrentLinkedQueue<Long>();
-
     private ConcurrentLinkedQueue<Long> aclChangeSetsToIndex = new ConcurrentLinkedQueue<Long>();
-
     private ConcurrentLinkedQueue<Long> aclChangeSetsToPurge = new ConcurrentLinkedQueue<Long>();
-
     private ConcurrentLinkedQueue<Long> aclsToReindex = new ConcurrentLinkedQueue<Long>();
-
     private ConcurrentLinkedQueue<Long> aclsToIndex = new ConcurrentLinkedQueue<Long>();
-
     private ConcurrentLinkedQueue<Long> aclsToPurge = new ConcurrentLinkedQueue<Long>();
     
     /**
@@ -311,14 +303,13 @@ public class AclTracker extends AbstractTracker
         }
 
         checkShutdown();
-//        trackModels(false);
         
         if(!isMaster && isSlave)
         {
             return;
         }
 
-        TrackerState state = this.infoSrv.getTrackerInitialState();
+        TrackerState state = super.getTrackerState();
 
         // Check we are tracking the correct repository
         // Check the first TX time
@@ -328,7 +319,6 @@ public class AclTracker extends AbstractTracker
         trackAclChangeSets();
 
         checkShutdown();
-//        trackTransactions();
 
         // check index state
         if (state.isCheck())
@@ -861,7 +851,7 @@ public class AclTracker extends AbstractTracker
         AclChangeSets aclChangeSets;
         BoundedDeque<AclChangeSet> changeSetsFound = new BoundedDeque<AclChangeSet>(100);
         HashSet<AclChangeSet> changeSetsIndexed = new HashSet<AclChangeSet>();
-        TrackerState state = super.infoSrv.getTrackerState();
+        TrackerState state = super.getTrackerState();
         
         do
         {

@@ -35,6 +35,7 @@ import java.util.Properties;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.solr.client.AclReaders;
 import org.alfresco.solr.client.SOLRAPIClient;
+import org.alfresco.solr.content.SolrContentStore;
 import org.alfresco.util.NumericEncoder;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.apache.solr.common.SolrInputDocument;
@@ -69,6 +70,7 @@ public class SolrInformationServerTest
     private @Mock UpdateHandler updateHandler;
     private @Mock SolrResourceLoader resourceLoader;
     private @Mock SOLRAPIClient solrAPIClient;
+    private @Mock SolrContentStore solrContentStore;
     private @Mock RunUpdateProcessorFactory runUpdateProcessorFactory;
     private SolrCore core;
     private CoreDescriptor coreDescriptor;
@@ -95,7 +97,7 @@ public class SolrInformationServerTest
         FieldUtils.writeField(core, "updateProcessorChains", map, true);
         
         
-        infoServer = new SolrInformationServer(adminHandler, core, solrAPIClient);
+        infoServer = new SolrInformationServer(adminHandler, core, solrAPIClient, solrContentStore);
     }
 
     //@Test
