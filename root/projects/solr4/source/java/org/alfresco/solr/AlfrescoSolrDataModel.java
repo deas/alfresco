@@ -18,12 +18,42 @@
  */
 package org.alfresco.solr;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.model.ContentModel;
+import org.alfresco.opencmis.dictionary.CMISAbstractDictionaryService;
+import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
+import org.alfresco.opencmis.dictionary.QNameFilter;
+import org.alfresco.repo.cache.MemoryCache;
+import org.alfresco.repo.dictionary.DictionaryComponent;
+import org.alfresco.repo.dictionary.DictionaryDAOImpl;
+import org.alfresco.repo.dictionary.M2Model;
+import org.alfresco.repo.dictionary.M2ModelDiff;
+import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
+import org.alfresco.repo.dictionary.NamespaceDAOImpl;
+import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
+import org.alfresco.repo.i18n.StaticMessageLookup;
+import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
+import org.alfresco.repo.tenant.SingleTServiceImpl;
+import org.alfresco.repo.tenant.TenantService;
+import org.alfresco.solr.AlfrescoClientDataModelServicesFactory.DictionaryKey;
+import org.alfresco.service.cmr.dictionary.DictionaryException;
+import org.alfresco.service.cmr.dictionary.PropertyDefinition;
+import org.alfresco.service.namespace.NamespaceException;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.ISO9075;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.SortedDocValues;
 import org.apache.lucene.search.FieldCache;
@@ -31,6 +61,8 @@ import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.util.BytesRef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
  * @author Andy
@@ -38,7 +70,18 @@ import org.slf4j.LoggerFactory;
  */
 public class AlfrescoSolrDataModel
 {
-
+    static enum FieldUse
+    {
+        FTS,          // Term/Phrase/Range/Fuzzy/Prefix/Proximity/Wild
+        ID,           // Exact/ExactRange - Comparison, In, Upper, Lower
+        FACET,        // Field, Range, Query
+                      // Text fields will require cross language support to avoid tokenisation for facets
+        STATS,        // Stats
+        SORT,         // Locale
+        SUGGESTION,
+        COMPETION  
+    }
+    
     protected final static Logger log = LoggerFactory.getLogger(AlfrescoSolrDataModel.class);
     
     private static ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -47,14 +90,80 @@ public class AlfrescoSolrDataModel
 
     private AlfrescoFieldType alfrescoFieldType;
     
+    private TenantService tenantService;
+
+    private NamespaceDAOImpl namespaceDAO;
+
+    private DictionaryDAOImpl dictionaryDAO;
+    
+    private  Map<String,DictionaryComponent> dictionaryServices;
+
+    private  Map<DictionaryKey,CMISAbstractDictionaryService> cmisDictionaryServices;
+    
+    private HashMap<String, Set<String>> modelErrors = new HashMap<String, Set<String>>();
+
+    
     /**
      * @param id
      */
     public AlfrescoSolrDataModel()
     {
-        super();
+        tenantService = new SingleTServiceImpl();
+        namespaceDAO = new NamespaceDAOImpl();
+        namespaceDAO.setTenantService(tenantService);
+        namespaceDAO.setNamespaceRegistryCache(new MemoryCache<String, NamespaceRegistry>());
+
+        dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
+        dictionaryDAO.setTenantService(tenantService);
+        dictionaryDAO.setDictionaryRegistryCache(new MemoryCache<String, DictionaryRegistry>());
+        // TODO: use config ....
+        dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
+        dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
+
+        QNameFilter qnameFilter = getQNameFilter();
+        dictionaryServices = AlfrescoClientDataModelServicesFactory.constructDictionaryServices(qnameFilter, dictionaryDAO);
+        DictionaryComponent dictionaryComponent = getDictionaryService(CMISStrictDictionaryService.DEFAULT);
+        dictionaryComponent.setMessageLookup(new StaticMessageLookup());
+
+        cmisDictionaryServices = AlfrescoClientDataModelServicesFactory.constructDictionaries(qnameFilter, namespaceDAO, dictionaryComponent, dictionaryDAO);
+
     }
 
+    /**
+     * 
+     * @param tenant
+     * @param aclId
+     * @return <TENANT>:<ACLID>:A-<ACLID>
+     */
+    public static String getAclDocumentlId(String tenant, Long aclId)
+    {
+        StringBuilder builder = new StringBuilder();
+        // TODO - check and encode for ":"
+        builder.append(tenant.replaceAll(":", "_.._"));
+        builder.append(NumericEncoder.encodeToHex(aclId));
+        builder.append(":A-");
+        builder.append(NumericEncoder.encodeToHex(aclId));
+        return builder.toString();
+    }
+    
+    /**
+     * 
+     * @param tenant
+     * @param aclId
+     * @return <TENANT>:<ACLID>: D-<DBID>
+     */
+    public static String getNodeDocumentlId(String tenant, Long aclId, Long dbid)
+    {
+        StringBuilder builder = new StringBuilder();
+        // TODO - check and encode for ":"
+        builder.append(tenant.replaceAll(":", "_.._"));
+        builder.append(NumericEncoder.encodeToHex(aclId));
+        builder.append(":D-");
+        builder.append(NumericEncoder.encodeToHex(dbid));
+        return builder.toString();
+    }
+    
+    
     /**
      * @param id
      * @return
@@ -91,22 +200,132 @@ public class AlfrescoSolrDataModel
         }
 
     }
-   
-    // Index 
-    public List<String> getIndexedFieldNamesForProperty(QName propertyQName)
+    
+    /**
+     * TODO: Fix to load type filter/exclusions from somewhere sensible
+     * @return
+     */
+    private QNameFilter getQNameFilter()
     {
-        return Collections.singletonList(propertyQName.toString());
+        QNameFilter qnameFilter = null;
+        FileSystemXmlApplicationContext ctx = null;
+
+        File resourceDirectory = getResourceDirectory();
+        File filterContext = new File(resourceDirectory, "alfresco/model/opencmis-qnamefilter-context.xml");
+
+        try
+        {
+            ctx = new FileSystemXmlApplicationContext(new String[] { "file:" + filterContext.getAbsolutePath() }, false);
+            ctx.setClassLoader(this.getClass().getClassLoader());
+            ctx.refresh();
+            qnameFilter = (QNameFilter)ctx.getBean("cmisTypeExclusions");
+            if(qnameFilter == null)
+            {
+                log.warn("Unable to find type filter at " + filterContext.getAbsolutePath() + ", no type filtering");
+            }
+        }
+        catch(BeansException e)
+        {
+            log.warn("Unable to parse type filter at " + filterContext.getAbsolutePath() + ", no type filtering");
+        }
+        finally
+        {
+            if(ctx != null && ctx.getBeanFactory() != null && ctx.isActive())
+            {
+                ctx.close();
+            }
+        }
+
+        return qnameFilter;
     }
     
-    // FTS   - Term/Phrase/Range/Fuzzy/Prefix/Proximity/Wild
-    // ID    - Exact/ExactRange - Comparison, In, Upper, Lower
-    // FACET - Field, Range, Query, Stats
-    // SORT  - Locale
-    // CROSS-LOCALE
-    // PHRASE SUGGESTION
-    // COMPLETION
-    // HIGHLIGHT
-    public String getSearchFieldNameForProperty(QName propertyQName)
+    /**
+     * @return
+     */
+    public ClassLoader getResourceClassLoader()
+    {
+
+        File f = getResourceDirectory();
+        if (f.canRead() && f.isDirectory())
+        {
+
+            URL[] urls = new URL[1];
+
+            try
+            {
+                URL url = f.toURI().normalize().toURL();
+                urls[0] = url;
+            }
+            catch (MalformedURLException e)
+            {
+                throw new AlfrescoRuntimeException("Failed to add resources to classpath ", e);
+            }
+
+            return URLClassLoader.newInstance(urls, this.getClass().getClassLoader());
+        }
+        else
+        {
+            return this.getClass().getClassLoader();
+        }
+    }
+    
+    private File getResourceDirectory()
+    {
+        File f = new File("alfrescoResources");
+        return f;
+    }  
+    
+    /**
+     * Gets a DictionaryService, if an Alternative dictionary is specified it tries to get that.
+     * It will attempt to get the DEFAULT dictionary service if null is specified or it can't find
+     * a dictionary with the name of "alternativeDictionary"
+     * @param alternativeDictionary - can be null;
+     * @return DictionaryService
+     */
+    public DictionaryComponent getDictionaryService(String alternativeDictionary)
+    {
+        DictionaryComponent dictionaryComponent = null;
+        
+        if (alternativeDictionary != null && !alternativeDictionary.trim().isEmpty())
+        {
+            dictionaryComponent = dictionaryServices.get(alternativeDictionary);
+        }
+        
+        if (dictionaryComponent == null)
+        {
+            dictionaryComponent = dictionaryServices.get(CMISStrictDictionaryService.DEFAULT);
+        }
+        return dictionaryComponent;
+    }
+    
+    /**
+     * Get all the field names into which we must copy the source data
+     * TODO: Determine from the model
+     * 
+     * @param propertyQName
+     * @return
+     */
+    public List<String> getIndexedFieldNamesForProperty(QName propertyQName)
+    {
+        PropertyDefinition propertyDefinition = getPropertyDefinition(propertyQName);
+        if(propertyDefinition == null)
+        {
+            return Collections.<String>emptyList();
+        }
+        propertyDefinition.getIndexTokenisationMode();
+        return Collections.singletonList(propertyQName.toString());   
+    }
+    
+    
+    /**
+     * Get the schema field to use for a specific use 
+     * TODO: Determine from the model
+     *
+     * @param propertyQName
+     * @param fieldUse
+     * @return
+     */
+    public String getSearchFieldNameForProperty(QName propertyQName, FieldUse fieldUse)
     {
         return propertyQName.toString();
     }
@@ -155,12 +374,35 @@ public class AlfrescoSolrDataModel
 //
 //    }
     
-//    private PropertyDefinition getPropertyDefinition(String fieldName)
-//    {
-//        QName rawPropertyName = QName.createQName(expandFieldName(fieldName).substring(1));
-//        QName propertyQName = QName.createQName(rawPropertyName.getNamespaceURI(), ISO9075.decode(rawPropertyName.getLocalName()));
-//        return getPropertyDefinition(propertyQName);
-//    }
+    private PropertyDefinition getPropertyDefinition(String fieldName)
+    {
+        QName rawPropertyName = QName.createQName(expandFieldName(fieldName).substring(1));
+        QName propertyQName = QName.createQName(rawPropertyName.getNamespaceURI(), ISO9075.decode(rawPropertyName.getLocalName()));
+        return getPropertyDefinition(propertyQName);
+    }
+    
+
+    /**
+     * @param propertyQName
+     * @return
+     */
+    public PropertyDefinition getPropertyDefinition(QName propertyQName)
+    {
+        PropertyDefinition propertyDef = getDictionaryService(CMISStrictDictionaryService.DEFAULT).getProperty(propertyQName);
+//        if ((propertyDef != null) && (propertyDef.getName().equals(ContentModel.PROP_AUTHOR)))
+//        {
+//            return new PropertyDefinitionWrapper(propertyDef);
+//        }
+//        else if ((propertyDef != null) && (propertyDef.getName().equals(ContentModel.PROP_CREATOR)))
+//        {
+//            return new PropertyDefinitionWrapper(propertyDef);
+//        }
+//        else if ((propertyDef != null) && (propertyDef.getName().equals(ContentModel.PROP_MODIFIER)))
+//        {
+//            return new PropertyDefinitionWrapper(propertyDef);
+//        }
+        return propertyDef;
+    }
     
     
     private String expandFieldName(String fieldName)
@@ -220,6 +462,77 @@ public class AlfrescoSolrDataModel
 //        }
 //        return propertyDef;
 //    }
+    
+    
+    /**
+     * @param model
+     */
+    public boolean putModel(M2Model model)
+    {
+        Set<String> errors = validateModel(model);
+        if(errors.size() == 0)
+        {
+            modelErrors.remove(model.getName());
+            dictionaryDAO.putModelIgnoringConstraints(model);
+            return true;
+        }
+        else
+        {
+            if(!modelErrors.containsKey(model.getName()))
+            {
+                modelErrors.put(model.getName(), errors);
+                log.warn(errors.iterator().next());
+            }
+            return false;
+        }
+       
+    }
+
+    
+    private Set<String> validateModel(M2Model model)
+    {
+        HashSet<String> errors = new HashSet<String>();
+        try 
+        { 
+            dictionaryDAO.getCompiledModel(QName.createQName(model.getName(), namespaceDAO)); 
+        } 
+        catch (DictionaryException e) 
+        {
+            // No model to diff
+            return errors;
+        }
+        catch(NamespaceException e)
+        {
+            // namespace unknown - no model 
+            return errors;
+        }
+        
+        
+        List<M2ModelDiff> modelDiffs = dictionaryDAO.diffModelIgnoringConstraints(model);
+        
+        for (M2ModelDiff modelDiff : modelDiffs)
+        {
+            if (modelDiff.getDiffType().equals(M2ModelDiff.DIFF_UPDATED))
+            {
+                errors.add("Model not updated: "+model.getName()  + "   Failed to validate model update - found non-incrementally updated " + modelDiff.getElementType() + " '" + modelDiff.getElementName() + "'");
+            }
+        }
+        return errors;
+    }
+  
+    
+    public M2Model getM2Model(QName modelQName)
+    {
+        return dictionaryDAO.getCompiledModel(modelQName).getM2Model();
+    }
+
+    public void afterInitModels()
+    {
+        for (CMISAbstractDictionaryService cds : cmisDictionaryServices.values())
+        {
+            cds.afterDictionaryInit();
+        }
+    }
     
 //    public static class TextSortFieldComparatorSource extends FieldComparatorSource
 //    {

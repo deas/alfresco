@@ -2,13 +2,12 @@
 
 <!-- 
    TODO 
-   - ICU ? Is it still one locale rather then cross-locale for folding etc?
    - Truncated field that could be used for sort/faceting/clustering?
    - SITE analysis 
    - Geospatial ?
    - Currency ?
-   - ICU ordering implications
    - (default facetting configuration)
+   - more complex shingling for phrases
 -->
 
 <schema name="Alfresco V2.0" version="1.5">
@@ -46,16 +45,27 @@
       <!-- All anlysis is defined in dummy field types which this field type uses -->
 
       <!-- TODO: truncated text field for sorting?? -->
+      
       <fieldType name="alfrescoFieldType" class="org.alfresco.solr.AlfrescoFieldType" />
       <fieldType name="path" class="solr.TextField" >
          <analyzer class="org.alfresco.repo.search.impl.lucene.analysis.PathAnalyzer" />
       </fieldType>
 
-      <!-- Field types that are only used to define language specific analysis (generally ordered by ISO code) -->
+
+      <!-- Suggestion -->
+
+      <fieldType name="text_shingle" class="solr.TextField" positionIncrementGap="100">
+         <analyzer>
+            <tokenizer class="solr.ICUTokenizerFactory"/>
+            <filter class="solr.ICUNormalizer2FilterFactory" name="nfkc_cf" mode="compose" />
+	    <filter class="solr.ShingleFilterFactory" minShingleSize="2" maxShingleSize="3" outputUnigrams="true" outputUnigramsIfNoShingles="true" tokenSeparator=" " />
+         </analyzer>
+      </fieldType>
+      
 
       <!-- Cross-locale -->
       <!-- Include word splitting -->
-      <!-- TODO: Considser ICU here --> 
+
       <fieldType name="text___" class="solr.TextField" positionIncrementGap="100">
          <analyzer>
             <tokenizer class="solr.ICUTokenizerFactory"/>
@@ -75,13 +85,19 @@
          </analyzer>
       </fieldType>
 
+
       <!-- Cross locale generic collation -->
+
       <fieldType name="collatedROOT" class="solr.TextField">
          <analyzer>
             <tokenizer class="solr.KeywordTokenizerFactory"/>
             <filter class="solr.CollationKeyFilterFactory"  language=""  strength="primary" />
          </analyzer>
       </fieldType>
+
+      <!--                                                                                                     -->
+      <!-- Field types that are only used to define language specific analysis (generally ordered by ISO code) -->
+      <!--                                                                                                     -->
 
       <!-- English -->
       <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
@@ -564,6 +580,9 @@
       <field name="OWNER"                 type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
       <field name="PARENTASSOCCRC"        type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
       <field name="TENANT"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+
+      <!-- Suggestion -->
+      <field name="suggest"               type="text_shingle"    indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
 
 
       <!-- example pluggable field -->

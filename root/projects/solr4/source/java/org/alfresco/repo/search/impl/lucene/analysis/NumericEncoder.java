@@ -183,7 +183,7 @@ public class NumericEncoder
         return new String(buf);
     }
 
-    private static String encodeToHex(long l)
+    public static String encodeToHex(long l)
     {
         char[] buf = new char[] { '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' };
         int charPos = 16;

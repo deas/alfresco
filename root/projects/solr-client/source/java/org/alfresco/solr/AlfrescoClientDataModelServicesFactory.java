@@ -23,7 +23,7 @@ import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
  *
  * @author Gethin James
  */
-public class AlfrescoSolrDataModelServicesFactory
+public class AlfrescoClientDataModelServicesFactory
 {
     public static final String DICTIONARY_FILTERED_WITH_EXCLUSIONS = "cmisWithExclusions";
 

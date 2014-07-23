@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.repo.search.impl.lucene.analysis;
+package org.alfresco.util;
 
 /**
  * Support to encode numeric types in the lucene index.
@@ -106,6 +106,18 @@ public class NumericEncoder
         return encodeToHex(replacement);
     }
 
+    public static String encode(Long longToEncode)
+    {
+        if(longToEncode == null)
+        {
+            return encode(0L);
+        }
+        else
+        {
+            return encode(longToEncode.longValue());
+        }
+    }
+    
     /**
      * Secode a long
      * @param hex

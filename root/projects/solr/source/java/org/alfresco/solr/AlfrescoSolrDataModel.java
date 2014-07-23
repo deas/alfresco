@@ -87,7 +87,7 @@ import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.namespace.NamespaceException;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.solr.AlfrescoSolrDataModelServicesFactory.DictionaryKey;
+import org.alfresco.solr.AlfrescoClientDataModelServicesFactory.DictionaryKey;
 import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.solr.query.LuceneQueryBuilderContextSolrImpl;
 import org.alfresco.solr.query.SolrQueryParser;
@@ -319,11 +319,11 @@ public class AlfrescoSolrDataModel
         dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
 
         QNameFilter qnameFilter = getQNameFilter();
-        dictionaryServices = AlfrescoSolrDataModelServicesFactory.constructDictionaryServices(qnameFilter, dictionaryDAO);
+        dictionaryServices = AlfrescoClientDataModelServicesFactory.constructDictionaryServices(qnameFilter, dictionaryDAO);
         DictionaryComponent dictionaryComponent = getDictionaryService(CMISStrictDictionaryService.DEFAULT);
         dictionaryComponent.setMessageLookup(new StaticMessageLookup());
 
-        cmisDictionaryServices = AlfrescoSolrDataModelServicesFactory.constructDictionaries(qnameFilter, namespaceDAO, dictionaryComponent, dictionaryDAO);
+        cmisDictionaryServices = AlfrescoClientDataModelServicesFactory.constructDictionaries(qnameFilter, namespaceDAO, dictionaryComponent, dictionaryDAO);
 
     }
 

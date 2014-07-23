@@ -1377,9 +1377,9 @@
       <str name="name">mySuggester</str>
       <str name="lookupImpl">FuzzyLookupFactory</str>      <!-- org.apache.solr.spelling.suggest.fst -->
       <str name="dictionaryImpl">DocumentDictionaryFactory</str>     <!-- org.apache.solr.spelling.suggest.HighFrequencyDictionaryFactory --> 
-      <str name="field">suggest.__</str>
+      <str name="field">suggest</str>
       <str name="weightField">price</str>
-      <str name="suggestAnalyzerFieldType">text___</str>
+      <str name="suggestAnalyzerFieldType">text_shingle</str>
     </lst>
   </searchComponent>
 
