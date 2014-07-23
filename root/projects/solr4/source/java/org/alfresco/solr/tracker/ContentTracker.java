@@ -1,8 +1,51 @@
+/*
+ * Copyright (C) 2014 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.alfresco.solr.tracker;
 
+import java.util.Properties;
+
+import org.alfresco.solr.InformationServer;
+import org.alfresco.solr.client.SOLRAPIClient;
+
+/**
+ * The tracker is triggered and then queries for docs with FTSSTATUS (Full Text Search Status) set to something other than clean.
+ * States may be NONE - first time indexed; STALE - using old content for the node; OK - current; Clean - TODO
+ * Then it fixes up the docs.
+ * Similar to org.alfresco.repo.search.impl.lucene.ADMLuceneIndexerImpl
+ * 
+ * @author Ahmed Owian
+ */
 public class ContentTracker extends AbstractTracker implements Tracker
 {
 
+    public ContentTracker(SolrTrackerScheduler scheduler, Properties p, SOLRAPIClient client, String coreName,
+                InformationServer informationServer)
+    {
+        super(scheduler, p, client, coreName, informationServer);
+
+    }
+    
+    ContentTracker()
+    {
+        // Testing purposes only
+    }
+    
     @Override
     protected void doTrack()
     {

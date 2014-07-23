@@ -38,7 +38,6 @@ import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Transactions;
 import org.json.JSONException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
