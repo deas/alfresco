@@ -3,8 +3,11 @@ package org.alfresco.solr.tracker;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,12 +16,14 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2Namespace;
 import org.alfresco.service.cmr.dictionary.ModelDefinition.XMLBindingType;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.client.AlfrescoModel;
@@ -55,6 +60,61 @@ public class ModelTracker extends AbstractTracker implements Tracker
         if (!alfrescoModelDir.exists())
         {
             alfrescoModelDir.mkdir();
+        }
+        
+        loadPersistedModels();
+    }
+
+    /**
+     * 
+     */
+    private void loadPersistedModels()
+    {
+        HashMap<String, M2Model> modelMap = new HashMap<String, M2Model>();
+        if (alfrescoModelDir.exists() && alfrescoModelDir.isDirectory())
+        {
+            for (File file : alfrescoModelDir.listFiles(new FileFilter()
+            {
+                @Override
+                public boolean accept(File pathname)
+                {
+                    return pathname.isFile() && pathname.getName().endsWith(".xml");
+                }
+
+            }))
+            {
+                InputStream modelStream;
+                try
+                {
+                    modelStream = new FileInputStream(file);
+                    M2Model model = M2Model.createModel(modelStream);
+                    modelStream.close();
+                    for (M2Namespace namespace : model.getNamespaces())
+                    {
+                        modelMap.put(namespace.getUri(), model);
+                    }
+                }
+                catch (FileNotFoundException e)
+                {
+                    throw new AlfrescoRuntimeException("File not found", e);
+                }
+                catch (IOException e)
+                {
+                    throw new AlfrescoRuntimeException("File not found", e);
+                }
+
+            }
+        }
+        // Load the models ensuring that they are loaded in the correct order
+        HashSet<String> loadedModels = new HashSet<String>();
+        for (M2Model model : modelMap.values())
+        {
+            loadModel(modelMap, loadedModels, model);
+        }
+
+        if(modelMap.size() > 0)
+        {
+            AlfrescoSolrDataModel.getInstance().afterInitModels();
         }
     }
 
