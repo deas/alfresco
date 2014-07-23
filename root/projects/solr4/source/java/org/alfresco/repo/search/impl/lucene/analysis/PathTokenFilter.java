@@ -27,6 +27,10 @@ import java.util.LinkedList;
 
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
+import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 
 /**
  * @author andyh TODO To change the template for this generated type comment go to Window - Preferences - Java - Code
@@ -56,6 +60,14 @@ public class PathTokenFilter extends Tokenizer
 
     public final static String TOKEN_TYPE_PATH_ELEMENT_NAMESPACE_PREFIX = "PATH_ELEMENT_NAMESPACE_PREFIX";
 
+    private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
+
+    private final OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
+
+    private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
+    
+    private final PositionIncrementAttribute posIncAtt = addAttribute(PositionIncrementAttribute.class);
+    
     char pathSeparator;
 
     String separatorTokenText;
@@ -283,6 +295,11 @@ public class PathTokenFilter extends Tokenizer
             buffer.append(c);
         }
         int end = readerPosition - 1;
+        // Stop the final token being returned with an end before the start.
+        if (start > end)
+        {
+            end = start;
+        }
         readerPosition = -1;
         if (!inNameSpace)
         {
@@ -298,6 +315,18 @@ public class PathTokenFilter extends Tokenizer
     @Override
     public boolean incrementToken() throws IOException
     {
-        return false;
+        clearAttributes();
+        
+        Token next = next();
+        if (next == null)
+        {
+            return false;
+        }
+        
+        termAtt.copyBuffer(next.buffer(), 0, next.length());
+        offsetAtt.setOffset(correctOffset(next.startOffset()), correctOffset(next.endOffset()));
+        typeAtt.setType(next.type());
+        posIncAtt.setPositionIncrement(next.getPositionIncrement());
+        return true;
     }
 }
