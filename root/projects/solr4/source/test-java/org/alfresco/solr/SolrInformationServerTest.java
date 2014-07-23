@@ -18,8 +18,7 @@
  */
 package org.alfresco.solr;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.atLeastOnce;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,15 +33,11 @@ import java.util.Properties;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.solr.client.AclReaders;
 import org.apache.commons.lang.reflect.FieldUtils;
-import org.apache.lucene.analysis.util.ResourceLoader;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.CoreDescriptor;
-import org.apache.solr.core.IndexDeletionPolicyWrapper;
-import org.apache.solr.core.SolrConfig;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrResourceLoader;
-import org.apache.solr.schema.IndexSchema;
 import org.apache.solr.update.AddUpdateCommand;
 import org.apache.solr.update.UpdateHandler;
 import org.junit.Before;
@@ -96,8 +91,8 @@ public class SolrInformationServerTest
                                   "ROLE_ADMINISTRATOR",
                                   "ROLE_OWNER",
                                   "ROLE_RANDOM"),
-                      Arrays.asList("GROUP_marketing",
-                                  "simpleuser",
+                      Arrays.asList("GROUP_engineering",
+                                  "justauser",
                                   "GROUP_EVERYONE",
                                   "ROLE_GUEST",
                                   "ROLE_ADMINISTRATOR",
@@ -112,8 +107,8 @@ public class SolrInformationServerTest
                                   "ROLE_ADMINISTRATOR",
                                   "ROLE_OWNER",
                                   "ROLE_RANDOM"),
-                      Arrays.asList("GROUP_marketing",
-                                  "simpleuser",
+                      Arrays.asList("GROUP_engineering",
+                                  "justauser",
                                   "GROUP_EVERYONE",
                                   "ROLE_GUEST",
                                   "ROLE_ADMINISTRATOR",
@@ -150,7 +145,7 @@ public class SolrInformationServerTest
             if (sourceAclReaders.getId() == 103)
             {
                 // Authorities *may* (e.g. GROUP, EVERYONE, GUEST) be mangled to include tenant information
-                Collection<Object> docReaders = inputDoc.getFieldValues(QueryConstants.FIELD_READER);
+                final Collection<Object> docReaders = inputDoc.getFieldValues(QueryConstants.FIELD_READER);
                 assertEquals(Arrays.asList("GROUP_marketing@tenant.test",
                                            "simpleuser",
                                            "GROUP_EVERYONE@tenant.test",
@@ -158,11 +153,20 @@ public class SolrInformationServerTest
                                            "ROLE_ADMINISTRATOR",
                                            "ROLE_OWNER",
                                            "ROLE_RANDOM"), docReaders);
+                final Collection<Object> docDenied = inputDoc.getFieldValues(QueryConstants.FIELD_DENIED);
+                assertEquals(Arrays.asList("GROUP_engineering@tenant.test",
+                            "justauser",
+                            "GROUP_EVERYONE@tenant.test",
+                            "ROLE_GUEST@tenant.test",
+                            "ROLE_ADMINISTRATOR",
+                            "ROLE_OWNER",
+                            "ROLE_RANDOM"), docDenied);
             }
             else
             {
                 // Simple case, no authority/tenant mangling.
                 assertEquals(sourceAclReaders.getReaders(), inputDoc.getFieldValues(QueryConstants.FIELD_READER));            
+                assertEquals(sourceAclReaders.getDenied(), inputDoc.getFieldValues(QueryConstants.FIELD_DENIED));            
             }
         }
     }

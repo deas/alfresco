@@ -806,28 +806,13 @@ public class SolrInformationServer implements InformationServer
             String tenant = aclReaders.getTenantDomain();
             for (String reader : aclReaders.getReaders())
             {
-                switch (AuthorityType.getAuthorityType(reader))
-                {
-                    case USER:
-                        input.addField(QueryConstants.FIELD_READER, reader);
-                        break;
-                    case GROUP:
-                    case EVERYONE:
-                    case GUEST:
-                        if (tenant.length() == 0)
-                        {
-                            // Default tenant matches 4.0
-                            input.addField(QueryConstants.FIELD_READER, reader);
-                        }
-                        else
-                        {
-                            input.addField(QueryConstants.FIELD_READER, reader + "@" + tenant);
-                        }
-                        break;
-                    default:
-                        input.addField(QueryConstants.FIELD_READER, reader);
-                        break;
-                }
+                reader = addTenantToAuthority(reader, tenant);
+                input.addField(QueryConstants.FIELD_READER, reader);
+            }
+            for (String denied : aclReaders.getDenied())
+            {
+                denied = addTenantToAuthority(denied, tenant);
+                input.addField(QueryConstants.FIELD_DENIED, denied);
             }
             cmd.solrDoc = input;
             //cmd.doc = LegacySolrInformationServer.toDocument(cmd.getSolrInputDocument(), core.getSchema(),  dataModel);
@@ -836,6 +821,36 @@ public class SolrInformationServer implements InformationServer
 
         long end = System.nanoTime();
         return (end - start);
+    }
+    
+    /**
+     * Adds tenant information to an authority, <strong>if required</strong>, such that jbloggs for tenant example.com
+     * would become jbloggs@example.com
+     * 
+     * @param authority   The authority to mutate, if it matches certain types.
+     * @param tenant      The tenant that will be added to the authority.
+     * @return The new authority information
+     */
+    private String addTenantToAuthority(String authority, String tenant)
+    {
+        switch (AuthorityType.getAuthorityType(authority))
+        {
+            case GROUP:
+            case EVERYONE:
+            case GUEST:
+                if (tenant.length() == 0)
+                {
+                    // Default tenant matches 4.0
+                }
+                else
+                {
+                    authority = authority + "@" + tenant;
+                }
+                break;
+            default:
+                break;
+        }
+        return authority;
     }
     
     private LocalSolrQueryRequest getLocalSolrQueryRequest()

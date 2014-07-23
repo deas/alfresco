@@ -102,6 +102,8 @@ public interface QueryConstants
 
     public static final String FIELD_READER = "READER";
 
+    public static final String FIELD_DENIED = "DENIED";
+    
     public static final String FIELD_AUTHORITY = "AUTHORITY";
 
     public static final String FIELD_OWNERSET = "OWNERSET";
