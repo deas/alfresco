@@ -1006,7 +1006,7 @@
                             <index.subsystem.name>solr4</index.subsystem.name>
                             <solr.host>localhost</solr.host>
                             <solr.port>${tomcat.default.solr4.ssl.port}</solr.port>
-                            <solr.secureComms>none</solr.secureComms>
+                            <solr.secureComms>https</solr.secureComms>
                             <solr.backup.alfresco.numberToKeep>0</solr.backup.alfresco.numberToKeep>
                             <solr.backup.archive.numberToKeep>0</solr.backup.archive.numberToKeep>
                         </systemProperties>
