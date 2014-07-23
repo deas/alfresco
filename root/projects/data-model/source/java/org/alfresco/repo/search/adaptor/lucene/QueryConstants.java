@@ -158,4 +158,10 @@ public interface QueryConstants
     
     public static final String FIELD_DOC_TYPE = "DOC_TYPE";
     
+    public static final String FIELD_SOLR_LOCALISED_UNTOKENISED_SUFFIX = ".u";
+    
+    public static final String FIELD_SOLR_NOLOCALE_UNTOKENISED_SUFFIX = ".__.u";
+    
+    public static final String FIELD_SOLR_NOLOCALE_TOKENISED_SUFFIX = ".__";
+    
 }

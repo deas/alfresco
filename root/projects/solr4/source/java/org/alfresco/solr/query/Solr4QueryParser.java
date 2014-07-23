@@ -20,16 +20,20 @@ package org.alfresco.solr.query;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
@@ -58,6 +62,7 @@ import org.alfresco.solr.AlfrescoSolrDataModel.ContentFieldType;
 import org.alfresco.solr.AlfrescoSolrDataModel.FieldInstance;
 import org.alfresco.solr.AlfrescoSolrDataModel.FieldUse;
 import org.alfresco.solr.AlfrescoSolrDataModel.IndexedField;
+import org.alfresco.util.CachingDateFormat;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
 import org.alfresco.util.SearchLanguageConversion;
@@ -93,6 +98,8 @@ import org.apache.lucene.util.Version;
 import org.jaxen.saxpath.SAXPathException;
 import org.jaxen.saxpath.base.XPathReader;
 import org.springframework.extensions.surf.util.I18NUtil;
+
+import sun.tools.asm.SwitchData;
 
 /**
  * @author Andy
@@ -2419,10 +2426,25 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     }
                     return booleanQuery;
                 }
-                else if (propertyDef.getDataType().getName().equals(DataTypeDefinition.DATETIME))
+                else if (propertyDef.getDataType().getName().equals(DataTypeDefinition.DATETIME) || propertyDef.getDataType().getName().equals(DataTypeDefinition.DATE))
                 {
-                    String solrField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), null, FieldUse.ID).getFields().get(0).getField();
-                    return newRangeQuery(solrField, part1, part2, includeLower, includeUpper);
+                    Pair<Date, Integer> dateAndResolution1 = parseDateString(part1);
+                    Pair<Date, Integer> dateAndResolution2 = parseDateString(part2);
+                    
+                    BooleanQuery bQuery = new BooleanQuery(); 
+                    IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), null, FieldUse.ID);
+                    for(FieldInstance instance : indexedField.getFields())
+                    {
+                        String start = dateAndResolution1 == null ? part1 : (includeLower ? getDateStart(dateAndResolution1) : getDateEnd(dateAndResolution1) );
+                        String end = dateAndResolution2 == null ? part2 : (includeUpper ? getDateEnd(dateAndResolution2) : getDateStart(dateAndResolution2) );
+
+                        Query query =  newRangeQuery(instance.getField(), start, end, includeLower, includeUpper);
+                        if(query != null)
+                        {
+                            bQuery.add(query,Occur.SHOULD);
+                        }
+                    }
+                    return bQuery;
                 }
                 else
                 {
@@ -3528,6 +3550,43 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     throw new UnsupportedOperationException("Wild cards are not supported for the datetime type");
                 }
             }
+            
+            // expand date for loose date parsing 
+            if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.DATETIME) || propertyDef.getDataType().getName().equals(DataTypeDefinition.DATE)))
+            {
+                Pair<Date, Integer> dateAndResolution = parseDateString(queryText);
+                
+                BooleanQuery bQuery = new BooleanQuery(); 
+                IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), null, FieldUse.FTS);
+                for(FieldInstance instance : indexedField.getFields())
+                {
+                    if(dateAndResolution != null)
+                    {
+                        Query query =  newRangeQuery(instance.getField(), getDateStart(dateAndResolution), getDateEnd(dateAndResolution), true, true);
+                        if(query != null)
+                        {
+                            bQuery.add(query,Occur.SHOULD);
+                        }
+                    }
+                    else
+                    {
+                        Query query = subQueryBuilder.getQuery(instance.getField(), queryText, AnalysisMode.DEFAULT, luceneFunction);
+                        if(query != null)
+                        {
+                            bQuery.add(query,Occur.SHOULD);
+                        }
+                    }
+                }
+                if(bQuery.getClauses().length > 0)
+                {
+                    return bQuery;
+                }
+                else
+                {
+                    return createNoMatchQuery();
+                }
+            }
+            
 
             if ((propertyDef != null)
                     && (tenantService.isTenantUser()) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.NODE_REF)) && (queryText.contains(StoreRef.URI_FILLER)))
@@ -3574,6 +3633,127 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         }
     }
 
+    
+    /**
+     * @param dateAndResolution
+     * @return
+     */
+    private String getDateEnd(Pair<Date, Integer> dateAndResolution)
+    {
+        Calendar cal= Calendar.getInstance(I18NUtil.getLocale());
+        cal.setTime(dateAndResolution.getFirst());
+        switch(dateAndResolution.getSecond())
+        {
+            case Calendar.YEAR:
+                cal.set(Calendar.MONTH, cal.getActualMaximum(Calendar.MONTH));
+            case Calendar.MONTH:
+                cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+            case Calendar.DAY_OF_MONTH:
+                cal.set(Calendar.HOUR_OF_DAY, cal.getActualMaximum(Calendar.HOUR_OF_DAY));
+            case Calendar.HOUR_OF_DAY:
+                cal.set(Calendar.MINUTE, cal.getActualMaximum(Calendar.MINUTE));
+            case Calendar.MINUTE:
+                cal.set(Calendar.SECOND, cal.getActualMaximum(Calendar.SECOND));
+            case Calendar.SECOND:
+                cal.set(Calendar.MILLISECOND, cal.getActualMaximum(Calendar.MILLISECOND));
+            case Calendar.MILLISECOND:
+            default:
+        }
+        SimpleDateFormat formatter = CachingDateFormat.getSolrDatetimeFormat();
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return formatter.format(cal.getTime());
+    }
+
+    /**
+     * @param dateAndResolution
+     * @return
+     */
+    private String getDateStart(Pair<Date, Integer> dateAndResolution)
+    {
+        Calendar cal= Calendar.getInstance(I18NUtil.getLocale());
+        cal.setTime(dateAndResolution.getFirst());
+        switch(dateAndResolution.getSecond())
+        {
+            case Calendar.YEAR:
+                cal.set(Calendar.MONTH, cal.getActualMinimum(Calendar.MONTH));
+            case Calendar.MONTH:
+                cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+            case Calendar.DAY_OF_MONTH:
+                cal.set(Calendar.HOUR_OF_DAY, cal.getActualMinimum(Calendar.HOUR_OF_DAY));
+            case Calendar.HOUR_OF_DAY:
+                cal.set(Calendar.MINUTE, cal.getActualMinimum(Calendar.MINUTE));
+            case Calendar.MINUTE:
+                cal.set(Calendar.SECOND, cal.getActualMinimum(Calendar.SECOND));
+            case Calendar.SECOND:
+                cal.set(Calendar.MILLISECOND, cal.getActualMinimum(Calendar.MILLISECOND));
+            case Calendar.MILLISECOND:
+            default:
+        }
+        SimpleDateFormat formatter = CachingDateFormat.getSolrDatetimeFormat();
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return formatter.format(cal.getTime());
+    }
+
+    private Pair<Date, Integer> parseDateString(String dateString)
+    {
+        try
+        {
+            Pair<Date, Integer> result = CachingDateFormat.lenientParse(dateString, Calendar.YEAR);
+            return result;
+        }
+        catch (java.text.ParseException e)
+        {
+            SimpleDateFormat oldDf = CachingDateFormat.getDateFormat();
+            try
+            {
+                Date date = oldDf.parse(dateString);
+                return new Pair<Date, Integer>(date, Calendar.SECOND);
+            }
+            catch (java.text.ParseException ee)
+            {
+                if (dateString.equalsIgnoreCase("min"))
+                {
+                    Calendar cal = Calendar.getInstance(I18NUtil.getLocale());
+                    cal.set(Calendar.YEAR, cal.getMinimum(Calendar.YEAR));
+                    cal.set(Calendar.DAY_OF_YEAR, cal.getMinimum(Calendar.DAY_OF_YEAR));
+                    cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
+                    cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
+                    cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
+                    cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+                    return new Pair<Date, Integer>(cal.getTime(), Calendar.MILLISECOND);
+                }
+                else if (dateString.equalsIgnoreCase("now"))
+                {
+                    return new Pair<Date, Integer>(new Date(), Calendar.MILLISECOND);
+                }
+                else if (dateString.equalsIgnoreCase("today"))
+                {
+                    Calendar cal = Calendar.getInstance(I18NUtil.getLocale());
+                    cal.setTime(new Date());
+                    cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
+                    cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
+                    cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
+                    cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+                    return new Pair<Date, Integer>(cal.getTime(), Calendar.DAY_OF_MONTH);
+                }
+                else if (dateString.equalsIgnoreCase("max"))
+                {
+                    Calendar cal = Calendar.getInstance(I18NUtil.getLocale());
+                    cal.set(Calendar.YEAR, cal.getMaximum(Calendar.YEAR));
+                    cal.set(Calendar.DAY_OF_YEAR, cal.getMaximum(Calendar.DAY_OF_YEAR));
+                    cal.set(Calendar.HOUR_OF_DAY, cal.getMaximum(Calendar.HOUR_OF_DAY));
+                    cal.set(Calendar.MINUTE, cal.getMaximum(Calendar.MINUTE));
+                    cal.set(Calendar.SECOND, cal.getMaximum(Calendar.SECOND));
+                    cal.set(Calendar.MILLISECOND, cal.getMaximum(Calendar.MILLISECOND));
+                    return new Pair<Date, Integer>(cal.getTime(), Calendar.MILLISECOND);
+                }
+                else
+                {
+                    return null; // delegate to SOLR date parsing
+                }
+            }
+        }
+    }
  
 
     protected Query functionQueryBuilder(String expandedFieldName, String ending, QName propertyQName, PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, String queryText,
@@ -4320,7 +4500,8 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
    
     protected Query createAuthoritySetQuery(String queryText) throws ParseException
     {
-        return new SolrAuthoritySetQuery(queryText);
+        return new MatchAllDocsQuery();
+        //return new SolrAuthoritySetQuery(queryText);
     }
 
 }

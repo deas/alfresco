@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Locale;
 
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -45,6 +46,7 @@ import org.alfresco.solr.AlfrescoSolrDataModel.FieldUse;
 import org.alfresco.solr.AlfrescoSolrDataModel.IndexedField;
 import org.alfresco.util.Pair;
 import org.apache.solr.common.params.CommonParams;
+import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.ContentStream;
 import org.apache.solr.request.SolrQueryRequest;
@@ -83,7 +85,45 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
      */
     public AbstractQParser(String qstr, SolrParams localParams, SolrParams params, SolrQueryRequest req)
     {
-        super(qstr, localParams, params, req);
+        super(qstr, localParams, fixFacetParams(params), req);
+        req.setParams(fixFacetParams(params));
+    }
+
+    /**
+     * @param params
+     * @return
+     */
+    private static SolrParams fixFacetParams(SolrParams params)
+    {
+        if(true)
+        {
+            return params;
+        }
+        
+        ModifiableSolrParams fixed = new ModifiableSolrParams();
+        for(Iterator<String> it = params.getParameterNamesIterator(); it.hasNext(); /**/)
+        {
+            String name = it.next();
+            if(name.equals("facet.field"))
+            {
+                fixed.add(name, endProperty(params.get(name), FieldUse.FACET));
+            }
+            if(name.startsWith("f."))
+            {
+                int index = name.indexOf(".facet.", 2);
+                if(index > -1)
+                {
+                    fixed.add("f."+endProperty(name.substring(2, index), FieldUse.FACET)+name.substring(index), params.get(name));
+                }
+                else
+                {
+                    fixed.add(name, params.get(name));
+                }
+            }
+                    
+        }
+        
+        return fixed;
     }
 
     protected Pair<SearchParameters, Boolean> getSearchParameters()
@@ -442,7 +482,7 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
                 {
                     if(Character.isWhitespace(c))
                     {
-                        String toAppend = endProperty(propertyBuilder);
+                        String toAppend = endProperty(propertyBuilder.toString(), FieldUse.SORT);
                         builder.append(toAppend);
                         builder.append(c);
                         propertyBuilder = null;
@@ -455,7 +495,7 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
             }
             if(propertyBuilder != null)
             {
-                String toAppend = endProperty(propertyBuilder);
+                String toAppend = endProperty(propertyBuilder.toString(), FieldUse.SORT);
                 builder.append(toAppend);
             }
             sortStr = builder.toString();
@@ -474,9 +514,8 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
      * @param c
      * @return
      */
-    private String  endProperty(StringBuilder propertyBuilder)
+    private static String  endProperty(String  potentialProperty,  FieldUse fieldUse)
     {
-        String potentialProperty = propertyBuilder.toString();
         AlfrescoFunctionEvaluationContext functionContext = new AlfrescoFunctionEvaluationContext( AlfrescoSolrDataModel.getInstance().getNamespaceDAO(),  AlfrescoSolrDataModel.getInstance().getDictionaryService(CMISStrictDictionaryService.DEFAULT), NamespaceService.CONTENT_MODEL_1_0_URI);
 
         String luceneField =  functionContext.getLuceneFieldName(potentialProperty);
@@ -488,7 +527,7 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
         if(propertyDef != null)
         {
 
-            IndexedField fields = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), getTextField(fieldNameAndEnding.getSecond()), FieldUse.SORT);
+            IndexedField fields = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), getTextField(fieldNameAndEnding.getSecond()), fieldUse);
             if(fields.getFields().size() > 0)
             {
                 solrSortField = fields.getFields().get(0).getField();
@@ -510,7 +549,7 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
      * @param luceneField
      * @return
      */
-    protected String mapNonPropertyFields(String luceneField)
+    protected static String mapNonPropertyFields(String luceneField)
     {
         switch(luceneField)
         {
@@ -529,7 +568,7 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
      * @param sort
      * @return
      */
-    protected ContentFieldType getTextField(String ending)
+    protected static ContentFieldType getTextField(String ending)
     {
         switch(ending)
         {

@@ -361,6 +361,22 @@ public class QueryParserUtils implements QueryConstants
             propertyFieldName = field.substring(1, field.length() - FIELD_TRANSFORMATION_STATUS_SUFFIX.length());
             ending = FIELD_TRANSFORMATION_STATUS_SUFFIX;
         }
+        // ordering matters .__.u before .u 
+        else if (field.endsWith(FIELD_SOLR_NOLOCALE_UNTOKENISED_SUFFIX))
+        {
+            propertyFieldName = field.substring(1, field.length() - FIELD_SOLR_NOLOCALE_UNTOKENISED_SUFFIX.length());
+            ending = FIELD_SOLR_NOLOCALE_UNTOKENISED_SUFFIX;
+        }
+        else if (field.endsWith(FIELD_SOLR_LOCALISED_UNTOKENISED_SUFFIX))
+        {
+            propertyFieldName = field.substring(1, field.length() - FIELD_SOLR_LOCALISED_UNTOKENISED_SUFFIX.length());
+            ending = FIELD_SOLR_LOCALISED_UNTOKENISED_SUFFIX;
+        }
+        else if (field.endsWith(FIELD_SOLR_NOLOCALE_TOKENISED_SUFFIX))
+        {
+            propertyFieldName = field.substring(1, field.length() - FIELD_SOLR_NOLOCALE_TOKENISED_SUFFIX.length());
+            ending = FIELD_SOLR_NOLOCALE_TOKENISED_SUFFIX;
+        }
         else
         {
             propertyFieldName = field.substring(1);
