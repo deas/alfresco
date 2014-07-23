@@ -330,7 +330,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void commit() throws IOException
     {
-        this.core.getUpdateHandler().commit(new CommitUpdateCommand(getLocalSolrQueryRequerst(), false));
+        this.core.getUpdateHandler().commit(new CommitUpdateCommand(getLocalSolrQueryRequest(), false));
     }
 
     @Override
@@ -391,7 +391,7 @@ public class SolrInformationServer implements InformationServer
 
         for (String idToDelete : idsToDelete)
         {
-            DeleteUpdateCommand docCmd = new DeleteUpdateCommand(getLocalSolrQueryRequerst());
+            DeleteUpdateCommand docCmd = new DeleteUpdateCommand(getLocalSolrQueryRequest());
             docCmd.setId(idToDelete);
             core.getUpdateHandler().delete(docCmd);
         }
@@ -795,7 +795,7 @@ public class SolrInformationServer implements InformationServer
         long start = System.nanoTime();
         for (AclReaders aclReaders : aclReaderList)
         {
-            AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequerst());
+            AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
             cmd.overwrite = overwrite;
             SolrInputDocument input = new SolrInputDocument();
             //input.addField(QueryConstants.FIELD_ID, "ACL-" + aclReaders.getId());
@@ -838,7 +838,7 @@ public class SolrInformationServer implements InformationServer
         return (end - start);
     }
     
-    private LocalSolrQueryRequest getLocalSolrQueryRequerst()
+    private LocalSolrQueryRequest getLocalSolrQueryRequest()
     {
         LocalSolrQueryRequest req = new LocalSolrQueryRequest(core, new NamedList<>());
         return req;
@@ -848,7 +848,7 @@ public class SolrInformationServer implements InformationServer
     public void indexAclTransaction(AclChangeSet changeSet, boolean overwrite) throws IOException
     {
         LocalSolrQueryRequest req = new LocalSolrQueryRequest(core, new NamedList<>());
-        AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequerst());
+        AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
         cmd.overwrite = overwrite;
         SolrInputDocument input = new SolrInputDocument();
         //input.addField(QueryConstants.FIELD_ID, "ACLTX-" + changeSet.getId());
@@ -950,7 +950,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void rollback() throws IOException
     {
-        this.core.getUpdateHandler().rollback(new RollbackUpdateCommand(getLocalSolrQueryRequerst()));
+        this.core.getUpdateHandler().rollback(new RollbackUpdateCommand(getLocalSolrQueryRequest()));
     }
 
 }

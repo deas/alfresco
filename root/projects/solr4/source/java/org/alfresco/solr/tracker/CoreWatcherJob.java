@@ -28,6 +28,7 @@ import org.alfresco.solr.SolrInformationServer;
 import org.alfresco.solr.SolrKeyResourceLoader;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.SOLRAPIClientFactory;
+import org.apache.solr.core.CoreDescriptorDecorator;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrResourceLoader;
 import org.quartz.Job;
@@ -56,7 +57,8 @@ public class CoreWatcherJob implements Job
             TrackerRegistry trackerRegistry = adminHandler.getTrackerRegistry();
             if (!trackerRegistry.hasTrackersForCore(coreName))
             {
-                if (Boolean.parseBoolean(core.getCoreDescriptor().getCoreProperty("enable.alfresco.tracking", "false")))
+            	Properties props = new CoreDescriptorDecorator(core.getCoreDescriptor()).getCoreProperties();
+                if (Boolean.parseBoolean(props.getProperty("enable.alfresco.tracking", "false")))
                 {
                     log.info("Starting to track " + coreName);
 
@@ -68,7 +70,6 @@ public class CoreWatcherJob implements Job
 
                     SolrTrackerScheduler scheduler = adminHandler.getScheduler();
                     SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
-                    Properties props = core.getResourceLoader().getCoreProperties();
                     SolrKeyResourceLoader keyResourceLoader = new SolrKeyResourceLoader(loader);
 
                     SOLRAPIClientFactory clientFactory = new SOLRAPIClientFactory();
