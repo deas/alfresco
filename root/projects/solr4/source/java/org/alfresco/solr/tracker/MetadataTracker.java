@@ -5,11 +5,11 @@ import java.util.List;
 import org.alfresco.solr.NodeReport;
 import org.alfresco.solr.client.Node;
 
-public class MetadataTracker implements Tracker
+public class MetadataTracker extends AbstractTracker implements Tracker
 {
 
     @Override
-    public void track()
+    public void doTrack()
     {
         // TODO Auto-generated method stub
 
@@ -35,13 +35,6 @@ public class MetadataTracker implements Tracker
 
     @Override
     public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getAlfrescoVersion()
     {
         // TODO Auto-generated method stub
         return null;
