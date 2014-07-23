@@ -1712,7 +1712,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                 query.append(fieldName).append(":").append(nodeId).append(operator);
             }
         }
-        query.delete(query.length() - 1 - operator.length(), query.length());
+        query.delete(query.length() - operator.length(), query.length());
         
         return query.toString();
     }
@@ -1774,6 +1774,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                     propertyQName, type);
         for (FieldInstance fieldInstance : indexedField.getFields())
         {
+            doc.removeField(fieldInstance.getField());
             switch(type)
             {
             case TRANSFORMATION_EXCEPTION:
@@ -1982,6 +1983,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
 
         for (FieldInstance  field : AlfrescoSolrDataModel.getInstance().getIndexedFieldNamesForProperty(propertyQName).getFields())
         {
+            cachedDoc.removeField(field.getField());
             if(field.isLocalised())
             {
                 cachedDoc.addField(field.getField(), builder.toString());
