@@ -569,6 +569,13 @@
                         <db.password>${db.password}</db.password>
                         <dir.root>${dir.root}</dir.root>
                     </systemProperties>
+                    <httpsPort>8443</httpsPort>
+                    <keystoreFile>${project.parent.basedir}/projects/system-build-test/keystore/ssl.keystore</keystoreFile>
+                    <keystorePass>kT9X6oe68t</keystorePass>
+                    <keystoreType>JCEKS</keystoreType>
+                    <truststoreFile>${project.parent.basedir}/projects/system-build-test/keystore/ssl.truststore</truststoreFile>
+                    <truststorePass>kT9X6oe68t</truststorePass>
+                    <truststoreType>JCEKS</truststoreType>
                 </configuration>
             </plugin>
             <plugin>
