@@ -726,7 +726,6 @@
                     generate-javadocs-jlan,
                     generate-javadocs-slingshot,
                     generate-javadocs-solrclient,
-                    generate-javadocs-solr4,
                     generate-javadocs-solr,
                     generate-javadocs-webframeworkcommons,
                     generate-javadocs-wcmquickstart-clientapi" />
