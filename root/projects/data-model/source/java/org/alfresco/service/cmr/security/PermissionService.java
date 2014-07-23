@@ -253,6 +253,15 @@ public interface PermissionService
     public Set<String> getReaders(Long aclId);
     
     /**
+     * Get the denied authorities associated with a given ACL
+     * 
+     * @param aclId                 the low-level ACL ID
+     * @return                      set of authorities denied permission on the ACL
+     */
+    @Auditable(parameters = { "aclId" })
+    public Set<String> getReadersDenied(Long aclId);
+    
+    /**
      * Check if a permission is allowed on an acl.
      * @return the access status
      */
