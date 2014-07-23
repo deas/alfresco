@@ -333,7 +333,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     }
     
     @Override
-    public List<TenantAndDbId> getDocsWithUncleanContent() throws IOException
+    public List<TenantAndDbId> getDocsWithUncleanContent(int start, int rows) throws IOException
     {
         SolrQueryRequest request = null;
         try
@@ -342,8 +342,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
 
             ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
             String query = FIELD_FTSSTATUS + ":" + FTSStatus.Dirty + " OR " + FIELD_FTSSTATUS + ":" + FTSStatus.New;
-            // TODO batch this query instead of getting all rows at once
-            params.set("q", query).set("fl", "id").set("rows", "" + Integer.MAX_VALUE);
+            params.set("q", query).set("fl", "id").set("rows", "" + rows).set("start", "" + start);
             ResultContext rc = cloudSelect(request, params);
             
             List<TenantAndDbId> docs = new ArrayList<>();

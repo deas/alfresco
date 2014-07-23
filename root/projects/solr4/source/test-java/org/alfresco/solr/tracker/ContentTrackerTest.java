@@ -20,10 +20,12 @@ package org.alfresco.solr.tracker;
 
 import static org.mockito.Mockito.*;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
-import org.alfresco.solr.InformationServer;
+import org.alfresco.solr.SolrInformationServer;
+import org.alfresco.solr.SolrInformationServer.TenantAndDbId;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +33,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.verification.VerificationMode;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContentTrackerTest
@@ -44,7 +45,7 @@ public class ContentTrackerTest
     private SOLRAPIClient repositoryClient;
     private String coreName = "theCoreName";
     @Mock
-    private InformationServer srv;
+    private SolrInformationServer srv;
     @Spy
     private Properties props;
 
@@ -58,11 +59,26 @@ public class ContentTrackerTest
     @Test
     public void doTrackWithNoContentDoesNothing() throws Exception
     {
-        
         this.contentTracker.doTrack();
-        verify(srv).commit();
+        
+        verify(srv, never()).commit();
     }
 
+    @Test
+    public void doTrackWithContentUpdatesContent() throws Exception
+    {
+        List<TenantAndDbId> buckets = new ArrayList<>();
+        TenantAndDbId bucket = this.srv.new TenantAndDbId();
+        bucket.dbId = 0l;
+        bucket.tenant = "";
+        buckets.add(bucket);
+        when(this.srv.getDocsWithUncleanContent(anyInt(), anyInt())).thenReturn(buckets).thenReturn(null);
+        this.contentTracker.doTrack();
+        
+        verify(srv).updateContentToIndexAndCache(anyLong(), anyString());
+        verify(srv).commit();
+    }
+    
     @Test
     public void testCheckIndex()
     {

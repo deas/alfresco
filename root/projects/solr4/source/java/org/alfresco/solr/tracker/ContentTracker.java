@@ -44,7 +44,6 @@ public class ContentTracker extends AbstractTracker implements Tracker
                 InformationServer informationServer)
     {
         super(scheduler, p, client, coreName, informationServer);
-
     }
     
     ContentTracker()
@@ -55,15 +54,29 @@ public class ContentTracker extends AbstractTracker implements Tracker
     @Override
     protected void doTrack() throws Exception
     {
-        List<TenantAndDbId> buckets = this.infoSrv.getDocsWithUncleanContent();
-        
-        for (TenantAndDbId bucket : buckets)
+        final int ROWS = 300;
+        int start = 0;
+        long totalDocs = 0l;
+        List<TenantAndDbId> buckets = this.infoSrv.getDocsWithUncleanContent(start, ROWS);
+        while (buckets != null && !buckets.isEmpty())
         {
-            // update the content
-            this.infoSrv.updateContentToIndexAndCache(bucket.dbId, bucket.tenant);
+            for (TenantAndDbId bucket : buckets)
+            {
+                // update the content
+                this.infoSrv.updateContentToIndexAndCache(bucket.dbId, bucket.tenant);
+            }
+            
+            totalDocs += buckets.size();
+            start += ROWS;
+            buckets = this.infoSrv.getDocsWithUncleanContent(start, ROWS);
         }
-        super.infoSrv.commit();
         
+        if (totalDocs > 0)
+        {
+            super.infoSrv.commit();
+        }
+        
+        log.info("total number of docs with content updated: " + totalDocs);
     }
 
     @Override

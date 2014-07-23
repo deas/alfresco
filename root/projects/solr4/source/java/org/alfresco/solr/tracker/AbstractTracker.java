@@ -118,7 +118,7 @@ public abstract class AbstractTracker implements Tracker
         {
             if((state != null) && state.isRunning())
             {
-                log.info("... update for " + coreName + " is already running");
+                log.info("... " + this.getClass().getSimpleName() + " for core [" + coreName + "] is already running");
                 return;
             }
         }
@@ -132,12 +132,12 @@ public abstract class AbstractTracker implements Tracker
         {
             if((state != null) && state.isRunning())
             {
-                log.info("... update for " + coreName + " is already running");
+                log.info("... " + this.getClass().getSimpleName() + " for core [" + coreName + "] is already running.");
                 return;
             }
             else
             {
-                log.info("... updating " + coreName);
+                log.info("... Running " + this.getClass().getSimpleName() + " for core ["+ coreName + "].");
                 this.invalidateTrackerState();
                 getTrackerState();
                 state.setRunning(true);

@@ -40,6 +40,8 @@ import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Transactions;
 import org.alfresco.solr.client.Node.SolrApiNodeStatus;
 import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * This tracks two things: transactions and metadata nodes
@@ -47,6 +49,7 @@ import org.json.JSONException;
  */
 public class MetadataTracker extends AbstractTracker implements Tracker
 {
+    protected final static Logger log = LoggerFactory.getLogger(MetadataTracker.class);
     private static final long TIME_STEP_32_DAYS_IN_MS = 1000 * 60 * 60 * 24 * 32L;
     private static final long TIME_STEP_1_HR_IN_MS = 60 * 60 * 1000L;
     private static final int DEFAULT_TRANSACTION_DOCS_BATCH_SIZE = 100;
