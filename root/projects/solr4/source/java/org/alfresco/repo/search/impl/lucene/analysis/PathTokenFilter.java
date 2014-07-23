@@ -90,6 +90,8 @@ public class PathTokenFilter extends Tokenizer
 
     private boolean includeNamespace;
 
+    private boolean endOfStream = false;
+    
     public PathTokenFilter(Reader in, char pathSeparator, String separatorTokenText, String noNsTokenText,
             char nsStartDelimiter, char nsEndDelimiter, boolean includeNameSpace)
     {
@@ -261,7 +263,7 @@ public class PathTokenFilter extends Tokenizer
 
     private Token nextToken() throws IOException
     {
-        if (readerPosition == -1)
+        if (endOfStream)
         {
             return null;
         }
@@ -300,7 +302,7 @@ public class PathTokenFilter extends Tokenizer
         {
             end = start;
         }
-        readerPosition = -1;
+        endOfStream = true;
         if (!inNameSpace)
         {
             return new Token(buffer.toString(), start, end, "QNAME");
@@ -337,5 +339,14 @@ public class PathTokenFilter extends Tokenizer
         tokens.clear();
         it = null;
         readerPosition = 0;
+        endOfStream = false;
+    }
+
+    @Override
+    public void end() throws IOException
+    {
+        super.end();
+        int finalOffset = correctOffset(readerPosition);
+        offsetAtt.setOffset(finalOffset, finalOffset);
     }
 }

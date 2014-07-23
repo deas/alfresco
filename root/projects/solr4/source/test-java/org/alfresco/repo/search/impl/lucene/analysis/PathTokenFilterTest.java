@@ -26,6 +26,8 @@ import junit.framework.TestCase;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
+import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 
 public class PathTokenFilterTest extends TestCase
@@ -103,18 +105,52 @@ public class PathTokenFilterTest extends TestCase
     public void testTokenizerReuse() throws IOException
     {
         // We should be able to use the same Tokenizer twice.
-        StringReader reader = new StringReader("uri1:one");
+        final String path = "uri1:one";
+        StringReader reader = new StringReader(path);
         PathTokenFilter ts = new PathTokenFilter(reader, PathTokenFilter.PATH_SEPARATOR,
                 PathTokenFilter.SEPARATOR_TOKEN_TEXT, PathTokenFilter.NO_NS_TOKEN_TEXT,
                 PathTokenFilter.NAMESPACE_START_DELIMITER, PathTokenFilter.NAMESPACE_END_DELIMITER, true);
 
+        OffsetAttribute offsetAtt = ts.addAttribute(OffsetAttribute.class);
+        
         // First use
         tokenise(ts, new String[]{"uri1", "one"});
+        assertEquals(path.length(), offsetAtt.startOffset());
+        assertEquals(path.length(), offsetAtt.endOffset());
         
         // Second use
-        StringReader reader2 = new StringReader("/{uri1}one/uri2:two/");
+        final String path2 = "/{uri1}one/uri2:two/";
+        StringReader reader2 = new StringReader(path2);
         ts.setReader(reader2);
         tokenise(ts, new String[]{"uri1", "one", "uri2", "two"});
+        assertEquals(path2.length(), offsetAtt.startOffset());
+        assertEquals(path2.length(), offsetAtt.endOffset());
+    }
+    
+    
+    public void testAttributesAfterStreamEnd() throws IOException
+    {
+        final String path = "uri1:one";
+        StringReader reader = new StringReader(path);
+        PathTokenFilter ts = new PathTokenFilter(reader, PathTokenFilter.PATH_SEPARATOR,
+                PathTokenFilter.SEPARATOR_TOKEN_TEXT, PathTokenFilter.NO_NS_TOKEN_TEXT,
+                PathTokenFilter.NAMESPACE_START_DELIMITER, PathTokenFilter.NAMESPACE_END_DELIMITER, true);
+
+        CharTermAttribute termAtt = ts.addAttribute(CharTermAttribute.class);
+        TypeAttribute typeAtt = ts.addAttribute(TypeAttribute.class);
+        OffsetAttribute offsetAtt = ts.addAttribute(OffsetAttribute.class);
+        PositionIncrementAttribute posIncAtt = ts.addAttribute(PositionIncrementAttribute.class);
+        
+        // PathTokenFilter.end() will be called after all tokens consumed.
+        tokenise(ts, new String[]{"uri1", "one"});
+        
+        // Check attributes cleaned up
+        assertEquals("", termAtt.toString());
+        assertEquals("word", typeAtt.type()); // the default
+        assertEquals(0, posIncAtt.getPositionIncrement());
+        // Final offset...
+        assertEquals(path.length(), offsetAtt.startOffset());
+        assertEquals(path.length(), offsetAtt.endOffset());
     }
     
     private void tokenise(String path, String[] tokens) throws IOException
