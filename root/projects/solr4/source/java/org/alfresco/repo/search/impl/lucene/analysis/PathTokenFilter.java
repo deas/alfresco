@@ -329,4 +329,13 @@ public class PathTokenFilter extends Tokenizer
         posIncAtt.setPositionIncrement(next.getPositionIncrement());
         return true;
     }
+
+    @Override
+    public void reset() throws IOException
+    {
+        super.reset();
+        tokens.clear();
+        it = null;
+        readerPosition = 0;
+    }
 }

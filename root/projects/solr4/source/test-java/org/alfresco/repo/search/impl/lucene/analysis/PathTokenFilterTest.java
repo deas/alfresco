@@ -100,6 +100,22 @@ public class PathTokenFilterTest extends TestCase
        
     }
     
+    public void testTokenizerReuse() throws IOException
+    {
+        // We should be able to use the same Tokenizer twice.
+        StringReader reader = new StringReader("uri1:one");
+        PathTokenFilter ts = new PathTokenFilter(reader, PathTokenFilter.PATH_SEPARATOR,
+                PathTokenFilter.SEPARATOR_TOKEN_TEXT, PathTokenFilter.NO_NS_TOKEN_TEXT,
+                PathTokenFilter.NAMESPACE_START_DELIMITER, PathTokenFilter.NAMESPACE_END_DELIMITER, true);
+
+        // First use
+        tokenise(ts, new String[]{"uri1", "one"});
+        
+        // Second use
+        StringReader reader2 = new StringReader("/{uri1}one/uri2:two/");
+        ts.setReader(reader2);
+        tokenise(ts, new String[]{"uri1", "one", "uri2", "two"});
+    }
     
     private void tokenise(String path, String[] tokens) throws IOException
     {
@@ -107,7 +123,12 @@ public class PathTokenFilterTest extends TestCase
         TokenStream ts = new PathTokenFilter(reader, PathTokenFilter.PATH_SEPARATOR,
                 PathTokenFilter.SEPARATOR_TOKEN_TEXT, PathTokenFilter.NO_NS_TOKEN_TEXT,
                 PathTokenFilter.NAMESPACE_START_DELIMITER, PathTokenFilter.NAMESPACE_END_DELIMITER, true);
-       Token t;
+        
+        tokenise(ts, tokens);
+    }
+
+    private void tokenise(TokenStream ts, String[] tokens) throws IOException
+    {
        int i = 0;
        
        CharTermAttribute termAtt = ts.addAttribute(CharTermAttribute.class);
