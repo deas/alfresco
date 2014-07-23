@@ -861,6 +861,8 @@
       
       <!-- remove the WAR, if necessary -->
       <delete file="${dir.deploy.tomcat}/${file.name.war.webclient}" />
+      <delete dir="${dir.deploy.tomcat.webclient}" 
+              includeEmptyDirs="true" quiet="yes" />
       
       <!-- copy the class files from each project to the WEB-INF/classes folder -->
       <copy todir="${dir.deploy.tomcat.webclient}/WEB-INF/classes" verbose="${copy.verbose}">
