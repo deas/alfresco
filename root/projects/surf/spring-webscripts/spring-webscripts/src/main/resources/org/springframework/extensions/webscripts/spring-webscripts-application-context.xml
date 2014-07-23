@@ -364,6 +364,7 @@
       <property name="removeRequestHeaders">
          <set>
             <value>Cookie</value>
+            <value>Host</value>
          </set>
       </property>
       <!-- the set of headers to remove when proxying a response from a remote endpoint to a client -->
