@@ -7238,8 +7238,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 InformationServer srv, NamedList<Object> report) throws IOException
     {
         NamedList<Object> coreSummary = new SimpleOrderedMap<Object>();
-// TODO: Needs testing if the cast is ok        
-        coreSummary.addAll((Map<String, Object>) srv.getCoreStats());
+        coreSummary.addAll((SimpleOrderedMap<Object>) srv.getCoreStats());
         long lastIndexTxCommitTime = srv.getTrackerState().getLastIndexedTxCommitTime();
         long lastIndexedTxId = srv.getTrackerState().getLastIndexedTxId();
         long lastTxCommitTimeOnServer = srv.getTrackerState().getLastTxCommitTimeOnServer();
