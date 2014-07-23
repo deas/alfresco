@@ -118,6 +118,12 @@ public class PathTokenFilter extends Tokenizer
         return nextToken;
     }
 
+    // TODO: temporary replacement for Token.termText()
+    private String termText(Token token)
+    {
+        return new String(token.buffer(), 0, token.length());
+    }
+    
     private void buildTokenListAndIterator() throws IOException
     {
         NumberFormat nf = new DecimalFormat(INTEGER_FORMAT);
@@ -132,7 +138,7 @@ public class PathTokenFilter extends Tokenizer
         Token namespaceToken = null;
         while ((t = nextToken()) != null)
         {
-            String text = t.termText();
+            String text = termText(t);
 
             if (text.length() == 0)
             {
@@ -192,7 +198,7 @@ public class PathTokenFilter extends Tokenizer
 
             if (includeNamespace)
             {
-                if (namespaceToken.termText().equals(""))
+                if (termText(namespaceToken).equals(""))
                 {
                     namespaceToken = new Token(noNsTokenText, t.startOffset(), t.startOffset(),
                             TOKEN_TYPE_PATH_ELEMENT_NAMESPACE);
@@ -229,7 +235,7 @@ public class PathTokenFilter extends Tokenizer
 
         tokens.add(insertCountAt, countToken);
 
-        if ((tokens.size() == 0) || !(tokens.get(tokens.size() - 1).termText().equals(TOKEN_TYPE_PATH_SEP)))
+        if ((tokens.size() == 0) || !(termText(tokens.get(tokens.size() - 1)).equals(TOKEN_TYPE_PATH_SEP)))
         {
             pathSplitToken = new Token(separatorTokenText, 0, 0, TOKEN_TYPE_PATH_SEP);
             pathSplitToken.setPositionIncrement(1);
@@ -287,5 +293,11 @@ public class PathTokenFilter extends Tokenizer
             throw new IllegalStateException("QName terminated incorrectly: " + buffer.toString());
         }
 
+    }
+
+    @Override
+    public boolean incrementToken() throws IOException
+    {
+        return false;
     }
 }
