@@ -91,6 +91,7 @@ public abstract class CMISActionValuesTest extends CmisUtils
     protected void createTestData(WebDrone drone, String uniqueName) throws Exception
     {
         testUser = getUserNameFreeDomain(uniqueName);
+        deletableTestUser = getUserNameFreeDomain("deletable" + uniqueName);
         otherTestUser = getUserNameFreeDomain("other" + uniqueName);
 
 
@@ -103,7 +104,7 @@ public abstract class CMISActionValuesTest extends CmisUtils
         sourceFolderName = getFolderName(uniqueName + "Source") + System.currentTimeMillis();
 
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser);
-
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, deletableTestUser);
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, otherTestUser);
 
         ShareUser.login(drone, testUser);
