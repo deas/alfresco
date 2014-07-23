@@ -18,28 +18,46 @@
  */
 package org.alfresco.solr.tracker;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TrackerRegistry
 {
-    // Keyed on core name and Tracker class
+    /*
+     *  Keyed on core name and Tracker class
+     *  This facilitates getting a particular type of Tracker for a given core
+     */
     private Map<String, ConcurrentHashMap<Class<? extends Tracker>, Tracker>> trackers = new ConcurrentHashMap<>();
 
-    /**
-     * @return the trackers
-     */
     public Map<String, ConcurrentHashMap<Class<? extends Tracker>, Tracker>> getTrackers()
     {
         return trackers;
     }
     
-    public synchronized void register(String coreName, Tracker tracker)
+    public Collection<Tracker> getTrackersForCore(String coreName)
+    {
+        return this.trackers.get(coreName).values();
+    }
+    
+    public boolean hasTrackersForCore(String coreName)
+    {
+        return this.trackers.containsKey(coreName);
+    }
+    
+    public <T extends Tracker> T getTrackerForCore(String coreName, Class<T> trackerClass)
     {
         Map<Class<? extends Tracker>, Tracker> coreTrackers = this.trackers.get(coreName);
+        return (T) coreTrackers.get(trackerClass);
+    }
+    
+    public synchronized void register(String coreName, Tracker tracker)
+    {
+        ConcurrentHashMap<Class<? extends Tracker>, Tracker> coreTrackers = this.trackers.get(coreName);
         if (coreTrackers == null) 
         {
             coreTrackers = new ConcurrentHashMap<>();
+            this.trackers.put(coreName, coreTrackers);
         }
         
         coreTrackers.put(tracker.getClass(), tracker);
