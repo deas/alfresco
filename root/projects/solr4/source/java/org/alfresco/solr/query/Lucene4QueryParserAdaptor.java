@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -20,32 +20,50 @@ package org.alfresco.solr.query;
 
 import java.util.List;
 
+import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.adaptor.lucene.AnalysisMode;
 import org.alfresco.repo.search.adaptor.lucene.LuceneFunction;
 import org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserExpressionAdaptor;
+import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext;
 import org.alfresco.repo.search.impl.querymodel.Ordering;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.search.SearchParameters;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.TermQuery;
+import org.apache.solr.search.SyntaxError;
 
 /**
  * @author Andy
  *
  */
-public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query, Sort, Exception>
+public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query, Sort, SyntaxError>
 {
+
+    private Solr4QueryParser lqp;
+
+    /**
+     * @param lqp
+     */
+    public Lucene4QueryParserAdaptor(Solr4QueryParser lqp)
+    {
+        this.lqp = lqp;
+    }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getFieldQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode, org.alfresco.repo.search.adaptor.lucene.LuceneFunction)
      */
     @Override
-    public Query getFieldQuery(String field, String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws Exception
+    public Query getFieldQuery(String field, String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        return lqp.getFieldQuery(field, queryText, analysisMode, luceneFunction);
     }
 
     /* (non-Javadoc)
@@ -53,40 +71,38 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
      */
     @Override
     public Query getRangeQuery(String field, String lower, String upper, boolean includeLower, boolean includeUpper, AnalysisMode analysisMode, LuceneFunction luceneFunction)
-            throws Exception
+            throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        //return lqp.getRangeQuery(field, lower, upper, includeLower, includeUpper, analysisMode, luceneFunction);
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getMatchAllQuery()
      */
     @Override
-    public Query getMatchAllQuery() throws Exception
+    public Query getMatchAllQuery() throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new MatchAllDocsQuery();
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getMatchNoneQuery()
      */
     @Override
-    public Query getMatchNoneQuery() throws Exception
+    public Query getMatchNoneQuery() throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new TermQuery(new Term("NO_TOKENS", "__"));
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getLikeQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode)
      */
     @Override
-    public Query getLikeQuery(String field, String sqlLikeClause, AnalysisMode analysisMode) throws Exception
+    public Query getLikeQuery(String field, String sqlLikeClause, AnalysisMode analysisMode) throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        //return lqp.getLikeQuery(field, sqlLikeClause, analysisMode);
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
@@ -95,38 +111,62 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
     @Override
     public SearchParameters getSearchParameters()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return lqp.getSearchParameters();
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getSortField(java.lang.String)
      */
     @Override
-    public String getSortField(String field) throws Exception
+    public String getSortField(String field) throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO 
+        //return field;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getIdentifierQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode, org.alfresco.repo.search.adaptor.lucene.LuceneFunction)
      */
     @Override
-    public Query getIdentifierQuery(String field, String stringValue, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws Exception
+    public Query getIdentifierQuery(String field, String stringValue, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        String[] split = stringValue.split(";");
+        if(split.length == 1)
+        {
+            return lqp.getFieldQuery(field, stringValue, AnalysisMode.IDENTIFIER, luceneFunction);
+        }
+        else
+        {
+            if(split[1].equalsIgnoreCase("PWC"))
+            {
+                return getMatchNoneQuery();
+            }
+            
+            BooleanQuery query = new BooleanQuery();
+            BooleanQuery part1 = new BooleanQuery();
+            part1.add(lqp.getFieldQuery(field, split[0], AnalysisMode.IDENTIFIER, luceneFunction), Occur.MUST);
+            part1.add(lqp.getFieldQuery("@"+ContentModel.PROP_VERSION_LABEL.toString(), split[1], AnalysisMode.IDENTIFIER, luceneFunction), Occur.MUST);
+            query.add(part1, Occur.SHOULD);
+            
+            if(split[1].equals("1.0"))
+            {
+                BooleanQuery part2 = new BooleanQuery();
+                part2.add(lqp.getFieldQuery(field, split[0], AnalysisMode.IDENTIFIER, luceneFunction), Occur.MUST);
+                part2.add(lqp.getFieldQuery(QueryConstants.FIELD_ASPECT, ContentModel.ASPECT_VERSIONABLE.toString(), AnalysisMode.IDENTIFIER, luceneFunction), Occur.MUST_NOT);
+                query.add(part2, Occur.SHOULD);
+            }
+            return query;
+        }
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getIdentifieLikeQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode)
      */
     @Override
-    public Query getIdentifieLikeQuery(String field, String stringValue, AnalysisMode analysisMode) throws Exception
+    public Query getIdentifieLikeQuery(String field, String sqlLikeClause, AnalysisMode analysisMode) throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        return getLikeQuery(field, sqlLikeClause, analysisMode);
     }
 
     /* (non-Javadoc)
@@ -136,37 +176,36 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
     public boolean sortFieldExists(String noLocalField)
     {
         // TODO Auto-generated method stub
-        return false;
+        //return false;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getFieldQuery(java.lang.String, java.lang.String)
      */
     @Override
-    public Query getFieldQuery(String field, String value) throws Exception
+    public Query getFieldQuery(String field, String queryText) throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        return lqp.getFieldQuery(field, queryText);
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#buildSort(java.util.List, org.alfresco.repo.search.impl.querymodel.FunctionEvaluationContext)
      */
     @Override
-    public Sort buildSort(List<Ordering> list, FunctionEvaluationContext functionContext) throws Exception
+    public Sort buildSort(List<Ordering> list, FunctionEvaluationContext functionContext) throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getFuzzyQuery(java.lang.String, java.lang.String, java.lang.Float)
      */
     @Override
-    public Query getFuzzyQuery(String luceneFieldName, String term, Float minSimilarity) throws Exception
+    public Query getFuzzyQuery(String luceneFieldName, String term, Float minSimilarity) throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        //return lqp.getFuzzyQuery(luceneFieldName, term, minSimilarity);
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
@@ -175,8 +214,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
     @Override
     public String getField()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return lqp.getField();
     }
 
     /* (non-Javadoc)
@@ -185,68 +223,68 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
     @Override
     public int getPhraseSlop()
     {
-        // TODO Auto-generated method stub
-        return 0;
+        return lqp.getPhraseSlop();
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getFieldQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode, java.lang.Integer, org.alfresco.repo.search.adaptor.lucene.LuceneFunction)
      */
     @Override
-    public Query getFieldQuery(String luceneFieldName, String term, AnalysisMode analysisMode, Integer slop, LuceneFunction luceneFunction) throws Exception
+    public Query getFieldQuery(String luceneFieldName, String term, AnalysisMode analysisMode, Integer slop, LuceneFunction luceneFunction) throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        //return lqp.getFieldQuery(luceneFieldName, term, analysisMode, slop, luceneFunction);
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getPrefixQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode)
      */
     @Override
-    public Query getPrefixQuery(String luceneFieldName, String term, AnalysisMode analysisMode) throws Exception
+    public Query getPrefixQuery(String luceneFieldName, String term, AnalysisMode analysisMode) throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        //return lqp.getPrefixQuery(luceneFieldName, term, analysisMode);
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getSpanQuery(java.lang.String, java.lang.String, java.lang.String, int, boolean)
      */
     @Override
-    public Query getSpanQuery(String luceneFieldName, String first, String last, int slop, boolean inOrder) throws Exception
+    public Query getSpanQuery(String field, String first, String last, int slop, boolean inOrder) throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        //return lqp.getSpanQuery(field, first, last, slop, inOrder);
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getWildcardQuery(java.lang.String, java.lang.String, org.alfresco.repo.search.adaptor.lucene.AnalysisMode)
      */
     @Override
-    public Query getWildcardQuery(String luceneFieldName, String term, AnalysisMode mode) throws Exception
+    public Query getWildcardQuery(String luceneFieldName, String term, AnalysisMode analysisMode) throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        //return lqp.getWildcardQuery(luceneFieldName, term, analysisMode);
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getNegatedQuery(java.lang.Object)
      */
     @Override
-    public Query getNegatedQuery(Query query) throws Exception
+    public Query getNegatedQuery(Query query) throws SyntaxError
     {
-        // TODO Auto-generated method stub
-        return null;
+        LuceneQueryParserExpressionAdaptor<Query, SyntaxError> expressionAdaptor = getExpressionAdaptor();
+        expressionAdaptor.addRequired(getMatchAllQuery());
+        expressionAdaptor.addExcluded(query);
+        return expressionAdaptor.getQuery();
     }
 
     /* (non-Javadoc)
      * @see org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor#getExpressionAdaptor()
      */
     @Override
-    public LuceneQueryParserExpressionAdaptor<Query, Exception> getExpressionAdaptor()
+    public LuceneQueryParserExpressionAdaptor<Query, SyntaxError> getExpressionAdaptor()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new Lucene4QueryParserExpressionAdaptor();
     }
 
     /* (non-Javadoc)
@@ -255,8 +293,7 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
     @Override
     public Query getMatchAllNodesQuery()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new TermQuery(new Term("ISNODE", "T"));
     }
 
     /* (non-Javadoc)
@@ -265,8 +302,125 @@ public class Lucene4QueryParserAdaptor implements LuceneQueryParserAdaptor<Query
     @Override
     public String getDatetimeSortField(String field, PropertyDefinition propertyDef)
     {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
+    
+    private class Lucene4QueryParserExpressionAdaptor implements LuceneQueryParserExpressionAdaptor<Query, SyntaxError>
+    {
+        BooleanQuery booleanQuery = new BooleanQuery();
+
+        /* (non-Javadoc)
+         * @see org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor#addRequired(java.lang.Object)
+         */
+        @Override
+        public void addRequired(Query q)
+        {
+            booleanQuery.add(q, Occur.MUST);
+        }
+
+        /* (non-Javadoc)
+         * @see org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor#addExcluded(java.lang.Object)
+         */
+        @Override
+        public void addExcluded(Query q)
+        {
+            booleanQuery.add(q, Occur.MUST_NOT);
+        }
+
+        /* (non-Javadoc)
+         * @see org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor#addOptoinal(java.lang.Object)
+         */
+        @Override
+        public void addOptional(Query q)
+        {
+            booleanQuery.add(q, Occur.SHOULD);
+        }
+
+        /* (non-Javadoc)
+         * @see org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor#getQuery()
+         */
+        @Override
+        public Query getQuery()  throws SyntaxError
+        {
+            if(booleanQuery.getClauses().length == 0)
+            {
+                return getMatchNoneQuery();
+            }
+            else if (booleanQuery.getClauses().length == 1)
+            {
+                BooleanClause clause = booleanQuery.getClauses()[0];
+                if(clause.isProhibited())
+                {
+                    booleanQuery.add(getMatchAllQuery(), Occur.MUST);
+                    return booleanQuery;
+                }
+                else
+                {
+                    return clause.getQuery();
+                }
+            }
+            else
+            {
+                return booleanQuery;
+            }
+        }
+        
+        public Query getNegatedQuery() throws SyntaxError
+        {
+            if(booleanQuery.getClauses().length == 0)
+            {
+                return getMatchAllQuery();
+            }
+            else if (booleanQuery.getClauses().length == 1)
+            {
+                BooleanClause clause = booleanQuery.getClauses()[0];
+                if(clause.isProhibited())
+                {
+                    return clause.getQuery();
+                }
+                else
+                {
+                    return Lucene4QueryParserAdaptor.this.getNegatedQuery(getQuery());
+                }
+            }
+            else
+            {
+                return Lucene4QueryParserAdaptor.this.getNegatedQuery(getQuery());
+            }
+        }
+
+        /* (non-Javadoc)
+         * @see org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor#addRequired(java.lang.Object, float)
+         */
+        @Override
+        public void addRequired(Query q, float boost) throws SyntaxError
+        {
+            q.setBoost(boost);
+            addRequired(q);
+        }
+
+        /* (non-Javadoc)
+         * @see org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor#addExcluded(java.lang.Object, float)
+         */
+        @Override
+        public void addExcluded(Query q, float boost) throws SyntaxError
+        {
+            q.setBoost(boost);
+            addExcluded(q);
+        }
+
+        /* (non-Javadoc)
+         * @see org.alfresco.repo.search.impl.lucene.LuceneQueryParserExpressionAdaptor#addOptional(java.lang.Object, float)
+         */
+        @Override
+        public void addOptional(Query q, float boost) throws SyntaxError
+        {
+            q.setBoost(boost);
+            addOptional(q);
+            
+        }
+        
+    }
+
 
 }

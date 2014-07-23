@@ -1780,41 +1780,40 @@
   <searchComponent name="addTxId"     class="org.alfresco.solr.TxIdSearchComponent" />  
 -->
 
-<!--
    <requestHandler name="/alfresco" class="solr.SearchHandler" lazy="true" >
     <lst name="defaults">
      <str name="defType">alfresco</str>
     </lst>
     <arr name="components">
-      <str>setLocale</str>
+      <!-- <str>setLocale</str> -->
       <str>query</str>
       <str>facet</str>
       <str>mlt</str>
       <str>highlight</str>
       <str>stats</str>
       <str>debug</str>
-      <str>clearLocale</str>
-      <str>addTxId</str>
+      <!-- <str>clearLocale</str> -->
+      <!-- <str>addTxId</str> -->
     </arr>
   </requestHandler>
+
 
   <requestHandler name="/afts" class="solr.SearchHandler" lazy="true" >
     <lst name="defaults">
      <str name="defType">afts</str>
     </lst>
     <arr name="components">
-      <str>setLocale</str>
+      <!-- <str>setLocale</str> -->
       <str>query</str>
       <str>facet</str>
       <str>mlt</str>
       <str>highlight</str>
       <str>stats</str>
       <str>debug</str>
-      <str>clearLocale</str>
-      <str>addTxId</str>
+      <!-- <str>clearLocale</str> -->
+      <!-- <str>addTxId</str> -->
     </arr>
   </requestHandler>
--->
 
  <requestHandler name="/cmis" class="solr.SearchHandler" lazy="true" >
     <lst name="defaults">
@@ -1834,8 +1833,8 @@
   </requestHandler>
 
 
-<!--  <queryParser name="alfresco" class="org.alfresco.solr.query.AlfrescoLuceneQParserPlugin"/> -->
-<!--  <queryParser name="afts" class="org.alfresco.solr.query.AlfrescoFTSQParserPlugin"/> -->
+  <queryParser name="alfresco" class="org.alfresco.solr.query.AlfrescoLuceneQParserPlugin"/>
+  <queryParser name="afts" class="org.alfresco.solr.query.AlfrescoFTSQParserPlugin"/>
   <queryParser name="cmis" class="org.alfresco.solr.query.CmisQParserPlugin"/>
 
 </config>

@@ -39,9 +39,9 @@ import org.alfresco.opencmis.dictionary.CMISDictionaryService;
 import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.opencmis.dictionary.QNameFilter;
 import org.alfresco.opencmis.search.CMISQueryOptions;
+import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.opencmis.search.CMISQueryParser;
 import org.alfresco.opencmis.search.CmisFunctionEvaluationContext;
-import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
@@ -52,6 +52,13 @@ import org.alfresco.repo.dictionary.M2ModelDiff;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.i18n.StaticMessageLookup;
 import org.alfresco.repo.search.MLAnalysisMode;
+import org.alfresco.repo.search.impl.parsers.AlfrescoFunctionEvaluationContext;
+import org.alfresco.repo.search.impl.parsers.FTSParser;
+import org.alfresco.repo.search.impl.parsers.FTSQueryParser;
+import org.alfresco.repo.search.impl.querymodel.Constraint;
+import org.alfresco.repo.search.impl.querymodel.Ordering;
+import org.alfresco.repo.search.impl.querymodel.QueryModelFactory;
+import org.alfresco.repo.search.impl.querymodel.QueryOptions.Connective;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilder;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryModelFactory;
@@ -64,16 +71,19 @@ import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.namespace.NamespaceException;
+import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AlfrescoClientDataModelServicesFactory.DictionaryKey;
 import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.solr.query.Lucene4QueryBuilderContextSolrImpl;
+import org.alfresco.solr.query.Solr4QueryParser;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.NumericEncoder;
 import org.alfresco.util.Pair;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.CapabilityJoin;
 import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.SortedDocValues;
@@ -84,6 +94,8 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.NumericUtils;
+import org.apache.lucene.util.Version;
+import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.search.SyntaxError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1012,7 +1024,7 @@ public class AlfrescoSolrDataModel
     }
     
     public org.alfresco.repo.search.impl.querymodel.Query parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode mode, SearchParameters searchParameters,
-            IndexReader indexReader, String alternativeDictionary, CmisVersion cmisVersion) 
+            SolrQueryRequest req, String alternativeDictionary, CmisVersion cmisVersion) 
     {
         // convert search parameters to cmis query options
         // TODO: how to handle store ref
@@ -1761,14 +1773,14 @@ public class AlfrescoSolrDataModel
     /**
      * @param cmsWithAlfrescoExtensions
      * @param searchParametersAndFilter
-     * @param indexReader
+     * @param req
      * @param queryModelQuery
      * @param cmisVersion
      * @param altDic
      * @return
      * @throws Exception 
      */
-     public Query getCMISQuery(CMISQueryMode mode, Pair<SearchParameters, Boolean> searchParametersAndFilter, IndexReader indexReader, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery, CmisVersion cmisVersion, String alternativeDictionary) throws SyntaxError
+     public Query getCMISQuery(CMISQueryMode mode, Pair<SearchParameters, Boolean> searchParametersAndFilter, SolrQueryRequest req, org.alfresco.repo.search.impl.querymodel.Query queryModelQuery, CmisVersion cmisVersion, String alternativeDictionary) throws SyntaxError
     {
         SearchParameters searchParameters = searchParametersAndFilter.getFirst();
         Boolean isFilter = searchParametersAndFilter.getSecond();
@@ -1778,7 +1790,7 @@ public class AlfrescoSolrDataModel
 
         Set<String> selectorGroup = queryModelQuery.getSource().getSelectorGroups(functionContext).get(0);
 
-        LuceneQueryBuilderContext<Query, Sort, SyntaxError> luceneContext = getLuceneQueryBuilderContext(searchParameters, indexReader, alternativeDictionary);
+        LuceneQueryBuilderContext<Query, Sort, SyntaxError> luceneContext = getLuceneQueryBuilderContext(searchParameters, req, alternativeDictionary);
         @SuppressWarnings("unchecked")
         LuceneQueryBuilder<Query, Sort, SyntaxError> builder = (LuceneQueryBuilder<Query, Sort, SyntaxError>) queryModelQuery;
         org.apache.lucene.search.Query luceneQuery = builder.buildQuery(selectorGroup, luceneContext, functionContext);
@@ -1787,10 +1799,96 @@ public class AlfrescoSolrDataModel
         return contextAwareQuery;
     }
      
-     public LuceneQueryBuilderContext<Query, Sort, SyntaxError> getLuceneQueryBuilderContext(SearchParameters searchParameters, IndexReader indexReader, String alternativeDictionary)
+     public LuceneQueryBuilderContext<Query, Sort, SyntaxError> getLuceneQueryBuilderContext(SearchParameters searchParameters, SolrQueryRequest req, String alternativeDictionary)
      {
          Lucene4QueryBuilderContextSolrImpl luceneContext = new Lucene4QueryBuilderContextSolrImpl(getDictionaryService(alternativeDictionary), namespaceDAO, tenantService, searchParameters,
-                 MLAnalysisMode.EXACT_LANGUAGE, indexReader, null, this);
+                 MLAnalysisMode.EXACT_LANGUAGE, req, this);
          return luceneContext;
      }
+
+     public Solr4QueryParser getLuceneQueryParser(SearchParameters searchParameters, SolrQueryRequest req)
+     {
+         Analyzer analyzer =  req.getSchema().getAnalyzer();
+         Solr4QueryParser parser = new Solr4QueryParser(Version.LUCENE_48, searchParameters.getDefaultFieldName(), analyzer);
+//         Operator defaultOperator;
+//         if (searchParameters.getDefaultOperator() == SearchParameters.AND)
+//         {
+//             defaultOperator = LuceneQueryParser.AND_OPERATOR;
+//         }
+//         else
+//         {
+//             defaultOperator = LuceneQueryParser.OR_OPERATOR;
+//         }
+         //parser.setDefaultOperator(defaultOperator);
+         parser.setNamespacePrefixResolver(namespaceDAO);
+         parser.setDictionaryService(getDictionaryService(CMISStrictDictionaryService.DEFAULT));
+         parser.setTenantService(tenantService);
+         parser.setSearchParameters(searchParameters);
+         //parser.setDefaultSearchMLAnalysisMode(getMLAnalysisMode());
+         //parser.setIndexReader(indexReader);
+         parser.setAllowLeadingWildcard(true);
+
+         return parser;
+     }
+
+    /**
+     * @param searchParametersAndFilter
+     * @param req
+     * @return
+     * @throws SyntaxError 
+     */
+     public Query getFTSQuery(Pair<SearchParameters, Boolean> searchParametersAndFilter, SolrQueryRequest req) throws SyntaxError
+     {
+
+         SearchParameters searchParameters = searchParametersAndFilter.getFirst();
+         Boolean isFilter = searchParametersAndFilter.getSecond();
+
+         QueryModelFactory factory = new LuceneQueryModelFactory<Query, Sort, SyntaxError>();
+         AlfrescoFunctionEvaluationContext functionContext = new AlfrescoFunctionEvaluationContext(namespaceDAO, getDictionaryService(CMISStrictDictionaryService.DEFAULT), NamespaceService.CONTENT_MODEL_1_0_URI);
+
+         FTSParser.Mode mode;
+
+         if (searchParameters.getDefaultFTSOperator() == org.alfresco.service.cmr.search.SearchParameters.Operator.AND)
+         {
+             mode = FTSParser.Mode.DEFAULT_CONJUNCTION;
+         }
+         else
+         {
+             mode = FTSParser.Mode.DEFAULT_DISJUNCTION;
+         }
+
+         Constraint constraint = FTSQueryParser.buildFTS(searchParameters.getQuery(), factory, functionContext, null, null, mode,
+                 searchParameters.getDefaultFTSOperator() == org.alfresco.service.cmr.search.SearchParameters.Operator.OR ? Connective.OR : Connective.AND,
+                         searchParameters.getQueryTemplates(), searchParameters.getDefaultFieldName());
+         org.alfresco.repo.search.impl.querymodel.Query queryModelQuery = factory.createQuery(null, null, constraint, new ArrayList<Ordering>());
+
+         @SuppressWarnings("unchecked")
+         LuceneQueryBuilder<Query, Sort, SyntaxError> builder = (LuceneQueryBuilder<Query, Sort, SyntaxError>) queryModelQuery;
+
+         LuceneQueryBuilderContext<Query, Sort, SyntaxError> luceneContext = getLuceneQueryBuilderContext(searchParameters, req, CMISStrictDictionaryService.DEFAULT);
+
+         Set<String> selectorGroup = null;
+         if (queryModelQuery.getSource() != null)
+         {
+             List<Set<String>> selectorGroups = queryModelQuery.getSource().getSelectorGroups(functionContext);
+
+             if (selectorGroups.size() == 0)
+             {
+                 throw new UnsupportedOperationException("No selectors");
+             }
+
+             if (selectorGroups.size() > 1)
+             {
+                 throw new UnsupportedOperationException("Advanced join is not supported");
+             }
+
+             selectorGroup = selectorGroups.get(0);
+         }
+         Query luceneQuery = builder.buildQuery(selectorGroup, luceneContext, functionContext);
+         // query needs some search parameters fro correct caching ....
+
+         ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, Boolean.TRUE.equals(isFilter) ? null : searchParameters);
+         return contextAwareQuery;
+     }
+
 }

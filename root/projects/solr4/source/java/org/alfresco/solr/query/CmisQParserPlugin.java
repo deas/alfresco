@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -85,14 +85,12 @@ public class CmisQParserPlugin extends QParserPlugin
             SearchParameters searchParameters = searchParametersAndFilter.getFirst();
             // these could either be checked & set here, or in the SolrQueryParser constructor
 
-            IndexReader indexReader = req.getSearcher().getIndexReader();
-
             String cmisVersionString = this.params.get("cmisVersion");
             CmisVersion cmisVersion = (cmisVersionString == null ? CmisVersion.CMIS_1_0 : CmisVersion.valueOf(cmisVersionString));
             
             String altDic = this.params.get(SearchParameters.ALTERNATIVE_DICTIONARY);
             org.alfresco.repo.search.impl.querymodel.Query queryModelQuery
-              = AlfrescoSolrDataModel.getInstance().parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParameters, indexReader, altDic, cmisVersion);
+              = AlfrescoSolrDataModel.getInstance().parseCMISQueryToAlfrescoAbstractQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParameters, req, altDic, cmisVersion);
             
             // build the sort param and update the params on the request if required .....
             
@@ -161,7 +159,7 @@ public class CmisQParserPlugin extends QParserPlugin
                 this.params = newParams;
             }
 
-            Query query = AlfrescoSolrDataModel.getInstance().getCMISQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParametersAndFilter, indexReader, queryModelQuery, cmisVersion, altDic);
+            Query query = AlfrescoSolrDataModel.getInstance().getCMISQuery(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS, searchParametersAndFilter, req, queryModelQuery, cmisVersion, altDic);
             if(log.isDebugEnabled())
             {
                 log.debug("AFTS QP query as lucene:\t    "+query);

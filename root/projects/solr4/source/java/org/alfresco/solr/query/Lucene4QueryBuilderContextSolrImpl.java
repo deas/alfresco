@@ -30,6 +30,8 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.util.Version;
+import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.search.SyntaxError;
 
 /**
@@ -41,7 +43,7 @@ public class Lucene4QueryBuilderContextSolrImpl implements LuceneQueryBuilderCon
 
     private NamespacePrefixResolver namespacePrefixResolver;
     
-    private LuceneQueryParserAdaptor<Query, Sort, Exception> lqpa;
+    private LuceneQueryParserAdaptor<Query, Sort, SyntaxError> lqpa;
 
     /**
      * Context for building lucene queries
@@ -54,21 +56,20 @@ public class Lucene4QueryBuilderContextSolrImpl implements LuceneQueryBuilderCon
      * @param indexReader
      */
     public Lucene4QueryBuilderContextSolrImpl(DictionaryService dictionaryService, NamespacePrefixResolver namespacePrefixResolver, TenantService tenantService,
-            SearchParameters searchParameters, MLAnalysisMode defaultSearchMLAnalysisMode, IndexReader indexReader, Analyzer defaultAnalyzer, AlfrescoSolrDataModel model)
+            SearchParameters searchParameters, MLAnalysisMode defaultSearchMLAnalysisMode, SolrQueryRequest req, AlfrescoSolrDataModel model)
     {
-//        Analyzer analyzer;
-//        lqp = new Solr4QueryParser(searchParameters.getDefaultFieldName(), analyzer);
+          lqp = new Solr4QueryParser(Version.LUCENE_48, searchParameters.getDefaultFieldName(), req.getSchema().getAnalyzer());
 //        lqp.setDefaultOperator(AbstractLuceneQueryParser.OR_OPERATOR);
-//        lqp.setDictionaryService(dictionaryService);
-//        lqp.setNamespacePrefixResolver(namespacePrefixResolver);
-//        lqp.setTenantService(tenantService);
-//        lqp.setSearchParameters(searchParameters);
+        lqp.setDictionaryService(dictionaryService);
+        lqp.setNamespacePrefixResolver(namespacePrefixResolver);
+        lqp.setTenantService(tenantService);
+          lqp.setSearchParameters(searchParameters);
 //        lqp.setDefaultSearchMLAnalysisMode(defaultSearchMLAnalysisMode);
 //        lqp.setIndexReader(indexReader);
 //        lqp.setAllowLeadingWildcard(true);
 //        this.namespacePrefixResolver = namespacePrefixResolver;
         
-//        lqpa = new Lucene4QueryParserAdaptor(lqp);
+          lqpa = new Lucene4QueryParserAdaptor(lqp);
     }
 
     /* (non-Javadoc)
@@ -76,8 +77,7 @@ public class Lucene4QueryBuilderContextSolrImpl implements LuceneQueryBuilderCon
      */
     public LuceneQueryParserAdaptor<Query, Sort, SyntaxError> getLuceneQueryParserAdaptor()
     {
-//        return lqpa;
-        return null;
+        return lqpa;
     }
 
     /* (non-Javadoc)
