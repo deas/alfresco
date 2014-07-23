@@ -20,6 +20,7 @@
 package org.alfresco.solr;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -45,23 +46,28 @@ import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.solr.client.Node;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.tracker.IndexHealthReport;
-import org.alfresco.solr.tracker.Tracker;
 import org.alfresco.solr.tracker.TrackerStats;
 import org.alfresco.util.NumericEncoder;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.FixedBitSet;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrInfoMBean;
+import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocSet;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.update.AddUpdateCommand;
+import org.apache.solr.update.CommitUpdateCommand;
+import org.apache.solr.update.DeleteUpdateCommand;
 import org.apache.solr.util.RefCounted;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -221,64 +227,240 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void checkCache() throws IOException
     {
-        // TODO Auto-generated method stub
-
+     // TODO: Add the SolrQueryRequest instead of null
+        AddUpdateCommand checkDocCmd = new AddUpdateCommand(null);
+        
+        
+        BytesRef indexedId = new BytesRef("CHECK_CACHE");
+        checkDocCmd.setIndexedId(indexedId );
+        core.getUpdateHandler().addDoc(checkDocCmd);
+        this.commit();
     }
 
     @Override
-    public IndexHealthReport checkIndexTransactions(IndexHealthReport arg0, Long arg1, Long arg2, IOpenBitSet arg3,
-                long arg4, IOpenBitSet arg5, long arg6) throws IOException
+    public IndexHealthReport checkIndexTransactions(IndexHealthReport indexHealthReport, Long minTxId, Long minAclTxId,
+                IOpenBitSet txIdsInDb, long maxTxId, IOpenBitSet aclTxIdsInDb, long maxAclTxId) throws IOException
     {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public NodeReport checkNodeCommon(NodeReport arg0)
+    public NodeReport checkNodeCommon(NodeReport nodeReport)
     {
-        // TODO Auto-generated method stub
-        return null;
+        long dbid = nodeReport.getDbid();
+        RefCounted<SolrIndexSearcher> refCounted = null;
+
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            if (refCounted == null) { return nodeReport; }
+
+            try
+            {
+                SolrIndexSearcher solrIndexSearcher = refCounted.get();
+
+                String dbidString = NumericEncoder.encode(dbid);
+                DocSet docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term("DBID", dbidString)));
+                // should find leaf and aux
+                for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
+                {
+                    int doc = it.nextDoc();
+                    Document document = solrIndexSearcher.doc(doc);
+                    IndexableField fieldable = document.getField("ID");
+                    if (fieldable != null)
+                    {
+                        String value = fieldable.stringValue();
+                        if (value != null)
+                        {
+                            if (value.startsWith("LEAF-"))
+                            {
+                                nodeReport.setIndexLeafDoc(Long.valueOf(doc));
+                            }
+                            else if (value.startsWith("AUX-"))
+                            {
+                                nodeReport.setIndexAuxDoc(Long.valueOf(doc));
+                            }
+                        }
+                    }
+                }
+
+                DocSet txDocSet = solrIndexSearcher.getDocSet(new WildcardQuery(new Term("TXID", "*")));
+                for (DocIterator it = txDocSet.iterator(); it.hasNext(); /* */)
+                {
+                    int doc = it.nextDoc();
+                    Document document = solrIndexSearcher.doc(doc);
+                    IndexableField fieldable = document.getField("TXID");
+                    if (fieldable != null)
+                    {
+
+                        if ((nodeReport.getIndexLeafDoc() == null) || (doc < nodeReport.getIndexLeafDoc().longValue()))
+                        {
+                            String value = fieldable.stringValue();
+                            long txid = Long.parseLong(value);
+                            nodeReport.setIndexLeafTx(txid);
+                        }
+                        if ((nodeReport.getIndexAuxDoc() == null) || (doc < nodeReport.getIndexAuxDoc().longValue()))
+                        {
+                            String value = fieldable.stringValue();
+                            long txid = Long.parseLong(value);
+                            nodeReport.setIndexAuxTx(txid);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                refCounted.decref();
+            }
+        }
+        catch (IOException e)
+        {
+            // TODO: do what here?
+        }
+
+        return nodeReport;
     }
 
     @Override
     public void commit() throws IOException
     {
-        // TODO Auto-generated method stub
+// TODO Add SolrQueryRequest
+        this.core.getUpdateHandler().commit(new CommitUpdateCommand(null, false));
+    }
+
+    @Override
+    public void deleteByAclChangeSetId(Long aclChangeSetId) throws IOException
+    {
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+
+            Query query = new TermQuery(new Term(QueryConstants.FIELD_INACLTXID, NumericEncoder.encode(aclChangeSetId)));
+            deleteByQuery(solrIndexSearcher, query);
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+    }
+    
+
+    private void deleteByQuery(SolrIndexSearcher solrIndexSearcher, Query query) throws IOException
+    {
+        HashSet<String> idsToDelete = new HashSet<String>();
+
+        DocSet docSet = solrIndexSearcher.getDocSet(query);
+        if (docSet instanceof BitDocSet)
+        {
+            BitDocSet source = (BitDocSet) docSet;
+            FixedBitSet openBitSet = source.getBits();
+            int current = -1;
+            while ((current = openBitSet.nextSetBit(current + 1)) != -1)
+            {
+                Document doc = solrIndexSearcher.doc(current, Collections.singleton(QueryConstants.FIELD_ID));
+                IndexableField fieldable = doc.getField(QueryConstants.FIELD_ID);
+                if (fieldable != null)
+                {
+                    idsToDelete.add(fieldable.stringValue());
+                }
+
+            }
+        }
+        else
+        {
+            for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
+            {
+                Document doc = solrIndexSearcher.doc(it.nextDoc(), Collections.singleton(QueryConstants.FIELD_ID));
+                IndexableField fieldable = doc.getField(QueryConstants.FIELD_ID);
+                if (fieldable != null)
+                {
+                    idsToDelete.add(fieldable.stringValue());
+                }
+            }
+        }
+
+        for (String idToDelete : idsToDelete)
+        {
+// TODO Add SolrQueryRequest
+            DeleteUpdateCommand docCmd = new DeleteUpdateCommand(null);
+            docCmd.setId(idToDelete);
+            core.getUpdateHandler().delete(docCmd);
+        }
 
     }
 
     @Override
-    public void deleteByAclChangeSetId(Long arg0) throws IOException
+    public void deleteByAclId(Long aclId) throws IOException
     {
-        // TODO Auto-generated method stub
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
 
+            Query query = new TermQuery(new Term(QueryConstants.FIELD_ACLID, NumericEncoder.encode(aclId)));
+            deleteByQuery(solrIndexSearcher, query);
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
     }
 
     @Override
-    public void deleteByAclId(Long arg0) throws IOException
+    public void deleteByNodeId(Long nodeId) throws IOException
     {
-        // TODO Auto-generated method stub
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
 
+            Query query = new TermQuery(new Term(QueryConstants.FIELD_DBID, NumericEncoder.encode(nodeId)));
+            deleteByQuery(solrIndexSearcher, query);
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
     }
 
     @Override
-    public void deleteByNodeId(Long arg0) throws IOException
+    public void deleteByTransactionId(Long transactionId) throws IOException
     {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void deleteByTransactionId(Long arg0) throws IOException
-    {
-        // TODO Auto-generated method stub
-
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            Query query = new TermQuery(new Term(QueryConstants.FIELD_INTXID, NumericEncoder.encode(transactionId)));
+            deleteByQuery(solrIndexSearcher, query);
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
     }
 
     @Override
     public List<AlfrescoModel> getAlfrescoModels()
     {
-//        return this.dataModel.getAlfrescoModels();
+//        return this.dataModel.getAlfrescoModels(); TODO
         return null;
     }
 
