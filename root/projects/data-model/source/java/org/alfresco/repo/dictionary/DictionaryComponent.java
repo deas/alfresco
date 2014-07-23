@@ -39,11 +39,11 @@ import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.QName;
 import org.springframework.extensions.surf.util.ParameterCheck;
 
-
 /**
  * Data Dictionary Service Implementation
  * 
  * @author David Caruana
+ * @author sglover
  */
 public class DictionaryComponent implements DictionaryService, TenantDeployer
 {
@@ -78,9 +78,14 @@ public class DictionaryComponent implements DictionaryService, TenantDeployer
      */
     public Collection<QName> getAllModels()
     {
-        return dictionaryDAO.getModels();
+        return getAllModels(true);
     }
-    
+
+    public Collection<QName> getAllModels(boolean includeInherited)
+    {
+        return dictionaryDAO.getModels(includeInherited);
+    }
+
     /* (non-Javadoc)
      * @see org.alfresco.repo.dictionary.DictionaryService#getModel(org.alfresco.repo.ref.QName)
      */
@@ -121,12 +126,12 @@ public class DictionaryComponent implements DictionaryService, TenantDeployer
      */
     public Collection<QName> getAllTypes()
     {
-        Collection<QName> types = new ArrayList<QName>(100);
-        for (QName model : getAllModels())
-        {
-            types.addAll(getTypes(model));
-        }
-        return types;
+        return getAllTypes(true);
+    }
+
+    public Collection<QName> getAllTypes(boolean includeInherited)
+    {
+    	return dictionaryDAO.getTypes(includeInherited);
     }
 
     
@@ -157,12 +162,12 @@ public class DictionaryComponent implements DictionaryService, TenantDeployer
      */
     public Collection<QName> getAllAspects()
     {
-        Collection<QName> aspects = new ArrayList<QName>(64);
-        for (QName model : getAllModels())
-        {
-            aspects.addAll(getAspects(model));
-        }
-        return aspects;
+        return getAllAspects(true);
+    }
+
+    public Collection<QName> getAllAspects(boolean includeInherited)
+    {
+        return dictionaryDAO.getAspects(includeInherited);
     }
     
     /* (non-Javadoc)
@@ -170,14 +175,14 @@ public class DictionaryComponent implements DictionaryService, TenantDeployer
      */
     public Collection<QName> getAllAssociations()
     {
-        Collection<QName> associations = new ArrayList<QName>(64);
-        for (QName model : getAllModels())
-        {
-            associations.addAll(getAssociations(model));
-        }
-        return associations;
+        return getAllAssociations(true);
     }
     
+    public Collection<QName> getAllAssociations(boolean includeInherited)
+    {
+        return dictionaryDAO.getAssociations(includeInherited);
+    }
+
     /* (non-Javadoc)
      * @see org.alfresco.service.cmr.dictionary.DictionaryService#getSubAspects(org.alfresco.service.namespace.QName, boolean)
      */
@@ -502,4 +507,22 @@ public class DictionaryComponent implements DictionaryService, TenantDeployer
     {
         return messageLookup.getMessage(messageKey, locale, params);
     }
+
+//	@Override
+//	public Collection<QName> getCoreTypes()
+//	{
+//		return dictionaryDAO.getCoreTypes();
+//	}
+//
+//	@Override
+//	public Collection<QName> getCoreAspects()
+//	{
+//		return dictionaryDAO.getCoreAspects();
+//	}
+//
+//	@Override
+//	public Collection<QName> getCoreAssociations()
+//	{
+//		return dictionaryDAO.getCoreAssociations();
+//	}
 }

@@ -40,10 +40,10 @@ public interface TypeDefinitionWrapper
     QName getAlfrescoName();
 
     QName getAlfrescoClass();
-
+    String getTenantId();
     TypeDefinitionWrapper getParent();
 
-    List<TypeDefinitionWrapper> getChildren();
+//    List<TypeDefinitionWrapper> getChildren();
 
     Collection<PropertyDefinitionWrapper> getProperties();
 

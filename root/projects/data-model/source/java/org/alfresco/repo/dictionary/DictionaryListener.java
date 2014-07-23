@@ -18,7 +18,6 @@
  */
 package org.alfresco.repo.dictionary;
 
-
 /**
  * Dictionary Listener interface.
  * <p>
@@ -27,12 +26,18 @@ package org.alfresco.repo.dictionary;
  */
 public interface DictionaryListener
 {        
-    // callback for (re-)initialising the Dictionary caches
-    public void onDictionaryInit();
+    /**
+     * Callback for (re-)initialising the Dictionary caches (executed in the current tenant context)
+     */
+    void onDictionaryInit();
+
+    /**
+     * Callback once dictionary destroy is complete (executed in the current tenant context)
+     */
+    void afterDictionaryDestroy();
     
-    // callback once dictionary destroy is complete
-    public void afterDictionaryDestroy();
-    
-    // callback once dictionary initialisation is complete
-    public void afterDictionaryInit();
+    /**
+     * Callback once dictionary initialisation is complete (executed in the current tenant context)
+     */
+    void afterDictionaryInit();
 }

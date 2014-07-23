@@ -31,70 +31,77 @@ import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.namespace.QName;
 
-
 /**
  * Dictionary Data Access
  * 
- * @author David Caruana
+ * @author David Caruana, sglover
  */
 public interface DictionaryDAO extends ModelQuery
 {
- 
+	List<DictionaryListener> getDictionaryListeners();
+
+	DictionaryRegistry getDictionaryRegistry(String tenantDomain);
+
+	boolean isContextRefreshed();
+
     /**
      * @return the models known by the dictionary
      */
-    public Collection<QName> getModels();
-    
+    Collection<QName> getModels(boolean includeInherited);
+
+    Collection<QName> getTypes(boolean includeInherited);
+    Collection<QName> getAssociations(boolean includeInherited);
+    Collection<QName> getAspects(boolean includeInherited);
+
     /**
      * @param name the model to retrieve
      * @return the named model definition
      */
-    public ModelDefinition getModel(QName name);
+    ModelDefinition getModel(QName name);
     
     /**
      * @param model the model to retrieve property types for
      * @return the property types of the model
      */
-    public Collection<DataTypeDefinition> getDataTypes(QName model);
+    Collection<DataTypeDefinition> getDataTypes(QName model);
     
     /**
      * @param model the model to retrieve types for
      * @return the types of the model
      */
-    public Collection<TypeDefinition> getTypes(QName model);
+    Collection<TypeDefinition> getTypes(QName model);
     
     /**
      * @param superType
      * @param follow  true => follow up the super-class hierarchy, false => immediate sub types only
      * @return
      */
-    public Collection<QName> getSubTypes(QName superType, boolean follow);
+    Collection<QName> getSubTypes(QName superType, boolean follow);
 
     /**
      * @param model the model to retrieve aspects for
      * @return the aspects of the model
      */
-    public Collection<AspectDefinition> getAspects(QName model);
-    
-    
+    Collection<AspectDefinition> getAspects(QName model);
+
     /**
      * @param model the model to retrieve associations for
      * @return the associations of the model
      */
-    public Collection<AssociationDefinition> getAssociations(QName model);
+    Collection<AssociationDefinition> getAssociations(QName model);
     
     /**
      * @param superAspect
      * @param follow  true => follow up the super-class hierarchy, false => immediate sub aspects only
      * @return
      */
-    public Collection<QName> getSubAspects(QName superAspect, boolean follow);
+    Collection<QName> getSubAspects(QName superAspect, boolean follow);
        
     /**
      * @param model the model for which to get properties for
      * @return the properties of the model
      */
-    public Collection<PropertyDefinition> getProperties(QName model);
+    Collection<PropertyDefinition> getProperties(QName model);
 
     /**
      * Construct an anonymous type that combines a primary type definition and
@@ -104,7 +111,7 @@ public interface DictionaryDAO extends ModelQuery
      * @param aspects  the aspects to combine
      * @return the anonymous type definition
      */
-    public TypeDefinition getAnonymousType(QName type, Collection<QName> aspects);
+    TypeDefinition getAnonymousType(QName type, Collection<QName> aspects);
     
     /**
      * Adds a model to the dictionary.  The model is compiled and validated.
@@ -112,8 +119,10 @@ public interface DictionaryDAO extends ModelQuery
      * @param model the model to add
      * @return QName name of model
      */
-    public QName putModel(M2Model model);
-    
+    QName putModel(M2Model model);
+
+//    QName putCustomModel(M2Model model);
+
     /**
      * Adds a model to the dictionary.  The model is compiled and validated.
      * Constraints are not loaded.
@@ -124,7 +133,7 @@ public interface DictionaryDAO extends ModelQuery
      * @param model the model to add
      * @return QName name of model
      */
-    public QName putModelIgnoringConstraints(M2Model model);
+    QName putModelIgnoringConstraints(M2Model model);
     
     /**
      * Removes a model from the dictionary.  The types and aspect in the model will no longer be 
@@ -132,7 +141,7 @@ public interface DictionaryDAO extends ModelQuery
      * 
      * @param model     the qname of the model to remove
      */
-    public void removeModel(QName model);
+    void removeModel(QName model);
     
     /**
      * Get all properties for the model and that are of the given data type.
@@ -142,7 +151,7 @@ public interface DictionaryDAO extends ModelQuery
      * @param dataType              <tt>null</tt> to get all properties
      * @return                      the properties associated with the model
      */
-    public Collection<PropertyDefinition> getProperties(QName modelName, QName dataType);
+    Collection<PropertyDefinition> getProperties(QName modelName, QName dataType);
      
     /**
      * Get all properties for all models of the given data type. 
@@ -151,25 +160,25 @@ public interface DictionaryDAO extends ModelQuery
      * @param dataType
      * @return
      */
-    public Collection<PropertyDefinition> getPropertiesOfDataType(QName dataType);
+    Collection<PropertyDefinition> getPropertiesOfDataType(QName dataType);
     
     /**
      * @param model the model to retrieve namespaces for
      * @return the namespaces of the model
      */
-    public Collection<NamespaceDefinition> getNamespaces(QName modelName);
+    Collection<NamespaceDefinition> getNamespaces(QName modelName);
     
     /**
      * @param model the model to retrieve constraint defs (including property constaint refs)
      * @return the constraints of the model
      */
-    public Collection<ConstraintDefinition> getConstraints(QName model);
+    Collection<ConstraintDefinition> getConstraints(QName model);
     
     /**
      * @param model the model to retrieve constraint defs (optionally only referenceable constraints)
      * @return the constraints of the model
      */
-    public Collection<ConstraintDefinition> getConstraints(QName model, boolean referenceableDefsOnly);
+    Collection<ConstraintDefinition> getConstraints(QName model, boolean referenceableDefsOnly);
     
     /**
      * Return diffs between input model and model in the Dictionary.
@@ -179,9 +188,9 @@ public interface DictionaryDAO extends ModelQuery
      * @param model
      * @return model diffs (if any)
      */
-    public List<M2ModelDiff> diffModel(M2Model model);
+    List<M2ModelDiff> diffModel(M2Model model);
     
-    public List<M2ModelDiff> diffModelIgnoringConstraints(M2Model model);
+    List<M2ModelDiff> diffModelIgnoringConstraints(M2Model model);
     
     /**
      *
@@ -189,30 +198,30 @@ public interface DictionaryDAO extends ModelQuery
      * 
      * @param dictionaryListener
      */
-    public void register(DictionaryListener dictionaryListener);
-    
+    void registerListener(DictionaryListener dictionaryListener);
+
     /**
      * Reset the Dictionary - destroy & re-initialise
      */
-    public void reset();
+    void reset();
     
     /**
      * Initialise the Dictionary
      */
-    public void init();
+    void init();
     
     /**
      * Destroy the Dictionary
      */
-    public void destroy();
+    void destroy();
     
     // MT-specific
-    public boolean isModelInherited(QName name);
+    boolean isModelInherited(QName name);
 
     /**
      * @return
      */
-    public String getDefaultAnalyserResourceBundleName();
+    String getDefaultAnalyserResourceBundleName();
 
     /**
      * @return

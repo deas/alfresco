@@ -39,6 +39,8 @@ public interface CMISDictionaryService
      */
     TypeDefinitionWrapper findType(String typeId);
 
+    List<TypeDefinitionWrapper> getChildren(String typeId);
+
     /**
      * Find type for Alfresco class name. Optionally, constrain match to one of
      * specified CMIS scopes
@@ -70,12 +72,16 @@ public interface CMISDictionaryService
      */
     List<TypeDefinitionWrapper> getBaseTypes();
 
+    List<TypeDefinitionWrapper> getBaseTypes(boolean includeParent);
+
     /**
      * Get all Types
      * 
      * @return
      */
     List<TypeDefinitionWrapper> getAllTypes();
+
+    List<TypeDefinitionWrapper> getAllTypes(boolean includeParent);
 
     /**
      * Find data type

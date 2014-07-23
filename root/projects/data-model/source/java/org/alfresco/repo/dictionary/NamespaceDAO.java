@@ -62,22 +62,22 @@ public interface NamespaceDAO extends NamespacePrefixResolver
     /**
      * Initialise Namespaces
      */
-    public void init();
+//    public void init();
     
-    public void afterDictionaryInit();
+//    public void afterDictionaryInit();
     
     /**
      * Destroy Namespaces
      */
-    public void destroy();
+//    public void destroy();
     
     /**
      * Register with the Dictionary
      */
-    public void registerDictionary(DictionaryDAO dictionaryDAO);
+//    public void registerDictionary(DictionaryDAO dictionaryDAO);
 
     /**
      * Clear NamespaceLocal
      */
-    public void clearNamespaceLocal();
+//    public void clearNamespaceLocal();
 }

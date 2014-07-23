@@ -43,15 +43,12 @@ import org.alfresco.opencmis.dictionary.QNameFilter;
 import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
-import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
+import org.alfresco.repo.dictionary.DictionaryRegistry;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2ModelDiff;
 import org.alfresco.repo.dictionary.NamespaceDAO;
-import org.alfresco.repo.dictionary.NamespaceDAOImpl;
-import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
 import org.alfresco.repo.i18n.StaticMessageLookup;
-import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.repo.tenant.SingleTServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
@@ -111,7 +108,7 @@ public class AlfrescoSolrDataModel
     
     private TenantService tenantService;
 
-    private NamespaceDAOImpl namespaceDAO;
+    private NamespaceDAO namespaceDAO;
 
     private DictionaryDAOImpl dictionaryDAO;
     
@@ -128,16 +125,15 @@ public class AlfrescoSolrDataModel
     public AlfrescoSolrDataModel()
     {
         tenantService = new SingleTServiceImpl();
-        namespaceDAO = new NamespaceDAOImpl();
-        namespaceDAO.setTenantService(tenantService);
-        namespaceDAO.setNamespaceRegistryCache(new MemoryCache<String, NamespaceRegistry>());
 
-        dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
+        dictionaryDAO = new DictionaryDAOImpl();
         dictionaryDAO.setTenantService(tenantService);
         dictionaryDAO.setDictionaryRegistryCache(new MemoryCache<String, DictionaryRegistry>());
         // TODO: use config ....
         dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
         dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
+
+        namespaceDAO = dictionaryDAO;
 
         QNameFilter qnameFilter = getQNameFilter();
         dictionaryServices = AlfrescoClientDataModelServicesFactory.constructDictionaryServices(qnameFilter, dictionaryDAO);

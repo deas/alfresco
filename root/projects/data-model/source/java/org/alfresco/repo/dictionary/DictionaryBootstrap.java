@@ -111,9 +111,9 @@ public class DictionaryBootstrap implements DictionaryListener
     /**
      * Register with the Dictionary
      */
-    public void register()
+    private void register()
     {
-        dictionaryDAO.register(this);
+        dictionaryDAO.registerListener(this);
     }
 
     /*
@@ -128,8 +128,9 @@ public class DictionaryBootstrap implements DictionaryListener
         {
             logger.trace("onDictionaryInit: ["+Thread.currentThread()+"]");
         }
-        
-        Collection<QName> modelsBefore = dictionaryDAO.getModels(); // note: on first bootstrap will init empty dictionary
+
+        // note: on first bootstrap will init empty dictionary
+        Collection<QName> modelsBefore = dictionaryDAO.getModels(true); // note: on first bootstrap will init empty dictionary
         int modelsBeforeCnt = (modelsBefore != null ? modelsBefore.size() : 0);
         
         if ((tenantService == null) || (! tenantService.isTenantUser()))
@@ -145,12 +146,12 @@ public class DictionaryBootstrap implements DictionaryListener
                 try
                 {
                     M2Model model = M2Model.createModel(modelStream);
-                    
+
                     if (logger.isDebugEnabled())
                     {
                         logger.debug("Loading model: "+model.getName()+" (from "+bootstrapModel+")");
                     }
-                    
+
                     dictionaryDAO.putModel(model);
                 }
                 catch(DictionaryException e)
@@ -170,7 +171,7 @@ public class DictionaryBootstrap implements DictionaryListener
                 }
             }
             
-            Collection<QName> modelsAfter = dictionaryDAO.getModels();
+            Collection<QName> modelsAfter = dictionaryDAO.getModels(true);
             int modelsAfterCnt = (modelsAfter != null ? modelsAfter.size() : 0);
             
             if (logger.isDebugEnabled())

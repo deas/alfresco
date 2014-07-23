@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.opencmis.dictionary.CMISAbstractDictionaryService.DictionaryRegistry;
 import org.alfresco.opencmis.mapping.CMISMapping;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.constraint.ListOfValuesConstraint;
@@ -79,9 +78,17 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
     protected AbstractTypeDefinition typeDefInclProperties;
 
     protected TypeDefinitionWrapper parent;
-    protected List<TypeDefinitionWrapper> children;
+//    protected List<TypeDefinitionWrapper> children;
 
-    protected QName alfrescoName = null;
+    private String tenantId;
+
+    @Override
+    public String getTenantId()
+    {
+		return tenantId;
+	}
+
+	protected QName alfrescoName = null;
     protected QName alfrescoClass = null;
     protected Map<Action, CMISActionEvaluator> actionEvaluators;
 
@@ -144,11 +151,11 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
         return parent;
     }
 
-    @Override
-    public List<TypeDefinitionWrapper> getChildren()
-    {
-        return children;
-    }
+//    @Override
+//    public List<TypeDefinitionWrapper> getChildren()
+//    {
+//        return children;
+//    }
 
     @Override
     public Map<Action, CMISActionEvaluator> getActionEvaluators()
@@ -182,10 +189,10 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
 
     // create
 
-    public abstract void connectParentAndSubTypes(CMISMapping cmisMapping, DictionaryRegistry registry,
+    public abstract List<TypeDefinitionWrapper> connectParentAndSubTypes(CMISMapping cmisMapping, CMISDictionaryRegistry registry,
             DictionaryService dictionaryService);
 
-    public abstract void resolveInheritance(CMISMapping cmisMapping, DictionaryRegistry registry,
+    public abstract void resolveInheritance(CMISMapping cmisMapping, CMISDictionaryRegistry registry,
             DictionaryService dictionaryService);
 
     public void assertComplete()

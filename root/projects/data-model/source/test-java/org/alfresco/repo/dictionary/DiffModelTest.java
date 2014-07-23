@@ -26,8 +26,6 @@ import junit.framework.TestCase;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.cache.MemoryCache;
-import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
-import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
 import org.alfresco.repo.tenant.SingleTServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.namespace.QName;
@@ -915,12 +913,11 @@ public class DiffModelTest extends TestCase
     	// Initialise the Dictionary
         TenantService tenantService = new SingleTServiceImpl();
         
-        NamespaceDAOImpl namespaceDAO = new NamespaceDAOImpl();
-        namespaceDAO.setTenantService(tenantService);
+//        NamespaceDAOImpl namespaceDAO = new NamespaceDAOImpl();
+//        namespaceDAO.setTenantService(tenantService);
+//        initNamespaceCaches(namespaceDAO);
         
-        initNamespaceCaches(namespaceDAO);
-        
-        dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
+        dictionaryDAO = new DictionaryDAOImpl();
         dictionaryDAO.setTenantService(tenantService);
         
         initDictionaryCaches(dictionaryDAO);
@@ -941,10 +938,10 @@ public class DiffModelTest extends TestCase
         dictionaryDAO.setDictionaryRegistryCache(new MemoryCache<String, DictionaryRegistry>());
     }
     
-    private void initNamespaceCaches(NamespaceDAOImpl namespaceDAO)
-    {
-        namespaceDAO.setNamespaceRegistryCache(new MemoryCache<String, NamespaceRegistry>());
-    }
+//    private void initNamespaceCaches(NamespaceDAOImpl namespaceDAO)
+//    {
+//        namespaceDAO.setNamespaceRegistryCache(new MemoryCache<String, NamespaceRegistry>());
+//    }
     
     public void testDeleteModel()
     {

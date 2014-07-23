@@ -51,13 +51,11 @@ import org.alfresco.opencmis.search.CmisFunctionEvaluationContext;
 import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
-import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
+import org.alfresco.repo.dictionary.DictionaryRegistry;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2ModelDiff;
 import org.alfresco.repo.dictionary.NamespaceDAO;
-import org.alfresco.repo.dictionary.NamespaceDAOImpl;
-import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
 import org.alfresco.repo.i18n.StaticMessageLookup;
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.adaptor.lucene.AnalysisMode;
@@ -138,7 +136,7 @@ public class AlfrescoSolrDataModel
 
     private TenantService tenantService;
 
-    private NamespaceDAOImpl namespaceDAO;
+    private NamespaceDAO namespaceDAO;
 
     private DictionaryDAOImpl dictionaryDAO;
 
@@ -276,11 +274,9 @@ public class AlfrescoSolrDataModel
         this.id = id;
 
         tenantService = new SingleTServiceImpl();
-        namespaceDAO = new NamespaceDAOImpl();
-        namespaceDAO.setTenantService(tenantService);
-        namespaceDAO.setNamespaceRegistryCache(new MemoryCache<String, NamespaceRegistry>());
 
-        dictionaryDAO = new DictionaryDAOImpl(namespaceDAO);
+        dictionaryDAO = new DictionaryDAOImpl(/*namespaceDAO*/);
+        namespaceDAO = dictionaryDAO;
         dictionaryDAO.setTenantService(tenantService);
         dictionaryDAO.setDictionaryRegistryCache(new MemoryCache<String, DictionaryRegistry>());
         // TODO: use config ....

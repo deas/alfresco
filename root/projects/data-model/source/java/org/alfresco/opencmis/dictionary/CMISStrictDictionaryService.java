@@ -19,10 +19,14 @@
 package org.alfresco.opencmis.dictionary;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 import org.alfresco.opencmis.mapping.CMISMapping;
+import org.alfresco.repo.dictionary.CompiledModel;
+import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.AssociationDefinition;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
+import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.namespace.QName;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
@@ -48,12 +52,146 @@ public class CMISStrictDictionaryService extends CMISAbstractDictionaryService
     
     public static final String DEFAULT = "DEFAULT_DICTIONARY";
 
-	@Override
-    protected void createDefinitions(DictionaryRegistry registry)
+    private DictionaryInitializer coreDictionaryInitializer;
+    private DictionaryInitializer tenantDictionaryInitializer;
+
+    public void init()
     {
-        createTypeDefs(registry, dictionaryService.getAllTypes());
-        createAssocDefs(registry, dictionaryService.getAllAssociations());
-        createTypeDefs(registry, dictionaryService.getAllAspects());
+    	this.coreDictionaryInitializer = new DictionaryInitializer()
+		{
+			@Override
+		    public Collection<AbstractTypeDefinitionWrapper> createDefinitions(CMISDictionaryRegistry cmisRegistry)
+		    {
+				Collection<AbstractTypeDefinitionWrapper> ret = new LinkedList<>();
+				ret.addAll(createTypeDefs(cmisRegistry, dictionaryService.getAllTypes(true)));
+
+				Collection<QName> assocQNames = dictionaryService.getAllAssociations(true);
+
+		        // register base type
+		        String typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_RELATIONSHIP, CMISMapping.RELATIONSHIP_QNAME);
+		        ClassDefinition classDef = dictionaryService.getClass(CMISMapping.RELATIONSHIP_QNAME);
+
+		        // from Thor
+		        if (classDef == null)
+		        {
+		            if (assocQNames.size() != 0)
+		            {
+		                logger.warn("Unexpected - no class for "+CMISMapping.RELATIONSHIP_QNAME+" - cannot create assocDefs for: "+assocQNames);
+		            }
+		        }
+		        else
+		        {
+			        RelationshipTypeDefintionWrapper objectTypeDef = new RelationshipTypeDefintionWrapper(cmisMapping,
+			                accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
+			        cmisRegistry.registerTypeDefinition(objectTypeDef);
+			        ret.add(objectTypeDef);
+
+					ret.addAll(createAssocDefs(cmisRegistry, assocQNames));
+		        }
+
+		        ret.addAll(createTypeDefs(cmisRegistry, dictionaryService.getAllAspects(true)));
+				return ret;
+		    }
+
+			@Override
+		    public Collection<AbstractTypeDefinitionWrapper> createDefinitions(CMISDictionaryRegistry cmisRegistry,
+		    		CompiledModel model)
+		    {
+				Collection<AbstractTypeDefinitionWrapper> ret = new LinkedList<>();
+				
+				model.getClass(model.getTypes().iterator().next().getName());
+
+				for(TypeDefinition typeDef : model.getTypes())
+				{
+					QName classQName = typeDef.getName();
+					AbstractTypeDefinitionWrapper objectTypeDef = createTypeDef(classQName);
+		            if(objectTypeDef != null)
+		            {
+		                cmisRegistry.registerTypeDefinition(objectTypeDef);
+		                ret.add(objectTypeDef);
+		            }
+				}
+
+				for(AssociationDefinition assocDef : model.getAssociations())
+				{
+					QName classQName = assocDef.getName();
+					RelationshipTypeDefintionWrapper assocTypeDef =  createAssocDef(classQName);
+		        	if(assocTypeDef != null)
+		        	{	
+			            cmisRegistry.registerTypeDefinition(assocTypeDef);
+				        ret.add(assocTypeDef);
+		        	}
+				}
+
+				for(AspectDefinition aspectDef : model.getAspects())
+				{
+					QName classQName = aspectDef.getName();
+					AbstractTypeDefinitionWrapper objectTypeDef = createTypeDef(classQName);
+		            if(objectTypeDef != null)
+		            {
+		                cmisRegistry.registerTypeDefinition(objectTypeDef);
+		                ret.add(objectTypeDef);
+		            }
+				}
+
+				return ret;
+		    }
+		};
+
+    	this.tenantDictionaryInitializer = new DictionaryInitializer()
+		{
+			@Override
+		    public Collection<AbstractTypeDefinitionWrapper> createDefinitions(CMISDictionaryRegistry cmisRegistry)
+		    {
+				Collection<AbstractTypeDefinitionWrapper> ret = new LinkedList<>();
+				ret.addAll(createTypeDefs(cmisRegistry, dictionaryService.getAllTypes(false)));
+				ret.addAll(createAssocDefs(cmisRegistry, dictionaryService.getAllAssociations(false)));
+				ret.addAll(createTypeDefs(cmisRegistry, dictionaryService.getAllAspects(false)));
+				return ret;
+		    }
+
+			@Override
+		    public Collection<AbstractTypeDefinitionWrapper> createDefinitions(CMISDictionaryRegistry cmisRegistry,
+		    		CompiledModel model)
+		    {
+				Collection<AbstractTypeDefinitionWrapper> ret = new LinkedList<>();
+
+				for(TypeDefinition typeDef : model.getTypes())
+				{
+					QName classQName = typeDef.getName();
+					AbstractTypeDefinitionWrapper objectTypeDef = createTypeDef(classQName);
+		            if(objectTypeDef != null)
+		            {
+		                cmisRegistry.registerTypeDefinition(objectTypeDef);
+		                ret.add(objectTypeDef);
+		            }
+				}
+
+				for(AssociationDefinition assocDef : model.getAssociations())
+				{
+					QName classQName = assocDef.getName();
+					RelationshipTypeDefintionWrapper assocTypeDef =  createAssocDef(classQName);
+		        	if(assocTypeDef != null)
+		        	{	
+			            cmisRegistry.registerTypeDefinition(assocTypeDef);
+				        ret.add(assocTypeDef);
+		        	}
+				}
+
+				for(AspectDefinition aspectDef : model.getAspects())
+				{
+					QName classQName = aspectDef.getName();
+					AbstractTypeDefinitionWrapper objectTypeDef = createTypeDef(classQName);
+		            if(objectTypeDef != null)
+		            {
+		                cmisRegistry.registerTypeDefinition(objectTypeDef);
+		                ret.add(objectTypeDef);
+		            }
+				}
+
+				return ret;
+		    }
+		};
     }
 
     /**
@@ -62,49 +200,78 @@ public class CMISStrictDictionaryService extends CMISAbstractDictionaryService
      * @param registry
      * @param classQNames
      */
-    private void createTypeDefs(DictionaryRegistry registry, Collection<QName> classQNames)
+    private AbstractTypeDefinitionWrapper createTypeDef(QName classQName)
     {
+    	AbstractTypeDefinitionWrapper objectTypeDef = null;
+
+        // skip items that are remapped to CMIS model
+        if(!cmisMapping.isRemappedType(classQName))
+        {
+	        // create appropriate kind of type definition
+	        ClassDefinition classDef = dictionaryService.getClass(classQName);
+	        String typeId = null;
+	        if (cmisMapping.isValidCmisDocument(classQName))
+	        {
+	            typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_DOCUMENT, classQName);
+	            objectTypeDef = new DocumentTypeDefinitionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
+	        }
+	        else if (cmisMapping.isValidCmisFolder(classQName))
+	        {
+	            typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_FOLDER, classQName);
+	            objectTypeDef = new FolderTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
+	        }
+	        else if (cmisMapping.getCmisVersion().equals(CmisVersion.CMIS_1_1) && cmisMapping.isValidCmisSecondaryType(classQName))
+	        {
+	            typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_SECONDARY, classQName);
+	            objectTypeDef = new SecondaryTypeDefinitionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
+	        }
+	        else if (cmisMapping.isValidCmisPolicy(classQName))
+	        {
+	            typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_POLICY, classQName);
+	            objectTypeDef = new PolicyTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
+	        }
+	        else if (cmisMapping.isValidCmisItem(classQName))
+	        {
+	            typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_ITEM, classQName);
+	            objectTypeDef = new ItemTypeDefinitionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
+	        }
+        }
+
+        return objectTypeDef;
+    }
+
+    private Collection<AbstractTypeDefinitionWrapper> createTypeDefs(CMISDictionaryRegistry registry,
+    		Collection<QName> classQNames)
+    {
+    	Collection<AbstractTypeDefinitionWrapper> ret = new LinkedList<>();
+
         for (QName classQName : classQNames)
         {
-            // skip items that are remapped to CMIS model
-            if (cmisMapping.isRemappedType(classQName))
-                continue;
-
-            // create appropriate kind of type definition
-            ClassDefinition classDef = dictionaryService.getClass(classQName);
-            String typeId = null;
-            AbstractTypeDefinitionWrapper objectTypeDef = null;
-            if (cmisMapping.isValidCmisDocument(classQName))
-            {
-                typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_DOCUMENT, classQName);
-                objectTypeDef = new DocumentTypeDefinitionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
-            }
-            else if (cmisMapping.isValidCmisFolder(classQName))
-            {
-                typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_FOLDER, classQName);
-                objectTypeDef = new FolderTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
-            }
-            else if (cmisMapping.getCmisVersion().equals(CmisVersion.CMIS_1_1) && cmisMapping.isValidCmisSecondaryType(classQName))
-            {
-                typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_SECONDARY, classQName);
-                objectTypeDef = new SecondaryTypeDefinitionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
-            }
-            else if (cmisMapping.isValidCmisPolicy(classQName))
-            {
-                typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_POLICY, classQName);
-                objectTypeDef = new PolicyTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
-            }
-            else if (cmisMapping.isValidCmisItem(classQName))
-            {
-                typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_ITEM, classQName);
-                objectTypeDef = new ItemTypeDefinitionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
-            }
-
+        	AbstractTypeDefinitionWrapper objectTypeDef = createTypeDef(classQName);
             if (objectTypeDef != null)
             {
                 registry.registerTypeDefinition(objectTypeDef);
+                ret.add(objectTypeDef);
             }
         }
+
+        return ret;
+    }
+
+    private RelationshipTypeDefintionWrapper createAssocDef(QName classQName)
+    {
+    	RelationshipTypeDefintionWrapper assocTypeDef = null;
+
+        if(cmisMapping.isValidCmisRelationship(classQName))
+        {
+	        // create appropriate kind of type definition
+	        AssociationDefinition assocDef = dictionaryService.getAssociation(classQName);
+	        String typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_RELATIONSHIP, classQName);
+	        assocTypeDef = new RelationshipTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, 
+	                typeId, dictionaryService, assocDef);
+        }
+
+        return assocTypeDef;
     }
 
     /**
@@ -113,40 +280,34 @@ public class CMISStrictDictionaryService extends CMISAbstractDictionaryService
      * @param registry
      * @param classQNames
      */
-    private void createAssocDefs(DictionaryRegistry registry, Collection<QName> classQNames)
+    private Collection<RelationshipTypeDefintionWrapper> createAssocDefs(CMISDictionaryRegistry registry,
+    		Collection<QName> classQNames)
     {
-        // register base type
-        String typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_RELATIONSHIP, CMISMapping.RELATIONSHIP_QNAME);
-        ClassDefinition classDef = dictionaryService.getClass(CMISMapping.RELATIONSHIP_QNAME);
-
-        // from Thor
-        if (classDef == null)
-        {
-            if (classQNames.size() != 0)
-            {
-                logger.warn("Unexpected - no class for "+CMISMapping.RELATIONSHIP_QNAME+" - cannot create assocDefs for: "+classQNames);
-            }
-            return;
-        }
-        
-        RelationshipTypeDefintionWrapper objectTypeDef = new RelationshipTypeDefintionWrapper(cmisMapping,
-                accessorMapping, luceneBuilderMapping, typeId, dictionaryService, classDef);
-
-        registry.registerTypeDefinition(objectTypeDef);
+    	Collection<RelationshipTypeDefintionWrapper> ret = new LinkedList<>();
 
         // register all other relationships
         for (QName classQName : classQNames)
         {
-            if (!cmisMapping.isValidCmisRelationship(classQName))
-                continue;
-
-            // create appropriate kind of type definition
-            AssociationDefinition assocDef = dictionaryService.getAssociation(classQName);
-            typeId = cmisMapping.getCmisTypeId(BaseTypeId.CMIS_RELATIONSHIP, classQName);
-            objectTypeDef = new RelationshipTypeDefintionWrapper(cmisMapping, accessorMapping, luceneBuilderMapping, 
-                    typeId, dictionaryService, assocDef);
-
-            registry.registerTypeDefinition(objectTypeDef);
+        	RelationshipTypeDefintionWrapper assocTypeDef = createAssocDef(classQName);
+        	if(assocTypeDef != null)
+        	{	
+	            registry.registerTypeDefinition(assocTypeDef);
+		        ret.add(assocTypeDef);
+        	}
         }
+
+        return ret;
     }
+
+	@Override
+	protected DictionaryInitializer getCoreDictionaryInitializer()
+	{
+		return coreDictionaryInitializer;
+	}
+
+	@Override
+	protected DictionaryInitializer getTenantDictionaryInitializer()
+	{
+		return tenantDictionaryInitializer;
+	}
 }

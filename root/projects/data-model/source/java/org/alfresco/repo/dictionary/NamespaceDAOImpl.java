@@ -43,144 +43,143 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Simple in-memory namespace DAO
  */
-public class NamespaceDAOImpl implements NamespaceDAO
+public class NamespaceDAOImpl {/*implements NamespaceDAO
 {
     private static final Log logger = LogFactory.getLog(NamespaceDAOImpl.class);
     
-    /**
+    *//**
      * Lock objects
-     */
+     *//*
     private ReadWriteLock lock = new ReentrantReadWriteLock();
     private Lock readLock = lock.readLock();
     private Lock writeLock = lock.writeLock();
     
     // Internal cache (NON-clustered, NON-transactional)
-    private SimpleCache<String, NamespaceRegistry> namespaceRegistryCache;
+//    private SimpleCache<String, NamespaceRegistry> namespaceRegistryCache;
     
     // used to reset the cache
-    private ThreadLocal<NamespaceRegistry> namespaceRegistryThreadLocal = new ThreadLocal<NamespaceRegistry>();
-    private ThreadLocal<NamespaceRegistry> defaultNamespaceRegistryThreadLocal = new ThreadLocal<NamespaceRegistry>();
-    
+//    private ThreadLocal<NamespaceRegistry> namespaceRegistryThreadLocal = new ThreadLocal<NamespaceRegistry>();
+//    private ThreadLocal<NamespaceRegistry> defaultNamespaceRegistryThreadLocal = new ThreadLocal<NamespaceRegistry>();
+
     // Dependencies
     private TenantService tenantService;
     private DictionaryDAO dictionaryDAO;
-    
-    
+
     public void setTenantService(TenantService tenantService)
     {
         this.tenantService = tenantService;
     }
-    
-    public void setNamespaceRegistryCache(SimpleCache<String, NamespaceRegistry> namespaceRegistryCache)
-    {
-        this.namespaceRegistryCache = namespaceRegistryCache;
-    }
-    
+
+//    public void setNamespaceRegistryCache(SimpleCache<String, NamespaceRegistry> namespaceRegistryCache)
+//    {
+//        this.namespaceRegistryCache = namespaceRegistryCache;
+//    }
+
     public void registerDictionary(DictionaryDAO dictionaryDAO)
     {
         this.dictionaryDAO = dictionaryDAO;
     }
-    
-    
-    /**
+
+    // TODO remove
+    *//**
      * Complete the initialisation
-     */
+     *//*
     public void afterDictionaryInit()
     {
-        String tenantDomain = getTenantDomain();        
-        NamespaceRegistry namespaceRegistry = getNamespaceRegistryLocal(tenantDomain);
-        
-        if (namespaceRegistry == null)
-        {
-            readLock.lock();
-            try
-            {
-                // No new registry has been set on the thread, so we expect one to be cached already
-                namespaceRegistry = namespaceRegistryCache.get(tenantDomain);
-                if (namespaceRegistry == null)
-                {
-                    throw new IllegalStateException("In afterDictionaryInit, yet no namespace registry for domain "
-                            + tenantDomain);
-                }
-                if (tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
-                {
-                    defaultNamespaceRegistryThreadLocal.set(namespaceRegistry);
-                }
-                else
-                {
-                    namespaceRegistryThreadLocal.set(namespaceRegistry);
-                }
-            }
-            finally
-            {
-                readLock.unlock();
-            }
-        }
-        else
-        {
-            writeLock.lock();
-            try
-            {
-                namespaceRegistryCache.put(tenantDomain, namespaceRegistry);
-            }
-            finally
-            {
-                writeLock.unlock();
-            }
-        }
+//        String tenantDomain = getTenantDomain();        
+//        NamespaceRegistry namespaceRegistry = getNamespaceRegistryLocal(tenantDomain);
+//        
+//        if (namespaceRegistry == null)
+//        {
+//            readLock.lock();
+//            try
+//            {
+//                // No new registry has been set on the thread, so we expect one to be cached already
+//                namespaceRegistry = namespaceRegistryCache.get(tenantDomain);
+//                if (namespaceRegistry == null)
+//                {
+//                    throw new IllegalStateException("In afterDictionaryInit, yet no namespace registry for domain "
+//                            + tenantDomain);
+//                }
+//                if (tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
+//                {
+//                    defaultNamespaceRegistryThreadLocal.set(namespaceRegistry);
+//                }
+//                else
+//                {
+//                    namespaceRegistryThreadLocal.set(namespaceRegistry);
+//                }
+//            }
+//            finally
+//            {
+//                readLock.unlock();
+//            }
+//        }
+//        else
+//        {
+//            writeLock.lock();
+//            try
+//            {
+//                namespaceRegistryCache.put(tenantDomain, namespaceRegistry);
+//            }
+//            finally
+//            {
+//                writeLock.unlock();
+//            }
+//        }
     }
 
     
-    /**
+    *//**
      * Initialise empty namespaces
-     */
+     *//*
     public void init()
     {
-        String tenantDomain = getTenantDomain();
-        NamespaceRegistry namespaceRegistry = initNamespaceRegistry(tenantDomain);
-        
-        if (namespaceRegistry == null)
-        {
-            // unexpected
-            throw new AlfrescoRuntimeException("Failed to init namespaceRegistry " + tenantDomain);
-        }
+//        String tenantDomain = getTenantDomain();
+//        NamespaceRegistry namespaceRegistry = initNamespaceRegistry(tenantDomain);
+//        
+//        if (namespaceRegistry == null)
+//        {
+//            // unexpected
+//            throw new AlfrescoRuntimeException("Failed to init namespaceRegistry " + tenantDomain);
+//        }
     }
     
-    /**
+    *//**
      * Destroy the namespaces
-     */
+     *//*
     public void destroy()
     {
-        String tenantDomain = getTenantDomain();
-        
-        removeNamespaceRegistry(tenantDomain);
-        
-        if (logger.isTraceEnabled()) 
-        {
-            logger.trace("Namespaces destroyed");
-        }
+//        String tenantDomain = getTenantDomain();
+//        
+//        removeNamespaceRegistry(tenantDomain);
+//        
+//        if (logger.isTraceEnabled()) 
+//        {
+//            logger.trace("Namespaces destroyed");
+//        }
     }
+
+//    private NamespaceRegistry initNamespaceRegistry(String tenantDomain)
+//    {
+//        // create threadlocal, if needed
+//        NamespaceRegistry namespaceRegistry = createNamespaceLocal(tenantDomain);
+//        
+//        namespaceRegistry.setUrisCache(new ArrayList<String>());
+//        namespaceRegistry.setPrefixesCache(new HashMap<String, String>());
+//        
+//        if (logger.isTraceEnabled()) 
+//        {
+//            logger.trace("Empty namespaces initialised: "+namespaceRegistry+" - "+namespaceRegistryThreadLocal+" ["+Thread.currentThread()+"]");
+//        }
+//        
+//        return namespaceRegistry;
+//    }
     
-    private NamespaceRegistry initNamespaceRegistry(String tenantDomain)
-    {
-        // create threadlocal, if needed
-        NamespaceRegistry namespaceRegistry = createNamespaceLocal(tenantDomain);
-        
-        namespaceRegistry.setUrisCache(new ArrayList<String>());
-        namespaceRegistry.setPrefixesCache(new HashMap<String, String>());
-        
-        if (logger.isTraceEnabled()) 
-        {
-            logger.trace("Empty namespaces initialised: "+namespaceRegistry+" - "+namespaceRegistryThreadLocal+" ["+Thread.currentThread()+"]");
-        }
-        
-        return namespaceRegistry;
-    }
     
-    
-    /* (non-Javadoc)
+     (non-Javadoc)
      * @see org.alfresco.repo.ref.NamespacePrefixResolver#getURIs()
-     */
+     
     public Collection<String> getURIs()
     {
         if (! tenantService.isTenantUser())
@@ -212,9 +211,9 @@ public class NamespaceDAOImpl implements NamespaceDAO
     }
     
     
-    /* (non-Javadoc)
+     (non-Javadoc)
      * @see org.alfresco.repo.ref.NamespacePrefixResolver#getPrefixes()
-     */
+     
     public Collection<String> getPrefixes()
     {      
         if (!(AuthenticationUtil.isMtEnabled() && tenantService.isTenantUser()))
@@ -246,9 +245,9 @@ public class NamespaceDAOImpl implements NamespaceDAO
     }
     
     
-    /* (non-Javadoc)
+     (non-Javadoc)
      * @see org.alfresco.repo.dictionary.impl.NamespaceDAO#addURI(java.lang.String)
-     */
+     
     public void addURI(String uri)
     {
         if (getUrisCtx().contains(uri))
@@ -259,9 +258,9 @@ public class NamespaceDAOImpl implements NamespaceDAO
     }
     
     
-    /* (non-Javadoc)
+     (non-Javadoc)
      * @see org.alfresco.repo.dictionary.impl.NamespaceDAO#addPrefix(java.lang.String, java.lang.String)
-     */
+     
     public void addPrefix(String prefix, String uri)
     {
         if (!getUrisCtx().contains(uri))
@@ -272,27 +271,27 @@ public class NamespaceDAOImpl implements NamespaceDAO
     }
     
     
-    /* (non-Javadoc)
+     (non-Javadoc)
      * @see org.alfresco.repo.dictionary.impl.NamespaceDAO#removeURI(java.lang.String)
-     */
+     
     public void removeURI(String uri)
     {
         getUrisCtx().remove(uri);
     }
     
     
-    /* (non-Javadoc)
+     (non-Javadoc)
      * @see org.alfresco.repo.dictionary.impl.NamespaceDAO#removePrefix(java.lang.String)
-     */
+     
     public void removePrefix(String prefix)
     {
         getPrefixesCtx().remove(prefix);
     }
     
     
-    /* (non-Javadoc)
+     (non-Javadoc)
      * @see org.alfresco.repo.ref.NamespacePrefixResolver#getNamespaceURI(java.lang.String)
-     */
+     
     public String getNamespaceURI(String prefix)
     {
         if (! tenantService.isTenantUser())
@@ -317,9 +316,9 @@ public class NamespaceDAOImpl implements NamespaceDAO
     }
     
     
-    /* (non-Javadoc)
+     (non-Javadoc)
      * @see org.alfresco.repo.ref.NamespacePrefixResolver#getPrefixes(java.lang.String)
-     */
+     
     public Collection<String> getPrefixes(String URI)
     {
         if (! tenantService.isTenantUser())
@@ -377,150 +376,149 @@ public class NamespaceDAOImpl implements NamespaceDAO
             return uriPrefixes;
         }
     }
-    
-    
+
     // re-entrant (eg. via reset)
-    private NamespaceRegistry getNamespaceRegistry(String tenantDomain)
-    {
-        NamespaceRegistry namespaceRegistry =  null;
-        
-        // check threadlocal first - return if set (we must be in the middle of dictionary initialization)
-        namespaceRegistry = getNamespaceRegistryLocal(tenantDomain);
-        if (namespaceRegistry != null)
-        {
-            return namespaceRegistry; // return local namespaceRegistry
-        }
-        
-        // Ensure the dictionary registry has been initialized for this tenant (does nothing if already initialized)
-        try
-        {
-            String currentUserDomain = tenantService.getCurrentUserDomain();
-            if (currentUserDomain.equals(tenantDomain))
-            {
-                dictionaryDAO.init();
-            }
-            else
-            {
-                AuthenticationUtil.runAs(new RunAsWork<Void>()
-                {
-                    @Override
-                    public Void doWork() throws Exception
-                    {
-                        dictionaryDAO.init();
-                        return null;
-                    }
-                }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), tenantDomain));
-            }
+//    private NamespaceRegistry getNamespaceRegistry(String tenantDomain)
+//    {
+//        NamespaceRegistry namespaceRegistry =  null;
+//        
+//        // check threadlocal first - return if set (we must be in the middle of dictionary initialization)
+//        namespaceRegistry = getNamespaceRegistryLocal(tenantDomain);
+//        if (namespaceRegistry != null)
+//        {
+//            return namespaceRegistry; // return local namespaceRegistry
+//        }
+//        
+//        // Ensure the dictionary registry has been initialized for this tenant (does nothing if already initialized)
+//        try
+//        {
+//            String currentUserDomain = tenantService.getCurrentUserDomain();
+//            if (currentUserDomain.equals(tenantDomain))
+//            {
+//                dictionaryDAO.init();
+//            }
+//            else
+//            {
+//                AuthenticationUtil.runAs(new RunAsWork<Void>()
+//                {
+//                    @Override
+//                    public Void doWork() throws Exception
+//                    {
+//                        dictionaryDAO.init();
+//                        return null;
+//                    }
+//                }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), tenantDomain));
+//            }
+//
+//            // check threadlocal again - return if set
+//            namespaceRegistry = getNamespaceRegistryLocal(tenantDomain);
+//            if (namespaceRegistry != null)
+//            {
+//                return namespaceRegistry; // return local namespaceRegistry
+//            }
+//        }
+//        finally
+//        {
+//            // Initialization complete - we must clear the thread local
+//            removeNamespaceLocal(tenantDomain);
+//        }
+//
+//        throw new IllegalStateException("dictionaryDAO.init() called, yet no namespace registry for domain " + tenantDomain);
+//    }
 
-            // check threadlocal again - return if set
-            namespaceRegistry = getNamespaceRegistryLocal(tenantDomain);
-            if (namespaceRegistry != null)
-            {
-                return namespaceRegistry; // return local namespaceRegistry
-            }
-        }
-        finally
-        {
-            // Initialization complete - we must clear the thread local
-            removeNamespaceLocal(tenantDomain);
-        }
-
-        throw new IllegalStateException("dictionaryDAO.init() called, yet no namespace registry for domain " + tenantDomain);
-    }
-    
     // create threadlocal
-    private NamespaceRegistry createNamespaceLocal(String tenantDomain)
-    {
-         // create threadlocal, if needed
-        NamespaceRegistry namespaceRegistry = getNamespaceRegistryLocal(tenantDomain);
-        if (namespaceRegistry == null)
-        {
-            namespaceRegistry = new NamespaceRegistry(tenantDomain);
-            
-            if (tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
-            {
-                defaultNamespaceRegistryThreadLocal.set(namespaceRegistry);
-            }
-            else
-            {
-                namespaceRegistryThreadLocal.set(namespaceRegistry);
-            }
-        }
-        
-        return namespaceRegistry;
-    }
+//    private NamespaceRegistry createNamespaceLocal(String tenantDomain)
+//    {
+//         // create threadlocal, if needed
+//        NamespaceRegistry namespaceRegistry = getNamespaceRegistryLocal(tenantDomain);
+//        if (namespaceRegistry == null)
+//        {
+//            namespaceRegistry = new NamespaceRegistry(tenantDomain);
+//            
+//            if (tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
+//            {
+//                defaultNamespaceRegistryThreadLocal.set(namespaceRegistry);
+//            }
+//            else
+//            {
+//                namespaceRegistryThreadLocal.set(namespaceRegistry);
+//            }
+//        }
+//        
+//        return namespaceRegistry;
+//    }
+//    
+//    // get threadlocal 
+//    private NamespaceRegistry getNamespaceRegistryLocal(String tenantDomain)
+//    {
+//        NamespaceRegistry namespaceRegistry = null;
+//        
+//        if (tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
+//        {
+//            namespaceRegistry = this.defaultNamespaceRegistryThreadLocal.get();
+//        }
+//        else
+//        {
+//            namespaceRegistry = this.namespaceRegistryThreadLocal.get();
+//        }
+//        
+//        // check to see if domain switched (eg. during login)
+//        if ((namespaceRegistry != null) && (tenantDomain.equals(namespaceRegistry.getTenantDomain())))
+//        {
+//            return namespaceRegistry; // return threadlocal, if set
+//        }
+//        
+//        return null;
+//    }
+//    
+//    // remove threadlocal
+//    private void removeNamespaceLocal(String tenantDomain)
+//    {
+//        if (tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
+//        {
+//            defaultNamespaceRegistryThreadLocal.set(null); // it's in the cache, clear the threadlocal
+//        }
+//        else
+//        {
+//            defaultNamespaceRegistryThreadLocal.set(null); // it's in the cache, clear the threadlocal
+//            namespaceRegistryThreadLocal.set(null); // it's in the cache, clear the threadlocal
+//        }
+//    }
+//    
+//    private void removeNamespaceRegistry(String tenantDomain)
+//    {
+//        try
+//        {
+//            writeLock.lock();
+//            if (namespaceRegistryCache.get(tenantDomain) != null)
+//            {
+//                namespaceRegistryCache.remove(tenantDomain);
+//            }
+//            
+//            removeNamespaceLocal(tenantDomain);
+//        }
+//        finally
+//        {
+//            writeLock.unlock();
+//        }
+//    }
     
-    // get threadlocal 
-    private NamespaceRegistry getNamespaceRegistryLocal(String tenantDomain)
-    {
-        NamespaceRegistry namespaceRegistry = null;
-        
-        if (tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
-        {
-            namespaceRegistry = this.defaultNamespaceRegistryThreadLocal.get();
-        }
-        else
-        {
-            namespaceRegistry = this.namespaceRegistryThreadLocal.get();
-        }
-        
-        // check to see if domain switched (eg. during login)
-        if ((namespaceRegistry != null) && (tenantDomain.equals(namespaceRegistry.getTenantDomain())))
-        {
-            return namespaceRegistry; // return threadlocal, if set
-        }
-        
-        return null;
-    }
-    
-    // remove threadlocal
-    private void removeNamespaceLocal(String tenantDomain)
-    {
-        if (tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
-        {
-            defaultNamespaceRegistryThreadLocal.set(null); // it's in the cache, clear the threadlocal
-        }
-        else
-        {
-            defaultNamespaceRegistryThreadLocal.set(null); // it's in the cache, clear the threadlocal
-            namespaceRegistryThreadLocal.set(null); // it's in the cache, clear the threadlocal
-        }
-    }
-    
-    private void removeNamespaceRegistry(String tenantDomain)
-    {
-        try
-        {
-            writeLock.lock();
-            if (namespaceRegistryCache.get(tenantDomain) != null)
-            {
-                namespaceRegistryCache.remove(tenantDomain);
-            }
-            
-            removeNamespaceLocal(tenantDomain);
-        }
-        finally
-        {
-            writeLock.unlock();
-        }
-    }
-    
-    /**
+    *//**
      * Get URIs from the cache (in the context of the current user's tenant domain)
      * 
      * @return URIs
-     */
+     *//*
     private List<String> getUrisCtx()
     {
         return getUrisCtx(getTenantDomain());
     }
 
-    /**
+    *//**
      * Get URIs from the cache
      * 
      * @param tenantDomain
      * @return URIs
-     */
+     *//*
     private List<String> getUrisCtx(String tenantDomain)
     {
         if ((! AuthenticationUtil.isMtEnabled()) || (! tenantDomain.equals(TenantService.DEFAULT_DOMAIN)))
@@ -540,22 +538,22 @@ public class NamespaceDAOImpl implements NamespaceDAO
         }
     }
     
-    /**
+    *//**
      * Get prefixes from the cache
      * 
      * @return prefixes
-     */
+     *//*
     private Map<String, String> getPrefixesCtx()
     {
         return getPrefixesCtx(getTenantDomain());
     }
     
-    /**
+    *//**
      * Get prefixes from the cache
      * 
      * @param tenantDomain
      * @return prefixes
-     */
+     *//*
     private Map<String, String> getPrefixesCtx(String tenantDomain)
     {
         if ((! AuthenticationUtil.isMtEnabled()) || (! tenantDomain.equals(TenantService.DEFAULT_DOMAIN)))
@@ -575,62 +573,63 @@ public class NamespaceDAOImpl implements NamespaceDAO
         }
     }
     
-    /**
+    *//**
      * Local helper - returns tenant domain (or empty string if default non-tenant)
-     */
+     *//*
     private String getTenantDomain()
     {
         return tenantService.getCurrentUserDomain();
     }
-    
-    public static class NamespaceRegistry implements Serializable
-    {
-        private static final long serialVersionUID = 1L;
-        private List<String> urisCache = new ArrayList<String>(0);
-        private Map<String, String> prefixesCache = new HashMap<String, String>(0);
-        
-        private String tenantDomain;
-        
-        public NamespaceRegistry(String tenantDomain)
-        {
-            this.tenantDomain = tenantDomain;
-        }
-        
-        public String getTenantDomain()
-        {
-            return tenantDomain;
-        } 
-        
-        public List<String> getUrisCache()
-        {
-            return urisCache;
-        }
-        
-        public void setUrisCache(List<String> urisCache)
-        {
-            this.urisCache = urisCache;
-        }
-        
-        public Map<String, String> getPrefixesCache()
-        {
-            return prefixesCache;
-        }
 
-        public void setPrefixesCache(Map<String, String> prefixesCache)
-        {
-            this.prefixesCache = prefixesCache;
-        }
-    }
+//    public static class NamespaceRegistry implements Serializable
+//    {
+//        private static final long serialVersionUID = 1L;
+//        private List<String> urisCache = new ArrayList<String>(0);
+//        private Map<String, String> prefixesCache = new HashMap<String, String>(0);
+//        
+//        private String tenantDomain;
+//        
+//        public NamespaceRegistry(String tenantDomain)
+//        {
+//            this.tenantDomain = tenantDomain;
+//        }
+//        
+//        public String getTenantDomain()
+//        {
+//            return tenantDomain;
+//        } 
+//        
+//        public List<String> getUrisCache()
+//        {
+//            return urisCache;
+//        }
+//        
+//        public void setUrisCache(List<String> urisCache)
+//        {
+//            this.urisCache = urisCache;
+//        }
+//        
+//        public Map<String, String> getPrefixesCache()
+//        {
+//            return prefixesCache;
+//        }
+//
+//        public void setPrefixesCache(Map<String, String> prefixesCache)
+//        {
+//            this.prefixesCache = prefixesCache;
+//        }
+//    }
 
+    // TODO remove
     @Override
     public void clearNamespaceLocal()
     {
-        String tenantDomain = getTenantDomain();
-        removeNamespaceLocal(tenantDomain);
-
-        if (logger.isTraceEnabled())
-        {
-            logger.trace("NamespaceLocal cleared");
-        }
-    }
+//        String tenantDomain = getTenantDomain();
+//        removeNamespaceLocal(tenantDomain);
+//
+//        if (logger.isTraceEnabled())
+//        {
+//            logger.trace("NamespaceLocal cleared");
+//        }
+    }*/
 }

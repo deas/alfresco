@@ -20,10 +20,11 @@ package org.alfresco.opencmis.dictionary;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.opencmis.CMISUtils;
-import org.alfresco.opencmis.dictionary.CMISAbstractDictionaryService.DictionaryRegistry;
 import org.alfresco.opencmis.mapping.CMISMapping;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
@@ -96,14 +97,23 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
         createActionEvaluators(propertyAccessorMapping, BaseTypeId.CMIS_POLICY);
     }
 
-    public void connectParentAndSubTypes(CMISMapping cmisMapping, DictionaryRegistry registry,
+    @Override
+    public List<TypeDefinitionWrapper> connectParentAndSubTypes(CMISMapping cmisMapping, CMISDictionaryRegistry registry,
             DictionaryService dictionaryService)
     {
+    	String parentTypeId = typeDef.getParentTypeId();
+
         // find parent
         if (typeDef.getParentTypeId() != null)
         {
-            parent = registry.typeDefsByTypeId.get(typeDef.getParentTypeId());
-        } else
+            parent = registry.getTypeDefByTypeId(parentTypeId);
+//            if(registry.getTenant() != null && parent != null && registry.getTypeDefByTypeId(parentTypeId, false) == null)
+//            {
+//            	// this is a tenant registry and the parent is not defined locally so add this type as a child of it
+//            	registry.addChild(parent.getTypeId(), this);
+//            }
+        }
+        else
         {
             if (!isBaseType())
             {
@@ -114,7 +124,6 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
         }
 
         // find children
-        children = new ArrayList<TypeDefinitionWrapper>();
         Collection<QName> childrenNames = null;
 
         if (isBaseType())
@@ -122,31 +131,39 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
             // add the "Aspects" type to the CMIS Policy type
             childrenNames = new ArrayList<QName>();
             childrenNames.add(CMISMapping.ASPECTS_QNAME);
-        } else if (getAlfrescoName().equals(CMISMapping.ASPECTS_QNAME))
+        }
+        else if (getAlfrescoName().equals(CMISMapping.ASPECTS_QNAME))
         {
             // add all root aspects to the "Aspects" type
             childrenNames = new ArrayList<QName>();
 
             String aspectsTypeId = cmisMapping.getCmisTypeId(CMISMapping.ASPECTS_QNAME);
-            for (AbstractTypeDefinitionWrapper tdw : registry.typeDefsByTypeId.values())
+            for (AbstractTypeDefinitionWrapper tdw : registry.getTypeDefs(false))
             {
+//            	TypeDefinitionWrapper parent = tdw.getParent();
+//            	if(tdw.getTenantId().equals(parent.getTenantId()))
+//            	{
+            		// type and parent in same tenant
+//            	}
                 String parentId = tdw.getTypeDefinition(false).getParentTypeId();
                 if ((parentId != null) && parentId.equals(aspectsTypeId))
                 {
                     childrenNames.add(tdw.getAlfrescoName());
                 }
             }
-        } else
+        }
+        else
         {
-            // add all non-root aspects to their parent
+            // add all non-root aspects in this tenant to their parent
             childrenNames = dictionaryService.getSubAspects(cmisMapping.getAlfrescoClass(getAlfrescoName()), false);
         }
 
+        List<TypeDefinitionWrapper> children = new LinkedList<TypeDefinitionWrapper>();
         for (QName childName : childrenNames)
         {
             if (cmisMapping.isValidCmisPolicy(childName))
             {
-                TypeDefinitionWrapper child = registry.typeDefsByQName.get(childName);
+                TypeDefinitionWrapper child = registry.getTypeDefByQName(childName);
 
                 if (child == null)
                 {
@@ -160,10 +177,13 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
                 logger.info("Not a policy: " + childName);
             }
         }
+
+        return children;
+//        registry.setChildren(typeDef.getId(), children);
     }
 
     public void resolveInheritance(CMISMapping cmisMapping,
-            DictionaryRegistry registry, DictionaryService dictionaryService)
+            CMISDictionaryRegistry registry, DictionaryService dictionaryService)
     {
         PropertyDefinition<?> propertyDefintion;
 
@@ -190,6 +210,7 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
             }
         }
 
+        List<TypeDefinitionWrapper> children = registry.getChildren(typeDef.getId());
         for (TypeDefinitionWrapper child : children)
         {
             if (child instanceof AbstractTypeDefinitionWrapper)

@@ -19,28 +19,25 @@
 package org.alfresco.opencmis.dictionary;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
-import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.opencmis.mapping.CMISMapping;
 import org.alfresco.repo.cache.SimpleCache;
+import org.alfresco.repo.dictionary.CompiledModel;
 import org.alfresco.repo.dictionary.DictionaryDAO;
-import org.alfresco.repo.dictionary.DictionaryListener;
-import org.alfresco.service.cmr.dictionary.AspectDefinition;
-import org.alfresco.service.cmr.dictionary.ClassDefinition;
+import org.alfresco.repo.dictionary.ExtendedDictionaryListener;
+import org.alfresco.repo.tenant.TenantService;
+import org.alfresco.repo.tenant.TenantUtil;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.ISO9075;
-import org.apache.chemistry.opencmis.commons.data.CmisExtensionElement;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.PropertyType;
-import org.apache.chemistry.opencmis.commons.impl.dataobjects.CmisExtensionElementImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationEvent;
@@ -53,23 +50,33 @@ import org.springframework.extensions.surf.util.AbstractLifecycleBean;
  * @author florian.mueller
  */
 public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBean implements CMISDictionaryService,
-        DictionaryListener
+        ExtendedDictionaryListener
 {
     // Logger
     protected static final Log logger = LogFactory.getLog(CMISAbstractDictionaryService.class);
 
-    public static final String ALFRESCO_EXTENSION_NAMESPACE = "http://www.alfresco.org";
-    public static final String MANDATORY_ASPECTS = "mandatoryAspects";
-    public static final String MANDATORY_ASPECT = "mandatoryAspect";
-
     // service dependencies
-    private DictionaryDAO dictionaryDAO;
+    protected DictionaryDAO dictionaryDAO;
     protected DictionaryService dictionaryService;
     protected CMISMapping cmisMapping;
     protected PropertyAccessorMapping accessorMapping;
     protected PropertyLuceneBuilderMapping luceneBuilderMapping;
+    protected TenantService tenantService;
 
-    /**
+    private final ReentrantReadWriteLock registryLock = new ReentrantReadWriteLock();
+    private final WriteLock registryWriteLock = registryLock.writeLock();
+    private final ReadLock registryReadLock = registryLock.readLock();
+    
+    // note: cache is tenant-aware (if using TransctionalCache impl)
+    private SimpleCache<String, CMISDictionaryRegistry> singletonCache; // eg. for openCmisDictionaryRegistry
+    private final String KEY_OPENCMIS_DICTIONARY_REGISTRY = "key.openCmisDictionaryRegistry";
+
+    public void setTenantService(TenantService tenantService)
+    {
+		this.tenantService = tenantService;
+	}
+
+	/**
      * Set the mapping service
      * 
      * @param cmisMapping
@@ -119,153 +126,182 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         this.dictionaryDAO = dictionaryDAO;
     }
 
-    public void setSingletonCache(SimpleCache<String, DictionaryRegistry> singletonCache)
+    public void setSingletonCache(SimpleCache<String, CMISDictionaryRegistry> singletonCache)
     {
         this.singletonCache = singletonCache;
     }
-    
-    private final ReentrantReadWriteLock registryLock = new ReentrantReadWriteLock();
-    private final WriteLock registryWriteLock = registryLock.writeLock();
-    private final ReadLock registryReadLock = registryLock.readLock();
-    
-    // note: cache is tenant-aware (if using TransctionalCache impl)
-    private SimpleCache<String, DictionaryRegistry> singletonCache; // eg. for openCmisDictionaryRegistry
-    private final String KEY_OPENCMIS_DICTIONARY_REGISTRY = "key.openCmisDictionaryRegistry";
-    
-    protected String key_opencmis_dictionary_registry = null;
-    
-    /**
-     * CMIS Dictionary registry
+
+    protected interface DictionaryInitializer
+    {
+    	Collection<AbstractTypeDefinitionWrapper> createDefinitions(CMISDictionaryRegistry cmisRegistry);
+    	Collection<AbstractTypeDefinitionWrapper> createDefinitions(CMISDictionaryRegistry cmisRegistry, CompiledModel model);
+    }
+
+    protected abstract DictionaryInitializer getCoreDictionaryInitializer();
+    protected abstract DictionaryInitializer getTenantDictionaryInitializer();
+
+    protected CMISDictionaryRegistry getRegistry()
+    {
+    	String tenant = TenantUtil.getCurrentDomain();
+    	return getRegistry(tenant);
+    }
+
+    CMISDictionaryRegistry getRegistry(String tenant)
+    {
+    	CMISDictionaryRegistry cmisRegistry = null;
+    	boolean readLockReleased = false;
+
+    	registryReadLock.lock();
+    	try
+    	{
+        	String cacheKey = getCacheKey(tenant);
+        	cmisRegistry = singletonCache.get(cacheKey);
+    		if(cmisRegistry == null)
+    		{
+        		registryReadLock.unlock();
+        		readLockReleased = true;
+
+                registryWriteLock.lock();
+                try
+                {
+                	cmisRegistry = singletonCache.get(cacheKey);
+            		if(cmisRegistry == null)
+            		{
+            			cmisRegistry = createDictionaryRegistry(tenant);
+            		}
+                }
+                finally
+                {
+                    registryWriteLock.unlock();
+                }
+    		}
+    	}
+    	finally
+    	{
+    		if(!readLockReleased)
+    		{
+    			registryReadLock.unlock();
+    		}
+    	}
+
+        return cmisRegistry;
+    }
+
+    /*
+     * (non-Javadoc)
      * 
-     * Index of CMIS Type Definitions
+     * @see
+     * org.springframework.extensions.surf.util.AbstractLifecycleBean#onBootstrap
+     * (org.springframework.context.ApplicationEvent)
      */
-    public class DictionaryRegistry
+    @Override
+    protected void onBootstrap(ApplicationEvent event)
     {
-        // Type Definitions Index
-        Map<QName, TypeDefinitionWrapper> typeDefsByQName = new HashMap<QName, TypeDefinitionWrapper>();
-        Map<QName, TypeDefinitionWrapper> assocDefsByQName = new HashMap<QName, TypeDefinitionWrapper>();
+        afterDictionaryInit();
 
-        Map<String, AbstractTypeDefinitionWrapper> typeDefsByTypeId = new HashMap<String, AbstractTypeDefinitionWrapper>();
-        Map<String, TypeDefinitionWrapper> typeDefsByQueryName = new HashMap<String, TypeDefinitionWrapper>();
-        List<TypeDefinitionWrapper> baseTypes = new ArrayList<TypeDefinitionWrapper>();
-
-        Map<String, PropertyDefinitionWrapper> propDefbyPropId = new HashMap<String, PropertyDefinitionWrapper>();
-        Map<String, PropertyDefinitionWrapper> propDefbyQueryName = new HashMap<String, PropertyDefinitionWrapper>();
-
-        /**
-         * Register type definition.
-         * 
-         * @param typeDef
-         */
-        public void registerTypeDefinition(AbstractTypeDefinitionWrapper typeDef)
+        // TODO revisit (for KS and/or 1.1)
+        if (dictionaryDAO != null)
         {
-            AbstractTypeDefinitionWrapper existingTypeDef = typeDefsByTypeId.get(typeDef.getTypeId());
-            if (existingTypeDef != null)
-            {
-                throw new AlfrescoRuntimeException("Type " + typeDef.getTypeId() + " already registered");
-            }
-
-            typeDefsByTypeId.put(typeDef.getTypeId(), typeDef);
-            QName typeQName = typeDef.getAlfrescoName();
-            if (typeQName != null)
-            {
-                if ((typeDef instanceof RelationshipTypeDefintionWrapper) && !typeDef.isBaseType())
-                {
-                    assocDefsByQName.put(typeQName, typeDef);
-                } else
-                {
-                    typeDefsByQName.put(typeQName, typeDef);
-                }
-            }
-
-            typeDefsByQueryName.put(typeDef.getTypeDefinition(false).getQueryName(), typeDef);
-
-            if (logger.isDebugEnabled())
-            {
-                logger.debug("Registered type " + typeDef.getTypeId() + " (scope=" + typeDef.getBaseTypeId() + ")");
-                logger.debug(" QName: " + typeDef.getAlfrescoName());
-                logger.debug(" Table: " + typeDef.getTypeDefinition(false).getQueryName());
-                logger.debug(" Action Evaluators: " + typeDef.getActionEvaluators().size());
-            }
+            dictionaryDAO.registerListener(this);
         }
-
-        /**
-         * Register property definitions.
-         * 
-         * @param typeDef
-         */
-        public void registerPropertyDefinitions(AbstractTypeDefinitionWrapper typeDef)
+        else
         {
-            for (PropertyDefinitionWrapper propDef : typeDef.getProperties())
-            {
-                if (propDef.getPropertyDefinition().isInherited())
-                {
-                    continue;
-                }
-
-                propDefbyPropId.put(propDef.getPropertyId(), propDef);
-                propDefbyQueryName.put(propDef.getPropertyDefinition().getQueryName(), propDef);
-            }
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see java.lang.Object#toString()
-         */
-        @Override
-        public String toString()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.append("DictionaryRegistry[");
-            builder.append("Types=").append(typeDefsByTypeId.size()).append(", ");
-            builder.append("Base Types=").append(baseTypes.size()).append(", ");
-            builder.append("]");
-            return builder.toString();
+            logger.error("DictionaryDAO is null - hence CMIS Dictionary not registered for updates");
         }
     }
-    
-    protected DictionaryRegistry getRegistry()
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.springframework.extensions.surf.util.AbstractLifecycleBean#onShutdown
+     * (org.springframework.context.ApplicationEvent)
+     */
+    @Override
+    protected void onShutdown(ApplicationEvent event)
     {
-        return getRegistryImpl();
+    }
+
+    private String getCacheKey()
+    {
+    	String tenant = tenantService.getCurrentUserDomain();
+    	return getCacheKey(tenant);
+    }
+
+    private String getCacheKey(String tenant)
+    {
+    	String cacheKey = KEY_OPENCMIS_DICTIONARY_REGISTRY + "." + tenant + "." + cmisMapping.getCmisVersion().toString();
+    	return cacheKey;
+    }
+
+    protected CMISDictionaryRegistry createCoreDictionaryRegistry()
+    {
+    	CMISDictionaryRegistryImpl cmisRegistry = new CMISDictionaryRegistryImpl(this, cmisMapping, dictionaryService,
+    			getCoreDictionaryInitializer());
+        cmisRegistry.init();
+        return cmisRegistry;
+    }
+
+    protected CMISDictionaryRegistry createTenantDictionaryRegistry(String tenant)
+    {
+    	CMISDictionaryRegistryImpl cmisRegistry = new CMISDictionaryRegistryImpl(this, tenant, "",
+    			cmisMapping, dictionaryService, getTenantDictionaryInitializer());
+        cmisRegistry.init();
+        return cmisRegistry;
     }
     
-    protected DictionaryRegistry getRegistryImpl()
+    protected CMISDictionaryRegistry createDictionaryRegistryWithWriteLock()
     {
-        DictionaryRegistry registry = null;
+    	CMISDictionaryRegistry cmisRegistry = null;
 
-        registryReadLock.lock();
+    	String tenant = TenantUtil.getCurrentDomain();
+
+        registryWriteLock.lock();
         try
         {
-            // Avoid NPE due to null cache key.
-            if (key_opencmis_dictionary_registry != null)
-            {
-                registry = singletonCache.get(key_opencmis_dictionary_registry);
-            }
+        	cmisRegistry = createDictionaryRegistry(tenant);
         }
         finally
         {
-            registryReadLock.unlock();
+            registryWriteLock.unlock();
         }
 
-        if (registry == null)
-        {
-            init();
-            registry = singletonCache.get(key_opencmis_dictionary_registry);
-        }
-        return registry;
+        return cmisRegistry;
     }
-    
+
+    protected CMISDictionaryRegistry createDictionaryRegistry(String tenant)
+    {
+    	CMISDictionaryRegistry cmisRegistry = null;
+    	String cacheKey = getCacheKey(tenant);
+
+    	if(tenant.equals(TenantService.DEFAULT_DOMAIN))
+    	{
+    		cmisRegistry = createCoreDictionaryRegistry();
+    	}
+    	else
+    	{
+    		cmisRegistry = createTenantDictionaryRegistry(tenant);
+    	}
+
+        // publish new registry
+        singletonCache.put(cacheKey, cmisRegistry);
+
+        return cmisRegistry;
+    }
+
+    @Override
     public TypeDefinitionWrapper findType(String typeId)
     {
-        return getRegistry().typeDefsByTypeId.get(typeId);
+        return getRegistry().getTypeDefByTypeId(typeId);
     }
-    
+
+    @Override
     public boolean isExcluded(QName qname)
     {
         return cmisMapping.isExcluded(qname);
     }
 
+    @Override
     public TypeDefinitionWrapper findTypeForClass(QName clazz, BaseTypeId... matchingScopes)
     {
         // searching for relationship
@@ -284,13 +320,14 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         TypeDefinitionWrapper typeDef = null;
         if (scopeByRelationship)
         {
-            typeDef = getRegistry().assocDefsByQName.get(clazz);
-        } else
+            typeDef = getRegistry().getAssocDefByQName(clazz);
+        }
+        else
         {
-            typeDef = getRegistry().typeDefsByQName.get(clazz);
+            typeDef = getRegistry().getTypeDefByQName(clazz);
             if (typeDef == null)
             {
-                typeDef = getRegistry().assocDefsByQName.get(clazz);
+                typeDef = getRegistry().getAssocDefByQName(clazz);
             }
         }
 
@@ -311,167 +348,89 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         return matchingTypeDef;
     }
 
+    @Override
     public TypeDefinitionWrapper findNodeType(QName clazz)
     {
-        return getRegistry().typeDefsByQName.get(cmisMapping.getCmisType(clazz));
+        return getRegistry().getTypeDefByQName(cmisMapping.getCmisType(clazz));
     }
 
+    @Override
     public TypeDefinitionWrapper findAssocType(QName clazz)
     {
-        return getRegistry().assocDefsByQName.get(cmisMapping.getCmisType(clazz));
+        return getRegistry().getAssocDefByQName(cmisMapping.getCmisType(clazz));
     }
-
+    
+    @Override
     public TypeDefinitionWrapper findTypeByQueryName(String queryName)
     {
         // ISO 9075 name look up should be lower case.
-        return getRegistry().typeDefsByQueryName.get(ISO9075.lowerCaseEncodedSQL(queryName));
+        return getRegistry().getTypeDefByQueryName(ISO9075.lowerCaseEncodedSQL(queryName));
     }
 
-    public QName getAlfrescoClass(QName name)
-    {
-        return cmisMapping.getAlfrescoClass(name);
-    }
-
+    @Override
     public PropertyDefinitionWrapper findProperty(String propId)
     {
-        return getRegistry().propDefbyPropId.get(propId);
+        return getRegistry().getPropDefByPropId(propId);
     }
 
     @Override
     public PropertyDefinitionWrapper findPropertyByQueryName(String queryName)
     {
-        return getRegistry().propDefbyQueryName.get(ISO9075.lowerCaseEncodedSQL(queryName));
+        return getRegistry().getPropDefByQueryName(ISO9075.lowerCaseEncodedSQL(queryName));
     }
 
+    @Override
     public List<TypeDefinitionWrapper> getBaseTypes()
     {
-        return Collections.unmodifiableList(getRegistry().baseTypes);
+        return Collections.unmodifiableList(getRegistry().getBaseTypes());
     }
 
+    @Override
+    public List<TypeDefinitionWrapper> getBaseTypes(boolean includeParent)
+    {
+        return Collections.unmodifiableList(getRegistry().getBaseTypes(includeParent));
+    }
+
+    @Override
     public List<TypeDefinitionWrapper> getAllTypes()
     {
-        return Collections.unmodifiableList(new ArrayList<TypeDefinitionWrapper>(getRegistry().typeDefsByTypeId
-                .values()));
+    	// TODO is there a way of not having to reconstruct this every time?
+    	return Collections.unmodifiableList(new ArrayList<TypeDefinitionWrapper>(getRegistry().getTypeDefs()));
     }
 
+    @Override
+    public List<TypeDefinitionWrapper> getAllTypes(boolean includeParent)
+    {
+    	// TODO is there a way of not having to reconstruct this every time?
+    	return Collections.unmodifiableList(new ArrayList<TypeDefinitionWrapper>(getRegistry().getTypeDefs(includeParent)));
+    }
+
+    @Override
     public PropertyType findDataType(QName dataType)
     {
         return cmisMapping.getDataType(dataType);
     }
 
+    @Override
     public QName findAlfrescoDataType(PropertyType propertyType)
     {
         return cmisMapping.getAlfrescoDataType(propertyType);
     }
 
-    /**
-     * Factory for creating CMIS Definitions
-     * 
-     * @param registry
-     */
-    abstract protected void createDefinitions(DictionaryRegistry registry);
-
-    private void addTypeExtensions(DictionaryRegistry registry, TypeDefinitionWrapper td)
-    {
-        QName classQName = td.getAlfrescoClass();
-        ClassDefinition classDef = dictionaryService.getClass(classQName);
-        if(classDef != null)
-        {
-	        // add mandatory/default aspects
-	        List<AspectDefinition> defaultAspects = classDef.getDefaultAspects(true);
-	        if(defaultAspects != null && defaultAspects.size() > 0)
-	        {
-		        List<CmisExtensionElement> mandatoryAspectsExtensions = new ArrayList<CmisExtensionElement>();
-		        for(AspectDefinition aspectDef : defaultAspects)
-		        {
-		        	QName aspectQName = aspectDef.getName();
-		        	
-		        	TypeDefinitionWrapper aspectType = registry.typeDefsByQName.get(cmisMapping.getCmisType(aspectQName));
-		            if (aspectType == null)
-		            {
-		                continue;
-		            }
-	
-		        	mandatoryAspectsExtensions.add(new CmisExtensionElementImpl(ALFRESCO_EXTENSION_NAMESPACE, MANDATORY_ASPECT, null, aspectType.getTypeId()));
-		        }
-	
-	            if(!mandatoryAspectsExtensions.isEmpty())
-	            {
-	                td.getTypeDefinition(true).setExtensions(
-	                        Collections.singletonList((CmisExtensionElement) new CmisExtensionElementImpl(
-	                                ALFRESCO_EXTENSION_NAMESPACE, MANDATORY_ASPECTS, null, mandatoryAspectsExtensions)));
-	            }
-	        }
-        }
-    }
-
-    /**
-     * Dictionary Initialization - creates a new registry
-     */
-    protected void init()
-    {
-        registryWriteLock.lock();
-        try
-        {
-        	this.key_opencmis_dictionary_registry = KEY_OPENCMIS_DICTIONARY_REGISTRY + "." + cmisMapping.getCmisVersion().toString();
-            DictionaryRegistry registry = new DictionaryRegistry();
-            
-            if (logger.isDebugEnabled())
-            {
-                logger.debug("Creating type definitions...");
-            }
-            
-            // phase 1: construct type definitions and link them together
-            createDefinitions(registry);
-            for (AbstractTypeDefinitionWrapper objectTypeDef : registry.typeDefsByTypeId.values())
-            {
-                objectTypeDef.connectParentAndSubTypes(cmisMapping, registry, dictionaryService);
-            }
-            
-            // phase 2: register base types and inherit property definitions
-            for (AbstractTypeDefinitionWrapper typeDef : registry.typeDefsByTypeId.values())
-            {
-                if (typeDef.getTypeDefinition(false).getParentTypeId() == null)
-                {
-                    registry.baseTypes.add(typeDef);
-                    typeDef.resolveInheritance(cmisMapping, registry, dictionaryService);
-                }
-            }
-            
-            // phase 3: register properties
-            for (AbstractTypeDefinitionWrapper typeDef : registry.typeDefsByTypeId.values())
-            {
-                registry.registerPropertyDefinitions(typeDef);
-            }
-            
-            // phase 4: assert valid
-            for (AbstractTypeDefinitionWrapper typeDef : registry.typeDefsByTypeId.values())
-            {
-                typeDef.assertComplete();
-                
-                addTypeExtensions(registry, typeDef);
-            }
-            
-            // publish new registry
-            singletonCache.put(key_opencmis_dictionary_registry, registry);
-            
-            if (logger.isInfoEnabled())
-                logger.info("Initialized CMIS Dictionary. Types:" + registry.typeDefsByTypeId.size() + ", Base Types:"
-                        + registry.baseTypes.size());
-        }
-        finally
-        {
-            registryWriteLock.unlock();
-        }
-    }
-    
     /*
      * (non-Javadoc)
      * 
      * @see org.alfresco.repo.dictionary.DictionaryListener#onInit()
      */
+    @Override
     public void onDictionaryInit()
     {
+    }
+
+    @Override
+    public void modelAdded(CompiledModel model, String tenantDomain)
+    {
+    	getRegistry(tenantDomain).addModel(model);
     }
 
     /*
@@ -479,9 +438,10 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
      * 
      * @see org.alfresco.repo.dictionary.DictionaryListener#afterInit()
      */
+    @Override
     public void afterDictionaryInit()
     {
-        init();
+    	createDictionaryRegistryWithWriteLock();
     }
 
     /*
@@ -490,12 +450,14 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
      * @see
      * org.alfresco.repo.dictionary.DictionaryListener#afterDictionaryDestroy()
      */
+    @Override
     public void afterDictionaryDestroy()
     {
         registryWriteLock.lock();
         try
         {
-            singletonCache.remove(key_opencmis_dictionary_registry);
+        	String cacheKey = getCacheKey();
+            singletonCache.remove(cacheKey);
         }
         finally
         {
@@ -503,42 +465,9 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.springframework.extensions.surf.util.AbstractLifecycleBean#onBootstrap
-     * (org.springframework.context.ApplicationEvent)
-     */
-    protected void onBootstrap(ApplicationEvent event)
+    @Override
+    public List<TypeDefinitionWrapper> getChildren(String typeId)
     {
-        afterDictionaryInit();
-
-        // TODO revisit (for KS and/or 1.1)
-        if (dictionaryDAO != null)
-        {
-            dictionaryDAO.register(this);
-        }
-        else
-        {
-            logger.error("DictionaryDAO is null - hence CMIS Dictionary not registered for updates");
-        }
+    	return getRegistry().getChildren(typeId);
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.springframework.extensions.surf.util.AbstractLifecycleBean#onShutdown
-     * (org.springframework.context.ApplicationEvent)
-     */
-    protected void onShutdown(ApplicationEvent event)
-    {
-    }
-    
-    public String getCmisTypeId(QName classQName)
-    {
-        return cmisMapping.getCmisTypeId(classQName);
-    }
-
 }

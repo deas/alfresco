@@ -18,11 +18,11 @@
  */
 package org.alfresco.opencmis.dictionary;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.opencmis.dictionary.CMISAbstractDictionaryService.DictionaryRegistry;
 import org.alfresco.opencmis.mapping.CMISMapping;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.QName;
@@ -33,14 +33,23 @@ public abstract class ShadowTypeDefinitionWrapper extends AbstractTypeDefinition
 
     private static final long serialVersionUID = 1L;
 
-    public void connectParentAndSubTypes(CMISMapping cmisMapping, DictionaryRegistry registry,
+    @Override
+    public List<TypeDefinitionWrapper> connectParentAndSubTypes(CMISMapping cmisMapping, CMISDictionaryRegistry registry,
             DictionaryService dictionaryService)
     {
+    	String parentTypeId = typeDef.getParentTypeId();
+
         // find parent
-        if (typeDef.getParentTypeId() != null)
+        if (parentTypeId != null)
         {
-            parent = registry.typeDefsByTypeId.get(typeDef.getParentTypeId());
-        } else
+            parent = registry.getTypeDefByTypeId(parentTypeId);
+            if(registry.getTenant() != null && parent != null && registry.getTypeDefByTypeId(parentTypeId, false) == null)
+            {
+            	// this is a tenant registry and the parent is not defined locally so add this type as a child of it
+            	registry.addChild(parent.getTypeId(), this);
+            }
+        }
+        else
         {
             if (!isBaseType())
             {
@@ -50,15 +59,23 @@ public abstract class ShadowTypeDefinitionWrapper extends AbstractTypeDefinition
             parent = null;
         }
 
+//        if(parent != null)
+//        {
+//            List<TypeDefinitionWrapper> children = new LinkedList<TypeDefinitionWrapper>();
+//            children.add(this);
+//            registry.setChildren(parent.getTypeId(), children);
+//        }
+
         // find children
-        children = new ArrayList<TypeDefinitionWrapper>();
+//        children = new ArrayList<TypeDefinitionWrapper>();
+        List<TypeDefinitionWrapper> children = new LinkedList<TypeDefinitionWrapper>();
         Collection<QName> childrenNames = dictionaryService.getSubTypes(cmisMapping.getAlfrescoClass(getAlfrescoName()),
                 false);
         for (QName childName : childrenNames)
         {
             if (cmisMapping.isValidCmisObject(getBaseTypeId(), childName))
             {
-                TypeDefinitionWrapper child = registry.typeDefsByQName.get(childName);
+                TypeDefinitionWrapper child = registry.getTypeDefByQName(childName);
 
                 if (child == null)
                 {
@@ -68,10 +85,12 @@ public abstract class ShadowTypeDefinitionWrapper extends AbstractTypeDefinition
                 children.add(child);
             }
         }
+        return children;
+//        registry.setChildren(typeDef.getId(), children);
     }
 
     public void resolveInheritance(CMISMapping cmisMapping,
-            DictionaryRegistry registry, DictionaryService dictionaryService)
+            CMISDictionaryRegistry registry, DictionaryService dictionaryService)
     {
         PropertyDefinition<?> propertyDefintion;
 
@@ -98,6 +117,7 @@ public abstract class ShadowTypeDefinitionWrapper extends AbstractTypeDefinition
             }
         }
 
+        List<TypeDefinitionWrapper> children = registry.getChildren(typeDef.getId());
         for (TypeDefinitionWrapper child : children)
         {
             if (child instanceof AbstractTypeDefinitionWrapper)

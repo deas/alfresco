@@ -52,7 +52,7 @@ public interface DictionaryService extends MessageLookup
      */
     @NotAuditable
     public Collection<QName> getAllModels();
-    
+
     /**
      * @param model the model name to retrieve
      * @return the specified model (or null, if it doesn't exist)
@@ -92,7 +92,10 @@ public interface DictionaryService extends MessageLookup
      */
     @NotAuditable
     Collection<QName> getAllTypes();
-    
+
+    @NotAuditable
+    Collection<QName> getAllTypes(boolean includeInherited);
+
     /**
      * Get the sub types of the type.   The returned list includes the base type which is passed in as a parameter.
      * 
@@ -143,6 +146,9 @@ public interface DictionaryService extends MessageLookup
     @NotAuditable
     Collection<QName> getAllAspects();
     
+    @NotAuditable
+    Collection<QName> getAllAspects(boolean includeInherited);
+
     /**
      * @param aspect
      * @param follow  true => follow up the super-class hierarchy, false => immediate sub aspects only
@@ -271,6 +277,9 @@ public interface DictionaryService extends MessageLookup
     @NotAuditable
     Collection<QName> getAllAssociations();
     
+    @NotAuditable
+    Collection<QName> getAllAssociations(boolean includeInherited);
+
     /**
      * Gets the definition of the constraint
      * 
