@@ -38,6 +38,7 @@ import org.alfresco.opencmis.dictionary.CMISAbstractDictionaryService;
 import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.opencmis.dictionary.QNameFilter;
 import org.alfresco.repo.cache.MemoryCache;
+import org.alfresco.repo.dictionary.CompiledModelsCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
 import org.alfresco.repo.dictionary.DictionaryRegistry;
@@ -124,7 +125,7 @@ public class AlfrescoSolrDataModel
 
         dictionaryDAO = new DictionaryDAOImpl();
         dictionaryDAO.setTenantService(tenantService);
-        dictionaryDAO.setDictionaryRegistryCache(new MemoryCache<String, DictionaryRegistry>());
+        dictionaryDAO.setDictionaryRegistryCache(new CompiledModelsCache());
         // TODO: use config ....
         dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
         dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
