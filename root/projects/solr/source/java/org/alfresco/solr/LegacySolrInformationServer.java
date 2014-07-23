@@ -88,6 +88,7 @@ import org.alfresco.solr.tracker.CoreTracker;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.MultiThreadedCoreTracker;
 import org.alfresco.solr.tracker.Tracker;
+import org.alfresco.solr.tracker.TrackerStats;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
 import org.alfresco.util.TempFileProvider;
@@ -2495,7 +2496,6 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
         }
     }
 
-    @Override
     public Tracker getTracker()
     {
         return this.coreTracker;
@@ -2559,5 +2559,11 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
     public long getHoleRetention()
     {
         return this.holeRetention;
+    }
+    
+    @Override
+    public TrackerStats getTrackerStats()
+    {
+        return this.coreTracker.getTrackerStats();
     }
 }

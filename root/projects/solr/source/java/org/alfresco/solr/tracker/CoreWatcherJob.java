@@ -19,7 +19,6 @@
 package org.alfresco.solr.tracker;
 
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
-import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.LegacySolrInformationServer;
 import org.apache.solr.core.SolrCore;
 import org.quartz.Job;
@@ -57,7 +56,7 @@ public class CoreWatcherJob implements Job
                     log.info("Starting to track " + core.getName());
                     
                     // Create information server and wire it up.  This will be done by a registry
-                    InformationServer srv = new LegacySolrInformationServer(adminHandler, core);
+                    LegacySolrInformationServer srv = new LegacySolrInformationServer(adminHandler, core);
                     adminHandler.getInformationServers().put(core.getName(), srv);
                     adminHandler.getTrackers().put(core.getName(), srv.getTracker());
                 }

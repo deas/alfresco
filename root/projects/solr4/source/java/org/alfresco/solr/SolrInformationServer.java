@@ -21,8 +21,8 @@ import org.alfresco.solr.client.Node;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.Tracker;
+import org.alfresco.solr.tracker.TrackerStats;
 import org.apache.solr.core.SolrCore;
-import org.apache.solr.core.SolrResourceLoader;
 import org.json.JSONException;
 
 /**
@@ -35,6 +35,7 @@ public class SolrInformationServer implements InformationServer
     private AlfrescoCoreAdminHandler adminHandler;
     private SolrCore core;
     private TrackerState trackerState = new TrackerState();
+    private TrackerStats trackerStats = new TrackerStats(this);
     private AlfrescoSolrDataModel dataModel;
     private String alfrescoVersion;
     private int authorityCacheSize;
@@ -222,10 +223,9 @@ public class SolrInformationServer implements InformationServer
     }
 
     @Override
-    public Tracker getTracker()
+    public TrackerStats getTrackerStats()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.trackerStats;
     }
 
     @Override

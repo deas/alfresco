@@ -98,20 +98,14 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             e.printStackTrace();
         }
 
-        initLogging(coreContainer);
-
-    }
-
-    private void initLogging(CoreContainer coreContainer)
-    {
-        initResourceBasedLogging(coreContainer, "log4j.properties");
-        initResourceBasedLogging(coreContainer, "log4j-solr.properties");
+        initResourceBasedLogging("log4j.properties");
+        initResourceBasedLogging("log4j-solr.properties");
     }
 
     /**
      * @param solrResourceLoader
      */
-    private void initResourceBasedLogging(CoreContainer coreContainer, String resource)
+    protected void initResourceBasedLogging(String resource)
     {
         try
         {
