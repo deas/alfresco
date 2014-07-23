@@ -212,6 +212,12 @@ public class AlfrescoSolrDataModel
         File resourceDirectory = getResourceDirectory();
         File filterContext = new File(resourceDirectory, "alfresco/model/opencmis-qnamefilter-context.xml");
 
+        if(!filterContext.exists())
+        {
+            log.warn("No type filter context found at " + filterContext.getAbsolutePath() + ", no type filtering");
+            return qnameFilter;
+        }
+        
         try
         {
             ctx = new FileSystemXmlApplicationContext(new String[] { "file:" + filterContext.getAbsolutePath() }, false);
