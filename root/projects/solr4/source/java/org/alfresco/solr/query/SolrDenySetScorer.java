@@ -19,17 +19,9 @@
 package org.alfresco.solr.query;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
 
-import org.alfresco.solr.ResizeableArrayList;
-import org.alfresco.solr.cache.AclLookUp;
-import org.alfresco.solr.cache.CacheConstants;
-import org.alfresco.solr.cache.CacheEntry;
 import org.apache.lucene.index.AtomicReader;
-import org.apache.lucene.index.DocsEnum;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Weight;
 import org.apache.lucene.util.FixedBitSet;
 import org.apache.solr.search.BitDocSet;
@@ -46,99 +38,20 @@ public class SolrDenySetScorer extends AbstractSolrCachingScorer
 
     public static SolrDenySetScorer createDenySetScorer(Weight weight, SolrIndexSearcher searcher, String authorities, AtomicReader reader) throws IOException
     {
-        // Get hold of solr top level searcher
-        // Execute query with caching
-        // translate reults to leaf docs
-        // build ordered doc list
-
         String[] auths = authorities.substring(1).split(authorities.substring(0, 1));
-
-        long[] aclIdByDocId = (long[]) searcher.cacheLookup(CacheConstants.ALFRESCO_CACHE, CacheConstants.KEY_ACL_ID_BY_DOC_ID);
-        HashMap<AclLookUp, AclLookUp> lookups = (HashMap<AclLookUp, AclLookUp>) searcher
-                .cacheLookup(CacheConstants.ALFRESCO_CACHE, CacheConstants.KEY_ACL_LOOKUP);
-        ResizeableArrayList<CacheEntry> aclThenLeafOrderedEntries = (ResizeableArrayList<CacheEntry>) searcher.cacheLookup(CacheConstants.ALFRESCO_ARRAYLIST_CACHE,
-                CacheConstants.KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF);
-        BitDocSet publicDocSet = (BitDocSet) searcher.cacheLookup(CacheConstants.ALFRESCO_CACHE, CacheConstants.KEY_PUBLIC_DOC_SET);
-
+        
         DocSet deniedDocSet = new BitDocSet(new FixedBitSet(searcher.maxDoc()));
-        HashSet<Long> ignoredAlcs = null;
-        for (String auth : auths)
+     
+        for (String auth: auths)
         {
-            if (auth.equals("GROUP_EVERYONE"))
-            {
-                HashSet<Long> aclIds =  (HashSet<Long>)searcher.cacheLookup(CacheConstants.ALFRESCO_DENY_TO_ACL_IDS_CACHE, auth);
-                if(aclIds == null)
-                {
-                    aclIds = buildDenyAclIds(searcher, auth, aclIdByDocId);
-                    searcher.cacheInsert(CacheConstants.ALFRESCO_DENY_TO_ACL_IDS_CACHE, auth, aclIds);
-                }
-                ignoredAlcs = aclIds;
-                break;
-            }
+            DocSet docs = searcher.getDocSet(new SolrDeniedQuery(auth));
+            // Add this authority's docs to the full set.
+            deniedDocSet.union(docs);
         }
-
-        HashSet<Long> acls = new HashSet<Long>();
-        for (String auth : auths)
-        {
-            if (auth.equals("GROUP_EVERYONE"))
-            {
-                deniedDocSet = deniedDocSet.union(publicDocSet);
-            }
-            else
-            {
-                HashSet<Long> aclIds =  (HashSet<Long>)searcher.cacheLookup(CacheConstants.ALFRESCO_DENY_TO_ACL_IDS_CACHE, auth);
-                if(aclIds == null)
-                {
-                    aclIds = buildDenyAclIds(searcher, auth, aclIdByDocId);
-                    searcher.cacheInsert(CacheConstants.ALFRESCO_DENY_TO_ACL_IDS_CACHE, auth, aclIds);
-                }
-                acls.addAll(aclIds);
-               
-            }
-        }
-        if(ignoredAlcs != null)
-        {
-            acls.removeAll(ignoredAlcs);
-        }
-
-        AclLookUp key = new AclLookUp(0);
-
-        for (Long acl : acls)
-        {
-            key.setAclid(acl);
-            AclLookUp value = lookups.get(key);
-            if (value != null)
-            {
-                for (int i = value.getStart(); i < value.getEnd(); i++)
-                {
-                    deniedDocSet.add(aclThenLeafOrderedEntries.get(i).getLeaf());
-                }
-            }
-        }
-
+        
+        // TODO: cache the full set? e.g. searcher.cacheInsert(CacheConstants.ALFRESCO_DENYSET_CACHE, authorities, deniedDocSet)
+        // plus check of course, for presence in cache at start of method.
         return new SolrDenySetScorer(weight, deniedDocSet, reader);
-
-    }
-
-    public static HashSet<Long> buildDenyAclIds(SolrIndexSearcher searcher, String authority, long[] aclIdByDocId) throws IOException
-    {
-        HashSet<Long> aclsAsSet = new HashSet<Long>();
-
-        AtomicReader reader = searcher.getAtomicReader();
-        DocsEnum docsEnum = reader.termDocsEnum(new Term("DENIED", authority));
-        if (docsEnum == null)
-        {
-            // field or term does not exist
-            return aclsAsSet;
-        }
-
-        int currentDoc;
-        while ((currentDoc = docsEnum.nextDoc()) != DocsEnum.NO_MORE_DOCS)
-        {
-            long acl = aclIdByDocId[currentDoc];
-            aclsAsSet.add(acl);
-        }
-        return aclsAsSet;
     }
 
 }

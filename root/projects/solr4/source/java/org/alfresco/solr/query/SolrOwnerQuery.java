@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2010 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -21,7 +21,6 @@ package org.alfresco.solr.query;
 import java.io.IOException;
 
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
-import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -32,13 +31,13 @@ import org.apache.solr.search.SolrIndexSearcher;
 
 /**
  * @author Andy
- * @author Matt Ward
+ *
  */
-public class SolrReaderSetQuery extends AbstractAuthoritySetQuery
+public class SolrOwnerQuery extends AbstractAuthorityQuery
 {
-    public SolrReaderSetQuery(String authorities)
+    public SolrOwnerQuery(String authority)
     {
-        super(authorities);
+        super(authority);
     }
     
     @Override
@@ -48,30 +47,29 @@ public class SolrReaderSetQuery extends AbstractAuthoritySetQuery
         {
             throw new IllegalStateException("Must have a SolrIndexSearcher");
         }
-        return new SolrReaderSetQueryWeight((SolrIndexSearcher)searcher, this, authorities);
+        return new SolrOwnerQueryWeight((SolrIndexSearcher)searcher, this, authority);
     }
 
     @Override
     public String toString()
     {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(QueryConstants.FIELD_READERSET).append(':');
-        stringBuilder.append(authorities);
+        stringBuilder.append(QueryConstants.FIELD_OWNER).append(':');
+        stringBuilder.append(authority);
         return stringBuilder.toString();
     }
-
-    class SolrReaderSetQueryWeight extends AbstractAuthorityQueryWeight
+    
+    private class SolrOwnerQueryWeight extends AbstractAuthorityQueryWeight
     {
-        public SolrReaderSetQueryWeight(SolrIndexSearcher searcher, Query query, String readers) throws IOException
+        public SolrOwnerQueryWeight(SolrIndexSearcher searcher, Query query, String authority) throws IOException
         {
-            super(searcher, query, QueryConstants.FIELD_READERSET, readers);
+            super(searcher, query, QueryConstants.FIELD_OWNER, authority);
         }
 
         @Override
         public Scorer scorer(AtomicReaderContext context, Bits acceptDocs) throws IOException
         {
-            AtomicReader reader = context.reader();
-            return SolrReaderSetScorer.createReaderSetScorer(this, searcher, authorities, reader);
+            return SolrOwnerScorer.createOwnerScorer(this, context.reader(), searcher, SolrOwnerQuery.this.authority);
         }
     }
 }

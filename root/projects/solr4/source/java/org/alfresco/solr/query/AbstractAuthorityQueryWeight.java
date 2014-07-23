@@ -33,13 +33,13 @@ import org.apache.lucene.search.similarities.TFIDFSimilarity;
 import org.apache.solr.search.SolrIndexSearcher;
 
 /**
- * Abstract {@link Weight} implementation for authority set queries.
+ * Abstract {@link Weight} implementation for authority related queries.
  * 
  * @see AbstractAuthoritySetQuery
  */
-public abstract class AbstractAuthoritySetQueryWeight extends Weight
+public abstract class AbstractAuthorityQueryWeight extends Weight
 {
-    protected AbstractAuthoritySetQuery query;
+    protected Query query;
     protected SolrIndexSearcher searcher;
     protected TFIDFSimilarity similarity;
     protected float value;
@@ -48,14 +48,14 @@ public abstract class AbstractAuthoritySetQueryWeight extends Weight
     protected float queryWeight;
     protected Explanation idfExp;
     
-    public AbstractAuthoritySetQueryWeight(SolrIndexSearcher searcher, AbstractAuthoritySetQuery query, String termName) throws IOException
+    public AbstractAuthorityQueryWeight(SolrIndexSearcher searcher, Query query, String authTermName, String authTermText) throws IOException
     {
         this.searcher = searcher;
         this.query = query;
         this.similarity = (TFIDFSimilarity) searcher.getSimilarity();
-        CollectionStatistics collectionStats = searcher.collectionStatistics("AUTHSET");
+        CollectionStatistics collectionStats = searcher.collectionStatistics(authTermName);
         final IndexReaderContext context = searcher.getTopReaderContext();
-        final Term term = new Term(termName, query.authorities);
+        final Term term = new Term(authTermName, authTermText);
         final TermContext termContext = TermContext.build(context, term);
         TermStatistics termStats = searcher.termStatistics(term, termContext);
         idfExp = similarity.idfExplain(collectionStats, termStats);

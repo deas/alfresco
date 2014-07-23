@@ -16,56 +16,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.solr.cache;
+package org.alfresco.solr.data;
 
+import java.util.HashSet;
 
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.service.cmr.security.PermissionService;
 
-public class OwnerLookUp
+/**
+ * Statically configured set of authorities that always have read access.
+ * 
+ * @author Matt Ward
+ */
+public class GlobalReaders
 {
-    int owner;
-
-    int start;
-
-    int end;
-
-    public OwnerLookUp(int owner)
-    {
-        this.owner = owner;
+    private static HashSet<String> readers = new HashSet<String>();
+    
+    static
+    {        
+        readers.add(PermissionService.OWNER_AUTHORITY);
+        readers.add(PermissionService.ADMINISTRATOR_AUTHORITY);
+        readers.add(AuthenticationUtil.getSystemUserName());
     }
-
-    public OwnerLookUp(int owner, int start)
+    
+    public static HashSet<String> getReaders()
     {
-        this.owner = owner;
-        this.start = start;
+        return readers;
     }
-
-    public void setEnd(int end)
-    {
-        this.end = end;
-    }
-
-    /**
-     * @return the owner
-     */
-    public int getOwner()
-    {
-        return owner;
-    }
-
-    /**
-     * @return the start
-     */
-    public int getStart()
-    {
-        return start;
-    }
-
-    /**
-     * @return the end
-     */
-    public int getEnd()
-    {
-        return end;
-    }
-
 }

@@ -110,6 +110,8 @@ public interface QueryConstants
 
     public static final String FIELD_READERSET = "READERSET";
 
+    public static final String FIELD_DENYSET = "DENYSET";
+    
     public static final String FIELD_AUTHORITYSET = "AUTHSET";
 
     public static final String FIELD_TXID = "TXID";

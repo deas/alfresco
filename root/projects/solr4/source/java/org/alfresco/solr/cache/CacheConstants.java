@@ -25,13 +25,19 @@ package org.alfresco.solr.cache;
  */
 public class CacheConstants
 {
-    public static String ALFRESCO_CACHE = "alfrescoCache";
-    public static String ALFRESCO_ARRAYLIST_CACHE = "alfrescoArrayListCache";
+    // Cache names
+//    public static String ALFRESCO_CACHE = "alfrescoCache";
+//    public static String ALFRESCO_ARRAYLIST_CACHE = "alfrescoArrayListCache";
+//    public static String ALFRESCO_PATH_CACHE = "alfrescoPathCache";
+//    public static String ALFRESCO_READER_TO_ACL_IDS_CACHE = "alfrescoReaderToAclIdsCache";
+//    public static String ALFRESCO_DENY_TO_ACL_IDS_CACHE = "alfrescoDenyToAclIdsCache";
+
     public static String ALFRESCO_AUTHORITY_CACHE = "alfrescoAuthorityCache";
-    public static String ALFRESCO_PATH_CACHE = "alfrescoPathCache";
-    public static String ALFRESCO_READER_TO_ACL_IDS_CACHE = "alfrescoReaderToAclIdsCache";
-    public static String ALFRESCO_DENY_TO_ACL_IDS_CACHE = "alfrescoDenyToAclIdsCache";
+    public static String ALFRESCO_OWNERLOOKUP_CACHE = "alfrescoOwnerCache";
+    public static String ALFRESCO_READER_CACHE = "alfrescoReaderCache";
+    public static String ALFRESCO_DENIED_CACHE = "alfrescoDeniedCache";
     
+    // Cache keys
     public static String KEY_GLOBAL_READERS = "KEY_GLOBAL_READERS";
     public static String KEY_ALL_LEAF_DOCS = "KEY_ALL_LEAF_DOCS";
     public static String KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF = "KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF";
@@ -40,4 +46,5 @@ public class CacheConstants
     public static String KEY_ACL_LOOKUP = "KEY_ACL_LOOKUP";
     public static String KEY_PUBLIC_DOC_SET = "KEY_PUBLIC_DOC_SET";
     public static String KEY_ACL_ID_BY_DOC_ID = "KEY_ACL_ID_BY_DOC_ID";
+    public static String KEY_OWNER_ID_MANAGER = "KEY_OWNER_ID_MANAGER";
 }

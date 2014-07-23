@@ -4363,8 +4363,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
    
     protected Query createAuthoritySetQuery(String queryText) throws ParseException
     {
-     // TODO: FIX
-        return new MatchAllDocsQuery();
+        return new SolrAuthoritySetQuery(queryText);
     }
 
 }

@@ -19,65 +19,47 @@
 package org.alfresco.solr.query;
 
 import java.io.IOException;
-import java.util.HashMap;
 
-import org.alfresco.solr.ResizeableArrayList;
-import org.alfresco.solr.cache.CacheConstants;
-import org.alfresco.solr.cache.CacheEntry;
-import org.alfresco.solr.cache.OwnerLookUp;
 import org.apache.lucene.index.AtomicReader;
-import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.Weight;
-import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.util.FixedBitSet;
 import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocSet;
 import org.apache.solr.search.SolrIndexSearcher;
 
+/**
+ * Find the set of documents owned by the specified set of authorities,
+ * for those authorities that are users (e.g. we're not interested in groups etc.)
+ * 
+ * @author Matt Ward
+ */
 public class SolrOwnerSetScorer extends AbstractSolrCachingScorer
 {
-
     /**
-     * @param similarity
-     * @param in
-     * @param solrIndexReader
+     * Package private constructor.
      */
-    SolrOwnerSetScorer(Weight weight, Similarity similarity, DocSet in, AtomicReader reader)
+    SolrOwnerSetScorer(Weight weight, DocSet in, AtomicReader reader)
     {
         super(weight, in, reader);
-        // TODO Auto-generated constructor stub
     }
 
-    public static SolrOwnerSetScorer createOwnerSetScorer(Weight weight, AtomicReaderContext context, SolrIndexSearcher searcher, String authorities) throws IOException
+    public static SolrOwnerSetScorer createOwnerSetScorer(Weight weight, AtomicReader reader, SolrIndexSearcher searcher, String authorities) throws IOException
     {
-        // Get hold of solr top level searcher
-        // Execute query with caching
-        // translate reults to leaf docs
-        // build ordered doc list
-
+        // The set of docs owned by all of the authorities
         BitDocSet authorityOwnedDocs = new BitDocSet(new FixedBitSet(searcher.maxDoc()));
 
-        HashMap<String, OwnerLookUp> ownerLookUp = (HashMap<String, OwnerLookUp>) searcher.cacheLookup(CacheConstants.ALFRESCO_CACHE,
-                    CacheConstants.KEY_OWNER_LOOKUP);
-
+        // Split the authorities. The first character in the authorities String
+        // specifies the separator, e.g. ",jbloggs,abeecher"
         String[] auths = authorities.substring(1).split(authorities.substring(0, 1));
         
         for (String current : auths)
         {
-            OwnerLookUp lookUp = ownerLookUp.get(current);
-            if (lookUp != null)
-            {
-                ResizeableArrayList<CacheEntry> indexedOderedByOwnerIdThenDoc = (ResizeableArrayList<CacheEntry>) searcher.cacheLookup(CacheConstants.ALFRESCO_ARRAYLIST_CACHE,
-                            CacheConstants.KEY_DBID_LEAF_PATH_BY_OWNER_ID_THEN_LEAF);
-                for (int i = lookUp.getStart(); i < lookUp.getEnd(); i++)
-                {
-                    authorityOwnedDocs.addUnique(indexedOderedByOwnerIdThenDoc.get(i).getLeaf());
-                }
-            }
+            DocSet currentAuthDocs = searcher.getDocSet(new SolrOwnerQuery(current));
+            // Add to the doc set owned by the set of authorities.
+            authorityOwnedDocs.union(currentAuthDocs);
         }
 
-        return new SolrOwnerSetScorer(weight, searcher.getSimilarity(), authorityOwnedDocs, context.reader());
-
+        // TODO: Cache the final set? e.g. searcher.cacheInsert(authorities, authorityOwnedDocs)
+        return new SolrOwnerSetScorer(weight, authorityOwnedDocs, reader);
     }
-
 }

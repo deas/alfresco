@@ -21,26 +21,34 @@ package org.alfresco.solr.query;
 import java.io.IOException;
 
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
-import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.Weight;
 import org.apache.lucene.util.Bits;
 import org.apache.solr.search.SolrIndexSearcher;
 
 /**
- * Query for a set of denied authorities.
- * 
+ * TODO: comment me!
  * @author Matt Ward
  */
-public class SolrDenySetQuery extends AbstractAuthoritySetQuery
+public class SolrReaderQuery extends AbstractAuthorityQuery
 {
-    public SolrDenySetQuery(String authorities)
+    public SolrReaderQuery(String authority)
     {
-        super(authorities);
+        super(authority);
     }
-    
+
+    @Override
+    public String toString()
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(QueryConstants.FIELD_READER).append(':');
+        stringBuilder.append(authority);
+        return stringBuilder.toString();
+    }
+
     @Override
     public Weight createWeight(IndexSearcher searcher) throws IOException
     {
@@ -48,31 +56,21 @@ public class SolrDenySetQuery extends AbstractAuthoritySetQuery
         {
             throw new IllegalStateException("Must have a SolrIndexSearcher");
         }
-        return new SolrDenySetQueryWeight((SolrIndexSearcher)searcher, this);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(QueryConstants.FIELD_DENYSET).append(':');
-        stringBuilder.append(authorities);
-        return stringBuilder.toString();
+        return new SolrReaderQueryWeight((SolrIndexSearcher)searcher, this, authority);
     }
 
     
-    private class SolrDenySetQueryWeight extends AbstractAuthorityQueryWeight
+    private class SolrReaderQueryWeight extends AbstractAuthorityQueryWeight
     {
-        public SolrDenySetQueryWeight(SolrIndexSearcher searcher, SolrDenySetQuery query) throws IOException 
+        public SolrReaderQueryWeight(SolrIndexSearcher searcher, Query query, String reader) throws IOException
         {
-            super(searcher, query, QueryConstants.FIELD_DENYSET, authorities);
+            super(searcher, query, QueryConstants.FIELD_READER, reader);
         }
 
         @Override
         public Scorer scorer(AtomicReaderContext context, Bits acceptDocs) throws IOException
         {
-            AtomicReader reader = context.reader();
-            return SolrDenySetScorer.createDenySetScorer(this, searcher, authorities, reader);
-        }
+            return SolrReaderScorer.createReaderScorer(this, context.reader(), searcher, authority);
+        }   
     }
 }

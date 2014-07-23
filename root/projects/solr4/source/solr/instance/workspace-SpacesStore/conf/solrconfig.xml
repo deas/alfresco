@@ -558,6 +558,34 @@
       -->
 
 
+    <cache name="alfrescoOwnerCache"
+              class="solr.LRUCache"
+              size="4096"
+              initialSize="1024"
+              autowarmCount="0"
+              />
+              
+    <cache name="alfrescoReaderCache"
+              class="solr.LRUCache"
+              size="4096"
+              initialSize="1024"
+              autowarmCount="0"
+              />
+              
+    <cache name="alfrescoDeniedCache"
+              class="solr.LRUCache"
+              size="4096"
+              initialSize="1024"
+              autowarmCount="0"
+              />
+              
+    <cache name="alfrescoAuthorityCache"
+              class="solr.LRUCache"
+              size="4096"
+              initialSize="1024"
+              autowarmCount="0"
+              />
+              
     <!-- Lazy Field Loading
 
          If true, stored fields that are not requested will be loaded

@@ -25,21 +25,20 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Weight;
 
 /**
- * Base class for queries relating to a set of authorities, e.g. reader set query.
+ * Base class for queries relating to an authority.
  */
-public abstract class AbstractAuthoritySetQuery extends Query
+public abstract class AbstractAuthorityQuery extends Query
 {
-    protected String authorities;
+    protected String authority;
     
     /**
-     * Construct with authorities.
+     * Construct with authority.
      * 
-     * @param authorities
+     * @param authority
      */
-    public AbstractAuthoritySetQuery(String authorities)
+    public AbstractAuthorityQuery(String authority)
     {
-        super();
-        this.authorities = authorities;
+        this.authority = authority;
     }
 
     /**
@@ -51,7 +50,6 @@ public abstract class AbstractAuthoritySetQuery extends Query
     @Override
     public abstract Weight createWeight(IndexSearcher searcher) throws IOException;
     
-    @Override
     public String toString(String field)
     {
         return toString();
@@ -62,7 +60,7 @@ public abstract class AbstractAuthoritySetQuery extends Query
     {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((authorities == null) ? 0 : authorities.hashCode());
+        result = prime * result + ((authority == null) ? 0 : authority.hashCode());
         return result;
     }
 
@@ -75,13 +73,13 @@ public abstract class AbstractAuthoritySetQuery extends Query
             return false;
         if (getClass() != obj.getClass())
             return false;
-        AbstractAuthoritySetQuery other = (AbstractAuthoritySetQuery) obj;
-        if (authorities == null)
+        AbstractAuthorityQuery other = (AbstractAuthorityQuery) obj;
+        if (authority == null)
         {
-            if (other.authorities != null)
+            if (other.authority != null)
                 return false;
         }
-        else if (!authorities.equals(other.authorities))
+        else if (!authority.equals(other.authority))
             return false;
         return true;
     }

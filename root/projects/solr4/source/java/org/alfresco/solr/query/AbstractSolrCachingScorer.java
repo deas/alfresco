@@ -82,7 +82,7 @@ public abstract class AbstractSolrCachingScorer extends Scorer
      */
     private int getBase()
     {
-        throw new UnsupportedOperationException();
+        return 0;
     }
     
     @Override
