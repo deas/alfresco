@@ -70,7 +70,7 @@ public class MetadataTrackerTest
         this.metadataTracker = new MetadataTracker(scheduler, props, repositoryClient, coreName, srv);
     }
 
-    @Test@Ignore
+    @Test
     public void doTrackWithOneTransactionUpdatesOnce() throws AuthenticationException, IOException, JSONException
     {
         TrackerState state = new TrackerState();
@@ -83,6 +83,8 @@ public class MetadataTrackerTest
         List<Transaction> txsList = new ArrayList<>();
         Transaction tx = new Transaction();
         tx.setCommitTimeMs(1L);
+        tx.setDeletes(1);
+        tx.setUpdates(1);
         txsList.add(tx);
         when(txs.getTransactions()).thenReturn(txsList);
 
@@ -98,7 +100,7 @@ public class MetadataTrackerTest
         this.metadataTracker.doTrack();
 
         InOrder inOrder = inOrder(srv);
-        inOrder.verify(srv).indexNode(node, true);
+        inOrder.verify(srv).indexNodes(nodes, true);
         inOrder.verify(srv).indexTransaction(tx, true);
         inOrder.verify(srv).commit();
     }

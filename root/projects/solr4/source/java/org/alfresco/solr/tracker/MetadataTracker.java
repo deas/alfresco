@@ -461,7 +461,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                     }
                     
                     txBatch.add(info);
-                    if (txBatch.size() > this.transactionDocsBatchSize) // TODO check for something similar to getAclCount
+                    if (getUpdateAndDeleteCount(txBatch) > this.transactionDocsBatchSize)
                     {
                         indexed = true;
                         docCount += indexBatchOfTransactions(txBatch);
@@ -479,21 +479,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                 {
                     if (super.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
-                        waitForAsynchronousReindexing();
-                        for (Transaction tx : txsIndexed)
-                        {
-                            super.infoSrv.indexTransaction(tx, true);
-                            if (tx.getCommitTimeMs() > state.getLastIndexedTxCommitTime())
-                            {
-                                state.setLastIndexedTxCommitTime(tx.getCommitTimeMs());
-                                state.setLastIndexedTxId(tx.getId());
-                            }
-// TODO: Is this what we are supposed to add here?  See AclTracker: trackerStats.addChangeSetAcls((int) (set.getAclCount()));
-                            trackerStats.addTxDocs((int) tx.getDeletes());
-                            trackerStats.addTxDocs((int) tx.getUpdates());
-                        }
-                        txsIndexed.clear();
-                        super.infoSrv.commit();
+                        indexTransactionsAfterAsynchronous(txsIndexed, state);
                         docCount = 0;
                     }
                 }
@@ -503,7 +489,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             if (!txBatch.isEmpty())
             {
                 indexed = true;
-                if (txBatch.size() > 0)
+                if (this.getUpdateAndDeleteCount(txBatch) > 0)
                 {
                     docCount += indexBatchOfTransactions(txBatch);
                 }
@@ -516,66 +502,42 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                 txBatch.clear();
             }
         }
-//            
-//                    else
-//                    {
-//                        indexed = true;
-//
-//                        GetNodesParameters gnp = new GetNodesParameters();
-//                        ArrayList<Long> txs = new ArrayList<Long>();
-//                        txs.add(info.getId());
-//                        gnp.setTransactionIds(txs);
-//                        gnp.setStoreProtocol(storeRef.getProtocol());
-//                        gnp.setStoreIdentifier(storeRef.getIdentifier());
-//                        List<Node> nodes = client.getNodes(gnp, Integer.MAX_VALUE);
-//                        for (Node node : nodes)
-//                        {
-//                            docCount++;
-//                            if (log.isDebugEnabled())
-//                            {
-//                                log.debug(node.toString());
-//                            }
-//
-//                            this.infoSrv.indexNode(node, true);
-//
-//                            checkShutdown();
-//                        }
-//
-//                        // Index the transaction doc after the node - if this is not found then a reindex will be done.
-//                        this.infoSrv.indexTransaction(info, true);
-//
-//                        trackerStats.addTxDocs(nodes.size());
-//
-//                        if (info.getCommitTimeMs() > state.getLastIndexedTxCommitTime())
-//                        {
-//                            state.setLastIndexedTxCommitTime(info.getCommitTimeMs());
-//                            state.setLastIndexedTxId(info.getId());
-//                        }
-//
-//                        txnsFound.add(info);
-//                    }
-//                }
-//                // could batch commit here
-//                if (docCount > batchCount)
-//                {
-//                    if (this.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
-//                    {
-//                        checkShutdown();
-//                        this.infoSrv.commit();
-//                        docCount = 0;
-//                    }
-//                }
-//                checkShutdown();
-//            }
         while ((transactions.getTransactions().size() > 0) && (upToDate == false));
 
         if (indexed)
         {
-            checkShutdown();
-            this.infoSrv.commit();
+            indexTransactionsAfterAsynchronous(txsIndexed, state);
         }
     }
 
+    private void indexTransactionsAfterAsynchronous(HashSet<Transaction> txsIndexed, TrackerState state)
+                throws IOException
+    {
+        waitForAsynchronousReindexing();
+        for (Transaction tx : txsIndexed)
+        {
+            super.infoSrv.indexTransaction(tx, true);
+            if (tx.getCommitTimeMs() > state.getLastIndexedTxCommitTime())
+            {
+                state.setLastIndexedTxCommitTime(tx.getCommitTimeMs());
+                state.setLastIndexedTxId(tx.getId());
+            }
+            trackerStats.addTxDocs((int) tx.getDeletes());
+            trackerStats.addTxDocs((int) tx.getUpdates());
+        }
+        txsIndexed.clear();
+        super.infoSrv.commit();
+    }
+
+    private long getUpdateAndDeleteCount(List<Transaction> txs)
+    {
+        long count = 0;
+        for (Transaction tx : txs)
+        {
+            count += (tx.getUpdates() + tx.getDeletes());
+        }
+        return count;
+    }
 
     private int indexBatchOfTransactions(List<Transaction> txBatch) throws AuthenticationException, IOException, JSONException
     {
