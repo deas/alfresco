@@ -659,11 +659,12 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
     @Override
     public void indexNode(Node node, boolean overwrite) throws IOException, AuthenticationException, JSONException
     {
+        RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
             long start = System.nanoTime();
 
-            RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
+            refCounted = core.getSearcher(false, true, null);
             SolrIndexSearcher solrIndexSearcher = refCounted.get();
 
             if ((node.getStatus() == SolrApiNodeStatus.DELETED) || (node.getStatus() == SolrApiNodeStatus.UNKNOWN))
@@ -1041,6 +1042,14 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
 
             log.warn("Node index failed and skipped for " + node.getId() + " in Tx " + node.getTxnId(), e);
         }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+      
 
     }
 
