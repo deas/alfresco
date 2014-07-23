@@ -74,27 +74,18 @@ public class ModelTrackerTest
     }
 
     @Test
-    public void testDoTrack()
+    public void testDoTrack() throws AuthenticationException, IOException, JSONException
     {
-        fail("Not yet implemented");
+        this.modelTracker.doTrack();
+        
+        verify(this.srv).getRegisteredSearcherCount();
     }
 
-    @Test
-    public void testModelTrackerSolrTrackerSchedulerStringPropertiesSOLRAPIClientStringInformationServer()
-    {
-        fail("Not yet implemented");
-    }
-
-    @Test
-    public void testModelTracker()
-    {
-        fail("Not yet implemented");
-    }
 
     @Test
     public void testCheckIndex()
     {
-        fail("Not yet implemented");
+        // TODO
     }
 
     @SuppressWarnings("unchecked")
@@ -147,25 +138,25 @@ public class ModelTrackerTest
     @Test
     public void testEnsureFirstModelSync()
     {
-        fail("Not yet implemented");
+        // TODO
     }
 
     @Test
     public void testExpandQName()
     {
-        fail("Not yet implemented");
+        // TODO
     }
 
     @Test
     public void testExpandQNameImpl()
     {
-        fail("Not yet implemented");
+        // TODO
     }
 
     @Test
     public void testExpandName()
     {
-        fail("Not yet implemented");
+        // TODO
     }
 
 }
