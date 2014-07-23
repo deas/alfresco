@@ -20,13 +20,14 @@ package org.alfresco.solr.query;
 
 import java.io.IOException;
 
-import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.Weight;
 import org.apache.lucene.util.FixedBitSet;
 import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocSet;
+import org.apache.solr.search.SolrIndexSearcher;
 
 
 /**
@@ -41,48 +42,43 @@ public abstract class AbstractSolrCachingScorer extends Scorer
 
     FixedBitSet bitSet;
 
-    IndexReader solrIndexReader;
-
-    AbstractSolrCachingScorer(Weight weight, DocSet in, IndexReader solrIndexReader)
+    SolrIndexSearcher searcher;
+    AtomicReaderContext context;
+    
+    AbstractSolrCachingScorer(Weight weight, DocSet in, AtomicReaderContext context, SolrIndexSearcher searcher)
     {
         super(weight);
-        if (in instanceof BitDocSet)
+        // TODO: 'in' is often too small for the logic in next() to work successfully (ArrayIndexOutOfBoundsException)
+        if (false /*in instanceof BitDocSet*/)
         {
             matches = (BitDocSet) in;
         }
         else
         {
-            this.matches = new BitDocSet(new FixedBitSet(solrIndexReader.maxDoc()));
+            this.matches = new BitDocSet(new FixedBitSet(searcher.maxDoc()));
             for (DocIterator it = in.iterator(); it.hasNext(); /* */)
             {
                 matches.addUnique(it.nextDoc());
             }
         }
         bitSet = matches.getBits();
-        this.solrIndexReader = solrIndexReader;
-        // TODO: original code uses -1 as initial value for doc and checks for this value
-        // in next(), but unless getBase() returns 0, then this value will not be -1.
-        // TODO: check the logic in next() - perhaps should be return (doc != initialDocValue) or similar?
+        this.searcher = searcher;
+        this.context = context;
         doc = getBase() - 1;
     }
 
     
     private boolean next()
     {        
+        // TODO: this is breaking because sometimes a BitDocSet is passed in to the constructor
+        // that is smaller than searcher.maxDoc()
         doc = bitSet.nextSetBit(doc+1);
-        return (doc != -1)  && (doc < (getBase()  + solrIndexReader.maxDoc()));
+        return (doc != -1)  && (doc < (getBase()  + searcher.maxDoc()));
     }
     
-    /**
-     * Not yet implemented. Previously this method was the inlined code:
-     * <pre>solrIndexReader.getBase()</pre>
-     * TODO: determine the equivalent for Solr 4, then inline this method once again.
-     * 
-     * From the original javadoc: "Returns the docid offset within the parent reader"
-     */
     private int getBase()
     {
-        return 0;
+        return context.docBase;
     }
     
     @Override

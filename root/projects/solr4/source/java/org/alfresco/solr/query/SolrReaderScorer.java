@@ -22,8 +22,7 @@ import java.io.IOException;
 
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.solr.cache.CacheConstants;
-import org.apache.lucene.index.AtomicReader;
-import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.Weight;
@@ -37,12 +36,12 @@ import org.apache.solr.search.SolrIndexSearcher;
  */
 public class SolrReaderScorer extends AbstractSolrCachingScorer
 {
-    SolrReaderScorer(Weight weight, DocSet in, IndexReader solrIndexReader)
+    SolrReaderScorer(Weight weight, DocSet in, AtomicReaderContext context, SolrIndexSearcher searcher)
     {
-        super(weight, in, solrIndexReader);
+        super(weight, in, context, searcher);
     }
 
-    public static SolrReaderScorer createReaderScorer(Weight weight, AtomicReader reader, SolrIndexSearcher searcher, String authority) throws IOException
+    public static SolrReaderScorer createReaderScorer(Weight weight, AtomicReaderContext context, SolrIndexSearcher searcher, String authority) throws IOException
     {     
         DocSet readableDocs = (DocSet) searcher.cacheLookup(CacheConstants.ALFRESCO_READER_CACHE, authority);
 
@@ -52,6 +51,6 @@ public class SolrReaderScorer extends AbstractSolrCachingScorer
             readableDocs = searcher.getDocSet(new TermQuery(new Term(QueryConstants.FIELD_READER, authority)));
             searcher.cacheInsert(CacheConstants.ALFRESCO_READER_CACHE, authority, readableDocs);
         }
-        return new SolrReaderScorer(weight, readableDocs, reader);
+        return new SolrReaderScorer(weight, readableDocs, context, searcher);
     }
 }

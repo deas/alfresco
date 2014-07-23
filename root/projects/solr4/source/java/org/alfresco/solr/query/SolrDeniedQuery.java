@@ -69,7 +69,7 @@ public class SolrDeniedQuery extends AbstractAuthorityQuery
         @Override
         public Scorer scorer(AtomicReaderContext context, Bits acceptDocs) throws IOException
         {
-            return SolrDeniedScorer.createDenyScorer(this, context.reader(), searcher, authority);
+            return SolrDeniedScorer.createDenyScorer(this, context, searcher, authority);
         }   
     }
 }

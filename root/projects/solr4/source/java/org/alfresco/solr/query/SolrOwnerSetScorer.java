@@ -21,6 +21,7 @@ package org.alfresco.solr.query;
 import java.io.IOException;
 
 import org.apache.lucene.index.AtomicReader;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.Weight;
 import org.apache.lucene.util.FixedBitSet;
 import org.apache.solr.search.BitDocSet;
@@ -38,12 +39,12 @@ public class SolrOwnerSetScorer extends AbstractSolrCachingScorer
     /**
      * Package private constructor.
      */
-    SolrOwnerSetScorer(Weight weight, DocSet in, AtomicReader reader)
+    SolrOwnerSetScorer(Weight weight, DocSet in, AtomicReaderContext context, SolrIndexSearcher searcher)
     {
-        super(weight, in, reader);
+        super(weight, in, context, searcher);
     }
 
-    public static SolrOwnerSetScorer createOwnerSetScorer(Weight weight, AtomicReader reader, SolrIndexSearcher searcher, String authorities) throws IOException
+    public static SolrOwnerSetScorer createOwnerSetScorer(Weight weight, AtomicReaderContext context, SolrIndexSearcher searcher, String authorities) throws IOException
     {
         // The set of docs owned by all of the authorities
         BitDocSet authorityOwnedDocs = new BitDocSet(new FixedBitSet(searcher.maxDoc()));
@@ -60,6 +61,6 @@ public class SolrOwnerSetScorer extends AbstractSolrCachingScorer
         }
 
         // TODO: Cache the final set? e.g. searcher.cacheInsert(authorities, authorityOwnedDocs)
-        return new SolrOwnerSetScorer(weight, authorityOwnedDocs, reader);
+        return new SolrOwnerSetScorer(weight, authorityOwnedDocs, context, searcher);
     }
 }

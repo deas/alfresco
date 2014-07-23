@@ -21,7 +21,7 @@ package org.alfresco.solr.query;
 import java.io.IOException;
 
 import org.apache.lucene.index.AtomicReader;
-import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.Weight;
 import org.apache.lucene.util.FixedBitSet;
 import org.apache.solr.search.BitDocSet;
@@ -31,12 +31,12 @@ import org.apache.solr.search.SolrIndexSearcher;
 public class SolrDenySetScorer extends AbstractSolrCachingScorer
 {
 
-    SolrDenySetScorer(Weight weight, DocSet in, IndexReader solrIndexReader)
+    SolrDenySetScorer(Weight weight, DocSet in, AtomicReaderContext context, SolrIndexSearcher searcher)
     {
-        super(weight, in, solrIndexReader);
+        super(weight, in, context, searcher);
     }
 
-    public static SolrDenySetScorer createDenySetScorer(Weight weight, SolrIndexSearcher searcher, String authorities, AtomicReader reader) throws IOException
+    public static SolrDenySetScorer createDenySetScorer(Weight weight, AtomicReaderContext context, SolrIndexSearcher searcher, String authorities, AtomicReader reader) throws IOException
     {
         String[] auths = authorities.substring(1).split(authorities.substring(0, 1));
         
@@ -51,7 +51,7 @@ public class SolrDenySetScorer extends AbstractSolrCachingScorer
         
         // TODO: cache the full set? e.g. searcher.cacheInsert(CacheConstants.ALFRESCO_DENYSET_CACHE, authorities, deniedDocSet)
         // plus check of course, for presence in cache at start of method.
-        return new SolrDenySetScorer(weight, deniedDocSet, reader);
+        return new SolrDenySetScorer(weight, deniedDocSet, context, searcher);
     }
 
 }

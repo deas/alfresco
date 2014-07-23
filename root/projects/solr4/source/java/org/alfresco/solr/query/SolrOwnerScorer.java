@@ -23,8 +23,7 @@ import java.io.IOException;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.solr.cache.CacheConstants;
-import org.apache.lucene.index.AtomicReader;
-import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.Weight;
@@ -41,12 +40,12 @@ import org.apache.solr.search.SolrIndexSearcher;
  */
 public class SolrOwnerScorer extends AbstractSolrCachingScorer
 {
-    SolrOwnerScorer(Weight weight, DocSet in, IndexReader indexReader)
+    SolrOwnerScorer(Weight weight, DocSet in, AtomicReaderContext context, SolrIndexSearcher searcher)
     {
-        super(weight, in, indexReader);
+        super(weight, in, context, searcher);
     }
 
-    public static SolrOwnerScorer createOwnerScorer(Weight weight, AtomicReader reader, SolrIndexSearcher searcher, String authority) throws IOException
+    public static SolrOwnerScorer createOwnerScorer(Weight weight, AtomicReaderContext context, SolrIndexSearcher searcher, String authority) throws IOException
     {
         if (AuthorityType.getAuthorityType(authority) == AuthorityType.USER)
         {
@@ -58,11 +57,11 @@ public class SolrOwnerScorer extends AbstractSolrCachingScorer
                 ownedDocs = searcher.getDocSet(new TermQuery(new Term(QueryConstants.FIELD_OWNER, authority)));
                 searcher.cacheInsert(CacheConstants.ALFRESCO_OWNERLOOKUP_CACHE, authority, ownedDocs);
             }
-            return new SolrOwnerScorer(weight, ownedDocs, reader);
+            return new SolrOwnerScorer(weight, ownedDocs, context, searcher);
         }
         
         // Return an empty doc set, as the authority isn't a user.
-        return new SolrOwnerScorer(weight, new BitDocSet(new FixedBitSet(0)), reader);
+        return new SolrOwnerScorer(weight, new BitDocSet(new FixedBitSet(0)), context, searcher);
     }
 
 }

@@ -22,8 +22,7 @@ import java.io.IOException;
 
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.solr.cache.CacheConstants;
-import org.apache.lucene.index.AtomicReader;
-import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.Weight;
@@ -37,12 +36,12 @@ import org.apache.solr.search.SolrIndexSearcher;
  */
 public class SolrDeniedScorer extends AbstractSolrCachingScorer
 {
-    SolrDeniedScorer(Weight weight, DocSet in, IndexReader solrIndexReader)
+    SolrDeniedScorer(Weight weight, DocSet in, AtomicReaderContext context, SolrIndexSearcher searcher)
     {
-        super(weight, in, solrIndexReader);
+        super(weight, in, context, searcher);
     }
 
-    public static SolrDeniedScorer createDenyScorer(Weight weight, AtomicReader reader, SolrIndexSearcher searcher, String authority) throws IOException
+    public static SolrDeniedScorer createDenyScorer(Weight weight, AtomicReaderContext context, SolrIndexSearcher searcher, String authority) throws IOException
     {     
         DocSet deniedDocs = (DocSet) searcher.cacheLookup(CacheConstants.ALFRESCO_DENIED_CACHE, authority);
 
@@ -52,6 +51,6 @@ public class SolrDeniedScorer extends AbstractSolrCachingScorer
             deniedDocs = searcher.getDocSet(new TermQuery(new Term(QueryConstants.FIELD_DENIED, authority)));
             searcher.cacheInsert(CacheConstants.ALFRESCO_DENIED_CACHE, authority, deniedDocs);
         }
-        return new SolrDeniedScorer(weight, deniedDocs, reader);
+        return new SolrDeniedScorer(weight, deniedDocs, context, searcher);
     }
 }
