@@ -378,7 +378,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         {
            return;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             log.info("Failed to load "+resource, e);
         }
@@ -1841,6 +1841,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
                 HashMap<QName, PropertyValue> baseFolderProperties = new HashMap<QName, PropertyValue>();
                 baseFolderProperties.put(ContentModel.PROP_NAME, new StringPropertyValue("Base Folder"));
+// TODO: This variable is never used.  Please verify that it is not needed.
                 HashMap<QName, String> baseFolderContent = new HashMap<QName, String>();
                 NodeRef baseFolderNodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
                 QName baseFolderQName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "baseFolder");
@@ -1852,6 +1853,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
                 HashMap<QName, PropertyValue> folder00Properties = new HashMap<QName, PropertyValue>();
                 folder00Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("Folder 0"));
+// TODO: This variable is never used.  Please see if we even need it.
                 HashMap<QName, String> folder00Content = new HashMap<QName, String>();
                 NodeRef folder00NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
                 QName folder00QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "Folder 0");
@@ -2067,6 +2069,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
             HashMap<QName, PropertyValue> baseFolderProperties = new HashMap<QName, PropertyValue>();
             baseFolderProperties.put(ContentModel.PROP_NAME, new StringPropertyValue("Base Folder"));
+// This variable is never used.  What was it meant to be used for?
             HashMap<QName, String> baseFolderContent = new HashMap<QName, String>();
             NodeRef baseFolderNodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             QName baseFolderQName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "baseFolder");
@@ -3688,6 +3691,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         Date date0 = cal.getTime();
         cal.add(Calendar.DAY_OF_MONTH, 2);
         Date date2 = cal.getTime();
+// TODO: This variable is never used.  Please see if we even need it.
         StringPropertyValue d0 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date0));
         StringPropertyValue d1 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date1));
         StringPropertyValue d2 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date2));
@@ -3810,6 +3814,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         Date date0 = cal.getTime();
         cal.add(Calendar.DAY_OF_MONTH, 2);
         Date date2 = cal.getTime();
+// TODO: This variable is never used.  Please see if we even need it.
         StringPropertyValue d0 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date0));
         StringPropertyValue d1 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, newdate1));
         StringPropertyValue d2 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date2));
@@ -5576,6 +5581,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
         // newParams.set("fq", "AUTHORITY_FILTER_FROM_JSON");
         solrReq.setParams(newParams);
+// TODO: This variable is never used.  Please see if we even need it.
         ArrayList<ContentStream> streams = new ArrayList<ContentStream>();
         // streams.add(new ContentStreamBase.StringStream("json"));
         // solrReq.setContentStreams(streams);
@@ -6947,11 +6953,12 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 
         if (properties != null)
         {
-            for (QName propertyQname : properties.keySet())
+            for (Map.Entry<QName, PropertyValue> entry : properties.entrySet())
             {
+                QName propertyQname = entry.getKey();
                 if (dataModel.isIndexedOrStored(propertyQname))
                 {
-                    PropertyValue value = properties.get(propertyQname);
+                    PropertyValue value = entry.getValue();
                     if (value != null)
                     {
                         if (value instanceof ContentPropertyValue)
@@ -7332,10 +7339,9 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         if (modelErrors.size() > 0)
         {
             NamedList<Object> errorList = new SimpleOrderedMap<Object>();
-            for (String modelName : modelErrors.keySet())
+            for (Map.Entry<String, Set<String>> modelNameToErrors : modelErrors.entrySet())
             {
-                Set<String> errors = modelErrors.get(modelName);
-                errorList.add(modelName, errors);
+                errorList.add(modelNameToErrors.getKey(), modelNameToErrors.getValue());
             }
             coreSummary.add("Model changes are not compatible with the existing data model and have not been applied", errorList);
         }
@@ -7537,7 +7543,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         }
         if (!destDir.canWrite())
         {
-            throw new IOException("No acces to destination directory" + destDir);
+            throw new IOException("No access to destination directory" + destDir);
         }
 
         File[] files = srcDir.listFiles();

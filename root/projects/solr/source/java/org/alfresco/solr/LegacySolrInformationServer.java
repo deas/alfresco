@@ -35,10 +35,10 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -85,6 +85,7 @@ import org.alfresco.solr.client.SOLRAPIClient.GetTextContentResponse;
 import org.alfresco.solr.client.StringPropertyValue;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.tracker.CoreTracker;
+import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.MultiThreadedCoreTracker;
 import org.alfresco.solr.tracker.Tracker;
 import org.alfresco.util.ISO9075;
@@ -481,9 +482,8 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
                 Long fileSize = 0L;
 
                 File dir = new File(solrIndexSearcher.getIndexDir());
-                for (Iterator it = indexCommit.getFileNames().iterator(); it.hasNext(); /**/)
+                for (String name : (Collection<String>) indexCommit.getFileNames())
                 {
-                    String name = (String) it.next();
                     File file = new File(dir, name);
                     if (file.exists())
                     {
@@ -1043,7 +1043,6 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
 
     }
 
-    // move
     private void updateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite,
                 SolrIndexSearcher solrIndexSearcher, LinkedHashSet<Long> stack) throws AuthenticationException,
                 IOException, JSONException
@@ -1070,7 +1069,6 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
 
     }
 
-    // move
     private void doUpdateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite,
                 SolrIndexSearcher solrIndexSearcher, LinkedHashSet<Long> stack) throws AuthenticationException,
                 IOException, JSONException
@@ -1161,7 +1159,6 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
         }
     }
 
-    // move
     private SolrInputDocument createAuxDoc(NodeMetaData nodeMetaData)
     {
         SolrInputDocument aux = new SolrInputDocument();
@@ -1218,7 +1215,6 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
         return aux;
     }
 
-    // move into InformationSever and make that an abstract class
     private boolean mayHaveChildren(NodeMetaData nodeMetaData)
     {
         // 1) Does the type support children?
@@ -1333,6 +1329,7 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
                 Term term = termEnum.term();
                 if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith(PREFIX_ERROR))
                 {
+// TODO: This variable is never read.  Do we even need it?
                     int docCount = 0;
                     TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
                     while (termDocs.next())
@@ -1394,7 +1391,6 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
         return lastTxCommitTimeBeforeHoles;
     }
 
-    // move
     private long getLargestTxIdByCommitTime(SolrIndexReader reader, Long lastTxCommitTimeBeforeHoles)
                 throws IOException
     {
@@ -1420,7 +1416,6 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
         return txid;
     }
 
-    // move
     private long getLargestChangeSetIdByCommitTime(SolrIndexReader reader, Long lastChangeSetCommitTimeBeforeHoles)
                 throws IOException
     {
@@ -1481,7 +1476,6 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
         return lastTxCommitTime;
     }
 
-    // move
     private long getLastTransactionId(SolrIndexReader reader) throws IOException
     {
         long lastTxId = 0;
@@ -2122,6 +2116,384 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
 
         return term != null && target.equals(term.text());
     }
+    
+    @Override
+    public AclReport checkAclInIndex(Long aclid, AclReport aclReport)
+    {
+        try
+        {
+            RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
+
+            refCounted = core.getSearcher(false, true, null);
+            if (refCounted == null)
+            {
+                return aclReport;
+            }
+
+            try
+            {
+                SolrIndexSearcher solrIndexSearcher = refCounted.get();
+                SolrIndexReader reader = solrIndexSearcher.getReader();
+
+                String aclIdString = NumericEncoder.encode(aclid);
+                DocSet docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term("ACLID", aclIdString)));
+                // should find leaf and aux
+                for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
+                {
+                    int doc = it.nextDoc();
+
+                    Document document = solrIndexSearcher.doc(doc);
+                    Fieldable fieldable = document.getFieldable("ID");
+                    if (fieldable != null)
+                    {
+                        String value = fieldable.stringValue();
+                        if (value != null)
+                        {
+                            if (value.startsWith("ACL-"))
+                            {
+                                aclReport.setIndexAclDoc(Long.valueOf(doc));
+                            }
+                        }
+                    }
+
+                }
+                DocSet txDocSet = solrIndexSearcher.getDocSet(new WildcardQuery(new Term("ACLTXID", "*")));
+                for (DocIterator it = txDocSet.iterator(); it.hasNext(); /* */)
+                {
+                    int doc = it.nextDoc();
+                    Document document = solrIndexSearcher.doc(doc);
+                    Fieldable fieldable = document.getFieldable("ACLTXID");
+                    if (fieldable != null)
+                    {
+
+                        if ((aclReport.getIndexAclDoc() == null) || (doc < aclReport.getIndexAclDoc().longValue()))
+                        {
+                            String value = fieldable.stringValue();
+                            long acltxid = Long.parseLong(value);
+                            aclReport.setIndexAclTx(acltxid);
+                        }
+
+                    }
+                }
+
+            }
+            finally
+            {
+                refCounted.decref();
+            }
+
+        }
+        catch (IOException e)
+        {
+
+        }
+
+        return aclReport;
+    }
+
+    @Override
+    public IndexHealthReport checkIndexTransactions(IndexHealthReport indexHealthReport, Long minTxId, Long minAclTxId,
+                IOpenBitSet txIdsInDb, long maxTxId, IOpenBitSet aclTxIdsInDb, long maxAclTxId) throws IOException
+    {
+        IOpenBitSet txIdsInIndex = this.getOpenBitSetInstance();
+
+        IOpenBitSet aclTxIdsInIndex = this.getOpenBitSetInstance();
+
+        RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
+
+        if (refCounted == null)
+        {
+            return indexHealthReport;
+        }
+
+        try
+        {
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            SolrIndexReader reader = solrIndexSearcher.getReader();
+
+            // Index TX Count
+            if (minTxId != null)
+            {
+                TermDocs termDocs = null;
+                int count = 0;
+                for (long i = minTxId; i <= maxTxId; i++)
+                {
+                    int docCount = 0;
+                    String target = NumericEncoder.encode(i);
+                    Term term = new Term(QueryConstants.FIELD_TXID, target);
+                    if (termDocs == null)
+                    {
+                        termDocs = reader.termDocs(term);
+                    }
+                    else
+                    {
+                        termDocs.seek(term);
+                    }
+                    while (termDocs.next())
+                    {
+                        int doc = termDocs.doc();
+                        if (!reader.isDeleted(doc))
+                        {
+                            docCount++;
+                        }
+                    }
+
+                    if (docCount == 0)
+                    {
+                        if (txIdsInDb.get(i))
+                        {
+                            indexHealthReport.setMissingTxFromIndex(i);
+                        }
+                    }
+                    else if (docCount == 1)
+                    {
+                        txIdsInIndex.set(i);
+                        if (!txIdsInDb.get(i))
+                        {
+                            indexHealthReport.setTxInIndexButNotInDb(i);
+                        }
+                        count++;
+                    }
+                    else if (docCount > 1)
+                    {
+                        indexHealthReport.setDuplicatedTxInIndex(i);
+                        if (!txIdsInDb.get(i))
+                        {
+                            indexHealthReport.setTxInIndexButNotInDb(i);
+                        }
+                        count++;
+                    }
+
+                }
+                if (termDocs != null)
+                {
+                    termDocs.close();
+                }
+
+                indexHealthReport.setUniqueTransactionDocsInIndex(txIdsInIndex.cardinality());
+                indexHealthReport.setTransactionDocsInIndex(count);
+            }
+
+            // ACL TX
+
+            if (minAclTxId != null)
+            {
+                TermDocs termDocs = null;
+                int count = 0;
+                for (long i = minAclTxId; i <= maxAclTxId; i++)
+                {
+                    int docCount = 0;
+                    String target = NumericEncoder.encode(i);
+                    Term term = new Term(QueryConstants.FIELD_ACLTXID, target);
+                    if (termDocs == null)
+                    {
+                        termDocs = reader.termDocs(term);
+                    }
+                    else
+                    {
+                        termDocs.seek(term);
+                    }
+                    while (termDocs.next())
+                    {
+                        int doc = termDocs.doc();
+                        if (!reader.isDeleted(doc))
+                        {
+                            docCount++;
+                        }
+                    }
+
+                    if (docCount == 0)
+                    {
+                        if (aclTxIdsInDb.get(i))
+                        {
+                            indexHealthReport.setMissingAclTxFromIndex(i);
+                        }
+                    }
+                    else if (docCount == 1)
+                    {
+                        aclTxIdsInIndex.set(i);
+                        if (!aclTxIdsInDb.get(i))
+                        {
+                            indexHealthReport.setAclTxInIndexButNotInDb(i);
+                        }
+                        count++;
+                    }
+                    else if (docCount > 1)
+                    {
+                        indexHealthReport.setDuplicatedAclTxInIndex(i);
+                        if (!aclTxIdsInDb.get(i))
+                        {
+                            indexHealthReport.setAclTxInIndexButNotInDb(i);
+                        }
+                        count++;
+                    }
+
+                }
+                if (termDocs != null)
+                {
+                    termDocs.close();
+                }
+
+                indexHealthReport.setUniqueAclTransactionDocsInIndex(aclTxIdsInIndex.cardinality());
+                indexHealthReport.setAclTransactionDocsInIndex(count);
+            }
+
+            // LEAF
+
+            int leafCount = 0;
+            TermEnum termEnum = reader.terms(new Term(QueryConstants.FIELD_ID, "LEAF-"));
+            do
+            {
+                Term term = termEnum.term();
+                if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith("LEAF-"))
+                {
+                    int docCount = 0;
+                    TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
+                    while (termDocs.next())
+                    {
+                        if (!reader.isDeleted(termDocs.doc()))
+                        {
+                            docCount++;
+                        }
+                    }
+                    if (docCount > 1)
+                    {
+                        long txid = Long.parseLong(term.text().substring(5));
+                        indexHealthReport.setDuplicatedLeafInIndex(txid);
+                    }
+
+                    leafCount += docCount;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            while (termEnum.next());
+            termEnum.close();
+
+            indexHealthReport.setLeafDocCountInIndex(leafCount);
+
+            // AUX
+
+            int auxCount = 0;
+            termEnum = reader.terms(new Term(QueryConstants.FIELD_ID, "AUX-"));
+            do
+            {
+                Term term = termEnum.term();
+                if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith("AUX-"))
+                {
+                    int docCount = 0;
+                    TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
+                    while (termDocs.next())
+                    {
+                        if (!reader.isDeleted(termDocs.doc()))
+                        {
+                            docCount++;
+                        }
+                    }
+                    if (docCount > 1)
+                    {
+                        long txid = Long.parseLong(term.text().substring(4));
+                        indexHealthReport.setDuplicatedAuxInIndex(txid);
+                    }
+    
+                    auxCount += docCount;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            while (termEnum.next());
+            termEnum.close();
+
+            indexHealthReport.setAuxDocCountInIndex(auxCount);
+
+            // ERROR
+
+            int errorCount = 0;
+            termEnum = reader.terms(new Term(QueryConstants.FIELD_ID, "ERROR-"));
+            do
+            {
+                Term term = termEnum.term();
+                if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith("ERROR-"))
+                {
+                    int docCount = 0;
+                    TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
+                    while (termDocs.next())
+                    {
+                        if (!reader.isDeleted(termDocs.doc()))
+                        {
+                            docCount++;
+                        }
+                    }
+                    if (docCount > 1)
+                    {
+                        long txid = Long.parseLong(term.text().substring(6));
+                        indexHealthReport.setDuplicatedErrorInIndex(txid);
+                    }
+
+                    errorCount += docCount;         
+                }
+                else
+                {
+                    break;
+                }
+            }
+            while (termEnum.next());
+            termEnum.close();
+
+            indexHealthReport.setErrorDocCountInIndex(errorCount);
+
+            // UNINDEXED
+
+            int unindexedCount = 0;
+            termEnum = reader.terms(new Term(QueryConstants.FIELD_ID, "UNINDEXED-"));
+            do
+            {
+                Term term = termEnum.term();
+                if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith("UNINDEXED-"))
+                {
+                    int docCount = 0;
+                    TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
+                    while (termDocs.next())
+                    {
+                        if (!reader.isDeleted(termDocs.doc()))
+                        {
+                            docCount++;
+                        }
+                    }
+                    if (docCount > 1)
+                    {
+                        long txid = Long.parseLong(term.text().substring(10));
+                        indexHealthReport.setDuplicatedUnindexedInIndex(txid);
+                    }
+
+                    unindexedCount += docCount;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            while (termEnum.next());
+            termEnum.close();
+
+            indexHealthReport.setUnindexedDocCountInIndex(unindexedCount);
+
+            // Other
+
+            indexHealthReport.setLastIndexedCommitTime(trackerState.getLastIndexedTxCommitTime());
+            indexHealthReport.setLastIndexedIdBeforeHoles(trackerState.getLastIndexedTxIdBeforeHoles());
+
+            return indexHealthReport;
+        }
+        finally
+        {
+            refCounted.decref();
+        }
+    }
 
     @Override
     public Tracker getTracker()
@@ -2181,5 +2553,11 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
     public M2Model getM2Model(QName modelQName)
     {
         return this.dataModel.getM2Model(modelQName);
+    }
+    
+    @Override
+    public long getHoleRetention()
+    {
+        return this.holeRetention;
     }
 }

@@ -59,6 +59,7 @@ import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.NodeReport;
 import org.alfresco.solr.SolrKeyResourceLoader;
 import org.alfresco.solr.TrackerState;
+import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.client.Acl;
 import org.alfresco.solr.client.AclChangeSet;
 import org.alfresco.solr.client.AclChangeSets;
@@ -912,6 +913,7 @@ public class CoreTracker implements Tracker
     {
         boolean indexed = false;
         boolean upToDate = false;
+// TODO: This variable is never used.  Please see if we even need it.
         ArrayList<Transaction> transactionsOrderedById = new ArrayList<Transaction>(10000);
         Transactions transactions;
         BoundedDeque<Transaction> txnsFound = new BoundedDeque<Transaction>(100);
@@ -1642,449 +1644,138 @@ public class CoreTracker implements Tracker
         trackerStats.addAclTime(time);
     }
 
-
-
-    /**
-     * @param refCounted
-     * @throws IOException
-     * @throws JSONException
-     */
-    // refactor to move chunks over
-    public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime) throws AuthenticationException, IOException,
-    JSONException
+    public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime) 
+                throws AuthenticationException, IOException, JSONException
     {
 
         IndexHealthReport indexHealthReport = new IndexHealthReport(infoSrv);
-        
-//        
-//        Long minTxId = null;
-//        Long minAclTxId = null;
-//
-//        long firstTransactionCommitTime = 0;
-//        Transactions firstTransactions = client.getTransactions(null, 0L, null, 2000L, 1);
-//        if(firstTransactions.getTransactions().size() > 0)
-//        {
-//            Transaction firstTransaction = firstTransactions.getTransactions().get(0);
-//            firstTransactionCommitTime = firstTransaction.getCommitTimeMs();
-//        }
-//
-//        // DB TX Count
-//        OpenBitSet txIdsInDb = new OpenBitSet();
-//        Long lastTxCommitTime = Long.valueOf(firstTransactionCommitTime);
-//        if (fromTime != null)
-//        {
-//            lastTxCommitTime = fromTime;
-//        }
-//        long maxTxId = 0;
-//
-//        long loopStartingCommitTime;
-//        Transactions transactions;
-//        BoundedDeque<Transaction> txnsFound = new  BoundedDeque<Transaction>(100);
-//        long endTime = System.currentTimeMillis() + holeRetention;
-//        DO: do
-//        {
-//            transactions = getSomeTransactions(txnsFound, lastTxCommitTime, 1000*60*60L, 2000, endTime);
-//            for (Transaction info : transactions.getTransactions())
-//            {
-//                // include
-//                if (toTime != null)
-//                {
-//                    if (info.getCommitTimeMs() > toTime.longValue())
-//                    {
-//                        break DO;
-//                    }
-//                }
-//                if (toTx != null)
-//                {
-//                    if (info.getId() > toTx.longValue())
-//                    {
-//                        break DO;
-//                    }
-//                }
-//
-//                // bounds for later loops
-//                if (minTxId == null)
-//                {
-//                    minTxId = info.getId();
-//                }
-//                if (maxTxId < info.getId())
-//                {
-//                    maxTxId = info.getId();
-//                }
-//
-//                lastTxCommitTime = info.getCommitTimeMs();
-//                txIdsInDb.set(info.getId());
-//                txnsFound.add(info);
-//            }
-//        }
-//        while (transactions.getTransactions().size() > 0);
-//
-//        indexHealthReport.setDbTransactionCount(txIdsInDb.cardinality());
-//
-//        // DB ACL TX Count
-//
-//        long firstChangeSetCommitTimex = 0;
-//        AclChangeSets firstChangeSets = client.getAclChangeSets(null, 0L, null, 2000L, 1);
-//        if(firstChangeSets.getAclChangeSets().size() > 0)
-//        {
-//            AclChangeSet firstChangeSet = firstChangeSets.getAclChangeSets().get(0);
-//            firstChangeSetCommitTimex = firstChangeSet.getCommitTimeMs();
-//        }
-//
-//        java.util.OpenBitSet aclTxIdsInDb = new OpenBitSet();
-//        Long lastAclTxCommitTime = Long.valueOf(firstChangeSetCommitTimex);
-//        if (fromTime != null)
-//        {
-//            lastAclTxCommitTime = fromTime;
-//        }
-//        long maxAclTxId = 0;
-//
-//        AclChangeSets aclTransactions;
-//        BoundedDeque<AclChangeSet> changeSetsFound = new  BoundedDeque<AclChangeSet>(100);
-//        DO: do
-//        {
-//            aclTransactions = getSomeAclChangeSets(changeSetsFound, lastAclTxCommitTime, 1000*60*60L, 2000, endTime);
-//            for (AclChangeSet set : aclTransactions.getAclChangeSets())
-//            {
-//                // include
-//                if (toTime != null)
-//                {
-//                    if (set.getCommitTimeMs() > toTime.longValue())
-//                    {
-//                        break DO;
-//                    }
-//                }
-//                if (toAclTx != null)
-//                {
-//                    if (set.getId() > toAclTx.longValue())
-//                    {
-//                        break DO;
-//                    }
-//                }
-//
-//                // bounds for later loops
-//                if (minAclTxId == null)
-//                {
-//                    minAclTxId = set.getId();
-//                }
-//                if (maxAclTxId < set.getId())
-//                {
-//                    maxAclTxId = set.getId();
-//                }
-//
-//                lastAclTxCommitTime = set.getCommitTimeMs();
-//                aclTxIdsInDb.set(set.getId());
-//                changeSetsFound.add(set);
-//            }
-//        }
-//        while (aclTransactions.getAclChangeSets().size() > 0);
-//
-//        indexHealthReport.setDbAclTransactionCount(aclTxIdsInDb.cardinality());
-//
-//        // Index TX Count
-//
-//        OpenBitSet txIdsInIndex = new OpenBitSet();
-//
-//        OpenBitSet aclTxIdsInIndex = new OpenBitSet();
-//
-//        RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
-//
-//        if (refCounted == null)
-//        {
-//            return indexHealthReport;
-//        }
-//
-//        try
-//        {
-//            SolrIndexSearcher solrIndexSearcher = refCounted.get();
-//            SolrIndexReader reader = solrIndexSearcher.getReader();
-//
-//            // Index TX Count
-//            if (minTxId != null)
-//            {
-//                TermDocs termDocs = null;
-//                int count = 0;
-//                for (long i = minTxId; i <= maxTxId; i++)
-//                {
-//                    int docCount = 0;
-//                    String target = NumericEncoder.encode(i);
-//                    Term term = new Term(QueryConstants.FIELD_TXID, target);
-//                    if (termDocs == null)
-//                    {
-//                        termDocs = reader.termDocs(term);
-//                    }
-//                    else
-//                    {
-//                        termDocs.seek(term);
-//                    }
-//                    while (termDocs.next())
-//                    {
-//                        int doc = termDocs.doc();
-//                        if (!reader.isDeleted(doc))
-//                        {
-//                            docCount++;
-//                        }
-//                    }
-//
-//                    if (docCount == 0)
-//                    {
-//                        if (txIdsInDb.get(i))
-//                        {
-//                            indexHealthReport.setMissingTxFromIndex(i);
-//                        }
-//                    }
-//                    else if (docCount == 1)
-//                    {
-//                        txIdsInIndex.set(i);
-//                        if (!txIdsInDb.get(i))
-//                        {
-//                            indexHealthReport.setTxInIndexButNotInDb(i);
-//                        }
-//                        count++;
-//                    }
-//                    else if (docCount > 1)
-//                    {
-//                        indexHealthReport.setDuplicatedTxInIndex(i);
-//                        if (!txIdsInDb.get(i))
-//                        {
-//                            indexHealthReport.setTxInIndexButNotInDb(i);
-//                        }
-//                        count++;
-//                    }
-//
-//                }
-//                if (termDocs != null)
-//                {
-//                    termDocs.close();
-//                }
-//
-//                indexHealthReport.setUniqueTransactionDocsInIndex(txIdsInIndex.cardinality());
-//                indexHealthReport.setTransactionDocsInIndex(count);
-//            }
-//
-//            // ACL TX
-//
-//            if (minAclTxId != null)
-//            {
-//                TermDocs termDocs = null;
-//                int count = 0;
-//                for (long i = minAclTxId; i <= maxAclTxId; i++)
-//                {
-//                    int docCount = 0;
-//                    String target = NumericEncoder.encode(i);
-//                    Term term = new Term(QueryConstants.FIELD_ACLTXID, target);
-//                    if (termDocs == null)
-//                    {
-//                        termDocs = reader.termDocs(term);
-//                    }
-//                    else
-//                    {
-//                        termDocs.seek(term);
-//                    }
-//                    while (termDocs.next())
-//                    {
-//                        int doc = termDocs.doc();
-//                        if (!reader.isDeleted(doc))
-//                        {
-//                            docCount++;
-//                        }
-//                    }
-//
-//                    if (docCount == 0)
-//                    {
-//                        if (aclTxIdsInDb.get(i))
-//                        {
-//                            indexHealthReport.setMissingAclTxFromIndex(i);
-//                        }
-//                    }
-//                    else if (docCount == 1)
-//                    {
-//                        aclTxIdsInIndex.set(i);
-//                        if (!aclTxIdsInDb.get(i))
-//                        {
-//                            indexHealthReport.setAclTxInIndexButNotInDb(i);
-//                        }
-//                        count++;
-//                    }
-//                    else if (docCount > 1)
-//                    {
-//                        indexHealthReport.setDuplicatedAclTxInIndex(i);
-//                        if (!aclTxIdsInDb.get(i))
-//                        {
-//                            indexHealthReport.setAclTxInIndexButNotInDb(i);
-//                        }
-//                        count++;
-//                    }
-//
-//                }
-//                if (termDocs != null)
-//                {
-//                    termDocs.close();
-//                }
-//
-//                indexHealthReport.setUniqueAclTransactionDocsInIndex(aclTxIdsInIndex.cardinality());
-//                indexHealthReport.setAclTransactionDocsInIndex(count);
-//            }
-//
-//            // LEAF
-//
-//            int leafCount = 0;
-//            TermEnum termEnum = reader.terms(new Term(QueryConstants.FIELD_ID, "LEAF-"));
-//            do
-//            {
-//                Term term = termEnum.term();
-//                if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith("LEAF-"))
-//                {
-//                    int docCount = 0;
-//                    TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
-//                    while (termDocs.next())
-//                    {
-//                        if (!reader.isDeleted(termDocs.doc()))
-//                        {
-//                            docCount++;
-//                        }
-//                    }
-//                    if (docCount > 1)
-//                    {
-//                        long txid = Long.parseLong(term.text().substring(5));
-//                        indexHealthReport.setDuplicatedLeafInIndex(txid);
-//                    }
-//
-//                    leafCount += docCount;
-//                }
-//                else
-//                {
-//                    break;
-//                }
-//            }
-//            while (termEnum.next());
-//            termEnum.close();
-//
-//            indexHealthReport.setLeafDocCountInIndex(leafCount);
-//
-//            // AUX
-//
-//            int auxCount = 0;
-//            termEnum = reader.terms(new Term(QueryConstants.FIELD_ID, "AUX-"));
-//            do
-//            {
-//                Term term = termEnum.term();
-//                if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith("AUX-"))
-//                {
-//                    int docCount = 0;
-//                    TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
-//                    while (termDocs.next())
-//                    {
-//                        if (!reader.isDeleted(termDocs.doc()))
-//                        {
-//                            docCount++;
-//                        }
-//                    }
-//                    if (docCount > 1)
-//                    {
-//                        long txid = Long.parseLong(term.text().substring(4));
-//                        indexHealthReport.setDuplicatedAuxInIndex(txid);
-//                    }
-//    
-//                    auxCount += docCount;
-//                }
-//                else
-//                {
-//                    break;
-//                }
-//            }
-//            while (termEnum.next());
-//            termEnum.close();
-//
-//            indexHealthReport.setAuxDocCountInIndex(auxCount);
-//
-//            // ERROR
-//
-//            int errorCount = 0;
-//            termEnum = reader.terms(new Term(QueryConstants.FIELD_ID, "ERROR-"));
-//            do
-//            {
-//                Term term = termEnum.term();
-//                if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith("ERROR-"))
-//                {
-//                    int docCount = 0;
-//                    TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
-//                    while (termDocs.next())
-//                    {
-//                        if (!reader.isDeleted(termDocs.doc()))
-//                        {
-//                            docCount++;
-//                        }
-//                    }
-//                    if (docCount > 1)
-//                    {
-//                        long txid = Long.parseLong(term.text().substring(6));
-//                        indexHealthReport.setDuplicatedErrorInIndex(txid);
-//                    }
-//
-//                    errorCount += docCount;         
-//                }
-//                else
-//                {
-//                    break;
-//                }
-//            }
-//            while (termEnum.next());
-//            termEnum.close();
-//
-//            indexHealthReport.setErrorDocCountInIndex(errorCount);
-//
-//            // UNINDEXED
-//
-//            int unindexedCount = 0;
-//            termEnum = reader.terms(new Term(QueryConstants.FIELD_ID, "UNINDEXED-"));
-//            do
-//            {
-//                Term term = termEnum.term();
-//                if (term.field().equals(QueryConstants.FIELD_ID) && term.text().startsWith("UNINDEXED-"))
-//                {
-//                    int docCount = 0;
-//                    TermDocs termDocs = reader.termDocs(new Term(QueryConstants.FIELD_ID, term.text()));
-//                    while (termDocs.next())
-//                    {
-//                        if (!reader.isDeleted(termDocs.doc()))
-//                        {
-//                            docCount++;
-//                        }
-//                    }
-//                    if (docCount > 1)
-//                    {
-//                        long txid = Long.parseLong(term.text().substring(10));
-//                        indexHealthReport.setDuplicatedUnindexedInIndex(txid);
-//                    }
-//
-//                    unindexedCount += docCount;
-//                }
-//                else
-//                {
-//                    break;
-//                }
-//            }
-//            while (termEnum.next());
-//            termEnum.close();
-//
-//            indexHealthReport.setUnindexedDocCountInIndex(unindexedCount);
-//
-//            // Other
-//
-//            indexHealthReport.setLastIndexedCommitTime(state.lastIndexedTxCommitTime);
-//            indexHealthReport.setLastIndexedIdBeforeHoles(state.lastIndexedTxIdBeforeHoles);
-//
-//            return indexHealthReport;
-//        }
-//        finally
-//        {
-//            refCounted.decref();
-//        }
-        return indexHealthReport;
-    }
+        Long minTxId = null;
+        Long minAclTxId = null;
 
-    
+        long firstTransactionCommitTime = 0;
+        Transactions firstTransactions = client.getTransactions(null, 0L, null, 2000L, 1);
+        if(firstTransactions.getTransactions().size() > 0)
+        {
+            Transaction firstTransaction = firstTransactions.getTransactions().get(0);
+            firstTransactionCommitTime = firstTransaction.getCommitTimeMs();
+        }
+
+        // DB TX Count
+        IOpenBitSet txIdsInDb = infoSrv.getOpenBitSetInstance();
+        Long lastTxCommitTime = Long.valueOf(firstTransactionCommitTime);
+        if (fromTime != null)
+        {
+            lastTxCommitTime = fromTime;
+        }
+        long maxTxId = 0;
+
+        Transactions transactions;
+        BoundedDeque<Transaction> txnsFound = new  BoundedDeque<Transaction>(100);
+        long endTime = System.currentTimeMillis() + infoSrv.getHoleRetention();
+        DO: do
+        {
+            transactions = getSomeTransactions(txnsFound, lastTxCommitTime, 1000*60*60L, 2000, endTime);
+            for (Transaction info : transactions.getTransactions())
+            {
+                // include
+                if (toTime != null)
+                {
+                    if (info.getCommitTimeMs() > toTime.longValue())
+                    {
+                        break DO;
+                    }
+                }
+                if (toTx != null)
+                {
+                    if (info.getId() > toTx.longValue())
+                    {
+                        break DO;
+                    }
+                }
+
+                // bounds for later loops
+                if (minTxId == null)
+                {
+                    minTxId = info.getId();
+                }
+                if (maxTxId < info.getId())
+                {
+                    maxTxId = info.getId();
+                }
+
+                lastTxCommitTime = info.getCommitTimeMs();
+                txIdsInDb.set(info.getId());
+                txnsFound.add(info);
+            }
+        }
+        while (transactions.getTransactions().size() > 0);
+
+        indexHealthReport.setDbTransactionCount(txIdsInDb.cardinality());
+
+        // DB ACL TX Count
+
+        long firstChangeSetCommitTimex = 0;
+        AclChangeSets firstChangeSets = client.getAclChangeSets(null, 0L, null, 2000L, 1);
+        if(firstChangeSets.getAclChangeSets().size() > 0)
+        {
+            AclChangeSet firstChangeSet = firstChangeSets.getAclChangeSets().get(0);
+            firstChangeSetCommitTimex = firstChangeSet.getCommitTimeMs();
+        }
+
+        IOpenBitSet aclTxIdsInDb = infoSrv.getOpenBitSetInstance();
+        Long lastAclTxCommitTime = Long.valueOf(firstChangeSetCommitTimex);
+        if (fromTime != null)
+        {
+            lastAclTxCommitTime = fromTime;
+        }
+        long maxAclTxId = 0;
+
+        AclChangeSets aclTransactions;
+        BoundedDeque<AclChangeSet> changeSetsFound = new  BoundedDeque<AclChangeSet>(100);
+        DO: do
+        {
+            aclTransactions = getSomeAclChangeSets(changeSetsFound, lastAclTxCommitTime, 1000*60*60L, 2000, endTime);
+            for (AclChangeSet set : aclTransactions.getAclChangeSets())
+            {
+                // include
+                if (toTime != null)
+                {
+                    if (set.getCommitTimeMs() > toTime.longValue())
+                    {
+                        break DO;
+                    }
+                }
+                if (toAclTx != null)
+                {
+                    if (set.getId() > toAclTx.longValue())
+                    {
+                        break DO;
+                    }
+                }
+
+                // bounds for later loops
+                if (minAclTxId == null)
+                {
+                    minAclTxId = set.getId();
+                }
+                if (maxAclTxId < set.getId())
+                {
+                    maxAclTxId = set.getId();
+                }
+
+                lastAclTxCommitTime = set.getCommitTimeMs();
+                aclTxIdsInDb.set(set.getId());
+                changeSetsFound.add(set);
+            }
+        }
+        while (aclTransactions.getAclChangeSets().size() > 0);
+
+        indexHealthReport.setDbAclTransactionCount(aclTxIdsInDb.cardinality());
+
+        // Index TX Count
+        return this.infoSrv.checkIndexTransactions(indexHealthReport, minTxId, minAclTxId, txIdsInDb, maxTxId, 
+                    aclTxIdsInDb, maxAclTxId);
+    }
 
     @Override
     public NodeReport checkNode(Node node)
@@ -2213,110 +1904,34 @@ public class CoreTracker implements Tracker
         }
     }
 
-    /**
-     * @param aclid
-     * @return
-     */
-    // refactor to split up
     @Override
     public AclReport checkAcl(Long aclid)
     {
         AclReport aclReport = new AclReport();
-        
-//        
-//        aclReport.setAclId(aclid);
-//
-//        // In DB
-//
-//        try
-//        {
-//            List<AclReaders> readers = client.getAclReaders(Collections.singletonList(new Acl(0, aclid)));
-//            aclReport.setExistsInDb(readers.size() == 1);
-//        }
-//        catch (IOException e)
-//        {
-//            aclReport.setExistsInDb(false);
-//        }
-//        catch (JSONException e)
-//        {
-//            aclReport.setExistsInDb(false);
-//        }
-//        catch (AuthenticationException e)
-//        {
-//            aclReport.setExistsInDb(false);
-//        }
-//
-//        // In Index
-//
-//        try
-//        {
-//            RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
-//
-//            refCounted = core.getSearcher(false, true, null);
-//            if (refCounted == null)
-//            {
-//                return aclReport;
-//            }
-//
-//            try
-//            {
-//                SolrIndexSearcher solrIndexSearcher = refCounted.get();
-//                SolrIndexReader reader = solrIndexSearcher.getReader();
-//
-//                String aclIdString = NumericEncoder.encode(aclid);
-//                DocSet docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term("ACLID", aclIdString)));
-//                // should find leaf and aux
-//                for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
-//                {
-//                    int doc = it.nextDoc();
-//
-//                    Document document = solrIndexSearcher.doc(doc);
-//                    Fieldable fieldable = document.getFieldable("ID");
-//                    if (fieldable != null)
-//                    {
-//                        String value = fieldable.stringValue();
-//                        if (value != null)
-//                        {
-//                            if (value.startsWith("ACL-"))
-//                            {
-//                                aclReport.setIndexAclDoc(Long.valueOf(doc));
-//                            }
-//                        }
-//                    }
-//
-//                }
-//                DocSet txDocSet = solrIndexSearcher.getDocSet(new WildcardQuery(new Term("ACLTXID", "*")));
-//                for (DocIterator it = txDocSet.iterator(); it.hasNext(); /* */)
-//                {
-//                    int doc = it.nextDoc();
-//                    Document document = solrIndexSearcher.doc(doc);
-//                    Fieldable fieldable = document.getFieldable("ACLTXID");
-//                    if (fieldable != null)
-//                    {
-//
-//                        if ((aclReport.getIndexAclDoc() == null) || (doc < aclReport.getIndexAclDoc().longValue()))
-//                        {
-//                            String value = fieldable.stringValue();
-//                            long acltxid = Long.parseLong(value);
-//                            aclReport.setIndexAclTx(acltxid);
-//                        }
-//
-//                    }
-//                }
-//
-//            }
-//            finally
-//            {
-//                refCounted.decref();
-//            }
-//
-//        }
-//        catch (IOException e)
-//        {
-//
-//        }
+        aclReport.setAclId(aclid);
 
-        return aclReport;
+        // In DB
+
+        try
+        {
+            List<AclReaders> readers = client.getAclReaders(Collections.singletonList(new Acl(0, aclid)));
+            aclReport.setExistsInDb(readers.size() == 1);
+        }
+        catch (IOException e)
+        {
+            aclReport.setExistsInDb(false);
+        }
+        catch (JSONException e)
+        {
+            aclReport.setExistsInDb(false);
+        }
+        catch (AuthenticationException e)
+        {
+            aclReport.setExistsInDb(false);
+        }
+
+        // In Index
+        return this.infoSrv.checkAclInIndex(aclid, aclReport);
     }
 
     private void loadModel(Map<String, M2Model> modelMap, HashSet<String> loadedModels, M2Model model)
@@ -2410,9 +2025,6 @@ public class CoreTracker implements Tracker
         }
     }
 
-    /**
-     * 
-     */
     @Override
     public void ensureFirstModelSync()
     {
