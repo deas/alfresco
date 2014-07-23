@@ -18,8 +18,12 @@
  */
 package org.alfresco.solr.content;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import java.util.TreeMap;
+import java.util.zip.CRC32;
 
+import org.alfresco.repo.content.ContentStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +40,16 @@ public class SolrContentUrlBuilder
      * <b>solr</b> is the prefix for SOLR content URLs
      * @see #isContentUrlSupported(String)
      */
-    public static final String STORE_PROTOCOL = "store";
+    public static final String SOLR_PROTOCOL = "solr";
+
+    /** The key for the tenant name */
+    public static final String KEY_TENANT = "tenant";
+    /** The key for the DB ID */
+    public static final String KEY_DB_ID = "dbId";
+    /** The key for the ACL ID */
+    public static final String KEY_ACL_ID = "aclId";
     
-    protected final static Logger log = LoggerFactory.getLogger(SolrContentUrlBuilder.class);
+    protected final static Logger logger = LoggerFactory.getLogger(SolrContentUrlBuilder.class);
     
     /** Metadata ordered by key */
     private final TreeMap<String, String> metadata;
@@ -63,6 +74,13 @@ public class SolrContentUrlBuilder
     
     /**
      * Add some metadata to the URL generator.  The order in which metadata is added is irrelevant.
+     * <p/>
+     * Note that there are specific keys that are commonly used and, if provided, may not be null or empty.
+     * <ul>
+     *   <li><b>{@link #KEY_TENANT}:</b>    The name of the tenant or 'default' if missing.</li>
+     *   <li><b>{@link #KEY_DB_ID}:</b>     The database ID.</li>
+     *   <li><b>{@link #KEY_ACL_ID}:</b>    The ACL ID.</li>
+     * </ul>
      * 
      * @param key           an arbitrary metadata key (never <tt>null</tt>>
      * @param value         some metadata value (<tt>null</tt> is supported)
@@ -82,6 +100,88 @@ public class SolrContentUrlBuilder
         {
             throw new IllegalStateException("The metadata key, '" + key + "', has already been used.");
         }
+        // Check well-known keys
+        if (key.equals(KEY_TENANT) || key.equals(KEY_DB_ID) || key.equals(KEY_ACL_ID))
+        {
+            if (value == null || value.length() == 0)
+            {
+                throw new IllegalArgumentException("Invalid value for key '" + key + "': " + value);
+            }
+        }
+        // Store metadata
+        metadata.put(key, value);
+        
+        // Done
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Appending SOLR metadata: " + key + " - " + value);
+        }
         return this;
+    }
+    
+    /**
+     * Get the final content URL using the {@link #add(String, String) supplied metadata}.
+     * 
+     * @return              the SOLR content URL
+     * @throws              IllegalStateException if no metadata has been added
+     */
+    public synchronized String get()
+    {
+        if (metadata.size() == 0)
+        {
+            throw new IllegalStateException("No metadata added.  Usage add.");
+        }
+        // Calculate the CRC
+        CRC32 crc = new CRC32();
+        try
+        {
+            for (Map.Entry<String, String> entry : metadata.entrySet())
+            {
+                // This is ordered, so just add each entry as "key = value".
+                // DO NOT USE entry.toString() because the format is not a contract
+                // and we have to have the same string for the same metadata
+                String entryStr = entry.getKey() + "=" + entry.getValue() + "; ";
+                crc.update(entryStr.getBytes("UTF-8"));
+            }
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            // Yeah, right.
+            throw new RuntimeException("UTF-8 is not supported.", e);
+        }
+        // Is there a 'tenant'?
+        String tenant = metadata.get(KEY_TENANT);
+        if (tenant == null)             // We checked it for length before
+        {
+            tenant = "default";
+        }
+
+        StringBuilder sb = new StringBuilder(72);
+        sb.append(SOLR_PROTOCOL).append(ContentStore.PROTOCOL_DELIMITER).append(tenant).append("/");
+        // We use 3 characters at a time from the CRC, which gives up to 999 entries per path element of the URL
+        String crcStr = "" + crc.getValue();
+        int pathCharCount = 0;
+        for (int i = 0; i < crcStr.length(); i++)
+        {
+            // If we have 3 chars in a path part (and we have more chars) then we have a folder
+            if (pathCharCount == 3)
+            {
+                sb.append("/");
+                pathCharCount = 0;
+            }
+            // Append the char
+            sb.append(crcStr.charAt(i));
+            pathCharCount++;
+        }
+        // We always have a numeric value ending, never '/'.  That's it.  Just give it an extension.
+        sb.append(".bin");
+        String url = sb.toString();
+        
+        // Done
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Converted SOLR metadata to URL: " + url + "  -- " + metadata.toString());
+        }
+        return url;
     }
 }
