@@ -128,7 +128,7 @@ public class SolrInformationServer implements InformationServer
                 String qName = p.getProperty(key);
                 if ((null != qName) && !qName.isEmpty())
                 {
-                    QName typeQName = QName.resolveToQName(/*dataModel.getNamespaceDAO()*/null, qName); // TODO
+                    QName typeQName = QName.resolveToQName(dataModel.getNamespaceDAO(), qName); // TODO
                     TypeDefinition type = dataModel.getDictionaryService(CMISStrictDictionaryService.DEFAULT).getType(typeQName);
                     if (null != type)
                     {

@@ -21,11 +21,6 @@ package org.alfresco.solr.tracker;
 
 import java.util.Properties;
 
-import org.alfresco.encryption.KeyStoreParameters;
-import org.alfresco.encryption.ssl.SSLEncryptionParameters;
-import org.alfresco.httpclient.AlfrescoHttpClient;
-import org.alfresco.httpclient.HttpClientFactory;
-import org.alfresco.httpclient.HttpClientFactory.SecureCommsType;
 import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.alfresco.solr.AlfrescoSolrCloseHook;
@@ -38,7 +33,6 @@ import org.apache.solr.core.SolrResourceLoader;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +56,7 @@ public class CoreWatcherJob implements Job
             TrackerRegistry trackerRegistry = adminHandler.getTrackerRegistry();
             if (!trackerRegistry.hasTrackersForCore(coreName))
             {
-                if (core.getSolrConfig().getBool("alfresco/track", false))
+                if (Boolean.parseBoolean(core.getCoreDescriptor().getCoreProperty("enable.alfresco.tracking", "false")))
                 {
                     log.info("Starting to track " + coreName);
 

@@ -41,6 +41,7 @@ import org.alfresco.repo.dictionary.DictionaryDAOImpl;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl.DictionaryRegistry;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2ModelDiff;
+import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
 import org.alfresco.repo.i18n.StaticMessageLookup;
@@ -198,6 +199,11 @@ public class AlfrescoSolrDataModel
             readWriteLock.writeLock().unlock();
         }
 
+    }
+    
+    public NamespaceDAO getNamespaceDAO()
+    {
+        return namespaceDAO;
     }
     
     /**
