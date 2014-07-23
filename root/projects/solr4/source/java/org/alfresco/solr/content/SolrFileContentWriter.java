@@ -120,7 +120,7 @@ public class SolrFileContentWriter implements ContentWriter
         }
         try
         {
-            OutputStream is = new BufferedOutputStream(new FileOutputStream(file));
+            OutputStream is = new BufferedOutputStream(FileUtils.openOutputStream(file));
             written = true;
             // done
             return is;

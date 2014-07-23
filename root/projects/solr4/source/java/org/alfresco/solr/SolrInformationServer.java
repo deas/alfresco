@@ -1430,15 +1430,16 @@ public class SolrInformationServer implements InformationServer
         addFieldsToDoc(nodeMetaData, newDoc);
         SolrInputDocument cachedDoc = null;
         boolean isContentIndexedForNode = isContentIndexedForNode(nodeMetaData.getProperties());
+        String fixedTenantDomain = AlfrescoSolrDataModel.getTenantId(nodeMetaData.getTenantDomain());
         if (isContentIndexedForNode)
         {
-            cachedDoc = retrieveDocFromSolrContentStore(nodeMetaData.getTenantDomain(), nodeMetaData.getId());
+            cachedDoc = retrieveDocFromSolrContentStore(fixedTenantDomain, nodeMetaData.getId());
         }
         addPropertiesToDoc(nodeMetaData, isContentIndexedForNode, newDoc, cachedDoc);
         if (isContentIndexedForNode)
         {
             // Now that the new doc is fully updated and is about to go to the Solr index, cache it.
-            storeDocOnSolrContentStore(nodeMetaData.getTenantDomain(), nodeMetaData.getId(), newDoc);
+            storeDocOnSolrContentStore(fixedTenantDomain, nodeMetaData.getId(), newDoc);
         }
     }
 
@@ -1848,17 +1849,25 @@ public class SolrInformationServer implements InformationServer
                     .add(SolrContentUrlBuilder.KEY_TENANT, tenant)
                     .add(SolrContentUrlBuilder.KEY_DB_ID, String.valueOf(dbId))
                     .get();
+        if(!this.solrContentStore.exists(contentUrl))
+        {
+            return null;
+        }
         ContentReader reader = this.solrContentStore.getReader(contentUrl);
         SolrInputDocument cachedDoc = null;
-        // try-with-resources statement closes all these InputStreams
-        try (
+        if(reader.exists())
+        {
+
+            // try-with-resources statement closes all these InputStreams
+            try (
                     InputStream contentInputStream = reader.getContentInputStream();
                     // Uncompresses the document
                     GZIPInputStream gzip = new GZIPInputStream(contentInputStream);
                     FastInputStream fis = new FastInputStream(gzip)
-            )
-        { 
-            cachedDoc = new JavaBinCodec().readSolrInputDocument(fis);
+                    )
+                    { 
+                cachedDoc = new JavaBinCodec().readSolrInputDocument(fis);
+                    }
         }
         return cachedDoc;
     }
