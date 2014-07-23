@@ -240,19 +240,16 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
 
     // ACL change sets
 
-//    @Override
     public void addAclChangeSetToReindex(Long aclChangeSetToReindex)
     {
         aclChangeSetsToReindex.offer(aclChangeSetToReindex);
     }
 
-//    @Override
     public void addAclChangeSetToIndex(Long aclChangeSetToIndex)
     {
         aclChangeSetsToIndex.offer(aclChangeSetToIndex);
     }
 
-//    @Override
     public void addAclChangeSetToPurge(Long aclChangeSetToPurge)
     {
         aclChangeSetsToPurge.offer(aclChangeSetToPurge);
@@ -260,19 +257,16 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
 
     // ACLs
 
-//    @Override
     public void addAclToReindex(Long aclToReindex)
     {
         aclsToReindex.offer(aclToReindex);
     }
 
-//    @Override
     public void addAclToIndex(Long aclToIndex)
     {
         aclsToIndex.offer(aclToIndex);
     }
 
-//    @Override
     public void addAclToPurge(Long aclToPurge)
     {
         aclsToPurge.offer(aclToPurge);
@@ -857,7 +851,6 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
     }
 
 
-//    @Override
     public List<Node> getFullNodesForDbTransaction(Long txid)
     {
         try
@@ -890,7 +883,6 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
      * @param acltxid
      * @return
      */
-//    @Override
     public List<Long> getAclsForDbAclTransaction(Long acltxid)
     {
         try
@@ -918,7 +910,6 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
         }
     }
 
-//    @Override
     public AclReport checkAcl(Long aclid)
     {
         AclReport aclReport = new AclReport();
