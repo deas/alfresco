@@ -1032,11 +1032,7 @@ public class SolrInformationServer implements InformationServer
                 if (node.getStatus() == SolrApiNodeStatus.DELETED)
                 {
                     // Fake the empty node metadata for this parent deleted node
-                    NodeMetaData nodeMetaData = new NodeMetaData();
-                    nodeMetaData.setId(node.getId());
-                    nodeMetaData.setType(ContentModel.TYPE_DELETED);
-                    nodeMetaData.setNodeRef(new NodeRef(node.getNodeRef()));
-                    nodeMetaData.setTxnId(node.getTxnId());
+                    NodeMetaData nodeMetaData = createDeletedNodeMetaData(node);
                     nodeMetaDatas = Collections.singletonList(nodeMetaData);
                 }
                 else
@@ -1209,6 +1205,16 @@ public class SolrInformationServer implements InformationServer
 
     }
 
+    private NodeMetaData createDeletedNodeMetaData(Node node)
+    {
+        NodeMetaData nodeMetaData = new NodeMetaData();
+        nodeMetaData.setId(node.getId());
+        nodeMetaData.setType(ContentModel.TYPE_DELETED);
+        nodeMetaData.setNodeRef(new NodeRef(node.getNodeRef()));
+        nodeMetaData.setTxnId(node.getTxnId());
+        return nodeMetaData;
+    }
+
     private SolrInputDocument createDocFromNodeMetaData(NodeMetaData nodeMetaData)
     {
         SolrInputDocument doc = new SolrInputDocument();
@@ -1248,11 +1254,7 @@ public class SolrInformationServer implements InformationServer
                 for (Long deletedNodeId : deletedNodeIds)
                 {
                     Node node = nodeIdsToNodes.get(deletedNodeId);
-                    NodeMetaData nodeMetaData = new NodeMetaData();
-                    nodeMetaData.setId(node.getId());
-                    nodeMetaData.setType(ContentModel.TYPE_DELETED);
-                    nodeMetaData.setNodeRef(new NodeRef(node.getNodeRef()));
-                    nodeMetaData.setTxnId(node.getTxnId());
+                    NodeMetaData nodeMetaData = createDeletedNodeMetaData(node);
                     nodeMetaDatas.add(nodeMetaData);
                 }
                 
