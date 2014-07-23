@@ -53,6 +53,18 @@
       </fieldType>
 
 
+      <fieldType name="site" class="solr.TextField" >
+         <analyzer type="index">
+            <tokenizer class="solr.PatternTokenizerFactory" pattern=";"/>
+            <filter class="solr.PatternReplaceFilterFactory" pattern="/\{http\://www\.alfresco\.org/model/application/1\.0\}company\_home/\{http\://www\.alfresco\.org/model/site/1\.0\}sites/\{http\://www\.alfresco\.org/model/content/1.0}([^/]*)/.*" replacement="$1"/>
+            <filter class="solr.PatternReplaceFilterFactory" pattern="/.*" replacement="_REPOSITORY_"/>
+         </analyzer>
+         <analyzer type="query">
+            <tokenizer class="solr.KeywordTokenizerFactory"/>
+         </analyzer>
+      </fieldType>
+
+
       <!-- Suggestion -->
 
       <fieldType name="text_shingle" class="solr.TextField" positionIncrementGap="100">
@@ -587,7 +599,7 @@
 
 
       <!-- example pluggable field -->
-      <field name="SITE" type="identifier" indexed="true" omitNorms="true" stored="false" multiValued="true"  docValues="true"/>
+      <field name="SITE" type="site" indexed="true" omitNorms="true" stored="false" multiValued="true" />
 
 
       <!-- Single value indexed  -->
