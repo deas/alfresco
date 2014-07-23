@@ -292,8 +292,8 @@ public class AclTracker implements Tracker
         return repoClient;
     }
 
-//    @Override
-    public void updateIndex()
+    @Override
+    public void track()
     {
         TrackerState state = this.infoSrv.getTrackerState();
 
@@ -1858,14 +1858,4 @@ public class AclTracker implements Tracker
     {
         this.shutdown = shutdown;
     }
-        
-    
-    // TODO: remove this method and rename updateIndex() to track() and apply @Override annotation.
-    @Override
-    public void track()
-    {
-        // Delegating to old/existing method.
-        updateIndex();
-    }
-
 }
