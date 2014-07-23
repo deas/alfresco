@@ -41,6 +41,7 @@ public class SolrContentUrlBuilder
      * @see #isContentUrlSupported(String)
      */
     public static final String SOLR_PROTOCOL = "solr";
+    public static final String SOLR_PROTOCOL_PREFIX = SOLR_PROTOCOL + ContentStore.PROTOCOL_DELIMITER;
 
     /** The key for the tenant name */
     public static final String KEY_TENANT = "tenant";
@@ -156,12 +157,24 @@ public class SolrContentUrlBuilder
             tenant = "default";
         }
 
+        // Build a numeric value using the CRC and special IDs, if available
+        StringBuilder numSb = new StringBuilder(52);
+        if (metadata.containsKey(KEY_DB_ID))
+        {
+            numSb.append(metadata.get(KEY_DB_ID));
+        }
+        if (metadata.containsKey(KEY_ACL_ID))
+        {
+            numSb.append(metadata.get(KEY_ACL_ID));
+        }
+        numSb.append(crc.getValue());
+        String numStr = numSb.toString();
+        
         StringBuilder sb = new StringBuilder(72);
-        sb.append(SOLR_PROTOCOL).append(ContentStore.PROTOCOL_DELIMITER).append(tenant).append("/");
+        sb.append(SOLR_PROTOCOL_PREFIX).append(tenant).append("/");
         // We use 3 characters at a time from the CRC, which gives up to 999 entries per path element of the URL
-        String crcStr = "" + crc.getValue();
         int pathCharCount = 0;
-        for (int i = 0; i < crcStr.length(); i++)
+        for (int i = 0; i < numStr.length(); i++)
         {
             // If we have 3 chars in a path part (and we have more chars) then we have a folder
             if (pathCharCount == 3)
@@ -170,7 +183,7 @@ public class SolrContentUrlBuilder
                 pathCharCount = 0;
             }
             // Append the char
-            sb.append(crcStr.charAt(i));
+            sb.append(numStr.charAt(i));
             pathCharCount++;
         }
         // We always have a numeric value ending, never '/'.  That's it.  Just give it an extension.

@@ -18,6 +18,7 @@
  */
 package org.alfresco.solr.content;
 
+import java.io.File;
 import java.util.Date;
 
 import org.alfresco.repo.content.ContentContext;
@@ -25,6 +26,7 @@ import org.alfresco.repo.content.ContentStore;
 import org.alfresco.service.cmr.repository.ContentIOException;
 import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.ContentWriter;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,48 +45,77 @@ import org.slf4j.LoggerFactory;
  */
 public class SolrContentStore implements ContentStore
 {
-    /**
-     * <b>solr</b> is the prefix for SOLR content URLs
-     * @see #isContentUrlSupported(String)
-     */
-    public static final String STORE_PROTOCOL = "store";
-    
     protected final static Logger log = LoggerFactory.getLogger(SolrContentStore.class);
+    
+    private final String root;
+    
+    public SolrContentStore(String rootStr)
+    {
+        File rootFile = new File(rootStr);
+        try
+        {
+            FileUtils.forceMkdir(rootFile);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Failed to create directory for content store: " + this.root, e);
+        }
+        this.root = rootFile.getAbsolutePath();
+    }
 
     @Override
     public boolean isContentUrlSupported(String contentUrl)
     {
-        throw new UnsupportedOperationException("Auto-created method not implemented.");
+        return (contentUrl != null && contentUrl.startsWith(SolrContentUrlBuilder.SOLR_PROTOCOL_PREFIX));
     }
 
+    /**
+     * @return                  <tt>true</tt> always
+     */
     @Override
     public boolean isWriteSupported()
     {
-        throw new UnsupportedOperationException("Auto-created method not implemented.");
+        return true;
     }
 
+    /**
+     * @return                  -1 always
+     */
     @Override
     public long getSpaceFree()
     {
-        throw new UnsupportedOperationException("Auto-created method not implemented.");
+        return -1L;
     }
 
+    /**
+     * @return                  -1 always
+     */
     @Override
     public long getSpaceTotal()
     {
-        throw new UnsupportedOperationException("Auto-created method not implemented.");
+        return -1L;
     }
 
     @Override
     public String getRootLocation()
     {
-        throw new UnsupportedOperationException("Auto-created method not implemented.");
+        return root;
     }
 
+    /**
+     * Convert a content URL into a File, whether it exists or not
+     */
+    private File getFileFromUrl(String contentUrl)
+    {
+        String path = contentUrl.replace(SolrContentUrlBuilder.SOLR_PROTOCOL_PREFIX, root + "/");
+        return new File(path);
+    }
+    
     @Override
     public boolean exists(String contentUrl)
     {
-        throw new UnsupportedOperationException("Auto-created method not implemented.");
+        File file = getFileFromUrl(contentUrl);
+        return file.exists();
     }
 
     @Override
