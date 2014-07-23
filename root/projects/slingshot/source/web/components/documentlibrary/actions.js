@@ -500,11 +500,18 @@
          {
             if (isCloud)
             {
-               displayPromptText += this.msg("actions.synced.cloud." + content + ".delete", displayName);
+        	   if (jsNode.hasAspect("sync:deleteOnPrem"))
+               {
+          	      displayPromptText += this.msg("actions.synced.cloud." + content + ".delete.on.prem", displayName);
+               }
+               else
+               {
+          	      displayPromptText += this.msg("actions.synced.cloud." + content + ".delete", displayName);
+               }
             }
             else
             {
-               displayPromptText += this.msg("actions.synced." + content + ".delete", displayName);
+                displayPromptText += this.msg("actions.synced." + content + ".delete", displayName);
             }
          }
 

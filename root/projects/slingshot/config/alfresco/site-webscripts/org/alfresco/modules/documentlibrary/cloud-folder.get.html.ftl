@@ -34,6 +34,11 @@
             <h3>${msg("header.options")}</h3>
             <label for="includeSubFolders" id="includeSubFolders-label"><input type="checkbox" value="includeSubFolders" name="includeSubFolders" id="includeSubFolders" class="cloudSyncOption" checked="checked"><span>${msg("label.includeSubFolders")}</span></label>
             <label for="lockSourceCopy" id="lockSourceCopy-label"><input type="checkbox" value="lockSourceCopy" name="lockSourceCopy" id="lockSourceCopy" class="cloudSyncOption"><span>${msg("label.lock-source-copy")}</span></label>
+            
+            <label for="isDeleteOnCloud" id="isDeleteOnCloud-label"><input type="checkbox" value="isDeleteOnCloud" name="isDeleteOnCloud" id="isDeleteOnCloud" class="cloudSyncOption" checked="checked"><span>${msg("label.is-delete-on-cloud")}</span></label>
+            <label for="isDeleteOnPrem" id="isDeleteOnPrem-label"><input type="checkbox" value="isDeleteOnPrem" name="isDeleteOnPrem" id="isDeleteOnPrem" class="cloudSyncOption"><span>${msg("label.is-delete-on-prem")}</span></label>
+            
+            
             <#--
             <label for="syncComments" id="syncComments-label"><input type="checkbox" value="syncComments" name="syncComments" id="syncComments" class="cloudSyncOption"><span>${msg("label.syncComments")}</span></label>
             <label for="deleteOnUnsync" id="deleteOnUnsync-label"><input type="checkbox" value="deleteOnUnsync" name="deleteOnUnsync" id="deleteOnUnsync" class="cloudSyncOption"><span>${msg("label.deleteOnUnsync")}</span></label>
