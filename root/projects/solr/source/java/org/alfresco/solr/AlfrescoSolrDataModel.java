@@ -294,6 +294,35 @@ public class AlfrescoSolrDataModel
            compiledModelsCache.setTenantService(tenantService);
            compiledModelsCache.setRegistry(new DefaultAsynchronouslyRefreshedCacheRegistry());
            compiledModelsCache.setThreadPoolExecutor(getThreadPoolExecutor());
+           
+           
+           // MNT-11618 "Failed to get lock ReadLock for getting dictionary registry from cache..." error during strartup on Linux (intermittently)
+           File config = new File(id, "conf/solrcore.properties");
+           Properties properties = new Properties();
+           long lockTimeout = 4000;
+           try
+           {
+               properties.load(new FileInputStream(config));
+
+               String lockProperty = properties.getProperty("system.lockTryTimeout.AlfrescoSolrDataModel.DictionaryDAOImpl");
+
+               if (lockProperty != null)
+               {
+                   lockTimeout = Long.valueOf(lockProperty);
+               }
+           }
+           catch (FileNotFoundException e1)
+           {
+               // TODO Auto-generated catch block
+           }
+           catch (IOException e1)
+           {
+               // TODO Auto-generated catch block
+           }
+           catch (NumberFormatException e)
+           {
+               // TODO Auto-generated catch block
+           }
 
            // TODO: use config ....
            dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
