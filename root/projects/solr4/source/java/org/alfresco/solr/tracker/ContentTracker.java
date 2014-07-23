@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.alfresco.solr.InformationServer;
-import org.alfresco.solr.TrackerState;
+import org.alfresco.solr.SolrInformationServer.TenantAndDbId;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,10 +53,15 @@ public class ContentTracker extends AbstractTracker implements Tracker
     }
     
     @Override
-    protected void doTrack()
+    protected void doTrack() throws Exception
     {
-        List<Integer> docIds = this.infoSrv.getDocsIdsWithContent();
+        List<TenantAndDbId> buckets = this.infoSrv.getDocsWithUncleanContent();
         
+        for (TenantAndDbId bucket : buckets)
+        {
+            // update the content
+            this.infoSrv.updateContentToIndexAndCache(bucket.dbId, bucket.tenant);
+        }
         
     }
 

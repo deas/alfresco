@@ -132,6 +132,8 @@ public class AlfrescoSolrDataModel
         TRANSFORMATION_EXCEPTION
     }
     
+    public static final String CONTENT_LOCALE_PREFIX = "content@locale@";
+    
     protected final static Logger log = LoggerFactory.getLogger(AlfrescoSolrDataModel.class);
 
     private static final String CHANGE_SET = "CHANGE_SET";

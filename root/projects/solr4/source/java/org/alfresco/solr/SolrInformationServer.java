@@ -297,9 +297,15 @@ public class SolrInformationServer implements InformationServer
         // TODO Auto-generated method stub
         return null;
     }
-
+    
+    public class TenantAndDbId
+    {
+        public Long dbId;
+        public String tenant;
+    }
+    
     @Override
-    public List<Integer> getDocsIdsWithContent()
+    public List<TenantAndDbId> getDocsWithUncleanContent()
     {
         LocalSolrQueryRequest solrReq = new LocalSolrQueryRequest(core, new NamedList<>());
         SolrQueryResponse solrRsp = new SolrQueryResponse();
@@ -318,7 +324,7 @@ public class SolrInformationServer implements InformationServer
         log.info("Response: " + solrRsp);
         log.info("solrRsp.getReturnFields(): " + solrRsp.getReturnFields());
         
-        List<Integer> docIds = new ArrayList<>();
+        List<TenantAndDbId> docs = new ArrayList<>();
         
         ResultContext rc = (ResultContext) solrRsp.getValues().get("response");
         if (rc != null)
@@ -326,10 +332,11 @@ public class SolrInformationServer implements InformationServer
             DocIterator iterator = rc.docs.iterator();
             while (iterator.hasNext())
             {
-                docIds.add(iterator.next());
+                //docIds.add(iterator.next());
+// TODO  Talk with Andy to get the two pieces of information
             }
         }
-        return docIds;
+        return docs;
     }
     
     @Override
@@ -1661,11 +1668,35 @@ public class SolrInformationServer implements InformationServer
         }
         return fieldName;
     }
-    
+
 
     private void addContentPropertyMetadata(SolrInputDocument doc, QName propertyQName, 
-                ContentPropertyValue contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType type, 
-                GetTextContentResponse textContentResponse)
+                AlfrescoSolrDataModel.ContentFieldType type, GetTextContentResponse textContentResponse)
+    {
+        IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getIndexedFieldForContentPropertyMetadata(
+                    propertyQName, type);
+        for (FieldInstance fieldInstance : indexedField.getFields())
+        {
+            switch(type)
+            {
+            case TRANSFORMATION_EXCEPTION:
+                doc.addField(fieldInstance.getField(), textContentResponse.getTransformException());
+                break;
+            case TRANSFORMATION_STATUS:
+                doc.addField(fieldInstance.getField(), textContentResponse.getStatus());
+                break;
+            case TRANSFORMATION_TIME:
+                doc.addField(fieldInstance.getField(), textContentResponse.getTransformDuration());
+                break;
+                // Skips the ones that require the ContentPropertyValue
+                default:
+                break;
+            }
+        }
+    }
+
+    private void addContentPropertyMetadata(SolrInputDocument doc, QName propertyQName, 
+                ContentPropertyValue contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType type)
     {
         IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getIndexedFieldForContentPropertyMetadata(
                     propertyQName, type);
@@ -1688,14 +1719,8 @@ public class SolrInformationServer implements InformationServer
             case SIZE:
                 doc.addField(fieldInstance.getField(), contentPropertyValue.getLength());
                 break;
-            case TRANSFORMATION_EXCEPTION:
-                doc.addField(fieldInstance.getField(), textContentResponse.getTransformException());
-                break;
-            case TRANSFORMATION_STATUS:
-                doc.addField(fieldInstance.getField(), textContentResponse.getStatus());
-                break;
-            case TRANSFORMATION_TIME:
-                doc.addField(fieldInstance.getField(), textContentResponse.getTransformDuration());
+                // Skips the ones that require the text content response
+                default:
                 break;
             }
         }
@@ -1706,11 +1731,19 @@ public class SolrInformationServer implements InformationServer
                 QName propertyQName, ContentPropertyValue contentPropertyValue)
                     throws AuthenticationException, IOException
     {
-        addContentPropertiesToDocFromContentPropertyValue(newDoc, propertyQName, contentPropertyValue);
-
-        // TODO Do we still need this short-circuit now that we are introducing ContentTracker?
-        if (false == transformContent) { return; } 
-
+        addContentPropertyMetadata(newDoc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.DOCID);
+        addContentPropertyMetadata(newDoc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.SIZE);
+        addContentPropertyMetadata(newDoc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.LOCALE);
+        addContentPropertyMetadata(newDoc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.MIMETYPE);
+        addContentPropertyMetadata(newDoc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.ENCODING);
+        
+        if (false == transformContent) 
+        {
+            // Marks it as Clean so we do not get the actual content
+            newDoc.addField(FIELD_FTSSTATUS, FTSStatus.Clean.toString());
+            return; 
+        }
+        
         if (cachedDoc != null)
         {
             // Builds up the new solr doc from the cached content regardless of whether or not it is current
@@ -1755,34 +1788,58 @@ public class SolrInformationServer implements InformationServer
             newDoc.addField(FIELD_FTSSTATUS, FTSStatus.New.toString());
         }
     }
-
-    private void addContentPropertiesToDocFromContentPropertyValue(SolrInputDocument doc, QName propertyQName,
-                ContentPropertyValue contentPropertyValue)
+    
+    @Override
+    public void updateContentToIndexAndCache(long dbId, String tenant) throws Exception
     {
-        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.DOCID, null);
-        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.SIZE, null);
-        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.LOCALE, null);
-        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.MIMETYPE, null);
-        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.ENCODING, null);
+        SolrInputDocument cachedDoc = retrieveDocFromSolrContentStore(tenant, dbId);
+        if (cachedDoc != null)
+        {
+            addContentToCachedDoc(cachedDoc, dbId);
+            // Marks as clean since the doc's content is now up to date
+            cachedDoc.addField(FIELD_FTSSTATUS, FTSStatus.Clean.toString());
+            storeDocOnSolrContentStore(tenant, dbId, cachedDoc);
+            
+            // Add to index
+            AddUpdateCommand addDocCmd = new AddUpdateCommand(getLocalSolrQueryRequest());
+            addDocCmd.overwrite = true;
+            addDocCmd.solrDoc = cachedDoc;
+            UpdateRequestProcessor processor = this.core.getUpdateProcessingChain(null).createProcessor(
+                        getLocalSolrQueryRequest(), new SolrQueryResponse());
+            processor.processAdd(addDocCmd);
+        }
+        else
+        {
+            throw new Exception("This method should not be called unless there is a cached doc in the content store.");
+        }
     }
-
-    //TODO Use with ContentTracking
-    private void addContentPropertyToDocUsingAlfrescoRepository(SolrInputDocument doc, QName propertyQName, 
-                long dbId, ContentPropertyValue contentPropertyValue) 
+    
+    private void addContentToCachedDoc(SolrInputDocument cachedDoc, long dbId) throws UnsupportedEncodingException, AuthenticationException, IOException
+    {
+        for (String fieldName : cachedDoc.getFieldNames())
+        {
+            if (fieldName.startsWith(AlfrescoSolrDataModel.CONTENT_LOCALE_PREFIX))
+            {
+                String locale = String.valueOf(cachedDoc.getFieldValue(fieldName));
+                String qNamePart = fieldName.substring(AlfrescoSolrDataModel.CONTENT_LOCALE_PREFIX.length());
+                QName propertyQName = QName.createQName(qNamePart);
+                addContentPropertyToDocUsingAlfrescoRepository(cachedDoc, propertyQName, dbId, locale);
+            }
+        }
+    }
+    
+    private void addContentPropertyToDocUsingAlfrescoRepository(SolrInputDocument cachedDoc, 
+                QName propertyQName, long dbId, String locale) 
                             throws AuthenticationException, IOException, UnsupportedEncodingException
     {
-        addContentPropertiesToDocFromContentPropertyValue(doc, propertyQName, contentPropertyValue);
-        
-        if (false == transformContent) { return; } 
-        
         long start = System.nanoTime();
         
         // Expensive call to be done with ContentTrakcer
         GetTextContentResponse response = repositoryClient.getTextContent(dbId, propertyQName, null);
         
-        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.TRANSFORMATION_STATUS, response);
-        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.TRANSFORMATION_EXCEPTION, response);
-        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.TRANSFORMATION_TIME, response);
+        addContentPropertyMetadata(cachedDoc, propertyQName, AlfrescoSolrDataModel.ContentFieldType.TRANSFORMATION_STATUS, response);
+        addContentPropertyMetadata(cachedDoc, propertyQName, AlfrescoSolrDataModel.ContentFieldType.TRANSFORMATION_EXCEPTION, response);
+        addContentPropertyMetadata(cachedDoc, propertyQName, AlfrescoSolrDataModel.ContentFieldType.TRANSFORMATION_TIME, response);
 
         InputStream ris = response.getContent();
         String textContent = "";
@@ -1805,18 +1862,18 @@ public class SolrInformationServer implements InformationServer
         this.getTrackerStats().addDocTransformationTime(end - start);
         
         StringBuilder builder = new StringBuilder();
-        builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
+        builder.append("\u0000").append(locale).append("\u0000");
         builder.append(textContent);
 
-        for( FieldInstance  field : AlfrescoSolrDataModel.getInstance().getIndexedFieldNamesForProperty(propertyQName).getFields())
+        for (FieldInstance  field : AlfrescoSolrDataModel.getInstance().getIndexedFieldNamesForProperty(propertyQName).getFields())
         {
             if(field.isLocalised())
             {
-                doc.addField(field.getField(), builder.toString());
+                cachedDoc.addField(field.getField(), builder.toString());
             }
             else
             {
-                doc.addField(field.getField(), textContent);
+                cachedDoc.addField(field.getField(), textContent);
             }
         }
     }

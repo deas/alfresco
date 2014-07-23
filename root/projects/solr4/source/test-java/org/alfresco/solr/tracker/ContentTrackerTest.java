@@ -55,7 +55,7 @@ public class ContentTrackerTest
     }
 
     @Test
-    public void doTrackWithNoContentDoesNothing() throws IOException
+    public void doTrackWithNoContentDoesNothing() throws Exception
     {
         
         this.contentTracker.doTrack();

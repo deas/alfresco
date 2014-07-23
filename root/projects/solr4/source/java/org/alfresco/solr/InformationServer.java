@@ -28,6 +28,7 @@ import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.solr.SolrInformationServer.TenantAndDbId;
 import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.adapters.ISimpleOrderedMap;
 import org.alfresco.solr.client.AclChangeSet;
@@ -113,6 +114,8 @@ public interface InformationServer
     IndexHealthReport checkIndexTransactions(IndexHealthReport indexHealthReport, Long minTxId, Long minAclTxId,
                 IOpenBitSet txIdsInDb, long maxTxId, IOpenBitSet aclTxIdsInDb, long maxAclTxId) throws IOException;
 
-    List<Integer> getDocsIdsWithContent();
+    List<TenantAndDbId> getDocsWithUncleanContent();
+
+    void updateContentToIndexAndCache(long dbId, String tenant) throws Exception;
 
 }

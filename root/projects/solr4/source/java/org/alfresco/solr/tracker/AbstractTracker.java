@@ -108,6 +108,8 @@ public abstract class AbstractTracker implements Tracker
     @Override
     public void track()
     {
+        // This ensures that we will get a new initial state each run
+        this.invalidateTrackerState();
         TrackerState state = this.getTrackerState();
 
         synchronized (this) 
@@ -172,6 +174,11 @@ public abstract class AbstractTracker implements Tracker
             state.setRunning(false);
             state.setCheck(false);
         }
+    }
+    
+    private void invalidateTrackerState()
+    {
+        this.state = null;
     }
     
     @Override
