@@ -1690,4 +1690,7 @@
 
    <target name="assemble-command-extras" description="Assemble commands" />
 
+   <target name="assemble-tomcat-extras" description="Assemble distribution war" />
+
+ 
 </project>

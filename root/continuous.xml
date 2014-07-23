@@ -550,6 +550,7 @@
          <fileset dir="${dir.project.installer.messages}" />
       </copy>
 
+      <antcall target="assemble-tomcat-extras"/>            
    </target>
 
    <!-- *********************** -->
