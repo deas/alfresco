@@ -79,6 +79,7 @@ import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.update.AddUpdateCommand;
 import org.apache.solr.update.CommitUpdateCommand;
 import org.apache.solr.update.DeleteUpdateCommand;
+import org.apache.solr.update.RollbackUpdateCommand;
 import org.apache.solr.util.RefCounted;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -238,14 +239,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void checkCache() throws IOException
     {
-     // TODO: Add the SolrQueryRequest instead of null
-        AddUpdateCommand checkDocCmd = new AddUpdateCommand(null);
-        
-        
-        BytesRef indexedId = new BytesRef("CHECK_CACHE");
-        checkDocCmd.setIndexedId(indexedId );
-        core.getUpdateHandler().addDoc(checkDocCmd);
-        this.commit();
+       // There is no cache to check for SOLR 4
     }
 
     @Override
@@ -336,8 +330,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void commit() throws IOException
     {
-// TODO Add SolrQueryRequest
-        this.core.getUpdateHandler().commit(new CommitUpdateCommand(null, false));
+        this.core.getUpdateHandler().commit(new CommitUpdateCommand(getLocalSolrQueryRequerst(), false));
     }
 
     @Override
@@ -398,8 +391,7 @@ public class SolrInformationServer implements InformationServer
 
         for (String idToDelete : idsToDelete)
         {
-// TODO Add SolrQueryRequest
-            DeleteUpdateCommand docCmd = new DeleteUpdateCommand(null);
+            DeleteUpdateCommand docCmd = new DeleteUpdateCommand(getLocalSolrQueryRequerst());
             docCmd.setId(idToDelete);
             core.getUpdateHandler().delete(docCmd);
         }
@@ -884,7 +876,9 @@ public class SolrInformationServer implements InformationServer
         AddUpdateCommand cmd = new AddUpdateCommand(null); // TODO: Add SolrQueryRequest req
         cmd.overwrite = overwrite;
         SolrInputDocument input = new SolrInputDocument();
-        input.addField(QueryConstants.FIELD_ID, "TX-" + info.getId());
+        //input.addField(QueryConstants.FIELD_ID, "TX-" + info.getId());
+        input.addField("id", "TX-" + info.getId());
+        input.addField("_version_", "0");
         input.addField(QueryConstants.FIELD_TXID, info.getId());
         input.addField(QueryConstants.FIELD_INTXID, info.getId());
         input.addField(QueryConstants.FIELD_TXCOMMITTIME, info.getCommitTimeMs());
@@ -938,8 +932,7 @@ public class SolrInformationServer implements InformationServer
             DocsEnum docsEnum = atomicReader.termDocsEnum(new Term(field, bytes));
             if(docsEnum != null)
             {
-                int docId = -1;
-                while ((docId = docsEnum.nextDoc()) != DocIdSetIterator.NO_MORE_DOCS)
+                if(docsEnum.nextDoc() != DocIdSetIterator.NO_MORE_DOCS)
                 {
                     return true;
                 }
@@ -957,7 +950,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void rollback() throws IOException
     {
-        // TODO Auto-generated method stub
+        this.core.getUpdateHandler().rollback(new RollbackUpdateCommand(getLocalSolrQueryRequerst()));
     }
 
 }
