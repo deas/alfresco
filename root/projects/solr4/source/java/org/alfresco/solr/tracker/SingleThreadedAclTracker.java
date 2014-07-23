@@ -71,7 +71,7 @@ public abstract class SingleThreadedAclTracker extends AbstractTracker
 
 
     @Override
-    protected void doTrack() throws Throwable
+    void doTrack() throws Throwable
     {
         // Maintenance stuff
         purgeAclChangeSets();
