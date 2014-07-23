@@ -575,7 +575,7 @@
       <field name="TYPE"                  type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
       <field name="ASPECT"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
       <field name="FTSSTATUS"             type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <field name="DBID"                  type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+      <field name="DBID"                  type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="true"  docValues="true" />
       <field name="TXID"                  type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
       <field name="INTXID"                type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
       <field name="ACLTXID"               type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />

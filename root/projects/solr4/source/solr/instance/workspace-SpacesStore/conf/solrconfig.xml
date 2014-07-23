@@ -1805,7 +1805,7 @@
     <arr name="components">
       <!-- <str>setLocale</str> -->
       <str>query</str>
-      <str>facet</str>
+      <!--<str>facet</str>-->
       <str>mlt</str>
       <str>highlight</str>
       <str>stats</str>

@@ -82,7 +82,9 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RegexpQuery;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeQuery;
+import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper;
 import org.apache.lucene.search.spans.SpanNearQuery;
+import org.apache.lucene.search.spans.SpanOrQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
 import org.apache.lucene.util.BytesRef;
@@ -1767,7 +1769,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         Term term = new Term(field, termText);
                         if ((termText != null) && (termText.contains("*") || termText.contains("?")))
                         {
-                            addWildcardTerms(multiTerms, term);
+                            throw new IllegalStateException("Wildcards are not allowed in multi phrase anymore");
                         }
                         else
                         {
@@ -1823,79 +1825,142 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 // If we skip all (for just 1* in the input) this is still an issue.
                 else
                 {
-                    boolean skippedTokens = false;
-                    BooleanQuery q = newBooleanQuery(true);
-                    TOKEN_SEQUENCE: for(LinkedList<org.apache.lucene.analysis.Token> tokenSequence : fixedTokenSequences)
+                    SpanOrQuery spanOr = new SpanOrQuery();
+                    
+                    for(LinkedList<org.apache.lucene.analysis.Token> tokenSequence : fixedTokenSequences)
                     {
-                        // TODO: SPAN SPAN SPAN WONDERFUL SPAN .... etc etc
-                        // phrase query:
-                        MultiPhraseQuery mpq = newMultiPhraseQuery();
-                        mpq.setSlop(internalSlop);
-                        int position = 0;
+                        int gap = 0;
+                        SpanQuery spanQuery = null;
+                        SpanOrQuery atSamePosition = new SpanOrQuery();
                         for (int i = 0; i < tokenSequence.size(); i++)
                         {
                             nextToken = (org.apache.lucene.analysis.Token) tokenSequence.get(i);
                             String termText = nextToken.toString();
-
+                            
                             Term term = new Term(field, termText);
 
                             if (getEnablePositionIncrements())
                             {
+                                SpanQuery nextSpanQuery;
                                 if ((termText != null) && (termText.contains("*") || termText.contains("?")))
                                 {
-                                    mpq.add(getMatchingTerms(field, term), position);
+                                    org.apache.lucene.search.WildcardQuery wildQuery = new org.apache.lucene.search.WildcardQuery(term);
+                                    nextSpanQuery = new SpanMultiTermQueryWrapper<>(wildQuery);
                                 }
                                 else
                                 {
-                                    mpq.add(new Term[] { term }, position);
+                                    nextSpanQuery = new SpanTermQuery(term);
                                 }
-                                if(exceedsTermCount(mpq))
+                                if(gap == 0)
                                 {
-                                    // We could duplicate the token sequence without the failing wildcard expansion and try again ??
-                                    skippedTokens = true;
-                                    continue TOKEN_SEQUENCE;
-                                }
-                                if(nextToken.getPositionIncrement() > 0)
-                                {
-                                    position += nextToken.getPositionIncrement();
+                                    atSamePosition.addClause(nextSpanQuery);
                                 }
                                 else
                                 {
-                                    position++;
+                                    if(atSamePosition.getClauses().length == 0)
+                                    {
+                                        if(spanQuery == null)
+                                        {
+                                            spanQuery = nextSpanQuery;
+                                        }
+                                        else
+                                        {
+                                            spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, nextSpanQuery}, gap, true);
+                                        }
+                                        atSamePosition = new SpanOrQuery();
+                                    }
+                                    else if(atSamePosition.getClauses().length == 1)
+                                    {
+                                        if(spanQuery == null)
+                                        {
+                                            spanQuery = atSamePosition.getClauses()[0];
+                                        }
+                                        else
+                                        {
+                                            spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition.getClauses()[0]}, gap, true);
+                                        }
+                                        atSamePosition = new SpanOrQuery();
+                                        atSamePosition.addClause(nextSpanQuery);
+                                    }
+                                    else
+                                    {
+                                        if(spanQuery == null)
+                                        {
+                                            spanQuery = atSamePosition;
+                                        }
+                                        else
+                                        {
+                                            spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition}, gap, true);
+                                        }
+                                        atSamePosition = new SpanOrQuery();
+                                        atSamePosition.addClause(nextSpanQuery);
+                                    }
                                 }
+                                gap = nextToken.getPositionIncrement();
                                 
                             }
                             else
                             {
+                                SpanQuery nextSpanQuery;
                                 if ((termText != null) && (termText.contains("*") || termText.contains("?")))
                                 {
-                                    mpq.add(getMatchingTerms(field, term));
+                                    org.apache.lucene.search.WildcardQuery wildQuery = new org.apache.lucene.search.WildcardQuery(term);
+                                    nextSpanQuery = new SpanMultiTermQueryWrapper<>(wildQuery);
                                 }
                                 else
                                 {
-                                    mpq.add(term);
+                                    nextSpanQuery = new SpanTermQuery(term);
                                 }
-                                if(exceedsTermCount(mpq))
+                                if(spanQuery == null)
                                 {
-                                    skippedTokens = true;
-                                    continue TOKEN_SEQUENCE;
+                                    spanQuery = new SpanOrQuery();
+                                    ((SpanOrQuery)spanQuery).addClause(nextSpanQuery);
+                                }
+                                else
+                                {
+                                    ((SpanOrQuery)spanQuery).addClause(nextSpanQuery);
                                 }
                             }
                         }
-                        q.add(mpq, BooleanClause.Occur.SHOULD);
+                        if(atSamePosition.getClauses().length == 0)
+                        {
+                            spanOr.addClause(spanQuery);
+                        }
+                        else if(atSamePosition.getClauses().length == 1)
+                        {
+                            if(spanQuery == null)
+                            {
+                                spanQuery = atSamePosition.getClauses()[0];
+                            }
+                            else
+                            {
+                                spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition.getClauses()[0]}, gap, true);
+                            }
+                            atSamePosition = new SpanOrQuery();
+                            spanOr.addClause(spanQuery);
+                        }
+                        else
+                        {
+                            if(spanQuery == null)
+                            {
+                                spanQuery = atSamePosition;
+                            }
+                            else
+                            {
+                                spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition}, gap, true);
+                            }
+                            atSamePosition = new SpanOrQuery();
+                            spanOr.addClause(spanQuery);
+                        }
                     }
-                    if(skippedTokens && (q.clauses().size() == 0))
-                    {
-                        throw new ParseException("Query skipped all token sequences as wildcards generated too many clauses: "+field+" "+queryText );
-                    }
-                    return q;
+                    return spanOr;
                 }
             }
             else
             {
-                MultiPhraseQuery q = new MultiPhraseQuery();
-                q.setSlop(internalSlop);
-                int position = 0;
+                SpanQuery spanQuery = null;
+                SpanOrQuery atSamePosition = new SpanOrQuery();
+                int gap = 0;
                 for (int i = 0; i < list.size(); i++)
                 {
                     nextToken = list.get(i);
@@ -1903,38 +1968,114 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     Term term = new Term(field, termText);
                     if (getEnablePositionIncrements())
                     {
+                        SpanQuery nextSpanQuery;
                         if ((termText != null) && (termText.contains("*") || termText.contains("?")))
                         {
-                            q.add(getMatchingTerms(field, term), position);
+                            org.apache.lucene.search.WildcardQuery wildQuery = new org.apache.lucene.search.WildcardQuery(term);
+                            nextSpanQuery = new SpanMultiTermQueryWrapper<>(wildQuery);
                         }
                         else
                         {
-                            q.add(new Term[] { term }, position);
+                            nextSpanQuery = new SpanTermQuery(term);
                         }
-                        checkTermCount(field, queryText, q);
-                        if(nextToken.getPositionIncrement() > 0)
+                        if(gap == 0)
                         {
-                            position += nextToken.getPositionIncrement();
+                            atSamePosition.addClause(nextSpanQuery);
                         }
                         else
                         {
-                            position++;
+                            if(atSamePosition.getClauses().length == 0)
+                            {
+                                if(spanQuery == null)
+                                {
+                                    spanQuery = nextSpanQuery;
+                                }
+                                else
+                                {
+                                    spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, nextSpanQuery}, gap, true);
+                                }
+                                atSamePosition = new SpanOrQuery();
+                            }
+                            else if(atSamePosition.getClauses().length == 1)
+                            {
+                                if(spanQuery == null)
+                                {
+                                    spanQuery = atSamePosition.getClauses()[0];
+                                }
+                                else
+                                {
+                                    spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition.getClauses()[0]}, gap, true);
+                                }
+                                atSamePosition = new SpanOrQuery();
+                                atSamePosition.addClause(nextSpanQuery);
+                            }
+                            else
+                            {
+                                if(spanQuery == null)
+                                {
+                                    spanQuery = atSamePosition;
+                                }
+                                else
+                                {
+                                    spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition}, gap, true);
+                                }
+                                atSamePosition = new SpanOrQuery();
+                                atSamePosition.addClause(nextSpanQuery);
+                            }
                         }
+                        gap = nextToken.getPositionIncrement();
                     }
                     else
                     {
+                        SpanQuery nextSpanQuery;
                         if ((termText != null) && (termText.contains("*") || termText.contains("?")))
                         {
-                            q.add(getMatchingTerms(field, term));
+                            org.apache.lucene.search.WildcardQuery wildQuery = new org.apache.lucene.search.WildcardQuery(term);
+                            nextSpanQuery = new SpanMultiTermQueryWrapper<>(wildQuery);
                         }
                         else
                         {
-                            q.add(term);
+                            nextSpanQuery = new SpanTermQuery(term);
                         }
-                        checkTermCount(field, queryText,q);
+                        if(spanQuery == null)
+                        {
+                            spanQuery = new SpanOrQuery();
+                            ((SpanOrQuery)spanQuery).addClause(nextSpanQuery);
+                        }
+                        else
+                        {
+                            ((SpanOrQuery)spanQuery).addClause(nextSpanQuery);
+                        }
                     }
                 }
-                return q;
+                if(atSamePosition.getClauses().length == 0)
+                {
+                    return spanQuery;
+                }
+                else if(atSamePosition.getClauses().length == 1)
+                {
+                    if(spanQuery == null)
+                    {
+                        spanQuery = atSamePosition.getClauses()[0];
+                    }
+                    else
+                    {
+                        spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition.getClauses()[0]}, gap, true);
+                    }
+                    return spanQuery;
+                }
+                else
+                {
+                    if(spanQuery == null)
+                    {
+                        spanQuery = atSamePosition;
+                    }
+                    else
+                    {
+                        spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition}, gap, true);
+                    }
+                    return spanQuery;
+                }
             }
         }
     }
@@ -2000,6 +2141,11 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 {
                     return false;
                 }   
+                String termText = fromCurrent.toString();
+                if ((termText != null) && (termText.contains("*") || termText.contains("?")))
+                {
+                    return false;
+                }
             }
         }
         return true;
@@ -3735,6 +3881,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     protected Query createReaderQuery(String queryText) throws ParseException
     {
         //return new SolrCachingReaderQuery(queryText);
+        // TODO: FIX
         return new MatchAllDocsQuery();
     }
 
@@ -3745,6 +3892,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     protected Query createAuthorityQuery(String queryText) throws ParseException
     {
         //return new SolrCachingAuthorityQuery(queryText);
+        // TODO: FIX
         return new MatchAllDocsQuery();
     }
 
@@ -4201,18 +4349,21 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
   
     protected Query createOwnerSetQuery(String queryText) throws ParseException
     {
+     // TODO: FIX
         return new MatchAllDocsQuery();
     }
 
     
     protected Query createReaderSetQuery(String queryText) throws ParseException
     {
+     // TODO: FIX
         return new MatchAllDocsQuery();
     }
 
    
     protected Query createAuthoritySetQuery(String queryText) throws ParseException
     {
+     // TODO: FIX
         return new MatchAllDocsQuery();
     }
 
