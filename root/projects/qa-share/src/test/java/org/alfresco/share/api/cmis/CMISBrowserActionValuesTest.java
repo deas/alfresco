@@ -233,4 +233,48 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
         String thisFileName = getFileName(thisTestName);
         applyACLTest(drone, thisFileName);
     }
+    
+
+    @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException.class)
+    public void ALF_3131() 
+    {
+        super.cmisItemTypeShouldNotBeQueryable();
+    }
+    
+    @Test
+    public void ALF_3132()
+    {
+        super.cmPersonShouldFindPeople();
+    }
+
+    @Test
+    public void ALF_3133()
+    {
+        super.cmPersonWithWhereClauseShouldFindPerson();
+    }
+
+    @Test
+    public void ALF_3134()
+    {
+        super.cmPersonCanBeUpdatedBySelf();
+    }
+
+    @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
+    public void ALF_3135()
+    {
+        super.cmPersonCannotBeUpdatedByUnauthorizedUser();
+    }
+
+    @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
+    public void ALF_3136()
+    {
+        super.cmPersonCannotBeDeletedByUnauthorizedUser();
+    }
+    
+    @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException.class)
+    public void ALF_3137() 
+    {
+        super.cmPersonCannotBeDeletedByAuthorizedUserViaCmis();
+    }
+    
 }
