@@ -28,6 +28,7 @@ import org.alfresco.solr.SolrInformationServer;
 import org.alfresco.solr.SolrKeyResourceLoader;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.SOLRAPIClientFactory;
+import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.CoreDescriptorDecorator;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrResourceLoader;
@@ -50,14 +51,14 @@ public class CoreWatcherJob implements Job
     {
         AlfrescoCoreAdminHandler adminHandler = (AlfrescoCoreAdminHandler) jec.getJobDetail().getJobDataMap()
                     .get(JOBDATA_ADMIN_HANDLER_KEY);
-
-        for (SolrCore core : adminHandler.getCoreContainer().getCores())
+        CoreContainer coreContainer = adminHandler.getCoreContainer();
+        for (SolrCore core : coreContainer.getCores())
         {
             String coreName = core.getName();
             TrackerRegistry trackerRegistry = adminHandler.getTrackerRegistry();
             if (!trackerRegistry.hasTrackersForCore(coreName))
             {
-            	Properties props = new CoreDescriptorDecorator(core.getCoreDescriptor()).getCoreProperties();
+                Properties props = new CoreDescriptorDecorator(core.getCoreDescriptor()).getCoreProperties();
                 if (Boolean.parseBoolean(props.getProperty("enable.alfresco.tracking", "false")))
                 {
                     log.info("Starting to track " + coreName);
@@ -78,7 +79,8 @@ public class CoreWatcherJob implements Job
 
                     if (trackerRegistry.getModelTracker() == null)
                     {
-                        ModelTracker mTracker = new ModelTracker(scheduler, adminHandler.getCoreContainer().getSolrHome(), props, repositoryClient, coreName, srv);
+                        ModelTracker mTracker = new ModelTracker(scheduler, coreContainer.getSolrHome(), props,
+                                    repositoryClient, coreName, srv);
                         trackerRegistry.setModelTracker(mTracker);
                     }
 
@@ -88,7 +90,8 @@ public class CoreWatcherJob implements Job
                     ContentTracker contentTracker = new ContentTracker();
                     trackerRegistry.register(coreName, contentTracker);
 
-                    MetadataTracker metadataTracker = new MetadataTracker();
+                    MetadataTracker metadataTracker = new MetadataTracker(scheduler, props, repositoryClient, coreName,
+                                srv);
                     trackerRegistry.register(coreName, metadataTracker);
                 }
             }

@@ -22,17 +22,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.solr.BoundedDeque;
+import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.NodeReport;
 import org.alfresco.solr.TrackerState;
 import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.client.GetNodesParameters;
 import org.alfresco.solr.client.Node;
+import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Transactions;
 import org.alfresco.solr.client.Node.SolrApiNodeStatus;
@@ -47,10 +50,22 @@ public class MetadataTracker extends AbstractTracker implements Tracker
     private ConcurrentLinkedQueue<Long> nodesToIndex = new ConcurrentLinkedQueue<Long>();
     private ConcurrentLinkedQueue<Long> nodesToPurge = new ConcurrentLinkedQueue<Long>();
 
+
+    public MetadataTracker(SolrTrackerScheduler scheduler, Properties p, SOLRAPIClient client, String coreName,
+                InformationServer informationServer)
+    {
+        super(scheduler, p, client, coreName, informationServer);
+    }
+    
+    MetadataTracker()
+    {
+        // Testing purposes only
+    }
+
     @Override
     protected void doTrack() throws AuthenticationException, IOException, JSONException
     {
-
+// TODO See what needs to be done around this stuff
         checkShutdown();
         trackTransactions();
     }
