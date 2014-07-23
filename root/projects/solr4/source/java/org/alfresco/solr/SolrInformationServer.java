@@ -47,13 +47,18 @@ import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.Tracker;
 import org.alfresco.solr.tracker.TrackerStats;
+import org.alfresco.util.NumericEncoder;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrInfoMBean;
+import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocSet;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.update.AddUpdateCommand;
@@ -141,10 +146,76 @@ public class SolrInformationServer implements InformationServer
     }
 
     @Override
-    public AclReport checkAclInIndex(Long arg0, AclReport arg1)
+    public AclReport checkAclInIndex(Long aclid, AclReport aclReport)
     {
-        // TODO Auto-generated method stub
-        return null;
+        try
+        {
+            RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
+
+            refCounted = core.getSearcher(false, true, null);
+            if (refCounted == null)
+            {
+                return aclReport;
+            }
+
+            try
+            {
+                SolrIndexSearcher solrIndexSearcher = refCounted.get();
+
+                String aclIdString = NumericEncoder.encode(aclid);
+                DocSet docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term("ACLID", aclIdString)));
+                // should find leaf and aux
+                for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
+                {
+                    int doc = it.nextDoc();
+
+                    Document document = solrIndexSearcher.doc(doc);
+                    IndexableField fieldable = document.getField("ID");
+                    if (fieldable != null)
+                    {
+                        String value = fieldable.stringValue();
+                        if (value != null)
+                        {
+                            if (value.startsWith("ACL-"))
+                            {
+                                aclReport.setIndexAclDoc(Long.valueOf(doc));
+                            }
+                        }
+                    }
+
+                }
+                DocSet txDocSet = solrIndexSearcher.getDocSet(new WildcardQuery(new Term("ACLTXID", "*")));
+                for (DocIterator it = txDocSet.iterator(); it.hasNext(); /* */)
+                {
+                    int doc = it.nextDoc();
+                    Document document = solrIndexSearcher.doc(doc);
+                    IndexableField fieldable = document.getField("ACLTXID");
+                    if (fieldable != null)
+                    {
+
+                        if ((aclReport.getIndexAclDoc() == null) || (doc < aclReport.getIndexAclDoc().longValue()))
+                        {
+                            String value = fieldable.stringValue();
+                            long acltxid = Long.parseLong(value);
+                            aclReport.setIndexAclTx(acltxid);
+                        }
+
+                    }
+                }
+
+            }
+            finally
+            {
+                refCounted.decref();
+            }
+
+        }
+        catch (IOException e)
+        {
+
+        }
+
+        return aclReport;
     }
 
     @Override

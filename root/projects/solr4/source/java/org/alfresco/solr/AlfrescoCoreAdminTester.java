@@ -330,7 +330,7 @@ public class AlfrescoCoreAdminTester
 
             SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
 //            String id = loader.getInstanceDir();
-            AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance(/*id*/);
+            AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance();
 //            dataModel.setCMDefaultUri();
             // add data
 
@@ -919,7 +919,7 @@ public class AlfrescoCoreAdminTester
 
                 SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
 //                String id = loader.getInstanceDir();
-                dataModel = AlfrescoSolrDataModel.getInstance(/*id*/);
+                dataModel = AlfrescoSolrDataModel.getInstance();
 //                dataModel.setCMDefaultUri();
                 // add data
 
@@ -1148,7 +1148,7 @@ public class AlfrescoCoreAdminTester
 
             SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
 //            String id = loader.getInstanceDir();
-            AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance(/*id*/);
+            AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance();
 //            dataModel.setCMDefaultUri();
             // add data
 

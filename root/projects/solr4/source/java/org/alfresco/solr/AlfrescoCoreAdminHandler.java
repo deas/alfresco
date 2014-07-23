@@ -94,7 +94,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         initResourceBasedLogging("log4j-solr.properties");
     }
 
-    protected void initResourceBasedLogging(String resource)
+    private void initResourceBasedLogging(String resource)
     {
         try
         {
