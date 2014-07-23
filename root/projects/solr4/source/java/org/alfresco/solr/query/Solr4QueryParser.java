@@ -88,6 +88,7 @@ import org.apache.lucene.search.spans.SpanTermQuery;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.jaxen.saxpath.SAXPathException;
+import org.jaxen.saxpath.base.XPathReader;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 /**
@@ -3642,82 +3643,71 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     protected Query createPathQuery(String queryText, boolean withRepeats) throws SAXPathException
     {
-//        XPathReader reader = new XPathReader();
-//        SolrXPathHandler handler = new SolrXPathHandler();
-//        handler.setNamespacePrefixResolver(namespacePrefixResolver);
-//        handler.setDictionaryService(dictionaryService);
-//        reader.setXPathHandler(handler);
-//        reader.parse(queryText);
-//        SolrPathQuery pathQuery = handler.getQuery();
-//        pathQuery.setRepeats(withRepeats);
-//        return new SolrCachingPathQuery(pathQuery);
-        throw new UnsupportedOperationException();
+        XPathReader reader = new XPathReader();
+        SolrXPathHandler handler = new SolrXPathHandler();
+        handler.setNamespacePrefixResolver(namespacePrefixResolver);
+        handler.setDictionaryService(dictionaryService);
+        reader.setXPathHandler(handler);
+        reader.parse(queryText);
+        SolrPathQuery pathQuery = handler.getQuery();
+        pathQuery.setRepeats(withRepeats);
+        // TODO - cache
+        return pathQuery;
     }
 
     protected Query createQNameQuery(String queryText) throws SAXPathException
     {
-//        XPathReader reader = new XPathReader();
-//        SolrXPathHandler handler = new SolrXPathHandler();
-//        handler.setNamespacePrefixResolver(namespacePrefixResolver);
-//        handler.setDictionaryService(dictionaryService);
-//        reader.setXPathHandler(handler);
-//        reader.parse("//" + queryText);
-//        SolrPathQuery pathQuery = handler.getQuery();
-//        return new SolrCachingPathQuery(pathQuery);
-        throw new UnsupportedOperationException();
+        XPathReader reader = new XPathReader();
+        SolrXPathHandler handler = new SolrXPathHandler();
+        handler.setNamespacePrefixResolver(namespacePrefixResolver);
+        handler.setDictionaryService(dictionaryService);
+        reader.setXPathHandler(handler);
+        reader.parse("//" + queryText);
+        SolrPathQuery pathQuery = handler.getQuery();
+        // TODO - cache
+        return pathQuery;
     }
 
     protected Query createPrimaryAssocQNameQuery(String queryText) throws SAXPathException
     {
-//        XPathReader reader = new XPathReader();
-//        SolrXPathHandler handler = new SolrXPathHandler();
-//        handler.setNamespacePrefixResolver(namespacePrefixResolver);
-//        handler.setDictionaryService(dictionaryService);
-//        reader.setXPathHandler(handler);
-//        reader.parse("//" + queryText);
-//        SolrPathQuery pathQuery = handler.getQuery();
-//        pathQuery.setPathField(FIELD_PRIMARYASSOCQNAME);
-//        return new SolrCachingPathQuery(pathQuery);
-        throw new UnsupportedOperationException();
+        XPathReader reader = new XPathReader();
+        SolrXPathHandler handler = new SolrXPathHandler();
+        handler.setNamespacePrefixResolver(namespacePrefixResolver);
+        handler.setDictionaryService(dictionaryService);
+        reader.setXPathHandler(handler);
+        reader.parse("//" + queryText);
+        SolrPathQuery pathQuery = handler.getQuery();
+        pathQuery.setPathField(FIELD_PRIMARYASSOCQNAME);
+        // TODO - cache
+        return pathQuery;
     }
 
     protected Query createPrimaryAssocTypeQNameQuery(String queryText) throws SAXPathException
     {
-//        XPathReader reader = new XPathReader();
-//        SolrXPathHandler handler = new SolrXPathHandler();
-//        handler.setNamespacePrefixResolver(namespacePrefixResolver);
-//        handler.setDictionaryService(dictionaryService);
-//        reader.setXPathHandler(handler);
-//        reader.parse("//" + queryText);
-//        SolrPathQuery pathQuery = handler.getQuery();
-//        pathQuery.setPathField(FIELD_PRIMARYASSOCTYPEQNAME);
-//        return new SolrCachingPathQuery(pathQuery);
-        
-        throw new UnsupportedOperationException();
+        XPathReader reader = new XPathReader();
+        SolrXPathHandler handler = new SolrXPathHandler();
+        handler.setNamespacePrefixResolver(namespacePrefixResolver);
+        handler.setDictionaryService(dictionaryService);
+        reader.setXPathHandler(handler);
+        reader.parse("//" + queryText);
+        SolrPathQuery pathQuery = handler.getQuery();
+        pathQuery.setPathField(FIELD_PRIMARYASSOCTYPEQNAME);
+        // TODO - cache
+        return pathQuery;
     }
 
     protected Query createAssocTypeQNameQuery(String queryText) throws SAXPathException
-    {
-        // This was broken and using only FIELD_PRIMARYASSOCTYPEQNAME
-        // The field was also not indexed correctly.
-        // We do both for backward compatability ...
-//        BooleanQuery booleanQuery = new BooleanQuery();
-//
-//        XPathReader reader = new XPathReader();
-//        SolrXPathHandler handler = new SolrXPathHandler();
-//        handler.setNamespacePrefixResolver(namespacePrefixResolver);
-//        handler.setDictionaryService(dictionaryService);
-//        reader.setXPathHandler(handler);
-//        reader.parse("//" + queryText);
-//        SolrPathQuery pathQuery = handler.getQuery();
-//        pathQuery.setPathField(FIELD_ASSOCTYPEQNAME);
-//
-//        booleanQuery.add(new SolrCachingPathQuery(pathQuery), Occur.SHOULD);
-//        booleanQuery.add(createPrimaryAssocTypeQNameQuery(queryText), Occur.SHOULD);
-//
-//        return getNonEmptyBooleanQuery(booleanQuery);
-        
-        throw new UnsupportedOperationException();
+    {   
+        XPathReader reader = new XPathReader();
+        SolrXPathHandler handler = new SolrXPathHandler();
+        handler.setNamespacePrefixResolver(namespacePrefixResolver);
+        handler.setDictionaryService(dictionaryService);
+        reader.setXPathHandler(handler);
+        reader.parse("//" + queryText);
+        SolrPathQuery pathQuery = handler.getQuery();
+        pathQuery.setPathField(FIELD_ASSOCTYPEQNAME);
+        // TODO - cache
+        return pathQuery;
     }
 
     /**
@@ -3745,7 +3735,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     protected Query createReaderQuery(String queryText) throws ParseException
     {
         //return new SolrCachingReaderQuery(queryText);
-        throw new UnsupportedOperationException();
+        return new MatchAllDocsQuery();
     }
 
     /**
@@ -3755,7 +3745,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     protected Query createAuthorityQuery(String queryText) throws ParseException
     {
         //return new SolrCachingAuthorityQuery(queryText);
-        throw new UnsupportedOperationException();
+        return new MatchAllDocsQuery();
     }
 
 
@@ -4209,24 +4199,21 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
   
-    protected org.apache.lucene.search.Query createOwnerSetQuery(String queryText) throws ParseException
+    protected Query createOwnerSetQuery(String queryText) throws ParseException
     {
-        //return new SolrOwnerSetQuery(queryText);
-        throw new UnsupportedOperationException();
+        return new MatchAllDocsQuery();
     }
 
     
-    protected org.apache.lucene.search.Query createReaderSetQuery(String queryText) throws ParseException
+    protected Query createReaderSetQuery(String queryText) throws ParseException
     {
-        //return new SolrReaderSetQuery(queryText);
-        throw new UnsupportedOperationException();
+        return new MatchAllDocsQuery();
     }
 
    
-    protected org.apache.lucene.search.Query createAuthoritySetQuery(String queryText) throws ParseException
+    protected Query createAuthoritySetQuery(String queryText) throws ParseException
     {
-        //return new SolrAuthoritySetQuery(queryText);
-        throw new UnsupportedOperationException();
+        return new MatchAllDocsQuery();
     }
 
 }

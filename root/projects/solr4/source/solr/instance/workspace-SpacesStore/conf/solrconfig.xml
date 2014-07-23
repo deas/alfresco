@@ -1780,7 +1780,7 @@
   <searchComponent name="addTxId"     class="org.alfresco.solr.TxIdSearchComponent" />  
 -->
 
-   <requestHandler name="/alfresco" class="solr.SearchHandler" lazy="true" >
+   <requestHandler name="/alfresco" class="org.apache.solr.handler.component.AlfrescoSearchHandler" lazy="true" >
     <lst name="defaults">
      <str name="defType">alfresco</str>
     </lst>
@@ -1798,7 +1798,7 @@
   </requestHandler>
 
 
-  <requestHandler name="/afts" class="solr.SearchHandler" lazy="true" >
+  <requestHandler name="/afts" class="org.apache.solr.handler.component.AlfrescoSearchHandler" lazy="true" >
     <lst name="defaults">
      <str name="defType">afts</str>
     </lst>
@@ -1815,7 +1815,7 @@
     </arr>
   </requestHandler>
 
- <requestHandler name="/cmis" class="solr.SearchHandler" lazy="true" >
+ <requestHandler name="/cmis" class="org.apache.solr.handler.component.AlfrescoSearchHandler" lazy="true" >
     <lst name="defaults">
      <str name="defType">cmis</str>
     </lst>
