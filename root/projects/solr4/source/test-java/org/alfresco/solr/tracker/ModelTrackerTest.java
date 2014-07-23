@@ -98,7 +98,7 @@ public class ModelTrackerTest
         when(props.getProperty("enable.master", "true")).thenReturn("true");
 
         // TODO: create test folder for model sync?
-        this.modelTracker = new ModelTracker(scheduler, "", props, repositoryClient, coreName, srv);
+        this.modelTracker = new ModelTracker(scheduler, null, props, repositoryClient, coreName, srv);
     }
 
     @After
