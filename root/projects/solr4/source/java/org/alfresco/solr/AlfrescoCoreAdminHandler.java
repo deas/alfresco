@@ -24,11 +24,13 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.text.ParseException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.solr.tracker.CoreWatcherJob;
 import org.alfresco.solr.tracker.Tracker;
+import org.alfresco.solr.tracker.TrackerRegistry;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.handler.admin.CoreAdminHandler;
 import org.quartz.CronTrigger;
@@ -42,7 +44,7 @@ import org.quartz.impl.StdSchedulerFactory;
 public class AlfrescoCoreAdminHandler extends CoreAdminHandler
 {
     private Scheduler scheduler = null;
-    private ConcurrentHashMap<String, Tracker> trackers = new ConcurrentHashMap<String, Tracker>();
+    private TrackerRegistry trackerRegistry = new TrackerRegistry();
     private ConcurrentHashMap<String, InformationServer> informationServers = new ConcurrentHashMap<String, InformationServer>();
 
     public AlfrescoCoreAdminHandler()
@@ -73,8 +75,6 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             scheduler.start();
 
             // Start job to manage the tracker jobs
-            // Currently just add
-
             JobDetail job = new JobDetail("CoreWatcher", "Solr", CoreWatcherJob.class);
             JobDataMap jobDataMap = new JobDataMap();
             jobDataMap.put("ADMIN_HANDLER", this);
@@ -162,16 +162,16 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         return is;
     }
 
-    /**
-     * @return the trackers
-     */
-    public ConcurrentHashMap<String, Tracker> getTrackers()
-    {
-        return trackers;
-    }
+    
+    
 
     public ConcurrentHashMap<String, InformationServer> getInformationServers()
     {
         return this.informationServers;
+    }
+
+    public TrackerRegistry getTrackerRegistry()
+    {
+        return trackerRegistry;
     }
 }

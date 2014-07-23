@@ -40,7 +40,7 @@ public class CoreWatcherJob implements Job
         for (SolrCore core : adminHandler.getCoreContainer().getCores())
         {
 
-            if (!adminHandler.getTrackers().containsKey(core.getName()))
+            if (!adminHandler.getTrackerRegistry().getTrackers().containsKey(core.getName()))
             {
                 if (core.getSolrConfig().getBool("alfresco/track", false))
                 {
@@ -49,7 +49,7 @@ public class CoreWatcherJob implements Job
                     // Create information server and wire it up.  This will be done by a registry
                     InformationServer srv = new SolrInformationServer(adminHandler, core);
                     adminHandler.getInformationServers().put(core.getName(), srv);
-                    adminHandler.getTrackers().put(core.getName(), srv.getTracker());
+                    adminHandler.getTrackerRegistry().register(core.getName(), srv.getTracker());
                 }
             }
         }

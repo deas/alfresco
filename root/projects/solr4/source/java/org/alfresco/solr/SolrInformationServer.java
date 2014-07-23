@@ -21,14 +21,25 @@ import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.Tracker;
 import org.apache.solr.core.SolrCore;
+import org.apache.solr.core.SolrResourceLoader;
 import org.json.JSONException;
 
 public class SolrInformationServer implements InformationServer
 {
 
+    private AlfrescoCoreAdminHandler adminHandler;
+    private SolrCore core;
+    private TrackerState trackerState = new TrackerState();
+    private AlfrescoSolrDataModel dataModel;
+    
     public SolrInformationServer(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
-        
+        this.adminHandler = adminHandler;
+        this.core = core;
+
+        SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
+        String id = loader.getInstanceDir();
+        dataModel = AlfrescoSolrDataModel.getInstance(id);
     }
 
     @Override
