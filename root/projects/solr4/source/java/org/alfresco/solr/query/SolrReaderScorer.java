@@ -26,6 +26,10 @@ import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.Weight;
+import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.FixedBitSet;
+import org.apache.solr.search.BitDocSet;
+import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocSet;
 import org.apache.solr.search.SolrIndexSearcher;
 
@@ -47,10 +51,30 @@ public class SolrReaderScorer extends AbstractSolrCachingScorer
 
         if (readableDocs == null)
         {
-            // Cache miss: query the index for docs where the reader matches the authority. 
-            readableDocs = searcher.getDocSet(new TermQuery(new Term(QueryConstants.FIELD_READER, authority)));
+            // Cache miss: query the index for ACL docs where the reader matches the authority. 
+            DocSet aclDocs = searcher.getDocSet(new TermQuery(new Term(QueryConstants.FIELD_READER, authority)));
+            
+            // Allocate a bitset to store the results.
+            readableDocs = new BitDocSet(new FixedBitSet(searcher.maxDoc()));
+            
+            // Translate from ACL docs to real docs
+            for (DocIterator it = aclDocs.iterator(); it.hasNext(); /**/)
+            {
+                int docID = it.nextDoc();
+                // Obtain the ACL ID for this ACL doc.
+                long aclID = searcher.getAtomicReader().getNumericDocValues(QueryConstants.FIELD_ACLID).get(docID);
+                BytesRef aclIDBytesRef = new BytesRef(Long.toString(aclID));
+                // Find real docs that match the ACL ID
+                DocSet docsForAclId = searcher.getDocSet(new TermQuery(new Term(QueryConstants.FIELD_ACLID, aclIDBytesRef)));                
+                readableDocs.union(docsForAclId);
+                // Exclude the ACL docs from the results, we only want real docs that match.
+                // Probably not very efficient, what we really want is remove(docID)
+                readableDocs.andNot(aclDocs);
+            }
+            
             searcher.cacheInsert(CacheConstants.ALFRESCO_READER_CACHE, authority, readableDocs);
         }
+        
         return new SolrReaderScorer(weight, readableDocs, context, searcher);
     }
 }
