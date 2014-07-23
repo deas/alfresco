@@ -32,6 +32,7 @@ import java.util.Properties;
 
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.solr.client.AclReaders;
+import org.alfresco.util.NumericEncoder;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.core.CoreContainer;
@@ -137,7 +138,7 @@ public class SolrInformationServerTest
             SolrInputDocument inputDoc = update.getSolrInputDocument();
             // Retrieve the original AclReaders object and compare with data in submitted SolrInputDocument
             final AclReaders sourceAclReaders = aclReadersList.get(docIndex);
-            assertEquals("ACL-"+sourceAclReaders.getId(), inputDoc.getFieldValue("id").toString());            
+            assertEquals(AlfrescoSolrDataModel.getTenantId(sourceAclReaders.getTenantDomain())+":"+NumericEncoder.encode(sourceAclReaders.getId())+":ACL", inputDoc.getFieldValue("id").toString());            
             assertEquals("0", inputDoc.getFieldValue("_version_").toString());
             assertEquals(sourceAclReaders.getId(), inputDoc.getFieldValue(QueryConstants.FIELD_ACLID));
             assertEquals(sourceAclReaders.getAclChangeSetId(), inputDoc.getFieldValue(QueryConstants.FIELD_INACLTXID));

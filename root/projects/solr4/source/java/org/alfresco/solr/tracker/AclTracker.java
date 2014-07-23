@@ -32,7 +32,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
-import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AclReport;
 import org.alfresco.solr.BoundedDeque;
@@ -50,6 +49,7 @@ import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Transactions;
 import org.alfresco.solr.tracker.pool.DefaultTrackerPoolFactory;
 import org.alfresco.solr.tracker.pool.TrackerPoolFactory;
+import org.alfresco.util.NumericEncoder;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -397,10 +397,8 @@ public class AclTracker extends AbstractTracker
             {
                 Transaction firstTransaction = firstTransactions.getTransactions().get(0);
                 long firstTxId = firstTransaction.getId();
-                String targetTxId = NumericEncoder.encode(firstTxId);
                 long firstTransactionCommitTime = firstTransaction.getCommitTimeMs();
-                String targetTxCommitTime = NumericEncoder.encode(firstTransactionCommitTime);
-                int setSize = this.infoSrv.getDocSetSize(targetTxId, targetTxCommitTime);
+                int setSize = this.infoSrv.getDocSetSize(""+firstTxId, ""+firstTransactionCommitTime);
                 
                 if (setSize == 0)
                 {

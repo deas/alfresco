@@ -27,12 +27,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
+import org.alfresco.model.ContentModel;
 import org.alfresco.opencmis.dictionary.CMISAbstractDictionaryService;
 import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.opencmis.dictionary.QNameFilter;
@@ -46,9 +48,10 @@ import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl;
 import org.alfresco.repo.dictionary.NamespaceDAOImpl.NamespaceRegistry;
 import org.alfresco.repo.i18n.StaticMessageLookup;
-import org.alfresco.repo.search.impl.lucene.analysis.NumericEncoder;
+import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.repo.tenant.SingleTServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
+import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.alfresco.service.cmr.dictionary.ModelDefinition;
 import org.alfresco.service.cmr.dictionary.PropertyDefinition;
@@ -57,6 +60,7 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AlfrescoClientDataModelServicesFactory.DictionaryKey;
 import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.util.ISO9075;
+import org.alfresco.util.NumericEncoder;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.SortedDocValues;
 import org.apache.lucene.search.FieldCache;
@@ -86,6 +90,12 @@ public class AlfrescoSolrDataModel
     }
     
     protected final static Logger log = LoggerFactory.getLogger(AlfrescoSolrDataModel.class);
+
+    private static final String CHANGE_SET = "CHANGE_SET";
+
+    private static final String  TX = "TX";
+    
+    private static final String DEFAULT_TENANT = "_DEFAULT_";
     
     private static ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
@@ -132,20 +142,50 @@ public class AlfrescoSolrDataModel
 
     }
 
+    public static String getTenantId(String tenant)
+    {
+        if((tenant == null) || tenant.equals(TenantService.DEFAULT_DOMAIN))
+        {
+            return DEFAULT_TENANT;
+        }
+        else
+        {
+            return tenant.replaceAll(":", "_.._");
+        }
+    }
+    
     /**
      * 
      * @param tenant
      * @param aclId
      * @return <TENANT>:<ACLID>:A-<ACLID>
      */
-    public static String getAclDocumentlId(String tenant, Long aclId)
+    public static String getAclDocumentId(String tenant, Long aclId)
     {
         StringBuilder builder = new StringBuilder();
         // TODO - check and encode for ":"
-        builder.append(tenant.replaceAll(":", "_.._"));
-        builder.append(NumericEncoder.encodeToHex(aclId));
-        builder.append(":A-");
-        builder.append(NumericEncoder.encodeToHex(aclId));
+        builder.append(getTenantId(tenant));
+        builder.append(":");
+        builder.append(NumericEncoder.encode(aclId));
+        builder.append(":ACL");
+        return builder.toString();
+    }
+    
+    /**
+     * 
+     * @param tenant
+     * @param aclChangeSetId
+     * @return <TENANT>:CHANGE_SET:<aclChangeSetId <- max in doc if compressed>
+     */
+    public static String getAclChangeSetDocumentId(String tenant, Long aclChangeSetId)
+    {
+        StringBuilder builder = new StringBuilder();
+        // TODO - check and encode for ":"
+        builder.append(getTenantId(tenant));
+        builder.append(":");
+        builder.append(CHANGE_SET);
+        builder.append(":");
+        builder.append(NumericEncoder.encode(aclChangeSetId));
         return builder.toString();
     }
     
@@ -155,14 +195,33 @@ public class AlfrescoSolrDataModel
      * @param aclId
      * @return <TENANT>:<ACLID>: D-<DBID>
      */
-    public static String getNodeDocumentlId(String tenant, Long aclId, Long dbid)
+    public static String getNodeDocumentId(String tenant, Long aclId, Long dbid)
     {
         StringBuilder builder = new StringBuilder();
         // TODO - check and encode for ":"
-        builder.append(tenant.replaceAll(":", "_.._"));
-        builder.append(NumericEncoder.encodeToHex(aclId));
-        builder.append(":D-");
-        builder.append(NumericEncoder.encodeToHex(dbid));
+        builder.append(getTenantId(tenant));
+        builder.append(":");
+        builder.append(NumericEncoder.encode(aclId));
+        builder.append(":");
+        builder.append(NumericEncoder.encode(dbid));
+        return builder.toString();
+    }
+    
+    /**
+     * 
+     * @param tenant
+     * @param txId
+     * @return <TENANT>:CHANGE_SET:<txId <- max in doc if compressed>
+     */
+    public static String getTransactionDocumentId(String tenant, Long txId)
+    {
+        StringBuilder builder = new StringBuilder();
+        // TODO - check and encode for ":"
+        builder.append(getTenantId(tenant));
+        builder.append(":");
+        builder.append(TX);
+        builder.append(":");
+        builder.append(NumericEncoder.encode(txId));
         return builder.toString();
     }
     
@@ -321,28 +380,121 @@ public class AlfrescoSolrDataModel
      */
     public List<String> getIndexedFieldNamesForProperty(QName propertyQName)
     {
+        // TODO: Cache and throw on model refresh
+        
+        LinkedList<String> fieldNames = new LinkedList<>();
         PropertyDefinition propertyDefinition = getPropertyDefinition(propertyQName);
-        if(propertyDefinition == null)
-        {
-            return Collections.<String>emptyList();
+        if((propertyDefinition == null))
+        { 
+            return fieldNames;
         }
-        propertyDefinition.getIndexTokenisationMode();
-        return Collections.singletonList(propertyQName.toString());   
+        if(!propertyDefinition.isIndexed() && !propertyDefinition.isStoredInIndex())
+        {
+            return fieldNames;
+        }
+
+        DataTypeDefinition dataTypeDefinition = propertyDefinition.getDataType();
+        if(isPrimaryType(dataTypeDefinition)) 
+        {
+            StringBuilder builder = new StringBuilder();
+            addPrefixForPrimaryType(builder, propertyDefinition.isMultiValued(), hasDocValues(propertyQName), dataTypeDefinition);
+            builder.append(QueryConstants.PROPERTY_FIELD_PREFIX);
+            builder.append(propertyQName.toString());
+            fieldNames.add(builder.toString());
+        }
+        else if(dataTypeDefinition.equals(DataTypeDefinition.MLTEXT))
+        {
+            
+        }
+        else if(dataTypeDefinition.equals(DataTypeDefinition.CONTENT))
+        {
+            
+        }
+        else if(dataTypeDefinition.equals(DataTypeDefinition.TEXT))
+        {
+    
+        }
+        else
+        {
+            // generic properties as text
+        }
+
+        return fieldNames;
+
     }
-    
-    
+
+       
     /**
-     * Get the schema field to use for a specific use 
-     * TODO: Determine from the model
-     *
      * @param propertyQName
-     * @param fieldUse
      * @return
      */
-    public String getSearchFieldNameForProperty(QName propertyQName, FieldUse fieldUse)
+    private boolean hasDocValues(QName propertyQName)
     {
-        return propertyQName.toString();
+        if(propertyQName == null)
+        {
+            return false;
+        }
+        return propertyQName.equals(ContentModel.PROP_CREATED) || propertyQName.equals(ContentModel.PROP_MODIFIED); 
     }
+
+    private boolean isPrimaryType(DataTypeDefinition dataTypeDefinition)
+    {
+        // TODO: Boolean - did do as text
+        QName qName = dataTypeDefinition.getName();
+        return(qName.equals(DataTypeDefinition.DATE) || qName.equals(DataTypeDefinition.DATETIME) || qName.equals(DataTypeDefinition.DOUBLE) 
+                || qName.equals(DataTypeDefinition.FLOAT) || qName.equals(DataTypeDefinition.INT) || qName.equals(DataTypeDefinition.LONG));
+    }
+    
+    private void addPrefixForPrimaryType(StringBuilder builder, boolean multi, boolean docValues, DataTypeDefinition dataTypeDefinition)
+    {
+        builder.append(multi ? "mv" : "sv");
+        builder.append(docValues ? "dv" : "");
+        builder.append("_");
+        QName qName = dataTypeDefinition.getName();
+        if(qName.equals(DataTypeDefinition.DATE))
+        {
+            builder.append("date");
+        }    
+        else if(qName.equals(DataTypeDefinition.DATETIME))
+        {
+            builder.append("date");
+        }
+        else if(qName.equals(DataTypeDefinition.DOUBLE))
+        {
+            builder.append("double");
+        }
+        else if(qName.equals(DataTypeDefinition.FLOAT))
+        {
+            builder.append("float");
+        }
+        else if(qName.equals(DataTypeDefinition.INT))
+        {
+            builder.append("int");
+        }
+        else if(qName.equals(DataTypeDefinition.LONG))
+        {
+            builder.append("long");
+        }
+        else
+        {
+            // is not primary
+        }
+        
+    }
+    
+    
+//    /**
+//     * Get the schema field to use for a specific use 
+//     * TODO: Determine from the model
+//     *
+//     * @param propertyQName
+//     * @param fieldUse
+//     * @return
+//     */
+//    public String getSearchFieldNameForProperty(QName propertyQName, FieldUse fieldUse)
+//    {
+//        
+//    }
     
     
 //    public SortField getSortField(SchemaField field, boolean reverse)

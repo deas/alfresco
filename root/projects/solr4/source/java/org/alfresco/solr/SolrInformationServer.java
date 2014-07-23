@@ -34,6 +34,7 @@ import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
+import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.namespace.QName;
@@ -488,8 +489,17 @@ public class SolrInformationServer implements InformationServer
             refCounted = core.getSearcher(false, true, null);
             SolrIndexSearcher solrIndexSearcher = refCounted.get();
             BooleanQuery query = new BooleanQuery();
-            query.add(new TermQuery(new Term(QueryConstants.FIELD_TXID, targetTxId)), Occur.MUST);
-            query.add(new TermQuery(new Term(QueryConstants.FIELD_TXCOMMITTIME, targetTxCommitTime)), Occur.MUST);
+            
+            BytesRef bytesTxId = new BytesRef();
+            long txId = Long.parseLong(targetTxId);
+            NumericUtils.longToPrefixCoded(txId, 0, bytesTxId);
+            
+            BytesRef bytesTxCommitTime = new BytesRef();
+            long txCommitTime = Long.parseLong(targetTxCommitTime);
+            NumericUtils.longToPrefixCoded(txCommitTime, 0, bytesTxCommitTime);
+            
+            query.add(new TermQuery(new Term(QueryConstants.FIELD_TXID, bytesTxId)), Occur.MUST);
+            query.add(new TermQuery(new Term(QueryConstants.FIELD_TXCOMMITTIME, bytesTxCommitTime)), Occur.MUST);
             DocSet set = solrIndexSearcher.getDocSet(query);
 
             return set.size();
@@ -798,8 +808,8 @@ public class SolrInformationServer implements InformationServer
             AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
             cmd.overwrite = overwrite;
             SolrInputDocument input = new SolrInputDocument();
-            //input.addField(QueryConstants.FIELD_ID, "ACL-" + aclReaders.getId());
-            input.addField("id", "ACL-" + aclReaders.getId());
+            input.addField("id", AlfrescoSolrDataModel.getAclDocumentId(aclReaders.getTenantDomain(), aclReaders.getId()));
+            // Do we need to get this right - the version stamp from the DB? 
             input.addField("_version_", "0");
             input.addField(QueryConstants.FIELD_ACLID, aclReaders.getId());
             input.addField(QueryConstants.FIELD_INACLTXID, aclReaders.getAclChangeSetId());
@@ -867,7 +877,7 @@ public class SolrInformationServer implements InformationServer
         cmd.overwrite = overwrite;
         SolrInputDocument input = new SolrInputDocument();
         //input.addField(QueryConstants.FIELD_ID, "ACLTX-" + changeSet.getId());
-        input.addField("id", "ACLTX-" + changeSet.getId());
+        input.addField("id", AlfrescoSolrDataModel.getAclChangeSetDocumentId(TenantService.DEFAULT_DOMAIN, changeSet.getId()));
         input.addField("_version_", "0");
         input.addField(QueryConstants.FIELD_ACLTXID, changeSet.getId());
         input.addField(QueryConstants.FIELD_INACLTXID, changeSet.getId());
@@ -891,9 +901,8 @@ public class SolrInformationServer implements InformationServer
         AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequest());
         cmd.overwrite = overwrite;
         SolrInputDocument input = new SolrInputDocument();
-        //input.addField(QueryConstants.FIELD_ID, "TX-" + info.getId());
-        input.addField("id", "TX-" + info.getId());
-        input.addField("_version_", "0");
+        input.addField("id", AlfrescoSolrDataModel.getTransactionDocumentId(TenantService.DEFAULT_DOMAIN, info.getId()));
+        input.addField("_version_", 0);
         input.addField(QueryConstants.FIELD_TXID, info.getId());
         input.addField(QueryConstants.FIELD_INTXID, info.getId());
         input.addField(QueryConstants.FIELD_TXCOMMITTIME, info.getCommitTimeMs());
