@@ -20,9 +20,7 @@ package org.alfresco.solr.query;
 
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.solr.AlfrescoSolrDataModel;
-import org.alfresco.solr.ContextAwareQuery;
 import org.alfresco.util.Pair;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
 import org.apache.solr.common.params.SolrParams;

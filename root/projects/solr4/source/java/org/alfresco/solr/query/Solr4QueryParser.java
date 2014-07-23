@@ -56,6 +56,11 @@ import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.solr.AlfrescoSolrDataModel;
+import org.alfresco.solr.AlfrescoSolrDataModel.ContentFieldType;
+import org.alfresco.solr.AlfrescoSolrDataModel.FieldInstance;
+import org.alfresco.solr.AlfrescoSolrDataModel.FieldUse;
+import org.alfresco.solr.AlfrescoSolrDataModel.IndexedField;
 import org.alfresco.util.CachingDateFormat;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
@@ -108,6 +113,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     public Solr4QueryParser(Version matchVersion, String f, Analyzer a)
     {
         super(matchVersion, f, a);
+        setAllowLeadingWildcard(true);
     }
 
     @SuppressWarnings("unused")
@@ -121,7 +127,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     private SearchParameters searchParameters;
 
-    private MLAnalysisMode mlAnalysisMode = MLAnalysisMode.EXACT_LANGUAGE;
+    private MLAnalysisMode mlAnalysisMode = MLAnalysisMode.EXACT_LANGUAGE_AND_ALL;
 
     private int internalSlop = 0;
 
@@ -651,7 +657,36 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     private boolean isPropertyField(String field)
     {
-        return field.startsWith(PROPERTY_FIELD_PREFIX);
+        if(field.startsWith(PROPERTY_FIELD_PREFIX))
+        {
+            return true;
+        }
+        int index = field.lastIndexOf('@');
+        if(index > -1)
+        {
+            PropertyDefinition pDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, field.substring(index));
+            if(pDef != null)
+            {
+                IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getIndexedFieldNamesForProperty(pDef.getName());
+                for(FieldInstance instance : indexedField.getFields())
+                {
+                    if(instance.getField().equals(field))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+       
     }
   
     
@@ -1073,6 +1108,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 testText = queryText.substring(position + 1);
                 requiresMLTokenDuplication = true;
                 localeString = queryText.substring(1, position);
+                
             }
         }
 
@@ -2117,13 +2153,9 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         // FIELD_TYPE uses the default
         if (isPropertyField(field))
         {
-            String fieldName;
+            String fieldName = null;
             PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, field.substring(1));
-            if (propertyDef != null)
-            {
-                fieldName = PROPERTY_FIELD_PREFIX + propertyDef.getName();
-            }
-            else
+            if (propertyDef == null)
             {
                 fieldName = expandAttributeFieldName(field);
             }
@@ -2170,7 +2202,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         }
                         for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
                         {
-                            addLocaleSpecificUntokenisedTextRangeFunction(fieldName, part1, part2, includeLower, includeUpper, luceneFunction, booleanQuery, mlAnalysisMode,
+                            addLocaleSpecificUntokenisedTextRangeFunction(fieldName, propertyDef, part1, part2, includeLower, includeUpper, luceneFunction, booleanQuery, mlAnalysisMode,
                                     locale, tokenisationMode);
                         }
                         return booleanQuery;
@@ -2201,7 +2233,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
                     {
 
-                        addTextRange(field, part1, part2, includeLower, includeUpper, analysisMode, fieldName, propertyDef, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+                        addTextRange(field, propertyDef, part1, part2, includeLower, includeUpper, analysisMode, fieldName, propertyDef, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
 
                     }
                     return booleanQuery;
@@ -3040,8 +3072,8 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     private Query spanQueryBuilder(String field, String first, String last, int slop, boolean inOrder) throws ParseException
     {
         String propertyFieldName = field.substring(1);
-
-        String expandedFieldName;
+        String expandedFieldName = null;
+        
         PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, propertyFieldName);
         IndexTokenisationMode tokenisationMode = IndexTokenisationMode.TRUE;
         if (propertyDef != null)
@@ -3052,8 +3084,6 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 tokenisationMode = IndexTokenisationMode.TRUE;
             }
             QName propertyQName = propertyDef.getName();
-            expandedFieldName = PROPERTY_FIELD_PREFIX +propertyQName;
-            
         }
         else
         {
@@ -3074,7 +3104,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {
-                addMLTextSpanQuery(field, first, last, slop, inOrder, expandedFieldName, propertyDef, tokenisationMode, booleanQuery,
+                addMLTextSpanQuery(field, propertyDef, first, last, slop, inOrder, expandedFieldName, propertyDef, tokenisationMode, booleanQuery,
                         mlAnalysisMode, locale);
             }
             return booleanQuery;
@@ -3090,7 +3120,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, addContentCrossLocaleWildcards()));
             }
 
-            return addContentSpanQuery(field, first, last, slop, inOrder, expandedFieldName, expandedLocales, mlAnalysisMode);
+            return addContentSpanQuery(field, propertyDef, first, last, slop, inOrder, expandedFieldName, expandedLocales, mlAnalysisMode);
 
         }
         else if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.TEXT)))
@@ -3105,7 +3135,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {
 
-                addTextSpanQuery(field, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+                addTextSpanQuery(field, propertyDef, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
 
             }
             return booleanQuery;
@@ -3177,7 +3207,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             propertyFieldName = field.substring(1);
         }
 
-        String expandedFieldName;
+        String expandedFieldName = null;
         QName propertyQName;
         PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, propertyFieldName);
         IndexTokenisationMode tokenisationMode = IndexTokenisationMode.TRUE;
@@ -3188,7 +3218,6 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 tokenisationMode = IndexTokenisationMode.TRUE;
             }
-            expandedFieldName = PROPERTY_FIELD_PREFIX + propertyDef.getName() + ending;
             propertyQName = propertyDef.getName();
         }
         else
@@ -3216,64 +3245,70 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     }
                 }
 
-                return functionQueryBuilder(expandedFieldName, propertyQName, propertyDef, tokenisationMode, queryText, luceneFunction);
+                return functionQueryBuilder(expandedFieldName, ending, propertyQName, propertyDef, tokenisationMode, queryText, luceneFunction);
             }
         }
 
         // Mime type
-        if (expandedFieldName.endsWith(FIELD_MIMETYPE_SUFFIX))
+        if (ending.equals(FIELD_MIMETYPE_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
-                return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
+                return subQueryBuilder.getQuery(AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyQName, ContentFieldType.MIMETYPE, FieldUse.ID).getFields().get(0).getField(), queryText, analysisMode, luceneFunction);
             }
 
         }
-        else if (expandedFieldName.endsWith(FIELD_SIZE_SUFFIX))
+        else if (ending.equals(FIELD_SIZE_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
-                return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
+                return subQueryBuilder.getQuery(AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyQName, ContentFieldType.SIZE, FieldUse.ID).getFields().get(0).getField(), queryText, analysisMode, luceneFunction);
+                
             }
 
         }
-        else if (expandedFieldName.endsWith(FIELD_LOCALE_SUFFIX))
+        else if (ending.equals(FIELD_LOCALE_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
-                return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
+                return subQueryBuilder.getQuery(AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyQName, ContentFieldType.LOCALE, FieldUse.ID).getFields().get(0).getField(), queryText, analysisMode, luceneFunction);
+                
             }
 
         }
-        else if (expandedFieldName.endsWith(FIELD_ENCODING_SUFFIX))
+        else if (ending.equals(FIELD_ENCODING_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
-                return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
+                return subQueryBuilder.getQuery(AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyQName, ContentFieldType.ENCODING, FieldUse.ID).getFields().get(0).getField(), queryText, analysisMode, luceneFunction);
+                
             }
 
         }
-        else if (expandedFieldName.endsWith(FIELD_TRANSFORMATION_STATUS_SUFFIX))
+        else if (ending.equals(FIELD_TRANSFORMATION_STATUS_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
-                return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
+                return subQueryBuilder.getQuery(AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyQName, ContentFieldType.TRANSFORMATION_STATUS, FieldUse.ID).getFields().get(0).getField(), queryText, analysisMode, luceneFunction);
+                
             }
 
         }
-        else if (expandedFieldName.endsWith(FIELD_TRANSFORMATION_TIME_SUFFIX))
+        else if (ending.equals(FIELD_TRANSFORMATION_TIME_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
-                return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
+                return subQueryBuilder.getQuery(AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyQName, ContentFieldType.TRANSFORMATION_TIME, FieldUse.ID).getFields().get(0).getField(), queryText, analysisMode, luceneFunction);
+                
             }
 
         }
-        else if (expandedFieldName.endsWith(FIELD_TRANSFORMATION_EXCEPTION_SUFFIX))
+        else if (ending.equals(FIELD_TRANSFORMATION_EXCEPTION_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
-                return subQueryBuilder.getQuery(expandedFieldName, queryText, analysisMode, luceneFunction);
+                return subQueryBuilder.getQuery(AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyQName, ContentFieldType.TRANSFORMATION_EXCEPTION, FieldUse.ID).getFields().get(0).getField(), queryText, analysisMode, luceneFunction);
+                
             }
 
         }
@@ -3296,7 +3331,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {
-                addMLTextAttributeQuery(field, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, propertyDef, tokenisationMode, booleanQuery,
+                addMLTextAttributeQuery(field, propertyDef, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, propertyDef, tokenisationMode, booleanQuery,
                         mlAnalysisMode, locale);
             }
             return getNonEmptyBooleanQuery(booleanQuery);
@@ -3316,7 +3351,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, addContentCrossLocaleWildcards()));
             }
 
-            return addContentAttributeQuery(queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, expandedLocales, mlAnalysisMode);
+            return addContentAttributeQuery(propertyDef, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, expandedLocales);
 
         }
         else if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.TEXT)))
@@ -3342,7 +3377,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {
 
-                addTextAttributeQuery(field, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+                addTextAttributeQuery(field, propertyDef, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
 
             }
             return getNonEmptyBooleanQuery(booleanQuery);
@@ -3367,26 +3402,50 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
             // Sort and id is only special for MLText, text, and content
             // Dates are not special in this case
-            Query query = subQueryBuilder.getQuery(expandedFieldName, queryText, AnalysisMode.DEFAULT, luceneFunction);
-            if (query != null)
+            if(propertyDef != null)
             {
-                return query;
+                BooleanQuery bQuery = new BooleanQuery(); 
+                IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), null, FieldUse.FTS);
+                for(FieldInstance instance : indexedField.getFields())
+                {
+                    Query query = subQueryBuilder.getQuery(instance.getField(), queryText, AnalysisMode.DEFAULT, luceneFunction);
+                    if(query != null)
+                    {
+                        bQuery.add(query,Occur.SHOULD);
+                    }
+                }
+                if(bQuery.getClauses().length > 0)
+                {
+                    return bQuery;
+                }
+                else
+                {
+                    return createNoMatchQuery();
+                }
             }
             else
             {
-                return createNoMatchQuery();
+                Query query = subQueryBuilder.getQuery(expandedFieldName, queryText, AnalysisMode.DEFAULT, luceneFunction);
+                if (query != null)
+                {
+                    return query;
+                }
+                else
+                {
+                    return createNoMatchQuery();
+                }
             }
         }
     }
 
  
 
-    protected Query functionQueryBuilder(String expandedFieldName, QName propertyQName, PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, String queryText,
+    protected Query functionQueryBuilder(String expandedFieldName, String ending, QName propertyQName, PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, String queryText,
             LuceneFunction luceneFunction) throws ParseException
             {
 
         // Mime type
-        if (expandedFieldName.endsWith(FIELD_MIMETYPE_SUFFIX))
+        if (ending.equals(FIELD_MIMETYPE_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3394,7 +3453,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
 
         }
-        else if (expandedFieldName.endsWith(FIELD_SIZE_SUFFIX))
+        else if (ending.equals(FIELD_SIZE_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3402,7 +3461,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
 
         }
-        else if (expandedFieldName.endsWith(FIELD_LOCALE_SUFFIX))
+        else if (ending.equals(FIELD_LOCALE_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3410,7 +3469,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
 
         }
-        else if (expandedFieldName.endsWith(FIELD_ENCODING_SUFFIX))
+        else if (ending.equals(FIELD_ENCODING_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3418,7 +3477,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
 
         }
-        else if (expandedFieldName.endsWith(FIELD_CONTENT_DOC_ID_SUFFIX))
+        else if (ending.equals(FIELD_CONTENT_DOC_ID_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3426,7 +3485,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
 
         }
-        else if (expandedFieldName.endsWith(FIELD_TRANSFORMATION_EXCEPTION_SUFFIX))
+        else if (ending.equals(FIELD_TRANSFORMATION_EXCEPTION_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3434,7 +3493,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
 
         }
-        else if (expandedFieldName.endsWith(FIELD_TRANSFORMATION_TIME_SUFFIX))
+        else if (ending.equals(FIELD_TRANSFORMATION_TIME_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3442,7 +3501,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
 
         }
-        else if (expandedFieldName.endsWith(FIELD_TRANSFORMATION_STATUS_SUFFIX))
+        else if (ending.equals(FIELD_TRANSFORMATION_STATUS_SUFFIX))
         {
             if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT)))
             {
@@ -3469,7 +3528,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {
 
-                addLocaleSpecificUntokenisedMLOrTextFunction(expandedFieldName, queryText, luceneFunction, booleanQuery, mlAnalysisMode, locale, tokenisationMode);
+                addLocaleSpecificUntokenisedMLOrTextFunction(expandedFieldName, propertyDef, queryText, luceneFunction, booleanQuery, mlAnalysisMode, locale, tokenisationMode);
 
             }
             return booleanQuery;
@@ -3497,7 +3556,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {
-                addLocaleSpecificUntokenisedMLOrTextFunction(expandedFieldName, queryText, luceneFunction, booleanQuery, mlAnalysisMode, locale, tokenisationMode);
+                addLocaleSpecificUntokenisedMLOrTextFunction(expandedFieldName, propertyDef, queryText, luceneFunction, booleanQuery, mlAnalysisMode, locale, tokenisationMode);
 
             }
             return booleanQuery;
@@ -3672,8 +3731,8 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
 
     // TODO: correct field names
-    protected Query addContentAttributeQuery(String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction, String expandedFieldName,
-            List<Locale> expandedLocales, MLAnalysisMode mlAnalysisMode) throws ParseException
+    protected Query addContentAttributeQuery(PropertyDefinition pDef, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction, String expandedFieldName,
+            List<Locale> expandedLocales) throws ParseException
     {
         BooleanQuery booleanQuery = new BooleanQuery();
         for (Locale locale : expandedLocales)
@@ -3682,21 +3741,34 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 StringBuilder builder = new StringBuilder(queryText.length() + 10);
                 builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
-                Query subQuery = subQueryBuilder.getQuery(expandedFieldName + ".__", builder.toString(), analysisMode, luceneFunction);
-                if (subQuery != null)
+                IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(pDef.getName(), null, FieldUse.FTS);
+                for(FieldInstance field : indexedField.getFields())
                 {
-                    booleanQuery.add(subQuery, Occur.SHOULD);
+                    if(!field.isLocalised())
+                    {
+                        Query subQuery = subQueryBuilder.getQuery(field.getField(), builder.toString(), analysisMode, luceneFunction);
+                        if (subQuery != null)
+                        {
+                            booleanQuery.add(subQuery, Occur.SHOULD);
+                        }
+                    }
                 }
-
             }
             else
             {
                 StringBuilder builder = new StringBuilder(queryText.length() + 10);
                 builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
-                Query subQuery = subQueryBuilder.getQuery(expandedFieldName, builder.toString(), analysisMode, luceneFunction);
-                if (subQuery != null)
+                IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(pDef.getName(), null, FieldUse.FTS);
+                for(FieldInstance field : indexedField.getFields())
                 {
-                    booleanQuery.add(subQuery, Occur.SHOULD);
+                    if(field.isLocalised())
+                    {
+                        Query subQuery = subQueryBuilder.getQuery(field.getField(), builder.toString(), analysisMode, luceneFunction);
+                        if (subQuery != null)
+                        {
+                            booleanQuery.add(subQuery, Occur.SHOULD);
+                        }
+                    }
                 }
             }
         }
@@ -3704,7 +3776,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
    
-    protected void addLocaleSpecificUntokenisedMLOrTextFunction(String expandedFieldName, String queryText, LuceneFunction luceneFunction, BooleanQuery booleanQuery,
+    protected void addLocaleSpecificUntokenisedMLOrTextFunction(String expandedFieldName, PropertyDefinition pDef, String queryText, LuceneFunction luceneFunction, BooleanQuery booleanQuery,
             MLAnalysisMode mlAnalysisMode, Locale locale, IndexTokenisationMode tokenisationMode)
     {
 //        Query subQuery = new CaseInsensitiveFieldQuery(new Term(getFieldName(expandedFieldName, locale, tokenisationMode, IndexTokenisationMode.FALSE), getFixedFunctionQueryText(
@@ -3731,41 +3803,72 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         return builder.toString();
     }
 
-    private String getFieldName(String baseFieldName, Locale locale, IndexTokenisationMode actualIndexTokenisationMode, IndexTokenisationMode preferredIndexTokenisationMode)
+    private FieldInstance getFieldInstance(String baseFieldName, PropertyDefinition pDef, Locale locale, IndexTokenisationMode actualIndexTokenisationMode, IndexTokenisationMode preferredIndexTokenisationMode)
     {
-        StringBuilder builder = new StringBuilder(baseFieldName.length() + 5);
-        builder.append(baseFieldName);
-        if (locale.toString().length() == 0)
+        if(pDef != null)
         {
-            builder.append(".__");
-        }
-        switch (actualIndexTokenisationMode)
-        {
-        case BOTH:
+
             switch (preferredIndexTokenisationMode)
             {
             case BOTH:
                 throw new IllegalStateException("Preferred mode can not be BOTH");
             case FALSE:
-                builder.append(".u");
-                break;
+                if(locale.toString().length() == 0)
+                {
+                    IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(pDef.getName(), null, FieldUse.ID);
+                    for(FieldInstance field : indexedField.getFields())
+                    {
+                        if(!field.isLocalised())
+                        {
+                            return field;
+                        }
+                    }
+                }
+                else
+                {
+                    IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(pDef.getName(), null, FieldUse.ID);
+                    for(FieldInstance field : indexedField.getFields())
+                    {
+                        if(field.isLocalised())
+                        {
+                            return field;
+                        }
+                    }
+                }
             case TRUE:
-                // nothing to do
-                break;
+                if(locale.toString().length() == 0)
+                {
+                    IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(pDef.getName(), null, FieldUse.FTS);
+                    for(FieldInstance field : indexedField.getFields())
+                    {
+                        if(!field.isLocalised())
+                        {
+                            return field;
+                        }
+                    }
+                }
+                else
+                {
+                    IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(pDef.getName(), null, FieldUse.FTS);
+                    for(FieldInstance field : indexedField.getFields())
+                    {
+                        if(field.isLocalised())
+                        {
+                            return field;
+                        }
+                    }
+                }
             }
-            break;
-        case FALSE:
-            builder.append(".u");
-            break;
-        case TRUE:
-            // nothing to do
-            break;
+
+            
         }
-        return builder.toString();
+
+        return new FieldInstance(baseFieldName, false, false);
+        
     }
 
     
-    protected void addLocaleSpecificUntokenisedTextRangeFunction(String expandedFieldName, String lower, String upper, boolean includeLower, boolean includeUpper,
+    protected void addLocaleSpecificUntokenisedTextRangeFunction(String expandedFieldName, PropertyDefinition pDef, String lower, String upper, boolean includeLower, boolean includeUpper,
             LuceneFunction luceneFunction, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale, IndexTokenisationMode tokenisationMode) throws ParseException
     {
 //        String field = getFieldName(expandedFieldName, locale, tokenisationMode, IndexTokenisationMode.FALSE);
@@ -3786,15 +3889,15 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
    
-    protected void addMLTextAttributeQuery(String field, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
+    protected void addMLTextAttributeQuery(String field, PropertyDefinition pDef, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
             String expandedFieldName, PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode,
             Locale locale) throws ParseException
     {
 
-        addMLTextOrTextAttributeQuery(field, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+        addMLTextOrTextAttributeQuery(field, pDef, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
     }
 
-    private void addMLTextOrTextAttributeQuery(String field, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
+    private void addMLTextOrTextAttributeQuery(String field, PropertyDefinition pDef, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
             String expandedFieldName, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale) throws ParseException
     {
 
@@ -3809,7 +3912,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 default:
                 case DEFAULT:
                 case TOKENISE:
-                    addLocaleSpecificMLOrTextAttribute(queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName, tokenisationMode,
+                    addLocaleSpecificMLOrTextAttribute(pDef, queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName, tokenisationMode,
                             IndexTokenisationMode.TRUE);
                     break;
                 case IDENTIFIER:
@@ -3818,7 +3921,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 case WILD:
                 case LIKE:
                     setLowercaseExpandedTerms(false);
-                    addLocaleSpecificMLOrTextAttribute(queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName, tokenisationMode,
+                    addLocaleSpecificMLOrTextAttribute(pDef, queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName, tokenisationMode,
                             IndexTokenisationMode.FALSE);
 
                     break;
@@ -3826,12 +3929,12 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 break;
             case FALSE:
                 setLowercaseExpandedTerms(false);
-                addLocaleSpecificMLOrTextAttribute(queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName, tokenisationMode,
+                addLocaleSpecificMLOrTextAttribute(pDef, queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName, tokenisationMode,
                         IndexTokenisationMode.FALSE);
                 break;
             case TRUE:
             default:
-                addLocaleSpecificMLOrTextAttribute(queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName, tokenisationMode,
+                addLocaleSpecificMLOrTextAttribute(pDef, queryText, subQueryBuilder, analysisMode, luceneFunction, booleanQuery, locale, expandedFieldName, tokenisationMode,
                         IndexTokenisationMode.TRUE);
                 break;
             }
@@ -3844,22 +3947,27 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
   
-    protected void addTextAttributeQuery(String field, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
+    protected void addTextAttributeQuery(String field, PropertyDefinition pDef, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
             String expandedFieldName, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale) throws ParseException
     {
 
-        addMLTextOrTextAttributeQuery(field, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+        addMLTextOrTextAttributeQuery(field, pDef, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
     }
 
   
-    private void addLocaleSpecificMLOrTextAttribute(String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
+    private void addLocaleSpecificMLOrTextAttribute(PropertyDefinition pDef, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
             BooleanQuery booleanQuery, Locale locale, String textFieldName, IndexTokenisationMode tokenisationMode, IndexTokenisationMode preferredTokenisationMode)
             throws ParseException
     {
 
+        FieldInstance fieldInstance = getFieldInstance(textFieldName, pDef, locale, tokenisationMode, preferredTokenisationMode);
         StringBuilder builder = new StringBuilder(queryText.length() + 10);
-        builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
-        Query subQuery = subQueryBuilder.getQuery(getFieldName(textFieldName, locale, tokenisationMode, preferredTokenisationMode), builder.toString(), analysisMode,
+        if(fieldInstance.isLocalised())
+        {
+            builder.append("\u0000").append(locale.toString()).append("\u0000");
+        }
+        builder.append(queryText);
+        Query subQuery = subQueryBuilder.getQuery(fieldInstance.getField(), builder.toString(), analysisMode,
                 luceneFunction);
         if (subQuery != null)
         {
@@ -3868,7 +3976,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
  
-    protected void addTextRange(String field, String part1, String part2, boolean includeLower, boolean includeUpper, AnalysisMode analysisMode, String fieldName,
+    protected void addTextRange(String field, PropertyDefinition pDef, String part1, String part2, boolean includeLower, boolean includeUpper, AnalysisMode analysisMode, String fieldName,
             PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale) throws ParseException
     {
         switch (tokenisationMode)
@@ -3878,10 +3986,10 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
             case DEFAULT:
             case TOKENISE:
-                addLocaleSpecificTextRange(fieldName, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode, tokenisationMode, IndexTokenisationMode.TRUE);
+                addLocaleSpecificTextRange(fieldName, pDef, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode, tokenisationMode, IndexTokenisationMode.TRUE);
                 break;
             case IDENTIFIER:
-                addLocaleSpecificTextRange(fieldName, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode, tokenisationMode, IndexTokenisationMode.FALSE);
+                addLocaleSpecificTextRange(fieldName, pDef, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode, tokenisationMode, IndexTokenisationMode.FALSE);
                 break;
             case WILD:
             case LIKE:
@@ -3892,17 +4000,17 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
             break;
         case FALSE:
-            addLocaleSpecificTextRange(fieldName, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode, tokenisationMode, IndexTokenisationMode.FALSE);
+            addLocaleSpecificTextRange(fieldName, pDef, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode, tokenisationMode, IndexTokenisationMode.FALSE);
             break;
         case TRUE:
-            addLocaleSpecificTextRange(fieldName, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode, tokenisationMode, IndexTokenisationMode.TRUE);
+            addLocaleSpecificTextRange(fieldName, pDef, part1, part2, includeLower, includeUpper, booleanQuery, locale, analysisMode, tokenisationMode, IndexTokenisationMode.TRUE);
             break;
         default:
         }
 
     }
 
-    private void addLocaleSpecificTextRange(String expandedFieldName, String part1, String part2, boolean includeLower, boolean includeUpper, BooleanQuery booleanQuery,
+    private void addLocaleSpecificTextRange(String expandedFieldName, PropertyDefinition pDef, String part1, String part2, boolean includeLower, boolean includeUpper, BooleanQuery booleanQuery,
             Locale locale, AnalysisMode analysisMode, IndexTokenisationMode tokenisationMode, IndexTokenisationMode preferredtokenisationMode) throws ParseException
     {
 //        String field = getFieldName(expandedFieldName, locale, tokenisationMode, preferredtokenisationMode);
@@ -3929,14 +4037,14 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
   
-    protected void addTextSpanQuery(String field, String first, String last, int slop, boolean inOrder, String expandedFieldName, IndexTokenisationMode tokenisationMode,
+    protected void addTextSpanQuery(String field, PropertyDefinition pDef, String first, String last, int slop, boolean inOrder, String expandedFieldName, IndexTokenisationMode tokenisationMode,
             BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale)
     {
-        addMLTextOrTextSpanQuery(field, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+        addMLTextOrTextSpanQuery(field, pDef, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
     }
 
    
-    protected org.apache.lucene.search.Query addContentSpanQuery(String field, String first, String last, int slop, boolean inOrder, String expandedFieldName,
+    protected org.apache.lucene.search.Query addContentSpanQuery(String field, PropertyDefinition pDef, String first, String last, int slop, boolean inOrder, String expandedFieldName,
             List<Locale> expandedLocales, MLAnalysisMode mlAnalysisMode)
     {
 //        try
@@ -4016,13 +4124,13 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
  
-    protected void addMLTextSpanQuery(String field, String first, String last, int slop, boolean inOrder, String expandedFieldName, PropertyDefinition propertyDef,
+    protected void addMLTextSpanQuery(String field, PropertyDefinition pDef, String first, String last, int slop, boolean inOrder, String expandedFieldName, PropertyDefinition propertyDef,
             IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale)
     {
-        addMLTextOrTextSpanQuery(field, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+        addMLTextOrTextSpanQuery(field, pDef, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
     }
 
-    private void addMLTextOrTextSpanQuery(String field, String first, String last, int slop, boolean inOrder, String expandedFieldName, IndexTokenisationMode tokenisationMode,
+    private void addMLTextOrTextSpanQuery(String field, PropertyDefinition pDef, String first, String last, int slop, boolean inOrder, String expandedFieldName, IndexTokenisationMode tokenisationMode,
             BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale)
     {
 //        try
@@ -4074,19 +4182,22 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
   
     protected org.apache.lucene.search.Query createOwnerSetQuery(String queryText) throws ParseException
     {
-        return new SolrOwnerSetQuery(queryText);
+        //return new SolrOwnerSetQuery(queryText);
+        throw new UnsupportedOperationException();
     }
 
     
     protected org.apache.lucene.search.Query createReaderSetQuery(String queryText) throws ParseException
     {
-        return new SolrReaderSetQuery(queryText);
+        //return new SolrReaderSetQuery(queryText);
+        throw new UnsupportedOperationException();
     }
 
    
     protected org.apache.lucene.search.Query createAuthoritySetQuery(String queryText) throws ParseException
     {
-        return new SolrAuthoritySetQuery(queryText);
+        //return new SolrAuthoritySetQuery(queryText);
+        throw new UnsupportedOperationException();
     }
 
 }

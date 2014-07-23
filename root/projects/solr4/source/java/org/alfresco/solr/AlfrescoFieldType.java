@@ -68,7 +68,9 @@ public class AlfrescoFieldType extends FieldType
     {
         this.schema = schema;
         properties |= TOKENIZED;
+        properties &= ~OMIT_TF_POSITIONS;
         super.init(schema, args);
+        
         // TODO: Wire up localised analysis driven from the schema
         // for now we do something basic
         analyzer = new AlfrescoAnalyzerWrapper(schema);

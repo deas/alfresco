@@ -85,7 +85,6 @@ import org.apache.chemistry.opencmis.commons.enums.CapabilityJoin;
 import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.AtomicReaderContext;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.SortedDocValues;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -109,7 +108,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
  */
 public class AlfrescoSolrDataModel
 {
-    static enum FieldUse
+    public static enum FieldUse
     {
         FTS,          // Term/Phrase/Range/Fuzzy/Prefix/Proximity/Wild
         ID,           // Exact/ExactRange - Comparison, In, Upper, Lower
@@ -121,7 +120,7 @@ public class AlfrescoSolrDataModel
         COMPLETION  
     }
     
-    static enum ContentFieldType
+    public static enum ContentFieldType
     {
         DOCID,
         SIZE,
