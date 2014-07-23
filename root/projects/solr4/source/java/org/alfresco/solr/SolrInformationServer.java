@@ -1601,7 +1601,7 @@ public class SolrInformationServer implements InformationServer
             switch(type)
             {
             case DOCID:
-                //doc.addField(fieldInstance.getField(), contentPropertyValue.get());
+                doc.addField(fieldInstance.getField(), contentPropertyValue.getId());
                 break;
             case ENCODING:
                 doc.addField(fieldInstance.getField(), contentPropertyValue.getEncoding());
@@ -1634,6 +1634,7 @@ public class SolrInformationServer implements InformationServer
     private void addContentPropertyToDoc(SolrInputDocument doc, QName propertyQName, NodeMetaData nodeMetaData, ContentPropertyValue contentPropertyValue)
                     throws AuthenticationException, IOException
     {
+        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.DOCID, null);
         addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.SIZE, null);
         addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.LOCALE, null);
         addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.MIMETYPE, null);

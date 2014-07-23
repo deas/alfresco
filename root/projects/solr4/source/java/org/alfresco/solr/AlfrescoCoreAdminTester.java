@@ -398,7 +398,7 @@ public class AlfrescoCoreAdminTester
             list_1.addValue(new StringPropertyValue("anyValueAsString"));
             properties04.put(QName.createQName(TEST_NAMESPACE, "any-many-ista"), list_1);
             MultiPropertyValue list_2 = new MultiPropertyValue();
-            list_2.addValue(new ContentPropertyValue(Locale.ENGLISH, 12L, "UTF-16", "text/plain"));
+            list_2.addValue(new ContentPropertyValue(Locale.ENGLISH, 12L, "UTF-16", "text/plain", null));
             properties04.put(QName.createQName(TEST_NAMESPACE, "content-many-ista"), list_2);
             content04.put(QName.createQName(TEST_NAMESPACE, "content-many-ista"), "multicontent");
 
@@ -560,7 +560,7 @@ public class AlfrescoCoreAdminTester
             }
 
             properties14.put(ContentModel.PROP_CONTENT,
-                        new ContentPropertyValue(Locale.UK, 298L, "UTF-8", "text/plain"));
+                        new ContentPropertyValue(Locale.UK, 298L, "UTF-8", "text/plain", null));
             content14.put(
                         ContentModel.PROP_CONTENT,
                         "The quick brown fox jumped over the lazy dog and ate the Alfresco Tutorial, in pdf format, along with the following stop words;  a an and are"
@@ -935,7 +935,7 @@ public class AlfrescoCoreAdminTester
                     content00Properties.put(ContentModel.PROP_DESCRIPTION, desc00);
                     content00Properties.put(ContentModel.PROP_TITLE, desc00);
                     content00Properties.put(ContentModel.PROP_CONTENT, new ContentPropertyValue(Locale.UK, 0l, "UTF-8",
-                                "text/plain"));
+                                "text/plain", null));
                     content00Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("Doc " + i));
                     content00Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("Test"));
                     content00Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("Test"));
@@ -1309,7 +1309,7 @@ public class AlfrescoCoreAdminTester
             content00Properties.put(ContentModel.PROP_DESCRIPTION, desc00);
             content00Properties.put(ContentModel.PROP_TITLE, desc00);
             content00Properties.put(ContentModel.PROP_CONTENT, new ContentPropertyValue(Locale.UK, 0l, "UTF-8",
-                        "text/plain"));
+                        "text/plain", null));
             content00Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("Alfresco Tutorial"));
             content00Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content00Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
@@ -1344,7 +1344,7 @@ public class AlfrescoCoreAdminTester
             content01Properties.put(ContentModel.PROP_DESCRIPTION, desc01);
             content01Properties.put(ContentModel.PROP_TITLE, desc01);
             content01Properties.put(ContentModel.PROP_CONTENT, new ContentPropertyValue(Locale.UK, 0l, "UTF-8",
-                        "text/plain"));
+                        "text/plain", null));
             content01Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("AA%"));
             content01Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content01Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
@@ -1372,7 +1372,7 @@ public class AlfrescoCoreAdminTester
             content02Properties.put(ContentModel.PROP_DESCRIPTION, desc02);
             content02Properties.put(ContentModel.PROP_TITLE, desc02);
             content02Properties.put(ContentModel.PROP_CONTENT, new ContentPropertyValue(Locale.UK, 0l, "UTF-8",
-                        "text/plain"));
+                        "text/plain", null));
             content02Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("BB_"));
             content02Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content02Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
@@ -1400,7 +1400,7 @@ public class AlfrescoCoreAdminTester
             content03Properties.put(ContentModel.PROP_DESCRIPTION, desc03);
             content03Properties.put(ContentModel.PROP_TITLE, desc03);
             content03Properties.put(ContentModel.PROP_CONTENT, new ContentPropertyValue(Locale.UK, 0l, "UTF-8",
-                        "text/plain"));
+                        "text/plain", null));
             content03Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("CC\\"));
             content03Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content03Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
@@ -1428,7 +1428,7 @@ public class AlfrescoCoreAdminTester
             content04Properties.put(ContentModel.PROP_DESCRIPTION, desc04);
             content04Properties.put(ContentModel.PROP_TITLE, desc04);
             content04Properties.put(ContentModel.PROP_CONTENT, new ContentPropertyValue(Locale.UK, 0l, "UTF-8",
-                        "text/plain"));
+                        "text/plain", null));
             content04Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("DD\'"));
             content04Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content04Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
@@ -1457,7 +1457,7 @@ public class AlfrescoCoreAdminTester
             content05Properties.put(ContentModel.PROP_DESCRIPTION, desc05);
             content05Properties.put(ContentModel.PROP_TITLE, desc05);
             content05Properties.put(ContentModel.PROP_CONTENT, new ContentPropertyValue(Locale.UK, 0l, "UTF-8",
-                        "text/plain"));
+                        "text/plain", null));
             content05Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("EE.aa"));
             content05Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content05Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
@@ -1492,7 +1492,7 @@ public class AlfrescoCoreAdminTester
             content06Properties.put(ContentModel.PROP_DESCRIPTION, desc06);
             content06Properties.put(ContentModel.PROP_TITLE, desc06);
             content06Properties.put(ContentModel.PROP_CONTENT, new ContentPropertyValue(Locale.UK, 0l, "UTF-8",
-                        "text/plain"));
+                        "text/plain", null));
             content06Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("FF.EE"));
             content06Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content06Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
@@ -1531,7 +1531,7 @@ public class AlfrescoCoreAdminTester
             content07Properties.put(ContentModel.PROP_DESCRIPTION, desc07);
             content07Properties.put(ContentModel.PROP_TITLE, desc07);
             content07Properties.put(ContentModel.PROP_CONTENT, new ContentPropertyValue(Locale.UK, 0l, "UTF-8",
-                        "text/plain"));
+                        "text/plain", null));
             content07Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("GG*GG"));
             content07Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content07Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
@@ -1571,7 +1571,7 @@ public class AlfrescoCoreAdminTester
             content08Properties.put(ContentModel.PROP_DESCRIPTION, desc08);
             content08Properties.put(ContentModel.PROP_TITLE, desc08);
             content08Properties.put(ContentModel.PROP_CONTENT, new ContentPropertyValue(Locale.UK, 0l, "UTF-8",
-                        "text/plain"));
+                        "text/plain", null));
             content08Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("HH?HH"));
             content08Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content08Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
@@ -1611,7 +1611,7 @@ public class AlfrescoCoreAdminTester
             content09Properties.put(ContentModel.PROP_DESCRIPTION, desc09);
             content09Properties.put(ContentModel.PROP_TITLE, desc09);
             content09Properties.put(ContentModel.PROP_CONTENT, new ContentPropertyValue(Locale.UK, 0l, "UTF-9",
-                        "text/plain"));
+                        "text/plain", null));
             content09Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("aa"));
             content09Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content09Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
@@ -1653,7 +1653,7 @@ public class AlfrescoCoreAdminTester
             content10Properties.put(ContentModel.PROP_DESCRIPTION, desc10);
             content10Properties.put(ContentModel.PROP_TITLE, desc10);
             content10Properties.put(ContentModel.PROP_CONTENT, new ContentPropertyValue(Locale.UK, 0l, "UTF-9",
-                        "text/plain"));
+                        "text/plain", null));
             content10Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("aa-thumb"));
             content10Properties.put(ContentModel.PROP_CREATOR, new StringPropertyValue("System"));
             content10Properties.put(ContentModel.PROP_MODIFIER, new StringPropertyValue("System"));
