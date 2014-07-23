@@ -114,7 +114,7 @@ public interface InformationServer
     IndexHealthReport checkIndexTransactions(IndexHealthReport indexHealthReport, Long minTxId, Long minAclTxId,
                 IOpenBitSet txIdsInDb, long maxTxId, IOpenBitSet aclTxIdsInDb, long maxAclTxId) throws IOException;
 
-    List<TenantAndDbId> getDocsWithUncleanContent();
+    List<TenantAndDbId> getDocsWithUncleanContent() throws IOException;
 
     void updateContentToIndexAndCache(long dbId, String tenant) throws Exception;
 

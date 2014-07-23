@@ -62,6 +62,7 @@ public class ContentTracker extends AbstractTracker implements Tracker
             // update the content
             this.infoSrv.updateContentToIndexAndCache(bucket.dbId, bucket.tenant);
         }
+        super.infoSrv.commit();
         
     }
 

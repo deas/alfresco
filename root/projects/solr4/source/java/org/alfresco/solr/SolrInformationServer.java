@@ -90,13 +90,16 @@ import org.alfresco.util.NumericEncoder;
 import org.alfresco.util.Pair;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.index.SortedSetDocValues;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
+import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.FixedBitSet;
+import org.apache.lucene.util.NumericUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
@@ -155,6 +158,21 @@ public class SolrInformationServer implements InformationServer
     
     protected final static Logger log = LoggerFactory.getLogger(SolrInformationServer.class);
     protected enum FTSStatus {New, Dirty, Clean}; //TODO store this somewhere common
+    
+    
+    // write a BytesRef as a byte array
+    JavaBinCodec.ObjectResolver resolver = new JavaBinCodec.ObjectResolver() {
+      @Override
+      public Object resolve(Object o, JavaBinCodec codec) throws IOException {
+        if (o instanceof BytesRef) {
+          BytesRef br = (BytesRef)o;
+          codec.writeByteArray(br.bytes, br.offset, br.length);
+          return null;
+        }
+        return o;
+      }
+    };
+    
 
     public SolrInformationServer(AlfrescoCoreAdminHandler adminHandler, SolrCore core, SOLRAPIClient repositoryClient,
                 SolrContentStore solrContentStore)
@@ -305,16 +323,14 @@ public class SolrInformationServer implements InformationServer
     }
     
     @Override
-    public List<TenantAndDbId> getDocsWithUncleanContent()
+    public List<TenantAndDbId> getDocsWithUncleanContent() throws IOException
     {
         LocalSolrQueryRequest solrReq = new LocalSolrQueryRequest(core, new NamedList<>());
         SolrQueryResponse solrRsp = new SolrQueryResponse();
         SolrRequestHandler requestHandler = core.getRequestHandler("/select");
         
         ModifiableSolrParams newParams = new ModifiableSolrParams(solrReq.getParams());
-        String query = "NOT " + FIELD_FTSSTATUS + ":" + FTSStatus.Clean;
-//        String query = FIELD_FTSSTATUS + ":" + FTSStatus.Clean;
-//        String query = "*:*";
+        String query = FIELD_FTSSTATUS + ":" + FTSStatus.Dirty + " OR " + FIELD_FTSSTATUS + ":" + FTSStatus.New;
         newParams.set("q", query  );
         newParams.set("fl", "id");
         newParams.set("rows", "" + Integer.MAX_VALUE);
@@ -330,11 +346,29 @@ public class SolrInformationServer implements InformationServer
         if (rc != null)
         {
             DocIterator iterator = rc.docs.iterator();
-//            while (iterator.hasNext())
+            for(DocIterator it = rc.docs.iterator(); it.hasNext(); /**/)
             {
-                //docIds.add(iterator.next());
-// TODO  Talk with Andy to get the two pieces of information
+                int docID = it.nextDoc();
+                BytesRef tenant = new BytesRef();
+                solrReq.getSearcher().getAtomicReader().getSortedDocValues(FIELD_TENANT).get(docID, tenant);
+                
+                BytesRef dbid = new BytesRef();
+                SortedSetDocValues ssdv = solrReq.getSearcher().getAtomicReader().getSortedSetDocValues(FIELD_DBID);
+                ssdv.setDocument(docID);
+                long ordinal = ssdv.nextOrd();
+                if(ordinal == SortedSetDocValues.NO_MORE_ORDS)
+                {
+                    continue;
+                }
+                ssdv.lookupOrd(ordinal, dbid);
+             
+                TenantAndDbId tenantAndDbId = new TenantAndDbId();
+                tenantAndDbId.tenant = tenant.utf8ToString();
+                tenantAndDbId.dbId = NumericUtils.prefixCodedToLong(dbid);
+                
+                docs.add(tenantAndDbId);
             }
+
         }
         return docs;
     }
@@ -1740,6 +1774,7 @@ public class SolrInformationServer implements InformationServer
         if (false == transformContent) 
         {
             // Marks it as Clean so we do not get the actual content
+            newDoc.removeField(FIELD_FTSSTATUS);
             newDoc.addField(FIELD_FTSSTATUS, FTSStatus.Clean.toString());
             return; 
         }
@@ -1774,17 +1809,20 @@ public class SolrInformationServer implements InformationServer
             if (cachedDocContentDocid == currentContentDocid)
             {
                 // The content in the cache is current
+                newDoc.removeField(FIELD_FTSSTATUS);
                 newDoc.addField(FIELD_FTSSTATUS, FTSStatus.Clean.toString());
             }
             else
             {
                 // The cached content is out of date
+                newDoc.removeField(FIELD_FTSSTATUS);
                 newDoc.addField(FIELD_FTSSTATUS, FTSStatus.Dirty.toString());
             }
         }
         else 
         {
             // There is not a SolrInputDocument in the solrContentStore, so no content is added now to the new solr doc
+            newDoc.removeField(FIELD_FTSSTATUS);
             newDoc.addField(FIELD_FTSSTATUS, FTSStatus.New.toString());
         }
     }
@@ -1797,6 +1835,7 @@ public class SolrInformationServer implements InformationServer
         {
             addContentToCachedDoc(cachedDoc, dbId);
             // Marks as clean since the doc's content is now up to date
+            cachedDoc.removeField(FIELD_FTSSTATUS);
             cachedDoc.addField(FIELD_FTSSTATUS, FTSStatus.Clean.toString());
             storeDocOnSolrContentStore(tenant, dbId, cachedDoc);
             
@@ -1816,7 +1855,7 @@ public class SolrInformationServer implements InformationServer
     
     private void addContentToCachedDoc(SolrInputDocument cachedDoc, long dbId) throws UnsupportedEncodingException, AuthenticationException, IOException
     {
-        for (String fieldName : cachedDoc.getFieldNames())
+        for (String fieldName : cachedDoc.deepCopy().getFieldNames())
         {
             if (fieldName.startsWith(AlfrescoSolrDataModel.CONTENT_LOCALE_PREFIX))
             {
@@ -1885,17 +1924,21 @@ public class SolrInformationServer implements InformationServer
                     .add(SolrContentUrlBuilder.KEY_TENANT, tenant)
                     .add(SolrContentUrlBuilder.KEY_DB_ID, String.valueOf(dbId))
                     .getContentContext();
+        if(this.solrContentStore.exists(contentContext.getContentUrl()))
+        {
+            this.solrContentStore.delete(contentContext.getContentUrl());
+        }
+      
         ContentWriter writer = this.solrContentStore.getWriter(contentContext);
         try (
                     OutputStream contentOutputStream = writer.getContentOutputStream();
                     // Compresses the document
-                    GZIPOutputStream gzip = new GZIPOutputStream(contentOutputStream);
-                    FastOutputStream fos = new FastOutputStream(gzip);
+                    //GZIPOutputStream gzip = new GZIPOutputStream(contentOutputStream);
+                    //FastOutputStream fos = new FastOutputStream(contentOutputStream);
             )
         {
-            JavaBinCodec codec = new JavaBinCodec();
-            codec.init(fos);
-            codec.writeSolrInputDocument(doc);
+            JavaBinCodec codec = new JavaBinCodec(resolver);
+            codec.marshal(doc, contentOutputStream);
         }
     }
 
@@ -1919,11 +1962,11 @@ public class SolrInformationServer implements InformationServer
             try (
                     InputStream contentInputStream = reader.getContentInputStream();
                     // Uncompresses the document
-                    GZIPInputStream gzip = new GZIPInputStream(contentInputStream);
-                    FastInputStream fis = new FastInputStream(gzip)
+                    //GZIPInputStream gzip = new GZIPInputStream(contentInputStream);
+                    //FastInputStream fis = new FastInputStream(contentInputStream)
                     )
                     { 
-                cachedDoc = new JavaBinCodec().readSolrInputDocument(fis);
+                cachedDoc = (SolrInputDocument) new JavaBinCodec(resolver).unmarshal(contentInputStream);
                     }
         }
         return cachedDoc;

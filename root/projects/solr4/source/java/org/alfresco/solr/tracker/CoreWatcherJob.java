@@ -80,7 +80,7 @@ public class CoreWatcherJob implements Job
                                 AlfrescoSolrDataModel.getInstance().getDictionaryService(
                                             CMISStrictDictionaryService.DEFAULT), AlfrescoSolrDataModel.getInstance()
                                             .getNamespaceDAO());
-                    SolrContentStore solrContentStore = this.getSolrContentStore();
+                    SolrContentStore solrContentStore = this.getSolrContentStore(coreContainer);
                     
                     // Registers the information server and the trackers.
                     SolrInformationServer srv = new SolrInformationServer(adminHandler, core, repositoryClient,
@@ -108,7 +108,7 @@ public class CoreWatcherJob implements Job
     }
 
 
-    private SolrContentStore getSolrContentStore() throws JobExecutionException
+    private SolrContentStore getSolrContentStore(CoreContainer coreContainer) throws JobExecutionException
     {
         try
         {
@@ -118,7 +118,7 @@ public class CoreWatcherJob implements Job
             rootStr = new File(rootStr).getAbsolutePath(); // Ensure we handle separator char
             
             // TODO: Replace with the rootStr from a properties file.
-            return new SolrContentStore(rootStr );
+            return new SolrContentStore(coreContainer.getSolrHome() + "ContentStore" );
         }
         catch (IOException e)
         {

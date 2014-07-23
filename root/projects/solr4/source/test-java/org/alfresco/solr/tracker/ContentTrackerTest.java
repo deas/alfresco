@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.verification.VerificationMode;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContentTrackerTest
@@ -59,8 +60,7 @@ public class ContentTrackerTest
     {
         
         this.contentTracker.doTrack();
-
-        verify(srv, never()).commit();
+        verify(srv).commit();
     }
 
     @Test
