@@ -790,7 +790,7 @@
          <action type="action-link" id="onActionCopyTo" icon="document-copy-to" label="menu.selected-items.copy" />
          <action type="action-link" id="onActionMoveTo" icon="document-move-to" permission="Delete" label="menu.selected-items.move"/>
          <action type="action-link" id="onActionAssignWorkflow" asset="document" icon="document-assign-workflow" label="menu.selected-items.assign-workflow"/>
-         <action type="action-link" id="onActionDelete" icon="document-delete" permission="Delete" label="menu.selected-items.delete" notAspect="hwf:hybridWorkflow" />
+         <action type="action-link" id="onActionDelete" icon="document-delete" permission="Delete" label="menu.selected-items.delete" notAspect="hwf:hybridWorkflow,sys:undeletable" />
          <action type="action-link" id="onActionCloudSync" asset="document" icon="document-cloud-sync"  permission="CreateChildren" label="menu.selected-items.cloudSync" notAspect="sync:syncSetMemberNode" syncMode="ON_PREMISE" />
          <action type="action-link" id="onActionCloudSyncRequest" icon="document-request-sync" label="menu.selected-items.cloudRequestSync" hasAspect="sync:syncSetMemberNode" syncMode="ON_PREMISE" />
       </multi-select>
@@ -1031,6 +1031,7 @@
             </permissions>
             <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
             <evaluator>evaluator.doclib.action.isNotPartOfHybridWorklfow</evaluator>
+            <evaluator>evaluator.doclib.action.isDeletable</evaluator>
          </action>
 
          <!-- Assign workflow -->

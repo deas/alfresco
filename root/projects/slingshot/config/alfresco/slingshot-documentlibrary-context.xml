@@ -590,6 +590,15 @@
       </property>
    </bean>
    
+   <bean id="evaluator.doclib.action.isDeletable" parent="evaluator.doclib.action.hasAspect">
+      <property name="aspects">
+         <list>
+            <value>sys:undeletable</value>
+         </list>
+      </property>
+      <property name="negateOutput" value="true" />
+   </bean>
+   
    <bean id="evaluator.doclib.action.isNotPartOfHybridWorklfow" parent="evaluator.doclib.action.hasAspect">
       <property name="aspects">
          <list>
