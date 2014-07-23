@@ -92,6 +92,18 @@ public class AlfrescoSolrDataModel
         COMPETION  
     }
     
+    static enum ContentFieldType
+    {
+        DOCID,
+        SIZE,
+        LOCALE, 
+        MIMETYPE,
+        ENCODING,
+        TRANSFORMATION_STATUS,
+        TRANSFORMATION_TIME,
+        TRANSFORMATION_EXCEPTION
+    }
+    
     protected final static Logger log = LoggerFactory.getLogger(AlfrescoSolrDataModel.class);
 
     private static final String CHANGE_SET = "CHANGE_SET";
@@ -406,6 +418,57 @@ public class AlfrescoSolrDataModel
             dictionaryComponent = dictionaryServices.get(CMISStrictDictionaryService.DEFAULT);
         }
         return dictionaryComponent;
+    }
+    
+    public IndexedField getIndexedFieldForContentPropertyMetadata(QName propertyQName, ContentFieldType type)
+    {
+        IndexedField indexedField = new IndexedField();
+        PropertyDefinition propertyDefinition = getPropertyDefinition(propertyQName);
+        if((propertyDefinition == null))
+        { 
+            return indexedField;
+        }
+        if(!propertyDefinition.isIndexed() && !propertyDefinition.isStoredInIndex())
+        {
+            return indexedField;
+        }
+        
+        DataTypeDefinition dataTypeDefinition = propertyDefinition.getDataType();
+        if(dataTypeDefinition.getName().equals(DataTypeDefinition.CONTENT))
+        {
+            switch (type)
+            {
+            case DOCID:
+                indexedField.addField("content@docid@"+propertyQName, false, false);
+                break;
+            case ENCODING:
+                indexedField.addField("content@encoding@"+propertyQName, false, false);
+                break;
+            case LOCALE:
+                indexedField.addField("content@locale@"+propertyQName, false, false);
+                break;
+            case MIMETYPE:
+                indexedField.addField("content@mimetype@"+propertyQName, false, false);
+                break;
+            case SIZE:
+                indexedField.addField("content@size@"+propertyQName, false, false);
+                break;
+            case TRANSFORMATION_EXCEPTION:
+                indexedField.addField("content@tr_ex@"+propertyQName, false, false);
+                break;
+            case TRANSFORMATION_STATUS:
+                indexedField.addField("content@tr_status@"+propertyQName, false, false);
+                break;
+            case TRANSFORMATION_TIME:
+                indexedField.addField("content@tr_time@"+propertyQName, false, false);
+                break;
+            default:
+                break;
+            }
+            
+        }
+        return indexedField;      
+        
     }
     
     /**

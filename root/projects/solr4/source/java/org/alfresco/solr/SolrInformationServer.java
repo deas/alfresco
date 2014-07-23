@@ -54,6 +54,7 @@ import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AlfrescoSolrDataModel.FieldInstance;
+import org.alfresco.solr.AlfrescoSolrDataModel.IndexedField;
 import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.adapters.ISimpleOrderedMap;
 import org.alfresco.solr.adapters.SolrOpenBitSetAdapter;
@@ -1655,29 +1656,60 @@ public class SolrInformationServer implements InformationServer
         }
     }
 
+    private void addContentPropertyMetadata(SolrInputDocument doc, QName propertyQName, ContentPropertyValue contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType type, GetTextContentResponse textContentResponse)
+    {
+        IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getIndexedFieldForContentPropertyMetadata(propertyQName, type);
+        for(FieldInstance fieldInstance : indexedField.getFields())
+        {
+            switch(type)
+            {
+            case DOCID:
+                //doc.addField(fieldInstance.getField(), contentPropertyValue.get());
+                break;
+            case ENCODING:
+                doc.addField(fieldInstance.getField(), contentPropertyValue.getEncoding());
+                break;
+            case LOCALE:
+                doc.addField(fieldInstance.getField(), contentPropertyValue.getLocale());
+                break;
+            case MIMETYPE:
+                doc.addField(fieldInstance.getField(), contentPropertyValue.getMimetype());
+                break;
+            case SIZE:
+                doc.addField(fieldInstance.getField(), contentPropertyValue.getLength());
+                break;
+            case TRANSFORMATION_EXCEPTION:
+                doc.addField(fieldInstance.getField(), textContentResponse.getTransformException());
+                break;
+            case TRANSFORMATION_STATUS:
+                doc.addField(fieldInstance.getField(), textContentResponse.getStatus());
+                break;
+            case TRANSFORMATION_TIME:
+                doc.addField(fieldInstance.getField(), textContentResponse.getTransformDuration());
+                break;
+            }
+            
+           
+        }
+    }
+    
+    
     private void addContentPropertyToDoc(SolrInputDocument doc, QName propertyQName, NodeMetaData nodeMetaData, ContentPropertyValue contentPropertyValue)
                     throws AuthenticationException, IOException
     {
-        
-//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".size",
-//                contentPropertyValue.getLength());
-//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".locale",
-//                contentPropertyValue.getLocale());
-//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".mimetype",
-//                contentPropertyValue.getMimetype());
-//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".encoding",
-//                contentPropertyValue.getEncoding());
+        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.SIZE, null);
+        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.LOCALE, null);
+        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.MIMETYPE, null);
+        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.ENCODING, null);
 
         if (false == transformContent) { return; }
 
         long start = System.nanoTime();
         GetTextContentResponse response = repositoryClient.getTextContent(nodeMetaData.getId(), propertyQName, null);
-//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".transformationStatus",
-//                response.getStatus());
-//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".transformationTime",
-//                response.getTransformDuration());
-//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + nodeMetaData.toString() + ".transformationException",
-//                response.getTransformException());
+        
+        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.TRANSFORMATION_STATUS, response);
+        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.TRANSFORMATION_EXCEPTION, response);
+        addContentPropertyMetadata(doc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.TRANSFORMATION_TIME, response);
 
         InputStreamReader isr = null;
         InputStream ris = response.getContent();
