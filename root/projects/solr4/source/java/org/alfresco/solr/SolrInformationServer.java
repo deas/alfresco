@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 
 import org.alfresco.httpclient.AuthenticationException;
@@ -35,6 +35,7 @@ import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
+import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.adapters.ISimpleOrderedMap;
@@ -49,18 +50,28 @@ import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.TrackerStats;
 import org.alfresco.util.NumericEncoder;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.AtomicReader;
+import org.apache.lucene.index.AtomicReaderContext;
+import org.apache.lucene.index.DocsEnum;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.index.Terms;
+import org.apache.lucene.index.TermsEnum;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.FixedBitSet;
+import org.apache.lucene.util.NumericUtils;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.util.NamedList;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrInfoMBean;
+import org.apache.solr.request.LocalSolrQueryRequest;
 import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocSet;
@@ -578,27 +589,285 @@ public class SolrInformationServer implements InformationServer
     @Override
     public TrackerState getTrackerInitialState() throws IOException
     {
-        // TODO Auto-generated method stub
-        return null;
+        TrackerState state = new TrackerState();
+
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            IndexReader reader = solrIndexSearcher.getIndexReader();
+
+            if (state.getLastIndexedTxCommitTime() == 0)
+            {
+                state.setLastIndexedTxCommitTime(getLargestTermValue(reader, QueryConstants.FIELD_TXCOMMITTIME, -1L));
+            }
+
+            if (state.getLastIndexedTxId() == 0)
+            {
+                state.setLastIndexedTxId(getLargestTermValue(reader, QueryConstants.FIELD_TXID, -1L));
+            }
+
+            if (state.getLastIndexedChangeSetCommitTime() == 0)
+            {
+                state.setLastIndexedChangeSetCommitTime(getLargestTermValue(reader, QueryConstants.FIELD_ACLTXCOMMITTIME, -1L));
+            }
+
+            if (state.getLastIndexedChangeSetId() == 0)
+            {
+                state.setLastIndexedChangeSetId(getLargestTermValue(reader, QueryConstants.FIELD_ACLTXID, -1L));
+            }
+
+            long startTime = System.currentTimeMillis();
+            state.setTimeToStopIndexing(startTime - lag);
+            state.setTimeBeforeWhichThereCanBeNoHoles(startTime - holeRetention);
+
+            long timeBeforeWhichThereCanBeNoTxHolesInIndex = state.getLastIndexedTxCommitTime() - holeRetention;
+            state.setLastGoodTxCommitTimeInIndex(getLargestTermValue(reader, QueryConstants.FIELD_TXCOMMITTIME, timeBeforeWhichThereCanBeNoTxHolesInIndex));
+
+            long timeBeforeWhichThereCanBeNoChangeSetHolesInIndex = state.getLastIndexedChangeSetCommitTime()
+                        - holeRetention;
+            state.setLastGoodChangeSetCommitTimeInIndex(getLargestTermValue(reader, QueryConstants.FIELD_ACLTXCOMMITTIME, timeBeforeWhichThereCanBeNoChangeSetHolesInIndex));
+
+            if (state.getLastGoodTxCommitTimeInIndex() > 0)
+            {
+                if (state.getLastIndexedTxIdBeforeHoles() == -1)
+                {
+                    state.setLastIndexedTxIdBeforeHoles(getStoredLongByLongTerm(reader, QueryConstants.FIELD_TXCOMMITTIME, QueryConstants.FIELD_TXID, state.getLastGoodTxCommitTimeInIndex()));
+                            
+                }
+                else
+                {
+                    long currentBestFromIndex = getStoredLongByLongTerm(reader, QueryConstants.FIELD_TXCOMMITTIME, QueryConstants.FIELD_TXID, state.getLastGoodTxCommitTimeInIndex());
+                    if (currentBestFromIndex > state.getLastIndexedTxIdBeforeHoles())
+                    {
+                        state.setLastIndexedTxIdBeforeHoles(currentBestFromIndex);
+                    }
+                }
+            }
+
+            if (state.getLastGoodChangeSetCommitTimeInIndex() > 0)
+            {
+                if (state.getLastIndexedChangeSetIdBeforeHoles() == -1)
+                {
+                    state.setLastIndexedChangeSetIdBeforeHoles(getStoredLongByLongTerm(reader, QueryConstants.FIELD_ACLTXCOMMITTIME, QueryConstants.FIELD_ACLTXID, state.getLastGoodTxCommitTimeInIndex()));
+                }
+                else
+                {
+                    long currentBestFromIndex = getStoredLongByLongTerm(reader, QueryConstants.FIELD_ACLTXCOMMITTIME, QueryConstants.FIELD_ACLTXID, state.getLastGoodTxCommitTimeInIndex());
+                    if (currentBestFromIndex > state.getLastIndexedTxIdBeforeHoles())
+                    {
+                        state.setLastIndexedChangeSetIdBeforeHoles(currentBestFromIndex);
+                    }
+                }
+            }
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+
+        // Sets the trackerState only after it has been fully initialized
+        this.trackerState = state;
+        
+        return this.trackerState;
     }
 
+    /*
+     * Find the largest numeric long term value in the given index field
+     */
+    private long getLargestTermValue(IndexReader reader, String fieldName, long limit)
+    {
+        long largestValue = 0;
+        long value;
+        
+        for(AtomicReaderContext atomicReaderContext  : reader.leaves())
+        {
+            value = getLargestTermValue(atomicReaderContext.reader(), fieldName, limit);
+            if(value > largestValue)
+            {
+                largestValue = value;
+            }
+        }
+        return largestValue;
+      
+    }
+    
+    /*
+     * Find the last numeric long term value
+     * -1 indicates not found
+     */
+    private long getLargestTermValue(AtomicReader atomicReader, String fieldName, long limit)
+    {
+        long largestValue = -1;
+        try
+        {
+            Terms terms = atomicReader.terms(fieldName);
+            if(terms != null)
+            {
+                TermsEnum termEnum = terms.iterator(null);
+                BytesRef bytesRef;
+                while((bytesRef = termEnum.next()) != null)
+                {
+                    long value = NumericUtils.prefixCodedToLong(bytesRef);
+                    if(limit > -1)
+                    {
+                        if(value < limit)
+                        {
+                            if(value > largestValue)
+                            {
+                                largestValue = value;
+                            }
+                        }
+                        else
+                        {
+                            return largestValue;
+                        }
+                    }
+                    else
+                    {
+                        if(value > largestValue)
+                        {
+                            largestValue = value;
+                        }
+                    }
+
+                }
+            }
+        }
+        catch (IOException e1)
+        {
+            // do nothing
+        }
+        return largestValue;
+    }
+    
+
+    private long getStoredLongByLongTerm(IndexReader reader, String term, String fieldable, Long value) throws IOException
+    {
+        long storedValue = 0;
+        
+        for(AtomicReaderContext atomicReaderContext  : reader.leaves())
+        {
+            storedValue = getStoredLongByLongTerm(atomicReaderContext.reader(), term, fieldable, value);
+            if(storedValue > 0L)
+            {
+                return storedValue;
+            }
+        }
+        return storedValue;
+    }
+    
+    private long getStoredLongByLongTerm(AtomicReader atomicReader, String term, String fieldable, Long value) throws IOException
+    {
+        long storedLong = -1L;
+        BytesRef bytes = new BytesRef();
+        if (value != -1L)
+        {
+            NumericUtils.longToPrefixCoded(value, 0, bytes);
+            DocsEnum docsEnum = atomicReader.termDocsEnum(new Term(term, bytes));
+            if(docsEnum != null)
+            {
+                int docId = -1;
+                while ((docId = docsEnum.nextDoc()) != DocIdSetIterator.NO_MORE_DOCS)
+                {
+                    Document doc = atomicReader.document(docId);
+                    IndexableField field = doc.getField(QueryConstants.FIELD_ACLTXID);
+                    if (field != null)
+                    {
+                        long curentStoredLong = field.numericValue().longValue();
+                        if (curentStoredLong > storedLong)
+                        {
+                            storedLong = curentStoredLong;
+                        }
+                    }
+                }
+            }
+        }
+        return storedLong;
+    }
+    
+    
     @Override
-    public TrackerState getTrackerState()
+    public TrackerState getTrackerState() 
     {
         return this.trackerState;
     }
 
     @Override
-    public long indexAcl(List<AclReaders> arg0, boolean arg1) throws IOException
+    public long indexAcl(List<AclReaders> aclReaderList, boolean overwrite) throws IOException
     {
-        // TODO Auto-generated method stub
-        return 0;
+        long start = System.nanoTime();
+        for (AclReaders aclReaders : aclReaderList)
+        {
+            AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequerst());
+            cmd.overwrite = overwrite;
+            SolrInputDocument input = new SolrInputDocument();
+            //input.addField(QueryConstants.FIELD_ID, "ACL-" + aclReaders.getId());
+            input.addField("id", "ACL-" + aclReaders.getId());
+            input.addField("_version_", "0");
+            input.addField(QueryConstants.FIELD_ACLID, aclReaders.getId());
+            input.addField(QueryConstants.FIELD_INACLTXID, aclReaders.getAclChangeSetId());
+            String tenant = aclReaders.getTenantDomain();
+            for (String reader : aclReaders.getReaders())
+            {
+                switch (AuthorityType.getAuthorityType(reader))
+                {
+                    case USER:
+                        input.addField(QueryConstants.FIELD_READER, reader);
+                        break;
+                    case GROUP:
+                    case EVERYONE:
+                    case GUEST:
+                        if (tenant.length() == 0)
+                        {
+                            // Default tenant matches 4.0
+                            input.addField(QueryConstants.FIELD_READER, reader);
+                        }
+                        else
+                        {
+                            input.addField(QueryConstants.FIELD_READER, reader + "@" + tenant);
+                        }
+                        break;
+                    default:
+                        input.addField(QueryConstants.FIELD_READER, reader);
+                        break;
+                }
+            }
+            cmd.solrDoc = input;
+            //cmd.doc = LegacySolrInformationServer.toDocument(cmd.getSolrInputDocument(), core.getSchema(),  dataModel);
+            core.getUpdateHandler().addDoc(cmd);
+        }
+
+        long end = System.nanoTime();
+        return (end - start);
+    }
+    
+    private LocalSolrQueryRequest getLocalSolrQueryRequerst()
+    {
+        LocalSolrQueryRequest req = new LocalSolrQueryRequest(core, new NamedList<>());
+        return req;
     }
 
     @Override
-    public void indexAclTransaction(AclChangeSet arg0, boolean arg1) throws IOException
+    public void indexAclTransaction(AclChangeSet changeSet, boolean overwrite) throws IOException
     {
-        // TODO Auto-generated method stub
+        LocalSolrQueryRequest req = new LocalSolrQueryRequest(core, new NamedList<>());
+        AddUpdateCommand cmd = new AddUpdateCommand(getLocalSolrQueryRequerst());
+        cmd.overwrite = overwrite;
+        SolrInputDocument input = new SolrInputDocument();
+        //input.addField(QueryConstants.FIELD_ID, "ACLTX-" + changeSet.getId());
+        input.addField("id", "ACLTX-" + changeSet.getId());
+        input.addField("_version_", "0");
+        input.addField(QueryConstants.FIELD_ACLTXID, changeSet.getId());
+        input.addField(QueryConstants.FIELD_INACLTXID, changeSet.getId());
+        input.addField(QueryConstants.FIELD_ACLTXCOMMITTIME, changeSet.getCommitTimeMs());
+        cmd.solrDoc = input;
+        //cmd.doc = toDocument(cmd.getSolrInputDocument(), core.getSchema(), dataModel);
+        core.getUpdateHandler().addDoc(cmd);
 
     }
 
@@ -627,9 +896,55 @@ public class SolrInformationServer implements InformationServer
     
     
     @Override
-    public boolean isInIndex(String arg0, long arg1) throws IOException
+    public boolean isInIndex(String field, long id) throws IOException
     {
-        // TODO Auto-generated method stub
+        RefCounted<SolrIndexSearcher> refCounted = null;
+        try
+        {
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            IndexReader reader = solrIndexSearcher.getIndexReader();
+            
+            return isInIndex(reader, field, id);
+        }
+        finally
+        {
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
+        }
+            
+    }
+    
+    private boolean isInIndex(IndexReader reader, String field, long value) throws IOException
+    {
+        for(AtomicReaderContext atomicReaderContext  : reader.leaves())
+        {
+            if(isInIndex(atomicReaderContext.reader(), field, value))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private boolean isInIndex(AtomicReader atomicReader, String field, long value) throws IOException
+    {
+        BytesRef bytes = new BytesRef();
+        if (value != -1L)
+        {
+            NumericUtils.longToPrefixCoded(value, 0, bytes);
+            DocsEnum docsEnum = atomicReader.termDocsEnum(new Term(field, bytes));
+            if(docsEnum != null)
+            {
+                int docId = -1;
+                while ((docId = docsEnum.nextDoc()) != DocIdSetIterator.NO_MORE_DOCS)
+                {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
