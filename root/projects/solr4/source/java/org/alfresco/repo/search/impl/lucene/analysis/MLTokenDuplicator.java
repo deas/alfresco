@@ -32,6 +32,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
+import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 
 /**
  * Create duplicate tokens for multilingual varients The forms are Tokens: Token - all languages {fr}Token - if a
@@ -40,7 +44,7 @@ import org.apache.lucene.analysis.Tokenizer;
  * 
  * @author andyh
  */
-public class MLTokenDuplicator extends Tokenizer
+public class MLTokenDuplicator extends TokenStream
 {
     private static Log    s_logger = LogFactory.getLog(MLTokenDuplicator.class);
     
@@ -51,13 +55,22 @@ public class MLTokenDuplicator extends Tokenizer
     Iterator<Token> it;
 
     HashSet<String> prefixes;
+    
+    private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
+
+    private final OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
+
+    private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
+    
+    private final PositionIncrementAttribute posIncAtt = addAttribute(PositionIncrementAttribute.class);
+
+    private boolean done = false;
 
     public MLTokenDuplicator(TokenStream source, Locale locale, Reader reader, MLAnalysisMode mlAnalaysisMode)
     {
-        super(reader);
         this.source = source;
         this.locale = locale;
-
+        
         Collection<Locale> locales = MLAnalysisMode.getLocales(mlAnalaysisMode, locale, false);
         prefixes = new HashSet<String>(locales.size());
         for(Locale toAdd : locales)
@@ -80,10 +93,35 @@ public class MLTokenDuplicator extends Tokenizer
         }
 
     }
-    
-    public MLTokenDuplicator(Locale locale, MLAnalysisMode mlAnalaysisMode)
+
+    /* (non-Javadoc)
+     * @see org.apache.lucene.analysis.Tokenizer#close()
+     */
+    @Override
+    public void close() throws IOException
     {
-        this(null, locale, null, mlAnalaysisMode);
+        source.close();
+        super.close();
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.lucene.analysis.Tokenizer#reset()
+     */
+    @Override
+    public void reset() throws IOException
+    {
+        source.reset();
+        super.reset();
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.lucene.analysis.TokenStream#end()
+     */
+    @Override
+    public void end() throws IOException
+    {
+        source.end();
+        super.end();
     }
 
     private Token next() throws IOException
@@ -100,6 +138,7 @@ public class MLTokenDuplicator extends Tokenizer
         if (it.hasNext())
         {
             t = it.next();
+            
             return t;
         }
         else
@@ -113,8 +152,37 @@ public class MLTokenDuplicator extends Tokenizer
     private Iterator<Token> buildIterator() throws IOException
     {
         // TODO: use incrementToken() somehow?
-        Token token = null;//source.next();
-        return buildIterator(token);
+        if(!done && source.incrementToken())
+        {
+            CharTermAttribute cta = source.getAttribute(CharTermAttribute.class);
+            OffsetAttribute offsetAtt = source.getAttribute(OffsetAttribute.class);
+            TypeAttribute typeAtt = null;
+            if(source.hasAttribute(TypeAttribute.class))
+            {
+                typeAtt = source.getAttribute(TypeAttribute.class);
+            }
+            PositionIncrementAttribute posIncAtt = null;
+            if(source.hasAttribute(PositionIncrementAttribute.class))
+            {
+                posIncAtt = source.getAttribute(PositionIncrementAttribute.class);
+            }
+            Token token = new Token(cta.buffer(), 0, cta.length(), offsetAtt.startOffset(), offsetAtt.endOffset());
+            if(typeAtt != null)
+            {
+                token.setType(typeAtt.type());
+            }
+            if(posIncAtt != null)
+            {
+                token.setPositionIncrement(posIncAtt.getPositionIncrement());
+            }
+            return buildIterator(token);
+        }
+        else
+        {
+            done = true;
+            return buildIterator(null);
+        }
+        
 
     }
 
@@ -128,7 +196,8 @@ public class MLTokenDuplicator extends Tokenizer
 
         ArrayList<Token> tokens = new ArrayList<Token>(prefixes.size());
         for (String prefix : prefixes)
-        {
+        {   
+            
             Token newToken = new Token(prefix + termText(token), token.startOffset(), token.endOffset(), token.type());
             if (tokens.size() == 0)
             {
@@ -147,7 +216,20 @@ public class MLTokenDuplicator extends Tokenizer
     @Override
     public boolean incrementToken() throws IOException
     {
-        return false;
+        clearAttributes();
+        
+        Token next = next();
+        if (next == null)
+        {
+            return false;
+        }
+        
+        termAtt.copyBuffer(next.buffer(), 0, next.length());
+        offsetAtt.setOffset(next.startOffset(), next.endOffset());
+        typeAtt.setType(next.type());
+        posIncAtt.setPositionIncrement(next.getPositionIncrement());
+        return true;
+        
     }
 
     // TODO: temporary replacement for Token.termText()

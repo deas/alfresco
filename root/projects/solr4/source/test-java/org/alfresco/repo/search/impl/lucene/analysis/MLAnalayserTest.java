@@ -67,7 +67,7 @@ public class MLAnalayserTest
     @Before
     public void setUp() throws Exception
     {
-        analyser = new MLAnalayser(dictionaryService, mlAnalaysisMode);
+        analyser = new MLAnalayser(mlAnalaysisMode);
         PropertyDefinition propDef = Mockito.mock(PropertyDefinition.class);
         when(propDef.resolveAnalyserClassName(any(Locale.class))).thenReturn(StandardAnalyzer.class.getName()); //AlfrescoStandardAnalyser.class.getName());
         when(dictionaryService.getProperty(any(QName.class))).thenReturn(propDef);

@@ -21,87 +21,258 @@ package org.alfresco.repo.search.impl.lucene.analysis;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashMap;
 import java.util.Locale;
 
-import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.MLAnalysisMode;
-import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
-import org.alfresco.service.cmr.dictionary.DictionaryService;
-import org.alfresco.service.cmr.dictionary.PropertyDefinition;
-import org.alfresco.service.namespace.QName;
 import org.alfresco.util.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
+import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
+import org.apache.solr.schema.FieldType;
+import org.apache.solr.schema.IndexSchema;
 import org.springframework.extensions.surf.util.I18NUtil;
 
 public class MLAnalayser extends Analyzer
 {
     private static Log s_logger = LogFactory.getLog(MLAnalayser.class);
 
-    private DictionaryService dictionaryService;
-
-    private HashMap<Pair<String, Locale>, Analyzer> analysers = new HashMap<Pair<String, Locale>, Analyzer>();
-
     private MLAnalysisMode mlAnalaysisMode;
-
-    private Analyzer analyzer;
+   
+    private IndexSchema schema;
     
-    public MLAnalayser(DictionaryService dictionaryService, MLAnalysisMode mlAnalaysisMode)
+    public MLAnalayser(MLAnalysisMode mlAnalaysisMode, IndexSchema schema)
     {
-        this(dictionaryService, mlAnalaysisMode, null);
-    }
- 
-
-    public MLAnalayser(DictionaryService dictionaryService, MLAnalysisMode mlAnalaysisMode, Analyzer analyzer)
-    {
-        this.dictionaryService = dictionaryService;
+        super(Analyzer.PER_FIELD_REUSE_STRATEGY);
         this.mlAnalaysisMode = mlAnalaysisMode;
-        this.analyzer = analyzer;
+        this.schema = schema;
     }
 
-    // TODO: was named tokenStream(...)
-//    @Override
-    public TokenStream tokenStreamRenamed(String fieldName, Reader reader)
-    {
-        // We use read ahead to get the language info - if this does not exist we need to restart
-        // an use the default - there foer we need mark and restore.
-        BufferedReader breader = new BufferedReader(reader);
-        if (reader instanceof BufferedReader)
-        {
-            breader = (BufferedReader)reader;
-        }
-        else
-        {
-            breader = new BufferedReader(reader);
-        }
 
+    public MLAnalayser(MLAnalysisMode mlAnalaysisMode)
+    {
+        super(Analyzer.PER_FIELD_REUSE_STRATEGY);
+        this.mlAnalaysisMode = mlAnalaysisMode;
+    }
+
+  
+    
+    @Override
+    protected TokenStreamComponents createComponents(String fieldName, Reader reader) 
+    {
+        MLTokenizer mltokenizer = new MLTokenizer(fieldName, reader, schema, mlAnalaysisMode);
         try
         {
-            if (!breader.markSupported())
+            mltokenizer.setLocaleAndPositionReaderAfterLocaleEncoding(reader);
+        }
+        catch (IOException e)
+        {
+            try{mltokenizer.close();} catch(IOException ioe) {};
+            throw new AnalysisException("Failed to init MLTokenizer", e);
+        }
+        return new LocaleAwareTokenStreamComponents(mltokenizer);
+    }
+    
+    private static class LocaleAwareTokenStreamComponents extends Analyzer.TokenStreamComponents 
+    {
+        MLTokenizer mltokenizer;
+        
+        /**
+         * @param arg0
+         */
+        public LocaleAwareTokenStreamComponents(final MLTokenizer source)
+        {
+            super(source);
+            this.mltokenizer = source;
+        }
+
+        /* (non-Javadoc)
+         * @see org.apache.lucene.analysis.Analyzer.TokenStreamComponents#setReader(java.io.Reader)
+         */
+        @Override
+        protected void setReader(Reader reader) throws IOException
+        {
+            super.setReader(mltokenizer.setLocaleAndPositionReaderAfterLocaleEncoding(reader));
+        }
+    }
+    
+    private static class MLTokenizer extends Tokenizer
+    {
+        TokenStream ts;
+        
+        String fieldName;
+        
+        private IndexSchema schema;
+        
+        MLAnalysisMode mlAnalaysisMode;
+
+        private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
+
+        private final OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
+
+        private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
+        
+        private final PositionIncrementAttribute posIncAtt = addAttribute(PositionIncrementAttribute.class);
+     
+        MLTokenizer(String fieldName, Reader reader, IndexSchema schema, MLAnalysisMode mlAnalaysisMode) 
+        {
+            super(reader);
+            this.fieldName = fieldName;
+            this.schema = schema;
+            this.mlAnalaysisMode = mlAnalaysisMode;
+        }
+        
+        
+
+        /**
+         * @param reader
+         * @throws IOException 
+         */
+        public Reader setLocaleAndPositionReaderAfterLocaleEncoding(Reader reader) throws IOException
+        {
+            Pair<Locale, Reader> pair = getLocaleAndPositioReaderAfterLocaleEncoding(fieldName, reader);
+
+            if(s_logger.isDebugEnabled())
             {
-                throw new AnalysisException(
-                        "Multilingual tokenisation requires a reader that supports marks and reset");
+                s_logger.debug("Created ML analyser token stream for "+fieldName+ " with locale "+pair.getFirst());
             }
-            breader.mark(100);
-            StringBuilder builder = new StringBuilder();
-            if (breader.read() == '\u0000')
+            TokenStream source = getAnalyser(fieldName, pair.getFirst()).tokenStream(fieldName, pair.getSecond());
+            ts =  new MLTokenDuplicator(source, pair.getFirst(), pair.getSecond(), mlAnalaysisMode);
+            return pair.getSecond();
+        }
+
+
+
+        /* (non-Javadoc)
+         * @see org.apache.lucene.analysis.Tokenizer#close()
+         */
+        @Override
+        public void close() throws IOException
+        {
+            ts.close();
+            super.close();
+        }
+
+
+
+        /* (non-Javadoc)
+         * @see org.apache.lucene.analysis.Tokenizer#reset()
+         */
+        @Override
+        public void reset() throws IOException
+        {
+            ts.reset();
+            super.reset();
+        }
+
+
+        /* (non-Javadoc)
+         * @see org.apache.lucene.analysis.Tokenizer#reset()
+         */
+        @Override
+        public void end() throws IOException
+        {
+            ts.end();
+            super.end();
+        }
+
+
+        
+
+        /* (non-Javadoc)
+         * @see org.apache.lucene.analysis.TokenStream#incrementToken()
+         */
+        @Override
+        public boolean incrementToken() throws IOException
+        {
+            clearAttributes();
+            if(ts.incrementToken())
             {
-                String language = "";
-                String country = "";
-                String varient = "";
-                char c;
-                int count = 0;
-                while ((c = (char) breader.read()) != '\u0000')
+                ts.copyTo(this);
+                return true;
+                
+            }
+            else
+            {
+                ts.end();
+                ts.close();
+                return false;
+            }
+            
+           
+          
+        }
+        
+        
+        public Pair<Locale,Reader> getLocaleAndPositioReaderAfterLocaleEncoding(String fieldName, Reader reader)
+        {
+            // We use read ahead to get the language info - if this does not exist we need to restart
+            // an use the default - there for we need mark and restore.
+            BufferedReader breader;
+            if (reader instanceof BufferedReader)
+            {
+                breader = (BufferedReader)reader;
+            }
+            else
+            {
+                breader = new BufferedReader(reader);
+            }
+
+            try
+            {
+                if (!breader.markSupported())
                 {
-                    if (count++ > 99)
+                    throw new AnalysisException(
+                            "Multilingual tokenisation requires a reader that supports marks and reset");
+                }
+                breader.mark(100);
+                StringBuilder builder = new StringBuilder();
+                if (breader.read() == '\u0000')
+                {
+                    String language = "";
+                    String country = "";
+                    String varient = "";
+                    char c;
+                    int count = 0;
+                    while ((c = (char) breader.read()) != '\u0000')
                     {
-                        breader.reset();
-                        return getDefaultAnalyser(fieldName).tokenStream(fieldName, breader);
+                        if (count++ > 99)
+                        {
+                            breader.reset();
+                            return new Pair<Locale, Reader>(I18NUtil.getLocale(), breader);
+                        }
+                        if (c == '_')
+                        {
+                            if (language.length() == 0)
+                            {
+                                language = builder.toString();
+                            }
+                            else if (country.length() == 0)
+                            {
+                                country = builder.toString();
+                            }
+                            else if (varient.length() == 0)
+                            {
+                                varient = builder.toString();
+                            }
+                            else
+                            {
+                                breader.reset();
+                                return new Pair<Locale, Reader>(I18NUtil.getLocale(), breader);
+                            }
+                            builder = new StringBuilder();
+                        }
+                        else
+                        {
+                            builder.append(c);
+                        }
                     }
-                    if (c == '_')
+                    if (builder.length() > 0)
                     {
                         if (language.length() == 0)
                         {
@@ -118,130 +289,68 @@ public class MLAnalayser extends Analyzer
                         else
                         {
                             breader.reset();
-                            return getDefaultAnalyser(fieldName).tokenStream(fieldName, breader);
+                            return new Pair<Locale, Reader>(I18NUtil.getLocale(), breader);
                         }
-                        builder = new StringBuilder();
                     }
-                    else
-                    {
-                        builder.append(c);
-                    }
+                    Locale locale = new Locale(language, country, varient);
+                    // leave the reader where it is ....
+                    return new Pair<Locale, Reader>(locale, breader);
+                    
                 }
-                if (builder.length() > 0)
+                else
                 {
-                    if (language.length() == 0)
-                    {
-                        language = builder.toString();
-                    }
-                    else if (country.length() == 0)
-                    {
-                        country = builder.toString();
-                    }
-                    else if (varient.length() == 0)
-                    {
-                        varient = builder.toString();
-                    }
-                    else
-                    {
-                        breader.reset();
-                        return getDefaultAnalyser(fieldName).tokenStream(fieldName, breader);
-                    }
+                    breader.reset();
+                    return new Pair<Locale, Reader>(I18NUtil.getLocale(), breader);
                 }
-                Locale locale = new Locale(language, country, varient);
-                // leave the reader where it is ....
-                return new MLTokenDuplicator(getAnalyser(fieldName, locale).tokenStream(fieldName, breader), locale, breader, mlAnalaysisMode);
             }
-            else
+            catch (IOException io)
             {
-                breader.reset();
-                return getDefaultAnalyser(fieldName).tokenStream(fieldName, breader);
+                try
+                {
+                    breader.reset();
+                }
+                catch (IOException e)
+                {
+                    throw new AnalysisException("Failed to reset buffered reader - token stream will be invalid", e);
+                }
+                return null;
             }
-        }
-        catch (IOException io)
-        {
-            try
-            {
-                breader.reset();
-            }
-            catch (IOException e)
-            {
-                throw new AnalysisException("Failed to reset buffered reader - token stream will be invalid", e);
-            }
-            return null;//getDefaultAnalyser(fieldName).tokenStream(fieldName, breader);
-        }
-    }
-
-    private Analyzer getDefaultAnalyser(String fieldName)
-    {
-        return getAnalyser(fieldName, I18NUtil.getLocale());
-    }
-
-    private Analyzer getAnalyser(String fieldName, Locale locale)
-    {
-        if(analyzer != null)
-        {
-            return analyzer;
-        }
-        Pair<String, Locale> key = new Pair<String, Locale>(fieldName, locale);
-        Analyzer localeSpecificAnalyzer = (Analyzer) analysers.get(key);
-        if (localeSpecificAnalyzer == null)
-        {
-            localeSpecificAnalyzer = findAnalyser(key);
-        }
-        // wrap analyser to produce plain and prefixed tokens
-        return localeSpecificAnalyzer;
-    }
-
-    private Analyzer findAnalyser(Pair<String, Locale> key)
-    {
-        Analyzer localeSpecificAnalyzer = loadAnalyzer(key);
-        analysers.put(key, localeSpecificAnalyzer);
-        return localeSpecificAnalyzer;
-    }
-
-    private Analyzer loadAnalyzer(Pair<String, Locale> key)
-    {
-        QName propertyQName = QName.createQName(key.getFirst().substring(1));
-        PropertyDefinition propertyDef = dictionaryService.getProperty(propertyQName);
-        String analyserClassName;
-        if(propertyDef == null)
-        {
-            DataTypeDefinition dataType = dictionaryService.getDataType(DataTypeDefinition.TEXT);
-            analyserClassName = dataType.resolveAnalyserClassName(key.getSecond());
-        }
-        else
-        {
-            analyserClassName = propertyDef.resolveAnalyserClassName(key.getSecond());
-        }
+        }   
         
-        if (s_logger.isDebugEnabled())
-        {
-            s_logger.debug("Loading " + analyserClassName + " for " + key);
-        }
-        try
-        {
-            Class<?> clazz = Class.forName(analyserClassName);
-            Analyzer localeSpecificAnalyzer = (Analyzer) clazz.newInstance();
-            return localeSpecificAnalyzer;
-        }
-        catch (ClassNotFoundException e)
-        {
-            throw new RuntimeException("Unable to load analyser" + analyserClassName);
-        }
-        catch (InstantiationException e)
-        {
-            throw new RuntimeException("Unable to load analyser" + analyserClassName);
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new RuntimeException("Unable to load analyser" + analyserClassName);
-        }
-    }
 
+        private Analyzer getAnalyser(String fieldName, Locale locale)
+        {
+             if(schema != null)
+             {
+                 if(fieldName.contains("@l_@"))
+                 {
+                     FieldType fieldType = schema.getFieldTypeByName("identifier");
+                     return fieldType.getAnalyzer();
+                 }
+                 else if(fieldName.contains("@lt@"))
+                 {
+                     StringBuilder builder = new StringBuilder();
+                     builder.append("text_");
+                     builder.append(locale.getLanguage());
+                     FieldType fieldType = schema.getFieldTypeByName(builder.toString());
+                     if(fieldType == null)
+                     {
+                         fieldType = schema.getFieldTypeByName("text_en");
+                     }
+                     return fieldType.getAnalyzer();
+                 }
+                 else
+                 {
+                     return null;
+                 }
+                 
+             }
+             else
+             {
+                 return null;
+             }
+        }
+     
 
-    @Override
-    protected TokenStreamComponents createComponents(String arg0, Reader arg1)
-    {
-        return null;
     }
 }

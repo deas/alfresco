@@ -71,8 +71,8 @@ public class AlfrescoFieldType extends FieldType
         super.init(schema, args);
         // TODO: Wire up localised analysis driven from the schema
         // for now we do something basic
-        analyzer = schema.getFieldTypeByName("text___").getAnalyzer();
-        queryAnalyzer = schema.getFieldTypeByName("text___").getQueryAnalyzer();
+        analyzer = new AlfrescoAnalyzerWrapper(schema);
+        queryAnalyzer = new AlfrescoAnalyzerWrapper(schema);
         AlfrescoSolrDataModel.getInstance().setAlfrescoFieldType(this);
     }
 
@@ -276,5 +276,27 @@ public class AlfrescoFieldType extends FieldType
         UnicodeUtil.UTF16toUTF8(stringVal, 0, stringVal.length(), spare);
         return spare;
     }
+
+    /* (non-Javadoc)
+     * @see org.apache.solr.schema.FieldType#getAnalyzer()
+     */
+    @Override
+    public Analyzer getAnalyzer()
+    {
+        // TODO Auto-generated method stub
+        return super.getAnalyzer();
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.solr.schema.FieldType#getQueryAnalyzer()
+     */
+    @Override
+    public Analyzer getQueryAnalyzer()
+    {
+        // TODO Auto-generated method stub
+        return super.getQueryAnalyzer();
+    }
+    
+    
 
 }

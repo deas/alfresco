@@ -47,6 +47,7 @@
       <!-- TODO: truncated text field for sorting?? -->
       
       <fieldType name="alfrescoFieldType" class="org.alfresco.solr.AlfrescoFieldType" />
+
       <fieldType name="path" class="solr.TextField" >
          <analyzer class="org.alfresco.repo.search.impl.lucene.analysis.PathAnalyzer" />
       </fieldType>
@@ -599,6 +600,7 @@
       <dynamicField name="date@s_@*"          type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
       <dynamicField name="datetime@s_@*"      type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
       <dynamicField name="boolean@s_@*"       type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
+      <dynamicField name="qname@s_@*"         type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
       <dynamicField name="category@s_@*"      type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
       <dynamicField name="noderef@s_@*"       type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
       <dynamicField name="childassocref@s_@*" type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
@@ -626,6 +628,7 @@
       <dynamicField name="date@m_@*"          type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
       <dynamicField name="datetime@m_@*"      type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
       <dynamicField name="boolean@m_@*"       type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="qname@m_@*"         type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
       <dynamicField name="category@m_@*"      type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
       <dynamicField name="noderef@m_@*"       type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
       <dynamicField name="childassocref@m_@*" type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
@@ -644,13 +647,13 @@
 
 
       <dynamicField name="text@__@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
-      <dynamicField name="text@l_@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
+      <dynamicField name="text@l_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
       <dynamicField name="text@lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
       <dynamicField name="text@_t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
       <dynamicField name="text@sort@*"        type="collatedROOT"      indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
 
       <dynamicField name="mltext@__@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
-      <dynamicField name="mltext@l_@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
+      <dynamicField name="mltext@l_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
       <dynamicField name="mltext@lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
       <dynamicField name="mltext@_t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
       <dynamicField name="mltext@sort@*"        type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
