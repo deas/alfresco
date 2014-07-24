@@ -283,6 +283,27 @@ Alfresco.util.onlineEditUrl = function(vtiServer, location)
 };
 
 /**
+ * Creates a url for online editing with the AOS sharepoint implementation.
+ *
+ * @method Alfresco.util.onlineEditUrlAos
+ * @param aos {Object} (Required) AOS Server config object
+ * @param aos.baseUrl {String} (Required) The base URL where the AOS implementation is available
+ * @param record {Object} (Required) Object describing the file to edit
+ * @param record.webdav {String} The relative webdav path of the file
+ * @return {String} The url to where the document can be edited online
+ * @throws {Error}
+ */
+Alfresco.util.onlineEditUrlAos = function(aos, record)
+{
+   // sanity checks
+   if (!Alfresco.util.isValueSet(aos) || !Alfresco.util.isValueSet(baseUrl) || !Alfresco.util.isValueSet(record.webdavUrl) || (record.webdavUrl.substring(0,8) != '/webdav/') )
+   {
+      throw new Error("Alfresco.util.onlineEditUrlAos: Sanity checks failed.");
+   }
+   return Alfresco.util.combinePaths(aos.baseUrl, record.webdavUrl.substring(7));
+};
+
+/**
  * Appends an array onto an object
  *
  * @method Alfresco.util.appendArrayToObject

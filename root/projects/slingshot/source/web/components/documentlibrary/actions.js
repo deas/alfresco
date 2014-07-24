@@ -961,15 +961,11 @@
        */
       onActionEditOnlineAos: function dlA_onActionEditOnlineAos(record)
       {
-         // sanity checks
-         if (!$isValueSet(this.doclistMetadata.custom.aos) || !$isValueSet(this.doclistMetadata.custom.aos.baseUrl)
-             || !$isValueSet(record.webdavUrl) || (record.webdavUrl.substring(0,8) != '/webdav/') )
+         if (!$isValueSet(record.onlineEditUrlAos))
          {
-            Alfresco.logger.error("onActionEditOnlineAos", "Sanity checks failed");
-            return;
+            record.onlineEditUrlAos = Alfresco.util.onlineEditUrlAos(this.doclistMetadata.custom.aos, record);
          }
          
-         var aosUrl = $combine(this.doclistMetadata.custom.aos.baseUrl, record.webdavUrl.substring(7));
          var fileExtension = Alfresco.util.getFileExtension(record.location.file);
          var protocolHandler = this.getProtocolForFileExtension(fileExtension);
          
@@ -1000,11 +996,11 @@
          // if we have a working PlugIn (ActiveX or NPAPI), use it. Otherwise we use the protocol handler (e.g. Chrome w/o PlugIn)
          if(officeLauncher.isAvailable())
          {
-             this._aos_launchOfficeByPlugin(officeLauncher, aosUrl);
+             this._aos_launchOfficeByPlugin(officeLauncher, record.onlineEditUrlAos);
          }
          else
          {
-             this._aos_tryToLaunchOfficeByMsProtocolHandler(officeLauncher, protocolHandler, aosUrl);
+             this._aos_tryToLaunchOfficeByMsProtocolHandler(officeLauncher, protocolHandler, record.onlineEditUrlAos);
          }
         
          return;
