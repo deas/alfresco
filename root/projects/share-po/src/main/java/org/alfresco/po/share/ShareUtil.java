@@ -44,24 +44,12 @@ public class ShareUtil
     }
 
     /**
-     * Pattern representing url prefix without the /share/*.*
-     */
-    private static final String BASE_URL_PATTERN = "^*/page.*";
-    /**
-     * The relative path to logout.
-     */
-    private static final String LOGOUT_PATTERN = "/page/dologout";
-
-    /**
-     * Logs user out, by using a restful approach. This has been done as the UI
-     * has not labelled the logout with an id or css element to indicate a
-     * logout link.
+     * Use Logout on header bar and mimics action of logout on share.
      */
     public static synchronized void logout(final WebDrone drone)
     {
-        String currentUrl = drone.getCurrentUrl();
-        String url = currentUrl.replaceFirst(BASE_URL_PATTERN, LOGOUT_PATTERN);
-        drone.navigateTo(url);
+        SharePage page = drone.getCurrentPage().render();
+        page.getNav().logout();
     }
 
     /**
