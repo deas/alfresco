@@ -467,7 +467,8 @@ function EmbeddedOfficeLauncher()
         return navigator && navigator.mimeTypes && navigator.mimeTypes[mimeType] && navigator.mimeTypes[mimeType].enabledPlugin;
     }
     
-    var URL_ESCAPE_CHARS = '<>\'\"?#@%&`';
+    // ACE-2310: We need to make sure that all characters are encoded properly but we need to prevent double encoding. Removed percent character from URL_ESCAPE_CHARS
+    var URL_ESCAPE_CHARS = '<>\'\"?#@&`';
     
     function encodeUrl(url)
     {
