@@ -9,6 +9,7 @@
 <@script type="text/javascript" src="${url.context}/res/modules/social-publish.js" group="${dependencyGroup}"/>
 <@script type="text/javascript" src="${url.context}/res/modules/documentlibrary/cloud-folder.js" group="${dependencyGroup}"/>
 <@script type="text/javascript" src="${url.context}/res/modules/cloud-auth.js" group="${dependencyGroup}"/>
+<@script type="text/javascript" src="${url.context}/res/js/officelauncher.js" group="${dependencyGroup}"/>
 
 <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/documentlibrary/actions.css" group="${dependencyGroup}"/>
 <@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/documentlibrary/global-folder.css" group="${dependencyGroup}"/>
