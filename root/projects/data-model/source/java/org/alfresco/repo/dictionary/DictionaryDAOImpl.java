@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -70,6 +72,7 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
 
     // Static list of registered dictionary listeners
     private List<DictionaryListener> dictionaryListeners = new ArrayList<DictionaryListener>();
+    private ReadWriteLock dictionaryListenersLock = new ReentrantReadWriteLock();
 
     // Logger
     private static Log logger = LogFactory.getLog(DictionaryDAO.class);
@@ -116,16 +119,33 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     @Override
     public void registerListener(DictionaryListener dictionaryListener)
     {
-        if (! dictionaryListeners.contains(dictionaryListener))
+  	    this.dictionaryListenersLock.writeLock().lock();
+        try
         {
-        	dictionaryListeners.add(dictionaryListener);
+            if (! dictionaryListeners.contains(dictionaryListener))
+            {
+        	    dictionaryListeners.add(dictionaryListener);
+            }
+        }
+        finally
+        {
+        	 this.dictionaryListenersLock.writeLock().unlock();
         }
     }
 
     @Override
     public List<DictionaryListener> getDictionaryListeners() 
     {
-		return dictionaryListeners;
+    	// need to hold read lock here
+    	this.dictionaryListenersLock.readLock().lock();
+        try
+        {
+        	return new ArrayList<DictionaryListener>(dictionaryListeners);
+        }
+        finally
+        {
+        	this.dictionaryListenersLock.readLock().unlock();
+        }
 	}
 
     private Map<String, DictionaryRegistry> getThreadLocal()

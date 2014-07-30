@@ -38,6 +38,12 @@ import org.alfresco.service.namespace.QName;
  */
 public interface DictionaryDAO extends ModelQuery
 {
+	/**
+     * get DictionaryListener registered by calls to registerListener
+     * 
+     * @see DictionaryListener
+	 * @return read only list of dictionary listeners
+	 */
 	List<DictionaryListener> getDictionaryListeners();
 
 	DictionaryRegistry getDictionaryRegistry(String tenantDomain);
