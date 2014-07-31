@@ -1119,7 +1119,7 @@
          var iframe = document.createElement('iframe');
          iframe.setAttribute('style', 'display: none; height: 0; width: 0;');
          document.getElementsByTagName('body')[0].appendChild(iframe);
-         iframe.attr('src', protocolUrl);
+         iframe.src = protocolUrl;
       },
       
       getProtocolForFileExtension: function(fileExtension)
