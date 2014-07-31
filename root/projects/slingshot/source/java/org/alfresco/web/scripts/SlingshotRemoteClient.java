@@ -51,7 +51,7 @@ import org.springframework.extensions.webscripts.ui.common.StringUtils;
  */
 public class SlingshotRemoteClient extends RemoteClient
 {
-    private static final Pattern CONTENT_PATTERN = Pattern.compile(".*/api/(node|path)/content/workspace/SpacesStore/.*");
+    private static final Pattern CONTENT_PATTERN = Pattern.compile(".*/(api|slingshot)/(node|path)/content/workspace/SpacesStore/.*");
     private static final Pattern SLINGSHOT_WIKI_PAGE_PATTERN = Pattern.compile(".*/slingshot/wiki/page/.*");
     private static final Pattern SLINGSHOT_WIKI_VERSION_PATTERN = Pattern.compile(".*/slingshot/wiki/version/.*");
 
