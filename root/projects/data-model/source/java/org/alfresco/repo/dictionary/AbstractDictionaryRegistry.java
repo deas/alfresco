@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.AssociationDefinition;
@@ -31,12 +34,13 @@ public abstract class AbstractDictionaryRegistry implements DictionaryRegistry
     protected static final Log logger = LogFactory.getLog(AbstractDictionaryRegistry.class);
 
 	protected DictionaryDAO dictionaryDAO;
-    protected Map<String, List<CompiledModel>> uriToModels = new HashMap<String, List<CompiledModel>>(0);
-    protected Map<QName,CompiledModel> compiledModels = new HashMap<QName,CompiledModel>(0);
+    private Map<String, List<CompiledModel>> uriToModels = new ConcurrentHashMap<String, List<CompiledModel>>(0);
+    private Map<QName,CompiledModel> compiledModels = new ConcurrentHashMap<QName,CompiledModel>(0);
 
     // namespaces
-    protected List<String> urisCache = new ArrayList<String>(0);
-    protected Map<String, String> prefixesCache = new HashMap<String, String>(0);
+    private ReadWriteLock urisCacheRWLock = new ReentrantReadWriteLock(true);
+    private List<String> urisCache = new ArrayList<String>(20);
+    private Map<String, String> prefixesCache = new ConcurrentHashMap<String, String>(0);
 
     public AbstractDictionaryRegistry(DictionaryDAO dictionaryDAO)
     {
@@ -118,7 +122,15 @@ public abstract class AbstractDictionaryRegistry implements DictionaryRegistry
 	        for (M2Namespace namespace : model.getNamespaces())
 	        {
 	            prefixesCache.remove(namespace.getPrefix());
-	            urisCache.remove(namespace.getUri());
+	            urisCacheRWLock.writeLock().lock();
+	            try
+	            {
+	            	urisCache.remove(namespace.getUri());
+	            }
+	            finally
+	            {
+	            	urisCacheRWLock.writeLock().unlock();
+	            }
 	
 	        	List<CompiledModel> models = uriToModels.get(namespace.getUri());
 	        	if(models != null)
@@ -146,7 +158,8 @@ public abstract class AbstractDictionaryRegistry implements DictionaryRegistry
     	{
     		models = Collections.emptyList();
     	}
-        return models;
+    	// defensive copy
+        return new  ArrayList<CompiledModel>(models);
     }
     
     protected void unmapUriToModel(String uri, CompiledModel model)
@@ -182,7 +195,16 @@ public abstract class AbstractDictionaryRegistry implements DictionaryRegistry
         	for (M2Namespace namespace : previousVersion.getM2Model().getNamespaces())
         	{
         		prefixesCache.remove(namespace.getPrefix());
-        		urisCache.remove(namespace.getUri());
+
+        		urisCacheRWLock.writeLock().lock();
+        		try
+        		{
+        			urisCache.remove(namespace.getUri());
+                }
+                finally
+                {
+                	urisCacheRWLock.writeLock().unlock();
+                }
         		unmapUriToModel(namespace.getUri(), previousVersion);
         	}
 
@@ -196,7 +218,15 @@ public abstract class AbstractDictionaryRegistry implements DictionaryRegistry
         M2Model m2Model = model.getM2Model();
         for (M2Namespace namespace : m2Model.getNamespaces())
         {
-        	urisCache.add(namespace.getUri());
+        	urisCacheRWLock.writeLock().lock();
+        	try
+        	{
+        		urisCache.add(namespace.getUri());
+	        }
+	        finally
+	        {
+	        	urisCacheRWLock.writeLock().unlock();
+	        }
         	prefixesCache.put(namespace.getPrefix(), namespace.getUri());
         	mapUriToModel(namespace.getUri(), model);
         }
@@ -448,7 +478,15 @@ public abstract class AbstractDictionaryRegistry implements DictionaryRegistry
     
     protected List<String> getUrisCacheImpl()
     {
-        return urisCache;
+    	urisCacheRWLock.readLock().lock();
+    	try
+    	{
+    		return new ArrayList<String>(urisCache);
+        }
+        finally
+        {
+        	urisCacheRWLock.readLock().unlock();
+        }
     }
 
     @Override
@@ -485,13 +523,30 @@ public abstract class AbstractDictionaryRegistry implements DictionaryRegistry
         {
             throw new NamespaceException("URI " + uri + " has already been defined");
         }
-    	urisCache.add(uri);
+
+        urisCacheRWLock.writeLock().lock();
+        try
+        {
+        	urisCache.add(uri);
+        }
+        finally
+        {
+        	urisCacheRWLock.writeLock().unlock();
+        }
     }
 
     @Override
     public boolean hasURI(String uri)
     {
-    	return urisCache.contains(uri);
+    	urisCacheRWLock.readLock().lock();
+    	try
+    	{
+    		return urisCache.contains(uri);
+        }
+        finally
+        {
+        	urisCacheRWLock.readLock().unlock();
+        }
     }
 
     @Override
@@ -508,10 +563,18 @@ public abstract class AbstractDictionaryRegistry implements DictionaryRegistry
 
     protected void addPrefixImpl(String prefix, String uri)
     {
-	    if(!urisCache.contains(uri))
-	    {
-	        throw new NamespaceException("Namespace URI " + uri + " does not exist");
-	    }
+    	urisCacheRWLock.readLock().lock();
+    	try
+    	{
+		    if(!urisCache.contains(uri))
+		    {
+		        throw new NamespaceException("Namespace URI " + uri + " does not exist");
+		    }
+        }
+        finally
+        {
+        	urisCacheRWLock.readLock().unlock();
+        }
     }
 
     @Override
@@ -528,7 +591,15 @@ public abstract class AbstractDictionaryRegistry implements DictionaryRegistry
 
     protected boolean removeURIImpl(String uri)
     {
-        return urisCache.remove(uri);
+    	urisCacheRWLock.writeLock().lock();
+    	try
+    	{
+    		return urisCache.remove(uri);
+        }
+        finally
+        {
+        	urisCacheRWLock.writeLock().unlock();
+        }
     }
 
     protected boolean removePrefixImpl(String prefix)
@@ -593,9 +664,24 @@ public abstract class AbstractDictionaryRegistry implements DictionaryRegistry
 	{
 	    uriToModels.clear();
 	    compiledModels.clear();
-	    urisCache.clear();
+	    urisCacheRWLock.writeLock().lock();
+	    try
+	    {
+	    	urisCache.clear();
+        }
+        finally
+        {
+        	urisCacheRWLock.writeLock().unlock();
+        }
 	    prefixesCache.clear();
 
 		removeImpl();
 	}
+
+    @Override
+    public boolean isModelInherited(QName modelName)
+    {
+    	CompiledModel model = compiledModels.get(modelName);
+    	return (model != null);
+    }
 }

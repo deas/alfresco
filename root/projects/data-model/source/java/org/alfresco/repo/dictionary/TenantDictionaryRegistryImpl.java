@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.repo.tenant.TenantUtil;
 import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.namespace.NamespaceException;
@@ -47,15 +46,6 @@ public class TenantDictionaryRegistryImpl extends AbstractDictionaryRegistry
 		}
 		QName ret = super.putModelImpl(model);
 
-		// TODO
-//		for(DictionaryListener listener : dictionaryDAO.getDictionaryListeners())
-//		{
-//			if(listener instanceof ExtendedDictionaryListener)
-//			{
-//				((ExtendedDictionaryListener)listener).modelAdded(model, TenantUtil.getCurrentDomain());
-//			}
-//		}
-
 		return ret;
 	}
 
@@ -63,7 +53,7 @@ public class TenantDictionaryRegistryImpl extends AbstractDictionaryRegistry
 	public Map<QName, CompiledModel> getCompiledModels(boolean includeInherited)
 	{
 		Map<QName, CompiledModel> ret = new HashMap<QName, CompiledModel>();
-		ret.putAll(compiledModels);
+		ret.putAll(super.getCompiledModels(includeInherited));
 		if(includeInherited)
 		{
 			ret.putAll(getParent().getCompiledModels(includeInherited));

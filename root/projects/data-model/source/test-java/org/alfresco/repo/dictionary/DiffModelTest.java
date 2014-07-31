@@ -28,7 +28,6 @@ import java.util.concurrent.TimeUnit;
 import junit.framework.TestCase;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.tenant.SingleTServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.namespace.QName;

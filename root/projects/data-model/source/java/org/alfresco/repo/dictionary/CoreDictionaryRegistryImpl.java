@@ -24,13 +24,6 @@ public class CoreDictionaryRegistryImpl extends AbstractDictionaryRegistry
     }
 
     @Override
-    public boolean isModelInherited(QName modelName)
-    {
-    	CompiledModel model = compiledModels.get(modelName);
-    	return (model != null);
-    }
-
-    @Override
     protected void initImpl()
     {
     	long startTime = System.currentTimeMillis();
