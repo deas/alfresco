@@ -38,17 +38,17 @@ import org.alfresco.service.namespace.QName;
  */
 public interface DictionaryDAO extends ModelQuery
 {
-	/**
+    /**
      * get DictionaryListener registered by calls to registerListener
      * 
-     * @see DictionaryListener
-	 * @return read only list of dictionary listeners
-	 */
-	List<DictionaryListener> getDictionaryListeners();
+     * @see org.alfresco.repo.dictionary.DictionaryListener
+     * @return read only list of dictionary listeners
+     */
+    List<DictionaryListener> getDictionaryListeners();
 
-	DictionaryRegistry getDictionaryRegistry(String tenantDomain);
+    DictionaryRegistry getDictionaryRegistry(String tenantDomain);
 
-	boolean isContextRefreshed();
+    boolean isContextRefreshed();
 
     /**
      * @return the models known by the dictionary
@@ -56,55 +56,67 @@ public interface DictionaryDAO extends ModelQuery
     Collection<QName> getModels(boolean includeInherited);
 
     Collection<QName> getTypes(boolean includeInherited);
+
     Collection<QName> getAssociations(boolean includeInherited);
+
     Collection<QName> getAspects(boolean includeInherited);
 
     /**
-     * @param name the model to retrieve
+     * @param name
+     *            the model to retrieve
      * @return the named model definition
      */
     ModelDefinition getModel(QName name);
-    
+
     /**
-     * @param model the model to retrieve property types for
+     * @param model
+     *            the model to retrieve property types for
      * @return the property types of the model
      */
     Collection<DataTypeDefinition> getDataTypes(QName model);
-    
+
     /**
-     * @param model the model to retrieve types for
+     * @param model
+     *            the model to retrieve types for
      * @return the types of the model
      */
     Collection<TypeDefinition> getTypes(QName model);
-    
+
     /**
      * @param superType
-     * @param follow  true => follow up the super-class hierarchy, false => immediate sub types only
+     * @param follow
+     *            true => follow up the super-class hierarchy, false =>
+     *            immediate sub types only
      * @return
      */
     Collection<QName> getSubTypes(QName superType, boolean follow);
 
     /**
-     * @param model the model to retrieve aspects for
+     * @param model
+     *            the model to retrieve aspects for
      * @return the aspects of the model
      */
     Collection<AspectDefinition> getAspects(QName model);
 
     /**
-     * @param model the model to retrieve associations for
+     * @param model
+     *            the model to retrieve associations for
      * @return the associations of the model
      */
     Collection<AssociationDefinition> getAssociations(QName model);
-    
+
     /**
      * @param superAspect
-     * @param follow  true => follow up the super-class hierarchy, false => immediate sub aspects only
+     * @param follow
+     *            true => follow up the super-class hierarchy, false =>
+     *            immediate sub aspects only
      * @return
      */
     Collection<QName> getSubAspects(QName superAspect, boolean follow);
-       
+
     /**
-     * @param model the model for which to get properties for
+     * @param model
+     *            the model for which to get properties for
      * @return the properties of the model
      */
     Collection<PropertyDefinition> getProperties(QName model);
@@ -113,93 +125,109 @@ public interface DictionaryDAO extends ModelQuery
      * Construct an anonymous type that combines a primary type definition and
      * and one or more aspects
      * 
-     * @param type the primary type
-     * @param aspects  the aspects to combine
+     * @param type
+     *            the primary type
+     * @param aspects
+     *            the aspects to combine
      * @return the anonymous type definition
      */
     TypeDefinition getAnonymousType(QName type, Collection<QName> aspects);
-    
+
     /**
-     * Adds a model to the dictionary.  The model is compiled and validated.
+     * Adds a model to the dictionary. The model is compiled and validated.
      * 
-     * @param model the model to add
+     * @param model
+     *            the model to add
      * @return QName name of model
      */
     QName putModel(M2Model model);
 
-//    QName putCustomModel(M2Model model);
+    // QName putCustomModel(M2Model model);
 
     /**
-     * Adds a model to the dictionary.  The model is compiled and validated.
+     * Adds a model to the dictionary. The model is compiled and validated.
      * Constraints are not loaded.
      * 
-     * This method should only be used to load models where the enforcement of constraints is never required.
-     * For example, SOLR read only use of the index where contraints are not required and thier definitions may not be available.  
+     * This method should only be used to load models where the enforcement of
+     * constraints is never required. For example, SOLR read only use of the
+     * index where contraints are not required and thier definitions may not be
+     * available.
      * 
-     * @param model the model to add
+     * @param model
+     *            the model to add
      * @return QName name of model
      */
     QName putModelIgnoringConstraints(M2Model model);
-    
+
     /**
-     * Removes a model from the dictionary.  The types and aspect in the model will no longer be 
-     * available.
+     * Removes a model from the dictionary. The types and aspect in the model
+     * will no longer be available.
      * 
-     * @param model     the qname of the model to remove
+     * @param model
+     *            the qname of the model to remove
      */
     void removeModel(QName model);
-    
+
     /**
-     * Get all properties for the model and that are of the given data type.
-     * If dataType is null then the all properties will be returned. 
+     * Get all properties for the model and that are of the given data type. If
+     * dataType is null then the all properties will be returned.
      * 
-     * @param modelName             the name of the model
-     * @param dataType              <tt>null</tt> to get all properties
-     * @return                      the properties associated with the model
+     * @param modelName
+     *            the name of the model
+     * @param dataType
+     *            <tt>null</tt> to get all properties
+     * @return the properties associated with the model
      */
     Collection<PropertyDefinition> getProperties(QName modelName, QName dataType);
-     
+
     /**
-     * Get all properties for all models of the given data type. 
+     * Get all properties for all models of the given data type.
      * 
      * @param modelName
      * @param dataType
      * @return
      */
     Collection<PropertyDefinition> getPropertiesOfDataType(QName dataType);
-    
+
     /**
-     * @param model the model to retrieve namespaces for
+     * @param model
+     *            the model to retrieve namespaces for
      * @return the namespaces of the model
      */
     Collection<NamespaceDefinition> getNamespaces(QName modelName);
-    
+
     /**
-     * @param model the model to retrieve constraint defs (including property constaint refs)
+     * @param model
+     *            the model to retrieve constraint defs (including property
+     *            constaint refs)
      * @return the constraints of the model
      */
     Collection<ConstraintDefinition> getConstraints(QName model);
-    
+
     /**
-     * @param model the model to retrieve constraint defs (optionally only referenceable constraints)
+     * @param model
+     *            the model to retrieve constraint defs (optionally only
+     *            referenceable constraints)
      * @return the constraints of the model
      */
-    Collection<ConstraintDefinition> getConstraints(QName model, boolean referenceableDefsOnly);
-    
+    Collection<ConstraintDefinition> getConstraints(QName model,
+            boolean referenceableDefsOnly);
+
     /**
      * Return diffs between input model and model in the Dictionary.
      * 
-     * If the input model does not exist in the Dictionary then no diffs will be returned.
+     * If the input model does not exist in the Dictionary then no diffs will be
+     * returned.
      * 
      * @param model
      * @return model diffs (if any)
      */
     List<M2ModelDiff> diffModel(M2Model model);
-    
+
     List<M2ModelDiff> diffModelIgnoringConstraints(M2Model model);
-    
+
     /**
-     *
+     * 
      * Register listener with the Dictionary
      * 
      * @param dictionaryListener
@@ -210,17 +238,17 @@ public interface DictionaryDAO extends ModelQuery
      * Reset the Dictionary - destroy & re-initialise
      */
     void reset();
-    
+
     /**
      * Initialise the Dictionary
      */
     void init();
-    
+
     /**
      * Destroy the Dictionary
      */
     void destroy();
-    
+
     // MT-specific
     boolean isModelInherited(QName name);
 

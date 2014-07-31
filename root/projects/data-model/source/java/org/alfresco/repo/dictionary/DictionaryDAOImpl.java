@@ -50,23 +50,23 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-
 /**
  * Default implementation of the Dictionary.
- *  
+ * 
  * @author David Caruana, janv, sglover
- *
+ * 
  */
-// TODO deal with destroy of core dictionary registry i.e. do we remove all tenant dictionary registries too?
-public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, ApplicationListener<ApplicationEvent>
+// TODO deal with destroy of core dictionary registry i.e. do we remove all
+// tenant dictionary registries too?
+public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO,
+        ApplicationListener<ApplicationEvent>
 {
     // Tenant Service
     private TenantService tenantService;
 
     // used to reset the cache
-    private ThreadLocal<Map<String, DictionaryRegistry>> dictionaryRegistryThreadLocal =
-    		new ThreadLocal<Map<String, DictionaryRegistry>>();
- 
+    private ThreadLocal<Map<String, DictionaryRegistry>> dictionaryRegistryThreadLocal = new ThreadLocal<Map<String, DictionaryRegistry>>();
+
     // Internal cache (clusterable)
     private CompiledModelsCache dictionaryRegistryCache;
 
@@ -78,28 +78,30 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     private static Log logger = LogFactory.getLog(DictionaryDAO.class);
 
     private String defaultAnalyserResourceBundleName;
-    
+
     private ClassLoader resourceClassLoader;
 
-	// inject dependencies
-    
+    // inject dependencies
+
     public void setTenantService(TenantService tenantService)
     {
         this.tenantService = tenantService;
     }
 
-    public void setDictionaryRegistryCache(CompiledModelsCache dictionaryRegistryCache)
+    public void setDictionaryRegistryCache(
+            CompiledModelsCache dictionaryRegistryCache)
     {
         this.dictionaryRegistryCache = dictionaryRegistryCache;
     }
-    
-    @Override 
+
+    @Override
     public String getDefaultAnalyserResourceBundleName()
     {
         return defaultAnalyserResourceBundleName;
     }
 
-    public void setDefaultAnalyserResourceBundleName(String defaultAnalyserResourceBundleName)
+    public void setDefaultAnalyserResourceBundleName(
+            String defaultAnalyserResourceBundleName)
     {
         this.defaultAnalyserResourceBundleName = defaultAnalyserResourceBundleName;
     }
@@ -107,7 +109,8 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     /**
      * Construct
      * 
-     * @param namespaceDAO  namespace data access
+     * @param namespaceDAO
+     *            namespace data access
      */
     public DictionaryDAOImpl()
     {
@@ -119,83 +122,88 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     @Override
     public void registerListener(DictionaryListener dictionaryListener)
     {
-  	    this.dictionaryListenersLock.writeLock().lock();
+        this.dictionaryListenersLock.writeLock().lock();
         try
         {
-            if (! dictionaryListeners.contains(dictionaryListener))
+            if (!dictionaryListeners.contains(dictionaryListener))
             {
-        	    dictionaryListeners.add(dictionaryListener);
+                dictionaryListeners.add(dictionaryListener);
             }
         }
         finally
         {
-        	 this.dictionaryListenersLock.writeLock().unlock();
+            this.dictionaryListenersLock.writeLock().unlock();
         }
     }
 
     @Override
-    public List<DictionaryListener> getDictionaryListeners() 
+    public List<DictionaryListener> getDictionaryListeners()
     {
-    	// need to hold read lock here
-    	this.dictionaryListenersLock.readLock().lock();
+        // need to hold read lock here
+        this.dictionaryListenersLock.readLock().lock();
         try
         {
-        	return new ArrayList<DictionaryListener>(dictionaryListeners);
+            return new ArrayList<DictionaryListener>(dictionaryListeners);
         }
         finally
         {
-        	this.dictionaryListenersLock.readLock().unlock();
+            this.dictionaryListenersLock.readLock().unlock();
         }
-	}
+    }
 
     private Map<String, DictionaryRegistry> getThreadLocal()
     {
-    	Map<String, DictionaryRegistry> map = dictionaryRegistryThreadLocal.get();
-    	if(map == null)
-    	{
-    		map = new HashMap<String, DictionaryRegistry>();
-    		dictionaryRegistryThreadLocal.set(map);
-    	}
-    	return map;
+        Map<String, DictionaryRegistry> map = dictionaryRegistryThreadLocal
+                .get();
+        if (map == null)
+        {
+            map = new HashMap<String, DictionaryRegistry>();
+            dictionaryRegistryThreadLocal.set(map);
+        }
+        return map;
     }
 
     private DictionaryRegistry createCoreDictionaryRegistry()
     {
-    	DictionaryRegistry dictionaryRegistry = new CoreDictionaryRegistryImpl(this);
+        DictionaryRegistry dictionaryRegistry = new CoreDictionaryRegistryImpl(
+                this);
         getThreadLocal().put("", dictionaryRegistry);
         dictionaryRegistry.init();
         getThreadLocal().remove("");
         return dictionaryRegistry;
     }
 
-    private DictionaryRegistry createTenantDictionaryRegistry(final String tenant)
+    private DictionaryRegistry createTenantDictionaryRegistry(
+            final String tenant)
     {
-    	DictionaryRegistry result = AuthenticationUtil.runAs(new RunAsWork<DictionaryRegistry>()
-        {
-            public DictionaryRegistry doWork()
-            {
-            	DictionaryRegistry dictionaryRegistry = new TenantDictionaryRegistryImpl(DictionaryDAOImpl.this,
-            			tenant);
-                getThreadLocal().put(tenant, dictionaryRegistry);
-                dictionaryRegistry.init();
-                getThreadLocal().remove(tenant);
-                return dictionaryRegistry;
-            }
-        }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), tenant));
+        DictionaryRegistry result = AuthenticationUtil.runAs(
+                new RunAsWork<DictionaryRegistry>()
+                {
+                    public DictionaryRegistry doWork()
+                    {
+                        DictionaryRegistry dictionaryRegistry = new TenantDictionaryRegistryImpl(
+                                DictionaryDAOImpl.this, tenant);
+                        getThreadLocal().put(tenant, dictionaryRegistry);
+                        dictionaryRegistry.init();
+                        getThreadLocal().remove(tenant);
+                        return dictionaryRegistry;
+                    }
+                }, tenantService.getDomainUser(
+                        AuthenticationUtil.getSystemUserName(), tenant));
 
         return result;
     }
 
-	/**
+    /**
      * Initialise the Dictionary & Namespaces
      */
     public void init()
     {
-    	String tenant = tenantService.getCurrentUserDomain();
+        String tenant = tenantService.getCurrentUserDomain();
 
-    	getDictionaryRegistry(tenant, true);
+        getDictionaryRegistry(tenant, true);
     }
-    
+
     /**
      * Destroy the Dictionary & Namespaces
      */
@@ -210,13 +218,13 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
             logger.debug("Dictionary destroyed");
         }
     }
-    
+
     /**
      * Reset the Dictionary & Namespaces
      */
     public void reset()
     {
-        if (logger.isDebugEnabled()) 
+        if (logger.isDebugEnabled())
         {
             logger.debug("Resetting dictionary ...");
         }
@@ -224,20 +232,25 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         destroy();
         init();
 
-        if (logger.isDebugEnabled()) 
+        if (logger.isDebugEnabled())
         {
             logger.debug("... resetting dictionary completed");
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.impl.DictionaryDAO#putCoreModel(org.alfresco.repo.dictionary.impl.M2Model)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.impl.DictionaryDAO#putCoreModel(org.alfresco
+     * .repo.dictionary.impl.M2Model)
      */
     public QName putModel(M2Model model)
     {
-		// the core registry is not yet initialised so put it in the core registry
-    	QName ret = putModelImpl(model, true);
-    	return ret;
+        // the core registry is not yet initialised so put it in the core
+        // registry
+        QName ret = putModelImpl(model, true);
+        return ret;
     }
 
     @Override
@@ -246,20 +259,25 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         return putModelImpl(model, false);
     }
 
-    private QName putModelImpl(M2Model model, boolean enableConstraintClassLoading)
+    private QName putModelImpl(M2Model model,
+            boolean enableConstraintClassLoading)
     {
         // Compile model definition
-        CompiledModel compiledModel = model.compile(this, this, enableConstraintClassLoading);
+        CompiledModel compiledModel = model.compile(this, this,
+                enableConstraintClassLoading);
         QName modelName = compiledModel.getModelDefinition().getName();
 
         getTenantDictionaryRegistry().putModel(compiledModel);
 
         if (logger.isTraceEnabled())
         {
-            logger.trace("Registered core model: " + modelName.toPrefixString(this));
+            logger.trace("Registered core model: "
+                    + modelName.toPrefixString(this));
             for (M2Namespace namespace : model.getNamespaces())
             {
-                logger.trace("Registered core namespace: '" + namespace.getUri() + "' (prefix '" + namespace.getPrefix() + "')");
+                logger.trace("Registered core namespace: '"
+                        + namespace.getUri() + "' (prefix '"
+                        + namespace.getPrefix() + "')");
             }
         }
 
@@ -281,21 +299,25 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     }
 
     /**
-     * @param modelName  the model name
+     * @param modelName
+     *            the model name
      * @return the compiled model of the given name
      */
     public CompiledModel getCompiledModel(QName modelName)
     {
         return getTenantDictionaryRegistry().getModel(modelName);
     }
-    
-    
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.impl.ModelQuery#getPropertyType(org.alfresco.repo.ref.QName)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.impl.ModelQuery#getPropertyType(org.alfresco
+     * .repo.ref.QName)
      */
     public DataTypeDefinition getDataType(QName typeName)
     {
-    	DataTypeDefinition dataTypeDef = null;
+        DataTypeDefinition dataTypeDef = null;
 
         if (typeName != null)
         {
@@ -312,8 +334,12 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         return getTenantDictionaryRegistry().getDataType(javaClass);
     }
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.impl.DictionaryDAO#getPropertyTypes(org.alfresco.repo.ref.QName)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.impl.DictionaryDAO#getPropertyTypes(org.
+     * alfresco.repo.ref.QName)
      */
     public Collection<DataTypeDefinition> getDataTypes(QName modelName)
     {
@@ -321,13 +347,16 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         return model.getDataTypes();
     }
 
-
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.impl.ModelQuery#getType(org.alfresco.repo.ref.QName)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.impl.ModelQuery#getType(org.alfresco.repo
+     * .ref.QName)
      */
     public TypeDefinition getType(QName typeName)
     {
-    	TypeDefinition typeDef = null;
+        TypeDefinition typeDef = null;
 
         if (typeName != null)
         {
@@ -336,62 +365,71 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
 
         return typeDef;
     }
-    
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.DictionaryDAO#getSubTypes(org.alfresco.service.namespace.QName, boolean)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.DictionaryDAO#getSubTypes(org.alfresco.service
+     * .namespace.QName, boolean)
      */
     public Collection<QName> getSubTypes(QName superType, boolean follow)
     {
-    	// note: could be optimised further, if compiled into the model
-    	
+        // note: could be optimised further, if compiled into the model
+
         // Get all types (with parent type) for all models
-        Map<QName, QName> allTypesAndParents = new HashMap<QName, QName>(); // name, parent
-        
+        Map<QName, QName> allTypesAndParents = new HashMap<QName, QName>(); // name,
+                                                                            // parent
+
         for (CompiledModel model : getCompiledModels(true).values())
         {
-        	for (TypeDefinition type : model.getTypes())
-        	{
-        		allTypesAndParents.put(type.getName(), type.getParentName());
-        	}
+            for (TypeDefinition type : model.getTypes())
+            {
+                allTypesAndParents.put(type.getName(), type.getParentName());
+            }
         }
-        
+
         // Get sub types
-    	HashSet<QName> subTypes = new HashSet<QName>();
+        HashSet<QName> subTypes = new HashSet<QName>();
         for (QName type : allTypesAndParents.keySet())
         {
-        	if (follow)
-        	{   
-        		// all sub types
-        		QName current = type;
-	            while ((current != null) && !current.equals(superType))
-	            {
-	            	current = allTypesAndParents.get(current); // get parent
-	            }
-	            if (current != null)
-	            {
-	            	subTypes.add(type);
-	            }
-        	}
-        	else
-        	{
-        		// immediate sub types only
-        	    QName typesSuperType = allTypesAndParents.get(type);
-        		if (typesSuperType != null && typesSuperType.equals(superType))
-        		{
-        			subTypes.add(type);
-        		}
-        	}
+            if (follow)
+            {
+                // all sub types
+                QName current = type;
+                while ((current != null) && !current.equals(superType))
+                {
+                    current = allTypesAndParents.get(current); // get parent
+                }
+                if (current != null)
+                {
+                    subTypes.add(type);
+                }
+            }
+            else
+            {
+                // immediate sub types only
+                QName typesSuperType = allTypesAndParents.get(type);
+                if (typesSuperType != null && typesSuperType.equals(superType))
+                {
+                    subTypes.add(type);
+                }
+            }
 
         }
         return subTypes;
     }
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.impl.ModelQuery#getAspect(org.alfresco.repo.ref.QName)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.impl.ModelQuery#getAspect(org.alfresco.repo
+     * .ref.QName)
      */
     public AspectDefinition getAspect(QName aspectName)
     {
-    	AspectDefinition aspectDef = null;
+        AspectDefinition aspectDef = null;
 
         if (aspectName != null)
         {
@@ -400,61 +438,72 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
 
         return aspectDef;
     }
-    
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.DictionaryDAO#getSubAspects(org.alfresco.service.namespace.QName, boolean)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.DictionaryDAO#getSubAspects(org.alfresco
+     * .service.namespace.QName, boolean)
      */
     public Collection<QName> getSubAspects(QName superAspect, boolean follow)
     {
-    	// note: could be optimised further, if compiled into the model
-    	
-        // Get all aspects (with parent aspect) for all models   
-        Map<QName, QName> allAspectsAndParents = new HashMap<QName, QName>(); // name, parent
-        
+        // note: could be optimised further, if compiled into the model
+
+        // Get all aspects (with parent aspect) for all models
+        Map<QName, QName> allAspectsAndParents = new HashMap<QName, QName>(); // name,
+                                                                              // parent
+
         for (CompiledModel model : getCompiledModels(true).values())
         {
-        	for (AspectDefinition aspect : model.getAspects())
-        	{
-        		allAspectsAndParents.put(aspect.getName(), aspect.getParentName());
-        	}
+            for (AspectDefinition aspect : model.getAspects())
+            {
+                allAspectsAndParents.put(aspect.getName(),
+                        aspect.getParentName());
+            }
         }
-   	
+
         // Get sub aspects
-    	HashSet<QName> subAspects = new HashSet<QName>();
+        HashSet<QName> subAspects = new HashSet<QName>();
         for (QName aspect : allAspectsAndParents.keySet())
         {
-        	if (follow)
-        	{
-        		// all sub aspects
-	        	QName current = aspect;
-	            while ((current != null) && !current.equals(superAspect))
-	            {
-	            	current = allAspectsAndParents.get(current); // get parent
-	            }
-	            if (current != null)
-	            {
-	            	subAspects.add(aspect);
-	            }
-	    	}
-	    	else
-	    	{
-	    		// immediate sub aspects only
-	    	    QName typesSuperAspect = allAspectsAndParents.get(aspect);
-	    		if (typesSuperAspect != null && typesSuperAspect.equals(superAspect))
-	    		{
-	    			subAspects.add(aspect);
-	    		}
-	    	}
+            if (follow)
+            {
+                // all sub aspects
+                QName current = aspect;
+                while ((current != null) && !current.equals(superAspect))
+                {
+                    current = allAspectsAndParents.get(current); // get parent
+                }
+                if (current != null)
+                {
+                    subAspects.add(aspect);
+                }
+            }
+            else
+            {
+                // immediate sub aspects only
+                QName typesSuperAspect = allAspectsAndParents.get(aspect);
+                if (typesSuperAspect != null
+                        && typesSuperAspect.equals(superAspect))
+                {
+                    subAspects.add(aspect);
+                }
+            }
         }
         return subAspects;
     }
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.impl.ModelQuery#getClass(org.alfresco.repo.ref.QName)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.impl.ModelQuery#getClass(org.alfresco.repo
+     * .ref.QName)
      */
     public ClassDefinition getClass(QName className)
     {
-    	ClassDefinition classDef = null;
+        ClassDefinition classDef = null;
 
         if (className != null)
         {
@@ -464,41 +513,52 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         return classDef;
     }
 
-    
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.impl.ModelQuery#getProperty(org.alfresco.repo.ref.QName)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.impl.ModelQuery#getProperty(org.alfresco
+     * .repo.ref.QName)
      */
     public PropertyDefinition getProperty(QName propertyName)
     {
-    	PropertyDefinition propertyDef = null;
+        PropertyDefinition propertyDef = null;
 
         if (propertyName != null)
         {
-            propertyDef = getTenantDictionaryRegistry().getProperty(propertyName);
+            propertyDef = getTenantDictionaryRegistry().getProperty(
+                    propertyName);
         }
 
         return propertyDef;
     }
 
-    
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.ModelQuery#getConstraint(org.alfresco.service.namespace.QName)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.ModelQuery#getConstraint(org.alfresco.service
+     * .namespace.QName)
      */
     public ConstraintDefinition getConstraint(QName constraintQName)
     {
-    	ConstraintDefinition constraintDef = null;
+        ConstraintDefinition constraintDef = null;
 
         if (constraintQName != null)
         {
-            constraintDef = getTenantDictionaryRegistry().getConstraint(constraintQName);
+            constraintDef = getTenantDictionaryRegistry().getConstraint(
+                    constraintQName);
         }
 
         return constraintDef;
     }
-    
-    
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.impl.ModelQuery#getAssociation(org.alfresco.repo.ref.QName)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.impl.ModelQuery#getAssociation(org.alfresco
+     * .repo.ref.QName)
      */
     public AssociationDefinition getAssociation(QName assocName)
     {
@@ -517,13 +577,15 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         return getCompiledModels(includeInherited).keySet();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.alfresco.repo.dictionary.impl.DictionaryDAO#getModels()
      */
     public Collection<QName> getModels()
     {
         // get all models - including inherited models, if applicable
-    	return getModels(true);
+        return getModels(true);
     }
 
     public Collection<QName> getTypes(boolean includeInherited)
@@ -535,7 +597,7 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     {
         return getTenantDictionaryRegistry().getAssociations(includeInherited);
     }
-    
+
     public Collection<QName> getAspects(boolean includeInherited)
     {
         return getTenantDictionaryRegistry().getAspects(includeInherited);
@@ -547,13 +609,18 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         return getTenantDictionaryRegistry().isModelInherited(modelName);
     }
 
-    private Map<QName,CompiledModel> getCompiledModels(boolean includeInherited) 
+    private Map<QName, CompiledModel> getCompiledModels(boolean includeInherited)
     {
-        return getTenantDictionaryRegistry().getCompiledModels(includeInherited);
+        return getTenantDictionaryRegistry()
+                .getCompiledModels(includeInherited);
     }
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.impl.DictionaryDAO#getModel(org.alfresco.repo.ref.QName)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.impl.DictionaryDAO#getModel(org.alfresco
+     * .repo.ref.QName)
      */
     public ModelDefinition getModel(QName name)
     {
@@ -561,9 +628,12 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         return model.getModelDefinition();
     }
 
-
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.impl.DictionaryDAO#getTypes(org.alfresco.repo.ref.QName)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.impl.DictionaryDAO#getTypes(org.alfresco
+     * .repo.ref.QName)
      */
     public Collection<TypeDefinition> getTypes(QName modelName)
     {
@@ -571,9 +641,12 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         return model.getTypes();
     }
 
-
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.impl.DictionaryDAO#getAspects(org.alfresco.repo.ref.QName)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.impl.DictionaryDAO#getAspects(org.alfresco
+     * .repo.ref.QName)
      */
     public Collection<AspectDefinition> getAspects(QName modelName)
     {
@@ -581,16 +654,20 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         return model.getAspects();
     }
 
-
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.impl.DictionaryDAO#getAnonymousType(org.alfresco.repo.ref.QName, java.util.Collection)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.impl.DictionaryDAO#getAnonymousType(org.
+     * alfresco.repo.ref.QName, java.util.Collection)
      */
     public TypeDefinition getAnonymousType(QName type, Collection<QName> aspects)
     {
         TypeDefinition typeDef = getType(type);
         if (typeDef == null)
         {
-            throw new DictionaryException("d_dictionary.model.err.type_not_found", type);
+            throw new DictionaryException(
+                    "d_dictionary.model.err.type_not_found", type);
         }
         Collection<AspectDefinition> aspectDefs = new ArrayList<AspectDefinition>();
         if (aspects != null)
@@ -600,7 +677,8 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
                 AspectDefinition aspectDef = getAspect(aspect);
                 if (aspectDef == null)
                 {
-                    throw new DictionaryException("d_dictionary.model.err.aspect_not_found", aspect);
+                    throw new DictionaryException(
+                            "d_dictionary.model.err.aspect_not_found", aspect);
                 }
                 aspectDefs.add(aspectDef);
             }
@@ -610,23 +688,28 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
 
     /*
      * (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.DictionaryDAO#getProperties(org.alfresco.service.namespace.QName)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.DictionaryDAO#getProperties(org.alfresco
+     * .service.namespace.QName)
      */
     public Collection<PropertyDefinition> getProperties(QName modelName)
     {
         CompiledModel model = getCompiledModel(modelName);
         return model.getProperties();
     }
-    
+
     @Override
-    public Collection<PropertyDefinition> getProperties(QName modelName, QName dataType)
+    public Collection<PropertyDefinition> getProperties(QName modelName,
+            QName dataType)
     {
         HashSet<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
 
         Collection<PropertyDefinition> props = getProperties(modelName);
-        for(PropertyDefinition prop : props)
+        for (PropertyDefinition prop : props)
         {
-            if((dataType == null) ||   prop.getDataType().getName().equals(dataType))
+            if ((dataType == null)
+                    || prop.getDataType().getName().equals(dataType))
             {
                 properties.add(prop);
             }
@@ -636,24 +719,30 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
 
     /*
      * (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.DictionaryDAO#getProperties(org.alfresco.service.namespace.QName, org.alfresco.service.namespace.QName)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.DictionaryDAO#getProperties(org.alfresco
+     * .service.namespace.QName, org.alfresco.service.namespace.QName)
      */
     public Collection<PropertyDefinition> getPropertiesOfDataType(QName dataType)
     {
-    	Collection<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
+        Collection<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
 
-    	Collection<QName> modelNames = getModels();
-    	for(QName modelName : modelNames)
-    	{
-    		properties.addAll(getProperties(modelName, dataType));
-    	}
+        Collection<QName> modelNames = getModels();
+        for (QName modelName : modelNames)
+        {
+            properties.addAll(getProperties(modelName, dataType));
+        }
 
-    	return properties;
+        return properties;
     }
 
     /*
      * (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.DictionaryDAO#getNamespaces(org.alfresco.service.namespace.QName)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.DictionaryDAO#getNamespaces(org.alfresco
+     * .service.namespace.QName)
      */
     public Collection<NamespaceDefinition> getNamespaces(QName modelName)
     {
@@ -661,16 +750,21 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         ModelDefinition modelDef = model.getModelDefinition();
         return modelDef.getNamespaces();
     }
-    
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.dictionary.DictionaryDAO#getConstraints(org.alfresco.service.namespace.QName)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.dictionary.DictionaryDAO#getConstraints(org.alfresco
+     * .service.namespace.QName)
      */
     public Collection<ConstraintDefinition> getConstraints(QName modelName)
     {
         return getConstraints(modelName, false);
     }
-    
-    public Collection<ConstraintDefinition> getConstraints(QName modelName, boolean referenceableDefsOnly)
+
+    public Collection<ConstraintDefinition> getConstraints(QName modelName,
+            boolean referenceableDefsOnly)
     {
         CompiledModel model = getCompiledModel(modelName);
         if (referenceableDefsOnly)
@@ -683,7 +777,8 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         }
     }
 
-    private Collection<ConstraintDefinition> getReferenceableConstraintDefs(CompiledModel model)
+    private Collection<ConstraintDefinition> getReferenceableConstraintDefs(
+            CompiledModel model)
     {
         Collection<ConstraintDefinition> conDefs = model.getConstraints();
         Collection<PropertyDefinition> propDefs = model.getProperties();
@@ -694,7 +789,7 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
                 conDefs.remove(conDef);
             }
         }
-        
+
         return conDefs;
     }
 
@@ -706,21 +801,22 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     }
 
     // re-entrant (eg. via reset)
-    private DictionaryRegistry getDictionaryRegistry(final String tenantDomain, final boolean init)
+    private DictionaryRegistry getDictionaryRegistry(final String tenantDomain,
+            final boolean init)
     {
-    	DictionaryRegistry dictionaryRegistry = null;
+        DictionaryRegistry dictionaryRegistry = null;
 
-    	if(tenantDomain == null)
-    	{
-    		throw new AlfrescoRuntimeException("Tenant must be set");
-    	}
+        if (tenantDomain == null)
+        {
+            throw new AlfrescoRuntimeException("Tenant must be set");
+        }
 
-    	// check threadlocal first - return if set
-    	dictionaryRegistry = getThreadLocal().get(tenantDomain);
-    	if (dictionaryRegistry == null)
-    	{
-    	    dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
-    	}
+        // check threadlocal first - return if set
+        dictionaryRegistry = getThreadLocal().get(tenantDomain);
+        if (dictionaryRegistry == null)
+        {
+            dictionaryRegistry = dictionaryRegistryCache.get(tenantDomain);
+        }
 
         return dictionaryRegistry;
     }
@@ -733,32 +829,35 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
      */
     public DictionaryRegistry initDictionaryRegistry(final String tenantDomain)
     {
-        return AuthenticationUtil.runAs(new RunAsWork<DictionaryRegistry>()
-	    {
-    	    public DictionaryRegistry doWork()
-    	    {
-    		DictionaryRegistry dictionaryRegistry = null;
-    		if(tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
-    		{
-    			dictionaryRegistry = createCoreDictionaryRegistry();
-    		}
-    		else
-    		{
-    			dictionaryRegistry = createTenantDictionaryRegistry(tenantDomain);
-    		}
+        return AuthenticationUtil.runAs(
+                new RunAsWork<DictionaryRegistry>()
+                {
+                    public DictionaryRegistry doWork()
+                    {
+                        DictionaryRegistry dictionaryRegistry = null;
+                        if (tenantDomain.equals(TenantService.DEFAULT_DOMAIN))
+                        {
+                            dictionaryRegistry = createCoreDictionaryRegistry();
+                        }
+                        else
+                        {
+                            dictionaryRegistry = createTenantDictionaryRegistry(tenantDomain);
+                        }
 
-    		getThreadLocal().put(tenantDomain, dictionaryRegistry);
-    		dictionaryRegistry.init();
-    		getThreadLocal().remove(tenantDomain);
+                        getThreadLocal().put(tenantDomain, dictionaryRegistry);
+                        dictionaryRegistry.init();
+                        getThreadLocal().remove(tenantDomain);
 
-    		return dictionaryRegistry;
-    	    }
-	    }, tenantService.getDomainUser(AuthenticationUtil.getSystemUserName(), tenantDomain));
+                        return dictionaryRegistry;
+                    }
+                },
+                tenantService.getDomainUser(
+                        AuthenticationUtil.getSystemUserName(), tenantDomain));
     }
 
     private void removeDictionaryRegistry(String tenantDomain)
     {
-        //TODO Should be reworked when ACE-2001 will be implemented
+        // TODO Should be reworked when ACE-2001 will be implemented
         dictionaryRegistryCache.remove(tenantDomain);
         dictionaryRegistryCache.refresh(tenantDomain);
     }
@@ -766,7 +865,8 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     /**
      * Return diffs between input model and model in the Dictionary.
      * 
-     * If the input model does not exist in the Dictionary then no diffs will be returned.
+     * If the input model does not exist in the Dictionary then no diffs will be
+     * returned.
      * 
      * @param model
      * @return model diffs (if any)
@@ -775,32 +875,35 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
     {
         return diffModel(model, true);
     }
-    
+
     public List<M2ModelDiff> diffModelIgnoringConstraints(M2Model model)
     {
         return diffModel(model, false);
     }
-    
+
     /**
      * Return diffs between input model and model in the Dictionary.
      * 
-     * If the input model does not exist in the Dictionary then no diffs will be returned.
+     * If the input model does not exist in the Dictionary then no diffs will be
+     * returned.
      * 
      * @param model
      * @return model diffs (if any)
      */
-    public List<M2ModelDiff> diffModel(M2Model model, boolean enableConstraintClassLoading)
+    public List<M2ModelDiff> diffModel(M2Model model,
+            boolean enableConstraintClassLoading)
     {
         // Compile model definition
-        CompiledModel compiledModel = model.compile(this, this, enableConstraintClassLoading);
+        CompiledModel compiledModel = model.compile(this, this,
+                enableConstraintClassLoading);
         QName modelName = compiledModel.getModelDefinition().getName();
-        
+
         CompiledModel previousVersion = null;
-        try 
-        { 
-            previousVersion = getCompiledModel(modelName); 
-        } 
-        catch (DictionaryException e) 
+        try
+        {
+            previousVersion = getCompiledModel(modelName);
+        }
+        catch (DictionaryException e)
         {
             logger.warn(e);
         } // ignore missing model
@@ -814,50 +917,55 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
             return diffModel(previousVersion, compiledModel);
         }
     }
-    
+
     /**
      * Return diffs between two compiled models.
      * 
-     * note:
-     * - checks classes (types & aspects) for incremental updates
-     * - checks properties for incremental updates, but does not include the diffs
-     * - checks assocs & child assocs for incremental updates, but does not include the diffs
-     * - incremental updates include changes in title/description, property default value, etc
-     * - ignores changes in model definition except name (ie. title, description, author, published date, version are treated as an incremental update)
+     * note: - checks classes (types & aspects) for incremental updates - checks
+     * properties for incremental updates, but does not include the diffs -
+     * checks assocs & child assocs for incremental updates, but does not
+     * include the diffs - incremental updates include changes in
+     * title/description, property default value, etc - ignores changes in model
+     * definition except name (ie. title, description, author, published date,
+     * version are treated as an incremental update)
      * 
-     * TODO
-     * - imports
-     * - namespace
-     * - datatypes
-     * - constraints (including property constraints - references and inline)
+     * TODO - imports - namespace - datatypes - constraints (including property
+     * constraints - references and inline)
      * 
      * @param model
      * @return model diffs (if any)
      */
-    /* package */ List<M2ModelDiff> diffModel(CompiledModel previousVersion, CompiledModel model)
+    /* package */List<M2ModelDiff> diffModel(CompiledModel previousVersion,
+            CompiledModel model)
     {
         List<M2ModelDiff> M2ModelDiffs = new ArrayList<M2ModelDiff>();
-        
+
         if (previousVersion != null)
-        { 
-            Collection<TypeDefinition> previousTypes = previousVersion.getTypes();
-            Collection<AspectDefinition> previousAspects = previousVersion.getAspects();
+        {
+            Collection<TypeDefinition> previousTypes = previousVersion
+                    .getTypes();
+            Collection<AspectDefinition> previousAspects = previousVersion
+                    .getAspects();
             Collection<ConstraintDefinition> previousConDefs = getReferenceableConstraintDefs(previousVersion);
-            
+
             if (model == null)
             {
                 // delete model
                 for (TypeDefinition previousType : previousTypes)
                 {
-                    M2ModelDiffs.add(new M2ModelDiff(previousType.getName(), M2ModelDiff.TYPE_TYPE, M2ModelDiff.DIFF_DELETED));
+                    M2ModelDiffs.add(new M2ModelDiff(previousType.getName(),
+                            M2ModelDiff.TYPE_TYPE, M2ModelDiff.DIFF_DELETED));
                 }
                 for (AspectDefinition previousAspect : previousAspects)
                 {
-                    M2ModelDiffs.add(new M2ModelDiff(previousAspect.getName(), M2ModelDiff.TYPE_ASPECT, M2ModelDiff.DIFF_DELETED));
+                    M2ModelDiffs.add(new M2ModelDiff(previousAspect.getName(),
+                            M2ModelDiff.TYPE_ASPECT, M2ModelDiff.DIFF_DELETED));
                 }
                 for (ConstraintDefinition previousConDef : previousConDefs)
                 {
-                    M2ModelDiffs.add(new M2ModelDiff(previousConDef.getName(), M2ModelDiff.TYPE_CONSTRAINT, M2ModelDiff.DIFF_DELETED));
+                    M2ModelDiffs.add(new M2ModelDiff(previousConDef.getName(),
+                            M2ModelDiff.TYPE_CONSTRAINT,
+                            M2ModelDiff.DIFF_DELETED));
                 }
             }
             else
@@ -866,40 +974,59 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
                 Collection<TypeDefinition> types = model.getTypes();
                 Collection<AspectDefinition> aspects = model.getAspects();
                 Collection<ConstraintDefinition> conDefs = getReferenceableConstraintDefs(model);
-                
+
                 if (previousTypes.size() != 0)
                 {
-                    M2ModelDiffs.addAll(M2ClassDefinition.diffClassLists(new ArrayList<ClassDefinition>(previousTypes), new ArrayList<ClassDefinition>(types), M2ModelDiff.TYPE_TYPE));
+                    M2ModelDiffs.addAll(M2ClassDefinition.diffClassLists(
+                            new ArrayList<ClassDefinition>(previousTypes),
+                            new ArrayList<ClassDefinition>(types),
+                            M2ModelDiff.TYPE_TYPE));
                 }
                 else
                 {
                     for (TypeDefinition type : types)
                     {
-                        M2ModelDiffs.add(new M2ModelDiff(type.getName(), M2ModelDiff.TYPE_TYPE, M2ModelDiff.DIFF_CREATED));
+                        M2ModelDiffs
+                                .add(new M2ModelDiff(type.getName(),
+                                        M2ModelDiff.TYPE_TYPE,
+                                        M2ModelDiff.DIFF_CREATED));
                     }
                 }
-                
+
                 if (previousAspects.size() != 0)
                 {
-                    M2ModelDiffs.addAll(M2ClassDefinition.diffClassLists(new ArrayList<ClassDefinition>(previousAspects), new ArrayList<ClassDefinition>(aspects), M2ModelDiff.TYPE_ASPECT));
+                    M2ModelDiffs.addAll(M2ClassDefinition.diffClassLists(
+                            new ArrayList<ClassDefinition>(previousAspects),
+                            new ArrayList<ClassDefinition>(aspects),
+                            M2ModelDiff.TYPE_ASPECT));
                 }
                 else
                 {
                     for (AspectDefinition aspect : aspects)
                     {
-                        M2ModelDiffs.add(new M2ModelDiff(aspect.getName(), M2ModelDiff.TYPE_ASPECT, M2ModelDiff.DIFF_CREATED));
+                        M2ModelDiffs.add(new M2ModelDiff(aspect.getName(),
+                                M2ModelDiff.TYPE_ASPECT,
+                                M2ModelDiff.DIFF_CREATED));
                     }
                 }
-                
+
                 if (previousConDefs.size() != 0)
                 {
-                    M2ModelDiffs.addAll(M2ConstraintDefinition.diffConstraintLists(new ArrayList<ConstraintDefinition>(previousConDefs), new ArrayList<ConstraintDefinition>(conDefs)));
+                    M2ModelDiffs
+                            .addAll(M2ConstraintDefinition
+                                    .diffConstraintLists(
+                                            new ArrayList<ConstraintDefinition>(
+                                                    previousConDefs),
+                                            new ArrayList<ConstraintDefinition>(
+                                                    conDefs)));
                 }
                 else
                 {
                     for (ConstraintDefinition conDef : conDefs)
                     {
-                        M2ModelDiffs.add(new M2ModelDiff(conDef.getName(), M2ModelDiff.TYPE_CONSTRAINT, M2ModelDiff.DIFF_CREATED));
+                        M2ModelDiffs.add(new M2ModelDiff(conDef.getName(),
+                                M2ModelDiff.TYPE_CONSTRAINT,
+                                M2ModelDiff.DIFF_CREATED));
                     }
                 }
             }
@@ -911,23 +1038,25 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
                 // new model
                 Collection<TypeDefinition> types = model.getTypes();
                 Collection<AspectDefinition> aspects = model.getAspects();
-                
+
                 for (TypeDefinition type : types)
                 {
-                    M2ModelDiffs.add(new M2ModelDiff(type.getName(), M2ModelDiff.TYPE_TYPE, M2ModelDiff.DIFF_CREATED));
+                    M2ModelDiffs.add(new M2ModelDiff(type.getName(),
+                            M2ModelDiff.TYPE_TYPE, M2ModelDiff.DIFF_CREATED));
                 }
-                           
+
                 for (AspectDefinition aspect : aspects)
                 {
-                    M2ModelDiffs.add(new M2ModelDiff(aspect.getName(), M2ModelDiff.TYPE_ASPECT, M2ModelDiff.DIFF_CREATED));
-                }  
+                    M2ModelDiffs.add(new M2ModelDiff(aspect.getName(),
+                            M2ModelDiff.TYPE_ASPECT, M2ModelDiff.DIFF_CREATED));
+                }
             }
-            else 
+            else
             {
                 // nothing to diff
             }
         }
-        
+
         return M2ModelDiffs;
     }
 
@@ -949,8 +1078,12 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         return getTenantDictionaryRegistry().getPrefixesCache().get(prefix);
     }
 
-    /* (non-Javadoc)
-     * @see org.alfresco.repo.ref.NamespacePrefixResolver#getPrefixes(java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.alfresco.repo.ref.NamespacePrefixResolver#getPrefixes(java.lang.String
+     * )
      */
     @Override
     public Collection<String> getPrefixes(String URI)
@@ -964,50 +1097,52 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO, Applicati
         getTenantDictionaryRegistry().addURI(uri);
     }
 
-	@Override
-	public Collection<String> getPrefixes()
-	{
-		return Collections.unmodifiableCollection(getTenantDictionaryRegistry().getPrefixesCache().keySet());
-	}
+    @Override
+    public Collection<String> getPrefixes()
+    {
+        return Collections.unmodifiableCollection(getTenantDictionaryRegistry()
+                .getPrefixesCache().keySet());
+    }
 
-	@Override
-	public Collection<String> getURIs()
-	{
-		return Collections.unmodifiableCollection(getTenantDictionaryRegistry().getUrisCache());
-	}
+    @Override
+    public Collection<String> getURIs()
+    {
+        return Collections.unmodifiableCollection(getTenantDictionaryRegistry()
+                .getUrisCache());
+    }
 
-	@Override
-	public void removeURI(String uri)
-	{
+    @Override
+    public void removeURI(String uri)
+    {
         getTenantDictionaryRegistry().removeURI(uri);
-	}
+    }
 
-	@Override
-	public void addPrefix(String prefix, String uri)
-	{
+    @Override
+    public void addPrefix(String prefix, String uri)
+    {
         getTenantDictionaryRegistry().addPrefix(prefix, uri);
-	}
+    }
 
-	@Override
-	public void removePrefix(String prefix)
-	{
+    @Override
+    public void removePrefix(String prefix)
+    {
         getTenantDictionaryRegistry().removePrefix(prefix);
-	}
+    }
 
-	private AtomicBoolean contextRefreshed = new AtomicBoolean(false);
+    private AtomicBoolean contextRefreshed = new AtomicBoolean(false);
 
-	@Override
-	public boolean isContextRefreshed()
-	{
-		return contextRefreshed.get();
-	}
+    @Override
+    public boolean isContextRefreshed()
+    {
+        return contextRefreshed.get();
+    }
 
-	@Override
-	public void onApplicationEvent(ApplicationEvent event)
-	{
-		if(event instanceof ContextRefreshedEvent)
-		{
-			contextRefreshed.set(true);
-		}
-	}
+    @Override
+    public void onApplicationEvent(ApplicationEvent event)
+    {
+        if (event instanceof ContextRefreshedEvent)
+        {
+            contextRefreshed.set(true);
+        }
+    }
 }
