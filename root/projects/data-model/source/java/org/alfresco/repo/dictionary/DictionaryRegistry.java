@@ -52,4 +52,6 @@ public interface DictionaryRegistry
     void removePrefix(String prefix);
     Collection<QName> getTypes(boolean includeInherited);
     Collection<QName> getAssociations(boolean includeInherited);
-    Collection<QName> getAspects(boolean includeInherited);}
+    Collection<QName> getAspects(boolean includeInherited);
+    String getNamespaceURI(String prefix);
+}

@@ -684,4 +684,17 @@ public abstract class AbstractDictionaryRegistry implements DictionaryRegistry
     	CompiledModel model = compiledModels.get(modelName);
     	return (model != null);
     }
+
+    @Override
+    public String getNamespaceURI(String prefix)
+    {
+    	String namespaceURI = null;
+
+    	if(prefix != null)
+    	{
+    		namespaceURI = getPrefixesCache().get(prefix);
+    	}
+
+    	return namespaceURI;
+    }
 }

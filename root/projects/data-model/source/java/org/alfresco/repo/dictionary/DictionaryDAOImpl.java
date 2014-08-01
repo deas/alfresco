@@ -1075,7 +1075,7 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO,
     @Override
     public String getNamespaceURI(String prefix)
     {
-        return getTenantDictionaryRegistry().getPrefixesCache().get(prefix);
+        return getTenantDictionaryRegistry().getNamespaceURI(prefix);
     }
 
     /*
