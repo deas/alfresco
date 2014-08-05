@@ -296,7 +296,7 @@ Alfresco.util.onlineEditUrl = function(vtiServer, location)
 Alfresco.util.onlineEditUrlAos = function(aos, record)
 {
    // sanity checks
-   if (!Alfresco.util.isValueSet(aos) || !Alfresco.util.isValueSet(baseUrl) || !Alfresco.util.isValueSet(record.webdavUrl) || (record.webdavUrl.substring(0,8) != '/webdav/') )
+   if (!Alfresco.util.isValueSet(aos) || !Alfresco.util.isValueSet(aos.baseUrl) || !Alfresco.util.isValueSet(record.webdavUrl) || (record.webdavUrl.substring(0,8) != '/webdav/') )
    {
       throw new Error("Alfresco.util.onlineEditUrlAos: Sanity checks failed.");
    }
