@@ -1006,6 +1006,7 @@
                <permission allow="true">Write</permission>
             </permissions>
             <evaluator>evaluator.doclib.action.isAosOnlineEditAvailable</evaluator>
+            <evaluator>evaluator.doclib.action.notEditBrowser</evaluator>
             <evaluator negate="true">evaluator.doclib.action.isLockedForAos</evaluator>
             <evaluator>evaluator.doclib.action.isMimetypeEditableAos</evaluator>
          </action>
