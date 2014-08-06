@@ -320,10 +320,10 @@ public class CoreTracker implements Tracker
     @Override
     public void updateIndex()
     {
-        TrackerState state = this.infoSrv.getTrackerState();
-
+        TrackerState state;
         synchronized (this) 
         {
+            state = this.infoSrv.getTrackerState();
             if (state.isRunning())
             {
                 log.info("... update for " + coreName + " is already running");
@@ -332,7 +332,17 @@ public class CoreTracker implements Tracker
             else
             {
                 log.info("... updating " + coreName);
-                state.setRunning(true);
+                try
+                {
+                    state = this.infoSrv.getTrackerInitialState(); 
+                    state.setRunning(true);
+                }
+                catch (IOException e)
+                {
+                    log.error("Failed to get tracker initial state", e);
+                    return;
+                }
+               
             }
         }
         try
@@ -397,8 +407,11 @@ public class CoreTracker implements Tracker
         }
         finally
         {
-            state.setRunning(false);
-            state.setCheck(false);
+            if(state != null)
+            {
+               state.setRunning(false);
+               state.setCheck(false);
+            }
         }
     }
 
@@ -876,7 +889,7 @@ public class CoreTracker implements Tracker
             return;
         }
 
-        TrackerState state = this.infoSrv.getTrackerInitialState();
+        TrackerState state = this.infoSrv.getTrackerState();
 
         // Check we are tracking the correct repository
         // Check the first TX time
