@@ -737,10 +737,10 @@
             var parentNode = this.widgets.treeview.getNodeByProperty("nodeRef", obj.parentNodeRef);
             if (parentNode !== null)
             {
-               if (!parentNode.hasChildren())
+               if (!parentNode.hasChildren() && parentNode.isLeaf === true)
                {
-                  // Now parent has a child - it is a created folder
-                  parentNode.isLeaf = false;
+                  // load children dynamically on render (ACE-2341, MNT-11763)
+                  parentNode.dynamicLoadComplete = false;
                }
                this._sortNodeChildren(parentNode);
             }
