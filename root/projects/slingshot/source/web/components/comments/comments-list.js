@@ -346,7 +346,7 @@
          }
          var commentForm = new Alfresco.forms.Form(formId);
          this.widgets.commentForm = commentForm;
-         commentForm.addValidation(rowId + "-content", Alfresco.forms.validation.mandatory, null);
+         commentForm.addValidation(rowId + "-content", this.contentValidation, editor);
          commentForm.setSubmitElements(submitButton);
          commentForm.setAjaxSubmitMethod(editMode ? Alfresco.util.Ajax.PUT : Alfresco.util.Ajax.POST);
          commentForm.setAJAXSubmit(true,
@@ -407,6 +407,18 @@
             form: commentForm,
             editor: editor
          }
+      },
+	  
+      /**
+       *  Content validation
+       *
+       * @method contentValidation
+       */
+      contentValidation: function CommentsList_contentValidation(field, editor, event, form)
+      {
+         // Make sure the editors content is saved down to the form
+         editor.save();
+         return Alfresco.forms.validation.mandatory(field, null, event, form);
       },
 
       /**
