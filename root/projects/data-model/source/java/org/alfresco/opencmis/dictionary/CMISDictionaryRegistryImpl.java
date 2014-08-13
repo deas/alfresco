@@ -445,7 +445,11 @@ public class CMISDictionaryRegistryImpl implements CMISDictionaryRegistry
         TypeDefinitionWrapper existingTypeDef = typeDefsByTypeId.get(typeDef.getTypeId());
         if (existingTypeDef != null)
         {
-            throw new AlfrescoRuntimeException("Type " + typeDef.getTypeId() + " already registered");
+//            throw new AlfrescoRuntimeException("Type " + typeDef.getTypeId() + " already registered");
+            if(logger.isWarnEnabled())
+            {
+                logger.warn("Type " + typeDef.getTypeId() + " already registered");
+            }
         }
 
         typeDefsByTypeId.put(typeDef.getTypeId(), typeDef);
