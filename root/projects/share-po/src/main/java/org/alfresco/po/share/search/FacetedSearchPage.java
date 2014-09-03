@@ -2,9 +2,10 @@ package org.alfresco.po.share.search;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.WebDroneUtil;
@@ -14,10 +15,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
-import com.gargoylesoftware.htmlunit.javascript.TimeoutError;
 
 /**
  * The Class FacetedSearchPage.
@@ -25,7 +26,7 @@ import com.gargoylesoftware.htmlunit.javascript.TimeoutError;
  * @author Richard Smith
  */
 @SuppressWarnings("unchecked")
-public class FacetedSearchPage extends SharePage
+public class FacetedSearchPage extends SharePage implements SearchResultPage
 {
 
     /** Constants */
@@ -41,8 +42,8 @@ public class FacetedSearchPage extends SharePage
     private List<FacetedSearchFacetGroup> facetGroups;
     private FacetedSearchSort sort;
     private FacetedSearchView view;
-    private List<FacetedSearchResult> results;
-    
+    private List<SearchResult> results;
+
     /**
      * Instantiates a new faceted search page.
      * 
@@ -162,7 +163,7 @@ public class FacetedSearchPage extends SharePage
     {
         return sort;
     }
-    
+
     /**
      * Gets the view.
      * 
@@ -178,7 +179,7 @@ public class FacetedSearchPage extends SharePage
      * 
      * @return List<{@link FacetedSearchResult}>
      */
-    public List<FacetedSearchResult> getResults()
+    public List<SearchResult> getResults()
     {
         return this.results;
     }
@@ -189,11 +190,11 @@ public class FacetedSearchPage extends SharePage
      * @param title
      * @return the result
      */
-	public FacetedSearchResult getResultByTitle(String title) 
+	public SearchResult getResultByTitle(String title) 
 	{
 		try
 		{
-			for (FacetedSearchResult facetedSearchResult : this.getResults())
+			for (SearchResult facetedSearchResult : getResults())
 			{
 				if (facetedSearchResult.getTitle().equals(title)) 
 				{
@@ -201,7 +202,7 @@ public class FacetedSearchPage extends SharePage
 				}
 			}
 		} 
-		catch (Exception e)
+		catch (TimeoutException e)
 		{
 			logger.error("Unable to get the title : ", e);
 		}
@@ -216,10 +217,10 @@ public class FacetedSearchPage extends SharePage
      * @param name
      * @return the result
      */
-    public FacetedSearchResult getResultByName(String name)
+    public SearchResult getResultByName(String name)
     {
         try {
-			for(FacetedSearchResult facetedSearchResult : this.getResults())
+			for(SearchResult facetedSearchResult : getResults())
 			{
 			    if(facetedSearchResult.getName().equals(name))
 			    {
@@ -300,7 +301,7 @@ public class FacetedSearchPage extends SharePage
 
         // Initialise the faceted search results
         List<WebElement> results = drone.findAll(RESULT);
-        this.results = new ArrayList<FacetedSearchResult>();
+        this.results = new ArrayList<SearchResult>();
         for (WebElement result : results)
         {
             this.results.add(new FacetedSearchResult(drone, result));
@@ -342,7 +343,7 @@ public class FacetedSearchPage extends SharePage
 			    configure_search.click();        
 			}
 			return new FacetedSearchConfigPage(drone);
-		} catch (TimeoutError e)
+		} catch (TimeoutException e)
         {
             logger.error("Unable to find the link : " + e.getMessage());
         }
@@ -375,5 +376,53 @@ public class FacetedSearchPage extends SharePage
             }
         }
         return false;
+    }
+    
+    @Override
+    public boolean hasResults()
+    {
+        return !getResults().isEmpty();
+    }
+
+    @Override
+    public HtmlPage selectItem(String name)
+    {
+        if (name == null || name.isEmpty())
+        {
+            throw new IllegalArgumentException("Search row name is required");
+        }
+        try
+        {
+            String selector = String.format("//span[@class = 'value'][contains(., '%s')]", name);
+            drone.find(By.xpath(selector)).click();
+        }
+        catch (NoSuchElementException e)
+        {
+            throw new PageException(String.format("Search result %s item not found", name), e);
+        }
+        
+        return FactorySharePage.getUnknownPage(drone);
+    }
+
+    @Override
+    public HtmlPage selectItem(int number)
+    {
+        if (number < 0)
+        {
+            throw new IllegalArgumentException("Value can not be negative");
+        }
+        number += 1;
+        try
+        {
+            String selector = String.format("tr.alfresco-search-AlfSearchResult:nth-of-type(%d) a", number);
+            WebElement row = drone.find(By.cssSelector(selector));
+            row.click();
+        }
+        catch (NoSuchElementException e)
+        {
+            throw new PageException(String.format("Search result %d item not found", number), e);
+        }
+
+        return FactorySharePage.getUnknownPage(drone);
     }
 }

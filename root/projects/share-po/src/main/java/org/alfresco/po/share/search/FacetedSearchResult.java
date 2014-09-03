@@ -7,7 +7,7 @@ import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-public class FacetedSearchResult
+public class FacetedSearchResult implements SearchResult
 {
     /** Constants. */
     private static final By NAME = By.cssSelector("div.nameAndTitleCell span.alfresco-renderers-Property:first-of-type span.inner a");
