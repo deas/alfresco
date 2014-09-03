@@ -117,7 +117,7 @@ define({
     * @instance
     * @type [string]
     */
-   localOnlyFunctionalSuites: ['tests/alfresco/CodeCoverageBalancer'],
+   localOnlyFunctionalSuites: [],//['tests/alfresco/CodeCoverageBalancer'],
 
    /**
     * This is the full array of functional test suites for local tests

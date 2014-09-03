@@ -49,7 +49,8 @@ define(["./config/Suites"],
 	      // Note: the config package is specifically for local (loc)
          packages: [
             { name: 'alfresco', location: './tests/alfresco' },
-            { name: 'config', location: './tests/config/loc' }
+            { name: 'config', location: './tests/config/loc' },
+            { name: 'reporters', location: './tests/reporters'}
          ]
       },
 
@@ -64,8 +65,9 @@ define(["./config/Suites"],
    
       // An array of code coverage reporters to invoke
       reporters: [
-         'console',
-         'runner'
+         // 'console',
+         // 'runner',
+         'reporters/TestSummary'
       ]
 
    };

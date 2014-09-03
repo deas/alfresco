@@ -25,7 +25,7 @@ define(["./config/Suites"],
       // OnDemand. Options that will be permutated are browserName, version, platform, and platformVersion; any other
       // capabilities options specified for an environment will be copied as-is
       environments: [
-         { browserName: 'chrome' },
+         // { browserName: 'chrome' },
          { browserName: 'firefox' }
 //         ,{ browserName: 'phantomjs' }
       ],
@@ -49,7 +49,8 @@ define(["./config/Suites"],
          // Note: the config package is specifically for virtual machine (vm)
          packages: [
             { name: 'alfresco', location: './tests/alfresco' },
-            { name: 'config', location: './tests/config/vm' }
+            { name: 'config', location: './tests/config/vm' },
+            { name: 'reporters', location: './tests/reporters'}
          ]
       },
 
@@ -64,8 +65,9 @@ define(["./config/Suites"],
    
       // An array of code coverage reporters to invoke
       reporters: [
-         'console',
-         'runner'
+         // 'console',
+         // 'runner',
+         'reporters/TestSummary'
       ]
 
    };
