@@ -24,7 +24,6 @@ import java.util.List;
 import org.alfresco.po.share.ShareUtil.RequiredAlfrescoVersion;
 import org.alfresco.po.share.admin.AdminConsolePage;
 import org.alfresco.po.share.adminconsole.CategoryManagerPage;
-import org.alfresco.po.share.adminconsole.ChannelManagerPage;
 import org.alfresco.po.share.adminconsole.NodeBrowserPage;
 import org.alfresco.po.share.adminconsole.TagManagerPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
@@ -87,7 +86,7 @@ public class Navigation extends SharePage
     public Navigation(WebDrone drone)
     {
         super(drone);
-        userNameDropDown = drone.getElement("user.dropdown");
+        userNameDropDown = drone.getElement("user.dropdown");       
       
     }
 
@@ -506,31 +505,7 @@ public class Navigation extends SharePage
         List<org.openqa.selenium.WebElement> elements = drone.findAll(By.cssSelector(SITE_ADMIN_MANAGE_SITE_LINK_SELECTOR));
         return (elements.size() != 0);
     }
-
-    /**
-     * Select Channel Manager link as Admin.
-     *
-     * @return the html page
-     */
-
-    public ChannelManagerPage getChannelManagerPage()
-    {
-            if (alfrescoVersion.isCloud())
-            {
-                throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
-            }
-            // TODO To be implemented by using UI once JIRA: https://issues.alfresco.com/jira/browse/ALF-18909 is resolved
-            String usersPageURL = "/page/console/admin-console/channel-admin";
-            String currentUrl = drone.getCurrentUrl();
-            if (currentUrl != null)
-            {
-                String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
-                drone.navigateTo(url);
-            }
-            return new ChannelManagerPage(drone).render();
-
-    }
-
+    
     /**
      * Select manage sites link as Admin.
      *

@@ -1,7 +1,6 @@
 package org.alfresco.po.share.site.document;
 
 import org.alfresco.po.share.UserProfilePage;
-import org.alfresco.po.share.adminconsole.Channel;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
@@ -764,15 +763,7 @@ public interface FileDirectoryInfo
      *
      * @return
      */
-    boolean isFileShared();
-
-    /**
-     * Select the link publish from
-     * the actions drop down.
-     *
-     * @return
-     */
-    PublishPage selectPublish();
+    boolean isFileShared();    
 
     /**
      * Check if the save link is visible.
@@ -797,21 +788,7 @@ public interface FileDirectoryInfo
      * @return {@link DocumentLibraryPage}
      */
     DocumentDetailsPage selectViewOriginalDocument();
-
-    /**
-     * Checks if the message about publishing displayed
-     *
-     * @param fileName
-     * @param channel
-     * @return
-     */
-    boolean isPublishPopupDisplayed(String fileName, Channel channel);
-
-    /**
-     * Close PopUp message about content publishing
-     */
-    public void closePublishPopup();
-
+      
     /**
      * Return the URL of the thumbnail
      * @return

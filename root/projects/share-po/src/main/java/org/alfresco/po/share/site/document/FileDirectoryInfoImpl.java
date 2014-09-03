@@ -14,7 +14,6 @@ package org.alfresco.po.share.site.document;
 
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.FactorySharePage;
-import org.alfresco.po.share.adminconsole.Channel;
 import org.alfresco.po.share.exception.AlfrescoVersionException;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
@@ -1512,26 +1511,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             throw new PageOperationException("Manage Rules link is not displayed for selected data row", te);
         }
-    }
-
-    /**
-     * (non-Javadoc)
-     *
-     * @see org.alfresco.po.share.site.document.FileDirectoryInfo#selectPublish()
-     */
-    @Override
-    public PublishPage selectPublish()
-    {
-        try
-        {
-            findAndWait(PUBLISH_LINK).click();
-            return new PublishPage(drone).render();
-        }
-        catch(TimeoutException te)
-        {
-            throw new PageOperationException("Publish link is not displayed for selected data row", te);
-        }
-    }
+    }   
 
     /*
      * (non-Javadoc)
@@ -2695,49 +2675,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
         return new DocumentDetailsPage(drone);
     }
-
-    /**
-     * (non-Javadoc)
-     *
-     * @see FileDirectoryInfo#isPublishPopupDisplayed(String, org.alfresco.po.share.adminconsole.Channel)
-     */
-    @Override
-    public boolean isPublishPopupDisplayed(String fileName, Channel channel)
-    {
-        try
-        {
-            WebElement popup = drone.findAndWait(By.xpath("//div[@class='publishConfirm']/div"));
-            String newChannelName = String.format("New %s channel", channel.getChannelName());
-            String publishMessage = String.format("%s is queued for publishing to %s", fileName, newChannelName);
-            return popup.isDisplayed() && popup.getText().contains(publishMessage);
-        }
-        catch (Exception ex)
-        {
-            return false;
-        }
-    }
-
-    /**
-     * (non-Javadoc)
-     *
-     * @see FileDirectoryInfo#closePublishPopup()
-     */
-    @Override
-    public void closePublishPopup()
-    {
-        try
-        {
-            WebElement closePopupButton = drone.findAndWait(By.xpath("//div[@class='balloon']/div[@class='closeButton']"));
-            closePopupButton.click();
-        }
-        catch (Exception e)
-        {
-           if(logger.isDebugEnabled()){
-               logger.debug("Publish Pop-up didn't closed",e);
-           }
-        }
-    }
-
+    
     /**
      * {@inheritDoc}
      */

@@ -16,7 +16,6 @@ package org.alfresco.po.share.site.document;
 
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.ShareDialogue;
-import org.alfresco.po.share.adminconsole.Channel;
 import org.alfresco.po.share.preview.PdfJsPlugin;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.user.CloudSignInPage;
@@ -1181,34 +1180,7 @@ public class DocumentDetailsPage extends DetailsPage
         return new ChangeTypePage(drone);
     }
 
-    /**
-     * Selects the Publish link from Document actions.
-     *
-     * @return {@link PublishPage} response
-     */
-    public PublishPage selectPublish()
-    {
-        if (alfrescoVersion.isCloud())
-        {
-            throw new UnsupportedOperationException("Operation available only for Enterprise version");
-        }
-
-        By publishLink;
-        switch (alfrescoVersion)
-        {
-            case Enterprise41:
-                publishLink = By.cssSelector("div.document-publish a");
-                break;
-
-            default:
-                publishLink = By.cssSelector("div#onActionPublish a");
-                break;
-        }
-        drone.findAndWait(publishLink).click();
-
-        return new PublishPage(drone);
-    }
-
+   
     /**
      * Method to download the document to the specified version.
      *
@@ -1220,88 +1192,7 @@ public class DocumentDetailsPage extends DetailsPage
         downloadButton.click();
         // Assumes driver capability settings to save file in a specific location when
     }
-
-    /**
-     * Gets publishing version value from the details page
-     * if document not have publishing history set version as 1.0
-     *
-     * @return String value of publishing version
-     */
-    public String getPublishingVersion()
-    {
-        try
-        {
-            WebElement publishingVersionSpan = drone.findFirstDisplayedElement(By
-                    .xpath("//div[contains(@class,'publishing-panel-left')]/span[@class='document-version']"));
-            return publishingVersionSpan.getText();
-        }
-        catch (NoSuchElementException ex)
-        {
-            return "1.0";
-        }
-    }
-
-    /**
-     * Gets publishing info such as document name, channel it was published to and the time it was published
-     * if document not have publishing history set version as 1.0
-     *
-     * @param versionNumber version number
-     * @return String value of publishing version
-     */
-    public HashMap<String, String> getPublishingInfo(String versionNumber)
-    {
-        HashMap<String, String> map = new HashMap<>();
-
-        try
-        {
-            WebElement placeHolder = drone
-                    .findAndWait(By.xpath(String
-                            .format("//div[contains(@class,'publishing-panel-left')]/span[@class='document-version' and text()='%s']/parent::div/following-sibling::div[contains(@class, 'publishing-panel-right')]",
-                                    versionNumber)));
-            WebElement documentNameControl = placeHolder.findElement(By.xpath("./h3"));
-            map.put("documentName", documentNameControl.getText());
-            WebElement channelNameControl = placeHolder.findElement(By.xpath("./div[@class='channel-details']/span[@class='channel-name']"));
-            map.put("channelName", channelNameControl.getText());
-            WebElement statusControl = placeHolder.findElement(By.xpath("./div[@class='status-details']/span[@class='status']"));
-            map.put("status", statusControl.getText());
-            WebElement actionAnchor = placeHolder.findElement(By.xpath("./span[@class='actions']/a[contains(@class, 'publish')]"));
-            map.put("action", actionAnchor.getAttribute("title"));
-
-        }
-        catch (NoSuchElementException ex)
-        {
-            return null;
-        }
-        catch (TimeoutException tEx)
-        {
-            return null;
-        }
-
-        return map;
-    }
-
-    /**
-     * Selects the Publish link from Document actions.
-     *
-     * @return {@link PublishPage} response
-     */
-    public ConfirmUnpublishPage selectUnpublish(String versionNumber)
-    {
-        if (alfrescoVersion.isCloud())
-        {
-            throw new UnsupportedOperationException("Operation available only for Enterprise version");
-        }
-
-        WebElement placeHolder = drone
-                .findAndWait(By.xpath(String
-                        .format("//div[contains(@class,'publishing-panel-left')]/span[@class='document-version' and text()='%s']/parent::div/following-sibling::div[contains(@class, 'publishing-panel-right')]",
-                                versionNumber)));
-        WebElement actionAnchor = placeHolder.findElement(By.xpath("./span[@class='actions']/a[contains(@class, 'publish')]"));
-        actionAnchor.click();
-
-        return new ConfirmUnpublishPage(drone);
-    }
-
+            
     /**
      * Click on quick share link.
      *
@@ -1492,28 +1383,7 @@ public class DocumentDetailsPage extends DetailsPage
         return actionNames;
     }
 
-    /**
-     * Checks if the message about publishing displayed
-     *
-     * @param fileName
-     * @param channel
-     * @return
-     */
-    public boolean isPublishPopupDisplayed(String fileName, Channel channel)
-    {
-        try
-        {
-            WebElement popup = drone.findAndWait(By.xpath("//div[@class='publishConfirm']/div"));
-            String newChannelName = String.format("New %s channel", channel.getChannelName());
-            String publishMessage = String.format("%s is queued for publishing to %s", fileName, newChannelName);
-            return popup.isDisplayed() && popup.getText().contains(publishMessage);
-        }
-        catch (Exception ex)
-        {
-            return false;
-        }
-    }
-    /**
+        /**
      * Verify the Version histiry panel is present in the page.
      * 
      * @return
@@ -1531,27 +1401,7 @@ public class DocumentDetailsPage extends DetailsPage
 
     }
 
-    /**
-     * Close PopUp message about content publishing
-     */
-    public void closePublishPopup()
-    {
-        try
-        {
-
-            WebElement closePopupButton = drone.findAndWait(By.xpath("//div[@class='balloon']/div[@class='closeButton']"));
-            closePopupButton.click();
-            waitUntilAlert();
-
-        }
-        catch (Exception e)
-        {
-            if (logger.isDebugEnabled())
-            {
-                logger.debug("Publish Pop-up didn't closed", e);
-            }
-        }
-    }
+    
 
     public boolean isStartWorkflowIconDisplayed()
     {
@@ -1563,7 +1413,7 @@ public class DocumentDetailsPage extends DetailsPage
         return isEditIconPresent(VERSION_HISTORY_PANEL);
     }
 
- /**
+   /**
      * Click on Start Workflow icon in Workflow panel at Details Page
      * 
      * @return StartWorkFlowPage

@@ -17,7 +17,6 @@ package org.alfresco.po.share;
 import org.alfresco.po.share.admin.AdminConsolePage;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.adminconsole.CategoryManagerPage;
-import org.alfresco.po.share.adminconsole.ChannelManagerPage;
 import org.alfresco.po.share.adminconsole.NodeBrowserPage;
 import org.alfresco.po.share.adminconsole.TagManagerPage;
 import org.alfresco.po.share.bulkimport.BulkImportPage;
@@ -144,8 +143,7 @@ public class FactorySharePage implements PageFactory
         pages.put("search", SiteResultsPage.class);
         pages.put("start-workflow", StartWorkFlowPage.class);
         pages.put("user-cloud-auth", CloudSyncPage.class);
-        pages.put("node-browser", NodeBrowserPage.class);
-        pages.put("channel-admin", ChannelManagerPage.class);
+        pages.put("node-browser", NodeBrowserPage.class);        
         pages.put("category-manager", CategoryManagerPage.class);
         pages.put("admin-console", AdminConsolePage.class);
         pages.put("manage-sites", ManageSitesPage.class);
