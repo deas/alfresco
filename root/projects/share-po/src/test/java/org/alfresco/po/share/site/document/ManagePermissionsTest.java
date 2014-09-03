@@ -205,7 +205,7 @@ public class ManagePermissionsTest extends AbstractTest
     {
         String userName = "EVERYONE";
         AlfrescoVersion version = drone.getProperties().getVersion();
-        if (version.isCloud())
+        if(version.isCloud())
         {
             userName = "INTERNAL_USERS";
         }
@@ -245,7 +245,7 @@ public class ManagePermissionsTest extends AbstractTest
     {
         String userName = "Administrator";
         AlfrescoVersion version = drone.getProperties().getVersion();
-        if (version.isCloud())
+        if(version.isCloud())
         {
             userName = "Auto Account";
         }

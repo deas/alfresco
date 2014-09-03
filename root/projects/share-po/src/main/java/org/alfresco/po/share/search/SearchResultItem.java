@@ -35,7 +35,7 @@ import org.openqa.selenium.WebElement;
 /**
  * Holds the information of a search result item.
  * When completing a search the resulting page yields results
- * which each indivdual row is represented by SearchResultItem class.
+ * which each individual row is represented by SearchResultItem class.
  * 
  * @author Michael Suzuki
  * @since 1.3
@@ -87,16 +87,6 @@ public class SearchResultItem implements SearchResult
         return title;
     }
 
-    /**
-     * Select the link of the search result item.
-     * 
-     * @return true if link found and selected
-     */
-    public void click()
-    {
-        WebElement link = webElement.findElement(By.cssSelector(ITEM_NAME_CSS_HOLDER));
-        link.click();
-    }
 
     /**
      * Method to Click on Download link of result item present on search results.
@@ -271,4 +261,5 @@ public class SearchResultItem implements SearchResult
     {
         return getTitle();
     }
+    
 }

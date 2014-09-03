@@ -53,15 +53,6 @@ public class SiteContentBreakdownDashletTest extends AbstractSiteDashletTest
     private static final String DOCX_TYPE = "Microsoft Word";
     private static final String HTML_TYPE = "HTML";
     private static final String PDF_TYPE = "Adobe PDF Document";
-    private static final String EMAIL_TYPE =  "EMail";
-    private static final String STYLE_SHEET_TYPE =  "Style Sheet";
-    private static final String OPEN_DOCUMENT_TEXT_TYPE =  "OpenDocument Text";
-    private static final String MICROSOFT_EXCEL_TYPE =  "Microsoft Excel";
-    private static final String MICROSOFT_OUTLOOK_TYPE =  "Microsoft Outlook";
-    private static final String XML_TYPE =  "XML";
-    private static final String VIDEO_TYPE =  "MPEG4 Video";
-    private static final String RICH_TEXT_TYPE =  "Rich Text Format";
-    
 
     private static int numberOfTxtFiles = 5;
     private static int numberOfDocxFiles = 4;
@@ -69,7 +60,7 @@ public class SiteContentBreakdownDashletTest extends AbstractSiteDashletTest
     private static int numberOfJpgFiles = 3;
     private static int numberOfPdfFiles = 9;
 
-    private DashBoardPage dashBoard;
+    DashBoardPage dashBoard;
 
     @BeforeTest
     public void prepare()

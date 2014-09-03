@@ -227,7 +227,7 @@ public class SiteNavigation extends AbstractSiteNavigation
     private WebElement extractLink(final String title)
     {
         List<WebElement> list;
-        if (getAlfrescoVersion().isCloud())
+        if (alfrescoVersion.isCloud())
         {
             list = findElements(By.cssSelector("span"));
         }
@@ -323,7 +323,7 @@ public class SiteNavigation extends AbstractSiteNavigation
             // This code needs to be removed when this cloud issue is fixed as
             // part of release-31
             // https://issues.alfresco.com/jira/browse/CLOUD-2092
-            if (!getAlfrescoVersion().isCloud() && !AlfrescoVersion.MyAlfresco.equals(getAlfrescoVersion()))
+            if (!alfrescoVersion.isCloud())
             {
                 return isLinkActive(By.cssSelector(documentLibLink));
             }

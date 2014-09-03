@@ -7,7 +7,7 @@ import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-public class FacetedSearchResult
+public class FacetedSearchResult implements SearchResult
 {
     /** Constants. */
     private static final By NAME = By.cssSelector("tr td.nameAndTitleCell span.alfresco-renderers-Property:first-of-type span.inner a");
@@ -27,6 +27,7 @@ public class FacetedSearchResult
     private WebElement siteLink;
     private String site;
     private ActionsSet actions;
+    private final boolean isFolder;
 
     /**
      * Instantiates a new faceted search result - some items may be null.
@@ -57,7 +58,23 @@ public class FacetedSearchResult
             siteLink = result.findElement(SITE);
             site = siteLink.getText();
         }
+        isFolder = checkFolder(result);
+
         actions = new ActionsSet(drone, result.findElement(ACTIONS));
+    }
+    
+    private boolean checkFolder(WebElement row)
+    {
+        try
+        {
+            String source = row.findElement(By.tagName("img")).getAttribute("src");
+            if(source != null && source.endsWith("folder.png"))
+            {
+                return true;
+            }
+        }
+        catch(Exception e){}
+        return false;
     }
 
     /**
@@ -181,5 +198,11 @@ public class FacetedSearchResult
     public ActionsSet getActions()
     {
         return actions;
+    }
+
+    @Override
+    public boolean isFolder()
+    {
+        return isFolder;
     }
 }

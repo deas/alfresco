@@ -375,9 +375,9 @@ public class NewUserPage extends SharePage
      */
     private boolean addGroup(String groupName)
     {
-        if (alfrescoVersion.isCloud()) 
-        { 
-            throw new UnsupportedOperationException("This function is not for CLOUD!!"); 
+        if (alfrescoVersion.isCloud())
+        {
+            throw new UnsupportedOperationException("This function is not for CLOUD!!");
         }
         if (StringUtils.isEmpty(groupName))
         {

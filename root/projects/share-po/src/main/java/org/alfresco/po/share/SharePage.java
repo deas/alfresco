@@ -14,21 +14,32 @@
  */
 package org.alfresco.po.share;
 
-import org.alfresco.po.share.search.SearchBox;
-import org.alfresco.webdrone.*;
-import org.alfresco.webdrone.exception.PageException;
-import org.alfresco.webdrone.exception.PageOperationException;
-import org.alfresco.webdrone.exception.PageRenderTimeException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.Select;
-
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import org.alfresco.po.share.search.SearchBox;
+import org.alfresco.webdrone.ElementState;
+import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.webdrone.Page;
+import org.alfresco.webdrone.RenderElement;
+import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.RenderWebElement;
+import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.exception.PageOperationException;
+import org.alfresco.webdrone.exception.PageRenderTimeException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 /**
  * Abstract of an Alfresco Share HTML page.
@@ -135,15 +146,15 @@ public abstract class SharePage extends Page
         String selector;
         switch (alfrescoVersion)
         {
-        case Enterprise41:
-        	selector = "h1.theme-color-3";
-            break;
-        case Cloud:
-            selector = "div.alf-menu-title span.alf-menu-title-text";
-            break;
-        default:
-        	selector = "a.alf-menu-title-text";
-            break;
+            case Enterprise41:
+                selector = "h1.theme-color-3";
+                break;
+            case Cloud:
+                selector = "div.alf-menu-title span.alf-menu-title-text";
+                break;
+            default:
+                selector = "a.alf-menu-title-text";
+                break;
         }
         return drone.find(By.cssSelector(selector)).getText().trim();
     }

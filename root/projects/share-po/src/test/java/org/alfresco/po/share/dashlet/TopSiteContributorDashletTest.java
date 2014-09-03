@@ -31,7 +31,6 @@ import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
-import org.alfresco.webdrone.exception.PageException;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -67,7 +66,7 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
 
     private DashBoardPage dashBoard;
     private InviteMembersPage membersPage;
-    private SiteDashboardPage siteDashBoard;
+     SiteDashboardPage siteDashBoard;
 
     @BeforeTest
     public void prepare()
@@ -115,7 +114,6 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         navigateToSiteDashboard();
         SitePage site = drone.getCurrentPage().render();
         membersPage = site.getSiteNav().selectInvite().render();
-        List<String> searchUsers = userSearchRetry(random1);
         membersPage.clickAddUser(random1);
         membersPage.selectInviteeAndAssignRole("(" + random1 + ")", UserRole.COLLABORATOR);
         membersPage.clickInviteButton();
@@ -203,46 +201,6 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
            {
                 Assert.assertEquals(Integer.parseInt(fileCount), fifthNumberOfFiles);
            }
-            
         }        
-
-    }
-    
-    /**
-     * Site members user search retry
-     * 
-     * @param user
-     * @return
-     */
-    private List<String> userSearchRetry(String user)
-    {
-        int counter = 0;
-        int waitInMilliSeconds = 2000;
-        while (counter < retrySearchCount)
-        {
-            List<String> searchUsers = membersPage.searchUser(user);
-            if (searchUsers.size() > 0)
-            {
-                return searchUsers;
-            }
-            else
-            {
-                counter++;
-                drone.getCurrentPage().render();
-            }
-            // double wait time to not over do solr search
-            waitInMilliSeconds = (waitInMilliSeconds * 2);
-            synchronized (this)
-            {
-                try
-                {
-                    this.wait(waitInMilliSeconds);
-                }
-                catch (InterruptedException e)
-                {
-                }
-            }
-        }
-        throw new PageException("user search failed");
     }
 }

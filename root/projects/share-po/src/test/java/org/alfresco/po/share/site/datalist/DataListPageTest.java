@@ -1,11 +1,16 @@
 package org.alfresco.po.share.site.datalist;
 
-import mx4j.tools.config.DefaultConfigurationBuilder;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.dashlet.AbstractSiteDashletTest;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SitePageType;
-import org.alfresco.po.share.site.datalist.items.ContactListItem;
 import org.alfresco.po.share.site.datalist.lists.ContactList;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
@@ -13,11 +18,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.testng.Assert.*;
 
 /**
  * Holds tests for Data Lists web elements

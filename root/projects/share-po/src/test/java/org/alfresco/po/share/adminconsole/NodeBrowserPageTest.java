@@ -85,12 +85,12 @@ public class NodeBrowserPageTest extends AbstractTest
     @Test(dependsOnMethods = "getSearchResultsNoResults", groups = "Enterprise-only", expectedExceptions = PageOperationException.class)
     public void getSearchResultsWithException() throws Exception
     {
-        NodeBrowserSearchResult language = nodeBrowserPage.getSearchResults("sdfsadfsf");
+        nodeBrowserPage.getSearchResults("sdfsadfsf");
     }
 
     @Test(dependsOnMethods = "getSearchResultsWithException", groups = "Enterprise-only", expectedExceptions = IllegalArgumentException.class)
     public void getSearchResultsWithIllegalArgException() throws Exception
     {
-        NodeBrowserSearchResult language = nodeBrowserPage.getSearchResults("");
+        nodeBrowserPage.getSearchResults("");
     }
 }

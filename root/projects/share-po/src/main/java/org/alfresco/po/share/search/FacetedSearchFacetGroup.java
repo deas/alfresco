@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -70,8 +72,14 @@ public class FacetedSearchFacetGroup
     /**
      * The Class FacetedSearchFacet.
      */
-    public class FacetedSearchFacet
+    public class FacetedSearchFacet extends SharePage
     {
+
+        protected FacetedSearchFacet(WebDrone drone)
+        {
+            super(drone);
+            // TODO Auto-generated constructor stub
+        }
 
         private WebDrone drone;
         private WebElement link;
@@ -88,6 +96,7 @@ public class FacetedSearchFacetGroup
          */
         public FacetedSearchFacet(WebDrone drone, WebElement link, String label, int hits)
         {
+            super(drone);
             this.drone = drone;
             this.link = link;
             this.label = label;
@@ -133,6 +142,27 @@ public class FacetedSearchFacetGroup
         {
             this.link.click();
             return FactorySharePage.resolvePage(this.drone);
+        }
+
+        @Override
+        public <T extends HtmlPage> T render(RenderTime timer)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public <T extends HtmlPage> T render(long time)
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public <T extends HtmlPage> T render()
+        {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 }

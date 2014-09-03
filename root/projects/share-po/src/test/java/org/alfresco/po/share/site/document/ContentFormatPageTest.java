@@ -49,7 +49,7 @@ public class ContentFormatPageTest extends AbstractTest
     private TinyMceEditor textEditor;
     private String commentText;
     private String fontAttForCloud = "<font style=\"color: rgb(0, 0, 255);\">";
-    private String fontAtt = "<font color=\"#0000FF\">";
+    String fontAtt = "<font color=\"#0000FF\">";
      
     /**
      * Pre test setup of a dummy file to upload.
@@ -172,7 +172,7 @@ public class ContentFormatPageTest extends AbstractTest
         textEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(commentText, textEditor.getText());
         AlfrescoVersion version = drone.getProperties().getVersion();
-        if(version.isCloud())
+        if (AlfrescoVersion.Cloud.equals(version))
         {
             fontAtt = fontAttForCloud ;
         }
@@ -193,7 +193,7 @@ public class ContentFormatPageTest extends AbstractTest
         textEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(commentText, textEditor.getText());       
         AlfrescoVersion version = drone.getProperties().getVersion();
-        if (version.isCloud())
+        if (AlfrescoVersion.Cloud.equals(version))
         {
             fontAtt = fontAttForCloud;
         }
@@ -215,7 +215,7 @@ public class ContentFormatPageTest extends AbstractTest
         textEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(commentText, textEditor.getText());  
         AlfrescoVersion version = drone.getProperties().getVersion();
-        if (version.isCloud())
+        if (AlfrescoVersion.Cloud.equals(version))
         {
             fontAtt = fontAttForCloud;
         }
@@ -223,7 +223,7 @@ public class ContentFormatPageTest extends AbstractTest
         textEditor.clickUndo();        
         Assert.assertTrue(textEditor.getContent().contains("<p>"+commentText+"</p>"));
         textEditor.clickRedo();       
-        if (version.isCloud())
+        if (AlfrescoVersion.Cloud.equals(version))
         {
             fontAtt = fontAttForCloud;
         }

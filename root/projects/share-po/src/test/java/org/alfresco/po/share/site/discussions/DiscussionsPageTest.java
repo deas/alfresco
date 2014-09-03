@@ -1,8 +1,14 @@
 package org.alfresco.po.share.site.discussions;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.dashlet.AbstractSiteDashletTest;
-import org.alfresco.po.share.dashlet.mydiscussions.TopicsListPage;
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SitePageType;
@@ -14,11 +20,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.testng.Assert.*;
 
 /**
  * Holds tests for Discussion page web elements

@@ -307,7 +307,7 @@ public class ImagePreviewDashlet extends AbstractDashlet implements Dashlet
         checkNotNull(imageName);
         try
         {
-            String imageNameEncoded = URLEncoder.encode(imageName, "UTF-8");
+            URLEncoder.encode(imageName, "UTF-8");
         }
         catch (UnsupportedEncodingException e)
         {

@@ -60,7 +60,7 @@ public abstract class AbstractSiteNavigation extends HtmlElement
     public static final String LABEL_DOCUMENTLIBRARY_PLACEHOLDER = "div#HEADER_SITE_DOCUMENTLIBRARY";
     private final String siteNavPlaceHolder;
     private final String dashboardLink;
-    private AlfrescoVersion alfrescoVersion;
+    protected AlfrescoVersion alfrescoVersion;
 
     public AbstractSiteNavigation(WebDrone drone)
     {

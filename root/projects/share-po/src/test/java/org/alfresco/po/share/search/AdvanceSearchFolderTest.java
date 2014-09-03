@@ -67,7 +67,7 @@ public class AdvanceSearchFolderTest extends AbstractTest
         folderSearchPage = contentSearchPage.searchLink("Folders").render();
         folderSearchPage.inputName("Contracts");
         folderSearchPage.inputDescription("This folder holds the agency contracts");
-        SearchResultsPage searchResults = searchRetry();
+        SearchResultPage searchResults = searchRetry();
         Assert.assertTrue(searchResults.hasResults());
     }
 

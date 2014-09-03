@@ -5,7 +5,9 @@ import java.io.File;
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.FactorySharePage;
-import org.alfresco.po.share.site.*;
+import org.alfresco.po.share.site.SitePage;
+import org.alfresco.po.share.site.UpdateFilePage;
+import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.webdrone.HtmlPage;
@@ -16,8 +18,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertTrue;
 
 /**
  * Functional test to test View Properties Page

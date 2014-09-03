@@ -23,11 +23,11 @@ import org.alfresco.po.share.search.RepositoryResultsPage;
 import org.alfresco.po.share.search.SearchBox;
 import org.alfresco.po.share.search.SearchResultsPage;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.openqa.selenium.NoSuchElementException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-import org.openqa.selenium.NoSuchElementException;
 
 /**
  * Tests the {@link Pagination} class

@@ -294,9 +294,8 @@ public class AdvanceSearchContentTest extends AbstractTest
         contentSearchPage.inputName("my.txt");
         SearchResultsPage searchResults = searchRetry();
         Assert.assertTrue(searchResults.hasResults());
-        SearchResultItem item = (SearchResultItem) searchResults.getResults().get(0);
-        Assert.assertFalse(item.isFolder());
-        Assert.assertTrue(item.getFolderNamesFromContentPath().size() == 0);
+        Assert.assertFalse(searchResults.getResults().get(0).isFolder());
+        Assert.assertTrue(((SearchResultItem) searchResults.getResults().get(0)).getFolderNamesFromContentPath().size() == 0);
     }
 
     /**
@@ -311,15 +310,15 @@ public class AdvanceSearchContentTest extends AbstractTest
         contentSearchPage.inputName("my.txt");
         SearchResultsPage searchResults = searchRetry();
         Assert.assertTrue(searchResults.hasResults());
-        SearchResult searchResultItem = searchResults.getResults().get(0);
-        searchResultItem.clickLink();
+        SearchResultItem searchResultItem = (SearchResultItem) searchResults.getResults().get(0);
+        searchResultItem.clickOnDownloadIcon();
         
         contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
         contentSearchPage.inputName("my.txt");
         searchResults = searchRetry();
         Assert.assertTrue(searchResults.hasResults());
-        SearchResultItem item = (SearchResultItem) searchResults.getResults().get(0);
-        String url = item.clickOnViewInBrowserIcon();
+        searchResultItem = (SearchResultItem) searchResults.getResults().get(0);
+        String url = searchResultItem.clickOnViewInBrowserIcon();
         Assert.assertNotNull(url);
         Assert.assertTrue(url.contains("my.txt"));
     }
@@ -353,9 +352,9 @@ public class AdvanceSearchContentTest extends AbstractTest
         contentSearchPage.inputName(fileName);
         SearchResultsPage searchResults = searchRetry();
         Assert.assertTrue(searchResults.hasResults());
-        SearchResultItem searchResultItem = (SearchResultItem)searchResults.getResults().get(0);
+        SearchResult searchResultItem = searchResults.getResults().get(0);
         
-        List<String> list = searchResultItem.getFolderNamesFromContentPath();
+        List<String> list = ((SearchResultItem) searchResultItem).getFolderNamesFromContentPath();
         Assert.assertTrue(list.size() > 0);
         Assert.assertTrue(list.size() == 2);
         Assert.assertTrue(list.get(0).equalsIgnoreCase("Attachments"));
