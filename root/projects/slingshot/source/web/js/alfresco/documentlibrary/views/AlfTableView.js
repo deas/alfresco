@@ -48,7 +48,7 @@ define(["dojo/_base/declare",
        */
       viewSelectionConfig: {
          label: "Table View",
-         iconClass: "alf-simplelist-icon"
+         iconClass: "alf-tableview-icon"
       },
       
       widgetsForHeader: [

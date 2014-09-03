@@ -62,7 +62,7 @@ define(["dojo/_base/declare",
        */
       viewSelectionConfig: {
          label: "Filmstrip View",
-         iconClass: "alf-detailedlist-icon"
+         iconClass: "alf-filmstrip-icon"
       },
       
       /**

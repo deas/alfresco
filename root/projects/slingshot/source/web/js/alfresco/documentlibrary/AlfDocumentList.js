@@ -26,8 +26,7 @@
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
  * @mixes module:alfresco/core/CoreWidgetProcessing
- * @mixes module:alfresco/core/CoreXhr
- * @mixes module:alfresco/core/PathUtils
+ * @mixes module:alfresco/core/FullScreenMixin
  * @mixes module:alfresco/documentlibrary/_AlfDocumentListTopicMixin
  * @mixes module:alfresco/documentlibrary/_AlfHashMixin
  * @author Dave Draper
@@ -38,8 +37,7 @@ define(["dojo/_base/declare",
         "dojo/text!./templates/AlfDocumentList.html",
         "alfresco/core/Core",
         "alfresco/core/CoreWidgetProcessing",
-        "alfresco/core/CoreXhr",
-        "alfresco/core/PathUtils",
+        "alfresco/core/FullScreenMixin",
         "alfresco/core/JsNode",
         "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
         "alfresco/documentlibrary/_AlfHashMixin",
@@ -53,10 +51,10 @@ define(["dojo/_base/declare",
         "dojo/io-query",
         "dojo/dom-construct",
         "dojo/dom-class"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, CoreWidgetProcessing, AlfCoreXhr, PathUtils, JsNode, _AlfDocumentListTopicMixin, _AlfHashMixin, DynamicWidgetProcessingTopics,
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, CoreWidgetProcessing, FullScreenMixin, JsNode, _AlfDocumentListTopicMixin, _AlfHashMixin, DynamicWidgetProcessingTopics,
                  _PreferenceServiceTopicMixin, AlfDocumentListView, array, lang, AlfCheckableMenuItem, hash, ioQuery, domConstruct, domClass) {
    
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, AlfCoreXhr, PathUtils, _AlfDocumentListTopicMixin, _AlfHashMixin, 
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, FullScreenMixin, _AlfDocumentListTopicMixin, _AlfHashMixin, 
                    DynamicWidgetProcessingTopics, _PreferenceServiceTopicMixin], {
       
       /**
@@ -219,6 +217,10 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_DOCUMENTLIST_CATEGORY_CHANGED", lang.hitch(this, this.onCategoryChanged));
          this.alfSubscribe("ALF_DOCUMENTLIST_TAG_CHANGED", lang.hitch(this, this.onTagChanged));
          this.alfSubscribe(this.filterSelectionTopic, lang.hitch(this, this.onFilterChanged));
+
+         // Handle full screen and full window requests...
+         this.alfSubscribe("ALF_DOCLIST_FULL_WINDOW", lang.hitch(this, this.toggleFullScreen, true));
+         this.alfSubscribe("ALF_DOCLIST_FULL_SCREEN", lang.hitch(this, this.toggleFullScreen, false));
 
          this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, "onViewSelected"));
          this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, "onDocumentSelection"));

@@ -935,10 +935,39 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                                                    name: "alfresco/documentlibrary/AlfViewSelectionGroup"
                                                 },
                                                 {
+                                                   id: "DOCLIB_CONFIG_MENU_VIEW_MODE_GROUP",
+                                                   name: "alfresco/menus/AlfMenuGroup",
+                                                   config: {
+                                                      label: msg.get("doclib.viewModes.label"),
+                                                      widgets: [
+                                                         {
+                                                            id: "DOCLIB_FULL_WINDOW_OPTION",
+                                                            name: "alfresco/menus/AlfCheckableMenuItem",
+                                                            config: {
+                                                               label: msg.get("doclib.fullwindow.label"),
+                                                               iconClass: "alf-fullscreen-icon",
+                                                               checked: false,
+                                                               publishTopic: "ALF_DOCLIST_FULL_WINDOW"
+                                                            }
+                                                         },
+                                                         {
+                                                            id: "DOCLIB_FULL_SCREEN_OPTION",
+                                                            name: "alfresco/menus/AlfCheckableMenuItem",
+                                                            config: {
+                                                               label: msg.get("doclib.fullscreen.label"),
+                                                               iconClass: "alf-fullscreen-icon",
+                                                               checked: false,
+                                                               publishTopic: "ALF_DOCLIST_FULL_SCREEN"
+                                                            }
+                                                         }
+                                                      ]
+                                                   }
+                                                },
+                                                {
                                                    id: "DOCLIB_CONFIG_MENU_OPTIONS_GROUP",
                                                    name: "alfresco/menus/AlfMenuGroup",
                                                    config: {
-                                                      label: "Options",
+                                                      label: msg.get("doclib.options.label"),
                                                       widgets: [
                                                          {
                                                             id: "DOCLIB_SHOW_FOLDERS_OPTION",
