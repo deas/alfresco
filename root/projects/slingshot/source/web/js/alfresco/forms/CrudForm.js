@@ -107,7 +107,9 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_forms_CrudForm__postCreate() {
-         this.infoNode = domConstruct.create("div", null, this.domNode, "first");
+         this.infoNode = domConstruct.create("div", {
+            id: this.id + "_INFO_NODE"
+         }, this.domNode, "first");
          this.__creatingInfoWidgets = true;
          this.processWidgets(this.widgetsForInfo, this.infoNode);
          this.inherited(arguments);
@@ -152,6 +154,11 @@ define(["dojo/_base/declare",
          if (this.__creatingInfoWidgets === true)
          {
             this.__creatingInfoWidgets = false;
+         }
+         else if (this.__creatingAdditionalButtons === true)
+         {
+            this.__creatingAdditionalButtons = false;
+            this.additionalButtons = registry.findWidgets(this.buttonsNode);
          }
          else
          {
@@ -225,6 +232,7 @@ define(["dojo/_base/declare",
          // Copied from original code - might not need the IF condition...
          if (this.widgetsAdditionalButtons != null)
          {
+            this.__creatingAdditionalButtons = true;
             this.additionalButtons = [];
             this.processWidgets(this.widgetsAdditionalButtons, this.buttonsNode);
          }

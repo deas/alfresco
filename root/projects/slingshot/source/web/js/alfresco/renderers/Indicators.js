@@ -49,15 +49,6 @@ define(["dojo/_base/declare",
       i18nRequirements: [{i18nFile: "./i18n/Indicators.properties"}],
       
       /**
-       * An array of the CSS files to use with this widget.
-       * 
-       * @instance
-       * @type {object[]}
-       * @default [{cssFile:"./css/Indicators.css"}]
-       */
-      cssRequirements: [{cssFile:"./css/Indicators.css"}],
-      
-      /**
        * The HTML template to use for the widget.
        * @instance
        * @type {string}

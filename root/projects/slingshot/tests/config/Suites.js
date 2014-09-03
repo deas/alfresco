@@ -68,6 +68,7 @@ define({
 
       'tests/alfresco/footer/FooterTest',
 
+      'tests/alfresco/forms/CrudFormTest',
       'tests/alfresco/forms/DynamicFormTest',
       'tests/alfresco/forms/FormsTest',
       'tests/alfresco/forms/SingleTextFieldFormTest',
