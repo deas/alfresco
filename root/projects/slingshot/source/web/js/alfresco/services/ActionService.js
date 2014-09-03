@@ -18,21 +18,21 @@
  */
 
 /**
- * This handles publications requesting to perform actions on documents. It instantiates a "legacy" YUI2 based 
+ * This handles publications requesting to perform actions on documents. It instantiates a "legacy" YUI2 based
  * Alfresco.DocListToolbar widget which is delegated any actions that aren't explicitly handled by the service.
  * Over time this service should handle more and more of the core document actions as the old YUI2 code is phased
  * out. However, currently it just aliases those actions as well as any custom actions that are registered by
  * extensions.
- * 
+ *
  * Custom actions prior to 4.2 were provided via the YAHOO.Bubbling.fire("registerAction" ...) event
  * where the target function accepted a single argument of the file to work with.
- * 
+ *
  * "action.js" handles the registering of these functions.
  * "toolbar.js" augments its prototype with that of "action.js" to get all of the default action handlers
  * and in turn will be able to register additional handlers.
  *
  * Custom actions only supported single files in versions prior to 4.2
- * 
+ *
  * @module alfresco/services/ActionService
  * @extends module:alfresco/core/Core
  * @mixes module:alfresco/core/CoreXhr
@@ -40,8 +40,9 @@
  * @mixes module:alfresco/services/_NavigationServiceTopicMixin
  * @mixes module:alfresco/core/UrlUtils
  * @mixes module:alfresco/core/NotificationUtils
- * @author Dave Draper
+ * @author Dave Draper & David Webster
  */
+
 define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreXhr",
@@ -56,41 +57,43 @@ define(["dojo/_base/declare",
         "dojo/_base/array",
         "alfresco/dialogs/AlfDialog",
         "alfresco/pickers/Picker"],
-        function(declare, AlfCore, AlfCoreXhr, AlfConstants, _AlfDocumentListTopicMixin, _NavigationServiceTopicMixin, UrlUtils, 
+        function(declare, AlfCore, AlfCoreXhr, AlfConstants, _AlfDocumentListTopicMixin, _NavigationServiceTopicMixin, UrlUtils,
                  ArrayUtils, JsNode, NotificationUtils, lang, array, AlfDialog, Picker) {
-   
+
+   // TODO: L18N sweep - lots of widgets defined with hard coded labels...
+
    return declare([AlfCore, AlfCoreXhr, _AlfDocumentListTopicMixin, _NavigationServiceTopicMixin, UrlUtils, NotificationUtils], {
-      
+
       /**
        * An array of the i18n files to use with this widget.
-       * 
+       *
        * @instance
        * @type {object[]}
        * @default [{i18nFile: "./i18n/ActionService.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/ActionService.properties"}],
-      
+
       /**
        * This should be set when the current context is a site.
-       * 
+       *
        * @instance
        * @type {string}
        * @default null
        */
       siteId: null,
-      
+
       /**
        * This should be set when the current context is a site, typically this will be set to "documentlibrary"
-       * 
+       *
        * @instance
        * @type {string}
        * @default null
        */
       containerId: null,
-      
+
       /**
        * This should be set if "siteId" is not set.
-       * 
+       *
        * @instance
        * @type {string}
        * @default null
@@ -108,32 +111,32 @@ define(["dojo/_base/declare",
 
       /**
        * Sets up the subscriptions for the NavigationService
-       * 
+       *
        * @instance
        * @param {array} args Constructor arguments
        */
       constructor: function alfresco_services_ActionService__constructor(args) {
          lang.mixin(this, args);
-         
+
          // Normal processing...
          this.currentlySelectedDocuments = {};
-         this.alfSubscribe(this.documentsLoadedTopic, lang.hitch(this, "onDocumentsLoaded"));
-         this.alfSubscribe(this.metadataChangeTopic, lang.hitch(this, "handleCurrentNodeChange"));
-         this.alfSubscribe(this.documentSelectedTopic, lang.hitch(this, "onDocumentSelected"));
-         this.alfSubscribe(this.documentDeselectedTopic, lang.hitch(this, "onDocumentDeselected"));
-         this.alfSubscribe(this.singleDocumentActionTopic, lang.hitch(this, "handleSingleDocAction"));
-         this.alfSubscribe(this.syncLocationTopic, lang.hitch(this, "onSyncLocation"));
-         this.alfSubscribe(this.unsyncLocationTopic, lang.hitch(this, "onUnsyncLocation"));
-         
-         this.alfSubscribe("ALF_MULTIPLE_DOCUMENT_ACTION_REQUEST", lang.hitch(this, "handleMultiDocLegacyAction"));
-         this.alfSubscribe("ALF_CREATE_CONTENT", lang.hitch(this, "processActionObject"));
-         
+         this.alfSubscribe(this.documentsLoadedTopic, lang.hitch(this, this.onDocumentsLoaded));
+         this.alfSubscribe(this.metadataChangeTopic, lang.hitch(this, this.handleCurrentNodeChange));
+         this.alfSubscribe(this.documentSelectedTopic, lang.hitch(this, this.onDocumentSelected));
+         this.alfSubscribe(this.documentDeselectedTopic, lang.hitch(this, this.onDocumentDeselected));
+         this.alfSubscribe(this.singleDocumentActionTopic, lang.hitch(this, this.handleSingleDocAction));
+         this.alfSubscribe(this.syncLocationTopic, lang.hitch(this, this.onSyncLocation));
+         this.alfSubscribe(this.unsyncLocationTopic, lang.hitch(this, this.onUnsyncLocation));
+
+         this.alfSubscribe("ALF_MULTIPLE_DOCUMENT_ACTION_REQUEST", lang.hitch(this, this.handleMultiDocLegacyAction));
+         this.alfSubscribe("ALF_CREATE_CONTENT", lang.hitch(this, this.processActionObject));
+
          // Non-legacy action handlers...
-         this.alfSubscribe("ALF_MOVE_DOCUMENTS", lang.hitch(this, "onMoveDocuments"));
+         this.alfSubscribe("ALF_MOVE_DOCUMENTS", lang.hitch(this, this.onMoveDocuments));
 
          // Response handlers...
-         this.alfSubscribe("ALF_ON_ACTION_DETAILS_SUCCESS", lang.hitch(this, "onActionDetailsSucess"));
-         this.alfSubscribe("ALF_ON_ACTION_EDIT_INLINE_SUCCESS", lang.hitch(this, "onActionEditInlineSucess"));
+         this.alfSubscribe("ALF_ON_ACTION_DETAILS_SUCCESS", lang.hitch(this, this.onActionDetailsSucess));
+         this.alfSubscribe("ALF_ON_ACTION_EDIT_INLINE_SUCCESS", lang.hitch(this, this.onActionEditInlineSucess));
       },
 
       /**
@@ -154,17 +157,17 @@ define(["dojo/_base/declare",
             }
          }
       },
-      
+
       /**
        * @instance
        */
       requestRefresh: function() {
          this.alfPublish(this.reloadDataTopic, {});
       },
-      
+
       /**
        * The primary purpose of this function is to reset the 'currentlySelectedDocuments' attribute.
-       * 
+       *
        * @instance
        * @param {object} payload The details of the documents loaded
        */
@@ -173,7 +176,7 @@ define(["dojo/_base/declare",
          this.currentlySelectedDocuments = {};
          this.onSelectedFilesChanged();
       },
-      
+
       /**
        * The current Node that content will be worked relative to.
        * @instance
@@ -181,7 +184,7 @@ define(["dojo/_base/declare",
        * @default null
        */
       _currentNode: null,
-      
+
       /**
        *
        * @instance
@@ -197,17 +200,17 @@ define(["dojo/_base/declare",
             this.alfLog("error", "A request was made to update the current NodeRef, but no 'node' property was provided in the payload: ", payload);
          }
       },
-      
+
       /**
        * This function handles requests to perform an action on a single document. The action will be handled by the legacy action handler.
-       * 
+       *
        * @instance
        * @param payload
        */
       handleSingleDocAction: function alfresco_services_ActionService__handleSingleDocAction(payload) {
          this.alfLog("log", "Single document action request:", payload);
-         if (payload && 
-             payload.document != null && 
+         if (payload &&
+             payload.document != null &&
              payload.action != null)
          {
             if (typeof payload.action === "string")
@@ -230,9 +233,9 @@ define(["dojo/_base/declare",
             }
          }
       },
-      
+
       /**
-       * 
+       *
        * @instance
        * @param {object} payload The data passed in the request to perform the action.
        */
@@ -248,10 +251,10 @@ define(["dojo/_base/declare",
             this[payload.action].call(this, payload, documents);
          }
       },
-      
+
       /**
        * Calls a "legacy" action handler that is defined within the DocumentListToolbar widget.
-       * 
+       *
        * @instance
        * @param {function} func The handler function to call
        * @param {object} doc The document to pass as the argument to the handler
@@ -260,12 +263,12 @@ define(["dojo/_base/declare",
       _callLegacyActionHandler: function alfresco_services_ActionService(func, doc, i) {
          this.alfLog("log", "Calling handler", func, doc, i);
       },
-      
+
       /**
        * This is used to keep track of the documents that are currently selected. It is initialised to an empty
        * array in the constructor, the onDocumentSelected function adds elements and the onDocumentDeselected
        * function removes them.
-       * 
+       *
        * @instance
        * @type {object}
        * @default null
@@ -277,13 +280,13 @@ define(["dojo/_base/declare",
        * topic. It is important that multiple selection events can be captured so that only one publication of
        * selected items occurs. Otherwise the responsiveness ot the UI is degraded as each individual selection
        * event is processed (e.g. by [AlfDocumentActionMenuItems]{@link module:alfresco/documentlibrary/AlfDocumentActionMenuItem})
-       * 
+       *
        * @instance
        * @type {timeout}
        * @default null
        */
       selectionTimeout: null,
-      
+
       /**
        * Updates the aray of documents that are currently selected.
        * @instance
@@ -297,28 +300,28 @@ define(["dojo/_base/declare",
             {
                clearTimeout(this.selectionTimeout);
             }
-            this.selectionTimeout = setTimeout(lang.hitch(this, "deferredSelectionHandler"), 50);
+            this.selectionTimeout = setTimeout(lang.hitch(this, this.deferredSelectionHandler), 50);
          }
       },
-      
+
       /**
        * This is called from [onDocumentSelected]{@link module:alfresco/services/ActionService#onDocumentSelected}
        * when the [selectionTimeout]{@link module:alfresco/services/ActionService#selectionTimeout} times out. It
        * rests the [selectionTimeout]{@link module:alfresco/services/ActionService#selectionTimeout} to null and
        * calls [onSelectedFilesChanged]{@link module:alfresco/services/ActionService#deselectionTimeout}
-       * 
+       *
        * @instance
        */
       deferredSelectionHandler: function alfresco_services_ActionService__deferredSelectionHandler() {
          this.onSelectedFilesChanged();
          this.selectionTimeout = null;
       },
-      
+
       /**
        * Updates the array of documents that are currently selected.
-       * 
+       *
        * @instance
-       * @param {object} The details of the document selected
+       * @param {object} payload The details of the document selected
        */
       onDocumentDeselected: function alfresco_services_ActionService__onDocumentDeselected(payload) {
          if (payload && payload.value && payload.value.nodeRef != null)
@@ -328,13 +331,13 @@ define(["dojo/_base/declare",
             {
                clearTimeout(this.selectionTimeout);
             }
-            this.selectionTimeout = setTimeout(lang.hitch(this, "deferredSelectionHandler"), 50);
+            this.selectionTimeout = setTimeout(lang.hitch(this, this.deferredSelectionHandler), 50);
          }
       },
-      
+
       /**
        * Converts the currently selected documents object into an array for easier iteration.
-       * 
+       *
        * @instance
        */
       getSelectedDocumentArray: function alfresco_services_ActionService__getSelectedDocumentArray() {
@@ -345,13 +348,13 @@ define(["dojo/_base/declare",
          }
          return a;
       },
-      
+
       /**
        * Handle changes in file selection by updating the ActionService 'currentlySelectedDocuments' attribute
        * so that other handlers can apply actions to the appropriate files and then evaluates the permissions
        * and aspects on the selected files and publishes the details on the 'selectedDocumentsChangeTopic' attribute
-       * topic to allow menus to filter actions appropriately. 
-       * 
+       * topic to allow menus to filter actions appropriately.
+       *
        * @instance
        */
       onSelectedFilesChanged: function alfresco_services_ActionService__onSelectedFilesChanged() {
@@ -359,7 +362,7 @@ define(["dojo/_base/declare",
              fileType, userAccess = {}, fileAccess, index,
              commonAspects = [], allAspects = [],
              i, ii, j, jj;
-         
+
          var fnFileType = function fnFileType(file)
          {
             return (file.node.isContainer ? "folder" : "document");
@@ -369,7 +372,7 @@ define(["dojo/_base/declare",
          for (i = 0, ii = files.length; i < ii; i++)
          {
             file = files[i];
-            
+
             // Required user access level - logical AND of each file's permissions
             fileAccess = file.node.permissions.user;
             for (index in fileAccess)
@@ -379,7 +382,7 @@ define(["dojo/_base/declare",
                   userAccess[index] = (userAccess[index] === undefined ? fileAccess[index] : userAccess[index] && fileAccess[index]);
                }
             }
-            
+
             // Make a note of all selected file types Using a hybrid array/object so we can use both array.length and "x in object"
             fileType = fnFileType(file);
             if (!(fileType in fileTypes))
@@ -415,7 +418,7 @@ define(["dojo/_base/declare",
                }
             }
          }
-         
+
          // Publish the information about the actions so that menu items can be filtered...
          this.alfPublish(this.selectedDocumentsChangeTopic, {
             selectedFiles: files,
@@ -424,14 +427,14 @@ define(["dojo/_base/declare",
             allAspects: allAspects
          });
       },
-      
+
       /**
        * This function handles requests to create new content. It handles content creation of 4 different types:
        * - pagelink (a link to another page within the application)
        * - link (a link to an external page)
        * - javascript (calls a JavaScript action handler)
        * - template (creates templated content)
-       * 
+       *
        * @instance
        * @param {object} action An object containing the details of the action to perform
        * @param {object} document The document to perform the action on (only applicable to actions of type "javascript")
@@ -493,10 +496,10 @@ define(["dojo/_base/declare",
             this.alfLog("error", "A request was made to perform an action, but no 'type' was provided in the payload: ", action);
          }
       },
-      
+
       /**
        * Links to another page within Share to handle the content creation.
-       * 
+       *
        * @instance
        * @param {object} payload
        * @param {object} document The document to perform the action using.
@@ -512,7 +515,7 @@ define(["dojo/_base/declare",
          {
             url = lang.replace(url, { nodeRef: this._currentNode.parent.nodeRef});
          }
-         
+
          // Make a request to navigation to a the URL (relative to the Share page content) within the current window...
          this.alfPublish(this.navigateToPageTopic, {
             type: this.sharePageRelativePath,
@@ -520,10 +523,10 @@ define(["dojo/_base/declare",
             target: this.currentTarget
          });
       },
-      
+
       /**
        * Links to an external page to handle content creation.
-       * 
+       *
        * @instance
        * @param {object} payload The payload published on the requesting topic
        * @param {object} document The document to perform the action on.
@@ -536,10 +539,10 @@ define(["dojo/_base/declare",
             target: this.currentTarget
          });
       },
-      
+
       /**
        * Calls a JavaScript function to handle content creation.
-       * 
+       *
        * @instance
        * @param {object} payload The payload published on the requesting topic
        * @param {object} document The document to perform the action on.
@@ -554,7 +557,7 @@ define(["dojo/_base/declare",
                jsNode: new JsNode(node)
             };
          }
-         
+
          // See if the requested function is provided by this service and if not delegate to the Alfresco.DocLibToolbar widget.
          var f = this[payload.params["function"]];
          if (typeof f === "function")
@@ -567,10 +570,10 @@ define(["dojo/_base/declare",
             this.callLegacyActionHandler(payload.params["function"], document);
          }
       },
-      
+
       /**
        * Calls a JavaScript function provided (or registered with) the Alfresco.DocLibToolbar widget.
-       * 
+       *
        * @instance
        * @param {string} functionName The name of the function to call
        * @param {object} document The document to perform the action on.
@@ -578,12 +581,12 @@ define(["dojo/_base/declare",
       callLegacyActionHandler: function alfresco_services_ActionService__callLegacyActionHandler(functionName, document) {
          this.alfLog("warn", "Legacy toolbar now removed");
       },
-      
+
       /**
        * Handles requests to display the details of the supplied document. This function currently
        * delegates handling of the request to the Alfresco.DocLibToolbar by calling
        * [callLegacyActionHandler]{@link module:alfresco/services/ActionsService#callLegacyActionHandler}
-       * 
+       *
        * @instance
        * @param {object} response The response from the request
        * @param {object} document The document to get the details for
@@ -611,7 +614,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * This function will be called in response to a documents details being successfully retrieved. 
+       * This function will be called in response to a documents details being successfully retrieved.
        *
        * @instance
        * @param {object} payload
@@ -626,7 +629,7 @@ define(["dojo/_base/declare",
             var properties = lang.getObject("response.item.node.properties", false, payload);
             this.alfLog("log", "Display these properties", properties);
 
-            // TODO: Contruct dialog form...
+            // TODO: Construct dialog form...
             var widgets = [];
             for (var key in properties)
             {
@@ -650,7 +653,7 @@ define(["dojo/_base/declare",
                   config: {
                      label: key,
                      value: properties[key],
-                     name: name 
+                     name: name
                   }
                }
                widgets.push(widget);
@@ -671,7 +674,7 @@ define(["dojo/_base/declare",
        * Handles requests to upload a new version of the supplied document. This function currently
        * delegates handling of the request to the Alfresco.DocLibToolbar by calling
        * [callLegacyActionHandler]{@link module:alfresco/services/ActionsService#callLegacyActionHandler}
-       * 
+       *
        * @instance
        * @param {object} response The response from the request
        * @param {object} document The document to upload a new version for.
@@ -679,7 +682,7 @@ define(["dojo/_base/declare",
       onActionUploadNewVersion: function alfresco_services_ActionService__onActionUploadNewVersion(payload, document) {
          this.callLegacyActionHandler("onActionUploadNewVersion", document);
       },
-      
+
       /**
        * Handles requests to edit a document inline.
        *
@@ -704,7 +707,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * This function will be called in response to a documents details being successfully retrieved. 
+       * This function will be called in response to a documents details being successfully retrieved.
        *
        * @instance
        * @param {object} payload
@@ -719,7 +722,7 @@ define(["dojo/_base/declare",
          {
             var node = lang.getObject("response.item.node", false, payload);
             var content = lang.getObject("response.itemContent", false, payload);
-            
+
             this.alfPublish("ALF_CREATE_FORM_DIALOG_REQUEST", {
                dialogTitle: "Edit: " + node.properties["cm:name"],
                dialogConfirmationButtonTitle: "Save",
@@ -803,14 +806,14 @@ define(["dojo/_base/declare",
 
       /**
        * Handles requests to edit the supplied document offline. This posts a request to the
-       * "/slingshot/doclib/action/checkout/node/{store_type}/{store_id}" repository WebScript to 
+       * "/slingshot/doclib/action/checkout/node/{store_type}/{store_id}" repository WebScript to
        * checkout the document. Successful requests are handled by the
        * [onActionEditOfflineSuccess]{@link module:alfresco/services/ActionsService#onActionEditOfflineSuccess} function
        * and failed requests are handled by the [onActionEditOfflineFailure]{@link module:alfresco/services/ActionsService#onActionEditOfflineFailure}
        * function.
-       * 
+       *
        * @instance
-       * @param {object} response The response from the request
+       * @param {object} payload The event payload
        * @param {object} document The document edit offline.
        */
       onActionEditOffline: function alfresco_services_ActionService__onActionEditOffline(payload, document) {
@@ -840,27 +843,27 @@ define(["dojo/_base/declare",
             this.alfLog("error", "A request was made to edit a document offline, but the document supplied does not contain enough information", document);
          }
       },
-      
+
       /**
        * This is the success callback handler from the XHR request made by [onActionEditOffline]{@link module:alfresco/services/ActionsService#onActionEditOffline}.
        * The success response should contain a download URL for the checked out document which is then passed to the browser
        * to automatically trigger a download of the document. A request is then published to reload the document list data.
-       * 
+       *
        * @instance
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
       onActionEditOfflineSuccess: function alfresco_services_ActionService__onActionEditOfflineSuccess(response, originalRequestConfig) {
          this.alfLog("log", "Edit offline request success", response, originalRequestConfig);
-         
-         if (response != null && 
-             response.results != null && 
+
+         if (response != null &&
+             response.results != null &&
              response.results.length > 0 &&
              response.results[0].downloadUrl != null)
          {
             this.displayMessage(this.message("message.edit-offline.success", {"0": response.results[0].id}));
             this.alfPublish(this.navigateToPageTopic, {
-               url: AlfConstants.PROXY_URI + response.results[0].downloadUrl, 
+               url: AlfConstants.PROXY_URI + response.results[0].downloadUrl,
                type: this.fullPath
             });
             this.alfPublish(this.reloadDataTopic, {});
@@ -870,24 +873,24 @@ define(["dojo/_base/declare",
             this.alfLog("error", "A request to edit a document offline returned a successful response but did not provide a 'downloadUrl' attribute", response, originalRequestConfig);
          }
       },
-      
+
       /**
        * This is the failure callback handler from the XHR request made by [onActionEditOffline]{@link module:alfresco/services/ActionsService#onActionEditOffline}.
        * It prompts the user with a message indicating that the document could not be checked out.
-       * 
+       *
        * @instance
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
        */
       onActionEditOfflineFailure: function alfresco_services_ActionService__onActionEditOfflineSuccess(response, originalRequestConfig) {
          this.alfLog("error", "Edit offline request failure", response, originalRequestConfig);
-         
+
          this.displayMessage(this.message("message.edit-offline.failure", {"0": response.results[0].id}));
       },
-      
+
       /**
        * Handles requests to copy the supplied document to another location.
-       * 
+       *
        * @instance
        * @param {object} payload
        * @param {object} document The document edit offline.
@@ -1008,7 +1011,7 @@ define(["dojo/_base/declare",
                               ]
                            }
                         }
-                     ],
+                     ]
                   }
                }
             ],
@@ -1087,7 +1090,7 @@ define(["dojo/_base/declare",
        * Handles requests to move the supplied document to another location. This function currently
        * delegates handling of the request to the Alfresco.DocLibToolbar by calling
        * [callLegacyActionHandler]{@link module:alfresco/services/ActionsService#callLegacyActionHandler}
-       * 
+       *
        * @instance
        * @param {object} response The response from the request
        * @param {object} document The document edit offline.
@@ -1095,12 +1098,12 @@ define(["dojo/_base/declare",
       onActionMoveTo: function alfresco_services_ActionService__onActionMoveTo(payload, document) {
          this.callLegacyActionHandler("onActionMoveTo", document);
       },
-      
+
       /**
        * Handles requests to delete the supplied document. This function currently
        * delegates handling of the request to the Alfresco.DocLibToolbar by calling
        * [callLegacyActionHandler]{@link module:alfresco/services/ActionsService#callLegacyActionHandler}
-       * 
+       *
        * @instance
        * @param {object} response The response from the request
        * @param {object} document The document edit offline.
@@ -1108,7 +1111,7 @@ define(["dojo/_base/declare",
       onActionDelete: function alfresco_services_ActionService__onActionDelete(payload, documents) {
 
          var responseTopic = this.generateUuid();
-         this._actionDeleteHandle = this.alfSubscribe(responseTopic, lang.hitch(this, "onActionDeleteConfirmation"), true);
+         this._actionDeleteHandle = this.alfSubscribe(responseTopic, lang.hitch(this, this.onActionDeleteConfirmation), true);
 
          var dialog = new AlfDialog({
             generatePubSubScope: false,
@@ -1182,7 +1185,7 @@ define(["dojo/_base/declare",
 
       /**
        * This function is called when the user confirms that they wish to delete a document
-       * 
+       *
        * @instance
        * @param {object} payload An object containing the details of the document(s) to be deleted.
        */
@@ -1193,7 +1196,7 @@ define(["dojo/_base/declare",
             return item.nodeRef;
          });
          var responseTopic = this.generateUuid();
-         var subscriptionHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onActionDeleteSuccess"), true);
+         var subscriptionHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onActionDeleteSuccess), true);
 
          this.serviceXhr({
             alfTopic: responseTopic,
@@ -1235,36 +1238,74 @@ define(["dojo/_base/declare",
        * Handles requests to start a new workflow using the supplied document. This function currently
        * delegates handling of the request to the Alfresco.DocLibToolbar by calling
        * [callLegacyActionHandler]{@link module:alfresco/services/ActionsService#callLegacyActionHandler}
-       * 
+       *
        * @instance
-       * @param {object} response The response from the request
+       * @param {object} payload The event payload
        * @param {object} document The document edit offline.
        */
       onActionAssignWorkflow: function alfresco_services_ActionService__onActionAssignWorkflow(payload, document) {
          this.callLegacyActionHandler("onActionAssignWorkflow", document);
       },
-      
+
       /**
        * Handles requests to start a socially publish the supplied document. This function currently
        * delegates handling of the request to the Alfresco.DocLibToolbar by calling
        * [callLegacyActionHandler]{@link module:alfresco/services/ActionsService#callLegacyActionHandler}
-       * 
+       *
        * @instance
-       * @param {object} response The response from the request
+       * @param {object} payload The event payload
        * @param {object} document The document edit offline.
        */
       onActionPublish: function alfresco_services_ActionService__onActionPublish(payload, document) {
          this.callLegacyActionHandler("onActionPublish", document);
       },
-      
+
+      /**
+       * Handles requests to start a folder download.
+       *
+       * @instance
+       * @param {object} payload The payload form the action trigger
+       * @param {object} folder The folder
+       */
+      onActionFolderDownload: function alfresco_services_ActionService__onActionFolderDownload(payload, folder) {
+         var dialog = new AlfDialog({
+            generatePubSubScope: true,
+            title: this.message("services.ActionService.ActionFolderDownload.title"),
+            widgetsContent: [
+               {
+                  name: "alfresco/renderers/Progress",
+                  config: {
+                     requestProgressTopic: "ALF_ARCHIVE_REQUEST",
+                     progressFinishedTopic: ["ALF_DOWNLOAD_FILE", "ALF_ARCHIVE_DELETE"],
+                     nodes: folder
+                  }
+               }
+            ],
+            widgetsButtons: [
+               {
+                  name: "alfresco/buttons/AlfButton",
+                  config: {
+                     label: this.message("services.ActionService.button.cancel"),
+                     additionalCssClasses: "alfresco-dialogs-AlfProgress cancellation",
+                     publishTopic: "ALF_CLOSE_DIALOG"
+                  }
+               }
+            ]
+         });
+
+         this.alfSubscribe("ALF_CLOSE_DIALOG", lang.hitch(dialog, dialog.hide));
+
+         dialog.show();
+      },
+
       /**
        * Creates new content based on the nodeRef supplied.
-       * 
+       *
        * @instance
        * @param {object} payload
        */
       createTemplateContent: function alfresco_services_ActionService__createTemplateContent(payload) {
-         
+
          // Create content based on a template
          var node = payload.params.nodeRef,
              destination = this._currentNode.parent.nodeRef;
@@ -1287,7 +1328,7 @@ define(["dojo/_base/declare",
                              callbackScope: this});
          }
       },
-      
+
       /**
        * @instance
        * @param {object} response The response from the request
@@ -1301,7 +1342,7 @@ define(["dojo/_base/declare",
             highlightFile: response.name
          });
       },
-      
+
       /**
        * @instance
        * @param {object} response The response from the request
@@ -1310,7 +1351,7 @@ define(["dojo/_base/declare",
       templateContentCreateFailure: function alfresco_services_ActionService__templateContentCreateSuccess(response, originalRequestConfig) {
          this.displayMessage(this.message("message.create-content-by-template-node.failure", response.name));
       },
-      
+
       /**
        * @instance
        * @param {object} payload
@@ -1324,7 +1365,7 @@ define(["dojo/_base/declare",
          };
          this.callLegacyActionHandler("onActionCloudSync", record);
       },
-      
+
       /**
        * @instance
        * @param {object} payload
@@ -1338,20 +1379,20 @@ define(["dojo/_base/declare",
          };
          this.callLegacyActionHandler("onActionCloudUnsync", record);
       },
-      
+
       /**
        * Performs a document move. Note, this doesn't display a dialog for move options - it simply performs the move. The payload
        * published on this topic must contain a "sourceNodeRefs" attribute which should be an array of strings where each element
        * is a NodeRef to be moved. It can accept either a "targetNodeRefUri" or a "targetPath". The "targetNodeRefUri" should be
        * a URI fragment of a NodeRef (e.g. with the "://" converted to "/"). When a "targetPath" is specified then either the
        * "rootNode" attribute or a combination of "siteId" and "containerId" will be used to construct the POST URL.
-       * 
+       *
        * @instance
        * @param {object} payload
        */
       onMoveDocuments: function alfresco_services_ActionService__onMoveDocuments(payload) {
-         
-         if (payload && 
+
+         if (payload &&
              payload.sourceNodeRefs != null)
          {
             var url = null;
@@ -1390,7 +1431,7 @@ define(["dojo/_base/declare",
             }
          }
       },
-      
+
       /**
        * @instance
        * @param {object} response
@@ -1400,7 +1441,7 @@ define(["dojo/_base/declare",
          // TODO: Display a success message.
          this.alfPublish(this.reloadDataTopic, {});
       },
-      
+
       /**
        * @instance
        * @param {object} response
