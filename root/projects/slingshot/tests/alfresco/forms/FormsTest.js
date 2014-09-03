@@ -64,14 +64,12 @@ define(["intern!object",
          .findByCssSelector("#HASH_TEXT_BOX_1 .dijitInputContainer input")
             .getValue()
             .then(function(resultText) {
-               TestCommon.log(testname,67,"Check fragment hash change sets field1");
                assert(resultText == "updatedField1", "Test #2a - field1 was not set by the hash: " + resultText);
             })
             .end()
          .findByCssSelector("#HASH_TEXT_BOX_2 .dijitInputContainer input")
             .getValue()
             .then(function(resultText) {
-               TestCommon.log(testname,74,"Check fragment hash change sets field2");
                assert(resultText == "updatedField2", "Test #2b - field2 was not set by the hash: " + resultText);
             })
             .end()
@@ -79,7 +77,6 @@ define(["intern!object",
          // 2. Test hiding/displaying/configuring the standard buttons
          .findAllByCssSelector("#STANDARD_FORM .buttons .alfresco-buttons-AlfButton.confirmationButton.dijitButtonDisabled")
             .then(function(elements) {
-               TestCommon.log(testname,82,"Check that the standard form confirmation button is initially disabled");
                assert(elements.length == 1, "Test #3 - Standard form button was not initially disabled");
             })
             .end()
@@ -93,7 +90,6 @@ define(["intern!object",
             .end()
          .findAllByCssSelector("#STANDARD_FORM .buttons .alfresco-buttons-AlfButton.confirmationButton.dijitButtonDisabled")
             .then(function(elements) {
-               TestCommon.log(testname,82,"Check that the standard form confirmation button is initially disabled");
                assert(elements.length == 0, "Test #4a - Standard form button was not enabled following valid data entry");
             })
             .end()
@@ -102,13 +98,11 @@ define(["intern!object",
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "field3", "test3"))
             .then(function(elements) {
-               TestCommon.log(testname,106,"Check standard form was published correctly");
                assert(elements.length == 1, "Test #4b - standard form didn't publish correctly");
             })
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "field4", "9"))
             .then(function(elements) {
-               TestCommon.log(testname,106,"Check standard form was published correctly");
                assert(elements.length == 1, "Test #4c - standard form didn't publish correctly");
             })
             .end()
@@ -116,13 +110,11 @@ define(["intern!object",
          // 3. Test creating additional buttons
          .findAllByCssSelector("#ADD_BUTTON_1")
             .then(function(elements) {
-               TestCommon.log(testname,120,"Check that the first additional button was added");
                assert(elements.length == 1, "Test #5a - The first additional button could not be found");
             })
             .end()
          .findAllByCssSelector("#ADD_BUTTON_2")
             .then(function(elements) {
-               TestCommon.log(testname,126,"Check that the second additional button was added");
                assert(elements.length == 1, "Test #5b - The second additional button could not be found");
             })
             .end()
@@ -137,19 +129,16 @@ define(["intern!object",
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "field5", "test4"))
             .then(function(elements) {
-               TestCommon.log(testname,142,"Check additional form was published correctly");
                assert(elements.length == 1, "Test #5c - the additional button didn't publish data correctly");
             })
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "field6", "test5"))
             .then(function(elements) {
-               TestCommon.log(testname,148,"Check additional form was published correctly");
                assert(elements.length == 1, "Test #5d - the additional button didn't publish data correctly");
             })
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "extra", "stuff"))
             .then(function(elements) {
-               TestCommon.log(testname,154,"Check additional form was published correctly");
                assert(elements.length == 1, "Test #5e - the additional button didn't publish data correctly");
             })
             .end()
@@ -157,14 +146,12 @@ define(["intern!object",
          // 4. Test scoping
          .findAllByCssSelector(TestCommon.topicSelector("CUSTOM_SCOPE_AddButton1", "publish", "any"))
             .then(function(elements) {
-               TestCommon.log(testname,162,"Check custom scope applied to additional button form");
                assert(elements.length == 1, "Test #6a - Custom scope not set");
             })
             .end()
 
          .findAllByCssSelector(TestCommon.topicSelector("SET_HASH", "publish", "any"))
             .then(function(elements) {
-               TestCommon.log(testname,169,"Check global scope applied to hash form");
                assert(elements.length == 1, "Test #6b - Global scope not set");
             })
             .end()
