@@ -166,22 +166,63 @@ define(["alfresco/forms/controls/BaseFormControl",
                      name: "alfresco/pickers/PickedItems",
                      assignTo: "pickedItemsWidget"
                   },
+                  // {
+                  //    name: "alfresco/buttons/AlfFormDialogButton",
+                  //    assignTo: "formDialogButton",
+                  //    config: {
+                  //       label: "Add",
+                  //       dialogTitle: "Select...",
+                  //       dialogConfirmationButtonTitle : "OK",
+                  //       dialogCancellationButtonTitle : "Cancel",
+                  //       formSubmissionTopic: "ALF_ITEMS_SELECTED",
+                  //       additionalCssClasses: "confirmationButton",
+                  //       widgets: [
+                  //          {
+                  //             name: "alfresco/pickers/Picker",
+                  //             config: {}
+                  //          }
+                  //       ]
+                  //    }
+                  // },
                   {
-                     name: "alfresco/buttons/AlfFormDialogButton",
+                     name: "alfresco/buttons/AlfButton",
                      assignTo: "formDialogButton",
                      config: {
                         label: "Add",
-                        dialogTitle: "Select...",
-                        dialogConfirmationButtonTitle : "OK",
-                        dialogCancellationButtonTitle : "Cancel",
-                        formSubmissionTopic: "ALF_ITEMS_SELECTED",
-                        additionalCssClasses: "confirmationButton",
-                        widgets: [
-                           {
-                              name: "alfresco/pickers/Picker",
-                              config: {}
-                           }
-                        ]
+                        publishTopic: "ALF_CREATE_DIALOG_REQUEST",
+                        publishPayload: {
+                           dialogTitle: "Select...",
+                           widgetsContent: [
+                              {
+                                 name: "alfresco/pickers/Picker"
+                              }
+                           ],
+                           widgetsButtons: [
+                              {
+                                 name: "alfresco/buttons/AlfButton",
+                                 config: {
+                                    label: "OK",
+                                    publishTopic: "ALF_ITEMS_SELECTED"
+                                 }
+                              },
+                              {
+                                 name: "alfresco/buttons/AlfButton",
+                                 config: {
+                                    label: "Cancel",
+                                    publishTopic: "NO_OP"
+                                 }
+                              }
+                           ],
+                           publishOnShow: [
+                              {
+                                 publishTopic: "ALF_RETRIEVE_DOCUMENTS_REQUEST",
+                                 publishPayload: {
+                                    nodeRef: "alfresco://company/shared",
+                                    path: "/"
+                                 }
+                              }
+                           ]
+                        }
                      }
                   },
                   {

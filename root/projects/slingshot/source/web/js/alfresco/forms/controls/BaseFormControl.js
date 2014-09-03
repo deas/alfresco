@@ -259,7 +259,7 @@ define(["dojo/_base/declare",
          this._required = status;
          if (this._requirementIndicator)
          {
-            if (this._required == true)
+            if (this._required === true)
             {
                domClass.add(this._requirementIndicator, "required");
             }
@@ -351,7 +351,7 @@ define(["dojo/_base/declare",
       constructor: function alfresco_forms_controls_BaseFormControl__constructor(args) {
          declare.safeMixin(this, args);
          
-         if (this.fieldId == null || this.fieldId == "")
+         if (this.fieldId == null || this.fieldId === "")
          {
             this.fieldId = this.generateUuid();
          }
@@ -628,7 +628,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            return []
+            return [];
          }
       },
 
@@ -731,9 +731,6 @@ define(["dojo/_base/declare",
       setOptions: function alfresco_forms_controls_BaseFormControl__setOptions(options) {
          
          this.alfLog("log", "Setting options for field '" + this.fieldId + "'", options);
-         
-         // Get the current value so that we can attempt to reset it when the options are refreshed...
-         var currentValue = this.getValue();
          
          this.options = options;
          if (this.wrappedWidget)
@@ -839,7 +836,7 @@ define(["dojo/_base/declare",
             // Process the rule subscriptions...
             if (typeof config.rules != "undefined")
             {
-               this.processRulesConfig(attribute, config.rules)
+               this.processRulesConfig(attribute, config.rules);
             }
             else if (typeof config.rules != "undefined")
             {
@@ -851,7 +848,7 @@ define(["dojo/_base/declare",
             // Process the callback subscriptions...
             if (typeof config.callbacks == "object")
             {
-               this._processCallbacksConfig(attribute, config.callbacks)
+               this._processCallbacksConfig(attribute, config.callbacks);
             }
             else if (typeof config.callbacks != "undefined")
             {
@@ -969,7 +966,7 @@ define(["dojo/_base/declare",
                
                // Assume that its NOT valid value (we'll only do the actual test if its not set to an INVALID value)...
                // UNLESS there are no valid values specified (in which case any value is valid apart form those in the invalid list)
-               var isValidValue = (typeof validValues == "undefined" || validValues.length == 0);
+               var isValidValue = (typeof validValues == "undefined" || validValues.length === 0);
 
                // Initialise the invalid value to be false if no invalid values have been declared (and only check values if defined)...
                var isInvalidValue = (typeof invalidValues != "undefined" && invalidValues.length > 0);
@@ -1091,7 +1088,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       postMixInProperties: function alfresco_renderers_Reorder__postMixInProperties() {
-         if (this.validationInProgressImgSrc == null || this.validationInProgressImgSrc == "")
+         if (this.validationInProgressImgSrc == null || this.validationInProgressImgSrc === "")
          {
             this.validationInProgressImgSrc = require.toUrl("alfresco/forms/controls") + "/css/images/" + this.validationInProgressImg;
          }
@@ -1103,14 +1100,11 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_forms_controls_BaseFormControl__postCreate() {
-         
-         var _this = this;
-         
          /*
           * These are the types of attributes we expect a form to have...
-          * Field label (e.g. �Name�)
+          * Field label (e.g. Name)
           * Description (e.g. hover help)
-            Units (e.g. �milliseconds�, etc)
+            Units (e.g. milliseconds, etc)
             User control (e.g. text box, drop-down menu, radio buttons, etc)
             Validation - regex expression
             Validation - callback function reference
@@ -1184,7 +1178,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            this.alfLog("error", "The wrapped widget has no 'placeAt' function - perhaps the 'placeWidget' function should be overridden?", this);
+            this.alfLog("warn", "The wrapped widget has no 'placeAt' function - perhaps the 'placeWidget' function should be overridden?", this);
          }
       },
       
@@ -1205,7 +1199,8 @@ define(["dojo/_base/declare",
          this.alfDisabled(this._disabled);
          
          // Set the label...
-         if (this.label != null && lang.trim(this.label) != "")
+         var widgetId = lang.getObject("id", false, this.wrappedWidget);
+         if (this.label != null && lang.trim(this.label) !== "" && widgetId != null)
          {
             this._labelNode.innerHTML = this.encodeHTML(this.message(this.label));
             domAttr.set(this._labelNode, "for", this.wrappedWidget.id);
@@ -1216,7 +1211,7 @@ define(["dojo/_base/declare",
          }
 
          // Set the description...
-         if (this.description != null && lang.trim(this.description) != "")
+         if (this.description != null && lang.trim(this.description) !== "")
          {
             this._descriptionNode.innerHTML = this.encodeHTML(this.message(this.description));
          }
@@ -1226,7 +1221,7 @@ define(["dojo/_base/declare",
          }
          
          // Set the units label...
-         if (this.unitsLabel != null && this.unitsLabel != "")
+         if (this.unitsLabel != null && this.unitsLabel !== "")
          {
             this._unitsNode.innerHTML = this.encodeHTML(this.message(this.unitsLabel));
          }
@@ -1244,10 +1239,11 @@ define(["dojo/_base/declare",
          }
 
          // Fix for missing label on validation input
-         var validationInput = query("input.dijitValidationIcon.dijitValidationInner", this._controlNode),
-             validationInputId = this.wrappedWidget.id + "_validationInput";
-         if(validationInput && validationInput.length > 0)
+         var validationInput = query("input.dijitValidationIcon.dijitValidationInner", this._controlNode);
+         if(validationInput && validationInput.length > 0 && widgetId != null)
          {
+            var validationInputId = this.wrappedWidget.id + "_validationInput";
+
             // Add 'id' to the input
             domAttr.set(validationInput[0], "id", validationInputId);
 
@@ -1273,7 +1269,7 @@ define(["dojo/_base/declare",
          if (this.wrappedWidget)
          {
             // TODO: Do we need to do anything with the watch handle when the widget is destroyed?
-            var watchHandle = this.wrappedWidget.watch("value", lang.hitch(this, "onValueChangeEvent"));
+            this.wrappedWidget.watch("value", lang.hitch(this, "onValueChangeEvent"));
          }
       },
       
@@ -1482,7 +1478,7 @@ define(["dojo/_base/declare",
                 passedRegExpTest = true; // Assume valid starting point.
             
             // Check that a value has been specified if this is a required field...
-            passedRequiredTest = !(this._required && (value == null || value == ""));
+            passedRequiredTest = !(this._required && (value == null || value === ""));
             
             // Check if any specified regular expression is passed...
             if (this.validationConfig != null)
@@ -1545,9 +1541,9 @@ define(["dojo/_base/declare",
          // unless specifically requested by the configuration. This allows
          // multiple controls to represent a single field but also allows intentionally
          // hidden fields to still have data submitted
-         if (((this._visible !== undefined && this._visible == false) ||
-              (this._disabled !== undefined && this._disabled == true)) &&
-             (this.postWhenHiddenOrDisabled !== undefined && this.postWhenHiddenOrDisabled == false))
+         if (((this._visible !== undefined && this._visible === false) ||
+              (this._disabled !== undefined && this._disabled === true)) &&
+             (this.postWhenHiddenOrDisabled !== undefined && this.postWhenHiddenOrDisabled === false))
          {
             // Don't set the value (line below is just to allow debug point to be set)
          }
@@ -1570,9 +1566,9 @@ define(["dojo/_base/declare",
        * @param {object} values The object to set the each form control value from
        */
       updateFormControlValue: function alfresco_forms_controls_BaseFormControl__addFormControlValue(values) {
-         if (((this._visible !== undefined && this._visible == false) ||
-              (this._disabled !== undefined && this._disabled == true)) &&
-             (this.noValueUpdateWhenHiddenOrDisabled !== undefined && this.noValueUpdateWhenHiddenOrDisabled == true))
+         if (((this._visible !== undefined && this._visible === false) ||
+              (this._disabled !== undefined && this._disabled === true)) &&
+             (this.noValueUpdateWhenHiddenOrDisabled !== undefined && this.noValueUpdateWhenHiddenOrDisabled === true))
          {
             // Don't set the value as the field is hidden or disabled and has requested that it not be updated
             // in these circumstances. The typical reason for this is that multiple controls represent a single

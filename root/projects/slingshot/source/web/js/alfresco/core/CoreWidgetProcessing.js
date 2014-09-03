@@ -52,7 +52,6 @@ define(["dojo/_base/declare",
          try
          {
             // For the moment we'll just ignore handling the configUrl...
-            var _this = this;
             if (widgets && widgets instanceof Array)
             {
                // Reset the processing complete flag (this is to support multiple invocations of widget processing)...
@@ -90,7 +89,7 @@ define(["dojo/_base/declare",
          {
             if (this.filterWidget(widgetConfig, index))
             {
-               var domNode = this.createWidgetDomNode(widgetConfig, rootNode, widgetConfig.className);
+               var domNode = this.createWidgetDomNode(widgetConfig, rootNode, (widgetConfig.className != null ? widgetConfig.className : ""));
                this.createWidget(widgetConfig, domNode, this._registerProcessedWidget, this, index);
             }
          }
@@ -113,7 +112,7 @@ define(["dojo/_base/declare",
       /**
        * This is used to countdown the widgets that are still waiting to be created. It is initialised to the size
        * of the widgets array supplied to the [processWidgets]{@link module:alfresco/core/Core#processWidgets} function.
-       * widgets
+       * 
        * @instance 
        * @type {number}
        * @default null
@@ -151,10 +150,10 @@ define(["dojo/_base/declare",
             // If the widget has dynamic visibility behaviour configured then we need to set up the necessary
             // subscriptions to handle the rules that have been defined. We will set the initial visibility
             // as requested and then set up the subcriptions...
-            if (widget.visibilityConfig != undefined)
+            if (widget.visibilityConfig !== undefined)
             {
                var initialValue = lang.getObject("visibilityConfig.initialValue", false, widget);
-               if (initialValue != null && initialValue == false)
+               if (initialValue != null && initialValue === false)
                {
                   // Hide the widget if requested to initially...
                   domStyle.set(widget.domNode, "display", "none");
@@ -180,7 +179,7 @@ define(["dojo/_base/declare",
             this.alfLog("warn", "No widget supplied following registration", this);
          }
          
-         if (this._processedWidgetCountdown == 0)
+         if (this._processedWidgetCountdown === 0)
          {
             // Double-check that no empty elements are in the array of processed widgets...
             // This could still be possible when indices have been used to set array contents...
@@ -209,7 +208,7 @@ define(["dojo/_base/declare",
 
          // Assume that its NOT valid value (we'll only do the actual test if its not set to an INVALID value)...
          // UNLESS there are no valid values specified (in which case any value is valid apart form those in the invalid list)
-         var isValidValue = (typeof is == "undefined" || is.length == 0);
+         var isValidValue = (typeof is == "undefined" || is.length === 0);
 
          // Initialise the invalid value to be false if no invalid values have been declared (and only check values if defined)...
          var isInvalidValue = (typeof isNot != "undefined" && isNot.length > 0);
@@ -226,7 +225,7 @@ define(["dojo/_base/declare",
          }
 
          var visible = isValidValue && !isInvalidValue;
-         if (visible == false)
+         if (visible === false)
          {
             domStyle.set(widget.domNode, "display", "none");
          }
@@ -301,7 +300,7 @@ define(["dojo/_base/declare",
          // Add a new <div> element to the "main" domNode (defined by the "data-dojo-attach-point"
          // in the HTML template)...
          var tmp = rootNode;
-         if (rootClassName != null && rootClassName != "")
+         if (rootClassName != null && rootClassName !== "")
          {
             tmp = domConstruct.create("div", { className: rootClassName}, rootNode);
          }
@@ -340,7 +339,7 @@ define(["dojo/_base/declare",
             {
                // Attempt to use the model ID as the DOM ID if available, but if not just generate an ID
                // based on the module name...
-               if (config.id == null || config.id.trim() == "")
+               if (config.id == null || lang.trim(config.id) === "")
                {
                   initArgs.id = config.name.replace(/\//g, "_") + "___" + this.generateUuid();
                }
@@ -527,7 +526,7 @@ define(["dojo/_base/declare",
                 renderFilterValues = this.getRenderFilterValues(renderFilterConfig);
             passesFilter = array.some(renderFilterValues, lang.hitch(this, "processFilter", renderFilterConfig, renderFilterProperty));
          }
-         else if (renderFilterConfig.renderOnAbsentProperty == true)
+         else if (renderFilterConfig.renderOnAbsentProperty === true)
          {
             passesFilter = true;
          }
