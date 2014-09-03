@@ -1,9 +1,4 @@
 {
-   "publishOnReady": [
-      {
-         "publishTopic": "GLOBAL_UPDATE_TOPIC"
-      }
-   ],
    "services": [
       {
          "name": "alfresco/services/LoggingService",
