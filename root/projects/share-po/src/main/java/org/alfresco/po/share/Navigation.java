@@ -28,6 +28,7 @@ import org.alfresco.po.share.adminconsole.ChannelManagerPage;
 import org.alfresco.po.share.adminconsole.NodeBrowserPage;
 import org.alfresco.po.share.adminconsole.TagManagerPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
+import org.alfresco.po.share.search.FacetedSearchConfigPage;
 import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
@@ -922,6 +923,23 @@ public class Navigation extends SharePage
             drone.navigateTo(url);
         }
         return new FacetedSearchPage(drone);
+    }
+
+    /**
+     * Navigates to the faceted search config page.
+     * 
+     * @return {@link FacetedSearchConfigPage} Instance of FacetedSearchConfigPage
+     */
+    public HtmlPage getFacetedSearchConfigPage()
+    {
+        String facetedSearchConfigPageURL = "/page/dp/ws/faceted-search-config";
+        String currentUrl = drone.getCurrentUrl();
+        if (currentUrl != null)
+        {
+            String url = currentUrl.replaceFirst("^*/page.*", facetedSearchConfigPageURL);
+            drone.navigateTo(url);
+        }
+        return new FacetedSearchConfigPage(drone);
     }
 
     /**

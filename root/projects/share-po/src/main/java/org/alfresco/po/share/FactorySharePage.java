@@ -167,6 +167,7 @@ public class FactorySharePage implements PageFactory
         pages.put("user-sites", UserSitesPage.class);
         pages.put("tag-management", TagManagerPage.class);
         pages.put("faceted-search", FacetedSearchPage.class);
+        pages.put("faceted-search-config", FacetedSearchConfigPage.class);
         pages.put("user-sites", UserSitesPage.class);
         pages.put("bulkfsimport", BulkImportPage.class);
         pages.put("status", StatusBulkImportPage.class);
