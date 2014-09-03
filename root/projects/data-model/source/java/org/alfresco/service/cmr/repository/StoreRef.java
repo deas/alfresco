@@ -35,7 +35,6 @@ public final class StoreRef implements EntityRef, Serializable
 
     public static final String PROTOCOL_WORKSPACE = "workspace";
     public static final String PROTOCOL_ARCHIVE = "archive";
-    public static final String PROTOCOL_AVM = "avm";
     public static final String PROTOCOL_TEST = "test";
     public static final String PROTOCOL_DELETED = "deleted";
     

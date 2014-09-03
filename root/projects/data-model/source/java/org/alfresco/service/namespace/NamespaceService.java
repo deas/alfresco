@@ -134,29 +134,11 @@ public interface NamespaceService extends NamespacePrefixResolver
     /** Alfresco security Prefix */
     static final String SECURITY_MODEL_PREFIX = "security";
     
-    /** Alfresco WCM URI */
-    static final String WCM_MODEL_1_0_URI = "http://www.alfresco.org/model/wcmmodel/1.0";
-    
-    /** Alfresco WCM Prefix */
-    static final String WCM_MODEL_PREFIX = "wcm";
-    
-    /** WCM Application Model URI */
-    static final String WCMAPP_MODEL_1_0_URI = "http://www.alfresco.org/model/wcmappmodel/1.0";
-    
-    /** WCM Application Model Prefix */
-    static final String WCMAPP_MODEL_PREFIX = "wca";
-
     /** Email Server Application Model URI */
     static final String EMAILSERVER_MODEL_URI = "http://www.alfresco.org/model/emailserver/1.0";
 
     /** Email Server Application Model Prefix */
     static final String EMAILSERVER_MODEL_PREFIX = "emailserver";
-    
-    /** WCM Workflow Model Prefix */
-    static final String WCMWF_MODEL = "wcmwf";
-    
-    /** WCM Workflow Model URI */
-    static final String WCMWF_MODEL_1_0_URI = "http://www.alfresco.org/model/wcmworkflow/1.0";
     
     /**
      * Register a prefix for namespace uri. 
