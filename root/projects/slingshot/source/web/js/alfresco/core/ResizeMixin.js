@@ -18,7 +18,14 @@
  */
 
 /**
- * This provides functions for both publishing resize payloads and handling resize subscriptions.
+ * This provides functions for both publishing resize payloads and handling resize subscriptions. Widgets that
+ * need to publish information about being resized (such as the [AlfSideBarContainer]{@link module:alfresco/layout/AlfSideBarContainer})
+ * should call the [alfPublishResizeEvent function]{@link module:alfresco/core/ResizeMixin#alfPublishResizeEvent} passing
+ * the node that has been resized. Widgets that need to handle either window or containing node resize events 
+ * (such as the [Grid]{@link module:alfresco/documentlibrary/views/layouts/Grid} and the [Carousel]{@link module:alfresco/documentlibrary/views/layouts/Carousel}
+ * should call the 
+ * call the [alfSetupResizeSubscriptions function]{@link module:alfresco/core/ResizeMixin#alfSetupResizeSubscriptions} passing
+ * the handler and scope to use when resize events occur.
  * 
  * @module alfresco/core/ResizeMixin
  * @author Dave Draper

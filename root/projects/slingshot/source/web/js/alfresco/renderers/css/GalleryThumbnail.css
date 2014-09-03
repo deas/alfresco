@@ -1,5 +1,6 @@
 .alfresco-renderers-Thumbnail.gallery {
   overflow: hidden;
+  cursor: pointer;
 }
 
 .alfresco-renderers-Thumbnail.gallery .displayName,

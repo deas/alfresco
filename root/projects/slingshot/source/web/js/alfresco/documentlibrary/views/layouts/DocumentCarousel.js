@@ -86,6 +86,36 @@ define(["dojo/_base/declare",
       calculateSizes: function alfresco_documentlibrary_views_layouts_DocumentCarousel__calculateSizes() {
          this.inherited(arguments);
          this.numberOfItemsShown = 1;
+      },
+
+      /**
+       * Extends the [inherited function]{@link module:alfresco/documentlibrary/views/layouts/Carousel#onPrevClick}
+       * to publish the current item index. This is done so that when used in the 
+       * [filmstrip view]{@link module:alfresco/documentlibrary/views/AlfFilmStripView} the content carousel
+       * is kept up-to-date.
+       *
+       * @instance
+       */
+      onPrevClick: function alfresco_documentlibrary_views_layouts_DocumentCarousel__onPrevClick(evt) {
+         this.inherited(arguments);
+         this.alfPublish("ALF_FILMSTRIP_ITEM_CHANGED", {
+            index: this.firstDisplayedIndex
+         });
+      },
+
+      /**
+       * Extends the [inherited function]{@link module:alfresco/documentlibrary/views/layouts/Carousel#onNextClick}
+       * to publish the current item index. This is done so that when used in the 
+       * [filmstrip view]{@link module:alfresco/documentlibrary/views/AlfFilmStripView} the content carousel
+       * is kept up-to-date.
+       *
+       * @instance
+       */
+      onNextClick: function alfresco_documentlibrary_views_layouts_DocumentCarousel__onNextClick(evt) {
+         this.inherited(arguments);
+         this.alfPublish("ALF_FILMSTRIP_ITEM_CHANGED", {
+            index: this.firstDisplayedIndex
+         });
       }
    });
 });

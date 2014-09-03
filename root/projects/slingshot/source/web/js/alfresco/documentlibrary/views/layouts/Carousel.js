@@ -103,7 +103,7 @@ define(["dojo/_base/declare",
          // Handle resize events...
          this.alfSetupResizeSubscriptions(this.resize, this);
       },
-      
+
       /**
        * Sets the width of each item (in pixels)
        *
@@ -187,17 +187,15 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * Overrides the superclass implementation to add an additional li element to get the column effect.
+       * Extends the inherited function to add an additional li element for each item.
        * 
        * @instance
-       * @param {Object} widget The widget definition to create the DOM node for
-       * @param {element} rootNode The DOM node to create the new DOM node as a child of
-       * @param {String} rootClassName A string containing one or more space separated CSS classes to set on the DOM node
-       * @returns {element} A new DOM node for a processed widget to attach to
+       * @param {array} widgets The widgets to create
+       * @param {element} rootNode The DOM element to add them into.
        */
-      createWidgetDomNode: function alfresco_documentlibrary_views_layouts_Carousel__createWidgetDomNode(widget, rootNode, rootClassName) {
+      processWidgets: function alfresco_core_CoreWidgetProcessing__processWidgets(widgets, rootNode) {
          var nodeToAdd = nodeToAdd = domConstruct.create("li", {}, rootNode);
-         return domConstruct.create("div", {}, nodeToAdd);
+         this.inherited(arguments, [widgets, nodeToAdd]);
       },
 
       /**

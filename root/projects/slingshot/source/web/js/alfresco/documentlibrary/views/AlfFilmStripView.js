@@ -35,6 +35,15 @@ define(["dojo/_base/declare",
    return declare([AlfDocumentListView], {
       
       /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/AlfFilmStripView.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/AlfFilmStripView.css"}],
+            
+      /**
        * The HTML template to use for the widget.
        * @instance
        * @type {String}
@@ -64,30 +73,6 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * Extends the [inherited function]{@link module:alfresco/documentlibrary/views/AlfDocumentListView#postCreate}
-       * to add in an [AlfDocument]{@link module:alfresco/documentlibrary/AlfDocument} instance for previewing the
-       * currently selected item in the view.
-       *
-       * @instance
-       */
-      postCreate: function alfresco_documentlibrary_views_AlfFilmStripView__postCreate() {
-         // this.currentItemView = new AlfDocument({
-         //    id: this.id + "_CURRENT_ITEM",
-         //    widgets: [
-         //       {
-         //          name: "alfresco/preview/AlfDocumentPreview"
-         //       }
-         //    ],
-         //    pubSubScope: this.pubSubScope,
-         //    parentPubSubScope: this.parentPubSubScope
-         // });
-         // this.currentItemView.placeAt(this.previewNode, "last");
-
-         // Carry on with the usual setup...
-         this.inherited(arguments);
-      },
-
-      /**
        * Extends the [inherited function]{@link module:alfresco/documentlibrary/views/AlfDocumentListView#renderView}
        * to publish a request to get the details of the first item (if available). This request is intended to be 
        * serviced by the [DocumentService]{@link module:alfresco/services/DocumentService} and the published response
@@ -106,9 +91,6 @@ define(["dojo/_base/declare",
             {
                this.contentCarousel.renderData();
             }
-            // this.alfPublish("ALF_FILMSTRIP_DOCUMENT_REQUEST__" + this.currentData.items[0].nodeRef, {
-            //    nodeRef: this.currentData.items[0].nodeRef
-            // });
          }
       },
 
@@ -155,7 +137,8 @@ define(["dojo/_base/declare",
             currentData: this.currentData,
             pubSubScope: this.pubSubScope,
             parentPubSubScope: this.parentPubSubScope,
-            fixedHeight: "112px"
+            fixedHeight: "112px",
+            itemSelectionTopics: ["ALF_FILMSTRIP_ITEM_CHANGED"]
          });
          return dlr;
       },
@@ -182,6 +165,28 @@ define(["dojo/_base/declare",
        */
       widgetsForContent: [
          {
+            name: "alfresco/layout/LeftAndRight",
+            config: {
+               widgets: [
+                  {
+                     name: "alfresco/renderers/Selector",
+                     align: "left"
+                  },
+                  {
+                     name: "alfresco/renderers/Property",
+                     align: "left",
+                     config: {
+                        propertyToRender: "node.properties.cm:name"
+                     }
+                  },
+                  {
+                     name: "alfresco/renderers/MoreInfo",
+                     align: "right"
+                  }
+               ]
+            }
+         },
+         {
             name: "alfresco/documentlibrary/views/layouts/AlfFilmStripViewDocument"
          }
       ],
@@ -205,7 +210,8 @@ define(["dojo/_base/declare",
                   index: "{index}",
                   nodeRef: "{nodeRef}"
                },
-               publishPayloadModifiers: ["processCurrentItemTokens"]
+               publishPayloadModifiers: ["processCurrentItemTokens"],
+               widgetsForSelectBar: null
             }
          }
       ]

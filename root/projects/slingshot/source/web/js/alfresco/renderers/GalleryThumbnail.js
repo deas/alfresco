@@ -130,10 +130,19 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_documentlibrary_views_AlfGalleryView__postCreate() {
          this.inherited(arguments);
-         this.selectBarWidget = new LeftAndRight({
-            widgets: this.getSelectBarWidgets()
-         }, this.selectBarNode);
-
+         if (this.widgetsForSelectBar)
+         {
+               this.selectBarWidget = new LeftAndRight({
+               currentItem: this.currentItem,
+               pubSubScope: this.pubSubScope,
+               parentPubSubScope: this.parentPubSubScope,
+               widgets: lang.clone(this.widgetsForSelectBar)
+            }, this.selectBarNode);
+         }
+         else
+         {
+            domStyle.set(this.titleNode, "display", "none");
+         }
          if (this.dimensions != null)
          {
             this.resize(this.dimensions);
@@ -141,29 +150,21 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * Returns the widget definition model to include in the select bar.
+       * Defines the widget definition model to include in the select bar.
        * 
        * @instance
        * @returns {object[]}
        */
-      getSelectBarWidgets: function alfresco_documentlibrary_views_AlfGalleryView__getWidgetsForSelectBar() {
-         return [
-           {
-              name: "alfresco/renderers/Selector",
-              align: "left",
-              config: {
-                 currentItem: this.currentItem
-              }
-           },
-           {
-              name: "alfresco/renderers/MoreInfo",
-              align: "right",
-              config: {
-                 currentItem: this.currentItem
-              }
-           }
-        ];
-      },
+      widgetsForSelectBar: [
+         {
+            name: "alfresco/renderers/Selector",
+            align: "left"
+         },
+         {
+            name: "alfresco/renderers/MoreInfo",
+            align: "right"
+         }
+      ],
 
       /**
        * Focuses the domNode. This has been added to support the dijit/_KeyNavContainer functions mixed into 
