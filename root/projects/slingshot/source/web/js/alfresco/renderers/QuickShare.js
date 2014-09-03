@@ -140,6 +140,8 @@ define(["dojo/_base/declare",
          this.inherited(arguments);
       },
       
+      propertyToRender: "jsNode.properties.qshare:sharedId",
+
       /**
        * Overridden to get the liked state of the current item.
        * 
@@ -147,7 +149,7 @@ define(["dojo/_base/declare",
        * @returns {boolean} Indicating the initial state of the toggle.
        */
       getInitialState: function alfresco_renderers_QuickShare__getInitialState() {
-         return typeof this.currentItem.jsNode.properties["qshare:sharedId"] != "undefined";
+         return (lang.getObject(this.propertyToRender, false, this.currentItem) != null);
       },
       
       /**
@@ -158,7 +160,8 @@ define(["dojo/_base/declare",
          this.inherited(arguments);
          
          // Hide folders
-         if (this.currentItem.node != null && this.currentItem.node.isContainer)
+         var isContainer = lang.getObject("node.isContainer", false, this.currentItem);
+         if (isContainer)
          {
             domClass.add(this.domNode, "hidden");
          }
@@ -178,12 +181,22 @@ define(["dojo/_base/declare",
             
             if (this.isToggleOn)
             {
-               this.widgets = this.defineWidgets(this.currentItem.jsNode.properties["qshare:sharedId"]);
+               var quickShareId = lang.getObject(this.propertyToRender, false, this.currentItem);
+               this.widgets = this.defineWidgets(quickShareId);
                this.processWidgets(this.widgets, this.onNode);
             }
          }
       },
       
+      /**
+       * The default quick share link
+       * 
+       * @instance
+       * @type {string}
+       * @default ""
+       */
+      quickShareLink: "",
+
       /**
        * This function is passed as the callback handler when publishing a request for the quick share link.
        * It simply sets the "quickShareLink" attribute with the argument passed.

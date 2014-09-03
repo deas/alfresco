@@ -21,20 +21,17 @@
  * @module alfresco/renderers/Like
  * @extends module:alfresco/renderers/Toggle
  * @mixes module:alfresco/services/_RatingsServiceTopicMixin
- * @mixes module:alfresco/renderers/_JsNodeMixin
  * @autor Dave Draper
  */
 define(["dojo/_base/declare",
         "alfresco/renderers/Toggle",
         "alfresco/services/_RatingsServiceTopicMixin",
-        "alfresco/renderers/_JsNodeMixin",
         "dojo/text!./templates/Like.html",
         "dojo/_base/lang",
-        "dojo/html",
-        "dojo/dom-class"], 
-        function(declare, Toggle, _RatingsServiceTopicMixin, _JsNodeMixin, template, lang, html, domClass) {
+        "dojo/html"], 
+        function(declare, Toggle, _RatingsServiceTopicMixin, template, lang, html) {
 
-   return declare([Toggle, _RatingsServiceTopicMixin, _JsNodeMixin], {
+   return declare([Toggle, _RatingsServiceTopicMixin], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -123,43 +120,31 @@ define(["dojo/_base/declare",
          this.inherited(arguments);
 
          // Set the current number of likes...
-         if (this.currentItem != null &&
-             this.currentItem.likes != null &&
-             this.currentItem.likes.totalLikes != null)
+         this.likeCount = lang.getObject(this.likeCountProperty, false, this.currentItem);
+         if (this.likeCount == null)
          {
-            this.likeCount = this.currentItem.likes.totalLikes;
+            this.likeCount = 0;
          }
       },
       
       /**
-       * Overridden to get the liked state of the current item.
-       * 
+       * The dot-notation property to use for the count of comments. Can be overridden.
+       *
        * @instance
-       * @returns {boolean} Indicating the initial state of the toggle.
+       * @type {string}
+       * @default "node.properties.fm:commentCount"
        */
-      getInitialState: function alfresco_renderers_Like__getInitialState() {
-         return this.currentItem.likes.isLiked;
-      },
-      
+      likeCountProperty: "likes.totalLikes",
+
       /**
-       * Overrides the default implementation to check that the event is related
-       * 
+       * Sets a default dot-notation property in the current item to use to render the initial state.
+       *
        * @instance
-       * @returns false
+       * @type {string}
+       * @default "likes.isLiked"
        */
-      relatesToMe: function alfresco_renderers_Like__relatesToMe(payload) {
-         var relatesToMe = false;
-         try
-         {
-            relatesToMe = (payload.requestConfig.data.nodeRefUri == this.currentItem.jsNode.nodeRef.uri);
-         }
-         catch (e) 
-         {
-            this.alfLog("error", "Unexpected data structures", e, payload, this);
-         }
-         return relatesToMe;
-      },
-      
+      propertyToRender: "likes.isLiked",
+
       /**
        * Called whenever the "toggleOnSuccessTopic" attribute is published on
        * @instance

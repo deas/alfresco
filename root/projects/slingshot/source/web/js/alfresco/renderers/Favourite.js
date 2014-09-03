@@ -106,33 +106,12 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * Overridden to get the favourited state of the current item.
-       * 
+       * Sets a default dot-notation property in the current item to use to render the initial state.
+       *
        * @instance
-       * @returns {boolean} Indicating the initial state of the toggle.
+       * @type {string}
+       * @default "isFavourite"
        */
-      getInitialState: function alfresco_renderers_Favourite__getInitialState() {
-         return this.currentItem.isFavourite;
-      },
-      
-      /**
-       * Overrides the default implementation to check that the event is related
-       * 
-       * @instance
-       * @returns false
-       */
-      relatesToMe: function alfresco_renderers_Favourite__relatesToMe(payload) {
-         var relatesToMe = false;
-         try
-         {
-            relatesToMe = (payload.requestConfig.node.jsNode.nodeRef.uri == this.currentItem.jsNode.nodeRef.uri);
-         }
-         catch (e) 
-         {
-            this.alfLog("error", "Unexpected data structures", e, payload, this);
-         }
-         return relatesToMe;
-      }
-      
+      propertyToRender: "isFavourite"
    });
 });

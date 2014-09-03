@@ -42,8 +42,8 @@ define(["dojo/_base/declare",
        */
       constructor: function alfresco_services_RatingsService__constructor(args) {
          lang.mixin(this, args);
-         this.alfSubscribe(this.addRatingTopic, lang.hitch(this, "onAddRating"));
-         this.alfSubscribe(this.removeRatingTopic, lang.hitch(this, "onRemoveRating"));
+         this.alfSubscribe(this.addRatingTopic, lang.hitch(this, this.onAddRating));
+         this.alfSubscribe(this.removeRatingTopic, lang.hitch(this, this.onRemoveRating));
       },
       
       /**
@@ -73,56 +73,22 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       onAddRating: function alfresco_services_RatingsService__onAddRating(payload) {
-         if (payload != null &&
-             payload.node != null &&
-             payload.node.jsNode != null &&
-             payload.node.jsNode.nodeRef != null &&
-             payload.node.jsNode.nodeRef.uri != null)
+         var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : this.addRatingTopic;
+         var nodeRefUri = lang.getObject("node.jsNode.nodeRef.uri", false, payload);
+         if (nodeRefUri)
          {
-            var url = this.getAddRatingsUrl(payload.node.jsNode.nodeRef.uri);
+            var url = this.getAddRatingsUrl(nodeRefUri);
             var data = {
-               nodeRefUri: payload.node.jsNode.nodeRef.uri,
+               nodeRefUri: nodeRefUri,
                rating: 1,
                ratingScheme: "likesRatingScheme"
             };
             
             this.serviceXhr({url : url,
+                             alfTopic: alfTopic,
                              data: data,
-                             method: "POST",
-                             successCallback: this.onAddRatingSuccess,
-                             failureCallback: this.onAddRatingFailure,
-                             callbackScope: this});
+                             method: "POST"});
          }
-      },
-      
-      /**
-       * This handles successfully completed requests to add a rating.
-       * 
-       * @instance
-       * @param {object} response The response from the request
-       * @param {object} originalRequestConfig The configuration passed on the original request
-       */
-      onAddRatingSuccess: function alfresco_services_RatingsService__onAddRatingSuccess(response, originalRequestConfig) {
-         this.alfLog("log", "Successfully rated a document", response, originalRequestConfig);
-         this.alfPublish(this.addRatingSuccessTopic, {
-            response: response,
-            requestConfig: originalRequestConfig
-         });
-      },
-      
-      /**
-       * This handles unsuccessful requests to add a rating.
-       * 
-       * @instance
-       * @param {object} response The response from the request
-       * @param {object} originalRequestConfig The configuration passed on the original request
-       */
-      onAddRatingFailure: function alfresco_services_RatingsService__onAddRatingFailure(response, originalRequestConfig) {
-         this.alfLog("error", "Failed to rate a document", response, originalRequestConfig);
-         this.alfPublish(this.addRatingFailureTopic, {
-            response: response,
-            requestConfig: originalRequestConfig
-         });
       },
       
       /**
@@ -132,54 +98,20 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       onRemoveRating: function alfresco_services_RatingsService__onRemoveRating(payload) {
-         if (payload != null &&
-             payload.node != null &&
-             payload.node.jsNode != null &&
-             payload.node.jsNode.nodeRef != null &&
-             payload.node.jsNode.nodeRef.uri != null)
+         var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : this.onRemoveRating;
+         var nodeRefUri = lang.getObject("node.jsNode.nodeRef.uri", false, payload);
+         if (nodeRefUri)
          {
-            var url = this.getRemoveRatingsUrl(payload.node.jsNode.nodeRef.uri);
+            var url = this.getRemoveRatingsUrl(nodeRefUri);
             var data = {
-               nodeRefUri: payload.node.jsNode.nodeRef.uri,
+               nodeRefUri: nodeRefUri,
                ratingScheme: "likesRatingScheme"
             };
             this.serviceXhr({url : url,
+                             alfTopic: alfTopic,
                              data: data,
-                             method: "DELETE", 
-                             successCallback: this.onRemoveRatingSuccess,
-                             failureCallback: this.onRemoveRatingFailure,
-                             callbackScope: this});
+                             method: "DELETE"});
          }
-      },
-      
-      /**
-       * This handles successfully completed requests to remove a rating.
-       * 
-       * @instance
-       * @param {object} response The response from the request
-       * @param {object} originalRequestConfig The configuration passed on the original request
-       */
-      onRemoveRatingSuccess: function alfresco_services_RatingsService__onRemoveRatingSuccess(response, originalRequestConfig) {
-         this.alfLog("log", "Successfully removed a document rating", response, originalRequestConfig);
-         this.alfPublish(this.removeRatingSuccessTopic, {
-            response: response,
-            requestConfig: originalRequestConfig
-         });
-      },
-      
-      /**
-       * This handles unsuccessful requests to remove a rating.
-       * 
-       * @instance
-       * @param {object} response The response from the request
-       * @param {object} originalRequestConfig The configuration passed on the original request
-       */
-      onRemoveRatingFailure: function alfresco_services_RatingsService__onRemoveRatingFailure(response, originalRequestConfig) {
-         this.alfLog("error", "Failed to remove a document rating", response, originalRequestConfig);
-         this.alfPublish(this.removeRatingFailureTopic, {
-            response: response,
-            requestConfig: originalRequestConfig
-         });
       }
    });
 });

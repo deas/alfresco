@@ -223,37 +223,41 @@ define(["dojo/_base/declare",
        * @param {String} [repositoryUrl] The URL of a linked repository
        */
       getActionUrls: function alfresco_core_UrlUtils__getActionUrls(record, siteId, repositoryUrl, replicationUrlMapping) {
-         var jsNode = record.node,
-             nodeRef = jsNode.isLink ? jsNode.linkedNode.nodeRef : jsNode.nodeRef,
-             strNodeRef = nodeRef.toString(),
-             nodeRefUri = nodeRef.uri,
-             contentUrl = jsNode.contentURL,
-             workingCopy = record.workingCopy || {},
-             recordSiteId = (record.location.site != null) ? record.location.site.name : null;
+         var actionUrls = {},
+             jsNode = record.node;
+         if (jsNode)
+         {
+            var nodeRef = jsNode.isLink ? jsNode.linkedNode.nodeRef : jsNode.nodeRef,
+                strNodeRef = nodeRef.toString(),
+                nodeRefUri = nodeRef.uri,
+                contentUrl = jsNode.contentURL,
+                workingCopy = record.workingCopy || {},
+                recordSiteId = (record.location.site != null) ? record.location.site.name : null;
 
-         var site = {
-            site: (siteId != null) ? siteId : recordSiteId
-         };
-         try
-         {
-            actionUrls = {};
-            actionUrls.downloadUrl = this.combinePaths(AlfConstants.PROXY_URI, contentUrl) + "?a=true";
-            actionUrls.viewUrl =  this.combinePaths(AlfConstants.PROXY_URI, contentUrl) + "\" target=\"_blank";
-            actionUrls.documentDetailsUrl = this.generatePageUrl("document-details?nodeRef=" + strNodeRef, site);
-            actionUrls.folderDetailsUrl = this.generatePageUrl("folder-details?nodeRef=" + strNodeRef, site);
-            actionUrls.editMetadataUrl = this.generatePageUrl("edit-metadata?nodeRef=" + strNodeRef, site);
-            actionUrls.inlineEditUrl = this.generatePageUrl("inline-edit?nodeRef=" + strNodeRef, site);
-            actionUrls.managePermissionsUrl = this.generatePageUrl("manage-permissions?nodeRef=" + strNodeRef, site);
-            actionUrls.manageTranslationsUrl = this.generatePageUrl("manage-translations?nodeRef=" + strNodeRef, site);
-            actionUrls.workingCopyUrl = this.generatePageUrl("document-details?nodeRef=" + (workingCopy.workingCopyNodeRef || strNodeRef), site);
-            actionUrls.workingCopySourceUrl = this.generatePageUrl("document-details?nodeRef=" + (workingCopy.sourceNodeRef || strNodeRef), site);
-            actionUrls.explorerViewUrl = this.combinePaths(repositoryUrl, "/n/showSpaceDetails/", nodeRefUri, site) + "\" target=\"_blank";
-            actionUrls.cloudViewUrl = this.combinePaths(AlfConstants.URL_SERVICECONTEXT, "cloud/cloudUrl?nodeRef=" + strNodeRef);
-            actionUrls.sourceRepositoryUrl = this.viewInSourceRepositoryURL(record, actionUrls) + "\" target=\"_blank";
-         }
-         catch (e)
-         {
-            this.alfLog("error", "The following error occurred generating action URLs", e, record, this);
+            var site = {
+               site: (siteId != null) ? siteId : recordSiteId
+            };
+            try
+            {
+               actionUrls.downloadUrl = this.combinePaths(AlfConstants.PROXY_URI, contentUrl) + "?a=true";
+               actionUrls.viewUrl =  this.combinePaths(AlfConstants.PROXY_URI, contentUrl) + "\" target=\"_blank";
+               actionUrls.documentDetailsUrl = this.generatePageUrl("document-details?nodeRef=" + strNodeRef, site);
+               actionUrls.folderDetailsUrl = this.generatePageUrl("folder-details?nodeRef=" + strNodeRef, site);
+               actionUrls.editMetadataUrl = this.generatePageUrl("edit-metadata?nodeRef=" + strNodeRef, site);
+               actionUrls.inlineEditUrl = this.generatePageUrl("inline-edit?nodeRef=" + strNodeRef, site);
+               actionUrls.managePermissionsUrl = this.generatePageUrl("manage-permissions?nodeRef=" + strNodeRef, site);
+               actionUrls.manageTranslationsUrl = this.generatePageUrl("manage-translations?nodeRef=" + strNodeRef, site);
+               actionUrls.workingCopyUrl = this.generatePageUrl("document-details?nodeRef=" + (workingCopy.workingCopyNodeRef || strNodeRef), site);
+               actionUrls.workingCopySourceUrl = this.generatePageUrl("document-details?nodeRef=" + (workingCopy.sourceNodeRef || strNodeRef), site);
+               actionUrls.viewGoogleDocUrl = workingCopy.googleDocUrl + "\" target=\"_blank";
+               actionUrls.explorerViewUrl = this.combinePaths(repositoryUrl, "/n/showSpaceDetails/", nodeRefUri, site) + "\" target=\"_blank";
+               actionUrls.cloudViewUrl = this.combinePaths(AlfConstants.URL_SERVICECONTEXT, "cloud/cloudUrl?nodeRef=" + strNodeRef);
+               actionUrls.sourceRepositoryUrl = this.viewInSourceRepositoryURL(record, actionUrls) + "\" target=\"_blank";
+            }
+            catch (e)
+            {
+               this.alfLog("error", "The following error occurred generating action URLs", e, record, this);
+            }
          }
          return actionUrls;
       },

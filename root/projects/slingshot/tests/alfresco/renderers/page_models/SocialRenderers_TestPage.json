@@ -1,0 +1,80 @@
+{
+   "services": [
+      {
+         "name": "alfresco/services/LoggingService",
+         "config": {
+            "loggingPreferences": {
+               "enabled": true,
+               "all": true
+            }
+         }
+      },
+      "alfresco/testing/mockservices/SocialTestService"
+   ],
+   "widgets":[
+      {
+         "name": "alfresco/documentlibrary/views/AlfDocumentListView",
+         "config": {
+            "id": "LIST",
+            "currentData": {
+               "items": [
+                  {
+                     "name": "Test 1",
+                     "liked": false,
+                     "favourite": false,
+                     "shareId": "s1"
+                  }
+               ]
+            },
+            "widgets":[
+               {
+                  "name": "alfresco/documentlibrary/views/layouts/Row",
+                  "config": {
+                     "widgets": [
+                        {
+                           "name": "alfresco/documentlibrary/views/layouts/Cell",
+                           "config": {
+                              "widgets": [
+                                 {
+                                    "id": "BASIC",
+                                    "name": "alfresco/renderers/Like",
+                                    "config": {
+                                       "propertyToRender": "liked"
+                                    }
+                                 },
+                                 {
+                                    "id": "PREFIX_SUFFIX",
+                                    "name": "alfresco/renderers/Favourite",
+                                    "config": {
+                                       "propertyToRender": "favourite"
+                                    }
+                                 },
+                                 {
+                                    "id": "NEW_LINE",
+                                    "name": "alfresco/renderers/Comments"
+                                 },
+                                 {
+                                    "id": "WARN1",
+                                    "name": "alfresco/renderers/QuickShare",
+                                    "config": {
+                                       "propertyToRender": "shareId"
+                                    }
+                                 }
+                              ]
+                           }
+                        }
+                     ]
+                  }
+               }
+            ]
+            
+         }
+      },
+      {
+         "name": "alfresco/testing/SubscriptionLog"
+      },
+      {
+         "name": "alfresco/testing/TestCoverageResults"
+      }
+   ]
+}

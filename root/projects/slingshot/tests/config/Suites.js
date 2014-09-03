@@ -100,6 +100,7 @@ define({
       'tests/alfresco/renderers/PublishingDropDownMenuTest',
       'tests/alfresco/renderers/PublishPayloadMixinOnActionsTest',
       'tests/alfresco/renderers/SearchResultPropertyLinkTest',
+      'tests/alfresco/renderers/SocialRenderersTest',
 
       'tests/alfresco/renderers/XhrActionsTest',
 

@@ -73,15 +73,15 @@ define(["dojo/_base/declare",
 
             // It's currently only worth subscribing to the events to capture preferences for if
             // there is a preferences service to post them to!!
-            this.alfSubscribe(this.getPreferenceTopic, lang.hitch(this, "getPreference"));
-            this.alfSubscribe(this.setPreferenceTopic, lang.hitch(this, "setPreference"));
+            this.alfSubscribe(this.getPreferenceTopic, lang.hitch(this, this.getPreference));
+            this.alfSubscribe(this.setPreferenceTopic, lang.hitch(this, this.setPreference));
             
-            this.alfSubscribe(this.showFoldersTopic, lang.hitch(this, "onShowFolders"));
-            this.alfSubscribe(this.showPathTopic, lang.hitch(this, "onShowPath"));
-            this.alfSubscribe(this.showSidebarTopic, lang.hitch(this, "onShowSidebar"));
-            this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, "onViewSelection"));
-            this.alfSubscribe(this.addFavouriteDocumentTopic, lang.hitch(this, "onAddFavouriteDocument"));
-            this.alfSubscribe(this.removeFavouriteDocumentTopic, lang.hitch(this, "onRemoveFavouriteDocument"));
+            this.alfSubscribe(this.showFoldersTopic, lang.hitch(this, this.onShowFolders));
+            this.alfSubscribe(this.showPathTopic, lang.hitch(this, this.onShowPath));
+            this.alfSubscribe(this.showSidebarTopic, lang.hitch(this, this.onShowSidebar));
+            this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, this.onViewSelection));
+            this.alfSubscribe(this.addFavouriteDocumentTopic, lang.hitch(this, this.onAddFavouriteDocument));
+            this.alfSubscribe(this.removeFavouriteDocumentTopic, lang.hitch(this, this.onRemoveFavouriteDocument));
             
             // There are other preferences that are currently handled by the wrapped DocumentList that
             // will need to be added here when a new DocumentList is created that replaces the wrapped
@@ -238,25 +238,27 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       onAddFavouriteDocument: function alfresco_services_PreferenceService__onAddFavouriteDocument(payload) {
-         if (payload != null && 
-             payload.node != null &&
-             payload.node.jsNode != null)
+         var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : this.onAddFavouriteDocument;
+         var jsNode = lang.getObject("node.jsNode", false, payload);
+         if (jsNode)
          {
             var responseConfig =
             {
                successCallback: {
                   fn: this.onAddFavouriteDocumentSuccess,
                   scope: this,
-                  obj: payload
+                  obj: payload,
+                  alfTopic: alfTopic
                },
                failureCallback: {
                   fn: this.onAddFavouriteDocumentFailure,
                   scope: this,
-                  obj: payload
+                  obj: payload,
+                  alfTopic: alfTopic
                }
             };
-            var prefKey = payload.node.jsNode.isContainer ? Alfresco.service.Preferences.FAVOURITE_FOLDERS : Alfresco.service.Preferences.FAVOURITE_DOCUMENTS;
-            this._wrappedService.add(prefKey, payload.node.jsNode.nodeRef.nodeRef, responseConfig);
+            var prefKey = jsNode.isContainer ? Alfresco.service.Preferences.FAVOURITE_FOLDERS : Alfresco.service.Preferences.FAVOURITE_DOCUMENTS;
+            this._wrappedService.add(prefKey, jsNode.nodeRef.nodeRef, responseConfig);
          }
       },
       
@@ -267,25 +269,27 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       onRemoveFavouriteDocument: function alfresco_services_PreferenceService__onRemoveFavouriteDocument(payload) {
-         if (payload != null && 
-             payload.node != null &&
-             payload.node.jsNode != null)
+         var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : this.onRemoveFavouriteDocument;
+         var jsNode = lang.getObject("node.jsNode", false, payload);
+         if (jsNode)
          {
             var responseConfig =
             {
                successCallback: {
                   fn: this.onRemoveFavouriteDocumentSuccess,
                   scope: this,
-                  obj: payload
+                  obj: payload,
+                  alfTopic: alfTopic
                },
                failureCallback: {
                   fn: this.onRemoveFavouriteDocumentFailure,
                   scope: this,
-                  obj: payload
+                  obj: payload,
+                  alfTopic: alfTopic
                }
             };
-            var prefKey = payload.node.jsNode.isContainer ? Alfresco.service.Preferences.FAVOURITE_FOLDERS : Alfresco.service.Preferences.FAVOURITE_DOCUMENTS;
-            this._wrappedService.remove(prefKey, payload.node.jsNode.nodeRef.nodeRef, responseConfig);
+            var prefKey = jsNode.isContainer ? Alfresco.service.Preferences.FAVOURITE_FOLDERS : Alfresco.service.Preferences.FAVOURITE_DOCUMENTS;
+            this._wrappedService.remove(prefKey, jsNode.nodeRef.nodeRef, responseConfig);
          }
       },
       
@@ -298,7 +302,7 @@ define(["dojo/_base/declare",
        */
       onAddFavouriteDocumentSuccess: function alfresco_services_PreferenceService__onAddFavouriteSuccess(response, originalRequestConfig) {
          this.alfLog("log", "Successfully favourited a document", response, originalRequestConfig);
-         this.alfPublish(this.addFavouriteDocumentSuccessTopic, {
+         this.alfPublish(originalRequestConfig.alfResponseTopic + "_SUCCESS", {
             response: response,
             requestConfig: originalRequestConfig
          });
@@ -313,7 +317,7 @@ define(["dojo/_base/declare",
        */
       onAddFavouriteDocumentFailure: function alfresco_services_PreferenceService__onAddFavouriteFailure(response, originalRequestConfig) {
          this.alfLog("error", "Failed to favourite a document", response, originalRequestConfig);
-         this.alfPublish(this.addFavouriteDocumentFailureTopic, {
+         this.alfPublish(originalRequestConfig.alfResponseTopic + "_FAILURE", {
             response: response,
             requestConfig: originalRequestConfig
          });
@@ -328,7 +332,7 @@ define(["dojo/_base/declare",
        */
       onRemoveFavouriteDocumentSuccess: function alfresco_services_PreferenceService__onRemoveFavouriteSuccess(response, originalRequestConfig) {
          this.alfLog("log", "Successfully removed a document favourite", response, originalRequestConfig);
-         this.alfPublish(this.removeFavouriteDocumentSuccessTopic, {
+         this.alfPublish(originalRequestConfig.alfResponseTopic + "_SUCCESS", {
             response: response,
             requestConfig: originalRequestConfig
          });
@@ -343,7 +347,7 @@ define(["dojo/_base/declare",
        */
       onRemoveFavouriteDocumentFailure: function alfresco_services_PreferenceService__onRemoveFavouriteDocumentFailure(response, originalRequestConfig) {
          this.alfLog("error", "Failed to remove a document favourite", response, originalRequestConfig);
-         this.alfPublish(this.removeFavouriteDocumentFailureTopic, {
+         this.alfPublish(originalRequestConfig.alfResponseTopic + "_FAILURE", {
             response: response,
             requestConfig: originalRequestConfig
          });

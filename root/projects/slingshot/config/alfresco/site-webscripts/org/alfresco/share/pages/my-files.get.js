@@ -15,6 +15,7 @@ services.push("alfresco/services/PreferenceService",
               "alfresco/services/ActionService",
               "alfresco/services/DocumentService",
               "alfresco/services/TagService",
+              "alfresco/services/RatingsService",
               "alfresco/dialogs/AlfDialogService");
 widgets.push(docLibWidgets);
 

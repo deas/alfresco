@@ -72,7 +72,7 @@ define(["alfresco/core/ProcessWidgets",
          }
          catch (e)
          {
-            console.error("BOOM!");
+            console.error("BOOM!", e);
             this.alfLog("error", "The following error occurred building the page", e);
             PubQueue.getSingleton().release();
          }

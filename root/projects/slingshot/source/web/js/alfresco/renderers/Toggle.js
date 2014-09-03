@@ -200,13 +200,30 @@ define(["dojo/_base/declare",
       isToggleOn: null,
       
       /**
+       * This should be set to the dot-notation property in the current item to use to render the 
+       * state.
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      propertyToRender: null,
+
+      /**
        * Override this to select the item property to toggle on.
        * 
        * @instance
        * @returns {boolean} Indicating the initial state of the toggle.
        */
       getInitialState: function alfresco_renderers_Toggle__getInitialState() {
-         return false;
+         if (this.propertyToRender != null)
+         {
+            return (lang.getObject(this.propertyToRender, false, this.currentItem) == true);
+         }
+         else
+         {
+            return false;
+         }
       },
       
       /**
@@ -222,18 +239,6 @@ define(["dojo/_base/declare",
          else
          {
             domClass.remove(this.offNode, "hidden");
-         }
-
-         // Subscribe to the success/failure events for toggling on and off...
-         if (this.toggleOnTopic != null)
-         {
-            this.alfSubscribe(this.toggleOnSuccessTopic, lang.hitch(this, "checkApplicable", this.onToggleOnSuccess));
-            this.alfSubscribe(this.toggleOnFailureTopic, lang.hitch(this, "checkApplicable", this.onToggleOnFailure));
-         }
-         if (this.toggleOffTopic != null)
-         {
-            this.alfSubscribe(this.toggleOffSuccessTopic, lang.hitch(this, "checkApplicable", this.onToggleOffSuccess));
-            this.alfSubscribe(this.toggleOffFailureTopic, lang.hitch(this, "checkApplicable", this.onToggleOffFailure));
          }
       },
       
@@ -284,9 +289,13 @@ define(["dojo/_base/declare",
        * @instance
        */
       toggledOn: function alfresco_renderers_Toggle__toggledOn() {
+         var responseTopic = this.pubSubScope + this.generateUuid();
+         this._successHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onToggleOnSuccess), true);
+         this._failureHandle = this.alfSubscribe(responseTopic + "_FAILURE", lang.hitch(this, this.onToggleOnFailure), true);
          this.alfPublish(this.toggleOnTopic, {
+            alfResponseTopic: responseTopic,
             node: this.currentItem
-         });
+         }, true);
       },
       
       /**
@@ -296,55 +305,37 @@ define(["dojo/_base/declare",
        * @instance
        */
       toggledOff: function alfresco_renderers_Toggle__toggledOff() {
+         var responseTopic = this.pubSubScope + this.generateUuid();
+         this._successHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onToggleOffSuccess), true);
+         this._failureHandle = this.alfSubscribe(responseTopic + "_FAILURE", lang.hitch(this, this.onToggleOffFailure), true);
          this.alfPublish(this.toggleOffTopic, {
+            alfResponseTopic: responseTopic,
             node: this.currentItem
          });
       },
       
       /**
-       * This function is used to check whether or not a toggle response publication event is related
-       * to the item rendered by the current widget. If it is then it calls the supplied handler with 
-       * the payload.
+       * Handles removing subscription handles setup during requests to toggle on or off
        * 
        * @instance
-       * @param {function} f The function to call if the publication is applicable to the current item
-       * @param {object} payload The payload to use to check applicability and to pass to the supplied handler
        */
-      checkApplicable: function alfresco_renderers_Toggle__checkApplicable(f, payload) {
-         if (this.relatesToMe(payload))
+      removeSubscriptionHandles: function alfresco_renderers_Toggle__removeSubscriptionHandles() {
+         if (this._successHandle != null)
          {
-            f.call(this, payload);
+            this.alfUnsubscribe(this._successHandle);
+         }
+         if (this._failureHandle != null)
+         {
+            this.alfUnsubscribe(this._failureHandle);
          }
       },
-      
-      /**
-       * This function is called whenever a toggle success or failure topic callback is processed.
-       * It is used to determine whether or not the event relates to the current rendered item.
-       * By default this attempts to match "payload.requestConfig.data.node.nodeRef" to the nodeRef
-       * of the current item. If this does not meet the concrete implementation requirements then 
-       * this function should be overridden by extending widgets.
-       * 
-       * @instance
-       * @returns false
-       */
-      relatesToMe: function alfresco_renderers_Toggle__relatesToMe(payload) {
-         var relatesToMe = false;
-         try
-         {
-            relatesToMe = (payload.requestConfig.data.node.nodeRef == this.currentItem.nodeRef);
-         }
-         catch (e) 
-         {
-            this.alfLog("error", "Unexpected data structures", e, payload, this);
-         }
-         return relatesToMe;
-      },
-      
+
       /**
        * Called whenever the "toggleOnSuccessTopic" attribute is published on
        * @instance
        */
       onToggleOnSuccess: function alfresco_renderers_Toggle__onToggleOnSuccess(payload) {
+         this.removeSubscriptionHandles();
          this.isToggleOn = true;
          domClass.add(this.processingNode, "hidden");
          domClass.remove(this.onNode, "hidden");
@@ -355,6 +346,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       onToggleOnFailure: function alfresco_renderers_Toggle__onToggleOnFailure(payload) {
+         this.removeSubscriptionHandles();
          this.isToggleOn = false;
          domClass.add(this.processingNode, "hidden");
          domClass.remove(this.offNode, "hidden");
@@ -366,6 +358,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       onToggleOffSuccess: function alfresco_renderers_Toggle__onToggleOffSuccess(payload) {
+         this.removeSubscriptionHandles();
          this.isToggleOn = false;
          domClass.add(this.processingNode, "hidden");
          domClass.remove(this.offNode, "hidden");
@@ -376,6 +369,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       onToggleOffFailure: function alfresco_renderers_Toggle__onToggleOffFailure(payload) {
+         this.removeSubscriptionHandles();
          this.isToggleOn = true;
          domClass.add(this.processingNode, "hidden");
          domClass.remove(this.onNode, "hidden");
