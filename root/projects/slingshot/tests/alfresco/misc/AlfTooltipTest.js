@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -53,7 +53,7 @@ define(["intern!object",
          .end()
 
          // Move to test button - does the tool tip appear?
-         .elementByCss("#TEST_BUTTON > #TEST_BUTTON_label")
+         .findByCssSelector("#TEST_BUTTON > #TEST_BUTTON_label")
          .moveTo()
          .sleep(1000)
          .hasElementByCss(".dijitTooltip")
@@ -64,7 +64,7 @@ define(["intern!object",
          .end()
 
          // Does the tool tip contain the appropriate copy
-         .elementByCss(".dijitTooltipContainer.dijitTooltipContents")
+         .findByCssSelector(".dijitTooltipContainer.dijitTooltipContents")
          .text()
          .then(function(resultText1) {
             TestCommon.log(testname,70,"Does the tool tip contain the appropriate copy");
@@ -83,7 +83,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCss(".dijitTooltip")
+         .findByCssSelector(".dijitTooltip")
          .isDisplayed()
          .then(function(result4) {
             TestCommon.log(testname,89,"Move to test button two - does the tool tip disappear?");

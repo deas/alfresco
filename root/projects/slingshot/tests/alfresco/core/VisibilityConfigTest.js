@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -25,7 +25,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -45,7 +45,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCss("#LOGO2")
+         .findByCssSelector("#LOGO2")
             .getComputedCss("display")
             .then(function(result) {
                assert(result == "none", "Test #1b - LOGO2 was displayed unexpectedly");
@@ -53,21 +53,21 @@ define(["intern!object",
             .end()
 
          // Test 2: Check that LOGO1 can be hidden can then displayed by isNot rules
-         .elementByCss("#HIDE_LOGO_1")
+         .findByCssSelector("#HIDE_LOGO_1")
             .moveTo()
             .click()
             .end()
-         .elementByCss("#LOGO1")
+         .findByCssSelector("#LOGO1")
             .getComputedCss("display")
             .then(function(result) {
                assert(result == "none", "Test #2a - LOGO1 was not hidden");
             })
             .end()
-         .elementByCss("#SHOW_LOGO_1")
+         .findByCssSelector("#SHOW_LOGO_1")
             .moveTo()
             .click()
             .end()
-         .elementByCss("#LOGO1")
+         .findByCssSelector("#LOGO1")
             .getComputedCss("display")
             .then(function(result) {
                assert(result == "block", "Test #2b - LOGO1 was not revealed");
@@ -75,31 +75,31 @@ define(["intern!object",
             .end()
 
          // Test 3: Check that LOGO2 can be displayed and then hidden by is rules
-         .elementByCss("#SHOW_LOGO_2_A")
+         .findByCssSelector("#SHOW_LOGO_2_A")
             .moveTo()
             .click()
             .end()
-         .elementByCss("#LOGO2")
+         .findByCssSelector("#LOGO2")
             .getComputedCss("display")
             .then(function(result) {
                assert(result == "block", "Test #3a - LOGO2 was not revealed");
             })
             .end()
-         .elementByCss("#HIDE_LOGO_2")
+         .findByCssSelector("#HIDE_LOGO_2")
             .moveTo()
             .click()
             .end()
-         .elementByCss("#LOGO2")
+         .findByCssSelector("#LOGO2")
             .getComputedCss("display")
             .then(function(result) {
                assert(result == "none", "Test #3b - LOGO2 was not hidden");
             })
             .end()
-         .elementByCss("#SHOW_LOGO_2_B")
+         .findByCssSelector("#SHOW_LOGO_2_B")
             .moveTo()
             .click()
             .end()
-         .elementByCss("#LOGO2")
+         .findByCssSelector("#LOGO2")
             .getComputedCss("display")
             .then(function(result) {
                assert(result == "block", "Test #3c - LOGO2 was not hidden again");

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -25,7 +25,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -46,8 +46,8 @@ define(["intern!object",
             .end()
 
          // 2. Use the keyboard to click each in turn
-         .keys(specialKeys["Tab"])
-         .keys(specialKeys["Return"])
+         .pressKeys(specialKeys["Tab"])
+         .pressKeys(specialKeys["Return"])
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "type", "SHARE_PAGE_RELATIVE"))
             .then(function(elements) {
                TestCommon.log(testname,53,"Check that 'SHARE_PAGE_RELATIVE' is set as the type");
@@ -67,8 +67,8 @@ define(["intern!object",
             })
             .end()
 
-         .keys(specialKeys["Tab"])
-         .keys(specialKeys["Return"])
+         .pressKeys(specialKeys["Tab"])
+         .pressKeys(specialKeys["Return"])
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "url", "site/site1/documentlibrary?path=/folder1/folder2/folder3"))
             .then(function(elements) {
                TestCommon.log(testname,74,"Check that url is correct for site folder");
@@ -76,8 +76,8 @@ define(["intern!object",
             })
             .end()
 
-         .keys(specialKeys["Tab"])
-         .keys(specialKeys["Return"])
+         .pressKeys(specialKeys["Tab"])
+         .pressKeys(specialKeys["Return"])
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "url", "document-details?nodeRef=workspace://SpacesStore/some-fake-uuid"))
             .then(function(elements) {
                TestCommon.log(testname,83,"Check that url is correct for repo document");
@@ -85,8 +85,8 @@ define(["intern!object",
             })
             .end()
 
-         .keys(specialKeys["Tab"])
-         .keys(specialKeys["Return"])
+         .pressKeys(specialKeys["Tab"])
+         .pressKeys(specialKeys["Return"])
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "url", "repository?path=/folder1/folder2/folder3"))
             .then(function(elements) {
                TestCommon.log(testname,92,"Check that url is correct for repo document");
@@ -95,7 +95,7 @@ define(["intern!object",
             .end()
 
          // 3. Use the mouse to click each in turn
-         .elementByCss("#SITE_DOC_LINK span.inner a")
+         .findByCssSelector("#SITE_DOC_LINK span.inner a")
             .moveTo()
             .click()
             .end()
@@ -105,7 +105,7 @@ define(["intern!object",
                assert(elements.length == 1, "Test #3a - site document search result URL was incorrect");
             })
             .end()
-         .elementByCss("#SITE_FOLDER_LINK span.inner a")
+         .findByCssSelector("#SITE_FOLDER_LINK span.inner a")
             .moveTo()
             .click()
             .end()
@@ -116,7 +116,7 @@ define(["intern!object",
             })
             .end()
 
-         .elementByCss("#REPO_DOC_LINK span.inner a")
+         .findByCssSelector("#REPO_DOC_LINK span.inner a")
             .moveTo()
             .click()
             .end()
@@ -127,7 +127,7 @@ define(["intern!object",
             })
             .end()
 
-         .elementByCss("#REPO_FOLDER_LINK span.inner a")
+         .findByCssSelector("#REPO_FOLDER_LINK span.inner a")
             .moveTo()
             .click()
             .end()

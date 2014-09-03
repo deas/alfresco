@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -25,7 +25,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -41,7 +41,7 @@ define(["intern!object",
          // 1) It's not obvious how to test that the footer is stuck to the bottom without visually checking
          // 2) Some of the config could be further tested
          // It's good enough as a starting point though.
-         .elementByCss(".alfresco-footer-AlfShareFooter span.copyright span:last-child")
+         .findByCssSelector(".alfresco-footer-AlfShareFooter span.copyright span:last-child")
             .text()
             .then(function (text) {
                TestCommon.log(testname,43,"Check copyright text");
@@ -49,7 +49,7 @@ define(["intern!object",
             })
             .end()
 
-         .elementByCss(".alfresco-footer-AlfShareFooter .licenseHolder")
+         .findByCssSelector(".alfresco-footer-AlfShareFooter .licenseHolder")
             .text()
             .then(function (text) {
                TestCommon.log(testname,51,"Check license text");

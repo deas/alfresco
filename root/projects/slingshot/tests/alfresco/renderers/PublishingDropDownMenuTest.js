@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -25,7 +25,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -47,7 +47,7 @@ define(["intern!object",
          .end()
 
          // Check the start value of drop down menu 1 is 'Public'
-         .elementByCss("span.dijitSelectLabel:nth-of-type(1)")
+         .findByCssSelector("span.dijitSelectLabel:nth-of-type(1)")
          .text()
          .then(function (result1) {
             TestCommon.log(testname,52,"Check the start value of drop down menu 1 is 'Public'");
@@ -57,7 +57,7 @@ define(["intern!object",
          .end()
 
          // Open the menu by mouse click
-         .elementByCss("span.dijitSelectLabel:nth-of-type(1)")
+         .findByCssSelector("span.dijitSelectLabel:nth-of-type(1)")
          .moveTo()
          .sleep(500)
          .click()
@@ -70,7 +70,7 @@ define(["intern!object",
          .end()
 
          // Check the menu has appeared
-         .elementByCss(".dijitMenuPopup")
+         .findByCssSelector(".dijitMenuPopup")
          .isDisplayed()
          .then(function(result3) {
             TestCommon.log(testname,77,"Check the menu has appeared");
@@ -79,7 +79,7 @@ define(["intern!object",
          .end()
 
          // Select a different item in the menu by mouse click
-         .elementByCss("tr.dijitMenuItem:nth-of-type(3)")
+         .findByCssSelector("tr.dijitMenuItem:nth-of-type(3)")
          .moveTo()
          .sleep(500)
          .click()
@@ -92,7 +92,7 @@ define(["intern!object",
          .end()
 
          // Check the menu disappeared
-         .elementByCss(".dijitMenuPopup")
+         .findByCssSelector(".dijitMenuPopup")
          .isDisplayed()
          .then(function(result5) {
             TestCommon.log(testname,97,"Check the menu disappeared");
@@ -121,14 +121,14 @@ define(["intern!object",
          .end()
 
          // // Open another menu with key functions - check it is visible
-         .keys(specialKeys["Tab"])
-         .keys(specialKeys["Tab"])
-         .keys(specialKeys["Tab"])
-         .keys(specialKeys["Tab"])
-         .keys(specialKeys["Tab"])
-         .keys(specialKeys["Down arrow"])
+         .pressKeys(specialKeys["Tab"])
+         .pressKeys(specialKeys["Tab"])
+         .pressKeys(specialKeys["Tab"])
+         .pressKeys(specialKeys["Tab"])
+         .pressKeys(specialKeys["Tab"])
+         .pressKeys(specialKeys["Down arrow"])
          .sleep(500)
-         .elementByCss(".dijitMenuPopup")
+         .findByCssSelector(".dijitMenuPopup")
          .isDisplayed()
          .then(function(result8) {
             TestCommon.log(testname,133,"Open another menu with key functions - check it is visible");
@@ -137,10 +137,10 @@ define(["intern!object",
          .end()
 
          // Select another item in the menu - check the menu disappears
-         .keys(specialKeys["Down arrow"])
-         .keys(specialKeys["Return"])
+         .pressKeys(specialKeys["Down arrow"])
+         .pressKeys(specialKeys["Return"])
          .sleep(500)
-         .elementByCss(".dijitMenuPopup")
+         .findByCssSelector(".dijitMenuPopup")
          .isDisplayed()
          .then(function(elements) {
             TestCommon.log(testname,145,"Select another item in the menu - check the menu disappears");

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -28,7 +28,7 @@ define(["intern!object",
         "intern/chai!expect",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, expect, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -131,7 +131,7 @@ define(["intern!object",
          .end()
 
          // Click the more choices button
-         .elementByCss("li.showMore")
+         .findByCssSelector("li.showMore")
          .clickElement()
          .end()
 
@@ -151,7 +151,7 @@ define(["intern!object",
          .end()
 
          // Click the less choices button
-         .elementByCss("li.showLess")
+         .findByCssSelector("li.showLess")
          .clickElement()
          .end()
 
@@ -171,7 +171,7 @@ define(["intern!object",
          .end()
 
          // Click the title - the facet menu should disappear
-         .elementByCss("#FACET1 > div.label")
+         .findByCssSelector("#FACET1 > div.label")
          .clickElement()
          .end()
 
@@ -184,7 +184,7 @@ define(["intern!object",
          .end()
 
          // Click the title again - the facet menu should reappear
-         .elementByCss("#FACET1 > div.label")
+         .findByCssSelector("#FACET1 > div.label")
          .clickElement()
          .end()
 
@@ -267,8 +267,8 @@ define(["intern!object",
          .end()
 
          // 'click' the first button
-         .keys(specialKeys.Tab)
-         .keys(specialKeys["Return"])
+         .pressKeys(specialKeys.Tab)
+         .pressKeys(specialKeys["Return"])
          .end()
 
          .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
@@ -279,10 +279,10 @@ define(["intern!object",
          .end()
 
          // Move to the facet menu label and 'click' it
-         .keys(specialKeys.Tab)
-         .keys(specialKeys.Tab)
-         .keys(specialKeys.Tab)
-         .keys(specialKeys["Return"])
+         .pressKeys(specialKeys.Tab)
+         .pressKeys(specialKeys.Tab)
+         .pressKeys(specialKeys.Tab)
+         .pressKeys(specialKeys["Return"])
          .end()
 
          .elementByCssSelector("#FACET1 > ul.filters")
@@ -294,7 +294,7 @@ define(["intern!object",
          .end()
 
          // 'Click' the menu label again to re-show the menu
-         .keys(specialKeys["Return"])
+         .pressKeys(specialKeys["Return"])
          .end()
 
          .elementByCssSelector("#FACET1 > ul.filters")
@@ -306,8 +306,8 @@ define(["intern!object",
          .end()
 
          // Tab onto the first facet in the menu and 'click' it - it should select
-         .keys(specialKeys.Tab)
-         .keys(specialKeys["Return"])
+         .pressKeys(specialKeys.Tab)
+         .pressKeys(specialKeys["Return"])
          .end()
 
          .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
@@ -326,7 +326,7 @@ define(["intern!object",
          .end()
 
          // 'Click' the first facet menu item again - it should de-select
-         .keys(specialKeys["Return"])
+         .pressKeys(specialKeys["Return"])
          .end()
 
          .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")

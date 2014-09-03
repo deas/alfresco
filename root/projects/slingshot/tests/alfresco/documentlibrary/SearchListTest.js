@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -25,7 +25,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -38,12 +38,12 @@ define(["intern!object",
          .end()
          
          // Include a facet with no data...
-         .elementByCss("#INCLUDE_FACET_0")
+         .findByCssSelector("#INCLUDE_FACET_0")
             .moveTo()
             .click()
             .end()
          // Include an initial facet (for code coverage)...
-         .elementByCss("#INCLUDE_FACET_1")
+         .findByCssSelector("#INCLUDE_FACET_1")
             .moveTo()
             .click()
             .end()
@@ -60,7 +60,7 @@ define(["intern!object",
             .end()
 
          // Click the button to set a search term (but don't actually provide one)
-         .elementByCss("#SET_SEARCH_TERM_1")
+         .findByCssSelector("#SET_SEARCH_TERM_1")
             .moveTo()
             .click()
             .end()
@@ -73,7 +73,7 @@ define(["intern!object",
             .end()
 
          // Click the button to set the search term...
-         .elementByCss("#SET_SEARCH_TERM_2")
+         .findByCssSelector("#SET_SEARCH_TERM_2")
             .moveTo()
             .click()
             .end()
@@ -94,7 +94,7 @@ define(["intern!object",
             .end()
 
          // Click the button to set the SAME search term (a new request shouldn't be issued)...
-         .elementByCss("#SET_SEARCH_TERM_2")
+         .findByCssSelector("#SET_SEARCH_TERM_2")
             .moveTo()
             .click()
             .end()
@@ -106,7 +106,7 @@ define(["intern!object",
             .end()
 
          // Click the button to set a DIFFERENT search term (a new request SHOULD be issued)...
-         .elementByCss("#SET_SEARCH_TERM_3")
+         .findByCssSelector("#SET_SEARCH_TERM_3")
             .moveTo()
             .click()
             .end()
@@ -125,11 +125,11 @@ define(["intern!object",
 
          // Send some response data, and then issue the search again, there should now be 3 search 
          // requests and the last one should be for the last search term...
-         .elementByCss("#PUBLISH_SEARCH_RESULTS")
+         .findByCssSelector("#PUBLISH_SEARCH_RESULTS")
             .moveTo()
             .click()
             .end()
-         .elementByCss("#SET_SEARCH_TERM_3")
+         .findByCssSelector("#SET_SEARCH_TERM_3")
             .moveTo()
             .click()
             .end()
@@ -148,7 +148,7 @@ define(["intern!object",
 
          // Click the button to set a variety of data (including facet filters)....
          // Set the same term again to check that the filters are removed...
-         .elementByCss("#SET_MULTIPLE_SEARCH_DATA")
+         .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
             .moveTo()
             .click()
             .end()
@@ -159,11 +159,11 @@ define(["intern!object",
             })
             .end()
          // Ensure the next search term will be set by publishing some data (to prevent concurrent request blocking)...
-         .elementByCss("#PUBLISH_SEARCH_RESULTS")
+         .findByCssSelector("#PUBLISH_SEARCH_RESULTS")
             .moveTo()
             .click()
             .end()
-         .elementByCss("#SET_SEARCH_TERM_3")
+         .findByCssSelector("#SET_SEARCH_TERM_3")
             .moveTo()
             .click()
             .end()
@@ -188,7 +188,7 @@ define(["intern!object",
                assert(elements.length == 5, "Test #3a - Unexpected number of search requests made before testing scope settings " + elements.length);
             })
             .end()
-         .elementByCss("#SET_SCOPE_0")
+         .findByCssSelector("#SET_SCOPE_0")
             .moveTo()
             .click()
             .end()
@@ -198,7 +198,7 @@ define(["intern!object",
                assert(elements.length == 5, "Test #3b - Setting a null scope issued a search request");
             })
             .end()
-         .elementByCss("#SET_SCOPE_1")
+         .findByCssSelector("#SET_SCOPE_1")
             .moveTo()
             .click()
             .end()
@@ -209,7 +209,7 @@ define(["intern!object",
             })
             .end()
 
-         .elementByCss("#SET_SCOPE_2")
+         .findByCssSelector("#SET_SCOPE_2")
             .moveTo()
             .click()
             .end()
@@ -232,7 +232,7 @@ define(["intern!object",
             })
             .end()
 
-         .elementByCss("#SET_SCOPE_3")
+         .findByCssSelector("#SET_SCOPE_3")
             .moveTo()
             .click()
             .end()
@@ -255,7 +255,7 @@ define(["intern!object",
             })
             .end()
 
-         .elementByCss("#SET_SCOPE_1")
+         .findByCssSelector("#SET_SCOPE_1")
             .moveTo()
             .click()
             .end()
@@ -280,7 +280,7 @@ define(["intern!object",
 
 
          // Check that updating the hash results in a search request being made...
-         .elementByCss("#SET_MULTIPLE_SEARCH_DATA")
+         .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
             .moveTo()
             .click()
             .end()
@@ -316,7 +316,7 @@ define(["intern!object",
             .end()
 
          // Click the button to remove filter2 from the filters list...
-         .elementByCss("#REMOVE_FACET_FILTER")
+         .findByCssSelector("#REMOVE_FACET_FILTER")
             .moveTo()
             .click()
             .end()
@@ -336,12 +336,12 @@ define(["intern!object",
             .end()
 
          // Click the button to include an additional facet in search requests...
-         .elementByCss("#INCLUDE_FACET_2")
+         .findByCssSelector("#INCLUDE_FACET_2")
             .moveTo()
             .click()
             .end()
 
-         .elementByCss("#APPLY_FACET_FILTER_0")
+         .findByCssSelector("#APPLY_FACET_FILTER_0")
             .moveTo()
             .click()
             .end()
@@ -353,7 +353,7 @@ define(["intern!object",
             .end()
 
          // Click the button to add filter4 to the filters list...
-         .elementByCss("#APPLY_FACET_FILTER")
+         .findByCssSelector("#APPLY_FACET_FILTER")
             .moveTo()
             .click()
             .end()
@@ -379,11 +379,11 @@ define(["intern!object",
             .end()
 
          // Publish data to prevent block on concurrent requests...
-         .elementByCss("#PUBLISH_SEARCH_RESULTS")
+         .findByCssSelector("#PUBLISH_SEARCH_RESULTS")
             .moveTo()
             .click()
             .end()
-         .elementByCss("#SET_MULTIPLE_SEARCH_DATA_2")
+         .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA_2")
             .moveTo()
             .click()
             .end()
@@ -407,7 +407,7 @@ define(["intern!object",
             .end()
 
          // Click the button to generate a fake search request response...
-         .elementByCss("#PUBLISH_SEARCH_RESULTS")
+         .findByCssSelector("#PUBLISH_SEARCH_RESULTS")
             .moveTo()
             .click()
             .end()

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -24,7 +24,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -40,7 +40,7 @@ define(["intern!object",
             // Test #1
             // Check margins in vertical widgets...
             .end()
-            .elementByCss("#SURF_LOGO1")
+            .findByCssSelector("#SURF_LOGO1")
                .getAttribute("style")
                .then(function(style) {
                   TestCommon.log(testname,46,"Is style set correctly?");
@@ -48,7 +48,7 @@ define(["intern!object",
                })
 
             .end()
-            .elementByCss("#SURF_LOGO2")
+            .findByCssSelector("#SURF_LOGO2")
                .getAttribute("style")
                .then(function(style) {
                   TestCommon.log(testname,54,"Is style set correctly?");
@@ -104,14 +104,14 @@ define(["intern!object",
             // Test #4
             // Test size allocation in horizontal widgets...
             .end()
-            .elementByCss("#LEVEL2_HORIZONTAL2")
+            .findByCssSelector("#LEVEL2_HORIZONTAL2")
                .getComputedCss("width")
                .then(function(width) {
                   testableDimensions.horiz2 = width.substring(0, width.lastIndexOf("px"));
                })
 
             .end()
-            .elementByCss("#LEVEL2_HORIZONTAL2 > div > div:nth-child(3)")
+            .findByCssSelector("#LEVEL2_HORIZONTAL2 > div > div:nth-child(3)")
                .getComputedCss("margin-left")
                .then(function(x) {
                   TestCommon.log(testname,117,"Test left margin of horizontal widget");
@@ -133,7 +133,7 @@ define(["intern!object",
                })
 
             .end()
-            .elementByCss("#LEVEL2_HORIZONTAL2 > div > div:nth-child(2)")
+            .findByCssSelector("#LEVEL2_HORIZONTAL2 > div > div:nth-child(2)")
                .getComputedCss("width")
                .then(function(width) {
                   TestCommon.log(testname,139,"Test width is set correctly");
@@ -141,14 +141,14 @@ define(["intern!object",
                })
 
             .end()
-            .elementByCss("#LEVEL2_HORIZONTAL3")
+            .findByCssSelector("#LEVEL2_HORIZONTAL3")
                .getComputedCss("width")
                .then(function(width) {
                   testableDimensions.horiz3 = width.substring(0, width.lastIndexOf("px"));
                })
 
             .end()
-            .elementByCss("#LEVEL2_HORIZONTAL3 > div > div:nth-child(1)")
+            .findByCssSelector("#LEVEL2_HORIZONTAL3 > div > div:nth-child(1)")
                .getComputedCss("width")
                .then(function(width) {
                   var x = width.substring(0, width.lastIndexOf("px"));
@@ -157,7 +157,7 @@ define(["intern!object",
                   assert(shouldBe == x, "Test #4e - The width was not set correctly by evenly dividing space");
                })
             .end()
-            .elementByCss("#LEVEL2_HORIZONTAL3 > div > div:nth-child(2)")
+            .findByCssSelector("#LEVEL2_HORIZONTAL3 > div > div:nth-child(2)")
                .getComputedCss("width")
                .then(function(width) {
                   var x = width.substring(0, width.lastIndexOf("px"));
@@ -201,7 +201,7 @@ define(["intern!object",
                   assert(result == true, "Test #5b - logo was not center aligned");
                })
 
-            .elementByCss(".center-container")
+            .findByCssSelector(".center-container")
                .getComputedCss("width")
                .then(function(width) {
                   var x = width.substring(0, width.lastIndexOf("px"));

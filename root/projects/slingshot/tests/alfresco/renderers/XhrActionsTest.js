@@ -38,7 +38,7 @@ define(["intern!object",
                // Test spec:
                // 1: Check dropdown element exists
 
-               .elementByCss(".alfresco-menus-AlfMenuBar span:first-child")
+               .findByCssSelector(".alfresco-menus-AlfMenuBar span:first-child")
                .text()
                .then(function(resultText) {
                   TestCommon.log(testname, null,"Check Actions menu was rendered");

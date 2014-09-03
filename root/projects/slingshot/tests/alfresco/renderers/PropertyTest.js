@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -37,7 +37,7 @@ define(["intern!object",
 
          .end()
 
-         .elementByCss("#BASIC .value")
+         .findByCssSelector("#BASIC .value")
          .text()
          .then(function(resultText) {
             TestCommon.log(testname,43,"Check standard property is rendered correctly");
@@ -45,7 +45,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCss("#PREFIX_SUFFIX .value")
+         .findByCssSelector("#PREFIX_SUFFIX .value")
          .text()
          .then(function(resultText) {
             TestCommon.log(testname,51,"Check prefixed/suffixed property is rendered correctly");
@@ -53,7 +53,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCss("#NEW_LINE")
+         .findByCssSelector("#NEW_LINE")
          .getComputedCss("display")
          .then(function(result) {
             TestCommon.log(testname,59,"Check new line property is rendered correctly");
@@ -61,7 +61,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCss("#WARN1 .value")
+         .findByCssSelector("#WARN1 .value")
          .text()
          .then(function(resultText) {
             TestCommon.log(testname,67,"Check standard warning is rendered correctly");
@@ -69,7 +69,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCss("#WARN2 .value")
+         .findByCssSelector("#WARN2 .value")
          .text()
          .then(function(resultText) {
             TestCommon.log(testname,75,"Check explicit warning is rendered correctly");
@@ -77,7 +77,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCss("#HOVER .inner")
+         .findByCssSelector("#HOVER .inner")
          .getComputedCss("visibility")
          .then(function(result) {
             TestCommon.log(testname,83,"Check hover property is hidden");
@@ -85,11 +85,11 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCss("#LIST_ITEMS tr")
+         .findByCssSelector("#LIST_ITEMS tr")
          .moveTo()
          .end()
 
-         .elementByCss("#HOVER .value")
+         .findByCssSelector("#HOVER .value")
          .text()
          .then(function(resultText) {
             TestCommon.log(testname,95,"Check hover property is shown on hover");
@@ -97,7 +97,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCss("#LABEL .label")
+         .findByCssSelector("#LABEL .label")
          .text()
          .then(function(resultText) {
             TestCommon.log(testname,103,"Check label is rendered correctly");

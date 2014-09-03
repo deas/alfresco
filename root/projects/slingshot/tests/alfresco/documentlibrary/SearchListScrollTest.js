@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -25,7 +25,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -60,7 +60,7 @@ define(["intern!object",
          .then(function(){
          TestCommon.log(testname, null, "Setting search data");
          })
-         .elementByCss("#SET_MULTIPLE_SEARCH_DATA")
+         .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
          .moveTo()
          .click()
          .end()
@@ -118,7 +118,7 @@ define(["intern!object",
          })
 
          // Facet Results. Check Facet Event
-         .elementByCss("#APPLY_FACET_FILTER")
+         .findByCssSelector("#APPLY_FACET_FILTER")
          .moveTo()
          .click()
          .end()
@@ -139,7 +139,7 @@ define(["intern!object",
          })
 
          // Retrigger Search results
-         .elementByCss("#SET_MULTIPLE_SEARCH_DATA")
+         .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
          .moveTo()
          .click()
          .end()

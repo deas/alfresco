@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -25,7 +25,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -96,7 +96,7 @@ define(["intern!object",
          .end()
 
          // 2. Change the sort order...
-         .elementByCss("#SORT_ASC_REQUEST")
+         .findByCssSelector("#SORT_ASC_REQUEST")
          .moveTo()
          .click()
          .end()
@@ -116,7 +116,7 @@ define(["intern!object",
          .end()
 
          // 3. Change sort field
-         .elementByCss("#SORT_FIELD_SELECTION")
+         .findByCssSelector("#SORT_FIELD_SELECTION")
          .moveTo()
          .click()
          .end()
@@ -136,7 +136,7 @@ define(["intern!object",
          .end()
 
          // 4. Change the sort order again (to descending this time)...
-         .elementByCss("#SORT_DESC_REQUEST")
+         .findByCssSelector("#SORT_DESC_REQUEST")
          .moveTo()
          .click()
          .end()
@@ -156,7 +156,7 @@ define(["intern!object",
          .end()
 
          // 5. Hide folders...
-         .elementByCss("#HIDE_FOLDERS")
+         .findByCssSelector("#HIDE_FOLDERS")
          .moveTo()
          .click()
          .end()
@@ -169,7 +169,7 @@ define(["intern!object",
          .end()
 
          // 6. Show folders...
-         .elementByCss("#SHOW_FOLDERS")
+         .findByCssSelector("#SHOW_FOLDERS")
          .moveTo()
          .click()
          .end()
@@ -182,7 +182,7 @@ define(["intern!object",
          .end()
 
          // 7. Set page...
-         .elementByCss("#SET_PAGE")
+         .findByCssSelector("#SET_PAGE")
          .moveTo()
          .click()
          .end()
@@ -194,7 +194,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCss("#PUBLISH_DATA")
+         .findByCssSelector("#PUBLISH_DATA")
          .moveTo()
          .click()
          .end()
@@ -214,7 +214,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCss("#CHANGE_VIEW")
+         .findByCssSelector("#CHANGE_VIEW")
          .moveTo()
          .click()
          .end()
@@ -227,7 +227,7 @@ define(["intern!object",
          .end()
 
          // 9. Change the page size
-         .elementByCss("#SET_DOCS_PER_PAGE")
+         .findByCssSelector("#SET_DOCS_PER_PAGE")
          .moveTo()
          .click()
          .end()

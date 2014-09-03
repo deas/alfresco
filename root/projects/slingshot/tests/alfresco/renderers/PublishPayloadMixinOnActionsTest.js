@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -24,7 +24,7 @@ define(["intern!object",
         "intern/chai!expect",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, expect, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -46,7 +46,7 @@ define(["intern!object",
          .end()
 
          // Open the first action menu by mouse click
-         .elementByCss("div.dijitMenuItemLabel:nth-of-type(1)")
+         .findByCssSelector("div.dijitMenuItemLabel:nth-of-type(1)")
          .moveTo()
          .sleep(500)
          .click()
@@ -59,7 +59,7 @@ define(["intern!object",
          .end()
 
          // Check the menu has appeared
-         .elementByCss(".dijitPopup")
+         .findByCssSelector(".dijitPopup")
          .isDisplayed()
          .then(function(result2) {
             TestCommon.log(testname,65,"Check the action menu has appeared");
@@ -68,7 +68,7 @@ define(["intern!object",
          .end()
 
          // Click the first button in the action menu
-         .elementByCss(".dijitPopup .dijitMenuItem:nth-of-type(1) .dijitMenuItemLabel")
+         .findByCssSelector(".dijitPopup .dijitMenuItem:nth-of-type(1) .dijitMenuItemLabel")
          .moveTo()
          .sleep(500)
          .click()
@@ -91,14 +91,14 @@ define(["intern!object",
          .end()
 
          // Open the first action menu again
-         .elementByCss("div.dijitMenuItemLabel:nth-of-type(1)")
+         .findByCssSelector("div.dijitMenuItemLabel:nth-of-type(1)")
          .moveTo()
          .sleep(500)
          .click()
          .end()
 
          // Click the second button in the action menu
-         .elementByCss(".dijitPopup .dijitMenuItem:nth-of-type(2) .dijitMenuItemLabel")
+         .findByCssSelector(".dijitPopup .dijitMenuItem:nth-of-type(2) .dijitMenuItemLabel")
          .moveTo()
          .sleep(500)
          .click()

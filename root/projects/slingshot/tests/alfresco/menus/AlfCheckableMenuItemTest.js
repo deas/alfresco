@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -26,7 +26,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -105,7 +105,7 @@ define(["intern!object",
             // Test #9
             // Check that an externally published topic can set a check box...
             .end()
-            .elementByCss("#SET_CHECKABLE_1_label")
+            .findByCssSelector("#SET_CHECKABLE_1_label")
                .moveTo()
                .click()
                .end()
@@ -117,7 +117,7 @@ define(["intern!object",
             // Test #10
             // Check that an externally published topic can unset a check box...
             .end()
-            .elementByCss("#UNSET_CHECKABLE_1_label")
+            .findByCssSelector("#UNSET_CHECKABLE_1_label")
                .moveTo()
                .click()
                .end()
@@ -129,7 +129,7 @@ define(["intern!object",
             // Test #11
             // Check that an externally published topic updates a group accordingly...
             .end()
-            .elementByCss("#SET_GROUPED_CHECKABLE_2_label")
+            .findByCssSelector("#SET_GROUPED_CHECKABLE_2_label")
                .moveTo()
                .click()
                .end()
@@ -145,11 +145,11 @@ define(["intern!object",
             // Test #12
             // Use mouse navigation to drive the checkable menu items...
             .end()
-            .elementByCss("#CHECKABLE_MENU_ITEMS_DROPDOWN")
+            .findByCssSelector("#CHECKABLE_MENU_ITEMS_DROPDOWN")
                .moveTo()
                .click()
                .end()
-            .elementByCss("#CHECKABLE_1")
+            .findByCssSelector("#CHECKABLE_1")
                .moveTo()
                .click()
                .end()
@@ -163,11 +163,11 @@ define(["intern!object",
                assert(result == true, "Test #12 - Mouse selection of CHECKABLE_1 didn't publish correctly (incorrect 'selected' payload attribute");
             })
             .end()
-            .elementByCss("#CHECKABLE_MENU_ITEMS_DROPDOWN")
+            .findByCssSelector("#CHECKABLE_MENU_ITEMS_DROPDOWN")
                .moveTo()
                .click()
                .end()
-            .elementByCss("#CHECKABLE_1")
+            .findByCssSelector("#CHECKABLE_1")
                .moveTo()
                .click()
                .end()
@@ -179,10 +179,10 @@ define(["intern!object",
             // Test #13
             // Use keyboard navigation to drive the checkable menu items...
             .end()
-            .keys(specialKeys["Down arrow"])
-            .keys(specialKeys["Down arrow"])
+            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(specialKeys["Down arrow"])
             .sleep(1000)
-            .keys(specialKeys["Space"])
+            .pressKeys(specialKeys["Space"])
             .hasElementByCss(TestCommon.topicSelector("CHECKABLE_2", "publish", "last"))
             .then(function(result) {
                assert(result == true, "Test #13 - Keyboard selection of CHECKABLE_2 didn't publish correctly");
@@ -202,12 +202,12 @@ define(["intern!object",
             // Test #14
             // Use keyboard navigation to drive the grouped checkable menu items...
             .end()
-            .keys(specialKeys["Down arrow"])
-            .keys(specialKeys["Down arrow"])
-            .keys(specialKeys["Down arrow"])
-            .keys(specialKeys["Down arrow"])
+            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(specialKeys["Down arrow"])
             .sleep(1000)
-            .keys(specialKeys["Return"])
+            .pressKeys(specialKeys["Return"])
             .hasElementByCss(TestCommon.topicSelector("ALF_CHECKABLE_MENU_ITEM__CHECKABLE_GROUP", "publish"))
             .then(function(result) {
                assert(result == true, "Test #14 - Keyboard selection of grouped item didn't publish to group");
@@ -228,11 +228,11 @@ define(["intern!object",
             // Test #15
             // Use mouse navigation to drive the grouped checkable menu items...
             .end()
-            .elementByCss("#CHECKABLE_MENU_ITEMS_DROPDOWN")
+            .findByCssSelector("#CHECKABLE_MENU_ITEMS_DROPDOWN")
                .moveTo()
                .click()
                .end()
-            .elementByCss("#GROUPED_CHECKABLE_3")
+            .findByCssSelector("#GROUPED_CHECKABLE_3")
                .moveTo()
                .click()
                .end()

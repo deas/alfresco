@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -40,7 +40,7 @@ define(["intern!object",
 
          .end()
 
-         .elementByCss("#LIST_WITH_HEADER_ITEMS tr:first-child td span.inner")
+         .findByCssSelector("#LIST_WITH_HEADER_ITEMS tr:first-child td span.inner")
          .clickElement()
          .end()
 

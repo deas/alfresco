@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -29,7 +29,7 @@ define(["intern!object",
         "intern/chai!expect",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, assert, expect, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -43,7 +43,7 @@ define(["intern!object",
             // .end()
 
             // Sort on the first column header...
-            .keys(specialKeys.Tab)
+            .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
             .active()
             .text()
@@ -51,7 +51,7 @@ define(["intern!object",
                TestCommon.log(testname,51,"Check tab focus on column header 1");
                expect(resultText).to.equal("Column 1", "The text is incorrect");
             })
-            .keys(specialKeys["Space"])
+            .pressKeys(specialKeys["Space"])
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
             .then(function(result) {
                TestCommon.log(testname,57,"Check sort on column header 1");
@@ -60,9 +60,9 @@ define(["intern!object",
             .end()
 
             // Sort on the second column header...
-            .keys(specialKeys.Tab)
+            .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
-            .keys(specialKeys["Return"])
+            .pressKeys(specialKeys["Return"])
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
             .then(function(result) {
                TestCommon.log(testname,68,"Check tab focus on column header 2");
@@ -71,9 +71,9 @@ define(["intern!object",
             .end()
 
             // Check that sort request doesn't occur for third column...
-            .keys(specialKeys.Tab)
+            .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
-            .keys(specialKeys["Return"])
+            .pressKeys(specialKeys["Return"])
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
             .then(function(result) {
                TestCommon.log(testname,79,"Check sort on column header 2");
@@ -82,7 +82,7 @@ define(["intern!object",
             .end()
 
             // // Go back to the previous header cell and sort in the opposite direction...
-            .keys([specialKeys.Shift,specialKeys.Tab])
+            .pressKeys([specialKeys.Shift,specialKeys.Tab])
             .sleep(alfPause)
 
             // Check it is currently sorted ascendinging...
@@ -92,7 +92,7 @@ define(["intern!object",
                assert(result == true, "The initial sort direction is not ascending");
             })
             // Now change the sort direction...
-            .keys(specialKeys["Return"])
+            .pressKeys(specialKeys["Return"])
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "direction", "descending"))
             .then(function(result) {
                TestCommon.log(testname,98,"Check reversed sort direction on column header 2");
@@ -100,15 +100,15 @@ define(["intern!object",
             })
 
             // Now go to the table itself...
-            .keys(specialKeys.Shift) // Need to remove shift...
+            .pressKeys(specialKeys.Shift) // Need to remove shift...
             .sleep(alfPause)
-            .keys(specialKeys.Tab)
+            .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
-            .keys(specialKeys.Tab)
+            .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
 
             // Should now be on the first row, tab to focus on the first cell...
-            .keys(specialKeys.Tab)
+            .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
 
             .active()
@@ -119,11 +119,11 @@ define(["intern!object",
             })
 
             // Use the cursor keys to go to the next line...
-            .keys(specialKeys['Down arrow'])
+            .pressKeys(specialKeys['Down arrow'])
             .sleep(alfPause)
 
             // Select the first element...
-            .keys(specialKeys.Tab)
+            .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
             .active()
             .text()
@@ -134,15 +134,15 @@ define(["intern!object",
             .end()
 
             // Use the cursor keys to wrap back to the first row...
-            .keys(specialKeys['Down arrow'])
+            .pressKeys(specialKeys['Down arrow'])
             .sleep(alfPause)
-            .keys(specialKeys['Down arrow'])
+            .pressKeys(specialKeys['Down arrow'])
             .sleep(alfPause)
-            .keys(specialKeys['Down arrow'])
+            .pressKeys(specialKeys['Down arrow'])
             .sleep(alfPause)
 
             // Select the first element...
-            .keys(specialKeys.Tab)
+            .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
             .active()
             .text()
@@ -153,11 +153,11 @@ define(["intern!object",
             .end()
 
             // Use the up cursor to wrap back to the last element...
-            .keys(specialKeys['Up arrow'])
+            .pressKeys(specialKeys['Up arrow'])
             .sleep(alfPause)
 
             // Select the first element...
-            .keys(specialKeys.Tab)
+            .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
             .active()
             .text()
@@ -168,11 +168,11 @@ define(["intern!object",
             .end()
 
             // Use the up cursor to go to the third row
-            .keys(specialKeys['Up arrow'])
+            .pressKeys(specialKeys['Up arrow'])
             .sleep(alfPause)
 
             // Select the first element...
-            .keys(specialKeys.Tab)
+            .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
             .active()
             .text()
@@ -201,7 +201,7 @@ define(["intern!object",
                assert(result == true, "Could not find COLUMN1_HEADER in Test #2a");
             })
             .end()
-            .elementByCss("#COLUMN1_HEADER > span")
+            .findByCssSelector("#COLUMN1_HEADER > span")
                .moveTo()
                .click()
                .end()

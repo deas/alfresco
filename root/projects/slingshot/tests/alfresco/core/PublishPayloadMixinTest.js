@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -37,7 +37,7 @@ define(["intern!object",
          .end()
 
          // Check that with minimal configuration we still get a payload published
-         .elementByCss("#PA_NO_TYPE")
+         .findByCssSelector("#PA_NO_TYPE")
          .clickElement()
          .end()
 
@@ -56,7 +56,7 @@ define(["intern!object",
          .end()
 
          // Check that setting the CONFIGURED type works and that the current item is NOT mixed into the payload...
-         .elementByCss("#PA_CONFIGURED")
+         .findByCssSelector("#PA_CONFIGURED")
          .clickElement()
          .end()
 
@@ -82,7 +82,7 @@ define(["intern!object",
          .end()
 
          // Check that setting the CONFIGURED type works and that the current item IS mixed into the payload...
-         .elementByCss("#PA_CONFIGURED_WITH_ITEM_MIXIN")
+         .findByCssSelector("#PA_CONFIGURED_WITH_ITEM_MIXIN")
          .clickElement()
          .end()
 
@@ -108,7 +108,7 @@ define(["intern!object",
          .end()
 
          // Check that setting the CURRENT_ITEM type works...
-         .elementByCss("#PA_CURRENT_ITEM")
+         .findByCssSelector("#PA_CURRENT_ITEM")
          .clickElement()
          .end()
 
@@ -134,7 +134,7 @@ define(["intern!object",
          .end()
 
          // Check that setting the PROCESS type works...
-         .elementByCss("#PA_PROCESS")
+         .findByCssSelector("#PA_PROCESS")
          .clickElement()
          .end()
 
@@ -153,7 +153,7 @@ define(["intern!object",
          .end()
 
          // Check that setting the BUILD type works...
-         .elementByCss("#PA_BUILD")
+         .findByCssSelector("#PA_BUILD")
          .clickElement()
          .end()
 
@@ -172,7 +172,7 @@ define(["intern!object",
          .end()
 
          // Check the PropertyLink widget implements the mixin correctly
-         .elementByCss("#PROPERTYLINK span.inner")
+         .findByCssSelector("#PROPERTYLINK span.inner")
          .clickElement()
          .end()
 
@@ -198,7 +198,7 @@ define(["intern!object",
          .end()
 
          // Check the DateLink widget implements the mixin correctly
-         .elementByCss("#DATELINK span.inner")
+         .findByCssSelector("#DATELINK span.inner")
          .clickElement()
          .end()
 

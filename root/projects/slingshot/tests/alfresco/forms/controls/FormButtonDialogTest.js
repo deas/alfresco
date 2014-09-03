@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -24,7 +24,7 @@ define(["intern!object",
         "intern/chai!expect",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, expect, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -38,7 +38,7 @@ define(["intern!object",
          .end()
 
          // Does the form exist?
-         .elementByCss("DIV#TEST_FORM > FORM")
+         .findByCssSelector("DIV#TEST_FORM > FORM")
          .then(function(el1) {
             TestCommon.log(testname,43,"Does the form exist?");
             expect(el1).to.be.an("object", "The Form could not be found");
@@ -67,7 +67,7 @@ define(["intern!object",
          .end()
 
          // Does the dialog have an appropriate title?
-         .elementByCss("span.dijitDialogTitle")
+         .findByCssSelector("span.dijitDialogTitle")
          .text()
          .then(function(resultText1) {
             TestCommon.log(testname,73,"Does the dialog have an appropriate title?");
@@ -92,14 +92,14 @@ define(["intern!object",
          .end()
 
          // Is the button copy correct?
-         .elementByCss("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.confirmation span.dijitButtonText")
+         .findByCssSelector("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.confirmation span.dijitButtonText")
          .text()
          .then(function (resultText2) {
             TestCommon.log(testname,98,"Is the button copy correct?");
             expect(resultText2).to.equal("Ok friend", "The copy on Dialog button one was incorrect");
          })
          .end()
-         .elementByCss("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span.dijitButtonText")
+         .findByCssSelector("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span.dijitButtonText")
          .text()
          .then(function (resultText3) {
             TestCommon.log(testname,105,"Is the button copy correct?");
@@ -108,7 +108,7 @@ define(["intern!object",
          .end()
 
          // Does the checkbox exist?
-         .elementByCss("div#TEST_CHECKBOX_CONTAINER > div.control input")
+         .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control input")
          .then(function (el3) {
             TestCommon.log(testname,113,"Does the checkbox exist?");
             expect(el3).to.be.an("object", "The Checkbox could not be found");
@@ -116,7 +116,7 @@ define(["intern!object",
          .end()
 
          // Is the checkbox checked?
-         .elementByCss("div#TEST_CHECKBOX_CONTAINER > div.control input")
+         .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control input")
          .isSelected()
          .then(function (result3) {
             TestCommon.log(testname,122,"Is the checkbox checked?");
@@ -125,7 +125,7 @@ define(["intern!object",
          .end()
 
          // Click the checkbox
-         .elementByCss("div#TEST_CHECKBOX_CONTAINER > div.control input")
+         .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control input")
          .moveTo()
          .sleep(500)
          .click()
@@ -133,7 +133,7 @@ define(["intern!object",
          .end()
 
          // Now is the checkbox checked?
-         .elementByCss("div#TEST_CHECKBOX_CONTAINER > div.control input")
+         .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control input")
          .isSelected()
          .then(function (result4) {
             TestCommon.log(testname,139,"Now is the checkbox checked?");
@@ -142,7 +142,7 @@ define(["intern!object",
          .end()
 
          // Click the cancel button
-         .elementByCss("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span")
+         .findByCssSelector("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span")
          .moveTo()
          .sleep(500)
          .click()
@@ -150,7 +150,7 @@ define(["intern!object",
          .end()
 
          // Has the dialog disappeared?
-         .elementByCss(".alfresco-dialog-AlfDialog")
+         .findByCssSelector(".alfresco-dialog-AlfDialog")
          .isDisplayed()
          .then(function(result5) {
             TestCommon.log(testname,156,"Has the dialog disappeared?");
@@ -159,7 +159,7 @@ define(["intern!object",
          .end()
 
          // Submit the main form
-         .elementByCss("span.alfresco-buttons-AlfButton.confirmationButton > span")
+         .findByCssSelector("span.alfresco-buttons-AlfButton.confirmationButton > span")
          .moveTo()
          .sleep(500)
          .click()

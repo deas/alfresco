@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -25,7 +25,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, assert, require, TestCommon, specialKeys) {
 
            debugger;
@@ -38,7 +38,7 @@ define(["intern!object",
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/controls/page_models/DojoDateTextBox_TestPage.json")
 
             // TEST 1
-               .elementByCss("#DOJODATETEXTBOX_CONTROL")
+               .findByCssSelector("#DOJODATETEXTBOX_CONTROL")
                .getValue()
                .then(function(value) {
                   assert(value == "2012-12-12", "Unexpected date value found in control");
@@ -46,13 +46,13 @@ define(["intern!object",
                .end()
 
             // TEST 2
-               .elementByCss("#DOJODATETEXTBOX .control .dijitArrowButton input.dijitArrowButtonInner")
+               .findByCssSelector("#DOJODATETEXTBOX .control .dijitArrowButton input.dijitArrowButtonInner")
                .click()
                .end()
-               .elementByCss("#DOJODATETEXTBOX_CONTROL_popup tbody tr:nth-of-type(3) td:nth-of-type(5) span")
+               .findByCssSelector("#DOJODATETEXTBOX_CONTROL_popup tbody tr:nth-of-type(3) td:nth-of-type(5) span")
                .click()
                .end()
-               .elementByCss("#DOJODATETEXTBOX_CONTROL")
+               .findByCssSelector("#DOJODATETEXTBOX_CONTROL")
                .getValue()
                .then(function(value) {
                   assert(value == "2012-12-14", "Unexpected date value found in control after date change");
@@ -60,7 +60,7 @@ define(["intern!object",
                .end()
 
             // TEST 3
-               .elementByCss("#FORM > .buttons > span:nth-of-type(1) > span > span > span:nth-of-type(3)")
+               .findByCssSelector("#FORM > .buttons > span:nth-of-type(1) > span > span > span:nth-of-type(3)")
                .click()
                .end()
                .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "someDate", "2012-12-14"))

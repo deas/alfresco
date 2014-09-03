@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -26,7 +26,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -39,7 +39,7 @@ define(["intern!object",
             // Test #1
             // Check the service subscription is setup
             .end()
-            .elementByCss(TestCommon.nthTopicSelector(1))
+            .findByCssSelector(TestCommon.nthTopicSelector(1))
             .text()
             .then(function(text) {
                console.log("Test #1a");
@@ -47,14 +47,14 @@ define(["intern!object",
             })
             .end()
             // NOTE: This test is no longer necessary as the topic is generated...
-            // .elementByCss(TestCommon.nthTopicSelector(2))
+            // .findByCssSelector(TestCommon.nthTopicSelector(2))
             // .text()
             // .then(function(text) {
             //    console.log("Test #1b");
             //    assert(text.lastIndexOf("ALF_CREATE_FORM_DIALOG_MIXIN_REQUEST_TOPIC") != -1, "Test #1b - form dialog mixin request topic missing");
             // })
             // .end()
-            // .elementByCss(TestCommon.nthTopicSelector(3))
+            // .findByCssSelector(TestCommon.nthTopicSelector(3))
             // .text()
             // .then(function(text) {
             //    console.log("Test #1c");
@@ -64,11 +64,11 @@ define(["intern!object",
             // Test #2
             // Create the dialog...
             .end()
-            .elementByCss("#DROP_DOWN_MENU_text")
+            .findByCssSelector("#DROP_DOWN_MENU_text")
                .moveTo()
                .click()
                .end()
-            .elementByCss("#FDM1_text")
+            .findByCssSelector("#FDM1_text")
                .moveTo()
                .click()
                .end()
@@ -79,7 +79,7 @@ define(["intern!object",
             })
 
             .end()
-            .elementByCss(".alfresco-dialog-AlfDialog .dijitDialogTitle")
+            .findByCssSelector(".alfresco-dialog-AlfDialog .dijitDialogTitle")
             .text()
             .then(function(text) {
                console.log("Test #2b");
@@ -99,7 +99,7 @@ define(["intern!object",
                assert(result == true, "Test #2d - The confirmation button is missing");
             })
             .end()
-            .elementByCss(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.confirmation")
+            .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.confirmation")
             .text()
             .then(function(text) {
                console.log("Test #2e");
@@ -113,7 +113,7 @@ define(["intern!object",
                assert(result == true, "Test #2f - The cancellation button is missing");
             })
             .end()
-            .elementByCss(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation")
+            .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation")
             .text()
             .then(function(text) {
                console.log("Test #2g");
@@ -123,7 +123,7 @@ define(["intern!object",
             // Test #3
             // Check publication occurs (don't check details - that's for another test)
             .end()
-            .elementByCss(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.confirmation span.dijitButtonText")
+            .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.confirmation span.dijitButtonText")
                .moveTo()
                .click()
                .end()
@@ -136,12 +136,12 @@ define(["intern!object",
             // Test #4
             // Close the dialog...
             .end()
-            .elementByCss("#DROP_DOWN_MENU_text")
+            .findByCssSelector("#DROP_DOWN_MENU_text")
                .moveTo()
                .sleep(1000)
                .click()
                .end()
-            .elementByCss("#FDM1_text")
+            .findByCssSelector("#FDM1_text")
                .moveTo()
                .click()
                .end()
@@ -151,11 +151,11 @@ define(["intern!object",
                assert(result == true, "Test #4a - The dialog was not created");
             })
             .end()
-            .elementByCss(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span.dijitButtonText")
+            .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span.dijitButtonText")
                .moveTo()
                .click()
                .end()
-            .elementByCss(TestCommon.nthTopicSelector("last"))
+            .findByCssSelector(TestCommon.nthTopicSelector("last"))
             .text()
             .then(function(text) {
                console.log("Test #4b"); 

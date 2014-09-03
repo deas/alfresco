@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -25,7 +25,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -38,13 +38,13 @@ define(["intern!object",
          .end()
 
          // 1. Test setting and getting the form value from the hash fragment
-         .elementByCss("#HASH_TEXT_BOX_1 .dijitInputContainer input")
+         .findByCssSelector("#HASH_TEXT_BOX_1 .dijitInputContainer input")
             .type("test1")
             .end()
-         .elementByCss("#HASH_TEXT_BOX_2 .dijitInputContainer input")
+         .findByCssSelector("#HASH_TEXT_BOX_2 .dijitInputContainer input")
             .type("test2")
             .end()
-         .elementByCss("#HASH_FORM .buttons .alfresco-buttons-AlfButton.confirmationButton > span")
+         .findByCssSelector("#HASH_FORM .buttons .alfresco-buttons-AlfButton.confirmationButton > span")
             .moveTo()
             .click()
             .end()
@@ -58,19 +58,19 @@ define(["intern!object",
          //    .end()
 
          // 2. Check that setting the hash will update the form...
-         .elementByCss("#SET_HASH")
+         .findByCssSelector("#SET_HASH")
             .moveTo()
             .click()
             .end()
 
-         .elementByCss("#HASH_TEXT_BOX_1 .dijitInputContainer input")
+         .findByCssSelector("#HASH_TEXT_BOX_1 .dijitInputContainer input")
             .getValue()
             .then(function(resultText) {
                TestCommon.log(testname,67,"Check fragment hash change sets field1");
                assert(resultText == "updatedField1", "Test #2a - field1 was not set by the hash: " + resultText);
             })
             .end()
-         .elementByCss("#HASH_TEXT_BOX_2 .dijitInputContainer input")
+         .findByCssSelector("#HASH_TEXT_BOX_2 .dijitInputContainer input")
             .getValue()
             .then(function(resultText) {
                TestCommon.log(testname,74,"Check fragment hash change sets field2");
@@ -87,10 +87,10 @@ define(["intern!object",
             .end()
 
          // 3. Update the fields and check that the submit button become enabled...
-         .elementByCss("#TEXT_BOX_1 .dijitInputContainer input")
+         .findByCssSelector("#TEXT_BOX_1 .dijitInputContainer input")
             .type("test3")
             .end()
-         .elementByCss("#TEXT_BOX_2 .dijitInputContainer input")
+         .findByCssSelector("#TEXT_BOX_2 .dijitInputContainer input")
             .type("9")
             .end()
          .elementsByCss("#STANDARD_FORM .buttons .alfresco-buttons-AlfButton.confirmationButton.dijitButtonDisabled")
@@ -99,7 +99,7 @@ define(["intern!object",
                assert(elements.length == 0, "Test #4a - Standard form button was not enabled following valid data entry");
             })
             .end()
-         .elementByCss("#STANDARD_FORM .buttons .alfresco-buttons-AlfButton.confirmationButton > span")
+         .findByCssSelector("#STANDARD_FORM .buttons .alfresco-buttons-AlfButton.confirmationButton > span")
             .moveTo()
             .click()
             .end()
@@ -129,13 +129,13 @@ define(["intern!object",
                assert(elements.length == 1, "Test #5b - The second additional button could not be found");
             })
             .end()
-         .elementByCss("#ADD_TEXT_BOX_1 .dijitInputContainer input")
+         .findByCssSelector("#ADD_TEXT_BOX_1 .dijitInputContainer input")
             .type("test4")
             .end()
-         .elementByCss("#ADD_TEXT_BOX_2 .dijitInputContainer input")
+         .findByCssSelector("#ADD_TEXT_BOX_2 .dijitInputContainer input")
             .type("test5")
             .end()
-         .elementByCss("#ADD_BUTTON_1")
+         .findByCssSelector("#ADD_BUTTON_1")
             .moveTo()
             .click()
             .end()

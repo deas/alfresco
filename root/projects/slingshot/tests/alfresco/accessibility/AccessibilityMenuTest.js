@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -92,8 +92,8 @@ define(["intern!object",
          .pressKeys([keys.ALT, keys.SHIFT, "s"])
          .pressKeys([keys.ALT, keys.SHIFT])
 //       Can't do this because of a conflict in FF on Windows that calls up a dialogue
-//         .keys([specialKeys["Control"], specialKeys["Command"], "s"])
-//         .keys([specialKeys["Control"], specialKeys["Command"]])
+//         .pressKeys([specialKeys["Control"], specialKeys["Command"], "s"])
+//         .pressKeys([specialKeys["Control"], specialKeys["Command"]])
          .url()
          .then(function (page) {
             // Only check the test if this isn't a Mac because of key combo conflicts.

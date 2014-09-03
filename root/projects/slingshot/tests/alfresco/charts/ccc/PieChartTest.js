@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -25,7 +25,7 @@ define(["intern!object",
    "intern/chai!assert",
    "require",
    "alfresco/TestCommon",
-   "intern/dojo/node!wd/lib/special-keys"],
+   "intern/dojo/node!leadfoot/keys"],
       function (registerSuite, assert, require, TestCommon, specialKeys) {
 
          registerSuite({
@@ -46,7 +46,7 @@ define(["intern!object",
 
                   // Test #2
                   // Check labels
-                     .elementByCss("#PIECHART_1 svg g g g g g:nth-child(2) text")
+                     .findByCssSelector("#PIECHART_1 svg g g g g g:nth-child(2) text")
                      .text()
                      .then(function(text) {
                         assert(text == "one-hundred-100", "Expected to find label 'one-hundred-100', but found '" + text + "'");
@@ -55,7 +55,7 @@ define(["intern!object",
 
                   // Test #3
                   // Check labels
-                     .elementByCss("#PIECHART_1 svg g g g g g:nth-child(4) text")
+                     .findByCssSelector("#PIECHART_1 svg g g g g g:nth-child(4) text")
                      .text()
                      .then(function(text) {
                         assert(text == "two-hundred-200", "Expected to find label 'two-hundred-200', but found '" + text + "'");

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -26,7 +26,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -60,21 +60,21 @@ define(["intern!object",
 
             // Test #2
             // Check the initial labels are correctly displayed...
-            .elementByCss("#MENU_BAR_SELECT_text")
+            .findByCssSelector("#MENU_BAR_SELECT_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Select (label)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
             })
             .end()
 
-            .elementByCss("#MENU_BAR_SELECT_VALUE_text")
+            .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Select (value)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
             })
             .end()
 
-            .elementByCss("#MENU_BAR_SELECT_WITH_ICON_text")
+            .findByCssSelector("#MENU_BAR_SELECT_WITH_ICON_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Select (show icon)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
@@ -83,10 +83,10 @@ define(["intern!object",
 
             // Test #3
             // Use the keyboard to test label set (using label)...
-            .keys(specialKeys["Tab"])
-            .keys(specialKeys["Down arrow"])
+            .pressKeys(specialKeys["Tab"])
+            .pressKeys(specialKeys["Down arrow"])
             .sleep(1000)
-            .keys(specialKeys["Space"])
+            .pressKeys(specialKeys["Space"])
             .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT", "publish", "last"))
             .then(function(result) {
                assert(result == true, "Test #3 - Keyboard selection of 'Option 1' didn't publish correctly (missing topic)");
@@ -99,7 +99,7 @@ define(["intern!object",
             })
             .end()
 
-            .elementByCss("#MENU_BAR_SELECT_text")
+            .findByCssSelector("#MENU_BAR_SELECT_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Option 1 Selected", "Test #3 - The label was not updated correctly: " + resultText);
@@ -108,9 +108,9 @@ define(["intern!object",
 
             // Test #4
             // Use the keyboard to test label set (using value)...
-            .keys(specialKeys["Right arrow"])
+            .pressKeys(specialKeys["Right arrow"])
             .sleep(1000)
-            .keys(specialKeys["Return"])
+            .pressKeys(specialKeys["Return"])
             .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT_VALUE", "publish", "last"))
             .then(function(result) {
                assert(result == true, "Test #4 - Keyboard selection of 'Option 1' didn't publish correctly (missing topic)");
@@ -123,7 +123,7 @@ define(["intern!object",
             })
             .end()
 
-            .elementByCss("#MENU_BAR_SELECT_VALUE_text")
+            .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Alpha", "Test #4 - The label was not updated correctly (to use a value): " + resultText);
@@ -136,13 +136,13 @@ define(["intern!object",
 
             // Test #6
             // Use the mouse to test label set (using label)...
-            .elementByCss("#MENU_BAR_SELECT")
+            .findByCssSelector("#MENU_BAR_SELECT")
                .moveTo()
                .sleep(500)
                .click()
                .sleep(500)
                .end()
-            .elementByCss("#SELECT_MENU_ITEM_2")
+            .findByCssSelector("#SELECT_MENU_ITEM_2")
                .moveTo()
                .sleep(500)
                .click()
@@ -160,7 +160,7 @@ define(["intern!object",
             })
             .end()
 
-            .elementByCss("#MENU_BAR_SELECT_text")
+            .findByCssSelector("#MENU_BAR_SELECT_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Option 2 Selected", "Test #6 - The label was not updated correctly: " + resultText);
@@ -169,13 +169,13 @@ define(["intern!object",
 
             // Test #6
             // Use the mouse to test label set (using label)...
-            .elementByCss("#MENU_BAR_SELECT_VALUE")
+            .findByCssSelector("#MENU_BAR_SELECT_VALUE")
                .moveTo()
                .sleep(500)
                .click()
                .sleep(500)
                .end()
-            .elementByCss("#SELECT_MENU_ITEM_4")
+            .findByCssSelector("#SELECT_MENU_ITEM_4")
                .moveTo()
                .sleep(500)
                .click()
@@ -193,7 +193,7 @@ define(["intern!object",
             })
             .end()
 
-            .elementByCss("#MENU_BAR_SELECT_VALUE_text")
+            .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Beta", "Test #6 - The label was not updated correctly: " + resultText);
@@ -207,13 +207,13 @@ define(["intern!object",
             // Test #8
             // Set the label using an external publication...
             
-            .elementByCss("#SET_WITH_LABEL_label")
+            .findByCssSelector("#SET_WITH_LABEL_label")
                .moveTo()
                .sleep(500)
                .click()
                .sleep(500)
                .end()
-            .elementByCss("#MENU_BAR_SELECT_text")
+            .findByCssSelector("#MENU_BAR_SELECT_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Alternative Label", "Test #8 - The label was not updated correctly by an external publication: " + resultText);
@@ -222,13 +222,13 @@ define(["intern!object",
 
             // Test #9
             // Set the label using an external publication...
-            .elementByCss("#SET_WITH_VALUE_label")
+            .findByCssSelector("#SET_WITH_VALUE_label")
                .moveTo()
                .sleep(500)
                .click()
                .sleep(500)
                .end()
-            .elementByCss("#MENU_BAR_SELECT_VALUE_text")
+            .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
             .text()
             .then(function(resultText) {
                assert(resultText == "Alternative Value", "Test #9 - The label was not updated correctly by an external publication: " + resultText);

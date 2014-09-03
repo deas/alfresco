@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -25,7 +25,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -38,8 +38,8 @@ define(["intern!object",
          .end()
 
          // 1. Test that enter won't submit without any data in the field...
-         .elementByCss("#STFF1 .dijitInputContainer input")
-            .keys(specialKeys["Return"])
+         .findByCssSelector("#STFF1 .dijitInputContainer input")
+            .pressKeys(specialKeys["Return"])
             .elementsByCss(TestCommon.topicSelector("TEST_PUBLISH", "publish", "any"))
                .then(function(elements) {
                   TestCommon.log(testname,45,"Check enter key cannot be used to submit data if field is empty");
@@ -48,9 +48,9 @@ define(["intern!object",
             .end()
 
          // 2. Test entering some text and hitting enter (rather than the OK button)...
-         .elementByCss("#STFF1 .dijitInputContainer input")
+         .findByCssSelector("#STFF1 .dijitInputContainer input")
             .type("test")
-            .keys(specialKeys["Return"])
+            .pressKeys(specialKeys["Return"])
             .end()
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "search", "test"))
             .then(function(elements) {

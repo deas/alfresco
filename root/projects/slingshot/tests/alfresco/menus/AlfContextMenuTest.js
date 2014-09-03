@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -26,7 +26,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -37,11 +37,11 @@ define(["intern!object",
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfContextMenu_TestPage.json")
 
             // TESTS COMMENTED OUT PENDING ANSWER POSTED HERE: https://github.com/theintern/intern/issues/191
-            // .elementByCss("#LOGO")
+            // .findByCssSelector("#LOGO")
             //    .moveTo()
             //    .click("2")
             //    .end()
-            // .elementByCss("#MI3")
+            // .findByCssSelector("#MI3")
             //    .moveTo()
             //    .click()
             //    .end()
@@ -52,11 +52,11 @@ define(["intern!object",
             //    })
             //    .end()
 
-            // .elementByCss("#CLASSIC_WINDOW div.content")
+            // .findByCssSelector("#CLASSIC_WINDOW div.content")
             //    .moveTo()
             //    .click("2")
             //    .end()
-            // .elementByCss("#MI1")
+            // .findByCssSelector("#MI1")
             //    .moveTo()
             //    .click()
             //    .end()

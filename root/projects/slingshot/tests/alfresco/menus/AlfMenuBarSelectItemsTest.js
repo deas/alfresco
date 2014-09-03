@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -26,7 +26,7 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, assert, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -53,11 +53,11 @@ define(["intern!object",
             // Test #3
             // Check clicking on the "Select All" item...
             .end()
-            .elementByCss("#MENU_BAR_SELECT_ITEMS")
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
                .moveTo()
                .click()
                .end()
-            .elementByCss("#SELECT_ALL")
+            .findByCssSelector("#SELECT_ALL")
                .moveTo()
                .click()
                .end()
@@ -83,7 +83,7 @@ define(["intern!object",
             // Test #4
             // Clicking on the 'checkbox' should now deselect everything...
             .end()
-            .elementByCss("#MENU_BAR_SELECT_ITEMS>img")
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img")
                .moveTo()
                .click()
                .end()
@@ -105,11 +105,11 @@ define(["intern!object",
             // Test #5
             // Check clicking on the "Some" menu item...
             .end()
-            .elementByCss("#MENU_BAR_SELECT_ITEMS")
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
                .moveTo()
                .click()
                .end()
-            .elementByCss("#SELECT_SOME_BY_ITEMS")
+            .findByCssSelector("#SELECT_SOME_BY_ITEMS")
                .moveTo()
                .click()
                .end()
@@ -136,7 +136,7 @@ define(["intern!object",
             // Test #6
             // Clicking on the 'checkbox' should move "SOME" to "ALL"...
             .end()
-            .elementByCss("#MENU_BAR_SELECT_ITEMS>img")
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img")
                .moveTo()
                .click()
                .end()
@@ -158,11 +158,11 @@ define(["intern!object",
             // Test #7
             // Check clicking on the "None (by Items)" menu item will set the none state...
             .end()
-            .elementByCss("#MENU_BAR_SELECT_ITEMS")
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
                .moveTo()
                .click()
                .end()
-            .elementByCss("#SELECT_NONE_BY_ITEMS")
+            .findByCssSelector("#SELECT_NONE_BY_ITEMS")
                .moveTo()
                .click()
                .end()
@@ -189,11 +189,11 @@ define(["intern!object",
             // Test #8
             // Check clicking on the "All (by Items)" menu item will set the all state...
             .end()
-            .elementByCss("#MENU_BAR_SELECT_ITEMS")
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
                .moveTo()
                .click()
                .end()
-            .elementByCss("#SELECT_ALL_BY_ITEMS")
+            .findByCssSelector("#SELECT_ALL_BY_ITEMS")
                .moveTo()
                .click()
                .end()
@@ -220,11 +220,11 @@ define(["intern!object",
             // Test #9
             // Check clicking on the "Select None" item...
             .end()
-            .elementByCss("#MENU_BAR_SELECT_ITEMS")
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
                .moveTo()
                .click()
                .end()
-            .elementByCss("#SELECT_NONE")
+            .findByCssSelector("#SELECT_NONE")
                .moveTo()
                .click()
                .end()
@@ -246,7 +246,7 @@ define(["intern!object",
             // Test #10
             // Clicking on the 'checkbox' should move "NONE" to "ALL"...
             .end()
-            .elementByCss("#MENU_BAR_SELECT_ITEMS>img")
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img")
                .moveTo()
                .click()
                .end()

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -28,7 +28,7 @@ define(["intern!object",
         "intern/chai!expect",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
+        "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, expect, require, TestCommon, specialKeys) {
 
    registerSuite({
@@ -126,7 +126,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCss("#MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
+         .findByCssSelector("#MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
          .text()
          .then(function(resultText) {
             TestCommon.log(testname,132,"Check custom toggle label changes after mouse click");
@@ -134,7 +134,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCss("#MENU_BAR_TOGGLE_WITH_ICON > img")
+         .findByCssSelector("#MENU_BAR_TOGGLE_WITH_ICON > img")
          .moveTo()
          .click()
          .end()
@@ -174,8 +174,8 @@ define(["intern!object",
 
          .end()
 
-         .keys(specialKeys.Tab)
-         .keys(specialKeys["Space"])
+         .pressKeys(specialKeys.Tab)
+         .pressKeys(specialKeys["Space"])
          .end()
 
          .hasElementByCss(TestCommon.topicSelector("ALF_WIDGETS_READY", "publish", "last"))
@@ -193,8 +193,8 @@ define(["intern!object",
          })
          .end()
 
-         .keys(specialKeys["Right arrow"])
-         .keys(specialKeys["Return"])
+         .pressKeys(specialKeys["Right arrow"])
+         .pressKeys(specialKeys["Return"])
          .end()
 
          .hasElementByCss(TestCommon.topicSelector("CLICK", "publish", "last"))
@@ -226,8 +226,8 @@ define(["intern!object",
          })
          .end()
 
-         .keys(specialKeys["Right arrow"])
-         .keys(specialKeys["Return"])
+         .pressKeys(specialKeys["Right arrow"])
+         .pressKeys(specialKeys["Return"])
 
          .hasElementByCss(TestCommon.topicSelector("CLICK", "publish", "last"))
          .then(function(result) {

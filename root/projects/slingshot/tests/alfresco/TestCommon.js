@@ -124,24 +124,24 @@ define(["intern/dojo/node!fs",
          return browser.get(this.bootstrapUrl())
 
          .setFindTimeout(Infinity)
-         .findByCss('.alfresco-core-Page.allWidgetsProcessed')
+         .findByCssSelector('.alfresco-core-Page.allWidgetsProcessed')
          .setFindTimeout(Config.timeout.implicitWait)
          .execute("dijit.registry.byId('UNIT_TEST_MODEL_FIELD').setValue('" + pageModel + "');'set';")
          .end()
 
          // It's necessary to type an additional space into the text area to ensure that the 
          // text area field validates and populates the form model with the data to be published...
-         .findByCss('#UNIT_TEST_MODEL_FIELD > DIV.control > TEXTAREA')
+         .findByCssSelector('#UNIT_TEST_MODEL_FIELD > DIV.control > TEXTAREA')
          .type(" ")
          .end()
 
          // Find and click on the test button to load the test page...
-         .findByCss("#LOAD_TEST_BUTTON")
+         .findByCssSelector("#LOAD_TEST_BUTTON")
          .click()
          .end()
 
          .setFindTimeout(Infinity)
-         .findByCss('.alfresco-core-Page.allWidgetsProcessed')
+         .findByCssSelector('.alfresco-core-Page.allWidgetsProcessed')
          .setFindTimeout(Config.timeout.implicitWait)
       },
 
@@ -408,7 +408,7 @@ define(["intern/dojo/node!fs",
          {
             browser.end()
 
-            .findByCss('.alfresco-testing-TestCoverageResults input[type=submit]')
+            .findByCssSelector('.alfresco-testing-TestCoverageResults input[type=submit]')
             .click()
             .end();
 
