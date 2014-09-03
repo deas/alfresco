@@ -40,71 +40,66 @@ define(["intern!object",
 
          // Check there are 3 drop down menus as described in the model
          .findAllByCssSelector("div.alfresco-renderers-PublishingDropDownMenu")
-         .then(function (dropdowns) {
-            TestCommon.log(testname,43,"Check there are 3 drop down menus as described in the model");
-            expect(dropdowns).to.have.length(3, "There should be 3 dropdown menus rendered");
-         })
-         .end()
+            .then(function (dropdowns) {
+               TestCommon.log(testname,43,"Check there are 3 drop down menus as described in the model");
+               expect(dropdowns).to.have.length(3, "There should be 3 dropdown menus rendered");
+            })
+            .end()
 
          // Check the start value of drop down menu 1 is 'Public'
          .findByCssSelector("span.dijitSelectLabel:nth-of-type(1)")
-         .getVisibleText()
-         .then(function (result1) {
-            TestCommon.log(testname,52,"Check the start value of drop down menu 1 is 'Public'");
-            expect(result1).to.equal("Public", "The start value of dropdown menu 1 should be 'Public'");
-         })
-         .sleep(500)
-         .end()
+            .getVisibleText()
+            .then(function (result1) {
+               TestCommon.log(testname,52,"Check the start value of drop down menu 1 is 'Public'");
+               expect(result1).to.equal("Public", "The start value of dropdown menu 1 should be 'Public'");
+            })
+            .end()
 
          // Open the menu by mouse click
          .findByCssSelector("span.dijitSelectLabel:nth-of-type(1)")
-         .sleep(500)
-         .click()
-         .sleep(500)
-         .hasElementByCss(".dijitMenuPopup")
-         .then(function(result2) {
-            TestCommon.log(testname,66,"Open the menu by mouse click");
-            expect(result2).to.equal(true, "The drop down menu did not appear on mouse clicks");
-         })
-         .end()
+            .click()
+            .end()
+         .findByCssSelector(".dijitMenuPopup")
+            .then(null,function() {
+               assert(false, "The drop down menu did not appear on mouse clicks");
+            })
+            .end()
 
          // Check the menu has appeared
          .findByCssSelector(".dijitMenuPopup")
-         .isDisplayed()
-         .then(function(result3) {
-            TestCommon.log(testname,77,"Check the menu has appeared");
-            expect(result3).to.equal(true, "The drop down menu should be visible on mouse clicks");
-          })
-         .end()
+            .isDisplayed()
+            .then(function(result3) {
+               TestCommon.log(testname,77,"Check the menu has appeared");
+               expect(result3).to.equal(true, "The drop down menu should be visible on mouse clicks");
+             })
+            .end()
 
          // Select a different item in the menu by mouse click
          .findByCssSelector("tr.dijitMenuItem:nth-of-type(3)")
-         .sleep(500)
-         .click()
-         .sleep(500)
-         .hasElementByCss(".dijitMenuPopup")
-         .then(function(result4) {
-            TestCommon.log(testname,88,"Select a different item in the menu by mouse click");
-            expect(result4).to.equal(true, "The menu code should not have been removed");
-         })
-         .end()
+            .click()
+            .end()
+         .findByCssSelector(".dijitMenuPopup")
+            .then(null, function() {
+                assert(false, "The menu code should not have been removed");
+            })
+            .end()
 
          // Check the menu disappeared
          .findByCssSelector(".dijitMenuPopup")
-         .isDisplayed()
-         .then(function(result5) {
-            TestCommon.log(testname,97,"Check the menu disappeared");
-            expect(result5).to.equal(false, "The drop down menu should be hidden after the mouse click");
-         })
-         .end()
+            .isDisplayed()
+            .then(function(result5) {
+               TestCommon.log(testname,97,"Check the menu disappeared");
+               expect(result5).to.equal(false, "The drop down menu should be hidden after the mouse click");
+            })
+            .end()
 
          // Check the menu selection published as expected after mouse clicks
          .findAllByCssSelector(TestCommon.pubDataCssSelector("ALF_PUBLISHING_DROPDOWN_MENU", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
-         .then(function(elements) {
-            TestCommon.log(testname,105,"Check the menu selection published as expected after mouse clicks");
-            assert(elements.length == 1, "The menu did not publish on 'ALF_PUBLISHING_DROPDOWN_MENU' after mouse clicks");
-         })
-         .end()
+            .then(function(elements) {
+               TestCommon.log(testname,105,"Check the menu selection published as expected after mouse clicks");
+               assert(elements.length == 1, "The menu did not publish on 'ALF_PUBLISHING_DROPDOWN_MENU' after mouse clicks");
+            })
+            .end()
 
          // Refresh the page to lose all focus
          .refresh()
@@ -112,11 +107,11 @@ define(["intern!object",
 
          // Check the menu publish is not shown after the refresh
          .findAllByCssSelector(TestCommon.pubDataCssSelector("ALF_PUBLISHING_DROPDOWN_MENU", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
-         .then(function(elements) {
-            TestCommon.log(testname,117,"Check the menu publish is not shown after the refresh");
-            assert(elements.length == 0, "The menu publish should have gone after a refresh", elements);
-         })
-         .end()
+            .then(function(elements) {
+               TestCommon.log(testname,117,"Check the menu publish is not shown after the refresh");
+               assert(elements.length == 0, "The menu publish should have gone after a refresh", elements);
+            })
+            .end()
 
          // // Open another menu with key functions - check it is visible
          .pressKeys(keys.TAB)
@@ -127,32 +122,32 @@ define(["intern!object",
          .pressKeys(keys.ARROW_DOWN)
          .sleep(500)
          .findByCssSelector(".dijitMenuPopup")
-         .isDisplayed()
-         .then(function(result8) {
-            TestCommon.log(testname,133,"Open another menu with key functions - check it is visible");
-            expect(result8).to.equal(true, "The drop down menu should be visible after key presses");
-         })
-         .end()
+            .isDisplayed()
+            .then(function(result8) {
+               TestCommon.log(testname,133,"Open another menu with key functions - check it is visible");
+               expect(result8).to.equal(true, "The drop down menu should be visible after key presses");
+            })
+            .end()
 
          // Select another item in the menu - check the menu disappears
          .pressKeys(keys.ARROW_DOWN)
          .pressKeys(keys.RETURN)
          .sleep(500)
          .findByCssSelector(".dijitMenuPopup")
-         .isDisplayed()
-         .then(function(elements) {
-            TestCommon.log(testname,145,"Select another item in the menu - check the menu disappears");
-            expect(elements).to.equal(false, "The drop down menu should be hidden after key presses");
-         })
-         .end()
+            .isDisplayed()
+            .then(function(elements) {
+               TestCommon.log(testname,145,"Select another item in the menu - check the menu disappears");
+               expect(elements).to.equal(false, "The drop down menu should be hidden after key presses");
+            })
+            .end()
 
          // Check the menu selection published as expected after key presses
          .findAllByCssSelector(TestCommon.pubDataCssSelector("ALF_PUBLISHING_DROPDOWN_MENU", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
-         .then(function(elements) {
-            TestCommon.log(testname,153,"Check the menu selection published as expected after key presses");
-            assert(elements.length == 1, "The menu did not publish on 'ALF_PUBLISHING_DROPDOWN_MENU' after key presses");
-         })
-         .end()
+            .then(function(elements) {
+               TestCommon.log(testname,153,"Check the menu selection published as expected after key presses");
+               assert(elements.length == 1, "The menu did not publish on 'ALF_PUBLISHING_DROPDOWN_MENU' after key presses");
+            })
+            .end()
 
          // Post the coverage results...
          .then(function() {
