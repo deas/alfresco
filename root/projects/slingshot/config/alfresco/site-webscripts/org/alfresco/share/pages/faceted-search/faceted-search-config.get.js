@@ -621,8 +621,9 @@ var main = {
                                                                               publishTopic: "ALF_CRUD_UPDATE",
                                                                               publishPayloadType: "PROCESS",
                                                                               publishPayloadModifiers: ["processCurrentItemTokens"],
-                                                                              publishPayloadItemMixin: true,
+                                                                              publishPayloadItemMixin: false,
                                                                               publishPayload: {
+                                                                                 filterID: "{filterID}",
                                                                                  url: "api/solr/facet-config/{filterID}",
                                                                                  noRefresh: true,
                                                                                  successMessage: msg.get("faceted-search-config.update.successMessage")
@@ -645,8 +646,9 @@ var main = {
                                                                               publishTopic: "ALF_CRUD_UPDATE",
                                                                               publishPayloadType: "PROCESS",
                                                                               publishPayloadModifiers: ["processCurrentItemTokens"],
-                                                                              publishPayloadItemMixin: true,
+                                                                              publishPayloadItemMixin: false,
                                                                               publishPayload: {
+                                                                                 filterID: "{filterID}",
                                                                                  url: "api/solr/facet-config/{filterID}",
                                                                                  noRefresh: true,
                                                                                  successMessage: msg.get("faceted-search-config.update.successMessage")
@@ -688,8 +690,9 @@ var main = {
                                                                               publishTopic: "ALF_CRUD_UPDATE",
                                                                               publishPayloadType: "PROCESS",
                                                                               publishPayloadModifiers: ["processCurrentItemTokens"],
-                                                                              publishPayloadItemMixin: true,
+                                                                              publishPayloadItemMixin: false,
                                                                               publishPayload: {
+                                                                                 filterID: "{filterID}",
                                                                                  url: "api/solr/facet-config/{filterID}",
                                                                                  noRefresh: true,
                                                                                  successMessage: msg.get("faceted-search-config.update.successMessage")
@@ -716,8 +719,9 @@ var main = {
                                                                               publishTopic: "ALF_CRUD_UPDATE",
                                                                               publishPayloadType: "PROCESS",
                                                                               publishPayloadModifiers: ["processCurrentItemTokens"],
-                                                                              publishPayloadItemMixin: true,
+                                                                              publishPayloadItemMixin: false,
                                                                               publishPayload: {
+                                                                                 filterID: "{filterID}",
                                                                                  url: "api/solr/facet-config/{filterID}",
                                                                                  noRefresh: true,
                                                                                  successMessage: msg.get("faceted-search-config.update.successMessage")
