@@ -54,8 +54,7 @@ define(["dojo/_base/declare",
 
       /**
        * Keeps track of the current picker depth. When a new picker is added it will be given the current depth
-       * which will then be incremented. When a picker requests a another picker be added (e.g. selecting "Repository"
-       * requests that an "alfresco/pickers/Explorer" rooted at Company Home be added) it should include the depth
+       * which will then be incremented. When a picker requests a another picker be added it should include the depth
        * within the request so that deeper pickers (that are no longer relevant) are removed.
        *
        * @instance
