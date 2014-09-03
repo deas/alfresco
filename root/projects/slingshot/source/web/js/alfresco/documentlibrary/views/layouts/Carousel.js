@@ -133,9 +133,33 @@ define(["dojo/_base/declare",
          domStyle.set(this.itemsNode, "width", this.itemsNodeWidth + "px");
          domStyle.set(this.itemsNode, "height", this.height);
 
+         this.resizeContainer();
+
          // Set the range of displayed items...
          this.lastDisplayedIndex = this.firstDisplayedIndex + (this.numberOfItemsShown - 1);
          this.renderDisplayedItems();
+
+         // Make sure the frame is aligned correctly...
+         this.currentLeftPosition = this.firstDisplayedIndex * this.itemsNodeWidth;
+         var left = "-" + this.currentLeftPosition + "px";
+         domStyle.set(this.containerNode, "left", left);
+      },
+
+      /**
+       * Resizes the container that holds all the items (some of which may be hidden from view). It
+       * sets the width by multiplying the number of items by the item width. This specific resizing
+       * has been abstracted to it's own function so that it can be easily re-used by extending widgets
+       * that may wish to call it (such as the [DocumentCarousel]{@link module:alfresco/documentlibrary/views/layouts/DocumentCarousel})
+       *
+       * @instance
+       */
+      resizeContainer: function alfresco_documentlibrary_views_layouts_Carousel__resizeContainer() {
+         var itemsCount = lang.getObject("currentData.items.length", false, this);
+         if (itemsCount !== null)
+         {
+            var totalWidth = (itemsCount * this.itemsNodeWidth) + "px";
+            domStyle.set(this.containerNode, "width", totalWidth);
+         }
       },
 
       /**
@@ -155,34 +179,35 @@ define(["dojo/_base/declare",
        * @instance
        */
       calculateSizes: function alfresco_documentlibrary_views_layouts_Carousel__calculateSizes() {
-         // Get the available width of the items node...
-         var computedStyle = domStyle.getComputedStyle(this.domNode);
-         var output = domGeom.getMarginBox(this.domNode, computedStyle);
-
-         // The width to use is the node width minus the space reserved for the navigation controls...
-         var overallWidth = output.w - (2 * this.navigationMargin);
-
-         // For now assume that the width of each item will be 100px....
-         // Divide the itemsNode width by 100 to get the number of items
-         this.numberOfItemsShown = Math.floor(overallWidth/this.itemWidth);
-         this.itemsNodeWidth = this.numberOfItemsShown * this.itemWidth;
-
-         if (this.fixedHeight != null)
+         if (this.domNode)
          {
-            // Use the configured height...
-            this.height = this.fixedHeight;
-         }
-         else
-         {
-            // Calculate a suitable height...
-            this.height = Math.floor((2 / 3) * this.itemsNodeWidth);
-            var viewPort = win.getBox();
-            var maxItemHeight = viewPort.h;
-            if (this.height > maxItemHeight)
+            // Get the available width of the items node...
+            var computedStyle = domStyle.getComputedStyle(this.domNode);
+            var output = domGeom.getMarginBox(this.domNode, computedStyle);
+
+            // The width to use is the node width minus the space reserved for the navigation controls...
+            var overallWidth = output.w - (2 * this.navigationMargin);
+
+            // For now assume that the width of each item will be 100px....
+            // Divide the itemsNode width by 100 to get the number of items
+            this.numberOfItemsShown = Math.floor(overallWidth/this.itemWidth);
+            this.itemsNodeWidth = this.numberOfItemsShown * this.itemWidth;
+
+            if (this.fixedHeight != null)
             {
-               this.height = maxItemHeight;
+               // Use the configured height...
+               this.height = this.fixedHeight;
             }
-            this.height += "px";
+            else
+            {
+               // Calculate a suitable height...
+               // We're going to set the height to be as big as the viewing port allows
+               // from the starting vertical position of the node
+               var position = domGeom.position(this.domNode);
+               var viewPort = win.getBox();
+               this.height = viewPort.h - position.y;
+               this.height += "px";
+            }
          }
       },
       
@@ -235,7 +260,6 @@ define(["dojo/_base/declare",
        * @param {object} evt The click event
        */
       onPrevClick: function alfresco_documentlibrary_views_layouts_Carousel__onPrevClick(evt) {
-         this.alfLog("log", "Previous carousel items request", this);
          if (this.currentLeftPosition > 0)
          {
             this.currentLeftPosition -= this.itemsNodeWidth;
@@ -249,6 +273,8 @@ define(["dojo/_base/declare",
          if (this.currentLeftPosition < 0)
          {
             this.currentLeftPosition = 0;
+            this.firstDisplayedIndex = 0;
+            this.lastDisplayedIndex = this.firstDisplayedIndex + (this.numberOfItemsShown - 1);
          }
          
          var left = "-" + this.currentLeftPosition + "px";
@@ -262,7 +288,6 @@ define(["dojo/_base/declare",
        * @param {object} evt The click event
        */
       onNextClick: function alfresco_documentlibrary_views_layouts_Carousel__onNextClick(evt) {
-         this.alfLog("log", "Next carousel items request", this);
          this.currentLeftPosition += this.itemsNodeWidth;
 
          // Update the displayed range...
@@ -316,16 +341,18 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       selectItem: function alfresco_documentlibrary_views_layouts_Carousel__item(payload) {
-         if (payload.index != null)
+
+         if (payload.index != null && !isNaN(parseInt(payload.index)))
          {
-            if (payload.index >= this.firstDisplayedIndex && payload.index <= this.lastDisplayedIndex)
+            var targetIndex = parseInt(payload.index);
+            if (targetIndex >= this.firstDisplayedIndex && targetIndex <= this.lastDisplayedIndex)
             {
                // The requested item is currently displayed, no action necessary...
             }
-            else if (payload.index > this.lastDisplayedIndex)
+            else if (targetIndex > this.lastDisplayedIndex)
             {
                // Start navigating back to find the item
-               while(payload.index > this.lastDisplayedIndex)
+               while(targetIndex > this.lastDisplayedIndex)
                {
                   this.onNextClick();
                }
@@ -333,7 +360,7 @@ define(["dojo/_base/declare",
             else
             {
                // Start navigating forward to find the item
-               while(payload.index < this.firstDisplayedIndex)
+               while(targetIndex < this.firstDisplayedIndex)
                {
                   this.onPrevClick();
                }

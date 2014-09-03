@@ -26,11 +26,11 @@
    padding: 0;
    position: relative;
    transition: left 1s ease 0.1s; /* NOTE THAT YUICOMPRESSOR STRIPS UNITS FROM 0 VALUES, BUT FIREFOX IGNORES TRANSITION RULES WITHOUT UNITS ON 0 VALUES!! */
-   width: 20000px;
 }
 
 .alfresco-documentlibrary-views-layouts-Carousel > div.items > div.frame > ol > li {
    display: inline-block;
+   float: left;
    margin-top: 6px;
 }
 

@@ -74,6 +74,7 @@ define(["dojo/_base/declare",
        */
       resize: function alfresco_documentlibrary_views_layouts_DocumentCarousel__resize() {
          this.inherited(arguments);
+         this.resizeContainer();
          query(".items li", this.domNode).style({width: this.itemsNodeWidth + "px"});
       },
 
