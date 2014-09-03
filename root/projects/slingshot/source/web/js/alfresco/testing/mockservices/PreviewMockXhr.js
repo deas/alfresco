@@ -27,7 +27,7 @@
  */
 define(["dojo/_base/declare",
         "alfresco/testing/MockXhr",
-        "dojo/text!./responseTemplates/preview/Image.json"], 
+        "dojo/text!./responseTemplates/previews/Image.json"], 
         function(declare, MockXhr, imageNode) {
    
    return declare([MockXhr], {

@@ -102,6 +102,8 @@ define({
       // 'tests/alfresco/misc/AlfTooltipTest', - COMMENTED OUT - THE TOOLTIP ITSELF NEEDS REWRITING
       'tests/alfresco/misc/TableAndFormDialogTest',
 
+      'tests/alfresco/preview/ImagePreviewTest',
+
       'tests/alfresco/renderers/BannerTest',
       'tests/alfresco/renderers/BooleanTest',
       'tests/alfresco/renderers/CategoryTest',

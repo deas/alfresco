@@ -79,7 +79,12 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST_SUCCESS", lang.hitch(this, "onDocumentLoaded"));
       },
       
-
+      /**
+       * If no current item is set but a nodeRef has been provided then publish a request to get the document
+       * with that nodeRef.
+       *
+       * @instance
+       */
       postCreate: function alfresco_documentlibrary_AlfDocument_postCreate() {
          if (this.currentItem == null && this.nodeRef != null)
          {

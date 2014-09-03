@@ -61,6 +61,8 @@
         this.requestBody = null;
         this.status = 0;
         this.statusText = "";
+        this.response = "";
+        this.responseType = "";
         this.upload = new UploadProgress();
         if (sinon.xhr.supportsCORS) {
             this.withCredentials = false;
@@ -232,14 +234,14 @@
         }
     }
 
-    function verifyResponseBodyType(body) {
-        if (typeof body != "string") {
-            var error = new Error("Attempted to respond to fake XMLHttpRequest with " +
-                                 body + ", which is not a string.");
-            error.name = "InvalidBodyException";
-            throw error;
-        }
-    }
+    // function verifyResponseBodyType(body) {
+    //     if (typeof body != "string") {
+    //         var error = new Error("Attempted to respond to fake XMLHttpRequest with " +
+    //                              body + ", which is not a string.");
+    //         error.name = "InvalidBodyException";
+    //         throw error;
+    //     }
+    // }
 
     sinon.extend(FakeXMLHttpRequest.prototype, sinon.EventTarget, {
         async: true,
@@ -411,8 +413,67 @@
         setResponseBody: function setResponseBody(body) {
             verifyRequestSent(this);
             verifyHeadersReceived(this);
-            verifyResponseBodyType(body);
+            // verifyResponseBodyType(body);
 
+            switch (this.responseType) {
+                case "": // The empty string should fall through
+                case "text":
+                    if (typeof body !== "string") {
+                        var error = new Error();
+                        error.name = "InvalidBodyException";
+                        throw error;
+                    }
+
+                    this.loadResponseText(body);
+                    this.response = this.responseText;
+                    break;
+                case "arraybuffer":
+                    if (body instanceof ArrayBuffer) {
+                        this.response = body;
+                    } else {
+                        this.response = new ArrayBuffer(body.length);
+
+                        var arrayView = new Uint8Array(this.response);
+                        for (var i = 0, length = body.length; i < length; i++) {
+                            arrayView[i] = body[i];
+                        }
+                    }
+                    break;
+            }
+
+            // var chunkSize = this.chunkSize || 10;
+            // var index = 0;
+            // this.responseText = "";
+
+            // do {
+            //     if (this.async) {
+            //         this.readyStateChange(FakeXMLHttpRequest.LOADING);
+            //     }
+
+            //     this.responseText += body.substring(index, index + chunkSize);
+            //     index += chunkSize;
+            // } while (index < body.length);
+
+            // var type = this.getResponseHeader("Content-Type");
+
+            // if (this.responseText &&
+            //     (!type || /(text\/xml)|(application\/xml)|(\+xml)/.test(type))) {
+            //     try {
+            //         this.responseXML = FakeXMLHttpRequest.parseXML(this.responseText);
+            //     } catch (e) {
+            //         // Unable to parse XML - no biggie
+            //     }
+            // }
+
+            if (this.async) {
+                this.readyStateChange(FakeXMLHttpRequest.DONE);
+            } else {
+                this.readyState = FakeXMLHttpRequest.DONE;
+            }
+        },
+
+        // Loads the response text from the given response body, that has to be a String.
+        loadResponseText: function loadResponseText (body) {
             var chunkSize = this.chunkSize || 10;
             var index = 0;
             this.responseText = "";
@@ -436,16 +497,10 @@
                     // Unable to parse XML - no biggie
                 }
             }
-
-            if (this.async) {
-                this.readyStateChange(FakeXMLHttpRequest.DONE);
-            } else {
-                this.readyState = FakeXMLHttpRequest.DONE;
-            }
         },
 
         respond: function respond(status, headers, body) {
-            this.status = typeof status == "number" ? status : 200;
+            this.status = typeof status === "number" ? status : 200;
             this.statusText = FakeXMLHttpRequest.statusCodes[this.status];
             this.setResponseHeaders(headers || {});
             this.setResponseBody(body || "");
