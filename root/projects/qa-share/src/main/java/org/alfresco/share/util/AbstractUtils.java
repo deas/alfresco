@@ -344,7 +344,7 @@ public abstract class AbstractUtils
             {
                 if (entry.getValue() != null)
                 {
-                    ShareUtil.logout(entry.getValue());
+                    ShareUser.logout(entry.getValue());
                     entry.getValue().quit();
                     logger.info(entry.getKey() + " closed");
                     logger.info("[Suite ] : End of Tests in: " + this.getClass().getSimpleName());
@@ -1405,6 +1405,7 @@ public abstract class AbstractUtils
      * @return
      * @throws Exception
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     protected String getDependsOnMethodName(Class cls) throws Exception
     {
         Test test = cls.getMethod(Thread.currentThread().getStackTrace()[2].getMethodName()).getAnnotation(Test.class);
