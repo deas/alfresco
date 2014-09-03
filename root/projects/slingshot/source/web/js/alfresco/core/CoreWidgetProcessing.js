@@ -460,12 +460,12 @@ define(["dojo/_base/declare",
                if (renderFilterMethod == null || lang.trim(renderFilterMethod) == "ALL")
                {
                   // Handle AND logic (all filters must pass)
-                  shouldRender = array.every(renderFilterConfig, lang.hitch(this, "processFilterConfig"));
+                  shouldRender = array.every(renderFilterConfig, lang.hitch(this, this.processFilterConfig));
                }
                else
                {
                   // Handle OR logic (only one filter needs to pass)
-                  shouldRender = array.some(renderFilterConfig, lang.hitch(this, "processFilterConfig"));
+                  shouldRender = array.some(renderFilterConfig, lang.hitch(this, this.processFilterConfig));
                }
             }
          }
