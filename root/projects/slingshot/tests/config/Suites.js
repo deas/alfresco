@@ -59,6 +59,7 @@ define({
 
       'tests/alfresco/footer/FooterTest',
 
+      'tests/alfresco/forms/DynamicFormTest.js',,
       'tests/alfresco/forms/FormsTest',
       'tests/alfresco/forms/SingleTextFieldFormTest',
       // 'tests/alfresco/forms/controls/DocumentPickerTest', // TODO: NEEDS FIXING - WIDGET POSSIBLY BROKEN
@@ -113,7 +114,7 @@ define({
     * @instance
     * @type [string]
     */
-   localOnlyFunctionalSuites: ['tests/alfresco/CodeCoverageBalancer'],
+   localOnlyFunctionalSuites: [], //['tests/alfresco/CodeCoverageBalancer'],
 
    /**
     * This is the full array of functional test suites for local tests

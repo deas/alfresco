@@ -158,6 +158,11 @@ define(["dojo/_base/declare",
             this.onSave();
          }
       },
+
+      stopKeyPressEvents: function alfresco_renderers_InlineEditProperty__stopKeyPressEvents(e) {
+         console.log("Stopping event");
+         event.stop(e);
+      },
       
       /**
        * @instance

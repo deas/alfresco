@@ -30,7 +30,7 @@ define(["intern!object",
 
    registerSuite({
       name: 'Social Renderers Test',
-      'Basic Test': function () {
+      'Like Test': function () {
          var browser = this.remote;
          var testname = "Social Renderers Test";
 
@@ -144,6 +144,137 @@ define(["intern!object",
             .isDisplayed()
             .then(function(result) {
                assert(result == true, "Test #4b - like WARNING image not displayed following simulated failure")
+            })
+            .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         })
+         .end();
+      },
+      'Favourite Test': function () {
+         var browser = this.remote;
+         var testname = "Social Renderers Test";
+
+         // type (like, favourite), status (processing, on, off, count, warning)
+         var toggleSelector = function(id, status) {
+            return "#" + id + " ." + status;
+         };
+
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/SocialRenderers_TestPage.json", testname)
+
+         .end()
+         
+         // Check the initial state of the FAVOURITE widget...
+         .findByCssSelector(toggleSelector("FAVOURITES", "processing"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == false, "Test #1a - favourite PROCESSING image displayed incorrectly")
+            })
+            .end()
+         .findByCssSelector(toggleSelector("FAVOURITES", "on"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == false, "Test #1b - favourite ON image displayed incorrectly")
+            })
+            .end()
+         .findByCssSelector(toggleSelector("FAVOURITES", "off"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == true, "Test #1c - favourite OFF image was not displayed")
+            })
+            .end()
+         .findByCssSelector(toggleSelector("FAVOURITES", "warning"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == false, "Test #1d - favourite WARNING image displayed incorrectly")
+            })
+            .end()
+         
+         // Click on FAVOURITE and check the response...
+         .findByCssSelector("#FAVOURITES")
+            .click()
+            .end()
+         .findAllByCssSelector(TestCommon.topicSelector("ALF_PREFERENCE_ADD_DOCUMENT_FAVOURITE", "publish", "any"))
+            .then(function(elements) {
+               assert(elements.length === 1, "Test #2a - Add favourite request not published");
+            })
+            .end()
+         .findByCssSelector(toggleSelector("FAVOURITES", "on"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == true, "Test #2b - favourite ON image not displayed following favourite")
+            })
+            .end()
+         .findByCssSelector(toggleSelector("FAVOURITES", "off"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == false, "Test #2c - favourite OFF image displayed despite liking")
+            })
+            .end()
+
+         // Click on FAVOURITE again and check the response...
+         .findByCssSelector("#FAVOURITES")
+            .click()
+            .end()
+         .findAllByCssSelector(TestCommon.topicSelector("ALF_PREFERENCE_REMOVE_DOCUMENT_FAVOURITE", "publish", "any"))
+            .then(function(elements) {
+               assert(elements.length === 1, "Test #3a - Remove favourite request not published");
+            })
+            .end()
+         .findByCssSelector(toggleSelector("FAVOURITES", "on"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == false, "Test #3b - favourite ON image displayed despite removing favourite")
+            })
+            .end()
+         .findByCssSelector(toggleSelector("FAVOURITES", "off"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == true, "Test #3c - favourite OFF image not displayed despite removing favourite")
+            })
+            .end()
+
+         // Click on the FAVOURITE again to check the simulated failure request...
+         .findByCssSelector("#FAVOURITES")
+            .click()
+            .end()
+         .findAllByCssSelector(TestCommon.topicSelector("ALF_PREFERENCE_ADD_DOCUMENT_FAVOURITE", "publish", "any"))
+            .then(function(elements) {
+               assert(elements.length === 2, "Test #4a - Add favourite request not published");
+            })
+            .end()
+         .findByCssSelector(toggleSelector("FAVOURITES", "warning"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == true, "Test #4b - favourite WARNING image not displayed following simulated failure")
+            })
+            .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         })
+         .end();
+      },
+      'Comments Test': function () {
+         var browser = this.remote;
+         var testname = "Social Renderers Test";
+
+         // type (like, favourite), status (processing, on, off, count, warning)
+         var toggleSelector = function(id, status) {
+            return "#" + id + " ." + status;
+         };
+
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/SocialRenderers_TestPage.json", testname)
+
+         .end()
+         
+         .findByCssSelector(toggleSelector("COMMENTS", "count"))
+            .getVisibleText()
+            .then(function(resultText) {
+               assert(resultText == "6", "Test #1a - comments COUNT is incorrect: " + resultText)
             })
             .end()
 
