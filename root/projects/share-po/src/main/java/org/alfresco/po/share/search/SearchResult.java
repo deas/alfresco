@@ -18,6 +18,7 @@
  */
 package org.alfresco.po.share.search;
 
+import org.alfresco.po.share.admin.ActionsSet;
 import org.alfresco.webdrone.HtmlPage;
 
 /**
@@ -53,4 +54,47 @@ public interface SearchResult
       * @return boolean true if search result is of folder
       */
      boolean isFolder();
+     
+     /**
+      * Date of search result item.
+      * 
+      * @return String Date
+      */
+     
+     String getDate();
+     
+     /**
+      * Site of search result item.
+      * 
+      * @return String Site
+      */
+     
+     String getSite();     
+     
+     /**
+      * Select the site link of the search result item.
+      * 
+      * @return true if link found and selected
+      */
+     HtmlPage clickSiteLink();
+     
+     /**
+      * Select the Date link of the search result item.
+      * 
+      * @return true if link found and selected
+      */
+     
+	 HtmlPage clickDateLink();
+	 
+	 
+	 /**
+      * Actions of search result item.
+      * 
+      * @return enum ActionSet
+      */
+	 ActionsSet getActions();
+	 
+	
+     
+     
 }

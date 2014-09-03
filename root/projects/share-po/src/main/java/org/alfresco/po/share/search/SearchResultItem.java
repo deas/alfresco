@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.admin.ActionsSet;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -50,6 +51,9 @@ public class SearchResultItem implements SearchResult
     private static final String FOLDER_CSS = "img[src$='folder.png']";
     private static final String FOLDER_PATH_CSS = "a";
     private static final String CONTENT_DETAILS_CSS = "div.details";
+    private static final String DATE = "tr td.dateCell span.inner";    
+    private static final String SITE = "tr td.siteCell span.inner";
+    
 
     private WebElement webElement;
     private String title;
@@ -261,5 +265,55 @@ public class SearchResultItem implements SearchResult
     {
         return getTitle();
     }
+    
+    @Override
+    /**
+     * The site are treated the same up till version 5.0
+     * @return String Site
+     */
+    public String getSite()
+    {
+        return getSite();
+    }
+    
+    @Override
+    /**
+     * The date are treated the same up till version 5.0
+     * @return String Date
+     */
+    public String getDate()
+    {
+        return getDate();
+    }
+    
+    @Override
+    /**
+     * The ActionsSet are treated the same up till version 5.0
+     * @return ActionsSet
+     */
+    public ActionsSet getActions()
+    {
+        return getActions();
+    }
+    
+    @Override
+    public HtmlPage clickDateLink()
+    {
+        WebElement link = webElement.findElement(By.cssSelector(DATE));
+        link.click();
+        return FactorySharePage.resolvePage(drone);
+    }
+    
+    @Override
+    public HtmlPage clickSiteLink()
+    {
+        WebElement link = webElement.findElement(By.cssSelector(SITE));
+        link.click();
+        return FactorySharePage.resolvePage(drone);
+    }
+    
+    
+    
+
     
 }
