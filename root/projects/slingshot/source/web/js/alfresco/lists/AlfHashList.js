@@ -101,7 +101,15 @@ define(["dojo/_base/declare",
             // changed. Each view renderer that registers a link will need to set a "linkClickTopic" and this
             // should be matched by the "linkClickTopic" of this instance)
             this.alfSubscribe(this.linkClickTopic, lang.hitch(this, this.onItemLinkClick));
-            if (this._readyToLoad) this.loadData();
+            if (this.currentData != null)
+            {
+               this.processLoadedData();
+               this.renderView();
+            }
+            else
+            {
+               this.loadData();
+            }
          }
       },
 

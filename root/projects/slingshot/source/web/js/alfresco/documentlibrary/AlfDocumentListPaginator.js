@@ -166,7 +166,7 @@ define(["dojo/_base/declare",
          {
             if (payload.totalDocuments != null && payload.startIndex != null)
             {
-               if (payload.totalDocuments == 0)
+               if (payload.totalDocuments === 0)
                {
                   // Hide pagination controls when there are no results...
                   domClass.add(this.domNode, "hidden");
@@ -239,7 +239,7 @@ define(["dojo/_base/declare",
                            value: (i+1)
                         }
                      });
-                     this.pageSelectorGroup.addChild(menuItem)
+                     this.pageSelectorGroup.addChild(menuItem);
                      
                      pageLabels.push();
                      pageStart = pageEnd + 1; // Add the 1 back on because the next page starts at 26
@@ -267,6 +267,16 @@ define(["dojo/_base/declare",
        */
       pageSelectorGroup: null,
       
+      /**
+       * This is the minimum width the container node must be in order for the page size selector
+       * to be displayed.
+       *
+       * @instance
+       * @type {number}
+       * @default 1024
+       */
+      hidePageSizeOnWidth: 1024,
+
       /**
        * @instance
        */
@@ -320,7 +330,7 @@ define(["dojo/_base/declare",
                   id: this.id + "_RESULTS_PER_PAGE_SELECTOR",
                   label: this.message("alf-documentlist-paginator.docsPerPageSelect.label"),
                   selectionTopic: this.docsPerpageSelectionTopic,
-                  minRwdWidth: 1024,
+                  minRwdWidth: this.hidePageSizeOnWidth,
                   widgets: [
                      {
                         name: "alfresco/menus/AlfMenuGroup",
