@@ -20,6 +20,7 @@ module.exports = function(grunt) {
    // Load all grunt modules
    // @see: https://github.com/sindresorhus/load-grunt-tasks
    require('load-grunt-tasks')(grunt)
+   grunt.loadNpmTasks('grunt-notify');
 
    var _ = require('lodash'), // Add the lodash util library
       extend = _.extend,
@@ -127,4 +128,19 @@ module.exports = function(grunt) {
       'shell:killShare',
       'vdown'
    ]);
+
+   // Display notifications on test passes and failures...
+   var notify = require('./node_modules/grunt-notify/lib/notify-lib');
+   grunt.event.on("intern.pass", function(data) {
+      notify({
+         title: "Unit Test Passed",
+         message: data 
+      });
+   });
+   grunt.event.on("intern.fail", function(data) {
+      notify({
+         title: "Unit Test Failed",
+         message: data 
+      });
+   });
 };
