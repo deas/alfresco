@@ -286,7 +286,21 @@ define(["dojo/_base/declare",
          }
          else
          {
-            this.facetFields = (this.facetFields != "") ? this.facetFields + "," + qname : qname;
+            // Make sure each facet is only included once (the search API is not tolerant of duplicates)...
+            // Even if multiple widgets want to include the same facet, they will all receive the same
+            // publication on search results...
+            var f = this.facetFields.split(",");
+            var alreadyAdded = array.some(f, function(currQName, i) {
+               return currQName === qname;
+            });
+            if (alreadyAdded)
+            {
+               // No action required - the request QName has already been included
+            }
+            else
+            {
+               this.facetFields = (this.facetFields != "") ? this.facetFields + "," + qname : qname;
+            }
          }
       },
 

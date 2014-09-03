@@ -327,7 +327,12 @@ var main = {
                                           },
                                           disablementConfig: {
                                              initialValue: false,
-                                             rules: []
+                                             rules: [
+                                                {
+                                                   targetId: "IS_DEFAULT",
+                                                   is: [true]
+                                                }
+                                             ]
                                           }
                                        }
                                     },
@@ -339,6 +344,20 @@ var main = {
                                           value: "true",
                                           label: "faceted-search-config.isEnabled.label",
                                           description: "faceted-search-config.isEnabled.description"
+                                       }
+                                    },
+                                    {
+                                       name: "alfresco/forms/controls/DojoCheckBox",
+                                       config: {
+                                          fieldId: "IS_DEFAULT",
+                                          name: "isDefault",
+                                          value: "false",
+                                          label: "faceted-search-config.isDefault.label",
+                                          description: "faceted-search-config.isDefault.description",
+                                          postWhenHiddenOrDisabled: false,
+                                          disablementConfig: {
+                                             initialValue: true
+                                          }
                                        }
                                     },
                                     {
