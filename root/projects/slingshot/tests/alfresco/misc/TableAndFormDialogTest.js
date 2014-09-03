@@ -32,7 +32,7 @@ define(["intern!object",
       'TableAndFormDialog': function () {
 
          var browser = this.remote;
-         var testname = "DateTest";
+         var testname = "Table and Form Dialog Test";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/misc/page_models/TableAndFormDialog_TestPage.json", testname)
 
          .end()
@@ -81,26 +81,26 @@ define(["intern!object",
             .end()
 
          // Count the form controls...
-         .findAllByCssSelector(".dialog-body form > div.alfresco-forms-controls-BaseFormControl")
+         .findAllByCssSelector(".dialog-body form div.alfresco-forms-controls-BaseFormControl")
             .then(function(elements) {
-               assert(elements.length == 3, "Test #2c - Unexpected number of form controls in the dialog");
+               assert(elements.length == 3, "Test #2c - Unexpected number of form controls in the dialog: " + elements.length);
             })
             .end()
 
          // Check the values of the controls...
-         .findByCssSelector(".dialog-body form > div.alfresco-forms-controls-BaseFormControl:nth-child(1) .dijitInputContainer input")
+         .findByCssSelector(".dialog-body form > .alfresco-layout-HorizontalWidgets:nth-child(1) .horizontal-widget:nth-child(1) div.alfresco-forms-controls-BaseFormControl .dijitInputContainer input")
             .getProperty('value')
             .then(function(resultText) {
                assert(resultText == "ID1", "Test #3a - The ID form field was not set correctly: " + resultText);
             })
             .end()
-         .findByCssSelector(".dialog-body form > div.alfresco-forms-controls-BaseFormControl:nth-child(2) .dijitInputContainer input")
+         .findByCssSelector(".dialog-body form > .alfresco-layout-HorizontalWidgets:nth-child(1) .horizontal-widget:nth-child(2) div.alfresco-forms-controls-BaseFormControl .dijitInputContainer input")
             .getProperty('value')
             .then(function(resultText) {
                assert(resultText == "Test1", "Test #3b - The name form field was not set correctly: " + resultText);
             })
             .end()
-         .findByCssSelector(".dialog-body form > div.alfresco-forms-controls-BaseFormControl:nth-child(3) span[role=option]")
+         .findByCssSelector(".dialog-body form > .alfresco-layout-HorizontalWidgets:nth-child(2) .horizontal-widget:nth-child(1) div.alfresco-forms-controls-BaseFormControl span[role=option]")
             .getVisibleText()
             .then(function(resultText) {
                assert(resultText == "One", "Test #3c - The option form field was not set correctly: " + resultText);
@@ -108,8 +108,9 @@ define(["intern!object",
             .end()
 
          // Update the first text field...
-         .findByCssSelector(".dialog-body form > div.alfresco-forms-controls-BaseFormControl:nth-child(1) .dijitInputContainer input")
-            .type("Updated_")
+         .findByCssSelector(".dialog-body form > .alfresco-layout-HorizontalWidgets:nth-child(1) .horizontal-widget:nth-child(1) div.alfresco-forms-controls-BaseFormControl .dijitInputContainer input")
+            .clearValue()
+            .type("Updated_ID1")
             .end()
 
          // Post the form...
