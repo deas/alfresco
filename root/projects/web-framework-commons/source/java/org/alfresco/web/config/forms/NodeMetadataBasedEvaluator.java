@@ -93,7 +93,7 @@ public abstract class NodeMetadataBasedEvaluator extends ServiceBasedEvaluator
         return result;
     }
 
-    private String callMetadataService(String nodeString) throws ConnectorServiceException
+    protected String callMetadataService(String nodeString) throws ConnectorServiceException
     {
         return callService("/api/metadata?nodeRef=" + nodeString + "&shortQNames=true");
     }
