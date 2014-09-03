@@ -22,7 +22,19 @@
       requireEverythingWidgetsPrefix: 'source/web/js/',
       requireEverythingWidgetsSuffix: '.js',
       requireEverythingExclusions: [
-         'alfresco/forms/controls/AceEditor'
+         'alfresco/forms/controls/AceEditor',
+         'alfresco/testing/mockservices/SiteMockXhr',
+         "alfresco/testing/mockservices/CreateContentMockXhr",
+         "alfresco/testing/mockservices/DocumentLibraryMockXhr",
+         "alfresco/testing/mockservices/HeaderMockXhr",
+         "alfresco/testing/mockservices/PaginationMockXhr",
+         "alfresco/testing/mockservices/PreviewMockXhr",
+         "alfresco/testing/mockservices/SearchMockXhr",
+         "alfresco/testing/mockservices/SearchScrollMockXhr",
+         "alfresco/testing/mockservices/SiteMockXhr",
+         "alfresco/testing/mockservices/UploadMockXhr",
+         "alfresco/testing/mockservices/UserMockXhrBad",
+         "alfresco/testing/mockservices/UserMockXhrGood"
       ]
    };
 

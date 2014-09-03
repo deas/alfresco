@@ -125,11 +125,11 @@ define({
       'tests/alfresco/renderers/SocialRenderersTest',
       'tests/alfresco/renderers/TagsTest',
       'tests/alfresco/renderers/ThumbnailTest',
+      'tests/alfresco/renderers/XhrActionsTest',
 
       'tests/alfresco/services/SearchServiceTest',
+      'tests/alfresco/services/SiteServiceTest',
       'tests/alfresco/services/UserServiceTest',
-
-      'tests/alfresco/renderers/XhrActionsTest',
 
       'tests/alfresco/search/FacetFiltersTest',
       'tests/alfresco/search/AlfSearchResultTest',

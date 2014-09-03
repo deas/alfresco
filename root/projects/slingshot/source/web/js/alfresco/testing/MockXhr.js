@@ -30,7 +30,6 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/dom-construct",
         "dojo/aspect",
-
         "sinon/sinon/match",
         "sinon/sinon/test_case",
         "sinon/sinon/test",
@@ -44,8 +43,7 @@ define(["dojo/_base/declare",
         "sinon/sinon/spy",
         "sinon/sinon",
         "sinon/sinon-server-1.10.3"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domConstruct, 
-                 aspect) {
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domConstruct, aspect) {
    
    return declare([ _WidgetBase, _TemplatedMixin, AlfCore], {
 
@@ -72,7 +70,6 @@ define(["dojo/_base/declare",
        */
       constructor: function alfresco_testing_MockXhr__constructor(args) {
          lang.mixin(this, args);
-
          this.loadBinaryData();
 
          // Set-up a fake server to handle all the responses...

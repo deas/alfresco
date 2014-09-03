@@ -471,11 +471,19 @@ define(["intern/dojo/node!fs",
        *
        * @instance
        * @param {object} browser This should be set to a reference to "this.remote" from the unit test
+       * @param {boolean} loadCoverageForm Choose to optionally navigate to the JustCoverage model before posting coverage data
        */
-      postCoverageResults: function(browser) {
+      postCoverageResults: function(browser, loadCoverageForm) {
          if(args.doCoverage === "true")
          {
-            browser.end()
+            
+            if(loadCoverageForm)
+            {
+               this.bootstrapCoverageForm(browser);
+               console.log(">> Coverage form loaded");
+            }
+
+            return browser.end()
 
             .findByCssSelector('.alfresco-testing-TestCoverageResults input[type=submit]')
                .click()
@@ -484,17 +492,31 @@ define(["intern/dojo/node!fs",
             .then(function() {
                console.log(">> Waiting for coverage submission to complete...");
             })
-
+            
             .then(pollUntil('return document.querySelector("body > script");'))
                .then(function (element) {}, function (error) {})
                .end();
-
-            console.log(">> Coverage Submitted");
+            
          }
          else
          {
-            browser.end();
+            return browser.end();
          }
+      },
+
+      /**
+       * This function loads the JustCoverage model to provide a code coverage submission form. This can be 
+       * used when a test navigates away from the test framework and an already rendered coverage form is 
+       * now missing.
+       *
+       * @instance
+       * @param {object} browser This should be the the "remote" attribute from the unit test
+       * @returns {promise} The promise for continuing the unit test.
+       */
+      bootstrapCoverageForm: function(browser) {
+         return this.bootstrapTest(browser, "./tests/alfresco/page_models/JustCoverage.json", "JustCoverage")
+            .sleep(1000)
+            .end();
       },
 
       /**

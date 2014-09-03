@@ -1,0 +1,7 @@
+{
+   "widgets":[
+      {
+         "name": "alfresco/testing/TestCoverageResults"
+      }
+   ]
+}

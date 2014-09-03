@@ -107,7 +107,7 @@ define(["dojo/_base/declare",
             url: AlfConstants.PROXY_URI + "api/admin-sites?skipCount=" + skipCount + "&maxItems="+ payload.pageSize ,
             method: "GET",
             alfTopic: payload.responseTopic
-         })
+         });
       },
 
       /**

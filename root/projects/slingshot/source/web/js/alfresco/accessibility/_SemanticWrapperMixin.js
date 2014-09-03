@@ -53,7 +53,7 @@ define(["dojo/_base/declare",
        * The semantic tags that could be used for the sematicWrapper.
        * @instance
        * @type {string[]}
-       * @default null
+       * @default ["header", "nav", "section", "article", "aside", "figure", "figcaption", "footer", "details", "summary", "mark", "time"]
        */
       _semanticWrapperOptions: ["header", "nav", "section", "article", "aside", "figure", "figcaption", "footer", "details", "summary", "mark", "time"],
 
