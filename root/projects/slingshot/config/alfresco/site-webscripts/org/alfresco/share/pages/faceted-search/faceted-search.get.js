@@ -526,7 +526,7 @@ var main = {
             name: "alfresco/layout/HorizontalWidgets",
             config: {
                widgets: [
-                  headingForFacetMenu,
+                  // headingForFacetMenu,
                   {
                      id: "FCTSRCH_SEARCH_FACET_LIST",
                      name: "alfresco/layout/VerticalWidgets",
