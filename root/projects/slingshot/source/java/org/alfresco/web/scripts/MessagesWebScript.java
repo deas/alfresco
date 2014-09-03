@@ -27,6 +27,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
+import org.alfresco.web.site.EditionInfo;
+import org.alfresco.web.site.EditionInterceptor;
+import org.springframework.extensions.surf.RequestContext;
+import org.springframework.extensions.surf.support.ThreadLocalRequestContext;
 import org.springframework.extensions.surf.util.I18NUtil;
 import org.springframework.extensions.surf.util.StringBuilderWriter;
 import org.springframework.extensions.webscripts.WebScriptException;
@@ -80,15 +84,15 @@ public class MessagesWebScript extends org.springframework.extensions.webscripts
         }
         writer.write(";\r\n");
 
-        // start logo 
-        // community logo
-        final String serverPath = req.getServerPath();
-        final int schemaIndex = serverPath.indexOf(':');
-        writer.write("window.setTimeout(function(){(document.getElementById('alfresco-yuiloader')||document.createElement('div')).innerHTML = '<img src=\"");
-        writer.write(serverPath.substring(0, schemaIndex));
-        writer.write("://www.alfresco.com/assets/images/logos/community-5.0-share.png\" alt=\"*\" style=\"display:none\"/>\'}, 100);\r\n");
-        // end logo
-
+        if (!isLicensed())
+        {
+            // community logo
+            final String serverPath = req.getServerPath();
+            final int schemaIndex = serverPath.indexOf(':');
+            writer.write("window.setTimeout(function(){(document.getElementById('alfresco-yuiloader')||document.createElement('div')).innerHTML = '<img src=\"");
+            writer.write(serverPath.substring(0, schemaIndex));
+            writer.write("://www.alfresco.com/assets/images/logos/community-5.0-share.png\" alt=\"*\" style=\"display:none\"/>\'}, 100);\r\n");
+        }
         return writer.toString();
     }
 
@@ -101,17 +105,30 @@ public class MessagesWebScript extends org.springframework.extensions.webscripts
     @Override
     protected String getMessagesSuffix(WebScriptRequest req, WebScriptResponse res, String locale) throws IOException
     {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(512);
         sb.append(";\r\n");
 
-        // start logo 
-        // community logo
-        final String serverPath = req.getServerPath();
-        final int schemaIndex = serverPath.indexOf(':');
-        sb.append("window.setTimeout(function(){(document.getElementById('alfresco-yuiloader')||document.createElement('div')).innerHTML = '<img src=\"");
-        sb.append(serverPath.substring(0, schemaIndex));
-        sb.append("://www.alfresco.com/assets/images/logos/community-5.0-share.png\" alt=\"*\" style=\"display:none\"/>\'}, 100);\r\n");
-        // end logo
+        if (!isLicensed())
+        {
+            // community logo
+            final String serverPath = req.getServerPath();
+            final int schemaIndex = serverPath.indexOf(':');
+            sb.append("window.setTimeout(function(){(document.getElementById('alfresco-yuiloader')||document.createElement('div')).innerHTML = '<img src=\"");
+            sb.append(serverPath.substring(0, schemaIndex));
+            sb.append("://www.alfresco.com/assets/images/logos/community-5.0-share.png\" alt=\"*\" style=\"display:none\"/>\'}, 100);\r\n");
+        }
         return sb.toString();
+    }
+    
+    protected boolean isLicensed()
+    {
+        boolean licensed = false;
+        final RequestContext rc = ThreadLocalRequestContext.getRequestContext();
+        if (rc != null)
+        {
+            final String edition = ((EditionInfo)rc.getValue(EditionInterceptor.EDITION_INFO)).getEdition();
+            licensed = (EditionInterceptor.ENTERPRISE_EDITION.equals(edition));
+        }
+        return licensed;
     }
 }
