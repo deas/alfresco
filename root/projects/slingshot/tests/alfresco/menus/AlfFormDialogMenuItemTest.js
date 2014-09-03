@@ -40,7 +40,7 @@ define(["intern!object",
             // Check the service subscription is setup
             .end()
             .findByCssSelector(TestCommon.nthTopicSelector(1))
-            .text()
+            .getVisibleText()
             .then(function(text) {
                console.log("Test #1a");
                assert(text == "ALF_CREATE_FORM_DIALOG_REQUEST", "Test #1a - A subscription from the alfresco/dialogs/AlfDialogService should have been setup");
@@ -48,14 +48,14 @@ define(["intern!object",
             .end()
             // NOTE: This test is no longer necessary as the topic is generated...
             // .findByCssSelector(TestCommon.nthTopicSelector(2))
-            // .text()
+            // .getVisibleText()
             // .then(function(text) {
             //    console.log("Test #1b");
             //    assert(text.lastIndexOf("ALF_CREATE_FORM_DIALOG_MIXIN_REQUEST_TOPIC") != -1, "Test #1b - form dialog mixin request topic missing");
             // })
             // .end()
             // .findByCssSelector(TestCommon.nthTopicSelector(3))
-            // .text()
+            // .getVisibleText()
             // .then(function(text) {
             //    console.log("Test #1c");
             //    assert(text.lastIndexOf("ALF_CREATE_FORM_DIALOG_MIXIN_CONFIRMATION_TOPIC") != -1, "Test #1b - form dialog mixin confirmation topic missing");
@@ -78,7 +78,7 @@ define(["intern!object",
 
             .end()
             .findByCssSelector(".alfresco-dialog-AlfDialog .dijitDialogTitle")
-            .text()
+            .getVisibleText()
             .then(function(text) {
                console.log("Test #2b");
                assert(text == "New Dialog", "Test #2b - The dialog title was not set correctly");
@@ -98,7 +98,7 @@ define(["intern!object",
             })
             .end()
             .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.confirmation")
-            .text()
+            .getVisibleText()
             .then(function(text) {
                console.log("Test #2e");
                assert(text == "Save", "Test #2e - The confirmation button text is wrong: " + text);
@@ -112,7 +112,7 @@ define(["intern!object",
             })
             .end()
             .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation")
-            .text()
+            .getVisibleText()
             .then(function(text) {
                console.log("Test #2g");
                assert(text == "Close", "Test #2g - The cancellation button text is wrong: " + text);
@@ -150,7 +150,7 @@ define(["intern!object",
                .click()
                .end()
             .findByCssSelector(TestCommon.nthTopicSelector("last"))
-            .text()
+            .getVisibleText()
             .then(function(text) {
                console.log("Test #4b"); 
                assert(text.lastIndexOf("ALF_CLOSE_DIALOG") != -1, "Test #4b - A request to close the form was not published");

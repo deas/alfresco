@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -42,7 +42,7 @@ define(["intern!object",
          
          // Has label with correct phrase
          .elementById("TEST_LABEL")
-         .text()
+         .getVisibleText()
          .then(function (label) {
             TestCommon.log(testname,47,"Check the label is shown with the correct text to begin with");
             expect(label).to.equal("This is a test label", "The label should contain 'This is a test label'");
@@ -81,7 +81,7 @@ define(["intern!object",
 
          // Label copy has changed appropriately
          .elementById("TEST_LABEL")
-         .text()
+         .getVisibleText()
          .then(function (label) {
             TestCommon.log(testname,87,"Check the label is now shown with the text from the topic publish payload");
             expect(label).to.equal("Label is updated", "The label should contain 'Label is updated'");

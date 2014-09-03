@@ -43,7 +43,7 @@ define(["intern!object",
 
          // Check no facets are shown to begin with
          .elementById("FACET1")
-         .text()
+         .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,48,"Check no facets are shown to begin with");
             expect(initialValue).to.equal("Facet 1", "The only text shown should be 'Facet 1'");
@@ -71,7 +71,7 @@ define(["intern!object",
 
          // Check the facet values
          .elementById("FACET1")
-         .text()
+         .getVisibleText()
          .then(function (facets) {
             TestCommon.log(testname,76,"Check the first set of facets have appeared");
             expect(facets).to.contain("result 1", "Facets should contain 'result 1'");
@@ -95,7 +95,7 @@ define(["intern!object",
 
          // Check the facet values
          .elementById("FACET1")
-         .text()
+         .getVisibleText()
          .then(function (facets) {
             TestCommon.log(testname,100,"Check the second set of facets have appeared");
             expect(facets).to.contain("result 5", "Facets should contain 'result 5'");
@@ -117,7 +117,7 @@ define(["intern!object",
 
          // Check the facet values
          .elementById("FACET1")
-         .text()
+         .getVisibleText()
          .then(function (facets) {
             TestCommon.log(testname,122,"Check the third set of facets have appeared");
             expect(facets).to.contain("result 7", "Facets should contain 'result 7'");
@@ -137,7 +137,7 @@ define(["intern!object",
 
          // Check the facet values
          .elementById("FACET1")
-         .text()
+         .getVisibleText()
          .then(function (facets) {
             TestCommon.log(testname,142,"Check the four set of facets are shown");
             expect(facets).to.contain("result 7", "Facets should contain 'result 7'");
@@ -157,7 +157,7 @@ define(["intern!object",
 
          // Check the facet values
          .elementById("FACET1")
-         .text()
+         .getVisibleText()
          .then(function (facets) {
             TestCommon.log(testname,162,"Check the fifth set of facets are shown");
             expect(facets).to.contain("result 7", "Facets should contain 'result 7'");
@@ -252,7 +252,7 @@ define(["intern!object",
 
          // Check no facets are shown to begin with
          .elementById("FACET1")
-         .text()
+         .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,257,"Check no facets are shown to begin with");
             expect(initialValue).to.equal("Facet 1", "The only text shown should be 'Facet 1'");

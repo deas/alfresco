@@ -61,21 +61,21 @@ define(["intern!object",
             // Test #2
             // Check the initial labels are correctly displayed...
             .findByCssSelector("#MENU_BAR_SELECT_text")
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                assert(resultText == "Select (label)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
             })
             .end()
 
             .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                assert(resultText == "Select (value)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
             })
             .end()
 
             .findByCssSelector("#MENU_BAR_SELECT_WITH_ICON_text")
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                assert(resultText == "Select (show icon)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
             })
@@ -100,7 +100,7 @@ define(["intern!object",
             .end()
 
             .findByCssSelector("#MENU_BAR_SELECT_text")
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                assert(resultText == "Option 1 Selected", "Test #3 - The label was not updated correctly: " + resultText);
             })
@@ -124,7 +124,7 @@ define(["intern!object",
             .end()
 
             .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                assert(resultText == "Alpha", "Test #4 - The label was not updated correctly (to use a value): " + resultText);
             })
@@ -159,7 +159,7 @@ define(["intern!object",
             .end()
 
             .findByCssSelector("#MENU_BAR_SELECT_text")
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                assert(resultText == "Option 2 Selected", "Test #6 - The label was not updated correctly: " + resultText);
             })
@@ -190,7 +190,7 @@ define(["intern!object",
             .end()
 
             .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                assert(resultText == "Beta", "Test #6 - The label was not updated correctly: " + resultText);
             })
@@ -209,7 +209,7 @@ define(["intern!object",
                .sleep(500)
                .end()
             .findByCssSelector("#MENU_BAR_SELECT_text")
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                assert(resultText == "Alternative Label", "Test #8 - The label was not updated correctly by an external publication: " + resultText);
             })
@@ -223,7 +223,7 @@ define(["intern!object",
                .sleep(500)
                .end()
             .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                assert(resultText == "Alternative Value", "Test #9 - The label was not updated correctly by an external publication: " + resultText);
             })

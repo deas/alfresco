@@ -40,14 +40,14 @@ define(["intern!object",
             // Check initial rendering...
             .end()
             .findByCssSelector("#BASIC .label")
-               .text()
+               .getVisibleText()
                .then(function(resultText) {
                   assert(resultText == "Basic", "Test #1a - The label was not rendered correctly: " + resultText);
                })
                .end()
 
             .findByCssSelector("#UNITS_AND_DESCRIPTION .units")
-               .text()
+               .getVisibleText()
                .then(function(resultText) {
                   assert(resultText == "Some unit", "Test #1b - The units was not rendered correctly: " + resultText);
                })
@@ -284,7 +284,7 @@ define(["intern!object",
                .then(function(result) {
                   assert(result == "block", "Test #5b - Validation error message should be displayed");
                })
-               .text()
+               .getVisibleText()
                .then(function(text) {
                   assert(text == "Value must be a number", "Test #5c - Validation error message not set correctly")
                })

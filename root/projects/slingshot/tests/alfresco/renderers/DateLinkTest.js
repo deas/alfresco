@@ -41,7 +41,7 @@ define(["intern!object",
          // that we get a relative date in the form "Modified over X years ago" so we're going to use a regular
          // expression that should continue to work in the future as the date gets further into the past
          .findByCssSelector("#CUSTOM_PROPS .value")
-         .text()
+         .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,46,"Check the first date is rendered correctly");
             assert(/(Modified over \d+ years ago by Brian Griffin)/g.test(resultText), "Test #1 - Custom property not rendered correctly: " + resultText);
@@ -49,7 +49,7 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#STANDARD_PROPS .value")
-         .text()
+         .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,54,"Check the second date is rendered correctly");
             assert(/(Modified over \d+ years ago by Chris Griffin)/g.test(resultText), "Test #2 - Standard property not rendered correctly: " + resultText);

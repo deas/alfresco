@@ -47,7 +47,7 @@ define(["intern!object",
                   // Test #2
                   // Check labels
                      .findByCssSelector("#PIECHART_1 svg g g g g g:nth-child(2) text")
-                     .text()
+                     .getVisibleText()
                      .then(function(text) {
                         assert(text == "one-hundred-100", "Expected to find label 'one-hundred-100', but found '" + text + "'");
                      })
@@ -56,7 +56,7 @@ define(["intern!object",
                   // Test #3
                   // Check labels
                      .findByCssSelector("#PIECHART_1 svg g g g g g:nth-child(4) text")
-                     .text()
+                     .getVisibleText()
                      .then(function(text) {
                         assert(text == "two-hundred-200", "Expected to find label 'two-hundred-200', but found '" + text + "'");
                      })

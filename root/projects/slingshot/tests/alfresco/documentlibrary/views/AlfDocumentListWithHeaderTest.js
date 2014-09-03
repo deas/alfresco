@@ -46,7 +46,7 @@ define(["intern!object",
             .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
             .active()
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                TestCommon.log(testname,51,"Check tab focus on column header 1");
                expect(resultText).to.equal("Column 1", "The text is incorrect");
@@ -112,7 +112,7 @@ define(["intern!object",
             .sleep(alfPause)
 
             .active()
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                TestCommon.log(testname,117,"Check row 1 selection");
                expect(resultText).to.equal("A", "The text is incorrect");
@@ -126,7 +126,7 @@ define(["intern!object",
             .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
             .active()
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                TestCommon.log(testname,131,"Check cursor down moves to next row");
                expect(resultText).to.equal("D", "The text is incorrect");
@@ -145,7 +145,7 @@ define(["intern!object",
             .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
             .active()
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                TestCommon.log(testname,150,"Check cursor down wraps to first row");
                expect(resultText).to.equal("A", "The text is incorrect");
@@ -160,7 +160,7 @@ define(["intern!object",
             .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
             .active()
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                TestCommon.log(testname,165,"Check cursor up wraps to last row");
                expect(resultText).to.equal("J", "The text is incorrect");
@@ -175,7 +175,7 @@ define(["intern!object",
             .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
             .active()
-            .text()
+            .getVisibleText()
             .then(function(resultText) {
                TestCommon.log(testname,180,"Check cursor up moves to previous row");
                expect(resultText).to.equal("G", "The text is incorrect");

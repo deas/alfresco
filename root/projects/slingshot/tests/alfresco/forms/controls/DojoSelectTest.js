@@ -53,7 +53,7 @@ define(["intern!object",
             // Check labels
             .end()
             .findByCssSelector("#FIXED_INVALID_CHANGES_TO .label")
-               .text()
+               .getVisibleText()
                .then(function(resultText) {
                   assert(resultText == "Fixed 1", "Test #1a - The label was not rendered correctly: " + resultText);
                })
@@ -62,7 +62,7 @@ define(["intern!object",
             // Test #2
             // Check initial value of fixed option...
             .findByCssSelector("#FIXED_INVALID_CHANGES_TO span[role=option]")
-               .text()
+               .getVisibleText()
                .then(function(resultText) {
                   assert(resultText == "Two", "Test #2a - The initial value was not represented correctly: " + resultText);
                })
@@ -84,7 +84,7 @@ define(["intern!object",
 
             // Check that a fixed option label is set from the label attribute...
             .findByCssSelector("#FIXED_INVALID_CHANGES_TO_CONTROL_dropdown table tr:nth-child(1) td.dijitMenuItemLabel")
-               .text()
+               .getVisibleText()
                .then(function(resultText) {
                   assert(resultText == "One", "Test #3b - Fixed label not set correctly: " + resultText);
                })
@@ -92,7 +92,7 @@ define(["intern!object",
 
             // Check that a fixed option label is set from the value attribute when no label attribute is provided...
             .findByCssSelector("#FIXED_INVALID_CHANGES_TO_CONTROL_dropdown table tr:nth-child(3) td.dijitMenuItemLabel")
-               .text()
+               .getVisibleText()
                .then(function(resultText) {
                   assert(resultText == "NO LABEL", "Test #3c - Fixed label not set correctly from value: " + resultText);
                })
@@ -117,7 +117,7 @@ define(["intern!object",
 
             // The options should have been provided once (the mock service increments the options)...
             .findByCssSelector("#HAS_UPDATE_TOPICS_CONTROL_dropdown table tr:nth-child(1) td.dijitMenuItemLabel")
-               .text()
+               .getVisibleText()
                .then(function(resultText) {
                   assert(resultText == "Update1_1", "Test #4b - Updated label not set correctly by pub/sub: " + resultText);
                })
@@ -141,7 +141,7 @@ define(["intern!object",
 
             // The options should have been provided once (the mock service increments the options)...
             .findByCssSelector("#HAS_CHANGES_TO_CONTROL_dropdown table tr:nth-child(1) td.dijitMenuItemLabel")
-               .text()
+               .getVisibleText()
                .then(function(resultText) {
                   assert(resultText == "Update1_3", "Test #5b - Updated label not set correctly by pub/sub: " + resultText);
                })
@@ -163,7 +163,7 @@ define(["intern!object",
                .click()
                .end()
             .findByCssSelector("#HAS_UPDATE_TOPICS_CONTROL_dropdown table tr:nth-child(1) td.dijitMenuItemLabel")
-               .text()
+               .getVisibleText()
                .then(function(resultText) {
                   assert(resultText == "Update1_2", "Test #6a - Updated label not set correctly by external update: " + resultText);
                })
@@ -177,7 +177,7 @@ define(["intern!object",
                .click()
                .end()
             .findByCssSelector("#HAS_UPDATE_TOPICS_CONTROL_dropdown table tr:nth-child(1) td.dijitMenuItemLabel")
-               .text()
+               .getVisibleText()
                .then(function(resultText) {
                   assert(resultText == "Update1_2", "Test #6b - Updated label not unexpectedly updated: " + resultText);
                })
@@ -191,7 +191,7 @@ define(["intern!object",
                .click()
                .end()
             .findByCssSelector("#HAS_UPDATE_TOPICS_CONTROL_dropdown table tr:nth-child(1) td.dijitMenuItemLabel")
-               .text()
+               .getVisibleText()
                .then(function(resultText) {
                   assert(resultText == "Update1_3", "Test #6c - Updated label not set correctly by external update: " + resultText);
                })
@@ -209,7 +209,7 @@ define(["intern!object",
                .click()
                .end()
             .findByCssSelector("#HAS_CHANGES_TO_CONTROL_dropdown table tr:nth-child(1) td.dijitMenuItemLabel")
-               .text()
+               .getVisibleText()
                .then(function(resultText) {
                   assert(resultText == "Update1_4", "Test #7a - Updated label not set correctly by pub/sub: " + resultText);
                })

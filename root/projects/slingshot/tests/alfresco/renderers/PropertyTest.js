@@ -38,7 +38,7 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#BASIC .value")
-         .text()
+         .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,43,"Check standard property is rendered correctly");
             assert(resultText == "Test", "Standard property not rendered correctly: " + resultText);
@@ -46,7 +46,7 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#PREFIX_SUFFIX .value")
-         .text()
+         .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,51,"Check prefixed/suffixed property is rendered correctly");
             assert(resultText == "(Test)", "Prefix and suffix not rendered correctly: " + resultText);
@@ -62,7 +62,7 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#WARN1 .value")
-         .text()
+         .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,67,"Check standard warning is rendered correctly");
             assert(resultText == "No property for: \"missing\"", "Standard warning not rendered correctly: " + resultText);
@@ -70,7 +70,7 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#WARN2 .value")
-         .text()
+         .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,75,"Check explicit warning is rendered correctly");
             assert(resultText == "No description", "Explicit warning not rendered correctly: " + resultText);
@@ -89,7 +89,7 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#HOVER .value")
-         .text()
+         .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,95,"Check hover property is shown on hover");
             assert(resultText == "Test", "Hover not displayed: " + resultText);
@@ -97,7 +97,7 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#LABEL .label")
-         .text()
+         .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,103,"Check label is rendered correctly");
             assert(resultText == "Label:", "Label not rendered correctly: " + resultText);

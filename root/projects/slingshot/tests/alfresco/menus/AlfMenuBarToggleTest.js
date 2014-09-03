@@ -43,7 +43,7 @@ define(["intern!object",
 
          // Check the initial labels are correctly displayed...
          .elementById("BASIC_MENU_BAR_TOGGLE_text")
-         .text()
+         .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,48,"Check basic toggle label");
             expect(initialValue).to.equal("Off", "The inital label of the basic toggle was not correct: " + initialValue);
@@ -51,7 +51,7 @@ define(["intern!object",
          .end()
 
          .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
-         .text()
+         .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,56,"Check custom toggle label");
             expect(initialValue).to.equal("On (Custom Label)", "The inital label of the custom toggle was not correct: " + initialValue);
@@ -99,7 +99,7 @@ define(["intern!object",
          .end()
 
          .elementById("BASIC_MENU_BAR_TOGGLE_text")
-         .text()
+         .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,105,"Check basic toggle text is changed after mouse click");
             expect(resultText).to.equal("On", "The label was not updated after toggle by mouse: " + resultText);
@@ -125,7 +125,7 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
-         .text()
+         .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,132,"Check custom toggle label changes after mouse click");
             expect(resultText).to.equal("Off (Custom Label)", "The label was not updated after toggle by mouse: " + resultText);
@@ -183,7 +183,7 @@ define(["intern!object",
          .end()
 
          .elementById("BASIC_MENU_BAR_TOGGLE_text")
-         .text()
+         .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,191,"Check basic toggle text is changed after keyboard selection");
             expect(resultText).to.equal("On", "The label was not updated after toggle by keyboard: " + resultText);
@@ -216,7 +216,7 @@ define(["intern!object",
          .end()
 
          .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
-         .text()
+         .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,224,"Check custom toggle text is changed after keyboard selection");
             expect(resultText).to.equal("Off (Custom Label)", "The custom toggle label was not updated after toggle by keyboard: " + resultText);
@@ -274,7 +274,7 @@ define(["intern!object",
          .end()
 
          .elementById("BASIC_MENU_BAR_TOGGLE_text")
-         .text()
+         .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,283,"Check basic toggle label asc");
             expect(initialValue).to.equal("On", "The asc label of the basic toggle was not correct: " + initialValue);
@@ -282,7 +282,7 @@ define(["intern!object",
          .end()
 
          .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
-         .text()
+         .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,291,"Check custom toggle label asc");
             expect(initialValue).to.equal("On (Custom Label)", "The asc label of the custom toggle was not correct: " + initialValue);
@@ -301,7 +301,7 @@ define(["intern!object",
          .end()
 
          .elementById("BASIC_MENU_BAR_TOGGLE_text")
-         .text()
+         .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,311,"Check basic toggle label desc");
             expect(initialValue).to.equal("Off", "The desc label of the basic toggle was not correct: " + initialValue);
@@ -309,7 +309,7 @@ define(["intern!object",
          .end()
 
          .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
-         .text()
+         .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,319,"Check custom toggle label desc");
             expect(initialValue).to.equal("Off (Custom Label)", "The desc label of the custom toggle was not correct: " + initialValue);

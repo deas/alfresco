@@ -47,7 +47,7 @@ define(["intern!object",
 
          // Find the heading text
          .findByCssSelector("#AccessibilityMenu > p")
-         .text()
+         .getVisibleText()
          .then(function(headingText) {
             TestCommon.log(testname,52,"Find the heading text");
             expect(headingText).to.equal("Access key links:", "The heading text is wrong");

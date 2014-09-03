@@ -46,7 +46,7 @@ define(["intern!object",
             .pressKeys(specialKeys["Down arrow"])
             .pressKeys(specialKeys["Right arrow"])
             // .findByCssSelector("#TEXT1 span.label")
-            //    .text()
+            //    .getVisibleText()
             //    .then(function(resultText) {
             //       assert(resultText == "", "Test #1a - The inital label of TEXT1 has been set incorrectly: " + resultText);
             //    })
@@ -55,7 +55,7 @@ define(["intern!object",
             .pressKeys(specialKeys["Down arrow"])
             .pressKeys(specialKeys["Right arrow"])
             // .findByCssSelector("#TEXT2 span.label")
-            //    .text()
+            //    .getVisibleText()
             //    .then(function(resultText) {
             //       assert(resultText == "", "Test #1b - The inital label of TEXT2 has been set incorrectly: " + resultText);
             //    })
@@ -86,7 +86,7 @@ define(["intern!object",
 
 
             // .findByCssSelector("#TEXT3 span.label")
-            //    .text()
+            //    .getVisibleText()
             //    .then(function(resultText) {
             //       assert(resultText == "Copy me!", "Test #1c - The inital label of TEXT3 has been set incorrectly: " + resultText);
             //    })

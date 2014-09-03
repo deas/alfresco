@@ -64,7 +64,7 @@ define(["intern!object",
 
          // Does the tool tip contain the appropriate copy
          .findByCssSelector(".dijitTooltipContainer.dijitTooltipContents")
-         .text()
+         .getVisibleText()
          .then(function(resultText1) {
             TestCommon.log(testname,70,"Does the tool tip contain the appropriate copy");
             expect(resultText1).to.equal("This is the test button", "The tool tip text is incorrect");

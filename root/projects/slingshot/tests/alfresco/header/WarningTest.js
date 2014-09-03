@@ -38,7 +38,7 @@ define(["intern!object",
          .end()
 
          .elementByCssSelector("#WARNINGS1 > div.warnings > div.info > span:last-child")
-            .text()
+            .getVisibleText()
             .then(function (result1) {
                TestCommon.log(testname,43, "Test 1a: Check warning");
                expect(result1).to.equal("WARNING", "Test 1a - Warning not displayed");
@@ -46,7 +46,7 @@ define(["intern!object",
             .end()
 
          .elementByCssSelector("#WARNINGS2 > div.warnings > div.info > span:last-child")
-            .text()
+            .getVisibleText()
             .then(function (result1) {
                TestCommon.log(testname,51, "Test 1b: Check error");
                expect(result1).to.equal("ERROR", "Test 1b - Error not displayed");
@@ -54,7 +54,7 @@ define(["intern!object",
             .end()
          
          .elementByCssSelector("#LICENSEWARNING_READONLY > div.warnings > div.info > span:last-child")
-            .text()
+            .getVisibleText()
             .then(function (result1) {
                TestCommon.log(testname,59, "Test 1c: Check readonly message");
                expect(result1).to.equal("Alfresco is running in READ ONLY mode. Please consult your System Administrator to resolve this.", "Test 1c - Readonly error not displayed");

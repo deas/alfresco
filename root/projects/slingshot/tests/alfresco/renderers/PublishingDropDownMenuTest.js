@@ -48,7 +48,7 @@ define(["intern!object",
 
          // Check the start value of drop down menu 1 is 'Public'
          .findByCssSelector("span.dijitSelectLabel:nth-of-type(1)")
-         .text()
+         .getVisibleText()
          .then(function (result1) {
             TestCommon.log(testname,52,"Check the start value of drop down menu 1 is 'Public'");
             expect(result1).to.equal("Public", "The start value of dropdown menu 1 should be 'Public'");

@@ -67,7 +67,7 @@ define(["intern!object",
 
          // Does the dialog have an appropriate title?
          .findByCssSelector("span.dijitDialogTitle")
-         .text()
+         .getVisibleText()
          .then(function(resultText1) {
             TestCommon.log(testname,73,"Does the dialog have an appropriate title?");
             expect(resultText1).to.equal("Twas brillig and the slithy toves...", "The Dialog title text is incorrect");
@@ -92,14 +92,14 @@ define(["intern!object",
 
          // Is the button copy correct?
          .findByCssSelector("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.confirmation span.dijitButtonText")
-         .text()
+         .getVisibleText()
          .then(function (resultText2) {
             TestCommon.log(testname,98,"Is the button copy correct?");
             expect(resultText2).to.equal("Ok friend", "The copy on Dialog button one was incorrect");
          })
          .end()
          .findByCssSelector("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span.dijitButtonText")
-         .text()
+         .getVisibleText()
          .then(function (resultText3) {
             TestCommon.log(testname,105,"Is the button copy correct?");
             expect(resultText3).to.equal("No thanks buddy", "The copy on Dialog button two was incorrect");
