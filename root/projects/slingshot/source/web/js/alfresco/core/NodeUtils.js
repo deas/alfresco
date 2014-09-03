@@ -82,6 +82,58 @@ define(["dojo/_base/lang",
          });
 
          return nodeRefArray;
+      },
+
+      /**
+       * Takes the array of node objects, retrieves the nodeRefs and returns as a string.
+       *
+       * @param {Object[]} nodes
+       * @returns {String} comma separated list of nodeRefs
+       */
+      nodeRefsString: function alfresco_core_NodeUtils_nodeRefString(nodes) {
+
+         // Use nodeRefArray to extract the nodeRefs from the object.
+         return this.nodeRefArray(nodes).join(',');
+      },
+
+      /**
+       * Tries to get a common parent nodeRef for an action that requires one.
+       *
+       * @method getParentNodeRef
+       * @param record {object} Object literal representing one file or folder to be actioned
+       * @return {string|null} Parent nodeRef or null
+       */
+      getParentNodeRef: function dlA_getParentNodeRef(record)
+      {
+         var nodeRef = null;
+
+         if (lang.isArray(record))
+         {
+            try
+            {
+               nodeRef = this.doclistMetadata.parent.nodeRef;
+            }
+            catch (e)
+            {
+               nodeRef = null;
+            }
+
+            if (nodeRef === null)
+            {
+               for (var i = 1, j = record.length, sameParent = true; i < j && sameParent; i++)
+               {
+                  sameParent = (record[i].parent.nodeRef == record[i - 1].parent.nodeRef);
+               }
+
+               nodeRef = sameParent ? record[0].parent.nodeRef : this.doclistMetadata.container;
+            }
+         }
+         else
+         {
+            nodeRef = record.parent.nodeRef;
+         }
+
+         return nodeRef;
       }
    };
 });
