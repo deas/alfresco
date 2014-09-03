@@ -119,6 +119,11 @@
             <version>${dependency.spring.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${dependency.spring.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-remote-api</artifactId>
             <version>${project.version}</version>
