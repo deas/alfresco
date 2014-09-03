@@ -44,17 +44,20 @@ define(["intern!object",
             .pressKeys(keys.ARROW_DOWN) // Skips over log to 2nd button
             .sleep(1000)
             .pressKeys(keys.SPACE)
-            .hasElementByCss(TestCommon.topicSelector("CLICKED_BUTTON_2", "publish", "last"))
-            .then(function(result) {
-               assert(result == true, "Test #1a - The wrapped menu item without focus was not skipped on downward keyboard navigation");
-            })
+            .findByCssSelector(TestCommon.topicSelector("CLICKED_BUTTON_2", "publish", "last"))
+               .then(null, function() {
+                  assert(false, "Test #1a - The wrapped menu item without focus was not skipped on downward keyboard navigation");
+               })
+               .end()
+
             .pressKeys(keys.ARROW_UP) // Skips over log to 2nd button
             .sleep(1000)
             .pressKeys(keys.RETURN)
-            .hasElementByCss(TestCommon.topicSelector("CLICKED_BUTTON_1", "publish", "last"))
-            .then(function(result) {
-               assert(result == true, "Test #1b - The wrapped menu item without focus was not skipped on upwards keyboard navigation");
-            })
+            .findByCssSelector(TestCommon.topicSelector("CLICKED_BUTTON_1", "publish", "last"))
+               .then(null, function() {
+                  assert(false, "Test #1b - The wrapped menu item without focus was not skipped on upwards keyboard navigation");
+               })
+               .end()
             // Currently commented out - this works in manual testing but not in Selenium for some reason
             // .end()
             // .findByCssSelector(".alfresco-logo-large")
@@ -63,17 +66,19 @@ define(["intern!object",
             .pressKeys(keys.ARROW_DOWN)
             .sleep(1000)
             .pressKeys(keys.SPACE)
-            .hasElementByCss(TestCommon.topicSelector("CLICKED_BUTTON_2", "publish", "last"))
-            .then(function(result) {
-               assert(result == true, "Test #1c - The wrapped menu item without focus was not navigated away from successfully");
-            })
+            .findByCssSelector(TestCommon.topicSelector("CLICKED_BUTTON_2", "publish", "last"))
+               .then(null, function() {
+                  assert(false, "Test #1c - The wrapped menu item without focus was not navigated away from successfully");
+               })
+               .end()
             .pressKeys(keys.ARROW_DOWN) // Skips over log to 2nd button
             .sleep(1000)
             .pressKeys(keys.SPACE)
-            .hasElementByCss(TestCommon.topicSelector("CLICKED_BUTTON_1", "publish", "last"))
-            .then(function(result) {
-               assert(result == true, "Test #1d - The empty wrapped menu item was not skipped on keyboard navigation");
-            })
+            .findByCssSelector(TestCommon.topicSelector("CLICKED_BUTTON_1", "publish", "last"))
+               .then(null, function() {
+                  assert(false, "Test #1d - The empty wrapped menu item was not skipped on keyboard navigation");
+               })
+               .end()
 
             // Post the coverage results...
             .then(function() {
