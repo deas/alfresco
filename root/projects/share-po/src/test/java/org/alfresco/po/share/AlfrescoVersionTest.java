@@ -33,13 +33,16 @@ public class AlfrescoVersionTest
         Assert.assertEquals(AlfrescoVersion.Enterprise41, enterprise41);
         AlfrescoVersion enterprise42 = AlfrescoVersion.fromString("Enterprise-42");
         Assert.assertEquals(AlfrescoVersion.Enterprise42, enterprise42);
+        AlfrescoVersion enterprise43 = AlfrescoVersion.fromString("Enterprise-43");
+        Assert.assertEquals(AlfrescoVersion.Enterprise43, enterprise43);
+        AlfrescoVersion enterprise5 = AlfrescoVersion.fromString("Enterprise-5");
+        Assert.assertEquals(AlfrescoVersion.Enterprise5, enterprise5);
         AlfrescoVersion cloud = AlfrescoVersion.fromString("Cloud");
         Assert.assertEquals(AlfrescoVersion.Cloud, cloud);
         AlfrescoVersion lowerCasecloud = AlfrescoVersion.fromString("cloud");
         Assert.assertEquals(AlfrescoVersion.Cloud, lowerCasecloud);
         AlfrescoVersion cloud2 = AlfrescoVersion.fromString("CloudNonFacetSearch");
         Assert.assertEquals(AlfrescoVersion.CloudNonFacetSearch, cloud2);
-        
         AlfrescoVersion myAlfresco = AlfrescoVersion.fromString("myalfresco");
         Assert.assertEquals(AlfrescoVersion.MyAlfresco, myAlfresco);
     }

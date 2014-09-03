@@ -12,6 +12,7 @@ public class SharePropertiesTest
         Assert.assertNotNull(prop);
         Assert.assertEquals(prop.getVersion(), AlfrescoVersion.Share);
         Assert.assertEquals(prop.getLocale().toString(), "en");
+        Assert.assertEquals(prop.getElement("id.login.button"), "page_x002e_components_x002e_slingshot-login_x0023_default-submit-button");
     }
     @Test
     public void createPropertiesWithFrenchLocale()
@@ -20,6 +21,7 @@ public class SharePropertiesTest
         Assert.assertNotNull(prop);
         Assert.assertEquals(prop.getVersion(), AlfrescoVersion.Enterprise41);
         Assert.assertEquals(prop.getLocale().toString(), "fr");
+        Assert.assertEquals(prop.getElement("id.login.button"), "btn-login");
     }
     @Test
     public void createSharePropertiesVersion41()
@@ -27,6 +29,7 @@ public class SharePropertiesTest
         ShareProperties prop = new ShareProperties("Enterprise41");
         Assert.assertNotNull(prop);
         Assert.assertEquals(prop.getVersion(), AlfrescoVersion.Enterprise41);
+        Assert.assertEquals(prop.getElement("id.login.button"), "btn-login");
     }
     @Test
     public void createSharePropertiesVersion42()
@@ -34,7 +37,26 @@ public class SharePropertiesTest
         ShareProperties prop = new ShareProperties("Enterprise42");
         Assert.assertNotNull(prop);
         Assert.assertEquals(prop.getVersion(), AlfrescoVersion.Enterprise42);
+        Assert.assertEquals(prop.getElement("id.login.button"), "page_x002e_components_x002e_slingshot-login_x0023_default-submit-button");
     }
+    
+    @Test
+    public void createSharePropertiesVersion43()
+    {
+        ShareProperties prop = new ShareProperties("Enterprise43");
+        Assert.assertNotNull(prop);
+        Assert.assertEquals(prop.getVersion(), AlfrescoVersion.Enterprise43);
+        Assert.assertEquals(prop.getElement("id.login.button"), "page_x002e_components_x002e_slingshot-login_x0023_default-submit-button");
+    }
+    @Test
+    public void createSharePropertiesVersion5()
+    {
+    	ShareProperties prop = new ShareProperties("Enterprise5");
+    	Assert.assertNotNull(prop);
+    	Assert.assertEquals(prop.getVersion(), AlfrescoVersion.Enterprise5);
+        Assert.assertEquals(prop.getElement("id.login.button"), "page_x002e_components_x002e_slingshot-login_x0023_default-submit-button");
+    }
+    
     @Test
     public void createSharePropertiesWithNull()
     {
