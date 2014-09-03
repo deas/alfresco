@@ -18,43 +18,21 @@
  */
 
 /**
- * This provides the configuration for widget unit tests.
+ * This 'test' runs the disableDebugModule function in TestCommon to disable the debug module.
  * 
  * @author Richard Smith
  */
-define({
+define(["intern!object",
+        "alfresco/TestCommon"], 
+        function (registerSuite, TestCommon) {
 
-   /**
-    * This is a selection of urls for test purposes. They should ONLY be defined here so that
-    * pervasive changes can be made in this one file.
-    *
-    * @instance
-    * @type {object}
-    */
-   urls: {
-      bootstrapBaseUrl: "http://localhost:8081",
-      moduleDeploymentBaseUrl: "http://admin:admin@localhost:8081"
-   },
+   registerSuite({
+      name: 'DebugDisable',
 
-   /**
-    * Should this process run the coverage report submission?
-    *
-    * @instance
-    * @type {boolean}
-    * @default true
-    */
-   doCoverageReport: false,
+      teardown: function () {
 
-   /**
-    * A selection of timeouts
-    *
-    * @instance
-    * @type {object}
-    */
-   timeout: {
-      implicitWait: 1000,
-      pageLoad: 10000,
-      asyncScript: 10000
-   }
+         return TestCommon.disableDebugModule(this.remote).end();
 
+      }
+   });
 });

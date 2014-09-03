@@ -23,30 +23,41 @@
  * @author Dave Draper
  */
 define(["intern/dojo/node!fs",
-        "config/Config"], 
-       function(fs, Config) {
+        "config/Config",
+        "intern/dojo/node!wd/lib/special-keys"], 
+       function(fs, Config, specialKeys) {
    return {
 
       /**
-       * This is the path to use to bootstrap tests. It should ONLY be defined here so that
-       * pervasive changes can be made in this one file.
-       *
-       * @instance
-       * @type {string}
-       * @default "/share/page/tp/ws/unit-test-bootstrap"
+       * Path configurations.
        */
-      bootstrapPath: "/share/page/tp/ws/unit-test-bootstrap",
+      paths: {
+         bootstrapPath: "/share/page/tp/ws/unit-test-bootstrap",
+         moduleDeploymentPath: "/share/page/modules/deploy"
+      },
 
       /**
-       * This is the URL to use to bootstrap tests. It is composed of the bootstrapPath and
-       * the Config.bootstrapUrl which is provided in the config package.
+       * This is the URL to use to bootstrap tests. It is composed of the paths.bootstrapPath and the 
+       * Config.urls.bootstrapBaseUrl which is provided in the config package.
        *
        * @instance
        * @type {string}
-       * @default Config.bootstrapBaseUrl + this.bootstrapPath
+       * @default Config.url.bootstrapBaseUrl + this.paths.bootstrapPath
        */
       bootstrapUrl: function bootstrapUrl(){
-         return Config.bootstrapBaseUrl + this.bootstrapPath;
+         return Config.urls.bootstrapBaseUrl + this.paths.bootstrapPath;
+      },
+
+      /**
+       * This is the URL to use to access the module deployment screen. It is composed of the 
+       * paths.moduleDeploymentPath and the Config.urls.bootstrapBaseUrl which is provided in the config package.
+       *
+       * @instance
+       * @type {string}
+       * @default Config.url.bootstrapBaseUrl + this.paths.moduleDeploymentPath
+       */
+      moduleDeploymentUrl: function moduleDeploymentUrl(){
+         return Config.urls.moduleDeploymentBaseUrl + this.paths.moduleDeploymentPath;
       },
 
       /**
@@ -87,11 +98,7 @@ define(["intern/dojo/node!fs",
        */
       bootstrapTest: function(browser, testPageDefinitionFile, testname) {
 
-         // Set browser timeouts - refer to Config files
-         // This allows us to use "elementBy..." calls rather than a "waitForElementBy..." which is more efficient...
-         browser.setImplicitWaitTimeout(Config.timeout.implicitWait);
-         browser.setPageLoadTimeout(Config.timeout.pageLoad);
-         browser.setAsyncScriptTimeout(Config.timeout.asyncScript);
+         this._applyTimeouts(browser);
 
          if(testname && browser.environmentType.browserName)
          {
@@ -129,12 +136,81 @@ define(["intern/dojo/node!fs",
 
          // Find and click on the test button to load the test page...
          .elementByCss("#LOAD_TEST_BUTTON")
-         .moveTo()
-         .sleep(500)
-         .click()
-         .sleep(500) // This sleep appears to be needed to prevent errors, but ideally it woudn't be here :(
+         .clickElement()
          .end()
          .waitForElementByCss('.alfresco-core-Page.allWidgetsProcessed')
+      },
+
+      /**
+       * This function enables the debug module on the server to make sure debug logging is available for
+       * use in functional test.
+       *
+       * @instance
+       * @param {object} browser This should be the the "remote" attribute from the unit test
+       * @returns {promise} The promise for continuing the unit test.
+       */
+      enableDebugModule: function(browser) {
+
+         this._applyTimeouts(browser);
+         console.log(">> Enabling debug via Debug Enabler Extension");
+
+         return browser.get(this.moduleDeploymentUrl())
+         .end()
+
+         .elementByCssSelector("select[name='undeployedModules'] > option[value*='Debug Enabler Extension']")
+         .clickElement()
+         .end()
+
+         .elementByCssSelector("td > input[value='Add']")
+         .clickElement()
+         .end()
+
+         .elementByCssSelector("input[value='Apply Changes']")
+         .clickElement()
+         .end()
+
+      },
+
+      /**
+       * This function disables the debug module on the server.
+       *
+       * @instance
+       * @param {object} browser This should be the the "remote" attribute from the unit test
+       * @returns {promise} The promise for continuing the unit test.
+       */
+      disableDebugModule: function(browser) {
+
+         this._applyTimeouts(browser);
+         console.log(">> Disabling debug via Debug Enabler Extension");
+
+         return browser.get(this.moduleDeploymentUrl())
+         .end()
+
+         .elementByCssSelector("select[name='deployedModules'] > option[value*='Debug Enabler Extension']")
+         .clickElement()
+         .end()
+
+         .elementByCssSelector("td > input[value='Remove']")
+         .clickElement()
+         .end()
+
+         .elementByCssSelector("input[value='Apply Changes']")
+         .clickElement()
+         .end()
+         
+      },
+
+      /**
+       * Set browser timeouts - refer to Config files
+       * Allows us to use "elementBy..." calls rather than a "waitForElementBy..." which is more efficient...
+       *
+       * @instance
+       * @param {browser}
+       */
+      _applyTimeouts: function(browser) {
+         browser.setImplicitWaitTimeout(Config.timeout.implicitWait);
+         browser.setPageLoadTimeout(Config.timeout.pageLoad);
+         browser.setAsyncScriptTimeout(Config.timeout.asyncScript);
       },
 
       /**
@@ -293,12 +369,10 @@ define(["intern/dojo/node!fs",
       postCoverageResults: function(browser) {
          if(Config.doCoverageReport)
          {
-            browser
-            .end()
+            browser.end()
+
             .elementByCss('.alfresco-testing-TestCoverageResults input[type=submit]')
-            .moveTo()
-            .sleep(500)
-            .click()
+            .clickElement()
             .end();
 
             console.log(">> Coverage ~~>");

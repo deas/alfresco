@@ -55,8 +55,8 @@ define(["./config/Suites"],
       // used here
       loader: {
          // Packages that should be registered with the loader in each testing environment
-	     // Note: the config package is specifically for sauce labs (sl)
-	     packages: [
+	      // Note: the config package is specifically for sauce labs (sl)
+	      packages: [
             { name: 'alfresco', location: './tests/alfresco' },
             { name: 'config', location: './tests/config/sl' }
          ]

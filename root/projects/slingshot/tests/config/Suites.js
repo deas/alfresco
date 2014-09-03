@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -33,7 +33,7 @@ define({
    baseNonFunctionalSuites: null,
 
    // Uncomment and add specific tests as necessary during development!
-   // baseFunctionalSuites: ['tests/alfresco/menus/AlfContextMenuTest'],
+   // baseFunctionalSuites: ['tests/alfresco/accessibility/AccessibilityMenuTest'],
 
    /**
     * This is the base array of functional test suites
@@ -113,7 +113,13 @@ define({
     * @type [string]
     */
    localFunctionalSuites: function localFunctionalSuites(){
-      return this.baseFunctionalSuites.concat(this.localOnlyFunctionalSuites);
+      return this.setupFunctionalSuites.concat(
+         this.baseFunctionalSuites.concat(
+            this.localOnlyFunctionalSuites.concat(
+               this.teardownFunctionalSuites
+            )
+         )
+      );
    },
 
    /**
@@ -131,7 +137,13 @@ define({
     * @type [string]
     */
    vmFunctionalSuites: function vmFunctionalSuites(){
-      return this.baseFunctionalSuites.concat(this.vmOnlyFunctionalSuites);
+      return this.setupFunctionalSuites.concat(
+         this.baseFunctionalSuites.concat(
+            this.vmOnlyFunctionalSuites.concat(
+               this.teardownFunctionalSuites
+            )
+         )
+      );
    },
 
    /**
@@ -149,7 +161,13 @@ define({
     * @type [string]
     */
    slFunctionalSuites: function slFunctionalSuites(){
-      return this.baseFunctionalSuites.concat(this.slOnlyFunctionalSuites);
+      return this.setupFunctionalSuites.concat(
+         this.baseFunctionalSuites.concat(
+            this.slOnlyFunctionalSuites.concat(
+               this.teardownFunctionalSuites
+            )
+         )
+      );
    },
 
    /**
@@ -167,7 +185,29 @@ define({
     * @type [string]
     */
    gridFunctionalSuites: function gridFunctionalSuites(){
-      return this.baseFunctionalSuites.concat(this.gridOnlyFunctionalSuites);
-   }
+      return this.setupFunctionalSuites.concat(
+         this.baseFunctionalSuites.concat(
+            this.gridOnlyFunctionalSuites.concat(
+               this.teardownFunctionalSuites
+            )
+         )
+      );
+   },
+
+   /**
+    * This is the array of functional test suites for setup purposes
+    *
+    * @instance
+    * @type [string]
+    */
+   setupFunctionalSuites: ['tests/alfresco/DebugEnable'],
+
+   /**
+    * This is the array of functional test suites for teardown purposes
+    *
+    * @instance
+    * @type [string]
+    */
+   teardownFunctionalSuites: ['tests/alfresco/DebugDisable']
 
 });

@@ -31,7 +31,7 @@ define(["./config/Suites"],
       ],
 
       // Maximum number of simultaneous integration tests that should be executed on the remote WebDriver service
-      maxConcurrency: 3,
+      maxConcurrency: 1,
 
       // Whether or not to start Sauce Connect before running tests
       useSauceConnect: false,
@@ -46,7 +46,7 @@ define(["./config/Suites"],
       // used here
       loader: {
          // Packages that should be registered with the loader in each testing environment
-	     // Note: the config package is specifically for virtual machine (vm)
+	      // Note: the config package is specifically for virtual machine (vm)
          packages: [
             { name: 'alfresco', location: './tests/alfresco' },
             { name: 'config', location: './tests/config/vm' }
