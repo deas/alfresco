@@ -59,7 +59,7 @@ public class EditTaskPage extends SharePage
     private static final By ITEM_ROW = By.cssSelector("div[id$='assoc_packageItems-cntrl'] table>tbody.yui-dt-data>tr");
     private static final boolean isViewMoreActionDisplayed = true;
 
-    private static final RenderElement TITLE_ELEMENT = getVisibleRenderElement(By.cssSelector(".alf-menu-title-text"));
+    private static final RenderElement TITLE_ELEMENT = getVisibleRenderElement(By.cssSelector(".alfresco-header-Title"));
     private static final RenderElement EDIT_TASK_HEADER_ELEMENT = getVisibleRenderElement(By.cssSelector("div.task-edit-header h1"));
     // private static final RenderElement TASK_STATUS_ELEMENT = getVisibleRenderElement(By.cssSelector(TASK_STATUS));
     // private static final RenderElement COMMENT_ELEMENT = getVisibleRenderElement(By.cssSelector(COMMENT_TEXTAREA));
