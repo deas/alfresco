@@ -140,37 +140,13 @@ function getFormDefinition(canEditFilterId) {
                         initialValue: true
                      },
                      optionsConfig: {
-                        // TODO: Currently using hard-coded values - these need to be retrieved from the available properties
-                        fixed: [
-                           {
-                              label: "MIME Type",
-                              value: "{http://www.alfresco.org/model/content/1.0}content.mimetype"
-                           },
-                           {
-                              label: "Description",
-                              value: "{http://www.alfresco.org/model/content/1.0}description.__"
-                           },
-                           {
-                              label: "Creator",
-                              value: "{http://www.alfresco.org/model/content/1.0}creator.__.u"
-                           },
-                           {
-                              label: "Modifier",
-                              value: "{http://www.alfresco.org/model/content/1.0}modifier.__.u"
-                           },
-                           {
-                              label: "Created",
-                              value: "{http://www.alfresco.org/model/content/1.0}created"
-                           },
-                           {
-                              label: "Modified",
-                              value: "{http://www.alfresco.org/model/content/1.0}modified"
-                           },
-                           {
-                              label: "Size",
-                              value: "{http://www.alfresco.org/model/content/1.0}content.size"
-                           }
-                        ]
+                        publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
+                        publishPayload: {
+                           url: url.context + "/service/faceted-search/facet-qname-options",
+                           itemsAttribute: "options",
+                           labelAttribute: "label",
+                           valueAttribute: "value"
+                        }
                      }
                   }
                },
@@ -183,12 +159,13 @@ function getFormDefinition(canEditFilterId) {
                      label: "faceted-search-config.displayControl.label",
                      description: "faceted-search-config.displayControl.description",
                      optionsConfig: {
-                        fixed: [
-                           {
-                              label: "faceted-search-config.displayControl.basic.label",
-                              value: "alfresco/search/FacetFilters"
-                           }
-                        ]
+                        publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
+                        publishPayload: {
+                           url: url.context + "/service/faceted-search/facet-rendering-options",
+                           itemsAttribute: "options",
+                           labelAttribute: "label",
+                           valueAttribute: "value"
+                        }
                      }
                   }
                }
