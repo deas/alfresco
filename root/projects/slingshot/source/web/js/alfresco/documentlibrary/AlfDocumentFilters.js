@@ -40,7 +40,7 @@ define(["dojo/_base/declare",
         function(declare, Twister, _OnDijitClickMixin, _AlfDocumentListTopicMixin, template, 
                  AlfDocumentFilter, lang, array, domConstruct, domClass, on) {
    return declare([Twister, _OnDijitClickMixin, _AlfDocumentListTopicMixin], {
-      
+
       /**
        * An array of the i18n files to use with this widget.
        * 
@@ -49,7 +49,7 @@ define(["dojo/_base/declare",
        * @default [{i18nFile: "./i18n/AlfDocumentFilters.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfDocumentFilters.properties"}],
-      
+
       /**
        * An array of the CSS files to use with this widget.
        * 
@@ -58,21 +58,21 @@ define(["dojo/_base/declare",
        * @default [{cssFile:"./css/AlfDocumentFilters.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfDocumentFilters.css"}],
-      
+
       /**
        * The HTML template to use for the widget.
        * @instance
        * @type {String}
        */
       templateString: template,
-      
+
       /**
        * @instance
        * @type {string}
        * @default "docListFilterPref"
        */
       filterPrefsName: "docListFilterPref",
-      
+
       /**
        * Extends the inherited function to set up the localized labels for the show more
        * and show less links.
@@ -92,7 +92,7 @@ define(["dojo/_base/declare",
          }
          this.showLessLabel = this.message(this.showLessLabel);
       },
-      
+
       /**
        * Overrides the inherited function to iterate over the processed widgets and call 
        * the 'addFilter' function passing each one as an argument.
@@ -108,7 +108,7 @@ define(["dojo/_base/declare",
             domClass.remove(this.showMoreNode, "hidden");
          }
       },
-      
+
       /**
        * Adds supplied widget to the 'filtersNode' if it inherites from 'alfresco/documentlibrary/AlfDocumentFilter'
        * 
@@ -170,7 +170,6 @@ define(["dojo/_base/declare",
        onShowLessClick: function alfresco_documentlibrary_AlfDocumentFilters__onShowMoreClick(evt) {
          domClass.remove(this.showMoreNode, "hidden");
          domClass.add(this.showLessNode, "hidden");
-
          array.forEach(this.moreFiltersList, function(widget, index) {
             domClass.add(widget.domNode, "hidden");
          }, this);

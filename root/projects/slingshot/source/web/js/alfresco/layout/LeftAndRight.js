@@ -20,16 +20,19 @@
 /**
  * @module alfresco/layouts/LeftAndRight
  * @extends module:alfresco/core/ProcessWidgets
+ * @mixes module:alfresco/accessibility/_SemanticWrapperMixin
  * @author Dave Draper
+ * @author Richard Smith
  */
 define(["dojo/_base/declare",
         "alfresco/core/ProcessWidgets",
+        "alfresco/accessibility/_SemanticWrapperMixin",
         "dojo/text!./templates/LeftAndRight.html",
         "dojo/dom-construct",
         "dojo/_base/array"], 
-        function(declare, ProcessWidgets, template, domConstruct, array) {
+        function(declare, ProcessWidgets, _SemanticWrapperMixin, template, domConstruct, array) {
    
-   return declare([ProcessWidgets], {
+   return declare([ProcessWidgets, _SemanticWrapperMixin], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -47,7 +50,7 @@ define(["dojo/_base/declare",
        * @type {string}
        */
       templateString: template,
-      
+
       /**
        * Iterates through the array of widgets to be created and creates the appropriate DOM node based
        * on the "align" attribute of the widget configuration. 
@@ -72,6 +75,12 @@ define(["dojo/_base/declare",
                }
                this.createWidget(entry, domNode, this._registerProcessedWidget, this, i);
             }, this);
+         }
+
+         // Create a semantic wrapper if required
+         if(this.semanticWrapper)
+         {
+            this.generateSemanticWrapper(this.parentNode, this.containerNode);
          }
       },
       

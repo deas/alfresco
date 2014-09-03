@@ -35,10 +35,12 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreWidgetProcessing",
         "dojo/_base/lang",
-        "dojo/_base/array"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template,  AlfCore, CoreWidgetProcessing, lang, array) {
+        "dojo/_base/array",
+        "dojo/dom-construct",
+        "dojo/dom-attr"], 
+        function(declare, _WidgetBase, _TemplatedMixin, template,  AlfCore, CoreWidgetProcessing, lang, array, domConstruct, domAttr) {
    return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
-      
+
       /**
        * An array of the CSS files to use with this widget.
        * 
@@ -47,14 +49,23 @@ define(["dojo/_base/declare",
        * @default [{cssFile:"./css/Twister.css"}]
        */
       cssRequirements: [{cssFile:"./css/Twister.css"}],
-      
+
       /**
        * The HTML template to use for the widget.
        * @instance
        * @type {String}
        */
       templateString: template,
-      
+
+      /**
+       * Should the generated twister use a heading or div for it's heading?
+       *
+       * @instance
+       * @type {number}
+       * @default null
+       */
+      headingLevel: null,
+
       /**
        * @instance
        */
@@ -64,13 +75,29 @@ define(["dojo/_base/declare",
             this.label = this.encodeHTML(this.message(this.label));
          }
       },
-      
+
       /**
        * Processes any widgets defined in the configuration for this instance.
        * 
        * @instance
        */
       postCreate: function alfresco_layout_Twister__postCreate() {
+
+         if(this.headingLevel && (isNaN(this.headingLevel) || this.headingLevel < 1 || this.headingLevel > 6))
+         {
+            this.alfLog("error", "A heading must have a numeric level from 1 to 6 and must have a label", this);
+         }
+         else if(this.headingLevel)
+         {
+            domConstruct.create("h" + this.headingLevel, {
+               innerHTML: this.label
+            }, this.labelNode);
+         }
+         else
+         {
+            domAttr.set(this.labelNode, "innerHTML", this.label);
+         }
+
          if (this.label != null && this.label != "")
          {
             Alfresco.util.createTwister(this.labelNode, this.filterPrefsName);

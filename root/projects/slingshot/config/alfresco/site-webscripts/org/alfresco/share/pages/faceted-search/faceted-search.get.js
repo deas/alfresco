@@ -55,6 +55,40 @@ var accessMenu = {
    }
 };
 
+// Headings
+var headingForSearchForm = {
+   name: "alfresco/html/Heading",
+   config: {
+      level: 2,
+      label: msg.get("faceted-search.heading.search-form"),
+      isHidden: true
+   }
+};
+var headingForFacetMenu = {
+   name: "alfresco/html/Heading",
+   config: {
+      level: 2,
+      label: msg.get("faceted-search.heading.facet-menu"),
+      isHidden: true
+   }
+};
+var headingForSortMenu = {
+   name: "alfresco/html/Heading",
+   config: {
+      level: 2,
+      label: msg.get("faceted-search.heading.sort-menu"),
+      isHidden: true
+   }
+};
+var headingForResultsList = {
+   name: "alfresco/html/Heading",
+   config: {
+      level: 2,
+      label: msg.get("faceted-search.heading.search-results-list"),
+      isHidden: true
+   }
+};
+
 // Compose the search form model
 var searchForm = {
    id: "FCTSRCH_SEARCH_FORM",
@@ -68,7 +102,8 @@ var searchForm = {
       okButtonClass: "call-to-action",
       textFieldName: "searchTerm",
       textBoxIconClass: "alf-search-icon",
-      textBoxCssClasses: "long"
+      textBoxCssClasses: "long hiddenlabel",
+      textBoxLabel: msg.get("faceted-search.search-form.search-field-label")
    }
 };
 
@@ -130,7 +165,8 @@ var facets = [
          facetQName: "{http://www.alfresco.org/model/content/1.0}content.mimetype",
          sortBy: "DESCENDING",
          maxFilters: 6,
-         useHash: false
+         useHash: false,
+         headingLevel: 3
       }
    },
    {
@@ -141,7 +177,8 @@ var facets = [
          facetQName: "{http://www.alfresco.org/model/content/1.0}creator.__.u",
          sortBy: "ALPHABETICALLY",
          maxFilters: 6,
-         useHash: false
+         useHash: false,
+         headingLevel: 3
       }
    },
    {
@@ -152,7 +189,8 @@ var facets = [
          facetQName: "{http://www.alfresco.org/model/content/1.0}modifier.__.u",
          sortBy: "ALPHABETICALLY",
          maxFilters: 6,
-         useHash: false
+         useHash: false,
+         headingLevel: 3
       }
    },
    {
@@ -164,7 +202,8 @@ var facets = [
          blockIncludeFacetRequest: true,
          sortBy: "INDEX",
          maxFilters: 6,
-         useHash: false
+         useHash: false,
+         headingLevel: 3
       }
    },
    {
@@ -176,7 +215,8 @@ var facets = [
          blockIncludeFacetRequest: true,
          sortBy: "INDEX",
          maxFilters: 6,
-         useHash: false
+         useHash: false,
+         headingLevel: 3
       }
    },
 /* see ACE-2131
@@ -190,7 +230,8 @@ var facets = [
          hitThreshold: 1,
          minFilterValueLength: 5,
          maxFilters: 6,
-         useHash: false
+         useHash: false,
+         headingLevel: 3
       }
    },
 */
@@ -203,7 +244,8 @@ var facets = [
          blockIncludeFacetRequest: true,
          sortBy: "INDEX",
          maxFilters: 6,
-         useHash: false
+         useHash: false,
+         headingLevel: 3
       }
    }
 ];
@@ -317,6 +359,7 @@ var searchResultsMenuBar = {
                label: msg.get("faceted-search.results-menu.results-found")
             }
          },
+         headingForSortMenu,
          {
             name: "alfresco/menus/AlfMenuBar",
             align: "right",
@@ -427,6 +470,7 @@ var main = {
                height: "4px"
             }
          },
+         headingForSearchForm,
          searchForm,
          {
             name: "alfresco/layout/HorizontalWidgets",
@@ -458,6 +502,7 @@ var main = {
             name: "alfresco/layout/HorizontalWidgets",
             config: {
                widgets: [
+                  headingForFacetMenu,
                   {
                      id: "FCTSRCH_SEARCH_FACET_LIST",
                      name: "alfresco/layout/VerticalWidgets",
@@ -472,6 +517,7 @@ var main = {
                      name: "alfresco/layout/VerticalWidgets",
                      config: {
                         widgets: [
+                           headingForResultsList,
                            searchDocLib
                         ]
                      }

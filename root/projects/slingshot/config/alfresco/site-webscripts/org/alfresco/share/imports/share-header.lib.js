@@ -1889,6 +1889,7 @@ function getHeaderModel(pageTitle) {
       name: "alfresco/header/Header",
       config: {
          currentItem: currentItem,
+         semanticWrapper: "nav",
          widgets: [
             {
                id: "HEADER_APP_MENU_BAR",
@@ -1933,6 +1934,7 @@ function getHeaderModel(pageTitle) {
       name: "alfresco/layout/LeftAndRight",
       config:
       {
+         semanticWrapper: "header",
          widgets:
          [
             {

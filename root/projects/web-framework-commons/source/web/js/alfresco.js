@@ -2283,8 +2283,8 @@ Alfresco.util.createTwister = function(p_controller, p_filterName, p_config)
       CLASS_CLOSED: "alfresco-twister-closed"
    };
 
-   var elController, elPanel,
-         config = YAHOO.lang.merge(defaultConfig, p_config || {});
+   var elController, elControllerChildren, elPanel,
+      config = YAHOO.lang.merge(defaultConfig, p_config || {});
 
    // Controller element
    elController = YUIDom.get(p_controller);
@@ -2292,6 +2292,9 @@ Alfresco.util.createTwister = function(p_controller, p_filterName, p_config)
    {
       return false;
    }
+
+   // Controller element children
+   elControllerChildren = YUIDom.getChildren(p_controller);
 
    // Panel element - next sibling or specified in configuration
    if (config.panel && YUIDom.get(config.panel))
@@ -2328,7 +2331,7 @@ Alfresco.util.createTwister = function(p_controller, p_filterName, p_config)
 
    // See if panel should be collapsed via value stored in preferences
    var collapsedPrefs = Alfresco.util.arrayToObject(Alfresco.util.createTwister.collapsed.split(",")),
-         isCollapsed = !!collapsedPrefs[p_filterName];
+      isCollapsed = !!collapsedPrefs[p_filterName];
 
    // Initial State
    YUIDom.addClass(elController, config.CLASS_BASE);
@@ -2348,7 +2351,20 @@ Alfresco.util.createTwister = function(p_controller, p_filterName, p_config)
       }
 
       // Only expand/collapse if actual twister element is clicked (not for inner elements, i.e. twister actions)
-      if (YUIEvent.getTarget(p_event) == elController)
+      var isControllerOrChild = false;
+      if(YUIEvent.getTarget(p_event) == elController)
+      {
+         isControllerOrChild = true;
+      }
+      for(var i=0; i < elControllerChildren.length; i++)
+      {
+         if(YUIEvent.getTarget(p_event) == elControllerChildren[i])
+         {
+            isControllerOrChild = true;
+         }
+      }
+
+      if (isControllerOrChild)
       {
          // Update UI to new state
          var collapse = YUIDom.hasClass(p_obj.controller, config.CLASS_OPEN);
@@ -2366,20 +2382,35 @@ Alfresco.util.createTwister = function(p_controller, p_filterName, p_config)
          {
             // Save to preferences
             var fnPref = collapse ? "add" : "remove",
-                  preferences = new Alfresco.service.Preferences();
+               preferences = new Alfresco.service.Preferences();
             preferences[fnPref].call(preferences, Alfresco.service.Preferences.COLLAPSED_TWISTERS, p_obj.filterName);
          }
       }
+
+      // Stop the event propogating any further (ie into the parent element)
+      p_event.stopPropagation();
    };
 
-   var twistObj = {
+   var twistObj = 
+   {
       controller: elController,
       panel: elPanel,
       filterName: p_filterName
    };
 
-   YUIEvent.addListener(elController, "click", twistFun, twistObj);
-   YUIEvent.addListener(elController, "keypress", twistFun, twistObj);
+   var addListener = function(controller) {
+      YUIEvent.addListener(controller, "click", twistFun, twistObj);
+      YUIEvent.addListener(controller, "keypress", twistFun, twistObj);
+   };
+
+   // Add event listeners for the main control
+   addListener(elController);
+
+   // Add event listeners to children if found
+   for(var i=0; i < elControllerChildren.length; i++)
+   {
+      addListener(elControllerChildren[i]);
+   }
 
 };
 

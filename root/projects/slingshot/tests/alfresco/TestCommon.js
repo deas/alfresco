@@ -152,6 +152,7 @@ define(["intern/dojo/node!fs",
       enableDebugModule: function(browser) {
 
          this._applyTimeouts(browser);
+         this._maxWindow(browser);
          console.log(">> Enabling debug via Debug Enabler Extension");
 
          return browser.get(this.moduleDeploymentUrl())
@@ -168,6 +169,28 @@ define(["intern/dojo/node!fs",
          .elementByCssSelector("input[value='Apply Changes']")
          .clickElement()
          .end()
+         
+//       this._applyTimeouts(browser);
+//       this._maxWindow(browser);
+//       console.log(">> Enabling debug via Debug Enabler Extension");
+//
+//       browser.get(this.moduleDeploymentUrl()).end();
+//
+//       var hasEnabler = true;
+//       browser.hasElementByCssSelector("select[name='undeployedModules'] > option[value*='Debug Enabler Extension']")
+//       .then(function(has){
+//          console.log(has);
+//       })
+//       .end();
+//
+//       if(hasEnabler)
+//       {
+//          browser.elementByCssSelector("select[name='undeployedModules'] > option[value*='Debug Enabler Extension']").clickElement().end();
+//          browser.elementByCssSelector("td > input[value='Add']").clickElement().end();
+//          browser.elementByCssSelector("input[value='Apply Changes']").clickElement().end();
+//       }
+//
+//       return browser;
 
       },
 
@@ -211,6 +234,16 @@ define(["intern/dojo/node!fs",
          browser.setImplicitWaitTimeout(Config.timeout.implicitWait);
          browser.setPageLoadTimeout(Config.timeout.pageLoad);
          browser.setAsyncScriptTimeout(Config.timeout.asyncScript);
+      },
+
+      /**
+       * Maximises the browser window if not already maximised
+       *
+       * @instance
+       * @param {browser}
+       */
+      _maxWindow: function(browser) {
+         browser.maximize(browser.windowHandle());
       },
 
       /**

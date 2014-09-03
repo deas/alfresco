@@ -29,13 +29,16 @@
    background-position: 0 3px !important;
 }
 
-.alfresco-layout-Twister .label {
+.alfresco-layout-Twister .label,
+.alfresco-layout-Twister .label h3 {
    font-family: @bold-font;
    color: @general-font-color;
    font-size: @normal-font-size;
    font-weight: normal;
-   padding-bottom: @standard-line-height - 2;
+}
+.alfresco-layout-Twister .label {
    margin-left: @standard-column-width;
+   padding-bottom: @standard-line-height - 2;
 }
 
 .alfresco-layout-Twister .content {

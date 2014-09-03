@@ -43,9 +43,10 @@ define(["dojo/_base/declare",
         "dojo/_base/array",
         "dojo/dom-style",
         "dojo/dom-class",
-        "dijit/Tooltip"], 
-        function(declare, _Widget, _Templated, _FocusMixin, template, AlfCore, ObjectTypeUtils, arrayUtils, lang, array, domStyle, domClass, Tooltip) {
-   
+        "dijit/Tooltip",
+        "dojo/dom-attr"], 
+        function(declare, _Widget, _Templated, _FocusMixin, template, AlfCore, ObjectTypeUtils, arrayUtils, lang, array, domStyle, domClass, Tooltip, domAttr) {
+
    return declare([_Widget, _Templated, _FocusMixin, AlfCore], {
       
       /**
@@ -1118,6 +1119,7 @@ define(["dojo/_base/declare",
          if (this.label != null && lang.trim(this.label) != "")
          {
             this._labelNode.innerHTML = this.encodeHTML(this.message(this.label));
+            domAttr.set(this._labelNode, "for", this.wrappedWidget.id);
          }
          else
          {

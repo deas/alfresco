@@ -29,6 +29,7 @@ function getFooterModel(services, widgets)
                   {
                      name: "alfresco/footer/AlfShareFooter",
                      config: {
+                        semanticWrapper: "footer",
                         licenseLabel: licenseHolder,
                         copyrightLabel: footerCopyRight,
                         altText: footerLogoAltText,

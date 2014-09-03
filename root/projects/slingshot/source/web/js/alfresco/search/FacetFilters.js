@@ -109,16 +109,13 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_search_FacetFilters__postCreate() {
-         if (this.label != null && this.label != "")
-         {
-            Alfresco.util.createTwister(this.labelNode, this.filterPrefsName);
-         }
+         this.inherited(arguments);
 
          // TODO: Commented out and published because it's being developed against QuaddsWidgets...
          this.alfSubscribe("ALF_WIDGETS_READY", lang.hitch(this, "publishFacets"), true);
          // this.publishFacets();
       },
-      
+
       /**
        * This has been added to support the initial implementation of date and size faceting against
        * Solr 1.4. The search service will always include modification/creation date and file size
