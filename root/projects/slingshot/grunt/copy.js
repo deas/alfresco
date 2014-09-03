@@ -37,7 +37,7 @@ module.exports = function (grunt, alf) {
                   dest: '',
                   rename: function(dest, src) {
                      var src = src.substring(src.indexOf("source/web/js/alfresco/") + 23);
-                     var newDest = '../../../../software/tomcat-app/webapps/share/js/alfresco/' + src;
+                     var newDest = './target/share/js/alfresco/' + src;
                      return newDest;
                   }
                }
@@ -52,7 +52,7 @@ module.exports = function (grunt, alf) {
                   dest: '',
                   rename: function(dest, src) {
                      var src = src.substring(src.indexOf("source/web/js/alfrescoInst/") + 27);
-                     var newDest = '../../../../software/tomcat-app/webapps/share/js/alfresco/' + src;
+                     var newDest = './target/share/js/alfresco/' + src;
                      return newDest;
                   }
                }
