@@ -25,25 +25,20 @@ import org.openqa.selenium.WebElement;
 public class PreViewPopUpPage extends SharePage
 {
 	//Constants
-	private static final By PREVIEW_POPUP = By.cssSelector(".alfresco-dialog-AlfDialog.dijitDialog>.dijitDialogPaneContent");   
-	private static final By IMG_ON_POPUP = By.cssSelector("div[class='previewer Image']>img");
-	private static final By PREVIEW_TEXT = By.cssSelector("div[class=textLayer]>div");
-	@RenderWebElement
-	private static final By PREVIEW_TITLE = By.cssSelector(".dijitDialogTitleBar>span[id$='title']");	
 	
-	private static final By PREVIEW_CLOSE_BUTTON = By.cssSelector("div[class='footer']>span>span>span>span[id^=alfresco_buttons]");
+	private static final By PREVIEW_POPUP = By.cssSelector(".alfresco-dialog-AlfDialog.dijitDialog");	
+	private static final By IMG_ON_POPUP = By.cssSelector("div[class$='previewer Image']");	
+	private static final By PREVIEW_TEXT = By.cssSelector(".textLayer>div");
 	
-	private static final Log logger = LogFactory.getLog(PreViewPopUpPage.class);
-	
+	@RenderWebElement	
+	private static final By PREVIEW_TITLE = By.cssSelector("div[class$='dijitDialogTitleBar']>span[class$=dijitDialogTitle]");	
+	private static final By PREVIEW_CLOSE_BUTTON = By.cssSelector("div[class$='dijitDialogTitleBar']>span[class$=dijitDialogTitle]");
+	private static final Log logger = LogFactory.getLog(PreViewPopUpPage.class);	
 	
 	private WebElement closeButton;
 	private WebElement previewTitle;
 	private WebElement imgOnPopUp;
 	private WebElement previewText;	
-	
-	//private static final By PREVIEW_POPUP = By.cssSelector("div[id='uniqName_1_"+index+"'] div[class='dialog-body']");
-	//private static final By PREVIEW_TITLE = By.cssSelector(".dijitDialogTitleBar>span[id='uniqName_1_"+index+"_title']");	     
-	//private static final By PREVIEW_CLOSE_BUTTON = By.cssSelector("div[id='uniqName_1_"+index+"'] div[class='footer']>span>span>span>span[id^=alfresco_buttons]");
 	
     public PreViewPopUpPage(WebDrone drone)
     {
@@ -154,7 +149,7 @@ public class PreViewPopUpPage extends SharePage
     {
         try
         {
-        	previewText = drone.findFirstDisplayedElement(PREVIEW_TEXT);
+        	previewText = drone.findAndWait(PREVIEW_TEXT);
         	if(previewText.isDisplayed())
         	{        		
         		return true;        		       		 
