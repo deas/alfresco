@@ -81,7 +81,17 @@
           * @type String
           * @default
           */
-         failureMessageKey: "message.failure",
+         failureMessageKey: "message.failure.workflow",
+
+         /**
+		 
+	 * The failure title key that will be displayed if data wasn't able to be loaded
+          *
+          * @property failureTitleKey
+          * @type String
+          * @default
+          */
+         failureTitleKey: "message.failure",
 
          /**
           * When set to true the proxy uri will prefix:ed to the value of the "url" option
@@ -146,7 +156,8 @@
             {
                Alfresco.util.PopupManager.displayPrompt(
                {
-                  text: this.msg(this.options.failureMessageKey),
+                  title: this.msg(this.options.failureTitleKey),
+                  text: this.msg(this.options.failureMessageKey, Alfresco.constants.USERNAME),
                   modal: true
                });
             }
@@ -165,7 +176,8 @@
       {
          Alfresco.util.PopupManager.displayPrompt(
          {
-            text: this.msg(this.options.failureMessageKey),
+            title: this.msg(this.options.failureTitleKey),
+            text: this.msg(this.options.failureMessageKey, Alfresco.constants.USERNAME),
             modal: true
          });
       }
