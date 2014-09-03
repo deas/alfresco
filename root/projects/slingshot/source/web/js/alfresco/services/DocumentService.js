@@ -23,7 +23,7 @@
  *
  * @module alfresco/services/DocumentService
  * @extends module:alfresco/core/Core
- * @author Dave Draper
+ * @author Dave Draper & David Webster
  */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
@@ -31,10 +31,20 @@ define(["dojo/_base/declare",
         "service/constants/Default",
         "alfresco/core/PathUtils",
         "alfresco/core/NodeUtils",
-        "dojo/_base/lang"],
-        function(declare, AlfCore, CoreXhr, AlfConstants, PathUtils, NodeUtils, lang) {
+        "dojo/_base/lang",
+        "dojo/dom-construct"],
+        function(declare, AlfCore, CoreXhr, AlfConstants, PathUtils, NodeUtils, lang, domConstruct) {
 
    return declare([AlfCore, CoreXhr, PathUtils], {
+
+      /**
+       * An array of the i18n files to use with this widget.
+       *
+       * @instance
+       * @type {object[]}
+       * @default [{i18nFile: "./i18n/DocumentService.properties"}]
+       */
+      i18nRequirements: [{i18nFile: "./i18n/DocumentService.properties"}],
 
       /**
        * The URL to the download API
@@ -115,6 +125,14 @@ define(["dojo/_base/declare",
       archiveProgressSuccessTopic: "ALF_ARCHIVE_PROGRESS_REQUEST_SUCCESS",
 
       /**
+       * Delete the archive created for downloading.
+       *
+       * @instance
+       * @type {String}
+       */
+      deleteArchiveTopic: "ALF_ARCHIVE_DELETE",
+
+      /**
        * Event topic to trigger a file download in the browser
        *
        * @instance
@@ -137,9 +155,11 @@ define(["dojo/_base/declare",
          this.alfSubscribe(this.requestArchiveTopic, lang.hitch(this, this.onRequestArchive));
          this.alfSubscribe(this.requestArchiveProgressTopic, lang.hitch(this, this.onRequestArchiveProgress));
          this.alfSubscribe(this.requestDelayedArchiveProgressTopic, lang.hitch(this, this.onRequestDelayedArchiveProgress));
+         this.alfSubscribe(this.deleteArchiveTopic, lang.hitch(this, this.onDeleteDownloadArchive));
 
          //Bind to download topics:
          this.alfSubscribe(this.downloadNodeTopic, lang.hitch(this, this.onDownloadFile));
+
       },
 
       /**
@@ -433,7 +453,10 @@ define(["dojo/_base/declare",
          }
          var status = payload.response.status;
 
-         var progressRequestPayload = payload.progressRequestPayload;
+         var progressRequestPayload = payload.requestConfig.progressRequestPayload;
+
+         // Clean up the payload a little:
+         payload.nodeRef = payload.requestConfig.progressRequestPayload.archiveNodeRef;
 
          switch (status)
          {
@@ -510,7 +533,7 @@ define(["dojo/_base/declare",
       {
          // TODO: Error handling? Handle Success?
          this.serviceXhr({
-            url: this.downloadAPI + "/" + "payload.archiveURL",
+            url: this.downloadAPI + "/" + payload.nodeRef.replace("://", "/"),
             method: "delete"
          });
       },
@@ -519,23 +542,25 @@ define(["dojo/_base/declare",
       //TODO: Does this really need to be this complicated? (Code is from previous implementation)
       onDownloadFile: function alfresco_services_DocumentService__onDownloadFile(payload)
       {
-         if (!payload.nodeRef || !payload.fileName)
+         var nodeRef = payload.nodeRef;
+         if (!nodeRef)
          {
-            this.alfLog("error", "NodeRef and/or Filename missing - unable to download.");
+            this.alfLog("error", "NodeRef missing - unable to download.");
             return;
          }
 
-         var form = document.createElement("form");
-         form.method = "GET";
-         form.action = AlfConstants.PROXY_URI + "api/node/content/" + payload.nodeRef.replace("://", "/") + "/" + encodeURIComponent(payload.fileName);
-         document.body.appendChild(form);
+         var fileName = payload.fileName || this.message("services.DocumentService.archiveName") + ".zip";
 
-         var d = form.ownerDocument,
-            iframe = d.createElement("iframe");
+         var form = domConstruct.create("form");
+         form.method = "GET";
+         form.action = AlfConstants.PROXY_URI + "api/node/content/" + nodeRef.replace("://", "/") + "/" + encodeURIComponent(fileName);
+         domConstruct.place(form, document.body);
+
+         var iframe = domConstruct.create("iframe");
 
          iframe.style.display = "none";
          iframe.name = iframe.id = "downloadArchive_" + this.generateUuid();
-         document.body.appendChild(iframe);
+         domConstruct.place(iframe, document.body);
 
          // makes it possible to target the frame properly in IE.
          window.frames[iframe.name].name = iframe.name;
