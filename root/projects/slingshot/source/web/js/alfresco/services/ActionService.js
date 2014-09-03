@@ -56,9 +56,10 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/_base/array",
         "alfresco/dialogs/AlfDialog",
-        "alfresco/pickers/Picker"],
+        "alfresco/pickers/Picker",
+        "alfresco/core/NodeUtils"],
         function(declare, AlfCore, AlfCoreXhr, AlfConstants, _AlfDocumentListTopicMixin, _NavigationServiceTopicMixin, UrlUtils,
-                 ArrayUtils, JsNode, NotificationUtils, lang, array, AlfDialog, Picker) {
+                 ArrayUtils, JsNode, NotificationUtils, lang, array, AlfDialog, Picker, NodeUtils) {
 
    // TODO: L18N sweep - lots of widgets defined with hard coded labels...
 
@@ -885,7 +886,7 @@ define(["dojo/_base/declare",
 
          var responseTopic = this.generateUuid() + "_ALF_COPY_LOCATION_PICKED",
             publishPayload = {
-               nodes: this.alfNodeRefArray(documents),
+               nodes: NodeUtils.nodeRefArray(documents),
                nodeRefTarget: this.copyMoveTarget,
                documents: documents
             };
@@ -1053,7 +1054,7 @@ define(["dojo/_base/declare",
             return;
          }
 
-         var nodeRefs = this.alfNodeRefArray(payload.documents),
+         var nodeRefs = NodeUtils.nodeRefArray(payload.documents),
             responseTopic = this.generateUuid(),
             subscriptionHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onActionCopyToSuccess), true),
             nodeRefTarget = payload.nodeRefTarget;

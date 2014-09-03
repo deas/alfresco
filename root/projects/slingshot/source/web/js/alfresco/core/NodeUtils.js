@@ -18,21 +18,21 @@
  */
 
 /**
- * 
+ *
  * @module alfresco/core/NodeUtils
- * @author Dave Draper
+ * @author Dave Draper & David Webster
  */
 define(["dojo/_base/lang",
-        "dojo/_base/array"], 
+        "dojo/_base/array"],
         function(lang, array) {
-   
+
    return {
-      
+
       /**
        * Converts the supplied NodeRef string into an object containing its composite attributes.
        *
        * @instance
-       * @param {string} nodeRef 
+       * @param {string} nodeRef
        * @return {object}
        */
       processNodeRef: function alfresco_core_NodeUtils__processNodeRef(nodeRef) {
@@ -68,7 +68,7 @@ define(["dojo/_base/lang",
        * @param {Object[]} nodes
        * @returns {Array} nodeRefArray
        */
-      alfNodeRefArray: function alfresco_core_NodeUtils__alfNodeRefArray(nodes) {
+      nodeRefArray: function alfresco_core_NodeUtils__nodeRefArray(nodes) {
 
          if (!lang.isArray(nodes))
          {
