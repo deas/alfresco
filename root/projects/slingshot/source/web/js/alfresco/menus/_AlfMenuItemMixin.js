@@ -32,87 +32,87 @@ define(["dojo/_base/declare",
         "alfresco/renderers/_PublishPayloadMixin",
         "alfresco/navigation/_HtmlAnchorMixin",
         "service/constants/Default",
-        "dojo/dom-class", 
+        "dojo/dom-class",
         "dojo/dom-style",
         "dojo/dom-construct",
         "dojo/on",
         "dojo/_base/lang",
         "dojo/_base/event",
         "dojo/has"],
-        function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, _PublishPayloadMixin, 
+        function(declare, AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, _PublishPayloadMixin,
                  _HtmlAnchorMixin, AlfConstants, domClass, domStyle, domConstruct, on, lang, event, has) {
-   
+
    return declare([AlfCore, AlfCoreRwd, _AlfPopupCloseMixin, _NavigationServiceTopicMixin, _PublishPayloadMixin, _HtmlAnchorMixin], {
 
       /**
        * An array of the CSS files to use with this widget.
-       * 
+       *
        * @instance
        * @type {object[]}
        * @default [{cssFile:"./css/_AlfMenuItemMixin.css"}]
        */
       cssRequirements: [{cssFile:"./css/_AlfMenuItemMixin.css"}],
-      
+
       /**
        * Defines the image width for the menu item icon. An image is only used if no explicit CSS class is set.
-       * 
+       *
        * @instance
-       * @type {string} 
+       * @type {string}
        * @default "16px"
        */
       iconImageWidth: "16px",
-      
+
       /**
        * Defines the image height for the menu item icon. An image is only used if no explicit CSS class is set.
-       * 
+       *
        * @instance
-       * @type {string} 
+       * @type {string}
        * @default "16px"
        */
       iconImageHeight: "16px",
-      
+
       /**
        * @instance
        * @type {string}
        * @default ""
        */
       iconAltText: "",
-      
+
       /**
        * If a 'targetUrl' attribute is provided the value will be passed as a publication event to the NavigationService
        * to reload the page to the URL defined.
-       * 
+       *
        * @instance
        * @type {string}
        * @default null
        */
       targetUrl: null,
-      
+
       // TODO: It might be nice to retrieve this from the NavigationService itself??
       /**
        * Indicates how the target URL should be handled. This defaults to "SHARE_PAGE_RELATIVE" which means that the URL
        * will be appended to the 'AlfConstants.URL_PAGECONTEXT' Global JavaScript constant. This can be overridden
        * on instantiation to indicate that another URL type, such as "FULL_PATH" should be used.
-       * 
+       *
        * @instance
        * @type {string}
        * @default "SHARE_PAGE_RELATIVE"
        */
       targetUrlType: "SHARE_PAGE_RELATIVE",
-      
+
       /**
-       * Indicates whether or not the URL should be opened in the current window/tab or in a new window. 
-       * 
+       * Indicates whether or not the URL should be opened in the current window/tab or in a new window.
+       *
        * @instance
        * @type {string}
        * @default "SHARE_PAGE_RELATIVE"
        */
       targetUrlLocation: "CURRENT",
-      
+
       /**
        * It's important to perform label encoding before buildRendering occurs (e.g. before postCreate)
-       * to ensure that an unencoded label isn't set and then replaced. 
-       * 
+       * to ensure that an unencoded label isn't set and then replaced.
+       *
        * @instance
        */
       postMixInProperties: function alfresco_menus__AlfMenuItemMixin__postMixInProperties() {
@@ -120,10 +120,10 @@ define(["dojo/_base/declare",
          {
             this.label = this.encodeHTML(this.message(this.label));
          }
-         
+
          this.inherited(arguments);
       },
-      
+
       /**
        * Ensures that the supplied menu item label is translated.
        * @instance
@@ -131,7 +131,7 @@ define(["dojo/_base/declare",
       postCreate: function alfresco_menus__AlfMenuItemMixin__postCreate() {
          this.set("label", this.label);
          this.inherited(arguments);
-         
+
          // Set up a handler for onContextMenu actions (e.g. right-clicks), although by default this will perform no action...
          on(this.domNode, "contextmenu", lang.hitch(this, "onContextMenu"));
          this.makeAnchor(this.targetUrl, this.targetUrlType);
@@ -147,17 +147,17 @@ define(["dojo/_base/declare",
       getAnchorTargetSelectors: function alfresco_renderers_SearchResultPropertyLink__getAnchorTargetSelectors() {
          return ["td.dijitMenuItemLabel","span.alf-menu-bar-label-node"];
       },
-      
+
       /**
        * Extension point for handling context click events. By default this performs no action.
-       * 
+       *
        * @instance
-       * @param {evt} evt The context menu event
+       * @param {event} evt The context menu event
        */
       onContextMenu: function(evt) {
          // No action by default.
       },
-      
+
       /**
        * @instance
        */
@@ -182,13 +182,13 @@ define(["dojo/_base/declare",
              * Dojo CSS class.
              */
             if(has("ie") == 8)
-            {     
+            {
                if(location.protocol.indexOf("https") != -1)
                {
                   //It is ssl in IE8, so we use full URL. see MNT-10867
                   this.iconImage = location.protocol + "//" + location.host + this.iconImage;
                }
-            } 
+            }
             domStyle.set(this.iconNode, { backgroundImage: "url(" + this.iconImage + ")",
                                           width: this.iconImageWidth,
                                           height: this.iconImageHeight,
@@ -199,7 +199,7 @@ define(["dojo/_base/declare",
          {
             // If there is no iconClass or iconImage then we need to explicitly set the the
             // parent element of the icon node to have an inherited width. This is because there
-            // is a CSS selector that fixes the width of menu items with icons to ensure that 
+            // is a CSS selector that fixes the width of menu items with icons to ensure that
             // they are all aligned. This means that there would be a space for an icon even if
             // one was not available.
             domStyle.set(this.iconNode.parentNode, {
@@ -207,29 +207,35 @@ define(["dojo/_base/declare",
             });
          }
       },
-      
+
       /**
        * Overrides the default onClick function. Currently only supports page navigation.
-       * 
+       *
        * @instance
        * @param {object} evt The click event
        */
       onClick: function alfresco_menus__AlfMenuItemMixin__onClick(evt) {
          this.alfLog("log", "AlfMenuBarItem clicked");
 
-         
+         var targetUrlLocation = this.targetUrlLocation;
+
+         if (navigator.platform.indexOf("Mac") !== -1 && evt.metaKey)
+         {
+            targetUrlLocation = "NEW";
+         }
+
          // Emit the event to close popups in the stack...
          this.emitClosePopupEvent();
-         
+
          if (this.targetUrl != null)
          {
-            // Stop the event (to prevent the browser processing <a> elements 
+            // Stop the event (to prevent the browser processing <a> elements
             event.stop(evt);
 
             // Handle URLs...
             this.alfPublish("ALF_NAVIGATE_TO_PAGE", { url: this.targetUrl,
                                                       type: this.targetUrlType,
-                                                      target: this.targetUrlLocation});
+                                                      target: targetUrlLocation});
          }
          else if (this.publishTopic != null)
          {
@@ -241,7 +247,7 @@ define(["dojo/_base/declare",
             // TODO: DD: Not keen on the fact that somehow this "document" specific stuff has crept in here...
             //           Ideally it shouldn't be there...
             var payload = this.generatePayload((this.publishPayload) ? this.publishPayload : {document: this.currentItem}, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin);
-            this.alfPublish(this.publishTopic, payload);
+            this.alfPublish(this.publishTopic, payload, publishGlobal, publishToParent);
          }
          else
          {
