@@ -33,78 +33,153 @@ define(["dojo/_base/declare",
    
    return declare([DocumentListPicker], {
 
-        postCreate: function alfresco_pickers_ContainerListPicker__postCreate(payload) {
-           var config = [{
-              name: "alfresco/documentlibrary/views/AlfDocumentListView",
-              config: {
-                 widgets: [
-                    {
-                       name: "alfresco/documentlibrary/views/layouts/Row",
-                       config: {
-                          renderFilter: [
+      /**
+       * Overrides the [inherited function]{@link module:alfresco/lists/AlfList#postCreate} to create the picker
+       * view for selecting documents.
+       * 
+       * @instance
+       */
+      postCreate: function alfresco_pickers_ContainerListPicker__postCreate(payload) {
+         var config = [{
+            name: "alfresco/documentlibrary/views/AlfDocumentListView",
+            config: {
+               widgets: [
+                  {
+                     name: "alfresco/documentlibrary/views/layouts/Row",
+                     config: {
+                        renderFilter: [
                              {
                                 property: "node.isContainer",
                                 values: [true]
                              }
                           ],
                           widgets: [
-                             {
-                                name: "alfresco/documentlibrary/views/layouts/Cell",
-                                config: {
-                                   widgets: [
-                                      {
-                                         name: "alfresco/renderers/PropertyLink",
-                                         config: {
-                                            propertyToRender: "node.properties.cm:name",
-                                            renderAsLink: true,
-                                            publishTopic: "ALF_ADD_PICKER",
-                                            useCurrentItemAsPayload: false,
-                                            publishPayloadType: "BUILD",
-                                            publishPayload: {
-                                               currentPickerDepth: null,
-                                               picker: {
-                                                  name: "alfresco/pickers/ContainerListPicker",
-                                                  config: {
-                                                     libraryRoot: {
-                                                        alfType: "item",
-                                                        alfProperty: "nodeRef"
-                                                     },
-                                                     nodeRef: {
-                                                        alfType: "item",
-                                                        alfProperty: "nodeRef"
-                                                     },
-                                                     // TODO: Is this path correct?
-                                                     path: "/documentlibrary"
-                                                  }
-                                               }
-                                            }
-                                         }
-                                      }
-                                   ]
-                                }
-                             },
-                             {
-                                name: "alfresco/documentlibrary/views/layouts/Cell",
-                                config: {
-                                   width: "20px",
-                                   widgets: [
-                                      {
-                                         name: "alfresco/renderers/PublishAction",
-                                         config: {
-                                            publishGlobal: true
-                                         }
-                                      }
-                                   ]
-                                }
-                             }
-                          ]
-                       }
-                    }
-                 ]
-              }
-           }];
+                           {
+                              name: "alfresco/documentlibrary/views/layouts/Cell",
+                              config: {
+                                 width: "20px",
+                                 widgets: [
+                                    {
+                                       name: "alfresco/renderers/FileType",
+                                       config: {
+                                          size: "small",
+                                          renderAsLink: true,
+                                          publishTopic: "ALF_DOCLIST_NAV"
+                                       }
+                                    }
+                                 ]
+                              }
+                           },
+                           {
+                              name: "alfresco/documentlibrary/views/layouts/Cell",
+                              config: {
+                                 widgets: [
+                                    {
+                                       name: "alfresco/renderers/PropertyLink",
+                                       config: {
+                                          propertyToRender: "node.properties.cm:name",
+                                          renderAsLink: true,
+                                          publishTopic: "ALF_DOCLIST_NAV"
+                                       }
+                                    }
+                                 ]
+                              }
+                           },
+                           {
+                              name: "alfresco/documentlibrary/views/layouts/Cell",
+                              config: {
+                                 width: "20px",
+                                 widgets: [
+                                    {
+                                       name: "alfresco/renderers/PublishAction",
+                                       config: {
+                                          publishPayloadType: "CURRENT_ITEM"
+                                       }
+                                    }
+                                 ]
+                              }
+                           }
+                        ]
+                     }
+                  }
+               ]
+            }
+         }];
+         this.processWidgets(config, this.itemsNode);
+      },
 
-           this.processWidgets(config, this.itemsNode);
-        }
+        // postCreate: function alfresco_pickers_ContainerListPicker__postCreate(payload) {
+        //    var config = [{
+        //       name: "alfresco/documentlibrary/views/AlfDocumentListView",
+        //       config: {
+        //          widgets: [
+        //             {
+        //                name: "alfresco/documentlibrary/views/layouts/Row",
+        //                config: {
+        //                   renderFilter: [
+        //                      {
+        //                         property: "node.isContainer",
+        //                         values: [true]
+        //                      }
+        //                   ],
+        //                   widgets: [
+        //                      {
+        //                         name: "alfresco/documentlibrary/views/layouts/Cell",
+        //                         config: {
+        //                            widgets: [
+        //                               {
+        //                                  name: "alfresco/renderers/PropertyLink",
+        //                                  config: {
+        //                                     propertyToRender: "node.properties.cm:name",
+        //                                     renderAsLink: true,
+        //                                     publishTopic: "ALF_ADD_PICKER",
+        //                                     useCurrentItemAsPayload: false,
+        //                                     publishPayloadType: "BUILD",
+        //                                     publishPayload: {
+        //                                        currentPickerDepth: null,
+        //                                        picker: {
+        //                                           name: "alfresco/pickers/ContainerListPicker",
+        //                                           config: {
+        //                                              libraryRoot: {
+        //                                                 alfType: "item",
+        //                                                 alfProperty: "nodeRef"
+        //                                              },
+        //                                              nodeRef: {
+        //                                                 alfType: "item",
+        //                                                 alfProperty: "nodeRef"
+        //                                              },
+        //                                              // TODO: Is this path correct?
+        //                                              path: "/documentlibrary"
+        //                                           }
+        //                                        }
+        //                                     }
+        //                                  }
+        //                               }
+        //                            ]
+        //                         }
+        //                      },
+        //                      {
+        //                         name: "alfresco/documentlibrary/views/layouts/Cell",
+        //                         config: {
+        //                            width: "20px",
+        //                            widgets: [
+        //                               {
+        //                                  name: "alfresco/renderers/PublishAction",
+        //                                  config: {
+        //                                     publishGlobal: true
+        //                                  }
+        //                               }
+        //                            ]
+        //                         }
+        //                      }
+        //                   ]
+        //                }
+        //             }
+        //          ]
+        //       }
+        //    }];
+
+        //    this.processWidgets(config, this.itemsNode);
+        // }
    });
 });

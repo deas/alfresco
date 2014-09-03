@@ -100,7 +100,7 @@ define(["dojo/_base/declare",
             // variables provided. We also need to subscribe to topics that indicate that the location has 
             // changed. Each view renderer that registers a link will need to set a "linkClickTopic" and this
             // should be matched by the "linkClickTopic" of this instance)
-            this.alfSubscribe(this.linkClickTopic, lang.hitch(this, "onItemLinkClick"));
+            this.alfSubscribe(this.linkClickTopic, lang.hitch(this, this.onItemLinkClick));
             if (this._readyToLoad) this.loadData();
          }
       },
@@ -118,7 +118,7 @@ define(["dojo/_base/declare",
       _payloadContainsUpdateableVar: function alfresco_lists_AlfHashList___payloadContainsUpdateableVar(payload) {
          
          // No hashVarsForUpdate - return true
-         if(this.hashVarsForUpdate == null || this.hashVarsForUpdate.length == 0)
+         if(this.hashVarsForUpdate == null || this.hashVarsForUpdate.length === 0)
          {
             return true;
          }

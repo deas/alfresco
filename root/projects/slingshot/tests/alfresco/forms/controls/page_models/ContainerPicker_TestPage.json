@@ -16,7 +16,7 @@
    ],
    "widgets":[
       {
-         "name": "alfresco/forms/controls/DocumentPicker",
+         "name": "alfresco/forms/controls/ContainerPicker",
          "config": {
             "id": "DOCUMENT_PICKER",
             "label": "Items"

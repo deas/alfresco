@@ -95,7 +95,7 @@ define(["dojo/_base/declare",
                                        config: {
                                           propertyToRender: "node.properties.cm:name",
                                           renderAsLink: true,
-                                          publishTopic: "ALF_ADD_PICKER"
+                                          publishTopic: "ALF_DOCLIST_NAV"
                                        }
                                     }
                                  ]

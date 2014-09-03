@@ -12,11 +12,11 @@
          }
       },
       "alfresco/dialogs/AlfDialogService",
-      "alfresco/services/DocumentService"
+      "alfresco/testing/mockservices/DocumentPickerTestService"
    ],
    "widgets":[
       {
-         "name": "alfresco/forms/controls/DocumentPicker",
+         "name": "alfresco/forms/controls/PropertyPicker",
          "config": {
             "id": "DOCUMENT_PICKER",
             "label": "Items"

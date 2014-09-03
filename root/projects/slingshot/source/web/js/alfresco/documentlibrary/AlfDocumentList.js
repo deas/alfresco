@@ -196,7 +196,7 @@ define(["dojo/_base/declare",
             {
                this.currentFilter = {
                   filter: payload.value
-               }
+               };
             }
          }
          else
@@ -230,7 +230,7 @@ define(["dojo/_base/declare",
             {
                this.currentFilter = {
                   tag: payload.value
-               }
+               };
             }
          }
          else
@@ -262,7 +262,7 @@ define(["dojo/_base/declare",
        */
       onItemLinkClick: function alfresco_documentlibrary_AlfDocumentList__onItemLinkClick(payload) {
          var node = lang.getObject("item.node", false, payload) || payload.node;
-         if (node.isContainer == true || node.isLink == true)
+         if (node.isContainer === true || node.isLink === true)
          {
             this.onFolderClick(payload);
          }
@@ -322,13 +322,13 @@ define(["dojo/_base/declare",
       updateLoadDataPayload: function alfresco_lists_AlfSortablePaginatedList__updateLoadDataPayload(payload) {
          this.inherited(arguments);
 
-         payload.type = this.showFolders ? "all" : "documents",
+         payload.type = this.showFolders ? "all" : "documents";
          payload.site = this.siteId;
          payload.container = this.containerId;
          payload.filter = this.currentFilter;
          payload.libraryRoot = this.rootNode;
 
-         if ((this.siteId == null || this.siteId == "") && this.nodeRef != null)
+         if ((this.siteId == null || this.siteId === "") && this.nodeRef != null)
          {
             // Repository mode (don't resolve Site-based folders)
             payload.nodeRef = this.nodeRef.toString();
