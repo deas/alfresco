@@ -507,12 +507,13 @@ public abstract class CollectionUtils
     }
 
     /**
-     * Creates a new sorted map, based on the values from the given map.
+     * Creates a new sorted map, based on the values from the given map and Comparator.
      * 
      * @param map the map which needs to be sorted
+     * @param valueComparator the Comparator
      * @return a new sorted map
      */
-    public static <K, V extends Comparable<V>> Map<K, V> sortMapByValue(Map<K, V> map)
+    public static <K, V> Map<K, V> sortMapByValue(Map<K, V> map, Comparator<Entry<K, V>> valueComparator)
     {
         if (map == null)
         {
@@ -520,15 +521,6 @@ public abstract class CollectionUtils
         }
 
         List<Entry<K, V>> entriesList = new LinkedList<Entry<K, V>>(map.entrySet());
-
-        // Map's value Comparator
-        Comparator<Entry<K, V>> valueComparator = new Comparator<Entry<K, V>>()
-        {
-            public int compare(Entry<K, V> entry1, Entry<K, V> entry2)
-            {
-                return (entry1.getValue()).compareTo(entry2.getValue());
-            }
-        };
 
         // Sort based on the map's values
         Collections.sort(entriesList, valueComparator);
