@@ -487,7 +487,7 @@
       onNewVersionUploadCompleteCustom: function DocumentActions_onNewVersionUploadCompleteCustom(complete)
       {
         this.recordData.jsNode.setNodeRef(complete.successful[0].nodeRef);
-        var mydocumentDetailsUrl = this.getActionUrls(this.recordData).documentDetailsUrl;
+        var mydocumentDetailsUrl = this.getActionUrls(this.recordData).documentDetailsUrl + "#newVersionUpload";
         
         Alfresco.Share.postActivity(this.options.siteId, "org.alfresco.documentlibrary.file-updated", complete.successful[0].fileName, "document-details?nodeRef="+complete.successful[0].nodeRef, 
         {
