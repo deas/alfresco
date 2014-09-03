@@ -4562,7 +4562,9 @@
          }
 
          // Build the URI stem
-         var uriPart = siteMode ? "site/{site}/{container}" : "node/alfresco/company/home",
+         var SHARED_FILES = "alfresco://shared/folder";
+         var isSharedFiles = SHARED_FILES == this.options.rootNode;
+         var uriPart = siteMode ? "site/{site}/{container}" : isSharedFiles ? ("node/" + SHARED_FILES.replace(/:\/\//g, "/")) : "node/alfresco/company/home",
             params = YAHOO.lang.substitute("{type}/" + uriPart + (obj.filter.filterId === "path" ? "{path}" : ""),
             {
                type: encodeURIComponent(obj.type),
