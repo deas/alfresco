@@ -261,7 +261,7 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       onItemLinkClick: function alfresco_documentlibrary_AlfDocumentList__onItemLinkClick(payload) {
-         var node = lang.getObject("item.node", false, payload);
+         var node = lang.getObject("item.node", false, payload) || payload.node;
          if (node.isContainer == true || node.isLink == true)
          {
             this.onFolderClick(payload);
