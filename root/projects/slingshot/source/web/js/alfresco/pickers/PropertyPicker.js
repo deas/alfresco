@@ -29,19 +29,17 @@
  */
 define(["dojo/_base/declare",
         "alfresco/documentlibrary/AlfDocumentList",
-        "alfresco/core/CoreXhr", 
-        "service/constants/Default",
         "dojo/_base/lang"], 
-        function(declare, AlfDocumentList, CoreXhr, AlfConstants, lang) {
+        function(declare, AlfDocumentList, lang) {
    
-   return declare([AlfDocumentList, CoreXhr], {
+   return declare([AlfDocumentList], {
 
       /**
        * An array of the i18n files to use with this widget.
        * 
        * @instance
        * @type {object[]}
-       * @default [{i18nFile: "./i18n/AlfDocumentList.properties"}]
+       * @default [{i18nFile: "./i18n/PropertyPicker.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/PropertyPicker.properties"}],
 
@@ -65,24 +63,26 @@ define(["dojo/_base/declare",
       waitForPageWidgets: false,
 
       /**
-       * Override the default implementation to call [loadData]{@link module:alfresco/documentlibrary/AlfDocumentList#loadData}
-       * with the currently selected folder node.
+       * This attribute has been added to support the scenario where properties can be selected from either a global
+       * list or from a sub-picker that narrows them down to either aspect or type. It is required because a sub-picker
+       * needs to publish to the parent but the primary picker doesn't. This is used by the [PropertyPicker]{@link module:alfresco/forms/controls/PropertyPicker}
+       * form control when defining the picker configuration.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      publishPickedItemsToParent: false,
+
+      /**
+       * Overrides inherited function to do a no-op. The pick action should be handled by a 
+       * [PublishAction widget]{@link module:alfresco/renderers/PublishAction}.
        *
        * @instance
        * @param {object} payload
        */
       onFolderClick: function alfresco_pickers_PropertyPicker__onFolderClick(payload) {
-
-         var targetNode = lang.getObject("item.nodeRef", false, payload);
-         if (targetNode != null)
-         {
-            this.nodeRef = targetNode;
-            this.loadData();
-         }
-         else
-         {
-            this.alfLog("warn", "A 'url' attribute was expected to be provided for an item click", payload, this);
-         }
+         // No action.
       },
 
       /**
@@ -101,73 +101,34 @@ define(["dojo/_base/declare",
        *
        * @instance
        */
-      setDisplayMessages: function alfresco_documentlibrary_AlfDocumentList__setDisplayMessages() {
+      setDisplayMessages: function alfresco_pickers_PropertyPicker__setDisplayMessages() {
          this.noViewSelectedMessage = this.message("propPicker.no.view.message");
          this.noDataMessage = this.message("propPicker.no.data.message");
          this.fetchingDataMessage = this.message("propPicker.loading.data.message");
          this.renderingViewMessage = this.message("propPicker.rendering.data.message");
          this.fetchingMoreDataMessage = this.message("propPicker.loading.data.message");
+         this.dataFailureMessage = this.message("propPicker.data.failure.message");
       },
 
       /**
-       * The URL to use to request data from
-       *
-       * @instance
-       * @type {string}
-       * @default null
-       */
-      url: null,
-
-      /**
-       * Overrides the inherited implementation to request data.
+       * Overrides the [inherited function]{@link module:alfresco/lists/AlfList#postCreate} to update the publishToParent
+       * attribute of the [PublishAction widget]{@link module:alfresco/renderers/PublishAction} defined in the 
+       * [widgets]{@link module:alfresco/pickers/PropertyPicker#widgets} attribute to use the configured
+       * [publishPickedItemsToParent]{@link module:alfresco/pickers/PropertyPicker#publishPickedItemsToParent} value.
        *
        * @instance
        */
-      loadData: function alfresco_pickers_PropertyPicker__loadData() {
-         this.showLoadingMessage();
-         if (this.url != null)
+      postCreate: function alfresco_lists_AlfList__postCreate() {
+         if (this.widgets)
          {
-            var alfTopic = "ALF_RETRIEVE_DOCUMENTS_REQUEST";
-            var url = AlfConstants.PROXY_URI + this.url;
-            var config = {
-               alfTopic: alfTopic,
-               url: url,
-               method: "GET",
-               callbackScope: this
-            };
-            this.serviceXhr(config);
-         }
-         else
-         {
-            this.alfLog("warn", "No 'url' attribute provided to request data", this);
-         }
-      },
-
-      /**
-       * TODO: This should really be the abstract...
-       * 
-       * @instance
-       * @param {object} response The response object
-       * @param {object} originalRequestConfig The configuration that was passed to the the [serviceXhr]{@link module:alfresco/core/CoreXhr#serviceXhr} function
-       */
-      onDataLoadSuccess: function alfresco_pickers_PropertyPicker__onDataLoadSuccess(payload) {
-         this.alfLog("log", "Data Loaded", payload, this);
-         
-         this._currentData = {
-            items: payload.response
-         };
-         
-         // Re-render the current view with the new data...
-         var view = this.viewMap[this._currentlySelectedView];
-         if (view != null)
-         {
-            this.showRenderingMessage();
-            view.setData(this._currentData);
-            view.renderView(this.useInfiniteScroll);
-            this.showView(view);
-            
-            // Force a resize of the sidebar container to take the new height of the view into account...
-            this.alfPublish("ALF_RESIZE_SIDEBAR", {});
+            var widgets = lang.clone(this.widgets);
+            // TODO: This really isn't ideal coding and somewhat breaks the ideals that Aikau strives for, however it will
+            // work for now and is something we should iterate over in the future to improve.
+            if(this.publishPickedItemsToParent === true)
+            {
+               lang.setObject("0.config.widgets.0.config.widgets.1.config.widgets.0.config.publishToParent", this.publishPickedItemsToParent, widgets);
+            }
+            this.processWidgets(widgets);
          }
       },
 
@@ -218,8 +179,9 @@ define(["dojo/_base/declare",
                                     {
                                        name: "alfresco/renderers/PublishAction",
                                        config: {
+                                          publishPayloadType: "CURRENT_ITEM",
                                           publishGlobal: false,
-                                          publishToParent: true
+                                          publishToParent: false
                                        }
                                     }
                                  ]

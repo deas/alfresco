@@ -73,7 +73,8 @@ define(["alfresco/forms/controls/Picker",
                                  name: "alfresco/renderers/PublishAction",
                                  config: {
                                     iconClass: "delete-16",
-                                    publishTopic: "ALF_ITEM_REMOVED"
+                                    publishTopic: "ALF_ITEM_REMOVED",
+                                    publishPayloadType: "CURRENT_ITEM"
                                  }
                               }
                            ]
@@ -137,7 +138,8 @@ define(["alfresco/forms/controls/Picker",
                                           name: "alfresco/renderers/PublishAction",
                                           config: {
                                              iconClass: "delete-16",
-                                             publishTopic: "ALF_ITEM_REMOVED"
+                                             publishTopic: "ALF_ITEM_REMOVED",
+                                             publishPayloadType: "CURRENT_ITEM"
                                           }
                                        }
                                     ]
@@ -165,8 +167,12 @@ define(["alfresco/forms/controls/Picker",
                               picker: {
                                  name: "alfresco/pickers/PropertyPicker",
                                  config: {
-                                    currentPickerDepth: 1,
-                                    url: "api/properties"
+                                    itemsProperty: null,
+                                    loadDataPublishTopic: "ALF_CRUD_GET_ALL",
+                                    loadDataPublishPayload: {
+                                       url: "api/properties"
+                                    },
+                                    publishPickedItemsToParent: false
                                  }
                               }
                            }
@@ -183,7 +189,11 @@ define(["alfresco/forms/controls/Picker",
                                  name: "alfresco/pickers/PropertyPicker",
                                  config: {
                                     generatePubSubScope: true,
-                                    url: "api/classes?cf=aspect",
+                                    itemsProperty: null,
+                                    loadDataPublishTopic: "ALF_CRUD_GET_ALL",
+                                    loadDataPublishPayload: {
+                                       url: "api/classes?cf=aspect"
+                                    },
                                     widgets: [
                                        {
                                           name: "alfresco/documentlibrary/views/AlfDocumentListView",
@@ -209,7 +219,12 @@ define(["alfresco/forms/controls/Picker",
                                                                               name: "alfresco/pickers/PropertyPicker",
                                                                               config: {
                                                                                  generatePubSubScope: true,
-                                                                                 url: "api/classes/{name}/properties"
+                                                                                 itemsProperty: null,
+                                                                                 loadDataPublishTopic: "ALF_CRUD_GET_ALL",
+                                                                                 loadDataPublishPayload: {
+                                                                                    url: "api/classes/{name}/properties"
+                                                                                 },
+                                                                                 publishPickedItemsToParent: true
                                                                               }
                                                                            }
                                                                         },
@@ -242,7 +257,11 @@ define(["alfresco/forms/controls/Picker",
                                  name: "alfresco/pickers/PropertyPicker",
                                  config: {
                                     generatePubSubScope: true,
-                                    url: "api/classes?cf=type",
+                                    itemsProperty: null,
+                                    loadDataPublishTopic: "ALF_CRUD_GET_ALL",
+                                    loadDataPublishPayload: {
+                                       url: "api/classes?cf=type"
+                                    },
                                     widgets: [
                                        {
                                           name: "alfresco/documentlibrary/views/AlfDocumentListView",
@@ -268,7 +287,12 @@ define(["alfresco/forms/controls/Picker",
                                                                               name: "alfresco/pickers/PropertyPicker",
                                                                               config: {
                                                                                  generatePubSubScope: true,
-                                                                                 url: "api/classes/{name}/properties"
+                                                                                 itemsProperty: null,
+                                                                                 loadDataPublishTopic: "ALF_CRUD_GET_ALL",
+                                                                                 loadDataPublishPayload: {
+                                                                                    url: "api/classes/{name}/properties"
+                                                                                 },
+                                                                                 publishPickedItemsToParent: true
                                                                               }
                                                                            }
                                                                         },
