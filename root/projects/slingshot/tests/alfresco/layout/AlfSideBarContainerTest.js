@@ -28,11 +28,12 @@ define(["intern!object",
         function (registerSuite, expect, assert, require, TestCommon) {
 
    registerSuite({
-      name: 'Sidebar Container Test',
-      'Basic Test': function () {
+      name: 'AlfSideBarContainer Test',
+      'AlfSideBarContainer Test': function () {
 
          var browser = this.remote;
-         var testname = "DateTest";
+         var testname = "AlfSideBarContainer Test";
+         var startSize;
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/layout/page_models/AlfSideBarContainer_TestPage.json", testname)
 
          .end()
@@ -111,9 +112,30 @@ define(["intern!object",
             })
             .end()
 
-         // TODO: Currently not testing actual sidebar dragging to resize (although this is a YUI widget so
-         //       in theory it shouldn't need testing). This is largely because Leadfoot doesn't have an obvious
-         //       drag-and-drop command set yet.
+         // Perform a resize
+         .findById("yui-gen0")
+         .getSize()
+         .then(function(size) {
+            startSize = size;
+         })
+         .end()
+
+         .findById("yui-gen1")
+         .then(function(element) {
+            browser.moveMouseTo(element);
+         })
+         .pressMouseButton()
+         .moveMouseTo(null, 200, 0)
+         .releaseMouseButton()
+         .end()
+
+         .findById("yui-gen0")
+         .getSize()
+         .then(function(endSize) {
+            expect(endSize.width).to.be.above(startSize.width, "The sidebar did not resize on the x axis");
+            expect(endSize.height).to.equal(startSize.height, "The sidebar should not have resized on the y axis");
+         })
+         .end()
 
          // Post the coverage results...
          .then(function() {

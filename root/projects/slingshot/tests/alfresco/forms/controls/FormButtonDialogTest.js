@@ -34,6 +34,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "FormButtonDialogTest";
+         var startPos;
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/controls/page_models/FormButtonDialog_TestPage.json", testname)
 
          .end()
@@ -131,6 +132,31 @@ define(["intern!object",
                expect(result4).to.equal(true, "The Checkbox should now be selected");
             })
             .end()
+
+         // Move the dialog
+         .findByCssSelector("span.dijitDialogTitle")
+         .getPosition()
+         .then(function(pos) {
+            startPos = pos;
+         })
+         .end()
+
+         .findByCssSelector("span.dijitDialogTitle")
+         .then(function(element) {
+            browser.moveMouseTo(element);
+         })
+         .pressMouseButton()
+         .moveMouseTo(null, 200, 100)
+         .releaseMouseButton()
+         .end()
+
+         .findByCssSelector("span.dijitDialogTitle")
+         .getPosition()
+         .then(function(endPos) {
+            expect(endPos.x - 200).to.equal(startPos.x, "The dialog did not move the expected distance on the x axis");
+            expect(endPos.y - 100).to.equal(startPos.y, "The dialog did not move the expected distance on the y axis");
+         })
+         .end()
 
          // Click the cancel button
          .findByCssSelector("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span")

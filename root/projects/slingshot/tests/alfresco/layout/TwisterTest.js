@@ -24,15 +24,16 @@ define(["intern!object",
         "intern/chai!expect",
         "intern/chai!assert",
         "require",
-        "alfresco/TestCommon"], 
-        function (registerSuite, expect, assert, require, TestCommon) {
+        "alfresco/TestCommon",
+        "intern/dojo/node!leadfoot/keys"], 
+        function (registerSuite, expect, assert, require, TestCommon, keys) {
 
    registerSuite({
-      name: 'Twister Test',
-      'Twister tests': function () {
+      name: 'Twister Tests',
+      'Twister mouse tests': function () {
 
          var browser = this.remote;
-         var testname = "Twister tests";
+         var testname = "Twister mouse tests";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/layout/page_models/Twister_TestPage.json", testname)
 
          .end()
@@ -120,6 +121,130 @@ define(["intern!object",
          .then(function (rows) {
             TestCommon.log(testname,null,"Check facets are shown after clicking the title again");
             expect(rows).to.have.length.above(0, "There should be some facets shown");
+         })
+         .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
+      },
+
+      'Twister keyboard tests': function () {
+
+         var browser = this.remote;
+         var testname = "Twister keyboard tests";
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/layout/page_models/Twister_TestPage.json", testname)
+
+         .end()
+
+         // Click button 1
+         .findById("BUTTON_1")
+         .click()
+         .end()
+
+         // Focus the title of twister 1
+         .pressKeys(keys.TAB)
+         
+         // 'Click' the title with the return key
+         .pressKeys(keys.RETURN)
+
+         // Title should still be visible
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .getVisibleText()
+         .then(function (text) {
+            TestCommon.log(testname,null,"Check the first twister title is visible after keyboard [RETURN]");
+            expect(text).to.equal("Twister with heading level", "The first twister title is not visible after keyboard [RETURN]");
+         })
+         .end()
+
+         // Facets should be hidden
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > ul")
+         .getVisibleText()
+         .then(function (text) {
+            TestCommon.log(testname,null,"Check the facets have hidden after keyboard [RETURN]");
+            expect(text).to.equal("", "The facets should be hidden after keyboard [RETURN]");
+         })
+         .end()
+
+         // 'Click' the title with the return key again
+         .pressKeys(keys.RETURN)
+
+         // Title should still be visible
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .getVisibleText()
+         .then(function (text) {
+            TestCommon.log(testname,null,"Check the first twister title is visible after re-pressing keyboard [RETURN]");
+            expect(text).to.equal("Twister with heading level", "The first twister title is not visible after re-pressing keyboard [RETURN]");
+         })
+         .end()
+
+         // Facets should not be hidden
+         .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
+         .then(function (rows) {
+            TestCommon.log(testname,null,"Check facets are shown after re-pressing keyboard [RETURN]");
+            expect(rows).to.have.length.above(0, "There should be some facets shown after re-pressing keyboard [RETURN]");
+         })
+         .end()
+
+         // 'Click' the title with the space key
+         .pressKeys(keys.SPACE)
+
+         // Title should still be visible
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .getVisibleText()
+         .then(function (text) {
+            TestCommon.log(testname,null,"Check the first twister title is visible after keyboard [SPACE]");
+            expect(text).to.equal("Twister with heading level", "The first twister title is not visible after keyboard [SPACE]");
+         })
+         .end()
+
+         // Facets should be hidden
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > ul")
+         .getVisibleText()
+         .then(function (text) {
+            TestCommon.log(testname,null,"Check the facets have hidden after keyboard [SPACE]");
+            expect(text).to.equal("", "The facets should be hidden after keyboard [SPACE]");
+         })
+         .end()
+
+         // 'Click' the title with the space key again
+         .pressKeys(keys.SPACE)
+
+         // Title should still be visible
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .getVisibleText()
+         .then(function (text) {
+            TestCommon.log(testname,null,"Check the first twister title is visible after re-pressing keyboard [SPACE]");
+            expect(text).to.equal("Twister with heading level", "The first twister title is not visible after re-pressing keyboard [SPACE]");
+         })
+         .end()
+
+         // Facets should not be hidden
+         .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
+         .then(function (rows) {
+            TestCommon.log(testname,null,"Check facets are shown after re-pressing keyboard [SPACE]");
+            expect(rows).to.have.length.above(0, "There should be some facets shown after re-pressing keyboard [SPACE]");
+         })
+         .end()
+
+         // 'Click' the title with the 'k' key
+         .pressKeys('k')
+
+         // Title should still be visible
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .getVisibleText()
+         .then(function (text) {
+            TestCommon.log(testname,null,"Check the first twister title is visible after re-pressing keyboard [k]");
+            expect(text).to.equal("Twister with heading level", "The first twister title is not visible after re-pressing keyboard [k]");
+         })
+         .end()
+
+         // Facets should not be hidden
+         .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
+         .then(function (rows) {
+            TestCommon.log(testname,null,"Check facets are still shown after pressing keyboard [k]");
+            expect(rows).to.have.length.above(0, "There should be some facets shown after pressing keyboard [k]");
          })
          .end()
 

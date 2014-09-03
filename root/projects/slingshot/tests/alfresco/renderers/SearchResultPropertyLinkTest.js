@@ -87,7 +87,7 @@ define(["intern!object",
 
          .pressKeys(keys.TAB)
          .pressKeys(keys.RETURN)
-         .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "repository?path=/folder1/folder2/folder3"))
+         .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "repository?path=/folder2/folder3"))
             .then(function(elements) {
                TestCommon.log(testname,92,"Check that url is correct for repo document");
                assert(elements.length == 1, "Test #2f - repo document search result URL was incorrect");
@@ -127,7 +127,7 @@ define(["intern!object",
          .findByCssSelector("#REPO_FOLDER_LINK span.inner a")
             .click()
             .end()
-         .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "repository?path=/folder1/folder2/folder3"))
+         .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "repository?path=/folder2/folder3"))
             .then(function(elements) {
                TestCommon.log(testname,92,"Check that url is correct for repo document");
                assert(elements.length == 1, "Test #3d - repo document search result URL was incorrect");
