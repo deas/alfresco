@@ -190,7 +190,7 @@ define(["dojo/_base/declare",
 
             var itemsToRender = (this.currentIndex)? this.currentData.items.slice(this.currentIndex): this.currentData.items;
             
-            array.forEach(itemsToRender, lang.hitch(this, "renderNextItem"));
+            array.forEach(itemsToRender, lang.hitch(this, this.renderNextItem));
             this.allItemsRendered();
          }
          else
