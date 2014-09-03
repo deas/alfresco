@@ -118,7 +118,7 @@ var searchForm = {
    }
 };
 
-// TODO: The following code describes two different visibilityConfig behaviours. Initially they were bundled together 
+// TODO: The following code describes two different visibilityConfig behaviours. Initially they were bundled together
 // but it was found that this did not work as each rule fires independently. One rule would apply a condition and then
 // the other would overrule it. A workaround was found within this example, but a more solid solution might be to
 // create a multiple topic listener service that would gather payloads from configured topic publishes, concatenate
@@ -207,10 +207,10 @@ rawFacets.forEach(function(facet, index, rawFacets) {
       // If the facet passes all scoping criteria then it should be included...
       if (includeFacet === true)
       {
-         var blockIncludeFacetRequest = (facet.customProperties != null && 
+         var blockIncludeFacetRequest = (facet.customProperties != null &&
                                          facet.customProperties.blockIncludeFacetRequest != null &&
                                          facet.customProperties.blockIncludeFacetRequest.value === "true");
-         
+
          var facet = {
             id: "FCTSRCH_" + facet.filterID,
             name: facet.displayControl,
@@ -551,7 +551,7 @@ var main = {
 };
 
 // Add a checkable menu for switching between Repository, All Sites and current site as necessary...
-// If we're in a site, make sure add in the site as an option in the menu 
+// If we're in a site, make sure add in the site as an option in the menu
 // Always add in "All Sites" and "Repository" options...
 // Cloud will need to remove the "Repository" option via an extension...
 // Need links rather than drop-down?
@@ -659,7 +659,8 @@ services.push("alfresco/services/NavigationService",
               "alfresco/services/QuickShareService",
               "alfresco/services/RatingsService",
               "alfresco/services/CrudService",
-              "alfresco/services/NotificationService");
+              "alfresco/services/NotificationService",
+              "alfresco/services/ContentService");
 
 // Add in the search form and search doc lib...
 widgets.unshift(accessMenu);
