@@ -211,11 +211,10 @@ define(["intern!object",
          .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_APPLY_FACET_FILTER"))
-         .then(function (){
-            TestCommon.log(testname,214,"Clicking a facet should publish");
-         }, function() {
-            fail("The facet did not publish on 'ALF_APPLY_FACET_FILTER'");
-         })
+         .then(
+            function(){TestCommon.log(testname,214,"Clicking a facet should publish");},
+            function(){fail("The facet did not publish on 'ALF_APPLY_FACET_FILTER'");}
+         )
          .end()
 
          // Click the first facet menu item again - it should de-select
@@ -232,11 +231,10 @@ define(["intern!object",
          .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_REMOVE_FACET_FILTER"))
-         .then(function() {
-            TestCommon.log(testname,234,"Clicking a facet to deselect should publish");
-         }, function() {
-            fail("The facet deselection did not publish on 'ALF_REMOVE_FACET_FILTER'");
-         })
+         .then(
+            function(){TestCommon.log(testname,234,"Clicking a facet to deselect should publish");},
+            function(){fail("The facet deselection did not publish on 'ALF_REMOVE_FACET_FILTER'");}
+         )
          .end()
 
          // Post the coverage results...
@@ -322,11 +320,10 @@ define(["intern!object",
          .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_APPLY_FACET_FILTER"))
-         .then(function() {
-            TestCommon.log(testname,323,"Clicking a facet with the keyboard should publish");
-         }, function() {
-            fail("The facet did not publish on 'ALF_APPLY_FACET_FILTER' when clicked with the keyboard");
-         })
+         .then(
+            function(){TestCommon.log(testname,323,"Clicking a facet with the keyboard should publish");},
+            function(){fail("The facet did not publish on 'ALF_APPLY_FACET_FILTER' when clicked with the keyboard");}
+         )
          .end()
 
          // 'Click' the first facet menu item again - it should de-select
@@ -342,11 +339,10 @@ define(["intern!object",
          .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_REMOVE_FACET_FILTER"))
-         .then(function (){
-            TestCommon.log(testname,342,"Clicking a facet using the keyboard to deselect should publish");
-         },function() {
-            fail("The facet deselection using the keyboard did not publish on 'ALF_REMOVE_FACET_FILTER'");
-         })
+         .then(
+            function(){TestCommon.log(testname,342,"Clicking a facet using the keyboard to deselect should publish");},
+            function(){fail("The facet deselection using the keyboard did not publish on 'ALF_REMOVE_FACET_FILTER'");}
+         )
          .end()
 
          // Post the coverage results...
