@@ -58,7 +58,6 @@ define(["intern!object",
 
          // Click the first date
          .findByCssSelector("#CUSTOM_PROPS .value")
-         .moveTo()
          .click()
          .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_NAVIGATE_TO_PAGE"))
          .then(function(result) {

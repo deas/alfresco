@@ -76,7 +76,6 @@ define(["intern!object",
             .pressKeys(specialKeys["Tab"])
             // .pressKeys(specialKeys["Tab"])
             // .findByCssSelector("#TEXTAREA textarea")
-            //    .moveTo()
             //    .click()
             //    // .type("hello")
             //    // .sleep(1000)

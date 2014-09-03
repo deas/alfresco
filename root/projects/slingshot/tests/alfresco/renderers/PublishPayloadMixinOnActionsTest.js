@@ -47,7 +47,6 @@ define(["intern!object",
 
          // Open the first action menu by mouse click
          .findByCssSelector("div.dijitMenuItemLabel:nth-of-type(1)")
-         .moveTo()
          .sleep(500)
          .click()
          .sleep(500)
@@ -69,7 +68,6 @@ define(["intern!object",
 
          // Click the first button in the action menu
          .findByCssSelector(".dijitPopup .dijitMenuItem:nth-of-type(1) .dijitMenuItemLabel")
-         .moveTo()
          .sleep(500)
          .click()
          .sleep(500)
@@ -92,14 +90,12 @@ define(["intern!object",
 
          // Open the first action menu again
          .findByCssSelector("div.dijitMenuItemLabel:nth-of-type(1)")
-         .moveTo()
          .sleep(500)
          .click()
          .end()
 
          // Click the second button in the action menu
          .findByCssSelector(".dijitPopup .dijitMenuItem:nth-of-type(2) .dijitMenuItemLabel")
-         .moveTo()
          .sleep(500)
          .click()
          .sleep(500)

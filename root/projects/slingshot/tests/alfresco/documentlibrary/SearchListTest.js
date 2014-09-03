@@ -39,12 +39,10 @@ define(["intern!object",
          
          // Include a facet with no data...
          .findByCssSelector("#INCLUDE_FACET_0")
-            .moveTo()
             .click()
             .end()
          // Include an initial facet (for code coverage)...
          .findByCssSelector("#INCLUDE_FACET_1")
-            .moveTo()
             .click()
             .end()
 
@@ -61,7 +59,6 @@ define(["intern!object",
 
          // Click the button to set a search term (but don't actually provide one)
          .findByCssSelector("#SET_SEARCH_TERM_1")
-            .moveTo()
             .click()
             .end()
 
@@ -74,7 +71,6 @@ define(["intern!object",
 
          // Click the button to set the search term...
          .findByCssSelector("#SET_SEARCH_TERM_2")
-            .moveTo()
             .click()
             .end()
 
@@ -95,7 +91,6 @@ define(["intern!object",
 
          // Click the button to set the SAME search term (a new request shouldn't be issued)...
          .findByCssSelector("#SET_SEARCH_TERM_2")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.topicSelector("ALF_SEARCH_REQUEST", "publish", "any"))
@@ -107,7 +102,6 @@ define(["intern!object",
 
          // Click the button to set a DIFFERENT search term (a new request SHOULD be issued)...
          .findByCssSelector("#SET_SEARCH_TERM_3")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.topicSelector("ALF_SEARCH_REQUEST", "publish", "any"))
@@ -126,11 +120,9 @@ define(["intern!object",
          // Send some response data, and then issue the search again, there should now be 3 search 
          // requests and the last one should be for the last search term...
          .findByCssSelector("#PUBLISH_SEARCH_RESULTS")
-            .moveTo()
             .click()
             .end()
          .findByCssSelector("#SET_SEARCH_TERM_3")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.topicSelector("ALF_SEARCH_REQUEST", "publish", "any"))
@@ -149,7 +141,6 @@ define(["intern!object",
          // Click the button to set a variety of data (including facet filters)....
          // Set the same term again to check that the filters are removed...
          .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "filters", "filter1,filter2,filter3"))
@@ -160,11 +151,9 @@ define(["intern!object",
             .end()
          // Ensure the next search term will be set by publishing some data (to prevent concurrent request blocking)...
          .findByCssSelector("#PUBLISH_SEARCH_RESULTS")
-            .moveTo()
             .click()
             .end()
          .findByCssSelector("#SET_SEARCH_TERM_3")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "term", "testTerm2"))
@@ -189,7 +178,6 @@ define(["intern!object",
             })
             .end()
          .findByCssSelector("#SET_SCOPE_0")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.topicSelector("ALF_SEARCH_REQUEST", "publish", "any"))
@@ -199,7 +187,6 @@ define(["intern!object",
             })
             .end()
          .findByCssSelector("#SET_SCOPE_1")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.topicSelector("ALF_SEARCH_REQUEST", "publish", "any"))
@@ -210,7 +197,6 @@ define(["intern!object",
             .end()
 
          .findByCssSelector("#SET_SCOPE_2")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.topicSelector("ALF_SEARCH_REQUEST", "publish", "any"))
@@ -233,7 +219,6 @@ define(["intern!object",
             .end()
 
          .findByCssSelector("#SET_SCOPE_3")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.topicSelector("ALF_SEARCH_REQUEST", "publish", "any"))
@@ -256,7 +241,6 @@ define(["intern!object",
             .end()
 
          .findByCssSelector("#SET_SCOPE_1")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.topicSelector("ALF_SEARCH_REQUEST", "publish", "any"))
@@ -281,7 +265,6 @@ define(["intern!object",
 
          // Check that updating the hash results in a search request being made...
          .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "term", "testTerm2"))
@@ -317,7 +300,6 @@ define(["intern!object",
 
          // Click the button to remove filter2 from the filters list...
          .findByCssSelector("#REMOVE_FACET_FILTER")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "filters", "filter1,filter3"))
@@ -337,12 +319,10 @@ define(["intern!object",
 
          // Click the button to include an additional facet in search requests...
          .findByCssSelector("#INCLUDE_FACET_2")
-            .moveTo()
             .click()
             .end()
 
          .findByCssSelector("#APPLY_FACET_FILTER_0")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.topicSelector("ALF_SEARCH_REQUEST", "publish", "any"))
@@ -354,7 +334,6 @@ define(["intern!object",
 
          // Click the button to add filter4 to the filters list...
          .findByCssSelector("#APPLY_FACET_FILTER")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.topicSelector("ALF_SEARCH_REQUEST", "publish", "any"))
@@ -380,11 +359,9 @@ define(["intern!object",
 
          // Publish data to prevent block on concurrent requests...
          .findByCssSelector("#PUBLISH_SEARCH_RESULTS")
-            .moveTo()
             .click()
             .end()
          .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA_2")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.topicSelector("ALF_SEARCH_REQUEST", "publish", "any"))
@@ -408,7 +385,6 @@ define(["intern!object",
 
          // Click the button to generate a fake search request response...
          .findByCssSelector("#PUBLISH_SEARCH_RESULTS")
-            .moveTo()
             .click()
             .end()
 

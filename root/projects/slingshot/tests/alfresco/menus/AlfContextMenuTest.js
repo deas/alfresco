@@ -38,11 +38,9 @@ define(["intern!object",
 
             // TESTS COMMENTED OUT PENDING ANSWER POSTED HERE: https://github.com/theintern/intern/issues/191
             // .findByCssSelector("#LOGO")
-            //    .moveTo()
             //    .click("2")
             //    .end()
             // .findByCssSelector("#MI3")
-            //    .moveTo()
             //    .click()
             //    .end()
             // .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "key3", "value3"))
@@ -53,11 +51,9 @@ define(["intern!object",
             //    .end()
 
             // .findByCssSelector("#CLASSIC_WINDOW div.content")
-            //    .moveTo()
             //    .click("2")
             //    .end()
             // .findByCssSelector("#MI1")
-            //    .moveTo()
             //    .click()
             //    .end()
             // .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "key1", "value1"))

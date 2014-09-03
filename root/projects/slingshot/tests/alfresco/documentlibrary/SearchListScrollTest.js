@@ -61,7 +61,6 @@ define(["intern!object",
          TestCommon.log(testname, null, "Setting search data");
          })
          .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
-         .moveTo()
          .click()
          .end()
 
@@ -119,7 +118,6 @@ define(["intern!object",
 
          // Facet Results. Check Facet Event
          .findByCssSelector("#APPLY_FACET_FILTER")
-         .moveTo()
          .click()
          .end()
 
@@ -140,7 +138,6 @@ define(["intern!object",
 
          // Retrigger Search results
          .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
-         .moveTo()
          .click()
          .end()
 

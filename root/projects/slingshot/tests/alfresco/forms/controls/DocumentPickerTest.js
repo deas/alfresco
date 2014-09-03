@@ -40,7 +40,6 @@ define(["intern!object",
 
          // Open the dialog to select items...
          .findByCssSelector("#DOCUMENT_PICKER .alfresco-layout-VerticalWidgets > span > span > span")
-         .moveTo()
          .click()
          .end()
 
@@ -54,7 +53,6 @@ define(["intern!object",
 
          // Select "Shared Files" (the results for this are mocked)
          .findByCssSelector(".alfresco-pickers-Picker .sub-pickers > div:first-child .dijitMenuItem:nth-child(2)")
-         .moveTo()
          .click()
          .end()
 
@@ -85,7 +83,6 @@ define(["intern!object",
 
          // Click the ADD publish action image to add the item to the picked items...
          .findByCssSelector(".alfresco-documentlibrary-AlfDocumentList .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr:nth-child(1) .alfresco-renderers-PublishAction img")
-         .moveTo()
          .click()
          .end()
 
@@ -100,7 +97,6 @@ define(["intern!object",
 
          // Close the dialog...
          .findByCssSelector(".alfresco-dialog-AlfDialog .footer .confirmation span.dijitButtonText")
-         .moveTo()
          .click()
          .end()
             
@@ -120,7 +116,6 @@ define(["intern!object",
 
          // Open the dialog again and check the picked items remain...
          .findByCssSelector("#DOCUMENT_PICKER .alfresco-layout-VerticalWidgets > span.alfresco-buttons-AlfButton.confirmationButton  > span > span")
-         .moveTo()
          .click()
          .end()
 
@@ -141,13 +136,11 @@ define(["intern!object",
 
          // Remove the previously selected item...
          .findByCssSelector(".picked-items tr .alfresco-renderers-PublishAction img")
-         .moveTo()
          .click()
          .end()
 
          // Close the dialog...
          .findByCssSelector(".alfresco-dialog-AlfDialog .footer .confirmation span.dijitButtonText")
-         .moveTo()
          .click()
          .end()
             
@@ -161,19 +154,16 @@ define(["intern!object",
 
          // Open the dialog again and add some more...
          .findByCssSelector("#DOCUMENT_PICKER .alfresco-layout-VerticalWidgets > span > span > span")
-         .moveTo()
          .click()
          .end()
 
          // Select "Shared Files" option again...
          .findByCssSelector(".alfresco-pickers-Picker .sub-pickers > div:first-child .dijitMenuItem:nth-child(2)")
-         .moveTo()
          .click()
          .end()
 
          // Click the ADD publish action image TWICE, check that it was only added once...
          .findByCssSelector(".alfresco-documentlibrary-AlfDocumentList .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr:nth-child(2) .alfresco-renderers-PublishAction img")
-         .moveTo()
          .click()
          .click()
          .end()
@@ -188,7 +178,6 @@ define(["intern!object",
 
          // Add another item...
          .findByCssSelector(".alfresco-documentlibrary-AlfDocumentList .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr:nth-child(3) .alfresco-renderers-PublishAction img")
-         .moveTo()
          .click()
          .end()
 
@@ -201,7 +190,6 @@ define(["intern!object",
 
          // Close the dialog...
          .findByCssSelector(".alfresco-dialog-AlfDialog .footer .confirmation span.dijitButtonText")
-         .moveTo()
          .click()
          .end()
             

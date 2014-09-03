@@ -246,11 +246,9 @@ define(["intern!object",
             // Test #16
             // Test drop-down menu using the mouse...
             .findByCssSelector("#DROP_DOWN_MENU_1")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#MENU_ITEM_1")
-               .moveTo()
                .click()
                .end()
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_1"))
@@ -262,19 +260,15 @@ define(["intern!object",
             // Test #17
             // Test cascade menus using the mouse...
             .findByCssSelector("#DROP_DOWN_MENU_3")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#CASCADING_MENU_1")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#CASCADING_MENU_2")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#MENU_ITEM_13")
-               .moveTo()
                .click()
                .end()
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_13"))

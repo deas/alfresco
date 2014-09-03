@@ -202,7 +202,6 @@ define(["intern!object",
             })
             .end()
             .findByCssSelector("#COLUMN1_HEADER > span")
-               .moveTo()
                .click()
                .end()
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col1"))

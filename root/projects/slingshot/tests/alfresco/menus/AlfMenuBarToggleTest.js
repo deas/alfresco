@@ -88,7 +88,6 @@ define(["intern!object",
          .end()
          
          .elementById("BASIC_MENU_BAR_TOGGLE_text")
-         .moveTo()
          .click()
          .end()
 
@@ -108,7 +107,6 @@ define(["intern!object",
          .end()
 
          .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
-         .moveTo()
          .click()
          .end()
 
@@ -135,7 +133,6 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#MENU_BAR_TOGGLE_WITH_ICON > img")
-         .moveTo()
          .click()
          .end()
 
@@ -273,7 +270,6 @@ define(["intern!object",
          .end()
 
          .elementById("TEST_BUTTON_ASC")
-         .moveTo()
          .click()
          .end()
 
@@ -301,7 +297,6 @@ define(["intern!object",
          .end()
 
          .elementById("TEST_BUTTON_DESC")
-         .moveTo()
          .click()
          .end()
 

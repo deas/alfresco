@@ -55,7 +55,6 @@ define(["intern!object",
 
          // Click the dialog button - does the dialog appear?
          .elementById("TEST_DIALOG_BUTTON")
-         .moveTo()
          .sleep(500)
          .click()
          .sleep(500)
@@ -126,7 +125,6 @@ define(["intern!object",
 
          // Click the checkbox
          .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control input")
-         .moveTo()
          .sleep(500)
          .click()
          .sleep(500)
@@ -143,7 +141,6 @@ define(["intern!object",
 
          // Click the cancel button
          .findByCssSelector("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span")
-         .moveTo()
          .sleep(500)
          .click()
          .sleep(500)
@@ -160,7 +157,6 @@ define(["intern!object",
 
          // Submit the main form
          .findByCssSelector("span.alfresco-buttons-AlfButton.confirmationButton > span")
-         .moveTo()
          .sleep(500)
          .click()
          .sleep(500)

@@ -58,7 +58,6 @@ define(["intern!object",
 
          // Open the menu by mouse click
          .findByCssSelector("span.dijitSelectLabel:nth-of-type(1)")
-         .moveTo()
          .sleep(500)
          .click()
          .sleep(500)
@@ -80,7 +79,6 @@ define(["intern!object",
 
          // Select a different item in the menu by mouse click
          .findByCssSelector("tr.dijitMenuItem:nth-of-type(3)")
-         .moveTo()
          .sleep(500)
          .click()
          .sleep(500)

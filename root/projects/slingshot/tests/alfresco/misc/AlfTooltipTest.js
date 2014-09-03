@@ -54,7 +54,6 @@ define(["intern!object",
 
          // Move to test button - does the tool tip appear?
          .findByCssSelector("#TEST_BUTTON > #TEST_BUTTON_label")
-         .moveTo()
          .sleep(1000)
          .hasElementByCss(".dijitTooltip")
          .then(function(result2) {
@@ -74,7 +73,6 @@ define(["intern!object",
 
          // Move to test button two - does the tool tip disappear?
          .elementById("TEST_BUTTON_TWO")
-         .moveTo()
          .sleep(250)
          .hasElementByCss(".dijitTooltip")
          .then(function(result3) {

@@ -58,7 +58,6 @@ define(["intern!object",
             // Currently commented out - this works in manual testing but not in Selenium for some reason
             // .end()
             // .findByCssSelector(".alfresco-logo-large")
-            //    .moveTo()
             //    .click()
             //    .end()
             .pressKeys(specialKeys["Down arrow"])

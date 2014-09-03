@@ -68,7 +68,6 @@ define(["intern!object",
          
          // Click button to publish topic
          .elementById("TEST_BUTTON")
-         .moveTo()
          .click()
          .end()
 

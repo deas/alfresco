@@ -86,7 +86,6 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#LIST_ITEMS tr")
-         .moveTo()
          .end()
 
          .findByCssSelector("#HOVER .value")

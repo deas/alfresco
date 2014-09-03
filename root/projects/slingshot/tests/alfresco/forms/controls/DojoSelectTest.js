@@ -72,7 +72,6 @@ define(["intern!object",
             // Check fixed options...
             // It is necessary to open the drop-down menu first to find the options...
             .findByCssSelector("#FIXED_INVALID_CHANGES_TO .dijitArrowButtonInner")
-               .moveTo()
                .click()
                .end()
 
@@ -100,14 +99,12 @@ define(["intern!object",
                .end()
 
             .findByCssSelector("#FIXED_INVALID_CHANGES_TO .dijitArrowButtonInner")
-               .moveTo()
                .click()
                .end()
 
             // Test #4
             // Check initial pub/sub options generated...
             .findByCssSelector("#HAS_UPDATE_TOPICS .dijitArrowButtonInner")
-               .moveTo()
                .click()
                .end()
 
@@ -127,14 +124,12 @@ define(["intern!object",
                .end()
 
             .findByCssSelector("#HAS_UPDATE_TOPICS .dijitArrowButtonInner")
-               .moveTo()
                .click()
                .end()
 
             // Test #5
             // Check that pub/sub options generated from field changes are correct (should be on 3rd request based on values being set)...
             .findByCssSelector("#HAS_CHANGES_TO .dijitArrowButtonInner")
-               .moveTo()
                .click()
                .end()
 
@@ -153,7 +148,6 @@ define(["intern!object",
                .end()
 
             .findByCssSelector("#HAS_CHANGES_TO .dijitArrowButtonInner")
-               .moveTo()
                .click()
                .end()
 
@@ -161,13 +155,11 @@ define(["intern!object",
             // Check that the update topics are processed...
             // Click the buttons to publish the topics...
             .findByCssSelector("#REQUEST_GLOBAL_UPDATE_label")
-               .moveTo()
                .click()
                .end()
 
             // Open the drop-down and check the update...
             .findByCssSelector("#HAS_UPDATE_TOPICS .dijitArrowButtonInner")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#HAS_UPDATE_TOPICS_CONTROL_dropdown table tr:nth-child(1) td.dijitMenuItemLabel")
@@ -179,11 +171,9 @@ define(["intern!object",
 
             // Clicking the 2nd button should have no effect (as it's the scoped topic published globally)...
             .findByCssSelector("#REQUEST_SCOPED_UPDATE_GLOBALLY_label")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#HAS_UPDATE_TOPICS .dijitArrowButtonInner")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#HAS_UPDATE_TOPICS_CONTROL_dropdown table tr:nth-child(1) td.dijitMenuItemLabel")
@@ -195,11 +185,9 @@ define(["intern!object",
 
             // Clicking the 3rd button should perform an update...
             .findByCssSelector("#REQUEST_SCOPED_UPDATE_label")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#HAS_UPDATE_TOPICS .dijitArrowButtonInner")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#HAS_UPDATE_TOPICS_CONTROL_dropdown table tr:nth-child(1) td.dijitMenuItemLabel")
@@ -212,15 +200,12 @@ define(["intern!object",
             // Test #7
             // Change a field to check an update is made...
             .findByCssSelector("#FIXED_INVALID_CHANGES_TO .dijitArrowButtonInner")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#FIXED_INVALID_CHANGES_TO_CONTROL_dropdown table tr:nth-child(1) td.dijitMenuItemLabel")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#HAS_CHANGES_TO .dijitArrowButtonInner")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#HAS_CHANGES_TO_CONTROL_dropdown table tr:nth-child(1) td.dijitMenuItemLabel")

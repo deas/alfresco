@@ -96,7 +96,6 @@ define(["intern!object",
 
          // 3. Use the mouse to click each in turn
          .findByCssSelector("#SITE_DOC_LINK span.inner a")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "site/site1/document-details?nodeRef=workspace://SpacesStore/some-fake-uuid"))
@@ -106,7 +105,6 @@ define(["intern!object",
             })
             .end()
          .findByCssSelector("#SITE_FOLDER_LINK span.inner a")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "site/site1/documentlibrary?path=/folder1/folder2/folder3"))
@@ -117,7 +115,6 @@ define(["intern!object",
             .end()
 
          .findByCssSelector("#REPO_DOC_LINK span.inner a")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "document-details?nodeRef=workspace://SpacesStore/some-fake-uuid"))
@@ -128,7 +125,6 @@ define(["intern!object",
             .end()
 
          .findByCssSelector("#REPO_FOLDER_LINK span.inner a")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "repository?path=/folder1/folder2/folder3"))

@@ -54,11 +54,9 @@ define(["intern!object",
             // Check clicking on the "Select All" item...
             .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#SELECT_ALL")
-               .moveTo()
                .click()
                .end()
             .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
@@ -84,7 +82,6 @@ define(["intern!object",
             // Clicking on the 'checkbox' should now deselect everything...
             .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img")
-               .moveTo()
                .click()
                .end()
             .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
@@ -106,11 +103,9 @@ define(["intern!object",
             // Check clicking on the "Some" menu item...
             .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#SELECT_SOME_BY_ITEMS")
-               .moveTo()
                .click()
                .end()
             .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
@@ -137,7 +132,6 @@ define(["intern!object",
             // Clicking on the 'checkbox' should move "SOME" to "ALL"...
             .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img")
-               .moveTo()
                .click()
                .end()
             .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
@@ -159,11 +153,9 @@ define(["intern!object",
             // Check clicking on the "None (by Items)" menu item will set the none state...
             .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#SELECT_NONE_BY_ITEMS")
-               .moveTo()
                .click()
                .end()
             .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
@@ -190,11 +182,9 @@ define(["intern!object",
             // Check clicking on the "All (by Items)" menu item will set the all state...
             .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#SELECT_ALL_BY_ITEMS")
-               .moveTo()
                .click()
                .end()
             .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
@@ -221,11 +211,9 @@ define(["intern!object",
             // Check clicking on the "Select None" item...
             .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
-               .moveTo()
                .click()
                .end()
             .findByCssSelector("#SELECT_NONE")
-               .moveTo()
                .click()
                .end()
             .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
@@ -247,7 +235,6 @@ define(["intern!object",
             // Clicking on the 'checkbox' should move "NONE" to "ALL"...
             .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img")
-               .moveTo()
                .click()
                .end()
             .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')

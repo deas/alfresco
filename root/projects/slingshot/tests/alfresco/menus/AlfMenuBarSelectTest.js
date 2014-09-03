@@ -137,13 +137,11 @@ define(["intern!object",
             // Test #6
             // Use the mouse to test label set (using label)...
             .findByCssSelector("#MENU_BAR_SELECT")
-               .moveTo()
                .sleep(500)
                .click()
                .sleep(500)
                .end()
             .findByCssSelector("#SELECT_MENU_ITEM_2")
-               .moveTo()
                .sleep(500)
                .click()
                .sleep(500)
@@ -170,13 +168,11 @@ define(["intern!object",
             // Test #6
             // Use the mouse to test label set (using label)...
             .findByCssSelector("#MENU_BAR_SELECT_VALUE")
-               .moveTo()
                .sleep(500)
                .click()
                .sleep(500)
                .end()
             .findByCssSelector("#SELECT_MENU_ITEM_4")
-               .moveTo()
                .sleep(500)
                .click()
                .sleep(500)
@@ -208,7 +204,6 @@ define(["intern!object",
             // Set the label using an external publication...
             
             .findByCssSelector("#SET_WITH_LABEL_label")
-               .moveTo()
                .sleep(500)
                .click()
                .sleep(500)
@@ -223,7 +218,6 @@ define(["intern!object",
             // Test #9
             // Set the label using an external publication...
             .findByCssSelector("#SET_WITH_VALUE_label")
-               .moveTo()
                .sleep(500)
                .click()
                .sleep(500)

@@ -54,7 +54,6 @@ define(["intern!object",
 
          // Test 2: Check that LOGO1 can be hidden can then displayed by isNot rules
          .findByCssSelector("#HIDE_LOGO_1")
-            .moveTo()
             .click()
             .end()
          .findByCssSelector("#LOGO1")
@@ -64,7 +63,6 @@ define(["intern!object",
             })
             .end()
          .findByCssSelector("#SHOW_LOGO_1")
-            .moveTo()
             .click()
             .end()
          .findByCssSelector("#LOGO1")
@@ -76,7 +74,6 @@ define(["intern!object",
 
          // Test 3: Check that LOGO2 can be displayed and then hidden by is rules
          .findByCssSelector("#SHOW_LOGO_2_A")
-            .moveTo()
             .click()
             .end()
          .findByCssSelector("#LOGO2")
@@ -86,7 +83,6 @@ define(["intern!object",
             })
             .end()
          .findByCssSelector("#HIDE_LOGO_2")
-            .moveTo()
             .click()
             .end()
          .findByCssSelector("#LOGO2")
@@ -96,7 +92,6 @@ define(["intern!object",
             })
             .end()
          .findByCssSelector("#SHOW_LOGO_2_B")
-            .moveTo()
             .click()
             .end()
          .findByCssSelector("#LOGO2")

@@ -45,7 +45,6 @@ define(["intern!object",
             .type("test2")
             .end()
          .findByCssSelector("#HASH_FORM .buttons .alfresco-buttons-AlfButton.confirmationButton > span")
-            .moveTo()
             .click()
             .end()
          // Temporarily commented out as the url() function is not returning the full URL...
@@ -59,7 +58,6 @@ define(["intern!object",
 
          // 2. Check that setting the hash will update the form...
          .findByCssSelector("#SET_HASH")
-            .moveTo()
             .click()
             .end()
 
@@ -100,7 +98,6 @@ define(["intern!object",
             })
             .end()
          .findByCssSelector("#STANDARD_FORM .buttons .alfresco-buttons-AlfButton.confirmationButton > span")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "field3", "test3"))
@@ -136,7 +133,6 @@ define(["intern!object",
             .type("test5")
             .end()
          .findByCssSelector("#ADD_BUTTON_1")
-            .moveTo()
             .click()
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "field5", "test4"))

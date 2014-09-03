@@ -100,7 +100,6 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#DD1_text")
-            .moveTo()
             .sleep(250)
             .click()
             .end()

@@ -97,7 +97,6 @@ define(["intern!object",
 
          // 2. Change the sort order...
          .findByCssSelector("#SORT_ASC_REQUEST")
-         .moveTo()
          .click()
          .end()
 
@@ -117,7 +116,6 @@ define(["intern!object",
 
          // 3. Change sort field
          .findByCssSelector("#SORT_FIELD_SELECTION")
-         .moveTo()
          .click()
          .end()
 
@@ -137,7 +135,6 @@ define(["intern!object",
 
          // 4. Change the sort order again (to descending this time)...
          .findByCssSelector("#SORT_DESC_REQUEST")
-         .moveTo()
          .click()
          .end()
 
@@ -157,7 +154,6 @@ define(["intern!object",
 
          // 5. Hide folders...
          .findByCssSelector("#HIDE_FOLDERS")
-         .moveTo()
          .click()
          .end()
 
@@ -170,7 +166,6 @@ define(["intern!object",
 
          // 6. Show folders...
          .findByCssSelector("#SHOW_FOLDERS")
-         .moveTo()
          .click()
          .end()
 
@@ -183,7 +178,6 @@ define(["intern!object",
 
          // 7. Set page...
          .findByCssSelector("#SET_PAGE")
-         .moveTo()
          .click()
          .end()
 
@@ -195,7 +189,6 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#PUBLISH_DATA")
-         .moveTo()
          .click()
          .end()
 
@@ -215,7 +208,6 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#CHANGE_VIEW")
-         .moveTo()
          .click()
          .end()
 
@@ -228,7 +220,6 @@ define(["intern!object",
 
          // 9. Change the page size
          .findByCssSelector("#SET_DOCS_PER_PAGE")
-         .moveTo()
          .click()
          .end()
 
