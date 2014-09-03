@@ -35,9 +35,15 @@ module.exports = function (grunt, alf) {
          all: {
             files: [alf.jsFiles, alf.cssFiles],
             tasks: [
-               // These could be run concurrently, but the output is messy.
-               //'concurrent:jsWatch'
-               's',
+               's'
+            ],
+            options: {
+               interrupt: true
+            }
+         },
+         test: {
+            files: [alf.jsFiles],
+            tasks: [
                'shell:jsdoc',
                'intern:dev'
             ],
