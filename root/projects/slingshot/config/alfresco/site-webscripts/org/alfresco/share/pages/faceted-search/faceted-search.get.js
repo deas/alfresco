@@ -570,6 +570,7 @@ var searchDocLib = {
 
 // Put all components together
 var main = {
+   id: "FCTSRCH_MAIN_VERTICAL_STACK",
    name: "alfresco/layout/VerticalWidgets",
    config: {
       baseClass: "side-margins",
