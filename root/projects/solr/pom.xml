@@ -29,31 +29,41 @@
     </properties>
 
     <dependencies>
-        <!-- ACE-2407 Yes... We really need 2 versions of Lucene to compile against -->
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core-2.9.3</artifactId>
-            <version>2.9.3</version>
-            <scope>system</scope>
-            <systemPath>${user.home}/.m2/repository/org/apache/lucene/lucene-core/2.9.3/lucene-core-2.9.3.jar</systemPath>
-        </dependency>
-
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-legacy-lucene</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.lucene</groupId>
+                    <artifactId>lucene-analyzers</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.lucene</groupId>
+                    <artifactId>lucene-snowball</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-solrclient</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <!-- provided dependencies -->
             <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>2.9.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-regex</artifactId>
+            <version>2.9.3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.solr</groupId>
@@ -64,64 +74,7 @@
                     <groupId>woodstox</groupId>
                     <artifactId>wstx-asl</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>org.apache.lucene</groupId>
-                    <artifactId>lucene-analyzers</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.lucene</groupId>
-                    <artifactId>lucene-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.lucene</groupId>
-                    <artifactId>lucene-highlighter</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.lucene</groupId>
-                    <artifactId>lucene-memory</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.lucene</groupId>
-                    <artifactId>lucene-misc</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.lucene</groupId>
-                    <artifactId>lucene-queries</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.lucene</groupId>
-                    <artifactId>lucene-spellchecker</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.lucene</groupId>
-                    <artifactId>lucene-snowball</artifactId>
-                </exclusion>
             </exclusions>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-analyzers</artifactId>
-            <version>${dependency.lucene.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>${dependency.lucene.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-regex</artifactId>
-            <version>${dependency.lucene.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-snowball</artifactId>
-            <version>${dependency.lucene.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.solr</groupId>
@@ -133,7 +86,6 @@
                     <artifactId>wstx-asl</artifactId>
                 </exclusion>
             </exclusions>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -163,7 +115,6 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -177,49 +128,10 @@
                 </configuration>
             </plugin>
 
-            <!-- ACE-2407 For some reason, we must compile against lucene 2.9.3 but package lucene 2.4.1 as well, 
-                making it override 2.9.3 in the classpath. We do it by unpacking lucene 2.4.1 in WEB-INF/classes -->
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unzip-lucene-2.4.1</id>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <phase>prepare-package</phase>
-                    </execution>
-                </executions> 
-                <configuration>
-                    <artifactItems>
-                        <artifactItem>
-                            <groupId>org.apache.lucene</groupId>
-                            <artifactId>lucene-analyzers</artifactId>
-                            <version>${dependency.lucene.version}</version>
-                        </artifactItem>
-                        <artifactItem>
-                            <groupId>org.apache.lucene</groupId>
-                            <artifactId>lucene-core</artifactId>
-                            <version>${dependency.lucene.version}</version>
-                        </artifactItem>
-                        <artifactItem>
-                            <groupId>org.apache.lucene</groupId>
-                            <artifactId>lucene-regex</artifactId>
-                            <version>${dependency.lucene.version}</version>
-                        </artifactItem>
-                        <artifactItem>
-                            <groupId>org.apache.lucene</groupId>
-                            <artifactId>lucene-snowball</artifactId>
-                            <version>${dependency.lucene.version}</version>
-                        </artifactItem>
-                    </artifactItems>
-                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
+                    <archiveClasses>true</archiveClasses>
                     <overlays>
                         <overlay>
                             <groupId>org.apache.solr</groupId>
