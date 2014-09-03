@@ -155,157 +155,70 @@ var sideBarMenu = {
    }
 };
 
-// // Make a request to the Repository to get the configured facets to use in search...
-// var rawFacets = [];
-// var result = remote.call("/api/solr/facet-config");
-// if (result.status.code == status.STATUS_OK)
-// {
-//    rawFacets = JSON.parse(result).facets;
-// }
+// Make a request to the Repository to get the configured facets to use in search...
+var rawFacets = [];
+var result = remote.call("/api/solr/facet-config");
+if (result.status.code == status.STATUS_OK)
+{
+   rawFacets = JSON.parse(result).facets;
+}
 
-// // Iterate over the list of facets and create an array of widgets for each one.
-// // Only the enableincludeFacetd facets will be included and if any are scoped this will be
-// // taken into account...
-// var facets = [];
-// rawFacets.forEach(function(facet, index, rawFacets) {
+// Iterate over the list of facets and create an array of widgets for each one.
+// Only the enableincludeFacetd facets will be included and if any are scoped this will be
+// taken into account...
+var facets = [];
+rawFacets.forEach(function(facet, index, rawFacets) {
 
-//    if (facet.isEnabled)
-//    {
-//       var includeFacet = true;
+   if (facet.isEnabled === true)
+   {
+      var includeFacet = true;
 
-//       // If we're in the context of a site and there is site scoping defined for
-//       // the current facet then we need to check that the current site is within
-//       // the list of scoped sites...
-//       var siteId = page.url.templateArgs.site;
-//       if (siteId != null && facet.scope === "SCOPED_SITES")
-//       {
-//          includeFacet = false;
-//          for (var i=0; i<facet.scopedSites.length; i++)
-//          {
-//             if (facet.scopedSites[i] === siteId)
-//             {
-//                includeFacet = true;
-//                break;
-//             }
-//          }
-//       }
+      // If we're in the context of a site and there is site scoping defined for
+      // the current facet then we need to check that the current site is within
+      // the list of scoped sites...
+      if (facet.scope === "SCOPED_SITES")
+      {
+         includeFacet = false;
+         var siteId = page.url.templateArgs.site;
+         if (siteId != null)
+         {
+            for (var i=0; i<facet.scopedSites.length; i++)
+            {
+               if (facet.scopedSites[i] === siteId)
+               {
+                  includeFacet = true;
+                  break;
+               }
+            }
+         }
+      }
 
-//       // If the facet passes all scoping criteria then it should be included...
-//       if (includeFacet)
-//       {
-//          var facet = {
-//             id: "FCTSRCH_" + facet.filterID,
-//             name: facet.displayControl,
-//             config: {
-//                label: msg.get(facet.displayName),
-//                facetQName: facet.facetQName,
-//                sortBy: facet.sortBy,
-//                maxFilters: facet.maxFilters,
-//                hitThreshold: facet.hitThreshold,
-//                minFilterValueLength: facet.minFilterValueLength,
-//                useHash: false,
-//                headingLevel: 3
-//             }
-//          };
-//          facets.push(facet);
-//       }
-//    }
-// });
-
-// // Compose the individual facets
-var facets = [
-   {
-      id: "FCTSRCH_FACET_FORMATS",
-      name: "alfresco/search/FacetFilters",
-      config: {
-         label: msg.get("faceted-search.facet-menu.facet.formats"),
-         facetQName: "{http://www.alfresco.org/model/content/1.0}content.mimetype",
-         sortBy: "DESCENDING",
-         maxFilters: 6,
-         useHash: false,
-         headingLevel: 3
-      }
-   },
-   {
-      id: "FCTSRCH_FACET_CREATOR",
-      name: "alfresco/search/FacetFilters",
-      config: {
-         label: msg.get("faceted-search.facet-menu.facet.creator"),
-         facetQName: "{http://www.alfresco.org/model/content/1.0}creator.__.u",
-         sortBy: "ALPHABETICALLY",
-         maxFilters: 6,
-         useHash: false,
-         headingLevel: 3
-      }
-   },
-   {
-      id: "FCTSRCH_FACET_MODIFIER",
-      name: "alfresco/search/FacetFilters",
-      config: {
-         label: msg.get("faceted-search.facet-menu.facet.modifier"),
-         facetQName: "{http://www.alfresco.org/model/content/1.0}modifier.__.u",
-         sortBy: "ALPHABETICALLY",
-         maxFilters: 6,
-         useHash: false,
-         headingLevel: 3
-      }
-   },
-   {
-      id: "FCTSRCH_FACET_CREATED",
-      name: "alfresco/search/FacetFilters",
-      config: {
-         label: msg.get("faceted-search.facet-menu.facet.created"),
-         facetQName: "{http://www.alfresco.org/model/content/1.0}created",
-         blockIncludeFacetRequest: true,
-         sortBy: "INDEX",
-         maxFilters: 6,
-         useHash: false,
-         headingLevel: 3
-      }
-   },
-   {
-      id: "FCTSRCH_FACET_MODIFIED",
-      name: "alfresco/search/FacetFilters",
-      config: {
-         label: msg.get("faceted-search.facet-menu.facet.modified"),
-         facetQName: "{http://www.alfresco.org/model/content/1.0}modified",
-         blockIncludeFacetRequest: true,
-         sortBy: "INDEX",
-         maxFilters: 6,
-         useHash: false,
-         headingLevel: 3
-      }
-   },
-/* see ACE-2131
-   {
-      id: "FCTSRCH_FACET_DESCRIPTION",
-      name: "alfresco/search/FacetFilters",
-      config: {
-         label: msg.get("faceted-search.facet-menu.facet.description"),
-         facetQName: "{http://www.alfresco.org/model/content/1.0}description.__",
-         sortBy: "DESCENDING",
-         hitThreshold: 1,
-         minFilterValueLength: 5,
-         maxFilters: 6,
-         useHash: false,
-         headingLevel: 3
-      }
-   },
-*/
-   {
-      id: "FCTSRCH_FACET_SIZE",
-      name: "alfresco/search/FacetFilters",
-      config: {
-         label: msg.get("faceted-search.facet-menu.facet.size"),
-         facetQName: "{http://www.alfresco.org/model/content/1.0}content.size",
-         blockIncludeFacetRequest: true,
-         sortBy: "INDEX",
-         maxFilters: 6,
-         useHash: false,
-         headingLevel: 3
+      // If the facet passes all scoping criteria then it should be included...
+      if (includeFacet === true)
+      {
+         var blockIncludeFacetRequest = (facet.customProperties != null && 
+                                         facet.customProperties.blockIncludeFacetRequest != null &&
+                                         facet.customProperties.blockIncludeFacetRequest.value === "true");
+         
+         var facet = {
+            id: "FCTSRCH_" + facet.filterID,
+            name: facet.displayControl,
+            config: {
+               label: msg.get(facet.displayName),
+               facetQName: facet.facetQName,
+               sortBy: facet.sortBy,
+               maxFilters: facet.maxFilters,
+               hitThreshold: facet.hitThreshold,
+               minFilterValueLength: facet.minFilterValueLength,
+               useHash: false,
+               headingLevel: 3,
+               blockIncludeFacetRequest: blockIncludeFacetRequest
+            }
+         };
+         facets.push(facet);
       }
    }
-];
+});
 
 // Function to compose the sort fields from share-config
 function getSortFieldsFromConfig()
