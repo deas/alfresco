@@ -228,7 +228,7 @@ public class DetailsPageTest extends AbstractTest
         Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.EDIT_OFFLINE), "Edit offline is not present");
         Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.GOOGLE_DOCS_EDIT), "Edit Google docs is not present");
         Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.START_WORKFLOW), "Start workflow is not present");
-        Assert.assertTrue(docDetails.isDocumentActionPresent(DocumentAction.PUBLISH_ACTION), "Publish Action  is not present");
+        
     }
     
     @Test(dependsOnMethods="isLinkPresentForDocumentTest", groups = { "Enterprise4.2" })
