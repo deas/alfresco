@@ -81,7 +81,9 @@ define(["intern!object",
 
             // // Go back to the previous header cell and sort in the opposite direction...
             .pressKeys([keys.SHIFT,keys.TAB])
-            .sleep(alfPause)
+            .findByCssSelector("#COLUMN2_HEADER .descendingSort.hidden")
+               .then(null,null)
+               .end()
 
             // Check it is currently sorted ascendinging...
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "direction", "ascending"))
@@ -92,6 +94,10 @@ define(["intern!object",
 
             // Now change the sort direction...
             .pressKeys(keys.RETURN)
+            .findByCssSelector("#COLUMN2_HEADER .ascendingSort.hidden")
+               .then(null,null)
+               .end()
+
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "direction", "descending"))
                .then(null, function() {
                   assert(false, "The second sort direction is not descending");
