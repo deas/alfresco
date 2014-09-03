@@ -46,7 +46,7 @@ define(["dojo/_base/declare",
          if (this.popup && this.popup.domNode)
          {
             // This ensures that we can differentiate between header menu popups and regular menu popups with our CSS selectors
-            domClass.add(this.popup.domNode, "alf-header-cascading-menu");
+            domClass.add(this.popup.domNode, "alfresco-header-AlfCascadingMenu");
          }
       }
    });

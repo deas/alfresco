@@ -34,7 +34,7 @@
    margin-top: 23px;
 }
 
-.alfresco-share .alf-header {
+.alfresco-share .alfresco-header-Header {
    background-color: #1A1A1A;
    color: #A6A6A6;
    font-family: Open Sans,arial,helvetica,clean,sans-serif;
@@ -43,7 +43,7 @@
 }
 
 /* Sets the highlight on the menu bar items in the header bar ONLY */
-.alfresco-share .alf-header .alfresco-menus-AlfMenuBar .dijitMenuPassive .dijitMenuItemHover {
+.alfresco-share .alfresco-header-Header .alfresco-menus-AlfMenuBar .dijitMenuPassive .dijitMenuItemHover {
    background-color: #717171;
    color: #fff;
 }
@@ -61,13 +61,13 @@
 }
 
 /* Sets the selection highlight colour on header menu items - more specific than class in AlfMenuBar */
-.alfresco-share .alf-header .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItemSelected.dijitMenuItem {
+.alfresco-share .alfresco-header-Header .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItemSelected.dijitMenuItem {
    background-color: #4D4D4D;
 }
 
 /* Sets the correct height for the header menu bar items. This may need to be changed for different browsers and
  * possible adjusted if items in the header are changed */
-.alfresco-share .alf-header .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItem {
+.alfresco-share .alfresco-header-Header .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItem {
    height: 22px;
    margin: 0 8px;
    padding-top: 4px;

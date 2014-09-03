@@ -68,6 +68,7 @@ define({
 
       'alfresco/footer/FooterTest', 
 
+      'tests/alfresco/header/HeaderWidgetsTest',
       'tests/alfresco/header/WarningTest',
 
       'tests/alfresco/html/LabelTest',
@@ -109,7 +110,7 @@ define({
     * @instance
     * @type [string]
     */
-   localOnlyFunctionalSuites: [],//['tests/alfresco/CodeCoverageBalancer'],
+   localOnlyFunctionalSuites: ['tests/alfresco/CodeCoverageBalancer'],
 
    /**
     * This is the full array of functional test suites for local tests

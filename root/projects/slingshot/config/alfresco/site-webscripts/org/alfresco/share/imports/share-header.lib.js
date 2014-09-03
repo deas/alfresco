@@ -1885,7 +1885,6 @@ function getHeaderModel(pageTitle) {
 
    var headerModel = [{
       id: "SHARE_HEADER",
-      className: "alf-header",
       name: "alfresco/header/Header",
       config: {
          currentItem: currentItem,

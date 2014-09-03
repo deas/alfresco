@@ -23,8 +23,9 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/layout/LeftAndRight"], 
-        function(declare, LeftAndRight) {
+        "alfresco/layout/LeftAndRight",
+        "dojo/dom-class"], 
+        function(declare, LeftAndRight, domClass) {
    
    /**
     * This extends the alfresco/layout/LeftAndRight image to header specific CSS selectors.
@@ -38,6 +39,19 @@ define(["dojo/_base/declare",
        * @type {object[]}
        * @default [{cssFile:"./css/Header.css"}]
        */
-      cssRequirements: [{cssFile:"./css/Header.css"}]
+      cssRequirements: [{cssFile:"./css/Header.css"}],
+
+      /**
+       * Extends the [inherited function]{@link module:alfresco/layout/LeftAndRight#postCreate}
+       * to add in an additional CSS class to map to the selectors defined for this widget.
+       *
+       * @instance
+       * @type {string}
+       * @default "alfresco-header-Header"
+       */
+      postCreate: function alfresco_core_ProcessWidgets__postCreate() {
+         domClass.add(this.domNode, "alfresco-header-Header");
+         this.inherited(arguments);
+      }
    });
 });
