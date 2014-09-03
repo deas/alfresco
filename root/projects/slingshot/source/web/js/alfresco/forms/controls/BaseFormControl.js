@@ -189,9 +189,26 @@ define(["dojo/_base/declare",
        * will be the case when multiple fields are being used to represent the same data but through progressive disclosure
        * only one field is displayed at a time. By overriding this variable a field can request not to have it's value updated
        * when it is hidden or disabled.
+       * 
+       * @instance
+       * @type {boolean}
+       * @default false
        */
       noValueUpdateWhenHiddenOrDisabled: false,
       
+      /**
+       * Sometimes multiple form controls might be used to represent a single post parameter. For example a set of radio
+       * buttons might present a set of options for a parameter where the last radio button progressively reveals a 
+       * text box for entering a custom value. In that case the radio buttons form control is superceded by the revealed
+       * text box. By setting this attribute to an array containing the values that prevent the form control value being
+       * included in the form post it is possible to define that behaviour
+       *
+       * @instance
+       * @type {array}
+       * @default null
+       */
+      noPostWhenValueIs: null,
+
       /**
        * The default visibility status is always true (this can be overridden by extending controls).
        * 

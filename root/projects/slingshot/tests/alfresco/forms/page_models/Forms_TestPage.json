@@ -167,6 +167,60 @@
          }
       },
       {
+         "name": "alfresco/layout/ClassicWindow",
+         "config": {
+            "title": "Conditional parameters form",
+            "widgets": [
+               {
+                  "id": "ADD_BUTTONS_FORM",
+                  "name": "alfresco/forms/Form",
+                  "config": {
+                     "okButtonPublishTopic": "PUBLISH_CONDITIONAL_FORM_DATA",
+                     "widgets": [
+                        {
+                           "id": "TARGET_OPTIONS",
+                           "name": "alfresco/forms/controls/DojoRadioButtons",
+                           "config": {
+                              "fieldId": "TARGET_FIELD",
+                              "name": "TARGET",
+                              "label": "Target",
+                              "value": "KNOWN1",
+                              "noPostWhenValueIs": ["CUSTOM"],
+                              "optionsConfig": {
+                                 "fixed": [
+                                    { "label": "Known 1", "value": "KNOWN1"},
+                                    { "label": "Known 2", "value": "KNOWN2"},
+                                    { "label": "Custom", "value": "CUSTOM"}
+                                 ]
+                              }
+                           }
+                        },
+                        {
+                           "id": "CUSTOM_TARGET",
+                           "name": "alfresco/forms/controls/DojoValidationTextBox",
+                           "config": {
+                              "label": "Custom",
+                              "name": "TARGET",
+                              "value": "",
+                              "postWhenHiddenOrDisabled": false,
+                              "visibilityConfig": {
+                                 "initialValue": false,
+                                 "rules": [
+                                    {
+                                       "targetId": "TARGET_FIELD",
+                                       "is": ["CUSTOM"]
+                                    }
+                                 ]
+                              }
+                           }
+                        }
+                     ]
+                  }
+               }
+            ]
+         }
+      },
+      {
          "name": "alfresco/testing/SubscriptionLog"
       },
       {

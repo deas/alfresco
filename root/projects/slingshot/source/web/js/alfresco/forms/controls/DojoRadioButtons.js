@@ -18,7 +18,7 @@
  */
 
 /**
- * @module alfresco/forms/controls/RadioButtons
+ * @module alfresco/forms/controls/DojoRadioButtons
  * @extends module:alfresco/forms/controls/BaseFormControl
  * @author Dave Draper
  */

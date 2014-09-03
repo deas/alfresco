@@ -43,9 +43,10 @@ define(["dojo/_base/declare",
         "dojo/_base/array",
         "dojo/json",
         "dijit/registry",
-        "dojo/hash"], 
+        "dojo/hash",
+        "alfresco/core/ArrayUtils"], 
         function(declare, _Widget, _Templated, Form, xhr, AlfCore, CoreWidgetProcessing, _AlfHashMixin, template, 
-                 ioQuery, lang, AlfButton, array, json, registry, hash) {
+                 ioQuery, lang, AlfButton, array, json, registry, hash, arrayUtils) {
    
    return declare([_Widget, _Templated, AlfCore, CoreWidgetProcessing, _AlfHashMixin], {
       
@@ -569,6 +570,10 @@ define(["dojo/_base/declare",
                    (entry.postWhenHiddenOrDisabled !== undefined && entry.postWhenHiddenOrDisabled == false))
                {
                   // Don't set the value (line below is just to allow debug point to be set)
+               }
+               else if (entry.noPostWhenValueIs && arrayUtils.arrayContains(entry.noPostWhenValueIs, entry.getValue()))
+               {
+                  // Don't set the value if the noPostIfValueIs array contains the current value.
                }
                else
                {

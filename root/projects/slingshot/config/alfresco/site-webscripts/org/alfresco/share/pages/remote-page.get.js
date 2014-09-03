@@ -30,6 +30,7 @@ if (page.url.templateArgs.pagename != null)
       }
 
       model.jsonModel = JSON.parse(pageDefinition);
+      model.jsonModel.groupMemberships = user.properties["alfUserGroups"];
    }
    catch(e)
    {

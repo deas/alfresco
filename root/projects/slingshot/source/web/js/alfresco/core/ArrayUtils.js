@@ -21,7 +21,7 @@
  * A utility class for working with arrays. The functions in this module are based on those
  * originally found in the YUI based alfresco.js file.
  * 
- * @module alfresco/core/ArrayUtilsalfresco/core/ArrayUtils
+ * @module alfresco/core/ArrayUtils
  * @author Dave Draper
  */
 define(["dojo/_base/lang"], 

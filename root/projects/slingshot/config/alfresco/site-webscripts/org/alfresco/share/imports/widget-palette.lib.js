@@ -1,3 +1,169 @@
+
+// This function can be used to create the form fields that are common to all widgets for determining
+// whether or not the widget should be rendered...
+function getRenderFilterConfig() {
+   var rfc = [
+      {
+         name: "alfresco/forms/controls/DojoCheckBox",
+         config: {
+            fieldId: "SHOW_RENDERING_CONFIG",
+            name: "showRenderingConfig",
+            label: "Define rendering rules",
+            description: "Check this box to configure the rules that determine whether or not this widget is rendered",
+            value: false
+         }
+      },
+      {
+         name: "alfresco/forms/controls/DojoRadioButtons",
+         config: {
+            fieldId: "TARGET_FIELD",
+            name: "defaultConfig.renderFilterMethod",
+            label: "Condition handling",
+            description: "Must all the conditions be true, or can just one condition be true to be rendered",
+            value: "ALL",
+            postWhenHiddenOrDisabled: false,
+            optionsConfig: {
+               fixed: [
+                  { label: "All conditions must be true", value: "ALL"},
+                  { label: "Only one condition needs to be true", value: "ANY"}
+               ]
+            },
+            visibilityConfig: {
+               initialValue: false,
+               rules: [
+                  {
+                     targetId: "SHOW_RENDERING_CONFIG",
+                     is: [true]
+                  }
+               ]
+            }
+         }
+      },
+      {
+         name: "alfresco/forms/controls/MultipleEntryFormControl",
+         config: {
+            name: "defaultConfig.renderFilter",
+            label: "Render filter configuration",
+            description: "Define the conditions in which the widget should be rendered",
+            postWhenHiddenOrDisabled: false,
+            widgets: [
+               {
+                  name: "alfresco/forms/controls/DojoRadioButtons",
+                  config: {
+                     fieldId: "TARGET_FIELD",
+                     name: "target",
+                     label: "Target Object Property",
+                     description: "Select from a list of well-known object properties of the widget or choose to provide a custom object",
+                     value: "groupMemberships",
+                     noPostWhenValueIs: ["CUSTOM"],
+                     optionsConfig: {
+                        fixed: [
+                           { label: "Group Membership", value: "groupMemberships"},
+                           { label: "Current Item", value: "currentItem"},
+                           { label: "Custom Attribute", value: "CUSTOM"}
+                        ]
+                     }
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     label: "Custom Target Object Property",
+                     name: "target",
+                     description: "Enter the target object property of the widget that should be tested",
+                     value: "",
+                     postWhenHiddenOrDisabled: false,
+                     visibilityConfig: {
+                        initialValue: false,
+                        rules: [
+                           {
+                              targetId: "TARGET_FIELD",
+                              is: ["CUSTOM"]
+                           }
+                        ]
+                     }
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoSelect",
+                  config: {
+                     fieldId: "GROUP_SELECT",
+                     name: "property",
+                     label: "User Group",
+                     description: "Select the group to test the users membership of",
+                     value: "GROUP_ALFRESCO_ADMINISTRATORS",
+                     postWhenHiddenOrDisabled: false,
+                     optionsConfig: {
+                        fixed: [
+                           { label: "Administrators", value: "GROUP_ALFRESCO_ADMINISTRATORS"},
+                           { label: "Search Administrators", value: "GROUP_SEARCH_ADMINISTRATORS"}
+                        ]
+                     },
+                     visibilityConfig: {
+                        initialValue: false,
+                        rules: [
+                           {
+                              targetId: "TARGET_FIELD",
+                              is: ["groupMemberships"]
+                           }
+                        ]
+                     }
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     label: "Property to Compare",
+                     description: "Enter the property of the object to test the value of (using a dot-notation style)",
+                     name: "property",
+                     value: "",
+                     postWhenHiddenOrDisabled: false,
+                     visibilityConfig: {
+                        initialValue: false,
+                        rules: [
+                           {
+                              targetId: "TARGET_FIELD",
+                              is: ["CUSTOM","currentItem"]
+                           }
+                        ]
+                     }
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/MultipleEntryFormControl",
+                  config: {
+                     name: "values",
+                     label: "Values To Test",
+                     description: "Add values that the property must be in order for the condition to be satisfied"
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoCheckBox",
+                  config: {
+                     name: "negate",
+                     label: "Negative Rule?",
+                     description: "Check this box if you want this rule to prevent rather than ensure rendering",
+                     value: false
+                  }
+               }
+            ],
+            visibilityConfig: {
+               initialValue: false,
+               rules: [
+                  {
+                     targetId: "SHOW_RENDERING_CONFIG",
+                     is: [true]
+                  }
+               ]
+            }
+         }
+      }
+   ];
+   return rfc;
+}
+
+
+
 function getCommonTopics() {
    return [
       {label:"Get all items in QuADDS",value:"ALF_GET_QUADDS_ITEMS"},
@@ -1573,7 +1739,7 @@ function getLogoWidget() {
                }
             }
          }
-      ],
+      ].concat(getRenderFilterConfig()),
       // If set to true, then the actual widget will be previewed...
       previewWidget: false,
       // This is the widget structure to use to display the widget.
