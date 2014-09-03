@@ -21,6 +21,26 @@
          @standard-column-width: 15px;
          // This is used when the columns need some breathing space.
          @standard-column-spacing: 5px;
+      
+         // Generic colours for displaying collections of items
+         @collectionColour1: #225DA8;
+         @collectionColour2: #F5993D;
+         @collectionColour3: #47AC50;
+         @collectionColour4: #F8E23C;
+         @collectionColour5: #2881C3;
+         @collectionColour6: #f8b828;
+         @collectionColour7: #8CC84F;
+         @collectionColour8: #f8f866;
+
+         // Charting item colours
+         @chartItemColour1: @collectionColour1;
+         @chartItemColour2: @collectionColour2;
+         @chartItemColour3: @collectionColour3;
+         @chartItemColour4: @collectionColour4;
+         @chartItemColour5: @collectionColour5;
+         @chartItemColour6: @collectionColour6;
+         @chartItemColour7: @collectionColour7;
+         @chartItemColour8: @collectionColour8;
 
          // Font Colours
          @general-font-color: #333;
@@ -101,26 +121,7 @@
          // Shadows
          @standard-box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
          @inset-box-shadow: 1px 1px 3px @standard-button-border-color inset;
-         
-         // Generic colours for displaying collections of items
-         @collectionColour1: #225DA8;
-         @collectionColour2: #F5993D;
-         @collectionColour3: #47AC50;
-         @collectionColour4: #F8E23C;
-         @collectionColour5: #2881C3;
-         @collectionColour6: #f8b828;
-         @collectionColour7: #8CC84F;
-         @collectionColour8: #f8f866;
 
-         // Charting item colours
-         @chartItemColour1: @collectionColour1;
-         @chartItemColour2: @collectionColour2;
-         @chartItemColour3: @collectionColour3;
-         @chartItemColour4: @collectionColour4;
-         @chartItemColour5: @collectionColour5;
-         @chartItemColour6: @collectionColour6;
-         @chartItemColour7: @collectionColour7;
-         @chartItemColour8: @collectionColour8;
       </less-variables>
 
    </css-tokens>
