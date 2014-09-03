@@ -48,7 +48,6 @@
                       <option>storeroot</option>
                       <option>noderef</option>
                       <option>xpath</option>
-                      <option>jcr-xpath</option>
                       <option>lucene</option>
                       <option>fts-alfresco</option>
                       <option>cmis-strict</option>

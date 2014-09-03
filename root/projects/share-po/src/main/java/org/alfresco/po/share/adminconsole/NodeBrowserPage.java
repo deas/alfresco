@@ -89,7 +89,6 @@ public class NodeBrowserPage extends AdminConsolePage
         STORE_ROOT("storeroot"),
         NODE_REF("noderef"),
         XPATH("xpath"),
-        JCR_XPATH("jcr-xpath"),
         LUCENE("lucene"),
         FTS_ALFRECO("fts-alfresco"),
         CMIS_STRICT("cmis-strict"),

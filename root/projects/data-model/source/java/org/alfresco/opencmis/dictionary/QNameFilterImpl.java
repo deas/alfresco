@@ -150,7 +150,6 @@ public class QNameFilterImpl implements QNameFilter
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/versionstore/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/action/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/application/1.0}*");
-        hardCodeListOfTypes.add("{http://www.jcp.org/jcr/mix/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/rule/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/rendition/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/qshare/1.0}*");

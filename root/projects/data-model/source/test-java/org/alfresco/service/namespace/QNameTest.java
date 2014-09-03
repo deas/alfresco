@@ -162,9 +162,6 @@ public class QNameTest extends TestCase
 
     public void testCommonTypes()
     {
-        QName qname2 = QName.createQName("{http://www.jcp.org/jcr/sv/1.0}*");
-        assertEquals("{http://www.jcp.org/jcr/sv/1.0}*", qname2.toString());
-        
         QName qname3 = QName.createQName("{http://www.alfresco.org/model/content/1.0}created");
         assertEquals("{http://www.alfresco.org/model/content/1.0}created", qname3.toString());
 
