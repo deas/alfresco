@@ -46,58 +46,57 @@ define(["intern!object",
             .pressKeys(keys.TAB)
             .sleep(alfPause)
             .getActiveElement()
-            .getVisibleText()
-            .then(function(resultText) {
-               TestCommon.log(testname,51,"Check tab focus on column header 1");
-               expect(resultText).to.equal("Column 1", "The text is incorrect");
-            })
+               .getVisibleText()
+               .then(function(resultText) {
+                  expect(resultText).to.equal("Column 1", "The text is incorrect");
+               })
+               .end()
+            
             .pressKeys(keys.SPACE)
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
-            .then(function(result) {
-               TestCommon.log(testname,57,"Check sort on column header 1");
-               assert(result == true, "Could not request to sort column 1 in PubSubLog");
-            })
-            .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
+               .then(null, function() {
+                  assert(false, "Could not request to sort column 1 in PubSubLog");
+               })
+               .end()
 
             // Sort on the second column header...
             .pressKeys(keys.TAB)
             .sleep(alfPause)
             .pressKeys(keys.RETURN)
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
-            .then(function(result) {
-               TestCommon.log(testname,68,"Check tab focus on column header 2");
-               assert(result == true, "Could not request to sort column 1 in PubSubLog");
-            })
-            .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
+               .then(null, function() {
+                  assert(false, "Could not request to sort column 1 in PubSubLog");
+               })
+               .end()
 
             // Check that sort request doesn't occur for third column...
             .pressKeys(keys.TAB)
             .sleep(alfPause)
             .pressKeys(keys.RETURN)
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
-            .then(function(result) {
-               TestCommon.log(testname,79,"Check sort on column header 2");
-               assert(result == true, "Could not request to sort column 1 in PubSubLog");
-            })
-            .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
+               .then(null, function() {
+                  assert(false, "Could not request to sort column 1 in PubSubLog");
+               })
+               .end()
 
             // // Go back to the previous header cell and sort in the opposite direction...
             .pressKeys([keys.SHIFT,keys.TAB])
             .sleep(alfPause)
 
             // Check it is currently sorted ascendinging...
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "direction", "ascending"))
-            .then(function(result) {
-               TestCommon.log(testname,91,"Check initial sort direction on column header 2");
-               assert(result == true, "The initial sort direction is not ascending");
-            })
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "direction", "ascending"))
+               .then(null, function() {
+                  assert(false, "The initial sort direction is not ascending");
+               })
+               .end()
+
             // Now change the sort direction...
             .pressKeys(keys.RETURN)
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "direction", "descending"))
-            .then(function(result) {
-               TestCommon.log(testname,98,"Check reversed sort direction on column header 2");
-               assert(result == true, "The second sort direction is not descending");
-            })
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "direction", "descending"))
+               .then(null, function() {
+                  assert(false, "The second sort direction is not descending");
+               })
+               .end()
 
             // Now go to the table itself...
             .pressKeys(keys.SHIFT) // Need to remove shift...
@@ -112,75 +111,71 @@ define(["intern!object",
             .sleep(alfPause)
 
             .getActiveElement()
-            .getVisibleText()
-            .then(function(resultText) {
-               TestCommon.log(testname,117,"Check row 1 selection");
-               expect(resultText).to.equal("A", "The text is incorrect");
-            })
+               .getVisibleText()
+               .then(function(resultText) {
+                  expect(resultText).to.equal("A", "The text is incorrect");
+               })
+               .end()
 
             // Use the cursor keys to go to the next line...
-            .pressKeys(keys['Down arrow'])
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(alfPause)
 
             // Select the first element...
             .pressKeys(keys.TAB)
             .sleep(alfPause)
             .getActiveElement()
-            .getVisibleText()
-            .then(function(resultText) {
-               TestCommon.log(testname,131,"Check cursor down moves to next row");
-               expect(resultText).to.equal("D", "The text is incorrect");
-            })
-            .end()
+               .getVisibleText()
+               .then(function(resultText) {
+                  expect(resultText).to.equal("D", "The text is incorrect");
+               })
+               .end()
 
             // Use the cursor keys to wrap back to the first row...
-            .pressKeys(keys['Down arrow'])
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(alfPause)
-            .pressKeys(keys['Down arrow'])
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(alfPause)
-            .pressKeys(keys['Down arrow'])
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(alfPause)
 
             // Select the first element...
             .pressKeys(keys.TAB)
             .sleep(alfPause)
             .getActiveElement()
-            .getVisibleText()
-            .then(function(resultText) {
-               TestCommon.log(testname,150,"Check cursor down wraps to first row");
-               expect(resultText).to.equal("A", "The text is incorrect");
-            })
-            .end()
+               .getVisibleText()
+               .then(function(resultText) {
+                  expect(resultText).to.equal("A", "The text is incorrect");
+               })
+               .end()
 
             // Use the up cursor to wrap back to the last element...
-            .pressKeys(keys['Up arrow'])
+            .pressKeys(keys.ARROW_UP)
             .sleep(alfPause)
 
             // Select the first element...
             .pressKeys(keys.TAB)
             .sleep(alfPause)
             .getActiveElement()
-            .getVisibleText()
-            .then(function(resultText) {
-               TestCommon.log(testname,165,"Check cursor up wraps to last row");
-               expect(resultText).to.equal("J", "The text is incorrect");
-            })
-            .end()
+               .getVisibleText()
+               .then(function(resultText) {
+                  expect(resultText).to.equal("J", "The text is incorrect");
+               })
+               .end()
 
             // Use the up cursor to go to the third row
-            .pressKeys(keys['Up arrow'])
+            .pressKeys(keys.ARROW_UP)
             .sleep(alfPause)
 
             // Select the first element...
             .pressKeys(keys.TAB)
             .sleep(alfPause)
             .getActiveElement()
-            .getVisibleText()
-            .then(function(resultText) {
-               TestCommon.log(testname,180,"Check cursor up moves to previous row");
-               expect(resultText).to.equal("G", "The text is incorrect");
-            })
-            .end()
+               .getVisibleText()
+               .then(function(resultText) {
+                  expect(resultText).to.equal("G", "The text is incorrect");
+               })
+               .end()
 
             // Post the coverage results...
             .then(function() {
@@ -195,20 +190,19 @@ define(["intern!object",
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/AlfDocumentListWithHeader_TestPage.json")
             .end()
 
-            .hasElementByCss("#COLUMN1_HEADER > span")
-            .then(function(result) {
-               TestCommon.log(testname,200,"Check column header");
-               assert(result == true, "Could not find COLUMN1_HEADER in Test #2a");
-            })
-            .end()
+            .findByCssSelector("#COLUMN1_HEADER > span")
+               .then(null, function() {
+                  assert(false, "Could not find COLUMN1_HEADER in Test #2a");
+               })
+               .end()
             .findByCssSelector("#COLUMN1_HEADER > span")
                .click()
                .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
-            .then(function(result) {
-               TestCommon.log(testname,210,"Sort on column 1 via the mouse");
-               assert(result == true, "Could not request to sort column 1 via mouse");
-            })
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
+               .then(null, function() {
+                  assert(false, "Could not request to sort column 1 via mouse");
+               })
+               .end()
             
             // Post the coverage results...
             .then(function() {
