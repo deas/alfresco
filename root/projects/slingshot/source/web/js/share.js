@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -2486,6 +2486,15 @@ Alfresco.Share.userAvatar = function(userName, size)
       var likes = record.getData("likes"),
          i18n = "like." + (record.getData("isFolder") ? "folder." : "document."),
          html = "";
+
+      if (!likes)
+      {
+         likes =
+         {
+            isLiked : false,
+            totalLikes : 0
+         };
+      }
 
       if (likes.isLiked)
       {
