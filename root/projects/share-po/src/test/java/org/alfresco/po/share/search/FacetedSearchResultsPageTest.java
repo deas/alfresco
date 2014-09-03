@@ -138,7 +138,8 @@ public class FacetedSearchResultsPageTest extends AbstractTest
             int paginatedResultsCount = facetedSearchPage.getResults().size();
             Assert.assertTrue(paginatedResultsCount > 0, "After searching for the letter 'a' and paginating there should be some search results");
             Assert.assertTrue(paginatedResultsCount >= resultsCount, "After searching for the letter 'a' and paginating there should be the same or more search results");
-        }  
+        }
+        facetedSearchPage.getSearchForm().clearSearchTerm();
     }
     
     /**

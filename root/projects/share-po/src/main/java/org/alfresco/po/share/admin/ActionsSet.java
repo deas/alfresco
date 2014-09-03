@@ -25,6 +25,8 @@ public class ActionsSet
     private static final By MENU_LABEL = By.cssSelector("td.dijitMenuItemLabel");
     private static final By DIALOG = By.cssSelector("div.alfresco-dialog-AlfDialog");
     private static final By DIALOG_BUTTONS = By.cssSelector("span.dijitButtonNode");
+    protected String nodeRef;
+    protected String rowElementXPath = null;
 
     private WebDrone drone;
     private WebElement control;
@@ -122,6 +124,7 @@ public class ActionsSet
     private List<WebElement> getMenuRows()
     {
         // Click the control to open the menu
+        drone.mouseOverOnElement(control);
         control.click();
 
         // Compose the selector for the drop down menu
