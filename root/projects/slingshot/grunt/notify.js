@@ -20,29 +20,19 @@
 'use strict';
 
 /**
- * Grunt tasks to for CSS and JS linting 
- * 
- * Config for csslint and jshint plugins
+ * Notification tasks
  */
 
 module.exports = function (grunt, alf) {
    // Return the config. This gets pushed into the grunt.init.config method in Gruntfile.
    return {
-      // Sanity check the CSS
-      // @see: https://github.com/gruntjs/grunt-contrib-csslint
-      // This needs a bit of work before it's useful - ours currently fails. A lot.
-      csslint: {
-         share: {
+      // @see: https://github.com/dylang/grunt-notify
+      notify: {
+         shareDeployed: {
             options: {
-               import: false,
-               csslintrc: ".csslintrc"
-            },
-            src: [alf.cssFiles]
+               message: "Code Deployed"
+            }
          }
-      },
-
-      jshint: {
-         all: ['**/.js', '**/.json']
       }
    };
 };

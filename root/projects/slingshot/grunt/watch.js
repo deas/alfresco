@@ -32,10 +32,11 @@ module.exports = function (grunt, alf) {
          // Trigger a deploy and restart & tests when a file changes
          // It works best to have only one watch, otherwise multiple builds could happen simultaneously.
          // TODO: Aikau files only...
-         all: {
+         deploy: {
             files: [alf.jsFiles, alf.cssFiles],
             tasks: [
-               's'
+               's',
+               'notify:shareDeployed'
             ],
             options: {
                interrupt: true

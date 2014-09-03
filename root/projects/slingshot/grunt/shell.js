@@ -100,7 +100,15 @@ module.exports = function (grunt, alf) {
 
          // start share & alfresco
          startRepo: {
-            command: 'm r -ie && m r -t',
+            command: 'm r -ie -t',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
+         startRepoFull: {
+            command: 'm r -be -t',
             options: {
                stdout: true,
                stderr: true,
@@ -141,28 +149,6 @@ module.exports = function (grunt, alf) {
          }
       },
       sharedConfig = {
-         antClean: {
-            command: 'ant clean',
-            options: {
-               stdout: true,
-               stderr: true,
-               failOnError: true,
-               execOptions: {
-                  cwd: alf.rootDir
-               }
-            }
-         },
-         mvnClean: {
-            command: 'mvn clean',
-            options: {
-               stdout: true,
-               stderr: true,
-               failOnError: true,
-               execOptions: {
-                  cwd: alf.rootDir
-               }
-            }
-         },
          // Generate JSDocs
          jsdoc: {
             command: 'jsdoc ../../' + alf.jsdocFiles + ' -c ../../conf.json', // TODO: Make this work with defined paths.
@@ -184,6 +170,31 @@ module.exports = function (grunt, alf) {
                failOnError: true,
                execOptions: {
                   cwd: alf.docsDir
+               }
+            }
+         },
+
+         mvnClean: {
+            command: 'mvn clean',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true,
+               execOptions: {
+                  cwd: alf.rootDir
+               }
+            }
+         },
+
+         // Update NPM dependencies:
+         npmInstall: {
+            command: 'npm install',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: false,
+               execOptions: {
+                  maxBuffer: "Infinite"
                }
             }
          },
@@ -221,7 +232,8 @@ module.exports = function (grunt, alf) {
          },
 
          svnUp: {
-            command: 'pwd;svn up',
+            // Force Interactive to enable conflict resolution inline.
+            command: 'pwd;svn up --force-interactive',
             options: {
                stdout: true,
                stderr: true,
@@ -259,7 +271,6 @@ module.exports = function (grunt, alf) {
                }
             }
          },
-
          // Set up an already running Vagrant VM instance
          vagrantProvision: {
             command: 'vagrant provision',
@@ -277,6 +288,20 @@ module.exports = function (grunt, alf) {
          // Shutdown a running vagrant VM istance
          vagrantHalt: {
             command: 'vagrant halt',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true,
+               execOptions: {
+                  cwd: alf.testResourcesDir,
+                  maxBuffer: "Infinite"
+               }
+            }
+         },
+         // See also vagrant.js
+         // Start the vagrant VM
+         vagrantReload: {
+            command: 'vagrant reload',
             options: {
                stdout: true,
                stderr: true,
