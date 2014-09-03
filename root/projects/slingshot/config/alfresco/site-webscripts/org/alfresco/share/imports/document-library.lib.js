@@ -1014,6 +1014,9 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                               },
                               {
                                  name: "alfresco/documentlibrary/views/AlfDetailedView"
+                              },
+                              {
+                                 name: "alfresco/documentlibrary/views/AlfFilmStripView"
                               }
                            ]
                         }

@@ -5,7 +5,7 @@
       <div data-dojo-attach-point="selectBarNode"></div>
    </div>
    <div class="displayName" data-dojo-attach-point="displayNameNode">${imgTitle}</div>
-   <a href="${itemLinkHref}" class="${itemLinkClass}" rel="${itemLinkRelative}" tabindex="0">
+   <span class="inner" data-dojo-attach-event="ondijitclick:onLinkClick">
       <img data-dojo-attach-point="imgNode" id="${imgId}" src="${thumbnailUrl}" alt="${imgAltText}" title="${imgTitle}"/>
-   </a>
+   </span>
 </div>

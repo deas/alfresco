@@ -91,11 +91,22 @@ define(["dojo/_base/declare",
       renditionName: "imgpreview",
       
       /**
+       * This should be set to an object containing the starting dimensions of the thumbnail. The object needs
+       * to have a "w" attribute to indicate the width and should be a string including the unit of measurement
+       * (e.g. "100px").
+       *  
+       * @instance
+       * @type {object}
+       * @default null
+       */
+      dimensions: null,
+
+      /**
        * @instance
        * @param {object} dimensions
        */
       resize: function alfresco_renderers_GalleryThumbnail__resize(dimensions) {
-         if (this.imgNode != null)
+         if (this.imgNode != null && dimensions && dimensions.w)
          {
             // Set the container height AND the image height and widths...
             // Heights are set to ensure a nice square thumbnail...
@@ -122,6 +133,11 @@ define(["dojo/_base/declare",
          this.selectBarWidget = new LeftAndRight({
             widgets: this.getSelectBarWidgets()
          }, this.selectBarNode);
+
+         if (this.dimensions != null)
+         {
+            this.resize(this.dimensions);
+         }
       },
       
       /**

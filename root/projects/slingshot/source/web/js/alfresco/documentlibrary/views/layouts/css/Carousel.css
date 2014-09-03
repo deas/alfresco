@@ -1,0 +1,49 @@
+.alfresco-documentlibrary-views-layouts-Carousel .items {
+   overflow-x: hidden;
+   background-image: url(./images/black-50-transparency.png);
+   background-repeat: repeat;
+   height: 112px
+}
+
+/* This needs to be set to relative so that the controls can be absolutely positioned over it */
+.alfresco-documentlibrary-views-layouts-Carousel {
+   position: relative;
+}
+
+/**
+ * Setting the margin isn't quite working because the overflow shows in the margin
+ */
+.alfresco-documentlibrary-views-layouts-Carousel div.frame {
+   margin: 0 40px;
+}
+
+/*
+ * The width needs to be properly calculated, this is just a really big number at the moment
+ * to get the frame working
+ */
+.alfresco-documentlibrary-views-layouts-Carousel ol {
+   width: 20000px;
+   padding: 0;
+}
+
+.alfresco-documentlibrary-views-layouts-Carousel .items li {
+   display: inline-block;
+}
+
+/* Absolute position over the list of items, and ensure full width so that the floated left and right
+ * controls are in the correct positions */
+.alfresco-documentlibrary-views-layouts-Carousel .controls {
+   position: absolute;
+   top: 6px;
+   width: 100%;
+}
+
+.alfresco-documentlibrary-views-layouts-Carousel .controls .prev{
+   float: left;
+   margin-left: 10px;
+}
+
+.alfresco-documentlibrary-views-layouts-Carousel .controls .next{
+   float: right;
+   margin-right: 10px;
+}

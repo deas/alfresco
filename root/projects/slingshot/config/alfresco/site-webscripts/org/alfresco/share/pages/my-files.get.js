@@ -9,7 +9,8 @@ var docLibServices = getDocumentLibraryServices();
 var docLibWidgets = getDocumentLibraryModel(null, null, user.properties['userHome']);
 
 // Add the DocLib services and widgets...
-services.push("alfresco/services/NavigationService",
+services.push("alfresco/services/PreferenceService",
+              "alfresco/services/NavigationService",
               "alfresco/services/SearchService",
               "alfresco/services/ActionService",
               "alfresco/services/DocumentService",

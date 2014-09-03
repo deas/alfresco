@@ -278,13 +278,7 @@ define(["dojo/_base/declare",
                // when rendering additional infinite scroll data...
                if (this.docListRenderer == null)
                {
-                  this.docListRenderer = new DocumentListRenderer({
-                     id: this.id + "_ITEMS",
-                     widgets: this.widgets,
-                     currentData: this.currentData,
-                     pubSubScope: this.pubSubScope,
-                     parentPubSubScope: this.parentPubSubScope
-                  });
+                  this.docListRenderer = this.createDocumentListRenderer();
                   this.docListRenderer.placeAt(this.tableNode, "last");
                } 
 
@@ -302,6 +296,26 @@ define(["dojo/_base/declare",
          {
             this.renderNoDataDisplay();
          }
+      },
+
+      /**
+       * Creates a new [DocumentListRenderer]{@link module:alfresco/documentlibrary/views/DocumentListRenderer}
+       * which is used to render the actual items in the view. This function can be overridden by extending views
+       * (such as the [Film Strip View]{@link module:alfresco/documentlibrary/views/AlfFilmStripView}) to create
+       * alternative widgets applicable to that view.
+       * 
+       * @instance
+       * @returns {object} A new [DocumentListRenderer]{@link module:alfresco/documentlibrary/views/DocumentListRenderer}
+       */
+      createDocumentListRenderer: function alfresco_documentlibrary_views_AlfDocumentListView__createDocumentListRenderer() {
+         var dlr = new DocumentListRenderer({
+            id: this.id + "_ITEMS",
+            widgets: this.widgets,
+            currentData: this.currentData,
+            pubSubScope: this.pubSubScope,
+            parentPubSubScope: this.parentPubSubScope
+         });
+         return dlr;
       },
 
       /**
