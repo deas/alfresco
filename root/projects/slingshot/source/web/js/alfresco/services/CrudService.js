@@ -145,20 +145,16 @@ define(["dojo/_base/declare",
        */
       onCreate: function alfresco_services_CrudService__onCreate(payload) {
          var url = this.getUrlFromPayload(payload);
-         var data = lang.getObject("data", false, payload);
-         if (data == null)
-         {
-            this.alfLog("warn", "A request was made to create a new item but no data was provided", payload, this);
-         }
-         else if (url !== null)
-         {
-            this.serviceXhr({url: url,
-                             data: data,
-                             method: "POST",
-                             alfTopic: payload.responseTopic,
-                             successCallback: this.refreshRequest,
-                             callbackScope: this});
-         }
+         var data = lang.clone(payload);
+         delete data.url;
+         delete data.responseTopic;
+         delete data.alfTopic;
+         this.serviceXhr({url: url,
+                          data: data,
+                          method: "POST",
+                          alfTopic: payload.responseTopic,
+                          successCallback: this.refreshRequest,
+                          callbackScope: this});
       },
 
       /**
@@ -168,20 +164,16 @@ define(["dojo/_base/declare",
        */
       onUpdate: function alfresco_services_CrudService__onUpdate(payload) {
          var url = this.getUrlFromPayload(payload);
-         var data = lang.getObject("data", false, payload);
-         if (data == null)
-         {
-            this.alfLog("warn", "A request was made to update a data item in a QuADDS but no data was provided", payload, this);
-         }
-         else
-         {
-            this.serviceXhr({url: url,
-                             data: data,
-                             method: "PUT",
-                             alfTopic: payload.responseTopic,
-                             successCallback: this.refreshRequest,
-                             callbackScope: this});
-         }
+         var data = lang.clone(payload);
+         delete data.url;
+         delete data.responseTopic;
+         delete data.alfTopic;
+         this.serviceXhr({url: url,
+                          data: data,
+                          method: "PUT",
+                          alfTopic: payload.responseTopic,
+                          successCallback: this.refreshRequest,
+                          callbackScope: this});
       },
 
       /**

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -96,7 +96,15 @@ define(["dojo/_base/declare",
       optionsSuccess: function alfresco_services_OptionsService__optionsSuccess(response, originalRequestConfig) {
          this.alfLog("log", "Successfully retrieved form control options", response, originalRequestConfig);
          var options = [];
-         var items = lang.getObject(originalRequestConfig.data.itemsAttribute, false, response);
+         var items = null;
+         if (originalRequestConfig.data.itemsAttribute === "")
+         {
+            items = response;
+         }
+         else
+         {
+            items = lang.getObject(originalRequestConfig.data.itemsAttribute, false, response);
+         }
          if (items !== null)
          {
             array.forEach(items, lang.hitch(this, this.processOptions, options, originalRequestConfig.data));

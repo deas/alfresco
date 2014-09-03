@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,6 +18,12 @@
  */
 
 /**
+ * This module is provided as an alternative to the standard [MultipleEntryElement]{@link module:alfresco/forms/controls/MultipleEntryElement}
+ * and differs in that the values returned are simple strings rather than complex JSON objects. The 
+ * [MultipleEntryElementFormControl]{@link module:alfresco/forms/controls/MultipleEntryElementFormControl} will use this
+ * element rendering widget when the [useSimpleValues attribute]{@link module:alfresco/forms/controls/MultipleEntryElementFormControl#useSimpleValues}
+ * is set to true.
+ * 
  * @module alfresco/forms/controls/SimpleMultipleEntryElement
  * @extends module:alfresco/forms/controls/MultipleEntryElement
  * @author Dave Draper
@@ -80,20 +86,27 @@ define(["dojo/_base/declare",
        * @returns {object[]}
        */
       getFormWidgets: function alfresco_forms_controls_SimpleMultipleEntryElement__getFormWidgets() {
-         return [
-            {
-               name: "alfresco/forms/controls/DojoValidationTextBox",
-               config: {
-                  name: "value",
-                  label: "multi.element.value.label",
-                  description: "multi.element.value.description",
-                  value: this.elementValue,
-                  requirementConfig: {
-                     initialValue: true
+         if (this.widgets != null)
+         {
+            return this.widgets;
+         }
+         else
+         {
+            return [
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     name: "value",
+                     label: "multi.element.value.label",
+                     description: "multi.element.value.description",
+                     value: this.elementValue,
+                     requirementConfig: {
+                        initialValue: true
+                     }
                   }
                }
-            }
-         ];
+            ];
+         }
       },
       
       /**

@@ -6,7 +6,8 @@ var services = getHeaderServices(),
     widgets = getHeaderModel(msg.get("faceted-search-config.page.title"));
 
 services.push("alfresco/services/CrudService",
-              "alfresco/services/NotificationService");
+              "alfresco/services/NotificationService",
+              "alfresco/services/OptionsService");
 
 
 var main = {
@@ -122,14 +123,53 @@ var main = {
                                                                      width: "",
                                                                      widgets: [
                                                                         {
+                                                                           name: "alfresco/renderers/Reorder"
+                                                                        }
+                                                                     ]
+                                                                  }
+                                                               },
+                                                               {
+                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                                  config: {
+                                                                     width: "",
+                                                                     widgets: [
+                                                                        {
                                                                            name: "alfresco/renderers/PropertyLink",
                                                                            config: {
                                                                               propertyToRender: "displayName",
                                                                               publishTopic: "ALF_CRUD_FORM_UPDATE",
                                                                               defaultConfig: {
-                                                                                 propertyToRender: "name",
+                                                                                 propertyToRender: "displayName",
                                                                                  publishTopic: "ALF_CRUD_FORM_UPDATE"
                                                                               }
+                                                                           }
+                                                                        }
+                                                                     ]
+                                                                  }
+                                                               },
+                                                               {
+                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                                  config: {
+                                                                     width: "",
+                                                                     widgets: [
+                                                                        {
+                                                                           name: "alfresco/renderers/Boolean",
+                                                                           config: {
+                                                                              propertyToRender: "isEnabled"
+                                                                           }
+                                                                        }
+                                                                     ]
+                                                                  }
+                                                               },
+                                                               {
+                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                                  config: {
+                                                                     width: "",
+                                                                     widgets: [
+                                                                        {
+                                                                           name: "alfresco/renderers/Property",
+                                                                           config: {
+                                                                              propertyToRender: "index"
                                                                            }
                                                                         }
                                                                      ]
@@ -155,7 +195,7 @@ var main = {
                            }
                         ]
                      },
-                     widthPx: "300"
+                     widthPx: "500"
                   },
                   {
                      name: "alfresco/layout/VerticalWidgets",
@@ -166,12 +206,21 @@ var main = {
                               config: {
                                  createButtonLabel: "Save",
                                  createButtonPublishTopic: "ALF_CRUD_CREATE",
+                                 createButtonPublishPayload: {
+                                    url: "api/solr/facet-config"
+                                 },
                                  createButtonPublishGlobal: true,
                                  updateButtonLabel: "Save",
                                  updateButtonPublishTopic: "ALF_CRUD_UPDATE",
+                                 updateButtonPublishPayload: {
+                                    url: "api/solr/facet-config"
+                                 },
                                  updateButtonPublishGlobal: true,
                                  deleteButtonLabel: "Delete",
                                  deleteButtonPublishTopic: "ALF_CRUD_DELETE",
+                                 deleteButtonPublishPayload: {
+                                    url: "api/solr/facet-config"
+                                 },
                                  deleteButtonPublishGlobal: true,
                                  showInfoTopics: ["ALF_CRUD_CREATE", "ALF_CRUD_UPDATE", "ALF_CRUD_DELETE"],
                                  showFormTopics: [],
@@ -184,7 +233,6 @@ var main = {
                                           value: "",
                                           label: "faceted-search-config.filterId.label",
                                           description: "faceted-search-config.filterId.description",
-                                          unitsLabel: "",
                                           visibilityConfig: {
                                              initialValue: true
                                           },
@@ -195,6 +243,16 @@ var main = {
                                              initialValue: false,
                                              rules: []
                                           }
+                                       }
+                                    },
+                                    {
+                                       name: "alfresco/forms/controls/DojoCheckBox",
+                                       config: {
+                                          fieldId: "IS_ENABLED",
+                                          name: "isEnabled",
+                                          value: "true",
+                                          label: "faceted-search-config.isEnabled.label",
+                                          description: "faceted-search-config.isEnabled.description"
                                        }
                                     },
                                     {
@@ -226,6 +284,24 @@ var main = {
                                                 {
                                                    label: "Modifier",
                                                    value: "{http://www.alfresco.org/model/content/1.0}modifier.__"
+                                                }
+                                             ]
+                                          }
+                                       }
+                                    },
+                                    {
+                                       name: "alfresco/forms/controls/DojoSelect",
+                                       config: {
+                                          fieldId: "DISPLAY_CONTROL",
+                                          name: "displayControl",
+                                          value: "alfresco/search/FacetFilters",
+                                          label: "faceted-search-config.displayControl.label",
+                                          description: "faceted-search-config.displayControl.description",
+                                          optionsConfig: {
+                                             fixed: [
+                                                {
+                                                   label: "faceted-search-config.displayControl.basic.label",
+                                                   value: "alfresco/search/FacetFilters"
                                                 }
                                              ]
                                           }
@@ -316,11 +392,54 @@ var main = {
                                              fixed: [
                                                 {
                                                    label: "faceted-search-config.scope.none.label",
-                                                   value: ""
+                                                   value: "ALL"
                                                 },
                                                 {
                                                    label: "faceted-search-config.scope.site.label",
                                                    value: "SCOPED_SITES"
+                                                }
+                                             ]
+                                          }
+                                       }
+                                    },
+                                    {
+                                       name: "alfresco/forms/controls/MultipleEntryFormControl",
+                                       config: {
+                                          fieldId: "SCOPED_SITES",
+                                          name: "scopedSites",
+                                          value: "",
+                                          label: "faceted-search-config.scopedSites.label",
+                                          description: "faceted-search-config.scopedSites.description",
+                                          useSimpleValues: true,
+                                          widgets: [
+                                             {
+                                                name: "alfresco/forms/controls/DojoSelect",
+                                                config: {
+                                                   fieldId: "SCOPED_SITES_SITE",
+                                                   name: "value",
+                                                   value: "",
+                                                   label: "faceted-search-config.scopedSites.site.label",
+                                                   description: "faceted-search-config.scopedSites.site.description",
+                                                   optionsConfig: {
+                                                      pubSub: {
+                                                         publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
+                                                         publishPayload: {
+                                                            url: url.context + "/proxy/alfresco/api/sites",
+                                                            itemsAttribute: "",
+                                                            labelAttribute: "title",
+                                                            valueAttribute: "shortName"
+                                                         }
+                                                      }
+                                                   }
+                                                }
+                                             }
+                                          ],
+                                          visibilityConfig: {
+                                             initialValue: false,
+                                             rules: [
+                                                {
+                                                   targetId: "SCOPE",
+                                                   is: ["SCOPED_SITES"]
                                                 }
                                              ]
                                           }

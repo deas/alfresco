@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -218,6 +218,10 @@ define(["dojo/_base/declare",
          // Process the widgets defined using the current item as the data to go into those widgets...
          this.alfLog("log", "Rendering item", this.currentData.items[this.currentIndex]);
          
+         // Mark the current item with an attribute indicating that it is the last item.
+         // This is done for the benefit of renderers that need to know if they are the last item.
+         this.currentData.items[this.currentIndex].isLastItem = (this.currentItem.index === this.currentData.items.length -1);
+
          // Set a width if provided...
          if (this.width != null)
          {
