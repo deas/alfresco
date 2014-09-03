@@ -7,9 +7,9 @@
             <exclude name="Hybrid.*" />
         </run>
     </groups>
-    <test name="SiteAdminGroupTests Data Prep" verbose="1" parallel="classes" thread-count="1">
+    <test name="DeleteSiteTests Data Prep" verbose="1" parallel="classes" thread-count="1">
         <classes>
-            <class name="org.alfresco.share.admin.SiteAdminGroupTests"></class>
+            <class name="org.alfresco.share.admin.DeleteSiteTests"></class>
         </classes>
     </test>
 </suite>

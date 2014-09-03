@@ -84,7 +84,7 @@ public class ManageSitesPageTest extends AbstractUtils
         }
 
         users = new ArrayList<> (testContext.getCreatedUsers());
-        int userCount = 1;
+        long userCount = System.currentTimeMillis();
         
         for (String username : users)
         {

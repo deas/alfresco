@@ -12,9 +12,40 @@
         <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
     </listeners>
         
-    <test name="SiteAdminGroupTests Data Prep" verbose="1" parallel="classes" thread-count="1">
+    <test name="SiteAdminGroupTests" verbose="1" parallel="classes" thread-count="1">
         <classes>
             <class name="org.alfresco.share.admin.SiteAdminGroupTests"></class>
         </classes>
     </test>
+    <test name="BecomeSiteManagerTest" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.admin.BecomeSiteManagerTest"></class>
+        </classes>
+    </test>
+    <test name="DeleteSiteTests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.admin.DeleteSiteTests"></class>
+        </classes>
+    </test>
+    <test name="ManageSitesPageTest" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.admin.ManageSitesPageTest"></class>
+        </classes>
+    </test>
+    <test name="SiteAdminChangeVisibilityTest" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.admin.SiteAdminChangeVisibilityTest"></class>
+        </classes>
+    </test>    
+    <test name="FacetedSearchTests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.search.FacetedSearchPageTest"></class>
+        </classes>
+    </test>
+    <test name="FacetedSearchTests" verbose="1" parallel="classes" thread-count="1">
+        <classes>
+            <class name="org.alfresco.share.search.FacetedSearchPageTest1"></class>
+        </classes>
+    </test>        
+    
 </suite>

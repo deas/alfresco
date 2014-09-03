@@ -39,7 +39,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     /** Constants */
     
     private static final String fileDir = "faceted-search-files\\";
-    private static final String fileStem = "-fs-test.docx";
+    private static final String fileStem = "-fs-test1.docx";
     
     private OpCloudTestContext testContext;
     private DashBoardPage dashBoardPage;
@@ -123,17 +123,17 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         String actionName4 = "Delete Document";
         String actionName5 = "Manage Permissions";
         
-        String name = ("b-fs-test.docx");
-        String name1 = ("c-fs-test.docx");
-        String name2 = ("d-fs-test.docx");
-        String name3 = ("e-fs-test.docx");
-        String name4 = ("a-fs-test.docx");
+        String name = ("b-fs-test1.docx");
+        String name1 = ("c-fs-test1.docx");
+        String name2 = ("d-fs-test1.docx");
+        String name3 = ("e-fs-test1.docx");
+        String name4 = ("a-fs-test1.docx");
         
         // Login as user1
         userLogin1();
 
         // Do a search for the letter 'a'
-        doSearch("test.docx");
+        doSearch("test1.docx");
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");        
@@ -163,7 +163,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         userLogin2();
         
         //Do a search for the letter 'a'
-        doSearch("fs-test.docx");     
+        doSearch("fs-test1.docx");     
         
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");
@@ -190,14 +190,14 @@ public class FacetedSearchPageTest1 extends AbstractUtils
                 
         String actionName2 = "View In Browser";        
         
-        String name = ("b-fs-test.docx");
-        String name1 = ("c-fs-test.docx");
+        String name = ("b-fs-test1.docx");
+        String name1 = ("c-fs-test1.docx");
         
         // Login as user2
         userLogin2();
 
         // Do a search for the letter 'a'
-        doSearch("test.docx");
+        doSearch("test1.docx");
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");        
@@ -239,7 +239,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
                 
         String actionName3 = "Edit Offline";      
                
-        String name = ("c-fs-test.docx");
+        String name = ("c-fs-test1.docx");
         
         // Login as user1
         userLogin1();
@@ -289,13 +289,13 @@ public class FacetedSearchPageTest1 extends AbstractUtils
                 
         String actionName4 = "Delete Document";        
         
-        String name = ("e-fs-test.docx");
+        String name = ("e-fs-test1.docx");
         
         // Login as user1
         userLogin1();
 
         // Do a search for the letter 'a'
-        doSearch("test.docx");
+        doSearch("test1.docx");
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");        
@@ -317,7 +317,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
         
         // Do a search for text
-        doSearch("test.docx");
+        doSearch("test1.docx");
 
         // Click the first action        
         facetedSearchPage.getResultByName(name).getActions().clickActionByNameAndDialogByButtonName(actionName4,"Yes");
@@ -354,7 +354,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
                 
         String actionName5 = "Manage Permissions";      
                
-        String name1 = ("c-fs-test.docx");
+        String name1 = ("c-fs-test1.docx");
         
         // Login as user1
         userLogin1();
@@ -547,7 +547,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         String actionName4 = "Delete Document";
         String actionName5 = "Manage Permissions";
         
-        String name = "b-fs-test.docx";
+        String name = "b-fs-test1.docx";
         
         // Login as user1        
         userLogin1();
