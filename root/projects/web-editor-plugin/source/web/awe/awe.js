@@ -992,7 +992,7 @@
                      var config = 
                      {
                         url: WEF.get("contextPath") + '/page/dologout',
-                        method: "GET",
+                        method: "POST",
                         successCallback: 
                         {
                            fn: function logoutSuccess(e)
