@@ -22,7 +22,7 @@ function main()
       model.node = nodeDetails.item.node;
       model.isContainer = nodeDetails.item.node.isContainer;
       model.paths = AlfrescoUtil.getPaths(nodeDetails, model.rootPage, model.rootLabelId);
-      model.showQuickShare = (!model.isContainer && model.showQuickShare && config.scoped["Social"]["quickshare"].getChildValue("url") != null).toString();
+      model.showQuickShare = (!model.isContainer && model.showQuickShare && (config.scoped["Social"]["quickshare"].getChildValue("url") != null) && quickShareStatus.enabled).toString();
       model.isWorkingCopy = (model.item && model.item.workingCopy && model.item.workingCopy.isWorkingCopy) ? true : false;
       model.showFavourite = (model.isWorkingCopy ? false : model.showFavourite).toString();
       model.showLikes = (model.isWorkingCopy ? false : model.showLikes).toString();
@@ -50,6 +50,7 @@ function main()
             rootPage : model.rootPage,
             rootLabelId : model.rootLabelId,
             showOnlyLocation: (model.showOnlyLocation == "true"),
+            showQuickShare: (model.showQuickShare == "true"),
             showFavourite : (model.showFavourite == "true"),
             showLikes : (model.showLikes == "true"),
             showComments : (model.showComments == "true"),

@@ -289,6 +289,10 @@
       <property name="extensionName" value="multiValue" />
    </bean>
 
+   <bean id="slingshot.scriptprocessor.quickShareStatus" parent="baseScriptExtension" class="org.alfresco.web.scripts.QuickShareStatus">
+      <property name="extensionName" value="quickShareStatus" />
+   </bean>
+
    <!-- Extension utils -->
    <bean id="slingshot.evaluator.utility" class="org.alfresco.web.extensibility.SlingshotEvaluatorUtil">
       <property name="serviceRegistry" ref="webframework.service.registry" />
