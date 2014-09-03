@@ -311,6 +311,15 @@
                text: this.msg("message.edit-cancel.success", displayName)
             });
          }
+	 
+         if (window.location.hash == "#newVersionUpload")
+         {
+            window.location.hash = "";
+            Alfresco.util.PopupManager.displayMessage(
+            {
+               text: this.msg("message.new-version-upload.success")
+            });
+         }
       },
 
       /**
