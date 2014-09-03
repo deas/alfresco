@@ -625,29 +625,6 @@ define(["dojo/_base/declare",
             messageArgs: Array.prototype.slice.call(arguments, 1)
          }, true);
          /* jshint +W059 */
-      },
-
-      /**
-       * This method takes an array of node objects and turns it into an array containing just the nodeRef for
-       * each node in the object.
-       *
-       * @param {Object[]} nodes
-       * @returns {Array} nodeRefArray
-       */
-      alfNodeRefArray: function alfresco_core_Core__alfNodeRefArray(nodes) {
-
-         if (!lang.isArray(nodes))
-         {
-            this.alfLog("error", "expected an array of nodes, but didn't receive one");
-         }
-
-         var nodeRefArray = array.map(nodes, function(node){
-            if (node.nodeRef) {
-               return node.nodeRef;
-            }
-         });
-
-         return nodeRefArray;
       }
    });
 });

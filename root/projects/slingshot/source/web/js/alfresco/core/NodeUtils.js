@@ -22,8 +22,9 @@
  * @module alfresco/core/NodeUtils
  * @author Dave Draper
  */
-define(["dojo/_base/lang"], 
-        function(lang) {
+define(["dojo/_base/lang",
+        "dojo/_base/array"], 
+        function(lang, array) {
    
    return {
       
@@ -58,6 +59,29 @@ define(["dojo/_base/lang"],
             e.message = "Invalid nodeRef: " + nodeRef;
             throw e;
          }
+      },
+
+      /**
+       * This method takes an array of node objects and turns it into an array containing just the nodeRef for
+       * each node in the object.
+       *
+       * @param {Object[]} nodes
+       * @returns {Array} nodeRefArray
+       */
+      alfNodeRefArray: function alfresco_core_NodeUtils__alfNodeRefArray(nodes) {
+
+         if (!lang.isArray(nodes))
+         {
+            this.alfLog("error", "expected an array of nodes, but didn't receive one");
+         }
+
+         var nodeRefArray = array.map(nodes, function(node){
+            if (node.nodeRef) {
+               return node.nodeRef;
+            }
+         });
+
+         return nodeRefArray;
       }
    };
 });
