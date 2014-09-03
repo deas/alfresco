@@ -96,7 +96,16 @@ define(["dojo/_base/declare",
        * @default null
        */
       rootNode: null,
-      
+
+      /**
+       * Used by callbacks from picker dialogs to store the picked target.
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      copyMoveTarget: null,
+
       /**
        * Sets up the subscriptions for the NavigationService
        * 
@@ -877,27 +886,129 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * Handles requests to copy the supplied document to another location. This function currently
-       * delegates handling of the request to the Alfresco.DocLibToolbar by calling
-       * [callLegacyActionHandler]{@link module:alfresco/services/ActionsService#callLegacyActionHandler}
+       * Handles requests to copy the supplied document to another location.
        * 
        * @instance
-       * @param {object} response The response from the request
+       * @param {object} payload
        * @param {object} document The document edit offline.
        */
       onActionCopyTo: function alfresco_services_ActionService__onActionCopyTo(payload, document) {
 
-         // Create a dialog containing the picker...
-         // Root selector, explorer
+         // TODO: This should accept multiple documents/
+         var responseTopic = this.generateUuid() + "_ALF_COPY_LOCATION_PICKED",
+            publishPayload = {
+               nodes: [document.nodeRef],
+               nodeRefTarget: this.copyMoveTarget,
+               document: document
+            };
+         this._actionCopyHandle = this.alfSubscribe(responseTopic, lang.hitch(this, this.onActionCopyToLocationSelected), true);
 
+         this.alfSubscribe("ALF_ITEM_SELECTED", lang.hitch(this, this.onActionCopyAddItem , true));
+
+         // Create a dialog containing the picker...
          var dialog = new AlfDialog({
             generatePubSubScope: true,
-            title: "Select Location to Copy To",
+            title: this.message("services.ActionService.copyTo.title"),
             widgetsContent: [
                {
                   name: "alfresco/pickers/Picker",
                   config: {
-
+                     widgetsForRootPicker: [
+                        {
+                           name: "alfresco/menus/AlfVerticalMenuBar",
+                           config: {
+                              widgets: [
+                                 {
+                                    name: "alfresco/menus/AlfMenuBarItem",
+                                    config: {
+                                       label: "My Files",
+                                       publishTopic: "ALF_ADD_PICKER",
+                                       publishPayload: {
+                                          currentPickerDepth: 0,
+                                          picker: {
+                                             name: "alfresco/pickers/ContainerListPicker",
+                                             config: {
+                                                nodeRef: "alfresco://user/home",
+                                                path: "/"
+                                             }
+                                          }
+                                       }
+                                    }
+                                 },
+                                 {
+                                    name: "alfresco/menus/AlfMenuBarItem",
+                                    config: {
+                                       label: "Shared Files",
+                                       publishTopic: "ALF_ADD_PICKER",
+                                       publishPayload: {
+                                          currentPickerDepth: 0,
+                                          picker: {
+                                             name: "alfresco/pickers/ContainerListPicker",
+                                             config: {
+                                                nodeRef: "alfresco://company/shared",
+                                                path: "/"
+                                             }
+                                          }
+                                       }
+                                    }
+                                 },
+                                 {
+                                    name: "alfresco/menus/AlfMenuBarItem",
+                                    config: {
+                                       label: "Repository",
+                                       publishTopic: "ALF_ADD_PICKER",
+                                       publishPayload: {
+                                          currentPickerDepth: 0,
+                                          picker: {
+                                             name: "alfresco/pickers/ContainerListPicker",
+                                             config: {
+                                                nodeRef: "alfresco://company/home",
+                                                path: "/"
+                                             }
+                                          }
+                                       }
+                                    }
+                                 },
+                                 {
+                                    name: "alfresco/menus/AlfMenuBarItem",
+                                    config: {
+                                       label: "Recent Sites",
+                                       publishTopic: "ALF_ADD_PICKER",
+                                       publishPayload: {
+                                          currentPickerDepth: 0,
+                                          picker: {
+                                             name: "alfresco/pickers/SingleItemPicker",
+                                             config: {
+                                                currentPickerDepth: 1,
+                                                requestItemsTopic: "ALF_GET_RECENT_SITES",
+                                                subPicker: "alfresco/pickers/ContainerListPicker"
+                                             }
+                                          }
+                                       }
+                                    }
+                                 },
+                                 {
+                                    name: "alfresco/menus/AlfMenuBarItem",
+                                    config: {
+                                       label: "Favorite Sites",
+                                       publishTopic: "ALF_ADD_PICKER",
+                                       publishPayload: {
+                                          currentPickerDepth: 0,
+                                          picker: {
+                                             name: "alfresco/pickers/SingleItemPicker",
+                                             config: {
+                                                currentPickerDepth: 1,
+                                                requestItemsTopic: "ALF_GET_FAVOURITE_SITES",
+                                                subPicker: "alfresco/pickers/ContainerListPicker"
+                                             }
+                                          }
+                                       }
+                                    }
+                                 }
+                              ]
+                           }
+                        }
+                     ],
                   }
                }
             ],
@@ -906,7 +1017,8 @@ define(["dojo/_base/declare",
                   name: "alfresco/buttons/AlfButton",
                   config: {
                      label: "OK",
-                     publishTopic: "ALF_LOCATION_PICKED"
+                     publishTopic: responseTopic,
+                     publishPayload: publishPayload
                   }
                },
                {
@@ -919,11 +1031,65 @@ define(["dojo/_base/declare",
             ]
          });
          dialog.show();
-
-
-         // this.callLegacyActionHandler("onActionCopyTo", document);
       },
-      
+
+      /**
+       * Handles the response to an item being clicked.
+       *
+       * @instance
+       * @param payload
+       */
+      onActionCopyAddItem: function alfresco_services_ActionService__onActionCopyAddItem(payload) {
+         this.copyMoveTarget = payload.nodeRef;
+      },
+
+      /**
+       * Handles the actual copy call - triggered once the location has been selected by
+       * [onActionCopyTo]{@link module:alfresco/services/ActionsService#onActionCopyTo}
+       *
+       * @instance
+       * @param payload
+       * @param document
+       */
+      onActionCopyToLocationSelected: function alfresco_services_ActionService__onActionCopyToLocationSelected(payload, document) {
+         if (this._actionCopyHandle != null)
+         {
+            this.alfUnsubscribe(this._actionCopyHandle);
+         }
+         else
+         {
+            this.alfLog("warn", "A subscription handle was not found for picking copy location - this could be a potential memory leak", this);
+         }
+
+         var nodeRefs = array.map(payload.nodes, function(item) {
+            return item.nodeRef;
+         });
+         var responseTopic = this.generateUuid();
+         var subscriptionHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onActionCopyToSuccess), true);
+         var nodeRefTarget = payload.nodeRefTarget
+
+         this.serviceXhr({
+            alfTopic: responseTopic,
+            subscriptionHandle: subscriptionHandle,
+            url: AlfConstants.PROXY_URI + "slingshot/doclib/action/copy-to/node/" + payload.nodes[0],
+            method: "POST",
+            data: {
+               nodeRefs: nodeRefs,
+               parentId: nodeRefTarget
+            }
+         });
+      },
+
+      /**
+       * What should we do when the copy action succeeds?
+       *
+       * @instance
+       * @param payload
+       */
+      onActionCopyToSuccess: function alfresco_services_ActionService__onActionCopyToSuccess(payload) {
+         this.onActionCompleteSuccess(arguments);
+      },
+
       /**
        * Handles requests to move the supplied document to another location. This function currently
        * delegates handling of the request to the Alfresco.DocLibToolbar by calling
@@ -947,7 +1113,6 @@ define(["dojo/_base/declare",
        * @param {object} document The document edit offline.
        */
       onActionDelete: function alfresco_services_ActionService__onActionDelete(payload, documents) {
-         // this.callLegacyActionHandler("onActionDelete", document);
 
          var responseTopic = this.generateUuid();
          this._actionDeleteHandle = this.alfSubscribe(responseTopic, lang.hitch(this, "onActionDeleteConfirmation"), true);
@@ -1062,6 +1227,16 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       onActionDeleteSuccess: function alfresco_services_ActionService__onActionDeleteSuccess(payload) {
+         this.onActionCompleteSuccess(arguments);
+      },
+
+      /**
+       * Used by action handlers. Deletes subscription handle and reloads doclist.
+       *
+       * @instance
+       * @param {object} payload
+       */
+      onActionCompleteSuccess: function alfresco_services_ActionService__onActionCompleteSuccess(payload) {
          var subscriptionHandle = lang.getObject("requestConfig.subscriptionHandle", false, payload);
          if (subscriptionHandle != null)
          {
@@ -1069,7 +1244,7 @@ define(["dojo/_base/declare",
          }
          this.alfPublish("ALF_DOCLIST_RELOAD_DATA", {});
       },
-      
+
       /**
        * Handles requests to start a new workflow using the supplied document. This function currently
        * delegates handling of the request to the Alfresco.DocLibToolbar by calling
