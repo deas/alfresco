@@ -165,7 +165,7 @@
                         }
                      ]
                   }
-               }
+               },
                {
                   "name": "alfresco/menus/AlfMenuBarPopup",
                   "config": {
@@ -200,7 +200,7 @@
                                     "name": "alfresco/menus/AlfMenuItem",
                                     "config": {
                                        "id": "MI2",
-                                       "label": "Shouldn\'t appear (old property)",
+                                       "label": "Should not appear (old property)",
                                        "publishTopic": "MI2",
                                        "renderFilter": [
                                           {

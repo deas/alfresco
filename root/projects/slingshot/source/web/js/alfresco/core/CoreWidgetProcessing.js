@@ -86,10 +86,13 @@ define(["dojo/_base/declare",
        * @param {number} index The index of the widget configuration in the array that it was taken from
        */
       processWidget: function alfresco_core_CoreWidgetProcessing__processWidget(rootNode, widgetConfig, index) {
-         if (widgetConfig != null && this.filterWidget(widgetConfig, index))
+         if (widgetConfig != null)
          {
-            var domNode = this.createWidgetDomNode(widgetConfig, rootNode, widgetConfig.className);
-            this.createWidget(widgetConfig, domNode, this._registerProcessedWidget, this, index);
+            if (this.filterWidget(widgetConfig, index))
+            {
+               var domNode = this.createWidgetDomNode(widgetConfig, rootNode, widgetConfig.className);
+               this.createWidget(widgetConfig, domNode, this._registerProcessedWidget, this, index);
+            }
          }
          else
          {
