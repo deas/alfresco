@@ -44,8 +44,8 @@ module.exports = function (grunt, alf) {
          test: {
             files: [alf.jsFiles],
             tasks: [
-               'shell:jsdoc',
-               'intern:dev'
+               'intern:dev',
+               'shell:jsdoc'
             ],
             options: {
                interrupt: true

@@ -17,6 +17,9 @@ define([],
       },
 
       '/test/fail': function (test) {
+         var error = test.error;
+         var message = error.name + ': ' + (error.message || 'Unknown error');
+         console.error('TEST FAILURE: ' + (hasGrouping ? test.name : test.id) + ' >> ' + message);
          failed.push(test);
       },
 
