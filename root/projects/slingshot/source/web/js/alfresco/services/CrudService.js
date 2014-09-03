@@ -90,7 +90,15 @@ define(["dojo/_base/declare",
             message: message
          });
 
-         this.alfPublish("ALF_DOCLIST_RELOAD_DATA");
+         var noRefresh = lang.getObject("data.noRefresh", false, originalRequestConfig);
+         if (noRefresh != null && noRefresh === true)
+         {
+            // Don't make a refresh request...
+         }
+         else
+         {
+            this.alfPublish("ALF_DOCLIST_RELOAD_DATA");
+         }
       },
 
       /**
@@ -304,14 +312,7 @@ define(["dojo/_base/declare",
        * @param {object} payload An object containing the the deletion details.
        */
       onDeleteConfirmation: function alfresco_services_CrudService__onDeleteConfirmation(payload) {
-         if (this._deleteHandle != null)
-         {
-            this.alfUnsubscribe(this._deleteHandle);
-         }
-         else
-         {
-            this.alfLog("warn", "A subscription handle was not found for confirming delete actions - this could be a potential memory leak", this);
-         }
+         this.alfUnsubscribeSaveHandles([this._deleteHandle]);
          this.performDelete(payload.url, payload.responseTopic, payload.successMessage);
       }
    });

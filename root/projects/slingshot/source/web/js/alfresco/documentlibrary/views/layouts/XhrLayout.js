@@ -116,14 +116,7 @@ define(["dojo/_base/declare",
        * @param {object} payload 
        */
       onXhrData: function alfresco_documentlibrary_views_layouts_XhrLayout__onXhrData(payload) {
-         if (this._xhrDataRequestHandle != null)
-         {
-            this.alfUnsubscribe(this._xhrDataRequestHandle);
-         }
-         else
-         {
-            this.alfLog("warn", "A subscription handle was not found for processing XHR layout data - this could be a potential memory leak", this);
-         }
+         this.alfUnsubscribeSaveHandles([this._xhrDataRequestHandle]);
          if (lang.exists("response.item", payload)) 
          {
             this.currentItem = payload.response.item;

@@ -461,6 +461,26 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * This is a helper function for unsubscribing from subscription handles that are set-up with unique
+       * topics to guarantee recipients. 
+       *
+       * @instance
+       * @param {array} handles The handles to unsubscribe
+       */
+      alfUnsubscribeSaveHandles: function alfresco_core_Core__alfUnsubscribeSaveHandles(handles) {
+         array.forEach(handles, function(handle, index) {
+            if (handle != null)
+            {
+               this.alfUnsubscribe(handle);
+            }
+            else
+            {
+               this.alfLog("warn", "A subscription handle was not found - this could be a potential memory leak", this);
+            }
+         }, this);
+      },
+
+      /**
        * This function will override a destroy method if available (e.g. if this has been mixed into a
        * widget instance) so that any subscriptions that have been made can be removed. This is necessary
        * because subscriptions are not automatically cleaned up when the widget is destroyed.

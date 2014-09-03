@@ -167,15 +167,7 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       onChangeSuccess: function alfresco_renderers_PublishingDropDownMenu__onChangeSuccess(payload) {
-         if (this._updateSuccessHandle != null)
-         {
-            this.alfUnsubscribe(this._updateSuccessHandle);
-         }
-         else
-         {
-            this.alfLog("warn", "A subscription handle was not found for confirming publishing actions - this could be a potential memory leak", this);
-         }
-
+         this.alfUnsubscribeSaveHandles([this._updateSuccessHandle,this._updateFailureHandle]);
          domClass.add(this.processingNode, "hidden");
          domClass.remove(this.successNode, "hidden");
          this.alfLog("log", "Update request success", payload)
@@ -192,17 +184,9 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       onChangeFailure: function alfresco_renderers_PublishingDropDownMenu__onChangeFailure(payload) {
-         if (this._updateFailureHandle != null)
-         {
-            this.alfUnsubscribe(this._updateFailureHandle);
-         }
-         else
-         {
-            this.alfLog("warn", "A subscription handle was not found for confirming publishing actions - this could be a potential memory leak", this);
-         }
+         this.alfUnsubscribeSaveHandles([this._updateSuccessHandle,this._updateFailureHandle]);
          domClass.add(this.processingNode, "hidden");
          domClass.remove(this.warningNode, "hidden");
-
          this.alfLog("log", "Update request success", payload)
       }
    });

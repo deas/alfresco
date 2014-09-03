@@ -228,14 +228,7 @@ define(["dojo/_base/declare",
        */
       onFileUploadComplete: function alfresco_services_ContentService__onFileUploadComplete() {
          this.alfLog("log", "Upload complete");
-         if (this._uploadSubHandle != null)
-         {
-            this.alfUnsubscribe(this._uploadSubHandle);
-         }
-         else
-         {
-            this.alfLog("warn", "A subscription handle was not found for processing file upload completion - this could be a potential memory leak", this);
-         }
+         this.alfUnsubscribeSaveHandles([this._uploadSubHandle]);
          this.alfPublish(this.reloadDataTopic, {});
       },
       

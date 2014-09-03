@@ -256,15 +256,7 @@ define(["dojo/_base/declare",
        * @param {object} payload An object containing the details of the site to be deleted.
        */
       onActionDeleteSiteConfirmation: function alfresco_services_SiteService__onActionDeleteSiteConfirmation(payload) {
-
-         if (this._actionDeleteHandle != null)
-         {
-            this.alfUnsubscribe(this._actionDeleteHandle);
-         }
-         else
-         {
-            this.alfLog("warn", "A subscription handle was not found for confirming delete actions - this could be a potential memory leak", this);
-         }
+         this.alfUnsubscribeSaveHandles([this._actionDeleteHandle]);
 
          var responseTopic = this.generateUuid();
          var subscriptionHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onActionDeleteSiteSuccess"), false);

@@ -588,9 +588,17 @@ var main = {
                                                                      width: "",
                                                                      widgets: [
                                                                         {
-                                                                           name: "alfresco/renderers/Property",
+                                                                           name: "alfresco/renderers/InlineEditProperty",
                                                                            config: {
-                                                                              propertyToRender: "displayName"
+                                                                              propertyToRender: "displayName",
+                                                                              publishTopic: "ALF_CRUD_UPDATE",
+                                                                              publishPayloadType: "PROCESS",
+                                                                              publishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                              publishPayloadItemMixin: true,
+                                                                              publishPayload: {
+                                                                                 url: "api/solr/facet-config/{filterID}",
+                                                                                 noRefresh: true
+                                                                              }
                                                                            }
                                                                         }
                                                                      ]
@@ -603,9 +611,26 @@ var main = {
                                                                      width: "",
                                                                      widgets: [
                                                                         {
-                                                                           name: "alfresco/renderers/Property",
+                                                                           name: "alfresco/renderers/InlineEditSelect",
                                                                            config: {
-                                                                              propertyToRender: "facetQName"
+                                                                              propertyToRender: "facetQName",
+                                                                              publishTopic: "ALF_CRUD_UPDATE",
+                                                                              publishPayloadType: "PROCESS",
+                                                                              publishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                              publishPayloadItemMixin: true,
+                                                                              publishPayload: {
+                                                                                 url: "api/solr/facet-config/{filterID}",
+                                                                                 noRefresh: true
+                                                                              },
+                                                                              optionsConfig: {
+                                                                                 publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
+                                                                                 publishPayload: {
+                                                                                    url: url.context + "/service/faceted-search/facet-qname-options",
+                                                                                    itemsAttribute: "options",
+                                                                                    labelAttribute: "label",
+                                                                                    valueAttribute: "value"
+                                                                                 }
+                                                                              }
                                                                            }
                                                                         }
                                                                      ]
@@ -618,9 +643,18 @@ var main = {
                                                                      width: "",
                                                                      widgets: [
                                                                         {
-                                                                           name: "alfresco/renderers/Property",
+                                                                           name: "alfresco/renderers/InlineEditSelect",
                                                                            config: {
-                                                                              propertyToRender: "displayControl"
+                                                                              propertyToRender: "displayControl",
+                                                                              optionsConfig: {
+                                                                                 publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
+                                                                                 publishPayload: {
+                                                                                    url: url.context + "/service/faceted-search/facet-rendering-options",
+                                                                                    itemsAttribute: "options",
+                                                                                    labelAttribute: "label",
+                                                                                    valueAttribute: "value"
+                                                                                 }
+                                                                              }
                                                                            }
                                                                         }
                                                                      ]

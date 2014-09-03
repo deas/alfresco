@@ -106,6 +106,7 @@ define({
       'tests/alfresco/renderers/DateLinkTest',
       'tests/alfresco/renderers/FileTypeTest',
       'tests/alfresco/renderers/IndicatorsTest',
+      'tests/alfresco/renderers/InlineEditPropertyTest',
       'tests/alfresco/renderers/PropertyTest',
       'tests/alfresco/renderers/PropertyLinkTest',
       'tests/alfresco/renderers/PublishingDropDownMenuTest',
@@ -126,7 +127,7 @@ define({
     * @instance
     * @type [string]
     */
-   localOnlyFunctionalSuites: ['tests/alfresco/CodeCoverageBalancer'],
+   localOnlyFunctionalSuites: [], // ['tests/alfresco/CodeCoverageBalancer'],
 
    /**
     * This is the full array of functional test suites for local tests

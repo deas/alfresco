@@ -647,14 +647,7 @@ define(["dojo/_base/declare",
        * @param {object} payload The published information
        */
       onPubSubOptions: function alfresco_forms_controls_BaseFormControl__onPubSubOptions(payload) {
-         if (this._pubSubOptionsHandle != null)
-         {
-            this.alfUnsubscribe(this._pubSubOptionsHandle);
-         }
-         else
-         {
-            this.alfLog("warn", "A subscription handle was not found for processing pubSubOptions - this could be a potential memory leak", this);
-         }
+         this.alfUnsubscribeSaveHandles([this._pubSubOptionsHandle]);
          if (payload.options != null)
          {
             this.setOptions(payload.options);

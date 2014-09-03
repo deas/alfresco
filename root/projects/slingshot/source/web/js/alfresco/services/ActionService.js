@@ -1052,14 +1052,7 @@ define(["dojo/_base/declare",
        * @param document
        */
       onActionCopyToLocationSelected: function alfresco_services_ActionService__onActionCopyToLocationSelected(payload, document) {
-         if (this._actionCopyHandle != null)
-         {
-            this.alfUnsubscribe(this._actionCopyHandle);
-         }
-         else
-         {
-            this.alfLog("warn", "A subscription handle was not found for picking copy location - this could be a potential memory leak", this);
-         }
+         this.alfUnsubscribeSaveHandles([this._actionCopyHandle]);
 
          var nodeRefs = array.map(payload.nodes, function(item) {
             return item.nodeRef;
@@ -1194,14 +1187,7 @@ define(["dojo/_base/declare",
        * @param {object} payload An object containing the details of the document(s) to be deleted.
        */
       onActionDeleteConfirmation: function alfresco_services_ActionService__onActionDeleteConfirmation(payload) {
-         if (this._actionDeleteHandle != null)
-         {
-            this.alfUnsubscribe(this._actionDeleteHandle);
-         }
-         else
-         {
-            this.alfLog("warn", "A subscription handle was not found for confirming delete actions - this could be a potential memory leak", this);
-         }
+         this.alfUnsubscribeSaveHandles([this._actionDeleteHandle]);
 
          var nodeRefs = array.map(payload.nodes, function(item) {
             return item.nodeRef;

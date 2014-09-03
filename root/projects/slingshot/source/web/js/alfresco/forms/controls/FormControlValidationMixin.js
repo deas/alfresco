@@ -410,14 +410,7 @@ define(["dojo/_base/declare",
        * @param {object} payload The payload containing the items to iterate through looking for an existing use of the form field value
        */
       onValidationUniqueResponse: function alfresco_forms_controls_FormControlValidationMixin__onValidationUniqueResponse(payload) {
-         if (this._validateUniqueHandle != null)
-         {
-            this.alfUnsubscribe(this._validateUniqueHandle);
-         }
-         else
-         {
-            this.alfLog("warn", "A subscription handle was not found for processing pubSubOptions - this could be a potential memory leak", this);
-         }
+         this.alfUnsubscribeSaveHandles([this._validateUniqueHandle]);
          var notUnique = false;
 
          // Grab the previously saved configuration from the instance and then remove it...
