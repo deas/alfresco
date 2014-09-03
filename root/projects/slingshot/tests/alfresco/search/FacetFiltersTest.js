@@ -213,7 +213,7 @@ define(["intern!object",
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_APPLY_FACET_FILTER"))
          .then(
             function(){TestCommon.log(testname,214,"Clicking a facet should publish");},
-            function(){fail("The facet did not publish on 'ALF_APPLY_FACET_FILTER'");}
+            function(){assert(false, "The facet did not publish on 'ALF_APPLY_FACET_FILTER'");}
          )
          .end()
 
@@ -233,7 +233,7 @@ define(["intern!object",
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_REMOVE_FACET_FILTER"))
          .then(
             function(){TestCommon.log(testname,234,"Clicking a facet to deselect should publish");},
-            function(){fail("The facet deselection did not publish on 'ALF_REMOVE_FACET_FILTER'");}
+            function(){assert(false, "The facet deselection did not publish on 'ALF_REMOVE_FACET_FILTER'");}
          )
          .end()
 
@@ -322,7 +322,7 @@ define(["intern!object",
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_APPLY_FACET_FILTER"))
          .then(
             function(){TestCommon.log(testname,323,"Clicking a facet with the keyboard should publish");},
-            function(){fail("The facet did not publish on 'ALF_APPLY_FACET_FILTER' when clicked with the keyboard");}
+            function(){assert(false, "The facet did not publish on 'ALF_APPLY_FACET_FILTER' when clicked with the keyboard");}
          )
          .end()
 
@@ -341,7 +341,7 @@ define(["intern!object",
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_REMOVE_FACET_FILTER"))
          .then(
             function(){TestCommon.log(testname,342,"Clicking a facet using the keyboard to deselect should publish");},
-            function(){fail("The facet deselection using the keyboard did not publish on 'ALF_REMOVE_FACET_FILTER'");}
+            function(){assert(false, "The facet deselection using the keyboard did not publish on 'ALF_REMOVE_FACET_FILTER'");}
          )
          .end()
 

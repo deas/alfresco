@@ -429,7 +429,7 @@ define(["intern/dojo/node!fs",
        * @param {string} desc The test description
        */
       log: function(test, line, desc) {
-         console.log(">> " + test + " [" + line + "]: " + desc);
+         console.log(">> " + test + ": " + desc);
       }
    };
 });

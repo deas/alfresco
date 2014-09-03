@@ -21,11 +21,11 @@
  * @author Dave Draper
  */
 define(["intern!object",
-        "intern/chai!expect",
         "intern/chai!assert",
+        "intern/chai!expect",
         "require",
         "alfresco/TestCommon"], 
-        function (registerSuite, expect, assert, require, TestCommon) {
+        function (registerSuite, assert, expect, require, TestCommon) {
 
    registerSuite({
       name: 'DateLink Test',
@@ -59,21 +59,27 @@ define(["intern!object",
          // Click the first date
          .findByCssSelector("#CUSTOM_PROPS .value")
          .click()
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_NAVIGATE_TO_PAGE"))
-         .then(function(result) {
-            TestCommon.log(testname,65,"Check the date click published as expected");
-            expect(result).to.equal(true, "The datelink did not publish on 'ALF_NAVIGATE_TO_PAGE' after mouse clicks");
-         })
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "type", "SHARE_PAGE_RELATIVE"))
-         .then(function(result) {
-            TestCommon.log(testname,70,"Check the date click published the payload as expected");
-            expect(result).to.equal(true, "The datelink did not publish the payload with 'type' as 'SHARE_PAGE_RELATIVE'");
-         })
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "url", "/1/2/3/4/5"))
-         .then(function(result) {
-            TestCommon.log(testname,75,"Check the date click published the payload as expected");
-            expect(result).to.equal(true, "The datelink did not publish the payload with 'url' as '/1/2/3/4/5'");
-         })
+         .end()
+
+         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_NAVIGATE_TO_PAGE"))
+         .then(
+            function(){TestCommon.log(testname,65,"Check the date click published as expected")},
+            function(){assert(false, "The datelink did not publish on 'ALF_NAVIGATE_TO_PAGE' after mouse clicks")}
+         )
+         .end()
+
+         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "type", "SHARE_PAGE_RELATIVE"))
+         .then(
+            function(){TestCommon.log(testname,70,"Check the date click published the payload as expected")},
+            function(){assert(false, "The datelink did not publish the payload with 'type' as 'SHARE_PAGE_RELATIVE'")}
+         )
+         .end()
+
+         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "/1/2/3/4/5"))
+         .then(
+            function(){TestCommon.log(testname,75,"Check the date click published the payload as expected")},
+            function(){assert(false, "The datelink did not publish the payload with 'url' as '/1/2/3/4/5'")}
+         )
          .end()
 
          // Post the coverage results...
