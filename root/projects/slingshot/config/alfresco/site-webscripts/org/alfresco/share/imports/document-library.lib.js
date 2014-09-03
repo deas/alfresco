@@ -934,6 +934,10 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                                                    id: "DOCLIB_CONFIG_MENU_VIEW_SELECT_GROUP",
                                                    name: "alfresco/documentlibrary/AlfViewSelectionGroup"
                                                 },
+                                                // The actions to toggle full-screen and full-window have been left in place
+                                                // for the time being, however the function is not working correctly due to
+                                                // issues with absolutely positioned popups used for menus that are not shown.
+                                                // Theses issues need to be resolved before this can be released.
                                                 {
                                                    id: "DOCLIB_CONFIG_MENU_VIEW_MODE_GROUP",
                                                    name: "alfresco/menus/AlfMenuGroup",
