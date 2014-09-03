@@ -136,7 +136,7 @@ define(["dojo/_base/declare",
        * @param {element} domNode The DOM node to add the value to
        */
       addValueToLog: function alfresco_testing_Subscription__addValueToLog(value, cellNode, depth) {
-         if (depth < 5)
+         if (depth < 6)
          {
             if (value == null)
             {

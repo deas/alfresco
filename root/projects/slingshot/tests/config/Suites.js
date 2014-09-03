@@ -51,6 +51,8 @@ define({
       'tests/alfresco/core/VisibilityConfigTest',
       'tests/alfresco/core/WidgetCreationTest',
 
+      'tests/alfresco/creation/WidgetConfigTest',
+
       'tests/alfresco/documentlibrary/DocumentListTest',
       'tests/alfresco/documentlibrary/DocumentSelectorTest',
       'tests/alfresco/documentlibrary/SearchListTest',
@@ -60,7 +62,7 @@ define({
 
       'tests/alfresco/footer/FooterTest',
 
-      'tests/alfresco/forms/DynamicFormTest.js',,
+      'tests/alfresco/forms/DynamicFormTest.js',
       'tests/alfresco/forms/FormsTest',
       'tests/alfresco/forms/SingleTextFieldFormTest',
       // 'tests/alfresco/forms/controls/DocumentPickerTest', // TODO: NEEDS FIXING - WIDGET POSSIBLY BROKEN

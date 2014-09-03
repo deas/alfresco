@@ -30,14 +30,15 @@ define(["intern!object",
 
    registerSuite({
       name: 'Page Creator Test',
-      'PageCreator1': function () {
+      'Basic Test': function () {
 
          // var command = new Command(session);
          var browser = this.remote;
 
-         var testname = "PageCreator1";
+         var testname = "BasicTest";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/creation/page_models/WidgetConfig_TestPage.json", testname)
 
+         // 1. Drag and drop the single item from the palette onto the drop-zone control...
          .findByCssSelector("#dojoUnique1 > .title")
             .then(function(element) {
                browser.moveMouseTo(element)
@@ -51,7 +52,29 @@ define(["intern!object",
                browser.moveMouseTo(element)
             })
             .releaseMouseButton()
-            .sleep(5000)
+            .end()
+
+         // 2. Select the dropped widget by clicking on the drag handle...
+         .findByCssSelector(".dojoDndHandle")
+            .click()
+            .end()
+
+         // 3. Check that the validation text box is displayed...
+         .findByCssSelector(".alfresco-forms-controls-DojoValidationTextBox .dijitInputContainer input")
+            .getProperty('value')
+            .then(function(resultText) {
+               assert(resultText == "Value1", "Test #2a - The initial value was not set correctly: " + resultText);
+            })
+            .end()
+
+         // 4. Save the config...
+         .findByCssSelector(".alfresco-creation-WidgetConfig .confirmationButton > span")
+            .click()
+            .end()
+
+         // 5. Save the form...
+         .findByCssSelector("#FORM .confirmationButton > span")
+            .click()
             .end()
 
          // Post the coverage results...

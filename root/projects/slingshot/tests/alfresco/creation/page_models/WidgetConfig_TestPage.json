@@ -27,8 +27,19 @@
                            "type": [ "widget" ],
                            "name": "Form",
                            "module": "alfresco/forms/Form",
-                           "defaultConfig": {},
-                           "widgetsForConfig": [],
+                           "defaultConfig": {
+                              "label": "Value1"
+                           },
+                           "widgetsForConfig": [
+                              {
+                                 "name": "alfresco/forms/controls/DojoValidationTextBox",
+                                 "config": {
+                                    "name": "defaultConfig.label",
+                                    "label": "Field1",
+                                    "value": "Value1"
+                                 }
+                              }
+                           ],
                            "previewWidget": false,
                            "widgetsForDisplay": [
                               {
@@ -43,14 +54,27 @@
                   }
                },
                {
-                  "id": "ROOT_DROP_ZONE",
-                  "name": "alfresco/forms/controls/DropZoneControl",
+                  "id": "FORM",
+                  "name": "alfresco/forms/Form",
                   "widthPc": 33,
                   "config": {
-                     "label": "Widgets",
-                     "name": "widgets",
-                     "value": null,
-                     "acceptTypes": ["widget"]
+                     "scopeFormControls": false,
+                     "okButtonLabel": "Save",
+                     "okButtonPublishTopic": "WIDGET_CONFIG_POST",
+                     "okButtonPublishGlobal": true,
+                     "showCancelButton": false,
+                     "widgets": [
+                        {
+                           "id": "ROOT_DROP_ZONE",
+                           "name": "alfresco/forms/controls/DropZoneControl",
+                           "config": {
+                              "label": "Widgets",
+                              "name": "widgets",
+                              "value": null,
+                              "acceptTypes": ["widget"]
+                           }
+                        }
+                     ]
                   }
                },
                {
