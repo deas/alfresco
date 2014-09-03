@@ -48,7 +48,7 @@ function getFormDefinition(canEditFilterId) {
             errorMessage: msg.get("faceted-search-config.filterId.error.isUse"),
             publishTopic: "ALF_CRUD_GET_ALL",
             publishPayload: {
-               url: "api/solr/facet-config"
+               url: "api/facet/facet-config"
             }
          }
       ];
@@ -61,7 +61,7 @@ function getFormDefinition(canEditFilterId) {
          config: {
             fieldId: "HIDDEN_UPDATE_URL",
             name: "url",
-            value: "api/solr/facet-config",
+            value: "api/facet/facet-config",
             visibilityConfig: {
                initialValue: false
             }
@@ -513,7 +513,7 @@ var main = {
                               config: {
                                  loadDataPublishTopic: "ALF_CRUD_GET_ALL",
                                  loadDataPublishPayload: {
-                                    url: "api/solr/facet-config"
+                                    url: "api/facet/facet-config"
                                  },
                                  itemsProperty: "facets",
                                  widgets: [
@@ -614,14 +614,14 @@ var main = {
                                                                      moveUpPublishPayloadModifiers: ["processCurrentItemTokens"],
                                                                      moveUpPublishPayloadItemMixin: true,
                                                                      moveUpPublishPayload: {
-                                                                        url: "api/solr/facet-config/{filterID}?relativePos=-1"
+                                                                        url: "api/facet/facet-config/{filterID}?relativePos=-1"
                                                                      },
                                                                      moveDownPublishTopic: "ALF_CRUD_UPDATE",
                                                                      moveDownPublishPayloadType: "PROCESS",
                                                                      moveDownPublishPayloadModifiers: ["processCurrentItemTokens"],
                                                                      moveDownPublishPayloadItemMixin: true,
                                                                      moveDownPublishPayload: {
-                                                                        url: "api/solr/facet-config/{filterID}?relativePos=1"
+                                                                        url: "api/facet/facet-config/{filterID}?relativePos=1"
                                                                      }
                                                                   }
                                                                }
@@ -659,7 +659,7 @@ var main = {
                                                                      publishPayloadItemMixin: false,
                                                                      publishPayload: {
                                                                         filterID: "{filterID}",
-                                                                        url: "api/solr/facet-config/{filterID}",
+                                                                        url: "api/facet/facet-config/{filterID}",
                                                                         noRefresh: true,
                                                                         successMessage: msg.get("faceted-search-config.update.successMessage")
                                                                      }
@@ -685,7 +685,7 @@ var main = {
                                                                      publishPayloadItemMixin: false,
                                                                      publishPayload: {
                                                                         filterID: "{filterID}",
-                                                                        url: "api/solr/facet-config/{filterID}",
+                                                                        url: "api/facet/facet-config/{filterID}",
                                                                         noRefresh: true,
                                                                         successMessage: msg.get("faceted-search-config.update.successMessage")
                                                                      },
@@ -730,7 +730,7 @@ var main = {
                                                                      publishPayloadItemMixin: false,
                                                                      publishPayload: {
                                                                         filterID: "{filterID}",
-                                                                        url: "api/solr/facet-config/{filterID}",
+                                                                        url: "api/facet/facet-config/{filterID}",
                                                                         noRefresh: true,
                                                                         successMessage: msg.get("faceted-search-config.update.successMessage")
                                                                      },
@@ -760,7 +760,7 @@ var main = {
                                                                      publishPayloadItemMixin: false,
                                                                      publishPayload: {
                                                                         filterID: "{filterID}",
-                                                                        url: "api/solr/facet-config/{filterID}",
+                                                                        url: "api/facet/facet-config/{filterID}",
                                                                         noRefresh: true,
                                                                         successMessage: msg.get("faceted-search-config.update.successMessage")
                                                                      },
@@ -850,7 +850,7 @@ var main = {
                                                                      publishPayloadType: "PROCESS",
                                                                      publishPayload: {
                                                                         requiresConfirmation: true,
-                                                                        url: "api/solr/facet-config/{filterID}",
+                                                                        url: "api/facet/facet-config/{filterID}",
                                                                         confirmationTitle: msg.get("faceted-search-config.delete.confirmationTitle"),
                                                                         confirmationPrompt: msg.get("faceted-search-config.delete.confirmationPrompt"),
                                                                         successMessage: msg.get("faceted-search-config.delete.successMessage")

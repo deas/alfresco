@@ -168,7 +168,7 @@ var sideBarMenu = {
 
 // Make a request to the Repository to get the configured facets to use in search...
 var rawFacets = [];
-var result = remote.call("/api/solr/facet-config");
+var result = remote.call("/api/facet/facet-config");
 if (result.status.code == status.STATUS_OK)
 {
    rawFacets = JSON.parse(result).facets;
