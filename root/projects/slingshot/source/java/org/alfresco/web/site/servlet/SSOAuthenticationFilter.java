@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -834,6 +834,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
 
         // Clear any cached logon details from the sessiom
         clearSession(session);
+        setRedirectUrl(req);
         
         // restart the authentication process for NTLM
         res.setHeader(HEADER_WWWAUTHENTICATE, authHdr);
@@ -1115,12 +1116,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
     {
         if (logger.isDebugEnabled())
             logger.debug("Redirecting to the login page.");
-        HttpSession session = req.getSession();
-        session.setAttribute(REDIRECT_URI, req.getRequestURI());
-        if (req.getQueryString() != null)
-        {
-            session.setAttribute(REDIRECT_QUERY, req.getQueryString());
-        }
+        setRedirectUrl(req);
         res.sendRedirect(req.getContextPath() + "/page?pt=login");
     }
     
@@ -1332,5 +1328,21 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
 
         return true;
     }
-    
+
+    /**
+     * Set the {@link org.alfresco.web.site.SlingshotPageView#REDIRECT_URI}
+     * <br> and {@link org.alfresco.web.site.SlingshotPageView#REDIRECT_QUERY}
+     * <br> parameters to the session.
+     * 
+     * @param req
+     */
+    private void setRedirectUrl(HttpServletRequest req)
+    {
+        HttpSession session = req.getSession();
+        session.setAttribute(REDIRECT_URI, req.getRequestURI());
+        if (req.getQueryString() != null)
+        {
+            session.setAttribute(REDIRECT_QUERY, req.getQueryString());
+        }
+    }
 }
