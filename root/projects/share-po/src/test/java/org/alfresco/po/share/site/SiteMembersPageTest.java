@@ -28,6 +28,7 @@ import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.UserSearchPage;
 import org.alfresco.po.share.dashlet.MyTasksDashlet;
 import org.alfresco.po.share.enums.UserRole;
+import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.openqa.selenium.WebElement;
@@ -111,8 +112,8 @@ public class SiteMembersPageTest extends AbstractTest
             ShareUtil.logout(drone);
             DashBoardPage userDashBoardPage = loginAs(userName, userName);
             MyTasksDashlet task = userDashBoardPage.getDashlet("tasks").render();
-            task.clickOnTask(siteName);
-            task.acceptInvitaton();
+            EditTaskPage editTaskPage = task.clickOnTask(siteName).render();
+            userDashBoardPage = editTaskPage.selectAcceptButton().render();
             ShareUtil.logout(drone);
             dashBoard = loginAs(username, password);
             drone.navigateTo(String.format("%s/page/site/%s/dashboard", shareUrl, siteName));

@@ -29,6 +29,7 @@ import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.testng.Assert;
@@ -114,14 +115,15 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         navigateToSiteDashboard();
         SitePage site = drone.getCurrentPage().render();
         membersPage = site.getSiteNav().selectInvite().render();
+        membersPage.searchUser(random1);
         membersPage.clickAddUser(random1);
         membersPage.selectInviteeAndAssignRole("(" + random1 + ")", UserRole.COLLABORATOR);
         membersPage.clickInviteButton();
         logout(drone);
         loginAs(random1, UNAME_PASSWORD).render();
         MyTasksDashlet task = dashBoard.getDashlet("tasks").render();
-        task = task.clickOnTask(siteName);
-        task.acceptInvitaton();
+        EditTaskPage editTaskPage = task.clickOnTask(siteName).render();
+        dashBoard = editTaskPage.selectAcceptButton().render();
 
         navigateToSiteDashboard();
         site = drone.getCurrentPage().render();

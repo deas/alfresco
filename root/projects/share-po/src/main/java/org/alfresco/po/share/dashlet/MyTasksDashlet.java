@@ -16,12 +16,15 @@ package org.alfresco.po.share.dashlet;
 
 import java.util.List;
 
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.ShareLink;
+import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,7 +46,6 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
 
     private static final String DATA_LIST_CSS_LOCATION = "h3 > a";
     private static final String DIV_DASHLET_CONTENT_PLACEHOLDER = "div.dashlet.my-tasks";
-    private static final String ACCEPT_BUTTON = "button[id*='accept-button']";
     private static final String LIST_OF_TASKS = "h3>a[href*='referrer=tasks']";
 
     /**
@@ -138,24 +140,12 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
     }
 
     /**
-     * Selects the accept button on Invitation page.
-     * 
-     * @return {@link MyTasksDashlet}
-     */
-    public MyTasksDashlet acceptInvitaton()
-    {
-        drone.findAndWait(By.cssSelector(ACCEPT_BUTTON)).click();
-
-        return this;
-    }
-
-    /**
      * This method clicks on specific task which appears on my-tasks dashlet.
      * 
      * @param task
-     * @return {@link MyTasksDashlet}
+     * @return {@link EditTaskPage}
      */
-    public MyTasksDashlet clickOnTask(String task)
+    public HtmlPage clickOnTask(String task)
     {
         if (task == null)
         {
@@ -170,7 +160,7 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
                 if (taskName != null && taskName.contains(task.toLowerCase()))
                 {
                     element.click();
-                    return this;
+                    return FactorySharePage.resolvePage(drone);
                 }
             }
 
