@@ -239,13 +239,13 @@
             
             // Create the appropriate uploader component
             var uploadType;
-            if (this.hasRequiredFlashPlayer)
-            {
-               uploadType = this.options.flashUploader;
-            }
-            else if (this.browserSupportsHTML5)
+            if (this.browserSupportsHTML5)
             {
                uploadType = this.options.dndUploader;
+            }
+            else if (this.hasRequiredFlashPlayer)
+            {
+               uploadType = this.options.flashUploader;
             }
             else
             {
