@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -32,13 +32,14 @@ define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "alfresco/core/Core",
         "alfresco/core/CoreXhr",
+        "dojo/json",
         "dojo/_base/lang",
         "dojo/_base/array",
         "dojo/on",
         "alfresco/dialogs/AlfDialog",
         "alfresco/buttons/AlfButton",
         "service/constants/Default"], 
-        function(declare, _WidgetBase, AlfCore, CoreXhr, lang, array, on, AlfDialog, AlfButton, AlfConstants) {
+        function(declare, _WidgetBase, AlfCore, CoreXhr, dojoJson, lang, array, on, AlfDialog, AlfButton, AlfConstants) {
    
    return declare([_WidgetBase, AlfCore, CoreXhr], {
 
@@ -222,7 +223,7 @@ define(["dojo/_base/declare",
        */
       validateRequestedFile: function alfresco_upload_AlfUpload__validateRequestedFile(file, index) {
          // Validation could possibly moved out to another method, but would this be overkill?
-         if (file.size == 0)
+         if (file.size === 0)
          {
             // 0kb file upload is not supported
             this.addInvalidFile(file);
@@ -308,11 +309,11 @@ define(["dojo/_base/declare",
             on(request.upload, "error", lang.hitch(this, "failureListener", fileId));
             
             // Construct the data that will be used for the upload
-            data = {
-               id: fileId,
-               name: fileName,
-               size: file.size
-            };
+            // var data = {
+            //    id: fileId,
+            //    name: fileName,
+            //    size: file.size
+            // };
 
             // // Get the nodeRef to update if available (this is required to perform version update)...
             var updateNodeRef = null;
@@ -397,7 +398,6 @@ define(["dojo/_base/declare",
        * @instance
        */
       spawnFileUploads: function alfresco_upload_AlfUpload__spawnFileUploads() {
-
          for (var key in this.fileStore)
          {
             var fileInfo = this.fileStore[key];
@@ -409,7 +409,7 @@ define(["dojo/_base/declare",
                // For now only allow 1 upload at a time
                return;
             }
-         };
+         }
       },
 
       /**
@@ -440,7 +440,7 @@ define(["dojo/_base/declare",
          if (this.uploadMethod === this.FORMDATA_UPLOAD)
          {
             // TODO: This should be able to respond to variable uploadData (to support overridden constructUploadData functions)...
-            var formData = new FormData;
+            var formData = new FormData();
             formData.append("filedata", fileInfo.uploadData.filedata);
             formData.append("filename", fileInfo.uploadData.filename);
             formData.append("destination", fileInfo.uploadData.destination);
@@ -495,11 +495,25 @@ define(["dojo/_base/declare",
                   this.alfLog("warn", "Either the 'uploadDisplayWidget' is null or it has no 'updateUploadProgress' function", this);
                }
 
-               // Update the overall progress of all the uploads...
-               this.updateAggregateProgress(fileInfo);
-   
-               // Save value of how much has been loaded for the next iteration
-               fileInfo.lastProgress = evt.loaded;
+               if (fileInfo.lastProgress == null)
+               {
+                  // This is the first progress update, set the last progress as 0...
+                  fileInfo.lastProgress = 0;
+                  fileInfo.currentProgress = evt.loaded;
+               }
+
+               // Set the current progress...
+               fileInfo.currentProgress = evt.loaded;
+
+               if (fileInfo.state === this.STATE_UPLOADING)
+               {
+                  // Update the overall progress of all the uploads...
+                  this.updateAggregateProgress(fileInfo);
+
+                  // Save value of how much has been loaded for the next iteration
+                  fileInfo.lastProgress = evt.loaded;
+               }
+               
             }
             catch(exception)
             {
@@ -527,7 +541,18 @@ define(["dojo/_base/declare",
             // file size. This can then be used to calculate the overall progress and set the
             // style of the progress bar...
             this.aggregateUploadCurrentSize -= fileInfo.lastProgress;
-            this.aggregateUploadCurrentSize += fileInfo.uploadData.filedata.size;
+            if (fileInfo.state !== this.STATE_UPLOADING)
+            {
+               // The upload has now completed, deduct the previous amount from the total upload completed
+               // and then add that to the overall progress...
+               this.aggregateUploadCurrentSize += fileInfo.uploadData.filedata.size;
+            }
+            else
+            {
+               this.aggregateUploadCurrentSize += fileInfo.currentProgress;
+            }
+            
+            // this.aggregateUploadCurrentSize += fileInfo.uploadData.filedata.size;
             var overallProgress = (this.aggregateUploadCurrentSize / this.aggregateUploadTargetSize);
             this.uploadDisplayWidget.updateAggregateProgress(overallProgress);
          }
@@ -562,9 +587,9 @@ define(["dojo/_base/declare",
                {
                   if (fileInfo.request.readyState == 4)
                   {
-                     _this.processUploadCompletion(fileId, evt)
+                     _this.processUploadCompletion(fileId, evt);
                   }
-               }
+               };
             }
             else
             {
@@ -586,13 +611,12 @@ define(["dojo/_base/declare",
        * @param {object} fileId The unique identifier of the file
        * @param {object} evt The completion event
        */
-      processUploadCompletion: function alfresco_upload_AlfUpload__processUploadCompletion(fileId, evt)
-      {
+      processUploadCompletion: function alfresco_upload_AlfUpload__processUploadCompletion(fileId, evt) {
          var fileInfo = this.fileStore[fileId];
          if (fileInfo.request.status == "200")
          {
             // TODO: SWAP THIS OUT FOR DOJO CODE
-            var response = Alfresco.util.parseJSON(fileInfo.request.responseText);
+            var response = dojoJson.parse(fileInfo.request.responseText);
 
             // update noderef and filename from response
             fileInfo.nodeRef = response.nodeRef;
@@ -652,8 +676,7 @@ define(["dojo/_base/declare",
        * @param {object} fileId The unique identifier of the file
        * @param {object} evt The completion event
        */
-      processUploadFailure: function alfresco_upload_AlfUpload__processUploadFailure(fileId, evt)
-      {
+      processUploadFailure: function alfresco_upload_AlfUpload__processUploadFailure(fileId, evt) {
          var fileInfo = this.fileStore[fileId];
          fileInfo.state = this.STATE_FAILURE;
 

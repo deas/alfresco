@@ -461,6 +461,7 @@ if (typeof sinon == "undefined") {
         this.initEvent(type, false, false, target);
         this.loaded = progressEventRaw.loaded || null;
         this.total = progressEventRaw.total || null;
+        this.lengthComputable = true; // DD - monkey patched
     };
 
     sinon.ProgressEvent.prototype = new sinon.Event();

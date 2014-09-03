@@ -84,6 +84,15 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * The nodeRef to upload to.
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      destinationNodeRef: null,
+
+      /**
        * @instance
        */
       onDndDrop: function alfresco_upload_AlfFileDrop__onDndDrop(evt) {
@@ -92,7 +101,7 @@ define(["dojo/_base/declare",
         this.alfPublish("ALF_UPLOAD_REQUEST", {
            files: evt.dataTransfer.files,
            targetData: {
-              destination: "workspace://SpacesStore/551e9d37-5a66-4297-a8a6-725ad864378e",
+              destination: this.destinationNodeRef,
               siteId: null,
               containerId: null,
               uploadDirectory: null,
