@@ -94,21 +94,18 @@ define(["dojo/_base/declare",
             "document-edit-offline",
             "folder-download",
             "document-copy-to",
-            "document-move-to"
+            "document-move-to",
+            "document-upload-new-version",
+            "document-locate",
 
-//            TODO: Dialog Service not read for property edits.
-//            "document-edit-properties",
+//            TODO: ContentService needs updates to work (or alfresco_services_ActionService__onActionDetailsSuccess needs to publish different payload.
+            "document-edit-properties"
 //
 //            TODO: Not implemented yet.
-//            "document-upload-new-version",
 //            "document-assign-workflow",
-//            "document-publish"
 //            "folder-view-details"
 //            "document-approve"
 //            "document-reject"
-//            "document-locate"
-//            "folder-manage-rules"
-//            "document-delete"
 //            "document-manage-aspects"
 //            "document-cloud-sync"
 //            "document-cloud-unsync"
@@ -120,7 +117,6 @@ define(["dojo/_base/declare",
 //            "document-assign-workflow"
 //            "document-cancel-editing"
 //            "document-cancel-editing-unlock"
-
          ];
 
          // For actions other than folders and documents we want to further restrict what are displayed
