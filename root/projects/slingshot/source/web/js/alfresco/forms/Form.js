@@ -40,12 +40,13 @@ define(["dojo/_base/declare",
         "alfresco/documentlibrary/_AlfHashMixin",
         "dojo/text!./templates/Form.html",
         "dojo/io-query",
+        "dojo/hash",
         "dojo/_base/lang",
         "alfresco/buttons/AlfButton",
         "dojo/_base/array",
         "dijit/registry"], 
         function(declare, _Widget, _Templated, Form, AlfCore, CoreWidgetProcessing, _AlfHashMixin, template, 
-                 ioQuery, lang, AlfButton, array, registry) {
+                 ioQuery, hash, lang, AlfButton, array, registry) {
    
    return declare([_Widget, _Templated, AlfCore, CoreWidgetProcessing, _AlfHashMixin], {
       
