@@ -25,8 +25,10 @@
 define(["dojo/_base/declare",
         "alfresco/documentlibrary/views/AlfDocumentListView",
         "dojo/text!./templates/AlfFilmStripView.html",
+        "alfresco/documentlibrary/AlfDocument",
+        "alfresco/preview/AlfDocumentPreview",
         "alfresco/documentlibrary/views/layouts/Carousel"], 
-        function(declare, AlfDocumentListView, template, Carousel) {
+        function(declare, AlfDocumentListView, template, AlfDocument, AlfDocumentPreview, Carousel) {
    
    return declare([AlfDocumentListView], {
       
@@ -59,6 +61,51 @@ define(["dojo/_base/declare",
          return "filmstrip";
       },
       
+      /**
+       * Extends the [inherited function]{@link module:alfresco/documentlibrary/views/AlfDocumentListView#postCreate}
+       * to add in an [AlfDocument]{@link module:alfresco/documentlibrary/AlfDocument} instance for previewing the
+       * currently selected item in the view.
+       *
+       * @instance
+       */
+      postCreate: function alfresco_documentlibrary_views_AlfFilmStripView__postCreate() {
+         this.currentItemView = new AlfDocument({
+            id: this.id + "_CURRENT_ITEM",
+            widgets: [
+               {
+                  name: "alfresco/preview/AlfDocumentPreview"
+               }
+            ],
+            pubSubScope: this.pubSubScope,
+            parentPubSubScope: this.parentPubSubScope
+         });
+         this.currentItemView.placeAt(this.previewNode, "last");
+
+         // Carry on with the usual setup...
+         this.inherited(arguments);
+      },
+
+      /**
+       * Extends the [inherited function]{@link module:alfresco/documentlibrary/views/AlfDocumentListView#renderView}
+       * to publish a request to get the details of the first item (if available). This request is intended to be 
+       * serviced by the [DocumentService]{@link module:alfresco/services/DocumentService} and the published response
+       * should be picked up the [AlfDocument]{@link module:alfresco/documentlibrary/AlfDocument} to render the
+       * preview as appropriate
+       *
+       * @instance
+       * @param {boolean} preserveCurrentData
+       */
+      renderView: function alfresco_documentlibrary_views_AlfDocumentListView__renderView(preserveCurrentData) {
+         this.inherited(arguments);
+         if (this.currentData && this.currentData.items && this.currentData.items.length > 0)
+         {
+            this.alfPublish("ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST", {
+               nodeRef: this.currentData.items[0].nodeRef,
+               alfResponseTopic: this.pubSubScope + "ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST"
+            }, true);
+         }
+      },
+
       /**
        * Creates a new [DocumentListRenderer]{@link module:alfresco/documentlibrary/views/DocumentListRenderer}
        * which is used to render the actual items in the view. This function can be overridden by extending views

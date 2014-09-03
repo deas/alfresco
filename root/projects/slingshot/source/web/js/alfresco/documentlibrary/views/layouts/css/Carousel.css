@@ -2,7 +2,9 @@
    overflow-x: hidden;
    background-image: url(./images/black-50-transparency.png);
    background-repeat: repeat;
-   height: 112px
+   height: 112px;
+   position: relative;
+   z-index: 2;
 }
 
 /* This needs to be set to relative so that the controls can be absolutely positioned over it */
@@ -36,14 +38,17 @@
    position: absolute;
    top: 6px;
    width: 100%;
+   z-index: 1;
 }
 
 .alfresco-documentlibrary-views-layouts-Carousel .controls .prev{
    float: left;
    margin-left: 10px;
+   z-index: 2;
 }
 
 .alfresco-documentlibrary-views-layouts-Carousel .controls .next{
    float: right;
    margin-right: 10px;
+   z-index: 2;
 }
