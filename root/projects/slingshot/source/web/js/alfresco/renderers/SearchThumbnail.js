@@ -31,8 +31,9 @@ define(["dojo/_base/declare",
         "alfresco/renderers/_SearchResultLinkMixin",
         "service/constants/Default",
         "dojo/_base/lang",
-        "dojo/window"], 
-        function(declare, Thumbnail, _HtmlAnchorMixin, _SearchResultLinkMixin, AlfConstants, lang, win) {
+        "dojo/window",
+        "dojo/dom-class"], 
+        function(declare, Thumbnail, _HtmlAnchorMixin, _SearchResultLinkMixin, AlfConstants, lang, win, domClass) {
 
    return declare([Thumbnail, _HtmlAnchorMixin, _SearchResultLinkMixin], {
 
@@ -44,6 +45,15 @@ define(["dojo/_base/declare",
        * @default [{i18nFile: "./i18n/SearchThumbnail.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/SearchThumbnail.properties"}],
+
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/Thumbnail.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/SearchThumbnail.css"}],
 
       /**
        * Indicates whether documents thumbnail clicks should launch a previewer in a dialog
@@ -65,6 +75,7 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_renderers_SearchThumbnail__postCreate() {
          this.inherited(arguments);
+         domClass.add(this.domNode, "alfresco-renderers-SearchThumbnail");
          this.publishPayload = this.generatePayload(this.payload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin, this.publishPayloadModifiers);
          this.makeAnchor(this.publishPayload.url, this.publishPayload.type);
       },

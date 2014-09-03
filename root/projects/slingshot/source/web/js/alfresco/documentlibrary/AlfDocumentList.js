@@ -216,6 +216,8 @@ define(["dojo/_base/declare",
        */
       setupSubscriptions: function alfrescdo_documentlibrary_AlfDocumentList__setupSubscriptions() {
          this.alfSubscribe("ALF_DOCUMENTLIST_PATH_CHANGED", lang.hitch(this, this.onPathChanged));
+         this.alfSubscribe("ALF_DOCUMENTLIST_CATEGORY_CHANGED", lang.hitch(this, this.onCategoryChanged));
+
          this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, "onViewSelected"));
          this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, "onDocumentSelection"));
          this.alfSubscribe(this.sortRequestTopic, lang.hitch(this, "onSortRequest"));
@@ -261,6 +263,31 @@ define(["dojo/_base/declare",
             currHash.path = this.currentPath;
             delete currHash.filter;
             delete currHash.category;
+            delete currHash.tag;
+            this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
+               url: ioQuery.objectToQuery(currHash),
+               type: "HASH"
+            }, true);
+         }
+         else
+         {
+            this.alfLog("warn", "A request was made to change the displayed path of a Document List, but no 'path' attribute was provided", payload, this);
+         }
+      },
+
+      /**
+       * Handles requests to update the current path.
+       *
+       * @instance
+       * @param {object} payload The details of the new path
+       */
+      onCategoryChanged: function alfresco_documentlibrary_AlfDocumentList__onCategoryChanged(payload) {
+         if (payload.path)
+         {
+            var currHash = ioQuery.queryToObject(hash());
+            currHash.category = payload.path;
+            delete currHash.filter;
+            delete currHash.path;
             delete currHash.tag;
             this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
                url: ioQuery.objectToQuery(currHash),

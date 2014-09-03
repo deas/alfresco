@@ -75,13 +75,13 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * Overrides the inherited value to set the "category" filterId.
+       * Overrides the inherited value to set the "ALF_DOCUMENTlIST_CATEGORY_CHANGED" topic.
        * 
        * @instance
        * @type {string}
-       * @default "category"
+       * @default "ALF_DOCUMENTLIST_CATEGORY_CHANGED"
        */
-      onClickFilterId: "category",
+      onClickTopic: "ALF_DOCUMENTLIST_CATEGORY_CHANGED",
       
       /**
        * @instance

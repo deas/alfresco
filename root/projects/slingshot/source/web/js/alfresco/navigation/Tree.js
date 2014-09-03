@@ -216,16 +216,16 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * This is the filterId that is published when a node on the tree is clicked. The data applied
+       * This is the topic that is published when a node on the tree is clicked. The data applied
        * to the filter is the the value of the node clicked. By default it is expected that the
-       * tree represents a location so the default id is "path". 
+       * tree represents a location so the default id is "ALF_DOCUMENTLIST_PATH_CHANGED". 
        * 
        * @instance
        * @type {string}
-       * @default "path"
+       * @default "ALF_DOCUMENTLIST_PATH_CHANGED"
        */
-      onClickFilterId: "path",
-      
+      onClickTopic: "ALF_DOCUMENTLIST_PATH_CHANGED",
+
       /**
        * @instance
        * @param {object} item The store item represented by the clicked node
@@ -234,7 +234,7 @@ define(["dojo/_base/declare",
        */
       onClick: function alfresco_navigation_Tree__onClick(item, node, evt) {
          this.alfLog("log", "Tree Node clicked", item, node, evt);
-         this.alfPublish("ALF_DOCUMENTLIST_PATH_CHANGED", {
+         this.alfPublish(this.onClickTopic, {
             path: item.path,
             type: "HASH"
          });

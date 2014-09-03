@@ -26,12 +26,6 @@
    cursor: pointer;
 }
 
-.alfresco-renderers-Thumbnail img {
-   display: block;
-   float: right;
-   box-shadow: 0 1px 3px #ccc;
-}
-
 /* Drag and Drop */
 
 .alfresco-renderers-Thumbnail.dndHighlight span.droppable
