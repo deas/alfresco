@@ -43,6 +43,7 @@ define(["intern!object",
             .then(function(element) {
                browser.moveMouseTo(element)
             })
+            .click()
             .pressMouseButton()
             .moveMouseTo(null, 1, 1)
             .end()
