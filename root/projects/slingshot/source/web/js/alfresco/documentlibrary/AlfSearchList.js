@@ -78,6 +78,7 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_APPLY_FACET_FILTER", lang.hitch(this, "onApplyFacetFilter"));
          this.alfSubscribe("ALF_REMOVE_FACET_FILTER", lang.hitch(this, "onRemoveFacetFilter"));
          this.alfSubscribe("ALF_SEARCHLIST_SCOPE_SELECTION", lang.hitch(this, "onScopeSelection"));
+         this.alfSubscribe("ALF_ADVANCED_SEARCH", lang.hitch(this, this.onAdvancedSearch));
          this.alfSubscribe(this.reloadDataTopic, lang.hitch(this, this.reloadData));
 
          // Infinite scroll handling
@@ -180,6 +181,21 @@ define(["dojo/_base/declare",
                type: "HASH"
             }, true);
          }
+      },
+
+      /**
+       * Handle advanced search requests.
+       *
+       * @instance
+       * @param {object} payload The details of what to search for.
+       */
+      onAdvancedSearch: function alfresco_documentlibrary_AlfSearchList__onAdvancedSearch(payload) {
+         // TODO: This needs some serious work...
+         this.resetResultsList();
+         this.searchTerm = payload.searchTerm;
+         delete payload.searchTerm;
+         this.query = payload;
+         this.loadData();
       },
 
       /**
@@ -451,6 +467,15 @@ define(["dojo/_base/declare",
                repo: repo,
                requestId: this.currentRequestId
             };
+
+            if (this.query)
+            {
+               delete this.query.alfTopic;
+               for (var key in this.query)
+               {
+                  searchPayload[key] = this.query[key];
+               }
+            }
 
             // InfiniteScroll uses pagination under the covers.
             if (this.useInfiniteScroll)

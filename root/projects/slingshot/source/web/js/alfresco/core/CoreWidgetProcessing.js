@@ -120,6 +120,11 @@ define(["dojo/_base/declare",
          this.alfLog("log", "Widgets expected: ", this._processedWidgetCountdown);
          if (widget != null)
          {
+            if (this._processedWidgets == null)
+            {
+               this._processedWidgets = [];
+            }
+            
             if (index == null || isNaN(index))
             {
                this._processedWidgets.push(widget);

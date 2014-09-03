@@ -55,11 +55,37 @@ var accessMenu = {
    }
 };
 
+var showAdvancedSearch = {
+   initialValue: false,
+   rules: [
+      {
+         topic: "ALF_SHOW_ADVANCED_SEARCH",
+         attribute: "show",
+         is: [true],
+         isNot: [false]
+      }
+   ]
+};
+
+var hideRegularSearch = {
+   initialValue: true,
+   rules: [
+      {
+         topic: "ALF_SHOW_ADVANCED_SEARCH",
+         attribute: "show",
+         is: [false],
+         isNot: [true]
+      }
+   ]
+};
+
 // Compose the search form model
 var searchForm = {
    id: "FCTSRCH_SEARCH_FORM",
    name: "alfresco/forms/SingleTextFieldForm",
    config: {
+      scopeFormControls: false,
+      visibilityConfig: hideRegularSearch,
       useHash: true,
       okButtonLabel: msg.get("faceted-search.search-form.ok-button-label"),
       okButtonPublishTopic : "ALF_SET_SEARCH_TERM",
@@ -414,6 +440,142 @@ var searchDocLib = {
    }
 };
 
+// These are the default advanced search forms...
+// TODO: This is just an example at present and the form data needs to be accessed from configuration
+//       and the labels all need localization...
+var advancedSearchOptions = [
+   {
+      label: "Folders",
+      value: JSON.stringify([
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               label: "Keywords",
+               name: "searchTerm"
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               label: "Name",
+               name: "prop_cm_name"
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               label: "Title",
+               name: "prop_cm_title"
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               label: "Description",
+               name: "prop_cm_description"
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               label: "",
+               name: "datatype",
+               value: "cm:folder",
+               visibilityConfig: {
+                  initialValue: false
+               }
+            }
+         }
+      ])
+   },
+   {
+      label: "CRM Attachments",
+      value: JSON.stringify([
+         {
+            name: "alfresco/forms/ControlRow",
+            config: {
+               widgets: [
+                  {
+                     name: "alfresco/forms/controls/DojoValidationTextBox",
+                     config: {
+                        label: "Account Identifier",
+                        name: "prop_crm_accountId"
+                     }
+                  },
+                  {
+                     name: "alfresco/forms/controls/DojoValidationTextBox",
+                     config: {
+                        label: "Account Identifier",
+                        name: "prop_crm_accountName"
+                     }
+                  }
+               ]
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               label: "Opportunity Name",
+               name: "prop_crm_opportunityName"
+            }
+         },
+         {
+            name: "alfresco/forms/ControlRow",
+            config: {
+               widgets: [
+                  {
+                     name: "alfresco/forms/controls/DojoValidationTextBox",
+                     config: {
+                        label: "Contract Number",
+                        name: "prop_crm_contractNumber"
+                     }
+                  },
+                  {
+                     name: "alfresco/forms/controls/DojoValidationTextBox",
+                     config: {
+                        label: "Contract Name",
+                        name: "prop_crm_contractName"
+                     }
+                  }
+               ]
+            }
+         },
+         {
+            name: "alfresco/forms/ControlRow",
+            config: {
+               widgets: [
+                  {
+                     name: "alfresco/forms/controls/DojoValidationTextBox",
+                     config: {
+                        label: "Case Number",
+                        name: "prop_crm_caseNumber"
+                     }
+                  },
+                  {
+                     name: "alfresco/forms/controls/DojoValidationTextBox",
+                     config: {
+                        label: "Case Name",
+                        name: "prop_crm_caseName"
+                     }
+                  }
+               ]
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               label: "",
+               name: "datatype",
+               value: "cm:content",
+               visibilityConfig: {
+                  initialValue: false
+               }
+            }
+         }
+      ])
+   }
+];
+
 // Put all components together
 var main = {
    name: "alfresco/layout/VerticalWidgets",
@@ -428,6 +590,39 @@ var main = {
             }
          },
          searchForm,
+         {
+            name: "alfresco/forms/Form",
+            config: {
+               showCancelButton: false,
+               showOkButton: false,
+               scopeFormControls: false,
+               widgets: [
+                  {
+                     name: "alfresco/forms/controls/DojoSelect",
+                     config: {
+                        fieldId: "ADVANCED_SEARCH_OPTION",
+                        label: msg.get("faceted-search.select-search-form.label"),
+                        visibilityConfig: showAdvancedSearch,
+                        optionsConfig: {
+                           fixed: advancedSearchOptions
+                        }
+                     }
+                  }
+               ]
+            }
+         },
+         {
+            name: "alfresco/forms/DynamicForm",
+            config: {
+               visibilityConfig: showAdvancedSearch,
+               scopeFormControls: false,
+               subscriptionTopic: "_valueChangeOf_ADVANCED_SEARCH_OPTION",
+               okButtonLabel: msg.get("faceted-search.search-form.ok-button-label"),
+               okButtonPublishTopic: "ALF_ADVANCED_SEARCH",
+               okButtonPublishGlobal: true,
+               showCancelButton: false
+            }
+         },
          {
             name: "alfresco/layout/HorizontalWidgets",
             config: {
@@ -574,6 +769,42 @@ var scopeSelection = {
                      }
                   }
                ]
+            }
+         },
+         {
+            name: "alfresco/renderers/PropertyLink",
+            align: "right",
+            config: {
+               visibilityConfig: hideRegularSearch,
+               currentItem: {
+                  label: msg.get("faceted-search.show-advanced-search.label")
+               },
+               propertyToRender: "label",
+               renderSize: "small",
+               useCurrentItemAsPayload: false,
+               publishTopic: "ALF_SHOW_ADVANCED_SEARCH",
+               publishPayloadType: "CONFIGURED",
+               publishPayload: {
+                  show: true
+               }
+            }
+         },
+         {
+            name: "alfresco/renderers/PropertyLink",
+            align: "right",
+            config: {
+               visibilityConfig: showAdvancedSearch,
+               currentItem: {
+                  label: msg.get("faceted-search.hide-advanced-search.label")
+               },
+               propertyToRender: "label",
+               renderSize: "small",
+               useCurrentItemAsPayload: false,
+               publishTopic: "ALF_SHOW_ADVANCED_SEARCH",
+               publishPayloadType: "CONFIGURED",
+               publishPayload: {
+                  show: false
+               }
             }
          }
       ]

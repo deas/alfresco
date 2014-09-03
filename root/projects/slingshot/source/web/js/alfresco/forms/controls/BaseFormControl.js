@@ -36,17 +36,15 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dijit/_FocusMixin",
         "dojo/text!./templates/BaseFormControl.html",
-        "dojo/dom-construct",
         "alfresco/core/Core",
         "alfresco/core/ObjectTypeUtils",
-        "dojo/_base/xhr",
+        "alfresco/core/ArrayUtils",
         "dojo/_base/lang",
         "dojo/_base/array",
         "dojo/dom-style",
         "dojo/dom-class",
-        "dijit/focus",
         "dijit/Tooltip"], 
-        function(declare, _Widget, _Templated, _FocusMixin, template, domConstruct, AlfCore, ObjectTypeUtils, xhr, lang, array, domStyle, domClass, focusUtil, Tooltip) {
+        function(declare, _Widget, _Templated, _FocusMixin, template, AlfCore, ObjectTypeUtils, arrayUtils, lang, array, domStyle, domClass, Tooltip) {
    
    return declare([_Widget, _Templated, _FocusMixin, AlfCore], {
       
@@ -467,6 +465,7 @@ define(["dojo/_base/declare",
                {
                   this.options = fixed;
                   array.forEach(this.options, lang.hitch(this, "processOptionLabel"));
+                  this.setOptionsValue(this.options);
                }
                else
                {
@@ -691,9 +690,33 @@ define(["dojo/_base/declare",
                array.forEach(options, lang.hitch(this, "addOption"));
             }
          }
+         this.setOptionsValue(options);
          
-         // Reset the option...
-         this.setValue(currentValue);
+      },
+
+      /**
+       * Sets the value if there are options to select from
+       *
+       * @instance
+       * @param {array} options The options to choose from
+       */
+      setOptionsValue: function alfresco_forms_controls_BaseFormControl__setOptionsValue(options) {
+         var currentValue = this.getValue();
+         var optionsContainsValue = array.some(options, function(option, index) {
+            return option.value == currentValue;
+         });
+         
+         if (optionsContainsValue)
+         {
+            // Reset the option...
+            this.setValue(currentValue);
+            this.value = currentValue;
+         }
+         else if (options.length > 0)
+         {
+            this.setValue(options[0].value);
+            this.value = options[0].value;
+         }
       },
       
       /**
@@ -703,7 +726,7 @@ define(["dojo/_base/declare",
        * @param {object} option The option to remove
        * @param {number} index The index of the option to remove
        */
-      removeOption: function alfrecso_forms_controls_BaseFormControl__removeOption(option, index) {
+      removeOption: function alfresco_forms_controls_BaseFormControl__removeOption(option, index) {
          this.wrappedWidget.removeOption(option);
       },
       
@@ -1379,6 +1402,71 @@ define(["dojo/_base/declare",
       hideValidationFailure: function alfresco_forms_controls_BaseFormControl__hideValidationFailure() {
          domClass.remove(this._validationIndicator, "validation-error");
          domClass.remove(this._validationMessage, "display");
+      },
+
+      /**
+       * This function is called from a [form]{@link module:alfresco/forms/Form} when it needs to get the 
+       * values from all the controls that it contains. The current control will only add its value to the
+       * supplied object if appropriate.
+       *
+       * @instance
+       * @param {object} values The object to update with the current value of the control
+       */
+      addFormControlValue: function alfresco_forms_controls_BaseFormControl__addFormControlValue(values) {
+         // Only include field values if the control is NOT hidden or disabled
+         // unless specifically requested by the configuration. This allows
+         // multiple controls to represent a single field but also allows intentionally
+         // hidden fields to still have data submitted
+         if (((this._visible !== undefined && this._visible == false) ||
+              (this._disabled !== undefined && this._disabled == true)) &&
+             (this.postWhenHiddenOrDisabled !== undefined && this.postWhenHiddenOrDisabled == false))
+         {
+            // Don't set the value (line below is just to allow debug point to be set)
+         }
+         else if (this.noPostWhenValueIs && arrayUtils.arrayContains(this.noPostWhenValueIs, this.getValue()))
+         {
+            // Don't set the value if the noPostIfValueIs array contains the current value.
+         }
+         else
+         {
+            // Process dot-notation property names...
+            lang.setObject(this.get("name"), this.getValue(), values);
+         }
+      },
+
+      /**
+       * This function is called from a [form]{@link module:alfresco/forms/Form} when it needs to set the 
+       * values from all the controls that it contains. The current control will be updated if appropriate.
+       *
+       * @instance
+       * @param {object} values The object to set the each form control value from
+       */
+      updateFormControlValue: function alfresco_forms_controls_BaseFormControl__addFormControlValue(values) {
+         if (((this._visible !== undefined && this._visible == false) ||
+              (this._disabled !== undefined && this._disabled == true)) &&
+             (this.noValueUpdateWhenHiddenOrDisabled !== undefined && this.noValueUpdateWhenHiddenOrDisabled == true))
+         {
+            // Don't set the value as the field is hidden or disabled and has requested that it not be updated
+            // in these circumstances. The typical reason for this is that multiple controls represent a single
+            // field and it is not the displayed control so shouldn't be updated to preserve its default value.
+         }
+         else
+         {
+            this.setValue(lang.getObject(this.get("name"), false, values));
+         }
+      },
+
+      /**
+       * This function is called from a [form]{@link module:alfresco/forms/Form} when it needs to validate the 
+       * all the controls that it contains.
+       *
+       * @instance
+       */
+      validateFormControlValue: function alfresco_forms_controls_BaseFormControl__validateFormControlValue() {
+         if (this.publishValue && typeof this.publishValue == "function")
+         {
+            this.validate();
+         }
       }
    });
 });

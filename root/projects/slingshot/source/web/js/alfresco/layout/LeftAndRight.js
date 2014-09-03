@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -55,22 +55,23 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_layout_LeftAndRight__postCreate() {
-         var _this = this;
          if (this.widgets)
          {
+            this._processedWidgets = [];
+            
             // Iterate over all the widgets in the configuration object and add them...
             array.forEach(this.widgets, function(entry, i) {
                var domNode = null;
                if (entry.align == "right")
                {
-                  domNode = _this.createWidgetDomNode(entry, _this.rightWidgets, entry.className);
+                  domNode = this.createWidgetDomNode(entry, this.rightWidgets, entry.className);
                }
                else
                {
-                  domNode = _this.createWidgetDomNode(entry, _this.leftWidgets, entry.className);
+                  domNode = this.createWidgetDomNode(entry, this.leftWidgets, entry.className);
                }
-               _this.createWidget(entry, domNode);
-            });
+               this.createWidget(entry, domNode, this._registerProcessedWidget, this, i);
+            }, this);
          }
       },
       

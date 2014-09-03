@@ -22,6 +22,9 @@
  * 
  * @module alfresco/renderers/PropertyLink
  * @extends alfresco/renderers/Property
+ * @mixes dijit/_OnDijitClickMixin
+ * @mixes module:alfresco/renderers/_PublishPayloadMixin
+ * @author Dave Draper
  * @author Richard Smith
  */
 define(["dojo/_base/declare",
@@ -34,6 +37,15 @@ define(["dojo/_base/declare",
         function(declare, Property, _OnDijitClickMixin, _PublishPayloadMixin, template, event, lang) {
 
    return declare([Property, _OnDijitClickMixin, _PublishPayloadMixin], {
+
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/PropertyLink.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/PropertyLink.css"}],
 
       /**
        * Overriddes the default HTML template to use for the widget.

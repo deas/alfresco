@@ -27,7 +27,7 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
- * @mixes module:alfresco/core/ObjectTypeUtils
+ * @mixes module:alfresco/renderers/_JsNodeMixin
  * @mixes module:alfresco/renderers/_ItemLinkMixin
  * @author Dave Draper
  */

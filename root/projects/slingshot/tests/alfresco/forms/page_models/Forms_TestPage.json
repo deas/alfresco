@@ -79,27 +79,34 @@
                      "cancelButtonPublishTopic": "CANCEL_FORM_DATA",
                      "widgets": [
                         {
-                           "id": "TEXT_BOX_1",
-                           "name": "alfresco/forms/controls/DojoValidationTextBox",
+                           "name": "alfresco/forms/ControlRow",
                            "config": {
-                              "label": "Field 3",
-                              "name": "field3",
-                              "value": "",
-                              "requirementConfig": {
-                                 "initialValue": true
-                              }
-                           }
-                        },
-                        {
-                           "id": "TEXT_BOX_2",
-                           "name": "alfresco/forms/controls/DojoValidationTextBox",
-                           "config": {
-                              "label": "Field 4",
-                              "name": "field4",
-                              "value": "",
-                              "validationConfig": {
-                                 "regex": "^[0-9]+$"
-                              }
+                              "widgets": [
+                                 {
+                                    "id": "TEXT_BOX_1",
+                                    "name": "alfresco/forms/controls/DojoValidationTextBox",
+                                    "config": {
+                                       "label": "Field 3",
+                                       "name": "field3",
+                                       "value": "",
+                                       "requirementConfig": {
+                                          "initialValue": true
+                                       }
+                                    }
+                                 },
+                                 {
+                                    "id": "TEXT_BOX_2",
+                                    "name": "alfresco/forms/controls/DojoValidationTextBox",
+                                    "config": {
+                                       "label": "Field 4",
+                                       "name": "field4",
+                                       "value": "",
+                                       "validationConfig": {
+                                          "regex": "^[0-9]+$"
+                                       }
+                                    }
+                                 }
+                              ]
                            }
                         }
                      ]

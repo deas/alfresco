@@ -560,26 +560,9 @@ define(["dojo/_base/declare",
          if (this._form)
          {
             array.forEach(this._form.getChildren(), function(entry, i) {
-
-               // Only include field values if the control is NOT hidden or disabled
-               // unless specifically requested by the configuration. This allows
-               // multiple controls to represent a single field but also allows intentionally
-               // hidden fields to still have data submitted
-               if (((entry._visible !== undefined && entry._visible == false) ||
-                    (entry._disabled !== undefined && entry._disabled == true)) &&
-                   (entry.postWhenHiddenOrDisabled !== undefined && entry.postWhenHiddenOrDisabled == false))
+               if (typeof entry.addFormControlValue === "function")
                {
-                  // Don't set the value (line below is just to allow debug point to be set)
-               }
-               else if (entry.noPostWhenValueIs && arrayUtils.arrayContains(entry.noPostWhenValueIs, entry.getValue()))
-               {
-                  // Don't set the value if the noPostIfValueIs array contains the current value.
-               }
-               else
-               {
-                  // values[entry.get("name")] = entry.getValue();
-                  // Process dot-notation property names...
-                  lang.setObject(entry.get("name"), entry.getValue(), values);
+                  entry.addFormControlValue(values);
                }
             });
          }
@@ -599,18 +582,9 @@ define(["dojo/_base/declare",
             if (this._form)
             {
                array.forEach(this._form.getChildren(), function(entry, i) {
-                  if (((entry._visible !== undefined && entry._visible == false) ||
-                       (entry._disabled !== undefined && entry._disabled == true)) &&
-                      (entry.noValueUpdateWhenHiddenOrDisabled !== undefined && entry.noValueUpdateWhenHiddenOrDisabled == true))
+                  if (typeof entry.updateFormControlValue === "function")
                   {
-                     // Don't set the value as the field is hidden or disabled and has requested that it not be updated
-                     // in these circumstances. The typical reason for this is that multiple controls represent a single
-                     // field and it is not the displayed control so shouldn't be updated to preserve its default value.
-                  }
-                  else
-                  {
-                     // entry.setValue(values[entry.get("name")]);
-                     entry.setValue(lang.getObject(entry.get("name"), false, values));
+                     entry.updateFormControlValue(values);
                   }
                });
             }
@@ -627,9 +601,9 @@ define(["dojo/_base/declare",
          this.alfLog("log", "Validating form", this._form);
          
          array.forEach(this._processedWidgets, function(widget, i) {
-            if (widget.publishValue && typeof widget.publishValue == "function")
+            if (typeof widget.validateFormControlValue === "function")
             {
-               widget.validate();
+               widget.validateFormControlValue();
             }
          });
 
