@@ -290,6 +290,89 @@ define(["dojo/_base/declare",
          
          // Add a new cell...
          return domConstruct.create("DIV", {}, nodeToAdd);
+      },
+
+      /**
+       * Extends the [inherited function]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin#renderNextItem}
+       * to ensure that any DOM elements added for allowing the user to retrieve more items is destroyed. These will
+       * have been created by the [allItemsRendered function]{@link module:alfresco/documentlibrary/views/layouts/Grid#allItemsRendered}
+       * when more data is available.
+       *
+       * @instance
+       */
+      renderNextItem: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__renderNextItem() {
+         if (this.nextLinkDisplay)
+         {
+            var cell = this.nextLinkDisplay.domNode.parentNode;
+            var row = cell.parentNode;
+            row.removeChild(cell);
+            this.nextLinkDisplay.destroy();
+            this.nextLinkDisplay = null;
+         }
+         this.inherited(arguments);
+      },
+
+      /**
+       * When set to true this will show a link for requesting more data (if available). This should be used when
+       * the grid is rendering data in an infinite scroll view. It is required because when the grid cells are small
+       * the data may not be sufficient to allow the scrolling events to occur that will request more data.
+       * 
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      showNextLink: false,
+
+      /**
+       * The label to use for the next link. This defaults to null, so MUST be set for the next link to be displayed.
+       * 
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      nextLinkLabel: null,
+
+      /**
+       * The topic to publish when the next link is clicked.
+       * 
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      nextLinkPublishTopic: null,
+
+      /**
+       * Overrides the [inherited function]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin#allItemsRendered}
+       * to create a link for retrieving more data when 
+       * 
+       * @instance
+       */
+      allItemsRendered: function alfresco_documentlibrary_views_layouts_Grid__allItemsRendered() {
+         if(this.showNextLink && this.currentData.totalRecords < this.currentData.numberFound)
+         {
+            this.processWidgets([{
+               name: "alfresco/layout/VerticalWidgets",
+               assignTo: "nextLinkDisplay",
+               config: {
+                  widgets: [
+                     {
+                        name: "alfresco/renderers/PropertyLink",
+                        config: {
+                           currentItem: {
+                              label: this.nextLinkLabel
+                           },
+                           propertyToRender: "label",
+                           renderSize: "small",
+                           useCurrentItemAsPayload: false,
+                           publishTopic: this.nextLinkPublishTopic,
+                           publishPayloadType: "CONFIGURED",
+                           publishPayload: {}
+                        }
+                     }
+                  ]
+               }
+            }], this.containerNode);
+         }
       }
    });
 });

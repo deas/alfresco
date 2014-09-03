@@ -144,6 +144,35 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * When set to true this will show a link for requesting more data (if available). This should be used when
+       * the grid is rendering data in an infinite scroll view. It is required because when the grid cells are small
+       * the data may not be sufficient to allow the scrolling events to occur that will request more data.
+       * 
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      showNextLink: false,
+
+      /**
+       * The label to use for the next link. This defaults to null, so MUST be set for the next link to be displayed.
+       * 
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      nextLinkLabel: null,
+
+      /**
+       * The topic to publish when the next link is clicked.
+       * 
+       * @instance
+       * @type {string}
+       * @default "ALF_SCROLL_NEAR_BOTTOM"
+       */
+      nextLinkPublishTopic: "ALF_SCROLL_NEAR_BOTTOM",
+
+      /**
        * Creates a new [DocumentListRenderer]{@link module:alfresco/documentlibrary/views/DocumentListRenderer}
        * which is used to render the actual items in the view. This function can be overridden by extending views
        * (such as the [Film Strip View]{@link module:alfresco/documentlibrary/views/AlfFilmStripView}) to create
@@ -159,7 +188,10 @@ define(["dojo/_base/declare",
             currentData: this.currentData,
             pubSubScope: this.pubSubScope,
             parentPubSubScope: this.parentPubSubScope,
-            columns: this.columns
+            columns: this.columns,
+            showNextLink: this.showNextLink,
+            nextLinkLabel: this.nextLinkLabel,
+            nextLinkPublishTopic: this.nextLinkPublishTopic
          });
          return dlr;
       },

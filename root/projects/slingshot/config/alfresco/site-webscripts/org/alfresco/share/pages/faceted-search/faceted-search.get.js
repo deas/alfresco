@@ -455,6 +455,8 @@ var searchDocLib = {
          {
             name: "alfresco/documentlibrary/views/AlfGalleryView",
             config: {
+               showNextLink: true,
+               nextLinkLabel: msg.get("faceted-search.show-more-results.label"),
                widgets: [
                   {
                      name: "alfresco/search/SearchGalleryThumbnail",
