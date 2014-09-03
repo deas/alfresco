@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -165,7 +165,8 @@ define(["dojo/_base/declare",
                config.subcriptionTopic = subcriptionTopic; // Include the subcriptionTopic in the configuration the subscription can be cleaned up
 
                // Construct the form widgets and then construct the dialog using that configuration...
-               var formConfig = this.createFormConfig(config.widgets);
+               var formValue = (config.formValue != null) ? config.formValue: {};
+               var formConfig = this.createFormConfig(config.widgets, formValue);
                var dialogConfig = this.createDialogConfig(config, formConfig);
                this.dialog = new AlfDialog(dialogConfig);
                this.dialog.show();
@@ -219,14 +220,16 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @param {object} widgets This is the configuration of the fields to be included in the form.
+       * @param {object} formValue The initial value to set in the form.
        * @returns {object} The configuration for the form to add to the dialog
        */
-      createFormConfig: function alfresco_dialogs_AlfDialogService__createFormConfig(widgets) {
+      createFormConfig: function alfresco_dialogs_AlfDialogService__createFormConfig(widgets, formValue) {
          var formConfig = {
             name: "alfresco/forms/Form",
             config: {
                displayButtons: false,
-               widgets: widgets
+               widgets: widgets,
+               value: formValue
             }
          };
          return formConfig;

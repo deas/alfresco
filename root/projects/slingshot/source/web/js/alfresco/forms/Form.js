@@ -18,7 +18,10 @@
  */
 
 /**
- * This is a work-in-progress widget... use with caution.
+ * This is the root module for all Aikau forms. It is intended to work with widgets that extend the
+ * [BaseFormControl]{@link module:alfresco/forms/controls/BaseFormControl} and handles setting and 
+ * getting there values as well as creating and controlling the behaviour of buttons that can be
+ * used to publish the overall value of the controls that the form contains.
  * 
  * @module alfresco/forms/Form
  * @extends dijit/_WidgetBase
@@ -32,7 +35,6 @@ define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
         "dijit/form/Form",
-        "dojo/_base/xhr",
         "alfresco/core/Core",
         "alfresco/core/CoreWidgetProcessing",
         "alfresco/documentlibrary/_AlfHashMixin",
@@ -41,12 +43,9 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "alfresco/buttons/AlfButton",
         "dojo/_base/array",
-        "dojo/json",
-        "dijit/registry",
-        "dojo/hash",
-        "alfresco/core/ArrayUtils"], 
-        function(declare, _Widget, _Templated, Form, xhr, AlfCore, CoreWidgetProcessing, _AlfHashMixin, template, 
-                 ioQuery, lang, AlfButton, array, json, registry, hash, arrayUtils) {
+        "dijit/registry"], 
+        function(declare, _Widget, _Templated, Form, AlfCore, CoreWidgetProcessing, _AlfHashMixin, template, 
+                 ioQuery, lang, AlfButton, array, registry) {
    
    return declare([_Widget, _Templated, AlfCore, CoreWidgetProcessing, _AlfHashMixin], {
       
@@ -516,6 +515,10 @@ define(["dojo/_base/declare",
             {
                var currHash = ioQuery.queryToObject(hash());
                this.setValue(currHash);
+            }
+            else
+            {
+               this.setValue(this.value);
             }
             
             array.forEach(widgets, function(widget, i) {

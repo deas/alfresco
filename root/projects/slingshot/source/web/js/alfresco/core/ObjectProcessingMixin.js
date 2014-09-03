@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,7 +18,10 @@
  */
 
 /**
- *
+ * This mixin module is primarily provided for allowing publication payloads to be be processed
+ * using a set of utility functions. It was written to be used by the 
+ * [_PublishPayloadMixin]{@link module:alfresco/renderers/_PublishPayloadMixin} but can be mixed into
+ * any module that needs to take advantage of the object processing capabilities that it provides.
  * 
  * @module alfresco/core/ObjectProcessingMixin
  * @author Dave Draper
@@ -31,6 +34,25 @@ define(["dojo/_base/declare",
    
    return declare(null, {
       
+      /**
+       * This utility function will convert the value "___AlfCurrentItem" into the actual
+       * currentItem object. It will return the supplied value if it is anything else.
+       * 
+       * @instance
+       * @param {string} v The value to process.
+       * @returns The processed value
+       */
+      setCurrentItem: function alfresco_core_ObjectProcessingMixin__setCurrentItem(v) {
+         if (v === "___AlfCurrentItem")
+         {
+            return this.currentItem;
+         }
+         else
+         {
+            return v;
+         } 
+      },
+
       /**
        * This utility function will perform token substitution on the supplied string value using the
        * values from currentItem.
@@ -90,7 +112,7 @@ define(["dojo/_base/declare",
             }
             else if (ObjectTypeUtils.isArray(v))
             {
-               array.forEach(v, lang.hitch(this.processObject(this, f)));
+               array.forEach(v, lang.hitch(this, this.processObject, functions));
             }
             else if (ObjectTypeUtils.isObject(v))
             {
