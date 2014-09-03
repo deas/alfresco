@@ -44,7 +44,7 @@ define(["dojo/_base/declare",
        * @instance
        * @type {object}
        * @property {string|null} label The label or message key for the view (as appears in the menus)
-       * @property {string|null} iconClass The class to place next to the label
+       * @property {string|null} icon"class" The "class" to place next to the label
        */
       viewSelectionConfig: {
          label: "Table View",
@@ -55,28 +55,70 @@ define(["dojo/_base/declare",
          {
             name: "alfresco/documentlibrary/views/layouts/HeaderCell",
             config: {
-               label: "Selector",
+               label: "",
                sortable: false
             }
          },
          {
             name: "alfresco/documentlibrary/views/layouts/HeaderCell",
             config: {
-               label: "Indicators",
+               label: "",
                sortable: false
             }
          },
          {
             name: "alfresco/documentlibrary/views/layouts/HeaderCell",
             config: {
-               label: "Name",
-               sortable: false
+               label: "label.name",
+               sortable: true
             }
          },
          {
             name: "alfresco/documentlibrary/views/layouts/HeaderCell",
             config: {
-               label: "Actions",
+               label: "label.title",
+               sortable: true
+            }
+         },
+         {
+            name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+            config: {
+               label: "label.description",
+               sortable: true
+            }
+         },
+         {
+            name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+            config: {
+               label: "label.creator",
+               sortable: true
+            }
+         },
+         {
+            name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+            config: {
+               label: "label.created",
+               sortable: true
+            }
+         },
+         {
+            name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+            config: {
+               label: "label.modifier",
+               sortable: true
+            }
+         },
+         {
+            name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+            config: {
+               label: "label.modified",
+               sortable: true
+            }
+         },
+         {
+            name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+            config: {
+               label: "",
                sortable: false
             }
          }
@@ -97,6 +139,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
+                        "class": "siteDescription mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/Selector"
@@ -107,6 +150,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
+                        "class": "siteDescription mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/Indicators"
@@ -117,13 +161,13 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
+                        "class": "siteDescription mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/InlineEditProperty",
                               config: {
                                  propertyToRender: "node.properties.cm:name",
                                  postParam: "prop_cm_name",
-                                 renderSize: "large",
                                  renderAsLink: true
                               }
                            }
@@ -133,6 +177,97 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
+                        "class": "siteDescription mediumpad",
+                        widgets: [
+                           {
+                              name: "alfresco/renderers/InlineEditProperty",
+                              config: {
+                                 propertyToRender: "node.properties.cm:title",
+                                 postParam: "prop_cm_title"
+                              }
+                           }
+                        ]
+                     }
+                  },
+                  {
+                     name: "alfresco/documentlibrary/views/layouts/Cell",
+                     config: {
+                        "class": "siteDescription mediumpad",
+                        widgets: [
+                           {
+                              name: "alfresco/renderers/InlineEditProperty",
+                              config: {
+                                 propertyToRender: "node.properties.cm:description",
+                                 postParam: "prop_cm_description"
+                              }
+                           }
+                        ]
+                     }
+                  },
+                  {
+                     name: "alfresco/documentlibrary/views/layouts/Cell",
+                     config: {
+                        "class": "siteDescription mediumpad",
+                        widgets: [
+                           {
+                              name: "alfresco/renderers/Property",
+                              config: {
+                                 propertyToRender: "node.properties.cm:creator",
+                                 postParam: "prop_cm_creator"
+                              }
+                           }
+                        ]
+                     }
+                  },
+                  {
+                     name: "alfresco/documentlibrary/views/layouts/Cell",
+                     config: {
+                        "class": "siteDescription mediumpad",
+                        widgets: [
+                           {
+                              name: "alfresco/renderers/Property",
+                              config: {
+                                 propertyToRender: "node.properties.cm:created",
+                                 postParam: "prop_cm_created"
+                              }
+                           }
+                        ]
+                     }
+                  },
+                  {
+                     name: "alfresco/documentlibrary/views/layouts/Cell",
+                     config: {
+                        "class": "siteDescription mediumpad",
+                        widgets: [
+                           {
+                              name: "alfresco/renderers/Property",
+                              config: {
+                                 propertyToRender: "node.properties.cm:modifier",
+                                 postParam: "prop_cm_modifier"
+                              }
+                           }
+                        ]
+                     }
+                  },
+                  {
+                     name: "alfresco/documentlibrary/views/layouts/Cell",
+                     config: {
+                        "class": "siteDescription mediumpad",
+                        widgets: [
+                           {
+                              name: "alfresco/renderers/Property",
+                              config: {
+                                 propertyToRender: "node.properties.cm:modified",
+                                 postParam: "prop_cm_modified"
+                              }
+                           }
+                        ]
+                     }
+                  },
+                  {
+                     name: "alfresco/documentlibrary/views/layouts/Cell",
+                     config: {
+                        "class": "siteDescription mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/Actions"

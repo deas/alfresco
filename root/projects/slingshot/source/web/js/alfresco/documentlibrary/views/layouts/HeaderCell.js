@@ -105,7 +105,7 @@ define(["dojo/_base/declare",
       /**
        * @instance
        */
-      postMixinProperties: function alfresco_documentlibrary_views_layouts_HeaderCell__postMixinProperties() {
+      postMixInProperties: function alfresco_documentlibrary_views_layouts_HeaderCell__postMixInProperties() {
          if (this.label != null)
          {
             this.label = this.message(this.label);
