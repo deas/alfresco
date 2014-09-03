@@ -38,7 +38,8 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "GalleryView Test (basic)";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/GalleryView_TestPage.json", testname)
+         // return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/GalleryView_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/galleryViewTest", testname)
 
             // 1. Check that the AlfGalleryViewSlider is visible (this is an additional control published from the gallery view)...
             .findByCssSelector(".alfresco-documentlibrary-AlfGalleryViewSlider")
@@ -98,7 +99,8 @@ define(["intern!object",
          var alfPause = 500;
          var browser = this.remote;
          var testname = "GalleryView Test (keyboard)";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/GalleryView_TestPage.json", testname)
+         // return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/GalleryView_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/galleryViewTest", testname)
 
             .findByCssSelector(".alfresco-documentlibrary-AlfGalleryViewSlider")
                .then(null, function() {

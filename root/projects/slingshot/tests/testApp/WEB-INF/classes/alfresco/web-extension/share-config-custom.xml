@@ -14,6 +14,10 @@
             <mode>development</mode>
          </autowire>
          
+         <!-- <defaults>
+            <persister>presets.persister</persister>
+         </defaults> -->
+         
          <!--  Add in the additional package definition for unit testing Aikau -->
          <dojo-pages>
             <packages>

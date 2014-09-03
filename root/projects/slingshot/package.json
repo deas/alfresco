@@ -10,7 +10,6 @@
       "load-grunt-tasks": "latest",
       "grunt-contrib-copy": "latest",
       "grunt-http": "latest",
-      "grunt-shell": "latest",
       "grunt-sync": "latest",
       "jsdoc": "~3.3.0",
       "uglify-js": "~1.2.5",
@@ -29,6 +28,8 @@
       "grunt-notify": "~0.3.0",
       "grunt-contrib-clean": "latest",
       "tcp-port-used": "latest",
-      "grunt-folder-list": "latest"
+      "grunt-folder-list": "latest",
+      "grunt-wait-server": "latest",
+      "grunt-shell-spawn": "latest"
    }
 }

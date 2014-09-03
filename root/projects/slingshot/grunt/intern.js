@@ -38,7 +38,10 @@ module.exports = function (grunt, alf) {
 
    // Register a test task that uses Intern_local
    grunt.registerTask('test_local', [
-      'intern:local' // Run all the intern tests a local instance of selenium
+      'shell:startTestApp',
+      'waitServer',
+      'intern:local',
+      'shell:stopTestApp' // Run all the intern tests a local instance of selenium
    ]);
 
    // Register a test task that uses Intern_sl
@@ -50,6 +53,21 @@ module.exports = function (grunt, alf) {
    grunt.registerTask('test_grid', [
       'intern:grid' // Run all the intern tests on grid
    ]);
+
+   grunt.registerTask('startUnitTestApp', 'Spawn a Maven process to start the Jetty server running the unit test application', function() {
+      var done = this.async();
+      var nodeCoverage = grunt.util.spawn({
+         cmd: 'mvn',
+         args: ['jetty:run'],
+         opts: {
+            detached: 'true',
+            stdio : 'inherit'
+         }
+      }, function(error, result, code) {
+         grunt.log.writeln("Jetty Application Started...");
+         done();
+      });
+   });
 
    // Return the config. This gets pushed into the grunt.init.config method in Gruntfile.
    return {

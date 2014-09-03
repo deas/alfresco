@@ -2,5 +2,5 @@
   <shortname>PropertyPicker Test</shortname>
   <description>This WebScript defines the PropertyPicker page test</description>
   <family>aikau-unit-tests</family>
-  <url>/PropertyPicker</url>
+  <url>/FormPropertyPicker</url>
 </webscript>

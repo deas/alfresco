@@ -203,7 +203,10 @@ module.exports = function (grunt, alf) {
 
          // Starts the Aikau unit test application
          startTestApp: {
-            command: 'mvn jetty:run-forked'
+            command: 'mvn jetty:run',
+            options: {
+               async: true
+            }
          },
 
          // Stops the Aikau unit test application
