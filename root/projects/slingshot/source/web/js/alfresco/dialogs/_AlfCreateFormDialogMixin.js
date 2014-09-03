@@ -47,12 +47,12 @@ define(["dojo/_base/declare",
 
          if (this.dialogConfirmationButtonTitle == null)
          {
-            this.dialogConfirmationButtonTitle = this.messages("services.ActionService.button.ok");
+            this.dialogConfirmationButtonTitle = this.message("services.ActionService.button.ok");
          }
 
          if (this.dialogCancellationButtonTitle == null)
          {
-            this.dialogCancellationButtonTitle = this.messages("services.ActionService.button.cancel");
+            this.dialogCancellationButtonTitle = this.message("services.ActionService.button.cancel");
          }
 
          // Generate a new UUID for the publishTopic and then override the configuration so that
