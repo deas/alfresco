@@ -44,6 +44,7 @@ module.exports = function (grunt, alf) {
    // Rebuild a vagrant instance.
    grunt.registerTask('vclean', [
       'shell:vagrantDestroy',
-      'shell:vagrantUp'
+      'shell:vagrantUp',
+      'shell:vagrantProvision'
    ]);
 }
