@@ -33,7 +33,7 @@ define({
    baseNonFunctionalSuites: null,
 
    // Uncomment and add specific tests as necessary during development!
-//   baseFunctionalSuites: ['tests/alfresco/accessibility/AccessibilityMenuTest'],
+  // baseFunctionalSuites: ['tests/alfresco/accessibility/AccessibilityMenuTest'],
 
    /**
     * This is the base array of functional test suites
@@ -102,6 +102,7 @@ define({
       // 'tests/alfresco/misc/AlfTooltipTest', - COMMENTED OUT - THE TOOLTIP ITSELF NEEDS REWRITING
       'tests/alfresco/misc/TableAndFormDialogTest',
 
+      'tests/alfresco/renderers/BannerTest',
       'tests/alfresco/renderers/BooleanTest',
       'tests/alfresco/renderers/DateTest',
       'tests/alfresco/renderers/DateLinkTest',
