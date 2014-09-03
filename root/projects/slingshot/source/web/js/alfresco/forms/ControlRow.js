@@ -106,7 +106,7 @@ define(["alfresco/layout/HorizontalWidgets",
        * 
        * @instance
        */
-      validateFormControl: function alfresco_forms_ControlRow__validateFormControl() {
+      validateFormControlValue: function alfresco_forms_ControlRow__validateFormControlValue() {
          array.forEach(this._processedWidgets, lang.hitch(this, this.validateChildFormControlValue));
       },
 
@@ -117,9 +117,9 @@ define(["alfresco/layout/HorizontalWidgets",
        * @param {number} index The index of the widget to validate
        */
       validateChildFormControlValue: function alfresco_forms_ControlRow__validateChildFormControlValue(widget, index) {
-         if (typeof widget.validateChildFormControlValue === "function")
+         if (typeof widget.validateFormControlValue === "function")
          {
-            widget.validateFormControl(values);
+            widget.validateFormControlValue();
          }
       }
    });
