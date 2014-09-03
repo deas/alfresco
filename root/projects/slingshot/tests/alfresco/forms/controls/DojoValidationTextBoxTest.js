@@ -58,7 +58,7 @@ define(["intern!object",
             // Test #2
             // Check initial value that is set...
             .findByCssSelector("#INITIAL_VALUE1 .dijitInputContainer input")
-               .getValue()
+               .getProperty('value')
                .then(function(resultText) {
                   assert(resultText == "Val1", "Test #2a - The initial value was not set correctly: " + resultText);
                })
@@ -68,9 +68,9 @@ define(["intern!object",
             // Check behaviour rules
             // Based on the initial value of "Field1" it is expected that SINGLE_POSITIVE_RULES should be
             // shown and SINGLE_NEGATIVE_RULES should be hidden
-            .hasElementByCss("#SINGLE_POSITIVE_RULES")
-               .then(function(result) {
-                  assert(result == true, "Test #3a - Widget not displayed as expected");
+            .findByCssSelector("#SINGLE_POSITIVE_RULES")
+               .then(null, function() {
+                  assert(false, "Test #3a - Widget not displayed as expected");
                })
                .end()
             .findByCssSelector("#SINGLE_NEGATIVE_RULES")
@@ -96,16 +96,16 @@ define(["intern!object",
 
             // ...and the field should be enabled for POSITIVE and disabled for NEGATIVE...
             .findByCssSelector("#SINGLE_POSITIVE_RULES .dijitInputContainer input")
-               .getAttribute("disabled")
+               .isEnabled()
                .then(function(result) {
-                  assert(result == "true", "Test #3e - Field should have been disabled");
+                  assert(result == false, "Test #3e - Field should have been disabled");
                })
                .end()
 
             .findByCssSelector("#SINGLE_NEGATIVE_RULES .dijitInputContainer input")
-               .getAttribute("disabled")
+               .isEnabled()
                .then(function(result) {
-                  assert(result == null, "Test #3f - Field should have been enabled");
+                  assert(result == true, "Test #3f - Field should have been enabled");
                })
                .end()
 
@@ -119,9 +119,9 @@ define(["intern!object",
                   assert(result == "none", "Test #3d - Widget displayed unexpectedly after processing positive rules");
                })
                .end()
-            .hasElementByCss("#SINGLE_NEGATIVE_RULES")
-               .then(function(result) {
-                  assert(result == true, "Test #3e - Widget not displayed as expected after processing negative rules");
+            .findByCssSelector("#SINGLE_NEGATIVE_RULES")
+               .then(null, function() {
+                  assert(false, "Test #3e - Widget not displayed as expected after processing negative rules");
                })
                .end()
 
@@ -147,15 +147,15 @@ define(["intern!object",
                .type(keys.BACKSPACE)
                .end()
             .findByCssSelector("#SINGLE_NEGATIVE_RULES .dijitInputContainer input")
-               .getAttribute("disabled")
+               .isEnabled()
                .then(function(result) {
-                  assert(result == "true", "Test #3h - Field should have been disabled");
+                  assert(result == false, "Test #3h - Field should have been disabled");
                })
                .end()
             .findByCssSelector("#SINGLE_POSITIVE_RULES .dijitInputContainer input")
-               .getAttribute("disabled")
+               .isEnabled()
                .then(function(result) {
-                  assert(result == null, "Test #3i - Field should have been enabled");
+                  assert(result == true, "Test #3i - Field should have been enabled");
                })
                .end()
 
@@ -170,9 +170,9 @@ define(["intern!object",
             .findByCssSelector("#INITIAL_VALUE3 .dijitInputContainer input")
                .type("3")
                .end()
-            .hasElementByCss("#SINGLE_POSITIVE_RULES")
-               .then(function(result) {
-                  assert(result == true, "Test #3a - Widget not displayed as expected");
+            .findByCssSelector("#SINGLE_POSITIVE_RULES")
+               .then(null, function() {
+                  assert(false, "Test #3a - Widget not displayed as expected");
                })
                .end()
             .findByCssSelector("#SINGLE_NEGATIVE_RULES")
@@ -194,15 +194,15 @@ define(["intern!object",
                })
                .end()
             .findByCssSelector("#SINGLE_POSITIVE_RULES .dijitInputContainer input")
-               .getAttribute("disabled")
+               .isEnabled()
                .then(function(result) {
-                  assert(result == "true", "Test #3e - Field should have been disabled");
+                  assert(result == false, "Test #3e - Field should have been disabled");
                })
                .end()
             .findByCssSelector("#SINGLE_NEGATIVE_RULES .dijitInputContainer input")
-               .getAttribute("disabled")
+               .isEnabled()
                .then(function(result) {
-                  assert(result == null, "Test #3f - Field should have been enabled");
+                  assert(result == true, "Test #3f - Field should have been enabled");
                })
                .end()
 
@@ -248,9 +248,9 @@ define(["intern!object",
                })
                .end()
             .findByCssSelector("#MULTIPLE_MIXED_RULES .dijitInputContainer input")
-               .getAttribute("disabled")
+               .isEnabled()
                .then(function(result) {
-                  assert(result == "true", "Test #4e - Multiple mixed should have been disabled");
+                  assert(result == false, "Test #4e - Multiple mixed should have been disabled");
                })
                .end()
             // Switch requirement OFF
@@ -264,9 +264,9 @@ define(["intern!object",
                })
                .end()
             .findByCssSelector("#MULTIPLE_MIXED_RULES .dijitInputContainer input")
-               .getAttribute("disabled")
+               .isEnabled()
                .then(function(result) {
-                  assert(result == null, "Test #4g - Multiple mixed should have been enabled");
+                  assert(result == true, "Test #4g - Multiple mixed should have been enabled");
                })
                .end()
 
