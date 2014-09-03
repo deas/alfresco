@@ -858,6 +858,10 @@
        */	  
       _isGroupDeletable: function Permissions__isGroupDeletable(oRecord)
 	  {
+         if(this.permissions.isInherited)
+         {
+             return true;
+         }      
          var groupName = oRecord.getData("authority").name;
          if (oRecord.getData("isGroup") == true)
          {
