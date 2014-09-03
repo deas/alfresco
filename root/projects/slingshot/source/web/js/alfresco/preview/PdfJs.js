@@ -38,10 +38,7 @@ define(["dojo/_base/declare",
    var AikauPdfJs = declare([AlfDocumentPreviewPlugin], {
 
       /**
-       * Declares the dependencies on PdfJs dependencies. Note that the patched YUI Compressor that Surf uses
-       * is not able to compress the pdf.js and pdf.worker.js files and changes to these need to be manually
-       * compressed (e.g. using JSMin) and committed. The versions ending -min.js should be uncommented for
-       * production systems.
+       * Declares the dependencies on PdfJs dependencies.
        * 
        * @instance
        * @type {String[]}
@@ -55,8 +52,6 @@ define(["dojo/_base/declare",
                            "/components/preview/pdfjs/compatibility.js",
                            "/components/preview/pdfjs/pdf.js",
                            "/components/preview/pdfjs/pdf.worker.js",
-                           // "/components/preview/pdfjs/pdf-min.js",
-                           // "/components/preview/pdfjs/pdf.worker-min.js",
                            "/components/preview/spin.js",
                            "/yui/tabview/tabview.js"],
 

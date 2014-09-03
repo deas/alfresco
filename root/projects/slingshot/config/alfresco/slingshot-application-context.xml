@@ -230,10 +230,6 @@
    <bean id="dependency.aggregator" parent="dependency.aggregator.abstract" class="org.springframework.extensions.surf.DependencyAggregator">
       <property name="compressionExclusions">
           <list>
-             <value>*/pdf.js</value>
-             <value>*/pdf.worker.js</value>
-             <value>*/pdf-min.js</value>
-             <value>*/pdf.worker-min.js</value>
              <value>*-min.js"</value>
           </list>
        </property>
