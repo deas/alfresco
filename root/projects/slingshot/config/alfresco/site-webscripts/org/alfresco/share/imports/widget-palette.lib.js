@@ -134,7 +134,8 @@ function getRenderFilterConfig() {
                   config: {
                      name: "values",
                      label: "Values To Test",
-                     description: "Add values that the property must be in order for the condition to be satisfied"
+                     description: "Add values that the property must be in order for the condition to be satisfied",
+                     useSimpleValues: true
                   }
                },
                {

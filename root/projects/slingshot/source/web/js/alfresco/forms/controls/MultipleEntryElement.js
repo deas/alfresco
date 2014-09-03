@@ -163,12 +163,21 @@ define(["dojo/_base/declare",
             
             // The element is always created from the base widgets which does not actually provide any values
             // so it is important that the values are set afterwards...
-            this.form.setValue(this.elementValue);
+            this.setFormValue(this.elementValue);
 
             this.alfLog("log", "Created new form for MEE", this.form);
             this.form.placeAt(this.editDisplay);
          }
          this.form.validate();
+      },
+
+      /**
+       * Sets the value of the internal form.
+       * 
+       * @instance
+       */
+      setFormValue: function alfresco_forms_controls_MultipleEntryElement__setFormValue(value) {
+         this.form.setValue(this.elementValue);
       },
       
       /**

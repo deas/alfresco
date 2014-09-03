@@ -33,6 +33,16 @@ define(["alfresco/forms/controls/BaseFormControl",
    return declare([BaseFormControl, CoreWidgetProcessing], {
       
       /**
+       * By default the values created will be objects containing a "value" attribute. But if this
+       * is set to true then the values will be simple strings as entered.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      useSimpleValues: false,
+
+      /**
        * @instance
        */
       constructor: function alfresco_forms_controls_MultipleEntryFormControl__constructor(args) {
@@ -44,13 +54,25 @@ define(["alfresco/forms/controls/BaseFormControl",
        * @returns {object} The widget config.
        */
       getWidgetConfig: function alfresco_forms_controls_MultipleEntryFormControl__getWidgetConfig() {
-         // Return the configuration for the widget
+         var elementWidget = null;
+         if (this.elementWidget != null)
+         {
+            elementWidget = this.elementWidget;
+         }
+         else if (this.useSimpleValues === true)
+         {
+            elementWidget = "alfresco/forms/controls/SimpleMultipleEntryElement";
+         }
+         else
+         {
+            elementWidget = "alfresco/forms/controls/MultipleEntryElement";
+         }
          return {
             id : this.generateUuid(),
             name: this.name,
             value: this.value,
             elementWrapper: (this.elementWrapper != null) ? this.elementWrapper : "alfresco/forms/controls/MultipleEntryElementWrapper",
-            elementWidget: (this.elementWidget != null) ? this.elementWidget : "alfresco/forms/controls/MultipleEntryElement",
+            elementWidget: elementWidget,
             widgets: this.widgets
          };
       },

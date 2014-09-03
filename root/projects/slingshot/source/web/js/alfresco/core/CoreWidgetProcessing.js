@@ -518,13 +518,26 @@ define(["dojo/_base/declare",
          {
             currValue = lang.trim(currValue);
          }
-         if (renderFilterConfig.negate == null || renderFilterConfig.negate == false)
+
+         // Convert booleans to strings for simple comparison...
+         // This is necessary because when creating pages dynamically the boolean values
+         // will end up as strings so the comparison won't work.
+         if (typeof target === "boolean")
          {
-            return currValue == target;
+            target = target.toString();
+         }
+         if (typeof currValue === "boolean")
+         {
+            currValue = currValue.toString();
+         }
+
+         if (renderFilterConfig.negate == null || renderFilterConfig.negate === false)
+         {
+            return currValue === target;
          }
          else
          {
-            return currValue != target;
+            return currValue !== target;
          }
       },
       

@@ -30,14 +30,15 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/forms/controls/MultipleEntryElementWrapper",
         "alfresco/forms/controls/MultipleEntryElement",
+        "alfresco/forms/controls/SimpleMultipleEntryElement",
         "dojo/_base/array",
         "dijit/focus",
         "dijit/registry",
         "dojo/aspect",
         "dojo/dnd/Source",
         "dojo/dom-construct"], 
-        function(declare, _Widget, _Templated, _FocusMixin, template, AlfCore, MultipleEntryElementWrapper, MultipleEntryElement, array, 
-                 focusUtil, registry, aspect, Source, domConstruct) {
+        function(declare, _Widget, _Templated, _FocusMixin, template, AlfCore, MultipleEntryElementWrapper, 
+                 MultipleEntryElement, SimpleMultipleEntryElement, array, focusUtil, registry, aspect, Source, domConstruct) {
    
    return declare([_Widget, _Templated, AlfCore], {
       
