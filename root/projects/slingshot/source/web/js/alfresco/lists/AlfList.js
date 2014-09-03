@@ -503,7 +503,8 @@ define(["dojo/_base/declare",
                var newView = this.viewMap[payload.value];
                this.showRenderingMessage();
                newView.setData(this.currentData);
-               newView.renderView(true);
+               newView.currentData.previousItemCount = 0;
+               newView.renderView(false);
                this.showView(newView);
             }
             else
