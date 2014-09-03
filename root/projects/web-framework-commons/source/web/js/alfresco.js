@@ -8180,8 +8180,17 @@ Alfresco.util.Ajax = function()
          if ((serverResponse.status == 401 || (serverResponse.status == 302 && (/(text\/html)/).test(contentType)))
                && !config.noReloadOnAuthFailure)
          {
-            window.location.reload(true);
-            return;
+            var redirect = serverResponse.getResponseHeader["Location"];
+            if (redirect)
+            {
+               window.location.href = window.location.protocol + "//" + window.location.host + redirect;
+               return;
+            }
+            else
+            {
+               window.location.reload(true);
+               return;
+            }
          }
 
          // Invoke the callback

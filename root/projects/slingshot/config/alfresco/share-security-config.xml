@@ -161,7 +161,7 @@
          <!-- Assert logout is done from a valid domain, if so clear the token when logging out -->
          <rule>
             <request>
-               <method>GET</method>
+               <method>POST</method>
                <path>/page/dologout(\?.+)?</path>
             </request>
             <action name="assertReferer">

@@ -118,7 +118,13 @@
          </span>
       </div>
    </span>
-</li>   
+</li>
+<#elseif item.type = "post">
+   <#assign post>${id}_post_${item.generatedId}</#assign>
+   <script type="text/javascript">//<![CDATA[
+   function ${post}() {Alfresco.util.Ajax.jsonRequest({method:"POST",url:Alfresco.constants.URL_PAGECONTEXT+"${item.value}"});}
+   //]]></script>
+   <li><a ${attrStyle} ${attrTitle} onclick="${post}()" tabindex="0" ${attrTarget!""}>${msg(item.label!"")}</a>
 <#else>
    <#assign attrTarget><#if item.type = "external-link">target="_blank"</#if></#assign>
 <li><a ${attrStyle} ${attrTitle} ${attrHref} id="${id}-${item.id}" tabindex="0" ${attrTarget!""}>${msg(item.label!"")}</a>
