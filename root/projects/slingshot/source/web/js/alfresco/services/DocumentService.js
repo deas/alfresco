@@ -20,7 +20,7 @@
 /**
  * Handles requests retrieve documents from the repository and publishes the details of them when they're
  * retrieved.
- * 
+ *
  * @module alfresco/services/DocumentService
  * @extends module:alfresco/core/Core
  * @author Dave Draper
@@ -31,23 +31,117 @@ define(["dojo/_base/declare",
         "service/constants/Default",
         "alfresco/core/PathUtils",
         "alfresco/core/NodeUtils",
-        "dojo/_base/lang",
-        "dojo/hash"],
-        function(declare, AlfCore, CoreXhr, AlfConstants, PathUtils, NodeUtils, lang, hash) {
-   
+        "dojo/_base/lang"],
+        function(declare, AlfCore, CoreXhr, AlfConstants, PathUtils, NodeUtils, lang) {
+
    return declare([AlfCore, CoreXhr, PathUtils], {
-      
+
       /**
-       * 
+       * The URL to the download API
+       *
+       * @instance
+       * @type {String}
+       * @default [AlfConstants.PROXY_URI + "api/internal/downloads"]
+       */
+      downloadAPI: AlfConstants.PROXY_URI + "api/internal/downloads",
+
+      /**
+       * How many times should we retry a failed archive progress request?
+       *
+       * @instance
+       * @type {Number}
+       * @default [6]
+       */
+      maxArchiveProgressRetryCount: 6,
+
+      /**
+       * How often should we request an update on an Archive's progress?
+       *
+       * @instance
+       * @type {Number}
+       * @default [250]
+       */
+      archiveProgressUpdateInterval: 250,
+
+      /**
+       * How long should we wait before triggering a request on a failed progress update?
+       *
+       * @instance
+       * @type {Number}
+       * @default [5000]
+       */
+      archiveProgressUpdateFailureInterval: 5000,
+
+      /**
+       * Called to start off the archiving process.
+       *
+       * @instance
+       * @type {String}
+       * @default ALF_ARCHIVE_REQUEST
+       */
+      requestArchiveTopic: "ALF_ARCHIVE_REQUEST",
+
+      /**
+       * Called to trigger a request to check progress
+       *
+       * @instance
+       * @type {String}
+       */
+      requestArchiveProgressTopic: "ALF_ARCHIVE_PROGRESS_REQUEST",
+
+      /**
+       * Called to trigger a delayed request to check progress
+       * delay is set in archiveProgressUpdateFailureInterval
+       *
+       * @instance
+       * @type {String}
+       */
+      requestDelayedArchiveProgressTopic: "ALF_ARCHIVE_DELAYED_PROGRESS_REQUEST",
+
+      /**
+       * Triggered when the progress request has failed
+       *
+       * @instance
+       * @type {String}
+       */
+      archiveProgressFailureTopic: "ALF_ARCHIVE_PROGRESS_REQUEST_FAILURE",
+
+      /**
+       * Triggered when the progress request has succeeded.
+       *
+       * @instance
+       * @type {String}
+       */
+      archiveProgressSuccessTopic: "ALF_ARCHIVE_PROGRESS_REQUEST_SUCCESS",
+
+      /**
+       * Event topic to trigger a file download in the browser
+       *
+       * @instance
+       * @type {String}
+       * @default "ALF_DOWNLOAD_FILE"
+       */
+      downloadNodeTopic: "ALF_DOWNLOAD_FILE",
+
+      /**
+       *
        * @instance
        * @param {array} args Constructor arguments
        */
       constructor: function alfresco_services_DocumentService__constructor(args) {
          lang.mixin(this, args);
-         this.alfSubscribe("ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST", lang.hitch(this, "onRetrieveSingleDocumentRequest"));
-         this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST", lang.hitch(this, "onRetrieveDocumentsRequest"));
+         this.alfSubscribe("ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST", lang.hitch(this, this.onRetrieveSingleDocumentRequest));
+         this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST", lang.hitch(this, this.onRetrieveDocumentsRequest));
+
+         //Bind to archive topics:
+         this.alfSubscribe(this.requestArchiveTopic, lang.hitch(this, this.onRequestArchive));
+         this.alfSubscribe(this.requestArchiveProgressTopic, lang.hitch(this, this.onRequestArchiveProgress));
+         this.alfSubscribe(this.requestDelayedArchiveProgressTopic, lang.hitch(this, this.onRequestDelayedArchiveProgress));
+
+         //Bind to download topics:
+         this.alfSubscribe(this.downloadNodeTopic, lang.hitch(this, this.onDownloadFile));
       },
-      
+
       /**
        * Retrieves the details for a single document. This currently uses the Repository API and therefore won't collect any Share specific
        * information such as actions, etc. However this could be updated to use a new WebScript in the future.
@@ -62,18 +156,17 @@ define(["dojo/_base/declare",
          }
          else
          {
-            var nodeRef = NodeUtils.processNodeRef(payload.nodeRef);
-            targetNode = payload.nodeRef;
+            var nodeRef = NodeUtils.processNodeRef(payload.nodeRef),
             targetNodeUri = nodeRef.uri;
 
             // Construct the URI for the request...
-            var uriPart = (payload.site != null && payload.site != "") ? "{type}/site/{site}/{container}" : "{type}/node/" + targetNodeUri;
+            var uriPart = (payload.site != null && payload.site !== "") ? "{type}/site/{site}/{container}" : "{type}/node/" + targetNodeUri;
             if (payload.filter != null && payload.filter.filterId === "path")
             {
-               // If a path has been provided in the filter then it is necessary to perform some special 
-               // encoding. We need to ensure that the data is URI encoded, but we want to preserve the 
+               // If a path has been provided in the filter then it is necessary to perform some special
+               // encoding. We need to ensure that the data is URI encoded, but we want to preserve the
                // forward slashes. We also need to "double encode" all % characters because FireFox has
-               // a nasty habit of decoding them *before* they've actually been posted back... this 
+               // a nasty habit of decoding them *before* they've actually been posted back... this
                // guarantees that the user will be able to bookmark valid URLs...
                var encodedPath = encodeURIComponent(payload.filter.filterData).replace(/%2F/g, "/").replace(/%25/g,"%2525");
                uriPart += this.combinePaths("/", encodedPath) + "/";
@@ -96,7 +189,7 @@ define(["dojo/_base/declare",
 
       /**
        * Handles requests to retrieve documents. The payload should contain the following properties:
-       * 
+       *
        * path
        * type
        * site
@@ -107,15 +200,15 @@ define(["dojo/_base/declare",
        * sortAscending
        * sortField
        * rootNode
-       * 
+       *
        * @instance
        * @param {object} payload The payload published on the topic
        */
       onRetrieveDocumentsRequest: function alfresco_services_DocumentService__onRetrieveDocumentsRequest(payload) {
-         
+
          var targetNode = "alfresco://company/home",
              targetNodeUri = "alfresco/company/home";
-         if (payload.nodeRef != null && payload.nodeRef != "")
+         if (payload.nodeRef != null && payload.nodeRef !== "")
          {
             var nodeRef = NodeUtils.processNodeRef(payload.nodeRef);
             targetNode = payload.nodeRef;
@@ -123,13 +216,13 @@ define(["dojo/_base/declare",
          }
 
          // Construct the URI for the request...
-         var uriPart = (payload.site != null && payload.site != "") ? "{type}/site/{site}/{container}" : "{type}/node/" + targetNodeUri;
+         var uriPart = (payload.site != null && payload.site !== "") ? "{type}/site/{site}/{container}" : "{type}/node/" + targetNodeUri;
          if (payload.filter != null && payload.filter.path != null)
          {
-            // If a path has been provided in the filter then it is necessary to perform some special 
-            // encoding. We need to ensure that the data is URI encoded, but we want to preserve the 
+            // If a path has been provided in the filter then it is necessary to perform some special
+            // encoding. We need to ensure that the data is URI encoded, but we want to preserve the
             // forward slashes. We also need to "double encode" all % characters because FireFox has
-            // a nasty habit of decoding them *before* they've actually been posted back... this 
+            // a nasty habit of decoding them *before* they've actually been posted back... this
             // guarantees that the user will be able to bookmark valid URLs...
             var encodedPath = encodeURIComponent(payload.filter.path).replace(/%2F/g, "/").replace(/%25/g,"%2525");
             uriPart += this.combinePaths("/", encodedPath);
@@ -165,24 +258,9 @@ define(["dojo/_base/declare",
             }
             else
             {
-               params += "?filter=path"
+               params += "?filter=path";
             }
          }
-         
-
-         // if (payload.filter != null)
-         // {
-         //    // Filter parameters
-         //    params += "?filter=" + encodeURIComponent(payload.filter.filterId);
-         //    if (payload.filter.filterData && payload.filter.filterId !== "path")
-         //    {
-         //       params += "&filterData=" + encodeURIComponent(payload.filter.filterData);
-         //    }
-         // }
-         // else
-         // {
-         //    params += "?filter=path"
-         // }
 
          if (payload.pageSize != null && payload.page != null)
          {
@@ -203,10 +281,10 @@ define(["dojo/_base/declare",
                params += "&libraryRoot=" + encodeURIComponent(targetNode);
             }
          }
-         
+
          // View mode and No-cache
          params += "&view=browse&noCache=" + new Date().getTime();
-         
+
          var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_DOCUMENTS_REQUEST";
          var url = AlfConstants.URL_SERVICECONTEXT + "components/documentlibrary/data/doclist/" + params;
          var config = {
@@ -216,6 +294,254 @@ define(["dojo/_base/declare",
             callbackScope: this
          };
          this.serviceXhr(config);
+      },
+
+      // Archive and Download:
+      // Init Archive:
+      onRequestArchive: function alfresco_services_DocumentService__onRequestArchive(payload)
+      {
+         var nodes = payload.nodes,
+            responseTopic = this.generateUuid();
+
+         if (!nodes) {
+            this.alfLog("error", "No Nodes to generate Archive from");
+            return;
+         }
+
+         var subscriptionHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onRequestArchiveSuccess));
+
+         this.serviceXhr({
+            alfTopic: responseTopic,
+            subscriptionHandle: subscriptionHandle,
+            url: this.downloadAPI,
+            method: "POST",
+            data: nodes,
+            payload: payload
+         });
+
+      },
+
+      /**
+       * Called when the initial request to create the Download Archive Succeeds.
+       *
+       * @instance
+       * @param payload
+       */
+      onRequestArchiveSuccess: function alfresco_services_DocumentService__onRequestArchiveSuccess(payload)
+      {
+         this.alfLog("info", "Archive successfully requested");
+
+         // Clean up listeners
+         if (payload.subscriptionHandle) {
+            this.alfUnsubscribe(payload.subscriptionHandle);
+         }
+
+         var publishPayload = lang.getObject("requestConfig.payload", false, payload);
+
+         if (!publishPayload) {
+            this.alfLog("error", "Unable to retrieve passed in payload from requestConfig.");
+            return;
+         }
+
+         publishPayload.archiveNodeRef= lang.getObject("response.nodeRef", false, payload);
+
+         if (!publishPayload.archiveNodeRef) {
+            this.alfLog("error", "archiveNodeRef missing from response object.");
+            return;
+         }
+
+         // The archiving has started - now check the progress:
+         this.alfPublish(this.requestArchiveProgressTopic, publishPayload);
+      },
+
+      /**
+       * Called when the initial request to create the Download Archive Fails.
+       *
+       * @instance
+       *
+       * @param payload
+       */
+      onRequestArchiveFailure: function alfresco_services_DocumentService__onRequestArchiveFailure(payload)
+      {
+         this.alfLog("error", "Unable to request archive");
+      },
+
+      /**
+       * Are we nearly there yet? Can we download the Archive yet?
+       *
+       * @instance
+       * @param payload
+       */
+      onRequestArchiveProgress: function alfresco_services_DocumentService__onRequestArchiveProgress(payload)
+      {
+
+         // Payload varies depending on
+         var progressRequestPayload = (payload.requestConfig) ? lang.getObject("requestConfig.progressRequestPayload", false, payload) : payload;
+         // Check payload has archiveNodeRef in.
+         if (!progressRequestPayload.archiveNodeRef)
+         {
+            this.alfLog("error", "Unable to retrieve nodeRef from payload: " + progressRequestPayload);
+            return;
+         }
+
+         var responseTopic = this.generateUuid();
+
+         // Remove old listeners before creating new ones.
+         if (progressRequestPayload.subscriptionHandles)
+         {
+            this.alfUnsubscribe(progressRequestPayload.subscriptionHandles);
+         }
+
+         var subscriptionHandles = [
+            this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onActionRequestArchiveProgressSuccess)),
+            this.alfSubscribe(responseTopic + "_FAILURE", lang.hitch(this, this.onActionRequestArchiveProgressFailure))
+         ];
+
+         this.serviceXhr({
+            alfTopic: responseTopic,
+            subscriptionHandles: subscriptionHandles,
+            progressRequestPayload: progressRequestPayload,
+            url: this.downloadAPI + "/" + progressRequestPayload.archiveNodeRef.replace("://", "/") + "/status",
+            method: "GET"
+         });
+      },
+
+      onRequestDelayedArchiveProgress: function alfresco_services_DocumentService__onRequestDelayedArchiveProgress(payload)
+      {
+         this.alfPublishDelayed(this.requestArchiveProgressTopic, payload, this.archiveProgressUpdateInterval);
+      },
+
+      /**
+       *
+       * Handles the Archive progress response.
+       *
+       * @instance
+       * @param payload
+       */
+      onActionRequestArchiveProgressSuccess: function alfresco_services_DocumentService__onActionRequestArchiveProgressSuccess(payload)
+      {
+         // Remove subscriptionListeners
+         if (payload.subscriptionHandles)
+         {
+            this.alfUnsubscribe(payload.subscriptionHandles);
+         }
+
+         if (!(payload && payload.response && payload.response.status))
+         {
+            this.alfLog("error", "Archive Progress Response Status missing");
+            return;
+         }
+         var status = payload.response.status;
+
+         var progressRequestPayload = payload.progressRequestPayload;
+
+         switch (status)
+         {
+            case "PENDING":
+               // Check again in a little bit.
+               this.alfPublish(this.requestDelayedArchiveProgressTopic, payload);
+               break;
+
+            case "IN_PROGRESS":
+               // ok, we've got progress. Check again soon.
+               this.alfPublish(this.requestDelayedArchiveProgressTopic, payload);
+
+               // Use the topic from the payload to notify the dialog of an update.
+               this.alfPublish(progressRequestPayload.progressUpdateTopic, payload);
+               break;
+
+            case "DONE":
+               // Now we're ready to download.
+               this.alfPublish(progressRequestPayload.progressCompleteTopic, payload);
+               break;
+
+            case "CANCELLED":
+               this.alfLog("info", "Archive cancelled");
+               this.alfPublish(progressRequestPayload.progressCancelledTopic, payload);
+               break;
+
+            default:
+               // Pass on error status:
+               // e.g. status = "MAX_CONTENT_SIZE_EXCEEDED"
+               progressRequestPayloads.errorMessage = status;
+               this.alfPublish(progressRequestPayload.progressErrorTopic, payload);
+               break;
+         }
+      },
+
+      /**
+       *
+       * Handles the Archive progress failure.
+       *
+       * @instance
+       * @param payload
+       */
+      onActionRequestArchiveProgressFailure: function alfresco_services_DocumentService__onActionRequestArchiveProgressFailure(payload)
+      {
+         this.alfLog("warn", "Error getting archive progress: " + payload);
+
+         // Remove subscriptionListeners
+         if (payload.subscriptonHandles)
+         {
+            this.alfUnsubscribe(payload.subscriptionHandles);
+         }
+
+         var failureCount = payload.requestConfig.progressRequestPayload.failureCount || 0;
+
+         if (failureCount < this.maxArchiveProgressRetryCount)
+         {
+            payload.requestConfig.progressRequestPayload.failureCount = ++failureCount;
+            this.alfPublish(this.requestDelayedArchiveProgressTopic, payload);
+         }
+         else
+         {
+            this.alfLog('Warn', "Failed to get archive progress");
+            this.alfPublish(this.archiveProgressFailureTopic, payload);
+         }
+      },
+
+      /**
+       * Called to Delete a Download Archive, to clean up the server.
+       *
+       * @instance
+       * @param payload
+       */
+      onDeleteDownloadArchive: function alfresco_services_DocumentService__onDeleteDownloadArchive(payload)
+      {
+         // TODO: Error handling? Handle Success?
+         this.serviceXhr({
+            url: this.downloadAPI + "/" + "payload.archiveURL",
+            method: "delete"
+         });
+      },
+
+      //  Download file:
+      //TODO: Does this really need to be this complicated? (Code is from previous implementation)
+      onDownloadFile: function alfresco_services_DocumentService__onDownloadFile(payload)
+      {
+         if (!payload.nodeRef || !payload.fileName)
+         {
+            this.alfLog("error", "NodeRef and/or Filename missing - unable to download.");
+            return;
+         }
+
+         var form = document.createElement("form");
+         form.method = "GET";
+         form.action = AlfConstants.PROXY_URI + "api/node/content/" + payload.nodeRef.replace("://", "/") + "/" + encodeURIComponent(payload.fileName);
+         document.body.appendChild(form);
+
+         var d = form.ownerDocument,
+            iframe = d.createElement("iframe");
+
+         iframe.style.display = "none";
+         iframe.name = iframe.id = "downloadArchive_" + this.generateUuid();
+         document.body.appendChild(iframe);
+
+         // makes it possible to target the frame properly in IE.
+         window.frames[iframe.name].name = iframe.name;
+
+         form.target = iframe.name;
+         form.submit();
       }
    });
 });
