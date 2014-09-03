@@ -40,56 +40,6 @@ define(["dojo/_base/declare",
    return declare([AlfCore, UrlUtils, PathUtils], {
 
       /**
-       * This function can be called to create a "link" from an item to another page (e.g. this would
-       * typically be used on an item within a collection to navigate to the details of that item)
-       * This will wrap the node in an anchor element but will actually publish a navigation when clicked
-       * and swallow the click event to prevent the browser from processing it directly.
-       *
-       * @instance
-       * @param {element} domNode The node on which to create the link.
-       */
-      createItemLink: function alfresco_renderers__ItemLinkMixin__createItemLink(domNode) {
-
-         if (domNode == null) 
-         {
-            this.alfLog("warn", "A request has been made to create a link for an item, but no DOM node has been provided", this);
-         }
-         else
-         {
-            // Generate the link information for the current item...
-            var payload = this.generateFileFolderLink();
-
-            // Work out the URL to use in a fake anchor (the anchor click will never be processed)...
-            // TODO: This code is based on something similar from "alfresco/menus/_AlfMenuItemMixin" and the two should be merged into
-            //       a common helper function - probably in this module...
-            var url;
-            if (typeof payload.type == "undefined" ||
-                payload.type == null ||
-                payload.type == "" ||
-                payload.type == "SHARE_PAGE_RELATIVE")
-            {
-               url = AlfConstants.URL_PAGECONTEXT + payload.url;
-            }
-            else if (payload.type == "CONTEXT_RELATIVE")
-            {
-               url = AlfConstants.URL_CONTEXT + payload.url;
-            }
-            else if (payload.type == "FULL_PATH")
-            {
-               url = payload.url;
-            }
-            else
-            {
-               url = window.location.pathname + "#" + payload.url;
-            }
-
-            // Attach the click event to the node...
-            on(domNode, "click", lang.hitch(this, "onItemLinkClick", payload));
-            dojo.query(domNode).wrap("<a class='alfresco-menus-_AlfMenuItemMixin' href='" + url + "'></a>");
-         }
-      },
-
-      /**
        * This is the topic that will be published when the item is clicked. The default is aimed at being processed
        * by the [NavigationService]{@link module:alfresco/services/NavigationService} but it can be overridden by the
        * widget mixing in this class to set a custom topic to use.
@@ -115,34 +65,45 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * Updates the publication payload and topic for a folder.
+       *
+       * @instance
+       */
+      updateFolderLinkPublication: function alfresco_renderers__ItemLinkMIxin__updateFolderLinkPublication() {
+         this.linkClickTopic = "ALF_DOCUMENTLIST_PATH_CHANGED";
+         this.publishPayload = {};
+         var locn = this.currentItem.location;
+         if (this.currentItem.parent.isContainer)
+         {
+            this.publishPayload.path = this.combinePaths(locn.path, locn.file);
+         }
+         else if (this.currentItem.location.path === "/")
+         {
+            // handle Repository root parent node (special store_root type - not a folder)
+            this.publishPayload.path = this.combinePaths(locn.path, "");
+         }
+         else
+         {
+            this.alfLog("warn", "It was not possible to generate a payload for the current item", this.currentItem, this);
+         }
+      },
+
+      /**
        * @instance
        */
       generateFileFolderLink: function alfresco_renderers__ItemLinkMixin__generateFileFolderLink() {
-         
-         var payload = {
-            url: "",
-            type: "FULL_PATH",
-            target: "CURRENT"
-         };
          if (this.currentItem != null && this.currentItem.node)
          {
             var jsNode = this.currentItem.jsNode;
-            // This was the original if condition - i can't work out why we need to check for a current site??
-//            if (jsNode.isLink && 
-//                $isValueSet(scope.options.siteId) && 
-//                this.currentItem.location.site && 
-//                this.currentItem.location.site.name !== scope.options.siteId)
             if (jsNode.isLink && this.currentItem.location.site)
             {
                if (jsNode.isContainer)
                {
-                  payload.url = $siteURL("documentlibrary?path=" + encodeURIComponent(this.currentItem.location.path),
-                  {
-                     site: this.currentItem.location.site.name
-                  });
+                  this.updateFolderLinkPublication();
                }
                else
                {
+                  // TODO: This needs re-writing...
                   payload.url = this.getActionUrls(this.currentItem, this.currentItem.location.site.name).documentDetailsUrl;
                }
             }
@@ -150,27 +111,7 @@ define(["dojo/_base/declare",
             {
                if (jsNode.isContainer)
                {
-                  if (this.currentItem.parent.isContainer)
-                  {
-                     // handle folder parent node
-                     payload.type = "HASH";
-                     payload.url = this.generatePathMarkup(this.currentItem.location);
-                  }
-                  else if (this.currentItem.location.path === "/")
-                  {
-                     // handle Repository root parent node (special store_root type - not a folder)
-                     payload.type = "HASH";
-                     payload.url = this.generateFilterMarkup({
-                        filterId: "path",
-                        filterData: $combine(this.currentItem.location.path, "")
-                     });
-                  }
-                  else
-                  {
-                     // handle unknown parent node types
-                     payload.type = "HASH";
-                     payload.url = "#";
-                  }
+                  this.updateFolderLinkPublication();
                }
                else
                {
@@ -183,13 +124,11 @@ define(["dojo/_base/declare",
                   }
                   else
                   {
-                     payload = this.getDetailsPayload();
+                     this.updateDocumentLinkPublication();
                   }
                }
             }
          }
-         payload.item = this.currentItem;
-         return payload;
       },
       
       /**
@@ -208,8 +147,9 @@ define(["dojo/_base/declare",
        *
        * @returns {object} The navigtation payload to use.
        */
-      getDetailsPayload: function alfresco_renderers__ItemLinkMixin__getDetailsUrl() {
-         var payload = {
+      updateDocumentLinkPublication: function alfresco_renderers__ItemLinkMixin__updateDocumentLinkPublication() {
+         this.publishTopic = "ALF_NAVIGATE_TO_PAGE";
+         this.publishPayload = {
             url: "",
             type: "FULL_PATH",
             target: "CURRENT"
@@ -217,47 +157,20 @@ define(["dojo/_base/declare",
          if (this.customDetailsURL == null)
          {
             var actionsUrls = this.getActionUrls(this.currentItem);
-            payload.url = actionUrls.documentDetailsUrl;
+            this.publishPayload.url = actionUrls.documentDetailsUrl;
          }
          else
          {
             // If a custom URL has been provided then use that but append the nodeRef URI on the end
-            payload.url = this.customDetailsURL
+            this.publishPayload.url = this.customDetailsURL
             if (lang.exists("currentItem.jsNode.nodeRef.uri", this))
             {
                // If the current item is a node with an accessible uri attribute then append it to the URL...
                // We should possibly only do this if a boolean attribute is set to true but at the moment
                // I can't see any cases where you wouldn't want to specify the node...
-               payload.url += "/" + this.currentItem.jsNode.nodeRef.uri;
+               this.publishPayload.url += "/" + this.currentItem.jsNode.nodeRef.uri;
             }
          }
-         return payload;
-      },
-
-      /**
-       * @instance
-       * @param {object} filter
-       */
-      generateFilterMarkup: function alfresco_renderers__ItemLinkMixin__generateFilterMarkup(filter)
-      {
-         var filterObj = Alfresco.util.cleanBubblingObject(filter);
-         return YAHOO.lang.substitute("filter={filterId}|{filterData}|{filterDisplay}", filterObj, function(p_key, p_value, p_meta)
-         {
-            return typeof p_value === "undefined" ? "" : window.escape(p_value);
-         });
-      },
-      
-      /**
-       * @instance
-       * @param {object} locn
-       */
-      generatePathMarkup: function alfresco_renderers__ItemLinkMixin__generatePathMarkup(locn)
-      {
-         return this.generateFilterMarkup(
-         {
-            filterId: "path",
-            filterData: this.combinePaths(locn.path, locn.file)
-         });
       }
    });
 });

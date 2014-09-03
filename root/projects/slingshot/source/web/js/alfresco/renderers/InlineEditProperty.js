@@ -32,6 +32,7 @@
 define(["dojo/_base/declare",
         "alfresco/renderers/Property", 
         "dijit/_OnDijitClickMixin",
+        "alfresco/renderers/_ItemLinkMixin",
         "alfresco/core/CoreXhr",
         "dojo/text!./templates/InlineEditProperty.html",
         "dojo/dom-class",
@@ -41,9 +42,9 @@ define(["dojo/_base/declare",
         "dojo/keys",
         "dojo/_base/event",
         "service/constants/Default"], 
-        function(declare, Property, _OnDijitClickMixin, CoreXhr, template, domClass, html, domAttr, fx, keys, event, AlfConstants) {
+        function(declare, Property, _OnDijitClickMixin, _ItemLinkMixin, CoreXhr, template, domClass, html, domAttr, fx, keys, event, AlfConstants) {
 
-   return declare([Property, _OnDijitClickMixin, CoreXhr], {
+   return declare([Property, _OnDijitClickMixin, _ItemLinkMixin, CoreXhr], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -85,6 +86,24 @@ define(["dojo/_base/declare",
          {
             this.postParam = "prop_" + this.propertyToRender.replace(/:/g, "_");
          }
+
+         this.generateFileFolderLink();
+      },
+
+      /**
+       * Handles the property being clicked. This stops the click event from propogating
+       * further through the DOM (to prevent any wrapping anchor elements from triggering
+       * browser navigation) and then publishes the configured topic and payload.
+       *
+       * @instance
+       * @param {object} evt The details of the click event
+       */
+      onLinkClick: function alfresco_renderers_InlineEditProperty__onLinkClick(evt) {
+         event.stop(evt);
+         var publishTopic = this.linkClickTopic;
+         var publishGlobal = (this.publishGlobal != null) ? this.publishGlobal : false;
+         var publishToParent = (this.publishToParent != null) ? this.publishToParent : false;
+         this.alfPublish(publishTopic, this.publishPayload, publishGlobal, publishToParent);
       },
       
       /**

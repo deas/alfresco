@@ -132,7 +132,14 @@ define(["dojo/_base/declare",
             // a nasty habit of decoding them *before* they've actually been posted back... this 
             // guarantees that the user will be able to bookmark valid URLs...
             var encodedPath = encodeURIComponent(payload.filter.path).replace(/%2F/g, "/").replace(/%25/g,"%2525");
-            uriPart += this.combinePaths("/", encodedPath);// + "/";
+            uriPart += this.combinePaths("/", encodedPath);
+         }
+
+         // Unbelievably it is necessary to remove any trailing forward slashes otherwise the location
+         // data set for each item will duplicate first element in the path !!!
+         if (uriPart.endsWith("/"))
+         {
+            uriPart = uriPart.substring(0, uriPart.length-1);
          }
 
          // Build the URI stem

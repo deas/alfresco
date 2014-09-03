@@ -204,6 +204,18 @@ define(["dojo/_base/declare",
             path: "/"
          };
          
+         this.setupSubscriptions();
+         this.setDisplayMessages();
+      },
+
+      /**
+       * This function sets up the subscriptions that the Document List relies upon to manage its
+       * internal state and request documents.
+       *
+       * @instance
+       */
+      setupSubscriptions: function alfrescdo_documentlibrary_AlfDocumentList__setupSubscriptions() {
+         this.alfSubscribe("ALF_DOCUMENTLIST_PATH_CHANGED", lang.hitch(this, this.onPathChanged));
          this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, "onViewSelected"));
          this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, "onDocumentSelection"));
          this.alfSubscribe(this.sortRequestTopic, lang.hitch(this, "onSortRequest"));
@@ -212,7 +224,6 @@ define(["dojo/_base/declare",
          this.alfSubscribe(this.pageSelectionTopic, lang.hitch(this, "onPageChange"));
          this.alfSubscribe(this.docsPerpageSelectionTopic, lang.hitch(this, "onDocsPerPageChange"));
          this.alfSubscribe(this.reloadDataTopic, lang.hitch(this, "loadData"));
-
          if (this.useInfiniteScroll)
          {
             this.alfSubscribe(this.scrollNearBottom, lang.hitch(this, "onScrollNearBottom"));
@@ -225,10 +236,41 @@ define(["dojo/_base/declare",
 
          this.alfSubscribe(this.requestInProgressTopic, lang.hitch(this, "onRequestInProgress"));
          this.alfSubscribe(this.requestFinishedTopic, lang.hitch(this, "onRequestFinished"));
-         
-         // Get the messages for the template...
-         // TODO: Extending modules should be updated to override this during the next refactor!
-         this.setDisplayMessages();
+      },
+
+      /**
+       * The current path displayed by the document list.
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      currentPath: null,
+
+      /**
+       * Handles requests to update the current path.
+       *
+       * @instance
+       * @param {object} payload The details of the new path
+       */
+      onPathChanged: function alfresco_documentlibrary_AlfDocumentList__onPathChanged(payload) {
+         if (payload.path)
+         {
+            this.currentPath = payload.path;
+            var currHash = ioQuery.queryToObject(hash());
+            currHash.path = this.currentPath;
+            delete currHash.filter;
+            delete currHash.category;
+            delete currHash.tag;
+            this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
+               url: ioQuery.objectToQuery(currHash),
+               type: "HASH"
+            }, true);
+         }
+         else
+         {
+            this.alfLog("warn", "A request was made to change the displayed path of a Document List, but no 'path' attribute was provided", payload, this);
+         }
       },
 
       /**
@@ -767,7 +809,7 @@ define(["dojo/_base/declare",
          {
             this.showLoadingMessage();
             var documentPayload = {
-               path: this.currentPath,
+               // path: this.currentPath,
                type: this.showFolders ? "all" : "documents",
                site: this.siteId,
                container: this.containerId,

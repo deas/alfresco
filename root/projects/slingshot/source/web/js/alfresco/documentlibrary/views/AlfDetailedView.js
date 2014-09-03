@@ -126,12 +126,11 @@ define(["dojo/_base/declare",
                                        config: {
                                           widgets: [
                                              {
-                                                name: "alfresco/renderers/PropertyLink",
+                                                name: "alfresco/renderers/InlineEditProperty",
                                                 config: {
                                                    propertyToRender: "node.properties.cm:name",
                                                    postParam: "prop_cm_name",
-                                                   renderSize: "large",
-                                                   publishTopic: ""
+                                                   renderSize: "large"
                                                 }
                                              },
                                              {
