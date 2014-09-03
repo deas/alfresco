@@ -10,12 +10,12 @@ import org.openqa.selenium.WebElement;
 public class FacetedSearchResult implements SearchResult
 {
     /** Constants. */
-    private static final By NAME = By.cssSelector("tr td.nameAndTitleCell span.alfresco-renderers-Property:first-of-type span.inner a");
-    private static final By TITLE = By.cssSelector("tr td.nameAndTitleCell span.alfresco-renderers-Property:last-of-type span.value");
-    private static final By DATE = By.cssSelector("tr td.dateCell span.inner");
-    private static final By DESCRIPTION = By.cssSelector("tr td.descriptionCell span.value");
-    private static final By SITE = By.cssSelector("tr td.siteCell span.inner");
-    private static final By ACTIONS = By.cssSelector("tr td.actionsCell");
+    private static final By NAME = By.cssSelector("div.nameAndTitleCell span.alfresco-renderers-Property:first-of-type span.inner a");
+    private static final By TITLE = By.cssSelector("div.nameAndTitleCell span.alfresco-renderers-Property:last-of-type span.value");
+    private static final By DATE = By.cssSelector("div.dateCell span.inner");
+    private static final By DESCRIPTION = By.cssSelector("div.descriptionCell span.value");
+    private static final By SITE = By.cssSelector("div.siteCell span.inner");
+    private static final By ACTIONS = By.cssSelector("div.actionsCell");
 
     private WebDrone drone;
     private WebElement link;
