@@ -459,6 +459,7 @@ var main = {
             config: {
                widgets: [
                   {
+                     id: "FCTSRCH_SEARCH_FACET_LIST",
                      name: "alfresco/layout/VerticalWidgets",
                      align: "sidebar",
                      widthPx: 340,
