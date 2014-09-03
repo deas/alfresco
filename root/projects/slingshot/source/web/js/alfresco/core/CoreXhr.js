@@ -32,14 +32,14 @@ define(["dojo/_base/declare",
         "dojo/request/xhr",
         "dojo/json",
         "dojo/date/stamp",
-        "dojo/cookie"], 
+        "dojo/cookie"],
         function(declare, AlfConstants, registry, pubSub, array, lang, domConstruct, uuid, xhr, JSON, stamp, dojoCookie) {
-   
+
    return declare(null, {
-      
+
       /**
        * Ensures that the csrfProperties are retrieved from the Alfresco constants provided by Surf.
-       * 
+       *
        * @instance
        * @param {object} args The constructor arguments.
        */
@@ -53,7 +53,7 @@ define(["dojo/_base/declare",
        * This function can be used to clean up JSON responses to remove any superfluous whitespace characters and
        * remove any trailing commas in arrays/objects. This function is particularly handy since Dojo can be very
        * fussy about JSON.
-       * 
+       *
        * @instance
        * @param {string} input
        * @returns {string} A cleaned up JSON response.
@@ -66,26 +66,27 @@ define(["dojo/_base/declare",
          }
          return r;
       },
-      
+
       /**
        * This method handles XHR requests. As well as providing default callback handlers for the success, failure and
        * progress responses it also performs some additional JSON cleanup of responses (where required) which is useful
        * when REST APIs return invalid code (this is especially useful as Dojo can be quite particular about parsing
-       * JSON).  
-       * 
+       * JSON).
+       *
        * The function takes a single object as an argument that will allow updates to be made to include additional
        * data and provide defaults when it is not provided.
-       * 
+       *
        * By default this function will issue a POST method
-       * 
+       *
        * @instance
        * @param {Object} config The configuration for the request
        * @todo List the available config object attributes
+       * @todo - should 400 response be a success?
        */
       serviceXhr: function alfresco_core_CoreXhr__serviceXhr(config) {
-         
+
          var _this = this;
-         
+
          if (config)
          {
             if (typeof config.url == "undefined")
@@ -99,7 +100,7 @@ define(["dojo/_base/declare",
                {
                   headers[this.getCsrfHeader()] = this.getCsrfToken();
                }
-               
+
                var request = xhr(config.url, {
                   handleAs: (config.handleAs) ? config.handleAs : "text",
                   method: (config.method) ? config.method : "POST",
@@ -107,8 +108,8 @@ define(["dojo/_base/declare",
                   query: (config.query) ? config.query : null,
                   headers: headers
                }).then(function(response) {
-                  
-                  var id = lang.getObject("requestId", false, config)
+
+                  var id = lang.getObject("requestId", false, config);
                   if (id != null)
                   {
                      delete _this.serviceRequests[id];
@@ -125,20 +126,20 @@ define(["dojo/_base/declare",
                      {
                         _this.alfLog("error", "An error occurred parsing an XHR JSON success response", response, this);
                      }
-                     
+
                   }
                   if (typeof config.successCallback == "function")
                   {
-                     var callbackScope = (config.successCallbackScope ? config.successCallbackScope : (config.callbackScope ? config.callbackScope : _this)); 
-                     config.successCallback.call(callbackScope, response, config)
+                     var callbackScope = (config.successCallbackScope ? config.successCallbackScope : (config.callbackScope ? config.callbackScope : _this));
+                     config.successCallback.call(callbackScope, response, config);
                   }
                   else
                   {
                      _this.defaultSuccessCallback(response, config);
                   }
-                  
+
                }, function(response) {
-                  
+
                   // HANDLE SESSION TIMEOUT
                   if (response.response && response.response.status === 401)
                   {
@@ -154,9 +155,9 @@ define(["dojo/_base/declare",
                         return;
                      }
                   }
-                  
+
                   // HANDLE FAILURE...
-                  var id = lang.getObject("requestId", false, config)
+                  var id = lang.getObject("requestId", false, config);
                   if (id != null)
                   {
                      delete _this.serviceRequests[id];
@@ -174,8 +175,8 @@ define(["dojo/_base/declare",
                   }
                   if (typeof config.failureCallback == "function")
                   {
-                     var callbackScope = (config.failureCallbackScope ? config.failureCallbackScope : (config.callbackScope ? config.callbackScope : _this)); 
-                     config.failureCallback.call(callbackScope, response, config)
+                     var callbackScope = (config.failureCallbackScope ? config.failureCallbackScope : (config.callbackScope ? config.callbackScope : _this));
+                     config.failureCallback.call(callbackScope, response, config);
                   }
                   else
                   {
@@ -183,7 +184,7 @@ define(["dojo/_base/declare",
                   }
 
                }, function(response) {
-                  
+
                   // HANDLE PROGRESS...
                   if (typeof response == "string" && lang.trim(response) !== "")
                   {
@@ -198,7 +199,7 @@ define(["dojo/_base/declare",
                   }
                   if (typeof config.progressCallback == "function")
                   {
-                     var callbackScope = (config.progressCallbackScope ? config.progressCallbackScope : (config.callbackScope ? config.callbackScope : _this)); 
+                     var callbackScope = (config.progressCallbackScope ? config.progressCallbackScope : (config.callbackScope ? config.callbackScope : _this));
                      config.progressCallback.call(callbackScope, response, config);
                   }
                   else
@@ -222,10 +223,10 @@ define(["dojo/_base/declare",
             this.alfLog("error", "A request was made to perform an XHR request, but no configuration for the request was provided");
          }
       },
-      
+
       /**
        * This is the default success callback for XHR requests that will be used if no other is provided.
-       * 
+       *
        * @instance
        * @param {object} response The object returned from the successful XHR request
        * @param {object} requestConfig The original configuration passed when the request was made
@@ -241,10 +242,10 @@ define(["dojo/_base/declare",
             });
          }
       },
-      
+
       /**
        * This is the default failure callback for XHR requests that will be used if no other is provided.
-       * 
+       *
        * @instance
        * @param {object} response The object returned from the failed XHR request
        * @param {object} requestConfig The original configuration passed when the request was made
@@ -284,10 +285,10 @@ define(["dojo/_base/declare",
             }
          }
       },
-      
+
       /**
        * This is the default progress callback for XHR requests that will be used if no other is provided.
-       * 
+       *
        * @instance
        * @param {object} response The object returned from the progress update of the XHR request
        * @param {object} requestConfig The original configuration passed when the request was made
@@ -310,7 +311,7 @@ define(["dojo/_base/declare",
        * @param {object} payload An object that should contain a 'requestId' attribute
        */
       onStopRequest: function alfresco_core_CoreXhr__onStopRequest(payload) {
-         var id = lang.getObject("requestId", false, payload)
+         var id = lang.getObject("requestId", false, payload);
          if (id != null && this.serviceRequests[id])
          {
             this.alfLog("info", "Stopping XHR request: " + id);

@@ -63,7 +63,7 @@ define(["dojo/_base/declare",
                this._processedWidgets = [];
                
                // Iterate over all the widgets in the configuration object and add them...
-               array.forEach(widgets, lang.hitch(this, "processWidget", rootNode));
+               array.forEach(widgets, lang.hitch(this, this.processWidget, rootNode));
             }
          }
          catch(e)
@@ -365,7 +365,7 @@ define(["dojo/_base/declare",
             if (initArgs.pubSubScope == this.pubSubScope)
             {
                // If the scope is inherited then also inherit the parent scope...
-               if (this.parentPubSubScope == null)
+               if (!this.parentPubSubScope)
                {
                   // ...set as global if not set already
                   initArgs.parentPubSubScope = "";

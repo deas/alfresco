@@ -18,9 +18,9 @@
  */
 
 /**
- * This mixin is intended to be mixed into any buttons or menu items that require an action that creates a new 
+ * This mixin is intended to be mixed into any buttons or menu items that require an action that creates a new
  * [dialog]{@link module:alfresco/dialogs/AlfDialog} that contains a [form]{@link module:alfresco/forms/Form}.
- * 
+ *
  * Examples of use include the create content menu items in the document library.
  *
  * @module alfresco/dialogs/_CreateFormDialogMixin
@@ -33,13 +33,13 @@ define(["dojo/_base/declare",
         "alfresco/dialogs/AlfDialog",
         "alfresco/forms/Form"],
         function(declare, AlfCore, lang, AlfDialog, AlfForm) {
-   
+
    return declare([AlfCore], {
 
       /**
-       * Create a new 'publishTopic' for the action and generates a new 'pubSubScope' and then sets 
+       * Create a new 'publishTopic' for the action and generates a new 'pubSubScope' and then sets
        * up subscriptions for handling show dialog and cancel dialog requests.
-       * 
+       *
        * @instance
        */
       postCreate: function alfresco_dialogs__CreateFormDialogMixin__postCreate() {
@@ -82,22 +82,18 @@ define(["dojo/_base/declare",
       dialogTitle: "",
 
       /**
-       * TODO: Default needs localizing
-       * 
-       * @instance
-       * @type {string}
-       * @default ""
-       */
-      dialogConfirmationButtonTitle: "OK",
-
-      /**
-       * TODO: Default needs localizing
        *
        * @instance
        * @type {string}
-       * @default ""
        */
-      dialogCancellationButtonTitle: "Cancel",
+      dialogConfirmationButtonTitle: this.messages("services.ActionService.button.ok"),
+
+      /**
+       *
+       * @instance
+       * @type {string}
+       */
+      dialogCancellationButtonTitle:this.messages("services.ActionService.button.cancel"),
 
       /**
        * The configuration for the contents of the dialog to be displayed. This should be provided either on instantiation
@@ -116,7 +112,7 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @param {object} payload The payload published on the request topic.
-       */ 
+       */
       onCreateFormDialogRequest: function alfresco_dialogs__CreateFormDialogMixin__onCreateFormDialogRequest(payload) {
          // Destroy any previously created dialog...
          if (this.dialog != null)
@@ -200,7 +196,7 @@ define(["dojo/_base/declare",
 
       /**
        * This is the topic that will be published when the dialog is "confirmed" (e.g. the "OK" button is clicked)
-       * 
+       *
        * @instance
        * @type {string}
        * @default null
@@ -215,12 +211,12 @@ define(["dojo/_base/declare",
        * This handles the user clicking the confirmation button on the dialog (typically, and by default the "OK" button). This has a special
        * handler to process the  payload and construct a simple object reqpresenting the
        * content of the inner [form]{@link module:alfresco/forms/Form}.
-       * 
+       *
        * @instance
        * @param {object} payload The dialog content
        */
       onDialogConfirmation: function alfresco_dialogs__CreateFormDialogMixin__onDialogConfirmation(payload) {
-         if (payload != null && 
+         if (payload != null &&
              payload.dialogContent != null &&
              payload.dialogContent.length == 1 &&
              typeof payload.dialogContent[0].getValue === "function")

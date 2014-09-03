@@ -217,7 +217,7 @@ define(["dojo/_base/declare",
        * @param {array} widgets The widgets to create
        * @param {element} rootNode The DOM element to add them into.
        */
-      processWidgets: function alfresco_core_CoreWidgetProcessing__processWidgets(widgets, rootNode) {
+      processWidgets: function alfresco_documentlibrary_views_layouts_Carousel__processWidgets(widgets, rootNode) {
          var nodeToAdd = nodeToAdd = domConstruct.create("li", {}, rootNode);
          this.inherited(arguments, [widgets, nodeToAdd]);
       },
