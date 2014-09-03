@@ -335,15 +335,6 @@ var formWidgets = [
  *                                                                                 *
  ***********************************************************************************/
 
-// This configuration can be used to select the item in the CrudForm
-// var facetClickConfig = {
-//    propertyToRender: "filterID",
-//    publishTopic: "ALF_CRUD_FORM_UPDATE"
-// };
-
-// The following commented out code provides an alternative method of handling facet
-// updates. Instead of publishing the current item to the CrudForm is requests a new
-// dialog be shown containing the attributes of the current item.
 var facetClickConfig = {
    propertyToRender: "filterID",
    useCurrentItemAsPayload: false,
@@ -366,18 +357,6 @@ var facetClickConfig = {
  *                                                                                 *
  ***********************************************************************************/
 
-// var createFacetButton = {
-//    name: "alfresco/buttons/AlfButton",
-//    config: {
-//       label: "faceted-search-config.create-facet.label",
-//       publishTopic: "ALF_CRUD_FORM_CREATE",
-//       additionalCssClasses: "call-to-action"
-//    }
-// };
-
-// The following commented out code provides an alternative method of handling facet
-// updates. Instead of publishing the current item to the CrudForm is requests a new
-// dialog be shown containing the attributes of the current item.
 var createFacetButton = {
    name: "alfresco/buttons/AlfButton",
    config: {
@@ -692,7 +671,11 @@ var main = {
                                                                               publishTopic: "ALF_CRUD_DELETE",
                                                                               publishPayloadType: "PROCESS",
                                                                               publishPayload: {
-                                                                                 url: "api/solr/facet-config/{filterID}"
+                                                                                 requiresConfirmation: true,
+                                                                                 url: "api/solr/facet-config/{filterID}",
+                                                                                 confirmationTitle: msg.get("faceted-search-config.delete.confirmationTitle"),
+                                                                                 confirmationPrompt: msg.get("faceted-search-config.delete.confirmationPrompt"),
+                                                                                 successMessage: msg.get("faceted-search-config.delete.successMessage")
                                                                               },
                                                                               publishPayloadModifiers: ["processCurrentItemTokens"],
                                                                               renderFilter: [
@@ -719,52 +702,9 @@ var main = {
                                  ]
                               }
                            }
-                           // ,
-                           // {
-                           //    name: "alfresco/html/Label",
-                           //    config: {
-                           //       label: "A short intro about this new feature here. Yada yada yada."
-                           //    }
-                           // }
                         ]
                      }
-                     // ,
-                     // widthPx: "500"
                   }
-                  // ,
-                  // {
-                  //    name: "alfresco/layout/VerticalWidgets",
-                  //    config: {
-                  //       widgets: [
-                  //          {
-                  //             name: "alfresco/forms/CrudForm",
-                  //             config: {
-                  //                createButtonLabel: "Save",
-                  //                createButtonPublishTopic: "ALF_CRUD_CREATE",
-                  //                createButtonPublishPayload: {
-                  //                   url: "api/solr/facet-config"
-                  //                },
-                  //                createButtonPublishGlobal: true,
-                  //                updateButtonLabel: "Save",
-                  //                updateButtonPublishTopic: "ALF_CRUD_UPDATE",
-                  //                updateButtonPublishPayload: {
-                  //                   url: "api/solr/facet-config"
-                  //                },
-                  //                updateButtonPublishGlobal: true,
-                  //                deleteButtonLabel: "Delete",
-                  //                deleteButtonPublishTopic: "ALF_CRUD_DELETE",
-                  //                deleteButtonPublishPayload: {
-                  //                   url: "api/solr/facet-config"
-                  //                },
-                  //                deleteButtonPublishGlobal: true,
-                  //                showInfoTopics: ["ALF_CRUD_CREATE", "ALF_CRUD_UPDATE", "ALF_CRUD_DELETE"],
-                  //                showFormTopics: [],
-                  //                widgets: formWidgets
-                  //             }
-                  //          }
-                  //       ]
-                  //    }
-                  // }
                ]
             }
          },

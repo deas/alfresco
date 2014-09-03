@@ -115,7 +115,7 @@ define(["dojo/_base/declare",
                   }
 
                   // HANDLE SUCCESS...
-                  if (typeof response == "string")
+                  if (typeof response == "string" && lang.trim(response) !== "")
                   {
                      try
                      {
@@ -161,7 +161,7 @@ define(["dojo/_base/declare",
                   {
                      delete _this.serviceRequests[id];
                   }
-                  if (typeof response == "string")
+                  if (typeof response == "string" && lang.trim(response) !== "")
                   {
                      try
                      {
@@ -185,7 +185,7 @@ define(["dojo/_base/declare",
                }, function(response) {
                   
                   // HANDLE PROGRESS...
-                  if (typeof response == "string")
+                  if (typeof response == "string" && lang.trim(response) !== "")
                   {
                      try
                      {
