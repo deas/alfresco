@@ -5225,11 +5225,12 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
                 *
                 * This section of code deals with setting up the auto-complete widget for the new tag
                 * input field. We need to set up a data source for retrieving the existing tags and
-                * which we will need to filter on the client.
+                * which we will need to filter on the server.
                 *
                 **************************************************************************************/
-               var oDS = new YAHOO.util.XHRDataSource(Alfresco.constants.PROXY_URI + "api/forms/picker/category/workspace/SpacesStore/tag:tag-root/children?selectableType=cm:category&searchTerm=&size=100&aspect=cm:taggable&");
+               var oDS = new YAHOO.util.XHRDataSource(Alfresco.constants.PROXY_URI + "api/forms/picker/category/workspace/SpacesStore/tag:tag-root/children?selectableType=cm:category&size=100&aspect=cm:taggable&searchTerm=");
                oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+               oDS.connXhrMode = "cancelStaleRequests";
                // This schema indicates where to find the tag name in the JSON response
                oDS.responseSchema =
                {
@@ -5237,8 +5238,11 @@ Alfresco.util.createInsituEditor = function(p_context, p_params, p_callback)
                   fields : ["name", "nodeRef"]
                };
                this.tagAutoComplete = new YAHOO.widget.AutoComplete(this.newTagInput, eAutoComplete, oDS);
-               this.tagAutoComplete.questionMark = false;     // Removes the question mark on the query string (this will be ignored anyway)
-               this.tagAutoComplete.applyLocalFilter = true;  // Filter the results on the client
+               // force using 'searchTerm' parameter
+               this.tagAutoComplete.generateRequest = function(sQuery)
+               {
+                  return sQuery;
+               };
                this.tagAutoComplete.queryDelay = 0.1           // Throttle requests sent
                this.tagAutoComplete.animSpeed = 0.08;
                this.tagAutoComplete.itemSelectEvent.subscribe(function(type, args)
