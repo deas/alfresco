@@ -29,3 +29,24 @@
 .alfresco-testing-ConsoleLog td>table {
    border: none;
 }
+
+.alfresco-testing-ConsoleLog pre {
+   padding: 0;
+   margin: 0;
+}
+
+.alfresco-testing-ConsoleLog pre .string {
+   color: green;
+}
+.alfresco-testing-ConsoleLog pre .number {
+   color: darkorange;
+}
+.alfresco-testing-ConsoleLog pre .boolean {
+   color: blue;
+}
+.alfresco-testing-ConsoleLog pre .null {
+   color: magenta;
+}
+.alfresco-testing-ConsoleLog pre .key {
+   color: red;
+}

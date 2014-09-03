@@ -96,14 +96,16 @@ define(["dojo/_base/declare",
       _consoleTakeOver: function alfresco_testing_ConsoleLog___consoleTakeOver(){
          var console = window.console,
              consoleContext = this;
+
          if (!console) return;
+
          function intercept(method){
             var original = console[method];
             console[method] = function(){
 
                if(arguments.length > 0)
                {
-                  consoleContext._recordLog(arguments[0]);
+                  consoleContext._recordLog(arguments);
                }
 
                if (original.apply){
@@ -115,19 +117,21 @@ define(["dojo/_base/declare",
                }
             }
          }
+
          var methods = ['log', 'warn', 'error'];
          for (var i = 0; i < methods.length; i++)
          {
             intercept(methods[i]);
          }
+
       },
 
       /**
        * Get a composed log row and write it to the log or to the storedLogs
        * @instance
        */
-      _recordLog: function alfresco_testing_ConsoleLog___recordLog(message){
-         var row = this._composeLogRow(message);
+      _recordLog: function alfresco_testing_ConsoleLog___recordLog(args){
+         var row = this._composeLogRow(args);
          if(this.hasLoaded)
          {
             domConstruct.place(row, this.logNode);
@@ -142,13 +146,26 @@ define(["dojo/_base/declare",
        * Compose a row for the logging from the message
        * @instance
        */
-      _composeLogRow: function alfresco_testing_ConsoleLog___composeLogRow(message){
+      _composeLogRow: function alfresco_testing_ConsoleLog___composeLogRow(args){
          var rowNode = domConstruct.create("tr", {
             className: "cl-row"
          });
-         var typeNode = domConstruct.create("td", {
+         domConstruct.create("td", {
             className: "cl-message",
-            innerHTML: message
+            innerHTML: args[0]
+         }, rowNode);
+         var objTdNode = domConstruct.create("td", {
+            className: "cl-object"
+         }, rowNode);
+         try {
+            domConstruct.create("pre", {
+               innerHTML: args[1] ? this._syntaxHighlight(args[1]) : ""
+            }, objTdNode);
+         }
+         catch(err) {}
+         domConstruct.create("td", {
+            className: "cl-object",
+            innerHTML: args[2] ? args[2] : ""
          }, rowNode);
          return rowNode;
       },
@@ -158,11 +175,44 @@ define(["dojo/_base/declare",
        * @instance
        */
       _writeStoredLogs: function alfresco_testing_ConsoleLog___writeStoredLogs(){
-         for(var i=0;i<this.storedLogs.length;i++)
+         for(var i=0; i<this.storedLogs.length; i++)
          {
             domConstruct.place(this.storedLogs[i], this.logNode);
          }
-      }
+      },
 
+      _syntaxHighlight: function alfresco_testing_ConsoleLog___syntaxHighlight(json){
+
+         if(typeof json != 'string')
+         {
+            json = JSON.stringify(json, undefined, 2);
+         }
+
+         json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+         return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            var cls = 'number';
+            if(/^"/.test(match))
+            {
+               if (/:$/.test(match))
+               {
+                  cls = 'key';
+               }
+               else
+               {
+                  cls = 'string';
+               }
+            }
+            else if (/true|false/.test(match))
+            {
+               cls = 'boolean';
+            }
+            else if (/null/.test(match))
+            {
+               cls = 'null';
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+         });
+      }
    });
 });
