@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -24,8 +24,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -501,5 +504,40 @@ public abstract class CollectionUtils
         result.retainAll(set2);
         
         return result;
+    }
+
+    /**
+     * Creates a new sorted map, based on the values from the given map.
+     * 
+     * @param map the map which needs to be sorted
+     * @return a new sorted map
+     */
+    public static <K, V extends Comparable<V>> Map<K, V> sortMapByValue(Map<K, V> map)
+    {
+        if (map == null)
+        {
+            return Collections.emptyMap();
+        }
+
+        List<Entry<K, V>> entriesList = new LinkedList<Entry<K, V>>(map.entrySet());
+
+        // Map's value Comparator
+        Comparator<Entry<K, V>> valueComparator = new Comparator<Entry<K, V>>()
+        {
+            public int compare(Entry<K, V> entry1, Entry<K, V> entry2)
+            {
+                return (entry1.getValue()).compareTo(entry2.getValue());
+            }
+        };
+
+        // Sort based on the map's values
+        Collections.sort(entriesList, valueComparator);
+
+        Map<K, V> orderedMap = new LinkedHashMap<K, V>(entriesList.size());
+        for (Entry<K, V> entry : entriesList)
+        {
+            orderedMap.put(entry.getKey(), entry.getValue());
+        }
+        return orderedMap;
     }
 }
