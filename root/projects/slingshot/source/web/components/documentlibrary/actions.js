@@ -520,6 +520,15 @@
             zIndex = 1000;
          }
 
+         //MNT-11084 : Full screen/window view: Actions works incorrectly;
+         var parent = undefined;
+         var container = Dom.get(this.id);
+         var ua = navigator.userAgent.toLowerCase();
+         if ((ua.indexOf('gecko') != -1 || ua.indexOf('safari')!=-1) && ua.indexOf('chrome')==-1)
+         {
+            parent = container;
+         }
+		 
          Alfresco.util.PopupManager.displayPrompt(
          {
             title: this.msg("actions." + content + ".delete"),
@@ -543,7 +552,7 @@
                },
                isDefault: true
             }]
-         });
+         }, parent);
       },
 
       /**
