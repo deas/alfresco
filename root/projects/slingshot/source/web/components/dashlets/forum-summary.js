@@ -335,9 +335,10 @@
        */
       getAuthorLink: function ForumSummary_getAuthorLink(author, classString)
       {
-         var fullName = author.firstName + ((author.firstName !== "" && author.lastName !== "")? " " : "") + author.lastName;
+         var fullName = author.firstName + ((author.firstName !== "" && author.lastName !== "")? " " : "") + author.lastName,
+             disableLink = !author.firstName && !author.lastName;
          
-         return Alfresco.util.userProfileLink(author.username, fullName, "class=\""+classString+"\"");
+         return Alfresco.util.userProfileLink(author.username, disableLink ? "" : fullName, "class=\""+classString+"\"", disableLink);
       }
    });
 })();
