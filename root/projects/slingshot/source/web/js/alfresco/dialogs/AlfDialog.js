@@ -273,26 +273,13 @@ define(["dojo/_base/declare",
             if (sniff("ie") == 8)
             {
                // Need to use "after" rather than "before" for IE8...
-               aspect.after(widget, "onClick", lang.hitch(this, this.cleanUp));
+               aspect.after(widget, "onClick", lang.hitch(this, this.hide));
             }
             else
             {
-               aspect.before(widget, "onClick", lang.hitch(this, this.cleanUp));
+               aspect.before(widget, "onClick", lang.hitch(this, this.hide));
             }
          }
-      },
-
-      /**
-       * Deletes the domNode associated with the AlfDialog completely
-       * 
-       * @instance
-       */
-      cleanUp: function alfresco_dialogs_AlfDialog__cleanUp() {
-         this.hide();
-         if(this.domNode)
-         {
-            domConstruct.destroy(this.domNode);
-         }  
       }
    });
 });

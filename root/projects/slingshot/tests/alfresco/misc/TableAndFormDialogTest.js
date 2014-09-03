@@ -112,7 +112,6 @@ define(["intern!object",
             .clearValue()
             .type("Updated_ID1")
             .end()
-            .sleep(5000)
 
          // Post the form...
          .findByCssSelector(".alfresco-dialog-AlfDialog .footer .alfresco-buttons-AlfButton:nth-child(1) .dijitButtonText")
