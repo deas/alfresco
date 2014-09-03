@@ -45,22 +45,21 @@ define(["intern!object",
          .elementById("FACET1")
          .text()
          .then(function (initialValue) {
-            TestCommon.log(testname,47,"Check no facets are shown to begin with");
+            TestCommon.log(testname,48,"Check no facets are shown to begin with");
             expect(initialValue).to.equal("Facet 1", "The only text shown should be 'Facet 1'");
          })
          .end()
 
          .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,54,"Check no facet rows are shown to begin with");
+            TestCommon.log(testname,55,"Check no facet rows are shown to begin with");
             expect(rows).to.have.length(0, "There should be no visible rows in the facet display");
          })
          .end()
 
          // Click button 1 - 4 rows of facet data should appear
          .elementById("DO_FACET_BUTTON_1")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
@@ -84,13 +83,12 @@ define(["intern!object",
 
          // Click button 2 - 2 rows of facet data should appear
          .elementById("DO_FACET_BUTTON_2")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,92,"Check facets are shown after clicking button 2");
+            TestCommon.log(testname,91,"Check facets are shown after clicking button 2");
             expect(rows).to.have.length(2, "There should be 2 rows in the facet display");
          })
          .end()
@@ -99,7 +97,7 @@ define(["intern!object",
          .elementById("FACET1")
          .text()
          .then(function (facets) {
-            TestCommon.log(testname,101,"Check the second set of facets have appeared");
+            TestCommon.log(testname,100,"Check the second set of facets have appeared");
             expect(facets).to.contain("result 5", "Facets should contain 'result 5'");
             expect(facets).to.contain("result 6", "Facets should contain 'result 6'");
          })
@@ -107,13 +105,12 @@ define(["intern!object",
 
          // Click button 3 - 4 rows of facet data should appear
          .elementById("DO_FACET_BUTTON_3")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,115,"Check facets are shown after clicking button 3");
+            TestCommon.log(testname,113,"Check facets are shown after clicking button 3");
             expect(rows).to.have.length(6, "There should be 6 rows in the facet display");
          })
          .end()
@@ -122,7 +119,7 @@ define(["intern!object",
          .elementById("FACET1")
          .text()
          .then(function (facets) {
-            TestCommon.log(testname,124,"Check the third set of facets have appeared");
+            TestCommon.log(testname,122,"Check the third set of facets have appeared");
             expect(facets).to.contain("result 7", "Facets should contain 'result 7'");
             expect(facets).to.contain("result 8", "Facets should contain 'result 8'");
             expect(facets).to.contain("result 9", "Facets should contain 'result 9'");
@@ -135,15 +132,14 @@ define(["intern!object",
 
          // Click the more choices button
          .elementByCss("li.showMore")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          // Check the facet values
          .elementById("FACET1")
          .text()
          .then(function (facets) {
-            TestCommon.log(testname,145,"Check the four set of facets are shown");
+            TestCommon.log(testname,142,"Check the four set of facets are shown");
             expect(facets).to.contain("result 7", "Facets should contain 'result 7'");
             expect(facets).to.contain("result 8", "Facets should contain 'result 8'");
             expect(facets).to.contain("result 9", "Facets should contain 'result 9'");
@@ -156,15 +152,14 @@ define(["intern!object",
 
          // Click the less choices button
          .elementByCss("li.showLess")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          // Check the facet values
          .elementById("FACET1")
          .text()
          .then(function (facets) {
-            TestCommon.log(testname,166,"Check the fifth set of facets are shown");
+            TestCommon.log(testname,162,"Check the fifth set of facets are shown");
             expect(facets).to.contain("result 7", "Facets should contain 'result 7'");
             expect(facets).to.contain("result 8", "Facets should contain 'result 8'");
             expect(facets).to.contain("result 9", "Facets should contain 'result 9'");
@@ -177,70 +172,66 @@ define(["intern!object",
 
          // Click the title - the facet menu should disappear
          .elementByCss("#FACET1 > div.label")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          .elementByCssSelector("#FACET1 > ul.filters")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,186,"Check facet menu is hidden when the title is clicked");
+            TestCommon.log(testname,181,"Check facet menu is hidden when the title is clicked");
             expect(displayed).to.equal(false, "Facet menu should be hidden when the title is clicked");
          })
          .end()
 
          // Click the title again - the facet menu should reappear
          .elementByCss("#FACET1 > div.label")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          .elementByCssSelector("#FACET1 > ul.filters")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,200,"Check facet menu is shown when the title is clicked again");
+            TestCommon.log(testname,194,"Check facet menu is shown when the title is clicked again");
             expect(displayed).to.equal(true, "Facet menu should be shown when the title is clicked again");
          })
          .end()
 
          // Click the first facet menu item - it should select
          .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type span.filterLabel")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,214,"Facet menu item should select when clicked");
+            TestCommon.log(testname,207,"Facet menu item should select when clicked");
             expect(displayed).to.equal(true, "Facet menu item should select when clicked");
          })
          .end()
 
          .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_APPLY_FACET_FILTER"))
          .then(function(published) {
-            TestCommon.log(testname,221,"Clicking a facet should publish");
+            TestCommon.log(testname,214,"Clicking a facet should publish");
             expect(published).to.equal(true, "The facet did not publish on 'ALF_APPLY_FACET_FILTER'");
          })
          .end()
 
          // Click the first facet menu item again - it should de-select
          .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type span.filterLabel")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,235,"Facet menu item should de-select when clicked again");
+            TestCommon.log(testname,227,"Facet menu item should de-select when clicked again");
             expect(displayed).to.equal(false, "Facet menu item should de-select when clicked again");
          })
          .end()
 
          .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_REMOVE_FACET_FILTER"))
          .then(function(published) {
-            TestCommon.log(testname,242,"Clicking a facet to deselect should publish");
+            TestCommon.log(testname,234,"Clicking a facet to deselect should publish");
             expect(published).to.equal(true, "The facet deselection did not publish on 'ALF_REMOVE_FACET_FILTER'");
          })
          .end()
@@ -263,14 +254,14 @@ define(["intern!object",
          .elementById("FACET1")
          .text()
          .then(function (initialValue) {
-            TestCommon.log(testname,266,"Check no facets are shown to begin with");
+            TestCommon.log(testname,257,"Check no facets are shown to begin with");
             expect(initialValue).to.equal("Facet 1", "The only text shown should be 'Facet 1'");
          })
          .end()
 
          .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,273,"Check no facet rows are shown to begin with");
+            TestCommon.log(testname,264,"Check no facet rows are shown to begin with");
             expect(rows).to.have.length(0, "There should be no visible rows in the facet display");
          })
          .end()
@@ -282,7 +273,7 @@ define(["intern!object",
 
          .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,285,"Check facets are shown after selecting button 1 with the keyboard");
+            TestCommon.log(testname,276,"Check facets are shown after selecting button 1 with the keyboard");
             expect(rows).to.have.length(4, "There should be 4 rows in the facet display");
          })
          .end()
@@ -297,7 +288,7 @@ define(["intern!object",
          .elementByCssSelector("#FACET1 > ul.filters")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,300,"Check facet menu is hidden when the title is clicked with the keyboard");
+            TestCommon.log(testname,291,"Check facet menu is hidden when the title is clicked with the keyboard");
             expect(displayed).to.equal(false, "Facet menu should be hidden when the title is clicked using the keyboard");
          })
          .end()
@@ -309,7 +300,7 @@ define(["intern!object",
          .elementByCssSelector("#FACET1 > ul.filters")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,312,"Check facet menu is displayed when the title is re-clicked with the keyboard");
+            TestCommon.log(testname,303,"Check facet menu is displayed when the title is re-clicked with the keyboard");
             expect(displayed).to.equal(true, "Facet menu should be displayed when the title is re-clicked using the keyboard");
          })
          .end()
@@ -322,14 +313,14 @@ define(["intern!object",
          .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,325,"Facet menu item should select when clicked with the keyboard");
+            TestCommon.log(testname,316,"Facet menu item should select when clicked with the keyboard");
             expect(displayed).to.equal(true, "Facet menu item should select when clicked using the keyboard");
          })
          .end()
 
          .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_APPLY_FACET_FILTER"))
          .then(function(published) {
-            TestCommon.log(testname,332,"Clicking a facet with the keyboard should publish");
+            TestCommon.log(testname,323,"Clicking a facet with the keyboard should publish");
             expect(published).to.equal(true, "The facet did not publish on 'ALF_APPLY_FACET_FILTER' when clicked with the keyboard");
          })
          .end()
@@ -341,14 +332,14 @@ define(["intern!object",
          .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,344,"Facet menu item should de-select when clicked again using the keyboard");
+            TestCommon.log(testname,335,"Facet menu item should de-select when clicked again using the keyboard");
             expect(displayed).to.equal(false, "Facet menu item should de-select when clicked again using the keyboard");
          })
          .end()
 
          .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_REMOVE_FACET_FILTER"))
          .then(function(published) {
-            TestCommon.log(testname,351,"Clicking a facet using the keyboard to deselect should publish");
+            TestCommon.log(testname,342,"Clicking a facet using the keyboard to deselect should publish");
             expect(published).to.equal(true, "The facet deselection using the keyboard did not publish on 'ALF_REMOVE_FACET_FILTER'");
          })
          .end()
@@ -369,26 +360,24 @@ define(["intern!object",
 
          // Click button 4 - 3 rows of facet data should appear
          .elementById("DO_FACET_BUTTON_4")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,378,"Check facets are shown after clicking button 4");
+            TestCommon.log(testname,368,"Check facets are shown after clicking button 4");
             expect(rows).to.have.length(3, "There should be 3 rows in the facet display");
          })
          .end()
 
          // Click facet1 - check the url hash appears as expected
          .elementByCssSelector("#FACET2 > ul.filters > li:first-of-type span.filterLabel")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          .url()
          .then(function (url) {
-            TestCommon.log(testname,391,"Click the first item in the facet menu");
+            TestCommon.log(testname,380,"Click the first item in the facet menu");
             expect(url).to.contain("FACET2QNAME", "The url hash should contain 'FACET2QNAME'")
                .and.to.contain("facFil1", "The facet click did not write the value 'facFil1' to the url hash as expected");
          })
@@ -396,13 +385,12 @@ define(["intern!object",
 
          // Click facet2 - check the url hash appears as expected
          .elementByCssSelector("#FACET2 > ul.filters > li:nth-of-type(2) span.filterLabel")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          .url()
          .then(function (url) {
-            TestCommon.log(testname,405,"Click the second item in the facet menu");
+            TestCommon.log(testname,393,"Click the second item in the facet menu");
             expect(url).to.contain("FACET2QNAME", "The url hash should contain 'FACET2QNAME'")
                .and.to.contain("facFil1", "The url hash should contain 'facFil2'")
                .and.to.contain("facFil2", "The facet click did not add the value 'facFil2' to the url hash as expected");
@@ -411,13 +399,12 @@ define(["intern!object",
 
          // Click facet1 - check the url hash appears as expected
          .elementByCssSelector("#FACET2 > ul.filters > li:first-of-type span.filterLabel")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          .url()
          .then(function (url) {
-            TestCommon.log(testname,420,"Click the first item in the facet menu again");
+            TestCommon.log(testname,407,"Click the first item in the facet menu again");
             expect(url).to.contain("FACET2QNAME", "The url hash should contain 'FACET2QNAME'")
                .and.to.not.contain("facFil1", "The facet click did not remove the value 'facFil1' from the url hash as expected");
          })
@@ -425,13 +412,12 @@ define(["intern!object",
 
          // Click facet2 - check the url hash appears as expected
          .elementByCssSelector("#FACET2 > ul.filters > li:nth-of-type(2) span.filterLabel")
-         .moveTo()
-         .click()
+         .clickElement()
          .end()
 
          .url()
          .then(function (url) {
-            TestCommon.log(testname,434,"Click the second item in the facet menu again");
+            TestCommon.log(testname,420,"Click the second item in the facet menu again");
             expect(url).to.not.contain("FACET2QNAME", "The url hash should not now contain 'FACET2QNAME'")
                .and.to.not.contain("facFil2", "The facet click did not remove the value 'facFil2' from the url hash as expected");
          })
