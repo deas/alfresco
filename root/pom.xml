@@ -74,7 +74,6 @@
     <module>projects/alfresco-jlan</module>
     <module>projects/alfresco-events</module>
     <module>projects/mbeans</module>
-    <module>projects/deployment</module>
     <module>projects/repository</module>
     <module>projects/remote-api</module>
     <module>projects/web-framework-commons</module>
