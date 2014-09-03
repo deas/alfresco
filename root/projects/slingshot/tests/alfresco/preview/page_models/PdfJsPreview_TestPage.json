@@ -4,7 +4,7 @@
          "publishTopic": "ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST",
          "publishPayload": {
             "dataSource": "customNodeRef",
-            "nodeRef": "workspace://SpacesStore/dcf25e07-c4d4-4041-a49c-48df9f6a2187"
+            "nodeRef": "workspace://SpacesStore/4145b84d-a85c-45ba-beab-a9bdc361d605"
          }
       }
    ],

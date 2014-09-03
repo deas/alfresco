@@ -227,6 +227,18 @@
        <property name="configService" ref="web.config" />
    </bean>
    
+   <bean id="dependency.aggregator" parent="dependency.aggregator.abstract" class="org.springframework.extensions.surf.DependencyAggregator">
+      <property name="compressionExclusions">
+          <list>
+             <value>*/pdf.js</value>
+             <value>*/pdf.worker.js</value>
+             <value>*/pdf-min.js</value>
+             <value>*/pdf.worker-min.js</value>
+             <value>*-min.js"</value>
+          </list>
+       </property>
+   </bean>
+
    <!-- CSS image data handler - override max image size to be 10K - anything larger is left as a resource url -->
    <bean id="css.data.image.handler" parent="css.data.image.handler.abstract" class="org.springframework.extensions.surf.CssImageDataHandler">
       <property name="maximumImageSize" value="10240" />
