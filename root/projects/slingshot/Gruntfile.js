@@ -36,7 +36,11 @@
          "alfresco/testing/mockservices/UploadMockXhr",
          "alfresco/testing/mockservices/UserMockXhrBad",
          "alfresco/testing/mockservices/UserMockXhrGood"
-      ]
+      ],
+
+      testModelFiles: ['tests/alfresco/**/*.json'],
+      alfTestModels: 'alfresco_model_files.json'
+
    };
 
    module.exports = function(grunt) {

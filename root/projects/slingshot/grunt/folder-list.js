@@ -39,6 +39,18 @@ module.exports = function (grunt, alf) {
                   dest: alf.testResourcesDir + '/' + alf.alfWidgetsList
                }
             ]
+         },
+         alf_test_models: {
+            options: {
+               files: true,
+               folder: true
+            },
+            files: [
+               {
+                  src: [alf.testModelFiles],
+                  dest: alf.testResourcesDir + '/' + alf.alfTestModels
+               }
+            ]
          }
       }
    };
