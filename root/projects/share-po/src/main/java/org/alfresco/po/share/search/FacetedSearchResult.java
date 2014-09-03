@@ -7,7 +7,7 @@ import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-public class FacetedSearchResult implements SearchResult
+public class FacetedSearchResult
 {
     /** Constants. */
     private static final By NAME = By.cssSelector("div.nameAndTitleCell span.alfresco-renderers-Property:first-of-type span.inner a");
@@ -15,7 +15,8 @@ public class FacetedSearchResult implements SearchResult
     private static final By DATE = By.cssSelector("div.dateCell span.inner");
     private static final By DESCRIPTION = By.cssSelector("div.descriptionCell span.value");
     private static final By SITE = By.cssSelector("div.siteCell span.inner");
-    private static final By ACTIONS = By.cssSelector("tr td.actionsCell");
+    private static final By ACTIONS = By.cssSelector("tr td.actionsCell");   
+    private static final By IMAGE = By.cssSelector("tbody[id=FCTSRCH_SEARCH_ADVICE_NO_RESULTS_ITEMS] td.thumbnailCell img");
 
     private WebDrone drone;
     private WebElement link;
@@ -27,7 +28,7 @@ public class FacetedSearchResult implements SearchResult
     private WebElement siteLink;
     private String site;
     private ActionsSet actions;
-    private final boolean isFolder;
+    private WebElement imageLink;
 
     /**
      * Instantiates a new faceted search result - some items may be null.
@@ -58,23 +59,14 @@ public class FacetedSearchResult implements SearchResult
             siteLink = result.findElement(SITE);
             site = siteLink.getText();
         }
-        isFolder = checkFolder(result);
-
-        actions = new ActionsSet(drone, result.findElement(ACTIONS));
-    }
-    
-    private boolean checkFolder(WebElement row)
-    {
-        try
+       
+        if(result.findElements(IMAGE).size() > 0)
         {
-            String source = row.findElement(By.tagName("img")).getAttribute("src");
-            if(source != null && source.endsWith("folder.png"))
-            {
-                return true;
-            }
-        }
-        catch(Exception e){}
-        return false;
+        	imageLink = result.findElement(IMAGE);        	
+             
+        }        
+        actions = new ActionsSet(drone, result.findElement(ACTIONS));
+        
     }
 
     /**
@@ -198,11 +190,18 @@ public class FacetedSearchResult implements SearchResult
     public ActionsSet getActions()
     {
         return actions;
-    }
-
-    @Override
-    public boolean isFolder()
+    }   
+        
+    
+    /**
+     * click the result imageLink.
+     *
+     * @return the preview pop up window
+     */
+    public PreViewPopUpPage clickImageLink()
     {
-        return isFolder;
-    }
+        imageLink.click();
+        return new PreViewPopUpPage(drone);
+    }  
+    
 }
