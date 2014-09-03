@@ -25,6 +25,11 @@
  * @module alfresco/pickers/ContainerListPicker
  * @extends module:alfresco/pickers/DocumentListPicker
  * @author Dave Draper
+ *
+ * @todo Fix look and feel to match existing pickers
+ * @todo Make folders tree based?
+ * @todo Default not to show not to show siblings of documentlibrary and automatically show children instead (but have that configurable)
+ * @todo Add a button to take the picker up a level (if parent isn't documentlibrary)
  */
 define(["dojo/_base/declare",
         "alfresco/pickers/DocumentListPicker"],
@@ -40,6 +45,15 @@ define(["dojo/_base/declare",
           * @default [{i18nFile: "./i18n/ContainerListPicker.properties"}]
           */
          i18nRequirements: [{i18nFile: "./i18n/ContainerListPicker.properties"}],
+
+         /**
+          * An array of the CSS files to use with this widget.
+          *
+          * @instance
+          * @type {object[]}
+          * @default [{cssFile:"./css/ContainerListPicker.css"}]
+          */
+         cssRequirements: [{cssFile:"./css/ContainerListPicker.css"}],
 
          /**
           * Sets some relevant messages to display

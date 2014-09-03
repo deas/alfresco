@@ -18,25 +18,25 @@
  */
 
 /**
- * <p>This extends the standard [document list]{@link module:alfresco/documentlibrary/AlfDocumentList} to 
+ * <p>This extends the standard [document list]{@link module:alfresco/documentlibrary/AlfDocumentList} to
  * define a document list specifically for selecting documents (e.g. for starting workflows, etc). It was
  * written to be used as part of a [picker]{@link module:alfresco/pickers/Picker} and specifically one that
  * is used as a form control.</p>
- * 
+ *
  * @module alfresco/pickers/DocumentListPicker
  * @extends module:alfresco/documentlibrary/AlfDocumentList
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/documentlibrary/AlfDocumentList", 
-        "dojo/_base/lang"], 
+        "alfresco/documentlibrary/AlfDocumentList",
+        "dojo/_base/lang"],
         function(declare, AlfDocumentList, lang) {
-   
+
    return declare([AlfDocumentList], {
 
       /**
-       * Overrides the [inherited value]{@link moduule:alfresco/lists/AlfList#waitForPageWidgets} to ensure that pickers 
-       * don't wait for the page to be loaded (as typically the page will be loaded long before the picker is opened). 
+       * Overrides the [inherited value]{@link moduule:alfresco/lists/AlfList#waitForPageWidgets} to ensure that pickers
+       * don't wait for the page to be loaded (as typically the page will be loaded long before the picker is opened).
        * This can still be overridden again in configuration when creating a new picker.
        *
        * @instance
@@ -46,7 +46,7 @@ define(["dojo/_base/declare",
       waitForPageWidgets: false,
 
       /**
-       * Overrides the [inherited value]{@link moduule:alfresco/lists/AlfHashList#useHash} to indicate that the location 
+       * Overrides the [inherited value]{@link moduule:alfresco/lists/AlfHashList#useHash} to indicate that the location
        * should not be driven by changes to the browser URL hash
        *
        * @instance
@@ -58,7 +58,7 @@ define(["dojo/_base/declare",
       /**
        * Overrides the [inherited function]{@link module:alfresco/lists/AlfList#postCreate} to create the picker
        * view for selecting documents.
-       * 
+       *
        * @instance
        */
       postCreate: function alfresco_pickers_DocumentListPicker__postCreate(payload) {
@@ -151,7 +151,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Overrides inherited function to do a no-op. The pick action should be handled by a 
+       * Overrides inherited function to do a no-op. The pick action should be handled by a
        * [PublishAction widget]{@link module:alfresco/renderers/PublishAction}.
        *
        * @instance
@@ -162,7 +162,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * The default widgets for the picker. This can be overridden at instantiation based on what is required to be 
+       * The default widgets for the picker. This can be overridden at instantiation based on what is required to be
        * displayed in the picker.
        *
        * @instance

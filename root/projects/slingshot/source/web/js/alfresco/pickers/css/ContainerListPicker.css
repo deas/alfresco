@@ -1,0 +1,9 @@
+.alfresco-pickers-Picker {
+    .sub-pickers {
+        & > .alfresco-menus-AlfMenuBar {
+            .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItem {
+                text-align: center;
+            }
+        }
+    }
+}

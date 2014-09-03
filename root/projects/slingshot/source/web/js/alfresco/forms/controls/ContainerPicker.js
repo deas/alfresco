@@ -20,21 +20,21 @@
 /**
  * <p>Extends the standard [picker form control]{@link module:alfresco/forms/controls/Picker} to allow the user to select containers
  * (essentially folders) from the Alfresco repository.</p>
- * 
+ *
  * <p>TODO: Update so that this is configurable for only selecting containers the user has write permission on</p>
- * 
+ *
  * @extends module:alfresco/forms/controls/Picker
  * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["alfresco/forms/controls/Picker",
-        "dojo/_base/declare"], 
+        "dojo/_base/declare"],
         function(Picker, declare) {
-   
+
    return declare([Picker], {
-      
+
       /**
-       * This should be overridden to define the widget model for rendering the picker that appears within the 
+       * This should be overridden to define the widget model for rendering the picker that appears within the
        * dialog.
        *
        * @instance
@@ -59,6 +59,7 @@ define(["alfresco/forms/controls/Picker",
                         config: {
                            label: "picker.myFiles.label",
                            publishTopic: "ALF_ADD_PICKER",
+                           publishOnRender: "true",
                            publishPayload: {
                               currentPickerDepth: 0,
                               picker: {

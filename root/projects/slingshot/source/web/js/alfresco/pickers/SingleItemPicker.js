@@ -106,7 +106,7 @@ define(["dojo/_base/declare",
          {
             // Iterate of the items and convert each item into a widget definition and add it to the
             var widgets = [];
-            array.forEach(payload.response, lang.hitch(this, "addItemWidgetConfig", widgets));
+            array.forEach(payload.response, lang.hitch(this, this.addItemWidgetConfig, widgets));
 
             var config = [
                {
@@ -132,6 +132,7 @@ define(["dojo/_base/declare",
        * @param {object[]} widgets The array of widgets to add the item widget to
        * @param {object} item The item to convert into a widget
        * @param {number} index The index of the item to add
+       * @todo Hard coded to site data. See comment in method description about generalising code.
        */
       addItemWidgetConfig: function alfresco_pickers_SingleItemPicker__addItemWidgetConfig(widgets, item, index) {
 
@@ -140,6 +141,7 @@ define(["dojo/_base/declare",
             name: "alfresco/menus/AlfMenuBarItem",
             config: {
                label: item.title,
+               iconClass: "alf-sites-icon", // hard-coded sites Icon.
                publishTopic: "ALF_ADD_PICKER",
                publishPayload: {
                   currentPickerDepth: this.currentPickerDepth,

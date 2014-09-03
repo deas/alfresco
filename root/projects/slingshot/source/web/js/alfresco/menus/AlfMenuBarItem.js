@@ -30,40 +30,40 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "dojo/dom-construct",
         "dojo/dom-class",
-        "service/constants/Default"], 
+        "service/constants/Default"],
         function(declare, MenuBarItem, _AlfMenuItemMixin, AlfCore, domConstruct, domClass, AlfConstants) {
-   
+
    /**
     * Currently this extends the default Dojo implementation of a MenuBarItem without making any changes. Despite
     * it not providing any additional value-add yet it should still be used such that changes can be applied
     * without needing to modify page definition files.
     */
    return declare([MenuBarItem, _AlfMenuItemMixin, AlfCore], {
-      
+
       /**
        * A DOM node that can optionally be created to display an icon.
-       * 
+       *
        * @instance
        * @type {object}
-       * @default null 
+       * @default null
        */
       iconNode: null,
-      
+
       /**
        * Sets the label of the menu item that represents the popup and creates a new alfresco/menus/AlfMenuGroups
        * instance containing all of the widgets to be displayed in the popup. Ideally the array of widgets should
        * be instances of alfresco/menus/AlfMenuGroup (where instance has its own list of menu items). However, this
        * widget should be able to accommodate any widget.
-       * 
+       *
        * @instance
        */
-      postCreate: function alfresco_menus_AlfMenuBarPopup__postCreate() {
+      postCreate: function alfresco_menus_AlfMenuBarItem__postCreate() {
          domClass.add(this.containerNode, "alf-menu-bar-label-node");
          if ((this.iconClass && this.iconClass != "dijitNoIcon") ||
              this.iconImage != null)
          {
-            this.iconNode = domConstruct.create("img", { 
-               className: this.iconClass, 
+            this.iconNode = domConstruct.create("img", {
+               className: this.iconClass,
                src: AlfConstants.URL_RESCONTEXT + "/js/alfresco/menus/css/images/transparent-20.png",
                alt: this.message(this.iconAltText),
                style: {
@@ -75,6 +75,13 @@ define(["dojo/_base/declare",
                domClass.add(this.containerNode, this.labelWithIconClass);
             }
          }
+
+         // If set, publish the topic when the item is rendered. Used for a default item.
+         if (this.publishOnRender)
+         {
+            this.alfPublish(this.publishTopic, this.publishPayload, this.publishGlobal, this.parentScope);
+         }
+
          this.setupIconNode();
          this.inherited(arguments);
       }

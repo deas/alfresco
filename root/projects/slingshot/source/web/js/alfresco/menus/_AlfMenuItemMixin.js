@@ -110,6 +110,15 @@ define(["dojo/_base/declare",
       targetUrlLocation: "CURRENT",
 
       /**
+       * Should we publish the publishTopic when we initially render the item?
+       *
+       * @instance
+       * @type {Boolean}
+       * @default false
+       */
+      publishOnRender: false,
+
+      /**
        * It's important to perform label encoding before buildRendering occurs (e.g. before postCreate)
        * to ensure that an unencoded label isn't set and then replaced.
        *
@@ -219,7 +228,7 @@ define(["dojo/_base/declare",
 
          var targetUrlLocation = this.targetUrlLocation;
 
-         if (navigator.platform.indexOf("Mac") !== -1 && evt.metaKey)
+         if (has("mac") && evt.metaKey)
          {
             targetUrlLocation = "NEW";
          }

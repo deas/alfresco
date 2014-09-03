@@ -1,31 +1,42 @@
 .alfresco-pickers-Picker {
   height: 210px;
-}
 
-.alfresco-pickers-Picker > div {
-  float: left;
-}
+    & > div {
+      float: left;
 
-.alfresco-pickers-Picker > .sub-pickers > div,
-.alfresco-pickers-Picker > .picked-items > div {
-  float: left;
-  border: 1px solid #CCC;
-  margin: 0 2px;
-  padding: 2px 10px 2px 2px;
-  height: 200px;
-  overflow-y: auto;
-}
+    }
 
-/* Remove styling from DocumentList widgets */
-.alfresco-pickers-Picker > .sub-pickers .alfresco-documentlibrary-AlfDocumentList {
-  border: 1px solid #CCCCCC;
-  margin: 0 2px;
-}
+    .sub-pickers > div,
+    .picked-items > div {
+        float: left;
+        border: @standard-border;
+        margin: 0 2px;
+        padding: 2px 10px 2px 2px;
+        height: 200px;
+        overflow-y: auto;
+        min-width: 100px; /* avoid the box appearing very small. */
+    }
 
-.alfresco-pickers-Picker .alfresco-documentlibrary-views-layouts-AlfDocumentListView {
-  padding: 0;
-}
+    .sub-pickers {
+        /* Remove styling from DocumentList widgets */
+        .alfresco-documentlibrary-AlfDocumentList {
+            border: @standard-border;
+            margin: 0 2px;
+        }
+        .alfresco-lists-AlfList > div.info,
+        .alfresco-documentlibrary-views-layouts-AlfDocumentListView {
+            padding: 0;
+            margin: 0;
+        }
 
-.alfresco-pickers-Picker .alfresco-menus-AlfMenuBar .dijitMenuBar {
-  padding: 0;
+        /* Style Menu bar specially */
+        .alfresco-menus-AlfMenuBar {
+            border: none;
+
+            /* This needs this many selectors to override the style in _AlfMenuItemMixin.css */
+            .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItem {
+                padding: @standard-column-spacing;
+            }
+        }
+    }
 }
