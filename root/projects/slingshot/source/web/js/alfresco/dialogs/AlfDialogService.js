@@ -88,6 +88,11 @@ define(["dojo/_base/declare",
        * @param {object} payload The details of the widgets and buttons for the dialog
        */
       onCreateDialogRequest: function alfresco_dialogs_AlfDialogService__onCreateDialogRequest(payload) {
+         if (this.dialog != null)
+         {
+            this.dialog.destroyRecursive();
+         }
+
          // TODO: Update this and other function with scoll setting...
          var dialogConfig = {
             title: this.message(payload.dialogTitle),
