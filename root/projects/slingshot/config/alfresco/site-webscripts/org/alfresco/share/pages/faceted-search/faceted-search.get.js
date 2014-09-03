@@ -449,6 +449,34 @@ var searchDocLib = {
                   "faceted-search.advice.suggestion1",
                   "faceted-search.advice.suggestion2",
                   "faceted-search.advice.suggestion3"
+               ],
+               a11yCaption: msg.get("faceted-search.results.caption"),
+               a11yCaptionClass: "hiddenAccessible",
+               widgetsForHeader: [
+                  {
+                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                     config: {
+                        label: msg.get("faceted-search.results.heading.thumbnail"),
+                        class: "hiddenAccessible",
+                        a11yScope: "col"
+                     }
+                  },
+                  {
+                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                     config: {
+                        label: msg.get("faceted-search.results.heading.details"),
+                        class: "hiddenAccessible",
+                        a11yScope: "col"
+                     }
+                  },
+                  {
+                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                     config: {
+                        label: msg.get("faceted-search.results.heading.actions"),
+                        class: "hiddenAccessible",
+                        a11yScope: "col"
+                     }
+                  }
                ]
             }
          },

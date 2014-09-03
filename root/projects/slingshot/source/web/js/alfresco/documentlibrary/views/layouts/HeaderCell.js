@@ -33,8 +33,9 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/dom-class",
         "dojo/query",
-        "alfresco/misc/AlfTooltip"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domClass, query, AlfTooltip) {
+        "alfresco/misc/AlfTooltip",
+        "dojo/dom-attr"], 
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domClass, query, AlfTooltip, domAttr) {
 
    return declare([_WidgetBase, _TemplatedMixin, AlfCore], {
 
@@ -103,6 +104,15 @@ define(["dojo/_base/declare",
       toolTipMsg: null,
 
       /**
+       * Optional accessibility scope.
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      a11yScope: null,
+
+      /**
        * @instance
        */
       postMixInProperties: function alfresco_documentlibrary_views_layouts_HeaderCell__postMixInProperties() {
@@ -132,9 +142,14 @@ define(["dojo/_base/declare",
             this.sortIcon(this.sortedAscending == false ? "desc" : "asc");
          }
 
-         if (this.toolTipMsg != null)
+         if (this.toolTipMsg)
          {
             this.addToolTipMsg();
+         }
+
+         if(this.a11yScope)
+         {
+            this.addA11yScope(this.a11yScope);
          }
       },
 
@@ -267,7 +282,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * This controls the display of a tool tip against the header cell label.
+       * Controls the display of a tool tip against the header cell label.
        *
        * @instance
        */
@@ -279,6 +294,18 @@ define(["dojo/_base/declare",
             label: this.message(this.toolTipMsg)
          });
          this.alfLog("log", "Created HeaderCell tooltip with label '" + tip.label + "' for item '" + this.domNode + "'", this);
+      },
+
+      /**
+       * Adds a scope attribute to the header cell if provided.
+       *
+       * @instance
+       */
+      addA11yScope: function alfresco_documentlibrary_views_layouts_HeaderCell__addA11yScope(scopeStr) {
+         if(scopeStr)
+         {
+            domAttr.set(this.containerNode, "scope", scopeStr);
+         }
       }
 
    });

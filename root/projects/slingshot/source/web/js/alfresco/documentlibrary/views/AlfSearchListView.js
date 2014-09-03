@@ -27,14 +27,14 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/documentlibrary/views/AlfDocumentListView",
+        "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
         "alfresco/core/Core",
         "dojo/text!./templates/NoSearchResults.html",
         "dojo/_base/array",
         "dojo/dom-construct"], 
-        function(declare, AlfDocumentListView,  _WidgetBase, _TemplatedMixin, AlfCore, template, array, domConstruct) {
+        function(declare, AlfDocumentListWithHeaderView,  _WidgetBase, _TemplatedMixin, AlfCore, template, array, domConstruct) {
    
    // Inner widget to render a template of advice...
    var NoSearchResultsTemplate = declare([_WidgetBase, _TemplatedMixin, AlfCore], {
@@ -67,7 +67,7 @@ define(["dojo/_base/declare",
       }
    });
 
-   return declare([AlfDocumentListView], {
+   return declare([AlfDocumentListWithHeaderView], {
       
       /**
        * The configuration for selecting the view (configured the menu item)

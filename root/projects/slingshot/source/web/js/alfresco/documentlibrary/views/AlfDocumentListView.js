@@ -140,6 +140,8 @@ define(["dojo/_base/declare",
             this.renderView(false);
          }
 
+         this.renderCaption();
+
          this.alfSubscribe(this.clearDocDataTopic, lang.hitch(this, "clearOldView"));
       },
       
@@ -389,6 +391,25 @@ define(["dojo/_base/declare",
          this.messageNode = domConstruct.create("div", {
             innerHTML: this.message("doclistview.rendering.error.message")
          }, this.domNode);
+      },
+
+      /**
+       * Optionally add a caption to the generated table
+       * 
+       * @instance
+       */
+      renderCaption: function alfresco_documentlibrary_views_AlfDocumentListWithHeaderView__renderCaption() {
+         if(this.a11yCaption && this.tableNode)
+         {
+            var caption = domConstruct.create("caption", {
+               innerHTML: this.a11yCaption
+            }, this.tableNode, "first");
+
+            if(this.a11yCaptionClass)
+            {
+               domClass.add(caption, this.a11yCaptionClass);
+            }
+         }
       }
    });
 });

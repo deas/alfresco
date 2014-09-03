@@ -6,5 +6,5 @@
 
 .alfresco-html-Heading.hiddenAccessible {
    position: absolute;
-   left: -999em;
+   left: -99999px;
 }

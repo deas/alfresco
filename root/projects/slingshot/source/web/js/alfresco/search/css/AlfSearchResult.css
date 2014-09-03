@@ -11,7 +11,8 @@
    width: 100px;
 }
 
-.alfresco-search-AlfSearchResult td.dateCell .alfresco-renderers-Property {
+.alfresco-search-AlfSearchResult td.dateCell .alfresco-renderers-Property,
+.alfresco-search-AlfSearchResult div.dateCell .alfresco-renderers-Property {
    color: @de-emphasized-font-color;
 }
 

@@ -48,3 +48,8 @@
    outline: 2px solid @docListDndHighlight;
    outline-offset: -2px;
 }
+
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView > table > caption.hiddenAccessible {
+   position: absolute;
+   left: -99999px;
+}
