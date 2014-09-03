@@ -26,11 +26,13 @@
             <class name="org.alfresco.po.share.dashlet.MySiteDashletTest" />
         </classes>
     </test>
+    <!-- WEBDRONE-746 FIXME
     <test name="MyTasksDashletTest">
         <classes>
             <class name="org.alfresco.po.share.dashlet.MyTasksDashletTest" />
         </classes>
     </test>
+    -->
     <test name="RssFeedDashletTest">
         <classes>
             <class name="org.alfresco.po.share.dashlet.RssFeedDashletTest" />
