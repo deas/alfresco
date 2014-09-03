@@ -248,6 +248,13 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+           <groupId>org.mortbay.jetty</groupId>
+           <artifactId>
+              com.springsource.org.mortbay.jetty.server
+           </artifactId>
+           <version>6.1.9</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -401,6 +408,39 @@
                     </aggregations>
                 </configuration>
             </plugin>
+            
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <configuration>
+                  <!-- Sets the port when using mvn jetty:run-forked -->
+                  <jvmArgs>-Djetty.port=8089</jvmArgs>
+                  <!-- Override the system properties to set a port that *should* be unused -->
+                   <systemProperties>
+                     <force>true</force>
+                     <systemProperty>
+                        <name>jetty.port</name>
+                        <value>8089</value>
+                      </systemProperty>
+                   </systemProperties>
+                   <!--  The following 3 settings allow us to execute a mvn jetty:stop command to shutdown the test application -->
+                   <stopPort>9966</stopPort>
+                   <stopKey>foo</stopKey>
+                   <stopWait>10</stopWait>
+                   <!-- Configure the application, this will essentially be Share but overlaid with the test resources -->
+                   <webApp>
+                     <descriptor>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</descriptor>
+                     <contextPath>/aikau</contextPath>
+                     <resourceBases>
+                        <resourceBase>tests/testApp</resourceBase>
+                        <resourceBase>${project.build.directory}/${project.build.finalName}</resourceBase>
+                     </resourceBases>
+                     <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames> 
+                   </webApp>
+                   <webAppSourceDirectory>tests/testApp</webAppSourceDirectory>
+                   <classesDirectory>tests/testApp/WEB-INF/classes</classesDirectory>
+                </configuration>
+         </plugin>
         </plugins>
     </build>
 

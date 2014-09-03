@@ -200,6 +200,17 @@ module.exports = function (grunt, alf) {
          }
       },
       sharedConfig = {
+
+         // Starts the Aikau unit test application
+         startTestApp: {
+            command: 'mvn jetty:run-forked'
+         },
+
+         // Stops the Aikau unit test application
+         stopTestApp: {
+            command: 'mvn jetty:stop'
+         },
+
          // Generate JSDocs
          jsdoc: {
             command: 'jsdoc ../../' + alf.jsdocFiles + ' -c ../../conf.json', // TODO: Make this work with defined paths.

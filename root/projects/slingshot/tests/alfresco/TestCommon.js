@@ -50,6 +50,16 @@ define(["intern/dojo/node!fs",
       },
 
       /**
+       * Generates the URL to use for loading unit test WebScripts
+       *
+       * @instance
+       * @param {string} webScriptURL The WebScript URL
+       */
+      testWebScriptURL: function (webScriptURL) {
+         return Config.urls.unitTestAppBaseUrl + "/aikau/page/tp/ws" + webScriptURL;
+      },
+
+      /**
        * This is the URL to use to access the module deployment screen. It is composed of the 
        * paths.moduleDeploymentPath and the Config.urls.bootstrapBaseUrl which is provided in the config package.
        *
@@ -84,6 +94,28 @@ define(["intern/dojo/node!fs",
             console.log(e);
          }
          return fileContent;
+      },
+
+      /**
+       *
+       *
+       * @instance
+       * @param {object} browser The browser context to use
+       * @param {string} testWebScriptURL The URL of the test WebScript
+       * @param {string} testName The name of the test to run
+       */
+      loadTestWebScript: function (browser, testWebScriptURL, testName) {
+         this._applyTimeouts(browser);
+         this._maxWindow(browser);
+         this._cancelModifierKeys(browser);
+         if(testName && browser.environmentType.browserName)
+         {
+            console.log(">> Starting '" + testName + "' on " + browser.environmentType.browserName);
+         }
+         return browser.get(this.testWebScriptURL(testWebScriptURL))
+            .then(pollUntil('return document.getElementsByClassName("allWidgetsProcessed");'))
+            .then(function (element) {}, function (error) {})
+            .end();
       },
 
       /**
