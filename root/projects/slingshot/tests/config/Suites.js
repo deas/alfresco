@@ -141,7 +141,7 @@ define({
     * @instance
     * @type [string]
     */
-   vmOnlyFunctionalSuites: ['tests/alfresco/CodeCoverageBalancer'],
+   vmOnlyFunctionalSuites: [], //['tests/alfresco/CodeCoverageBalancer'],
 
    /**
     * This is the full array of functional test suites for virtual machine tests

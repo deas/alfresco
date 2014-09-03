@@ -43,7 +43,7 @@ define({
     * @type {boolean}
     * @default true
     */
-   doCoverageReport: true,
+   doCoverageReport: false,
 
    /**
     * A selection of timeouts
