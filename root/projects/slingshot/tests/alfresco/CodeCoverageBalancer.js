@@ -40,6 +40,13 @@ define(["intern!object",
 
                .end()
 
+               .findByCssSelector("#LABEL")
+                  .getVisibleText()
+                  .then(function(text) {
+                     assert(text === "Coverage Balanced!", "Code Coverage Balancer Didn't Load - coverage results will be invalid");
+                  })
+                  .end()
+
                // Post the coverage results...
                .then(function() {
                   TestCommon.postCoverageResults(browser);
