@@ -33,7 +33,7 @@ define(["intern!object",
       'Basic Test': function () {
 
          var browser = this.remote;
-         var testname = "WarningTest";
+         var testname = "Header Widgets Test";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/header/page_models/HeaderWidgets_TestPage.json", testname)
 
          .end()
@@ -156,10 +156,108 @@ define(["intern!object",
             })
             .end()
 
+         // Click on the sites menus...
+         .findByCssSelector("#SITES_MENU_text")
+            .click()
+            .end()
+
+         .findByCssSelector("#HEADER_SITES_MENU_RECENT_site1 a")
+            .getVisibleText()
+            .then(function(text) {
+               assert(text === "Site1", "Test #4a - First recent site not rendered correctly")
+            })
+            .end()
+         .findByCssSelector("#HEADER_SITES_MENU_RECENT_site2 a")
+            .getVisibleText()
+            .then(function(text) {
+               assert(text === "Site2", "Test #4b - Sccond recent site not rendered correctly")
+            })
+            .end()
+
+         .findByCssSelector("#SITES_MENU_FAVOURITES_text")
+            .click()
+            .end()
+
+         .findByCssSelector("#HEADER_SITES_MENU_FAVOURITE_site1 a")
+            .getVisibleText()
+            .then(function(text) {
+               assert(text === "Site1", "Test #5a - First favourite site not rendered correctly")
+            })
+            .end()
+
+         .findByCssSelector("#HEADER_SITES_MENU_FAVOURITE_site2 a")
+            .getVisibleText()
+            .then(function(text) {
+               assert(text === "Site2", "Test #5b - Second favourite site not rendered correctly")
+            })
+            .end()
+
          // Post the coverage results...
          .then(function() {
             TestCommon.postCoverageResults(browser);
          });
+      },
+      'Add Favourite Test': function() {
+         var browser = this.remote;
+         var testname = "Add Favourite";
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/header/page_models/AddFavouriteSite_TestPage.json", testname)
+
+            .end()
+
+            .findByCssSelector("#SITES_MENU_text")
+               .click()
+               .end()
+
+            .findByCssSelector("#SITES_MENU_ADD_FAVOURITE_text")
+               .click()
+               .end()
+
+            .findAllByCssSelector(TestCommon.topicSelector("ALF_ADD_FAVOURITE_SITE", "publish", "last"))
+               .then(function(elements) {
+                  assert(elements.length == 1, "Test #1a - Add favourite topic not published");
+               })
+               .end()
+
+            .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "site", "site1"))
+               .then(function(elements) {
+                  assert(elements.length == 1, "Test #1b - Favourite not added correctly");
+               })
+               .end()
+
+            .then(function() {
+               TestCommon.postCoverageResults(browser);
+            });
+      },
+      'Remove Favourite Test': function() {
+         var browser = this.remote;
+         var testname = "Remove Favourite";
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/header/page_models/RemoveFavouriteSite_TestPage.json", testname)
+
+            .end()
+            
+            .findByCssSelector("#SITES_MENU_text")
+               .click()
+               .end()
+
+            .findByCssSelector("#SITES_MENU_REMOVE_FAVOURITE_text")
+               .click()
+               .end()
+
+            .findAllByCssSelector(TestCommon.topicSelector("ALF_REMOVE_FAVOURITE_SITE", "publish", "last"))
+               .then(function(elements) {
+                  assert(elements.length == 1, "Test #1a - Remove favourite topic not published");
+               })
+               .end()
+
+            .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "site", "site1"))
+               .then(function(elements) {
+                  assert(elements.length == 1, "Test #1b - Favourite not removed correctly");
+               })
+               .end()
+
+            .then(function() {
+               TestCommon.postCoverageResults(browser);
+            });
       }
    });
 });

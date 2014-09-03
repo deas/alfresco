@@ -45,6 +45,16 @@ define(["dojo/_base/declare",
       postCreate: function alfresco_dialogs__CreateFormDialogMixin__postCreate() {
          this.inherited(arguments);
 
+         if (this.dialogConfirmationButtonTitle == null)
+         {
+            this.dialogConfirmationButtonTitle = this.messages("services.ActionService.button.ok");
+         }
+
+         if (this.dialogCancellationButtonTitle == null)
+         {
+            this.dialogCancellationButtonTitle = this.messages("services.ActionService.button.cancel");
+         }
+
          // Generate a new UUID for the publishTopic and then override the configuration so that
          // the publishications are global. Then immediately subscribe globally to that generated
          // UUID. This should ensure that only this instance will handle the publications. This
@@ -85,15 +95,17 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {string}
+       * @default null
        */
-      dialogConfirmationButtonTitle: this.messages("services.ActionService.button.ok"),
+      dialogConfirmationButtonTitle: null,
 
       /**
        *
        * @instance
        * @type {string}
+       * @default null
        */
-      dialogCancellationButtonTitle:this.messages("services.ActionService.button.cancel"),
+      dialogCancellationButtonTitle: null,
 
       /**
        * The configuration for the contents of the dialog to be displayed. This should be provided either on instantiation

@@ -69,7 +69,12 @@
                                     }
                                  },
                                  {
-                                    "name": "alfresco/header/AlfSitesMenu"
+                                    "id": "SITES_MENU",
+                                    "name": "alfresco/header/AlfSitesMenu",
+                                    "config": {
+                                       "currentSite": "site1",
+                                       "currentUser": "admin"
+                                    }
                                  }
                               ]
                            }
@@ -87,9 +92,9 @@
          }
       },
       {
-         "name": "alfresco/testing/MockXhr",
+         "name": "alfresco/testing/mockservices/HeaderMockXhr",
          "config": {
-            
+            "location": "NON_SITE"
          }
       },
       {
