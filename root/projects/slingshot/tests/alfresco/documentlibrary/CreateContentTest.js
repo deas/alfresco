@@ -35,8 +35,6 @@ define(["intern!object",
          var testname = "Create Content Test";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/CreateContent_TestPage.json", testname)
 
-         .end()
-
          // Check everything is initialised correctly...
          .findByCssSelector("#CREATE_CONTENT_MENU_text")
             .click()

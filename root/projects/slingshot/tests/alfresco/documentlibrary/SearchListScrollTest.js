@@ -29,49 +29,47 @@ define(["intern!object",
         function (registerSuite, expect, assert, require, TestCommon, keys) {
 
    registerSuite({
-      name: 'AlfSearchListScroll Test',
-      'AlfSearchListTest': function () {
+      name: 'SearchList Scroll Test',
+      'Basic Test': function () {
          var browser = this.remote,
-             testname = "AlfSearchListTest",
+             testname = "Search List Scroll Test",
 
             countResults = function(expected) {
-               /* TODO: Mock Search service doesn't work, so no results are returned.
-               TestCommon.log(testname, "Checking that result count is correct");
-               // Get all result rows from DOM
+               TestCommon.log(testname, "Checking for " +  expected + " results...");
                browser.findAllByCssSelector(".alfresco-search-AlfSearchResult")
                   .then(function(elements) {
                      assert(elements.length === expected, "Counting Result, expected: " + expected + ", found: " + elements.length);
                   })
-                  .end(); */
+                  .end();
             },
             scrollToBottom = function() {
+               TestCommon.log(testname, "Scrolling to bottom...");
                browser.execute("return window.scrollTo(0,Math.max(document.documentElement.scrollHeight,document.body.scrollHeight,document.documentElement.clientHeight))")
-               .sleep(250)
+               .sleep(500)
                .end();
             },
             scrollToTop = function() {
+               TestCommon.log(testname, "Scrolling to top...");
                browser.execute("return window.scrollTo(0,0)")
-               .sleep(250)
+               .sleep(500)
                .end();
             };
 
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/SearchListScroll_TestPage.json", testname)
 
-            .end()
-
-            // Click the button to set the search term via the hash...
-            .then(function(){
-               TestCommon.log(testname, "Setting search data");
-            })
-            .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
-               .click()
+            // Check for the search request being made...
+            .findByCssSelector(TestCommon.topicSelector("ALF_SEARCH_REQUEST", "publish", "any"))
+               .then(null, function() {
+                  TestCommon.log(testname, "Looking for search request...");
+                  assert(false, "Test #1a - Search request not made");
+               })
                .end()
 
-            // Check search term has been set.
-            .findAllByCssSelector(TestCommon.topicSelector("ALF_SET_SEARCH_TERM", "publish", "any"))
-               .then(function(elements) {
-                  TestCommon.log(testname,"Check that search request triggered");
-                  assert(elements.length === 0, "Search not triggered.");
+            // Check for the search results being returned...
+            .findByCssSelector(TestCommon.topicSelector("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", "publish", "any"))
+               .then(null, function() {
+                  TestCommon.log(testname, "Looking for first search response...");
+                  assert(false, "Test #1b - Search results not returned");
                })
                .end()
 
@@ -90,16 +88,16 @@ define(["intern!object",
             // Check Trottled Scroll event
             .findAllByCssSelector(TestCommon.topicSelector("ALF_EVENTS_SCROLL", "publish", "any"))
                .then(function(elements) {
-                  TestCommon.log(testname,"Checking that ALF scroll event fired.");
-                  assert(elements.length == 1, "Scroll event didn't fire");
+                  TestCommon.log(testname,"Checking that scroll event fired.");
+                  assert(elements.length == 1, "Test #1c - Scroll event didn't fire, expected 1, found: " + elements.length);
                })
                .end()
 
             // Check Infinite Scroll Event fired.
             .findAllByCssSelector(TestCommon.topicSelector("ALF_SCROLL_NEAR_BOTTOM", "publish", "any"))
                .then(function(elements) {
-                  TestCommon.log(testname,"Checking that ALF scroll near bottom event fired.");
-                  assert(elements.length == 1, "Scroll near bottom event didn't fire");
+                  TestCommon.log(testname,"Checking that scroll near bottom event fired.");
+                  assert(elements.length == 1, "Test #1d - Scroll near bottom event didn't fire. Expected 1, found: " + elements.length);
                })
                .end()
 
@@ -116,36 +114,6 @@ define(["intern!object",
             // Count Results there should be 75 (Request 3)
             .then(function(){
                countResults(75);
-            })
-
-            // Facet Results. Check Facet Event
-            .findByCssSelector("#APPLY_FACET_FILTER")
-               .click()
-               .end()
-
-            // Count Results there should be 6 (Request 4)
-            .then(function(){
-               countResults(6);
-            })
-
-            // Scroll to bottom
-            .then(function(){
-               scrollToBottom();
-            })
-
-            // Check no scroll event is triggered.
-            .then(function(){
-               countResults(6);
-            })
-
-            // Retrigger Search results
-            .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
-               .click()
-               .end()
-
-            // Count Results. Check 25 Exist.
-            .then(function(){
-               countResults(25);
             })
 
             // Post the coverage results...

@@ -128,23 +128,22 @@ define(["intern/dojo/node!fs",
          return browser
 
          .get(this.bootstrapUrl())
-         .then(pollUntil('return document.getElementsByClassName("allWidgetsProcessed");'))
-         .then(function (element) {}, function (error) {})
-         .end()
+            .then(pollUntil('return document.getElementsByClassName("allWidgetsProcessed");'))
+            .then(function (element) {}, function (error) {})
+            .end()
 
          .execute("dijit.registry.byId('UNIT_TEST_MODEL_FIELD').setValue('" + pageModel + "');'set';")
-         .findByCssSelector('#UNIT_TEST_MODEL_FIELD TEXTAREA')
-         .type(" ")
-         .end()
+            .findByCssSelector('#UNIT_TEST_MODEL_FIELD TEXTAREA')
+            .type(" ")
+            .end()
 
          .findById("LOAD_TEST_BUTTON")
-         .click()
-         .end()
+            .click()
+            .end()
 
-         .then(pollUntil('return document.getElementsByClassName("allWidgetsProcessed");'))
-         .then(function (element) {}, function (error) {})
-         .end()
-
+         .then(pollUntil('return document.getElementsByClassName("aikau-reveal");'))
+            .then(function (element) {}, function (error) {})
+            .end();
       },
 
       /**
@@ -163,19 +162,19 @@ define(["intern/dojo/node!fs",
          console.log(">> Enabling debug via Debug Enabler Extension");
 
          return browser.get(this.moduleDeploymentUrl())
-         .end()
+            .end()
 
          .findByCssSelector("select[name='undeployedModules'] > option[value*='Debug Enabler Extension']")
-         .click()
-         .end()
+            .click()
+            .end()
 
          .findByCssSelector("td > input[value='Add']")
-         .click()
-         .end()
+            .click()
+            .end()
 
          .findByCssSelector("input[value='Apply Changes']")
-         .click()
-         .end()
+            .click()
+            .end();
          
 //       this._applyTimeouts(browser);
 //       this._maxWindow(browser);
@@ -216,20 +215,19 @@ define(["intern/dojo/node!fs",
          console.log(">> Disabling debug via Debug Enabler Extension");
 
          return browser.get(this.moduleDeploymentUrl())
-         .end()
+            .end()
 
          .findByCssSelector("select[name='deployedModules'] > option[value*='Debug Enabler Extension']")
-         .click()
-         .end()
+            .click()
+            .end()
 
          .findByCssSelector("td > input[value='Remove']")
-         .click()
-         .end()
+            .click()
+            .end()
 
          .findByCssSelector("input[value='Apply Changes']")
-         .click()
-         .end()
-         
+            .click()
+            .end();
       },
 
       /**

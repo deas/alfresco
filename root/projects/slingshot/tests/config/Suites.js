@@ -61,7 +61,7 @@ define({
       'tests/alfresco/documentlibrary/DocumentSelectorTest',
       'tests/alfresco/documentlibrary/PaginationTest',
       'tests/alfresco/documentlibrary/SearchListTest',
-      'tests/alfresco/documentlibrary/SearchListScrollTest', // PASSING - TODO: NEEDS IMPLEMENTING PROPERLY,
+      'tests/alfresco/documentlibrary/SearchListScrollTest',
       'tests/alfresco/documentlibrary/views/AlfDocumentListWithHeaderTest',
       'tests/alfresco/documentlibrary/views/FilmStripViewTest',
       'tests/alfresco/documentlibrary/views/GalleryViewTest',

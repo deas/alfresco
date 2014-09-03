@@ -40,7 +40,8 @@ define(["intern!object",
          var browser = this.remote;
          var testname = "AlfDocumentListWithHeaderTest";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/AlfDocumentListWithHeader_TestPage.json", testname)
-            // .end()
+            
+            .sleep(alfPause)
 
             // Sort on the first column header...
             .pressKeys(keys.TAB)
@@ -48,14 +49,14 @@ define(["intern!object",
             .getActiveElement()
                .getVisibleText()
                .then(function(resultText) {
-                  expect(resultText).to.equal("Column 1", "The text is incorrect");
+                  expect(resultText).to.equal("Column 1", "Test #1a - The text is incorrect");
                })
                .end()
             
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
                .then(null, function() {
-                  assert(false, "Could not request to sort column 1 in PubSubLog");
+                  assert(false, "Test #1b - Could not request to sort column 1 in PubSubLog");
                })
                .end()
 
@@ -65,7 +66,7 @@ define(["intern!object",
             .pressKeys(keys.RETURN)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
                .then(null, function() {
-                  assert(false, "Could not request to sort column 1 in PubSubLog");
+                  assert(false, "Test #1c - Could not request to sort column 1 in PubSubLog");
                })
                .end()
 
@@ -75,7 +76,7 @@ define(["intern!object",
             .pressKeys(keys.RETURN)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
                .then(null, function() {
-                  assert(false, "Could not request to sort column 1 in PubSubLog");
+                  assert(false, "Test #1d - Could not request to sort column 1 in PubSubLog");
                })
                .end()
 
@@ -88,7 +89,7 @@ define(["intern!object",
             // Check it is currently sorted ascendinging...
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "direction", "ascending"))
                .then(null, function() {
-                  assert(false, "The initial sort direction is not ascending");
+                  assert(false, "Test #1e - The initial sort direction is not ascending");
                })
                .end()
 
@@ -100,7 +101,7 @@ define(["intern!object",
 
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "direction", "descending"))
                .then(null, function() {
-                  assert(false, "The second sort direction is not descending");
+                  assert(false, "Test #1f - The second sort direction is not descending");
                })
                .end()
 
@@ -119,7 +120,7 @@ define(["intern!object",
             .getActiveElement()
                .getVisibleText()
                .then(function(resultText) {
-                  expect(resultText).to.equal("A", "The text is incorrect");
+                  expect(resultText).to.equal("A", "Test #1g - The text is incorrect");
                })
                .end()
 
@@ -133,7 +134,7 @@ define(["intern!object",
             .getActiveElement()
                .getVisibleText()
                .then(function(resultText) {
-                  expect(resultText).to.equal("D", "The text is incorrect");
+                  expect(resultText).to.equal("D", "Test #1h - The text is incorrect");
                })
                .end()
 
@@ -151,7 +152,7 @@ define(["intern!object",
             .getActiveElement()
                .getVisibleText()
                .then(function(resultText) {
-                  expect(resultText).to.equal("A", "The text is incorrect");
+                  expect(resultText).to.equal("A", "Test #1i - The text is incorrect");
                })
                .end()
 
@@ -165,7 +166,7 @@ define(["intern!object",
             .getActiveElement()
                .getVisibleText()
                .then(function(resultText) {
-                  expect(resultText).to.equal("J", "The text is incorrect");
+                  expect(resultText).to.equal("J", "Test #1j - The text is incorrect");
                })
                .end()
 
@@ -179,7 +180,7 @@ define(["intern!object",
             .getActiveElement()
                .getVisibleText()
                .then(function(resultText) {
-                  expect(resultText).to.equal("G", "The text is incorrect");
+                  expect(resultText).to.equal("G", "Test #1k - The text is incorrect");
                })
                .end()
 
@@ -190,15 +191,13 @@ define(["intern!object",
             .end();
       },
       'Mouse Tests': function () {
-         var alfPause = 150;
          var browser = this.remote;
-         var testname = "AlfDocumentListWithHeaderTest";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/AlfDocumentListWithHeader_TestPage.json")
             .end()
 
             .findByCssSelector("#COLUMN1_HEADER > span")
                .then(null, function() {
-                  assert(false, "Could not find COLUMN1_HEADER in Test #2a");
+                  assert(false, "Test #1a - Could not find COLUMN1_HEADER in Test #2a");
                })
                .end()
             .findByCssSelector("#COLUMN1_HEADER > span")
@@ -206,7 +205,7 @@ define(["intern!object",
                .end()
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
                .then(null, function() {
-                  assert(false, "Could not request to sort column 1 via mouse");
+                  assert(false, "Test #1b - Could not request to sort column 1 via mouse");
                })
                .end()
             

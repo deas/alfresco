@@ -11,61 +11,10 @@
             }
          }
       },
-      "alfresco/services/NavigationService"
+      "alfresco/services/NavigationService",
+      "alfresco/services/SearchService"
    ],
    "widgets": [
-      {
-         "id": "SET_SEARCH_TERM",
-         "name": "alfresco/buttons/AlfButton",
-         "config": {
-            "label": "Set Search Term",
-            "publishTopic": "ALF_NAVIGATE_TO_PAGE"
-         }
-      },
-      {
-         "id": "SET_MULTIPLE_SEARCH_DATA",
-         "name": "alfresco/buttons/AlfButton",
-         "config": {
-            "label": "Set Multiple Search Attributes",
-            "publishTopic": "ALF_NAVIGATE_TO_PAGE",
-            "publishPayload": {
-               "url": "searchTerm=testTerm2&facetFields=qname1&facetFilters=filter1,filter2,filter3&sortAscending=false&sortField=cm:title",
-               "type": "HASH"
-            }
-         }
-      },
-      {
-         "id": "REMOVE_FACET_FILTER",
-         "name": "alfresco/buttons/AlfButton",
-         "config": {
-            "label": "Remove Facet Filter",
-            "publishTopic": "ALF_REMOVE_FACET_FILTER"
-         }
-      },
-      {
-         "id": "APPLY_FACET_FILTER",
-         "name": "alfresco/buttons/AlfButton",
-         "config": {
-            "label": "Apply Facet Filter",
-            "publishTopic": "ALF_APPLY_FACET_FILTER"
-         }
-      },
-      {
-         "id": "INCLUDE_FACET",
-         "name": "alfresco/buttons/AlfButton",
-         "config": {
-            "label": "Include Facet",
-            "publishTopic": "ALF_INCLUDE_FACET"
-         }
-      },
-      {
-         "id": "PUBLISH_SEARCH_RESULTS",
-         "name": "alfresco/buttons/AlfButton",
-         "config": {
-            "label": "Fake Search Response",
-            "publishTopic": "ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS"
-         }
-      },
       {
          "name": "alfresco/documentlibrary/AlfSearchList",
          "config": {
@@ -81,6 +30,9 @@
       {
          "name": "alfresco/documentlibrary/AlfDocumentListInfiniteScroll"
       },
+      {
+         "name": "alfresco/testing/mockservices/SearchScrollMockXhr"
+      }
       {
          "name": "alfresco/testing/SubscriptionLog"
       },

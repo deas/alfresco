@@ -37,7 +37,7 @@ define(["intern!object",
       'Basic Test': function () {
 
          var browser = this.remote;
-         var testname = "GalleryView Test";
+         var testname = "GalleryView Test (basic)";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/GalleryView_TestPage.json", testname)
 
             // 1. Check that the AlfGalleryViewSlider is visible (this is an additional control published from the gallery view)...
@@ -97,11 +97,14 @@ define(["intern!object",
 
          var alfPause = 500;
          var browser = this.remote;
-         var testname = "GalleryView Test";
+         var testname = "GalleryView Test (keyboard)";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/GalleryView_TestPage.json", testname)
+
+            .sleep(alfPause)
 
             // 1. Focus on the first thumbnail...
             .pressKeys(keys.TAB) // Goes to slider...
+            .sleep(alfPause)
             .pressKeys(keys.TAB) // Goes to first thumbnail...
 
             // 2. Tab again to select the selector...
@@ -156,7 +159,7 @@ define(["intern!object",
             .pressKeys(keys.SPACE)
             .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_SELECTED", "value", "displayName", "Folder 4"))
                .then(function(elements) {
-                  assert(elements.length == 1, "Test #3b - The wrong document was selected");
+                  assert(elements.length == 1, "Test #3c - The wrong document was selected");
                })
                .end()
 
