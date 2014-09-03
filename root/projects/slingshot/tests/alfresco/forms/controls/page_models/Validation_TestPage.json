@@ -10,18 +10,18 @@
          }
       }
    },
-   "alfresco/services/CrudService"],
+   "alfresco/testing/mockservices/FormControlValidationTestService"],
    "widgets": [
       {
          "name": "alfresco/forms/Form",
          "config": {
             "widgets": [
                {
+                  "id": "TEST_CONTROL",
                   "name": "alfresco/forms/controls/DojoValidationTextBox", 
                   "config": {
-                     "id": "HAS_VALIDATION_CONFIG",
-                     "label": "Numbers Only",
-                     "name": "filterID",
+                     "label": "Three Letters Or More",
+                     "name": "name",
                      "value": "",
                      "validationConfig": [
                         {
@@ -31,27 +31,40 @@
                         },
                         {
                            "validation": "maxLength",
-                           "length": 10,
-                           "errorMessage": "Too Long"
+                           "length": 5,
+                           "errorMessage": "Too long"
                         },
                         {
                            "validation": "regex",
-                           "regex": "^[0-9]+$",
-                           "errorMessage": "Must be a number"
+                           "regex": "^[A-Za-z]+$",
+                           "errorMessage": "Letters only"
                         },
                         {
                            "validation": "validateUnique",
-                           "errorMessage": "Entry already in use",
-                           "itemsProperty": "response.facets",
-                           "publishTopic": "ALF_CRUD_GET_ALL",
-                           "publishPayload": {
-                              "url": "api/solr/facet-config"
-                           }
+                           "errorMessage": "Already used",
+                           "itemsProperty": "someData",
+                           "publishTopic": "GET_DUMMY_VALUES"
                         }
                      ]
                   }
                }
             ]
+         }
+      },
+      {
+         "id": "BLOCK_RESPONSE",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Block responses",
+            "publishTopic": "BLOCK_RESPONSES"
+         }
+      },
+      {
+         "id": "UNBLOCK_RESPONSE",
+         "name": "alfresco/buttons/AlfButton",
+         "config": {
+            "label": "Unblock responses",
+            "publishTopic": "UNBLOCK_RESPONSES"
          }
       },
       {

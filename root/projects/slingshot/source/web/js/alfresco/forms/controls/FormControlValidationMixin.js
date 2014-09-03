@@ -335,6 +335,17 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * Stores the validator configuration for validating uniqueness so that it doesn't need to be included
+       * in the payload from the called service. It is set in [validateUnique]{@link module:alfresco/forms/controls/FormControlValidationMixin#validateUnique}
+       * and reset to null in [onValidationUniqueResponse]{@link module:alfresco/forms/controls/FormControlValidationMixin#onValidationUniqueResponse}.
+       * 
+       * @instance
+       * @type {object}
+       * @default null
+       */
+      _validateUniqueConfig: null,
+
+      /**
        * This validator checks that the current form field value has not already been used on another item.
        * It should be configured with a 'publishTopic' attribute to request a list of existing items and
        * a 'publishPayload' attribute to go with it. Optionally an 'itemsProperty' attribute can be configured
@@ -348,8 +359,7 @@ define(["dojo/_base/declare",
          var responseTopic = this.generateUuid();
          var payload = (validationConfig.publishPayload) ? lang.clone(validationConfig.publishPayload) : {};
          payload.alfResponseTopic = responseTopic;
-         payload.validationConfig = lang.clone(validationConfig);
-         delete payload.validationConfig.publishPayload;
+         this._validateUniqueConfig = validationConfig;
          this._validateUniqueHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onValidationUniqueResponse), true);
          this.alfPublish(validationConfig.publishTopic, payload, true);
          return true;
@@ -372,7 +382,11 @@ define(["dojo/_base/declare",
             this.alfLog("warn", "A subscription handle was not found for processing pubSubOptions - this could be a potential memory leak", this);
          }
          var notUnique = false;
-         var validationConfig = lang.getObject("requestConfig.data.validationConfig", false, payload);
+
+         // Grab the previously saved configuration from the instance and then remove it...
+         var validationConfig = this._validateUniqueConfig;
+         this._validateUniqueConfig = null;
+         
          if (payload != null)
          {
             // Get the configured items property (this identifies the attribute in the payload containing
@@ -388,10 +402,17 @@ define(["dojo/_base/declare",
             // Get the array of items and check if the form field 'name' attribute for each item matches the
             // currently entered form field value...
             var items = lang.getObject(itemsProperty, false, payload);
-            notUnique = array.some(items, function(item, index) {
-               var itemValue = lang.getObject(this.name, false, item);
-               return itemValue == value;
-            }, this);
+            if (items == null)
+            {
+               this.alfLog("warn", "Attempting to validate uniqueness but 'itemsProperty' attribute doesn't map to an an array", validationConfig, this);
+            }
+            else
+            {
+               notUnique = array.some(items, function(item, index) {
+                  var itemValue = lang.getObject(this.name, false, item);
+                  return itemValue == value;
+               }, this);
+            }
          }
 
          // Report back with the validation result...
