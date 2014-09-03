@@ -336,7 +336,7 @@ define(["dojo/_base/declare",
 
       /**
        * @instance
-       * @param {object} The binding object
+       * @param {object} binding The binding object
        */
       alfRemoveDataListener: function alfresco_core_Core__alfRemoveDataListener(binding) {
          // Need to check my logic here (!?)
@@ -381,33 +381,44 @@ define(["dojo/_base/declare",
        * to introduce additional features (such as scoping) or updates to the payload.
        *
        * @instance
-       * @param {string} topic The topic on which to publish
+       * @param {String | Array} topics The topic(s) on which to publish
        * @param {object} payload The payload to publish on the supplied topic
        * @param {boolean} [global] Indicates that the pub/sub scope should not be applied
        * @param {boolean} [parentScope] Indicates that the pub/sub scope inherited from the parent should be applied
        */
-      alfPublish: function alfresco_core_Core__alfPublish(topic, payload, global, parentScope) {
-         var scopedTopic = topic;
-         if (global != null && global === true)
-         {
-            // No action required - use global scope
-         }
-         else if (parentScope != null && parentScope === true)
-         {
-            scopedTopic = this.parentPubSubScope + topic;
-         }
-         else
-         {
-            scopedTopic = this.pubSubScope + topic;
-         }
-         if (payload == null)
-         {
-            payload = {};
-         }
-         payload.alfTopic = scopedTopic;
+      alfPublish: function alfresco_core_Core__alfPublish(topics, payload, global, parentScope) {
 
-         // Publish...
-         PubQueue.getSingleton().publish(scopedTopic, payload, this);
+         // Allow an array of topics so we can publish multiple ones.
+         if (!lang.isArray(topics))
+         {
+            topics = [topics];
+         }
+
+         for (var i = 0; i < topics.length; i++)
+         {
+            var topic = topics[i];
+            var scopedTopic = topic;
+            if (global != null && global === true)
+            {
+               // No action required - use global scope
+            }
+            else if (parentScope != null && parentScope === true)
+            {
+               scopedTopic = this.parentPubSubScope + topic;
+            }
+            else
+            {
+               scopedTopic = this.pubSubScope + topic;
+            }
+            if (payload == null)
+            {
+               payload = {};
+            }
+            payload.alfTopic = scopedTopic;
+
+            // Publish...
+            PubQueue.getSingleton().publish(scopedTopic, payload, this);
+         }
       },
 
       /**
