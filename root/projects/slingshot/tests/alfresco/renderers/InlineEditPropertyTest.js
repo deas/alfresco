@@ -78,7 +78,7 @@ define(["intern!object",
                .end()
 
             // Check that the edit widget is created...
-            .findByCssSelector(".alfresco-forms-controls-DojoValidationTextBox")
+            .findByCssSelector(".alfresco-forms-controls-DojoValidationTextBox:first-child")
                .then(
                   function(){ /* No action required */},
                   function(){assert(false, "Test #2b - Clicking the edit icon did not create the validation text box")}
@@ -121,7 +121,7 @@ define(["intern!object",
             .pressKeys([keys.NULL])
             
             // Check edit box has reappeared...
-            .findByCssSelector(".alfresco-forms-controls-DojoValidationTextBox")
+            .findByCssSelector(".alfresco-forms-controls-DojoValidationTextBox:first-child")
                .isDisplayed()
                .then(function(result) {
                   assert(result === true, "Test #4a - The edit box was not revealed on CTRL-E");
@@ -150,6 +150,11 @@ define(["intern!object",
                   assert(elements.length == 1, "Test #5b - New value didn't publish correctly");
                })
                .end()
+            .findAllByCssSelector(TestCommon.pubSubDataCssSelector("any", "hiddenData", "hidden_update"))
+            .then(function(elements) {
+               assert(elements.length == 1, "Test #5b.1 - Hidden value didn't get included");
+            })
+            .end()
 
             // Check that the readonly view is displayed again...
             .findByCssSelector("#INLINE_EDIT > .alfresco-renderers-Property")

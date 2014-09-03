@@ -44,7 +44,15 @@
                                        "publishPayloadItemMixin": true,
                                        "publishPayload": {
                                           "url": "api/solr/facet-config/{name}"
-                                       }
+                                       },
+                                       "hiddenDataRules": [
+                                          {
+                                             "name": "hiddenData",
+                                             "rulePassValue": "hidden_update",
+                                             "ruleFailValue": "",
+                                             "is": ["New"]
+                                          }
+                                       ]
                                     }
                                  }
                               ]

@@ -67,6 +67,33 @@ function getFormDefinition(canEditFilterId) {
          }
       },
       {
+         name: "alfresco/forms/controls/HiddenValue",
+         config: {
+            fieldId: "CUSTOM_PROPERTIES",
+            name: "customProperties",
+            value: null,
+            autoSetConfig: [
+               {
+                  rulePassValue: {
+                     blockIncludeFacetRequest: {
+                        name: "{http://www.alfresco.org/model/solrfacetcustomproperty/1.0}blockIncludeFacetRequest",
+                        title: null,
+                        type: null,
+                        value: "true"
+                     }
+                  },
+                  ruleFailValue: {},
+                  rules: [
+                     {
+                        targetId: "FACET_QNAME",
+                        is: ["{http://www.alfresco.org/model/content/1.0}created","{http://www.alfresco.org/model/content/1.0}modified","{http://www.alfresco.org/model/content/1.0}content.size"]
+                     }
+                  ]
+               }
+            ]
+         }
+      },
+      {
          name: "alfresco/forms/ControlRow",
          config: {
             widgets: [
@@ -157,13 +184,7 @@ function getFormDefinition(canEditFilterId) {
                         initialValue: true
                      },
                      optionsConfig: {
-                        publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
-                        publishPayload: {
-                           url: url.context + "/service/faceted-search/facet-qname-options",
-                           itemsAttribute: "options",
-                           labelAttribute: "label",
-                           valueAttribute: "value"
-                        }
+                        fixed: getAvailableFacets()
                      }
                   }
                },
@@ -176,13 +197,7 @@ function getFormDefinition(canEditFilterId) {
                      label: "faceted-search-config.displayControl.label",
                      description: "faceted-search-config.displayControl.description",
                      optionsConfig: {
-                        publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
-                        publishPayload: {
-                           url: url.context + "/service/faceted-search/facet-rendering-options",
-                           itemsAttribute: "options",
-                           labelAttribute: "label",
-                           valueAttribute: "value"
-                        }
+                        fixed: getAvailableFacetControls()
                      }
                   }
                }
@@ -546,12 +561,6 @@ var main = {
                                                          config: {
                                                             label: ""
                                                          }
-                                                      },
-                                                      {
-                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                                         config: {
-                                                            label: ""
-                                                         }
                                                       }
                                                    ],
                                                    widgets: [
@@ -642,15 +651,24 @@ var main = {
                                                                                  noRefresh: true
                                                                               },
                                                                               optionsConfig: {
-                                                                                 publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
-                                                                                 publishPayload: {
-                                                                                    url: url.context + "/service/faceted-search/facet-qname-options",
-                                                                                    itemsAttribute: "options",
-                                                                                    labelAttribute: "label",
-                                                                                    valueAttribute: "value"
-                                                                                 }
+                                                                                 fixed: getAvailableFacets()
                                                                               },
-                                                                              valueDisplayMap: getAvailableFacets()
+                                                                              valueDisplayMap: getAvailableFacets(),
+                                                                              hiddenDataRules: [
+                                                                                 {
+                                                                                    name: "customProperties",
+                                                                                    rulePassValue: {
+                                                                                       blockIncludeFacetRequest: {
+                                                                                          name: "{http://www.alfresco.org/model/solrfacetcustomproperty/1.0}blockIncludeFacetRequest",
+                                                                                          title: null,
+                                                                                          type: null,
+                                                                                          value: "true"
+                                                                                       }
+                                                                                    },
+                                                                                    ruleFailValue: {},
+                                                                                    is: ["{http://www.alfresco.org/model/content/1.0}created","{http://www.alfresco.org/model/content/1.0}modified","{http://www.alfresco.org/model/content/1.0}content.size"]
+                                                                                 }
+                                                                              ]
                                                                            }
                                                                         }
                                                                      ]
@@ -675,13 +693,7 @@ var main = {
                                                                                  noRefresh: true
                                                                               },
                                                                               optionsConfig: {
-                                                                                 publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
-                                                                                 publishPayload: {
-                                                                                    url: url.context + "/service/faceted-search/facet-rendering-options",
-                                                                                    itemsAttribute: "options",
-                                                                                    labelAttribute: "label",
-                                                                                    valueAttribute: "value"
-                                                                                 }
+                                                                                 fixed: getAvailableFacetControls() 
                                                                               },
                                                                               valueDisplayMap: getAvailableFacetControls()
                                                                            }
@@ -744,21 +756,6 @@ var main = {
                                                                            name: "alfresco/renderers/Boolean",
                                                                            config: {
                                                                               propertyToRender: "isDefault"
-                                                                           }
-                                                                        }
-                                                                     ]
-                                                                  }
-                                                               },
-                                                               {
-                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
-                                                                  config: {
-                                                                     additionalCssClasses: "mediumpad",
-                                                                     width: "50px",
-                                                                     widgets: [
-                                                                        {
-                                                                           name: "alfresco/renderers/Property",
-                                                                           config: {
-                                                                              propertyToRender: "index"
                                                                            }
                                                                         }
                                                                      ]

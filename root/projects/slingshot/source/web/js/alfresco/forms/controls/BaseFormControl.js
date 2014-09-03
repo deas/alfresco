@@ -1580,7 +1580,11 @@ define(["dojo/_base/declare",
          }
          else
          {
-            this.setValue(lang.getObject(this.get("name"), false, values));
+            var v = lang.getObject(this.get("name"), false, values);
+            if (v !== undefined)
+            {
+               this.setValue(v);
+            }
          }
       },
 

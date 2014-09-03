@@ -35,37 +35,21 @@ define(["dojo/_base/declare",
    return declare([InlineEditProperty], {
 
       /**
-       * Gets the edit widget (creating it the first time it is requested).
+       * Overrides the [inherited function]{@link module:alfresco/renderers/InlineEditProperty#getPrimaryFormWidget}
+       * to return a [select form control]{@link module:alfresco/forms/controls/DojoSelect}.
        *
        * @instance
        * @returns {object} The widget for editing.
        */
-      getEditWidget: function alfresco_renderers_InlineEditSelect__getEditWidget() {
-         if (this.editWidget === null)
-         {
-            this.editWidget = this.createWidget({
-               name: "alfresco/forms/controls/DojoSelect",
-               config: {
-                  value: this.originalRenderedValue,
-                  optionsConfig: this.optionsConfig,
-                  _convertStringValuesToBooleans: true
-               }
-            }, this.editWidgetNode);
-         }
-         return this.editWidget;
-      },
-
-      /**
-       * Extends the inherited function to ensure that the select widget is created as soon as
-       * the main widget is created. This is done to ensure that options are generated immediately
-       * and that the control is set with the appropriate value and not just the first entry in the
-       * list.
-       *
-       * @instance
-       */
-      postCreate: function alfresco_renderers_InlineEditSelect__postCreate() {
-         this.inherited(arguments);
-         this.getEditWidget();
+      getPrimaryFormWidget: function alfresco_renderers_InlineEditSelect__getPrimaryFormWidget() {
+         return {
+            name: "alfresco/forms/controls/DojoSelect",
+            config: {
+               name: this.postParam,
+               optionsConfig: this.optionsConfig,
+               _convertStringValuesToBooleans: true
+            }
+         };
       }
    });
 });

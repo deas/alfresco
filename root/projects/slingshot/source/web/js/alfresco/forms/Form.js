@@ -553,6 +553,22 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * Focuses on the first field in the form.
+       *
+       * @instance
+       */
+      focus: function alfresco_forms_Form__focus() {
+         if (this._form)
+         {
+            var children = this._form.getChildren();
+            if (children.length > 0 && children[0].wrappedWidget && typeof children[0].wrappedWidget.focus === "function")
+            {
+               children[0].wrappedWidget.focus();
+            }
+         }
+      },
+
+      /**
        * @instance
        * @return {object}
        */
@@ -586,6 +602,10 @@ define(["dojo/_base/declare",
                   if (typeof entry.updateFormControlValue === "function")
                   {
                      entry.updateFormControlValue(values);
+                  }
+                  if (typeof entry.publishValue == "function")
+                  {
+                     entry.publishValue();
                   }
                });
             }

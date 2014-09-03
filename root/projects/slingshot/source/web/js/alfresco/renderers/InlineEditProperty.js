@@ -37,6 +37,7 @@ define(["dojo/_base/declare",
         "alfresco/renderers/_PublishPayloadMixin",
         "dojo/text!./templates/InlineEditProperty.html",
         "dojo/_base/lang",
+        "dojo/_base/array",
         "dojo/on",
         "dojo/dom-class",
         "dojo/html",
@@ -45,9 +46,11 @@ define(["dojo/_base/declare",
         "dojo/keys",
         "dojo/_base/event",
         "service/constants/Default",
-        "alfresco/forms/controls/DojoValidationTextBox"], 
+        "alfresco/forms/Form",
+        "alfresco/forms/controls/DojoValidationTextBox",
+        "alfresco/forms/controls/HiddenValue"], 
         function(declare, Property, _OnDijitClickMixin, CoreWidgetProcessing, _PublishPayloadMixin, 
-                 template, lang, on, domClass, html, domAttr, fx, keys, event, AlfConstants, DojoValidationTextBox) {
+                 template, lang, array, on, domClass, html, domAttr, fx, keys, event, AlfConstants, Form, DojoValidationTextBox) {
 
    return declare([Property, _OnDijitClickMixin, CoreWidgetProcessing, _PublishPayloadMixin], {
       
@@ -167,14 +170,97 @@ define(["dojo/_base/declare",
 
       /**
        * References the widget used for editing. Created by calling the 
-       * [getEditWidget]{@link module:alfresco/renderers/InlineEditProperty#getEditWidget}
+       * [getFormWidget]{@link module:alfresco/renderers/InlineEditProperty#getFormWidget}
        * for the first time.
        * 
        * @instance
        * @type {object}
        * @default null
        */
-      editWidget: null,
+      formWidget: null,
+
+      /**
+       * <p>In certain circimstances it may be necessary to submit additional data along with that
+       * provided by the main edit control. This configuration property should take the form:</p>
+       * <p><pre>hiddenDataRules: [
+       *   {
+       *     name: "customProperties",
+       *     rulePassValue: "hiddenData",
+       *     ruleFailValue: "",
+       *     is: ["includeHiddenData"]
+       *   }
+       * ]</pre></p>
+       *
+       * @instance
+       * @type {array}
+       * @default null
+       */
+      hiddenDataRules: null,
+
+      /**
+       * Gets the form widget that will be rendered as the edit field. By default this will 
+       * return a [validation textbox]{@link module:alfresco/forms/controls/DojoValidationTextBox}
+       * but can be overridden to return alternative form controls.
+       * 
+       * @instance
+       */
+      getPrimaryFormWidget: function alfresco_renderers_InlineEditProperty__getPrimaryFormWidget() {
+         return {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: this.postParam,
+               validationConfig: this.validationConfig
+            }
+         };
+      },
+
+      /**
+       * In certain circimstances it may be necessary to submit additional data along with that
+       * provided by the main edit control. This function processes configurable hidden data rules
+       * that generates an array of [hidden form controls]{@link module:alfresco/forms/controls/HiddenValue}
+       * that are configured with [autoSetConfig]{@link module:alfresco/forms/controls/BaseFormControl#autoSetConfig}
+       * that is derived from the [hiddenDataRules]{@link module:alfresco/renderers/InlineEditProperty#hiddenDataRules}.
+       * 
+       * @instance
+       */
+      processHiddenDataRules: function alfresco_renderers_InlineEditProperty__processHiddenDataRules() {
+         var additionalFormWidgets = []
+         if (this.hiddenDataRules != null)
+         {
+            array.forEach(this.hiddenDataRules, lang.hitch(this, this.processHiddenDataRule, additionalFormWidgets));
+         }
+         return additionalFormWidgets;
+      },
+
+      /**
+       * Called for each entry in the [hiddenDataRules]{@link module:alfresco/renderers/InlineEditProperty#hiddenDataRules}
+       * configuration to add a new [hidden form control]{@link module:alfresco/forms/controls/HiddenValue} definition
+       * into the supplied array.
+       * 
+       * @instance
+       * @param {array} additionalFormWidgets The array to add additional form widgets into
+       * @param {object} rule The current hidden data rule to process.
+       */
+      processHiddenDataRule: function alfresco_renderers_InlineEditProperty__processHiddenDataRule(additionalFormWidgets, rule) {
+         additionalFormWidgets.push({
+            name: "alfresco/forms/controls/HiddenValue",
+            config: {
+               name: rule.name,
+               value: "",
+               autoSetConfig: [
+                  {
+                     rulePassValue: rule.rulePassValue,
+                     ruleFailValue: rule.ruleFailValue,
+                     rules: [{
+                        targetId: "PRIMARY_FIELD",
+                        is: rule.is,
+                        isNot: rule.isNot
+                     }]
+                  }
+               ]
+            }
+         });
+      },
 
       /**
        * Gets the edit widget (creating it the first time it is requested).
@@ -182,17 +268,22 @@ define(["dojo/_base/declare",
        * @instance
        * @returns {object} The widget for editing.
        */
-      getEditWidget: function alfresco_renderers_InlineEditProperty__getEditWidget() {
-         if (this.editWidget === null)
+      getFormWidget: function alfresco_renderers_InlineEditProperty__getFormWidget() {
+         if (this.formWidget === null)
          {
-            this.editWidget = this.createWidget({
-               name: "alfresco/forms/controls/DojoValidationTextBox",
+            var primaryFormWidget = this.getPrimaryFormWidget();
+            var autoSetFields = this.processHiddenDataRules();
+            lang.setObject("config.fieldId", "PRIMARY_FIELD", primaryFormWidget);
+            this.formWidget = this.createWidget({
+               name: "alfresco/forms/Form",
                config: {
-                  validationConfig: this.validationConfig
+                  showOkButton: false,
+                  showCancelButton: false,
+                  widgets: [primaryFormWidget].concat(autoSetFields)
                }
-            }, this.editWidgetNode);
+            }, this.formWidgetNode);
          }
-         return this.editWidget;
+         return this.formWidget;
       },
 
       /**
@@ -203,11 +294,13 @@ define(["dojo/_base/declare",
        */
       onEditClick: function alfresco_renderers_InlineEditProperty__onEditClick(evt) {
          this.suppressContainerKeyboardNavigation(true);
-         var editWidget = this.getEditWidget();
-         editWidget.setValue(this.originalRenderedValue);
+         var formWidget = this.getFormWidget();
+         var o = new Object();
+         o[this.postParam] = this.originalRenderedValue;
+         formWidget.setValue(o);
          domClass.toggle(this.renderedValueNode, "hidden");
          domClass.toggle(this.editNode, "hidden");
-         editWidget.wrappedWidget.focus() // Focus on the input node so typing can occur straight away
+         formWidget.focus() // Focus on the input node so typing can occur straight away
          if (evt != undefined) event.stop(evt);
       },
       
@@ -259,7 +352,7 @@ define(["dojo/_base/declare",
          this._saveFailureHandle = this.alfSubscribe(responseTopic + "_FAILURE", lang.hitch(this, this.onSaveFailure), true);
 
          // TODO: Should be getting this from a widget...
-         payload[this.postParam] = this.getEditWidget().getValue();
+         lang.mixin(payload, this.getFormWidget().getValue());
 
          this.alfPublish(this.publishTopic, payload, true);
          
@@ -277,7 +370,7 @@ define(["dojo/_base/declare",
          this.alfUnsubscribeSaveHandles([this._saveSuccessHandle, this._saveFailureHandle]);
 
          this.alfLog("log", "Property '" + this.propertyToRender + "' successfully updated for node: ", this.currentItem);
-         this.originalRenderedValue = this.getEditWidget().getValue();
+         this.originalRenderedValue = this.getFormWidget().getValue()[this.postParam];
          this.renderedValue = this.mapValueToDisplayValue(this.originalRenderedValue);
          
          // This is a bit ugly... there will be better ways to handle this...
@@ -285,8 +378,6 @@ define(["dojo/_base/declare",
          var prefix = (this.requestedValuePrefix) ? this.requestedValuePrefix : this.renderedValuePrefix;
          var suffix = (this.requestedValueSuffix) ? this.requestedValueSuffix : this.renderedValueSuffix;
          
-         this.getEditWidget().setValue(prefix + this.renderedValue + suffix);
-
          html.set(this.renderedValueNode, prefix + this.renderedValue + suffix);
          domClass.remove(this.renderedValueNode, "hidden faded");
          domClass.add(this.editNode, "hidden");
@@ -319,7 +410,7 @@ define(["dojo/_base/declare",
          domClass.add(this.editNode, "hidden");
          
          // Reset the input field...
-         this.getEditWidget().setValue(this.renderedValue);
+         this.getFormWidget().setValue(this.renderedValue);
          this.renderedValueNode.focus();
       },
       
