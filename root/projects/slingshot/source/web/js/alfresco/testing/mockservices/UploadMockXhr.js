@@ -30,6 +30,15 @@ define(["dojo/_base/declare",
    return declare([MockXhr], {
 
       /**
+       * The response code to return. Default to 200 but can be overridden to test failures
+       *
+       * @instance
+       * @type {number}
+       * @default 200
+       */
+      responseCode: 200,
+
+      /**
        * This sets up the fake server with all the responses it should provide.
        *
        * @instance
@@ -37,12 +46,13 @@ define(["dojo/_base/declare",
       setupServer: function alfresco_testing_MockXhr__setupServer() {
          try
          {
+            var responseCode = this.responseCode;
             this.server.respondWith(function(request) {
                request.uploadProgress({
                   total: 100,
                   loaded: 20
                });
-               request.respond(200, 
+               request.respond(responseCode, 
                               {"Content-Type":"application/json;charset=UTF-8"},
                               '{"nodeRef":"bob","fileName":"moomin"}');
             });
