@@ -7,6 +7,10 @@
    font-size: @normal-font-size;
 }
 
+.alfresco-documentlibrary-AlfBreadcrumbTrail.hidden {
+   display: none;
+}
+
 .alfresco-share .alfresco-documentlibrary-AlfBreadcrumbTrail .alf-folder-separator {
    background: url("./images/folder-separator.png") no-repeat scroll 0 center transparent;
    margin-left: 10px;

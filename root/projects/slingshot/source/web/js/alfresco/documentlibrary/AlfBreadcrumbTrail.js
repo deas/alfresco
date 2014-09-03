@@ -110,10 +110,14 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_DOCUMENTLIST_CATEGORY_CHANGED", lang.hitch(this, this.onFilterSelection));
          this.alfSubscribe("ALF_DOCUMENTLIST_TAG_CHANGED", lang.hitch(this, this.onFilterSelection));
 
-         if (this._currentNode != null && this.currentPath != null)
+         if (this.currentPath != null)
          {
-            this._currentFolderUrl = "folder-details?nodeRef=" + this._currentNode.parent.nodeRef;
             this.renderBreadcrumbTrail();
+         }
+         var currentFolderNodeRef = lang.getObject("_currentNode.parent.nodeRef", false, this);
+         if (currentFolderNodeRef != null)
+         {
+            this._currentFolderUrl = "folder-details?nodeRef=" + currentFolderNodeRef;
          }
       },
 
@@ -152,6 +156,7 @@ define(["dojo/_base/declare",
             if (payload.node.parent && payload.node.parent.nodeRef)
             {
                this._currentFolderUrl = "folder-details?nodeRef=" + payload.node.parent.nodeRef;
+               this.renderBreadcrumbTrail();
             }
          }
          else

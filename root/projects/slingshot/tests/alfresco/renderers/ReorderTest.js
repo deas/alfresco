@@ -28,8 +28,8 @@ define(["intern!object",
         function (registerSuite, expect, assert, require, TestCommon) {
 
    registerSuite({
-      name: 'Date Test',
-      'alfresco/renderers/Date': function () {
+      name: 'Reorder Renderer Tests',
+      'Basic Tests': function () {
 
          var browser = this.remote;
          var testname = "Reorder Test";
