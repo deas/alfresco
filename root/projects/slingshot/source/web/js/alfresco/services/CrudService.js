@@ -126,7 +126,7 @@ define(["dojo/_base/declare",
       clonePayload: function alfresco_services_CrudService__clonePayload(payload) {
          var data = lang.clone(payload);
          delete data.url;
-         delete data.responseTopic;
+         delete data.alfResponseTopic;
          delete data.alfTopic;
          return data;
       },
@@ -144,6 +144,7 @@ define(["dojo/_base/declare",
          if (url !== null)
          {
             this.serviceXhr({url: url,
+                             data: this.clonePayload(payload),
                              alfTopic: (payload.alfResponseTopic ? payload.alfResponseTopic : null),
                              method: "GET"});
          }
@@ -161,6 +162,7 @@ define(["dojo/_base/declare",
          if (url !== null)
          {
             this.serviceXhr({url: url,
+                             data: this.clonePayload(payload),
                              method: "GET"});
          }
       },
@@ -179,7 +181,7 @@ define(["dojo/_base/declare",
                           data: this.clonePayload(payload),
                           method: "POST",
                           successMessage: payload.successMessage,
-                          alfTopic: payload.responseTopic,
+                          alfTopic: payload.alfResponseTopic,
                           successCallback: this.refreshRequest,
                           callbackScope: this});
       },
@@ -195,7 +197,7 @@ define(["dojo/_base/declare",
                           data: this.clonePayload(payload),
                           method: "PUT",
                           successMessage: payload.successMessage,
-                          alfTopic: payload.responseTopic,
+                          alfTopic: payload.alfResponseTopic,
                           successCallback: this.refreshRequest,
                           callbackScope: this});
       },

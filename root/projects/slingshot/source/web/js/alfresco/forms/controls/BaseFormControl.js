@@ -28,6 +28,7 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes dijit/_FocusMixin
+ * @mixed module:alfresco/forms/controls/FormControlValidationMixin
  * @mixes module:alfresco/core/Core
  * @author Dave Draper
  */
@@ -35,8 +36,9 @@ define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
         "dijit/_FocusMixin",
-        "dojo/text!./templates/BaseFormControl.html",
         "alfresco/core/Core",
+        "alfresco/forms/controls/FormControlValidationMixin",
+        "dojo/text!./templates/BaseFormControl.html",
         "alfresco/core/ObjectTypeUtils",
         "alfresco/core/ArrayUtils",
         "dojo/_base/lang",
@@ -47,9 +49,9 @@ define(["dojo/_base/declare",
         "dojo/dom-attr",
         "dojo/query",
         "dojo/dom-construct"], 
-        function(declare, _Widget, _Templated, _FocusMixin, template, AlfCore, ObjectTypeUtils, arrayUtils, lang, array, domStyle, domClass, Tooltip, domAttr, query, domConstruct) {
+        function(declare, _Widget, _Templated, _FocusMixin, AlfCore, FormControlValidationMixin, template, ObjectTypeUtils, arrayUtils, lang, array, domStyle, domClass, Tooltip, domAttr, query, domConstruct) {
 
-   return declare([_Widget, _Templated, _FocusMixin, AlfCore], {
+   return declare([_Widget, _Templated, _FocusMixin, AlfCore, FormControlValidationMixin], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -1010,6 +1012,37 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * The local image to use for a validation in progress indicator.
+       * 
+       * @instance
+       * @type {string}
+       * @default "ajax_anim.gif"
+       */
+      validationInProgressImg: "ajax_anim.gif",
+
+      /**
+       * The alt-text label to use for the validation in progress indicator
+       * 
+       * @instance
+       * @type {string}
+       * @default "validation.inprogress.alttext"
+       */
+      validationInProgressAltText: "validation.inprogress.alttext",
+
+      /**
+       * Processes the image source for indicating validation is in progress and its alt-text label.
+       *
+       * @instance
+       */
+      postMixInProperties: function alfresco_renderers_Reorder__postMixInProperties() {
+         if (this.validationInProgressImgSrc == null || this.validationInProgressImgSrc == "")
+         {
+            this.validationInProgressImgSrc = require.toUrl("alfresco/forms/controls") + "/css/images/" + this.validationInProgressImg;
+         }
+         this.validationInProgressAltText = this.message(this.validationInProgressAltText);
+      },
+
+      /**
        * 
        * @instance
        */
@@ -1323,26 +1356,30 @@ define(["dojo/_base/declare",
        */
       validate: function alfresco_forms_controls_BaseFormControl__validate() {
          
-         var isValid = this.processValidationRules();
-         
-         // Publish the results (this topic is provided primarily of an enclosing form)...
-         if (isValid)
+         if (this.validationConfig != null && ObjectTypeUtils.isArray(this.validationConfig))
          {
-            this.alfPublish("ALF_VALID_CONTROL", {
-               name: this.name,
-               fieldId: this.fieldId
-            });
-            this.hideValidationFailure();
+            this.startValidation();
          }
          else
          {
-            this.alfPublish("ALF_INVALID_CONTROL", {
-               name: this.name,
-               fieldId: this.fieldId
-            });
-            this.showValidationFailure();
+            var isValid = this.processValidationRules();
+            if (isValid)
+            {
+               this.alfPublish("ALF_VALID_CONTROL", {
+                  name: this.name,
+                  fieldId: this.fieldId
+               });
+               this.hideValidationFailure();
+            }
+            else
+            {
+               this.alfPublish("ALF_INVALID_CONTROL", {
+                  name: this.name,
+                  fieldId: this.fieldId
+               });
+               this.showValidationFailure();
+            }
          }
-         return isValid;
       },
       
       /**
@@ -1359,7 +1396,6 @@ define(["dojo/_base/declare",
        * @returns {boolean} Indicates whether or not the validation rules were passed successfully
        */
       processValidationRules: function alfresco_forms_controls_BaseFormControl__processValidationRules() {
-
          var valid = true;
          if (this._visible && !this._disabled)
          {

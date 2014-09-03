@@ -1,0 +1,64 @@
+{
+   "services": [{
+      "name": "alfresco/services/LoggingService",
+      "config": {
+         "loggingPreferences": {
+            "enabled": true,
+            "all": true,
+            "warn": true,
+            "error": true
+         }
+      }
+   },
+   "alfresco/services/CrudService"],
+   "widgets": [
+      {
+         "name": "alfresco/forms/Form",
+         "config": {
+            "widgets": [
+               {
+                  "name": "alfresco/forms/controls/DojoValidationTextBox", 
+                  "config": {
+                     "id": "HAS_VALIDATION_CONFIG",
+                     "label": "Numbers Only",
+                     "name": "filterID",
+                     "value": "",
+                     "validationConfig": [
+                        {
+                           "validation": "minLength",
+                           "length": 3,
+                           "errorMessage": "Too short"
+                        },
+                        {
+                           "validation": "maxLength",
+                           "length": 10,
+                           "errorMessage": "Too Long"
+                        },
+                        {
+                           "validation": "regex",
+                           "regex": "^[0-9]+$",
+                           "errorMessage": "Must be a number"
+                        },
+                        {
+                           "validation": "validateUnique",
+                           "errorMessage": "Entry already in use",
+                           "itemsProperty": "response.facets",
+                           "publishTopic": "ALF_CRUD_GET_ALL",
+                           "publishPayload": {
+                              "url": "api/solr/facet-config"
+                           }
+                        }
+                     ]
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "name": "alfresco/testing/SubscriptionLog"
+      },
+      {
+         "name": "alfresco/testing/TestCoverageResults"
+      }
+   ]
+}

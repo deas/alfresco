@@ -40,6 +40,17 @@
    display: none;
 }
 
+.alfresco-forms-controls-BaseFormControl > img.validationInProgress {
+   width: 16px;
+   height: 16px;
+   float: left;
+   margin: 5px;
+}
+
+.alfresco-forms-controls-BaseFormControl > img.validationInProgress.hidden {
+   display: none;
+}
+
 .alfresco-forms-controls-BaseFormControl > .validation-error {
    background: url("./images/error-16.png");
    display: block;
@@ -54,6 +65,7 @@
    display: none;
    color: #ED2525;
    font-weight: bold;
+   margin: 5px;
 }
 
 .alfresco-forms-controls-BaseFormControl > .validation-message.display {
