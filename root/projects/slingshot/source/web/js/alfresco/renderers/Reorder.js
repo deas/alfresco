@@ -18,7 +18,37 @@
  */
 
 /**
+ * <p>This renderer was originally written for the faceted search configuration page. It provides
+ * the ability to render up and down arrows for each item in a list and performs publications
+ * when those arrows are clicked (or actioned by the keyboard).</p>
+ * <p>The [propertyToRender]{@link module:alfresco/renderers/Reorder#propertyToRender} attribute is
+ * used for alt-text and title messages that attempt to create meaningful messages for visually
+ * impaired users so it should be set accordingly - e.g. to the identifier of the item being rendered.
+ * The message itself can be overridden by modifying the [upAltText]{@link module:alfresco/renderers/Reorder#upAltText}
+ * and [downAltText]{@link module:alfresco/renderers/Reorder#downAltText} attributes.</p>
+ * <p>The default up and down arrow images can be overridden by modifying the 
+ * [upArrowImg]{@link module:alfresco/renderers/Reorder#upArrowImg}
+ * and [downArrowImg]{@link module:alfresco/renderers/Reorder#downArrowImg} attributes.</p>
+ * <p>Example model configuration:</p>
  * 
+ * <p><pre>name: "alfresco/renderers/Reorder",
+ * config: {
+ *    propertyToRender: "displayName",
+ *    moveUpPublishTopic: "",
+ *    moveUpPublishPayloadType: "PROCESS",
+ *    moveUpPublishPayloadModifiers: ["processCurrentItemTokens"],
+ *    moveUpPublishPayloadItemMixin: true,
+ *    moveUpPublishPayload: {
+ *       url: "api/solr/facet-config/{filterID}?relativePos=-1"
+ *    },
+ *    moveDownPublishTopic: "ALF_CRUD_UPDATE",
+ *    moveDownPublishPayloadType: "PROCESS",
+ *    moveDownPublishPayloadModifiers: ["processCurrentItemTokens"],
+ *    moveDownPublishPayloadItemMixin: true,
+ *    moveDownPublishPayload: {
+ *       url: "api/solr/facet-config/{filterID}?relativePos=1"
+ *   }
+ * }</pre></p>
  *
  * @module alfresco/renderers/Reorder
  * @extends module:alfresco/renderers/Property
@@ -174,6 +204,10 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * Publishes a payload for moving the current item up a place. The payload is generated
+       * by calling the [generatePayload]{@link module:alfresco/renderers/_PublishPayloadMixin#generatePayload}
+       * function using the "moveUpPublishPayload", "moveUpPublishPayloadType", "moveUpPublishPayloadItemMixin"
+       * and "moveUpPublishPayloadModifiers" attributes.
        *
        * @instance
        * @param {object} evt The click event object
@@ -194,7 +228,11 @@ define(["dojo/_base/declare",
       },
 
       /**
-       *
+       * Publishes a payload for moving the current item down a place. The payload is generated
+       * by calling the [generatePayload]{@link module:alfresco/renderers/_PublishPayloadMixin#generatePayload}
+       * function using the "moveDownPublishPayload", "moveDownPublishPayloadType", "moveDownPublishPayloadItemMixin"
+       * and "moveDownPublishPayloadModifiers" attributes.
+       * 
        * @instance
        * @param {object} evt The click event object
        */
