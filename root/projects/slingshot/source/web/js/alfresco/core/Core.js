@@ -478,22 +478,23 @@ define(["dojo/_base/declare",
       alfUnsubscribe: function alfresco_core_Core__alfUnsubscribe(handle) {
          if (!handle)
          {
-            this.alfLog("error", "No subscription handles to unsubscribe from");
+            this.alfLog("warn", "No subscription handles to unsubscribe from");
          }
-
-         if (!lang.isArray(handle))
+         else
          {
-            handle = [handle];
-         }
-
-         handle.forEach(function(individualHandle){
-            if (AlfConstants.DEBUG === true)
+            if (!lang.isArray(handle))
             {
-               PubSubLog.getSingleton().unsub(individualHandle, this);
+               handle = [handle];
             }
+            handle.forEach(function(individualHandle){
+               if (AlfConstants.DEBUG === true)
+               {
+                  PubSubLog.getSingleton().unsub(individualHandle, this);
+               }
 
-            individualHandle.remove();
-         });
+               individualHandle.remove();
+            });
+         }
       },
 
       /**
