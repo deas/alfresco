@@ -354,7 +354,10 @@ define(["dojo/_base/declare",
          
          // Set a common group for the menu item...
          viewSelectionConfig.group = this.viewSelectionMenuItemGroup;
-         
+
+         // Make sure to inherit pubSubScope:
+         viewSelectionConfig.pubSubScope = this.pubSubScope;
+
          // Create a new AlfCheckableMenuItem for selecting the view. This will then be published and any menus that have subscribed
          // to the topic defined by "selectionMenuItemTopic" should add the menu item. When the menu item is clicked it will publish
          // the selection on the topic defined by the "viewSelectionTopic" (to which this DocumentList instance subscribes) and the
