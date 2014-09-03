@@ -36,204 +36,208 @@ define(["intern!object",
          var browser = this.remote;
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfMenuBarSelect_TestPage.json")
 
-            .end()
+         .end()
          
-            // Test #1
-            // Check that the subscriptions are set-up correctly
-            .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT"))
-            .then(function(result) {
-               assert(result == true, "Test #1 - A subscription for the basic widget could not be found");
-            })
-            .end()
+         // Test #1
+         // Check that the subscriptions are set-up correctly
+         .findByCssSelector(TestCommon.topicSelector("MENU_BAR_SELECT"))
+         .then(
+            null,
+            function(){assert(false, "Test #1 - A subscription for the basic widget could not be found");}
+         )
+         .end()
 
-            .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT_VALUE"))
-            .then(function(result) {
-               assert(result == true, "Test #1 - A subcription for the widget that displays selected values could not be found");
-            })
-            .end()
+         .findByCssSelector(TestCommon.topicSelector("MENU_BAR_SELECT_VALUE"))
+         .then(
+            null,
+            function(){assert(false, "Test #1 - A subcription for the widget that displays selected values could not be found");}
+         )
+         .end()
 
-            .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT_WITH_ICONS"))
-            .then(function(result) {
-               assert(result == true, "Test #1 - A subcription for the widget that displays icons could not be found");
-            })
-            .end()
+         .findByCssSelector(TestCommon.topicSelector("MENU_BAR_SELECT_WITH_ICONS"))
+         .then(
+            null,
+            function(){assert(false, "Test #1 - A subcription for the widget that displays icons could not be found");}
+         )
+         .end()
 
-            // Test #2
-            // Check the initial labels are correctly displayed...
-            .findByCssSelector("#MENU_BAR_SELECT_text")
-            .getVisibleText()
-            .then(function(resultText) {
-               assert(resultText == "Select (label)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
-            })
-            .end()
+         // Test #2
+         // Check the initial labels are correctly displayed...
+         .findByCssSelector("#MENU_BAR_SELECT_text")
+         .getVisibleText()
+         .then(function(resultText) {
+            assert(resultText == "Select (label)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
+         })
+         .end()
 
-            .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
-            .getVisibleText()
-            .then(function(resultText) {
-               assert(resultText == "Select (value)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
-            })
-            .end()
+         .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
+         .getVisibleText()
+         .then(function(resultText) {
+            assert(resultText == "Select (value)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
+         })
+         .end()
 
-            .findByCssSelector("#MENU_BAR_SELECT_WITH_ICON_text")
-            .getVisibleText()
-            .then(function(resultText) {
-               assert(resultText == "Select (show icon)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
-            })
-            .end()
+         .findByCssSelector("#MENU_BAR_SELECT_WITH_ICON_text")
+         .getVisibleText()
+         .then(function(resultText) {
+            assert(resultText == "Select (show icon)...", "Test #2 - The inital label of the basic widget was not correct: " + resultText);
+         })
+         .end()
 
-            // Test #3
-            // Use the keyboard to test label set (using label)...
-            .pressKeys(keys.TAB)
-            .pressKeys(keys.ARROW_DOWN)
-            .sleep(1000)
-            .pressKeys(keys.SPACE)
-            .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT", "publish", "last"))
-            .then(function(result) {
-               assert(result == true, "Test #3 - Keyboard selection of 'Option 1' didn't publish correctly (missing topic)");
-            })
-            .end()
+         // Test #3
+         // Use the keyboard to test label set (using label)...
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.ARROW_DOWN)
+         .sleep(1000)
+         .pressKeys(keys.SPACE)
+         .findByCssSelector(TestCommon.topicSelector("MENU_BAR_SELECT", "publish", "last"))
+         .then(
+            null,
+            function(){assert(false, "Test #3 - Keyboard selection of 'Option 1' didn't publish correctly (missing topic)");}
+         )
+         .end()
 
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "label", "Option 1 Selected"))
-            .then(function(result) {
-               assert(result == true, "Test #3 - Keyboard selection of 'Option 1' didn't publish correctly (incorrect 'label' payload attribute");
-            })
-            .end()
+         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "label", "Option 1 Selected"))
+         .then(
+            null,
+            function(){assert(false, "Test #3 - Keyboard selection of 'Option 1' didn't publish correctly (incorrect 'label' payload attribute");}
+         )
+         .end()
 
-            .findByCssSelector("#MENU_BAR_SELECT_text")
-            .getVisibleText()
-            .then(function(resultText) {
-               assert(resultText == "Option 1 Selected", "Test #3 - The label was not updated correctly: " + resultText);
-            })
-            .end()
+         .findByCssSelector("#MENU_BAR_SELECT_text")
+         .getVisibleText()
+         .then(function(resultText) {
+            assert(resultText == "Option 1 Selected", "Test #3 - The label was not updated correctly: " + resultText);
+         })
+         .end()
 
-            // Test #4
-            // Use the keyboard to test label set (using value)...
-            .pressKeys(keys.ARROW_RIGHT)
-            .sleep(1000)
-            .pressKeys(keys.RETURN)
-            .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT_VALUE", "publish", "last"))
-            .then(function(result) {
-               assert(result == true, "Test #4 - Keyboard selection of 'Option 1' didn't publish correctly (missing topic)");
-            })
-            .end()
+         // Test #4
+         // Use the keyboard to test label set (using value)...
+         .pressKeys(keys.ARROW_RIGHT)
+         .sleep(1000)
+         .pressKeys(keys.RETURN)
+         .findByCssSelector(TestCommon.topicSelector("MENU_BAR_SELECT_VALUE", "publish", "last"))
+         .then(
+            null,
+            function(){assert(false, "Test #4 - Keyboard selection of 'Option 1' didn't publish correctly (missing topic)");}
+         )
+         .end()
 
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "Alpha"))
-            .then(function(result) {
-               assert(result == true, "Test #4 - Keyboard selection of 'Alpha' didn't publish correctly (incorrect 'value' payload attribute");
-            })
-            .end()
+         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "Alpha"))
+         .then(
+            null,
+            function(){assert(false, "Test #4 - Keyboard selection of 'Alpha' didn't publish correctly (incorrect 'value' payload attribute");}
+         )
+         .end()
 
-            .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
-            .getVisibleText()
-            .then(function(resultText) {
-               assert(resultText == "Alpha", "Test #4 - The label was not updated correctly (to use a value): " + resultText);
-            })
-            .end()
+         .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
+         .getVisibleText()
+         .then(function(resultText) {
+            assert(resultText == "Alpha", "Test #4 - The label was not updated correctly (to use a value): " + resultText);
+         })
+         .end()
 
-            // Test #5
-            // Use the keyboard to test label set (using icons)...
-            // TODO: This currently isn't working - ALF-20632 has been raised to capture this, when fixed this unit test should be updated
+         // Test #5
+         // Use the keyboard to test label set (using icons)...
+         // TODO: This currently isn't working - ALF-20632 has been raised to capture this, when fixed this unit test should be updated
 
-            // Test #6
-            // Use the mouse to test label set (using label)...
-            .findByCssSelector("#MENU_BAR_SELECT")
-               .sleep(500)
-               .click()
-               .sleep(500)
-               .end()
-            .findByCssSelector("#SELECT_MENU_ITEM_2")
-               .sleep(500)
-               .click()
-               .sleep(500)
-               .end()
-            .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT", "publish", "last"))
-            .then(function(result) {
-               assert(result == true, "Test #6 - Mouse selection of 'Option 2' didn't publish correctly (missing topic)");
-            })
-            .end()
+         // Test #6
+         // Use the mouse to test label set (using label)...
+         .findByCssSelector("#MENU_BAR_SELECT")
+         .click()
+         .end()
 
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "label", "Option 2 Selected"))
-            .then(function(result) {
-               assert(result == true, "Test #6 - Mouse selection of 'Option 2' didn't publish correctly (incorrect 'label' payload attribute)");
-            })
-            .end()
+         .findByCssSelector("#SELECT_MENU_ITEM_2")
+         .click()
+         .end()
+         
+         .findByCssSelector(TestCommon.topicSelector("MENU_BAR_SELECT", "publish", "last"))
+         .then(
+            null,
+            function(){assert(false, "Test #6 - Mouse selection of 'Option 2' didn't publish correctly (missing topic)");}
+         )
+         .end()
 
-            .findByCssSelector("#MENU_BAR_SELECT_text")
-            .getVisibleText()
-            .then(function(resultText) {
-               assert(resultText == "Option 2 Selected", "Test #6 - The label was not updated correctly: " + resultText);
-            })
-            .end()
+         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "label", "Option 2 Selected"))
+         .then(
+            null,
+            function(){assert(false, "Test #6 - Mouse selection of 'Option 2' didn't publish correctly (incorrect 'label' payload attribute)");}
+         )
+         .end()
 
-            // Test #6
-            // Use the mouse to test label set (using label)...
-            .findByCssSelector("#MENU_BAR_SELECT_VALUE")
-               .sleep(500)
-               .click()
-               .sleep(500)
-               .end()
-            .findByCssSelector("#SELECT_MENU_ITEM_4")
-               .sleep(500)
-               .click()
-               .sleep(500)
-               .end()
-            .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT_VALUE", "publish", "last"))
-            .then(function(result) {
-               assert(result == true, "Test #6 - Mouse selection of 'Beta' didn't publish correctly (missing topic)");
-            })
-            .end()
+         .findByCssSelector("#MENU_BAR_SELECT_text")
+         .getVisibleText()
+         .then(function(resultText) {
+            assert(resultText == "Option 2 Selected", "Test #6 - The label was not updated correctly: " + resultText);
+         })
+         .end()
 
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "Beta"))
-            .then(function(result) {
-               assert(result == true, "Test #6 - Mouse selection of 'Beta' didn't publish correctly (incorrect 'value' payload attribute)");
-            })
-            .end()
+         // Test #6
+         // Use the mouse to test label set (using label)...
+         .findByCssSelector("#MENU_BAR_SELECT_VALUE")
+         .click()
+         .end()
 
-            .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
-            .getVisibleText()
-            .then(function(resultText) {
-               assert(resultText == "Beta", "Test #6 - The label was not updated correctly: " + resultText);
-            })
-            .end()
+         .findByCssSelector("#SELECT_MENU_ITEM_4")
+         .click()
+         .end()
 
-            // Test #7
-            // Use the mouse to test label set (using icon)...
-            // TODO: This currently isn't working - ALF-20632 has been raised to capture this, when fixed this unit test should be updated
+         .findByCssSelector(TestCommon.topicSelector("MENU_BAR_SELECT_VALUE", "publish", "last"))
+         .then(
+            null,
+            function(){assert(false, "Test #6 - Mouse selection of 'Beta' didn't publish correctly (missing topic)");}
+         )
+         .end()
 
-            // Test #8
-            // Set the label using an external publication...
-            
-            .findByCssSelector("#SET_WITH_LABEL_label")
-               .sleep(500)
-               .click()
-               .sleep(500)
-               .end()
-            .findByCssSelector("#MENU_BAR_SELECT_text")
-            .getVisibleText()
-            .then(function(resultText) {
-               assert(resultText == "Alternative Label", "Test #8 - The label was not updated correctly by an external publication: " + resultText);
-            })
-            .end()
+         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "Beta"))
+         .then(
+            null,
+            function(){assert(false, "Test #6 - Mouse selection of 'Beta' didn't publish correctly (incorrect 'value' payload attribute)");}
+         )
+         .end()
+         
+         .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
+         .getVisibleText()
+         .then(function(resultText) {
+            assert(resultText == "Beta", "Test #6 - The label was not updated correctly: " + resultText);
+         })
+         .end()
 
-            // Test #9
-            // Set the label using an external publication...
-            .findByCssSelector("#SET_WITH_VALUE_label")
-               .sleep(500)
-               .click()
-               .sleep(500)
-               .end()
-            .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
-            .getVisibleText()
-            .then(function(resultText) {
-               assert(resultText == "Alternative Value", "Test #9 - The label was not updated correctly by an external publication: " + resultText);
-            })
-            .end()
+         // Test #7
+         // Use the mouse to test label set (using icon)...
+         // TODO: This currently isn't working - ALF-20632 has been raised to capture this, when fixed this unit test should be updated
 
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+         // Test #8
+         // Set the label using an external publication...
+
+         .findByCssSelector("#SET_WITH_LABEL_label")
+         .click()
+         .end()
+
+         .findByCssSelector("#MENU_BAR_SELECT_text")
+         .getVisibleText()
+         .then(function(resultText) {
+            assert(resultText == "Alternative Label", "Test #8 - The label was not updated correctly by an external publication: " + resultText);
+         })
+         .end()
+
+         // Test #9
+         // Set the label using an external publication...
+         .findByCssSelector("#SET_WITH_VALUE_label")
+         .click()
+         .end()
+
+         .findByCssSelector("#MENU_BAR_SELECT_VALUE_text")
+         .getVisibleText()
+         .then(function(resultText) {
+            assert(resultText == "Alternative Value", "Test #9 - The label was not updated correctly by an external publication: " + resultText);
+         })
+         .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
       }
    });
 });
