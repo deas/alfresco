@@ -14,6 +14,10 @@
    text-shadow: 1px 1px #333333;
 }
 
+.alfresco-renderers-Thumbnail.gallery img {
+   width: 100%;
+}
+
 .alfresco-renderers-Thumbnail.gallery .alfresco-renderers-Selector.checked {
    background-image: url(./images/AllSelectedWhite.png);
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -70,7 +70,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       updateFolderLinkPublication: function alfresco_renderers__ItemLinkMIxin__updateFolderLinkPublication() {
-         this.linkClickTopic = "ALF_DOCUMENTLIST_PATH_CHANGED";
+         this.publishTopic = "ALF_DOCUMENTLIST_PATH_CHANGED";
          this.publishPayload = {};
          var locn = this.currentItem.location;
          if (this.currentItem.parent.isContainer)

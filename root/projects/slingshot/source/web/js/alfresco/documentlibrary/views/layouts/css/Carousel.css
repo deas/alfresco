@@ -4,7 +4,7 @@
 }
 
 .alfresco-documentlibrary-views-layouts-Carousel .items {
-   overflow-x: hidden;
+   overflow: hidden;
    position: relative;
    z-index: 2;
    margin: 0 auto; /* Center the items */

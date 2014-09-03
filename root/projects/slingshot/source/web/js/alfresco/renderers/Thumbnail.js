@@ -45,10 +45,11 @@ define(["dojo/_base/declare",
         "service/constants/Default",
         "dojo/_base/lang",
         "dojo/_base/event",
+        "dojo/dom-style",
         "alfresco/core/NodeUtils"], 
         function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, 
                  _PublishPayloadMixin, _OnDijitClickMixin, template, AlfCore, _ItemLinkMixin, _AlfDndDocumentUploadMixin, 
-                 AlfConstants, lang, event, NodeUtils) {
+                 AlfConstants, lang, event, domStyle, NodeUtils) {
 
    return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, AlfCore, _ItemLinkMixin, _AlfDndDocumentUploadMixin, _PublishPayloadMixin], {
       
@@ -169,7 +170,7 @@ define(["dojo/_base/declare",
        * @returns {string} The URL for the thumbnail.
        */
       generateFallbackThumbnailUrl: function alfresco_renderers_Thumbnail__generateFallbackThumbnailUrl() {
-         return this.thumbnailUrl = AlfConstants.URL_RESCONTEXT + "components/search/images/generic-result.png";
+         return AlfConstants.URL_RESCONTEXT + "components/search/images/generic-result.png";
       },
       
       /**
@@ -274,12 +275,22 @@ define(["dojo/_base/declare",
       postCreate: function alfresco_renderers_Thumbnail__postCreate() {
          this.inherited(arguments);
          var isContainer = lang.getObject("currentItem.jsNode.isContainer", false, this);
-         if (isContainer == true)
+         if (isContainer === true)
          {
             this.addUploadDragAndDrop(this.imgNode);
             this.addNodeDropTarget(this.imgNode);
          }
-         // this.createItemLink(this.domNode);
+
+         // If no topic has been provided then set up a default one (presumed to be for use
+         // in a document library)...
+         if (this.publishTopic == null)
+         {
+            this.generateFileFolderLink();
+         }
+         else if (this.publishPayload != null)
+         {
+            this.publishPayload = this.getGeneratedPayload(false, null);
+         }
       },
 
       /**
@@ -293,7 +304,7 @@ define(["dojo/_base/declare",
       onLinkClick: function alfresco_renderers_Thumbnail__onLinkClick(evt) {
          event.stop(evt);
          // var publishTopic = this.getPublishTopic();
-         if (this.publishTopic == null || lang.trim(this.publishTopic) == "")
+         if (this.publishTopic == null || lang.trim(this.publishTopic) === "")
          {
             this.alfLog("warn", "No publishTopic provided for PropertyLink", this);
          }
