@@ -552,14 +552,14 @@ public class FTSQueryParser
         return factory.createFunctionalConstraint(function, functionArguments);
     }
 
-    @SuppressWarnings("unchecked")
     static private Constraint buildExactTerm(CommonTree fieldReferenceNode, CommonTree testNode, QueryModelFactory factory, FunctionEvaluationContext functionEvaluationContext,
             Selector selector, Map<String, Column> columnMap)
     {
         String functionName = FTSTerm.NAME;
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
-        LiteralArgument larg = factory.createLiteralArgument(FTSTerm.ARG_TERM, DataTypeDefinition.TEXT, getText((List<Tree>) testNode.getChildren()));
+        @SuppressWarnings("unchecked")
+        LiteralArgument larg = factory.createLiteralArgument(FTSTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChildren()));
         functionArguments.put(larg.getName(), larg);
         larg = factory.createLiteralArgument(FTSTerm.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.IDENTIFIER);
         functionArguments.put(larg.getName(), larg);
@@ -580,14 +580,14 @@ public class FTSQueryParser
         return factory.createFunctionalConstraint(function, functionArguments);
     }
 
-    @SuppressWarnings("unchecked")
     static private Constraint buildTerm(CommonTree fieldReferenceNode, CommonTree testNode, QueryModelFactory factory, FunctionEvaluationContext functionEvaluationContext,
             Selector selector, Map<String, Column> columnMap)
     {
         String functionName = FTSTerm.NAME;
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
-        LiteralArgument larg = factory.createLiteralArgument(FTSTerm.ARG_TERM, DataTypeDefinition.TEXT, getText((List<Tree>) testNode.getChildren()));
+        @SuppressWarnings("unchecked")
+        LiteralArgument larg = factory.createLiteralArgument(FTSTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChildren()));
         functionArguments.put(larg.getName(), larg);
         larg = factory.createLiteralArgument(FTSTerm.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.DEFAULT);
         functionArguments.put(larg.getName(), larg);
@@ -915,14 +915,14 @@ public class FTSQueryParser
         return factory.createFunctionalConstraint(function, functionArguments);
     }
 
-    @SuppressWarnings("unchecked")
     static private Constraint buildWildTerm(CommonTree fieldReferenceNode, CommonTree testNode, QueryModelFactory factory, FunctionEvaluationContext functionEvaluationContext,
             Selector selector, Map<String, Column> columnMap)
     {
         String functionName = FTSWildTerm.NAME;
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
-        LiteralArgument larg = factory.createLiteralArgument(FTSWildTerm.ARG_TERM, DataTypeDefinition.TEXT, getText((List<Tree>) testNode.getChildren()));
+        @SuppressWarnings("unchecked")
+        LiteralArgument larg = factory.createLiteralArgument(FTSWildTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChildren()));
         functionArguments.put(larg.getName(), larg);
         larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.DEFAULT);
         functionArguments.put(larg.getName(), larg);
@@ -943,14 +943,14 @@ public class FTSQueryParser
         return factory.createFunctionalConstraint(function, functionArguments);
     }
     
-    @SuppressWarnings("unchecked")
     static private Constraint buildExactWildTerm(CommonTree fieldReferenceNode, CommonTree testNode, QueryModelFactory factory, FunctionEvaluationContext functionEvaluationContext,
             Selector selector, Map<String, Column> columnMap)
     {
         String functionName = FTSWildTerm.NAME;
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
-        LiteralArgument larg = factory.createLiteralArgument(FTSWildTerm.ARG_TERM, DataTypeDefinition.TEXT, getText((List<Tree>) testNode.getChildren()));
+        @SuppressWarnings("unchecked")
+        LiteralArgument larg = factory.createLiteralArgument(FTSWildTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChildren()));
         functionArguments.put(larg.getName(), larg);
         larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.IDENTIFIER);
         functionArguments.put(larg.getName(), larg);
@@ -971,14 +971,14 @@ public class FTSQueryParser
         return factory.createFunctionalConstraint(function, functionArguments);
     }
 
-    @SuppressWarnings("unchecked")
     static private Constraint buildPrefixTerm(CommonTree fieldReferenceNode, CommonTree testNode, QueryModelFactory factory, FunctionEvaluationContext functionEvaluationContext,
             Selector selector, Map<String, Column> columnMap)
     {
         String functionName = FTSPrefixTerm.NAME;
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
-        LiteralArgument larg = factory.createLiteralArgument(FTSPrefixTerm.ARG_TERM, DataTypeDefinition.TEXT, getText((List<Tree>) testNode.getChildren()));
+        @SuppressWarnings("unchecked")
+        LiteralArgument larg = factory.createLiteralArgument(FTSPrefixTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChildren()));
         functionArguments.put(larg.getName(), larg);
         larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.DEFAULT);
         functionArguments.put(larg.getName(), larg);
@@ -999,14 +999,14 @@ public class FTSQueryParser
         return factory.createFunctionalConstraint(function, functionArguments);
     }
     
-    @SuppressWarnings("unchecked")
     static private Constraint buildExactPrefixTerm(CommonTree fieldReferenceNode, CommonTree testNode, QueryModelFactory factory, FunctionEvaluationContext functionEvaluationContext,
             Selector selector, Map<String, Column> columnMap)
     {
         String functionName = FTSPrefixTerm.NAME;
         Function function = factory.getFunction(functionName);
         Map<String, Argument> functionArguments = new LinkedHashMap<String, Argument>();
-        LiteralArgument larg = factory.createLiteralArgument(FTSPrefixTerm.ARG_TERM, DataTypeDefinition.TEXT, getText((List<Tree>) testNode.getChildren()));
+        @SuppressWarnings("unchecked")
+        LiteralArgument larg = factory.createLiteralArgument(FTSPrefixTerm.ARG_TERM, DataTypeDefinition.TEXT, getText(testNode.getChildren()));
         functionArguments.put(larg.getName(), larg);
         larg = factory.createLiteralArgument(FTSPhrase.ARG_TOKENISATION_MODE, DataTypeDefinition.ANY, AnalysisMode.IDENTIFIER);
         functionArguments.put(larg.getName(), larg);
