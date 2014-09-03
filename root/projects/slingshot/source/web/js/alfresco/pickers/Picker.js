@@ -105,9 +105,11 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_pickers_Picker__postCreate() {
 
+         this.pubSubScope = this.generateUuid() + "_";
+
          this.currentPickers = [];
 
-         this.alfSubscribe("ALF_ADD_PICKER", lang.hitch(this, "addPicker"));
+         this.alfSubscribe("ALF_ADD_PICKER", lang.hitch(this, this.addPicker));
 
          // If requested, show picked items...
          if (this.showPickedItems == true)
@@ -161,6 +163,10 @@ define(["dojo/_base/declare",
             payload.picker.config.pickerDepth = this.currentPickerDepth;
             this.processWidgets([payload.picker], this.subPickersNode);
             this.currentPickerDepth++;
+         }
+         else
+         {
+            this.alfLog("error", "Error creating a picker: the payload picker is missing a picker object: ", payload);
          }
       },
 

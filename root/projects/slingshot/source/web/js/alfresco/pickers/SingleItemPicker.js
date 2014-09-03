@@ -54,6 +54,15 @@ define(["dojo/_base/declare",
       templateString: template,
 
       /**
+       * Which picker shall we call to display the results of this picking?
+       *
+       * @instance
+       * @type {String}
+       * @default "alfresco/pickers/DocumentListPicker"
+       */
+      subPicker: "alfresco/pickers/DocumentListPicker",
+
+      /**
        * 
        *
        * @instance
@@ -135,7 +144,7 @@ define(["dojo/_base/declare",
                publishPayload: {
                   currentPickerDepth: this.currentPickerDepth,
                   picker: {
-                     name: "alfresco/pickers/DocumentListPicker",
+                     name: this.subPicker,
                      config: {
                         libraryRoot: siteNodeRef,
                         nodeRef: siteNodeRef,

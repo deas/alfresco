@@ -34,6 +34,75 @@ define(["dojo/_base/declare",
    
    return declare([AlfDocumentList], {
 
+      postCreate: function alfresco_pickers_DocumentListPicker__postCreate(payload) {
+         var config = {
+            name: "alfresco/documentlibrary/views/AlfDocumentListView",
+            config: {
+               widgets: [
+                  {
+                     name: "alfresco/documentlibrary/views/layouts/Row",
+                     config: {
+                        widgets: [
+                           {
+                              name: "alfresco/documentlibrary/views/layouts/Cell",
+                              config: {
+                                 width: "20px",
+                                 widgets: [
+                                    {
+                                       name: "alfresco/renderers/FileType",
+                                       config: {
+                                          size: "small",
+                                          renderAsLink: true,
+                                          publishTopic: "ALF_DOCLIST_NAV"
+                                       }
+                                    }
+                                 ]
+                              }
+                           },
+                           {
+                              name: "alfresco/documentlibrary/views/layouts/Cell",
+                              config: {
+                                 widgets: [
+                                    {
+                                       name: "alfresco/renderers/PropertyLink",
+                                       config: {
+                                          propertyToRender: "node.properties.cm:name",
+                                          renderAsLink: true,
+                                          publishTopic: "ALF_ADD_PICKER"
+                                       }
+                                    }
+                                 ]
+                              }
+                           },
+                           {
+                              name: "alfresco/documentlibrary/views/layouts/Cell",
+                              config: {
+                                 width: "20px",
+                                 widgets: [
+                                    {
+                                       name: "alfresco/renderers/PublishAction",
+                                       config: {
+                                          renderFilter: [
+                                             {
+                                                property: "node.isContainer",
+                                                values: [false]
+                                             }
+                                          ]
+                                       }
+                                    }
+                                 ]
+                              }
+                           }
+                        ]
+                     }
+                  }
+               ]
+            }
+         };
+
+         this.processWidgets(config, this.itemsNode);
+      },
+
       /**
        * Indicates whether the location should be driven by changes to the browser URL hash
        *
@@ -62,7 +131,7 @@ define(["dojo/_base/declare",
        */
       onFolderClick: function alfresco_pickers_DocumentListPicker__onFolderClick(payload) {
 
-         var targetNode = lang.getObject("item.nodeRef", false, payload);
+         var targetNode = lang.getObject("item.nodeRef", false, payload) || payload.nodeRef;
          if (targetNode != null)
          {
             this.nodeRef = targetNode;
@@ -93,70 +162,7 @@ define(["dojo/_base/declare",
        * @type {object}
        */
       widgets: [
-         {
-            name: "alfresco/documentlibrary/views/AlfDocumentListView",
-            config: {
-               widgets: [
-                  {
-                     name: "alfresco/documentlibrary/views/layouts/Row",
-                     config: {
-                        widgets: [
-                           {
-                              name: "alfresco/documentlibrary/views/layouts/Cell",
-                              config: {
-                                 width: "20px",
-                                 widgets: [
-                                    {
-                                       name: "alfresco/renderers/FileType",
-                                       config: {
-                                          size: "small",
-                                          renderAsLink: true,
-                                          linkClickTopic: "ALF_DOCLIST_NAV"
-                                       }
-                                    }
-                                 ]
-                              }
-                           },
-                           {
-                              name: "alfresco/documentlibrary/views/layouts/Cell",
-                              config: {
-                                 widgets: [
-                                    {
-                                       name: "alfresco/renderers/Property",
-                                       config: {
-                                          propertyToRender: "node.properties.cm:name",
-                                          renderAsLink: true,
-                                          linkClickTopic: "ALF_DOCLIST_NAV"
-                                       }
-                                    }
-                                 ]
-                              }
-                           },
-                           {
-                              name: "alfresco/documentlibrary/views/layouts/Cell",
-                              config: {
-                                 width: "20px",
-                                 widgets: [
-                                    {
-                                       name: "alfresco/renderers/PublishAction",
-                                       config: {
-                                          renderFilter: [
-                                             {
-                                                property: "node.isContainer",
-                                                values: [false]
-                                             }
-                                          ]
-                                       }
-                                    }
-                                 ]
-                              }
-                           }
-                        ]
-                     }
-                  }
-               ]
-            }
-         }
+
       ]
    });
 });
