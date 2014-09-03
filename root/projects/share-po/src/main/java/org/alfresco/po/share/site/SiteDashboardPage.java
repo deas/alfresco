@@ -189,7 +189,7 @@ public class SiteDashboardPage extends SitePage implements Dashboard
     {
         try
         {
-            WebElement titleSpan = drone.findAndWait(By.cssSelector(".alf-menu-title-text"));
+            WebElement titleSpan = drone.findAndWait(By.cssSelector(".alfresco-header-Title"));
             return titleSpan.getText().toLowerCase().contains(title.toLowerCase());
         }
         catch (TimeoutException e)
