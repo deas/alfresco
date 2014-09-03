@@ -1,0 +1,3 @@
+.alfresco-lists-AlfList > div.info {
+   margin: @standard-line-height @standard-column-width;
+}

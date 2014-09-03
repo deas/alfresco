@@ -5,7 +5,8 @@
 var services = getHeaderServices(),
     widgets = getHeaderModel(msg.get("faceted-search-config.page.title"));
 
-services.push("alfresco/services/QuaddsService", "alfresco/services/NotificationService");
+services.push("alfresco/services/CrudService",
+              "alfresco/services/NotificationService");
 
 
 var main = {
@@ -98,9 +99,13 @@ var main = {
                                        }
                                     },
                                     {
-                                       name: "alfresco/documentlibrary/QuaddsList",
+                                       name: "alfresco/lists/AlfList",
                                        config: {
-                                          quadds: "facets",
+                                          loadDataPublishTopic: "ALF_CRUD_GET_ALL",
+                                          loadDataPublishPayload: {
+                                             url: "api/solr/facet-config"
+                                          },
+                                          itemsProperty: "facets",
                                           widgets: [
                                              {
                                                 name: "alfresco/documentlibrary/views/AlfDocumentListView",
@@ -119,7 +124,7 @@ var main = {
                                                                         {
                                                                            name: "alfresco/renderers/PropertyLink",
                                                                            config: {
-                                                                              propertyToRender: "name",
+                                                                              propertyToRender: "displayName",
                                                                               publishTopic: "ALF_CRUD_FORM_UPDATE",
                                                                               defaultConfig: {
                                                                                  propertyToRender: "name",
@@ -160,94 +165,35 @@ var main = {
                               name: "alfresco/forms/CrudForm",
                               config: {
                                  createButtonLabel: "Save",
-                                 createButtonPublishTopic: "ALF_CREATE_QUADDS_ITEM",
+                                 createButtonPublishTopic: "ALF_CRUD_CREATE",
                                  createButtonPublishGlobal: true,
                                  updateButtonLabel: "Save",
-                                 updateButtonPublishTopic: "ALF_UPDATE_QUADDS_ITEM",
+                                 updateButtonPublishTopic: "ALF_CRUD_UPDATE",
                                  updateButtonPublishGlobal: true,
                                  deleteButtonLabel: "Delete",
-                                 deleteButtonPublishTopic: "ALF_DELETE_QUADDS_ITEM",
+                                 deleteButtonPublishTopic: "ALF_CRUD_DELETE",
                                  deleteButtonPublishGlobal: true,
-                                 showInfoTopics: ["ALF_DELETE_QUADDS_ITEM", "ALF_CREATE_QUADDS_ITEM", "ALF_UPDATE_QUADDS_ITEM"],
+                                 showInfoTopics: ["ALF_CRUD_CREATE", "ALF_CRUD_UPDATE", "ALF_CRUD_DELETE"],
                                  showFormTopics: [],
                                  widgets: [
                                     {
                                        name: "alfresco/forms/controls/DojoValidationTextBox",
                                        config: {
-                                          fieldId: "QUADDS_ID",
-                                          name: "quadds",
-                                          value: "facets",
-                                          label: "QuADDS ID",
-                                          description: "",
-                                          unitsLabel: "",
-                                          visibilityConfig: {
-                                             initialValue: false,
-                                             rules: []
-                                          },
-                                          requirementConfig: {
-                                             initialValue: true,
-                                             rules: []
-                                          },
-                                          disablementConfig: {
-                                             initialValue: true,
-                                             rules: []
-                                          },
-                                          validationConfig: {
-                                             regex: ".*"
-                                          }
-                                       }
-                                    },
-                                    {
-                                       name: "alfresco/forms/controls/DojoValidationTextBox",
-                                       config: {
-                                          fieldId: "FACET_NAME",
-                                          name: "name",
+                                          fieldId: "FILTER_ID",
+                                          name: "filterID",
                                           value: "",
-                                          label: "Filter ID",
-                                          placeHolder: "Enter an ID for the filter",
-                                          description: "",
+                                          label: "faceted-search-config.filterId.label",
+                                          description: "faceted-search-config.filterId.description",
                                           unitsLabel: "",
                                           visibilityConfig: {
-                                             initialValue: true,
-                                             rules: []
+                                             initialValue: true
                                           },
                                           requirementConfig: {
-                                             initialValue: true,
-                                             rules: []
+                                             initialValue: true
                                           },
                                           disablementConfig: {
                                              initialValue: false,
                                              rules: []
-                                          },
-                                          validationConfig: {
-                                             regex: ".*"
-                                          }
-                                       }
-                                    },
-                                    {
-                                       name: "alfresco/forms/controls/DojoValidationTextBox",
-                                       config: {
-                                          fieldId: "DISPLAY_NAME",
-                                          name: "data.widget.config.label",
-                                          value: "",
-                                          label: "Display Name",
-                                          placeHolder: "Enter the name for the filter",
-                                          description: "",
-                                          unitsLabel: "",
-                                          visibilityConfig: {
-                                             initialValue: true,
-                                             rules: []
-                                          },
-                                          requirementConfig: {
-                                             initialValue: true,
-                                             rules: []
-                                          },
-                                          disablementConfig: {
-                                             initialValue: false,
-                                             rules: []
-                                          },
-                                          validationConfig: {
-                                             regex: ".*"
                                           }
                                        }
                                     },
@@ -255,22 +201,12 @@ var main = {
                                        name: "alfresco/forms/controls/DojoSelect",
                                        config: {
                                           fieldId: "FACET_QNAME",
-                                          name: "data.widget.config.facetQName",
+                                          name: "facetQName",
                                           value: "",
-                                          label: "Field Name",
-                                          description: "Internal property name for content model",
-                                          unitsLabel: "",
-                                          visibilityConfig: {
-                                             initialValue: true,
-                                             rules: []
-                                          },
+                                          label: "faceted-search-config.facetQName.label",
+                                          description: "faceted-search-config.facetQName.description",
                                           requirementConfig: {
-                                             initialValue: false,
-                                             rules: []
-                                          },
-                                          disablementConfig: {
-                                             initialValue: false,
-                                             rules: []
+                                             initialValue: true
                                           },
                                           optionsConfig: {
                                              // TODO: Currently using hard-coded values - these need to be retrieved from the available properties
@@ -296,32 +232,19 @@ var main = {
                                        }
                                     },
                                     {
-                                       name: "alfresco/forms/controls/DojoSelect",
+                                       name: "alfresco/forms/controls/DojoValidationTextBox",
                                        config: {
-                                          fieldId: "DISPLAY_CONTROL",
-                                          name: "data.widget.name",
-                                          value: "alfresco/search/FacetFilters",
-                                          label: "Display Control",
-                                          description: "Select the control with which to display the facet filters",
+                                          fieldId: "DISPLAY_NAME",
+                                          name: "displayName",
+                                          value: "",
+                                          label: "faceted-search-config.displayName.label",
+                                          placeHolder: "faceted-search-config.displayName.placeHolder",
+                                          description: "faceted-search-config.displayName.description",
                                           visibilityConfig: {
-                                             initialValue: true,
-                                             rules: []
+                                             initialValue: true
                                           },
                                           requirementConfig: {
-                                             initialValue: false,
-                                             rules: []
-                                          },
-                                          disablementConfig: {
-                                             initialValue: false,
-                                             rules: []
-                                          },
-                                          optionsConfig: {
-                                             fixed: [
-                                                {
-                                                   label: "Standard Filter Control",
-                                                   value: "alfresco/search/FacetFilters"
-                                                }
-                                             ]
+                                             initialValue: true
                                           }
                                        }
                                     },
@@ -329,35 +252,22 @@ var main = {
                                        name: "alfresco/forms/controls/DojoSelect",
                                        config: {
                                           fieldId: "SORTBY",
-                                          name: "data.widget.config.sortBy",
+                                          name: "sortBy",
                                           value: "ALPHABETICALLY",
-                                          label: "Sort by",
-                                          description: "Display order of filter items",
-                                          unitsLabel: "",
-                                          visibilityConfig: {
-                                             initialValue: true,
-                                             rules: []
-                                          },
-                                          requirementConfig: {
-                                             initialValue: false,
-                                             rules: []
-                                          },
-                                          disablementConfig: {
-                                             initialValue: false,
-                                             rules: []
-                                          },
+                                          label: "faceted-search-config.sortBy.label",
+                                          description: "faceted-search-config.sortBy.description",
                                           optionsConfig: {
                                              fixed: [
                                                 {
-                                                   label: "A-Z",
+                                                   label: "faceted-search-config.sortBy.AtoZ.label",
                                                    value: "ALPHABETICALLY"
                                                 },
                                                 {
-                                                   label: "Results (low to high)",
+                                                   label: "faceted-search-config.sortBy.highToLow.label",
                                                    value: "ASCENDING"
                                                 },
                                                 {
-                                                   label: "Results (high to low)",
+                                                   label: "faceted-search-config.sortBy.lowToHigh.label",
                                                    value: "DESCENDING"
                                                 }
                                              ]
@@ -367,28 +277,52 @@ var main = {
                                     {
                                        name: "alfresco/forms/controls/NumberSpinner",
                                        config: {
-                                          fieldId: "LIMIT",
-                                          name: "data.widget.config.maxFilters",
+                                          fieldId: "MAXFILTERS",
+                                          name: "maxFilters",
                                           value: "10",
-                                          label: "Limit",
-                                          description: "Maximum number of filter terms to display before \"More Choices\" link",
-                                          unitsLabel: "",
+                                          label: "faceted-search-config.maxFilters.label",
+                                          description: "faceted-search-config.maxFilters.description",
                                           min: 1,
                                           max: 20,
-                                          visibilityConfig: {
-                                             initialValue: true,
-                                             rules: []
-                                          },
-                                          requirementConfig: {
-                                             initialValue: true,
-                                             rules: []
-                                          },
-                                          disablementConfig: {
-                                             initialValue: false,
-                                             rules: []
-                                          },
                                           validationConfig: {
                                              regex: "^[0-9]+$"
+                                          }
+                                       }
+                                    },
+                                    {
+                                       name: "alfresco/forms/controls/NumberSpinner",
+                                       config: {
+                                          fieldId: "MIN_FILTER_VALUE_LENGTH",
+                                          name: "minFilterValueLength",
+                                          value: "10",
+                                          label: "faceted-search-config.minFilterValueLength.label",
+                                          description: "faceted-search-config.minFilterValueLength.description",
+                                          min: 1,
+                                          max: 20,
+                                          validationConfig: {
+                                             regex: "^[0-9]+$"
+                                          }
+                                       }
+                                    },
+                                    {
+                                       name: "alfresco/forms/controls/DojoSelect",
+                                       config: {
+                                          fieldId: "SCOPE",
+                                          name: "scope",
+                                          value: "",
+                                          label: "faceted-search-config.scope.label",
+                                          description: "faceted-search-config.scope.description",
+                                          optionsConfig: {
+                                             fixed: [
+                                                {
+                                                   label: "faceted-search-config.scope.none.label",
+                                                   value: ""
+                                                },
+                                                {
+                                                   label: "faceted-search-config.scope.site.label",
+                                                   value: "SCOPED_SITES"
+                                                }
+                                             ]
                                           }
                                        }
                                     }
