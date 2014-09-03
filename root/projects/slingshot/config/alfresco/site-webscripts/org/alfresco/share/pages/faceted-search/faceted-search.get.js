@@ -488,7 +488,8 @@ var searchDocLib = {
          "sortAscending",
          "allSites",
          "repo",
-         "searchScope"
+         "searchScope",
+         "query"
       ],
       selectedScope: "REPO",
       useInfiniteScroll: true,

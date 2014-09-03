@@ -485,6 +485,12 @@ define(["dojo/_base/declare",
             if (this.query)
             {
                delete this.query.alfTopic;
+
+               if(typeof this.query === "string")
+               {
+                  this.query = JSON.parse(this.query);
+               }
+
                for (var key in this.query)
                {
                   searchPayload[key] = this.query[key];
