@@ -97,7 +97,13 @@
          "name": "alfresco/testing/mockservices/PaginationMockXhr"
       }
       {
-         "name": "alfresco/testing/SubscriptionLog"
+         "name": "alfresco/testing/SubscriptionLog",
+         "config": {
+            "topicsToIgnore": [
+               "ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS",
+               "ALF_DOCLIST_DOCUMENTS_LOADED"
+            ]
+         }
       },
       {
          "name": "alfresco/testing/TestCoverageResults"

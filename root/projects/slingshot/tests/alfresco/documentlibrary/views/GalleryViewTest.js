@@ -100,11 +100,21 @@ define(["intern!object",
          var testname = "GalleryView Test (keyboard)";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/GalleryView_TestPage.json", testname)
 
-            .sleep(alfPause)
+            .findByCssSelector(".alfresco-documentlibrary-AlfGalleryViewSlider")
+               .then(null, function() {
+                  assert(false, "Test #0a - The gallery view slider was not found");
+               })
+               .end()
+
+            // Increment and decrement the size... just making sure everything is ready for keyboard navigation...
+            .findByCssSelector(".dijitSliderIncrementIconH")
+               .click()
+               .end()
+            .findByCssSelector(".dijitSliderDecrementIconH")
+               .click()
+               .end()
 
             // 1. Focus on the first thumbnail...
-            .pressKeys(keys.TAB) // Goes to slider...
-            .sleep(alfPause)
             .pressKeys(keys.TAB) // Goes to first thumbnail...
 
             // 2. Tab again to select the selector...

@@ -478,10 +478,18 @@ define(["intern/dojo/node!fs",
             browser.end()
 
             .findByCssSelector('.alfresco-testing-TestCoverageResults input[type=submit]')
-            .click()
-            .end();
+               .click()
+               .end()
+            
+            .then(function() {
+               console.log(">> Waiting for coverage submission to complete...");
+            })
 
-            console.log(">> Coverage ~~>");
+            .then(pollUntil('return document.querySelector("body > script");'))
+               .then(function (element) {}, function (error) {})
+               .end();
+
+            console.log(">> Coverage Submitted");
          }
          else
          {

@@ -95,37 +95,58 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * It's possible to configure a list of topics that should be ignored. This is primarily added for
+       * test purposes to allow avoid building enormous tabular structures that represent loaded data.
+       *
+       * @instance
+       * @type {array}
+       * @default null
+       */
+      topicsToIgnore: null,
+
+      /**
        *
        * @instance
        * @param {object} logData The details of the publication
        */
       updateLog: function alfresco_testing_Subscription__updateLog(logData) {
 
-         var rowNode = domConstruct.create("tr", {
-            className: "sl-row"
-         }, this.logNode);
-         var typeNode = domConstruct.create("td", {
-            className: "sl-type",
-            innerHTML: logData.type
-         }, rowNode);
-         var topicNode = domConstruct.create("td", {
-            className: "sl-topic",
-            innerHTML: logData.topic,
-         }, rowNode);
-         // Set some additional data in the DOM to aid with CSS selectors in unit tests...
-         domAttr.set(topicNode, "data-" + logData.type + "-topic", logData.topic);
-         var dataCellNode = domConstruct.create("td", {
-            className: "sl-data",
-         }, rowNode);
-         this.addValueToLog(logData.data, dataCellNode, 0);
-         var objectNode = domConstruct.create("td", {
-            className: "sl-object",
-            innerHTML: logData.object
-         }, rowNode);
-         // Make the object ID performing the action available on both the row and object cell for
-         // assisting with CSS selectors in unit tests...
-         domAttr.set(objectNode, "data-pubsub-object-id", logData.object);
-         domAttr.set(rowNode, "data-pubsub-log-entry-by", logData.object);
+         var includeTopic = true;
+         if (this.topicsToIgnore != null)
+         {
+            includeTopic = !array.some(this.topicsToIgnore, function(topic, index) {
+               return topic === logData.topic;
+            });
+         }
+
+         if (includeTopic === true)
+         {
+            var rowNode = domConstruct.create("tr", {
+               className: "sl-row"
+            }, this.logNode);
+            domConstruct.create("td", {
+               className: "sl-type",
+               innerHTML: logData.type
+            }, rowNode);
+            var topicNode = domConstruct.create("td", {
+               className: "sl-topic",
+               innerHTML: logData.topic,
+            }, rowNode);
+            // Set some additional data in the DOM to aid with CSS selectors in unit tests...
+            domAttr.set(topicNode, "data-" + logData.type + "-topic", logData.topic);
+            var dataCellNode = domConstruct.create("td", {
+               className: "sl-data",
+            }, rowNode);
+            this.addValueToLog(logData.data, dataCellNode, 0);
+            var objectNode = domConstruct.create("td", {
+               className: "sl-object",
+               innerHTML: logData.object
+            }, rowNode);
+            // Make the object ID performing the action available on both the row and object cell for
+            // assisting with CSS selectors in unit tests...
+            domAttr.set(objectNode, "data-pubsub-object-id", logData.object);
+            domAttr.set(rowNode, "data-pubsub-log-entry-by", logData.object);
+         }
       },
 
       /**

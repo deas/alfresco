@@ -35,56 +35,54 @@ define(["intern!object",
          var testname = "AccessibilityMenuTest";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/accessibility/page_models/AccessibilityMenu_TestPage.json", testname)
 
-         .end()
-
          // Find the menu element
          .findById("AccessibilityMenu")
-         .then(function (el) {
-            TestCommon.log(testname,"Find the menu element");
-            expect(el).to.be.an("object", "The Accessibility Menu could not be found");
-         })
-         .end()
+            .then(function (el) {
+               TestCommon.log(testname,"Find the menu element");
+               expect(el).to.be.an("object", "The Accessibility Menu could not be found");
+            })
+            .end()
 
          // Find the heading text
          .findByCssSelector("#AccessibilityMenu > p")
-         .getVisibleText()
-         .then(function(headingText) {
-            TestCommon.log(testname,"Find the heading text");
-            expect(headingText).to.equal("Access key links:", "The heading text is wrong");
-         })
-         .end()
+            .getVisibleText()
+            .then(function(headingText) {
+               TestCommon.log(testname,"Find the heading text");
+               expect(headingText).to.equal("Access key links:", "The heading text is wrong");
+            })
+            .end()
 
          // Find the menu items
          .findAllByCssSelector("#AccessibilityMenu > ul > li")
-         .then(function (menuitems) {
-            TestCommon.log(testname,"Find the menu items");
-            expect(menuitems).to.have.length(8, "The Accessibility Menu does not contain 8 <li> items");
-         })
-         .end()
+            .then(function (menuitems) {
+               TestCommon.log(testname,"Find the menu items");
+               expect(menuitems).to.have.length(8, "The Accessibility Menu does not contain 8 <li> items");
+            })
+            .end()
 
          // Find the first target
          .findByCssSelector("a#accesskey-skip")
-         .then(function (el) {
-            TestCommon.log(testname,"Find the first target");
-            expect(el).to.be.an("object", "The accesskey-skip target is missing");
-         })
-         .end()
+            .then(function (el) {
+               TestCommon.log(testname,"Find the first target");
+               expect(el).to.be.an("object", "The accesskey-skip target is missing");
+            })
+            .end()
 
          // Find the second target
          .findById("accesskey-foot")
-         .then(function (el) {
-            TestCommon.log(testname,"Find the second target");
-            expect(el).to.be.an("object", "The accesskey-foot target is missing");
-         })
-         .end()
+            .then(function (el) {
+               TestCommon.log(testname,"Find the second target");
+               expect(el).to.be.an("object", "The accesskey-foot target is missing");
+            })
+            .end()
 
          // Find the first menu link - which links the first target
          .findByCssSelector("#AccessibilityMenu > ul > li:nth-of-type(1) > a ")
-         .then(function (el) {
-            TestCommon.log(testname,"Find the first menu link - which links the first target");
-            expect(el).to.be.an("object", "The first link is missing");
-         })
-         .end()
+            .then(function (el) {
+               TestCommon.log(testname,"Find the first menu link - which links the first target");
+               expect(el).to.be.an("object", "The first link is missing");
+            })
+            .end()
 
          // Hit the browser with a sequence of different accesskey combinations and the letter 's' for a nav skip
          .pressKeys([keys.SHIFT, "s"])
@@ -110,8 +108,7 @@ define(["intern!object",
          // Post the coverage results...
          .then(function() {
             TestCommon.postCoverageResults(browser);
-         })
-         .end();
+         });
       }
    });
 });

@@ -42,11 +42,13 @@ define(["intern!object",
 
          .findByCssSelector("#CREATE_XML_DOC_1")
             .then(null, function() {
+               TestCommon.log(testname, "Checking for create content item in create content menu");
                assert(false, "Test #1a - Couldn't find content item in create content menu");
             })
             .end()
          .findAllByCssSelector("#CREATE_XML_DOC_1.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Checking create content item in create content menu is NOT disabled");
                assert(elements.length === 0, "Test #1b - Content item in create content menu was unexpectedly disabled");
             }, null)
             .end()
@@ -57,12 +59,14 @@ define(["intern!object",
 
          .findByCssSelector("#CREATE_XML_DOC_2")
             .then(null, function() {
+               TestCommon.log(testname, "Checking for create content item in standard menu");
                assert(false, "Test #1c - Couldn't find content item in standard popup menu");
             })
             .end()
 
          .findByCssSelector("#CREATE_TEMPLATES")
             .then(null, function() {
+               TestCommon.log(testname, "Checking for create template cascade");
                assert(false, "Test #1d - Couldn't find create templates cascade in standard popup menu");
             })
             .end()
@@ -74,9 +78,21 @@ define(["intern!object",
             .end()
          .findAllByCssSelector("#CREATE_CONTENT_MENUBAR_ITEM.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Checking create content menu bar item is not disabled");
                assert(elements.length === 0, "Test #1e - Content menu bar item was unexpectedly disabled");
             }, null)
             .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
+      },
+      'Create Content (deny permission)': function () {
+
+         var browser = this.remote;
+         var testname = "Create Content Test (Deny Permission)";
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/CreateContent_TestPage.json", testname)
 
          // Deny permissions...
          .findByCssSelector("#DENY_CREATE_PERMISSION_label")
@@ -86,6 +102,7 @@ define(["intern!object",
          // Check the content menu is disabled...
          .findAllByCssSelector("#CREATE_CONTENT_MENU.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Checking create content menu is now disabled");
                assert(elements.length === 1, "Test #2a - Content menu was not disabled");
             }, null)
             .end()
@@ -96,17 +113,20 @@ define(["intern!object",
             .end()
          .findAllByCssSelector("#CREATE_XML_DOC_2.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Checking create content item in standard menu is now disabled");
                assert(elements.length === 1, "Test #2b - Content item in standard popup menu was not disabled");
             })
             .end()
          .findAllByCssSelector("#CREATE_TEMPLATES.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Checking create template cascade is now disabled");
                assert(elements.length === 1, "Test #2c - Create templates in standard popup menu was not disabled");
             })
             .end()
 
          .findAllByCssSelector("#CREATE_CONTENT_MENUBAR_ITEM.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Checking menu bar item is now disabled");
                assert(elements.length === 1, "Test #2d - Content menu bar item was not disabled");
             }, null)
             .end()
@@ -122,6 +142,7 @@ define(["intern!object",
             .end()
          .findAllByCssSelector("#CREATE_XML_DOC_1.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Checking create content menu item in content menu has been re-enabled");
                assert(elements.length === 0, "Test #3a - Content item in create content menu was not re-enabled");
             }, null)
             .end()
@@ -132,20 +153,34 @@ define(["intern!object",
             .end()
          .findAllByCssSelector("#CREATE_XML_DOC_2.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Checking create content item in standard popup is re-enabled");
                assert(elements.length === 0, "Test #3b - Content item in standard popup menu was not re-enabled");
             })
             .end()
          .findAllByCssSelector("#CREATE_TEMPLATES.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Check create template cascade has been re-enabled");
                assert(elements.length === 0, "Test #3c - Create templates in standard popup menu was not re-enabled");
             })
             .end()
 
          .findAllByCssSelector("#CREATE_CONTENT_MENUBAR_ITEM.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Checking that content menu bar item has been re-enabled");
                assert(elements.length === 0, "Test #3d - Content menu bar item was not re-enabled");
             }, null)
             .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
+      },
+      'Create Content (change path)': function () {
+
+         var browser = this.remote;
+         var testname = "Create Content Test (Change Path)";
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/CreateContent_TestPage.json", testname)
 
          // Set tag filter...
          .findByCssSelector("#SET_OTHER_FILTER_label")
@@ -155,6 +190,7 @@ define(["intern!object",
          // Check the content menu is disabled...
          .findAllByCssSelector("#CREATE_CONTENT_MENU.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Check content menu has been disabled again");
                assert(elements.length === 1, "Test #4a - Content menu was not disabled");
             }, null)
             .end()
@@ -165,17 +201,20 @@ define(["intern!object",
             .end()
          .findAllByCssSelector("#CREATE_XML_DOC_2.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Check that content menu item in standard menu is disabled again");
                assert(elements.length === 1, "Test #4b - Content item in standard popup menu was not disabled");
             })
             .end()
          .findAllByCssSelector("#CREATE_TEMPLATES.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Check that create template cascade has been disabled again");
                assert(elements.length === 1, "Test #4c - Create templates in standard popup menu was not disabled");
             })
             .end()
 
          .findAllByCssSelector("#CREATE_CONTENT_MENUBAR_ITEM.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Check that content menu bar item has been disabled again");
                assert(elements.length === 1, "Test #4d - Content menu bar item was not disabled");
             }, null)
             .end()
@@ -191,6 +230,7 @@ define(["intern!object",
             .end()
          .findAllByCssSelector("#CREATE_XML_DOC_1.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Check that create content menu has been re-enabled");
                assert(elements.length === 0, "Test #5a - Content item in create content menu was not re-enabled");
             }, null)
             .end()
@@ -201,17 +241,20 @@ define(["intern!object",
             .end()
          .findAllByCssSelector("#CREATE_XML_DOC_2.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Check that create content menu item in standard menu has been re-enabled");
                assert(elements.length === 0, "Test #5b - Content item in standard popup menu was not re-enabled");
             })
             .end()
          .findAllByCssSelector("#CREATE_TEMPLATES.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Check that create template cascade has been re-enabled");
                assert(elements.length === 0, "Test #5c - Create templates in standard popup menu was not re-enabled");
             })
             .end()
 
          .findAllByCssSelector("#CREATE_CONTENT_MENUBAR_ITEM.dijitMenuItemDisabled")
             .then(function(elements) {
+               TestCommon.log(testname, "Check that create content menu bar item has been re-enabled");
                assert(elements.length === 0, "Test #5d - Content menu bar item was not re-enabled");
             }, null)
             .end()
@@ -224,7 +267,7 @@ define(["intern!object",
       'Create Templates': function () {
 
          var browser = this.remote;
-         var testname = "Create Content Test";
+         var testname = "Create Templates Test";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/CreateContent_TestPage.json", testname)
 
          .end()
@@ -240,6 +283,7 @@ define(["intern!object",
          .findByCssSelector("#CREATE_TEMPLATES_dropdown tbody tr:first-child td:nth-child(2)")
             .getVisibleText()
             .then(function(text) {
+               TestCommon.log(testname, "Check create template node has rendered correctly");
                assert(text === "Node 1", "Test #1a - Node wasn't rendered correctly");
             })
             .click()
@@ -247,6 +291,7 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_CREATE_CONTENT", "params", "nodeRef", "workspace://SpacesStore/0e56c7a3-67d0-4a35-b2ce-4c2038897a66"))
             .then(function(elements) {
+               TestCommon.log(testname, "Check that create template topic was published correctly");
                assert(elements.length == 1, "Test #1b - Create template topic not published correctly");
             })
             .end()

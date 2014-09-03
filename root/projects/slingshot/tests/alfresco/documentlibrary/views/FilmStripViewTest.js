@@ -32,32 +32,33 @@ define(["intern!object",
         "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, assert, expect, require, TestCommon, keys) {
 
+   var pause = 1500;
+
+   // Setup some selectors for re-use...
+   var previewCarouselSelector = "#FILMSTRIP_VIEW > div.preview";
+   var thumbnailsCarouselSelector = "#FILMSTRIP_VIEW > div.items";
+
+   var previewControlsSelector = previewCarouselSelector + " .controls";
+   var prevPreviewControlSelector = previewControlsSelector + " > div.prev > img";
+   var nextPreviewControlSelector = previewControlsSelector + " > div.next > img";
+   var previewFrameSelector = previewCarouselSelector + " .frame > ol";
+   var previewFrameItemsSelector = previewFrameSelector + " > li";
+
+   var previewImgSelectorSuffix = " > div:nth-child(2) img";
+   var thumbnailImgSelectorSuffix = " > div:nth-child(1) img";
+
+   var thumbnailControlsSelector = thumbnailsCarouselSelector + " .controls";
+   var prevThumbnailControlSelector = thumbnailControlsSelector + " > div.prev > img";
+   var nextThumbnailControlSelector = thumbnailControlsSelector + " > div.next > img";
+   var thumbnailFrameSelector = thumbnailsCarouselSelector + " .frame > ol";
+   var thumbnailFrameItemsSelector = thumbnailFrameSelector + " > li";
+
+         
    registerSuite({
       name: 'FilmStrip View Test',
       'Basic Test': function () {
 
-         var pause = 1500;
-
-         // Setup some selectors for re-use...
-         var previewCarouselSelector = "#FILMSTRIP_VIEW > div.preview";
-         var thumbnailsCarouselSelector = "#FILMSTRIP_VIEW > div.items";
-
-         var previewControlsSelector = previewCarouselSelector + " .controls";
-         var prevPreviewControlSelector = previewControlsSelector + " > div.prev > img";
-         var nextPreviewControlSelector = previewControlsSelector + " > div.next > img";
-         var previewFrameSelector = previewCarouselSelector + " .frame > ol";
-         var previewFrameItemsSelector = previewFrameSelector + " > li";
-
-         var previewImgSelectorSuffix = " > div:nth-child(2) img";
-         var thumbnailImgSelectorSuffix = " > div:nth-child(1) img";
-
-         var thumbnailControlsSelector = thumbnailsCarouselSelector + " .controls";
-         var prevThumbnailControlSelector = thumbnailControlsSelector + " > div.prev > img";
-         var nextThumbnailControlSelector = thumbnailControlsSelector + " > div.next > img";
-         var thumbnailFrameSelector = thumbnailsCarouselSelector + " .frame > ol";
-         var thumbnailFrameItemsSelector = thumbnailFrameSelector + " > li";
-
-         var browser = this.remote;
+         // var browser = this.remote;
          var testname = "FilmStripView Test";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/FilmStripView_TestPage.json", testname)
 
@@ -115,10 +116,15 @@ define(["intern!object",
                .then(function(result) {
                   assert(result === false, "Test #2c - The second preview item should be hidden");
                })
-               .end()
-
-            // Click on the next preview item to scroll along...
-            .findByCssSelector(nextPreviewControlSelector)
+               .end();
+      },
+      'Test Next/Previous Preview': function () {
+         // Wait for the data to load and the page to draw - this is currently slow and the rendering needs to be
+         var browser = this.remote;
+         // var testname = "Pagination Test";
+         
+         // Click on the next preview item to scroll along...
+         return browser.findByCssSelector(nextPreviewControlSelector)
                .click()
                .end()
 
@@ -159,27 +165,34 @@ define(["intern!object",
                .then(function(elements) {
                   assert(elements.length === 14, "Test #2a - Expected 14 preview items, found: " + elements.length);
                })
-               .end()
-
-            // Click the next preview selector 3 times (to check that the thumbnail frame scrolls)...
-            .findByCssSelector(nextPreviewControlSelector)
-               .click()
-               .sleep(pause)
-               .click()
-               .sleep(pause)
-               .click()
-               .sleep(pause)
-               .click()
-               .sleep(pause)
-               .end()
-
+               .end();
+      },
+      'Test Thumbnail Scrolls With Preview': function () {
+         // Wait for the data to load and the page to draw - this is currently slow and the rendering needs to be
+         var browser = this.remote;
+         
+         // Click the next preview selector 3 times (to check that the thumbnail frame scrolls)...
+         return browser.findByCssSelector(nextPreviewControlSelector)
+            .click()
+            .sleep(pause)
+            .click()
+            .sleep(pause)
+            .click()
+            .sleep(pause)
+            .click()
+            .sleep(pause)
+            .end();
             // TODO: Check that 2nd frame of thumbnails is displayed...
-
-            // Move to the 3rd selection of thumbnails...
-            .findByCssSelector(nextThumbnailControlSelector)
-               .click()
-               .sleep(pause)
-               .end()
+      },
+      'Test Preview Scrolls With Thumbnail Selection': function () {
+         // Wait for the data to load and the page to draw - this is currently slow and the rendering needs to be
+         var browser = this.remote;
+         
+         // Move to the 3rd selection of thumbnails...
+         return browser.findByCssSelector(nextThumbnailControlSelector)
+            .click()
+            .sleep(pause)
+            .end()
 
             // TODO: Check that 3rd frame of thumbnails is displayed...
 

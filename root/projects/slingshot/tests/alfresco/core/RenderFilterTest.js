@@ -35,9 +35,6 @@ define(["intern!object",
          var testname = "RenderFilterTest";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/core/page_models/RenderFilter_TestPage.json", testname)
 
-         .end()
-
-
          // The IDs that should be displayed are...
          // MBI1 - successful filter rule
          // MBI3 - negated rule
@@ -83,13 +80,13 @@ define(["intern!object",
 
          .findAllByCssSelector("#MBI8")
             .then(function (els) {
-               assert(els.length == 0, "An OR condition property render filter rule passed unexpectedly");
+               assert(els.length === 0, "An OR condition property render filter rule passed unexpectedly");
             })
             .end()
 
          .findAllByCssSelector("#MBI2")
             .then(function (els) {
-               assert(els.length == 0, "An inherited currentItem change render filter rule passed unexpectedly");
+               assert(els.length === 0, "An inherited currentItem change render filter rule passed unexpectedly");
             })
             .end()
 
@@ -108,15 +105,14 @@ define(["intern!object",
 
          .findAllByCssSelector("#MI2")
             .then(function (els) {
-               assert(els.length == 0, "An inherited currentItem change render filter rule passed unexpectedly");
+               assert(els.length === 0, "An inherited currentItem change render filter rule passed unexpectedly");
             })
             .end()
 
          // Post the coverage results...
          .then(function() {
             TestCommon.postCoverageResults(browser);
-         })
-         .end();
+         });
       }
    });
 });
