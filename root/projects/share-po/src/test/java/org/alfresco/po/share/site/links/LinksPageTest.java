@@ -1,23 +1,22 @@
 package org.alfresco.po.share.site.links;
 
-import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.dashlet.AbstractSiteDashletTest;
-import org.alfresco.po.share.exception.ShareException;
-import org.alfresco.po.share.site.CustomizeSitePage;
-import org.alfresco.po.share.site.SitePageType;
-import org.alfresco.po.share.util.FailedTestListener;
-import org.alfresco.po.share.util.SiteUtil;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.*;
+import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.dashlet.AbstractSiteDashletTest;
+import org.alfresco.po.share.site.CustomizeSitePage;
+import org.alfresco.po.share.site.SitePageType;
+import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
 
 /**
  * Holds tests for Links page web elements
@@ -56,11 +55,11 @@ public class LinksPageTest extends AbstractSiteDashletTest
     @Test(groups = "Enterprise-only")
     public void addLinksPage()
     {
-        customizeSitePage = siteDashBoard.getSiteNav().selectCustomizeSite();
+        customizeSitePage = siteDashBoard.getSiteNav().selectCustomizeSite().render();
         List<SitePageType> addPageTypes = new ArrayList<SitePageType>();
         addPageTypes.add(SitePageType.LINKS);
-        customizeSitePage.addPages(addPageTypes);
-        linksPage = siteDashBoard.getSiteNav().selectLinksPage();
+        customizeSitePage.addPages(addPageTypes).render();
+        linksPage = siteDashBoard.getSiteNav().selectLinksPage().render();
         assertNotNull(linksPage);
     }
 
@@ -68,40 +67,29 @@ public class LinksPageTest extends AbstractSiteDashletTest
     public void createLink()
     {
         assertTrue(linksPage.isCreateLinkEnabled());
-        addLinkForm = linksPage.clickNewLink();
+        addLinkForm = linksPage.clickNewLink().render();
         assertNotNull(addLinkForm);
-        linksDetailsPage = linksPage.createLink(text, url);
-        assertEquals(getLinkTitle(), text);
+        linksDetailsPage = linksPage.createLink(text, url).render();
+        assertEquals(linksDetailsPage.getLinkTitle(), text);
         assertNotNull(linksDetailsPage);
     }
 
     @Test(groups = "Enterprise-only", dependsOnMethods = "createLink")
     public void editLink()
     {
-        linksPage = linksDetailsPage.browseToLinksList();
-        linksPage.editLink(text, editedText, editedText, editedText, true);
-        assertEquals(getLinkTitle(), editedText);
+        linksPage = linksDetailsPage.browseToLinksList().render();
+        linksPage.editLink(text, editedText, editedText, editedText, true).render();
+        assertEquals(linksDetailsPage.getLinkTitle(), editedText);
         assertNotNull(linksDetailsPage);
     }
 
     @Test(groups = "Enterprise-only", dependsOnMethods = "editLink")
     public void deleteLink()
     {
-        linksPage = linksDetailsPage.browseToLinksList();
+        linksPage = linksDetailsPage.browseToLinksList().render();
         int expNum = linksPage.getLinksCount()-1;
-        linksPage.deleteLinkWithConfirm(editedText);
+        linksPage.deleteLinkWithConfirm(editedText).render();
         assertEquals(linksPage.getLinksCount(), expNum);
     }
 
-    private String getLinkTitle()
-    {
-        try
-        {
-            return drone.find(By.cssSelector(".nodeTitle>a")).getText();
-        }
-        catch (TimeoutException te)
-        {
-            throw new ShareException("Unable to find the link");
-        }
-    }
 }

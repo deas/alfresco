@@ -4,6 +4,7 @@ import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 
@@ -17,6 +18,7 @@ import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 @SuppressWarnings("unused")
 public class LinksDetailsPage extends SharePage
 {
+    private static final By TITLE = By.cssSelector(".nodeTitle>a");
     private static final By LINKS_LIST_LINK = By.cssSelector("span[class*='link']>a");
     private static final By COMMENT_LINK = By.cssSelector(".onAddCommentClick");
     private static final By EDIT_LINK = By.cssSelector(".onEditLink>a");
@@ -100,4 +102,20 @@ public class LinksDetailsPage extends SharePage
             throw new ShareException("Unable to retrieve the tag");
         }
     }
+    
+    /**
+     * @return The Title of the Link.
+     */
+    public String getLinkTitle()
+    {
+        try
+        {
+            return drone.findAndWait(TITLE).getText();
+        }
+        catch (TimeoutException te)
+        {
+            throw new PageOperationException("Unable to find the links title", te);
+        }
+    }
+    
 }

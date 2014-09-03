@@ -5,6 +5,7 @@ import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.site.discussions.TopicDirectoryInfo;
 import org.alfresco.po.share.site.discussions.TopicDirectoryInfoImpl;
 import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.RenderWebElement;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
@@ -25,7 +26,12 @@ public class LinksPage extends SharePage
 {
     private Log logger = LogFactory.getLog(this.getClass());
 
+    @RenderWebElement
     private static final By NEW_LINK_BTN = By.cssSelector("button[id*='default-create-link']");
+    @RenderWebElement
+    private static final By LINK_FILTER = By.cssSelector(".filter.links-filter");
+    @RenderWebElement
+    private static final By ALL_LINK_TITLE = By.cssSelector("div[id$='default-listTitle']");
     private static final By EDIT_LINK_LINK = By.cssSelector(".edit-link>a>span");
     private static final By DELETE_LINK_LINK = By.cssSelector(".delete-link>a>span");
     private static final By LINKS_CONTAINER = By.cssSelector("tbody[class*='data']>tr");
@@ -43,6 +49,7 @@ public class LinksPage extends SharePage
     public LinksPage render(RenderTime timer)
     {
         basicRender(timer);
+        webElementRender(timer);
         return this;
     }
 
