@@ -24,12 +24,6 @@
             <artifactId>alfresco-web-framework-commons</artifactId>
             <version>${project.version}</version>
             <classifier>classes</classifier>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>jsp-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -75,7 +69,6 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -147,7 +140,6 @@
         <dependency>
             <groupId>org.tuckey</groupId>
             <artifactId>urlrewritefilter</artifactId>
-            <version>4.0.4</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -195,23 +187,20 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
-            <version>1.1.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
-            <version>1.1.8</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>jstl</artifactId>
                     <groupId>javax.servlet</groupId>
+                    <artifactId>jstl</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-impl</artifactId>
-            <version>1.1.8</version>
         </dependency>
         <!-- Dependency on Dojo ZIP -->
         <dependency>

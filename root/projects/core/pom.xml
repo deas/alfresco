@@ -69,7 +69,6 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20090211</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -91,12 +90,6 @@
         <groupId>org.springframework.extensions.surf</groupId>
         <artifactId>spring-surf-core-configservice</artifactId>
         <version>${project.version}</version>
-	    <exclusions>
-		    <exclusion>
-			     <groupId>javax.servlet</groupId>
-			     <artifactId>servlet-api</artifactId>
-		    </exclusion>
-	   </exclusions>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
@@ -143,7 +136,6 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.4</version>
       <scope>provided</scope>
     </dependency>
 

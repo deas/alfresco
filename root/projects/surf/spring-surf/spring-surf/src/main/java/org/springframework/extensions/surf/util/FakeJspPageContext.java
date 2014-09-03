@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.el.ELContext;
+
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -379,6 +381,15 @@ public class FakeJspPageContext
      * @see javax.servlet.jsp.PageContext#getPage()
      */
     public Object getPage()
+    {
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.jsp.PageContext#getELContext()
+     */
+    @Override
+    public ELContext getELContext()
     {
         return null;
     }

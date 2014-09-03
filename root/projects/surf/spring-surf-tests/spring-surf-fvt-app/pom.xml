@@ -19,14 +19,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
 					<wtpversion>1.5</wtpversion>
@@ -54,9 +46,7 @@
                is so that we can execute the same tests for different configurations of the FVT application
                (e.g. with caching switched on/off). -->
          <plugin>
-             <groupId>org.apache.maven.plugins</groupId>
              <artifactId>maven-surefire-plugin</artifactId>
-             <version>2.6</version>
              <configuration>
                  <suiteXmlFiles>
                      <suiteXmlFile>src/test/resources/cachingEnabledSuite.xml</suiteXmlFile>
@@ -72,8 +62,7 @@
 		<dependency>
     	    <groupId>org.mortbay.jetty</groupId>
     	    <artifactId>jetty</artifactId>
-    	    <version>6.1.5</version>
-    	    <type>jar</type>
+    	    <version>6.1.26</version>
     	    <scope>test</scope>
         </dependency>
         <dependency>
@@ -107,63 +96,52 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<version>1.2</version>
 		</dependency>
 
 		<!-- Log4j -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
 		</dependency>
 
 		<!-- Commons -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
-			<version>1.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-			<version>3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-digester</groupId>
 			<artifactId>commons-digester</artifactId>
-			<version>1.6</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-el</groupId>
 			<artifactId>commons-el</artifactId>
-			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-			<version>1.1</version>
 		</dependency>
 
 		<!-- Clean URLs with JSPs -->
 		<dependency>
 			<groupId>org.tuckey</groupId>
 			<artifactId>urlrewritefilter</artifactId>
-			<version>3.1.0</version>
 		</dependency>
 
 		<!-- Spring Framework Project libraries -->
@@ -219,14 +197,12 @@
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
-			<version>2.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.7</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

@@ -16,16 +16,6 @@
             <groupId>org.springframework.extensions.surf</groupId>
             <artifactId>spring-surf</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>jsp-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>jaxen</groupId>
@@ -35,7 +25,6 @@
         <dependency>
              <groupId>javax.servlet</groupId>
              <artifactId>servlet-api</artifactId>
-             <version>2.4</version>
              <scope>provided</scope>
         </dependency>
         <dependency>

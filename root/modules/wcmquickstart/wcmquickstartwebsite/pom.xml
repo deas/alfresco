@@ -17,7 +17,7 @@
         <dependency>
             <groupId>rome</groupId>
             <artifactId>rome</artifactId>
-            <version>1.0RC2</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
