@@ -82,6 +82,19 @@ define(["intern!object",
          )
          .end()
 
+         // Click the other dates for coverage testing
+         .findByCssSelector("#STANDARD_PROPS .value")
+         .click()
+         .end()
+
+         .findByCssSelector("#BROKEN_1 .value")
+         .click()
+         .end()
+
+         .findByCssSelector("#BROKEN_2 .value")
+         .click()
+         .end()
+
          // Post the coverage results...
          .then(function() {
             TestCommon.postCoverageResults(browser);

@@ -40,11 +40,11 @@ define(["intern!object",
 
          .end()
 
-         // Check there are 10 rows x 5 columns = 50 cells
+         // Check there are 10 rows x 6 columns = 60 cells
          .findAllByCssSelector("span.alfresco-renderers-Property")
          .then(function (booleans) {
-            TestCommon.log(testname,"Check there are 50 cells as described in the model");
-            expect(booleans).to.have.length(50, "There should be 30 rows rendered");
+            TestCommon.log(testname,"Check there are 60 cells as described in the model");
+            expect(booleans).to.have.length(60, "There should be 60 cells rendered");
          })
          .end()
 

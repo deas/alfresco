@@ -87,7 +87,27 @@
          "config": {}
       },
       {
-         "id": "SMALL_ITEM_JS_NODE",
+         "id": "SMALL_ITEM_JS_NODE_1",
+         "name": "alfresco/renderers/SmallThumbnail",
+         "config": {
+            "currentItem": {
+               "jsNode": {
+                  "nodeRef": "dummy://nodeRef/1",
+                  "isContainer": false
+               },
+               "node": {
+                  "properties": {
+                     "cm:name": "SMALL_ITEM_JS_NODE_1"
+                  }
+               },
+               "type": "folder",
+               "displayName": "SMALL_ITEM_JS_NODE_1",
+               "renditionName": "doclib"
+            }
+         }
+      },
+      {
+         "id": "SMALL_ITEM_JS_NODE_2",
          "name": "alfresco/renderers/SmallThumbnail",
          "config": {
             "currentItem": {
@@ -96,18 +116,61 @@
                   "isContainer": true
                },
                "type": "folder",
-               "displayName": "ITEM_JS_NODE",
+               "displayName": "SMALL_ITEM_JS_NODE_2",
                "renditionName": "doclib"
             }
          }
       },
       {
-         "id": "ITEM_NODE_REF_DOCUMENT",
+         "id": "SMALL_ITEM_JS_NODE_3",
+         "name": "alfresco/renderers/SmallThumbnail",
+         "config": {
+            "currentItem": {
+               "jsNode": {
+                  "nodeRef": "dummy://nodeRef/1",
+                  "isContainer": false,
+                  "isLink": true,
+                  "linkedNode": {
+                     "isContainer": true
+                  }
+               },
+               "type": "folder",
+               "displayName": "SMALL_ITEM_JS_NODE_3",
+               "renditionName": "doclib"
+            }
+         }
+      },
+      {
+         "id": "SMALL_ITEM_JS_NODE_4",
+         "name": "alfresco/renderers/SmallThumbnail",
+         "config": {
+            "currentItem": {
+               "jsNode": {
+                  "nodeRef": "dummy://nodeRef/1",
+                  "isContainer": false,
+                  "isLink": false,
+                  "linkedNode": {
+                     "isContainer": false
+                  }
+               },
+               "node": {
+                  "properties": {
+                     "cm:name": "SMALL_ITEM_JS_NODE_4"
+                  }
+               },
+               "type": "folder",
+               "displayName": "SMALL_ITEM_JS_NODE_4",
+               "renditionName": "doclib"
+            }
+         }
+      },
+      {
+         "id": "SMALL_ITEM_NODE_REF_DOCUMENT",
          "name": "alfresco/renderers/SmallThumbnail",
          "config": {
             "currentItem": {
                "nodeRef": "dummy://nodeRef/1",
-               "displayName": "ITEM_NODE_REF_DOCUMENT",
+               "displayName": "SMALL_ITEM_NODE_REF_DOCUMENT",
                "type": "document"
             }
          }

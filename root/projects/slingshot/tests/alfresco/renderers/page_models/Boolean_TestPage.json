@@ -64,6 +64,13 @@
                      "id": "COLUMN5_HEADER",
                      "label": "MISSING DATA"
                   }
+               },
+               {
+                  "name": "alfresco/documentlibrary/views/layouts/HeaderCell",
+                  "config": {
+                     "id": "COLUMN6_HEADER",
+                     "label": "NO PROPERTY"
+                  }
                }
             ],
             "widgets":[
@@ -134,6 +141,20 @@
                                     "name": "alfresco/renderers/Boolean",
                                     "config": {
                                        "propertyToRender": "notAValidColumn",
+                                       "displayType": "YESNO"
+                                    }
+                                 }
+                              ]
+                           }
+                        },
+                        {
+                           "name": "alfresco/documentlibrary/views/layouts/Cell",
+                           "config": {
+                              "widgets": [
+                                 {
+                                    "name": "alfresco/renderers/Boolean",
+                                    "config": {
+                                       "propertyToRender": null,
                                        "displayType": "YESNO"
                                     }
                                  }
