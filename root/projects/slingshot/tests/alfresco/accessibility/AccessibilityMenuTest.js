@@ -23,8 +23,9 @@
 define(["intern!object",
         "intern/chai!expect",
         "require",
-        "alfresco/TestCommon"], 
-        function (registerSuite, expect, require, TestCommon) {
+        "alfresco/TestCommon",
+        "intern/dojo/node!leadfoot/keys"], 
+        function (registerSuite, expect, require, TestCommon, keys) {
 
    registerSuite({
       name: 'AccessibilityMenu Test',
@@ -45,7 +46,7 @@ define(["intern!object",
          .end()
 
          // Find the heading text
-         .findByCss("#AccessibilityMenu > p")
+         .findByCssSelector("#AccessibilityMenu > p")
          .text()
          .then(function(headingText) {
             TestCommon.log(testname,52,"Find the heading text");
@@ -62,7 +63,7 @@ define(["intern!object",
          .end()
 
          // Find the first target
-         .findByCss("a#accesskey-skip")
+         .findByCssSelector("a#accesskey-skip")
          .then(function (el) {
             TestCommon.log(testname,68,"Find the first target");
             expect(el).to.be.an("object", "The accesskey-skip target is missing");
@@ -78,7 +79,7 @@ define(["intern!object",
          .end()
 
          // Find the first menu link - which links the first target
-         .findByCss("#AccessibilityMenu > ul > li:nth-of-type(1) > a ")
+         .findByCssSelector("#AccessibilityMenu > ul > li:nth-of-type(1) > a ")
          .then(function (el) {
             TestCommon.log(testname,84,"Find the first menu link - which links the first target");
             expect(el).to.be.an("object", "The first link is missing");
