@@ -35,7 +35,6 @@ import org.testng.annotations.Test;
  * @since 1.6
  */
 @Listeners(FailedTestListener.class)
-@Test(groups="Enterprise-only", enabled=false)
 public class AdvanceSearchFolderTest extends AbstractTest
 {
     @SuppressWarnings("unused")
@@ -43,6 +42,7 @@ public class AdvanceSearchFolderTest extends AbstractTest
     DashBoardPage dashBoard;
     SiteDashboardPage site;
     AdvanceSearchFolderPage folderSearchPage;
+    
 
     /**
      * Pre test setup for Folder Search.
@@ -60,15 +60,15 @@ public class AdvanceSearchFolderTest extends AbstractTest
      * 
      * @throws Exception
      */
-    @Test
+    @Test(groups={"Enterprise-only","Enterprise4.2Bug"})
     public void folderSearchTest() throws Exception
     {
-        AdvanceSearchContentPage contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
-        folderSearchPage = contentSearchPage.searchLink("Folders").render();
-        folderSearchPage.inputName("Contracts");
-        folderSearchPage.inputDescription("This folder holds the agency contracts");
-        SearchResultPage searchResults = searchRetry();
-        Assert.assertTrue(searchResults.hasResults());
+    	AdvanceSearchContentPage contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
+    	folderSearchPage = contentSearchPage.searchLink("Folders").render(); 	
+        contentSearchPage.inputName("Contracts");
+        contentSearchPage.inputDescription("This folder holds the agency contracts");        
+        FacetedSearchPage searchResults = contentSearchPage.clickSearch().render();
+        Assert.assertTrue(searchResults.hasResults());        
     }
 
     /**
@@ -96,8 +96,7 @@ public class AdvanceSearchFolderTest extends AbstractTest
             else
             {
                 counter++;
-                searchResults.goBackToAdvanceSearch().render();
-            }
+                searchResults.goBackToAdvanceSearch().render();            }
         }
         throw new Exception("search failed");
     }
@@ -107,16 +106,16 @@ public class AdvanceSearchFolderTest extends AbstractTest
      * 
      */
     
-    @Test(groups={"Enterprise4.2Bug"})
+    @Test(groups={"Enterprise-only","Enterprise4.2Bug"})
     public void folderKeywordSearchTest() throws Exception
     {
         AdvanceSearchContentPage contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
         folderSearchPage = contentSearchPage.searchLink("Folders").render();
         folderSearchPage.inputKeyword("Contracts");
-        SearchResultsPage searchResults = searchRetry();
+        FacetedSearchPage searchResults = contentSearchPage.clickSearch().render();
         Assert.assertTrue(searchResults.hasResults());
-        folderSearchPage = searchResults.goBackToAdvanceSearch().render();
-        Assert.assertEquals("Contracts", contentSearchPage.getKeyword());
+        //folderSearchPage = searchResults.goBackToAdvanceSearch().render();
+        //Assert.assertEquals("Contracts", contentSearchPage.getKeyword());
     }
     
     /**
@@ -129,7 +128,7 @@ public class AdvanceSearchFolderTest extends AbstractTest
         AdvanceSearchContentPage contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
         folderSearchPage = contentSearchPage.searchLink("Folders").render();
         folderSearchPage.inputName("Contracts");
-        SearchResultsPage searchResults = searchRetry();
+        FacetedSearchPage searchResults = contentSearchPage.clickSearch().render();
         Assert.assertTrue(searchResults.hasResults());
         Assert.assertTrue(searchResults.getResults().get(0).isFolder());
     }
