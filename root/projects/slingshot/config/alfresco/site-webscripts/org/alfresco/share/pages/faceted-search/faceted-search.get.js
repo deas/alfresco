@@ -35,7 +35,7 @@ var rootWidgetId = "FCTSRCH_";
 
 // Insert a configuration page link if the user has the appropriate permissions...
 if (_processedUserData.groups["GROUP_ALFRESCO_ADMINISTRATORS"] == true ||
-    _processedUserData.groups["GROUP_SEARCH_ADMINISTRATORS"] == true ||
+    _processedUserData.groups["GROUP_ALFRESCO_SEARCH_ADMINISTRATORS"] == true ||
     _processedUserData.isNetworkAdmin == true)
 {
    var titleMenu = widgetUtils.findObject(widgets, "id", "HEADER_TITLE_MENU");
@@ -45,16 +45,7 @@ if (_processedUserData.groups["GROUP_ALFRESCO_ADMINISTRATORS"] == true ||
       config: {
          label: msg.get("faceted-search-config.label"),
          title: msg.get("faceted-search.config.link"),
-         // iconAltText: msg.get("faceted-search.config.link"),
-         // iconClass: "alf-configure-icon",
-         targetUrl: "dp/ws/faceted-search-config",
-         renderFilter: [
-            {
-               target: "groupMemberships",
-               property: "GROUP_ALFRESCO_ADMINISTRATORS",
-               values: [true]
-            }
-         ]
+         targetUrl: "dp/ws/faceted-search-config"
       }
    };
    titleMenu.config.widgets.splice(0, 0, searchConfigMenuItem);

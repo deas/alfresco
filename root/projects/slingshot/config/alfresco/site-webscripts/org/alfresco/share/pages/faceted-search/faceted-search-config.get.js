@@ -432,12 +432,7 @@ var main = {
                renderFilterMethod: "ALL",
                renderFilter: [
                   {
-                     property: "user.groups.GROUP_ALFRESCO_ADMINISTRATORS",
-                     renderOnAbsentProperty: true,
-                     values: [false]
-                  },
-                  {
-                     property: "user.groups.GROUP_SEARCH_ADMINISTRATORS",
+                     property: "user.groups.GROUP_ALFRESCO_SEARCH_ADMINISTRATORS",
                      renderOnAbsentProperty: true,
                      values: [false]
                   },
@@ -471,7 +466,7 @@ var main = {
                      values: [true]
                   },
                   {
-                     property: "user.groups.GROUP_SEARCH_ADMINISTRATORS",
+                     property: "user.groups.GROUP_ALFRESCO_SEARCH_ADMINISTRATORS",
                      values: [true]
                   },
                   {
